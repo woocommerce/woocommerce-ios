@@ -8,7 +8,7 @@ public enum AnalyticsOrdersTool {
         RESTTool(definition: definition, executor: execute)
     }
 
-    static let definition = AITool(
+    private static let definition = AITool(
         name: name,
         description: """
         Order analytics for a date range. Returns totals (order count, items \
@@ -38,7 +38,7 @@ public enum AnalyticsOrdersTool {
         ])
     )
 
-    struct Args: Decodable {
+    private struct Args: Decodable, Sendable {
         let after: String
         let before: String
         let interval: String?

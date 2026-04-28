@@ -8,7 +8,7 @@ public enum OrdersListTool {
         RESTTool(definition: definition, executor: execute)
     }
 
-    static let definition = AITool(
+    private static let definition = AITool(
         name: name,
         description: """
         List orders, optionally filtered by status, date range, or customer. \
@@ -72,7 +72,7 @@ public enum OrdersListTool {
         ])
     )
 
-    struct Args: Decodable {
+    private struct Args: Decodable, Sendable {
         let status: String?
         let search: String?
         let customer: Int?
@@ -90,7 +90,7 @@ public enum OrdersListTool {
         }
     }
 
-    static func query(from args: Args) -> [String: String] {
+    private static func query(from args: Args) -> [String: String] {
         var query: [String: String] = [
             "orderby": args.orderby ?? "date",
             "order": args.order ?? "desc",

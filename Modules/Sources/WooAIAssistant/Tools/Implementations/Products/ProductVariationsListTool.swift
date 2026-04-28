@@ -8,7 +8,7 @@ public enum ProductVariationsListTool {
         RESTTool(definition: definition, executor: execute)
     }
 
-    static let definition = AITool(
+    private static let definition = AITool(
         name: name,
         description: """
         List the variations of a variable product. Required: product_id (the \
@@ -37,7 +37,7 @@ public enum ProductVariationsListTool {
         ])
     )
 
-    struct Args: Decodable {
+    private struct Args: Decodable, Sendable {
         let productID: Int
         let page: Int?
         let perPage: Int?

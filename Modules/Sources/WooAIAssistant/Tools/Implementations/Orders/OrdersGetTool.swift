@@ -8,7 +8,7 @@ public enum OrdersGetTool {
         RESTTool(definition: definition, executor: execute)
     }
 
-    static let definition = AITool(
+    private static let definition = AITool(
         name: name,
         description: """
         Fetch a single order with full detail (line items, billing/shipping, \
@@ -29,7 +29,7 @@ public enum OrdersGetTool {
         ])
     )
 
-    struct Args: Decodable {
+    private struct Args: Decodable, Sendable {
         let id: Int
     }
 

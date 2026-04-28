@@ -13,5 +13,5 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../BuildSettingsPolice"
 install_swiftpm_dependencies
 popd
 
-echo "--- :sleuth_or_spy: Linting Xcode Build Settings"
+echo "--- :xcode: Linting Xcode Build Settings"
 bundle exec rake lint:xcode_build_settings

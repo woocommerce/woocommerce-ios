@@ -510,22 +510,18 @@ actor AgenticLoopOrchestrator {
             }
         }
 
-        // Fill in intra-batch secondaries with the primary's payload
-        // wrapped in the duplicateReplay envelope. Deterministic
-        // order (sorted by secondary index) so events emit in the
-        // same order the model issued the calls. The primary's
-        // resolved payload is nested verbatim under `data` - if it
-        // was a successful result the secondary sees a
-        // cached_result_reused hint; if the primary was blocked /
-        // cancelled / errored, the secondary sees the same outcome
-        // nested, which is still semantically correct ("the
-        // identical earlier call ended this way, don't retry").
+        // Mirror primary errors/cancellations directly rather than wrapping them in a success envelope.
         for (secondaryIndex, primaryIndex) in intraBatchSecondaryToPrimary.sorted(by: { $0.key < $1.key }) {
             let call = calls[secondaryIndex]
             if let primaryPayload = resolvedResults[primaryIndex] {
-                let replay = Self.duplicateReplayJSON(priorSeen: 1,
+                let replay: String
+                if Self.payloadIsErrorOrCancelled(primaryPayload) {
+                    replay = primaryPayload
+                } else {
+                    replay = Self.duplicateReplayJSON(priorSeen: 1,
                                                       name: call.function.name,
                                                       cachedPayload: primaryPayload)
+                }
                 continuation.yield(.toolCallCompleted(id: call.id,
                                                       name: call.function.name,
                                                       resultJSON: replay))
@@ -702,6 +698,20 @@ actor AgenticLoopOrchestrator {
     }
 
     // MARK: - Error JSON encoding
+
+    private static func payloadIsErrorOrCancelled(_ payload: String) -> Bool {
+        guard let data = payload.data(using: .utf8),
+              let parsed = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return false
+        }
+        if parsed["error"] != nil {
+            return true
+        }
+        if let status = parsed["status"] as? String, status == "user_cancelled" {
+            return true
+        }
+        return false
+    }
 
     private static func errorJSON(_ message: String) -> String {
         if let data = try? JSONSerialization.data(withJSONObject: ["error": message]),

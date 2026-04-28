@@ -1,4 +1,5 @@
 import Foundation
+import CocoaLumberjackSwift
 
 /// Human-readable one-liners shown on the confirmation card. Keeps the
 /// confirmation UX honest: the merchant sees "Update product #7: price -> $24.99"
@@ -166,7 +167,12 @@ public enum ToolPreviews {
 
     private static func decode<T: Decodable>(_ type: T.Type, from json: String) -> T? {
         guard let data = json.data(using: .utf8) else { return nil }
-        return try? JSONDecoder().decode(type, from: data)
+        do {
+            return try JSONDecoder().decode(type, from: data)
+        } catch {
+            DDLogError("ToolPreviews failed to decode \(type): \(error)")
+            return nil
+        }
     }
 
     /// Last-resort preview for tools without a dedicated builder. Truncates

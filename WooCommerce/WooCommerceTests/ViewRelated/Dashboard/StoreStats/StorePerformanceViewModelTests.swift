@@ -450,7 +450,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
                 onCompletion(.success(.paid))
             case let .updateAnalyticsOrderDateType(_, value, onCompletion):
                 receivedValue = value
-                onCompletion(.success(value))
+                onCompletion(.success(()))
             default:
                 break
             }
@@ -516,8 +516,8 @@ final class StorePerformanceViewModelTests: XCTestCase {
             switch action {
             case .retrieveAnalyticsOrderDateType(_, let onCompletion):
                 onCompletion(.success(.paid))
-            case let .updateAnalyticsOrderDateType(_, value, onCompletion):
-                onCompletion(.success(value))
+            case .updateAnalyticsOrderDateType(_, _, let onCompletion):
+                onCompletion(.success(()))
             default:
                 break
             }

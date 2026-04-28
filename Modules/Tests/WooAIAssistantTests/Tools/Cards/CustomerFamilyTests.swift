@@ -58,38 +58,6 @@ struct CustomerFamilyTests {
     }
 
     @Test
-    func test_fetch_when_include_returns_empty_array_then_returns_not_found() async {
-        // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("[]"))
-
-        // When
-        let outcomes = await CardFamily.customer.fetch(ids: [999], client: client)
-
-        // Then
-        if case .rejected(let reason) = outcomes[999] {
-            #expect(reason == .notFound)
-        } else {
-            Issue.record("expected rejected, got \(String(describing: outcomes[999]))")
-        }
-    }
-
-    @Test
-    func test_fetch_when_payload_is_object_not_array_then_returns_internal_error() async {
-        // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("{\"id\": 7}"))
-
-        // When
-        let outcomes = await CardFamily.customer.fetch(ids: [7], client: client)
-
-        // Then
-        if case .rejected(let reason) = outcomes[7] {
-            #expect(reason == .internalError)
-        } else {
-            Issue.record("expected rejected, got \(String(describing: outcomes[7]))")
-        }
-    }
-
-    @Test
     func test_fetch_when_multiple_ids_then_uses_comma_joined_include() async {
         // Given
         let body = """

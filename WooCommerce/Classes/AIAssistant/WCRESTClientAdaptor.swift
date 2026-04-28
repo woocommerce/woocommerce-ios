@@ -8,6 +8,7 @@ import struct Alamofire.HTTPMethod
 import enum WooAIAssistant.HTTPStatusClassification
 import struct WooAIAssistant.WCRESTResponse
 import protocol WooAIAssistant.WCRESTClient
+import CocoaLumberjackSwift
 
 /// `JetpackRequest(availableAsRESTRequest: true)` routes the same way other
 /// remotes do: WPCOM-tunneled with the bearer token, or upgraded to a direct
@@ -80,7 +81,12 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
         switch method {
         case .post, .put, .patch:
             guard let body, !body.isEmpty else { return nil }
-            return (try? JSONSerialization.jsonObject(with: body)) as? [String: Any]
+            do {
+                return try JSONSerialization.jsonObject(with: body) as? [String: Any]
+            } catch {
+                DDLogError("⛔️ WCRESTClientAdaptor failed to deserialize request body as JSON: \(error)")
+                return nil
+            }
         default:
             guard let query, !query.isEmpty else { return nil }
             return query.reduce(into: [String: Any]()) { dict, pair in

@@ -54,12 +54,7 @@ public struct RESTRequest: Request {
          path: String,
          parameters: [String: Any]? = nil,
          allowsCellularAccess: Bool = true) {
-        self.init(siteURL: siteURL,
-                  apiVersionPath: nil,
-                  method: method,
-                  path: path,
-                  parameters: parameters,
-                  allowsCellularAccess: allowsCellularAccess)
+        self.init(siteURL: siteURL, apiVersionPath: nil, method: method, path: path, parameters: parameters, allowsCellularAccess: allowsCellularAccess)
     }
 
     /// - Parameters:

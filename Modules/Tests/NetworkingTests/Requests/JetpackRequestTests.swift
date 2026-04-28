@@ -227,7 +227,6 @@ final class JetpackRequestTests: XCTestCase {
         // Then
         XCTAssertFalse(restRequest.allowsCellularAccess)
     }
-
 }
 
 

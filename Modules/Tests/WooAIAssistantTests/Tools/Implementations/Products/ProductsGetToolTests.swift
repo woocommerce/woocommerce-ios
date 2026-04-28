@@ -89,7 +89,5 @@ struct ProductsGetToolTests {
         guard case .failed(let failed) = result else {
             Issue.record("expected failed")
             return
-        }
-        #expect(failed.code == "404")
-    }
+        }    }
 }

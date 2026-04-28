@@ -41,18 +41,15 @@ public enum ToolResult: Sendable {
         public let toolCallID: String
         public let kind: AssistantErrorKind
         public let reason: String
-        public let code: String?
 
         public init(toolName: String,
                     toolCallID: String = "",
                     kind: AssistantErrorKind,
-                    reason: String,
-                    code: String? = nil) {
+                    reason: String) {
             self.toolName = toolName
             self.toolCallID = toolCallID
             self.kind = kind
             self.reason = reason
-            self.code = code
         }
     }
 
@@ -91,8 +88,7 @@ public enum ToolResult: Sendable {
             return .failed(.init(toolName: f.toolName,
                                  toolCallID: toolCallID,
                                  kind: f.kind,
-                                 reason: f.reason,
-                                 code: f.code))
+                                 reason: f.reason))
         case .rejectedBySafety(let r):
             return .rejectedBySafety(.init(toolName: r.toolName,
                                            toolCallID: toolCallID,

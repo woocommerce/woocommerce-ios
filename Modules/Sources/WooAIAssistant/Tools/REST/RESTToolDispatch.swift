@@ -38,7 +38,6 @@ enum RESTToolDispatch {
             ?? "HTTP \(response.statusCode)"
         return .init(toolName: toolName,
                      kind: HTTPStatusClassification.errorKind(forStatusCode: response.statusCode),
-                     reason: reason,
-                     code: String(response.statusCode))
+                     reason: reason)
     }
 }

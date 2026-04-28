@@ -59,8 +59,7 @@ struct ToolResultTests {
             toolName: "orders_get",
             toolCallID: "call_3",
             kind: .upstreamFailure,
-            reason: "HTTP 502 from upstream",
-            code: "bad_gateway"
+            reason: "HTTP 502 from upstream"
         ))
 
         // Then
@@ -71,9 +70,7 @@ struct ToolResultTests {
         #expect(failed.toolName == "orders_get")
         #expect(failed.toolCallID == "call_3")
         #expect(failed.kind == .upstreamFailure)
-        #expect(failed.reason == "HTTP 502 from upstream")
-        #expect(failed.code == "bad_gateway")
-    }
+        #expect(failed.reason == "HTTP 502 from upstream")    }
 
     @Test
     func test_toolResult_when_failed_without_code_then_code_is_nil() {
@@ -89,9 +86,7 @@ struct ToolResultTests {
         guard case .failed(let failed) = result else {
             Issue.record("expected .failed, got \(result)")
             return
-        }
-        #expect(failed.code == nil)
-    }
+        }    }
 
     @Test
     func test_toolResult_when_rejectedBySafety_then_carries_reason() {

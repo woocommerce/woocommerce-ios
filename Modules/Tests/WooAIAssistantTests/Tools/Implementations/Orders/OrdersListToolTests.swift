@@ -83,9 +83,7 @@ struct OrdersListToolTests {
             Issue.record("expected failed, got \(result)")
             return
         }
-        #expect(failed.kind == .upstreamFailure)
-        #expect(failed.code == "500")
-    }
+        #expect(failed.kind == .upstreamFailure)    }
 
     @Test
     func test_orders_list_when_arguments_not_json_then_returns_failed_with_invalid_tool_call() async {

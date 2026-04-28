@@ -79,4 +79,28 @@ public enum ToolResult: Sendable {
             self.proposal = proposal
         }
     }
+
+    func stamping(toolCallID: String) -> ToolResult {
+        switch self {
+        case .success(let s):
+            return .success(.init(toolName: s.toolName,
+                                  toolCallID: toolCallID,
+                                  structured: s.structured,
+                                  uiStructured: s.uiStructured))
+        case .failed(let f):
+            return .failed(.init(toolName: f.toolName,
+                                 toolCallID: toolCallID,
+                                 kind: f.kind,
+                                 reason: f.reason,
+                                 code: f.code))
+        case .rejectedBySafety(let r):
+            return .rejectedBySafety(.init(toolName: r.toolName,
+                                           toolCallID: toolCallID,
+                                           reason: r.reason))
+        case .awaitingConfirmation(let p):
+            return .awaitingConfirmation(.init(toolName: p.toolName,
+                                               toolCallID: toolCallID,
+                                               proposal: p.proposal))
+        }
+    }
 }

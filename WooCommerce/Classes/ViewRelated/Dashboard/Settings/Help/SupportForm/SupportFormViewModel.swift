@@ -52,6 +52,10 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     private let sourceTag: String?
 
+    /// Additional tags to include in the support request.
+    ///
+    private let additionalTags: [String]
+
     /// Handles the communication with Zendesk.
     ///
     private let zendeskProvider: ZendeskManagerProtocol
@@ -97,6 +101,7 @@ public final class SupportFormViewModel: ObservableObject {
 
     init(areas: [Area] = wooSupportAreas(),
          sourceTag: String? = nil,
+         additionalTags: [String] = [],
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analyticsProvider: Analytics = ServiceLocator.analytics,
          applicationLogsProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
@@ -104,6 +109,7 @@ public final class SupportFormViewModel: ObservableObject {
          attachments: [ZendeskAttachment] = []) {
         self.areas = areas
         self.sourceTag = sourceTag
+        self.additionalTags = additionalTags
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
         self.applicationLogsProvider = applicationLogsProvider
@@ -163,14 +169,15 @@ public final class SupportFormViewModel: ObservableObject {
         }
     }
 
-    /// Joins the selected area tags with the source tag(if available).
+    /// Joins the selected area tags with the source tag and additional tags.
     ///
     func assembleTags() -> [String] {
         guard let area else { return [] }
-        guard let sourceTag, sourceTag.isNotEmpty else {
-            return area.datasource.tags
+        var tags = area.datasource.tags
+        if let sourceTag, sourceTag.isNotEmpty {
+            tags.append(sourceTag)
         }
-        return area.datasource.tags + [sourceTag]
+        return tags + additionalTags
     }
 
     @MainActor

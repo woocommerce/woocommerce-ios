@@ -39,7 +39,7 @@ struct SupportChatMessageRow: View {
                 .foregroundColor(bubbleForeground)
                 .cornerRadius(SupportChatLayout.bubbleCornerRadius)
 
-            if message.role == .assistant {
+            if message.role == .bot {
                 Spacer(minLength: UIScreen.main.bounds.width * (1 - SupportChatLayout.maxBubbleWidthRatio))
             }
         }
@@ -50,7 +50,7 @@ struct SupportChatMessageRow: View {
         switch message.role {
         case .user:
             Text(message.content)
-        case .assistant:
+        case .bot, .unknown:
             Text(.init(message.content))
         }
     }
@@ -59,7 +59,7 @@ struct SupportChatMessageRow: View {
         switch message.role {
         case .user:
             return Color(.accent)
-        case .assistant:
+        case .bot, .unknown:
             return Color(.systemGray5)
         }
     }
@@ -68,7 +68,7 @@ struct SupportChatMessageRow: View {
         switch message.role {
         case .user:
             return .white
-        case .assistant:
+        case .bot, .unknown:
             return Color(.label)
         }
     }
@@ -119,7 +119,7 @@ struct TypingIndicatorRow: View {
 
 #Preview("Assistant Message") {
     SupportChatMessageRow(
-        message: .init(role: .assistant, content: "I can help you troubleshoot your connection. Let's start by checking a few things.")
+        message: .init(role: .bot, content: "I can help you troubleshoot your connection. Let's start by checking a few things.")
     )
     .padding()
 }

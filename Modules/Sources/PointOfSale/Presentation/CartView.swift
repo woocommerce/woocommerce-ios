@@ -288,13 +288,13 @@ private extension CartView {
 }
 
 private struct CartAddCustomAmountButton: View {
-    let onTap: () -> Void
+    static let tip = AddCustomAmountTip()
 
-    @State private var tip = AddCustomAmountTip()
+    let onTap: () -> Void
 
     var body: some View {
         Button(action: {
-            tip.invalidate(reason: .actionPerformed)
+            Self.tip.invalidate(reason: .actionPerformed)
             onTap()
         }) {
             Image(systemName: "plus")
@@ -303,7 +303,7 @@ private struct CartAddCustomAmountButton: View {
                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 .accessibilityLabel(Localization.addCustomAmountAccessibilityLabel)
         }
-        .popoverTip(tip, arrowEdge: .top)
+        .popoverTip(Self.tip, arrowEdge: .top)
         .accessibilityIdentifier("pos-add-custom-amount-header-button")
     }
 

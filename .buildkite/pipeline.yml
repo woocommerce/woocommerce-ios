@@ -122,6 +122,14 @@ steps:
           - github_commit_status:
               context: Check Package.resolved
 
+      # Runs on the `mac` queue because the underlying tool uses SwiftPM.
+      - label: ":sleuth_or_spy: Lint Xcode Build Settings"
+        command: .buildkite/commands/lint-build-settings.sh
+        plugins: [$CI_TOOLKIT]
+        notify:
+          - github_commit_status:
+              context: Lint Xcode Build Settings
+
   #################
   # UI Tests
   #################

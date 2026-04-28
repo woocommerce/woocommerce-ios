@@ -108,17 +108,13 @@ public enum ProductsUpdateTool {
                                  kind: .invalidToolCall,
                                  reason: "could not serialize update body"))
         }
-        let idempotencyKey = UUID().uuidString
-        let response = await client.request(method: "PUT",
-                                            path: "wc/v3/products/\(args.id)",
-                                            query: nil,
-                                            body: payload,
-                                            headers: ["Idempotency-Key": idempotencyKey])
-        return WriteResultMapper.mapEntity(response,
-                                           toolName: name,
-                                           idempotencyKey: idempotencyKey,
-                                           family: .product,
-                                           summarize: ProductSummary.make)
+        return await RESTToolDispatch.dispatchEntityWrite(method: "PUT",
+                                                          path: "wc/v3/products/\(args.id)",
+                                                          body: payload,
+                                                          client: client,
+                                                          toolName: name,
+                                                          family: .product,
+                                                          summarize: ProductSummary.make)
     }
 
     /// WC silently no-ops `regular_price` / `sale_price` writes on a variable

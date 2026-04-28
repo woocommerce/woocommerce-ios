@@ -119,15 +119,11 @@ public enum OrdersBulkUpdateTool {
                                  kind: .invalidToolCall,
                                  reason: "could not serialize batch body"))
         }
-        let idempotencyKey = UUID().uuidString
-        let response = await client.request(method: "POST",
-                                            path: "wc/v3/orders/batch",
-                                            query: nil,
-                                            body: payload,
-                                            headers: ["Idempotency-Key": idempotencyKey])
-        return WriteResultMapper.mapBatch(response,
-                                          toolName: name,
-                                          idempotencyKey: idempotencyKey,
-                                          family: .order)
+        return await RESTToolDispatch.dispatchBatchWrite(method: "POST",
+                                                         path: "wc/v3/orders/batch",
+                                                         body: payload,
+                                                         client: client,
+                                                         toolName: name,
+                                                         family: .order)
     }
 }

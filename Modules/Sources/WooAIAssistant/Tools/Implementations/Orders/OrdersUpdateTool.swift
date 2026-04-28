@@ -88,16 +88,12 @@ public enum OrdersUpdateTool {
                                  kind: .invalidToolCall,
                                  reason: "could not serialize update body"))
         }
-        let idempotencyKey = UUID().uuidString
-        let response = await client.request(method: "PUT",
-                                            path: "wc/v3/orders/\(args.id)",
-                                            query: nil,
-                                            body: payload,
-                                            headers: ["Idempotency-Key": idempotencyKey])
-        return WriteResultMapper.mapEntity(response,
-                                           toolName: name,
-                                           idempotencyKey: idempotencyKey,
-                                           family: .order,
-                                           summarize: OrderSummary.make)
+        return await RESTToolDispatch.dispatchEntityWrite(method: "PUT",
+                                                          path: "wc/v3/orders/\(args.id)",
+                                                          body: payload,
+                                                          client: client,
+                                                          toolName: name,
+                                                          family: .order,
+                                                          summarize: OrderSummary.make)
     }
 }

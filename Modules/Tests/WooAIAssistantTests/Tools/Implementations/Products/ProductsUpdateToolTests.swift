@@ -9,7 +9,7 @@ struct ProductsUpdateToolTests {
         let body = """
         {"id": 12, "name": "Wool Sweater", "type": "simple", "status": "publish"}
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = ProductsUpdateTool.make()
 
         // When
@@ -20,7 +20,7 @@ struct ProductsUpdateToolTests {
             Issue.record("expected success, got \(result)")
             return
         }
-        let call = try #require(client.calls.first)
+        let call = try #require(await client.calls.first)
         #expect(call.method == "PUT")
         #expect(call.path == "wc/v3/products/12")
         let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
@@ -34,7 +34,7 @@ struct ProductsUpdateToolTests {
         let body = """
         {"id": 12, "name": "X", "type": "simple"}
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = ProductsUpdateTool.make()
 
         // When
@@ -48,7 +48,7 @@ struct ProductsUpdateToolTests {
             Issue.record("expected success, got \(result)")
             return
         }
-        let call = try #require(client.calls.first)
+        let call = try #require(await client.calls.first)
         let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
         #expect(parsed["categories"] == nil)
         #expect(parsed["tags"] == nil)
@@ -60,7 +60,7 @@ struct ProductsUpdateToolTests {
         let body = """
         {"id": 12, "stock_quantity": 5, "type": "simple"}
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = ProductsUpdateTool.make()
 
         // When
@@ -71,7 +71,7 @@ struct ProductsUpdateToolTests {
             Issue.record("expected success, got \(result)")
             return
         }
-        let call = try #require(client.calls.first)
+        let call = try #require(await client.calls.first)
         let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
         #expect(parsed["stock_quantity"] as? Int == 5)
         #expect(parsed["manage_stock"] as? Bool == true)
@@ -83,7 +83,7 @@ struct ProductsUpdateToolTests {
         let probe = """
         {"id": 12, "name": "Tee", "type": "variable"}
         """
-        let client = RecordingWCRESTClient(responses: [
+        let client = MockWCRESTClient(responses: [
             StubResponses.ok(probe),
             StubResponses.ok(probe)
         ])
@@ -99,8 +99,8 @@ struct ProductsUpdateToolTests {
         }
         #expect(failed.kind == .invalidToolCall)
         #expect(failed.reason.contains("product_variations_update"))
-        #expect(client.calls.count == 1)
-        #expect(client.calls.first?.method == "GET")
+        #expect(await client.calls.count == 1)
+        #expect(await client.calls.first?.method == "GET")
     }
 
     @Test
@@ -112,7 +112,7 @@ struct ProductsUpdateToolTests {
         let putResponse = """
         {"id": 12, "name": "Tee", "regular_price": "19.99", "type": "simple"}
         """
-        let client = RecordingWCRESTClient(responses: [
+        let client = MockWCRESTClient(responses: [
             StubResponses.ok(probe),
             StubResponses.ok(putResponse)
         ])
@@ -126,14 +126,14 @@ struct ProductsUpdateToolTests {
             Issue.record("expected success, got \(result)")
             return
         }
-        let methods = client.calls.map { $0.method }
+        let methods = await client.calls.map { $0.method }
         #expect(methods == ["GET", "PUT"])
     }
 
     @Test
     func test_productsUpdate_when_only_id_provided_then_returns_invalidToolCall() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("{}"))
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
         let tool = ProductsUpdateTool.make()
 
         // When
@@ -145,13 +145,13 @@ struct ProductsUpdateToolTests {
             return
         }
         #expect(failed.kind == .invalidToolCall)
-        #expect(client.calls.isEmpty)
+        #expect(await client.calls.isEmpty)
     }
 
     @Test
     func test_productsUpdate_when_408_after_upload_then_returns_outcomeUnknown_with_uuid_correlation_id() async throws {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 408))
+        let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 408))
         let tool = ProductsUpdateTool.make()
 
         // When

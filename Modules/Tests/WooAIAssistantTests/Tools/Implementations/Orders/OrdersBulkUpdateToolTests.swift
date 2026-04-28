@@ -9,7 +9,7 @@ struct OrdersBulkUpdateToolTests {
         let body = """
         {"update": [{"id": 1, "status": "completed"}, {"id": 2, "status": "completed"}]}
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = OrdersBulkUpdateTool.make()
 
         // When
@@ -23,7 +23,7 @@ struct OrdersBulkUpdateToolTests {
             Issue.record("expected success, got \(result)")
             return
         }
-        let call = try #require(client.calls.first)
+        let call = try #require(await client.calls.first)
         #expect(call.method == "POST")
         #expect(call.path == "wc/v3/orders/batch")
         let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
@@ -39,7 +39,7 @@ struct OrdersBulkUpdateToolTests {
     @Test
     func test_ordersBulkUpdate_when_ids_empty_then_returns_invalidToolCall_without_calling_client() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("{}"))
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
         let tool = OrdersBulkUpdateTool.make()
 
         // When
@@ -51,13 +51,13 @@ struct OrdersBulkUpdateToolTests {
             return
         }
         #expect(failed.kind == .invalidToolCall)
-        #expect(client.calls.isEmpty)
+        #expect(await client.calls.isEmpty)
     }
 
     @Test
     func test_ordersBulkUpdate_when_ids_count_exceeds_100_then_returns_invalidToolCall() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("{}"))
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
         let tool = OrdersBulkUpdateTool.make()
         let ids = (1...101).map { String($0) }.joined(separator: ", ")
 
@@ -70,13 +70,13 @@ struct OrdersBulkUpdateToolTests {
             return
         }
         #expect(failed.kind == .invalidToolCall)
-        #expect(client.calls.isEmpty)
+        #expect(await client.calls.isEmpty)
     }
 
     @Test
     func test_ordersBulkUpdate_when_patch_has_no_field_then_returns_invalidToolCall() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("{}"))
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
         let tool = OrdersBulkUpdateTool.make()
 
         // When
@@ -88,13 +88,13 @@ struct OrdersBulkUpdateToolTests {
             return
         }
         #expect(failed.kind == .invalidToolCall)
-        #expect(client.calls.isEmpty)
+        #expect(await client.calls.isEmpty)
     }
 
     @Test
     func test_ordersBulkUpdate_when_408_after_upload_then_returns_outcomeUnknown_with_uuid_correlation_id() async throws {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 408))
+        let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 408))
         let tool = OrdersBulkUpdateTool.make()
 
         // When

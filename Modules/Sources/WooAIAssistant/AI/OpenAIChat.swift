@@ -6,18 +6,14 @@ import Foundation
 /// shape verbatim, so a single set of types covers today's backend and the
 /// expected future swap. Tool calling follows the OpenAI spec
 /// (`finish_reason: "tool_calls"`, `tool_calls[i].function.{name,arguments}`).
-public enum OpenAIChat {
+enum OpenAIChat {
 
-    // MARK: - Roles
-
-    public enum Role: String, Codable, Sendable {
+    enum Role: String, Codable, Sendable {
         case system
         case user
         case assistant
         case tool
     }
-
-    // MARK: - Messages
 
     /// One message in the chat history. Field validity depends on `role`:
     /// - `.system` / `.user`: `content` set; `toolCalls` and `toolCallID` nil.
@@ -26,16 +22,16 @@ public enum OpenAIChat {
     ///   in a real response, but both fields exist for round-tripping.
     /// - `.tool`: `content` is the tool result (typically a JSON string),
     ///   `toolCallID` references the originating assistant tool call.
-    public struct Message: Codable, Sendable, Equatable {
-        public let role: Role
-        public let content: String?
-        public let toolCalls: [ToolCall]?
-        public let toolCallID: String?
+    struct Message: Codable, Sendable, Equatable {
+        let role: Role
+        let content: String?
+        let toolCalls: [ToolCall]?
+        let toolCallID: String?
 
-        public init(role: Role,
-                    content: String? = nil,
-                    toolCalls: [ToolCall]? = nil,
-                    toolCallID: String? = nil) {
+        init(role: Role,
+             content: String? = nil,
+             toolCalls: [ToolCall]? = nil,
+             toolCallID: String? = nil) {
             self.role = role
             self.content = content
             self.toolCalls = toolCalls
@@ -55,11 +51,8 @@ public enum OpenAIChat {
         /// key with `jetpack_ai_error: Invalid message format`; it accepts
         /// an empty string. OpenAI's downstream model ignores `content`
         /// when `tool_calls` is set, so the empty string is cosmetic but
-        /// required to satisfy the proxy's validator. Verified empirically
-        /// via a live probe of the endpoint (probes E1/E2: `""` and
-        /// `"Calling tool"` both return 200 against an otherwise-failing
-        /// body).
-        public func encode(to encoder: Encoder) throws {
+        /// required to satisfy the proxy's validator.
+        func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(role, forKey: .role)
             if role == .assistant && toolCalls?.isEmpty == false {
@@ -72,87 +65,79 @@ public enum OpenAIChat {
             try container.encodeIfPresent(toolCallID, forKey: .toolCallID)
         }
 
-        public static func system(_ text: String) -> Message {
+        static func system(_ text: String) -> Message {
             Message(role: .system, content: text)
         }
-        public static func user(_ text: String) -> Message {
+        static func user(_ text: String) -> Message {
             Message(role: .user, content: text)
         }
-        public static func assistant(_ text: String) -> Message {
+        static func assistant(_ text: String) -> Message {
             Message(role: .assistant, content: text)
         }
-        public static func assistant(toolCalls: [ToolCall]) -> Message {
+        static func assistant(toolCalls: [ToolCall]) -> Message {
             Message(role: .assistant, toolCalls: toolCalls)
         }
-        public static func tool(callID: String, content: String) -> Message {
+        static func tool(callID: String, content: String) -> Message {
             Message(role: .tool, content: content, toolCallID: callID)
         }
     }
 
-    // MARK: - Tool calls
-
     /// Assistant-emitted request to invoke a function. `arguments` is a JSON
     /// string the caller must parse against the tool's declared schema.
-    public struct ToolCall: Codable, Sendable, Equatable {
-        public let id: String
-        public let type: String
-        public let function: FunctionCall
+    struct ToolCall: Codable, Sendable, Equatable {
+        let id: String
+        let type: String
+        let function: FunctionCall
 
-        public init(id: String, function: FunctionCall, type: String = "function") {
+        init(id: String, function: FunctionCall, type: String = "function") {
             self.id = id
             self.type = type
             self.function = function
         }
     }
 
-    public struct FunctionCall: Codable, Sendable, Equatable {
-        public let name: String
-        public let arguments: String
+    struct FunctionCall: Codable, Sendable, Equatable {
+        let name: String
+        let arguments: String
 
-        public init(name: String, arguments: String) {
+        init(name: String, arguments: String) {
             self.name = name
             self.arguments = arguments
         }
     }
 
-    // MARK: - Tool definitions (request side)
+    /// `parameters` is a JSON Schema object describing the function's
+    /// argument shape. Stored as `AnyCodableJSON` so any valid schema
+    /// round-trips without bespoke decoding per tool.
+    struct ToolDefinition: Codable, Sendable, Equatable {
+        let type: String
+        let function: FunctionDefinition
 
-    /// Function declaration sent in the `tools` array of a request. The
-    /// `parameters` field is a JSON Schema object describing the function's
-    /// argument shape - encoded as `AnyCodableJSON` so any valid schema
-    /// round-trips.
-    public struct ToolDefinition: Codable, Sendable, Equatable {
-        public let type: String
-        public let function: FunctionDefinition
-
-        public init(function: FunctionDefinition, type: String = "function") {
+        init(function: FunctionDefinition, type: String = "function") {
             self.type = type
             self.function = function
         }
     }
 
-    public struct FunctionDefinition: Codable, Sendable, Equatable {
-        public let name: String
-        public let description: String
-        public let parameters: AnyCodableJSON
+    struct FunctionDefinition: Codable, Sendable, Equatable {
+        let name: String
+        let description: String
+        let parameters: AnyCodableJSON
 
-        public init(name: String, description: String, parameters: AnyCodableJSON) {
+        init(name: String, description: String, parameters: AnyCodableJSON) {
             self.name = name
             self.description = description
             self.parameters = parameters
         }
     }
 
-    /// Wire-level `tool_choice` parameter. OpenAI accepts `"auto"`,
-    /// `"required"`, or a specific-function object. Used by the
-    /// orchestrator to pin `respond` on forced follow-up turns when the
-    /// model emitted plain text instead of calling the terminal tool.
-    public enum ToolChoice: Encodable, Sendable, Equatable {
+    /// Encoded-only; `jetpack-ai-query` never returns `tool_choice`.
+    enum ToolChoice: Encodable, Sendable, Equatable {
         case auto
         case required
         case function(name: String)
 
-        public func encode(to encoder: Encoder) throws {
+        func encode(to encoder: Encoder) throws {
             var container = encoder.singleValueContainer()
             switch self {
             case .auto:
@@ -174,26 +159,24 @@ public enum OpenAIChat {
         }
     }
 
-    // MARK: - Request
+    struct Request: Encodable, Sendable {
+        let messages: [Message]
+        let tools: [ToolDefinition]?
+        let toolChoice: ToolChoice?
+        let model: String?
+        let stream: Bool
+        let feature: String
+        let temperature: Double?
+        let maxTokens: Int?
 
-    public struct Request: Encodable, Sendable {
-        public let messages: [Message]
-        public let tools: [ToolDefinition]?
-        public let toolChoice: ToolChoice?
-        public let model: String?
-        public let stream: Bool
-        public let feature: String
-        public let temperature: Double?
-        public let maxTokens: Int?
-
-        public init(messages: [Message],
-                    tools: [ToolDefinition]? = nil,
-                    toolChoice: ToolChoice? = nil,
-                    model: String? = nil,
-                    stream: Bool = false,
-                    feature: String,
-                    temperature: Double? = nil,
-                    maxTokens: Int? = nil) {
+        init(messages: [Message],
+             tools: [ToolDefinition]? = nil,
+             toolChoice: ToolChoice? = nil,
+             model: String? = nil,
+             stream: Bool = false,
+             feature: String,
+             temperature: Double? = nil,
+             maxTokens: Int? = nil) {
             self.messages = messages
             self.tools = tools
             self.toolChoice = toolChoice
@@ -211,18 +194,16 @@ public enum OpenAIChat {
         }
     }
 
-    // MARK: - Response (non-streaming)
+    struct Response: Decodable, Sendable, Equatable {
+        let id: String?
+        let model: String?
+        let choices: [Choice]
+        let usage: Usage?
 
-    public struct Response: Decodable, Sendable, Equatable {
-        public let id: String?
-        public let model: String?
-        public let choices: [Choice]
-        public let usage: Usage?
-
-        public init(id: String? = nil,
-                    model: String? = nil,
-                    choices: [Choice],
-                    usage: Usage? = nil) {
+        init(id: String? = nil,
+             model: String? = nil,
+             choices: [Choice],
+             usage: Usage? = nil) {
             self.id = id
             self.model = model
             self.choices = choices
@@ -230,12 +211,12 @@ public enum OpenAIChat {
         }
     }
 
-    public struct Choice: Decodable, Sendable, Equatable {
-        public let index: Int
-        public let message: Message
-        public let finishReason: FinishReason?
+    struct Choice: Decodable, Sendable, Equatable {
+        let index: Int
+        let message: Message
+        let finishReason: FinishReason?
 
-        public init(index: Int, message: Message, finishReason: FinishReason? = nil) {
+        init(index: Int, message: Message, finishReason: FinishReason? = nil) {
             self.index = index
             self.message = message
             self.finishReason = finishReason
@@ -247,22 +228,24 @@ public enum OpenAIChat {
         }
     }
 
-    /// `finish_reason` value from the API. Decode falls back to `.stop` for
-    /// unknown strings so a future server-side enum addition does not break
-    /// in-flight responses; the orchestrator inspects `tool_calls` directly
-    /// for tool-driven turns and treats anything else as a terminal stop.
-    public enum FinishReason: String, Sendable, Equatable {
+    /// `finish_reason` value from the API. Unknown strings decode to `.other`
+    /// so a future server-side enum addition does not break in-flight
+    /// responses; matches Android's `FinishReason.OTHER` for cross-platform
+    /// parity. Callers that need to react only to a terminal stop should
+    /// match `.stop` explicitly.
+    enum FinishReason: String, Sendable, Equatable {
         case stop
         case toolCalls = "tool_calls"
         case length
         case contentFilter = "content_filter"
         case functionCall = "function_call"
+        case other
     }
 
-    public struct Usage: Decodable, Sendable, Equatable {
-        public let promptTokens: Int?
-        public let completionTokens: Int?
-        public let totalTokens: Int?
+    struct Usage: Decodable, Sendable, Equatable {
+        let promptTokens: Int?
+        let completionTokens: Int?
+        let totalTokens: Int?
 
         enum CodingKeys: String, CodingKey {
             case promptTokens = "prompt_tokens"
@@ -271,22 +254,19 @@ public enum OpenAIChat {
         }
     }
 
-    // MARK: - Streaming chunk (SSE)
-
-    /// Streaming chunk in the OpenAI SSE format. Multiple chunks build up a
-    /// single response; tool-call arguments arrive as fragments and must be
-    /// concatenated by index across chunks.
-    public struct Chunk: Decodable, Sendable, Equatable {
-        public let id: String?
-        public let model: String?
-        public let choices: [ChunkChoice]
-        public let usage: Usage?
+    /// Multiple chunks build up a single response; tool-call arguments arrive
+    /// as fragments and must be concatenated by index across chunks.
+    struct Chunk: Decodable, Sendable, Equatable {
+        let id: String?
+        let model: String?
+        let choices: [ChunkChoice]
+        let usage: Usage?
     }
 
-    public struct ChunkChoice: Decodable, Sendable, Equatable {
-        public let index: Int
-        public let delta: Delta
-        public let finishReason: FinishReason?
+    struct ChunkChoice: Decodable, Sendable, Equatable {
+        let index: Int
+        let delta: Delta
+        let finishReason: FinishReason?
 
         enum CodingKeys: String, CodingKey {
             case index, delta
@@ -294,10 +274,10 @@ public enum OpenAIChat {
         }
     }
 
-    public struct Delta: Decodable, Sendable, Equatable {
-        public let role: Role?
-        public let content: String?
-        public let toolCalls: [ToolCallDelta]?
+    struct Delta: Decodable, Sendable, Equatable {
+        let role: Role?
+        let content: String?
+        let toolCalls: [ToolCallDelta]?
 
         enum CodingKeys: String, CodingKey {
             case role, content
@@ -305,27 +285,26 @@ public enum OpenAIChat {
         }
     }
 
-    /// Partial tool call fragment streamed inside a `Delta`. `index` identifies
-    /// which tool call this fragment belongs to (0-based across the response).
-    /// All other fields are present in the first fragment and absent in
-    /// subsequent fragments that only carry more `arguments` characters.
-    public struct ToolCallDelta: Decodable, Sendable, Equatable {
-        public let index: Int
-        public let id: String?
-        public let type: String?
-        public let function: FunctionDelta?
+    /// All fields except `index` are present only in the first fragment of a
+    /// given tool call. Subsequent fragments carry just `index` and a slice
+    /// of `function.arguments` to be concatenated by the consumer.
+    struct ToolCallDelta: Decodable, Sendable, Equatable {
+        let index: Int
+        let id: String?
+        let type: String?
+        let function: FunctionDelta?
     }
 
-    public struct FunctionDelta: Decodable, Sendable, Equatable {
-        public let name: String?
-        public let arguments: String?
+    struct FunctionDelta: Decodable, Sendable, Equatable {
+        let name: String?
+        let arguments: String?
     }
 }
 
 extension OpenAIChat.FinishReason: Decodable {
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let raw = try container.decode(String.self)
-        self = OpenAIChat.FinishReason(rawValue: raw) ?? .stop
+        self = OpenAIChat.FinishReason(rawValue: raw) ?? .other
     }
 }

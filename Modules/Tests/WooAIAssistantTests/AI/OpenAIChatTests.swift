@@ -83,7 +83,7 @@ struct OpenAIChatTests {
     }
 
     @Test
-    func test_finishReason_when_unknown_string_then_decodes_to_stop() throws {
+    func test_finishReason_when_unknown_string_then_decodes_to_other() throws {
         // Given
         let json = "\"some_future_value\"".data(using: .utf8) ?? Data()
 
@@ -91,7 +91,7 @@ struct OpenAIChatTests {
         let finishReason = try JSONDecoder().decode(OpenAIChat.FinishReason.self, from: json)
 
         // Then
-        #expect(finishReason == .stop)
+        #expect(finishReason == .other)
     }
 
     @Test

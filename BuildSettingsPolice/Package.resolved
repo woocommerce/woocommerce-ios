@@ -1,5 +1,5 @@
 {
-  "originHash" : "527245b6a47858fe07f911401642963c1baaf6b9def103e826bc0610aadedd6b",
+  "originHash" : "ac552bbb7c707319683b7f9bf416f8e808e0fa8a34f361501993240482bf09b6",
   "pins" : [
     {
       "identity" : "aexml",
@@ -42,7 +42,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Automattic/xcode-build-settings-police.git",
       "state" : {
-        "revision" : "872287e2e01daf6d3574acf9a41c19ec4e0e6529"
+        "revision" : "a0538abe3a2b56e6dda7a08c440fe79603fc1b34"
       }
     },
     {

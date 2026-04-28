@@ -1,22 +1,12 @@
-/// `isReadOnly` is closure-injected because the toggle lives in app-target
-/// Labs settings; the assistant module stays UI-agnostic and the host wires
-/// the closure at construction.
 public struct DefaultSafetyPolicy: SafetyPolicy {
 
-    private let isReadOnly: @Sendable () -> Bool
-
-    public init(isReadOnly: @escaping @Sendable () -> Bool) {
-        self.isReadOnly = isReadOnly
-    }
+    public init() {}
 
     public func decision(for name: String, arguments: String, tool: AITool) -> SafetyDecision {
         switch tool.safetyLevel {
         case .safe:
             return .execute
         case .unsafe:
-            if isReadOnly() {
-                return .block(reason: "Read-only mode is on - the assistant can't run '\(name)'. Toggle it off in Labs settings to allow this change.")
-            }
             return .requireConfirmation(preview: ToolPreviews.defaultBuilder(name, arguments))
         }
     }

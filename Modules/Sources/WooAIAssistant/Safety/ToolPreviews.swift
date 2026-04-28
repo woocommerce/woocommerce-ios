@@ -28,22 +28,29 @@ public enum ToolPreviews {
             let billing_email: String?
         }
         guard let a = decode(A.self, from: arguments), let id = a.id else {
-            return "Update an order"
+            return Localization.ordersUpdateFallback
         }
+
+        // Status-only path: special "Set order #X to Y" wording.
+        if let status = a.status, a.customer_note == nil, a.billing_email == nil {
+            let suffix = customerNotifyingStatuses.contains(status) ? Localization.emailsCustomerSuffix : ""
+            return String.localizedStringWithFormat(Localization.ordersUpdateStatusOnly, id, status) + suffix
+        }
+
         var changes: [String] = []
         if let status = a.status {
-            let note = customerNotifyingStatuses.contains(status) ? " (emails the customer)" : ""
-            changes.append("status -> \(status)\(note)")
+            let suffix = customerNotifyingStatuses.contains(status) ? Localization.emailsCustomerSuffix : ""
+            changes.append(String.localizedStringWithFormat(Localization.changeStatus, status) + suffix)
         }
-        if a.customer_note != nil { changes.append("customer note updated") }
-        if let email = a.billing_email { changes.append("billing email -> \(email)") }
+        if a.customer_note != nil { changes.append(Localization.changeCustomerNote) }
+        if let email = a.billing_email {
+            changes.append(String.localizedStringWithFormat(Localization.changeBillingEmail, email))
+        }
+
         if changes.isEmpty {
-            return "Update order #\(id)"
+            return String.localizedStringWithFormat(Localization.ordersUpdateNoChanges, id)
         }
-        if changes.count == 1, a.status != nil {
-            return "Set order #\(id) to \(changes[0].replacingOccurrences(of: "status -> ", with: ""))"
-        }
-        return "Update order #\(id): \(changes.joined(separator: ", "))"
+        return String.localizedStringWithFormat(Localization.ordersUpdateFull, id, changes.joined(separator: ", "))
     }
 
     private static func ordersBulkUpdate(arguments: String) -> String {
@@ -58,15 +65,19 @@ public enum ToolPreviews {
         }
         guard let a = decode(A.self, from: arguments),
               let ids = a.ids, let patch = a.patch else {
-            return "Update many orders"
+            return Localization.ordersBulkUpdateFallback
         }
         var changes: [String] = []
-        if let status = patch.status { changes.append("status -> \(status)") }
-        if patch.customer_note != nil { changes.append("customer note updated") }
-        if let email = patch.billing_email { changes.append("billing email -> \(email)") }
-        let summary = changes.isEmpty ? "edit fields" : changes.joined(separator: ", ")
-        let noun = ids.count == 1 ? "order" : "orders"
-        return "Update \(ids.count) \(noun): \(summary)"
+        if let status = patch.status {
+            changes.append(String.localizedStringWithFormat(Localization.changeStatus, status))
+        }
+        if patch.customer_note != nil { changes.append(Localization.changeCustomerNote) }
+        if let email = patch.billing_email {
+            changes.append(String.localizedStringWithFormat(Localization.changeBillingEmail, email))
+        }
+        let summary = changes.isEmpty ? Localization.changeEditFields : changes.joined(separator: ", ")
+        let format = ids.count == 1 ? Localization.ordersBulkUpdateSingular : Localization.ordersBulkUpdatePlural
+        return String.localizedStringWithFormat(format, ids.count, summary)
     }
 
     private static func productsUpdate(arguments: String) -> String {
@@ -79,16 +90,15 @@ public enum ToolPreviews {
             let status: String?
         }
         guard let a = decode(A.self, from: arguments), let id = a.id else {
-            return "Update a product"
+            return Localization.productsUpdateFallback
         }
-        var changes: [String] = []
-        if let name = a.name { changes.append("name -> \(name)") }
-        if let price = a.regular_price { changes.append("price -> $\(price)") }
-        if let sale = a.sale_price { changes.append("sale -> \(sale.isEmpty ? "off" : "$\(sale)")") }
-        if let stock = a.stock_quantity { changes.append("stock -> \(stock)") }
-        if let status = a.status { changes.append("status -> \(status)") }
-        let summary = changes.isEmpty ? "edit fields" : changes.joined(separator: ", ")
-        return "Update product #\(id): \(summary)"
+        let changes = productChanges(name: a.name,
+                                     regularPrice: a.regular_price,
+                                     salePrice: a.sale_price,
+                                     stockQuantity: a.stock_quantity,
+                                     status: a.status)
+        let summary = changes.isEmpty ? Localization.changeEditFields : changes.joined(separator: ", ")
+        return String.localizedStringWithFormat(Localization.productsUpdateFull, id, summary)
     }
 
     private static func productsBulkUpdate(arguments: String) -> String {
@@ -105,17 +115,16 @@ public enum ToolPreviews {
         }
         guard let a = decode(A.self, from: arguments),
               let ids = a.ids, let patch = a.patch else {
-            return "Update many products"
+            return Localization.productsBulkUpdateFallback
         }
-        var changes: [String] = []
-        if let name = patch.name { changes.append("name -> \(name)") }
-        if let price = patch.regular_price { changes.append("price -> $\(price)") }
-        if let sale = patch.sale_price { changes.append("sale -> \(sale.isEmpty ? "off" : "$\(sale)")") }
-        if let stock = patch.stock_quantity { changes.append("stock -> \(stock)") }
-        if let status = patch.status { changes.append("status -> \(status)") }
-        let summary = changes.isEmpty ? "edit fields" : changes.joined(separator: ", ")
-        let noun = ids.count == 1 ? "product" : "products"
-        return "Update \(ids.count) \(noun): \(summary)"
+        let changes = productChanges(name: patch.name,
+                                     regularPrice: patch.regular_price,
+                                     salePrice: patch.sale_price,
+                                     stockQuantity: patch.stock_quantity,
+                                     status: patch.status)
+        let summary = changes.isEmpty ? Localization.changeEditFields : changes.joined(separator: ", ")
+        let format = ids.count == 1 ? Localization.productsBulkUpdateSingular : Localization.productsBulkUpdatePlural
+        return String.localizedStringWithFormat(format, ids.count, summary)
     }
 
     private static func productVariationsUpdate(arguments: String) -> String {
@@ -131,17 +140,55 @@ public enum ToolPreviews {
         }
         guard let a = decode(A.self, from: arguments),
               let pid = a.product_id, let vid = a.id else {
-            return "Update product variation"
+            return Localization.productVariationsUpdateFallback
         }
         var changes: [String] = []
-        if let price = a.regular_price { changes.append("price -> $\(price)") }
-        if let sale = a.sale_price { changes.append("sale -> \(sale.isEmpty ? "off" : "$\(sale)")") }
-        if let stock = a.stock_quantity { changes.append("stock -> \(stock)") }
-        if let stockStatus = a.stock_status { changes.append("stock status -> \(stockStatus)") }
-        if let sku = a.sku { changes.append("sku -> \(sku)") }
-        if let status = a.status { changes.append("status -> \(status)") }
-        let summary = changes.isEmpty ? "edit fields" : changes.joined(separator: ", ")
-        return "Update variation #\(vid) of product #\(pid): \(summary)"
+        if let price = a.regular_price {
+            changes.append(String.localizedStringWithFormat(Localization.changeRegularPrice, price))
+        }
+        if let sale = a.sale_price {
+            changes.append(sale.isEmpty ? Localization.changeSaleOff
+                                        : String.localizedStringWithFormat(Localization.changeSalePrice, sale))
+        }
+        if let stock = a.stock_quantity {
+            changes.append(String.localizedStringWithFormat(Localization.changeStockQuantity, stock))
+        }
+        if let stockStatus = a.stock_status {
+            changes.append(String.localizedStringWithFormat(Localization.changeStockStatus, stockStatus))
+        }
+        if let sku = a.sku {
+            changes.append(String.localizedStringWithFormat(Localization.changeSku, sku))
+        }
+        if let status = a.status {
+            changes.append(String.localizedStringWithFormat(Localization.changeStatus, status))
+        }
+        let summary = changes.isEmpty ? Localization.changeEditFields : changes.joined(separator: ", ")
+        return String.localizedStringWithFormat(Localization.productVariationsUpdateFull, vid, pid, summary)
+    }
+
+    private static func productChanges(name: String?,
+                                       regularPrice: String?,
+                                       salePrice: String?,
+                                       stockQuantity: Int?,
+                                       status: String?) -> [String] {
+        var changes: [String] = []
+        if let name = name {
+            changes.append(String.localizedStringWithFormat(Localization.changeName, name))
+        }
+        if let price = regularPrice {
+            changes.append(String.localizedStringWithFormat(Localization.changeRegularPrice, price))
+        }
+        if let sale = salePrice {
+            changes.append(sale.isEmpty ? Localization.changeSaleOff
+                                        : String.localizedStringWithFormat(Localization.changeSalePrice, sale))
+        }
+        if let stock = stockQuantity {
+            changes.append(String.localizedStringWithFormat(Localization.changeStockQuantity, stock))
+        }
+        if let status = status {
+            changes.append(String.localizedStringWithFormat(Localization.changeStatus, status))
+        }
+        return changes
     }
 
     /// Order statuses that trigger a customer email on transition.
@@ -164,5 +211,144 @@ public enum ToolPreviews {
             ? String(arguments.prefix(80)) + "..."
             : arguments
         return "\(name) \(args)"
+    }
+
+    private enum Localization {
+        static let ordersUpdateFallback = NSLocalizedString(
+            "ai.assistant.preview.orders_update.fallback",
+            value: "Update an order",
+            comment: "Confirmation card preview shown when the orders_update tool call cannot be parsed."
+        )
+        static let ordersUpdateNoChanges = NSLocalizedString(
+            "ai.assistant.preview.orders_update.no_changes",
+            value: "Update order #%1$d",
+            comment: "Confirmation card preview when only the order id is known. %1$d is the order number."
+        )
+        static let ordersUpdateStatusOnly = NSLocalizedString(
+            "ai.assistant.preview.orders_update.status_only",
+            value: "Set order #%1$d to %2$@",
+            comment: "Confirmation card preview when only the status changes on an order. %1$d is the order number, %2$@ is the new status."
+        )
+        static let ordersUpdateFull = NSLocalizedString(
+            "ai.assistant.preview.orders_update.full",
+            value: "Update order #%1$d: %2$@",
+            comment: "Confirmation card preview for a multi-field order update. %1$d is the order number, %2$@ is a comma-separated change list."
+        )
+
+        static let ordersBulkUpdateFallback = NSLocalizedString(
+            "ai.assistant.preview.orders_bulk_update.fallback",
+            value: "Update many orders",
+            comment: "Confirmation card preview when the orders_bulk_update tool call cannot be parsed."
+        )
+        static let ordersBulkUpdateSingular = NSLocalizedString(
+            "ai.assistant.preview.orders_bulk_update.singular",
+            value: "Update %1$d order: %2$@",
+            comment: "Singular bulk-orders confirmation preview. %1$d is the count (1), %2$@ is a comma-separated change list."
+        )
+        static let ordersBulkUpdatePlural = NSLocalizedString(
+            "ai.assistant.preview.orders_bulk_update.plural",
+            value: "Update %1$d orders: %2$@",
+            comment: "Plural bulk-orders confirmation preview. %1$d is the count, %2$@ is a comma-separated change list."
+        )
+
+        static let productsUpdateFallback = NSLocalizedString(
+            "ai.assistant.preview.products_update.fallback",
+            value: "Update a product",
+            comment: "Confirmation card preview when the products_update tool call cannot be parsed."
+        )
+        static let productsUpdateFull = NSLocalizedString(
+            "ai.assistant.preview.products_update.full",
+            value: "Update product #%1$d: %2$@",
+            comment: "Confirmation card preview for a product update. %1$d is the product id, %2$@ is a comma-separated change list."
+        )
+
+        static let productsBulkUpdateFallback = NSLocalizedString(
+            "ai.assistant.preview.products_bulk_update.fallback",
+            value: "Update many products",
+            comment: "Confirmation card preview when the products_bulk_update tool call cannot be parsed."
+        )
+        static let productsBulkUpdateSingular = NSLocalizedString(
+            "ai.assistant.preview.products_bulk_update.singular",
+            value: "Update %1$d product: %2$@",
+            comment: "Singular bulk-products confirmation preview. %1$d is the count (1), %2$@ is a comma-separated change list."
+        )
+        static let productsBulkUpdatePlural = NSLocalizedString(
+            "ai.assistant.preview.products_bulk_update.plural",
+            value: "Update %1$d products: %2$@",
+            comment: "Plural bulk-products confirmation preview. %1$d is the count, %2$@ is a comma-separated change list."
+        )
+
+        static let productVariationsUpdateFallback = NSLocalizedString(
+            "ai.assistant.preview.product_variations_update.fallback",
+            value: "Update product variation",
+            comment: "Confirmation card preview when the product_variations_update tool call cannot be parsed."
+        )
+        static let productVariationsUpdateFull = NSLocalizedString(
+            "ai.assistant.preview.product_variations_update.full",
+            value: "Update variation #%1$d of product #%2$d: %3$@",
+            comment: "Confirmation card preview for a variation update. %1$d is the variation id, %2$d is the parent product id, %3$@ is a comma-separated change list."
+        )
+
+        static let emailsCustomerSuffix = NSLocalizedString(
+            "ai.assistant.preview.suffix.emails_customer",
+            value: " (emails the customer)",
+            comment: "Trailing suffix appended to an order-status confirmation preview when the new status triggers a customer email. Includes the leading space."
+        )
+
+        static let changeEditFields = NSLocalizedString(
+            "ai.assistant.preview.change.edit_fields",
+            value: "edit fields",
+            comment: "Generic change description used when no specific field can be enumerated."
+        )
+        static let changeName = NSLocalizedString(
+            "ai.assistant.preview.change.name",
+            value: "name -> %1$@",
+            comment: "Change description for a name field. %1$@ is the new name."
+        )
+        static let changeRegularPrice = NSLocalizedString(
+            "ai.assistant.preview.change.regular_price",
+            value: "price -> $%1$@",
+            comment: "Change description for the regular price. %1$@ is the new price as a string."
+        )
+        static let changeSalePrice = NSLocalizedString(
+            "ai.assistant.preview.change.sale_price",
+            value: "sale -> $%1$@",
+            comment: "Change description for the sale price. %1$@ is the new sale price as a string."
+        )
+        static let changeSaleOff = NSLocalizedString(
+            "ai.assistant.preview.change.sale_off",
+            value: "sale -> off",
+            comment: "Change description when the sale price is being cleared (turned off)."
+        )
+        static let changeStockQuantity = NSLocalizedString(
+            "ai.assistant.preview.change.stock_quantity",
+            value: "stock -> %1$d",
+            comment: "Change description for stock quantity. %1$d is the new quantity."
+        )
+        static let changeStockStatus = NSLocalizedString(
+            "ai.assistant.preview.change.stock_status",
+            value: "stock status -> %1$@",
+            comment: "Change description for stock status (e.g. instock, outofstock). %1$@ is the new value."
+        )
+        static let changeSku = NSLocalizedString(
+            "ai.assistant.preview.change.sku",
+            value: "sku -> %1$@",
+            comment: "Change description for SKU. %1$@ is the new SKU."
+        )
+        static let changeStatus = NSLocalizedString(
+            "ai.assistant.preview.change.status",
+            value: "status -> %1$@",
+            comment: "Change description for a status field. %1$@ is the new status."
+        )
+        static let changeCustomerNote = NSLocalizedString(
+            "ai.assistant.preview.change.customer_note",
+            value: "customer note updated",
+            comment: "Change description when an order's customer note is being modified (the note text itself is not shown)."
+        )
+        static let changeBillingEmail = NSLocalizedString(
+            "ai.assistant.preview.change.billing_email",
+            value: "billing email -> %1$@",
+            comment: "Change description for billing email. %1$@ is the new email address."
+        )
     }
 }

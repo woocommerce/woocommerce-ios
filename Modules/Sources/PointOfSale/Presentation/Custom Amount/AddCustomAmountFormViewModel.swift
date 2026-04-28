@@ -31,9 +31,6 @@ final class AddCustomAmountFormViewModel {
         self.numberFormatter = formatter
     }
 
-    /// Updates `amount` after running the raw user input through
-    /// `CurrencyInputSanitizer`. Invalid input (extra decimals, multiple
-    /// separators, etc.) is rejected and the current value is kept.
     func setAmount(_ rawInput: String) {
         guard let sanitized = sanitizer.sanitize(rawInput) else { return }
         amount = sanitized

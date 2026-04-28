@@ -94,11 +94,6 @@ struct AddCustomAmountView: View {
     }
 
     private func focusAmountField() {
-        // Force a focus cycle (false → true) so a fresh tap always re-presents
-        // the popover — without this, dismissing the keyboard by tapping
-        // outside leaves `@FocusState` out of sync and a second tap does
-        // nothing. Also explicitly clear the name field's focus so the
-        // QWERTY keyboard fully tears down before the decimal-pad opens.
         isNameFocused = false
         isAmountFocused = false
         DispatchQueue.main.async {
@@ -115,10 +110,6 @@ struct AddCustomAmountView: View {
         .tint(.posPrimary)
         .padding(.vertical, POSPadding.small)
         .onChange(of: viewModel.isTaxable) { _, _ in
-            // Tapping the toggle dismisses the amount popover, but on iPad iOS
-            // sometimes "demotes" it to the docked decimal pad instead of
-            // closing the keyboard. Explicitly clear focus so the keyboard
-            // actually goes away.
             isAmountFocused = false
             isNameFocused = false
         }

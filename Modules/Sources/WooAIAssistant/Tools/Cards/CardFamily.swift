@@ -3,8 +3,8 @@ import Foundation
 /// `fetch` returns full entities for the renderer; `summarize` returns the
 /// compact projection the model is allowed to see. Letting the model see the
 /// entity directly is what causes the 50k-token list-read pathology.
-public struct CardFamily: Sendable {
-    public let id: CardFamilyID
+struct CardFamily: Sendable {
+    let id: CardFamilyID
     private let listPath: String
     private let summaryKeys: [String]
     private let extraSummary: (@Sendable (AnyCodableJSON) -> [String: AnyCodableJSON])?
@@ -24,7 +24,7 @@ public struct CardFamily: Sendable {
 
     /// Single batched fetch per family using WC REST `include=` so 10 mixed-family
     /// references resolve in at most 3 HTTP calls instead of 10.
-    public func fetch(ids: [Int64], client: WCRESTClient) async -> [Int64: CardFetchOutcome] {
+    func fetch(ids: [Int64], client: WCRESTClient) async -> [Int64: CardFetchOutcome] {
         guard ids.isEmpty == false else { return [:] }
         let includeValue = ids.map(String.init).joined(separator: ",")
         let response = await client.request(method: "GET",
@@ -62,7 +62,7 @@ public struct CardFamily: Sendable {
         return outcomes
     }
 
-    public func summarize(_ entity: AnyCodableJSON) -> AnyCodableJSON {
+    func summarize(_ entity: AnyCodableJSON) -> AnyCodableJSON {
         let projected = RESTResponseParsing.project(entity, keys: summaryKeys)
         guard let extraSummary else { return projected }
         guard case .object(var dict) = projected else { return projected }
@@ -72,7 +72,7 @@ public struct CardFamily: Sendable {
         return .object(dict)
     }
 
-    public static func forID(_ id: CardFamilyID) -> CardFamily {
+    static func forID(_ id: CardFamilyID) -> CardFamily {
         switch id {
         case .order: return .order
         case .product: return .product
@@ -80,7 +80,7 @@ public struct CardFamily: Sendable {
         }
     }
 
-    public static let order = CardFamily(
+    static let order = CardFamily(
         id: .order,
         listPath: "wc/v3/orders",
         summaryKeys: ["id", "number", "status", "total", "currency", "date_created"],
@@ -94,7 +94,7 @@ public struct CardFamily: Sendable {
         checkTrash: true
     )
 
-    public static let product = CardFamily(
+    static let product = CardFamily(
         id: .product,
         listPath: "wc/v3/products",
         summaryKeys: ["id", "name", "sku", "price", "stock_status"],
@@ -104,7 +104,7 @@ public struct CardFamily: Sendable {
     /// `customers/{id}` requires `manage_woocommerce`, which most shop_manager
     /// roles lack; `customers?include=` works under `read_customers` and is
     /// the universal path even for permissive roles.
-    public static let customer = CardFamily(
+    static let customer = CardFamily(
         id: .customer,
         listPath: "wc/v3/customers",
         summaryKeys: ["id", "first_name", "last_name", "email", "orders_count"],
@@ -112,13 +112,13 @@ public struct CardFamily: Sendable {
     )
 }
 
-public enum CardFetchOutcome: Sendable {
+enum CardFetchOutcome: Sendable {
     case found(AnyCodableJSON)
     case rejected(CardRefRejectionReason)
 
     /// Default REST status to rejection mapping. Status-only cases route here;
     /// 2xx-with-trashed-payload routes through `.staleReference` directly.
-    public static func rejection(forStatusCode statusCode: Int) -> CardRefRejectionReason {
+    static func rejection(forStatusCode statusCode: Int) -> CardRefRejectionReason {
         switch statusCode {
         case 401, 403: return .notPermitted
         case 404: return .notFound

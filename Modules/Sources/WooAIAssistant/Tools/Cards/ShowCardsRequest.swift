@@ -1,18 +1,18 @@
 import Foundation
 
-public struct ShowCardsRequest: Decodable, Sendable, Equatable {
-    public let references: [CardReference]
+struct ShowCardsRequest: Decodable, Sendable, Equatable {
+    let references: [CardReference]
 
-    public init(references: [CardReference]) {
+    init(references: [CardReference]) {
         self.references = references
     }
 }
 
-public struct CardReference: Decodable, Sendable, Equatable {
-    public let family: CardFamilyID
-    public let id: String
+struct CardReference: Decodable, Sendable, Equatable {
+    let family: CardFamilyID
+    let id: String
 
-    public init(family: CardFamilyID, id: String) {
+    init(family: CardFamilyID, id: String) {
         self.family = family
         self.id = id
     }
@@ -22,7 +22,7 @@ public struct CardReference: Decodable, Sendable, Equatable {
 /// boundary in `ToolResult.Success`: only `.resolved` contributes to
 /// `uiStructured`, while both contribute to the model-visible `structured`
 /// summary so the model can see what it asked for and what it got back.
-public enum Resolution: Sendable, Equatable {
+enum Resolution: Sendable, Equatable {
     case resolved(family: CardFamilyID,
                   id: String,
                   summary: AnyCodableJSON,

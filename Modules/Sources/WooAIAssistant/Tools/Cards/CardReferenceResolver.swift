@@ -1,15 +1,15 @@
 import Foundation
 
-public struct CardReferenceResolver: Sendable {
-    public static let maxReferencesPerCall = 10
+struct CardReferenceResolver: Sendable {
+    static let maxReferencesPerCall = 10
 
     private let client: WCRESTClient
 
-    public init(client: WCRESTClient) {
+    init(client: WCRESTClient) {
         self.client = client
     }
 
-    public func resolve(_ references: [CardReference]) async -> [Resolution] {
+    func resolve(_ references: [CardReference]) async -> [Resolution] {
         let bounded = Array(references.prefix(Self.maxReferencesPerCall))
         var resolutions: [Resolution] = Array(repeating: .rejected(family: nil, id: nil, reason: .internalError),
                                               count: bounded.count)

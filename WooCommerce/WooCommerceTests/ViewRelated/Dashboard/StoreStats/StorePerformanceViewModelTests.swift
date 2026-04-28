@@ -18,9 +18,14 @@ final class StorePerformanceViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
+        // The view model caches the analytics order type per siteID in UserDefaults to avoid a
+        // flash of the default value on launch. Tests share `siteID: 123`, so wipe the cache here
+        // to keep order-type tests deterministic.
+        UserDefaults.standard.removeObject(forKey: "performanceCard.orderType.123")
     }
 
     override func tearDown() {
+        UserDefaults.standard.removeObject(forKey: "performanceCard.orderType.123")
         storageManager = nil
         super.tearDown()
     }

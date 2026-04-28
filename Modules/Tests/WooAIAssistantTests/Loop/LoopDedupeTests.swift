@@ -20,11 +20,11 @@ struct LoopDedupeTests {
             function: .init(name: "products_list", arguments: #"{"per_page":5}"#)
         )
         let chat = MockAIChatService()
-        chat.scriptedTurns = [
+        await chat.setScriptedTurns([
             [.toolCall(firstCall), .completed(.toolCalls)],
             [.toolCall(identicalCall), .completed(.toolCalls)],
             [.textDelta("Done."), .completed(.stop)]
-        ]
+        ])
         let registry = MockToolRegistry()
         await registry.setAvailableTools([listTool])
         await registry.setResult(for: "products_list",
@@ -42,10 +42,9 @@ struct LoopDedupeTests {
         let invocations = await registry.invocationCount(for: "products_list")
         #expect(invocations == 1)
 
-        // The third-turn request should have a tool message for the
-        // duplicate call carrying the cached_result_reused envelope.
-        #expect(chat.capturedRequests.count >= 3)
-        let thirdRequest = chat.capturedRequests[2]
+        let capturedRequests = await chat.capturedRequests
+        #expect(capturedRequests.count >= 3)
+        let thirdRequest = capturedRequests[2]
         let dupeToolMessage = thirdRequest.messages.last { $0.role == .tool && $0.toolCallID == "call_2" }
         let content = try #require(dupeToolMessage?.content)
         #expect(content.contains("cached_result_reused"))
@@ -73,12 +72,12 @@ struct LoopDedupeTests {
             function: .init(name: "products_list", arguments: #"{"per_page":5}"#)
         )
         let chat = MockAIChatService()
-        chat.scriptedTurns = [
+        await chat.setScriptedTurns([
             [.toolCall(firstCall), .completed(.toolCalls)],
             [.toolCall(secondCall), .completed(.toolCalls)],
             [.toolCall(thirdCall), .completed(.toolCalls)],
             [.textDelta("Done."), .completed(.stop)]
-        ]
+        ])
         let registry = MockToolRegistry()
         await registry.setAvailableTools([listTool])
         await registry.setResult(for: "products_list",
@@ -95,8 +94,9 @@ struct LoopDedupeTests {
         // Then
         let invocations = await registry.invocationCount(for: "products_list")
         #expect(invocations == 1)
-        #expect(chat.capturedRequests.count >= 4)
-        let fourthRequest = chat.capturedRequests[3]
+        let capturedRequests = await chat.capturedRequests
+        #expect(capturedRequests.count >= 4)
+        let fourthRequest = capturedRequests[3]
         let escalatedToolMessage = fourthRequest.messages.last { $0.role == .tool && $0.toolCallID == "call_3" }
         let content = try #require(escalatedToolMessage?.content)
         #expect(content.contains("cached_result_reused"))

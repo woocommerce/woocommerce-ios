@@ -8,9 +8,9 @@ struct AgenticLoopOrchestratorTests {
     func test_run_when_chatService_emits_text_only_then_completes_without_tool_dispatch() async throws {
         // Given
         let chat = MockAIChatService()
-        chat.scriptedTurns = [
+        await chat.setScriptedTurns([
             [.textDelta("Hello"), .textDelta(" merchant"), .completed(.stop)]
-        ]
+        ])
         let registry = MockToolRegistry()
         let orchestrator = AgenticLoopOrchestrator(chatService: chat, toolRegistry: registry)
 
@@ -42,10 +42,10 @@ struct AgenticLoopOrchestratorTests {
             id: "call_1",
             function: .init(name: "orders_update", arguments: #"{"id":42,"status":"processing"}"#)
         )
-        chat.scriptedTurns = [
+        await chat.setScriptedTurns([
             [.toolCall(toolCall), .completed(.toolCalls)],
             [.textDelta("Done."), .completed(.stop)]
-        ]
+        ])
         let registry = MockToolRegistry()
         await registry.setAvailableTools([unsafeTool])
         await registry.setResult(for: "orders_update",
@@ -108,10 +108,10 @@ struct AgenticLoopOrchestratorTests {
             id: "call_1",
             function: .init(name: "orders_update", arguments: #"{"id":42,"status":"processing"}"#)
         )
-        chat.scriptedTurns = [
+        await chat.setScriptedTurns([
             [.toolCall(toolCall), .completed(.toolCalls)],
             [.textDelta("Cancelled."), .completed(.stop)]
-        ]
+        ])
         let registry = MockToolRegistry()
         await registry.setAvailableTools([unsafeTool])
         let orchestrator = AgenticLoopOrchestrator(chatService: chat,
@@ -146,8 +146,9 @@ struct AgenticLoopOrchestratorTests {
         // The model's follow-up turn should see a tool message in
         // its second-call request whose content is the user-
         // cancelled JSON envelope.
-        #expect(chat.capturedRequests.count >= 2)
-        let secondRequest = chat.capturedRequests[1]
+        let capturedRequests = await chat.capturedRequests
+        #expect(capturedRequests.count >= 2)
+        let secondRequest = capturedRequests[1]
         let toolMessage = secondRequest.messages.last { $0.role == .tool }
         let content = try #require(toolMessage?.content)
         #expect(content.contains("user_cancelled"))
@@ -168,7 +169,7 @@ struct AgenticLoopOrchestratorTests {
         // Three iterations, each calling the tool with DIFFERENT args
         // so dedupe doesn't short-circuit. We pass maxIterations: 3 to
         // make this terminate quickly while exercising the cap path.
-        chat.scriptedTurns = (0..<3).map { i in
+        let scriptedTurns: [[ChatStreamEvent]] = (0..<3).map { i in
             let call = OpenAIChat.ToolCall(
                 id: "call_\(i)",
                 function: .init(name: "orders_list",
@@ -176,6 +177,7 @@ struct AgenticLoopOrchestratorTests {
             )
             return [.toolCall(call), .completed(.toolCalls)]
         }
+        await chat.setScriptedTurns(scriptedTurns)
         let registry = MockToolRegistry()
         await registry.setAvailableTools([safeTool])
         await registry.setResult(for: "orders_list",

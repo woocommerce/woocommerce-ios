@@ -16,10 +16,10 @@ struct LoopOutcomeUnknownTests {
             function: .init(name: "orders_update", arguments: #"{"id":42,"status":"processing"}"#)
         )
         let chat = MockAIChatService()
-        chat.scriptedTurns = [
+        await chat.setScriptedTurns([
             [.toolCall(toolCall), .completed(.toolCalls)],
             [.textDelta("I couldn't confirm the change. Check the order."), .completed(.stop)]
-        ]
+        ])
         let registry = MockToolRegistry()
         await registry.setAvailableTools([writeTool])
         await registry.setResult(for: "orders_update",
@@ -51,8 +51,9 @@ struct LoopOutcomeUnknownTests {
 
         // The model should have seen the outcome_unknown advice
         // tool message in its follow-up request.
-        #expect(chat.capturedRequests.count >= 2)
-        let secondRequest = chat.capturedRequests[1]
+        let capturedRequests = await chat.capturedRequests
+        #expect(capturedRequests.count >= 2)
+        let secondRequest = capturedRequests[1]
         let toolMessage = secondRequest.messages.last { $0.role == .tool && $0.toolCallID == "call_1" }
         let content = try #require(toolMessage?.content)
         #expect(content.contains("\"outcome\":\"unknown\""))

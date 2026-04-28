@@ -30,6 +30,12 @@ public struct RESTRequest: Request {
 
     /// Caller-supplied request headers (e.g. `Idempotency-Key`).
     ///
+    /// **WARNING**: written onto the URLRequest in `asURLRequest()` BEFORE the
+    /// auth wrapper runs, and the wrapper uses `setValue(_:forHTTPHeaderField:)`
+    /// which overwrites. `Authorization`, `Accept`, and `User-Agent` are
+    /// reserved by the auth layer and any value set here for those fields will
+    /// be silently clobbered. Use this slot for application-level headers like
+    /// `Idempotency-Key` only.
     let customHeaders: [String: String]?
 
     private init(siteURL: String,
@@ -54,7 +60,8 @@ public struct RESTRequest: Request {
     ///     - path: path to the target endpoint.
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
-    ///     - customHeaders: Caller-supplied request headers, applied on top of the auth headers added by the network layer.
+    ///     - customHeaders: Caller-supplied request headers. Written before the auth wrapper, which will overwrite any reserved field
+    ///       (`Authorization`, `Accept`, `User-Agent`). Use for application-level headers like `Idempotency-Key`.
     ///
     public init(siteURL: String,
          method: HTTPMethod,
@@ -78,7 +85,8 @@ public struct RESTRequest: Request {
     ///     - path: path to the target endpoint.
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
-    ///     - customHeaders: Caller-supplied request headers, applied on top of the auth headers added by the network layer.
+    ///     - customHeaders: Caller-supplied request headers. Written before the auth wrapper, which will overwrite any reserved field
+    ///       (`Authorization`, `Accept`, `User-Agent`). Use for application-level headers like `Idempotency-Key`.
     ///
     init(siteURL: String,
          wooApiVersion: WooAPIVersion,

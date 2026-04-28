@@ -46,6 +46,12 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     /// to both transport paths so the same header survives the dotcom-tunneled
     /// and direct-REST routings.
     ///
+    /// **WARNING**: written onto the URLRequest in `asURLRequest()` BEFORE the
+    /// auth wrapper runs, and the wrapper uses `setValue(_:forHTTPHeaderField:)`
+    /// which overwrites. `Authorization`, `Accept`, and `User-Agent` are
+    /// reserved by the auth layer and any value set here for those fields will
+    /// be silently clobbered. Use this slot for application-level headers like
+    /// `Idempotency-Key` only.
     public let customHeaders: [String: String]?
 
 
@@ -59,7 +65,8 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///     - parameters: Collection of Key/Value parameters, to be forwarded to the Jetpack Connected site.
     ///     - availableAsRESTRequest: Whether the request should be transformed to a REST request if application password is available.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
-    ///     - customHeaders: Caller-supplied request headers, applied on top of the auth headers added by the network layer.
+    ///     - customHeaders: Caller-supplied request headers. Written before the auth wrapper, which will overwrite any reserved field
+    ///       (`Authorization`, `Accept`, `User-Agent`). Use for application-level headers like `Idempotency-Key`.
     ///
     public init(wooApiVersion: WooAPIVersion,
          method: HTTPMethod,

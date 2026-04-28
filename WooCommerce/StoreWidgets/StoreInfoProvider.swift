@@ -87,7 +87,8 @@ final class StoreInfoProvider: TimelineProvider {
             return completion(Timeline<StoreInfoEntry>(entries: [StoreInfoEntry.notConnected], policy: .never))
         }
 
-        let strongService = StoreInfoDataService(credentials: dependencies.credentials)
+        let strongService = StoreInfoDataService(credentials: dependencies.credentials,
+                                                 supportsJetpackVisitorStats: dependencies.supportsJetpackVisitorStats)
         networkService = strongService
         Task {
             do {
@@ -117,6 +118,7 @@ private extension StoreInfoProvider {
         let storeID: Int64
         let storeName: String
         let storeCurrencySettings: CurrencySettings
+        let supportsJetpackVisitorStats: Bool
     }
 
     /// Fetches the required dependencies from the keychain and the shared users default.
@@ -151,7 +153,8 @@ private extension StoreInfoProvider {
         return Dependencies(credentials: credentials,
                             storeID: storeID,
                             storeName: storeName,
-                            storeCurrencySettings: storeCurrencySettings)
+                            storeCurrencySettings: storeCurrencySettings,
+                            supportsJetpackVisitorStats: UserDefaults.group?[.defaultStoreSupportsJetpackVisitorStats] as? Bool ?? false)
     }
 }
 

@@ -223,6 +223,35 @@ final class StatsStoreV4Tests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    /// Verifies that `StatsActionV4.retrieveJetpackSiteVisitStats` resolves the Jetpack blog ID and persists stats for the local site ID.
+    ///
+    func test_retrieveJetpackSiteVisitStats_effectively_persists_retrieved_stats_for_local_site_id() throws {
+        // Given
+        let localSiteID = NetworkingCore.WooConstants.placeholderSiteID
+        let jetpackBlogID: Int64 = 1244634
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "/jetpack/v4/connection/data", filename: "jetpack-connected-user")
+        network.simulateResponse(requestUrlSuffix: "jetpack/v4/stats-app/sites/\(jetpackBlogID)/stats/visits", filename: "site-visits-day")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 0)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveJetpackSiteVisitStats(siteID: localSiteID,
+                                                                     siteTimezone: .current,
+                                                                     timeRange: .today,
+                                                                     latestDateToInclude: DateFormatter.dateFromString(with: "2018-08-06T17:06:55")) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let readOnlySiteVisitStats = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.SiteVisitStats.self)?.toReadOnly())
+        XCTAssertEqual(readOnlySiteVisitStats.siteID, localSiteID)
+        XCTAssertEqual(readOnlySiteVisitStats.items?.sorted().last?.visitors, 2)
+    }
+
     /// Verifies that `upsertStoredSiteVisitStats` effectively inserts a new SiteVisitStats, with the specified payload.
     ///
     func test_upsertStoredSiteVisitStats_effectively_persists_new_SiteVisitStats() {
@@ -637,6 +666,41 @@ final class StatsStoreV4Tests: XCTestCase {
 
         let readOnlySiteSummaryStats = viewStorage.firstObject(ofType: Storage.SiteSummaryStats.self)?.toReadOnly()
         XCTAssertEqual(readOnlySiteSummaryStats, sampleSiteSummaryStats())
+    }
+
+    /// Verifies that `StatsActionV4.retrieveJetpackSiteSummaryStats` resolves the Jetpack blog ID and persists summary stats for the local site ID.
+    ///
+    func test_retrieveJetpackSiteSummaryStats_effectively_persists_retrieved_stats_for_local_site_id() throws {
+        // Given
+        let localSiteID = NetworkingCore.WooConstants.placeholderSiteID
+        let jetpackBlogID: Int64 = 1244634
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "/jetpack/v4/connection/data", filename: "jetpack-connected-user")
+        network.simulateResponse(requestUrlSuffix: "jetpack/v4/stats-app/sites/\(jetpackBlogID)/stats/visits", filename: "site-visits-day")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSummaryStats.self), 0)
+
+        // When
+        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveJetpackSiteSummaryStats(siteID: localSiteID,
+                                                                       siteTimezone: .current,
+                                                                       period: .day,
+                                                                       quantity: 1,
+                                                                       latestDateToInclude: DateFormatter.dateFromString(with: "2018-08-06T17:06:55"),
+                                                                       saveInStorage: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let siteSummaryStats = try result.get()
+        XCTAssertEqual(siteSummaryStats.siteID, localSiteID)
+        XCTAssertEqual(siteSummaryStats.visitors, 105)
+        XCTAssertEqual(siteSummaryStats.views, 210)
+
+        let readOnlySiteSummaryStats = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.SiteSummaryStats.self)?.toReadOnly())
+        XCTAssertEqual(readOnlySiteSummaryStats, siteSummaryStats)
     }
 
     /// Verifies that `upsertStoredSiteSummaryStats` does not produce duplicate entries.

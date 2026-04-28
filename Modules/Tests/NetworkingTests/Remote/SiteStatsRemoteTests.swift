@@ -59,6 +59,43 @@ class SiteStatsRemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    /// Verifies that loadJetpackSiteVisitorStats properly parses the `SiteVisitStats` sample response.
+    ///
+    func test_loadJetpackSiteVisitorStats_properly_returns_parsed_stats() throws {
+        // Given
+        let remote = SiteStatsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "jetpack/v4/stats-app/sites/\(sampleSiteID)/stats/visits", filename: "site-visits-day")
+
+        // When
+        let result: Result<SiteVisitStats, Error> = waitFor { promise in
+            remote.loadJetpackSiteVisitorStats(for: self.sampleSiteID, unit: .day, latestDateToInclude: Date(), quantity: 1) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let siteVisitStats = try result.get()
+        XCTAssertEqual(siteVisitStats.items?.count, 12)
+    }
+
+    /// Verifies that loadJetpackSiteVisitorStats properly relays Networking Layer errors.
+    ///
+    func test_loadJetpackSiteVisitorStats_properly_relays_networking_errors() {
+        // Given
+        let remote = SiteStatsRemote(network: network)
+
+        // When
+        let result: Result<SiteVisitStats, Error> = waitFor { promise in
+            remote.loadJetpackSiteVisitorStats(for: self.sampleSiteID, unit: .day, latestDateToInclude: Date(), quantity: 1) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
     /// Verifies that loadSiteSummaryStats properly parses the `SiteSummaryStats` sample response.
     ///
     func test_loadSiteSummaryStats_properly_returns_parsed_stats() throws {

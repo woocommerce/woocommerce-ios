@@ -39,6 +39,14 @@ public enum StatsActionV4: Action {
         latestDateToInclude: Date,
         onCompletion: (Result<Void, Error>) -> Void)
 
+    /// Synchronizes `SiteVisitStats` for a site-authenticated Jetpack site.
+    ///
+    case retrieveJetpackSiteVisitStats(siteID: Int64,
+                                       siteTimezone: TimeZone,
+                                       timeRange: StatsTimeRangeV4,
+                                       latestDateToInclude: Date,
+                                       onCompletion: (Result<Void, Error>) -> Void)
+
     /// Retrieves `TopEarnerStats` for the provided siteID, time range, and date.
     /// Conditionally saves it to storage.
     ///
@@ -62,6 +70,16 @@ public enum StatsActionV4: Action {
                                   latestDateToInclude: Date,
                                   saveInStorage: Bool,
                                   onCompletion: (Result<SiteSummaryStats, Error>) -> Void)
+
+    /// Retrieves site summary stats for a site-authenticated Jetpack site.
+    ///
+    case retrieveJetpackSiteSummaryStats(siteID: Int64,
+                                         siteTimezone: TimeZone,
+                                         period: StatGranularity,
+                                         quantity: Int,
+                                         latestDateToInclude: Date,
+                                         saveInStorage: Bool,
+                                         onCompletion: (Result<SiteSummaryStats, Error>) -> Void)
 
     /// Retrieves the product bundle stats for the provided site ID and time range, without saving them to the Storage layer.
     ///

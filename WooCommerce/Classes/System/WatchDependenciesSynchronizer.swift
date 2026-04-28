@@ -30,6 +30,10 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
     ///
     @Published var credentials: Credentials?
 
+    /// Update this value to sync whether the current site supports Jetpack visitor stats.
+    ///
+    @Published var supportsJetpackVisitorStats = false
+
     /// Update this value to sync the crash report opt in value with the paired counterpart.
     ///
     @Published var enablesCrashReports: Bool = true
@@ -52,6 +56,7 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         self.storeID = storedDependencies?.storeID
         self.storeName = storedDependencies?.storeName
         self.credentials = storedDependencies?.credentials
+        self.supportsJetpackVisitorStats = storedDependencies?.supportsJetpackVisitorStats ?? false
 
         if let storedDependencies {
             self.enablesCrashReports = storedDependencies.enablesCrashReports
@@ -74,13 +79,14 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         // Additionally filter any duplicates and debounce signal by 0.5s
         // TODO: currencySettings should be treated as a new input but unfortunately there is no way to access it yet other than the ServiceLocator
 
-        let requiredDependencies = Publishers.CombineLatest4($storeID, $storeName, $credentials, Just(ServiceLocator.currencySettings))
+        let requiredDependencies = Publishers.CombineLatest4($storeID, $storeName, $credentials, $supportsJetpackVisitorStats)
+            .combineLatest(Just(ServiceLocator.currencySettings))
         let configurationDependencies = Publishers.CombineLatest($enablesCrashReports, $account)
 
         let watchDependencies = Publishers.CombineLatest(requiredDependencies, configurationDependencies)
             .map { (required, configuration) -> WatchDependencies? in
 
-                let (storeID, storeName, credentials, currencySettings) = required
+                let ((storeID, storeName, credentials, supportsJetpackVisitorStats), currencySettings) = required
                 let (enablesCrashReports, account) = configuration
 
                 guard let storeID, let storeName, let credentials else { return nil }
@@ -89,6 +95,7 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
                              storeName: storeName,
                              currencySettings: currencySettings,
                              credentials: credentials,
+                             supportsJetpackVisitorStats: supportsJetpackVisitorStats,
                              enablesCrashReports: enablesCrashReports,
                              account: account)
             }

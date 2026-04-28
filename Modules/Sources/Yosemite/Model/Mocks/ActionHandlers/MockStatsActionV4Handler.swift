@@ -23,9 +23,13 @@ struct MockStatsActionV4Handler: MockActionHandler {
             retrieveStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
         case .retrieveSiteVisitStats(let siteID, _, let timeRange, _, let onCompletion):
             retrieveSiteVisitStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
+        case .retrieveJetpackSiteVisitStats(let siteID, _, let timeRange, _, let onCompletion):
+            retrieveSiteVisitStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
         case .retrieveTopEarnerStats(let siteID, let timeRange, _, _, _, _, _, _, let onCompletion):
             retrieveTopEarnerStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
         case .retrieveSiteSummaryStats(let siteID, _, let period, _, let latestDateToInclude, _, let onCompletion):
+            retrieveSiteSummaryStats(siteID: siteID, period: period, latestDateToInclude: latestDateToInclude, onCompletion: onCompletion)
+        case .retrieveJetpackSiteSummaryStats(let siteID, _, let period, _, let latestDateToInclude, _, let onCompletion):
             retrieveSiteSummaryStats(siteID: siteID, period: period, latestDateToInclude: latestDateToInclude, onCompletion: onCompletion)
         default: unimplementedAction(action: action)
         }

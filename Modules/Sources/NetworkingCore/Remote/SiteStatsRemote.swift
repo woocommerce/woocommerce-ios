@@ -33,6 +33,39 @@ public class SiteStatsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Fetch the visitor stats using the site-authenticated Jetpack endpoint.
+    ///
+    /// - Parameters:
+    ///   - siteID: The site ID
+    ///   - unit: Defines the granularity of the stats we are fetching (one of 'day', 'week', 'month', or 'year')
+    ///   - latestDateToInclude: The latest date to include in the results.
+    ///   - quantity: How many `unit`s to fetch
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func loadJetpackSiteVisitorStats(for siteID: Int64,
+                                            siteTimezone: TimeZone? = nil,
+                                            unit: StatGranularity,
+                                            latestDateToInclude: Date,
+                                            quantity: Int,
+                                            completion: @escaping (Result<SiteVisitStats, Error>) -> Void) {
+        let dateFormatter = DateFormatter.Stats.statsDayFormatter
+        if let siteTimezone {
+            dateFormatter.timeZone = siteTimezone
+        }
+        let parameters = [ParameterKeys.unit: unit.rawValue,
+                          ParameterKeys.date: dateFormatter.string(from: latestDateToInclude),
+                          ParameterKeys.quantity: String(quantity),
+                          ParameterKeys.statFields: "\(ParameterValues.visitors),\(ParameterValues.views)"]
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: "\(Path.jetpackStatsApp)/\(siteID)/\(Path.siteVisitStats)",
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = SiteVisitStatsMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Fetch the summary stats for the period (day, week, month, or year) that includes the provided date.
     ///
     /// The endpoint supports a `num` parameter for fetching summary data across multiple periods.
@@ -69,6 +102,7 @@ public class SiteStatsRemote: Remote {
 private extension SiteStatsRemote {
     enum Path {
         static let sites: String             = "sites"
+        static let jetpackStatsApp: String   = "jetpack/v4/stats-app/sites"
         static let siteVisitStats: String    = "stats/visits"
         static let siteSummaryStats: String  = "stats/summary"
     }

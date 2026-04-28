@@ -26,6 +26,7 @@ extension WatchDependencies {
               storeName: "",
               currencySettings: CurrencySettings(),
               credentials: .init(authToken: ""),
+              supportsJetpackVisitorStats: false,
               enablesCrashReports: true,
               account: .init(userID: .zero, displayName: "", email: "", username: "", gravatarUrl: nil))
     }

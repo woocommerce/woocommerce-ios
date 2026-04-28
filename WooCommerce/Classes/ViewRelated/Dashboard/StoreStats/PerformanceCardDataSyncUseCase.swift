@@ -95,7 +95,23 @@ struct PerformanceCardDataSyncUseCase {
     /// Syncs visitor stats for dashboard UI.
     @MainActor
     func syncSiteVisitStats(timeRange: StatsTimeRangeV4, latestDateToInclude: Date) async throws {
-        guard stores.isAuthenticatedWithoutWPCom == false else { // Visit stats are only available for stores connected to WPCom
+        if stores.isAuthenticatedWithoutWPCom {
+            guard stores.sessionManager.defaultSite?.supportsJetpackVisitorStats == true else {
+                return
+            }
+
+            try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(StatsActionV4.retrieveJetpackSiteVisitStats(siteID: siteID,
+                                                                            siteTimezone: siteTimezone,
+                                                                            timeRange: timeRange,
+                                                                            latestDateToInclude: latestDateToInclude,
+                                                                            onCompletion: { result in
+                    if case let .failure(error) = result {
+                        DDLogError("⛔️ Error synchronizing Jetpack visitor stats: \(error)")
+                    }
+                    continuation.resume(with: result)
+                }))
+            }
             return
         }
 
@@ -116,7 +132,26 @@ struct PerformanceCardDataSyncUseCase {
     /// Syncs summary stats for dashboard UI.
     @MainActor
     func syncSiteSummaryStats(timeRange: StatsTimeRangeV4, latestDateToInclude: Date) async throws {
-        guard stores.isAuthenticatedWithoutWPCom == false else { // Summary stats are only available for stores connected to WPCom
+        if stores.isAuthenticatedWithoutWPCom {
+            guard stores.sessionManager.defaultSite?.supportsJetpackVisitorStats == true else {
+                return
+            }
+
+            try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(StatsActionV4.retrieveJetpackSiteSummaryStats(siteID: siteID,
+                                                                              siteTimezone: siteTimezone,
+                                                                              period: timeRange.summaryStatsGranularity,
+                                                                              quantity: 1,
+                                                                              latestDateToInclude: latestDateToInclude,
+                                                                              saveInStorage: true) { result in
+                    if case let .failure(error) = result {
+                        DDLogError("⛔️ Error synchronizing Jetpack summary stats: \(error)")
+                    }
+
+                    let voidResult = result.map { _ in () } // Caller expects no entity in the result.
+                    continuation.resume(with: voidResult)
+                })
+            }
             return
         }
 

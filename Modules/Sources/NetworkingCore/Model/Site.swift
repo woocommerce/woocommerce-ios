@@ -256,6 +256,12 @@ public extension Site {
         isJetpackConnected && !isJetpackThePluginInstalled
     }
 
+    /// Whether the site can provide Jetpack visitor stats over the site-authenticated path.
+    ///
+    public var supportsJetpackVisitorStats: Bool {
+        isJetpackConnected && isJetpackThePluginInstalled && !isWordPressComStore
+    }
+
     /// Whether the site has Jetpack plugin install, activated and connected.
     ///
     var isNonJetpackSite: Bool {

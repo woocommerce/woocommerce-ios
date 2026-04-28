@@ -863,6 +863,7 @@ private extension DefaultStoresManager {
         // Non-critical store info
         UserDefaults.group?[.defaultStoreID] = siteID
         UserDefaults.group?[.defaultStoreName] = sessionManager.defaultSite?.name
+        UserDefaults.group?[.defaultStoreSupportsJetpackVisitorStats] = sessionManager.defaultSite?.supportsJetpackVisitorStats ?? false
 
         // Currency Settings are stored in `SelectedSiteSettings.defaultStoreCurrencySettings`
 

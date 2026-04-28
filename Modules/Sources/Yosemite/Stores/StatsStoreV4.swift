@@ -1,5 +1,6 @@
 import Foundation
 import Networking
+import NetworkingCore
 import Storage
 import WooFoundation
 
@@ -7,6 +8,7 @@ import WooFoundation
 //
 public final class StatsStoreV4: Store {
     private let siteStatsRemote: SiteStatsRemote
+    private let jetpackConnectionRemote: JetpackConnectionRemote
     private let orderStatsRemote: OrderStatsRemoteV4
     private let productsRemote: ProductsRemote
     private let productsReportsRemote: ProductsReportsRemote
@@ -15,6 +17,7 @@ public final class StatsStoreV4: Store {
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.siteStatsRemote = SiteStatsRemote(network: network)
+        self.jetpackConnectionRemote = JetpackConnectionRemote(siteURL: "", network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)
         self.productsReportsRemote = ProductsReportsRemote(network: network)
@@ -82,6 +85,16 @@ public final class StatsStoreV4: Store {
                                    timeRange: timeRange,
                                    latestDateToInclude: latestDateToInclude,
                                    onCompletion: onCompletion)
+        case .retrieveJetpackSiteVisitStats(let siteID,
+                                            let siteTimezone,
+                                            let timeRange,
+                                            let latestDateToInclude,
+                                            let onCompletion):
+            retrieveJetpackSiteVisitStats(siteID: siteID,
+                                          siteTimezone: siteTimezone,
+                                          timeRange: timeRange,
+                                          latestDateToInclude: latestDateToInclude,
+                                          onCompletion: onCompletion)
         case .retrieveTopEarnerStats(let siteID,
                                      let timeRange,
                                      let timeZone,
@@ -114,6 +127,20 @@ public final class StatsStoreV4: Store {
                                      latestDateToInclude: latestDateToInclude,
                                      saveInStorage: saveInStorage,
                                      onCompletion: onCompletion)
+        case .retrieveJetpackSiteSummaryStats(let siteID,
+                                              let siteTimezone,
+                                              let period,
+                                              let quantity,
+                                              let latestDateToInclude,
+                                              let saveInStorage,
+                                              let onCompletion):
+            retrieveJetpackSiteSummaryStats(siteID: siteID,
+                                            siteTimezone: siteTimezone,
+                                            period: period,
+                                            quantity: quantity,
+                                            latestDateToInclude: latestDateToInclude,
+                                            saveInStorage: saveInStorage,
+                                            onCompletion: onCompletion)
         case let .retrieveProductBundleStats(siteID, unit, timeZone, earliestDateToInclude, latestDateToInclude, quantity, forceRefresh, onCompletion):
             retrieveProductBundleStats(siteID: siteID,
                                        unit: unit,
@@ -234,6 +261,40 @@ private extension StatsStoreV4 {
         }
     }
 
+    /// Retrieves site visit stats through the site-authenticated Jetpack endpoint.
+    ///
+    func retrieveJetpackSiteVisitStats(siteID: Int64,
+                                       siteTimezone: TimeZone,
+                                       timeRange: StatsTimeRangeV4,
+                                       latestDateToInclude: Date,
+                                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: siteTimezone)
+
+        retrieveJetpackBlogID { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let blogID):
+                siteStatsRemote.loadJetpackSiteVisitorStats(for: blogID,
+                                                            siteTimezone: siteTimezone,
+                                                            unit: timeRange.siteVisitStatsGranularity,
+                                                            latestDateToInclude: latestDateToInclude,
+                                                            quantity: quantity) { [weak self] result in
+                    switch result {
+                    case .success(let siteVisitStats):
+                        let localSiteVisitStats = siteVisitStats.copy(siteID: siteID)
+                        self?.upsertStoredSiteVisitStats(readOnlyStats: localSiteVisitStats, timeRange: timeRange) {
+                            onCompletion(.success(()))
+                        }
+                    case .failure(let error):
+                        onCompletion(.failure(SiteStatsStoreError(error: error)))
+                    }
+                }
+            case .failure(let error):
+                onCompletion(.failure(SiteStatsStoreError(error: error)))
+            }
+        }
+    }
+
     /// Retrieves the site summary stats for the provided site ID, period(s), and date.
     /// Conditionally saves them to storage, if a single period is retrieved.
     ///
@@ -287,6 +348,70 @@ private extension StatsStoreV4 {
                 }
             }
         }
+    }
+
+    /// Retrieves site summary stats through the site-authenticated Jetpack endpoint.
+    ///
+    func retrieveJetpackSiteSummaryStats(siteID: Int64,
+                                         siteTimezone: TimeZone,
+                                         period: StatGranularity,
+                                         quantity: Int,
+                                         latestDateToInclude: Date,
+                                         saveInStorage: Bool,
+                                         onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> Void) {
+        retrieveJetpackBlogID { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let blogID):
+                siteStatsRemote.loadJetpackSiteVisitorStats(for: blogID,
+                                                            siteTimezone: siteTimezone,
+                                                            unit: period,
+                                                            latestDateToInclude: latestDateToInclude,
+                                                            quantity: quantity) { [weak self] result in
+                    switch result {
+                    case .success(let siteVisitStats):
+                        let siteSummaryStats = Self.convertSiteVisitStatsIntoSummary(siteID: siteID,
+                                                                                     siteVisitStats: siteVisitStats,
+                                                                                     period: period)
+                        if saveInStorage {
+                            self?.upsertStoredSiteSummaryStats(readOnlyStats: siteSummaryStats) {
+                                onCompletion(.success(siteSummaryStats))
+                            }
+                        } else {
+                            onCompletion(.success(siteSummaryStats))
+                        }
+                    case .failure(let error):
+                        onCompletion(.failure(SiteStatsStoreError(error: error)))
+                    }
+                }
+            case .failure(let error):
+                onCompletion(.failure(SiteStatsStoreError(error: error)))
+            }
+        }
+    }
+
+    func retrieveJetpackBlogID(onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        jetpackConnectionRemote.fetchJetpackConnectionData(siteID: NetworkingCore.WooConstants.placeholderSiteID) { result in
+            let mappedResult = result.flatMap { connectionData -> Result<Int64, Error> in
+                guard let blogID = connectionData.blogID else {
+                    return .failure(JetpackSiteStatsError.blogIDUnavailable)
+                }
+                return .success(blogID)
+            }
+            onCompletion(mappedResult)
+        }
+    }
+
+    static func convertSiteVisitStatsIntoSummary(siteID: Int64,
+                                                 siteVisitStats: SiteVisitStats,
+                                                 period: StatGranularity) -> SiteSummaryStats {
+        let totalViews = siteVisitStats.items?.map { $0.views }.reduce(0, +) ?? 0
+        let totalVisitors = siteVisitStats.items?.map { $0.visitors }.reduce(0, +) ?? 0
+        return SiteSummaryStats(siteID: siteID,
+                                date: siteVisitStats.date,
+                                period: period,
+                                visitors: totalVisitors,
+                                views: totalViews)
     }
 
     /// Retrieves the top earner stats associated with the provided Site ID (if any!).
@@ -612,6 +737,10 @@ public extension StatsStoreV4 {
 //
 public enum StatsStoreV4Error: Error {
     case missingTopProducts
+}
+
+private enum JetpackSiteStatsError: Error {
+    case blogIDUnavailable
 }
 
 /// An error that occurs while fetching site visit stats.

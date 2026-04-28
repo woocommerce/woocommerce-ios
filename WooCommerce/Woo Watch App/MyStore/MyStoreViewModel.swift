@@ -55,7 +55,8 @@ final class MyStoreViewModel: ObservableObject {
             self.viewState = .loading
         }
 
-        let service = StoreInfoDataService(credentials: dependencies.credentials)
+        let service = StoreInfoDataService(credentials: dependencies.credentials,
+                                           supportsJetpackVisitorStats: dependencies.supportsJetpackVisitorStats)
         do {
             let stats = try await service.fetchTodayStats(for: dependencies.storeID)
 

@@ -26,7 +26,7 @@ struct OpenAIChatTests {
     @Test
     func test_response_decode_when_choices_empty_then_does_not_crash() throws {
         // Given
-        let json = """
+        let json = try #require("""
         {
           "id": "chatcmpl-1",
           "model": "gpt-4o-mini",
@@ -37,7 +37,7 @@ struct OpenAIChatTests {
             "total_tokens": 12
           }
         }
-        """.data(using: .utf8) ?? Data()
+        """.data(using: .utf8))
 
         // When
         let response = try JSONDecoder().decode(OpenAIChat.Response.self, from: json)
@@ -48,9 +48,33 @@ struct OpenAIChatTests {
     }
 
     @Test
+    func test_chunk_decode_when_choices_empty_then_does_not_crash() throws {
+        // Given
+        let json = try #require("""
+        {
+          "id": "chatcmpl-3",
+          "model": "gpt-4o-mini",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 9,
+            "completion_tokens": 1,
+            "total_tokens": 10
+          }
+        }
+        """.data(using: .utf8))
+
+        // When
+        let chunk = try JSONDecoder().decode(OpenAIChat.Chunk.self, from: json)
+
+        // Then
+        #expect(chunk.choices.isEmpty)
+        #expect(chunk.usage?.totalTokens == 10)
+    }
+
+    @Test
     func test_chunk_decode_when_tool_call_delta_only_arguments_then_index_assigns_correctly() throws {
         // Given
-        let json = """
+        let json = try #require("""
         {
           "id": "chatcmpl-2",
           "model": "gpt-4o-mini",
@@ -68,7 +92,7 @@ struct OpenAIChatTests {
             }
           ]
         }
-        """.data(using: .utf8) ?? Data()
+        """.data(using: .utf8))
 
         // When
         let chunk = try JSONDecoder().decode(OpenAIChat.Chunk.self, from: json)
@@ -85,7 +109,7 @@ struct OpenAIChatTests {
     @Test
     func test_finishReason_when_unknown_string_then_decodes_to_other() throws {
         // Given
-        let json = "\"some_future_value\"".data(using: .utf8) ?? Data()
+        let json = try #require("\"some_future_value\"".data(using: .utf8))
 
         // When
         let finishReason = try JSONDecoder().decode(OpenAIChat.FinishReason.self, from: json)
@@ -105,5 +129,40 @@ struct OpenAIChatTests {
 
         // Then
         #expect(decoded == original)
+    }
+
+    @Test
+    func test_request_encode_uses_snake_case_keys_and_omits_nil_fields() throws {
+        // Given
+        let request = OpenAIChat.Request(
+            messages: [.init(role: .user, content: "hi")],
+            tools: [
+                .init(function: .init(name: "orders_list",
+                                      description: "List orders",
+                                      parameters: .object([:])))
+            ],
+            toolChoice: .auto,
+            model: "gpt-4o-mini",
+            stream: true,
+            feature: "woo-ai-assistant",
+            maxTokens: 256
+        )
+
+        // When
+        let data = try JSONEncoder().encode(request)
+        let json = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+        // Then
+        #expect(json["tool_choice"] as? String == "auto")
+        #expect(json["max_tokens"] as? Int == 256)
+        #expect(json["model"] as? String == "gpt-4o-mini")
+        #expect(json["stream"] as? Bool == true)
+        #expect(json["feature"] as? String == "woo-ai-assistant")
+        #expect(json["temperature"] == nil)
+        let messages = try #require(json["messages"] as? [[String: Any]])
+        #expect(messages.first?["role"] as? String == "user")
+        let tools = try #require(json["tools"] as? [[String: Any]])
+        let toolFunction = try #require(tools.first?["function"] as? [String: Any])
+        #expect(toolFunction["name"] as? String == "orders_list")
     }
 }

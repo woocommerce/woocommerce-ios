@@ -56,7 +56,6 @@ enum OpenAIChat {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(role, forKey: .role)
             if role == .assistant && toolCalls?.isEmpty == false {
-                // Empty string, NOT null and NOT omitted.
                 try container.encode(content ?? "", forKey: .content)
             } else {
                 try container.encodeIfPresent(content, forKey: .content)
@@ -64,34 +63,19 @@ enum OpenAIChat {
             try container.encodeIfPresent(toolCalls, forKey: .toolCalls)
             try container.encodeIfPresent(toolCallID, forKey: .toolCallID)
         }
-
-        static func system(_ text: String) -> Message {
-            Message(role: .system, content: text)
-        }
-        static func user(_ text: String) -> Message {
-            Message(role: .user, content: text)
-        }
-        static func assistant(_ text: String) -> Message {
-            Message(role: .assistant, content: text)
-        }
-        static func assistant(toolCalls: [ToolCall]) -> Message {
-            Message(role: .assistant, toolCalls: toolCalls)
-        }
-        static func tool(callID: String, content: String) -> Message {
-            Message(role: .tool, content: content, toolCallID: callID)
-        }
     }
 
-    /// Assistant-emitted request to invoke a function. `arguments` is a JSON
-    /// string the caller must parse against the tool's declared schema.
+    /// `arguments` is a JSON string the caller must parse against the tool's
+    /// declared schema; OpenAI sends arguments as a serialised string rather
+    /// than an inline object.
     struct ToolCall: Codable, Sendable, Equatable {
         let id: String
         let type: String
         let function: FunctionCall
 
-        init(id: String, function: FunctionCall, type: String = "function") {
+        init(id: String, function: FunctionCall) {
             self.id = id
-            self.type = type
+            self.type = "function"
             self.function = function
         }
     }
@@ -99,11 +83,6 @@ enum OpenAIChat {
     struct FunctionCall: Codable, Sendable, Equatable {
         let name: String
         let arguments: String
-
-        init(name: String, arguments: String) {
-            self.name = name
-            self.arguments = arguments
-        }
     }
 
     /// `parameters` is a JSON Schema object describing the function's
@@ -113,8 +92,8 @@ enum OpenAIChat {
         let type: String
         let function: FunctionDefinition
 
-        init(function: FunctionDefinition, type: String = "function") {
-            self.type = type
+        init(function: FunctionDefinition) {
+            self.type = "function"
             self.function = function
         }
     }
@@ -123,12 +102,6 @@ enum OpenAIChat {
         let name: String
         let description: String
         let parameters: AnyCodableJSON
-
-        init(name: String, description: String, parameters: AnyCodableJSON) {
-            self.name = name
-            self.description = description
-            self.parameters = parameters
-        }
     }
 
     /// Encoded-only; `jetpack-ai-query` never returns `tool_choice`.
@@ -199,28 +172,12 @@ enum OpenAIChat {
         let model: String?
         let choices: [Choice]
         let usage: Usage?
-
-        init(id: String? = nil,
-             model: String? = nil,
-             choices: [Choice],
-             usage: Usage? = nil) {
-            self.id = id
-            self.model = model
-            self.choices = choices
-            self.usage = usage
-        }
     }
 
     struct Choice: Decodable, Sendable, Equatable {
         let index: Int
         let message: Message
         let finishReason: FinishReason?
-
-        init(index: Int, message: Message, finishReason: FinishReason? = nil) {
-            self.index = index
-            self.message = message
-            self.finishReason = finishReason
-        }
 
         enum CodingKeys: String, CodingKey {
             case index, message

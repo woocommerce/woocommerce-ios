@@ -278,6 +278,50 @@ final class JetpackRequestTests: XCTestCase {
         // Then
         XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Idempotency-Key"), "xyz-789")
     }
+
+    /// Covers the merge order: `asURLRequest()` writes `customHeaders` first,
+    /// then the auth wrapper runs `setValue` for its reserved fields. A
+    /// non-reserved header like `Idempotency-Key` must survive that pass.
+    func test_customHeaders_survive_application_password_auth_wrapper() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .put,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters,
+                                     customHeaders: ["Idempotency-Key": "auth-wrap-123"])
+        let urlRequest = try request.asURLRequest()
+        let applicationPassword = ApplicationPassword(wpOrgUsername: "user",
+                                                      password: .init("pass"),
+                                                      uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
+
+        // When
+        let authenticated = AuthenticatedRESTRequest(applicationPassword: applicationPassword, request: urlRequest).asURLRequest()
+
+        // Then
+        XCTAssertEqual(authenticated.value(forHTTPHeaderField: "Idempotency-Key"), "auth-wrap-123")
+        XCTAssertTrue((authenticated.value(forHTTPHeaderField: "Authorization") ?? "").hasPrefix("Basic"))
+    }
+
+    /// Same merge-order check on the dotcom-token path used by Jetpack-tunneled
+    /// requests when WPCOM credentials are present.
+    func test_customHeaders_survive_dotcom_token_auth_wrapper() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .put,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters,
+                                     customHeaders: ["Idempotency-Key": "dotcom-456"])
+        let urlRequest = try request.asURLRequest()
+
+        // When
+        let authenticated = AuthenticatedDotcomRequest(authToken: "token-xyz", request: urlRequest).asURLRequest()
+
+        // Then
+        XCTAssertEqual(authenticated.value(forHTTPHeaderField: "Idempotency-Key"), "dotcom-456")
+        XCTAssertEqual(authenticated.value(forHTTPHeaderField: "Authorization"), "Bearer token-xyz")
+    }
 }
 
 

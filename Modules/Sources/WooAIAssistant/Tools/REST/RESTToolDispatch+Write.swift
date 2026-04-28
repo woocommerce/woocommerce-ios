@@ -8,15 +8,14 @@ extension RESTToolDispatch {
                                     toolName: String,
                                     family: CardFamilyID,
                                     summarize: (AnyCodableJSON) -> AnyCodableJSON) async -> ToolResult {
-        let idempotencyKey = UUID().uuidString
+        let correlationID = UUID().uuidString
         let response = await client.request(method: method,
                                             path: path,
                                             query: nil,
-                                            body: body,
-                                            headers: ["Idempotency-Key": idempotencyKey])
+                                            body: body)
         return WriteResultMapper.mapEntity(response,
                                            toolName: toolName,
-                                           idempotencyKey: idempotencyKey,
+                                           correlationID: correlationID,
                                            family: family,
                                            summarize: summarize)
     }
@@ -27,15 +26,14 @@ extension RESTToolDispatch {
                                    client: WCRESTClient,
                                    toolName: String,
                                    family: CardFamilyID) async -> ToolResult {
-        let idempotencyKey = UUID().uuidString
+        let correlationID = UUID().uuidString
         let response = await client.request(method: method,
                                             path: path,
                                             query: nil,
-                                            body: body,
-                                            headers: ["Idempotency-Key": idempotencyKey])
+                                            body: body)
         return WriteResultMapper.mapBatch(response,
-                                          toolName: toolName,
-                                          idempotencyKey: idempotencyKey,
-                                          family: family)
+                                         toolName: toolName,
+                                         correlationID: correlationID,
+                                         family: family)
     }
 }

@@ -3,14 +3,17 @@ import Foundation
 /// Maps write responses, classifying transport drops and timeouts as `outcomeUnknown`.
 /// The write may still have applied server-side, so retrying risks a duplicate update.
 enum WriteResultMapper {
+    /// `correlationID` is a per-call UUID surfaced in `outcomeUnknown.code` so the
+    /// user has a support handle for unconfirmed writes. It is local-only and
+    /// never sent on the wire (the WC REST API ignores `Idempotency-Key`).
     static func mapEntity(_ response: WCRESTResponse,
                           toolName: String,
-                          idempotencyKey: String,
+                          correlationID: String,
                           family: CardFamilyID,
                           summarize: (AnyCodableJSON) -> AnyCodableJSON) -> ToolResult {
         if let unknown = unknownOutcomeFailure(response: response,
                                                toolName: toolName,
-                                               idempotencyKey: idempotencyKey) {
+                                               correlationID: correlationID) {
             return .failed(unknown)
         }
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
@@ -36,11 +39,11 @@ enum WriteResultMapper {
     /// counts and surfaces per-entry errors rather than trusting the envelope status.
     static func mapBatch(_ response: WCRESTResponse,
                          toolName: String,
-                         idempotencyKey: String,
+                         correlationID: String,
                          family: CardFamilyID) -> ToolResult {
         if let unknown = unknownOutcomeFailure(response: response,
                                                toolName: toolName,
-                                               idempotencyKey: idempotencyKey) {
+                                               correlationID: correlationID) {
             return .failed(unknown)
         }
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
@@ -84,12 +87,12 @@ enum WriteResultMapper {
 
     private static func unknownOutcomeFailure(response: WCRESTResponse,
                                               toolName: String,
-                                              idempotencyKey: String) -> ToolResult.Failed? {
+                                              correlationID: String) -> ToolResult.Failed? {
         guard HTTPStatusClassification.isOutcomeUnknownStatus(response.statusCode) else { return nil }
         return .init(toolName: toolName,
                      toolCallID: "",
                      kind: .outcomeUnknown,
                      reason: "Write request did not get a confirmed response. The change may or may not have applied; verify on the store before retrying.",
-                     code: idempotencyKey)
+                     code: correlationID)
     }
 }

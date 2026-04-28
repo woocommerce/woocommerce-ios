@@ -20,8 +20,7 @@ struct WCRESTClientRetryTests {
         let response = await client.request(method: "GET",
                                             path: "wc/v3/orders",
                                             query: nil,
-                                            body: nil,
-                                            headers: nil)
+                                            body: nil)
 
         // Then
         #expect(response.statusCode == 503)
@@ -43,8 +42,7 @@ struct WCRESTClientRetryTests {
         let response = await client.request(method: "GET",
                                             path: "wc/v3/orders/9999",
                                             query: nil,
-                                            body: nil,
-                                            headers: nil)
+                                            body: nil)
 
         // Then
         #expect(response.statusCode == 404)
@@ -65,8 +63,7 @@ struct WCRESTClientRetryTests {
         let response = await client.request(method: "GET",
                                             path: "wc/v3/orders",
                                             query: nil,
-                                            body: nil,
-                                            headers: nil)
+                                            body: nil)
 
         // Then
         #expect(response.statusCode == 401)
@@ -90,8 +87,7 @@ struct WCRESTClientRetryTests {
         let response = await client.request(method: "GET",
                                             path: "wc/v3/orders",
                                             query: nil,
-                                            body: nil,
-                                            headers: nil)
+                                            body: nil)
 
         // Then
         #expect(response.statusCode == 200)
@@ -113,8 +109,7 @@ struct WCRESTClientRetryTests {
         let response = await client.request(method: "POST",
                                             path: "wc/v3/orders/3551",
                                             query: nil,
-                                            body: Data("{}".utf8),
-                                            headers: nil)
+                                            body: Data("{}".utf8))
 
         // Then
         #expect(response.statusCode == 503)
@@ -138,8 +133,7 @@ struct WCRESTClientRetryTests {
         let response = await client.request(method: "GET",
                                             path: "wc/v3/orders",
                                             query: nil,
-                                            body: nil,
-                                            headers: nil)
+                                            body: nil)
 
         // Then
         #expect(response.statusCode == 200)
@@ -162,33 +156,11 @@ struct WCRESTClientRetryTests {
         let response = await client.request(method: "GET",
                                             path: "wc/v3/orders",
                                             query: nil,
-                                            body: nil,
-                                            headers: nil)
+                                            body: nil)
 
         // Then
         #expect(response.statusCode == HTTPStatusClassification.transportFailure)
         #expect(await stub.callCount == 1)
-    }
-
-    @Test
-    func test_request_passes_idempotencyKey_header_through_unchanged() async {
-        // Given
-        let stub = StubWCRESTClient(responses: [.status(200)])
-        let client = RetryingWCRESTClient(inner: stub,
-                                          policy: .default,
-                                          sleep: { _ in })
-
-        // When
-        _ = await client.request(method: "POST",
-                                 path: "wc/v3/orders/3551",
-                                 query: nil,
-                                 body: Data("{\"status\":\"completed\"}".utf8),
-                                 headers: ["Idempotency-Key": "abc-123",
-                                           "X-Trace": "trace-7"])
-
-        // Then
-        #expect(await stub.recordedHeaders.first?["Idempotency-Key"] == "abc-123")
-        #expect(await stub.recordedHeaders.first?["X-Trace"] == "trace-7")
     }
 }
 
@@ -202,7 +174,6 @@ private actor StubWCRESTClient: WCRESTClient {
 
     private var responses: [Scripted]
     private(set) var callCount = 0
-    private(set) var recordedHeaders: [[String: String]] = []
 
     init(responses: [Scripted]) {
         self.responses = responses
@@ -211,10 +182,8 @@ private actor StubWCRESTClient: WCRESTClient {
     func request(method: String,
                  path: String,
                  query: [String: String]?,
-                 body: Data?,
-                 headers: [String: String]?) async -> WCRESTResponse {
+                 body: Data?) async -> WCRESTResponse {
         callCount += 1
-        recordedHeaders.append(headers ?? [:])
         let scripted = responses.isEmpty ? .status(500) : responses.removeFirst()
         switch scripted {
         case .status(let code):

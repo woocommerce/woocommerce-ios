@@ -4,7 +4,7 @@ import Testing
 
 struct ProductsUpdateToolTests {
     @Test
-    func test_productsUpdate_when_name_set_then_sends_idempotencyKey_header_and_minimal_body() async throws {
+    func test_productsUpdate_when_name_set_then_sends_minimal_body() async throws {
         // Given
         let body = """
         {"id": 12, "name": "Wool Sweater", "type": "simple", "status": "publish"}
@@ -23,8 +23,6 @@ struct ProductsUpdateToolTests {
         let call = try #require(client.calls.first)
         #expect(call.method == "PUT")
         #expect(call.path == "wc/v3/products/12")
-        let key = try #require(call.headers["Idempotency-Key"])
-        #expect(UUID(uuidString: key) != nil)
         let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
         #expect(parsed["name"] as? String == "Wool Sweater")
         #expect(parsed["regular_price"] == nil)
@@ -151,7 +149,7 @@ struct ProductsUpdateToolTests {
     }
 
     @Test
-    func test_productsUpdate_when_408_after_upload_then_returns_outcomeUnknown() async {
+    func test_productsUpdate_when_408_after_upload_then_returns_outcomeUnknown_with_uuid_correlation_id() async throws {
         // Given
         let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 408))
         let tool = ProductsUpdateTool.make()
@@ -165,5 +163,7 @@ struct ProductsUpdateToolTests {
             return
         }
         #expect(failed.kind == .outcomeUnknown)
+        let code = try #require(failed.code)
+        #expect(UUID(uuidString: code) != nil)
     }
 }

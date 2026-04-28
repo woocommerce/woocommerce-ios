@@ -4,7 +4,7 @@ import Testing
 
 struct ProductsBulkUpdateToolTests {
     @Test
-    func test_productsBulkUpdate_when_status_set_then_each_entry_carries_id_and_status_with_idempotency_header() async throws {
+    func test_productsBulkUpdate_when_status_set_then_each_entry_carries_id_and_status() async throws {
         // Given
         let body = """
         {"update": [{"id": 10, "status": "draft"}, {"id": 11, "status": "draft"}]}
@@ -23,8 +23,6 @@ struct ProductsBulkUpdateToolTests {
         let call = try #require(client.calls.first)
         #expect(call.method == "POST")
         #expect(call.path == "wc/v3/products/batch")
-        let key = try #require(call.headers["Idempotency-Key"])
-        #expect(UUID(uuidString: key) != nil)
         let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
         let updates = try #require(parsed["update"] as? [[String: Any]])
         #expect(updates.count == 2)
@@ -97,7 +95,7 @@ struct ProductsBulkUpdateToolTests {
     }
 
     @Test
-    func test_productsBulkUpdate_when_408_after_upload_then_returns_outcomeUnknown() async {
+    func test_productsBulkUpdate_when_408_after_upload_then_returns_outcomeUnknown_with_uuid_correlation_id() async throws {
         // Given
         let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 408))
         let tool = ProductsBulkUpdateTool.make()
@@ -111,5 +109,7 @@ struct ProductsBulkUpdateToolTests {
             return
         }
         #expect(failed.kind == .outcomeUnknown)
+        let code = try #require(failed.code)
+        #expect(UUID(uuidString: code) != nil)
     }
 }

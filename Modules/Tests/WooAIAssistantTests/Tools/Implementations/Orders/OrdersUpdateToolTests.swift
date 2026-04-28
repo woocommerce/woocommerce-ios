@@ -4,7 +4,7 @@ import Testing
 
 struct OrdersUpdateToolTests {
     @Test
-    func test_ordersUpdate_when_status_completed_then_sends_idempotencyKey_header_and_status_body() async throws {
+    func test_ordersUpdate_when_status_completed_then_sends_status_body() async throws {
         // Given
         let body = """
         {"id": 7, "status": "completed", "total": "10.00", "currency": "USD"}
@@ -23,8 +23,6 @@ struct OrdersUpdateToolTests {
         let call = try #require(client.calls.first)
         #expect(call.method == "PUT")
         #expect(call.path == "wc/v3/orders/7")
-        let key = try #require(call.headers["Idempotency-Key"])
-        #expect(UUID(uuidString: key) != nil)
         let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
         #expect(parsed["status"] as? String == "completed")
     }
@@ -113,7 +111,7 @@ struct OrdersUpdateToolTests {
     }
 
     @Test
-    func test_ordersUpdate_when_url_timedOut_after_upload_then_returns_outcomeUnknown_not_retryable() async {
+    func test_ordersUpdate_when_url_timedOut_after_upload_then_returns_outcomeUnknown_with_uuid_correlation_id() async throws {
         // Given
         let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 408))
         let tool = OrdersUpdateTool.make()
@@ -127,5 +125,33 @@ struct OrdersUpdateToolTests {
             return
         }
         #expect(failed.kind == .outcomeUnknown)
+        let code = try #require(failed.code)
+        #expect(UUID(uuidString: code) != nil)
+    }
+
+    @Test
+    func test_ordersUpdate_when_two_writes_time_out_then_each_gets_a_unique_correlation_id() async throws {
+        // Given
+        let client = RecordingWCRESTClient(responses: [
+            StubResponses.failure(statusCode: 408),
+            StubResponses.failure(statusCode: 408)
+        ])
+        let tool = OrdersUpdateTool.make()
+
+        // When
+        let firstResult = await tool.executor(#"{"id": 1, "status": "processing"}"#, client)
+        let secondResult = await tool.executor(#"{"id": 2, "status": "processing"}"#, client)
+
+        // Then
+        guard case .failed(let firstFailed) = firstResult,
+              case .failed(let secondFailed) = secondResult else {
+            Issue.record("expected both failed, got \(firstResult) and \(secondResult)")
+            return
+        }
+        let firstCode = try #require(firstFailed.code)
+        let secondCode = try #require(secondFailed.code)
+        #expect(UUID(uuidString: firstCode) != nil)
+        #expect(UUID(uuidString: secondCode) != nil)
+        #expect(firstCode != secondCode)
     }
 }

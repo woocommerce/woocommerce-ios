@@ -16,15 +16,13 @@ public struct RetryingWCRESTClient: WCRESTClient {
     public func request(method: String,
                         path: String,
                         query: [String: String]?,
-                        body: Data?,
-                        headers: [String: String]?) async -> WCRESTResponse {
+                        body: Data?) async -> WCRESTResponse {
         var attempt = 0
         while true {
             let response = await inner.request(method: method,
                                                path: path,
                                                query: query,
-                                               body: body,
-                                               headers: headers)
+                                               body: body)
             if HTTPStatusClassification.isSuccess(response.statusCode) {
                 return response
             }

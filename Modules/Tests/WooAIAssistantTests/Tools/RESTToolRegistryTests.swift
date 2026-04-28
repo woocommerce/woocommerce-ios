@@ -93,8 +93,7 @@ struct RESTToolRegistryTests {
                 _ = await client.request(method: "GET",
                                          path: "wc/v3/orders/3551",
                                          query: nil,
-                                         body: nil,
-                                         headers: nil)
+                                         body: nil)
                 return .success(.init(toolName: "orders_get", structured: .object(["ok": .bool(true)])))
             }
         )
@@ -152,8 +151,7 @@ private struct NoopWCRESTClient: WCRESTClient {
     func request(method: String,
                  path: String,
                  query: [String: String]?,
-                 body: Data?,
-                 headers: [String: String]?) async -> WCRESTResponse {
+                 body: Data?) async -> WCRESTResponse {
         WCRESTResponse(data: Data(), statusCode: 200)
     }
 }
@@ -173,8 +171,7 @@ private actor ProbingWCRESTClient: WCRESTClient {
     func request(method: String,
                  path: String,
                  query: [String: String]?,
-                 body: Data?,
-                 headers: [String: String]?) async -> WCRESTResponse {
+                 body: Data?) async -> WCRESTResponse {
         callCount += 1
         recordedPaths.append(path)
         return WCRESTResponse(data: Data(), statusCode: 200)

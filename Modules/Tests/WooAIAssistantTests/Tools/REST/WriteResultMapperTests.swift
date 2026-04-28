@@ -19,7 +19,7 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "orders_update",
-                                                 idempotencyKey: "key-1",
+                                                 correlationID: "key-1",
                                                  family: .order,
                                                  summarize: { entity in
             if case .object(let dict) = entity, let status = dict["status"] {
@@ -50,14 +50,14 @@ struct WriteResultMapperTests {
     }
 
     @Test
-    func test_mapEntity_when_response_408_then_returns_outcomeUnknown_with_idempotency_key_in_code() {
+    func test_mapEntity_when_response_408_then_returns_outcomeUnknown_with_correlation_id_in_code() {
         // Given
         let response = WCRESTResponse(data: Data(), statusCode: 408)
 
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "orders_update",
-                                                 idempotencyKey: "key-2",
+                                                 correlationID: "key-2",
                                                  family: .order,
                                                  summarize: { _ in .object([:]) })
 
@@ -78,7 +78,7 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "products_update",
-                                                 idempotencyKey: "key-3",
+                                                 correlationID: "key-3",
                                                  family: .product,
                                                  summarize: { _ in .object([:]) })
 
@@ -98,7 +98,7 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "orders_update",
-                                                 idempotencyKey: "key-4",
+                                                 correlationID: "key-4",
                                                  family: .order,
                                                  summarize: { _ in .object([:]) })
 
@@ -122,7 +122,7 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapBatch(response,
                                                 toolName: "products_bulk_update",
-                                                idempotencyKey: "key-5",
+                                                correlationID: "key-5",
                                                 family: .product)
 
         // Then
@@ -156,7 +156,7 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapBatch(response,
                                                 toolName: "products_bulk_update",
-                                                idempotencyKey: "key-6",
+                                                correlationID: "key-6",
                                                 family: .product)
 
         // Then
@@ -171,14 +171,14 @@ struct WriteResultMapperTests {
     }
 
     @Test
-    func test_mapBatch_when_408_then_returns_outcomeUnknown_with_idempotency_key() {
+    func test_mapBatch_when_408_then_returns_outcomeUnknown_with_correlation_id() {
         // Given
         let response = WCRESTResponse(data: Data(), statusCode: 408)
 
         // When
         let result = WriteResultMapper.mapBatch(response,
                                                 toolName: "orders_bulk_update",
-                                                idempotencyKey: "key-7",
+                                                correlationID: "key-7",
                                                 family: .order)
 
         // Then

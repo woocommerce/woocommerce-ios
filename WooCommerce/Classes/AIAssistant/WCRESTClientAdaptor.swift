@@ -23,8 +23,7 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
     func request(method: String,
                  path: String,
                  query: [String: String]?,
-                 body: Data?,
-                 headers: [String: String]?) async -> WCRESTResponse {
+                 body: Data?) async -> WCRESTResponse {
         let httpMethod = HTTPMethod(rawValue: method.uppercased())
         let (apiVersion, subpath) = Self.splitAPIVersion(from: path)
         let parameters = Self.parameters(forMethod: httpMethod, query: query, body: body)

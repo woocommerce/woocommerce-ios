@@ -123,8 +123,7 @@ public enum ProductsUpdateTool {
         let probe = await client.request(method: "GET",
                                          path: "wc/v3/products/\(productID)",
                                          query: nil,
-                                         body: nil,
-                                         headers: nil)
+                                         body: nil)
         guard HTTPStatusClassification.isSuccess(probe.statusCode),
               let entity = RESTResponseParsing.decodeJSON(probe.data),
               RESTResponseParsing.stringField(entity, "type") == "variable" else {

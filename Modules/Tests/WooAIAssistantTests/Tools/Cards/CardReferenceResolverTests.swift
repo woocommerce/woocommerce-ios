@@ -7,11 +7,11 @@ struct CardReferenceResolverTests {
     func test_resolve_when_three_mixed_family_references_then_all_resolved_in_input_order() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/orders",
+        await client.stub(path: "wc/v3/orders",
                     response: StubResponses.ok("[{\"id\": 3551, \"status\": \"processing\", \"total\": \"120.00\"}]"))
-        client.stub(path: "wc/v3/products",
+        await client.stub(path: "wc/v3/products",
                     response: StubResponses.ok("[{\"id\": 42, \"name\": \"Beanie\", \"price\": \"19.99\", \"stock_status\": \"instock\"}]"))
-        client.stub(path: "wc/v3/customers",
+        await client.stub(path: "wc/v3/customers",
                     response: StubResponses.ok("[{\"id\": 7, \"first_name\": \"Jane\", \"email\": \"jane@example.com\"}]"))
         let resolver = CardReferenceResolver(client: client)
         let references: [CardReference] = [
@@ -34,7 +34,7 @@ struct CardReferenceResolverTests {
     func test_resolve_when_multiple_orders_then_uses_single_batched_fetch() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/orders",
+        await client.stub(path: "wc/v3/orders",
                     response: StubResponses.ok("""
                     [{"id": 1, "status": "processing", "total": "10.00"},
                      {"id": 2, "status": "processing", "total": "20.00"},
@@ -48,7 +48,7 @@ struct CardReferenceResolverTests {
 
         // Then
         #expect(resolutions.count == 3)
-        #expect(client.calls.filter { $0 == "wc/v3/orders" }.count == 1)
+        #expect(await client.calls.filter { $0 == "wc/v3/orders" }.count == 1)
     }
 
     @Test
@@ -56,7 +56,7 @@ struct CardReferenceResolverTests {
         // Given
         let client = StubbedWCRESTClient()
         let rows = (1...10).map { "{\"id\": \($0), \"status\": \"processing\", \"total\": \"10.00\"}" }.joined(separator: ",")
-        client.stub(path: "wc/v3/orders",
+        await client.stub(path: "wc/v3/orders",
                     response: StubResponses.ok("[\(rows)]"))
         let resolver = CardReferenceResolver(client: client)
         let references = (1...11).map { CardReference(family: .order, id: String($0)) }
@@ -81,7 +81,7 @@ struct CardReferenceResolverTests {
     func test_resolve_when_same_reference_twice_then_first_resolves_and_second_rejected_as_duplicate() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/orders",
+        await client.stub(path: "wc/v3/orders",
                     response: StubResponses.ok("[{\"id\": 3551, \"status\": \"processing\", \"total\": \"120.00\"}]"))
         let resolver = CardReferenceResolver(client: client)
         let references: [CardReference] = [
@@ -101,7 +101,7 @@ struct CardReferenceResolverTests {
         } else {
             Issue.record("expected second to be rejected.duplicate")
         }
-        #expect(client.calls.filter { $0 == "wc/v3/orders" }.count == 1)
+        #expect(await client.calls.filter { $0 == "wc/v3/orders" }.count == 1)
     }
 
     @Test(arguments: ["0", "abc", "-1"])
@@ -119,14 +119,14 @@ struct CardReferenceResolverTests {
         } else {
             Issue.record("expected rejected.malformed for id=\(rawID)")
         }
-        #expect(client.calls.isEmpty)
+        #expect(await client.calls.isEmpty)
     }
 
     @Test
     func test_resolve_when_id_missing_from_response_then_rejects_as_notFound() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/orders", response: StubResponses.ok("[]"))
+        await client.stub(path: "wc/v3/orders", response: StubResponses.ok("[]"))
         let resolver = CardReferenceResolver(client: client)
 
         // When
@@ -144,7 +144,7 @@ struct CardReferenceResolverTests {
     func test_resolve_when_remote_returns_403_then_rejects_all_in_family_as_notPermitted() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/products", response: StubResponses.failure(statusCode: 403))
+        await client.stub(path: "wc/v3/products", response: StubResponses.failure(statusCode: 403))
         let resolver = CardReferenceResolver(client: client)
         let references = [
             CardReference(family: .product, id: "1"),
@@ -168,7 +168,7 @@ struct CardReferenceResolverTests {
     func test_resolve_when_entity_status_trash_then_rejects_as_staleReference() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/orders",
+        await client.stub(path: "wc/v3/orders",
                     response: StubResponses.ok("[{\"id\": 3551, \"status\": \"trash\"}]"))
         let resolver = CardReferenceResolver(client: client)
 
@@ -187,7 +187,7 @@ struct CardReferenceResolverTests {
     func test_resolve_when_remote_returns_410_then_rejects_as_staleReference() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/orders", response: StubResponses.failure(statusCode: 410))
+        await client.stub(path: "wc/v3/orders", response: StubResponses.failure(statusCode: 410))
         let resolver = CardReferenceResolver(client: client)
 
         // When
@@ -205,7 +205,7 @@ struct CardReferenceResolverTests {
     func test_resolve_when_remote_returns_500_then_rejects_as_fetchFailed() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/orders", response: StubResponses.failure(statusCode: 500))
+        await client.stub(path: "wc/v3/orders", response: StubResponses.failure(statusCode: 500))
         let resolver = CardReferenceResolver(client: client)
 
         // When
@@ -223,7 +223,7 @@ struct CardReferenceResolverTests {
     func test_resolve_when_response_is_unparseable_then_rejects_as_internalError() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/orders", response: StubResponses.ok("not json at all"))
+        await client.stub(path: "wc/v3/orders", response: StubResponses.ok("not json at all"))
         let resolver = CardReferenceResolver(client: client)
 
         // When
@@ -241,7 +241,7 @@ struct CardReferenceResolverTests {
     func test_resolve_when_mixed_resolved_and_rejected_then_preserves_input_order() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/orders",
+        await client.stub(path: "wc/v3/orders",
                     response: StubResponses.ok("[{\"id\": 3551, \"status\": \"processing\", \"total\": \"120.00\"}]"))
         let resolver = CardReferenceResolver(client: client)
         let references: [CardReference] = [

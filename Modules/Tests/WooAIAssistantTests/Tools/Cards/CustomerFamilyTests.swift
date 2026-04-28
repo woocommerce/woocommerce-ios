@@ -38,7 +38,7 @@ struct CustomerFamilyTests {
         let body = """
         [{"id": 7, "first_name": "Jane", "_links": {}}]
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
 
         // When
         let outcomes = await CardFamily.customer.fetch(ids: [7], client: client)
@@ -52,7 +52,7 @@ struct CustomerFamilyTests {
             #expect(dict["first_name"] == .string("Jane"))
             #expect(dict["_links"] == nil)
         }
-        let call = client.calls.first
+        let call = await client.calls.first
         #expect(call?.path == "wc/v3/customers")
         #expect(call?.query["include"] == "7")
     }
@@ -63,7 +63,7 @@ struct CustomerFamilyTests {
         let body = """
         [{"id": 7, "first_name": "Jane"}, {"id": 8, "first_name": "John"}]
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
 
         // When
         let outcomes = await CardFamily.customer.fetch(ids: [7, 8], client: client)
@@ -73,8 +73,8 @@ struct CustomerFamilyTests {
             Issue.record("expected both ids resolved")
             return
         }
-        let call = client.calls.first
+        let call = await client.calls.first
         #expect(call?.query["include"] == "7,8")
-        #expect(client.calls.count == 1)
+        #expect(await client.calls.count == 1)
     }
 }

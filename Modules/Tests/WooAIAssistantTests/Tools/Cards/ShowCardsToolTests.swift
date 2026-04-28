@@ -59,7 +59,7 @@ struct ShowCardsToolTests {
     func test_executor_when_one_resolved_one_missing_one_duplicate_then_projection_splits_three_buckets() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/orders",
+        await client.stub(path: "wc/v3/orders",
                     response: StubResponses.ok("""
                     [{"id": 3551, "status": "processing", "total": "120.00", "currency": "USD",
                       "billing": {"first_name": "Jane", "last_name": "Doe"}}]

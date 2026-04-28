@@ -3,29 +3,20 @@ import Foundation
 
 /// Path-keyed stub so resolver tests can dispatch multiple families in
 /// parallel and remain deterministic regardless of `withTaskGroup` ordering.
-final class StubbedWCRESTClient: WCRESTClient, @unchecked Sendable {
-    private let lock = NSLock()
+actor StubbedWCRESTClient: WCRESTClient {
     private var routes: [String: WCRESTResponse] = [:]
     private var fallback: WCRESTResponse = WCRESTResponse(data: Data(), statusCode: 404)
-    private var _calls: [String] = []
-
-    var calls: [String] {
-        lock.lock(); defer { lock.unlock() }
-        return _calls
-    }
+    private(set) var calls: [String] = []
 
     func stub(path: String, response: WCRESTResponse) {
-        lock.lock(); defer { lock.unlock() }
         routes[path] = response
     }
 
     func stub(method: String, path: String, response: WCRESTResponse) {
-        lock.lock(); defer { lock.unlock() }
         routes["\(method) \(path)"] = response
     }
 
     func setFallback(_ response: WCRESTResponse) {
-        lock.lock(); defer { lock.unlock() }
         fallback = response
     }
 
@@ -33,12 +24,9 @@ final class StubbedWCRESTClient: WCRESTClient, @unchecked Sendable {
                  path: String,
                  query: [String: String]?,
                  body: Data?) async -> WCRESTResponse {
-        lock.lock()
-        _calls.append(path)
-        let response = routes["\(method) \(path)"]
+        calls.append(path)
+        return routes["\(method) \(path)"]
             ?? routes[path]
             ?? fallback
-        lock.unlock()
-        return response
     }
 }

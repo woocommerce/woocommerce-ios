@@ -28,11 +28,6 @@ public struct CustomerFamily: CardFamily {
     }
 
     public func summarize(_ entity: AnyCodableJSON) -> AnyCodableJSON {
-        var fields: [String: AnyCodableJSON] = [:]
-        guard case .object(let dict) = entity else { return .object(fields) }
-        for key in ["id", "first_name", "last_name", "email", "orders_count"] {
-            if let value = dict[key] { fields[key] = value }
-        }
-        return .object(fields)
+        RESTResponseParsing.project(entity, keys: ["id", "first_name", "last_name", "email", "orders_count"])
     }
 }

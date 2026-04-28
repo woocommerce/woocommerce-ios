@@ -27,12 +27,9 @@ public struct OrderFamily: CardFamily {
     }
 
     public func summarize(_ entity: AnyCodableJSON) -> AnyCodableJSON {
-        var fields: [String: AnyCodableJSON] = [:]
-        for key in ["id", "number", "status", "total", "currency", "date_created"] {
-            if case .object(let dict) = entity, let value = dict[key] {
-                fields[key] = value
-            }
-        }
+        let projected = RESTResponseParsing.project(entity,
+                                                    keys: ["id", "number", "status", "total", "currency", "date_created"])
+        guard case .object(var fields) = projected else { return projected }
         if let billing = RESTResponseParsing.objectField(entity, "billing"),
            let name = customerName(from: billing) {
             fields["customer_name"] = .string(name)

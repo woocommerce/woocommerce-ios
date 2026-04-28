@@ -96,6 +96,10 @@ public enum ProductsUpdateTool {
                                  reason: "at least one editable field must be provided"))
         }
 
+        // Always-on extra GET on price updates: catches WC's silent no-op when a
+        // merchant tries to set price on a variable parent. Cost is one round-trip
+        // per price update for simple products too, which we accept because
+        // looping on a no-op write is a worse failure mode than one extra GET.
         if body["regular_price"] != nil || body["sale_price"] != nil {
             if let failure = await variablePriceRefusal(productID: args.id, client: client) {
                 return .failed(failure)

@@ -29,8 +29,11 @@ struct OrderFamilyTests {
             return
         }
         #expect(fields["id"] == .int(3551))
+        #expect(fields["number"] == .string("3551"))
         #expect(fields["status"] == .string("processing"))
         #expect(fields["total"] == .string("120.00"))
+        #expect(fields["currency"] == .string("USD"))
+        #expect(fields["date_created"] == .string("2026-04-20T10:00:00"))
         #expect(fields["customer_name"] == .string("Jane Doe"))
         #expect(fields["line_items"] == nil)
     }

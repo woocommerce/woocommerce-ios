@@ -1,7 +1,5 @@
 import Foundation
 
-/// Decision-only retry policy for `WCRESTClient` requests.
-///
 /// Writes (POST, PUT, PATCH) never auto-retry. A duplicate write reaching the
 /// upstream could double-charge or duplicate inventory mutations, and the
 /// runtime can't tell whether the first attempt landed when the transport

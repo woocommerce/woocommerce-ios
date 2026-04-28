@@ -1,9 +1,7 @@
 import Foundation
 
-/// `ToolRegistry` whose tools call into the merchant's WooCommerce REST API
-/// through `WCRESTClient`. Unknown tool names short-circuit to
-/// `.failed(kind: .invalidToolCall)` so callers never need a typo guard
-/// before dispatch.
+/// Unknown tool names short-circuit to `.failed(kind: .invalidToolCall)` so
+/// callers never need a typo guard before dispatch.
 public struct RESTToolRegistry: ToolRegistry {
     private let client: WCRESTClient
     private let tools: [String: RESTTool]

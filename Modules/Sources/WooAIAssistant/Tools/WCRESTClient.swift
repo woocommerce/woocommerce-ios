@@ -1,13 +1,6 @@
 import Foundation
 
-/// Transport surface every REST tool calls into. Deliberately thin so the
-/// production adaptor can sit on the existing Networking module (app password,
-/// WPCOM bearer, Jetpack tunnel) and the headless harness can swap in a
-/// `URLSession`-only implementation without dragging dependencies into the
-/// assistant module.
-///
-/// Non-2xx responses are returned, not thrown, so retry policy and error
-/// classification stay in one place rather than spread across `do/catch`.
+/// Non-2xx responses return as `WCRESTResponse`, never throw.
 public protocol WCRESTClient: Sendable {
     func request(method: String,
                  path: String,

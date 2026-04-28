@@ -1,7 +1,6 @@
 public enum HTTPStatusClassification {
-    /// Sentinel for transport-level failures (no HTTP response: dropped
-    /// connection, DNS, timeout). Mapped to the network error kind so the
-    /// retry policy treats it like a 5xx instead of a hard error.
+    /// Sentinel for transport-level failures: no HTTP response (dropped
+    /// connection, DNS, timeout).
     public static let transportFailure: Int = 0
 
     public static func isSuccess(_ statusCode: Int) -> Bool {

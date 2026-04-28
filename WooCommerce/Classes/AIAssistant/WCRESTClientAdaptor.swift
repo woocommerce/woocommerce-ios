@@ -9,14 +9,12 @@ import enum WooAIAssistant.HTTPStatusClassification
 import struct WooAIAssistant.WCRESTResponse
 import protocol WooAIAssistant.WCRESTClient
 
-/// Implements `WCRESTClient` on top of the existing `Networking.Network`. Using
 /// `JetpackRequest(availableAsRESTRequest: true)` routes the same way other
 /// remotes do: WPCOM-tunneled with the bearer token, or upgraded to a direct
 /// app-password REST call when the site supports it.
 ///
-/// `Network` is not declared `Sendable`, but the app constructs a single
-/// instance at launch and never mutates it; treating the adaptor as `Sendable`
-/// is sound at this integration boundary.
+/// `Network` isn't declared `Sendable`, but the production instance is
+/// constructed once at launch and treated as thread-safe across the app.
 struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
     private let network: Network
     private let siteID: Int64
@@ -34,9 +32,8 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
         let httpMethod = HTTPMethod(rawValue: method.uppercased())
         let (apiVersion, subpath) = Self.splitAPIVersion(from: path)
         let parameters = Self.parameters(forMethod: httpMethod, query: query, body: body)
-        // `JetpackRequest` has no slot for arbitrary headers; auth headers are
-        // injected downstream by the network layer. Caller-supplied headers
-        // (e.g. `Idempotency-Key`) are intentionally dropped at this boundary.
+        // `JetpackRequest` has no header slot; caller-supplied headers
+        // (e.g. `Idempotency-Key`) are dropped at this boundary.
         _ = headers
 
         let jetpackRequest = JetpackRequest(wooApiVersion: apiVersion,

@@ -21,7 +21,7 @@ struct OrderFamilyTests {
         ])
 
         // When
-        let summary = OrderFamily().summarize(entity)
+        let summary = CardFamily.order.summarize(entity)
 
         // Then
         guard case .object(let fields) = summary else {
@@ -47,7 +47,7 @@ struct OrderFamilyTests {
         ])
 
         // When
-        let summary = OrderFamily().summarize(entity)
+        let summary = CardFamily.order.summarize(entity)
 
         // Then
         if case .object(let fields) = summary {
@@ -66,7 +66,7 @@ struct OrderFamilyTests {
         let client = RecordingWCRESTClient(response: StubResponses.ok(body))
 
         // When
-        let outcome = await OrderFamily().fetch(id: 3551, client: client)
+        let outcome = await CardFamily.order.fetch(id: 3551, client: client)
 
         // Then
         guard case .found(let entity) = outcome else {
@@ -91,7 +91,7 @@ struct OrderFamilyTests {
         let client = RecordingWCRESTClient(response: StubResponses.ok(body))
 
         // When
-        let outcome = await OrderFamily().fetch(id: 3551, client: client)
+        let outcome = await CardFamily.order.fetch(id: 3551, client: client)
 
         // Then
         if case .rejected(let reason) = outcome {
@@ -107,7 +107,7 @@ struct OrderFamilyTests {
         let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 404))
 
         // When
-        let outcome = await OrderFamily().fetch(id: 99999, client: client)
+        let outcome = await CardFamily.order.fetch(id: 99999, client: client)
 
         // Then
         if case .rejected(let reason) = outcome {

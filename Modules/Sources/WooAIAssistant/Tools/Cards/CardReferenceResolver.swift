@@ -63,7 +63,7 @@ public struct CardReferenceResolver: Sendable {
         guard let family = registry.family(for: reference.family) else {
             return .rejected(family: reference.family, id: reference.id, reason: .unsupportedFamily)
         }
-        switch await family.fetch(reference.id, client) {
+        switch await family.fetch(id: reference.id, client: client) {
         case .found(let entity):
             let summary = family.summarize(entity)
             let rendered = RenderedCardPayload(family: reference.family,

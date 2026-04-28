@@ -106,7 +106,7 @@ struct CardReferenceResolverTests {
     func test_resolve_when_family_missing_from_registry_then_rejects_as_unsupportedFamily() async {
         // Given
         let client = StubbedWCRESTClient()
-        let registry = CardFamilyRegistry([AnyCardFamily(OrderFamily())])
+        let registry = CardFamilyRegistry([.order])
         let resolver = CardReferenceResolver(registry: registry, client: client)
 
         // When

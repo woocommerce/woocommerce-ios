@@ -17,7 +17,7 @@ struct CustomerFamilyTests {
         ])
 
         // When
-        let summary = CustomerFamily().summarize(entity)
+        let summary = CardFamily.customer.summarize(entity)
 
         // Then
         guard case .object(let fields) = summary else {
@@ -41,7 +41,7 @@ struct CustomerFamilyTests {
         let client = RecordingWCRESTClient(response: StubResponses.ok(body))
 
         // When
-        let outcome = await CustomerFamily().fetch(id: 7, client: client)
+        let outcome = await CardFamily.customer.fetch(id: 7, client: client)
 
         // Then
         guard case .found(let entity) = outcome else {
@@ -63,7 +63,7 @@ struct CustomerFamilyTests {
         let client = RecordingWCRESTClient(response: StubResponses.ok("[]"))
 
         // When
-        let outcome = await CustomerFamily().fetch(id: 999, client: client)
+        let outcome = await CardFamily.customer.fetch(id: 999, client: client)
 
         // Then
         if case .rejected(let reason) = outcome {
@@ -79,7 +79,7 @@ struct CustomerFamilyTests {
         let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 401))
 
         // When
-        let outcome = await CustomerFamily().fetch(id: 7, client: client)
+        let outcome = await CardFamily.customer.fetch(id: 7, client: client)
 
         // Then
         if case .rejected(let reason) = outcome {
@@ -95,7 +95,7 @@ struct CustomerFamilyTests {
         let client = RecordingWCRESTClient(response: StubResponses.ok("{\"id\": 7}"))
 
         // When
-        let outcome = await CustomerFamily().fetch(id: 7, client: client)
+        let outcome = await CardFamily.customer.fetch(id: 7, client: client)
 
         // Then
         if case .rejected(let reason) = outcome {

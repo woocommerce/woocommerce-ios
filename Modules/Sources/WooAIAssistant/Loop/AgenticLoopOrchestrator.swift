@@ -262,15 +262,13 @@ actor AgenticLoopOrchestrator {
         lastOutcome = .maxIterations(iterations: maxIterations)
     }
 
-    /// Drains one chat-service stream. Returns either `.completed`
-    /// (final answer text was emitted) or `.toolCalls(...)` (more
-    /// loop work).
     private func runOneTurn(messages: [OpenAIChat.Message],
                             tools: [OpenAIChat.ToolDefinition]?,
                             continuation: AsyncThrowingStream<AssistantEvent, Error>.Continuation) async throws -> TurnOutcome {
         var pendingCalls: [OpenAIChat.ToolCall] = []
         var didEmitText = false
         var finishReason: OpenAIChat.FinishReason?
+        var didReceiveCompletedEvent = false
 
         let stream = chatService.streamTurn(messages: messages,
                                             tools: tools,
@@ -285,13 +283,16 @@ actor AgenticLoopOrchestrator {
                 pendingCalls.append(call)
             case .completed(let reason):
                 finishReason = reason
+                didReceiveCompletedEvent = true
             }
         }
 
-        // finish_reason == "length" means the model hit max_tokens
-        // mid-response. Any assistant-with-tool-calls message would
-        // carry partial arguments JSON and fail validation; any text
-        // is truncated. Surface as an explicit failure.
+        // A stream ending without `.completed` is an upstream truncation, not a clean finish.
+        if !didReceiveCompletedEvent {
+            throw AssistantError(kind: .upstreamFailure,
+                                 message: Localization.noFinishEvent)
+        }
+
         if finishReason == .length {
             throw AssistantError(kind: .upstreamFailure,
                                  message: Localization.lengthLimitFailure)
@@ -922,6 +923,11 @@ actor AgenticLoopOrchestrator {
             "ai.assistant.loop.empty_response_fallback",
             value: "(No response from the model.)",
             comment: "Fallback assistant text shown when the model finished a turn with no content and no tool calls."
+        )
+        static let noFinishEvent = NSLocalizedString(
+            "ai.assistant.loop.no_finish_event",
+            value: "The chat service ended the stream without finishing cleanly. Try again.",
+            comment: "Failure surfaced when the chat service's stream ends without emitting a finish event, indicating an upstream truncation."
         )
     }
 }

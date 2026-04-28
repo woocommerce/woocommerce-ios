@@ -168,6 +168,51 @@ struct LoopAdditionalEdgeCasesTests {
             Issue.record("Expected lastOutcome == .failed, got \(String(describing: outcome))")
         }
     }
+
+    @Test
+    func test_run_when_success_with_uiStructured_then_only_structured_appears_in_resubmitted_tool_message() async throws {
+        // Given
+        let listTool = AITool(name: "orders_list",
+                              description: "List orders",
+                              parametersSchema: .object([:]),
+                              safetyLevel: .safe)
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_1",
+            function: .init(name: "orders_list", arguments: #"{}"#)
+        )
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)],
+            [.textDelta("Found one."), .completed(.stop)]
+        ])
+        let uiOnlyCard = RenderedCardPayload(
+            family: .order,
+            id: "ui_only_marker_42",
+            element: .object(["uiOnlyKey": .string("uiOnlyValue")])
+        )
+        let success = ToolResult.Success(
+            toolName: "orders_list",
+            structured: .object(["structuredKey": .string("structuredValue")]),
+            uiStructured: UIStructured(cards: [uiOnlyCard])
+        )
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([listTool])
+        await registry.setResult(for: "orders_list", result: .success(success))
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat, toolRegistry: registry)
+
+        // When
+        for try await _ in orchestrator.run(prompt: "List orders") {}
+
+        // Then
+        let capturedRequests = await chat.capturedRequests
+        #expect(capturedRequests.count >= 2)
+        let secondRequest = capturedRequests[1]
+        let toolMessage = secondRequest.messages.first { $0.role == .tool && $0.toolCallID == "call_1" }
+        let content = try #require(toolMessage?.content)
+        #expect(content.contains("structuredValue"))
+        #expect(!content.contains("ui_only_marker_42"))
+        #expect(!content.contains("uiOnlyValue"))
+    }
 }
 
 private enum MockStreamError: Error {

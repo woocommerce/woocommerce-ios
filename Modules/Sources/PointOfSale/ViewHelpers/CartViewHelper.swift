@@ -32,8 +32,6 @@ struct CartViewHelper {
     func shouldShowCheckout(orderStage: PointOfSaleOrderStage, cart: Cart) -> Bool {
         guard case .building = orderStage else { return false }
 
-        // Coupons alone don't enable checkout — there has to be at least one
-        // chargeable line (a product or a custom amount) for them to apply to.
         return cart.purchasableItems.isNotEmpty || cart.customAmounts.isNotEmpty
     }
 

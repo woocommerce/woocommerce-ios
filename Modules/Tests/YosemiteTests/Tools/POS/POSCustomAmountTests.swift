@@ -86,7 +86,7 @@ struct POSCustomAmountTests {
     }
 
     @Test func cart_with_duplicate_custom_amounts_matches_order_with_same_count_of_matching_fees() async throws {
-        // Given — two identical (name, amount) entries
+        // Given
         let fee1 = OrderFeeLine.fake().copy(feeID: 1, name: "Tip", total: "5.00")
         let fee2 = OrderFeeLine.fake().copy(feeID: 2, name: "Tip", total: "5.00")
         let order = Order.fake().copy(fees: [fee1, fee2])
@@ -100,7 +100,7 @@ struct POSCustomAmountTests {
     }
 
     @Test func cart_with_duplicate_custom_amounts_does_not_match_order_with_one_matching_fee() async throws {
-        // Given — two identical entries in cart, only one fee on order
+        // Given
         let fee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
         let order = Order.fake().copy(fees: [fee])
         let sut = [
@@ -108,12 +108,12 @@ struct POSCustomAmountTests {
             POSCustomAmount(name: "Tip", amount: "5.00", isTaxable: false)
         ]
 
-        // When, Then — duplicates must not collapse into a single set element
+        // When, Then
         #expect(sut.matches(order: order) == false)
     }
 
     @Test func cart_with_custom_amount_ignores_deleted_fees_in_order() async throws {
-        // Given — a fee that has been "deleted" via the OrderFactory.deletedFeeLine helper
+        // Given
         let liveFee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
         let deletedFee = OrderFactory.deletedFeeLine(OrderFeeLine.fake().copy(feeID: 99, name: "Old", total: "10.00"))
         let order = Order.fake().copy(fees: [liveFee, deletedFee])

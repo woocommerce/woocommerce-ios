@@ -155,8 +155,8 @@ struct AddCustomAmountFormViewModelTests {
     }
 
     @Test func test_init_when_editing_existing_with_default_name_then_leaves_name_field_empty() async throws {
-        // Given — the cart stores the resolved name "Custom amount" when the merchant left it empty
-        let existing = POSCustomAmount(name: "Custom amount", amount: "5.00", isTaxable: true)
+        // Given
+        let existing = POSCustomAmount(name: AddCustomAmountFormViewModel.defaultName, amount: "5.00", isTaxable: true)
 
         // When
         let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings, editing: existing)
@@ -181,8 +181,7 @@ struct AddCustomAmountFormViewModelTests {
     }
 
     @Test func test_resolvedCustomAmount_when_called_repeatedly_then_keeps_the_same_id() async throws {
-        // Given — a fresh form (not editing) caches its id at init so a double-tap
-        // on submit can't produce two distinct entries.
+        // Given
         let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)
         sut.amount = "5.00"
 
@@ -205,7 +204,7 @@ struct AddCustomAmountFormViewModelTests {
         let first = try #require(firstForm.resolvedCustomAmount())
         let second = try #require(secondForm.resolvedCustomAmount())
 
-        // Then — separate forms produce separate ids so each "+" tap gives a new entry
+        // Then
         #expect(first.id != second.id)
     }
 }

@@ -281,9 +281,6 @@ extension [POSCustomAmount] {
             return false
         }
 
-        // Compare as multisets so duplicate (name, amount) pairs don't collapse —
-        // two "Tip $5.00" custom amounts must match two corresponding fee lines,
-        // not one. Sorting both sides and comparing element-wise is enough.
         let cartSummaries = self
             .map { CustomAmountSummary(name: $0.name, amount: $0.amount) }
             .sorted()

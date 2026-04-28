@@ -4,7 +4,6 @@ import struct Yosemite.POSCustomAmount
 
 @Observable
 final class AddCustomAmountFormViewModel {
-    /// Name applied to a custom amount when the merchant leaves the name field empty.
     static let defaultName = NSLocalizedString(
         "pos.addCustomAmount.defaultName",
         value: "Custom amount",
@@ -43,9 +42,6 @@ final class AddCustomAmountFormViewModel {
             self.isTaxable = existing.isTaxable
         } else {
             self.editingID = nil
-            // Generate a single id at init so repeat calls to `resolvedCustomAmount()`
-            // don't produce different ids — otherwise a double-tap on submit would
-            // upsert two distinct entries.
             self.resolvedID = UUID()
         }
     }

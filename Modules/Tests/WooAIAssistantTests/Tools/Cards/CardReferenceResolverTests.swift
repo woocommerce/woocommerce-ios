@@ -176,6 +176,24 @@ struct CardReferenceResolverTests {
     }
 
     @Test
+    func test_resolve_when_remote_returns_410_then_rejects_as_staleReference() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        client.stub(path: "wc/v3/orders/3551", response: StubResponses.failure(statusCode: 410))
+        let resolver = CardReferenceResolver(client: client)
+
+        // When
+        let result = await resolver.resolve([CardReference(family: .order, id: 3551)])
+
+        // Then
+        if case .rejected(_, _, let reason) = result.resolutions[0] {
+            #expect(reason == .staleReference)
+        } else {
+            Issue.record("expected rejected.staleReference")
+        }
+    }
+
+    @Test
     func test_resolve_when_remote_returns_500_then_rejects_as_fetchFailed() async {
         // Given
         let client = StubbedWCRESTClient()

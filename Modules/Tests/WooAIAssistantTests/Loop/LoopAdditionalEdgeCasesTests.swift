@@ -117,23 +117,25 @@ struct LoopAdditionalEdgeCasesTests {
         let confirmationSeen = AsyncSignal()
 
         // When
-        let consumerTask = Task {
-            for try await event in orchestrator.run(prompt: "Mark order 42 processing") {
-                if case .confirmationRequired = event {
-                    await confirmationSeen.signal()
-                    return
+        let consumerTask = Task<Void, Never> {
+            do {
+                for try await event in orchestrator.run(prompt: "Mark order 42 processing") {
+                    if case .confirmationRequired = event {
+                        await confirmationSeen.signal()
+                    }
                 }
+            } catch {
+                // Cancellation propagates here once the consumer task is cancelled.
             }
         }
         await confirmationSeen.wait()
         consumerTask.cancel()
-        _ = try? await consumerTask.value
-        try await Task.sleep(for: .milliseconds(100))
+        await consumerTask.value
+        let outcome = await orchestrator.awaitTermination()
 
         // Then
         let invocations = await registry.invocationCount(for: "orders_update")
         #expect(invocations == 0)
-        let outcome = await orchestrator.lastOutcome
         #expect(outcome == .stopped)
     }
 

@@ -9,13 +9,17 @@ enum AnalyticsDateBounds {
         return ("\(start)T00:00:00", "\(end)T23:59:59")
     }
 
+    private static let yyyyMMDDFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.isLenient = false
+        return formatter
+    }()
+
     private static func isValidYYYYMMDD(_ value: String) -> Bool {
-        let parts = value.split(separator: "-")
-        guard parts.count == 3,
-              parts[0].count == 4, parts[1].count == 2, parts[2].count == 2,
-              parts.allSatisfy({ $0.allSatisfy(\.isNumber) }) else {
-            return false
-        }
-        return true
+        yyyyMMDDFormatter.date(from: value) != nil
     }
 }

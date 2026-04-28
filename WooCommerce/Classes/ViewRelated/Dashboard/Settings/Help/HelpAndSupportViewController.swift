@@ -76,7 +76,8 @@ final class HelpAndSupportViewController: UIViewController {
         isMacCatalyst: isMacCatalyst,
         hasLoginSiteURL: loginSiteURL != nil,
         developerFFPanelEnabled: !ServiceLocator.stores.isAuthenticated
-            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel)
+            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel),
+        isAIChatEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
     )
 
     private var isMacCatalyst: Bool {
@@ -234,6 +235,8 @@ private extension HelpAndSupportViewController {
             configureSiteCompatibility(cell: cell)
         case let cell as ValueOneTableViewCell where row == .featureFlags:
             configureFeatureFlags(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .chatHistory:
+            configureChatHistory(cell: cell)
         default:
             fatalError()
         }
@@ -317,6 +320,23 @@ private extension HelpAndSupportViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = "Override Feature Flags"
         cell.detailTextLabel?.text = "Toggle local feature flags"
+    }
+
+    /// Chat History cell
+    ///
+    func configureChatHistory(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString(
+            "helpAndSupport.chatHistory.title",
+            value: "Chat History",
+            comment: "Title for the support chat history row on the Help screen"
+        )
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "helpAndSupport.chatHistory.subtitle",
+            value: "Revisit past support conversations",
+            comment: "Subtitle for the support chat history row on the Help screen"
+        )
     }
 
     func refreshViewContent() {
@@ -432,6 +452,34 @@ private extension HelpAndSupportViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 
+    /// Chat History action
+    ///
+    func chatHistoryWasPressed() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        let historyViewModel = SupportChatHistoryViewModel(siteID: siteID)
+        let rootView = SupportChatHistoryView(viewModel: historyViewModel) { [weak self] summary in
+            self?.resumeChat(for: summary)
+        }
+        let controller = UIHostingController(rootView: rootView)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    /// Pushes the support chat UI seeded with a prior `chatID` so the conversation
+    /// continues on the assistant's side when the merchant sends the next message.
+    private func resumeChat(for summary: SupportChatSummary) {
+        let chatViewModel = SupportChatViewModel(
+            botSlug: summary.botSlug,
+            chatID: summary.chatID,
+            onContactHumanSupport: { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            }
+        )
+        let controller = SupportChatHostingController(viewModel: chatViewModel)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
     @objc func dismissWasPressed() {
         dismiss(animated: true, completion: nil)
     }
@@ -488,6 +536,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             siteCompatibilityWasPressed()
         case .featureFlags:
             featureFlagsWasPressed()
+        case .chatHistory:
+            chatHistoryWasPressed()
         }
     }
 }
@@ -514,10 +564,11 @@ enum HelpAndSupportRow: CaseIterable {
     case systemStatusReport
     case siteCompatibility
     case featureFlags
+    case chatHistory
 
     var type: UITableViewCell.Type {
         switch self {
-        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .siteCompatibility, .featureFlags:
+        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .siteCompatibility, .featureFlags, .chatHistory:
             return ValueOneTableViewCell.self
         }
     }

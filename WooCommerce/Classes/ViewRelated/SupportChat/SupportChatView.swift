@@ -40,6 +40,7 @@ struct SupportChatView: View {
         )
         .onAppear {
             viewModel.showGreeting()
+            viewModel.resumeIfNeeded()
         }
     }
 
@@ -49,6 +50,10 @@ struct SupportChatView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(spacing: SupportChatLayout.messageSpacing) {
+                    if viewModel.isResumedChat {
+                        resumedChatHeader
+                    }
+
                     ForEach(viewModel.messages) { message in
                         SupportChatMessageRow(message: message)
                             .id(message.id)
@@ -81,6 +86,19 @@ struct SupportChatView: View {
                 proxy.scrollTo(lastMessage.id, anchor: .bottom)
             }
         }
+    }
+
+    // MARK: - Resumed Chat Header
+
+    private var resumedChatHeader: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "clock.arrow.circlepath")
+            Text(Localization.resumedChatHeader)
+        }
+        .font(.caption)
+        .foregroundColor(Color(.secondaryLabel))
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 4)
     }
 
     // MARK: - Human Support Banner
@@ -172,6 +190,11 @@ private extension SupportChatView {
             "supportChatView.contactSupport",
             value: "Contact Support",
             comment: "Button to contact human support from the chat"
+        )
+        static let resumedChatHeader = NSLocalizedString(
+            "supportChatView.resumedChatHeader",
+            value: "Continuing previous conversation",
+            comment: "Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow"
         )
     }
 }

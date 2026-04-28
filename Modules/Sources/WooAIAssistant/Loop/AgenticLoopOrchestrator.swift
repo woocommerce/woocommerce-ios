@@ -22,6 +22,7 @@ actor AgenticLoopOrchestrator {
     private let perToolPerTurnCap: Int
 
     private var pendingDecisions: [UUID: CheckedContinuation<Bool, Never>] = [:]
+    private var terminationContinuations: [CheckedContinuation<LoopOutcome, Never>] = []
 
     private let diagnostics: LoopDiagnosticsHandler
 
@@ -100,20 +101,37 @@ actor AgenticLoopOrchestrator {
         }
     }
 
+    /// Suspends until termination is fully settled. Resolves immediately if the loop has already
+    /// reached a terminal state; otherwise waits for the cleanup path to stamp `lastOutcome`.
+    func awaitTermination() async -> LoopOutcome {
+        if let outcome = lastOutcome { return outcome }
+        return await withCheckedContinuation { continuation in
+            terminationContinuations.append(continuation)
+        }
+    }
+
     private func setOutcome(_ outcome: LoopOutcome) {
         lastOutcome = outcome
+        resumeTerminationWaiters(with: outcome)
     }
 
     private func setOutcomeIfUnset(_ outcome: LoopOutcome) {
         guard lastOutcome == nil else { return }
         lastOutcome = outcome
+        resumeTerminationWaiters(with: outcome)
     }
 
-    /// Stamps `.stopped` so a post-stream `lastOutcome` query reads as a terminal state rather than nil.
+    private func resumeTerminationWaiters(with outcome: LoopOutcome) {
+        let waiters = terminationContinuations
+        terminationContinuations.removeAll()
+        for waiter in waiters { waiter.resume(returning: outcome) }
+    }
+
     private func handleStreamTerminated() {
         cancelAllPending()
         if lastOutcome == nil {
             lastOutcome = .stopped
+            resumeTerminationWaiters(with: .stopped)
         }
     }
 
@@ -176,7 +194,7 @@ actor AgenticLoopOrchestrator {
             switch outcome {
             case .completed:
                 continuation.yield(.completed(routeConfidence: nil))
-                lastOutcome = .completed
+                setOutcome(.completed)
                 return
 
             case .toolCalls(let calls):
@@ -203,7 +221,7 @@ actor AgenticLoopOrchestrator {
         // Soft-end the turn so the merchant sees a closing message rather than a bare error banner.
         continuation.yield(.textChunk(Localization.iterationCapClosing))
         continuation.yield(.completed(routeConfidence: nil))
-        lastOutcome = .maxIterations(iterations: maxIterations)
+        setOutcome(.maxIterations(iterations: maxIterations))
     }
 
     private func runOneTurn(messages: [OpenAIChat.Message],

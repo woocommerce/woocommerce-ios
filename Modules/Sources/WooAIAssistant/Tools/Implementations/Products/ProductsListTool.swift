@@ -13,8 +13,8 @@ public enum ProductsListTool {
         description: """
         List products, optionally filtered by status, category, tag, sku, \
         or keyword search. For aggregate sales / top sellers prefer the \
-        analytics tools. Pass extra_fields when the merchant asks about a \
-        non-default row field to avoid fanning out to products_get.
+        analytics tools. For prose questions about a specific product's \
+        stock quantity, prices, etc., call products_get with the ID.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -65,21 +65,6 @@ public enum ProductsListTool {
                 "per_page": .object([
                     "type": .string("integer"),
                     "description": .string("Max items; clamped 1-50, default 20.")
-                ]),
-                "extra_fields": .object([
-                    "type": .string("array"),
-                    "items": .object([
-                        "type": .string("string"),
-                        "enum": .array([
-                            .string("stock_quantity"),
-                            .string("total_sales"),
-                            .string("regular_price"),
-                            .string("sale_price"),
-                            .string("categories"),
-                            .string("on_sale")
-                        ])
-                    ]),
-                    "description": .string("Non-default fields to include on each row in ONE call.")
                 ])
             ])
         ])
@@ -96,12 +81,10 @@ public enum ProductsListTool {
         let order: String?
         let page: Int?
         let perPage: Int?
-        let extraFields: [String]?
 
         enum CodingKeys: String, CodingKey {
             case search, status, category, tag, sku, include, orderby, order, page
             case perPage = "per_page"
-            case extraFields = "extra_fields"
         }
     }
 

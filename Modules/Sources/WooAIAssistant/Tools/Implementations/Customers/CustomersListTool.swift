@@ -14,8 +14,7 @@ public enum CustomersListTool {
         List customers, optionally filtered by keyword (matches name, email, \
         username) or email. Use `include=[id]` to look up one customer by ID; \
         the per-id customer endpoint requires manage_woocommerce so include \
-        is the universal path. Pass extra_fields when the merchant asks \
-        about a non-default field (orders_count, total_spent).
+        is the universal path.
         """,
         parametersSchema: .object([
             "type": .string("object"),

@@ -14,9 +14,8 @@ public enum OrdersListTool {
         List orders, optionally filtered by status, date range, or customer. \
         Use to find specific orders, list pending fulfilment, or pull the most \
         recent N. For aggregate sales numbers prefer analytics_orders / \
-        analytics_revenue. Pass extra_fields when the merchant asks about a \
-        non-default row field (e.g. payment_method_title) to avoid fanning out \
-        to orders_get.
+        analytics_revenue. For prose questions about a specific order's \
+        payment method, customer email, etc., call orders_get with the ID.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -68,26 +67,6 @@ public enum OrdersListTool {
                 "per_page": .object([
                     "type": .string("integer"),
                     "description": .string("Max items; clamped 1-50, default 20.")
-                ]),
-                "extra_fields": .object([
-                    "type": .string("array"),
-                    "items": .object([
-                        "type": .string("string"),
-                        "enum": .array([
-                            .string("billing"),
-                            .string("shipping"),
-                            .string("payment_method_title"),
-                            .string("customer_id"),
-                            .string("customer_note"),
-                            .string("date_paid_gmt"),
-                            .string("date_created_gmt"),
-                            .string("shipping_total")
-                        ])
-                    ]),
-                    "description": .string(
-                        "Non-default fields to include on each row in ONE call. " +
-                        "Pass when the merchant asks about a field outside the default id/number/status/total/currency."
-                    )
                 ])
             ])
         ])
@@ -104,12 +83,10 @@ public enum OrdersListTool {
         let order: String?
         let page: Int?
         let perPage: Int?
-        let extraFields: [String]?
 
         enum CodingKeys: String, CodingKey {
             case status, search, customer, include, after, before, orderby, order, page
             case perPage = "per_page"
-            case extraFields = "extra_fields"
         }
     }
 

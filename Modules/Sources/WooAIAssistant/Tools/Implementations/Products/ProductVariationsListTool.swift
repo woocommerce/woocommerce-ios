@@ -31,19 +31,6 @@ public enum ProductVariationsListTool {
                 "per_page": .object([
                     "type": .string("integer"),
                     "description": .string("Max items; clamped 1-50, default 20.")
-                ]),
-                "extra_fields": .object([
-                    "type": .string("array"),
-                    "items": .object([
-                        "type": .string("string"),
-                        "enum": .array([
-                            .string("stock_quantity"),
-                            .string("regular_price"),
-                            .string("sale_price"),
-                            .string("attributes")
-                        ])
-                    ]),
-                    "description": .string("Non-default row fields to include on each variation.")
                 ])
             ]),
             "required": .array([.string("product_id")])
@@ -54,13 +41,11 @@ public enum ProductVariationsListTool {
         let productID: Int
         let page: Int?
         let perPage: Int?
-        let extraFields: [String]?
 
         enum CodingKeys: String, CodingKey {
             case productID = "product_id"
             case page
             case perPage = "per_page"
-            case extraFields = "extra_fields"
         }
     }
 

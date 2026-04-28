@@ -188,7 +188,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         XCTAssertNil(parameters.applicationFee)
     }
 
-    func test_collectPayment_for_a_payment_to_a_CA_gateway_account_includes_15cents_applicationFee_in_the_payment_intent() throws {
+    func test_collectPayment_for_a_payment_to_a_CA_gateway_account_includes_canada_applicationFee_in_the_payment_intent() throws {
         // Given
         let account = PaymentGatewayAccount.fake().copy(siteID: sampleSiteID,
                                                         defaultCurrency: "CAD",
@@ -223,7 +223,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         }
 
         // Then
-        let expectedFee = NSDecimalNumber(string: "0.15").decimalValue
+        // 150 * 0.027 + 0.05 (Canada base) + 0.15 (Interac) = 4.25
+        let expectedFee = NSDecimalNumber(string: "4.25").decimalValue
         assertEqual(expectedFee, parameters.applicationFee)
     }
 }

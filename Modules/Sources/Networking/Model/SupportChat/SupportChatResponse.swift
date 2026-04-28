@@ -37,6 +37,7 @@ public struct SupportChatResponse: Decodable, Equatable {
 /// Role of a message sender in a support chat thread.
 ///
 public enum SupportChatRole: String, Decodable, Equatable {
+    case user
     case bot
     case unknown
 

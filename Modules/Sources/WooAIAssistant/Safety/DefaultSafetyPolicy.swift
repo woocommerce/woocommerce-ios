@@ -8,12 +8,9 @@
 public struct DefaultSafetyPolicy: SafetyPolicy {
 
     private let isReadOnly: @Sendable () -> Bool
-    private let previewBuilder: @Sendable (String, String) -> String
 
-    public init(isReadOnly: @escaping @Sendable () -> Bool,
-                previewBuilder: @escaping @Sendable (String, String) -> String = ToolPreviews.defaultBuilder) {
+    public init(isReadOnly: @escaping @Sendable () -> Bool) {
         self.isReadOnly = isReadOnly
-        self.previewBuilder = previewBuilder
     }
 
     public func decision(for name: String, arguments: String, tool: AITool) -> SafetyDecision {
@@ -24,7 +21,7 @@ public struct DefaultSafetyPolicy: SafetyPolicy {
             if isReadOnly() {
                 return .block(reason: readOnlyBlockMessage(for: name))
             }
-            return .requireConfirmation(preview: previewBuilder(name, arguments))
+            return .requireConfirmation(preview: ToolPreviews.defaultBuilder(name, arguments))
         }
     }
 

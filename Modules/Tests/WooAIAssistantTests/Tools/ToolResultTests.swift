@@ -11,7 +11,7 @@ struct ToolResultTests {
             "ids": .array([.int(3551), .int(3548)])
         ])
         let uiStructured = UIStructured(cards: [
-            RenderedCardPayload(family: .order, id: 3551, element: .object(["id": .int(3551)]))
+            RenderedCardPayload(family: .order, id: "3551", element: .object(["id": .int(3551)]))
         ])
 
         // When
@@ -32,7 +32,7 @@ struct ToolResultTests {
         #expect(success.structured == structured)
         #expect(success.uiStructured?.cards.count == 1)
         #expect(success.uiStructured?.cards.first?.family == .order)
-        #expect(success.uiStructured?.cards.first?.id == 3551)
+        #expect(success.uiStructured?.cards.first?.id == "3551")
     }
 
     @Test
@@ -189,7 +189,7 @@ struct ToolResultTests {
             "id": .int(3551),
             "status": .string("processing")
         ])
-        let payload = RenderedCardPayload(family: .order, id: 3551, element: element)
+        let payload = RenderedCardPayload(family: .order, id: "3551", element: element)
 
         // When
         let envelope = UIStructured(cards: [payload])
@@ -197,7 +197,7 @@ struct ToolResultTests {
         // Then
         let card = envelope.cards.first
         #expect(card?.family == .order)
-        #expect(card?.id == 3551)
+        #expect(card?.id == "3551")
         #expect(card?.element == element)
     }
 

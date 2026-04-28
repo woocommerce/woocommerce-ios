@@ -26,13 +26,16 @@ struct ShowCardsToolTests {
         guard case .object(let items) = references["items"],
               case .object(let itemProperties) = items["properties"],
               case .object(let family) = itemProperties["family"],
-              case .array(let familyEnum) = family["enum"] else {
-            Issue.record("expected family enum constraint")
+              case .array(let familyEnum) = family["enum"],
+              case .object(let id) = itemProperties["id"] else {
+            Issue.record("expected family enum and id constraints")
             return
         }
         #expect(familyEnum.contains(.string("order")))
         #expect(familyEnum.contains(.string("product")))
         #expect(familyEnum.contains(.string("customer")))
+        #expect(id["type"] == .string("string"))
+        #expect(id["pattern"] == .string("^[1-9][0-9]*$"))
     }
 
     @Test
@@ -65,9 +68,9 @@ struct ShowCardsToolTests {
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
-            {"family": "order", "id": 3551},
-            {"family": "order", "id": 3548},
-            {"family": "order", "id": 9999}
+            {"family": "order", "id": "3551"},
+            {"family": "order", "id": "3548"},
+            {"family": "order", "id": "9999"}
         ]}
         """
 
@@ -97,7 +100,7 @@ struct ShowCardsToolTests {
         }
         #expect(firstResolved["status"] == .string("resolved"))
         #expect(firstResolved["family"] == .string("order"))
-        #expect(firstResolved["id"] == .int(3551))
+        #expect(firstResolved["id"] == .string("3551"))
         guard case .object(let summary) = firstResolved["summary"] else {
             Issue.record("expected summary object")
             return
@@ -111,14 +114,14 @@ struct ShowCardsToolTests {
         }
         #expect(rejected["status"] == .string("rejected"))
         #expect(rejected["reason"] == .string("notFound"))
-        #expect(rejected["id"] == .int(9999))
+        #expect(rejected["id"] == .string("9999"))
 
         let cards = success.uiStructured?.cards ?? []
         #expect(cards.count == 2)
         #expect(cards[0].family == .order)
-        #expect(cards[0].id == 3551)
+        #expect(cards[0].id == "3551")
         #expect(cards[1].family == .order)
-        #expect(cards[1].id == 3548)
+        #expect(cards[1].id == "3548")
     }
 
     @Test
@@ -128,7 +131,7 @@ struct ShowCardsToolTests {
         client.setFallback(StubResponses.failure(statusCode: 404))
         let tool = ShowCardsTool.make()
         let arguments = """
-        {"references": [{"family": "order", "id": 9999}]}
+        {"references": [{"family": "order", "id": "9999"}]}
         """
 
         // When

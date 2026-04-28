@@ -35,8 +35,8 @@ public enum ShowCardsTool {
                                 "enum": .array([.string("order"), .string("product"), .string("customer")])
                             ]),
                             "id": .object([
-                                "type": .string("integer"),
-                                "minimum": .int(1)
+                                "type": .string("string"),
+                                "pattern": .string("^[1-9][0-9]*$")
                             ])
                         ])
                     ])
@@ -70,7 +70,7 @@ public enum ShowCardsTool {
                 resolvedCount += 1
                 entries.append(.object([
                     "family": .string(family.rawValue),
-                    "id": .int(id),
+                    "id": .string(id),
                     "status": .string("resolved"),
                     "summary": summary
                 ]))
@@ -82,7 +82,7 @@ public enum ShowCardsTool {
                     "reason": .string(reason.rawValue)
                 ]
                 if let family { entry["family"] = .string(family.rawValue) }
-                if let id { entry["id"] = .int(id) }
+                if let id { entry["id"] = .string(id) }
                 entries.append(.object(entry))
             }
         }

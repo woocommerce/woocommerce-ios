@@ -10,9 +10,9 @@ public struct ShowCardsRequest: Decodable, Sendable, Equatable {
 
 public struct CardReference: Decodable, Sendable, Equatable {
     public let family: CardFamilyID
-    public let id: Int64
+    public let id: String
 
-    public init(family: CardFamilyID, id: Int64) {
+    public init(family: CardFamilyID, id: String) {
         self.family = family
         self.id = id
     }
@@ -24,11 +24,11 @@ public struct CardReference: Decodable, Sendable, Equatable {
 /// summary so the model can see what it asked for and what it got back.
 public enum Resolution: Sendable, Equatable {
     case resolved(family: CardFamilyID,
-                  id: Int64,
+                  id: String,
                   summary: AnyCodableJSON,
                   rendered: RenderedCardPayload)
     case rejected(family: CardFamilyID?,
-                  id: Int64?,
+                  id: String?,
                   reason: CardRefRejectionReason)
 }
 

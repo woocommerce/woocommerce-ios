@@ -38,7 +38,7 @@ struct ProductsGetToolTests {
         let cards = try #require(success.uiStructured?.cards)
         #expect(cards.count == 1)
         #expect(cards[0].family == .product)
-        #expect(cards[0].id == 555)
+        #expect(cards[0].id == "555")
         if case .object(let element) = cards[0].element {
             #expect(element["_links"] == nil)
             #expect(element["meta_data"] == nil)

@@ -13,10 +13,10 @@ public struct UIStructured: Sendable, Equatable {
 /// (the full entity for `order`, `product`, and `customer` families).
 public struct RenderedCardPayload: Sendable, Equatable {
     public let family: CardFamilyID
-    public let id: Int64
+    public let id: String
     public let element: AnyCodableJSON
 
-    public init(family: CardFamilyID, id: Int64, element: AnyCodableJSON) {
+    public init(family: CardFamilyID, id: String, element: AnyCodableJSON) {
         self.family = family
         self.id = id
         self.element = element

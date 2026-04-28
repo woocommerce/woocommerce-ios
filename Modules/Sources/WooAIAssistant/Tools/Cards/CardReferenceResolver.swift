@@ -17,10 +17,10 @@ public struct CardReferenceResolver: Sendable {
         var resolutions: [Resolution] = Array(repeating: .rejected(family: nil, id: nil, reason: .internalError),
                                               count: bounded.count)
         var seen: Set<SeenKey> = []
-        var fetchSlotsByFamily: [CardFamilyID: [(slot: Int, id: Int64)]] = [:]
+        var fetchSlotsByFamily: [CardFamilyID: [(slot: Int, id: String, parsed: Int64)]] = [:]
 
         for (index, reference) in bounded.enumerated() {
-            if reference.id <= 0 {
+            guard let parsed = Int64(reference.id), parsed > 0 else {
                 resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .malformed)
                 continue
             }
@@ -34,15 +34,15 @@ public struct CardReferenceResolver: Sendable {
                 resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .unsupportedFamily)
                 continue
             }
-            fetchSlotsByFamily[reference.family, default: []].append((slot: index, id: reference.id))
+            fetchSlotsByFamily[reference.family, default: []].append((slot: index, id: reference.id, parsed: parsed))
         }
 
         await withTaskGroup(of: (CardFamilyID, [Int64: CardFetchOutcome]).self) { group in
             for (familyID, slots) in fetchSlotsByFamily {
                 guard let family = registry.family(for: familyID) else { continue }
-                let ids = slots.map { $0.id }
+                let parsedIds = slots.map { $0.parsed }
                 group.addTask {
-                    let outcomes = await family.fetch(ids: ids, client: client)
+                    let outcomes = await family.fetch(ids: parsedIds, client: client)
                     return (familyID, outcomes)
                 }
             }
@@ -50,7 +50,7 @@ public struct CardReferenceResolver: Sendable {
                 guard let family = registry.family(for: familyID),
                       let slots = fetchSlotsByFamily[familyID] else { continue }
                 for entry in slots {
-                    let outcome = outcomes[entry.id] ?? .rejected(.notFound)
+                    let outcome = outcomes[entry.parsed] ?? .rejected(.notFound)
                     resolutions[entry.slot] = resolution(family: familyID,
                                                          id: entry.id,
                                                          outcome: outcome,
@@ -73,7 +73,7 @@ public struct CardReferenceResolver: Sendable {
     }
 
     private func resolution(family: CardFamilyID,
-                            id: Int64,
+                            id: String,
                             outcome: CardFetchOutcome,
                             summarize: (AnyCodableJSON) -> AnyCodableJSON) -> Resolution {
         switch outcome {
@@ -88,6 +88,6 @@ public struct CardReferenceResolver: Sendable {
 
     private struct SeenKey: Hashable {
         let family: CardFamilyID
-        let id: Int64
+        let id: String
     }
 }

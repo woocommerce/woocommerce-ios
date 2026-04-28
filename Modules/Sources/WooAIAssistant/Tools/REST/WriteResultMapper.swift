@@ -3,9 +3,6 @@ import Foundation
 /// Maps write responses, classifying transport drops and timeouts as `outcomeUnknown`.
 /// The write may still have applied server-side, so retrying risks a duplicate update.
 enum WriteResultMapper {
-    /// `correlationID` is a per-call UUID surfaced in `outcomeUnknown.code` so the
-    /// user has a support handle for unconfirmed writes. It is local-only and
-    /// never sent on the wire (the WC REST API ignores `Idempotency-Key`).
     static func mapEntity(_ response: WCRESTResponse,
                           toolName: String,
                           family: CardFamilyID,
@@ -24,7 +21,7 @@ enum WriteResultMapper {
         let pruned = RESTPayloadPruning.prune(entity)
         let summary = summarize(pruned)
         let uiStructured: UIStructured?
-        if let id = RESTResponseParsing.intField(pruned, "id") {
+        if let id = RESTResponseParsing.intField(pruned, "id").map(String.init) {
             uiStructured = UIStructured(cards: [RenderedCardPayload(family: family, id: id, element: pruned)])
         } else {
             uiStructured = nil
@@ -72,7 +69,7 @@ enum WriteResultMapper {
             summary["failed"] = .array(failedEntries)
         }
         let cards = updatedIDs.map { id in
-            RenderedCardPayload(family: family, id: id, element: .object(["id": .int(id)]))
+            RenderedCardPayload(family: family, id: String(id), element: .object(["id": .int(id)]))
         }
         return .success(.init(toolName: toolName,
                               structured: LLMPayloadCap.capped(.object(summary), toolName: toolName),

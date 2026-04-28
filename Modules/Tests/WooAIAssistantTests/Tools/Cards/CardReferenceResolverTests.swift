@@ -15,9 +15,9 @@ struct CardReferenceResolverTests {
                     response: StubResponses.ok("[{\"id\": 7, \"first_name\": \"Jane\", \"email\": \"jane@example.com\"}]"))
         let resolver = CardReferenceResolver(client: client)
         let references: [CardReference] = [
-            CardReference(family: .order, id: 3551),
-            CardReference(family: .product, id: 42),
-            CardReference(family: .customer, id: 7)
+            CardReference(family: .order, id: "3551"),
+            CardReference(family: .product, id: "42"),
+            CardReference(family: .customer, id: "7")
         ]
 
         // When
@@ -25,9 +25,9 @@ struct CardReferenceResolverTests {
 
         // Then
         #expect(result.resolutions.count == 3)
-        #expect(isResolved(result.resolutions[0], family: .order, id: 3551))
-        #expect(isResolved(result.resolutions[1], family: .product, id: 42))
-        #expect(isResolved(result.resolutions[2], family: .customer, id: 7))
+        #expect(isResolved(result.resolutions[0], family: .order, id: "3551"))
+        #expect(isResolved(result.resolutions[1], family: .product, id: "42"))
+        #expect(isResolved(result.resolutions[2], family: .customer, id: "7"))
     }
 
     @Test
@@ -41,7 +41,7 @@ struct CardReferenceResolverTests {
                      {"id": 3, "status": "processing", "total": "30.00"}]
                     """))
         let resolver = CardReferenceResolver(client: client)
-        let references = [1, 2, 3].map { CardReference(family: .order, id: Int64($0)) }
+        let references = [1, 2, 3].map { CardReference(family: .order, id: String($0)) }
 
         // When
         let result = await resolver.resolve(references)
@@ -59,7 +59,7 @@ struct CardReferenceResolverTests {
         client.stub(path: "wc/v3/orders",
                     response: StubResponses.ok("[\(rows)]"))
         let resolver = CardReferenceResolver(client: client)
-        let references = (1...11).map { CardReference(family: .order, id: Int64($0)) }
+        let references = (1...11).map { CardReference(family: .order, id: String($0)) }
 
         // When
         let result = await resolver.resolve(references)
@@ -67,7 +67,7 @@ struct CardReferenceResolverTests {
         // Then
         #expect(result.resolutions.count == 11)
         for index in 0..<10 {
-            #expect(isResolved(result.resolutions[index], family: .order, id: Int64(index + 1)),
+            #expect(isResolved(result.resolutions[index], family: .order, id: String(index + 1)),
                     "expected resolution \(index) to be resolved")
         }
         if case .rejected(_, _, let reason) = result.resolutions[10] {
@@ -85,18 +85,18 @@ struct CardReferenceResolverTests {
                     response: StubResponses.ok("[{\"id\": 3551, \"status\": \"processing\", \"total\": \"120.00\"}]"))
         let resolver = CardReferenceResolver(client: client)
         let references: [CardReference] = [
-            CardReference(family: .order, id: 3551),
-            CardReference(family: .order, id: 3551)
+            CardReference(family: .order, id: "3551"),
+            CardReference(family: .order, id: "3551")
         ]
 
         // When
         let result = await resolver.resolve(references)
 
         // Then
-        #expect(isResolved(result.resolutions[0], family: .order, id: 3551))
+        #expect(isResolved(result.resolutions[0], family: .order, id: "3551"))
         if case .rejected(let family, let id, let reason) = result.resolutions[1] {
             #expect(family == .order)
-            #expect(id == 3551)
+            #expect(id == "3551")
             #expect(reason == .duplicate)
         } else {
             Issue.record("expected second to be rejected.duplicate")
@@ -111,7 +111,25 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: 0)])
+        let result = await resolver.resolve([CardReference(family: .order, id: "0")])
+
+        // Then
+        if case .rejected(_, _, let reason) = result.resolutions[0] {
+            #expect(reason == .malformed)
+        } else {
+            Issue.record("expected rejected.malformed")
+        }
+        #expect(client.calls.isEmpty)
+    }
+
+    @Test
+    func test_resolve_when_id_is_non_numeric_then_rejects_as_malformed() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        let resolver = CardReferenceResolver(client: client)
+
+        // When
+        let result = await resolver.resolve([CardReference(family: .order, id: "abc")])
 
         // Then
         if case .rejected(_, _, let reason) = result.resolutions[0] {
@@ -130,7 +148,7 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(registry: registry, client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .product, id: 42)])
+        let result = await resolver.resolve([CardReference(family: .product, id: "42")])
 
         // Then
         if case .rejected(_, _, let reason) = result.resolutions[0] {
@@ -148,7 +166,7 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: 9999)])
+        let result = await resolver.resolve([CardReference(family: .order, id: "9999")])
 
         // Then
         if case .rejected(_, _, let reason) = result.resolutions[0] {
@@ -165,8 +183,8 @@ struct CardReferenceResolverTests {
         client.stub(path: "wc/v3/products", response: StubResponses.failure(statusCode: 403))
         let resolver = CardReferenceResolver(client: client)
         let references = [
-            CardReference(family: .product, id: 1),
-            CardReference(family: .product, id: 2)
+            CardReference(family: .product, id: "1"),
+            CardReference(family: .product, id: "2")
         ]
 
         // When
@@ -191,7 +209,7 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: 3551)])
+        let result = await resolver.resolve([CardReference(family: .order, id: "3551")])
 
         // Then
         if case .rejected(_, _, let reason) = result.resolutions[0] {
@@ -209,7 +227,7 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: 3551)])
+        let result = await resolver.resolve([CardReference(family: .order, id: "3551")])
 
         // Then
         if case .rejected(_, _, let reason) = result.resolutions[0] {
@@ -227,7 +245,7 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: 1)])
+        let result = await resolver.resolve([CardReference(family: .order, id: "1")])
 
         // Then
         if case .rejected(_, _, let reason) = result.resolutions[0] {
@@ -245,7 +263,7 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: 1)])
+        let result = await resolver.resolve([CardReference(family: .order, id: "1")])
 
         // Then
         if case .rejected(_, _, let reason) = result.resolutions[0] {
@@ -263,16 +281,16 @@ struct CardReferenceResolverTests {
                     response: StubResponses.ok("[{\"id\": 3551, \"status\": \"processing\", \"total\": \"120.00\"}]"))
         let resolver = CardReferenceResolver(client: client)
         let references: [CardReference] = [
-            CardReference(family: .order, id: 3551),
-            CardReference(family: .order, id: 9999),
-            CardReference(family: .order, id: 3551)
+            CardReference(family: .order, id: "3551"),
+            CardReference(family: .order, id: "9999"),
+            CardReference(family: .order, id: "3551")
         ]
 
         // When
         let result = await resolver.resolve(references)
 
         // Then
-        #expect(isResolved(result.resolutions[0], family: .order, id: 3551))
+        #expect(isResolved(result.resolutions[0], family: .order, id: "3551"))
         if case .rejected(_, _, let reason) = result.resolutions[1] {
             #expect(reason == .notFound)
         } else {
@@ -285,7 +303,7 @@ struct CardReferenceResolverTests {
         }
     }
 
-    private func isResolved(_ resolution: Resolution, family: CardFamilyID, id: Int64) -> Bool {
+    private func isResolved(_ resolution: Resolution, family: CardFamilyID, id: String) -> Bool {
         if case .resolved(let resolvedFamily, let resolvedID, _, _) = resolution {
             return resolvedFamily == family && resolvedID == id
         }

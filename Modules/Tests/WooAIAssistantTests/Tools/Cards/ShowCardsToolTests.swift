@@ -33,9 +33,80 @@ struct ShowCardsToolTests {
         }
         #expect(familyEnum.contains(.string("order")))
         #expect(familyEnum.contains(.string("product")))
+        #expect(familyEnum.contains(.string("product_variation")))
         #expect(familyEnum.contains(.string("customer")))
         #expect(id["type"] == .string("string"))
         #expect(id["pattern"] == .string("^[1-9][0-9]*$"))
+        guard case .object(let parentID) = itemProperties["parent_id"] else {
+            Issue.record("expected parent_id property in item schema")
+            return
+        }
+        #expect(parentID["type"] == .string("string"))
+        #expect(parentID["pattern"] == .string("^[1-9][0-9]*$"))
+    }
+
+    @Test
+    func test_executor_when_product_variation_with_parent_id_then_resolves_via_nested_path() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        await client.stub(path: "wc/v3/products/821/variations/822",
+                    response: StubResponses.ok("""
+                    {"id": 822, "name": "Black", "sku": "BNY-BLK", "price": "74.99",
+                     "stock_status": "instock", "parent_id": 821}
+                    """))
+        let tool = ShowCardsTool.make()
+        let arguments = """
+        {"references": [
+            {"family": "product_variation", "id": "822", "parent_id": "821"}
+        ]}
+        """
+
+        // When
+        let result = await tool.executor(arguments, client)
+
+        // Then
+        guard case .success(let success) = result else {
+            Issue.record("expected success, got \(result)")
+            return
+        }
+        let cards = success.uiStructured?.cards ?? []
+        #expect(cards.count == 1)
+        #expect(cards[0].family == .productVariation)
+        #expect(cards[0].id == "822")
+    }
+
+    @Test
+    func test_executor_when_product_variation_missing_parent_id_then_rejected_as_malformed() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        let tool = ShowCardsTool.make()
+        let arguments = """
+        {"references": [
+            {"family": "product_variation", "id": "822"}
+        ]}
+        """
+
+        // When
+        let result = await tool.executor(arguments, client)
+
+        // Then
+        guard case .success(let success) = result else {
+            Issue.record("expected success, got \(result)")
+            return
+        }
+        guard case .object(let structured) = success.structured,
+              case .array(let rejectedRefs) = structured["rejected_refs"] else {
+            Issue.record("expected rejected_refs array")
+            return
+        }
+        #expect(rejectedRefs.count == 1)
+        if case .object(let entry) = rejectedRefs[0] {
+            #expect(entry["reason"] == .string("malformed"))
+            #expect(entry["family"] == .string("product_variation"))
+        } else {
+            Issue.record("expected rejected entry object")
+        }
+        #expect(success.uiStructured == nil)
     }
 
     @Test

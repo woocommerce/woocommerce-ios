@@ -267,6 +267,131 @@ struct CardReferenceResolverTests {
         }
     }
 
+    @Test
+    func test_resolve_when_product_variation_reference_then_resolves() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        await client.stub(path: "wc/v3/products/821/variations/822",
+                    response: StubResponses.ok("""
+                    {"id": 822, "name": "Black", "sku": "BNY-BLK", "price": "74.99",
+                     "stock_status": "instock", "parent_id": 821, "status": "publish"}
+                    """))
+        let resolver = CardReferenceResolver(client: client)
+        let references = [CardReference(family: .productVariation, id: "822", parentID: "821")]
+
+        // When
+        let resolutions = await resolver.resolve(references)
+
+        // Then
+        #expect(resolutions.count == 1)
+        guard case .resolved(let family, let id, let summary, let rendered) = resolutions[0] else {
+            Issue.record("expected resolved, got \(resolutions[0])")
+            return
+        }
+        #expect(family == .productVariation)
+        #expect(id == "822")
+        if case .object(let fields) = summary {
+            #expect(fields["id"] == .int(822))
+            #expect(fields["name"] == .string("Black"))
+            #expect(fields["price"] == .string("74.99"))
+            #expect(fields["parent_id"] == .int(821))
+        } else {
+            Issue.record("expected object summary")
+        }
+        #expect(rendered.family == .productVariation)
+        #expect(rendered.id == "822")
+    }
+
+    @Test
+    func test_resolve_when_product_variation_missing_parent_id_then_malformed() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        let resolver = CardReferenceResolver(client: client)
+        let references = [CardReference(family: .productVariation, id: "822", parentID: nil)]
+
+        // When
+        let resolutions = await resolver.resolve(references)
+
+        // Then
+        if case .rejected(let family, let id, let reason) = resolutions[0] {
+            #expect(family == .productVariation)
+            #expect(id == "822")
+            #expect(reason == .malformed)
+        } else {
+            Issue.record("expected rejected.malformed")
+        }
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test(arguments: ["abc", "0", "-1"])
+    func test_resolve_when_product_variation_non_numeric_parent_id_then_malformed(rawParent: String) async {
+        // Given
+        let client = StubbedWCRESTClient()
+        let resolver = CardReferenceResolver(client: client)
+        let references = [CardReference(family: .productVariation, id: "822", parentID: rawParent)]
+
+        // When
+        let resolutions = await resolver.resolve(references)
+
+        // Then
+        if case .rejected(_, _, let reason) = resolutions[0] {
+            #expect(reason == .malformed)
+        } else {
+            Issue.record("expected rejected.malformed for parent_id=\(rawParent)")
+        }
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_resolve_when_product_variation_remote_returns_404_then_rejects_as_notFound() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        await client.stub(path: "wc/v3/products/821/variations/9999",
+                    response: StubResponses.failure(statusCode: 404))
+        let resolver = CardReferenceResolver(client: client)
+        let references = [CardReference(family: .productVariation, id: "9999", parentID: "821")]
+
+        // When
+        let resolutions = await resolver.resolve(references)
+
+        // Then
+        if case .rejected(_, _, let reason) = resolutions[0] {
+            #expect(reason == .notFound)
+        } else {
+            Issue.record("expected rejected.notFound")
+        }
+    }
+
+    @Test
+    func test_resolve_when_two_product_variations_then_each_uses_nested_path() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        await client.stub(path: "wc/v3/products/821/variations/822",
+                    response: StubResponses.ok("""
+                    {"id": 822, "name": "Black", "price": "74.99", "stock_status": "instock", "parent_id": 821}
+                    """))
+        await client.stub(path: "wc/v3/products/821/variations/823",
+                    response: StubResponses.ok("""
+                    {"id": 823, "name": "White", "price": "79.99", "stock_status": "instock", "parent_id": 821}
+                    """))
+        let resolver = CardReferenceResolver(client: client)
+        let references = [
+            CardReference(family: .productVariation, id: "822", parentID: "821"),
+            CardReference(family: .productVariation, id: "823", parentID: "821")
+        ]
+
+        // When
+        let resolutions = await resolver.resolve(references)
+
+        // Then
+        #expect(resolutions.count == 2)
+        #expect(isResolved(resolutions[0], family: .productVariation, id: "822"))
+        #expect(isResolved(resolutions[1], family: .productVariation, id: "823"))
+        let calls = await client.calls
+        #expect(calls.contains("wc/v3/products/821/variations/822"))
+        #expect(calls.contains("wc/v3/products/821/variations/823"))
+    }
+
     private func isResolved(_ resolution: Resolution, family: CardFamilyID, id: String) -> Bool {
         if case .resolved(let resolvedFamily, let resolvedID, _, _) = resolution {
             return resolvedFamily == family && resolvedID == id

@@ -14,12 +14,22 @@ struct CardReferenceResolver: Sendable {
         var resolutions: [Resolution] = Array(repeating: .rejected(family: nil, id: nil, reason: .internalError),
                                               count: bounded.count)
         var seen: Set<SeenKey> = []
-        var fetchSlotsByFamily: [CardFamilyID: [(slot: Int, id: String, parsed: Int64)]] = [:]
+        var fetchSlotsByFamily: [CardFamilyID: [FetchSlot]] = [:]
 
         for (index, reference) in bounded.enumerated() {
             guard let parsed = Int64(reference.id), parsed > 0 else {
                 resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .malformed)
                 continue
+            }
+            var parentParsed: Int64?
+            if reference.family == .productVariation {
+                guard let parentRaw = reference.parentID,
+                      let parsedParent = Int64(parentRaw),
+                      parsedParent > 0 else {
+                    resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .malformed)
+                    continue
+                }
+                parentParsed = parsedParent
             }
             let key = SeenKey(family: reference.family, id: reference.id)
             if seen.contains(key) {
@@ -27,15 +37,26 @@ struct CardReferenceResolver: Sendable {
                 continue
             }
             seen.insert(key)
-            fetchSlotsByFamily[reference.family, default: []].append((slot: index, id: reference.id, parsed: parsed))
+            fetchSlotsByFamily[reference.family, default: []].append(
+                FetchSlot(slot: index, id: reference.id, parsed: parsed, parentParsed: parentParsed)
+            )
         }
 
         await withTaskGroup(of: (CardFamilyID, [Int64: CardFetchOutcome]).self) { group in
             for (familyID, slots) in fetchSlotsByFamily {
                 let family = CardFamily.forID(familyID)
-                let parsedIds = slots.map { $0.parsed }
                 group.addTask {
-                    let outcomes = await family.fetch(ids: parsedIds, client: client)
+                    let outcomes: [Int64: CardFetchOutcome]
+                    switch family.pathStrategy {
+                    case .batchedList:
+                        outcomes = await family.fetch(ids: slots.map { $0.parsed }, client: client)
+                    case .nestedByParent:
+                        let nestedRefs: [(id: Int64, parentID: Int64)] = slots.compactMap { slot in
+                            guard let parent = slot.parentParsed else { return nil }
+                            return (id: slot.parsed, parentID: parent)
+                        }
+                        outcomes = await family.fetchNested(refs: nestedRefs, client: client)
+                    }
                     return (familyID, outcomes)
                 }
             }
@@ -82,5 +103,12 @@ struct CardReferenceResolver: Sendable {
     private struct SeenKey: Hashable {
         let family: CardFamilyID
         let id: String
+    }
+
+    private struct FetchSlot {
+        let slot: Int
+        let id: String
+        let parsed: Int64
+        let parentParsed: Int64?
     }
 }

@@ -11,10 +11,18 @@ struct ShowCardsRequest: Decodable, Sendable, Equatable {
 struct CardReference: Decodable, Sendable, Equatable {
     let family: CardFamilyID
     let id: String
+    let parentID: String?
 
-    init(family: CardFamilyID, id: String) {
+    init(family: CardFamilyID, id: String, parentID: String? = nil) {
         self.family = family
         self.id = id
+        self.parentID = parentID
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case family
+        case id
+        case parentID = "parent_id"
     }
 }
 

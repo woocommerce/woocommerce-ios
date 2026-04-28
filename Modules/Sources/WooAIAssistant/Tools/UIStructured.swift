@@ -28,5 +28,6 @@ public struct RenderedCardPayload: Sendable, Equatable {
 public enum CardFamilyID: String, Sendable, Codable, Equatable {
     case order
     case product
+    case productVariation = "product_variation"
     case customer
 }

@@ -13,8 +13,10 @@ public enum ShowCardsTool {
         description: """
         Render rich cards for specific entities the user should see. Call \
         this whenever you would otherwise mention an order/product/customer \
-        ID in prose. Up to 10 references per call. Prefer 1-5 for list-style \
-        answers; summarize the rest in prose.
+        ID in prose. Supported families: order, product, product_variation, \
+        customer. For product_variation, parent_id is required and must be \
+        the parent product's id. Up to 10 references per call. Prefer 1-5 \
+        for list-style answers; summarize the rest in prose.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -32,9 +34,18 @@ public enum ShowCardsTool {
                         "properties": .object([
                             "family": .object([
                                 "type": .string("string"),
-                                "enum": .array([.string("order"), .string("product"), .string("customer")])
+                                "enum": .array([
+                                    .string("order"),
+                                    .string("product"),
+                                    .string("product_variation"),
+                                    .string("customer")
+                                ])
                             ]),
                             "id": .object([
+                                "type": .string("string"),
+                                "pattern": .string("^[1-9][0-9]*$")
+                            ]),
+                            "parent_id": .object([
                                 "type": .string("string"),
                                 "pattern": .string("^[1-9][0-9]*$")
                             ])

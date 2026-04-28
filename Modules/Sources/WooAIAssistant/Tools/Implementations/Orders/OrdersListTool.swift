@@ -84,7 +84,10 @@ public enum OrdersListTool {
                             .string("shipping_total")
                         ])
                     ]),
-                    "description": .string("Non-default fields to include on each row in ONE call. Pass when the merchant asks about a field outside the default id/number/status/total/currency.")
+                    "description": .string(
+                        "Non-default fields to include on each row in ONE call. " +
+                        "Pass when the merchant asks about a field outside the default id/number/status/total/currency."
+                    )
                 ])
             ])
         ])

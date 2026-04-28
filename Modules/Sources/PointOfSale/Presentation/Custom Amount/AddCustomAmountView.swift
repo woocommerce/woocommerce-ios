@@ -114,6 +114,14 @@ struct AddCustomAmountView: View {
         }
         .tint(.posPrimary)
         .padding(.vertical, POSPadding.small)
+        .onChange(of: viewModel.isTaxable) { _, _ in
+            // Tapping the toggle dismisses the amount popover, but on iPad iOS
+            // sometimes "demotes" it to the docked decimal pad instead of
+            // closing the keyboard. Explicitly clear focus so the keyboard
+            // actually goes away.
+            isAmountFocused = false
+            isNameFocused = false
+        }
     }
 
     private var nameSection: some View {

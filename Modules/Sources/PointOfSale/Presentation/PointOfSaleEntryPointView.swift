@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 import TipKit
 import class WooFoundation.CurrencyFormatter

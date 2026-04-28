@@ -19,13 +19,9 @@ public struct DefaultSafetyPolicy: SafetyPolicy {
             return .execute
         case .unsafe:
             if isReadOnly() {
-                return .block(reason: readOnlyBlockMessage(for: name))
+                return .block(reason: "Read-only mode is on - the assistant can't run '\(name)'. Toggle it off in Labs settings to allow this change.")
             }
             return .requireConfirmation(preview: ToolPreviews.defaultBuilder(name, arguments))
         }
-    }
-
-    private func readOnlyBlockMessage(for name: String) -> String {
-        "Read-only mode is on - the assistant can't run '\(name)'. Toggle it off in Labs settings to allow this change."
     }
 }

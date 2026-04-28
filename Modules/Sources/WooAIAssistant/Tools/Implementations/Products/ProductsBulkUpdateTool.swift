@@ -18,7 +18,8 @@ public enum ProductsBulkUpdateTool {
         Apply the same allowlisted update to many products at once (max 100). \
         Good for category-wide repricing, flipping a set of products to draft, \
         or stock resets after a restock. Per-product differences require \
-        separate products_update calls.
+        separate products_update calls. Variable products in the batch will \
+        silently no-op price changes; use product_variations_update for those.
         """,
         parametersSchema: .object([
             "type": .string("object"),

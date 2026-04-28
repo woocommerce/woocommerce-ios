@@ -93,4 +93,40 @@ struct LoopAdditionalEdgeCasesTests {
         #expect(!primaryContent.contains("cached_result_reused"))
         #expect(secondaryContent.contains("cached_result_reused"))
     }
+
+    @Test
+    func test_run_when_chatService_throws_mid_stream_then_emits_failed_and_lastOutcome_is_failed() async throws {
+        // Given
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [.textDelta("Partial...")]
+        ])
+        await chat.setStreamError(MockStreamError.upstream)
+        let registry = MockToolRegistry()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat, toolRegistry: registry)
+
+        // When
+        var events: [AssistantEvent] = []
+        for try await event in orchestrator.run(prompt: "Anything") {
+            events.append(event)
+        }
+
+        // Then
+        let failedEvent: AssistantError? = events.compactMap { event in
+            if case .failed(let error) = event { return error }
+            return nil
+        }.first
+        #expect(failedEvent != nil)
+
+        let outcome = await orchestrator.lastOutcome
+        if case .failed = outcome {
+            #expect(true)
+        } else {
+            Issue.record("Expected lastOutcome == .failed, got \(String(describing: outcome))")
+        }
+    }
+}
+
+private enum MockStreamError: Error {
+    case upstream
 }

@@ -261,15 +261,16 @@ private extension StorePerformanceView {
                 viewModel.trackOrderTypeChevronTapped()
                 showingOrderTypePicker = true
             } label: {
-                HStack(spacing: Layout.orderTypeChevronSpacing) {
+                HStack(alignment: .center, spacing: Layout.orderTypeChevronSpacing) {
                     Text(viewModel.orderType.localizedTitle)
                         .font(Font(StyleManager.statsTitleFont))
-                        .lineLimit(1)
+                        .lineLimit(2)
                         .minimumScaleFactor(Layout.orderTypeLabelMinScale)
+                        .multilineTextAlignment(.center)
                     Image(systemName: "chevron.down")
                         .font(.caption2)
                         .foregroundStyle(Color(.textSubtle))
-                }
+                }.padding(.leading)
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("performance-order-type-button")

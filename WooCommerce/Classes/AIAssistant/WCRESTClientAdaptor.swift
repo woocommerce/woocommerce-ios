@@ -47,8 +47,13 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
             let (data, _) = try await network.responseDataAndHeaders(for: jetpackRequest)
             return WCRESTResponse(data: data, statusCode: 200)
         } catch let error as NetworkError {
+            if case .timeout = error {
+                return WCRESTResponse(data: error.responseData ?? Data(), statusCode: 408)
+            }
             return WCRESTResponse(data: error.responseData ?? Data(),
                                   statusCode: error.responseCode ?? HTTPStatusClassification.transportFailure)
+        } catch let error as URLError where error.code == .timedOut {
+            return WCRESTResponse(data: Data(), statusCode: 408)
         } catch {
             return WCRESTResponse(data: Data(), statusCode: HTTPStatusClassification.transportFailure)
         }

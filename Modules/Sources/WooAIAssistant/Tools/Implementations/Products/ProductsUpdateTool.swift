@@ -64,7 +64,7 @@ public enum ProductsUpdateTool {
         }
     }
 
-    private static let allowedStatuses: Set<String> = ["draft", "pending", "private", "publish"]
+    private static let allowedStatuses = AllowedProductUpdateStatuses.values
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
         let args: Args

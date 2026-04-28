@@ -56,9 +56,7 @@ public enum OrdersUpdateTool {
         }
     }
 
-    private static let allowedStatuses: Set<String> = [
-        "pending", "processing", "on-hold", "completed", "cancelled", "refunded", "failed"
-    ]
+    private static let allowedStatuses = AllowedOrderUpdateStatuses.values
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
         let args: Args

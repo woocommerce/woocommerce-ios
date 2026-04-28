@@ -69,7 +69,7 @@ public enum ProductVariationsUpdateTool {
         }
     }
 
-    private static let allowedStatuses: Set<String> = ["draft", "pending", "private", "publish"]
+    private static let allowedStatuses = AllowedProductUpdateStatuses.values
     private static let allowedStockStatuses: Set<String> = ["instock", "outofstock", "onbackorder"]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in

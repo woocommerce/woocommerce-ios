@@ -36,7 +36,7 @@ public enum ToolResult: Sendable {
         }
     }
 
-    public struct Failed: Sendable {
+    public struct Failed: Sendable, Error {
         public let toolName: String
         public let toolCallID: String
         public let kind: AssistantErrorKind

@@ -51,10 +51,10 @@ public enum AnalyticsRevenueTool {
     }
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
-        let decoded = RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name)
-        guard case .ok(let args) = decoded else {
-            if case .invalid(let failed) = decoded { return .failed(failed) }
-            return .failed(.init(toolName: name, toolCallID: "", kind: .invalidToolCall, reason: ""))
+        let args: Args
+        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
+        case .success(let value): args = value
+        case .failure(let failed): return .failed(failed)
         }
         guard let bounds = AnalyticsDateBounds.bounds(start: args.after, end: args.before) else {
             return .failed(.init(toolName: name,

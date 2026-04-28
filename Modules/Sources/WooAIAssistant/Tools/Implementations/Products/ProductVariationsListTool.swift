@@ -50,10 +50,10 @@ public enum ProductVariationsListTool {
     }
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
-        let decoded = RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name)
-        guard case .ok(let args) = decoded else {
-            if case .invalid(let failed) = decoded { return .failed(failed) }
-            return .failed(.init(toolName: name, toolCallID: "", kind: .invalidToolCall, reason: ""))
+        let args: Args
+        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
+        case .success(let value): args = value
+        case .failure(let failed): return .failed(failed)
         }
         var query: [String: String] = [
             "per_page": String(RESTToolDispatch.clampedPerPage(args.perPage))

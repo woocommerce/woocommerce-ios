@@ -10,26 +10,20 @@ enum RESTToolDispatch {
         return min(perPageRange.upperBound, max(perPageRange.lowerBound, value))
     }
 
-    enum Decoded<T> {
-        case ok(T)
-        case invalid(ToolResult.Failed)
-    }
-
     static func decodeArguments<T: Decodable>(_ type: T.Type,
                                               from json: String,
                                               toolName: String,
-                                              toolCallID: String = "") -> Decoded<T> {
+                                              toolCallID: String = "") -> Result<T, ToolResult.Failed> {
         guard let data = json.data(using: .utf8) else {
-            return .invalid(.init(toolName: toolName,
+            return .failure(.init(toolName: toolName,
                                   toolCallID: toolCallID,
                                   kind: .invalidToolCall,
                                   reason: "argument string was not UTF-8"))
         }
         do {
-            let decoded = try JSONDecoder().decode(type, from: data)
-            return .ok(decoded)
+            return .success(try JSONDecoder().decode(type, from: data))
         } catch {
-            return .invalid(.init(toolName: toolName,
+            return .failure(.init(toolName: toolName,
                                   toolCallID: toolCallID,
                                   kind: .invalidToolCall,
                                   reason: error.localizedDescription))

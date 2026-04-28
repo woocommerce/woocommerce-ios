@@ -23,24 +23,9 @@ enum ProductsListSummary {
             "ids": .array(ids),
             "stock_statuses_present": .array(stockStatuses.sorted().map(AnyCodableJSON.string))
         ]
-        if let priceRange = priceRange(prices) {
+        if let priceRange = RESTResponseParsing.decimalRange(prices) {
             fields["price_range"] = priceRange
         }
         return .object(fields)
-    }
-
-    private static func priceRange(_ prices: [Decimal]) -> AnyCodableJSON? {
-        guard let min = prices.min(), let max = prices.max() else { return nil }
-        return .object([
-            "min": .string(format(min)),
-            "max": .string(format(max))
-        ])
-    }
-
-    private static func format(_ value: Decimal) -> String {
-        var copy = value
-        var rounded = Decimal()
-        NSDecimalRound(&rounded, &copy, 2, .plain)
-        return NSDecimalNumber(decimal: rounded).stringValue
     }
 }

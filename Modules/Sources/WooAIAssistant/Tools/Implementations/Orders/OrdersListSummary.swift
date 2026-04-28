@@ -27,26 +27,9 @@ enum OrdersListSummary {
             "ids": .array(ids),
             "statuses_present": .array(statuses.sorted().map(AnyCodableJSON.string))
         ]
-        if let totalRange = totalRange(totals: totals, currency: currency) {
+        if let totalRange = RESTResponseParsing.decimalRange(totals, currency: currency) {
             fields["total_range"] = totalRange
         }
         return .object(fields)
-    }
-
-    private static func totalRange(totals: [Decimal], currency: String?) -> AnyCodableJSON? {
-        guard let min = totals.min(), let max = totals.max() else { return nil }
-        var range: [String: AnyCodableJSON] = [
-            "min": .string(format(min)),
-            "max": .string(format(max))
-        ]
-        if let currency { range["currency"] = .string(currency) }
-        return .object(range)
-    }
-
-    private static func format(_ value: Decimal) -> String {
-        var copy = value
-        var rounded = Decimal()
-        NSDecimalRound(&rounded, &copy, 2, .plain)
-        return NSDecimalNumber(decimal: rounded).stringValue
     }
 }

@@ -39,4 +39,23 @@ enum RESTResponseParsing {
         default: return nil
         }
     }
+
+    /// Rounds to 2 decimal places to keep summary payloads compact regardless of
+    /// the upstream price precision.
+    static func formatDecimal(_ value: Decimal) -> String {
+        var copy = value
+        var rounded = Decimal()
+        NSDecimalRound(&rounded, &copy, 2, .plain)
+        return NSDecimalNumber(decimal: rounded).stringValue
+    }
+
+    static func decimalRange(_ values: [Decimal], currency: String? = nil) -> AnyCodableJSON? {
+        guard let min = values.min(), let max = values.max() else { return nil }
+        var range: [String: AnyCodableJSON] = [
+            "min": .string(formatDecimal(min)),
+            "max": .string(formatDecimal(max))
+        ]
+        if let currency { range["currency"] = .string(currency) }
+        return .object(range)
+    }
 }

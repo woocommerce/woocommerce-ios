@@ -125,7 +125,7 @@ public enum ProductsBulkUpdateTool {
         guard let payload = try? JSONSerialization.data(withJSONObject: ["update": updates]) else {
             return .failed(.init(toolName: name,
                                  toolCallID: "",
-                                 kind: .invalidToolCall,
+                                 kind: .toolFailed,
                                  reason: "could not serialize batch body"))
         }
         return await RESTToolDispatch.dispatchBatchWrite(method: "POST",

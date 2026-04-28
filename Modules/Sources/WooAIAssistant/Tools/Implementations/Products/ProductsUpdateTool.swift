@@ -107,7 +107,7 @@ public enum ProductsUpdateTool {
         guard let payload = try? JSONSerialization.data(withJSONObject: body) else {
             return .failed(.init(toolName: name,
                                  toolCallID: "",
-                                 kind: .invalidToolCall,
+                                 kind: .toolFailed,
                                  reason: "could not serialize update body"))
         }
         return await RESTToolDispatch.dispatchEntityWrite(method: "PUT",

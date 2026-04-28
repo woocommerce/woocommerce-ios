@@ -14,4 +14,13 @@ install_swiftpm_dependencies
 popd
 
 echo "--- :xcode: Linting Xcode Build Settings"
-bundle exec rake lint:xcode_build_settings
+status=0
+bundle exec rake lint:xcode_build_settings || status=$?
+
+if [ "$status" -ne 0 ]; then
+  # Expand this collapsed log group so reviewers see the violations
+  # without having to click into the job.
+  # https://buildkite.com/docs/pipelines/managing-log-output#collapsing-output
+  echo "^^^ +++"
+  exit "$status"
+fi

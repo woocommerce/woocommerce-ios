@@ -3,6 +3,9 @@ import Foundation
 /// Maps write responses, classifying transport drops and timeouts as `outcomeUnknown`.
 /// The write may still have applied server-side, so retrying risks a duplicate update.
 enum WriteResultMapper {
+    /// `correlationID` is a per-call UUID surfaced in `outcomeUnknown.code` so the
+    /// user has a support handle for unconfirmed writes. It is local-only and
+    /// never sent on the wire (the WC REST API ignores `Idempotency-Key`).
     static func mapEntity(_ response: WCRESTResponse,
                           toolName: String,
                           family: CardFamilyID,

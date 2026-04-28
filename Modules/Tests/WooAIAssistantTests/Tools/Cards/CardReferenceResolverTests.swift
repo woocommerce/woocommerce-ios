@@ -104,38 +104,20 @@ struct CardReferenceResolverTests {
         #expect(client.calls.filter { $0 == "wc/v3/orders" }.count == 1)
     }
 
-    @Test
-    func test_resolve_when_id_is_zero_then_rejects_as_malformed() async {
+    @Test(arguments: ["0", "abc", "-1"])
+    func test_resolve_when_id_fails_int64_guard_then_rejects_as_malformed(rawID: String) async {
         // Given
         let client = StubbedWCRESTClient()
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let resolutions = await resolver.resolve([CardReference(family: .order, id: "0")])
+        let resolutions = await resolver.resolve([CardReference(family: .order, id: rawID)])
 
         // Then
         if case .rejected(_, _, let reason) = resolutions[0] {
             #expect(reason == .malformed)
         } else {
-            Issue.record("expected rejected.malformed")
-        }
-        #expect(client.calls.isEmpty)
-    }
-
-    @Test
-    func test_resolve_when_id_is_non_numeric_then_rejects_as_malformed() async {
-        // Given
-        let client = StubbedWCRESTClient()
-        let resolver = CardReferenceResolver(client: client)
-
-        // When
-        let resolutions = await resolver.resolve([CardReference(family: .order, id: "abc")])
-
-        // Then
-        if case .rejected(_, _, let reason) = resolutions[0] {
-            #expect(reason == .malformed)
-        } else {
-            Issue.record("expected rejected.malformed")
+            Issue.record("expected rejected.malformed for id=\(rawID)")
         }
         #expect(client.calls.isEmpty)
     }

@@ -14,6 +14,7 @@ struct OrdersGetToolTests {
             "total": "120.00",
             "currency": "USD",
             "date_created": "2026-04-20T10:00:00",
+            "payment_method_title": "Credit Card (Stripe)",
             "billing": {"first_name": "Jane", "last_name": "Doe", "email": "jane@example.com"},
             "_links": {"self": [{"href": "https://example.com/wp-json/wc/v3/orders/3551"}]},
             "meta_data": [{"id": 1, "key": "_pmpro_pin", "value": "abc"}]
@@ -46,6 +47,8 @@ struct OrdersGetToolTests {
             #expect(summary["status"] == .string("processing"))
             #expect(summary["total"] == .string("120.00"))
             #expect(summary["customer_name"] == .string("Jane Doe"))
+            #expect(summary["payment_method_title"] == .string("Credit Card (Stripe)"))
+            #expect(summary["customer_email"] == .string("jane@example.com"))
         } else {
             Issue.record("expected object structured")
         }

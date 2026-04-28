@@ -5,7 +5,7 @@ import Foundation
 ///
 /// Backed by the `woocommerce_date_type` site setting.
 ///
-public enum AnalyticsOrderDateType: String, CaseIterable, Hashable {
+public enum AnalyticsOrderDateType: String, CaseIterable, Sendable {
     /// Orders that have been paid for. Backend default.
     case paid = "date_paid"
     /// Every order placed, whether paid or not.

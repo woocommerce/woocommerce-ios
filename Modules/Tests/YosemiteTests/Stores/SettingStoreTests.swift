@@ -948,7 +948,7 @@ final class SettingStoreTests: XCTestCase {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
-                                 filename: "setting-analytics-date-type-success")
+                                 filename: "setting-analytics-date-type-paid")
 
         // When
         let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
@@ -982,7 +982,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(dateType, .completed)
     }
 
-    func test_retrieveAnalyticsOrderDateType_returns_parse_error_when_value_is_unknown() {
+    func test_retrieveAnalyticsOrderDateType_returns_parse_error_and_skips_cache_when_value_is_unknown() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
@@ -1001,6 +1001,7 @@ final class SettingStoreTests: XCTestCase {
             return XCTFail("Expected failure")
         }
         XCTAssertEqual(error as? SettingError, .parseError)
+        XCTAssertNil(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_date_type"))
     }
 
     func test_retrieveAnalyticsOrderDateType_returns_failure_when_network_fails() {
@@ -1023,14 +1024,14 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.updateAnalyticsOrderDateType
 
-    func test_updateAnalyticsOrderDateType_returns_updated_value() throws {
+    func test_updateAnalyticsOrderDateType_returns_success_when_response_parses() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
                                  filename: "setting-analytics-date-type-completed")
 
         // When
-        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+        let result: Result<Void, Error> = waitFor { promise in
             let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .completed) { result in
                 promise(result)
             }
@@ -1038,8 +1039,29 @@ final class SettingStoreTests: XCTestCase {
         }
 
         // Then
-        let dateType = try XCTUnwrap(result.get())
-        XCTAssertEqual(dateType, .completed)
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updateAnalyticsOrderDateType_returns_parse_error_and_skips_cache_when_value_is_unknown() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
+                                 filename: "setting-analytics-date-type-parse-error")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .completed) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        guard case let .failure(error) = result else {
+            return XCTFail("Expected failure")
+        }
+        XCTAssertEqual(error as? SettingError, .parseError)
+        XCTAssertNil(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_date_type"))
     }
 
     func test_updateAnalyticsOrderDateType_returns_failure_when_network_fails() {
@@ -1049,7 +1071,7 @@ final class SettingStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type", error: expectedError)
 
         // When
-        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+        let result: Result<Void, Error> = waitFor { promise in
             let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .allOrders) { result in
                 promise(result)
             }

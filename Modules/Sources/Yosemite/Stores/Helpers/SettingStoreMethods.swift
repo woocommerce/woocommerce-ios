@@ -18,7 +18,7 @@ internal protocol SettingStoreMethodsProtocol {
     func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping (Result<TaxBasedOnSetting, Error>) -> Void)
     func isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature) async throws -> Bool
     func retrieveAnalyticsOrderDateType(siteID: Int64) async throws -> AnalyticsOrderDateType
-    func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws -> AnalyticsOrderDateType
+    func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws
 }
 
 internal class SettingStoreMethods: SettingStoreMethodsProtocol {
@@ -180,21 +180,25 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func retrieveAnalyticsOrderDateType(siteID: Int64) async throws -> AnalyticsOrderDateType {
         let setting = try await siteSettingsRemote.loadAnalyticsOrderDateType(for: siteID)
-        guard let dateType = AnalyticsOrderDateType(rawValue: setting.value) else {
-            throw SettingError.parseError
-        }
-        return dateType
+        return try await parseAndCacheAnalyticsOrderDateType(setting, siteID: siteID)
     }
 
     /// Updates the WooCommerce Analytics order date-type setting (`woocommerce_date_type`).
     ///
     /// Throws `SettingError.parseError` if the response value cannot be mapped to a known type.
     ///
-    func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws -> AnalyticsOrderDateType {
+    func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws {
         let setting = try await siteSettingsRemote.updateAnalyticsOrderDateType(for: siteID, value: value.rawValue)
+        _ = try await parseAndCacheAnalyticsOrderDateType(setting, siteID: siteID)
+    }
+
+    /// Parses the response value into `AnalyticsOrderDateType` and, only on success, caches the SiteSetting locally.
+    /// Throws `SettingError.parseError` (without writing to cache) when the value can't be mapped to a known case.
+    private func parseAndCacheAnalyticsOrderDateType(_ setting: Networking.SiteSetting, siteID: Int64) async throws -> AnalyticsOrderDateType {
         guard let dateType = AnalyticsOrderDateType(rawValue: setting.value) else {
             throw SettingError.parseError
         }
+        await upsertSingleStoredSetting(siteID: siteID, readOnlySiteSetting: setting)
         return dateType
     }
 }
@@ -261,6 +265,14 @@ private extension SettingStoreMethods {
         storageManager.performAndSave({ [weak self] storage in
             self?.upsertSingleSetting(readOnlySiteSetting, in: storage, siteID: siteID)
         }, completion: onCompletion, on: .main)
+    }
+
+    func upsertSingleStoredSetting(siteID: Int64, readOnlySiteSetting: Networking.SiteSetting) async {
+        await withCheckedContinuation { continuation in
+            upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: readOnlySiteSetting) {
+                continuation.resume()
+            }
+        }
     }
 
     func upsertSingleSetting(_ readOnlySiteSetting: SiteSetting, in storage: StorageType, siteID: Int64) {

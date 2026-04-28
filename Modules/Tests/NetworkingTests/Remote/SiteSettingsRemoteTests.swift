@@ -279,7 +279,7 @@ final class SiteSettingsRemoteTests: XCTestCase {
         // Given
         let remote = SiteSettingsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
-                                 filename: "setting-analytics-date-type-success")
+                                 filename: "setting-analytics-date-type-paid")
 
         // When
         let setting = try await remote.loadAnalyticsOrderDateType(for: sampleSiteID)

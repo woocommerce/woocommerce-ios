@@ -188,10 +188,11 @@ public class SiteSettingsRemote: Remote {
     /// - Throws: An error if the request fails or the response cannot be parsed.
     ///
     public func loadAnalyticsOrderDateType(for siteID: Int64) async throws -> SiteSetting {
-        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+        let path = Constants.siteSettingsPath + Constants.analyticsSettingsGroup + "/" + Constants.analyticsOrderDateTypeSettingID
+        let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
                                      siteID: siteID,
-                                     path: Constants.analyticsOrderDateTypePath,
+                                     path: path,
                                      parameters: nil,
                                      availableAsRESTRequest: true)
         let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: .custom(Constants.analyticsSettingsGroup))
@@ -208,10 +209,11 @@ public class SiteSettingsRemote: Remote {
     ///
     public func updateAnalyticsOrderDateType(for siteID: Int64, value: String) async throws -> SiteSetting {
         let parameters: [String: Any] = [Constants.valueParameter: value]
-        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+        let path = Constants.siteSettingsPath + Constants.analyticsSettingsGroup + "/" + Constants.analyticsOrderDateTypeSettingID
+        let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,
                                      siteID: siteID,
-                                     path: Constants.analyticsOrderDateTypePath,
+                                     path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
         let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: .custom(Constants.analyticsSettingsGroup))
@@ -240,7 +242,7 @@ private extension SiteSettingsRemote {
         static let advancedSettingsGroup: String   = "advanced"
         static let pointOfSaleSettingsGroup: String = "point-of-sale"
         static let analyticsSettingsGroup: String = "wc_admin"
-        static let analyticsOrderDateTypePath: String = "settings/wc_admin/woocommerce_date_type"
+        static let analyticsOrderDateTypeSettingID: String = "woocommerce_date_type"
         static let valueParameter: String = "value"
         static let featureEnabledValue: String = "yes"
         static let featureDisabledValue: String = "no"

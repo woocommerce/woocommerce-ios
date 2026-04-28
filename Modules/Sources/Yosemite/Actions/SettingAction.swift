@@ -55,5 +55,5 @@ public enum SettingAction: Action {
 
     /// Updates the WooCommerce Analytics order date-type setting (`woocommerce_date_type`).
     ///
-    case updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType, onCompletion: (Result<AnalyticsOrderDateType, Error>) -> Void)
+    case updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType, onCompletion: (Result<Void, Error>) -> Void)
 }

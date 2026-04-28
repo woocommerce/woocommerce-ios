@@ -17,7 +17,9 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
     var retrievePointOfSaleSettingsSiteID: Int64?
 
     var retrieveAnalyticsOrderDateTypeResult: Result<AnalyticsOrderDateType, Error> = .success(.paid)
-    var updateAnalyticsOrderDateTypeResult: Result<AnalyticsOrderDateType, Error> = .success(.paid)
+    var retrieveAnalyticsOrderDateTypeReceivedSiteID: Int64?
+    var updateAnalyticsOrderDateTypeResult: Result<Void, Error> = .success(())
+    var updateAnalyticsOrderDateTypeReceivedSiteID: Int64?
     var updateAnalyticsOrderDateTypeReceivedValue: AnalyticsOrderDateType?
 
     func synchronizeGeneralSiteSettings(siteID: Int64,
@@ -92,6 +94,7 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
     }
 
     func retrieveAnalyticsOrderDateType(siteID: Int64) async throws -> AnalyticsOrderDateType {
+        retrieveAnalyticsOrderDateTypeReceivedSiteID = siteID
         switch retrieveAnalyticsOrderDateTypeResult {
         case .success(let dateType):
             return dateType
@@ -100,11 +103,12 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
         }
     }
 
-    func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws -> AnalyticsOrderDateType {
+    func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws {
+        updateAnalyticsOrderDateTypeReceivedSiteID = siteID
         updateAnalyticsOrderDateTypeReceivedValue = value
         switch updateAnalyticsOrderDateTypeResult {
-        case .success(let dateType):
-            return dateType
+        case .success:
+            return
         case .failure(let error):
             throw error
         }

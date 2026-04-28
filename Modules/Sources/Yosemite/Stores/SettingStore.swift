@@ -78,8 +78,8 @@ public class SettingStore: Store {
         case let .updateAnalyticsOrderDateType(siteID, value, onCompletion):
             Task { @MainActor in
                 do {
-                    let dateType = try await methods.updateAnalyticsOrderDateType(siteID: siteID, value: value)
-                    onCompletion(.success(dateType))
+                    try await methods.updateAnalyticsOrderDateType(siteID: siteID, value: value)
+                    onCompletion(.success(()))
                 } catch {
                     onCompletion(.failure(error))
                 }

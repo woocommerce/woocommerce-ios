@@ -41,11 +41,11 @@ struct CustomerFamilyTests {
         let client = RecordingWCRESTClient(response: StubResponses.ok(body))
 
         // When
-        let outcome = await CardFamily.customer.fetch(id: 7, client: client)
+        let outcomes = await CardFamily.customer.fetch(ids: [7], client: client)
 
         // Then
-        guard case .found(let entity) = outcome else {
-            Issue.record("expected found, got \(outcome)")
+        guard case .found(let entity) = outcomes[7] else {
+            Issue.record("expected found, got \(String(describing: outcomes[7]))")
             return
         }
         if case .object(let dict) = entity {
@@ -63,13 +63,13 @@ struct CustomerFamilyTests {
         let client = RecordingWCRESTClient(response: StubResponses.ok("[]"))
 
         // When
-        let outcome = await CardFamily.customer.fetch(id: 999, client: client)
+        let outcomes = await CardFamily.customer.fetch(ids: [999], client: client)
 
         // Then
-        if case .rejected(let reason) = outcome {
+        if case .rejected(let reason) = outcomes[999] {
             #expect(reason == .notFound)
         } else {
-            Issue.record("expected rejected, got \(outcome)")
+            Issue.record("expected rejected, got \(String(describing: outcomes[999]))")
         }
     }
 
@@ -79,13 +79,34 @@ struct CustomerFamilyTests {
         let client = RecordingWCRESTClient(response: StubResponses.ok("{\"id\": 7}"))
 
         // When
-        let outcome = await CardFamily.customer.fetch(id: 7, client: client)
+        let outcomes = await CardFamily.customer.fetch(ids: [7], client: client)
 
         // Then
-        if case .rejected(let reason) = outcome {
+        if case .rejected(let reason) = outcomes[7] {
             #expect(reason == .internalError)
         } else {
-            Issue.record("expected rejected, got \(outcome)")
+            Issue.record("expected rejected, got \(String(describing: outcomes[7]))")
         }
+    }
+
+    @Test
+    func test_fetch_when_multiple_ids_then_uses_comma_joined_include() async {
+        // Given
+        let body = """
+        [{"id": 7, "first_name": "Jane"}, {"id": 8, "first_name": "John"}]
+        """
+        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+
+        // When
+        let outcomes = await CardFamily.customer.fetch(ids: [7, 8], client: client)
+
+        // Then
+        guard case .found = outcomes[7], case .found = outcomes[8] else {
+            Issue.record("expected both ids resolved")
+            return
+        }
+        let call = client.calls.first
+        #expect(call?.query["include"] == "7,8")
+        #expect(client.calls.count == 1)
     }
 }

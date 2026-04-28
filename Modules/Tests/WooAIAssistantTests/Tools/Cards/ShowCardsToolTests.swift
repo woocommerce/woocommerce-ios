@@ -56,16 +56,12 @@ struct ShowCardsToolTests {
     func test_executor_when_two_resolved_one_rejected_then_structured_summary_lists_all_three_and_uiStructured_only_resolved() async {
         // Given
         let client = StubbedWCRESTClient()
-        client.stub(path: "wc/v3/orders/3551",
+        client.stub(path: "wc/v3/orders",
                     response: StubResponses.ok("""
-                    {"id": 3551, "status": "processing", "total": "120.00", "currency": "USD",
-                     "billing": {"first_name": "Jane", "last_name": "Doe"}}
+                    [{"id": 3551, "status": "processing", "total": "120.00", "currency": "USD",
+                      "billing": {"first_name": "Jane", "last_name": "Doe"}},
+                     {"id": 3548, "status": "on-hold", "total": "75.00", "currency": "USD"}]
                     """))
-        client.stub(path: "wc/v3/orders/3548",
-                    response: StubResponses.ok("""
-                    {"id": 3548, "status": "on-hold", "total": "75.00", "currency": "USD"}
-                    """))
-        client.stub(path: "wc/v3/orders/9999", response: StubResponses.failure(statusCode: 404))
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [

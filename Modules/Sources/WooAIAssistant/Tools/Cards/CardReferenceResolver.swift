@@ -17,7 +17,7 @@ public struct CardReferenceResolver: Sendable {
         var resolutions: [Resolution] = Array(repeating: .rejected(family: nil, id: nil, reason: .internalError),
                                               count: bounded.count)
         var seen: Set<SeenKey> = []
-        var fetchSlots: [Int] = []
+        var fetchSlotsByFamily: [CardFamilyID: [(slot: Int, id: Int64)]] = [:]
 
         for (index, reference) in bounded.enumerated() {
             if reference.id <= 0 {
@@ -30,19 +30,32 @@ public struct CardReferenceResolver: Sendable {
                 continue
             }
             seen.insert(key)
-            fetchSlots.append(index)
+            guard registry.family(for: reference.family) != nil else {
+                resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .unsupportedFamily)
+                continue
+            }
+            fetchSlotsByFamily[reference.family, default: []].append((slot: index, id: reference.id))
         }
 
-        await withTaskGroup(of: (Int, Resolution).self) { group in
-            for slot in fetchSlots {
-                let reference = bounded[slot]
+        await withTaskGroup(of: (CardFamilyID, [Int64: CardFetchOutcome]).self) { group in
+            for (familyID, slots) in fetchSlotsByFamily {
+                guard let family = registry.family(for: familyID) else { continue }
+                let ids = slots.map { $0.id }
                 group.addTask {
-                    let resolution = await fetch(reference: reference)
-                    return (slot, resolution)
+                    let outcomes = await family.fetch(ids: ids, client: client)
+                    return (familyID, outcomes)
                 }
             }
-            for await (slot, resolution) in group {
-                resolutions[slot] = resolution
+            for await (familyID, outcomes) in group {
+                guard let family = registry.family(for: familyID),
+                      let slots = fetchSlotsByFamily[familyID] else { continue }
+                for entry in slots {
+                    let outcome = outcomes[entry.id] ?? .rejected(.notFound)
+                    resolutions[entry.slot] = resolution(family: familyID,
+                                                         id: entry.id,
+                                                         outcome: outcome,
+                                                         summarize: family.summarize)
+                }
             }
         }
 
@@ -59,22 +72,17 @@ public struct CardReferenceResolver: Sendable {
         return ShowCardsResult(resolutions: resolutions)
     }
 
-    private func fetch(reference: CardReference) async -> Resolution {
-        guard let family = registry.family(for: reference.family) else {
-            return .rejected(family: reference.family, id: reference.id, reason: .unsupportedFamily)
-        }
-        switch await family.fetch(id: reference.id, client: client) {
+    private func resolution(family: CardFamilyID,
+                            id: Int64,
+                            outcome: CardFetchOutcome,
+                            summarize: (AnyCodableJSON) -> AnyCodableJSON) -> Resolution {
+        switch outcome {
         case .found(let entity):
-            let summary = family.summarize(entity)
-            let rendered = RenderedCardPayload(family: reference.family,
-                                               id: reference.id,
-                                               element: entity)
-            return .resolved(family: reference.family,
-                             id: reference.id,
-                             summary: summary,
-                             rendered: rendered)
+            let summary = summarize(entity)
+            let rendered = RenderedCardPayload(family: family, id: id, element: entity)
+            return .resolved(family: family, id: id, summary: summary, rendered: rendered)
         case .rejected(let reason):
-            return .rejected(family: reference.family, id: reference.id, reason: reason)
+            return .rejected(family: family, id: id, reason: reason)
         }
     }
 

@@ -1,71 +1,66 @@
 import Foundation
 
-/// `fetch` returns the full entity for the renderer; `summarize` returns the
+/// `fetch` returns full entities for the renderer; `summarize` returns the
 /// compact projection the model is allowed to see. Letting the model see the
 /// entity directly is what causes the 50k-token list-read pathology.
 public struct CardFamily: Sendable {
     public let id: CardFamilyID
-    private let pathStrategy: PathStrategy
+    private let listPath: String
     private let summaryKeys: [String]
     private let extraSummary: (@Sendable (AnyCodableJSON) -> [String: AnyCodableJSON])?
     private let checkTrash: Bool
 
-    enum PathStrategy: Sendable {
-        case directByID(prefix: String)
-        case includeQuery(path: String)
-    }
-
     init(id: CardFamilyID,
-         pathStrategy: PathStrategy,
+         listPath: String,
          summaryKeys: [String],
          extraSummary: (@Sendable (AnyCodableJSON) -> [String: AnyCodableJSON])? = nil,
          checkTrash: Bool) {
         self.id = id
-        self.pathStrategy = pathStrategy
+        self.listPath = listPath
         self.summaryKeys = summaryKeys
         self.extraSummary = extraSummary
         self.checkTrash = checkTrash
     }
 
-    public func fetch(id: Int64, client: WCRESTClient) async -> CardFetchOutcome {
-        switch pathStrategy {
-        case .directByID(let prefix):
-            let response = await client.request(method: "GET",
-                                                path: "\(prefix)\(id)",
-                                                query: nil,
-                                                body: nil,
-                                                headers: nil)
-            guard HTTPStatusClassification.isSuccess(response.statusCode) else {
-                return .rejected(CardFetchOutcome.rejection(forStatusCode: response.statusCode))
+    /// Single batched fetch per family using WC REST `include=` so 10 mixed-family
+    /// references resolve in at most 3 HTTP calls instead of 10.
+    public func fetch(ids: [Int64], client: WCRESTClient) async -> [Int64: CardFetchOutcome] {
+        guard ids.isEmpty == false else { return [:] }
+        let includeValue = ids.map(String.init).joined(separator: ",")
+        let response = await client.request(method: "GET",
+                                            path: listPath,
+                                            query: ["include": includeValue],
+                                            body: nil,
+                                            headers: nil)
+        guard HTTPStatusClassification.isSuccess(response.statusCode) else {
+            let reason = CardFetchOutcome.rejection(forStatusCode: response.statusCode)
+            return Dictionary(uniqueKeysWithValues: ids.map { ($0, .rejected(reason)) })
+        }
+        guard let payload = RESTResponseParsing.decodeJSON(response.data),
+              let rows = RESTResponseParsing.arrayItems(payload) else {
+            return Dictionary(uniqueKeysWithValues: ids.map { ($0, .rejected(.internalError)) })
+        }
+        var keyed: [Int64: AnyCodableJSON] = [:]
+        for row in rows {
+            if let rowID = RESTResponseParsing.intField(row, "id") {
+                keyed[rowID] = RESTPayloadPruning.prune(row)
             }
-            guard let entity = RESTResponseParsing.decodeJSON(response.data) else {
-                return .rejected(.internalError)
+        }
+        var outcomes: [Int64: CardFetchOutcome] = [:]
+        for id in ids {
+            guard let entity = keyed[id] else {
+                outcomes[id] = .rejected(.notFound)
+                continue
             }
-            let pruned = RESTPayloadPruning.prune(entity)
             // WC returns `status: "trash"` with a 200 for soft-deleted rows; treat
             // as stale rather than render a card the merchant cannot act on.
-            if checkTrash, RESTResponseParsing.stringField(pruned, "status") == "trash" {
-                return .rejected(.staleReference)
+            if checkTrash, RESTResponseParsing.stringField(entity, "status") == "trash" {
+                outcomes[id] = .rejected(.staleReference)
+                continue
             }
-            return .found(pruned)
-        case .includeQuery(let path):
-            let response = await client.request(method: "GET",
-                                                path: path,
-                                                query: ["include": String(id)],
-                                                body: nil,
-                                                headers: nil)
-            guard HTTPStatusClassification.isSuccess(response.statusCode) else {
-                return .rejected(CardFetchOutcome.rejection(forStatusCode: response.statusCode))
-            }
-            guard let payload = RESTResponseParsing.decodeJSON(response.data),
-                  let rows = RESTResponseParsing.arrayItems(payload) else {
-                return .rejected(.internalError)
-            }
-            guard let row = rows.first else {
-                return .rejected(.notFound)
-            }
-            return .found(RESTPayloadPruning.prune(row))
+            outcomes[id] = .found(entity)
         }
+        return outcomes
     }
 
     public func summarize(_ entity: AnyCodableJSON) -> AnyCodableJSON {
@@ -80,7 +75,7 @@ public struct CardFamily: Sendable {
 
     public static let order = CardFamily(
         id: .order,
-        pathStrategy: .directByID(prefix: "wc/v3/orders/"),
+        listPath: "wc/v3/orders",
         summaryKeys: ["id", "number", "status", "total", "currency", "date_created"],
         extraSummary: { entity in
             guard let billing = RESTResponseParsing.objectField(entity, "billing") else { return [:] }
@@ -94,7 +89,7 @@ public struct CardFamily: Sendable {
 
     public static let product = CardFamily(
         id: .product,
-        pathStrategy: .directByID(prefix: "wc/v3/products/"),
+        listPath: "wc/v3/products",
         summaryKeys: ["id", "name", "sku", "price", "stock_status"],
         checkTrash: true
     )
@@ -104,7 +99,7 @@ public struct CardFamily: Sendable {
     /// the universal path even for permissive roles.
     public static let customer = CardFamily(
         id: .customer,
-        pathStrategy: .includeQuery(path: "wc/v3/customers"),
+        listPath: "wc/v3/customers",
         summaryKeys: ["id", "first_name", "last_name", "email", "orders_count"],
         checkTrash: false
     )

@@ -17,11 +17,9 @@ enum RESTToolDispatch {
 
     static func decodeArguments<T: Decodable>(_ type: T.Type,
                                               from json: String,
-                                              toolName: String,
-                                              toolCallID: String = "") -> DecodedArguments<T> {
+                                              toolName: String) -> DecodedArguments<T> {
         guard let data = json.data(using: .utf8) else {
             return .failure(.init(toolName: toolName,
-                                  toolCallID: toolCallID,
                                   kind: .invalidToolCall,
                                   reason: "argument string was not UTF-8"))
         }
@@ -29,19 +27,16 @@ enum RESTToolDispatch {
             return .success(try JSONDecoder().decode(type, from: data))
         } catch {
             return .failure(.init(toolName: toolName,
-                                  toolCallID: toolCallID,
                                   kind: .invalidToolCall,
                                   reason: error.localizedDescription))
         }
     }
 
     static func failed(from response: WCRESTResponse,
-                       toolName: String,
-                       toolCallID: String = "") -> ToolResult.Failed {
+                       toolName: String) -> ToolResult.Failed {
         let reason = String(data: response.data, encoding: .utf8).flatMap { $0.isEmpty ? nil : $0 }
             ?? "HTTP \(response.statusCode)"
         return .init(toolName: toolName,
-                     toolCallID: toolCallID,
                      kind: HTTPStatusClassification.errorKind(forStatusCode: response.statusCode),
                      reason: reason,
                      code: String(response.statusCode))

@@ -144,6 +144,18 @@ struct POSOrderServiceTests {
     }
 
     @Test
+    func syncOrder_always_includes_feeLines_in_request_fields_even_for_empty_cart() async throws {
+        // Given — no items, coupons, or custom amounts.
+
+        // When
+        _ = try await sut.syncOrder(cart: .init(), currency: .USD)
+
+        // Then — `.feeLines` is always sent so the server doesn't keep stale fees from a previous draft.
+        let fields = try #require(mockOrdersRemote.spyCreatePOSOrderFields)
+        #expect(fields.contains(.feeLines))
+    }
+
+    @Test
     func syncOrder_sanitizes_items_before_sending_to_remote() async throws {
         // Given
         let cart = POSCart(items: [

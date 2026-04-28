@@ -180,8 +180,9 @@ struct AddCustomAmountFormViewModelTests {
         #expect(updated.amount == "9.00")
     }
 
-    @Test func test_resolvedCustomAmount_when_adding_then_generates_fresh_id() async throws {
-        // Given
+    @Test func test_resolvedCustomAmount_when_called_repeatedly_then_keeps_the_same_id() async throws {
+        // Given — a fresh form (not editing) caches its id at init so a double-tap
+        // on submit can't produce two distinct entries.
         let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)
         sut.amount = "5.00"
 
@@ -189,7 +190,22 @@ struct AddCustomAmountFormViewModelTests {
         let first = try #require(sut.resolvedCustomAmount())
         let second = try #require(sut.resolvedCustomAmount())
 
-        // Then — every call produces a brand-new id when not editing
+        // Then
+        #expect(first.id == second.id)
+    }
+
+    @Test func test_resolvedCustomAmount_when_adding_then_uses_a_fresh_id_per_form() async throws {
+        // Given
+        let firstForm = AddCustomAmountFormViewModel(currencySettings: currencySettings)
+        let secondForm = AddCustomAmountFormViewModel(currencySettings: currencySettings)
+        firstForm.amount = "5.00"
+        secondForm.amount = "5.00"
+
+        // When
+        let first = try #require(firstForm.resolvedCustomAmount())
+        let second = try #require(secondForm.resolvedCustomAmount())
+
+        // Then — separate forms produce separate ids so each "+" tap gives a new entry
         #expect(first.id != second.id)
     }
 }

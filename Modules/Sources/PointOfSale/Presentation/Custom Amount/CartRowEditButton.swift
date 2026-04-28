@@ -5,7 +5,7 @@ struct CartRowEditButton: View {
 
     var body: some View {
         Button(action: action, label: {
-            Text(Image(systemName: "pencil"))
+            Image(systemName: "pencil")
                 .font(.posButtonSymbolSmall)
         })
         .accessibilityLabel(Localization.editAccessibilityLabel)

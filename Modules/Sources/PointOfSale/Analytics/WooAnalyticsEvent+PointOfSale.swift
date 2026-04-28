@@ -207,7 +207,7 @@ extension WooAnalyticsEvent {
                 statName: .pointOfSaleCustomAmountSubmitted,
                 properties: [
                     Key.mode: mode.rawValue,
-                    Key.isTaxable: "\(isTaxable)"
+                    Key.isTaxable: isTaxable
                 ]
             )
         }

@@ -54,11 +54,13 @@ public extension POSCart {
     func compareWithOrder(_ order: Order?) -> CartOrderComparison {
         let itemsComparison = items.compareWithOrder(order)
         let couponsMatch = coupons.matches(order: order)
+        let customAmountsMatch = customAmounts.matches(order: order)
 
         return CartOrderComparison(
             missingItems: itemsComparison.missingItems,
             quantityMismatches: itemsComparison.quantityMismatches,
-            couponsMatch: couponsMatch
+            couponsMatch: couponsMatch,
+            customAmountsMatch: customAmountsMatch
         )
     }
 }
@@ -71,10 +73,12 @@ public struct CartOrderComparison {
     public let quantityMismatches: [QuantityMismatch]
     /// Whether the coupons in the cart match the order
     public let couponsMatch: Bool
+    /// Whether the custom amounts in the cart match the order's active fee lines
+    public let customAmountsMatch: Bool
 
     /// Returns true if there are any discrepancies between cart and order
     public var hasDiscrepancies: Bool {
-        return !missingItems.isEmpty || !quantityMismatches.isEmpty || !couponsMatch
+        return !missingItems.isEmpty || !quantityMismatches.isEmpty || !couponsMatch || !customAmountsMatch
     }
 
     /// Represents an item that was expected in the cart but is missing from the order
@@ -277,13 +281,24 @@ extension [POSCustomAmount] {
             return false
         }
 
-        let cartSummaries = Set(self.map { CustomAmountSummary(name: $0.name, amount: $0.amount) })
-        let orderSummaries = Set(activeOrderFees.map { CustomAmountSummary(name: $0.name ?? "", amount: $0.total) })
+        // Compare as multisets so duplicate (name, amount) pairs don't collapse —
+        // two "Tip $5.00" custom amounts must match two corresponding fee lines,
+        // not one. Sorting both sides and comparing element-wise is enough.
+        let cartSummaries = self
+            .map { CustomAmountSummary(name: $0.name, amount: $0.amount) }
+            .sorted()
+        let orderSummaries = activeOrderFees
+            .map { CustomAmountSummary(name: $0.name ?? "", amount: $0.total) }
+            .sorted()
         return cartSummaries == orderSummaries
     }
 
-    private struct CustomAmountSummary: Hashable {
+    private struct CustomAmountSummary: Hashable, Comparable {
         let name: String
         let amount: String
+
+        static func < (lhs: Self, rhs: Self) -> Bool {
+            (lhs.name, lhs.amount) < (rhs.name, rhs.amount)
+        }
     }
 }

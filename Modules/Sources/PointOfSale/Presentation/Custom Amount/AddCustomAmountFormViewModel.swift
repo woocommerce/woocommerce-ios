@@ -4,6 +4,12 @@ import struct Yosemite.POSCustomAmount
 
 @Observable
 final class AddCustomAmountFormViewModel {
+    /// Name applied to a custom amount when the merchant leaves the name field empty.
+    static let defaultName = NSLocalizedString(
+        "pos.addCustomAmount.defaultName",
+        value: "Custom amount",
+        comment: "Default name used for a Point of Sale custom amount when the merchant leaves the name field empty.")
+
     var amount: String = ""
     var name: String = ""
     var isTaxable: Bool = true
@@ -12,6 +18,7 @@ final class AddCustomAmountFormViewModel {
     let sanitizer: CurrencyInputSanitizer
     private let numberFormatter: NumberFormatter
     private let editingID: UUID?
+    private let resolvedID: UUID
 
     var isEditing: Bool { editingID != nil }
 
@@ -30,11 +37,16 @@ final class AddCustomAmountFormViewModel {
 
         if let existing {
             self.editingID = existing.id
+            self.resolvedID = existing.id
             self.amount = sanitizer.sanitize(existing.amount) ?? existing.amount
-            self.name = existing.name == Localization.defaultName ? "" : existing.name
+            self.name = existing.name == Self.defaultName ? "" : existing.name
             self.isTaxable = existing.isTaxable
         } else {
             self.editingID = nil
+            // Generate a single id at init so repeat calls to `resolvedCustomAmount()`
+            // don't produce different ids — otherwise a double-tap on submit would
+            // upsert two distinct entries.
+            self.resolvedID = UUID()
         }
     }
 
@@ -51,7 +63,7 @@ final class AddCustomAmountFormViewModel {
     func resolvedCustomAmount() -> POSCustomAmount? {
         guard isAddEnabled else { return nil }
         return POSCustomAmount(
-            id: editingID ?? UUID(),
+            id: resolvedID,
             name: resolvedName,
             amount: amount,
             isTaxable: isTaxable
@@ -60,21 +72,12 @@ final class AddCustomAmountFormViewModel {
 
     var resolvedName: String {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? Localization.defaultName : trimmed
+        return trimmed.isEmpty ? Self.defaultName : trimmed
     }
 
     private var parsedAmount: Decimal? {
         let trimmed = amount.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
         return numberFormatter.number(from: trimmed)?.decimalValue
-    }
-}
-
-extension AddCustomAmountFormViewModel {
-    enum Localization {
-        static let defaultName = NSLocalizedString(
-            "pos.addCustomAmount.defaultName",
-            value: "Custom amount",
-            comment: "Default name used for a Point of Sale custom amount when the merchant leaves the name field empty.")
     }
 }

@@ -31,7 +31,10 @@ struct ProductsListToolTests {
         }
         #expect(fields["count"] == .int(3))
         #expect(fields["ids"] == .array([.int(101), .int(102), .int(103)]))
-        #expect(fields["stock_statuses_present"] == .array([.string("instock"), .string("outofstock")]))
+        #expect(fields["stock_status_counts"] == .object([
+            "instock": .int(2),
+            "outofstock": .int(1)
+        ]))
         #expect(fields["price_range"] == .object([
             "min": .string("19"),
             "max": .string("120")

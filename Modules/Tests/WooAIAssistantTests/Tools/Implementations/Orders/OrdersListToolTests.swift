@@ -31,9 +31,11 @@ struct OrdersListToolTests {
         }
         #expect(fields["count"] == .int(3))
         #expect(fields["ids"] == .array([.int(3551), .int(3548), .int(3540)]))
-        #expect(fields["statuses_present"] == .array([.string("completed"),
-                                                      .string("on-hold"),
-                                                      .string("processing")]))
+        #expect(fields["status_counts"] == .object([
+            "completed": .int(1),
+            "on-hold": .int(1),
+            "processing": .int(1)
+        ]))
         #expect(fields["total_range"] == .object([
             "min": .string("12"),
             "max": .string("480"),

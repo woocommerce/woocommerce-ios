@@ -29,6 +29,10 @@ struct ProductVariationsListToolTests {
             #expect(fields["product_id"] == .int(555))
             #expect(fields["count"] == .int(2))
             #expect(fields["ids"] == .array([.int(1001), .int(1002)]))
+            #expect(fields["stock_status_counts"] == .object([
+                "instock": .int(1),
+                "outofstock": .int(1)
+            ]))
         } else {
             Issue.record("expected object structured")
         }

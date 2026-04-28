@@ -116,4 +116,3 @@ enum CardFetchOutcome: Sendable {
     case found(AnyCodableJSON)
     case rejected(CardRefRejectionReason)
 }
-

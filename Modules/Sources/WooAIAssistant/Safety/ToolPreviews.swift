@@ -172,7 +172,7 @@ public enum ToolPreviews {
                                        stockQuantity: Int?,
                                        status: String?) -> [String] {
         var changes: [String] = []
-        if let name = name {
+        if let name {
             changes.append(String.localizedStringWithFormat(Localization.changeName, name))
         }
         if let price = regularPrice {
@@ -185,7 +185,7 @@ public enum ToolPreviews {
         if let stock = stockQuantity {
             changes.append(String.localizedStringWithFormat(Localization.changeStockQuantity, stock))
         }
-        if let status = status {
+        if let status {
             changes.append(String.localizedStringWithFormat(Localization.changeStatus, status))
         }
         return changes
@@ -286,7 +286,7 @@ public enum ToolPreviews {
         static let productVariationsUpdateFull = NSLocalizedString(
             "ai.assistant.preview.product_variations_update.full",
             value: "Update variation #%1$d of product #%2$d: %3$@",
-            comment: "Confirmation card preview for a variation update. %1$d is the variation id, %2$d is the parent product id, %3$@ is a comma-separated change list."
+            comment: "Variation update preview. %1$d is the variation id, %2$d the parent product id, %3$@ the change list."
         )
 
         static let emailsCustomerSuffix = NSLocalizedString(

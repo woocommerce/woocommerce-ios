@@ -149,34 +149,17 @@ private actor ExecutorRecorder {
     }
 }
 
-private final class ProbingWCRESTClient: WCRESTClient, @unchecked Sendable {
-    private let lock = NSLock()
-    private var _callCount = 0
-    private var _recordedPaths: [String] = []
-
-    var callCount: Int {
-        get async {
-            lock.lock(); defer { lock.unlock() }
-            return _callCount
-        }
-    }
-
-    var recordedPaths: [String] {
-        get async {
-            lock.lock(); defer { lock.unlock() }
-            return _recordedPaths
-        }
-    }
+private actor ProbingWCRESTClient: WCRESTClient {
+    private(set) var callCount = 0
+    private(set) var recordedPaths: [String] = []
 
     func request(method: String,
                  path: String,
                  query: [String: String]?,
                  body: Data?,
                  headers: [String: String]?) async -> WCRESTResponse {
-        lock.lock()
-        _callCount += 1
-        _recordedPaths.append(path)
-        lock.unlock()
+        callCount += 1
+        recordedPaths.append(path)
         return WCRESTResponse(data: Data(), statusCode: 200)
     }
 }

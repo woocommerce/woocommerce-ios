@@ -1,8 +1,14 @@
 import Foundation
+import CocoaLumberjackSwift
 
 enum RESTResponseParsing {
     static func decodeJSON(_ data: Data) -> AnyCodableJSON? {
-        try? JSONDecoder().decode(AnyCodableJSON.self, from: data)
+        do {
+            return try JSONDecoder().decode(AnyCodableJSON.self, from: data)
+        } catch {
+            DDLogError("⛔️ RESTResponseParsing failed to decode JSON: \(error)")
+            return nil
+        }
     }
 
     static func arrayItems(_ value: AnyCodableJSON) -> [AnyCodableJSON]? {

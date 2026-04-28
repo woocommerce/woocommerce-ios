@@ -99,7 +99,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         coordinator.startSetup()
     }
 
-    private func showContactSupportForm() {
+    private func showContactSupportForm(sourceTag: String? = nil, additionalTags: [String] = []) {
         let attachments: [ZendeskAttachment] = {
             guard let troubleshootingDescription = self.viewModel.troubleshootingDescription(),
                   let data = troubleshootingDescription.data(using: .utf8) else { return [] }
@@ -111,7 +111,9 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
                 )
             ]
         }()
-        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(attachments: attachments))
+        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(sourceTag: sourceTag,
+                                                                                              additionalTags: additionalTags,
+                                                                                              attachments: attachments))
         supportController.show(from: self)
 
         ServiceLocator.analytics.track(event: .ConnectivityTool.contactSupportTapped())
@@ -120,11 +122,19 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     private func showSupportChat() {
         let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] in
             self?.navigationController?.popViewController(animated: true)
-            self?.showContactSupportForm()
+            self?.showContactSupportForm(sourceTag: Constants.aiChatEscalationSourceTag,
+                                         additionalTags: Constants.aiChatEscalationAdditionalTags)
         }
 
         let chatController = SupportChatHostingController(viewModel: chatViewModel)
         chatController.show(from: self)
+    }
+}
+
+private extension ConnectivityToolViewController {
+    enum Constants {
+        static let aiChatEscalationSourceTag = "in_app_support_escalate"
+        static let aiChatEscalationAdditionalTags = ["ai_skip"]
     }
 }
 

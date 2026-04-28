@@ -15,6 +15,7 @@ import enum Yosemite.POSItemType
 import Combine
 
 @MainActor
+@Suite(.timeLimit(.minutes(5)))
 struct PointOfSaleAggregateModelTests {
     @MainActor struct OrderStageTests {
         @Test func inits_with_building_order_stage() async throws {
@@ -653,14 +654,8 @@ struct PointOfSaleAggregateModelTests {
             await sut.checkOut()
             #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
 
-            await withCheckedContinuation { continuation in
-                var resumed = false
-                cardPresentPaymentService.onCollectPaymentCalled = {
-                    if !resumed {
-                        continuation.resume()
-                        resumed = true
-                    }
-                }
+            await fireOnce { fire in
+                cardPresentPaymentService.onCollectPaymentCalled = { fire() }
 
                 // When: the card reader connects
                 cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
@@ -721,14 +716,8 @@ struct PointOfSaleAggregateModelTests {
             await cardPresentPaymentService.disconnectReader()
             cardPresentPaymentService.collectPaymentWasCalled = false
 
-            await withCheckedContinuation { continuation in
-                var resumed = false
-                cardPresentPaymentService.onCollectPaymentCalled = {
-                    if !resumed {
-                        continuation.resume()
-                        resumed = true
-                    }
-                }
+            await fireOnce { fire in
+                cardPresentPaymentService.onCollectPaymentCalled = { fire() }
 
                 // When: the card reader is reconnected
                 cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
@@ -882,16 +871,9 @@ struct PointOfSaleAggregateModelTests {
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
 
             // When card payment succeeds
-            await withCheckedContinuation { continuation in
-                var resumed = false
-                coordinator.onPerformIncrementalSyncCalled = {
-                    if !resumed {
-                        continuation.resume()
-                        resumed = true
-                    }
-                }
-
-                Task {
+            await fireOnce { fire in
+                coordinator.onPerformIncrementalSyncCalled = { fire() }
+                Task { @MainActor in
                     await sut.checkOut()
                 }
             }
@@ -903,16 +885,9 @@ struct PointOfSaleAggregateModelTests {
             coordinator.performIncrementalSyncSiteID = 0
 
             // When cash payment succeeds
-            await withCheckedContinuation { continuation in
-                var resumed = false
-                coordinator.onPerformIncrementalSyncCalled = {
-                    if !resumed {
-                        continuation.resume()
-                        resumed = true
-                    }
-                }
-
-                Task {
+            await fireOnce { fire in
+                coordinator.onPerformIncrementalSyncCalled = { fire() }
+                Task { @MainActor in
                     try await sut.collectCashPayment(changeDueAmount: "0.00")
                 }
             }
@@ -1121,16 +1096,11 @@ struct PointOfSaleAggregateModelTests {
             sut.addToCart(makePurchasableItem(price: "10.00"))
 
             // Then: set the callback before checkOut so it fires when the fire-and-forget Task runs
-            await withCheckedContinuation { continuation in
-                var resumed = false
-                catalogSyncCoordinator.onPerformIncrementalSyncCalled = {
-                    guard !resumed else { return }
-                    resumed = true
-                    continuation.resume()
-                }
+            await fireOnce { fire in
+                catalogSyncCoordinator.onPerformIncrementalSyncCalled = { fire() }
 
                 // When
-                Task { await sut.checkOut() }
+                Task { @MainActor in await sut.checkOut() }
             }
             #expect(catalogSyncCoordinator.performIncrementalSyncInvocationCount >= 1)
             #expect(catalogSyncCoordinator.performIncrementalSyncSiteID == siteID)

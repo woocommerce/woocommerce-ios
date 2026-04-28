@@ -97,7 +97,6 @@ public enum ShowCardsTool {
         ])
         let uiStructured: UIStructured? = cards.isEmpty ? nil : UIStructured(cards: cards)
         return .success(.init(toolName: name,
-                              toolCallID: "",
                               structured: structured,
                               uiStructured: uiStructured))
     }

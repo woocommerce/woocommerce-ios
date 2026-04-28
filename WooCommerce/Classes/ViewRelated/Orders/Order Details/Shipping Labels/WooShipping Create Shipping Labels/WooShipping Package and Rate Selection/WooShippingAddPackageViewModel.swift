@@ -11,21 +11,29 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let stores: StoresManager
     private let storage: StorageManagerType
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     private let starAnimation: Animation = .spring(duration: 0.2)
 
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @Published var selectedPackageType: WooShippingAddPackageView.PackageProviderType
 
+    /// Whether the AR parcel fit-check entry point should be shown on the Carrier tab.
+    var isParcelFittingCheckEnabled: Bool {
+        featureFlagService.isFeatureFlagEnabled(.parcelFittingCheck)
+    }
+
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         selectedPackageType = .custom
         previousSelectedPackage = selectedPackage

@@ -7,6 +7,9 @@ struct DebugPanelView: View {
 
     @State private var minimumWooVersionOverride: String = UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications] ?? ""
 
+    @State private var isARParcelSizingPresented = false
+    @State private var isARFitCheckPresented = false
+
     var body: some View {
         List {
             Button {
@@ -31,6 +34,15 @@ struct DebugPanelView: View {
 
             NavigationLink(destination: OverrideFeatureFlagsView()) {
                 Text("Override Feature Flags")
+            }
+
+            Section("Parcel Fitting Check") {
+                Button("Open AR Parcel Sizing (Custom flow)") {
+                    isARParcelSizingPresented = true
+                }
+                Button("Open AR Fit Check (Carrier flow)") {
+                    isARFitCheckPresented = true
+                }
             }
 
             Section("Announcements") {
@@ -88,7 +100,76 @@ struct DebugPanelView: View {
             })
             .ignoresSafeArea()
         }
+        .fullScreenCover(isPresented: $isARParcelSizingPresented) {
+            ARParcelSizingView(
+                onCancel: { isARParcelSizingPresented = false },
+                onConfirm: { _, _, _ in isARParcelSizingPresented = false }
+            )
+        }
+        .fullScreenCover(isPresented: $isARFitCheckPresented) {
+            ARParcelFitCheckView(
+                availableCarriers: Self.debugCarrierPackages,
+                onCancel: { isARFitCheckPresented = false },
+                onConfirm: { _ in isARFitCheckPresented = false }
+            )
+        }
     }
+
+    /// Hardcoded carriers + packages so the carrier flow can be exercised
+    /// from the debug panel without going through the full shipping label
+    /// flow.
+    private static let debugCarrierPackages: [WooShippingCarrierPackages] = [
+        WooShippingCarrierPackages(
+            carrier: .usps,
+            packageGroups: [
+                WooPackageGroup(
+                    name: "Flat Rate Boxes",
+                    packages: [
+                        WooShippingPackageData(
+                            id: "usps_small_flat_rate",
+                            name: "Small Flat Rate Box",
+                            length: "8.6", width: "5.4", height: "1.6", weight: "",
+                            source: .predefined(sourceTitle: "Debug", sourceID: "debug"), packageType: "box"
+                        ),
+                        WooShippingPackageData(
+                            id: "usps_medium_flat_rate",
+                            name: "Medium Flat Rate Box",
+                            length: "11.0", width: "8.5", height: "5.5", weight: "",
+                            source: .predefined(sourceTitle: "Debug", sourceID: "debug"), packageType: "box"
+                        ),
+                        WooShippingPackageData(
+                            id: "usps_large_flat_rate",
+                            name: "Large Flat Rate Box",
+                            length: "12.0", width: "12.0", height: "6.0", weight: "",
+                            source: .predefined(sourceTitle: "Debug", sourceID: "debug"), packageType: "box"
+                        ),
+                    ]
+                )
+            ]
+        ),
+        WooShippingCarrierPackages(
+            carrier: .upsdap,
+            packageGroups: [
+                WooPackageGroup(
+                    name: "UPS Standard Boxes",
+                    packages: [
+                        WooShippingPackageData(
+                            id: "ups_small",
+                            name: "Small Box",
+                            length: "13.0", width: "11.0", height: "2.0", weight: "",
+                            source: .predefined(sourceTitle: "Debug", sourceID: "debug"), packageType: "box"
+                        ),
+                        WooShippingPackageData(
+                            id: "ups_medium",
+                            name: "Medium Box",
+                            length: "16.0", width: "11.0", height: "3.0", weight: "",
+                            source: .predefined(sourceTitle: "Debug", sourceID: "debug"), packageType: "box"
+                        ),
+                    ]
+                )
+            ]
+        ),
+    ]
 
     private func fetchTestAnnouncement() {
         announcementError = nil

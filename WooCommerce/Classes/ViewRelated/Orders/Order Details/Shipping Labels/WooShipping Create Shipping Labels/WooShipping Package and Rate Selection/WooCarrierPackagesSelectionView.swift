@@ -86,6 +86,8 @@ struct WooCarrierPackagesSelectionView: View {
     private let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
     private let addingCustomPackageHandler: () -> Void
 
+    @State private var isARFitCheckPresented = false
+
     init(viewModel: WooShippingAddPackageViewModel,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void,
          addingCustomPackageHandler: @escaping () -> Void) {
@@ -133,18 +135,45 @@ struct WooCarrierPackagesSelectionView: View {
             }
             Spacer()
             Divider()
-            Button(selectionButtonText) {
-                addPackageButtonTapped()
-            }
-            .renderedIf(viewModel.carrierTabs.isNotEmpty)
-            .disabled(selectionButtonDisabled)
-            .if(viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
-                $0.buttonStyle(SecondaryButtonStyle())
-            }
-            .if(!viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
-                $0.buttonStyle(PrimaryButtonStyle())
+            VStack(spacing: 8) {
+                if viewModel.isParcelFittingCheckEnabled && viewModel.carrierTabs.isNotEmpty {
+                    Button {
+                        isARFitCheckPresented = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "ruler")
+                            Text(Localization.fitCheckWithCamera)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                }
+                Button(selectionButtonText) {
+                    addPackageButtonTapped()
+                }
+                .renderedIf(viewModel.carrierTabs.isNotEmpty)
+                .disabled(selectionButtonDisabled)
+                .if(viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
+                    $0.buttonStyle(SecondaryButtonStyle())
+                }
+                .if(!viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
+                    $0.buttonStyle(PrimaryButtonStyle())
+                }
             }
             .padding()
+        }
+        .fullScreenCover(isPresented: $isARFitCheckPresented) {
+            ARParcelFitCheckView(
+                availableCarriers: viewModel.carrierPackages,
+                initialPackageID: viewModel.selectedCarriersPackageId,
+                onCancel: {
+                    isARFitCheckPresented = false
+                },
+                onConfirm: { package in
+                    viewModel.selectedCarriersPackageId = package.id
+                    isARFitCheckPresented = false
+                }
+            )
         }
     }
 }
@@ -251,6 +280,11 @@ private extension WooCarrierPackagesSelectionView {
             "wooShipping.packagesSelectionView.createCustomPackageCTA",
             value: "Create a custom package",
             comment: "Button to navigate to the custom package screen in the shipping label creation flow"
+        )
+        static let fitCheckWithCamera = NSLocalizedString(
+            "wooShipping.packagesSelectionView.fitCheckWithCamera",
+            value: "Fit check with camera",
+            comment: "Button on the carrier packages screen that opens an AR view to compare a parcel against the selected carrier package"
         )
     }
 }

@@ -15,6 +15,7 @@ struct WooAddCustomPackageView: View {
     @State private var isSavingPackage = false
     @State private var showingSavingError = false
     @State private var foundInvalidDimensions = false
+    @State private var isARParcelSizingPresented = false
 
     @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
     @Environment(\.shippingWeightUnit) private var weightUnit
@@ -80,6 +81,19 @@ struct WooAddCustomPackageView: View {
                             // showing weight input only if we are saving the template
                             if viewModel.showSaveTemplate {
                                 unitInputView(for: WooShippingPackageUnitType.weight, unit: weightUnit)
+                            }
+
+                            if viewModel.isParcelFittingCheckEnabled {
+                                Button {
+                                    isARParcelSizingPresented = true
+                                } label: {
+                                    HStack {
+                                        Image(systemName: "ruler")
+                                        Text(Localization.measureWithCamera)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                }
+                                .buttonStyle(SecondaryButtonStyle())
                             }
                         }
                         .toolbar {
@@ -166,6 +180,22 @@ struct WooAddCustomPackageView: View {
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .disabled(isSavingPackage)
+                .fullScreenCover(isPresented: $isARParcelSizingPresented) {
+                    ARParcelSizingView(
+                        initialLengthInches: Double(viewModel.fieldValues[.length] ?? "") ?? 8.0,
+                        initialWidthInches: Double(viewModel.fieldValues[.width] ?? "") ?? 6.0,
+                        initialHeightInches: Double(viewModel.fieldValues[.height] ?? "") ?? 4.0,
+                        onCancel: {
+                            isARParcelSizingPresented = false
+                        },
+                        onConfirm: { length, width, height in
+                            viewModel.fieldValues[.length] = String(format: "%.1f", length)
+                            viewModel.fieldValues[.width] = String(format: "%.1f", width)
+                            viewModel.fieldValues[.height] = String(format: "%.1f", height)
+                            isARParcelSizingPresented = false
+                        }
+                    )
+                }
                 .alert(Localization.SavingPackageError.title, isPresented: $showingSavingError, actions: {
                     Button(role: .cancel) {} label: {
                         Text(Localization.SavingPackageError.cancel)
@@ -289,6 +319,11 @@ extension WooAddCustomPackageView {
             "wooShipping.createLabel.addPackage.invalidDimensions",
             value: "Package dimensions should all be larger than 0",
             comment: "Message when user attempts to confirm a package with invalid dimension in the shipping label creation flow"
+        )
+        static let measureWithCamera = NSLocalizedString(
+            "wooShipping.createLabel.addPackage.measureWithCamera",
+            value: "Measure with camera",
+            comment: "Button on the custom package screen that opens an AR view to measure a parcel"
         )
         enum SavingPackageError {
             static let title = NSLocalizedString(

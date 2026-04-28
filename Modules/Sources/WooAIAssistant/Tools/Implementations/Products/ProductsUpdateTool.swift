@@ -43,7 +43,8 @@ public enum ProductsUpdateTool {
                 ])
             ]),
             "required": .array([.string("id")])
-        ])
+        ]),
+        safetyLevel: .unsafe
     )
 
     private struct Args: Decodable, Sendable {

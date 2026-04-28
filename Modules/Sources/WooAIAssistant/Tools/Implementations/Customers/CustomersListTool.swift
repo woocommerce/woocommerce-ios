@@ -53,7 +53,8 @@ public enum CustomersListTool {
                     "description": .string("Max items; clamped 1-50, default 20.")
                 ])
             ])
-        ])
+        ]),
+        safetyLevel: .safe
     )
 
     private struct Args: Decodable, Sendable {

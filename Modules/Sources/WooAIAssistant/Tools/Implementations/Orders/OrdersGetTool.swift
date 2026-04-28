@@ -26,7 +26,8 @@ public enum OrdersGetTool {
                 ])
             ]),
             "required": .array([.string("id")])
-        ])
+        ]),
+        safetyLevel: .safe
     )
 
     private struct Args: Decodable, Sendable {

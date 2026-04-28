@@ -39,7 +39,8 @@ public enum OrdersUpdateTool {
                 ])
             ]),
             "required": .array([.string("id")])
-        ])
+        ]),
+        safetyLevel: .unsafe
     )
 
     private struct Args: Decodable, Sendable {

@@ -27,12 +27,16 @@ enum WriteResultMapper {
         }
         let pruned = RESTPayloadPruning.prune(entity)
         let summary = summarize(pruned)
-        let id = RESTResponseParsing.intField(pruned, "id") ?? 0
-        let card = RenderedCardPayload(family: family, id: id, element: pruned)
+        let uiStructured: UIStructured?
+        if let id = RESTResponseParsing.intField(pruned, "id") {
+            uiStructured = UIStructured(cards: [RenderedCardPayload(family: family, id: id, element: pruned)])
+        } else {
+            uiStructured = nil
+        }
         return .success(.init(toolName: toolName,
                               toolCallID: "",
                               structured: LLMPayloadCap.capped(summary, toolName: toolName),
-                              uiStructured: UIStructured(cards: [card])))
+                              uiStructured: uiStructured))
     }
 
     /// WC's batch endpoint returns 200 even when individual entries fail, so the summary

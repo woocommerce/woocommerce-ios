@@ -112,6 +112,26 @@ struct WriteResultMapperTests {
     }
 
     @Test
+    func test_mapEntity_when_response_has_no_id_then_succeeds_without_card() {
+        // Given
+        let response = WCRESTResponse(data: Data(#"{"name": "Foo"}"#.utf8), statusCode: 200)
+
+        // When
+        let result = WriteResultMapper.mapEntity(response,
+                                                 toolName: "orders_update",
+                                                 correlationID: "key-no-id",
+                                                 family: .order,
+                                                 summarize: { entity in entity })
+
+        // Then
+        guard case .success(let success) = result else {
+            Issue.record("expected success, got \(result)")
+            return
+        }
+        #expect(success.uiStructured == nil)
+    }
+
+    @Test
     func test_mapBatch_when_all_entries_succeed_then_summary_lists_updated_ids() {
         // Given
         let body = """

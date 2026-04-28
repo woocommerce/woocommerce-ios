@@ -20,12 +20,29 @@ import ARKit
 struct ARCuboidView: UIViewRepresentable {
     /// Cuboid dimensions in metres: `x = length`, `y = height`, `z = width`.
     let dimensions: SIMD3<Float>
+    /// When true, a very subtle translucent fill is rendered on the faces
+    /// to give depth cues. When false, only the wireframe edges are shown.
+    let showFill: Bool
     @Binding var hasValidTarget: Bool
     @Binding var isPlaced: Bool
     /// Increment to place the cuboid at the current reticle target.
     let placeTrigger: Int
     /// Increment to remove the cuboid and return to placement state.
     let resetTrigger: Int
+
+    init(dimensions: SIMD3<Float>,
+         showFill: Bool = false,
+         hasValidTarget: Binding<Bool>,
+         isPlaced: Binding<Bool>,
+         placeTrigger: Int,
+         resetTrigger: Int) {
+        self.dimensions = dimensions
+        self.showFill = showFill
+        self._hasValidTarget = hasValidTarget
+        self._isPlaced = isPlaced
+        self.placeTrigger = placeTrigger
+        self.resetTrigger = resetTrigger
+    }
 
     func makeCoordinator() -> Coordinator {
         Coordinator(hasValidTarget: $hasValidTarget,
@@ -94,6 +111,7 @@ struct ARCuboidView: UIViewRepresentable {
             context.coordinator.removeCuboid()
         }
         context.coordinator.updateDimensions(dimensions)
+        context.coordinator.updateFillVisibility(showFill)
     }
 
     static func dismantleUIView(_ uiView: ARView, coordinator: Coordinator) {
@@ -118,6 +136,7 @@ struct ARCuboidView: UIViewRepresentable {
         // Placed cuboid
         private var cuboidAnchor: AnchorEntity?
         private var cuboidEntity: ModelEntity?
+        private var fillEntity: ModelEntity?
         private var installedGestures: [EntityGestureRecognizer] = []
 
         // Screen-wide rotation
@@ -160,6 +179,7 @@ struct ARCuboidView: UIViewRepresentable {
             }
             cuboidAnchor = nil
             cuboidEntity = nil
+            fillEntity = nil
             DispatchQueue.main.async { [weak self] in
                 self?.isPlaced = false
             }
@@ -226,6 +246,10 @@ struct ARCuboidView: UIViewRepresentable {
             cuboidEntity?.transform.scale = dims
         }
 
+        func updateFillVisibility(_ visible: Bool) {
+            fillEntity?.isEnabled = visible
+        }
+
         // MARK: Per-frame placement target
 
         private func updateTarget() {
@@ -285,10 +309,30 @@ struct ARCuboidView: UIViewRepresentable {
             root.position = world
             root.transform.scale = dimensions
 
-            // Wireframe edges only — no translucent fill. ParcelBroker AR
-            // uses the same approach: the cuboid is just 12 glowing edges.
-            // This sidesteps every occlusion / shading issue we hit with a
-            // filled volume.
+            // Translucent fill — always created but starts hidden. The
+            // parent can toggle it at runtime via `showFill` so the user
+            // can compare wireframe-only vs wireframe+fill without
+            // rebuilding.
+            var fillMaterial = PhysicallyBasedMaterial()
+            fillMaterial.baseColor = .init(tint: .black)
+            fillMaterial.emissiveColor = .init(color: .systemBlue)
+            fillMaterial.emissiveIntensity = 1.0
+            fillMaterial.blending = .transparent(opacity: .init(floatLiteral: 0.12))
+            fillMaterial.roughness = 1.0
+            fillMaterial.metallic = 0.0
+            fillMaterial.faceCulling = .back
+
+            let fill = ModelEntity(
+                mesh: .generateBox(size: SIMD3(1, 1, 1)),
+                materials: [fillMaterial]
+            )
+            fill.position.y = 0.5
+            fill.isEnabled = false
+            root.addChild(fill)
+            self.fillEntity = fill
+
+            // Wireframe edges — the primary visual. ParcelBroker AR uses
+            // the same approach: the cuboid is just 12 glowing edges.
             let edgeMaterial = UnlitMaterial(color: .systemBlue)
             for edge in unitBoxEdges() {
                 let bar = ModelEntity(

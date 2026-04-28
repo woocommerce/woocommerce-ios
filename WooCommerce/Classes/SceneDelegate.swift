@@ -20,6 +20,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let coordinator = AppCoordinator(window: window)
         self.appCoordinator = coordinator
         coordinator.start()
+        StoreWidgetsFeatureFlagSynchronizer.sync()
 
         // Scene-scoped initializations that need UI
         setupNoticePresenter()

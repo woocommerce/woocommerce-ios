@@ -215,6 +215,129 @@ struct LoopAdditionalEdgeCasesTests {
         #expect(!content.contains("ui_only_marker_42"))
         #expect(!content.contains("uiOnlyValue"))
     }
+
+    @Test
+    func test_run_when_one_safe_tool_then_stop_then_completes_with_tool_result_in_history() async throws {
+        // Given
+        let listTool = AITool(name: "orders_list",
+                              description: "List orders",
+                              parametersSchema: .object([:]),
+                              safetyLevel: .safe)
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_1",
+            function: .init(name: "orders_list", arguments: #"{"per_page":3}"#)
+        )
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)],
+            [.textDelta("Here are your orders."), .completed(.stop)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([listTool])
+        await registry.setResult(for: "orders_list",
+                                 result: .success(.init(toolName: "orders_list",
+                                                        structured: .object(["count": .int(3)]))))
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat, toolRegistry: registry)
+
+        // When
+        var events: [AssistantEvent] = []
+        for try await event in orchestrator.run(prompt: "List orders") {
+            events.append(event)
+        }
+
+        // Then
+        let invocations = await registry.invocationCount(for: "orders_list")
+        #expect(invocations == 1)
+        #expect(events.contains(.textChunk("Here are your orders.")))
+        #expect(events.contains(.completed(routeConfidence: nil)))
+
+        let capturedRequests = await chat.capturedRequests
+        #expect(capturedRequests.count == 2)
+        let secondRequestToolMessage = capturedRequests[1].messages.first { $0.role == .tool && $0.toolCallID == "call_1" }
+        let content = try #require(secondRequestToolMessage?.content)
+        #expect(content.contains("\"count\":3"))
+
+        let outcome = await orchestrator.lastOutcome
+        #expect(outcome == .completed)
+    }
+
+    @Test
+    func test_run_when_unknown_tool_name_from_model_then_synthetic_error_without_registry_execution() async throws {
+        // Given
+        let registeredTool = AITool(name: "orders_list",
+                                    description: "List orders",
+                                    parametersSchema: .object([:]),
+                                    safetyLevel: .safe)
+        let unknownToolCall = OpenAIChat.ToolCall(
+            id: "call_1",
+            function: .init(name: "imaginary_tool", arguments: #"{}"#)
+        )
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [.toolCall(unknownToolCall), .completed(.toolCalls)],
+            [.textDelta("Sorry, I cannot do that."), .completed(.stop)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([registeredTool])
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat, toolRegistry: registry)
+
+        // When
+        for try await _ in orchestrator.run(prompt: "Use the imaginary tool") {}
+
+        // Then
+        let imaginaryInvocations = await registry.invocationCount(for: "imaginary_tool")
+        let registeredInvocations = await registry.invocationCount(for: "orders_list")
+        #expect(imaginaryInvocations == 0)
+        #expect(registeredInvocations == 0)
+
+        let capturedRequests = await chat.capturedRequests
+        #expect(capturedRequests.count == 2)
+        let toolMessage = capturedRequests[1].messages.first { $0.role == .tool && $0.toolCallID == "call_1" }
+        let content = try #require(toolMessage?.content)
+        #expect(content.contains("Unknown tool"))
+    }
+
+    @Test
+    func test_run_when_tool_returns_invalidToolCall_failure_then_loop_continues_with_error_in_history() async throws {
+        // Given
+        let listTool = AITool(name: "orders_list",
+                              description: "List orders",
+                              parametersSchema: .object([:]),
+                              safetyLevel: .safe)
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_1",
+            function: .init(name: "orders_list", arguments: #"{not even valid json"#)
+        )
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)],
+            [.textDelta("I had trouble understanding that."), .completed(.stop)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([listTool])
+        await registry.setResult(for: "orders_list",
+                                 result: .failed(.init(toolName: "orders_list",
+                                                       kind: .invalidToolCall,
+                                                       reason: "Malformed arguments JSON.")))
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat, toolRegistry: registry)
+
+        // When
+        var events: [AssistantEvent] = []
+        for try await event in orchestrator.run(prompt: "List orders") {
+            events.append(event)
+        }
+
+        // Then
+        #expect(events.contains(.completed(routeConfidence: nil)))
+        let outcome = await orchestrator.lastOutcome
+        #expect(outcome == .completed)
+
+        let capturedRequests = await chat.capturedRequests
+        #expect(capturedRequests.count == 2)
+        let toolMessage = capturedRequests[1].messages.first { $0.role == .tool && $0.toolCallID == "call_1" }
+        let content = try #require(toolMessage?.content)
+        #expect(content.contains("Malformed arguments JSON"))
+    }
 }
 
 private enum MockStreamError: Error {

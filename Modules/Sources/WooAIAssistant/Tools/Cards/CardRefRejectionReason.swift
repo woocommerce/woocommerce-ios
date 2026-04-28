@@ -7,6 +7,7 @@ public enum CardRefRejectionReason: String, Sendable, Codable, Equatable {
     case malformed
     case unsupportedFamily
     case duplicate
+    case overLimit
     case notFound
     case notPermitted
     case staleReference
@@ -18,7 +19,7 @@ public enum CardRefRejectionReason: String, Sendable, Codable, Equatable {
     /// into `rejected_refs`. The split mirrors Android's structured shape.
     var bucket: Bucket {
         switch self {
-        case .malformed, .unsupportedFamily, .duplicate:
+        case .malformed, .unsupportedFamily, .duplicate, .overLimit:
             return .rejected
         case .notFound, .notPermitted, .staleReference, .fetchFailed, .internalError:
             return .missing

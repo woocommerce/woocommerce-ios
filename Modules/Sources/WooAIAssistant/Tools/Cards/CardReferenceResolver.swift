@@ -65,7 +65,7 @@ public struct CardReferenceResolver: Sendable {
         if references.count > Self.maxReferencesPerCall {
             let overflow = references.count - Self.maxReferencesPerCall
             resolutions.append(contentsOf: Array(
-                repeating: Resolution.rejected(family: nil, id: nil, reason: .malformed),
+                repeating: Resolution.rejected(family: nil, id: nil, reason: .overLimit),
                 count: overflow
             ))
         }

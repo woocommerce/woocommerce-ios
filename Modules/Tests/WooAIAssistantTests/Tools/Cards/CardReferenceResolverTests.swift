@@ -52,7 +52,7 @@ struct CardReferenceResolverTests {
     }
 
     @Test
-    func test_resolve_when_eleven_references_then_first_ten_processed_and_overflow_rejected_as_malformed() async {
+    func test_resolve_when_eleven_references_then_first_ten_processed_and_overflow_rejected_as_overLimit() async {
         // Given
         let client = StubbedWCRESTClient()
         let rows = (1...10).map { "{\"id\": \($0), \"status\": \"processing\", \"total\": \"10.00\"}" }.joined(separator: ",")
@@ -71,9 +71,9 @@ struct CardReferenceResolverTests {
                     "expected resolution \(index) to be resolved")
         }
         if case .rejected(_, _, let reason) = result.resolutions[10] {
-            #expect(reason == .malformed)
+            #expect(reason == .overLimit)
         } else {
-            Issue.record("expected overflow to be rejected.malformed")
+            Issue.record("expected overflow to be rejected.overLimit")
         }
     }
 

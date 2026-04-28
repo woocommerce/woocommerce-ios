@@ -53,7 +53,7 @@ struct ToolResultTests {
     }
 
     @Test
-    func test_toolResult_when_failed_then_carries_kind_reason_code() {
+    func test_toolResult_when_failed_then_carries_kind_and_reason() {
         // Given / When
         let result: ToolResult = .failed(.init(
             toolName: "orders_get",
@@ -72,22 +72,6 @@ struct ToolResultTests {
         #expect(failed.kind == .upstreamFailure)
         #expect(failed.reason == "HTTP 502 from upstream")
     }
-
-    @Test
-    func test_toolResult_when_failed_without_code_then_code_is_nil() {
-        // Given / When
-        let result: ToolResult = .failed(.init(
-            toolName: "orders_get",
-            toolCallID: "call_4",
-            kind: .network,
-            reason: "offline"
-        ))
-
-        // Then
-        guard case .failed(let failed) = result else {
-            Issue.record("expected .failed, got \(result)")
-            return
-        }    }
 
     @Test
     func test_toolResult_when_rejectedBySafety_then_carries_reason() {

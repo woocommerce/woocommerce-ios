@@ -33,16 +33,14 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
         let httpMethod = HTTPMethod(rawValue: method.uppercased())
         let (apiVersion, subpath) = Self.splitAPIVersion(from: path)
         let parameters = Self.parameters(forMethod: httpMethod, query: query, body: body)
-        // `JetpackRequest` has no header slot; caller-supplied headers
-        // (e.g. `Idempotency-Key`) are dropped at this boundary.
-        _ = headers
 
         let jetpackRequest = JetpackRequest(wooApiVersion: apiVersion,
                                             method: httpMethod,
                                             siteID: siteID,
                                             path: subpath,
                                             parameters: parameters,
-                                            availableAsRESTRequest: true)
+                                            availableAsRESTRequest: true,
+                                            customHeaders: headers)
 
         do {
             let (data, _) = try await network.responseDataAndHeaders(for: jetpackRequest)

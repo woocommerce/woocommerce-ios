@@ -42,6 +42,12 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///
     private let allowsCellularAccess: Bool
 
+    /// Caller-supplied request headers (e.g. `Idempotency-Key`). Forwarded
+    /// to both transport paths so the same header survives the dotcom-tunneled
+    /// and direct-REST routings.
+    ///
+    public let customHeaders: [String: String]?
+
 
     /// Designated Initializer.
     ///
@@ -53,6 +59,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///     - parameters: Collection of Key/Value parameters, to be forwarded to the Jetpack Connected site.
     ///     - availableAsRESTRequest: Whether the request should be transformed to a REST request if application password is available.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
+    ///     - customHeaders: Caller-supplied request headers, applied on top of the auth headers added by the network layer.
     ///
     public init(wooApiVersion: WooAPIVersion,
          method: HTTPMethod,
@@ -61,7 +68,8 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          path: String,
          parameters: [String: Any]? = nil,
          availableAsRESTRequest: Bool = false,
-         allowsCellularAccess: Bool = true) {
+         allowsCellularAccess: Bool = true,
+         customHeaders: [String: String]? = nil) {
         if [.mark1, .mark2].contains(wooApiVersion) {
             DDLogWarn("⚠️ You are using an older version of the Woo REST API: \(wooApiVersion.rawValue), for path: \(path)")
         }
@@ -73,6 +81,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
         self.parameters = parameters ?? [:]
         self.availableAsRESTRequest = availableAsRESTRequest
         self.allowsCellularAccess = allowsCellularAccess
+        self.customHeaders = customHeaders
     }
 
 
@@ -82,6 +91,11 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
         let dotcomEndpoint = DotcomRequest(wordpressApiVersion: JetpackRequest.wordpressApiVersion, method: dotcomMethod, path: dotcomPath)
         var dotcomRequest = try dotcomEndpoint.asURLRequest()
         dotcomRequest.allowsCellularAccess = allowsCellularAccess
+        if let customHeaders {
+            for (name, value) in customHeaders {
+                dotcomRequest.setValue(value, forHTTPHeaderField: name)
+            }
+        }
 
         return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
     }
@@ -99,7 +113,8 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                            method: method,
                            path: path,
                            parameters: parameters,
-                           allowsCellularAccess: allowsCellularAccess)
+                           allowsCellularAccess: allowsCellularAccess,
+                           customHeaders: customHeaders)
     }
 }
 

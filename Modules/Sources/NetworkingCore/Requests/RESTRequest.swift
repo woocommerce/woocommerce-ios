@@ -28,18 +28,24 @@ public struct RESTRequest: Request {
     ///
     let allowsCellularAccess: Bool
 
+    /// Caller-supplied request headers (e.g. `Idempotency-Key`).
+    ///
+    let customHeaders: [String: String]?
+
     private init(siteURL: String,
                  apiVersionPath: String?,
                  method: HTTPMethod,
                  path: String,
                  parameters: [String: Any]? = nil,
-                 allowsCellularAccess: Bool = true) {
+                 allowsCellularAccess: Bool = true,
+                 customHeaders: [String: String]? = nil) {
         self.siteURL = siteURL
         self.apiVersionPath = apiVersionPath
         self.method = method
         self.path = path
         self.parameters = parameters
         self.allowsCellularAccess = allowsCellularAccess
+        self.customHeaders = customHeaders
     }
 
     /// - Parameters:
@@ -48,13 +54,21 @@ public struct RESTRequest: Request {
     ///     - path: path to the target endpoint.
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
+    ///     - customHeaders: Caller-supplied request headers, applied on top of the auth headers added by the network layer.
     ///
     public init(siteURL: String,
          method: HTTPMethod,
          path: String,
          parameters: [String: Any]? = nil,
-         allowsCellularAccess: Bool = true) {
-        self.init(siteURL: siteURL, apiVersionPath: nil, method: method, path: path, parameters: parameters, allowsCellularAccess: allowsCellularAccess)
+         allowsCellularAccess: Bool = true,
+         customHeaders: [String: String]? = nil) {
+        self.init(siteURL: siteURL,
+                  apiVersionPath: nil,
+                  method: method,
+                  path: path,
+                  parameters: parameters,
+                  allowsCellularAccess: allowsCellularAccess,
+                  customHeaders: customHeaders)
     }
 
     /// - Parameters:
@@ -64,19 +78,22 @@ public struct RESTRequest: Request {
     ///     - path: path to the target endpoint.
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
+    ///     - customHeaders: Caller-supplied request headers, applied on top of the auth headers added by the network layer.
     ///
     init(siteURL: String,
          wooApiVersion: WooAPIVersion,
          method: HTTPMethod,
          path: String,
          parameters: [String: Any]? = nil,
-         allowsCellularAccess: Bool = true) {
+         allowsCellularAccess: Bool = true,
+         customHeaders: [String: String]? = nil) {
         self.init(siteURL: siteURL,
                   apiVersionPath: wooApiVersion.path,
                   method: method,
                   path: path,
                   parameters: parameters,
-                  allowsCellularAccess: allowsCellularAccess)
+                  allowsCellularAccess: allowsCellularAccess,
+                  customHeaders: customHeaders)
     }
 
     /// - Parameters:
@@ -117,6 +134,11 @@ public struct RESTRequest: Request {
         let url = try components.joined(separator: "/").asURL()
         var request = try URLRequest(url: url, method: method)
         request.allowsCellularAccess = allowsCellularAccess
+        if let customHeaders {
+            for (name, value) in customHeaders {
+                request.setValue(value, forHTTPHeaderField: name)
+            }
+        }
         switch method {
         case .post, .put:
             return try JSONEncoding.default.encode(request, with: parameters)

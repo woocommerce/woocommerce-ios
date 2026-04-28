@@ -227,6 +227,57 @@ final class JetpackRequestTests: XCTestCase {
         // Then
         XCTAssertFalse(restRequest.allowsCellularAccess)
     }
+
+    // MARK: - customHeaders Tests
+
+    func test_request_with_customHeaders_writes_them_onto_URLRequest() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .put,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters,
+                                     customHeaders: ["Idempotency-Key": "abc-123"])
+
+        // When
+        let urlRequest = try request.asURLRequest()
+
+        // Then
+        XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Idempotency-Key"), "abc-123")
+    }
+
+    func test_request_without_customHeaders_does_not_set_unrelated_fields() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters)
+
+        // When
+        let urlRequest = try request.asURLRequest()
+
+        // Then
+        XCTAssertNil(urlRequest.value(forHTTPHeaderField: "Idempotency-Key"))
+    }
+
+    func test_converting_to_RESTRequest_preserves_customHeaders() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters,
+                                     availableAsRESTRequest: true,
+                                     customHeaders: ["Idempotency-Key": "xyz-789"])
+
+        // When
+        let restRequest = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
+        let urlRequest = try restRequest.asURLRequest()
+
+        // Then
+        XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Idempotency-Key"), "xyz-789")
+    }
 }
 
 

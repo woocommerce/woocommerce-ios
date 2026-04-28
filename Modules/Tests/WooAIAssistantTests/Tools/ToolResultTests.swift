@@ -11,7 +11,7 @@ struct ToolResultTests {
             "ids": .array([.int(3551), .int(3548)])
         ])
         let uiStructured = UIStructured(cards: [
-            RenderedCardPayload(family: .order, id: 3551, element: .object(["id": .int(3551)]))
+            RenderedCardPayload(family: .order, id: "3551", element: .object(["id": .int(3551)]))
         ])
 
         // When
@@ -32,7 +32,7 @@ struct ToolResultTests {
         #expect(success.structured == structured)
         #expect(success.uiStructured?.cards.count == 1)
         #expect(success.uiStructured?.cards.first?.family == .order)
-        #expect(success.uiStructured?.cards.first?.id == 3551)
+        #expect(success.uiStructured?.cards.first?.id == "3551")
     }
 
     @Test
@@ -53,7 +53,7 @@ struct ToolResultTests {
     }
 
     @Test
-    func test_toolResult_when_failed_then_carries_kind_reason_code() {
+    func test_toolResult_when_failed_then_carries_kind_and_reason() {
         // Given / When
         let result: ToolResult = .failed(.init(
             toolName: "orders_get",
@@ -72,22 +72,6 @@ struct ToolResultTests {
         #expect(failed.kind == .upstreamFailure)
         #expect(failed.reason == "HTTP 502 from upstream")
     }
-
-    @Test
-    func test_toolResult_when_failed_without_code_then_code_is_nil() {
-        // Given / When
-        let result: ToolResult = .failed(.init(
-            toolName: "orders_get",
-            toolCallID: "call_4",
-            kind: .network,
-            reason: "offline"
-        ))
-
-        // Then
-        guard case .failed(let failed) = result else {
-            Issue.record("expected .failed, got \(result)")
-            return
-        }    }
 
     @Test
     func test_toolResult_when_rejectedBySafety_then_carries_reason() {
@@ -189,7 +173,7 @@ struct ToolResultTests {
             "id": .int(3551),
             "status": .string("processing")
         ])
-        let payload = RenderedCardPayload(family: .order, id: 3551, element: element)
+        let payload = RenderedCardPayload(family: .order, id: "3551", element: element)
 
         // When
         let envelope = UIStructured(cards: [payload])
@@ -197,7 +181,7 @@ struct ToolResultTests {
         // Then
         let card = envelope.cards.first
         #expect(card?.family == .order)
-        #expect(card?.id == 3551)
+        #expect(card?.id == "3551")
         #expect(card?.element == element)
     }
 

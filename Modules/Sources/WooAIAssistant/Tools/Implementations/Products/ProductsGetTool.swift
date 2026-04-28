@@ -53,8 +53,9 @@ public enum ProductsGetTool {
         }
         let pruned = RESTPayloadPruning.prune(entity)
         let summary = ProductSummary.make(from: pruned)
+        let resolvedID = RESTResponseParsing.intField(pruned, "id").map(String.init) ?? String(args.id)
         let card = RenderedCardPayload(family: .product,
-                                       id: RESTResponseParsing.intField(pruned, "id") ?? Int64(args.id),
+                                       id: resolvedID,
                                        element: pruned)
         return .success(.init(toolName: name,
                               structured: LLMPayloadCap.capped(summary, toolName: name),

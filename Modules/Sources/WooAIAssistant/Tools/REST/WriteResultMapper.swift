@@ -21,7 +21,7 @@ enum WriteResultMapper {
         let pruned = RESTPayloadPruning.prune(entity)
         let summary = summarize(pruned)
         let uiStructured: UIStructured?
-        if let id = RESTResponseParsing.intField(pruned, "id") {
+        if let id = RESTResponseParsing.intField(pruned, "id").map(String.init) {
             uiStructured = UIStructured(cards: [RenderedCardPayload(family: family, id: id, element: pruned)])
         } else {
             uiStructured = nil
@@ -69,7 +69,7 @@ enum WriteResultMapper {
             summary["failed"] = .array(failedEntries)
         }
         let cards = updatedIDs.map { id in
-            RenderedCardPayload(family: family, id: id, element: .object(["id": .int(id)]))
+            RenderedCardPayload(family: family, id: String(id), element: .object(["id": .int(id)]))
         }
         return .success(.init(toolName: toolName,
                               structured: LLMPayloadCap.capped(.object(summary), toolName: toolName),

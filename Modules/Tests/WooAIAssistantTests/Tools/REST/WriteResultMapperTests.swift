@@ -34,7 +34,7 @@ struct WriteResultMapperTests {
         }
         let cards = success.uiStructured?.cards ?? []
         #expect(cards.count == 1)
-        #expect(cards.first?.id == 42)
+        #expect(cards.first?.id == "42")
         #expect(cards.first?.family == .order)
         if case .object(let element) = cards.first?.element {
             #expect(element["_links"] == nil)

@@ -11,6 +11,17 @@ enum RESTResponseParsing {
         }
     }
 
+    static func project(_ entity: AnyCodableJSON, keys: [String]) -> AnyCodableJSON {
+        guard case .object(let dict) = entity else { return .object([:]) }
+        var fields: [String: AnyCodableJSON] = [:]
+        for key in keys {
+            if let value = dict[key] {
+                fields[key] = value
+            }
+        }
+        return .object(fields)
+    }
+
     static func arrayItems(_ value: AnyCodableJSON) -> [AnyCodableJSON]? {
         if case .array(let items) = value { return items }
         return nil

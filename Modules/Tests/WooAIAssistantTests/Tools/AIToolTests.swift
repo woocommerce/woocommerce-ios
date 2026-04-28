@@ -4,7 +4,7 @@ import Testing
 
 struct AIToolTests {
     @Test
-    func test_aiTool_when_constructed_then_exposes_name_description_and_schema() {
+    func test_aiTool_when_constructed_then_exposes_name_description_schema_and_safetyLevel() {
         // Given
         let schema: AnyCodableJSON = .object([
             "type": .string("object"),
@@ -18,12 +18,14 @@ struct AIToolTests {
         // When
         let tool = AITool(name: "orders_get",
                           description: "Fetch a single order by ID",
-                          parametersSchema: schema)
+                          parametersSchema: schema,
+                          safetyLevel: .safe)
 
         // Then
         #expect(tool.name == "orders_get")
         #expect(tool.description == "Fetch a single order by ID")
         #expect(tool.parametersSchema == schema)
+        #expect(tool.safetyLevel == .safe)
     }
 
     @Test
@@ -35,7 +37,10 @@ struct AIToolTests {
                 "query": .object(["type": .string("string")])
             ])
         ])
-        let tool = AITool(name: "products_search", description: "Search products", parametersSchema: schema)
+        let tool = AITool(name: "products_search",
+                          description: "Search products",
+                          parametersSchema: schema,
+                          safetyLevel: .safe)
 
         // When
         let data = try JSONEncoder().encode(tool.parametersSchema)

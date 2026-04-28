@@ -6,13 +6,6 @@ import Foundation
 /// duplicate update; the orchestrator renders this kind as a "verify on the
 /// store" prompt rather than an automatic retry.
 enum WriteResultMapper {
-    /// Statuses the adaptor synthesises after the body upload finished without
-    /// a confirmed response. On a write these collapse into `.outcomeUnknown`.
-    static let outcomeUnknownStatusCodes: Set<Int> = [
-        HTTPStatusClassification.transportFailure,
-        408
-    ]
-
     /// The idempotency key is echoed into the failure `code` so the orchestrator
     /// can show it to the merchant for manual reconciliation.
     static func mapEntity(_ response: WCRESTResponse,
@@ -98,7 +91,7 @@ enum WriteResultMapper {
     private static func unknownOutcomeFailure(response: WCRESTResponse,
                                               toolName: String,
                                               idempotencyKey: String) -> ToolResult.Failed? {
-        guard outcomeUnknownStatusCodes.contains(response.statusCode) else { return nil }
+        guard HTTPStatusClassification.isOutcomeUnknownStatus(response.statusCode) else { return nil }
         return .init(toolName: toolName,
                      toolCallID: "",
                      kind: .outcomeUnknown,

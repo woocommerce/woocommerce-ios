@@ -23,4 +23,13 @@ public enum HTTPStatusClassification {
             return .unknown
         }
     }
+
+    /// `true` for status codes that indicate a write may or may not have landed
+    /// upstream. `transportFailure` (0) covers BOTH connect-failed-before-send
+    /// AND mid-body drops; we cannot distinguish them at this layer, so writes
+    /// treat both conservatively as outcome_unknown to avoid retry-induced
+    /// duplicates. 408 is set by the adaptor for `URLError.timedOut`.
+    public static func isOutcomeUnknownStatus(_ statusCode: Int) -> Bool {
+        statusCode == transportFailure || statusCode == 408
+    }
 }

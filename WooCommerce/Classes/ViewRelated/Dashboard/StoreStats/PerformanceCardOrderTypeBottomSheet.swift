@@ -37,11 +37,6 @@ struct PerformanceCardOrderTypeBottomSheet: View {
                 }
                 .padding(.top, Layout.descriptionToOptionsSpacing)
 
-                Text(Localization.footer)
-                    .font(.footnote.weight(.regular))
-                    .foregroundStyle(.secondary)
-                    .padding(.top, Layout.optionsToFooterSpacing)
-
                 if viewModel.orderTypeUpdateError != nil {
                     HStack(spacing: Layout.errorSpacing) {
                         Image(systemName: "exclamationmark.triangle")
@@ -51,12 +46,17 @@ struct PerformanceCardOrderTypeBottomSheet: View {
                     }
                     .padding(.top, Layout.errorTopSpacing)
                 }
+
+                Text(Localization.footer)
+                    .font(.footnote.weight(.regular))
+                    .foregroundStyle(.secondary)
+                    .padding(.top, Layout.optionsToFooterSpacing)
             }
             .padding(.horizontal, Layout.horizontalPadding)
             .padding(.bottom, Layout.bottomPadding)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.fraction(Layout.preferredDetentFraction), .large])
         .presentationDragIndicator(.visible)
     }
 
@@ -83,7 +83,7 @@ struct PerformanceCardOrderTypeBottomSheet: View {
         HStack(alignment: .top, spacing: Layout.rowCheckmarkSpacing) {
             VStack(alignment: .leading, spacing: Layout.rowTitleSubtitleSpacing) {
                 Text(type.localizedTitle)
-                    .font(.body.weight(.regular))
+                    .font(.body.weight(.medium))
                     .foregroundStyle(.primary)
                 Text(type.localizedDescription)
                     .font(.subheadline.weight(.regular))
@@ -137,8 +137,8 @@ extension PerformanceCardOrderTypeBottomSheet {
     enum Layout {
         static let horizontalPadding: CGFloat = 16
         static let titleTopPadding: CGFloat = 29
-        static let titleToDescriptionSpacing: CGFloat = 16
-        static let descriptionToOptionsSpacing: CGFloat = 32
+        static let titleToDescriptionSpacing: CGFloat = 10
+        static let descriptionToOptionsSpacing: CGFloat = 24
         static let optionsToFooterSpacing: CGFloat = 24
         static let bottomPadding: CGFloat = 24
         static let rowSpacing: CGFloat = 20
@@ -146,6 +146,9 @@ extension PerformanceCardOrderTypeBottomSheet {
         static let rowCheckmarkSpacing: CGFloat = 12
         static let errorSpacing: CGFloat = 8
         static let errorTopSpacing: CGFloat = 16
+        /// Custom default detent — a bit bigger than `.medium` so that the entire
+        /// content (including the footer text) is visible without forcing a swipe to `.large`.
+        static let preferredDetentFraction: CGFloat = 0.65
     }
 
     enum Localization {

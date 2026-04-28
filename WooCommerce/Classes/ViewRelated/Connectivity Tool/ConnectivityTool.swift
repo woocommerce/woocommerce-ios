@@ -28,9 +28,22 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         // Bind cards to view
         viewModel.$cards.sink { [weak self] cards in
             self?.rootView.cards = cards
+        }
+        .store(in: &subscriptions)
+
+        // Bind chat button visibility
+        viewModel.$showChatButton.sink { [weak self] show in
+            self?.rootView.showChatButton = show
+        }
+        .store(in: &subscriptions)
+
+        // Bind contact support button visibility
+        viewModel.$showContactSupportButton.sink { [weak self] show in
+            self?.rootView.showContactSupportButton = show
         }
         .store(in: &subscriptions)
 
@@ -65,6 +78,11 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         rootView.onContactSupportTapped = { [weak self] in
             self?.showContactSupportForm()
         }
+
+        // Listen to the chat with support button
+        rootView.onChatWithSupportTapped = { [weak self] in
+            self?.showSupportChat()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -97,6 +115,16 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         supportController.show(from: self)
 
         ServiceLocator.analytics.track(event: .ConnectivityTool.contactSupportTapped())
+    }
+
+    private func showSupportChat() {
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+            self?.showContactSupportForm()
+        }
+
+        let chatController = SupportChatHostingController(viewModel: chatViewModel)
+        chatController.show(from: self)
     }
 }
 
@@ -131,6 +159,18 @@ struct ConnectivityTool: View {
     ///
     var onContactSupportTapped: (() -> ())?
 
+    /// Closure to be invoked when the "Chat with Support" button is tapped.
+    ///
+    var onChatWithSupportTapped: (() -> ())?
+
+    /// Whether the chat button should be shown.
+    ///
+    var showChatButton: Bool = false
+
+    /// Whether the contact support button should be shown.
+    ///
+    var showContactSupportButton: Bool = false
+
     /// Internal layout values
     ///
     private static let dividerVerticalSpacing = 8.0
@@ -159,11 +199,19 @@ struct ConnectivityTool: View {
 
             Divider().ignoresSafeArea()
 
-            Button(Localization.contactSupport) {
-                onContactSupportTapped?()
+            if showChatButton {
+                Button(Localization.chatWithSupport) {
+                    onChatWithSupportTapped?()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding()
+            } else if showContactSupportButton {
+                Button(Localization.contactSupport) {
+                    onContactSupportTapped?()
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .padding()
             }
-            .buttonStyle(SecondaryButtonStyle())
-            .padding()
         }
         .background(Color(uiColor: .listBackground))
         .navigationTitle(Localization.title)
@@ -177,6 +225,11 @@ private extension ConnectivityTool {
                                                 comment: "Subtitle on the connectivity tool screen")
         static let contactSupport = NSLocalizedString("Contact Support",
                                                       comment: "Contact support button in the connectivity tool screen")
+        static let chatWithSupport = NSLocalizedString(
+            "connectivityTool.chatWithSupport",
+            value: "Chat with Support",
+            comment: "Button to open AI chat support in the connectivity tool screen"
+        )
         static let title = NSLocalizedString(
             "connectivityTool.title",
             value: "Troubleshoot Connection",

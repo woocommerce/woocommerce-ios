@@ -70,6 +70,11 @@ namespace :lint do
   task :autocorrect do
     swiftlint(additional_args: ['--fix'])
   end
+
+  desc 'Check the Xcode project for inline build settings'
+  task :build_settings do
+    run_in_swift_package(dir: 'BuildSettingsPolice', cmd: 'swift run -c release build-settings-police check ../WooCommerce/WooCommerce.xcodeproj --project')
+  end
 end
 
 desc 'Open the project in Xcode'

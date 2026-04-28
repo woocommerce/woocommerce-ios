@@ -18,14 +18,9 @@ final class StorePerformanceViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
-        // The view model caches the analytics order type per siteID in UserDefaults to avoid a
-        // flash of the default value on launch. Tests share `siteID: 123`, so wipe the cache here
-        // to keep order-type tests deterministic.
-        UserDefaults.standard.removeObject(forKey: "performanceCard.orderType.123")
     }
 
     override func tearDown() {
-        UserDefaults.standard.removeObject(forKey: "performanceCard.orderType.123")
         storageManager = nil
         super.tearDown()
     }
@@ -372,6 +367,26 @@ final class StorePerformanceViewModelTests: XCTestCase {
     // MARK: - Order type bottom sheet
 
     @MainActor
+    func test_orderType_when_cached_SiteSetting_exists_then_seeded_synchronously_on_init() {
+        // Given — a previously persisted analytics order date type for this site.
+        let cachedSetting = SiteSetting.fake().copy(siteID: 123,
+                                                    settingID: "woocommerce_date_type",
+                                                    value: AnalyticsOrderDateType.allOrders.rawValue,
+                                                    settingGroupKey: "wc_admin")
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: cachedSetting)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+
+        // When
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
+
+        // Then — the cached value seeds `orderType` synchronously, before any network round-trip.
+        XCTAssertEqual(viewModel.orderType, .allOrders)
+    }
+
+    @MainActor
     func test_orderType_when_loadOrderType_succeeds_then_value_is_published() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -385,10 +400,13 @@ final class StorePerformanceViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
 
         // Then
-        XCTAssertEqual(viewModel.orderType, .paid) // initial fallback
+        XCTAssertEqual(viewModel.orderType, .paid) // initial fallback (no cached SiteSetting)
         waitUntil {
             viewModel.orderType == .completed
         }
@@ -408,7 +426,10 @@ final class StorePerformanceViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
 
         // Then — orderType remains the default `.paid` after failed fetch
         XCTAssertEqual(viewModel.orderType, .paid)
@@ -429,7 +450,10 @@ final class StorePerformanceViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
 
         // When
         await viewModel.didSelectOrderType(.paid)
@@ -468,7 +492,10 @@ final class StorePerformanceViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
 
         // When
         await viewModel.didSelectOrderType(.completed)
@@ -495,7 +522,10 @@ final class StorePerformanceViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
 
         // When
         await viewModel.didSelectOrderType(.allOrders)
@@ -536,6 +566,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         }
         let viewModel = StorePerformanceViewModel(siteID: 123,
                                                   stores: stores,
+                                                  storageManager: storageManager,
                                                   usageTracksEventEmitter: .init(),
                                                   analytics: analytics)
 

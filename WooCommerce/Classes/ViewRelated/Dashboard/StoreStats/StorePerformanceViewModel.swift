@@ -62,7 +62,6 @@ final class StorePerformanceViewModel: ObservableObject {
     private let currencySettings: CurrencySettings
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let analytics: Analytics
-    private let userDefaults: UserDefaults
 
     private var periodViewModel: StoreStatsPeriodViewModel?
     private(set) var chartViewModel: StoreStatsChartViewModel?
@@ -115,8 +114,7 @@ final class StorePerformanceViewModel: ObservableObject {
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
-         analytics: Analytics = ServiceLocator.analytics,
-         userDefaults: UserDefaults = .standard) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.siteTimezone = siteTimezone
@@ -125,13 +123,12 @@ final class StorePerformanceViewModel: ObservableObject {
         self.currencySettings = currencySettings
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.analytics = analytics
-        self.userDefaults = userDefaults
 
-        // Seed from the per-site cache to avoid showing the default (.paid) for the network round-trip
-        // when the merchant has previously saved a different value. `loadOrderType` still runs and
-        // reconciles with the server.
-        if let cachedRaw = userDefaults.string(forKey: Self.orderTypeCacheKey(for: siteID)),
-           let cached = AnalyticsOrderDateType(rawValue: cachedRaw) {
+        // Seed from the locally cached SiteSetting (written by SettingStoreMethods on every
+        // successful retrieve/update) to avoid showing the default `.paid` for the network
+        // round-trip when the merchant has previously saved a different value. `loadOrderType`
+        // still runs and reconciles with the server.
+        if let cached = AnalyticsOrderDateType.cachedValue(siteID: siteID, storageManager: storageManager) {
             self.orderType = cached
         }
 
@@ -146,14 +143,6 @@ final class StorePerformanceViewModel: ObservableObject {
         Task { @MainActor in
             await loadOrderType()
         }
-    }
-
-    private static func orderTypeCacheKey(for siteID: Int64) -> String {
-        "performanceCard.orderType.\(siteID)"
-    }
-
-    private func cacheOrderType(_ value: AnalyticsOrderDateType) {
-        userDefaults.set(value.rawValue, forKey: Self.orderTypeCacheKey(for: siteID))
     }
 
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
@@ -286,7 +275,6 @@ final class StorePerformanceViewModel: ObservableObject {
                 stores.dispatch(action)
             }
             orderType = newOrderType
-            cacheOrderType(newOrderType)
             // Server-side filter changed: invalidate the cached timestamp so the next sync hits the network.
             DashboardTimestampStore.removeTimestamp(for: .performance, at: timeRange.timestampRange)
             await reloadDataIfNeeded(forceRefresh: true)
@@ -481,7 +469,6 @@ private extension StorePerformanceViewModel {
             // honor their selection rather than overwriting it with the stale server value.
             guard !hasUserSelectedOrderType else { return }
             orderType = dateType
-            cacheOrderType(dateType)
         } catch {
             DDLogWarn("⚠️ Could not fetch analytics order date type, falling back to default: \(error)")
         }

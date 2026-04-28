@@ -11,8 +11,7 @@ struct CardReferenceResolver: Sendable {
 
     func resolve(_ references: [CardReference]) async -> [Resolution] {
         let bounded = Array(references.prefix(Self.maxReferencesPerCall))
-        var resolutions: [Resolution] = Array(repeating: .rejected(family: nil, id: nil, reason: .internalError),
-                                              count: bounded.count)
+        var resolutions: [Resolution?] = Array(repeating: nil, count: bounded.count)
         var seen: Set<SeenKey> = []
         var fetchSlotsByFamily: [CardFamilyID: [FetchSlot]] = [:]
 
@@ -73,17 +72,21 @@ struct CardReferenceResolver: Sendable {
             }
         }
 
+        let assigned = resolutions.compactMap { $0 }
+        precondition(assigned.count == bounded.count, "every bounded slot must be assigned")
+        var final = assigned
+
         // Truncate-and-warn on overflow rather than rejecting the whole call:
         // the merchant still gets the first 10 cards, and the model sees a
         // count mismatch big enough to learn from.
         if references.count > Self.maxReferencesPerCall {
             let overflow = references.count - Self.maxReferencesPerCall
-            resolutions.append(contentsOf: Array(
+            final.append(contentsOf: Array(
                 repeating: Resolution.rejected(family: nil, id: nil, reason: .overLimit),
                 count: overflow
             ))
         }
-        return resolutions
+        return final
     }
 
     private func resolution(family: CardFamilyID,

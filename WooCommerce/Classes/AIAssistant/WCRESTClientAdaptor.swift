@@ -34,8 +34,7 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
                                             siteID: siteID,
                                             path: subpath,
                                             parameters: parameters,
-                                            availableAsRESTRequest: true,
-                                            customHeaders: headers)
+                                            availableAsRESTRequest: true)
 
         do {
             let (data, _) = try await network.responseDataAndHeaders(for: jetpackRequest)

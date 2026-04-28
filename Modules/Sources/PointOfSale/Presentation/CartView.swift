@@ -5,6 +5,7 @@ import WooFoundation
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posCurrencyProvider) private var currencyProvider
     private let viewHelper = CartViewHelper()
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -63,8 +64,14 @@ struct CartView: View {
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
-            .posModal(isPresented: $showAddCustomAmountSheet) {
-                AddCustomAmountView(isPresented: $showAddCustomAmountSheet)
+            .posFullScreenCover(isPresented: $showAddCustomAmountSheet) {
+                AddCustomAmountView(
+                    isPresented: $showAddCustomAmountSheet,
+                    currencySettings: currencyProvider.currencySettings,
+                    onSubmit: { _ in
+                        // Real wiring lands on the next branch.
+                    }
+                )
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)

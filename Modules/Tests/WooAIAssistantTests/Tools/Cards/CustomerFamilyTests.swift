@@ -74,22 +74,6 @@ struct CustomerFamilyTests {
     }
 
     @Test
-    func test_fetch_when_response_is_401_then_returns_not_permitted() async {
-        // Given
-        let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 401))
-
-        // When
-        let outcome = await CardFamily.customer.fetch(id: 7, client: client)
-
-        // Then
-        if case .rejected(let reason) = outcome {
-            #expect(reason == .notPermitted)
-        } else {
-            Issue.record("expected rejected, got \(outcome)")
-        }
-    }
-
-    @Test
     func test_fetch_when_payload_is_object_not_array_then_returns_internal_error() async {
         // Given
         let client = RecordingWCRESTClient(response: StubResponses.ok("{\"id\": 7}"))

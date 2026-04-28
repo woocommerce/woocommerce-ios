@@ -26,7 +26,7 @@ struct CustomersListToolTests {
         #expect(success.uiStructured == nil)
         if case .object(let fields) = success.structured {
             #expect(fields["count"] == .int(2))
-            #expect(fields["ids"] == .array([.int(42), .int(73)]))
+            #expect(fields["ids"] == nil)
             if case .array(let matches) = fields["matches"], let first = matches.first, case .object(let firstDict) = first {
                 #expect(firstDict["id"] == .int(42))
                 #expect(firstDict["first_name"] == .string("Povilas"))

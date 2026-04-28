@@ -12,6 +12,8 @@ struct ARParcelFitCheckView: View {
     private let onCancel: () -> Void
     private let onConfirm: (any WooShippingPackageDataRepresentable) -> Void
 
+    @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
+
     @State private var selectedCarrierID: String?
     @State private var selectedPackageID: String?
 
@@ -102,7 +104,7 @@ struct ARParcelFitCheckView: View {
                 pickers
 
                 if let package = currentPackage {
-                    Text("\(package.length) × \(package.width) × \(package.height) in")
+                    Text("\(package.length) × \(package.width) × \(package.height) \(unit)")
                         .font(.subheadline.monospacedDigit())
                         .foregroundStyle(.white)
                 }
@@ -183,15 +185,22 @@ struct ARParcelFitCheckView: View {
         currentCarrierPackages.first { $0.id == selectedPackageID }
     }
 
-    /// Inches → metres mapping for ARKit. AR uses (X = length, Y = height,
-    /// Z = width).
+    private var unit: String {
+        dimensionsUnit.isEmpty ? "in" : dimensionsUnit
+    }
+
+    /// Convert from the store's configured unit to metres for ARKit.
     private var dimensionsInMeters: SIMD3<Float> {
-        let inch: Float = 0.0254
-        let defaultMeters = SIMD3<Float>(0.20, 0.10, 0.15)
-        guard let package = currentPackage else { return defaultMeters }
-        let l = (Float(package.length) ?? 8.0) * inch
-        let w = (Float(package.width) ?? 6.0) * inch
-        let h = (Float(package.height) ?? 4.0) * inch
+        let factor = DimensionUnitConversion.metersPerUnit(unit)
+        let defaults = DimensionUnitConversion.defaultDimensions(for: unit)
+        guard let package = currentPackage else {
+            return SIMD3(defaults.length * factor,
+                         defaults.height * factor,
+                         defaults.width * factor)
+        }
+        let l = (Float(package.length) ?? defaults.length) * factor
+        let w = (Float(package.width) ?? defaults.width) * factor
+        let h = (Float(package.height) ?? defaults.height) * factor
         return SIMD3(l, h, w)
     }
 }

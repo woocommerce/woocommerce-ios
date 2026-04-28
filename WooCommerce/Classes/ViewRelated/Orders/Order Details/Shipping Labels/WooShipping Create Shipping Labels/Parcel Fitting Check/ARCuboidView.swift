@@ -386,6 +386,45 @@ struct ARCuboidView: UIViewRepresentable {
     }
 }
 
+// MARK: - Dimension unit helpers
+
+/// Conversion factor from the store's configured dimension unit to metres
+/// (which is what RealityKit / ARKit use internally).
+enum DimensionUnitConversion {
+    static func metersPerUnit(_ unit: String) -> Float {
+        switch unit.lowercased() {
+        case "in":  return 0.0254
+        case "cm":  return 0.01
+        case "mm":  return 0.001
+        case "m":   return 1.0
+        case "yd":  return 0.9144
+        default:    return 0.0254
+        }
+    }
+
+    static func sliderRange(for unit: String) -> ClosedRange<Float> {
+        switch unit.lowercased() {
+        case "in":  return 0.5...30.0
+        case "cm":  return 1.0...75.0
+        case "mm":  return 10.0...750.0
+        case "m":   return 0.01...0.75
+        case "yd":  return 0.02...0.83
+        default:    return 0.5...30.0
+        }
+    }
+
+    static func defaultDimensions(for unit: String) -> (length: Float, width: Float, height: Float) {
+        switch unit.lowercased() {
+        case "in":  return (8.0, 6.0, 4.0)
+        case "cm":  return (20.0, 15.0, 10.0)
+        case "mm":  return (200.0, 150.0, 100.0)
+        case "m":   return (0.20, 0.15, 0.10)
+        case "yd":  return (0.22, 0.16, 0.11)
+        default:    return (8.0, 6.0, 4.0)
+        }
+    }
+}
+
 // MARK: - Shared chrome for AR Cuboid views
 
 /// Small centre reticle. Hosted by the parent so it can be hidden once the

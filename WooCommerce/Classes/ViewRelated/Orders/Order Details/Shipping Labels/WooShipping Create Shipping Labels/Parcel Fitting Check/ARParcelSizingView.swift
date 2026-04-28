@@ -11,23 +11,27 @@ struct ARParcelSizingView: View {
     private let onCancel: () -> Void
     private let onConfirm: (_ length: Double, _ width: Double, _ height: Double) -> Void
 
-    @State private var lengthInches: Float
-    @State private var widthInches: Float
-    @State private var heightInches: Float
+    @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
+
+    @State private var length: Float
+    @State private var width: Float
+    @State private var height: Float
 
     @State private var hasValidTarget: Bool = false
     @State private var isPlaced: Bool = false
     @State private var placeTrigger: Int = 0
     @State private var resetTrigger: Int = 0
 
-    init(initialLengthInches: Double = 8.0,
-         initialWidthInches: Double = 6.0,
-         initialHeightInches: Double = 4.0,
+    init(initialLength: Double? = nil,
+         initialWidth: Double? = nil,
+         initialHeight: Double? = nil,
          onCancel: @escaping () -> Void,
          onConfirm: @escaping (_ length: Double, _ width: Double, _ height: Double) -> Void) {
-        self._lengthInches = State(initialValue: Float(initialLengthInches))
-        self._widthInches = State(initialValue: Float(initialWidthInches))
-        self._heightInches = State(initialValue: Float(initialHeightInches))
+        // Defaults are resolved later via the environment unit; pass nil
+        // to use DimensionUnitConversion.defaultDimensions(for:).
+        self._length = State(initialValue: initialLength.map(Float.init) ?? -1)
+        self._width = State(initialValue: initialWidth.map(Float.init) ?? -1)
+        self._height = State(initialValue: initialHeight.map(Float.init) ?? -1)
         self.onCancel = onCancel
         self.onConfirm = onConfirm
     }
@@ -35,7 +39,7 @@ struct ARParcelSizingView: View {
     var body: some View {
         ZStack {
             ARCuboidView(
-                dimensions: dimensionsInMeters,
+                dimensions: dimensionsInMeters(length: length, width: width, height: height),
                 hasValidTarget: $hasValidTarget,
                 isPlaced: $isPlaced,
                 placeTrigger: placeTrigger,
@@ -94,14 +98,14 @@ struct ARParcelSizingView: View {
     private var bottomControls: some View {
         if isPlaced {
             VStack(spacing: 14) {
-                slider(label: "Length", value: $lengthInches)
-                slider(label: "Width", value: $widthInches)
-                slider(label: "Height", value: $heightInches)
+                slider(label: "Length", value: $length)
+                slider(label: "Width", value: $width)
+                slider(label: "Height", value: $height)
 
                 Button {
-                    onConfirm(Double(lengthInches),
-                              Double(widthInches),
-                              Double(heightInches))
+                    onConfirm(Double(length),
+                              Double(width),
+                              Double(height))
                 } label: {
                     Text("Use these dimensions")
                         .font(.headline)
@@ -128,21 +132,41 @@ struct ARParcelSizingView: View {
                 Text(label)
                     .font(.subheadline)
                 Spacer()
-                Text(String(format: "%.1f in", value.wrappedValue))
+                Text(String(format: "%.1f %@", value.wrappedValue, unit))
                     .font(.subheadline.monospacedDigit())
             }
             .foregroundStyle(.white)
-            Slider(value: value, in: 0.5...20.0)
+            Slider(value: value, in: DimensionUnitConversion.sliderRange(for: unit))
                 .tint(.blue)
         }
     }
 
-    /// Inches → metres mapping for ARKit. AR uses (X = length, Y = height,
-    /// Z = width) so the cuboid sits on its largest face by default.
-    private var dimensionsInMeters: SIMD3<Float> {
-        let inch: Float = 0.0254
-        return SIMD3(lengthInches * inch,
-                     heightInches * inch,
-                     widthInches * inch)
+    /// The active unit string — falls back to "in" if the environment is
+    /// empty (e.g. when launched from the debug panel outside the shipping
+    /// label flow).
+    private var unit: String {
+        dimensionsUnit.isEmpty ? "in" : dimensionsUnit
+    }
+
+    /// Resolves slider defaults when the init received nil (no pre-existing
+    /// form values). Called on first body evaluation when the environment
+    /// unit is available.
+    private var resolvedLength: Float {
+        length >= 0 ? length : DimensionUnitConversion.defaultDimensions(for: unit).length
+    }
+    private var resolvedWidth: Float {
+        width >= 0 ? width : DimensionUnitConversion.defaultDimensions(for: unit).width
+    }
+    private var resolvedHeight: Float {
+        height >= 0 ? height : DimensionUnitConversion.defaultDimensions(for: unit).height
+    }
+
+    /// Convert from the store's unit to metres for ARKit.
+    private func dimensionsInMeters(length: Float, width: Float, height: Float) -> SIMD3<Float> {
+        let factor = DimensionUnitConversion.metersPerUnit(unit)
+        let l = (length >= 0 ? length : resolvedLength) * factor
+        let h = (height >= 0 ? height : resolvedHeight) * factor
+        let w = (width >= 0 ? width : resolvedWidth) * factor
+        return SIMD3(l, h, w)
     }
 }

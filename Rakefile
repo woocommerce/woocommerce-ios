@@ -72,7 +72,7 @@ namespace :lint do
   end
 
   desc 'Check the Xcode project for inline build settings'
-  task :build_settings do
+  task :xcode_build_settings do
     run_in_swift_package(dir: 'BuildSettingsPolice', cmd: 'swift run -c release build-settings-police check ../WooCommerce/WooCommerce.xcodeproj --project')
   end
 end

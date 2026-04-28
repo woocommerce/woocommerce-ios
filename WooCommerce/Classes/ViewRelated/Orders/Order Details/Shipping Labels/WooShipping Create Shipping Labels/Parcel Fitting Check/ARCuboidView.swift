@@ -68,6 +68,17 @@ struct ARCuboidView: UIViewRepresentable {
         // translucent fill and looks like an interior shadow.
         arView.renderOptions.insert(.disableGroundingShadows)
 
+        // Screen-wide two-finger rotation (like ParcelBroker AR). Starts
+        // disabled; enabled once the cuboid is placed.
+        let rotation = UIRotationGestureRecognizer(
+            target: context.coordinator,
+            action: #selector(Coordinator.handleRotation(_:))
+        )
+        rotation.delegate = context.coordinator
+        rotation.isEnabled = false
+        arView.addGestureRecognizer(rotation)
+        context.coordinator.rotationGesture = rotation
+
         context.coordinator.arView = arView
         context.coordinator.dimensions = dimensions
         return arView
@@ -89,7 +100,7 @@ struct ARCuboidView: UIViewRepresentable {
         uiView.session.pause()
     }
 
-    final class Coordinator: NSObject, ARSessionDelegate {
+    final class Coordinator: NSObject, ARSessionDelegate, UIGestureRecognizerDelegate {
         weak var arView: ARView?
 
         @Binding var hasValidTarget: Bool
@@ -108,6 +119,10 @@ struct ARCuboidView: UIViewRepresentable {
         private var cuboidAnchor: AnchorEntity?
         private var cuboidEntity: ModelEntity?
         private var installedGestures: [EntityGestureRecognizer] = []
+
+        // Screen-wide rotation
+        var rotationGesture: UIRotationGestureRecognizer?
+        private var rotationStartYaw: Float = 0
 
         init(hasValidTarget: Binding<Bool>, isPlaced: Binding<Bool>) {
             self._hasValidTarget = hasValidTarget
@@ -152,22 +167,22 @@ struct ARCuboidView: UIViewRepresentable {
 
         private func installCuboidGestures() {
             guard let arView, let cuboidEntity else { return }
-            // Use an explicit unit-box collision shape (positioned to match
-            // the visible cuboid, which sits on the surface). It scales
-            // with `transform.scale`, so the gesture target tracks the
-            // cuboid's current dimensions. This works regardless of fill
-            // style, including the wireframe-only variant where there's no
-            // visible mesh to derive collision from.
+            // Collision shape for RealityKit's translation gesture.
             cuboidEntity.collision = CollisionComponent(
                 shapes: [
                     .generateBox(size: SIMD3(1, 1, 1))
                         .offsetBy(translation: SIMD3(0, 0.5, 0))
                 ]
             )
+            // Translation via entity-targeted gesture (drag on the cuboid).
+            // Rotation is handled separately via a screen-wide
+            // UIRotationGestureRecognizer so the user can two-finger twist
+            // anywhere — not just on the wireframe edges.
             installedGestures = arView.installGestures(
-                [.translation, .rotation],
+                [.translation],
                 for: cuboidEntity
             )
+            rotationGesture?.isEnabled = true
         }
 
         private func uninstallCuboidGestures() {
@@ -176,6 +191,34 @@ struct ARCuboidView: UIViewRepresentable {
                 arView.removeGestureRecognizer(gesture)
             }
             installedGestures.removeAll()
+            rotationGesture?.isEnabled = false
+        }
+
+        // MARK: Screen-wide rotation
+
+        @objc func handleRotation(_ gesture: UIRotationGestureRecognizer) {
+            guard let cuboidEntity else { return }
+
+            switch gesture.state {
+            case .began:
+                let q = cuboidEntity.transform.rotation
+                rotationStartYaw = 2 * atan2(q.imag.y, q.real)
+            case .changed:
+                let yaw = rotationStartYaw - Float(gesture.rotation)
+                cuboidEntity.transform.rotation = simd_quatf(
+                    angle: yaw,
+                    axis: SIMD3(0, 1, 0)
+                )
+            default:
+                break
+            }
+        }
+
+        func gestureRecognizer(
+            _ gestureRecognizer: UIGestureRecognizer,
+            shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer
+        ) -> Bool {
+            true
         }
 
         func updateDimensions(_ dims: SIMD3<Float>) {
@@ -235,71 +278,17 @@ struct ARCuboidView: UIViewRepresentable {
         private func buildCuboid(at world: SIMD3<Float>) {
             guard let arView else { return }
 
-            // Root must be a `ModelEntity` so RealityKit's translation +
-            // rotation gestures can target it. The root itself has no model;
-            // the visible fill and wireframe edges are children.
+            // Root must be a `ModelEntity` so RealityKit's translation
+            // gesture can target it. The root itself has no model; only
+            // the wireframe edges are children.
             let root = ModelEntity()
             root.position = world
             root.transform.scale = dimensions
 
-            // Translucent fill — unit cube whose bottom sits on the surface.
-            //
-            // Use `PhysicallyBasedMaterial` with explicit `.transparent`
-            // blending (this is the only material in RealityKit that
-            // reliably renders alpha-blended). Push emissive intensity high
-            // and roughness to 1 so every face renders at roughly the same
-            // brightness regardless of its normal direction — without this
-            // the bottom face shades dark and looks like an inset through
-            // the translucent top.
-            var fillMaterial = PhysicallyBasedMaterial()
-            // Base colour is what gets lit by the scene. Setting it to black
-            // means the lit contribution is always 0, so the cuboid's
-            // appearance can't vary as the camera moves through different
-            // RealityKit environment lighting samples.
-            fillMaterial.baseColor = .init(tint: .black)
-            // The visible blue comes purely from the (unlit) emissive
-            // channel, which renders the same regardless of view angle.
-            fillMaterial.emissiveColor = .init(color: .systemBlue)
-            fillMaterial.emissiveIntensity = 1.0
-            fillMaterial.blending = .transparent(opacity: .init(floatLiteral: 0.25))
-            fillMaterial.roughness = 1.0
-            fillMaterial.metallic = 0.0
-            // Render only the camera-facing faces. Without this, RealityKit
-            // renders both sides of the box for translucent materials, so
-            // the camera ray passes through TWO layers of the fill (front
-            // face + back face) and anything visible inside the cuboid is
-            // darkened twice. Single-sided rendering keeps it to one layer.
-            fillMaterial.faceCulling = .back
-
-            let fill = ModelEntity(
-                mesh: .generateBox(size: SIMD3(1, 1, 1)),
-                materials: [fillMaterial]
-            )
-            fill.position.y = 0.5
-            root.addChild(fill)
-
-            // Constant shadow disc on the floor at the cuboid's footprint.
-            // Doesn't vary with viewing angle or outside lighting (black
-            // base colour, transparent blending), so it gives the user a
-            // stable visual cue for where the bottom of the box meets the
-            // surface.
-            var shadowMaterial = PhysicallyBasedMaterial()
-            shadowMaterial.baseColor = .init(tint: .black)
-            shadowMaterial.blending = .transparent(opacity: .init(floatLiteral: 0.6))
-            shadowMaterial.roughness = 1.0
-            shadowMaterial.metallic = 0.0
-            shadowMaterial.faceCulling = .back
-
-            let shadow = ModelEntity(
-                mesh: .generateBox(size: SIMD3(1, 0.001, 1)),
-                materials: [shadowMaterial]
-            )
-            // Just above the floor in unit space so it doesn't z-fight with
-            // the real surface.
-            shadow.position.y = 0.0005
-            root.addChild(shadow)
-
-            // Wireframe edges — unit-length, scaled with the parent.
+            // Wireframe edges only — no translucent fill. ParcelBroker AR
+            // uses the same approach: the cuboid is just 12 glowing edges.
+            // This sidesteps every occlusion / shading issue we hit with a
+            // filled volume.
             let edgeMaterial = UnlitMaterial(color: .systemBlue)
             for edge in unitBoxEdges() {
                 let bar = ModelEntity(
@@ -327,19 +316,23 @@ struct ARCuboidView: UIViewRepresentable {
         /// and top face at y=1, x and z in [-0.5, 0.5].
         private func unitBoxEdges() -> [EdgeSpec] {
             let h: Float = 0.5
-            let t: Float = 0.003
+            let t: Float = 0.003          // regular edge thickness
+            let bottomT: Float = 0.006    // emphasised bottom-face edges so
+                                          // the contact line with the floor
+                                          // reads clearly
             var edges: [EdgeSpec] = []
 
-            // Edges along X (4 of them).
+            // Edges along X — thicker on the bottom face (y == 0).
             for y in [Float(0), 1] {
+                let thickness = y == 0 ? bottomT : t
                 for z in [-h, h] {
                     edges.append(EdgeSpec(
                         center: SIMD3(0, y, z),
-                        size: SIMD3(1, t, t)
+                        size: SIMD3(1, thickness, thickness)
                     ))
                 }
             }
-            // Edges along Y (4 vertical).
+            // Edges along Y — vertical, uniform thickness.
             for x in [-h, h] {
                 for z in [-h, h] {
                     edges.append(EdgeSpec(
@@ -348,12 +341,13 @@ struct ARCuboidView: UIViewRepresentable {
                     ))
                 }
             }
-            // Edges along Z (4 of them).
+            // Edges along Z — thicker on the bottom face (y == 0).
             for x in [-h, h] {
                 for y in [Float(0), 1] {
+                    let thickness = y == 0 ? bottomT : t
                     edges.append(EdgeSpec(
                         center: SIMD3(x, y, 0),
-                        size: SIMD3(t, t, 1)
+                        size: SIMD3(thickness, thickness, 1)
                     ))
                 }
             }

@@ -12,7 +12,10 @@ struct ProductsGetToolTests {
             "name": "Cashmere Scarf",
             "sku": "SCARF-CSH",
             "price": "89.00",
+            "regular_price": "99.00",
+            "sale_price": "89.00",
             "stock_status": "instock",
+            "stock_quantity": 12,
             "type": "simple",
             "status": "publish",
             "description": "<p>Soft &amp; warm cashmere scarf.</p>",
@@ -46,6 +49,9 @@ struct ProductsGetToolTests {
         if case .object(let summary) = success.structured {
             #expect(summary["sku"] == .string("SCARF-CSH"))
             #expect(summary["stock_status"] == .string("instock"))
+            #expect(summary["stock_quantity"] == .int(12))
+            #expect(summary["regular_price"] == .string("99.00"))
+            #expect(summary["sale_price"] == .string("89.00"))
             #expect(summary["description"] == nil)
         } else {
             Issue.record("expected object structured")

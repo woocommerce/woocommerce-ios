@@ -185,7 +185,9 @@ struct AgenticLoopOrchestratorTests {
         let orchestrator = AgenticLoopOrchestrator(chatService: chat,
                                                    toolRegistry: registry,
                                                    maxIterations: 3,
-                                                   diagnostics: { event in recorder.append(event) })
+                                                   diagnostics: { event in
+                                                       Task { await recorder.append(event) }
+                                                   })
 
         // When
         var events: [AssistantEvent] = []
@@ -206,7 +208,9 @@ struct AgenticLoopOrchestratorTests {
         let outcome = await orchestrator.lastOutcome
         #expect(outcome == .maxIterations(iterations: 3))
 
-        let diagnostics = recorder.snapshot()
+        // The diagnostics handler dispatches via fire-and-forget Task hops; give the actor a moment to drain.
+        try await Task.sleep(for: .milliseconds(50))
+        let diagnostics = await recorder.snapshot()
         let capDiagnostic = diagnostics.first { event in
             if case .maxIterationsHit(let iterations) = event {
                 return iterations == 3
@@ -217,23 +221,14 @@ struct AgenticLoopOrchestratorTests {
     }
 }
 
-/// Sendable buffer for diagnostics events captured under the
-/// `LoopDiagnosticsHandler` concurrency contract. Using a class with
-/// internal locking keeps mutation thread-safe without coupling the
-/// test to actor isolation.
-private final class DiagnosticsRecorder: @unchecked Sendable {
-    private let lock = NSLock()
+private actor DiagnosticsRecorder {
     private var events: [LoopDiagnosticsEvent] = []
 
     func append(_ event: LoopDiagnosticsEvent) {
-        lock.lock()
         events.append(event)
-        lock.unlock()
     }
 
     func snapshot() -> [LoopDiagnosticsEvent] {
-        lock.lock()
-        defer { lock.unlock() }
-        return events
+        events
     }
 }

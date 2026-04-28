@@ -1,19 +1,8 @@
 import Foundation
 import CocoaLumberjackSwift
 
-/// Human-readable one-liners shown on the confirmation card. Keeps the
-/// confirmation UX honest: the merchant sees "Update product #7: price -> $24.99"
-/// instead of `products_update {"id":7,"regular_price":"24.99"}`.
-///
-/// Each known tool decodes its own args struct and builds a sentence. Unknown
-/// tools fall through to a compact generic preview so adding a new tool never
-/// breaks the confirmation path - the preview just looks worse until a builder
-/// lands here.
 public enum ToolPreviews {
 
-    /// Default preview builder plugged into `DefaultSafetyPolicy`. Routes by
-    /// tool name; falls back to a truncated args string for anything it
-    /// doesn't recognize.
     public static let defaultBuilder: @Sendable (String, String) -> String = { name, arguments in
         switch name {
         case OrdersUpdateTool.name:
@@ -30,8 +19,6 @@ public enum ToolPreviews {
             return genericPreview(name: name, arguments: arguments)
         }
     }
-
-    // MARK: - Per-tool previews
 
     private static func ordersUpdate(arguments: String) -> String {
         struct A: Decodable {
@@ -157,10 +144,7 @@ public enum ToolPreviews {
         return "Update variation #\(vid) of product #\(pid): \(summary)"
     }
 
-    // MARK: - Helpers
-
-    /// Order statuses that trigger a customer email on transition. Used to
-    /// enrich the preview so the merchant knows an email is coming.
+    /// Order statuses that trigger a customer email on transition.
     private static let customerNotifyingStatuses: Set<String> = [
         "processing", "completed", "cancelled", "refunded", "on-hold"
     ]
@@ -175,8 +159,6 @@ public enum ToolPreviews {
         }
     }
 
-    /// Last-resort preview for tools without a dedicated builder. Truncates
-    /// to keep the card readable.
     private static func genericPreview(name: String, arguments: String) -> String {
         let args = arguments.count > 80
             ? String(arguments.prefix(80)) + "..."

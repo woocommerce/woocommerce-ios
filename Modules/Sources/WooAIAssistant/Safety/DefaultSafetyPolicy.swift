@@ -1,10 +1,6 @@
-/// Default policy that keys off `AIToolSafetyLevel` plus the read-only Labs toggle.
-///
-/// `isReadOnly` is closure-injected (not read directly) because the toggle lives
-/// in app-target Labs settings; the assistant module stays UI-agnostic and the
-/// host wires the closure at construction. Every `.unsafe` write requires
-/// confirmation: there is no auto-execute path for mutations regardless of
-/// shape, so the merchant always taps through.
+/// `isReadOnly` is closure-injected because the toggle lives in app-target
+/// Labs settings; the assistant module stays UI-agnostic and the host wires
+/// the closure at construction.
 public struct DefaultSafetyPolicy: SafetyPolicy {
 
     private let isReadOnly: @Sendable () -> Bool

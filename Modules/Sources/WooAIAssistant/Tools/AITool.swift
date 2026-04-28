@@ -16,14 +16,12 @@ public struct AITool: Sendable {
     }
 }
 
-/// Two-level safety classification consumed by `SafetyPolicy` to decide whether
-/// a tool call may dispatch immediately, requires confirmation, or must block.
 /// Cross-platform-aligned with the Android client; richer taxonomies were
 /// considered and rejected to keep the merchant-facing contract uniform.
 public enum AIToolSafetyLevel: Equatable, Sendable {
-    /// Side-effect-free or render-only. Always dispatches.
+    /// Side-effect-free or render-only.
     case safe
 
-    /// Mutates store data. Requires confirmation, or blocks under read-only mode.
+    /// Mutates store data.
     case unsafe
 }

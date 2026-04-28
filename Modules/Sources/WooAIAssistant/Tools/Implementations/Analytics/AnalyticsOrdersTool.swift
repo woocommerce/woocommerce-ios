@@ -52,7 +52,6 @@ public enum AnalyticsOrdersTool {
         }
         guard let bounds = AnalyticsDateBounds.bounds(start: args.after, end: args.before) else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "after and before must be YYYY-MM-DD"))
         }
@@ -73,13 +72,11 @@ public enum AnalyticsOrdersTool {
         }
         guard let payload = RESTResponseParsing.decodeJSON(response.data) else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .toolFailed,
                                  reason: "expected JSON object"))
         }
         let summary = AnalyticsStatsSummary.make(from: payload, range: (args.after, args.before))
         return .success(.init(toolName: name,
-                              toolCallID: "",
                               structured: LLMPayloadCap.capped(summary, toolName: name),
                               uiStructured: nil))
     }

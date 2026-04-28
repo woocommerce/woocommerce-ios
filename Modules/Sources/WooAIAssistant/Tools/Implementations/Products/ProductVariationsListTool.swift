@@ -71,13 +71,11 @@ public enum ProductVariationsListTool {
         guard let payload = RESTResponseParsing.decodeJSON(response.data),
               let rows = RESTResponseParsing.arrayItems(payload) else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .toolFailed,
                                  reason: "expected JSON array"))
         }
         let summary = ProductVariationsListSummary.make(productID: Int64(args.productID), from: rows)
         return .success(.init(toolName: name,
-                              toolCallID: "",
                               structured: LLMPayloadCap.capped(summary, toolName: name),
                               uiStructured: nil))
     }

@@ -107,13 +107,11 @@ public enum CustomersListTool {
         guard let payload = RESTResponseParsing.decodeJSON(response.data),
               let rows = RESTResponseParsing.arrayItems(payload) else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .toolFailed,
                                  reason: "expected JSON array"))
         }
         let summary = CustomersListSummary.make(from: rows)
         return .success(.init(toolName: name,
-                              toolCallID: "",
                               structured: LLMPayloadCap.capped(summary, toolName: name),
                               uiStructured: nil))
     }

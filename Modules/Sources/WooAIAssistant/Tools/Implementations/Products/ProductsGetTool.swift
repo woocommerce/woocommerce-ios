@@ -49,7 +49,6 @@ public enum ProductsGetTool {
         }
         guard let entity = RESTResponseParsing.decodeJSON(response.data) else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .toolFailed,
                                  reason: "expected JSON object"))
         }
@@ -59,7 +58,6 @@ public enum ProductsGetTool {
                                        id: RESTResponseParsing.intField(pruned, "id") ?? Int64(args.id),
                                        element: pruned)
         return .success(.init(toolName: name,
-                              toolCallID: "",
                               structured: LLMPayloadCap.capped(summary, toolName: name),
                               uiStructured: UIStructured(cards: [card])))
     }

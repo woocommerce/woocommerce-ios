@@ -26,7 +26,7 @@ public enum ToolResult: Sendable {
         public let uiStructured: UIStructured?
 
         public init(toolName: String,
-                    toolCallID: String,
+                    toolCallID: String = "",
                     structured: AnyCodableJSON,
                     uiStructured: UIStructured? = nil) {
             self.toolName = toolName
@@ -44,7 +44,7 @@ public enum ToolResult: Sendable {
         public let code: String?
 
         public init(toolName: String,
-                    toolCallID: String,
+                    toolCallID: String = "",
                     kind: AssistantErrorKind,
                     reason: String,
                     code: String? = nil) {
@@ -61,7 +61,7 @@ public enum ToolResult: Sendable {
         public let toolCallID: String
         public let reason: String
 
-        public init(toolName: String, toolCallID: String, reason: String) {
+        public init(toolName: String, toolCallID: String = "", reason: String) {
             self.toolName = toolName
             self.toolCallID = toolCallID
             self.reason = reason
@@ -73,7 +73,7 @@ public enum ToolResult: Sendable {
         public let toolCallID: String
         public let proposal: AnyCodableJSON
 
-        public init(toolName: String, toolCallID: String, proposal: AnyCodableJSON) {
+        public init(toolName: String, toolCallID: String = "", proposal: AnyCodableJSON) {
             self.toolName = toolName
             self.toolCallID = toolCallID
             self.proposal = proposal

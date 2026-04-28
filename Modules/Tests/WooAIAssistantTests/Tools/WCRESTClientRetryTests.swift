@@ -25,7 +25,7 @@ struct WCRESTClientRetryTests {
 
         // Then
         #expect(response.statusCode == 503)
-        #expect(stub.callCount == 3)
+        #expect(await stub.callCount == 3)
         #expect(await recorder.delays == [0.2, 0.8])
         #expect(HTTPStatusClassification.errorKind(forStatusCode: response.statusCode) == .upstreamFailure)
     }
@@ -48,7 +48,7 @@ struct WCRESTClientRetryTests {
 
         // Then
         #expect(response.statusCode == 404)
-        #expect(stub.callCount == 1)
+        #expect(await stub.callCount == 1)
         #expect(await recorder.delays.isEmpty)
         #expect(HTTPStatusClassification.errorKind(forStatusCode: response.statusCode) == .unknown)
     }
@@ -70,7 +70,7 @@ struct WCRESTClientRetryTests {
 
         // Then
         #expect(response.statusCode == 401)
-        #expect(stub.callCount == 1)
+        #expect(await stub.callCount == 1)
         #expect(HTTPStatusClassification.errorKind(forStatusCode: response.statusCode) == .auth)
     }
 
@@ -95,7 +95,7 @@ struct WCRESTClientRetryTests {
 
         // Then
         #expect(response.statusCode == 200)
-        #expect(stub.callCount == 2)
+        #expect(await stub.callCount == 2)
         #expect(await recorder.delays == [0.2])
         #expect(HTTPStatusClassification.errorKind(forStatusCode: 429) == .rateLimit)
     }
@@ -118,7 +118,7 @@ struct WCRESTClientRetryTests {
 
         // Then
         #expect(response.statusCode == 503)
-        #expect(stub.callCount == 1)
+        #expect(await stub.callCount == 1)
         #expect(await recorder.delays.isEmpty)
     }
 
@@ -143,7 +143,7 @@ struct WCRESTClientRetryTests {
 
         // Then
         #expect(response.statusCode == 200)
-        #expect(stub.callCount == 2)
+        #expect(await stub.callCount == 2)
         #expect(await recorder.delays == [0.2])
     }
 
@@ -167,7 +167,7 @@ struct WCRESTClientRetryTests {
 
         // Then
         #expect(response.statusCode == HTTPStatusClassification.transportFailure)
-        #expect(stub.callCount == 1)
+        #expect(await stub.callCount == 1)
     }
 
     @Test
@@ -187,14 +187,14 @@ struct WCRESTClientRetryTests {
                                            "X-Trace": "trace-7"])
 
         // Then
-        #expect(stub.recordedHeaders.first?["Idempotency-Key"] == "abc-123")
-        #expect(stub.recordedHeaders.first?["X-Trace"] == "trace-7")
+        #expect(await stub.recordedHeaders.first?["Idempotency-Key"] == "abc-123")
+        #expect(await stub.recordedHeaders.first?["X-Trace"] == "trace-7")
     }
 }
 
 // MARK: - Test doubles
 
-private final class StubWCRESTClient: WCRESTClient, @unchecked Sendable {
+private actor StubWCRESTClient: WCRESTClient {
     enum Scripted {
         case status(Int)
         case response(WCRESTResponse)
@@ -203,7 +203,6 @@ private final class StubWCRESTClient: WCRESTClient, @unchecked Sendable {
     private var responses: [Scripted]
     private(set) var callCount = 0
     private(set) var recordedHeaders: [[String: String]] = []
-    private let lock = NSLock()
 
     init(responses: [Scripted]) {
         self.responses = responses
@@ -214,8 +213,6 @@ private final class StubWCRESTClient: WCRESTClient, @unchecked Sendable {
                  query: [String: String]?,
                  body: Data?,
                  headers: [String: String]?) async -> WCRESTResponse {
-        lock.lock()
-        defer { lock.unlock() }
         callCount += 1
         recordedHeaders.append(headers ?? [:])
         let scripted = responses.isEmpty ? .status(500) : responses.removeFirst()

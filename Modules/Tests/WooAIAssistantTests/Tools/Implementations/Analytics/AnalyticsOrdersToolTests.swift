@@ -37,8 +37,8 @@ struct AnalyticsOrdersToolTests {
         } else {
             Issue.record("expected object structured")
         }
-        #expect(client.calls.first?.path == "wc-analytics/reports/orders/stats")
-        #expect(client.calls.first?.query["interval"] == "week")
+        #expect(await client.calls.first?.path == "wc-analytics/reports/orders/stats")
+        #expect(await client.calls.first?.query["interval"] == "week")
     }
 
     @Test
@@ -56,7 +56,7 @@ struct AnalyticsOrdersToolTests {
             return
         }
         #expect(failed.kind == .invalidToolCall)
-        #expect(client.calls.isEmpty)
+        #expect(await client.calls.isEmpty)
     }
 
     @Test

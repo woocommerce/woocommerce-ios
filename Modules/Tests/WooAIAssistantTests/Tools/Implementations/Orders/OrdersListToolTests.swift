@@ -53,7 +53,7 @@ struct OrdersListToolTests {
         _ = await tool.executor(#"{"per_page": 500}"#, client)
 
         // Then
-        #expect(client.calls.first?.query["per_page"] == "50")
+        #expect(await client.calls.first?.query["per_page"] == "50")
     }
 
     @Test
@@ -66,7 +66,7 @@ struct OrdersListToolTests {
         _ = await tool.executor(#"{"status": "any"}"#, client)
 
         // Then
-        #expect(client.calls.first?.query["status"] == nil)
+        #expect(await client.calls.first?.query["status"] == nil)
     }
 
     @Test

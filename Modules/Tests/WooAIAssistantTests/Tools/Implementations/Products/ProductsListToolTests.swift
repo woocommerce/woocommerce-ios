@@ -51,8 +51,8 @@ struct ProductsListToolTests {
         _ = await tool.executor(#"{"search": "scarf"}"#, client)
 
         // Then
-        #expect(client.calls.first?.query["search"] == "scarf")
-        #expect(client.calls.first?.path == "wc/v3/products")
+        #expect(await client.calls.first?.query["search"] == "scarf")
+        #expect(await client.calls.first?.path == "wc/v3/products")
     }
 
     @Test

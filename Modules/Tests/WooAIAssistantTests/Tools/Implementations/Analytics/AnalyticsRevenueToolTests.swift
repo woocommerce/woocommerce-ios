@@ -39,9 +39,9 @@ struct AnalyticsRevenueToolTests {
         } else {
             Issue.record("expected object structured")
         }
-        #expect(client.calls.first?.query["after"] == "2026-04-01T00:00:00")
-        #expect(client.calls.first?.query["before"] == "2026-04-30T23:59:59")
-        #expect(client.calls.first?.query["interval"] == "day")
+        #expect(await client.calls.first?.query["after"] == "2026-04-01T00:00:00")
+        #expect(await client.calls.first?.query["before"] == "2026-04-30T23:59:59")
+        #expect(await client.calls.first?.query["interval"] == "day")
     }
 
     @Test
@@ -59,7 +59,7 @@ struct AnalyticsRevenueToolTests {
             return
         }
         #expect(failed.kind == .invalidToolCall)
-        #expect(client.calls.isEmpty)
+        #expect(await client.calls.isEmpty)
     }
 
     @Test

@@ -24,7 +24,7 @@ struct ProductVariationsListToolTests {
             return
         }
         #expect(success.uiStructured == nil)
-        #expect(client.calls.first?.path == "wc/v3/products/555/variations")
+        #expect(await client.calls.first?.path == "wc/v3/products/555/variations")
         if case .object(let fields) = success.structured {
             #expect(fields["product_id"] == .int(555))
             #expect(fields["count"] == .int(2))
@@ -53,7 +53,7 @@ struct ProductVariationsListToolTests {
             return
         }
         #expect(failed.kind == .invalidToolCall)
-        #expect(client.calls.isEmpty)
+        #expect(await client.calls.isEmpty)
     }
 
     @Test
@@ -66,6 +66,6 @@ struct ProductVariationsListToolTests {
         _ = await tool.executor(#"{"product_id": 555, "per_page": 250}"#, client)
 
         // Then
-        #expect(client.calls.first?.query["per_page"] == "50")
+        #expect(await client.calls.first?.query["per_page"] == "50")
     }
 }

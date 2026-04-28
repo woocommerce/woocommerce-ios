@@ -37,7 +37,7 @@ struct CustomersListToolTests {
         } else {
             Issue.record("expected object structured")
         }
-        #expect(client.calls.first?.query["search"] == "Pov")
+        #expect(await client.calls.first?.query["search"] == "Pov")
     }
 
     @Test
@@ -50,7 +50,7 @@ struct CustomersListToolTests {
         _ = await tool.executor(#"{"include": [42, 73]}"#, client)
 
         // Then
-        #expect(client.calls.first?.query["include"] == "42,73")
+        #expect(await client.calls.first?.query["include"] == "42,73")
     }
 
     @Test

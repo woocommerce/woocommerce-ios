@@ -1,7 +1,7 @@
 import Foundation
 @testable import WooAIAssistant
 
-final class MockWCRESTClient: WCRESTClient, @unchecked Sendable {
+actor MockWCRESTClient: WCRESTClient {
     struct Recorded: Equatable {
         let method: String
         let path: String
@@ -10,9 +10,8 @@ final class MockWCRESTClient: WCRESTClient, @unchecked Sendable {
         let headers: [String: String]
     }
 
-    private let lock = NSLock()
+    private(set) var calls: [Recorded] = []
     private var responses: [WCRESTResponse]
-    private var _calls: [Recorded] = []
 
     init(response: WCRESTResponse) {
         self.responses = [response]
@@ -22,25 +21,17 @@ final class MockWCRESTClient: WCRESTClient, @unchecked Sendable {
         self.responses = responses
     }
 
-    var calls: [Recorded] {
-        lock.lock(); defer { lock.unlock() }
-        return _calls
-    }
-
     func request(method: String,
                  path: String,
                  query: [String: String]?,
                  body: Data?,
                  headers: [String: String]?) async -> WCRESTResponse {
-        lock.lock()
-        _calls.append(.init(method: method,
-                            path: path,
-                            query: query ?? [:],
-                            body: body,
-                            headers: headers ?? [:]))
-        let response = responses.count > 1 ? responses.removeFirst() : (responses.first ?? WCRESTResponse(data: Data(), statusCode: 200))
-        lock.unlock()
-        return response
+        calls.append(.init(method: method,
+                           path: path,
+                           query: query ?? [:],
+                           body: body,
+                           headers: headers ?? [:]))
+        return responses.count > 1 ? responses.removeFirst() : (responses.first ?? WCRESTResponse(data: Data(), statusCode: 200))
     }
 }
 

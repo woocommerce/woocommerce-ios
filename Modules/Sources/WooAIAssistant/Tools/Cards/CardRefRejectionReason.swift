@@ -5,7 +5,6 @@
 /// preserving the sub-distinctions would only surface decoder noise.
 public enum CardRefRejectionReason: String, Sendable, Codable, Equatable {
     case malformed
-    case unsupportedFamily
     case duplicate
     case overLimit
     case notFound
@@ -19,7 +18,7 @@ public enum CardRefRejectionReason: String, Sendable, Codable, Equatable {
     /// into `rejected_refs`. The split mirrors Android's structured shape.
     var bucket: Bucket {
         switch self {
-        case .malformed, .unsupportedFamily, .duplicate, .overLimit:
+        case .malformed, .duplicate, .overLimit:
             return .rejected
         case .notFound, .notPermitted, .staleReference, .fetchFailed, .internalError:
             return .missing

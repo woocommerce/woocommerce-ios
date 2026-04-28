@@ -3,12 +3,9 @@ import Foundation
 public struct CardReferenceResolver: Sendable {
     public static let maxReferencesPerCall = 10
 
-    private let registry: CardFamilyRegistry
     private let client: WCRESTClient
 
-    public init(registry: CardFamilyRegistry = .defaultRegistry(),
-                client: WCRESTClient) {
-        self.registry = registry
+    public init(client: WCRESTClient) {
         self.client = client
     }
 
@@ -30,16 +27,12 @@ public struct CardReferenceResolver: Sendable {
                 continue
             }
             seen.insert(key)
-            guard registry.family(for: reference.family) != nil else {
-                resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .unsupportedFamily)
-                continue
-            }
             fetchSlotsByFamily[reference.family, default: []].append((slot: index, id: reference.id, parsed: parsed))
         }
 
         await withTaskGroup(of: (CardFamilyID, [Int64: CardFetchOutcome]).self) { group in
             for (familyID, slots) in fetchSlotsByFamily {
-                guard let family = registry.family(for: familyID) else { continue }
+                let family = CardFamily.forID(familyID)
                 let parsedIds = slots.map { $0.parsed }
                 group.addTask {
                     let outcomes = await family.fetch(ids: parsedIds, client: client)
@@ -47,8 +40,8 @@ public struct CardReferenceResolver: Sendable {
                 }
             }
             for await (familyID, outcomes) in group {
-                guard let family = registry.family(for: familyID),
-                      let slots = fetchSlotsByFamily[familyID] else { continue }
+                guard let slots = fetchSlotsByFamily[familyID] else { continue }
+                let family = CardFamily.forID(familyID)
                 for entry in slots {
                     let outcome = outcomes[entry.parsed] ?? .rejected(.notFound)
                     resolutions[entry.slot] = resolution(family: familyID,

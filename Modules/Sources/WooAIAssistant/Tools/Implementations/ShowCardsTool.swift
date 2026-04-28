@@ -4,8 +4,8 @@ public enum ShowCardsTool {
 
     public static let name = "show_cards"
 
-    public static func make(registry: CardFamilyRegistry = .defaultRegistry()) -> RESTTool {
-        RESTTool(definition: definition, executor: executor(registry: registry))
+    public static func make() -> RESTTool {
+        RESTTool(definition: definition, executor: executor)
     }
 
     private static let definition = AITool(
@@ -45,17 +45,15 @@ public enum ShowCardsTool {
         ])
     )
 
-    private static func executor(registry: CardFamilyRegistry) -> @Sendable (String, WCRESTClient) async -> ToolResult {
-        return { arguments, client in
-            let request: ShowCardsRequest
-            switch RESTToolDispatch.decodeArguments(ShowCardsRequest.self, from: arguments, toolName: name) {
-            case .success(let value): request = value
-            case .failure(let failed): return .failed(failed)
-            }
-            let resolver = CardReferenceResolver(registry: registry, client: client)
-            let resolutions = await resolver.resolve(request.references)
-            return projection(of: resolutions, requested: request.references.count)
+    private static let executor: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        let request: ShowCardsRequest
+        switch RESTToolDispatch.decodeArguments(ShowCardsRequest.self, from: arguments, toolName: name) {
+        case .success(let value): request = value
+        case .failure(let failed): return .failed(failed)
         }
+        let resolver = CardReferenceResolver(client: client)
+        let resolutions = await resolver.resolve(request.references)
+        return projection(of: resolutions, requested: request.references.count)
     }
 
     private static func projection(of resolutions: [Resolution], requested: Int) -> ToolResult {

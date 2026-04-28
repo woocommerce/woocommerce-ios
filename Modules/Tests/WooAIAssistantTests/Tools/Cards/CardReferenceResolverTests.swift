@@ -141,24 +141,6 @@ struct CardReferenceResolverTests {
     }
 
     @Test
-    func test_resolve_when_family_missing_from_registry_then_rejects_as_unsupportedFamily() async {
-        // Given
-        let client = StubbedWCRESTClient()
-        let registry = CardFamilyRegistry([.order])
-        let resolver = CardReferenceResolver(registry: registry, client: client)
-
-        // When
-        let resolutions = await resolver.resolve([CardReference(family: .product, id: "42")])
-
-        // Then
-        if case .rejected(_, _, let reason) = resolutions[0] {
-            #expect(reason == .unsupportedFamily)
-        } else {
-            Issue.record("expected rejected.unsupportedFamily")
-        }
-    }
-
-    @Test
     func test_resolve_when_id_missing_from_response_then_rejects_as_notFound() async {
         // Given
         let client = StubbedWCRESTClient()

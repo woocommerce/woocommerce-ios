@@ -72,6 +72,14 @@ public struct CardFamily: Sendable {
         return .object(dict)
     }
 
+    public static func forID(_ id: CardFamilyID) -> CardFamily {
+        switch id {
+        case .order: return .order
+        case .product: return .product
+        case .customer: return .customer
+        }
+    }
+
     public static let order = CardFamily(
         id: .order,
         listPath: "wc/v3/orders",
@@ -120,18 +128,3 @@ public enum CardFetchOutcome: Sendable {
     }
 }
 
-public struct CardFamilyRegistry: Sendable {
-    private let families: [CardFamilyID: CardFamily]
-
-    public init(_ families: [CardFamily]) {
-        self.families = Dictionary(uniqueKeysWithValues: families.map { ($0.id, $0) })
-    }
-
-    public static func defaultRegistry() -> CardFamilyRegistry {
-        CardFamilyRegistry([.order, .product, .customer])
-    }
-
-    public func family(for id: CardFamilyID) -> CardFamily? {
-        families[id]
-    }
-}

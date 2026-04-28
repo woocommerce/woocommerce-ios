@@ -279,9 +279,6 @@ final class JetpackRequestTests: XCTestCase {
         XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Idempotency-Key"), "xyz-789")
     }
 
-    /// Covers the merge order: `asURLRequest()` writes `customHeaders` first,
-    /// then the auth wrapper runs `setValue` for its reserved fields. A
-    /// non-reserved header like `Idempotency-Key` must survive that pass.
     func test_customHeaders_survive_application_password_auth_wrapper() throws {
         // Given
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -303,8 +300,6 @@ final class JetpackRequestTests: XCTestCase {
         XCTAssertTrue((authenticated.value(forHTTPHeaderField: "Authorization") ?? "").hasPrefix("Basic"))
     }
 
-    /// Same merge-order check on the dotcom-token path used by Jetpack-tunneled
-    /// requests when WPCOM credentials are present.
     func test_customHeaders_survive_dotcom_token_auth_wrapper() throws {
         // Given
         let request = JetpackRequest(wooApiVersion: .mark3,

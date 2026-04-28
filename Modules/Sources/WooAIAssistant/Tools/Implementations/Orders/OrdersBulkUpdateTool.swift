@@ -4,8 +4,7 @@ public enum OrdersBulkUpdateTool {
 
     public static let name = "orders_bulk_update"
 
-    /// Matches WC's server-side default; enforced here so a hallucinated
-    /// bigger array fails fast instead of getting silently chopped server-side.
+    /// WC silently truncates batches above this server-side default; enforce locally to fail fast.
     public static let maxBatchSize = 100
 
     public static func make() -> RESTTool {

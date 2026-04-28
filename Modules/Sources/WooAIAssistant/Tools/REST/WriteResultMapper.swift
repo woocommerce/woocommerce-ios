@@ -1,13 +1,8 @@
 import Foundation
 
-/// Maps a write response into a `ToolResult`, surfacing the `outcome_unknown`
-/// state on transport drops and timeouts. A write that vanished into a black
-/// hole could still have applied server-side, so retrying it would risk a
-/// duplicate update; the orchestrator renders this kind as a "verify on the
-/// store" prompt rather than an automatic retry.
+/// Maps write responses, classifying transport drops and timeouts as `outcomeUnknown`.
+/// The write may still have applied server-side, so retrying risks a duplicate update.
 enum WriteResultMapper {
-    /// The idempotency key is echoed into the failure `code` so the orchestrator
-    /// can show it to the merchant for manual reconciliation.
     static func mapEntity(_ response: WCRESTResponse,
                           toolName: String,
                           idempotencyKey: String,
@@ -37,9 +32,8 @@ enum WriteResultMapper {
                               uiStructured: UIStructured(cards: [card])))
     }
 
-    /// WC's batch endpoint returns 200 with an `update` array even when
-    /// individual entries failed, so the summary counts updates and surfaces
-    /// the per-entry errors instead of letting partial failures look successful.
+    /// WC's batch endpoint returns 200 even when individual entries fail, so the summary
+    /// counts and surfaces per-entry errors rather than trusting the envelope status.
     static func mapBatch(_ response: WCRESTResponse,
                          toolName: String,
                          idempotencyKey: String,

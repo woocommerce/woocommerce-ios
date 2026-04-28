@@ -96,10 +96,8 @@ public enum ProductsUpdateTool {
                                  reason: "at least one editable field must be provided"))
         }
 
-        // Always-on extra GET on price updates: catches WC's silent no-op when a
-        // merchant tries to set price on a variable parent. Cost is one round-trip
-        // per price update for simple products too, which we accept because
-        // looping on a no-op write is a worse failure mode than one extra GET.
+        // Pre-flight GET catches WC's silent no-op when price is set on a variable parent;
+        // the extra round-trip on simple products is cheaper than looping on a no-op write.
         if body["regular_price"] != nil || body["sale_price"] != nil {
             if let failure = await variablePriceRefusal(productID: args.id, client: client) {
                 return .failed(failure)
@@ -121,10 +119,6 @@ public enum ProductsUpdateTool {
                                                           summarize: ProductSummary.make)
     }
 
-    /// WC silently no-ops `regular_price` / `sale_price` writes on a variable
-    /// parent (200 OK with the unchanged product). A pre-flight GET catches
-    /// the type and routes the model at the variation tool instead of letting
-    /// it loop on identical PUTs that never land.
     private static func variablePriceRefusal(productID: Int, client: WCRESTClient) async -> ToolResult.Failed? {
         let probe = await client.request(method: "GET",
                                          path: "wc/v3/products/\(productID)",

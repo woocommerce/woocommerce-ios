@@ -266,6 +266,11 @@ final class StorePerformanceViewModel: ObservableObject {
                 }
                 stores.dispatch(action)
             }
+            // Defensive: the API should echo back the value we just sent. If it doesn't, treat the
+            // response as a failure so the sheet surfaces an error instead of silently advancing.
+            guard saved == newOrderType else {
+                throw OrderTypeUpdateError.unexpectedSavedValue(expected: newOrderType, received: saved)
+            }
             orderType = saved
             // Server-side filter changed: invalidate the cached timestamp so the next sync hits the network.
             DashboardTimestampStore.removeTimestamp(for: .performance, at: timeRange.timestampRange)
@@ -276,6 +281,10 @@ final class StorePerformanceViewModel: ObservableObject {
             analytics.track(event: .Dashboard.performanceCardOrderTypeUpdateFailed(error: error))
         }
     }
+}
+
+private enum OrderTypeUpdateError: Error {
+    case unexpectedSavedValue(expected: AnalyticsOrderDateType, received: AnalyticsOrderDateType)
 }
 
 // MARK: - Data for `StorePerformanceView`

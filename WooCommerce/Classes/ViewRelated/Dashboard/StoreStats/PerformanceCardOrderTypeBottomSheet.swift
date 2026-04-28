@@ -70,7 +70,10 @@ struct PerformanceCardOrderTypeBottomSheet: View {
             updatingType = type
             await viewModel.didSelectOrderType(type)
             updatingType = nil
-            if viewModel.orderTypeUpdateError == nil {
+            // Dismiss only if the save actually took effect on the view model.
+            // If the save failed (or the server returned a value that doesn't match), the sheet stays
+            // open so the inline error block remains visible.
+            if viewModel.orderType == type {
                 dismiss()
             }
         }

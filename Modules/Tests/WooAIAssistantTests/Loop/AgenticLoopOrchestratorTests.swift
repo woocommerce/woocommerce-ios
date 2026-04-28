@@ -166,9 +166,6 @@ struct AgenticLoopOrchestratorTests {
                               parametersSchema: .object([:]),
                               safetyLevel: .safe)
         let chat = MockAIChatService()
-        // Three iterations, each calling the tool with DIFFERENT args
-        // so dedupe doesn't short-circuit. We pass maxIterations: 3 to
-        // make this terminate quickly while exercising the cap path.
         let scriptedTurns: [[ChatStreamEvent]] = (0..<3).map { i in
             let call = OpenAIChat.ToolCall(
                 id: "call_\(i)",
@@ -183,54 +180,40 @@ struct AgenticLoopOrchestratorTests {
         await registry.setResult(for: "orders_list",
                                  result: .success(.init(toolName: "orders_list",
                                                         structured: .object(["count": .int(0)]))))
-        let recorder = DiagnosticsRecorder()
-        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
-                                                   toolRegistry: registry,
-                                                   maxIterations: 3,
-                                                   diagnostics: { event in
-                                                       Task { await recorder.append(event) }
-                                                   })
 
-        // When
-        var events: [AssistantEvent] = []
-        for try await event in orchestrator.run(prompt: "List everything") {
-            events.append(event)
+        // When + Then
+        var collected: [AssistantEvent] = []
+        var orchestratorRef: AgenticLoopOrchestrator?
+        await confirmation { confirmCapDiagnostic in
+            let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                       toolRegistry: registry,
+                                                       maxIterations: 3,
+                                                       diagnostics: { event in
+                                                           if case .maxIterationsHit(let iterations) = event,
+                                                              iterations == 3 {
+                                                               confirmCapDiagnostic()
+                                                           }
+                                                       })
+            orchestratorRef = orchestrator
+            do {
+                for try await event in orchestrator.run(prompt: "List everything") {
+                    collected.append(event)
+                }
+            } catch {
+                Issue.record("Stream failed: \(error)")
+            }
         }
 
-        // Then
-        let textChunks: [String] = events.compactMap { event in
+        let textChunks: [String] = collected.compactMap { event in
             if case .textChunk(let text) = event {
                 return text
             }
             return nil
         }
         #expect(textChunks.contains { $0.contains("a few more steps than expected") })
-        #expect(events.contains(.completed(routeConfidence: nil)))
+        #expect(collected.contains(.completed(routeConfidence: nil)))
 
-        let outcome = await orchestrator.lastOutcome
+        let outcome = await orchestratorRef?.lastOutcome
         #expect(outcome == .maxIterations(iterations: 3))
-
-        // The diagnostics handler dispatches via fire-and-forget Task hops; give the actor a moment to drain.
-        try await Task.sleep(for: .milliseconds(50))
-        let diagnostics = await recorder.snapshot()
-        let capDiagnostic = diagnostics.first { event in
-            if case .maxIterationsHit(let iterations) = event {
-                return iterations == 3
-            }
-            return false
-        }
-        #expect(capDiagnostic != nil)
-    }
-}
-
-private actor DiagnosticsRecorder {
-    private var events: [LoopDiagnosticsEvent] = []
-
-    func append(_ event: LoopDiagnosticsEvent) {
-        events.append(event)
-    }
-
-    func snapshot() -> [LoopDiagnosticsEvent] {
-        events
     }
 }

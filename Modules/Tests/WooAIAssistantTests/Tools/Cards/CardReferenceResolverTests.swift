@@ -21,13 +21,13 @@ struct CardReferenceResolverTests {
         ]
 
         // When
-        let result = await resolver.resolve(references)
+        let resolutions = await resolver.resolve(references)
 
         // Then
-        #expect(result.resolutions.count == 3)
-        #expect(isResolved(result.resolutions[0], family: .order, id: "3551"))
-        #expect(isResolved(result.resolutions[1], family: .product, id: "42"))
-        #expect(isResolved(result.resolutions[2], family: .customer, id: "7"))
+        #expect(resolutions.count == 3)
+        #expect(isResolved(resolutions[0], family: .order, id: "3551"))
+        #expect(isResolved(resolutions[1], family: .product, id: "42"))
+        #expect(isResolved(resolutions[2], family: .customer, id: "7"))
     }
 
     @Test
@@ -44,10 +44,10 @@ struct CardReferenceResolverTests {
         let references = [1, 2, 3].map { CardReference(family: .order, id: String($0)) }
 
         // When
-        let result = await resolver.resolve(references)
+        let resolutions = await resolver.resolve(references)
 
         // Then
-        #expect(result.resolutions.count == 3)
+        #expect(resolutions.count == 3)
         #expect(client.calls.filter { $0 == "wc/v3/orders" }.count == 1)
     }
 
@@ -62,15 +62,15 @@ struct CardReferenceResolverTests {
         let references = (1...11).map { CardReference(family: .order, id: String($0)) }
 
         // When
-        let result = await resolver.resolve(references)
+        let resolutions = await resolver.resolve(references)
 
         // Then
-        #expect(result.resolutions.count == 11)
+        #expect(resolutions.count == 11)
         for index in 0..<10 {
-            #expect(isResolved(result.resolutions[index], family: .order, id: String(index + 1)),
+            #expect(isResolved(resolutions[index], family: .order, id: String(index + 1)),
                     "expected resolution \(index) to be resolved")
         }
-        if case .rejected(_, _, let reason) = result.resolutions[10] {
+        if case .rejected(_, _, let reason) = resolutions[10] {
             #expect(reason == .overLimit)
         } else {
             Issue.record("expected overflow to be rejected.overLimit")
@@ -90,11 +90,11 @@ struct CardReferenceResolverTests {
         ]
 
         // When
-        let result = await resolver.resolve(references)
+        let resolutions = await resolver.resolve(references)
 
         // Then
-        #expect(isResolved(result.resolutions[0], family: .order, id: "3551"))
-        if case .rejected(let family, let id, let reason) = result.resolutions[1] {
+        #expect(isResolved(resolutions[0], family: .order, id: "3551"))
+        if case .rejected(let family, let id, let reason) = resolutions[1] {
             #expect(family == .order)
             #expect(id == "3551")
             #expect(reason == .duplicate)
@@ -111,10 +111,10 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: "0")])
+        let resolutions = await resolver.resolve([CardReference(family: .order, id: "0")])
 
         // Then
-        if case .rejected(_, _, let reason) = result.resolutions[0] {
+        if case .rejected(_, _, let reason) = resolutions[0] {
             #expect(reason == .malformed)
         } else {
             Issue.record("expected rejected.malformed")
@@ -129,10 +129,10 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: "abc")])
+        let resolutions = await resolver.resolve([CardReference(family: .order, id: "abc")])
 
         // Then
-        if case .rejected(_, _, let reason) = result.resolutions[0] {
+        if case .rejected(_, _, let reason) = resolutions[0] {
             #expect(reason == .malformed)
         } else {
             Issue.record("expected rejected.malformed")
@@ -148,10 +148,10 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(registry: registry, client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .product, id: "42")])
+        let resolutions = await resolver.resolve([CardReference(family: .product, id: "42")])
 
         // Then
-        if case .rejected(_, _, let reason) = result.resolutions[0] {
+        if case .rejected(_, _, let reason) = resolutions[0] {
             #expect(reason == .unsupportedFamily)
         } else {
             Issue.record("expected rejected.unsupportedFamily")
@@ -166,10 +166,10 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: "9999")])
+        let resolutions = await resolver.resolve([CardReference(family: .order, id: "9999")])
 
         // Then
-        if case .rejected(_, _, let reason) = result.resolutions[0] {
+        if case .rejected(_, _, let reason) = resolutions[0] {
             #expect(reason == .notFound)
         } else {
             Issue.record("expected rejected.notFound")
@@ -188,11 +188,11 @@ struct CardReferenceResolverTests {
         ]
 
         // When
-        let result = await resolver.resolve(references)
+        let resolutions = await resolver.resolve(references)
 
         // Then
         for index in 0..<2 {
-            if case .rejected(_, _, let reason) = result.resolutions[index] {
+            if case .rejected(_, _, let reason) = resolutions[index] {
                 #expect(reason == .notPermitted)
             } else {
                 Issue.record("expected rejected.notPermitted at slot \(index)")
@@ -209,10 +209,10 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: "3551")])
+        let resolutions = await resolver.resolve([CardReference(family: .order, id: "3551")])
 
         // Then
-        if case .rejected(_, _, let reason) = result.resolutions[0] {
+        if case .rejected(_, _, let reason) = resolutions[0] {
             #expect(reason == .staleReference)
         } else {
             Issue.record("expected rejected.staleReference")
@@ -227,10 +227,10 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: "3551")])
+        let resolutions = await resolver.resolve([CardReference(family: .order, id: "3551")])
 
         // Then
-        if case .rejected(_, _, let reason) = result.resolutions[0] {
+        if case .rejected(_, _, let reason) = resolutions[0] {
             #expect(reason == .staleReference)
         } else {
             Issue.record("expected rejected.staleReference")
@@ -245,10 +245,10 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: "1")])
+        let resolutions = await resolver.resolve([CardReference(family: .order, id: "1")])
 
         // Then
-        if case .rejected(_, _, let reason) = result.resolutions[0] {
+        if case .rejected(_, _, let reason) = resolutions[0] {
             #expect(reason == .fetchFailed)
         } else {
             Issue.record("expected rejected.fetchFailed")
@@ -263,10 +263,10 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
 
         // When
-        let result = await resolver.resolve([CardReference(family: .order, id: "1")])
+        let resolutions = await resolver.resolve([CardReference(family: .order, id: "1")])
 
         // Then
-        if case .rejected(_, _, let reason) = result.resolutions[0] {
+        if case .rejected(_, _, let reason) = resolutions[0] {
             #expect(reason == .internalError)
         } else {
             Issue.record("expected rejected.internalError")
@@ -287,16 +287,16 @@ struct CardReferenceResolverTests {
         ]
 
         // When
-        let result = await resolver.resolve(references)
+        let resolutions = await resolver.resolve(references)
 
         // Then
-        #expect(isResolved(result.resolutions[0], family: .order, id: "3551"))
-        if case .rejected(_, _, let reason) = result.resolutions[1] {
+        #expect(isResolved(resolutions[0], family: .order, id: "3551"))
+        if case .rejected(_, _, let reason) = resolutions[1] {
             #expect(reason == .notFound)
         } else {
             Issue.record("expected slot 1 to be rejected.notFound")
         }
-        if case .rejected(_, _, let reason) = result.resolutions[2] {
+        if case .rejected(_, _, let reason) = resolutions[2] {
             #expect(reason == .duplicate)
         } else {
             Issue.record("expected slot 2 to be rejected.duplicate")

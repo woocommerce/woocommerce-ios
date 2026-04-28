@@ -12,7 +12,7 @@ public struct CardReferenceResolver: Sendable {
         self.client = client
     }
 
-    public func resolve(_ references: [CardReference]) async -> ShowCardsResult {
+    public func resolve(_ references: [CardReference]) async -> [Resolution] {
         let bounded = Array(references.prefix(Self.maxReferencesPerCall))
         var resolutions: [Resolution] = Array(repeating: .rejected(family: nil, id: nil, reason: .internalError),
                                               count: bounded.count)
@@ -69,7 +69,7 @@ public struct CardReferenceResolver: Sendable {
                 count: overflow
             ))
         }
-        return ShowCardsResult(resolutions: resolutions)
+        return resolutions
     }
 
     private func resolution(family: CardFamilyID,

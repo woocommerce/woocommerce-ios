@@ -53,18 +53,18 @@ public enum ShowCardsTool {
             case .failure(let failed): return .failed(failed)
             }
             let resolver = CardReferenceResolver(registry: registry, client: client)
-            let result = await resolver.resolve(request.references)
-            return projection(of: result, requested: request.references.count)
+            let resolutions = await resolver.resolve(request.references)
+            return projection(of: resolutions, requested: request.references.count)
         }
     }
 
-    private static func projection(of result: ShowCardsResult, requested: Int) -> ToolResult {
+    private static func projection(of resolutions: [Resolution], requested: Int) -> ToolResult {
         var resolvedRefs: [AnyCodableJSON] = []
         var missingRefs: [AnyCodableJSON] = []
         var rejectedRefs: [AnyCodableJSON] = []
         var cards: [RenderedCardPayload] = []
 
-        for resolution in result.resolutions {
+        for resolution in resolutions {
             switch resolution {
             case .resolved(let family, let id, let summary, let rendered):
                 resolvedRefs.append(.object([

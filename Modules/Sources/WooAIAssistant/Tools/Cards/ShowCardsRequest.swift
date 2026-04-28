@@ -31,11 +31,3 @@ public enum Resolution: Sendable, Equatable {
                   id: String?,
                   reason: CardRefRejectionReason)
 }
-
-public struct ShowCardsResult: Sendable, Equatable {
-    public let resolutions: [Resolution]
-
-    public init(resolutions: [Resolution]) {
-        self.resolutions = resolutions
-    }
-}

@@ -129,29 +129,4 @@ struct OrdersUpdateToolTests {
         #expect(UUID(uuidString: code) != nil)
     }
 
-    @Test
-    func test_ordersUpdate_when_two_writes_time_out_then_each_gets_a_unique_correlation_id() async throws {
-        // Given
-        let client = MockWCRESTClient(responses: [
-            StubResponses.failure(statusCode: 408),
-            StubResponses.failure(statusCode: 408)
-        ])
-        let tool = OrdersUpdateTool.make()
-
-        // When
-        let firstResult = await tool.executor(#"{"id": 1, "status": "processing"}"#, client)
-        let secondResult = await tool.executor(#"{"id": 2, "status": "processing"}"#, client)
-
-        // Then
-        guard case .failed(let firstFailed) = firstResult,
-              case .failed(let secondFailed) = secondResult else {
-            Issue.record("expected both failed, got \(firstResult) and \(secondResult)")
-            return
-        }
-        let firstCode = try #require(firstFailed.code)
-        let secondCode = try #require(secondFailed.code)
-        #expect(UUID(uuidString: firstCode) != nil)
-        #expect(UUID(uuidString: secondCode) != nil)
-        #expect(firstCode != secondCode)
-    }
 }

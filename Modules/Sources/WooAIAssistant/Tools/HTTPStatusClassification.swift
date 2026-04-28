@@ -17,8 +17,6 @@ public enum HTTPStatusClassification {
             return .timeout
         case 429:
             return .rateLimit
-        case 400..<500:
-            return .invalidToolCall
         case 500..<600:
             return .upstreamFailure
         default:

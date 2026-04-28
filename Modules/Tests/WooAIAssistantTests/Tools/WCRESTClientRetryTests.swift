@@ -31,7 +31,7 @@ struct WCRESTClientRetryTests {
     }
 
     @Test
-    func test_request_when_4xx_then_does_not_retry_and_returns_transportError() async {
+    func test_request_when_other_4xx_then_does_not_retry_and_kind_is_unknown() async {
         // Given
         let stub = StubWCRESTClient(responses: [.status(404)])
         let recorder = SleepRecorder()
@@ -50,7 +50,7 @@ struct WCRESTClientRetryTests {
         #expect(response.statusCode == 404)
         #expect(stub.callCount == 1)
         #expect(await recorder.delays.isEmpty)
-        #expect(HTTPStatusClassification.errorKind(forStatusCode: response.statusCode) == .invalidToolCall)
+        #expect(HTTPStatusClassification.errorKind(forStatusCode: response.statusCode) == .unknown)
     }
 
     @Test

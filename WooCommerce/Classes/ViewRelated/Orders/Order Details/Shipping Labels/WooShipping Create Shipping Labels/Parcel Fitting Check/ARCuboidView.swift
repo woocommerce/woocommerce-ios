@@ -59,27 +59,7 @@ struct ARCuboidView: UIViewRepresentable {
 
         arView.environment.sceneUnderstanding.options = [.occlusion]
 
-        // Gestures (added once; toggled enabled/disabled via state).
-        let pan = UIPanGestureRecognizer(
-            target: context.coordinator,
-            action: #selector(Coordinator.handlePan(_:))
-        )
-        pan.maximumNumberOfTouches = 1
-        pan.delegate = context.coordinator
-        pan.isEnabled = false
-        arView.addGestureRecognizer(pan)
-
-        let rotation = UIRotationGestureRecognizer(
-            target: context.coordinator,
-            action: #selector(Coordinator.handleRotation(_:))
-        )
-        rotation.delegate = context.coordinator
-        rotation.isEnabled = false
-        arView.addGestureRecognizer(rotation)
-
         context.coordinator.arView = arView
-        context.coordinator.panGesture = pan
-        context.coordinator.rotationGesture = rotation
         context.coordinator.dimensions = dimensions
         return arView
     }
@@ -100,10 +80,8 @@ struct ARCuboidView: UIViewRepresentable {
         uiView.session.pause()
     }
 
-    final class Coordinator: NSObject, ARSessionDelegate, UIGestureRecognizerDelegate {
+    final class Coordinator: NSObject, ARSessionDelegate {
         weak var arView: ARView?
-        var panGesture: UIPanGestureRecognizer?
-        var rotationGesture: UIRotationGestureRecognizer?
 
         @Binding var hasValidTarget: Bool
         @Binding var isPlaced: Bool
@@ -119,14 +97,8 @@ struct ARCuboidView: UIViewRepresentable {
 
         // Placed cuboid
         private var cuboidAnchor: AnchorEntity?
-        private var cuboidEntity: Entity?
-
-        // Drag gesture state
-        private var panStartCuboidPosition: SIMD3<Float>?
-        private var panStartTouchWorldPosition: SIMD3<Float>?
-
-        // Rotation gesture state
-        private var rotationStartYaw: Float = 0
+        private var cuboidEntity: ModelEntity?
+        private var installedGestures: [EntityGestureRecognizer] = []
 
         init(hasValidTarget: Binding<Bool>, isPlaced: Binding<Bool>) {
             self._hasValidTarget = hasValidTarget
@@ -147,20 +119,35 @@ struct ARCuboidView: UIViewRepresentable {
             guard !isPlaced, let target = currentTarget else { return }
             clearGhost()
             buildCuboid(at: target)
+            installCuboidGestures()
             isPlaced = true
-            panGesture?.isEnabled = true
-            rotationGesture?.isEnabled = true
         }
 
         func removeCuboid() {
+            uninstallCuboidGestures()
             if let cuboidAnchor, let arView {
                 arView.scene.removeAnchor(cuboidAnchor)
             }
             cuboidAnchor = nil
             cuboidEntity = nil
             isPlaced = false
-            panGesture?.isEnabled = false
-            rotationGesture?.isEnabled = false
+        }
+
+        private func installCuboidGestures() {
+            guard let arView, let cuboidEntity else { return }
+            cuboidEntity.generateCollisionShapes(recursive: true)
+            installedGestures = arView.installGestures(
+                [.translation, .rotation],
+                for: cuboidEntity
+            )
+        }
+
+        private func uninstallCuboidGestures() {
+            guard let arView else { return }
+            for gesture in installedGestures {
+                arView.removeGestureRecognizer(gesture)
+            }
+            installedGestures.removeAll()
         }
 
         func updateDimensions(_ dims: SIMD3<Float>) {
@@ -220,16 +207,21 @@ struct ARCuboidView: UIViewRepresentable {
         private func buildCuboid(at world: SIMD3<Float>) {
             guard let arView else { return }
 
-            let root = Entity()
+            // Root must be a `ModelEntity` so RealityKit's translation +
+            // rotation gestures can target it. The root itself has no model;
+            // the visible fill and wireframe edges are children.
+            let root = ModelEntity()
             root.position = world
             root.transform.scale = dimensions
 
             // Translucent fill — unit cube whose bottom sits on the surface.
-            var fillMaterial = PhysicallyBasedMaterial()
-            fillMaterial.baseColor = .init(tint: .systemYellow)
-            fillMaterial.blending = .transparent(opacity: .init(floatLiteral: 0.25))
-            fillMaterial.roughness = 0.5
-            fillMaterial.metallic = 0.0
+            // `UnlitMaterial` renders every face with the same alpha-blended
+            // colour regardless of normal direction; PBR makes the bottom
+            // face shade dark (it faces away from the light) which looks
+            // like an inset when viewed through the translucent top.
+            let fillMaterial = UnlitMaterial(
+                color: UIColor.systemYellow.withAlphaComponent(0.25)
+            )
 
             let fill = ModelEntity(
                 mesh: .generateBox(size: SIMD3(1, 1, 1)),
@@ -299,54 +291,6 @@ struct ARCuboidView: UIViewRepresentable {
             return edges
         }
 
-        // MARK: Gestures
-
-        @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
-            guard let arView, let cuboidEntity, isPlaced else { return }
-            let location = gesture.location(in: arView)
-
-            switch gesture.state {
-            case .began:
-                panStartCuboidPosition = cuboidEntity.position
-                panStartTouchWorldPosition = raycastWorldPosition(from: location, in: arView)
-
-            case .changed:
-                guard let panStartCuboidPosition,
-                      let panStartTouchWorldPosition,
-                      let currentRaycast = raycastWorldPosition(from: location, in: arView) else { return }
-                let delta = currentRaycast - panStartTouchWorldPosition
-                cuboidEntity.position = panStartCuboidPosition + SIMD3(delta.x, 0, delta.z)
-
-            case .ended, .cancelled, .failed:
-                panStartCuboidPosition = nil
-                panStartTouchWorldPosition = nil
-
-            default:
-                break
-            }
-        }
-
-        @objc func handleRotation(_ gesture: UIRotationGestureRecognizer) {
-            guard let cuboidEntity, isPlaced else { return }
-
-            switch gesture.state {
-            case .began:
-                rotationStartYaw = currentYaw(of: cuboidEntity)
-
-            case .changed:
-                let yaw = rotationStartYaw - Float(gesture.rotation)
-                cuboidEntity.transform.rotation = simd_quatf(angle: yaw, axis: SIMD3(0, 1, 0))
-
-            default:
-                break
-            }
-        }
-
-        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
-                               shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-            true
-        }
-
         // MARK: Helpers
 
         private func raycastWorldPosition(from location: CGPoint, in arView: ARView) -> SIMD3<Float>? {
@@ -375,11 +319,6 @@ struct ARCuboidView: UIViewRepresentable {
                 )
             }
             return nil
-        }
-
-        private func currentYaw(of entity: Entity) -> Float {
-            let q = entity.transform.rotation
-            return 2 * atan2(q.imag.y, q.real)
         }
     }
 }

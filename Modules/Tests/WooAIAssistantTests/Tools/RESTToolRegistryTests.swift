@@ -4,12 +4,12 @@ import Testing
 
 struct RESTToolRegistryTests {
     @Test
-    func test_execute_when_tool_unknown_then_returns_validationError() async {
+    func test_execute_when_tool_unknown_then_returns_failed_invalidToolCall() async {
         // Given
         let registry = RESTToolRegistry(client: NoopWCRESTClient(), tools: [])
 
         // When
-        let result = await registry.execute(name: "missing_tool", arguments: "{}")
+        let result = await registry.execute(name: "missing_tool", arguments: "{}", toolCallID: "call_xyz")
 
         // Then
         guard case .failed(let failed) = result else {
@@ -19,10 +19,11 @@ struct RESTToolRegistryTests {
         #expect(failed.toolName == "missing_tool")
         #expect(failed.kind == .invalidToolCall)
         #expect(failed.reason.contains("missing_tool"))
+        #expect(failed.toolCallID == "call_xyz")
     }
 
     @Test
-    func test_execute_when_executor_returns_success_then_payload_passes_through() async {
+    func test_execute_when_success_then_passes_payload_through() async {
         // Given
         let structured = AnyCodableJSON.object([
             "count": .int(2),
@@ -33,9 +34,7 @@ struct RESTToolRegistryTests {
                                description: "List orders",
                                parametersSchema: .object([:])),
             executor: { _, _ in
-                .success(.init(toolName: "orders_list",
-                               toolCallID: "call_1",
-                               structured: structured))
+                .success(.init(toolName: "orders_list", structured: structured))
             }
         )
         let registry = RESTToolRegistry(client: NoopWCRESTClient(), tools: [tool])
@@ -49,9 +48,35 @@ struct RESTToolRegistryTests {
             return
         }
         #expect(success.toolName == "orders_list")
-        #expect(success.toolCallID == "call_1")
         #expect(success.structured == structured)
         #expect(success.uiStructured == nil)
+    }
+
+    @Test
+    func test_execute_stamps_toolCallID_overriding_what_executor_emits() async {
+        // Given
+        let tool = RESTTool(
+            definition: AITool(name: "orders_get",
+                               description: "Get",
+                               parametersSchema: .object([:])),
+            executor: { _, _ in
+                .failed(.init(toolName: "orders_get",
+                              toolCallID: "executor_emitted",
+                              kind: .toolFailed,
+                              reason: "stub"))
+            }
+        )
+        let registry = RESTToolRegistry(client: NoopWCRESTClient(), tools: [tool])
+
+        // When
+        let result = await registry.execute(name: "orders_get", arguments: "{}", toolCallID: "call_real")
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected .failed, got \(result)")
+            return
+        }
+        #expect(failed.toolCallID == "call_real")
     }
 
     @Test
@@ -70,9 +95,7 @@ struct RESTToolRegistryTests {
                                          query: nil,
                                          body: nil,
                                          headers: nil)
-                return .success(.init(toolName: "orders_get",
-                                      toolCallID: "call_2",
-                                      structured: .object(["ok": .bool(true)])))
+                return .success(.init(toolName: "orders_get", structured: .object(["ok": .bool(true)])))
             }
         )
         let registry = RESTToolRegistry(client: probingClient, tools: [tool])
@@ -93,19 +116,13 @@ struct RESTToolRegistryTests {
             definition: AITool(name: "orders_list",
                                description: "List",
                                parametersSchema: .object([:])),
-            executor: { _, _ in .failed(.init(toolName: "orders_list",
-                                              toolCallID: "",
-                                              kind: .toolFailed,
-                                              reason: "stub")) }
+            executor: { _, _ in .failed(.init(toolName: "orders_list", kind: .toolFailed, reason: "stub")) }
         )
         let getTool = RESTTool(
             definition: AITool(name: "orders_get",
                                description: "Get",
                                parametersSchema: .object([:])),
-            executor: { _, _ in .failed(.init(toolName: "orders_get",
-                                              toolCallID: "",
-                                              kind: .toolFailed,
-                                              reason: "stub")) }
+            executor: { _, _ in .failed(.init(toolName: "orders_get", kind: .toolFailed, reason: "stub")) }
         )
         let registry = RESTToolRegistry(client: NoopWCRESTClient(), tools: [listTool, getTool])
 

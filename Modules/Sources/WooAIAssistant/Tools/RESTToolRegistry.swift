@@ -15,14 +15,15 @@ public struct RESTToolRegistry: ToolRegistry {
         tools.values.map { $0.definition }
     }
 
-    public func execute(name: String, arguments: String) async -> ToolResult {
+    public func execute(name: String, arguments: String, toolCallID: String) async -> ToolResult {
         guard let tool = tools[name] else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
+                                 toolCallID: toolCallID,
                                  kind: .invalidToolCall,
                                  reason: "Unknown tool: \(name)"))
         }
-        return await tool.executor(arguments, client)
+        let result = await tool.executor(arguments, client)
+        return result.stamping(toolCallID: toolCallID)
     }
 }
 

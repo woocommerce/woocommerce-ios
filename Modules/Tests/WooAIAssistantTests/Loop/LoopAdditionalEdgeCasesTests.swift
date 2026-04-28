@@ -95,6 +95,49 @@ struct LoopAdditionalEdgeCasesTests {
     }
 
     @Test
+    func test_run_when_stream_cancelled_during_confirmation_then_pending_continuations_resolve_false_and_outcome_is_stopped() async throws {
+        // Given
+        let unsafeTool = AITool(name: "orders_update",
+                                description: "Update an order",
+                                parametersSchema: .object([:]),
+                                safetyLevel: .unsafe)
+        let chat = MockAIChatService()
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_1",
+            function: .init(name: "orders_update", arguments: #"{"id":42}"#)
+        )
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([unsafeTool])
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   safetyPolicy: DefaultSafetyPolicy())
+        let confirmationSeen = AsyncSignal()
+
+        // When
+        let consumerTask = Task {
+            for try await event in orchestrator.run(prompt: "Mark order 42 processing") {
+                if case .confirmationRequired = event {
+                    await confirmationSeen.signal()
+                    return
+                }
+            }
+        }
+        await confirmationSeen.wait()
+        consumerTask.cancel()
+        _ = try? await consumerTask.value
+        try await Task.sleep(for: .milliseconds(100))
+
+        // Then
+        let invocations = await registry.invocationCount(for: "orders_update")
+        #expect(invocations == 0)
+        let outcome = await orchestrator.lastOutcome
+        #expect(outcome == .stopped)
+    }
+
+    @Test
     func test_run_when_chatService_throws_mid_stream_then_emits_failed_and_lastOutcome_is_failed() async throws {
         // Given
         let chat = MockAIChatService()
@@ -129,4 +172,29 @@ struct LoopAdditionalEdgeCasesTests {
 
 private enum MockStreamError: Error {
     case upstream
+}
+
+/// Single-shot signal so the test can wait for an event without polling.
+private actor AsyncSignal {
+    private var continuation: CheckedContinuation<Void, Never>?
+    private var signaled = false
+
+    func signal() {
+        if let pending = continuation {
+            continuation = nil
+            pending.resume()
+        } else {
+            signaled = true
+        }
+    }
+
+    func wait() async {
+        if signaled {
+            signaled = false
+            return
+        }
+        await withCheckedContinuation { cont in
+            continuation = cont
+        }
+    }
 }

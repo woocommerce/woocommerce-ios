@@ -92,7 +92,7 @@ struct OrdersBulkUpdateToolTests {
     }
 
     @Test
-    func test_ordersBulkUpdate_when_408_after_upload_then_returns_outcomeUnknown_with_uuid_correlation_id() async throws {
+    func test_ordersBulkUpdate_when_408_after_upload_then_returns_outcomeUnknown() async throws {
         // Given
         let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 408))
         let tool = OrdersBulkUpdateTool.make()
@@ -105,8 +105,5 @@ struct OrdersBulkUpdateToolTests {
             Issue.record("expected failed, got \(result)")
             return
         }
-        #expect(failed.kind == .outcomeUnknown)
-        let code = try #require(failed.code)
-        #expect(UUID(uuidString: code) != nil)
-    }
+        #expect(failed.kind == .outcomeUnknown)    }
 }

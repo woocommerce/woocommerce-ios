@@ -111,7 +111,7 @@ struct OrdersUpdateToolTests {
     }
 
     @Test
-    func test_ordersUpdate_when_url_timedOut_after_upload_then_returns_outcomeUnknown_with_uuid_correlation_id() async throws {
+    func test_ordersUpdate_when_url_timedOut_after_upload_then_returns_outcomeUnknown() async throws {
         // Given
         let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 408))
         let tool = OrdersUpdateTool.make()
@@ -124,9 +124,6 @@ struct OrdersUpdateToolTests {
             Issue.record("expected failed, got \(result)")
             return
         }
-        #expect(failed.kind == .outcomeUnknown)
-        let code = try #require(failed.code)
-        #expect(UUID(uuidString: code) != nil)
-    }
+        #expect(failed.kind == .outcomeUnknown)    }
 
 }

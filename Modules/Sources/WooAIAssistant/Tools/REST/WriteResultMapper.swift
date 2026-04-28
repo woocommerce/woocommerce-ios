@@ -3,16 +3,11 @@ import Foundation
 /// Maps write responses, classifying transport drops and timeouts as `outcomeUnknown`.
 /// The write may still have applied server-side, so retrying risks a duplicate update.
 enum WriteResultMapper {
-    /// Local-only correlation ID surfaced as `outcomeUnknown.code` for support
-    /// traceability. Never sent on the wire.
     static func mapEntity(_ response: WCRESTResponse,
                           toolName: String,
-                          correlationID: String,
                           family: CardFamilyID,
                           summarize: (AnyCodableJSON) -> AnyCodableJSON) -> ToolResult {
-        if let unknown = unknownOutcomeFailure(response: response,
-                                               toolName: toolName,
-                                               correlationID: correlationID) {
+        if let unknown = unknownOutcomeFailure(response: response, toolName: toolName) {
             return .failed(unknown)
         }
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
@@ -40,11 +35,8 @@ enum WriteResultMapper {
     /// counts and surfaces per-entry errors rather than trusting the envelope status.
     static func mapBatch(_ response: WCRESTResponse,
                          toolName: String,
-                         correlationID: String,
                          family: CardFamilyID) -> ToolResult {
-        if let unknown = unknownOutcomeFailure(response: response,
-                                               toolName: toolName,
-                                               correlationID: correlationID) {
+        if let unknown = unknownOutcomeFailure(response: response, toolName: toolName) {
             return .failed(unknown)
         }
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
@@ -85,12 +77,10 @@ enum WriteResultMapper {
     }
 
     private static func unknownOutcomeFailure(response: WCRESTResponse,
-                                              toolName: String,
-                                              correlationID: String) -> ToolResult.Failed? {
+                                              toolName: String) -> ToolResult.Failed? {
         guard HTTPStatusClassification.isOutcomeUnknownStatus(response.statusCode) else { return nil }
         return .init(toolName: toolName,
                      kind: .outcomeUnknown,
-                     reason: "Write request did not get a confirmed response. The change may or may not have applied; verify on the store before retrying.",
-                     code: correlationID)
+                     reason: "Write request did not get a confirmed response. The change may or may not have applied; verify on the store before retrying.")
     }
 }

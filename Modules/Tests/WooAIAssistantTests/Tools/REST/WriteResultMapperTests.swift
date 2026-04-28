@@ -19,7 +19,6 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "orders_update",
-                                                 correlationID: "key-1",
                                                  family: .order,
                                                  summarize: { entity in
             if case .object(let dict) = entity, let status = dict["status"] {
@@ -50,14 +49,13 @@ struct WriteResultMapperTests {
     }
 
     @Test
-    func test_mapEntity_when_response_408_then_returns_outcomeUnknown_with_correlation_id_in_code() {
+    func test_mapEntity_when_response_408_then_returns_outcomeUnknown() {
         // Given
         let response = WCRESTResponse(data: Data(), statusCode: 408)
 
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "orders_update",
-                                                 correlationID: "key-2",
                                                  family: .order,
                                                  summarize: { _ in .object([:]) })
 
@@ -67,7 +65,6 @@ struct WriteResultMapperTests {
             return
         }
         #expect(failed.kind == .outcomeUnknown)
-        #expect(failed.code == "key-2")
     }
 
     @Test
@@ -78,7 +75,6 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "products_update",
-                                                 correlationID: "key-3",
                                                  family: .product,
                                                  summarize: { _ in .object([:]) })
 
@@ -87,7 +83,6 @@ struct WriteResultMapperTests {
             Issue.record("expected outcomeUnknown, got \(result)")
             return
         }
-        #expect(failed.code == "key-3")
     }
 
     @Test
@@ -98,7 +93,6 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "orders_update",
-                                                 correlationID: "key-4",
                                                  family: .order,
                                                  summarize: { _ in .object([:]) })
 
@@ -119,7 +113,6 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "orders_update",
-                                                 correlationID: "key-no-id",
                                                  family: .order,
                                                  summarize: { entity in entity })
 
@@ -142,7 +135,6 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapBatch(response,
                                                 toolName: "products_bulk_update",
-                                                correlationID: "key-5",
                                                 family: .product)
 
         // Then
@@ -176,7 +168,6 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapBatch(response,
                                                 toolName: "products_bulk_update",
-                                                correlationID: "key-6",
                                                 family: .product)
 
         // Then
@@ -191,14 +182,13 @@ struct WriteResultMapperTests {
     }
 
     @Test
-    func test_mapBatch_when_408_then_returns_outcomeUnknown_with_correlation_id() {
+    func test_mapBatch_when_408_then_returns_outcomeUnknown() {
         // Given
         let response = WCRESTResponse(data: Data(), statusCode: 408)
 
         // When
         let result = WriteResultMapper.mapBatch(response,
                                                 toolName: "orders_bulk_update",
-                                                correlationID: "key-7",
                                                 family: .order)
 
         // Then
@@ -207,6 +197,5 @@ struct WriteResultMapperTests {
             return
         }
         #expect(failed.kind == .outcomeUnknown)
-        #expect(failed.code == "key-7")
     }
 }

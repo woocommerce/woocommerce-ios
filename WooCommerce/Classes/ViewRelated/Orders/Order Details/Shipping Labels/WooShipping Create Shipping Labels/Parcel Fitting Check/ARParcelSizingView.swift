@@ -17,9 +17,7 @@ struct ARParcelSizingView: View {
     @State private var width: Float
     @State private var height: Float
 
-    @State private var hasValidTarget: Bool = false
     @State private var isPlaced: Bool = false
-    @State private var placeTrigger: Int = 0
     @State private var resetTrigger: Int = 0
 
     init(initialLength: Double? = nil,
@@ -40,17 +38,10 @@ struct ARParcelSizingView: View {
         ZStack {
             ARCuboidView(
                 dimensions: dimensionsInMeters(length: length, width: width, height: height),
-                hasValidTarget: $hasValidTarget,
                 isPlaced: $isPlaced,
-                placeTrigger: placeTrigger,
                 resetTrigger: resetTrigger
             )
             .ignoresSafeArea()
-
-            if !isPlaced {
-                ARCuboidReticle(active: hasValidTarget)
-                    .allowsHitTesting(false)
-            }
 
             VStack {
                 topToolbar
@@ -89,7 +80,7 @@ struct ARParcelSizingView: View {
     }
 
     private var hintBanner: some View {
-        Text(isPlaced ? "" : "Aim the reticle at the parcel and tap + to place the cuboid")
+        Text("Tap on the surface to place the fitting box")
             .font(.callout)
             .foregroundStyle(.white)
             .multilineTextAlignment(.center)
@@ -124,11 +115,6 @@ struct ARParcelSizingView: View {
             .padding(16)
             .background(.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 16))
             .padding()
-        } else {
-            ARCuboidPlaceButton(active: hasValidTarget) {
-                placeTrigger += 1
-            }
-            .padding(.bottom, 40)
         }
     }
 

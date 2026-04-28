@@ -12,24 +12,19 @@ import ARKit
 /// detected horizontal plane) and 2-finger yaw rotation.
 ///
 /// State machine:
-/// - Pre-placement: a small ghost preview marker tracks the centre raycast
-///   target. `hasValidTarget` reflects whether the raycast finds a surface,
-///   which the parent uses to enable the "+" button.
+/// - Pre-placement: user taps anywhere on the AR view to place the cuboid
+///   at that surface position.
 /// - Post-placement: the cuboid is anchored, gestures are active, the trash
 ///   button (in the parent) returns to pre-placement state.
 struct ARCuboidView: UIViewRepresentable {
     /// Cuboid dimensions in metres: `x = length`, `y = height`, `z = width`.
     let dimensions: SIMD3<Float>
-    @Binding var hasValidTarget: Bool
     @Binding var isPlaced: Bool
-    /// Increment to place the cuboid at the current reticle target.
-    let placeTrigger: Int
     /// Increment to remove the cuboid and return to placement state.
     let resetTrigger: Int
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(hasValidTarget: $hasValidTarget,
-                    isPlaced: $isPlaced)
+        Coordinator(isPlaced: $isPlaced)
     }
 
     func makeUIView(context: Context) -> ARView {
@@ -45,7 +40,6 @@ struct ARCuboidView: UIViewRepresentable {
             config.sceneReconstruction = .mesh
         }
         arView.session.run(config)
-        arView.session.delegate = context.coordinator
 
         // Visual feedback for finding a horizontal plane.
         let coaching = ARCoachingOverlayView()
@@ -68,6 +62,16 @@ struct ARCuboidView: UIViewRepresentable {
         // translucent fill and looks like an interior shadow.
         arView.renderOptions.insert(.disableGroundingShadows)
 
+        // Tap-to-place: user taps anywhere on the scene to drop the cuboid.
+        // Disabled after placement; re-enabled on reset.
+        let tap = UITapGestureRecognizer(
+            target: context.coordinator,
+            action: #selector(Coordinator.handleTap(_:))
+        )
+        tap.delegate = context.coordinator
+        arView.addGestureRecognizer(tap)
+        context.coordinator.tapGesture = tap
+
         // Screen-wide two-finger rotation (like ParcelBroker AR). Starts
         // disabled; enabled once the cuboid is placed.
         let rotation = UIRotationGestureRecognizer(
@@ -85,10 +89,6 @@ struct ARCuboidView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: ARView, context: Context) {
-        if context.coordinator.lastPlaceTrigger != placeTrigger {
-            context.coordinator.lastPlaceTrigger = placeTrigger
-            context.coordinator.placeAtTarget()
-        }
         if context.coordinator.lastResetTrigger != resetTrigger {
             context.coordinator.lastResetTrigger = resetTrigger
             context.coordinator.removeCuboid()
@@ -100,58 +100,46 @@ struct ARCuboidView: UIViewRepresentable {
         uiView.session.pause()
     }
 
-    final class Coordinator: NSObject, ARSessionDelegate, UIGestureRecognizerDelegate {
+    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
         weak var arView: ARView?
 
-        @Binding var hasValidTarget: Bool
         @Binding var isPlaced: Bool
 
         var dimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
-        var lastPlaceTrigger: Int = 0
         var lastResetTrigger: Int = 0
-
-        // Pre-placement
-        private var rootAnchor: AnchorEntity?
-        private var ghostMarker: ModelEntity?
-        private var currentTarget: SIMD3<Float>?
 
         // Placed cuboid
         private var cuboidAnchor: AnchorEntity?
         private var cuboidEntity: ModelEntity?
         private var installedGestures: [EntityGestureRecognizer] = []
 
-        // Screen-wide rotation
+        // Gestures
+        var tapGesture: UITapGestureRecognizer?
         var rotationGesture: UIRotationGestureRecognizer?
         private var rotationStartYaw: Float = 0
 
-        init(hasValidTarget: Binding<Bool>, isPlaced: Binding<Bool>) {
-            self._hasValidTarget = hasValidTarget
+        init(isPlaced: Binding<Bool>) {
             self._isPlaced = isPlaced
         }
 
-        // MARK: ARSessionDelegate
+        // MARK: Tap-to-place
 
-        func session(_ session: ARSession, didUpdate frame: ARFrame) {
-            if !isPlaced {
-                updateTarget()
+        @objc func handleTap(_ gesture: UITapGestureRecognizer) {
+            guard !isPlaced, let arView else { return }
+            let location = gesture.location(in: arView)
+
+            guard let world = raycastWorldPosition(from: location, in: arView) else {
+                return
             }
-        }
 
-        // MARK: Public actions
-
-        func placeAtTarget() {
-            guard !isPlaced, let target = currentTarget else { return }
-            clearGhost()
-            buildCuboid(at: target)
+            buildCuboid(at: world)
             installCuboidGestures()
-            // Defer the @Binding write — `placeAtTarget` is called from
-            // `updateUIView` which is itself inside a SwiftUI view-update
-            // pass. State writes during a render pass are silently
-            // dropped, so the parent never switches to the "placed" UI.
             DispatchQueue.main.async { [weak self] in
                 self?.isPlaced = true
             }
         }
+
+        // MARK: Public actions
 
         func removeCuboid() {
             uninstallCuboidGestures()
@@ -182,6 +170,7 @@ struct ARCuboidView: UIViewRepresentable {
                 [.translation],
                 for: cuboidEntity
             )
+            tapGesture?.isEnabled = false
             rotationGesture?.isEnabled = true
         }
 
@@ -191,6 +180,7 @@ struct ARCuboidView: UIViewRepresentable {
                 arView.removeGestureRecognizer(gesture)
             }
             installedGestures.removeAll()
+            tapGesture?.isEnabled = true
             rotationGesture?.isEnabled = false
         }
 
@@ -225,56 +215,6 @@ struct ARCuboidView: UIViewRepresentable {
             dimensions = dims
             cuboidEntity?.transform.scale = dims
         }
-
-
-
-        // MARK: Per-frame placement target
-
-        private func updateTarget() {
-            guard let arView, arView.bounds.width > 0 else { return }
-            let center = CGPoint(x: arView.bounds.midX, y: arView.bounds.midY)
-
-            guard let world = raycastWorldPosition(from: center, in: arView) else {
-                if hasValidTarget { hasValidTarget = false }
-                clearGhost()
-                currentTarget = nil
-                return
-            }
-
-            currentTarget = world
-            if !hasValidTarget { hasValidTarget = true }
-
-            ensureRootAnchor()
-            updateGhost(at: world)
-        }
-
-        private func ensureRootAnchor() {
-            guard let arView, rootAnchor == nil else { return }
-            let anchor = AnchorEntity(world: matrix_identity_float4x4)
-            arView.scene.addAnchor(anchor)
-            rootAnchor = anchor
-        }
-
-        private func updateGhost(at world: SIMD3<Float>) {
-            guard let rootAnchor else { return }
-            if let existing = ghostMarker {
-                existing.position = world
-            } else {
-                let marker = ModelEntity(
-                    mesh: .generateBox(size: 0.012, cornerRadius: 0.002),
-                    materials: [UnlitMaterial(color: UIColor.systemBlue.withAlphaComponent(0.5))]
-                )
-                marker.position = world
-                rootAnchor.addChild(marker)
-                ghostMarker = marker
-            }
-        }
-
-        private func clearGhost() {
-            ghostMarker?.removeFromParent()
-            ghostMarker = nil
-        }
-
         // MARK: Cuboid construction
 
         private func buildCuboid(at world: SIMD3<Float>) {

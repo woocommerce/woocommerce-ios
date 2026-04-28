@@ -17,9 +17,7 @@ struct ARParcelFitCheckView: View {
     @State private var selectedCarrierID: String?
     @State private var selectedPackageID: String?
 
-    @State private var hasValidTarget: Bool = false
     @State private var isPlaced: Bool = false
-    @State private var placeTrigger: Int = 0
     @State private var resetTrigger: Int = 0
 
     init(availableCarriers: [WooShippingCarrierPackages],
@@ -47,23 +45,16 @@ struct ARParcelFitCheckView: View {
         ZStack {
             ARCuboidView(
                 dimensions: dimensionsInMeters,
-                hasValidTarget: $hasValidTarget,
                 isPlaced: $isPlaced,
-                placeTrigger: placeTrigger,
                 resetTrigger: resetTrigger
             )
             .ignoresSafeArea()
-
-            if !isPlaced {
-                ARCuboidReticle(active: hasValidTarget)
-                    .allowsHitTesting(false)
-            }
 
             VStack {
                 topToolbar
 
                 if !isPlaced {
-                    Text("Aim the reticle at the parcel and tap + to place the cuboid")
+                    Text("Tap on the surface to place the fitting box")
                         .font(.callout)
                         .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
@@ -126,11 +117,6 @@ struct ARParcelFitCheckView: View {
             .padding(16)
             .background(.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 16))
             .padding()
-        } else {
-            ARCuboidPlaceButton(active: hasValidTarget) {
-                placeTrigger += 1
-            }
-            .padding(.bottom, 40)
         }
     }
 

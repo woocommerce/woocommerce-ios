@@ -56,7 +56,7 @@ struct ShowCardsToolTests {
     }
 
     @Test
-    func test_executor_when_two_resolved_one_rejected_then_structured_summary_lists_all_three_and_uiStructured_only_resolved() async {
+    func test_executor_when_two_resolved_one_missing_then_structured_splits_resolved_and_missing_refs() async {
         // Given
         let client = StubbedWCRESTClient()
         client.stub(path: "wc/v3/orders",
@@ -87,18 +87,22 @@ struct ShowCardsToolTests {
             return
         }
         #expect(structured["requested"] == .int(3))
-        #expect(structured["resolved"] == .int(2))
-        #expect(structured["rejected"] == .int(1))
-        guard case .array(let entries) = structured["resolutions"] else {
-            Issue.record("expected resolutions array")
+        #expect(structured["validated"] == .int(3))
+        #expect(structured["rendered"] == .int(2))
+        guard case .array(let resolvedRefs) = structured["resolved_refs"],
+              case .array(let missingRefs) = structured["missing_refs"],
+              case .array(let rejectedRefs) = structured["rejected_refs"] else {
+            Issue.record("expected resolved_refs/missing_refs/rejected_refs arrays")
             return
         }
-        #expect(entries.count == 3)
-        guard case .object(let firstResolved) = entries[0] else {
-            Issue.record("expected first resolution to be object")
+        #expect(resolvedRefs.count == 2)
+        #expect(missingRefs.count == 1)
+        #expect(rejectedRefs.isEmpty)
+
+        guard case .object(let firstResolved) = resolvedRefs[0] else {
+            Issue.record("expected first resolved to be object")
             return
         }
-        #expect(firstResolved["status"] == .string("resolved"))
         #expect(firstResolved["family"] == .string("order"))
         #expect(firstResolved["id"] == .string("3551"))
         guard case .object(let summary) = firstResolved["summary"] else {
@@ -108,13 +112,13 @@ struct ShowCardsToolTests {
         #expect(summary["status"] == .string("processing"))
         #expect(summary["customer_name"] == .string("Jane Doe"))
 
-        guard case .object(let rejected) = entries[2] else {
-            Issue.record("expected rejected object")
+        guard case .object(let missing) = missingRefs[0] else {
+            Issue.record("expected missing object")
             return
         }
-        #expect(rejected["status"] == .string("rejected"))
-        #expect(rejected["reason"] == .string("notFound"))
-        #expect(rejected["id"] == .string("9999"))
+        #expect(missing["reason"] == .string("notFound"))
+        #expect(missing["id"] == .string("9999"))
+        #expect(missing["family"] == .string("order"))
 
         let cards = success.uiStructured?.cards ?? []
         #expect(cards.count == 2)
@@ -125,7 +129,48 @@ struct ShowCardsToolTests {
     }
 
     @Test
-    func test_executor_when_only_rejected_references_then_uiStructured_is_nil() async {
+    func test_executor_when_duplicate_reference_then_structured_routes_duplicate_to_rejected_refs() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        client.stub(path: "wc/v3/orders",
+                    response: StubResponses.ok("[{\"id\": 3551, \"status\": \"processing\", \"total\": \"120.00\"}]"))
+        let tool = ShowCardsTool.make()
+        let arguments = """
+        {"references": [
+            {"family": "order", "id": "3551"},
+            {"family": "order", "id": "3551"}
+        ]}
+        """
+
+        // When
+        let result = await tool.executor(arguments, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let structured) = success.structured else {
+            Issue.record("expected success with object structured")
+            return
+        }
+        #expect(structured["requested"] == .int(2))
+        #expect(structured["validated"] == .int(1))
+        #expect(structured["rendered"] == .int(1))
+        guard case .array(let resolvedRefs) = structured["resolved_refs"],
+              case .array(let missingRefs) = structured["missing_refs"],
+              case .array(let rejectedRefs) = structured["rejected_refs"] else {
+            Issue.record("expected three ref arrays")
+            return
+        }
+        #expect(resolvedRefs.count == 1)
+        #expect(missingRefs.isEmpty)
+        #expect(rejectedRefs.count == 1)
+        guard case .object(let duplicate) = rejectedRefs[0] else {
+            Issue.record("expected rejected object")
+            return
+        }
+        #expect(duplicate["reason"] == .string("duplicate"))
+    }
+
+    @Test
+    func test_executor_when_only_missing_references_then_uiStructured_is_nil() async {
         // Given
         let client = StubbedWCRESTClient()
         client.setFallback(StubResponses.failure(statusCode: 404))
@@ -143,11 +188,14 @@ struct ShowCardsToolTests {
             return
         }
         #expect(success.uiStructured == nil)
-        if case .object(let structured) = success.structured {
-            #expect(structured["resolved"] == .int(0))
-            #expect(structured["rejected"] == .int(1))
-        } else {
+        guard case .object(let structured) = success.structured else {
             Issue.record("expected object structured")
+            return
+        }
+        #expect(structured["validated"] == .int(1))
+        #expect(structured["rendered"] == .int(0))
+        if case .array(let missingRefs) = structured["missing_refs"] {
+            #expect(missingRefs.count == 1)
         }
     }
 }

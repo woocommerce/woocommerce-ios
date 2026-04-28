@@ -59,39 +59,43 @@ public enum ShowCardsTool {
     }
 
     private static func projection(of result: ShowCardsResult, requested: Int) -> ToolResult {
-        var resolvedCount: Int64 = 0
-        var rejectedCount: Int64 = 0
-        var entries: [AnyCodableJSON] = []
+        var resolvedRefs: [AnyCodableJSON] = []
+        var missingRefs: [AnyCodableJSON] = []
+        var rejectedRefs: [AnyCodableJSON] = []
         var cards: [RenderedCardPayload] = []
 
         for resolution in result.resolutions {
             switch resolution {
             case .resolved(let family, let id, let summary, let rendered):
-                resolvedCount += 1
-                entries.append(.object([
+                resolvedRefs.append(.object([
                     "family": .string(family.rawValue),
                     "id": .string(id),
-                    "status": .string("resolved"),
                     "summary": summary
                 ]))
                 cards.append(rendered)
             case .rejected(let family, let id, let reason):
-                rejectedCount += 1
                 var entry: [String: AnyCodableJSON] = [
-                    "status": .string("rejected"),
                     "reason": .string(reason.rawValue)
                 ]
                 if let family { entry["family"] = .string(family.rawValue) }
                 if let id { entry["id"] = .string(id) }
-                entries.append(.object(entry))
+                switch reason.bucket {
+                case .missing:
+                    missingRefs.append(.object(entry))
+                case .rejected:
+                    rejectedRefs.append(.object(entry))
+                }
             }
         }
 
+        let validated = resolvedRefs.count + missingRefs.count
         let structured: AnyCodableJSON = .object([
             "requested": .int(Int64(requested)),
-            "resolved": .int(resolvedCount),
-            "rejected": .int(rejectedCount),
-            "resolutions": .array(entries)
+            "validated": .int(Int64(validated)),
+            "rendered": .int(Int64(resolvedRefs.count)),
+            "resolved_refs": .array(resolvedRefs),
+            "missing_refs": .array(missingRefs),
+            "rejected_refs": .array(rejectedRefs)
         ])
         let uiStructured: UIStructured? = cards.isEmpty ? nil : UIStructured(cards: cards)
         return .success(.init(toolName: name,

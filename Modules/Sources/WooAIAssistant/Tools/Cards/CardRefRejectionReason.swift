@@ -12,4 +12,21 @@ public enum CardRefRejectionReason: String, Sendable, Codable, Equatable {
     case staleReference
     case fetchFailed
     case internalError
+
+    /// `validated` refs that proceeded to fetch but came back unresolved at the
+    /// data layer go into `missing_refs`. The pre-fetch validation rejects go
+    /// into `rejected_refs`. The split mirrors Android's structured shape.
+    var bucket: Bucket {
+        switch self {
+        case .malformed, .unsupportedFamily, .duplicate:
+            return .rejected
+        case .notFound, .notPermitted, .staleReference, .fetchFailed, .internalError:
+            return .missing
+        }
+    }
+
+    enum Bucket {
+        case missing
+        case rejected
+    }
 }

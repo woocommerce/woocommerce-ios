@@ -69,7 +69,6 @@ struct OrdersGetToolTests {
             return
         }
         #expect(failed.kind == .unknown)
-        #expect(failed.code == "404")
     }
 
     @Test

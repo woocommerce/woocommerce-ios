@@ -7,7 +7,6 @@ actor MockWCRESTClient: WCRESTClient {
         let path: String
         let query: [String: String]
         let body: Data?
-        let headers: [String: String]
     }
 
     private(set) var calls: [Recorded] = []
@@ -24,13 +23,11 @@ actor MockWCRESTClient: WCRESTClient {
     func request(method: String,
                  path: String,
                  query: [String: String]?,
-                 body: Data?,
-                 headers: [String: String]?) async -> WCRESTResponse {
+                 body: Data?) async -> WCRESTResponse {
         calls.append(.init(method: method,
                            path: path,
                            query: query ?? [:],
-                           body: body,
-                           headers: headers ?? [:]))
+                           body: body))
         return responses.count > 1 ? responses.removeFirst() : (responses.first ?? WCRESTResponse(data: Data(), statusCode: 200))
     }
 }

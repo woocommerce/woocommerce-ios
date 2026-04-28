@@ -65,8 +65,7 @@ public enum AnalyticsOrdersTool {
         let response = await client.request(method: "GET",
                                             path: "wc-analytics/reports/orders/stats",
                                             query: query,
-                                            body: nil,
-                                            headers: nil)
+                                            body: nil)
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
             return .failed(RESTToolDispatch.failed(from: response, toolName: name))
         }

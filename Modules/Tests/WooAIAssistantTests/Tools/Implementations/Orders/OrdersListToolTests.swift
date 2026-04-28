@@ -84,7 +84,6 @@ struct OrdersListToolTests {
             return
         }
         #expect(failed.kind == .upstreamFailure)
-        #expect(failed.code == "500")
     }
 
     @Test

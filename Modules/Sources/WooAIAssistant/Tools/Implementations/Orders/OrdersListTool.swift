@@ -119,8 +119,7 @@ public enum OrdersListTool {
         let response = await client.request(method: "GET",
                                             path: "wc/v3/orders",
                                             query: query(from: args),
-                                            body: nil,
-                                            headers: nil)
+                                            body: nil)
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
             return .failed(RESTToolDispatch.failed(from: response, toolName: name))
         }

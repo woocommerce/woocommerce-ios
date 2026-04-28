@@ -10,12 +10,7 @@ import struct WooAIAssistant.WCRESTResponse
 import protocol WooAIAssistant.WCRESTClient
 import CocoaLumberjackSwift
 
-/// `JetpackRequest(availableAsRESTRequest: true)` routes the same way other
-/// remotes do: WPCOM-tunneled with the bearer token, or upgraded to a direct
-/// app-password REST call when the site supports it.
-///
-/// `Network` isn't declared `Sendable`, but the production instance is
-/// constructed once at launch and treated as thread-safe across the app.
+/// `Network` isn't declared `Sendable`, but the production instance is constructed once at launch.
 struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
     private let network: Network
     private let siteID: Int64
@@ -28,14 +23,10 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
     func request(method: String,
                  path: String,
                  query: [String: String]?,
-                 body: Data?,
-                 headers: [String: String]?) async -> WCRESTResponse {
+                 body: Data?) async -> WCRESTResponse {
         let httpMethod = HTTPMethod(rawValue: method.uppercased())
         let (apiVersion, subpath) = Self.splitAPIVersion(from: path)
         let parameters = Self.parameters(forMethod: httpMethod, query: query, body: body)
-        // `JetpackRequest` has no header slot; caller-supplied headers
-        // (e.g. `Idempotency-Key`) are dropped at this boundary.
-        _ = headers
 
         let jetpackRequest = JetpackRequest(wooApiVersion: apiVersion,
                                             method: httpMethod,

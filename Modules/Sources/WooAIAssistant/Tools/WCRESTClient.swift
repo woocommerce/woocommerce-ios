@@ -5,8 +5,7 @@ public protocol WCRESTClient: Sendable {
     func request(method: String,
                  path: String,
                  query: [String: String]?,
-                 body: Data?,
-                 headers: [String: String]?) async -> WCRESTResponse
+                 body: Data?) async -> WCRESTResponse
 }
 
 public struct WCRESTResponse: Sendable, Equatable {

@@ -324,6 +324,10 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
         activityIndicator.startAnimating()
     }
 
+    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        activityIndicator.stopAnimating()
+    }
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         activityIndicator.stopAnimating()
         guard let url = webView.url else {

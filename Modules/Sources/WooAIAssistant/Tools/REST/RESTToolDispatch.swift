@@ -5,6 +5,11 @@ enum RESTToolDispatch {
     static let perPageRange: ClosedRange<Int> = 1...50
     static let defaultPerPage: Int = 20
 
+    enum DecodedArguments<T> {
+        case success(T)
+        case failure(ToolResult.Failed)
+    }
+
     static func clampedPerPage(_ value: Int?) -> Int {
         guard let value else { return defaultPerPage }
         return min(perPageRange.upperBound, max(perPageRange.lowerBound, value))
@@ -13,7 +18,7 @@ enum RESTToolDispatch {
     static func decodeArguments<T: Decodable>(_ type: T.Type,
                                               from json: String,
                                               toolName: String,
-                                              toolCallID: String = "") -> Result<T, ToolResult.Failed> {
+                                              toolCallID: String = "") -> DecodedArguments<T> {
         guard let data = json.data(using: .utf8) else {
             return .failure(.init(toolName: toolName,
                                   toolCallID: toolCallID,

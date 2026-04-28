@@ -79,25 +79,21 @@ public enum OrdersBulkUpdateTool {
         }
         guard !args.ids.isEmpty else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "ids must not be empty"))
         }
         guard args.ids.count <= maxBatchSize else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "ids has \(args.ids.count) entries; max is \(maxBatchSize)"))
         }
         if let status = args.patch.status, !allowedStatuses.contains(status) {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "status must be one of: \(allowedStatuses.sorted().joined(separator: ", "))"))
         }
         guard args.patch.hasAnyField else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "patch must set at least one field"))
         }
@@ -114,7 +110,6 @@ public enum OrdersBulkUpdateTool {
         }
         guard let payload = try? JSONSerialization.data(withJSONObject: ["update": updates]) else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .toolFailed,
                                  reason: "could not serialize batch body"))
         }

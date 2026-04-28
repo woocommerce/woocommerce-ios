@@ -80,13 +80,11 @@ public enum ProductVariationsUpdateTool {
         }
         if let status = args.status, !allowedStatuses.contains(status) {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "status must be one of: \(allowedStatuses.sorted().joined(separator: ", "))"))
         }
         if let stockStatus = args.stockStatus, !allowedStockStatuses.contains(stockStatus) {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "stock_status must be one of: \(allowedStockStatuses.sorted().joined(separator: ", "))"))
         }
@@ -104,13 +102,11 @@ public enum ProductVariationsUpdateTool {
 
         guard !body.isEmpty else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "at least one editable field must be provided"))
         }
         guard let payload = try? JSONSerialization.data(withJSONObject: body) else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .toolFailed,
                                  reason: "could not serialize update body"))
         }

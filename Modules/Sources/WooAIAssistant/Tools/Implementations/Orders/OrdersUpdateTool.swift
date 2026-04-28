@@ -68,7 +68,6 @@ public enum OrdersUpdateTool {
         }
         if let status = args.status, !allowedStatuses.contains(status) {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "status must be one of: \(allowedStatuses.sorted().joined(separator: ", "))"))
         }
@@ -78,13 +77,11 @@ public enum OrdersUpdateTool {
         if let email = args.billingEmail { body["billing"] = ["email": email] }
         guard !body.isEmpty else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "at least one editable field must be provided"))
         }
         guard let payload = try? JSONSerialization.data(withJSONObject: body) else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .toolFailed,
                                  reason: "could not serialize update body"))
         }

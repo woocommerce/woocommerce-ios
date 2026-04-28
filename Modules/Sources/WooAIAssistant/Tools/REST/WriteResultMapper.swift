@@ -21,7 +21,6 @@ enum WriteResultMapper {
         }
         guard let entity = RESTResponseParsing.decodeJSON(response.data) else {
             return .failed(.init(toolName: toolName,
-                                 toolCallID: "",
                                  kind: .toolFailed,
                                  reason: "expected JSON object"))
         }
@@ -34,7 +33,6 @@ enum WriteResultMapper {
             uiStructured = nil
         }
         return .success(.init(toolName: toolName,
-                              toolCallID: "",
                               structured: LLMPayloadCap.capped(summary, toolName: toolName),
                               uiStructured: uiStructured))
     }
@@ -56,7 +54,6 @@ enum WriteResultMapper {
         guard let entity = RESTResponseParsing.decodeJSON(response.data),
               let updates = RESTResponseParsing.objectField(entity, "update").flatMap(RESTResponseParsing.arrayItems) else {
             return .failed(.init(toolName: toolName,
-                                 toolCallID: "",
                                  kind: .toolFailed,
                                  reason: "expected {\"update\":[...]} batch payload"))
         }
@@ -84,7 +81,6 @@ enum WriteResultMapper {
             RenderedCardPayload(family: family, id: id, element: .object(["id": .int(id)]))
         }
         return .success(.init(toolName: toolName,
-                              toolCallID: "",
                               structured: LLMPayloadCap.capped(.object(summary), toolName: toolName),
                               uiStructured: cards.isEmpty ? nil : UIStructured(cards: cards)))
     }
@@ -94,7 +90,6 @@ enum WriteResultMapper {
                                               correlationID: String) -> ToolResult.Failed? {
         guard HTTPStatusClassification.isOutcomeUnknownStatus(response.statusCode) else { return nil }
         return .init(toolName: toolName,
-                     toolCallID: "",
                      kind: .outcomeUnknown,
                      reason: "Write request did not get a confirmed response. The change may or may not have applied; verify on the store before retrying.",
                      code: correlationID)

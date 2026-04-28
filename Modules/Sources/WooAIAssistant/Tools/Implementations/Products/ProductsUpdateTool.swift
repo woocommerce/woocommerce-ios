@@ -74,7 +74,6 @@ public enum ProductsUpdateTool {
         }
         if let status = args.status, !allowedStatuses.contains(status) {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "status must be one of: \(allowedStatuses.sorted().joined(separator: ", "))"))
         }
@@ -91,7 +90,6 @@ public enum ProductsUpdateTool {
 
         guard !body.isEmpty else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .invalidToolCall,
                                  reason: "at least one editable field must be provided"))
         }
@@ -106,7 +104,6 @@ public enum ProductsUpdateTool {
 
         guard let payload = try? JSONSerialization.data(withJSONObject: body) else {
             return .failed(.init(toolName: name,
-                                 toolCallID: "",
                                  kind: .toolFailed,
                                  reason: "could not serialize update body"))
         }
@@ -132,7 +129,6 @@ public enum ProductsUpdateTool {
         let reason = "Product #\(productID) is a variable product; price lives on each variation, not the parent. " +
                      "Call product_variations_list(product_id: \(productID)) to enumerate variations, then update each via product_variations_update."
         return .init(toolName: name,
-                     toolCallID: "",
                      kind: .invalidToolCall,
                      reason: reason)
     }

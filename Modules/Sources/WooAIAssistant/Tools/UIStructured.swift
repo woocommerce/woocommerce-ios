@@ -25,7 +25,7 @@ public struct RenderedCardPayload: Sendable, Equatable {
 
 /// Card families the renderer supports. Kept intentionally narrow so each
 /// family has a hand-written renderer rather than a generic JSON walker.
-public enum CardFamilyID: String, Sendable, Codable, Equatable {
+public enum CardFamilyID: String, Sendable, Decodable, Equatable {
     case order
     case product
     case productVariation = "product_variation"

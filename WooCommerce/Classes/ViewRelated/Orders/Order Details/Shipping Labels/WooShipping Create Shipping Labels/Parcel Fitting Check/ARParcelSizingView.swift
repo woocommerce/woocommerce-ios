@@ -107,7 +107,7 @@ struct ARParcelSizingView: View {
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
-                        .background(.yellow, in: Capsule())
+                        .background(.blue, in: Capsule())
                         .foregroundStyle(.black)
                 }
             }
@@ -133,7 +133,7 @@ struct ARParcelSizingView: View {
             }
             .foregroundStyle(.white)
             Slider(value: value, in: 0.5...20.0)
-                .tint(.yellow)
+                .tint(.blue)
         }
     }
 

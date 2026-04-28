@@ -116,7 +116,7 @@ struct ARParcelFitCheckView: View {
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
-                        .background(.yellow, in: Capsule())
+                        .background(.blue, in: Capsule())
                         .foregroundStyle(.black)
                 }
                 .disabled(currentPackage == nil)
@@ -145,7 +145,7 @@ struct ARParcelFitCheckView: View {
                     }
                 }
                 .pickerStyle(.menu)
-                .tint(.yellow)
+                .tint(.blue)
                 .onChange(of: selectedCarrierID) { _, _ in
                     // Snap to first package of the new carrier.
                     selectedPackageID = currentCarrierPackages.first?.id
@@ -163,7 +163,7 @@ struct ARParcelFitCheckView: View {
                     }
                 }
                 .pickerStyle(.menu)
-                .tint(.yellow)
+                .tint(.blue)
             }
         }
     }

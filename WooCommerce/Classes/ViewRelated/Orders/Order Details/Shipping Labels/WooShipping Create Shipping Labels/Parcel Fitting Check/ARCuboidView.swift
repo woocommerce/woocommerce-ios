@@ -37,6 +37,10 @@ struct ARCuboidView: UIViewRepresentable {
 
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.horizontal]
+        // Stop ARKit's automatic light-probe estimation. Otherwise the
+        // PBR fill material re-shades every time the camera moves, causing
+        // dark patches to drift across the cuboid as the user pans around.
+        config.isLightEstimationEnabled = false
         if ARWorldTrackingConfiguration.supportsSceneReconstruction(.mesh) {
             config.sceneReconstruction = .mesh
         }
@@ -58,6 +62,11 @@ struct ARCuboidView: UIViewRepresentable {
         ])
 
         arView.environment.sceneUnderstanding.options = [.occlusion]
+
+        // Disable RealityKit's automatic grounding shadow. Otherwise the
+        // contact shadow under the cuboid is visible through the
+        // translucent fill and looks like an interior shadow.
+        arView.renderOptions.insert(.disableGroundingShadows)
 
         context.coordinator.arView = arView
         context.coordinator.dimensions = dimensions
@@ -135,7 +144,18 @@ struct ARCuboidView: UIViewRepresentable {
 
         private func installCuboidGestures() {
             guard let arView, let cuboidEntity else { return }
-            cuboidEntity.generateCollisionShapes(recursive: true)
+            // Use an explicit unit-box collision shape (positioned to match
+            // the visible cuboid, which sits on the surface). It scales
+            // with `transform.scale`, so the gesture target tracks the
+            // cuboid's current dimensions. This works regardless of fill
+            // style, including the wireframe-only variant where there's no
+            // visible mesh to derive collision from.
+            cuboidEntity.collision = CollisionComponent(
+                shapes: [
+                    .generateBox(size: SIMD3(1, 1, 1))
+                        .offsetBy(translation: SIMD3(0, 0.5, 0))
+                ]
+            )
             installedGestures = arView.installGestures(
                 [.translation, .rotation],
                 for: cuboidEntity
@@ -189,7 +209,7 @@ struct ARCuboidView: UIViewRepresentable {
             } else {
                 let marker = ModelEntity(
                     mesh: .generateBox(size: 0.012, cornerRadius: 0.002),
-                    materials: [UnlitMaterial(color: UIColor.systemYellow.withAlphaComponent(0.5))]
+                    materials: [UnlitMaterial(color: UIColor.systemBlue.withAlphaComponent(0.5))]
                 )
                 marker.position = world
                 rootAnchor.addChild(marker)
@@ -215,13 +235,33 @@ struct ARCuboidView: UIViewRepresentable {
             root.transform.scale = dimensions
 
             // Translucent fill — unit cube whose bottom sits on the surface.
-            // `UnlitMaterial` renders every face with the same alpha-blended
-            // colour regardless of normal direction; PBR makes the bottom
-            // face shade dark (it faces away from the light) which looks
-            // like an inset when viewed through the translucent top.
-            let fillMaterial = UnlitMaterial(
-                color: UIColor.systemYellow.withAlphaComponent(0.25)
-            )
+            //
+            // Use `PhysicallyBasedMaterial` with explicit `.transparent`
+            // blending (this is the only material in RealityKit that
+            // reliably renders alpha-blended). Push emissive intensity high
+            // and roughness to 1 so every face renders at roughly the same
+            // brightness regardless of its normal direction — without this
+            // the bottom face shades dark and looks like an inset through
+            // the translucent top.
+            var fillMaterial = PhysicallyBasedMaterial()
+            // Base colour is what gets lit by the scene. Setting it to black
+            // means the lit contribution is always 0, so the cuboid's
+            // appearance can't vary as the camera moves through different
+            // RealityKit environment lighting samples.
+            fillMaterial.baseColor = .init(tint: .black)
+            // The visible blue comes purely from the (unlit) emissive
+            // channel, which renders the same regardless of view angle.
+            fillMaterial.emissiveColor = .init(color: .systemBlue)
+            fillMaterial.emissiveIntensity = 1.0
+            fillMaterial.blending = .transparent(opacity: .init(floatLiteral: 0.25))
+            fillMaterial.roughness = 1.0
+            fillMaterial.metallic = 0.0
+            // Render only the camera-facing faces. Without this, RealityKit
+            // renders both sides of the box for translucent materials, so
+            // the camera ray passes through TWO layers of the fill (front
+            // face + back face) and anything visible inside the cuboid is
+            // darkened twice. Single-sided rendering keeps it to one layer.
+            fillMaterial.faceCulling = .back
 
             let fill = ModelEntity(
                 mesh: .generateBox(size: SIMD3(1, 1, 1)),
@@ -230,8 +270,29 @@ struct ARCuboidView: UIViewRepresentable {
             fill.position.y = 0.5
             root.addChild(fill)
 
+            // Constant shadow disc on the floor at the cuboid's footprint.
+            // Doesn't vary with viewing angle or outside lighting (black
+            // base colour, transparent blending), so it gives the user a
+            // stable visual cue for where the bottom of the box meets the
+            // surface.
+            var shadowMaterial = PhysicallyBasedMaterial()
+            shadowMaterial.baseColor = .init(tint: .black)
+            shadowMaterial.blending = .transparent(opacity: .init(floatLiteral: 0.6))
+            shadowMaterial.roughness = 1.0
+            shadowMaterial.metallic = 0.0
+            shadowMaterial.faceCulling = .back
+
+            let shadow = ModelEntity(
+                mesh: .generateBox(size: SIMD3(1, 0.001, 1)),
+                materials: [shadowMaterial]
+            )
+            // Just above the floor in unit space so it doesn't z-fight with
+            // the real surface.
+            shadow.position.y = 0.0005
+            root.addChild(shadow)
+
             // Wireframe edges — unit-length, scaled with the parent.
-            let edgeMaterial = UnlitMaterial(color: .systemYellow)
+            let edgeMaterial = UnlitMaterial(color: .systemBlue)
             for edge in unitBoxEdges() {
                 let bar = ModelEntity(
                     mesh: .generateBox(size: edge.size),
@@ -331,7 +392,7 @@ struct ARCuboidReticle: View {
     let active: Bool
 
     var body: some View {
-        let color: Color = active ? .yellow : .white
+        let color: Color = active ? .blue : .white
         Circle()
             .stroke(color, lineWidth: 1.5)
             .frame(width: 18, height: 18)
@@ -370,7 +431,7 @@ struct ARCuboidPlaceButton: View {
                 .foregroundStyle(active ? Color.black : Color.white.opacity(0.6))
                 .frame(width: 64, height: 64)
                 .background(
-                    active ? AnyShapeStyle(.yellow) : AnyShapeStyle(.black.opacity(0.5)),
+                    active ? AnyShapeStyle(.blue) : AnyShapeStyle(.black.opacity(0.5)),
                     in: Circle()
                 )
         }

@@ -1,41 +1,17 @@
 import Foundation
 import CocoaLumberjackSwift
 
-/// Runs the client-side agentic loop on top of an `AIChatService`,
-/// a `ToolRegistry`, and a `SafetyPolicy`.
+/// Runs the client-side agentic loop on top of an `AIChatService`, a `ToolRegistry`, and a
+/// `SafetyPolicy`.
 ///
-/// Actor-isolated because unsafe tool calls suspend the loop while the
-/// merchant resolves a confirmation card. The pending continuation has
-/// to live somewhere safe from concurrent access, and the actor's
-/// serial mailbox is the cleanest fit. Callers resume the loop via
-/// `confirm(proposalID:)` / `cancel(proposalID:)`.
-///
-/// Per-turn behavior:
-/// 1. Build messages: system prompt + prior transcript + user prompt.
-/// 2. Call the chat service with tools attached.
-/// 3. Yield text deltas to the UI as they arrive.
-/// 4. Collect `toolCall` events; once the turn completes, for each
-///    call: consult `SafetyPolicy` (execute / requireConfirmation),
-///    suspend on confirmation if needed, dispatch via the registry,
-///    yield events for the UI, and append the result back into the
-///    transcript so the model can react.
-/// 5. Loop up to `maxIterations` times; if the cap is hit synthesize
-///    a graceful close instead of throwing.
-///
-/// Access: this class is `internal` rather than `public` because its
-/// `AIChatService` dependency uses `OpenAIChat` types that are still
-/// internal on trunk. C2 will widen the surface when the transport
-/// lands.
+/// Actor-isolated because unsafe tool calls suspend the loop while the merchant resolves a
+/// confirmation card; the pending continuation has to live somewhere safe from concurrent access.
+/// Callers resume the loop via `confirm(proposalID:)` / `cancel(proposalID:)`.
 actor AgenticLoopOrchestrator {
 
     static let defaultMaxIterations = 5
 
-    /// Max times the SAME tool name may dispatch in a single turn
-    /// (regardless of arguments) before subsequent calls to that tool
-    /// receive a synthetic per-tool-cap error message instead of
-    /// dispatching. 4 keeps "list + 3 drill-downs" flows legitimate
-    /// while catching varied-args fanouts (5-7 orders_list with
-    /// different orderby/status/extra_fields permutations).
+    /// 4 keeps "list + 3 drill-downs" flows legitimate while catching varied-args fanouts.
     static let defaultPerToolPerTurnCap = 4
 
     private let chatService: AIChatService
@@ -45,9 +21,6 @@ actor AgenticLoopOrchestrator {
     private let maxIterations: Int
     private let perToolPerTurnCap: Int
 
-    /// Pending confirmation continuations keyed by proposal id. The
-    /// loop suspends on `waitForDecision` and the UI resolves via
-    /// `confirm(proposalID:)` / `cancel(proposalID:)`.
     private var pendingDecisions: [UUID: CheckedContinuation<Bool, Never>] = [:]
 
     private let diagnostics: LoopDiagnosticsHandler
@@ -70,7 +43,6 @@ actor AgenticLoopOrchestrator {
         self.diagnostics = diagnostics
     }
 
-    /// Execute a single user turn. Streams orchestrator events to the UI.
     nonisolated func run(prompt: String,
                          priorMessages: [OpenAIChat.Message] = []) -> AsyncThrowingStream<AssistantEvent, Error> {
         AsyncThrowingStream { continuation in
@@ -108,14 +80,12 @@ actor AgenticLoopOrchestrator {
 
     // MARK: - External confirmation entry points
 
-    /// Call when the user taps Confirm on a proposal card.
     func confirm(proposalID: UUID) {
         if let continuation = pendingDecisions.removeValue(forKey: proposalID) {
             continuation.resume(returning: true)
         }
     }
 
-    /// Call when the user taps Cancel on a proposal card.
     func cancel(proposalID: UUID) {
         if let continuation = pendingDecisions.removeValue(forKey: proposalID) {
             continuation.resume(returning: false)
@@ -139,9 +109,7 @@ actor AgenticLoopOrchestrator {
         lastOutcome = outcome
     }
 
-    /// Stream consumer disconnected. Treat as cancellation: free
-    /// pending continuations and stamp the outcome so a follow-up
-    /// `lastOutcome` query reads as `.stopped` rather than nil.
+    /// Stamps `.stopped` so a post-stream `lastOutcome` query reads as a terminal state rather than nil.
     private func handleStreamTerminated() {
         cancelAllPending()
         if lastOutcome == nil {
@@ -149,27 +117,9 @@ actor AgenticLoopOrchestrator {
         }
     }
 
-    /// Suspend the loop until the UI resolves this proposal. Wraps
-    /// the checked continuation in a task-cancellation handler so
-    /// that if the outer stream terminates (consumer died, caller
-    /// cancelled) between yielding `.confirmationRequired` and
-    /// registering this continuation, the proposal still cancels
-    /// cleanly. Otherwise we'd leak a continuation and hang the
-    /// actor forever.
-    ///
-    /// Two cancellation races were flagged in review:
-    ///   (a) Cancel arrives BEFORE the continuation is stored.
-    ///       `Task.isCancelled` catches that before we touch the
-    ///       dictionary.
-    ///   (b) Cancel arrives AFTER the store but before `onCancel`'s
-    ///       enqueued Task reaches the actor. `onCancel` fires
-    ///       immediately (outside the actor), and its
-    ///       `Task { await self.cancel(...) }` runs later on the
-    ///       actor hop - by then the continuation is in the
-    ///       dictionary and gets properly resumed(false). Safe.
-    /// The post-store `Task.isCancelled` re-check is belt-and-braces
-    /// for (b) in case the scheduler reorders the onCancel work
-    /// past another actor hop.
+    /// Suspend the loop until the UI resolves this proposal. The pre- and post-store `Task.isCancelled`
+    /// checks plus the `onCancel` hop guarantee the continuation is always resumed even if cancellation
+    /// arrives between yielding `.confirmationRequired` and registering the continuation here.
     private func waitForDecision(proposalID: UUID) async -> Bool {
         await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
@@ -185,8 +135,6 @@ actor AgenticLoopOrchestrator {
                 }
             }
         } onCancel: {
-            // onCancel runs outside the actor, so hop back in via
-            // Task to mutate `pendingDecisions` safely.
             Task { await self.cancel(proposalID: proposalID) }
         }
     }
@@ -213,9 +161,7 @@ actor AgenticLoopOrchestrator {
 
         diagnostics(.turnStarted(prompt: prompt))
 
-        // Per-turn state for mid-flight guards. Each guard key
-        // ("empty:<tool>" or "repeat:<tool>") fires at most once per
-        // turn so we don't spam the model with duplicate system notes.
+        // Each guard key fires at most once so we don't spam the model with duplicate system notes.
         var firedGuards: Set<String> = []
 
         for _ in 0..<maxIterations {
@@ -254,9 +200,7 @@ actor AgenticLoopOrchestrator {
         }
 
         diagnostics(.maxIterationsHit(iterations: maxIterations))
-        // Graceful recovery: the model looped past the cap. Synthesize
-        // a closing message + completed event so the merchant sees a
-        // soft end instead of a bare error banner.
+        // Soft-end the turn so the merchant sees a closing message rather than a bare error banner.
         continuation.yield(.textChunk(Localization.iterationCapClosing))
         continuation.yield(.completed(routeConfidence: nil))
         lastOutcome = .maxIterations(iterations: maxIterations)
@@ -307,30 +251,10 @@ actor AgenticLoopOrchestrator {
         return .toolCalls(pendingCalls)
     }
 
-    /// Dispatch every call in `calls`, consulting the safety policy
-    /// for each. Returns the tool-result JSON payload for each call
-    /// in input order so they pair with the parent assistant
-    /// message's tool_calls array correctly.
-    ///
-    /// `priorCallSignatures` carries the per-signature count of
-    /// identical tool calls already made earlier in this turn, and
-    /// `priorResultsBySignature` carries the FIRST tool-result
-    /// payload captured for each such signature. When the model
-    /// fires an identical re-call we replay that cached payload
-    /// wrapped in a directive envelope instructing the model to
-    /// respond with what it already has - no error shape, so the
-    /// model treats the duplicate as "already answered, here's the
-    /// same data" rather than "tool failed, let me retry with
-    /// different args". The envelope escalates at the 3rd+ call
-    /// with a stronger `must_respond_now` marker.
-    ///
-    /// Why replay-with-hint beats the previous error-shape approach:
-    /// mini/gpt-4o treated `duplicate_call_blocked` as a retryable
-    /// failure and kept issuing variations (spelling tweaks,
-    /// reorderings) until the iteration cap tripped. A successful
-    /// result envelope matches the model's mental model - it gets
-    /// the data it asked for, with a hint saying "you've now been
-    /// asked to respond".
+    /// Dispatch every call in `calls` under the safety policy and return the per-call payloads in input
+    /// order. Identical calls (across the turn or within this batch) replay the cached payload via a
+    /// success-shaped `cached_result_reused` envelope rather than an error shape, because models treat
+    /// the latter as retryable and keep firing variations until the iteration cap trips.
     private func dispatchTools(_ calls: [OpenAIChat.ToolCall],
                                toolsByName: [String: AITool],
                                priorCallSignatures: [String: Int],
@@ -357,14 +281,7 @@ actor AgenticLoopOrchestrator {
         let liveResults = priorResultsBySignature
         var liveTurnTallies = priorPerToolTallies
 
-        // First occurrence of each (tool, args) signature within THIS
-        // batch becomes the "primary" and dispatches normally.
-        // Subsequent identical calls become intra-batch secondaries:
-        // we skip safety resolution + dispatch for them, and fill
-        // their resolved payload from the primary's result after the
-        // task group completes. Without this the task group fires
-        // the registry once per duplicate in parallel (liveResults
-        // only grew from PRIOR iterations), burning HTTP calls.
+        // Without intra-batch dedupe the task group fires the registry once per duplicate in parallel.
         var firstPrimaryByIntraSignature: [String: Int] = [:]
         var intraBatchSecondaryToPrimary: [Int: Int] = [:]
 
@@ -374,10 +291,6 @@ actor AgenticLoopOrchestrator {
             let priorSeen = liveSignatures[signature, default: 0]
             liveSignatures[signature] = priorSeen + 1
 
-            // Per-tool-per-turn cap: tally tool name across the
-            // whole turn (regardless of args). When the cap is hit,
-            // synthesize an error tool message instructing the
-            // model to wrap up.
             let priorToolCount = liveTurnTallies[call.function.name, default: 0]
             liveTurnTallies[call.function.name] = priorToolCount + 1
             if priorToolCount >= perToolPerTurnCap {
@@ -393,19 +306,6 @@ actor AgenticLoopOrchestrator {
                 continue
             }
 
-            // Circuit-breaker: replay the cached payload on the 2nd+
-            // identical call. Threshold is 1 (we short-circuit the
-            // SECOND identical call) because:
-            //   - The previous error-shape result was read by mini
-            //     as a retryable failure and just provoked more
-            //     variations, saturating the 5-iter cap.
-            //   - Returning the same payload as the first call,
-            //     wrapped in a hint, matches the model's mental
-            //     model and stops the loop in 1-2 iterations.
-            //   - Parallel-identical bursts within a single
-            //     assistant message still land - only the EXTRA
-            //     calls replay; the first call in the batch
-            //     dispatches normally.
             if priorSeen >= 1, let cachedPayload = liveResults[signature] {
                 continuation.yield(.toolCallStarted(id: call.id,
                                                     name: call.function.name,
@@ -420,10 +320,6 @@ actor AgenticLoopOrchestrator {
                 continue
             }
 
-            // Intra-batch duplicate: a call with this exact signature
-            // already claimed the primary slot earlier in THIS batch.
-            // Defer resolution - fill in the replay envelope after
-            // the primary's task group result lands.
             if let primaryIndex = firstPrimaryByIntraSignature[signature] {
                 intraBatchSecondaryToPrimary[index] = primaryIndex
                 continuation.yield(.toolCallStarted(id: call.id,
@@ -434,9 +330,6 @@ actor AgenticLoopOrchestrator {
 
             firstPrimaryByIntraSignature[signature] = index
 
-            // Unknown tool names default to .unsafe so the safety
-            // policy gates them. This pairs with the registry's own
-            // unknown-tool failure path.
             guard let tool = toolsByName[call.function.name] else {
                 let payload = Self.errorJSON("Unknown tool: \(call.function.name)")
                 continuation.yield(.toolCallStarted(id: call.id,
@@ -481,8 +374,6 @@ actor AgenticLoopOrchestrator {
             }
         }
 
-        // Dispatch approved calls in parallel and plug their results
-        // back into the same index slots.
         if !approvedIndices.isEmpty {
             for index in approvedIndices {
                 let call = calls[index]
@@ -544,10 +435,8 @@ actor AgenticLoopOrchestrator {
         }
     }
 
-    /// Translate a `ToolResult` into the model-visible JSON payload
-    /// that ends up as the tool message content, while also yielding
-    /// the trunk events the UI needs (`toolCallCompleted`,
-    /// `toolResult` for cards, `failed` for outcomeUnknown).
+    /// Translate a `ToolResult` into the model-visible JSON payload that ends up as the tool message
+    /// content, while also yielding the AssistantEvents the UI needs.
     private func handleToolResult(_ result: ToolResult,
                                   for call: OpenAIChat.ToolCall,
                                   continuation: AsyncThrowingStream<AssistantEvent, Error>.Continuation) -> String {
@@ -563,11 +452,8 @@ actor AgenticLoopOrchestrator {
             return payload
 
         case .failed(let failed) where failed.kind == .outcomeUnknown:
-            // outcome_unknown is a per-call event, NOT a terminal
-            // failure. The model still gets a tool message so it can
-            // react (advise the merchant to verify in the native UI),
-            // and the UI gets a typed failed event so it can render
-            // the distinct unknown state.
+            // Per-call event, not a terminal failure: the model still gets a tool message so it can
+            // react, and the UI gets a typed failed event so it can render the distinct unknown state.
             let payload = Self.outcomeUnknownJSON(toolName: call.function.name)
             continuation.yield(.toolCallCompleted(id: call.id,
                                                    name: call.function.name,
@@ -584,9 +470,6 @@ actor AgenticLoopOrchestrator {
             return payload
 
         case .rejectedBySafety(let rejection):
-            // Distinct from .failed for analytics, but the
-            // orchestrator hands the same shape to the model so the
-            // recovery path is identical.
             let payload = Self.errorJSON(rejection.reason)
             continuation.yield(.toolCallCompleted(id: call.id,
                                                    name: call.function.name,
@@ -594,10 +477,8 @@ actor AgenticLoopOrchestrator {
             return payload
 
         case .awaitingConfirmation:
-            // Should not happen at this layer: the orchestrator
-            // already gates confirmations via SafetyPolicy. Treat as
-            // a tool failure so the loop continues rather than
-            // hanging on a missing UI handshake.
+            // The orchestrator already gates confirmations via SafetyPolicy; reaching this case means
+            // a tool short-circuited the gate, so degrade to a tool failure rather than hanging.
             let payload = Self.errorJSON("Tool returned awaitingConfirmation past safety gate.")
             continuation.yield(.toolCallCompleted(id: call.id,
                                                    name: call.function.name,
@@ -606,20 +487,8 @@ actor AgenticLoopOrchestrator {
         }
     }
 
-    /// Mid-flight guards: inspect what's happened so far in this
-    /// turn and inject a single system nudge if the model is
-    /// misbehaving.
-    ///
-    /// Conditions (each fires at most once per turn):
-    /// 1. Empty-list retry loop: a `*_list` / `*_search` tool
-    ///    returned an empty array AND the model is still iterating.
-    /// 2. Same-tool repeat: the same tool name was called 3+ times
-    ///    in this turn. The two-tier safe/unsafe taxonomy uses one
-    ///    threshold for both.
-    ///
-    /// Nudges land as `.system` messages mid-conversation; OpenAI
-    /// chat completions accepts those, and the next request will
-    /// see them as authoritative guidance.
+    /// Inject a one-shot system nudge when this turn's transcript shows the model misbehaving (an
+    /// empty-list retry loop or the same tool called 3+ times). Each guard key fires at most once.
     private func applyInFlightGuards(messages: inout [OpenAIChat.Message],
                                      toolsByName: [String: AITool],
                                      fired: inout Set<String>) {
@@ -754,17 +623,8 @@ actor AgenticLoopOrchestrator {
         return #"{"error":"per_tool_cap_exceeded"}"#
     }
 
-    /// Wrap a cached tool-result payload in a directive envelope
-    /// telling the model it's seeing the same data it already got.
-    /// Shape is a SUCCESS envelope (not an error) so the model
-    /// doesn't treat this as a retryable failure. At priorSeen >= 2
-    /// the hint escalates with `must_respond_now` + `stop_reason`
-    /// markers.
-    ///
-    /// `data` is always the original tool result payload, round-
-    /// tripped through JSON parsing so it nests cleanly under
-    /// `data`. Invalid cached JSON falls back to a string payload
-    /// under `data_raw`.
+    /// Success-shaped envelope wrapping the cached payload. Escalates at `priorSeen >= 2` with
+    /// `must_respond_now` + `stop_reason` markers; falls back to `data_raw` on cached JSON parse failure.
     static func duplicateReplayJSON(priorSeen: Int,
                                     name: String,
                                     cachedPayload: String) -> String {
@@ -805,11 +665,8 @@ actor AgenticLoopOrchestrator {
         return #"{"status":"cached_result_reused"}"#
     }
 
-    /// Canonical (name, args) key used to detect identical duplicate
-    /// calls. JSON is parsed and re-serialized with sorted keys so
-    /// `{"a":1,"b":2}` and `{"b":2,"a":1}` collapse to the same
-    /// key. Falls back to the raw args string on parse failure
-    /// (malformed args can't be deduped reliably).
+    /// Canonical (name, args) key. Re-serializes with sorted keys so reorderings collapse to the same
+    /// signature; malformed JSON args fall back to the raw string.
     static func canonicalCallSignature(name: String, argumentsJSON: String) -> String {
         guard let data = argumentsJSON.data(using: .utf8),
               let obj = try? JSONSerialization.jsonObject(with: data) else {
@@ -822,17 +679,10 @@ actor AgenticLoopOrchestrator {
         return "\(name)|\(argumentsJSON)"
     }
 
-    /// Count how many times each (tool_name, canonical_args)
-    /// signature appears in the assistant.toolCalls messages of THIS
-    /// turn - i.e. everything after the last user message. Used as
-    /// the prior count fed into the circuit-breaker.
+    /// Per-signature counts of tool calls already dispatched this turn (everything after the last user
+    /// message). Excludes the tail tool-call message because those calls are about to dispatch, not prior.
     static func computePriorCallSignatures(in messages: [OpenAIChat.Message]) -> [String: Int] {
         guard let lastUserIdx = messages.lastIndex(where: { $0.role == .user }) else { return [:] }
-        // Exclude the tail if it's the current-turn assistant tool-
-        // call message: those calls are what we're ABOUT to dispatch,
-        // not "prior" invocations. Without this the count is off-by-
-        // one and the dedupe replay escalates on the 2nd call instead
-        // of the 3rd.
         var upperBound = messages.count
         if let last = messages.last, last.role == .assistant, last.toolCalls != nil {
             upperBound -= 1
@@ -850,18 +700,8 @@ actor AgenticLoopOrchestrator {
         return counts
     }
 
-    /// Walk this turn's messages and, for every canonical (tool, args)
-    /// signature, capture the FIRST tool-result payload that followed
-    /// it. Used by the dedupe replay: when the model fires an
-    /// identical call we hand it back the cached payload instead of
-    /// a blocked-error so it stops retrying and can answer with the
-    /// data it already has.
-    ///
-    /// "First wins" because downstream calls with the same sig are
-    /// the duplicates we're trying to short-circuit - the original
-    /// response is the canonical data. Signatures where the paired
-    /// tool-result message is missing (mid-dispatch, transcript
-    /// truncation) are skipped.
+    /// First tool-result payload captured per canonical signature this turn. First wins because the
+    /// duplicates we want to short-circuit are the ones AFTER the original response.
     static func computePriorResultsBySignature(in messages: [OpenAIChat.Message]) -> [String: String] {
         guard let lastUserIdx = messages.lastIndex(where: { $0.role == .user }) else { return [:] }
         var results: [String: String] = [:]
@@ -885,10 +725,8 @@ actor AgenticLoopOrchestrator {
         return results
     }
 
-    /// Tally tool calls by NAME (regardless of args) across this
-    /// turn, EXCLUDING the current-turn tool_calls message we're
-    /// about to dispatch - so the cap fires on the 5th call to the
-    /// same tool, not the 4th.
+    /// Per-tool-name tallies across the turn, excluding the tail tool-call message about to dispatch
+    /// (so the cap fires on the 5th call, not the 4th).
     static func computePerToolPriorTallies(in messages: [OpenAIChat.Message]) -> [String: Int] {
         guard let lastUserIdx = messages.lastIndex(where: { $0.role == .user }) else { return [:] }
         var upperBound = messages.count
@@ -952,7 +790,6 @@ private enum TurnOutcome {
 /// Degenerate policy used when the caller hasn't specified safety at
 /// all (tests, read-only prototypes). Every call executes.
 struct AlwaysExecuteSafetyPolicy: SafetyPolicy {
-    init() {}
     func decision(for name: String, arguments: String, tool: AITool) -> SafetyDecision {
         .execute
     }

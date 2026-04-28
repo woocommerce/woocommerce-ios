@@ -1,17 +1,12 @@
 import Foundation
 
-/// Transport-level abstraction the orchestrator depends on for chat
-/// completions. Concrete implementations (jetpack-ai-query, ai-api-proxy)
-/// land in C2; tests use `MockAIChatService` to script turns.
+/// Transport-level abstraction the orchestrator depends on for chat completions.
 ///
-/// Why a dedicated event type rather than `AssistantEvent`: the chat
-/// service is purely a wire-level seam. It does not understand
-/// confirmation, cards, dedupe, or loop concerns. The orchestrator
-/// translates `ChatStreamEvent` into `AssistantEvent` and drives the
-/// loop on top.
+/// Why a dedicated event type rather than `AssistantEvent`: the chat service is purely a wire-level
+/// seam. It does not understand confirmation, cards, dedupe, or loop concerns. The orchestrator
+/// translates `ChatStreamEvent` into `AssistantEvent` and drives the loop on top.
 ///
-/// `internal` access matches `OpenAIChat`'s current visibility on
-/// trunk; this becomes `public` once OpenAIChat is exposed (C2 work).
+// internal because OpenAIChat types are not yet exposed to the host app.
 protocol AIChatService: Sendable {
     /// Stream one chat completion. The orchestrator drains the stream
     /// to a `.completed` event, accumulating text deltas and tool
@@ -23,7 +18,6 @@ protocol AIChatService: Sendable {
 }
 
 extension AIChatService {
-    /// Convenience overload: `toolChoice` defaults to nil at call sites.
     func streamTurn(messages: [OpenAIChat.Message],
                     tools: [OpenAIChat.ToolDefinition]?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
         streamTurn(messages: messages, tools: tools, toolChoice: nil)

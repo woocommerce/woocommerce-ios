@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import UIKit
 import Yosemite
 import enum Networking.SupportChatRole
 import protocol WooFoundation.Analytics
@@ -9,6 +10,22 @@ import protocol WooFoundation.Analytics
 @MainActor
 @Observable
 final class SupportChatViewModel {
+
+    /// Entry point for opening the support chat.
+    ///
+    enum EntryPoint {
+        case helpAndSupport   // Shows issue picker first
+        case connectivityTool // Goes directly to chat (context already provided)
+    }
+
+    /// Current phase of the support chat flow.
+    ///
+    enum Phase: Equatable {
+        case issuePicker
+        case runningDiagnostics
+        case showingResults
+        case chatting
+    }
 
     /// Represents the current state of the chat.
     ///
@@ -47,33 +64,141 @@ final class SupportChatViewModel {
 
     // MARK: - Published State
 
+    private(set) var phase: Phase
+    private(set) var selectedIssue: SupportIssueType?
+    private(set) var diagnosticResults: [SupportDiagnosticsService.Result] = []
     private(set) var messages: [ChatMessage] = []
     private(set) var state: State = .idle
     private(set) var shouldPromptHumanSupport: Bool = false
+
+    /// URL to open when a fix action requires opening settings.
+    ///
+    private(set) var selectedURL: URL?
+
+    /// Set to true when the user needs to start Jetpack setup.
+    ///
+    private(set) var shouldStartJetpackSetup: Bool = false
 
     var inputText: String = ""
 
     // MARK: - Private Properties
 
     private var chatID: Int64?
+    private let entryPoint: EntryPoint
     private let botSlug: String
     private let stores: StoresManager
+    private var diagnosticsContext: [String: Any]?
     private let initialContext: [String: Any]?
     private let onContactHumanSupport: (_ transcript: String) -> Void
+    private let diagnosticsService: SupportDiagnosticsService
 
     // MARK: - Initialization
 
     init(botSlug: String = "woo-workflow-support_mobile_inapp",
+         entryPoint: EntryPoint = .helpAndSupport,
          stores: StoresManager = ServiceLocator.stores,
          initialContext: [String: Any]? = nil,
+         diagnosticsService: SupportDiagnosticsService? = nil,
          onContactHumanSupport: @escaping (_ transcript: String) -> Void) {
         self.botSlug = botSlug
+        self.entryPoint = entryPoint
         self.stores = stores
         self.initialContext = initialContext
+        self.diagnosticsService = diagnosticsService ?? SupportDiagnosticsService()
         self.onContactHumanSupport = onContactHumanSupport
+
+        // Set initial phase based on entry point
+        switch entryPoint {
+        case .helpAndSupport:
+            self.phase = .issuePicker
+        case .connectivityTool:
+            self.phase = .chatting
+        }
     }
 
-    // MARK: - Actions
+    // MARK: - Issue Selection & Diagnostics
+
+    /// Selects an issue type and runs diagnostics if needed.
+    ///
+    func selectIssue(_ issue: SupportIssueType) async {
+        selectedIssue = issue
+
+        // "Other" skips diagnostics and goes directly to chat
+        guard issue != .other else {
+            phase = .chatting
+            return
+        }
+
+        phase = .runningDiagnostics
+        diagnosticResults = await diagnosticsService.runTests(for: issue)
+        phase = .showingResults
+    }
+
+    /// Executes a fix action and re-runs the relevant test.
+    ///
+    func executeAction(_ action: SupportDiagnosticsService.Action) async {
+        do {
+            switch action {
+            case .enableAnalytics:
+                try await diagnosticsService.enableAnalytics()
+                await rerunTest(.analyticsSetting)
+
+            case .registerDevice:
+                try await diagnosticsService.registerDevice()
+                await rerunTest(.notifications)
+
+            case .enableOrderNotifications(let settings):
+                try await diagnosticsService.enableOrderNotifications(settings: settings)
+                await rerunTest(.notifications)
+
+            case .setupJetpack:
+                shouldStartJetpackSetup = true
+
+            case .openNotificationSettings:
+                selectedURL = diagnosticsService.openNotificationSettings()
+            }
+        } catch {
+            DDLogError("⛔️ Failed to execute action \(action): \(error)")
+        }
+    }
+
+    /// Re-runs a specific test and updates the results.
+    ///
+    private func rerunTest(_ test: SupportDiagnosticsService.Test) async {
+        let newResults = await diagnosticsService.runTests([test])
+        if let newResult = newResults.first,
+           let index = diagnosticResults.firstIndex(where: { $0.test == test }) {
+            diagnosticResults[index] = newResult
+        }
+    }
+
+    /// Proceeds from results screen to chat, building context from diagnostics.
+    ///
+    func proceedToChat() {
+        // Build context from diagnostic results
+        var context: [String: Any] = initialContext ?? [:]
+
+        if let issue = selectedIssue {
+            context["issue_type"] = String(describing: issue)
+        }
+
+        if let troubleshootingDescription = SupportDiagnosticsService.troubleshootingDescription(from: diagnosticResults) {
+            context["troubleshooting_results"] = troubleshootingDescription
+        }
+
+        if let site = stores.sessionManager.defaultSite {
+            context["site_id"] = site.siteID
+            context["site_url"] = site.url
+        }
+
+        context["app_version"] = Bundle.main.marketingVersion
+        context["ios_version"] = UIDevice.current.systemVersion
+
+        diagnosticsContext = context
+        phase = .chatting
+    }
+
+    // MARK: - Chat Actions
 
     func showGreeting() {
         guard messages.isEmpty else { return }
@@ -97,7 +222,13 @@ final class SupportChatViewModel {
         inputText = ""
         state = .sending
 
-        let context = chatID == nil ? initialContext : nil
+        // Use diagnostics context on first message, then nil for subsequent messages
+        let context: [String: Any]? = {
+            if chatID == nil {
+                return diagnosticsContext ?? initialContext
+            }
+            return nil
+        }()
 
         let action = SupportChatAction.sendMessage(
             botSlug: botSlug,

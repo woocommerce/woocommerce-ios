@@ -38,6 +38,7 @@ struct ARParcelSceneView: UIViewRepresentable {
     }
 
     static func dismantleUIView(_ uiView: ARView, coordinator: ARParcelSceneCoordinator) {
+        coordinator.tearDown()
         uiView.session.pause()
     }
 }

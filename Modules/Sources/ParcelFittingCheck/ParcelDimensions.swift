@@ -12,14 +12,11 @@ public struct ParcelDimensions {
     }
 
     func toMeters(unit: UnitLength) -> SIMD3<Float> {
-        SIMD3(
-            Self.meters(length, from: unit),
-            Self.meters(height, from: unit),
-            Self.meters(width, from: unit)
-        )
+        let factor = Self.metersPerUnit(unit)
+        return SIMD3(length * factor, height * factor, width * factor)
     }
 
-    private static func meters(_ value: Float, from unit: UnitLength) -> Float {
-        Float(Measurement(value: Double(value), unit: unit).converted(to: .meters).value)
+    private static func metersPerUnit(_ unit: UnitLength) -> Float {
+        Float(Measurement(value: 1.0, unit: unit).converted(to: .meters).value)
     }
 }

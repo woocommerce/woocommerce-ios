@@ -57,8 +57,23 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     }
 
     func updateDimensions(_ dims: SIMD3<Float>) {
+        guard dims != dimensions else { return }
         dimensions = dims
         cuboidEntity?.transform.scale = dims
+    }
+
+    func tearDown() {
+        uninstallGestures()
+        if let cuboidAnchor, let arView {
+            arView.scene.removeAnchor(cuboidAnchor)
+        }
+        cuboidAnchor = nil
+        cuboidEntity = nil
+        arView = nil
+        onPlaced = nil
+        onRemoved = nil
+        onARReady = nil
+        onARLost = nil
     }
 
     @objc func handleRotation(_ gesture: UIRotationGestureRecognizer) {

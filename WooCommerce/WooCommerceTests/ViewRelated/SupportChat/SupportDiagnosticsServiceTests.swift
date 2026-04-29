@@ -197,16 +197,17 @@ struct SupportDiagnosticsServiceTests {
         // Given
         let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
         mockUserNotificationCenter.authorizationStatus = .denied
-        let sut = makeSUT(userNotificationCenter: mockUserNotificationCenter)
-        sut.setActivePluginsForTesting([SystemPlugin.fake().copy(plugin: "jetpack/jetpack")])
+        let network = makeNetworkWithJetpackActive()
+        let sut = makeSUT(userNotificationCenter: mockUserNotificationCenter, network: network)
 
         // When
-        let results = await sut.runTests([Test.notifications])
+        let results = await sut.runTests([Test.site, Test.notifications])
 
         // Then
-        #expect(results.count == 1)
-        #expect(results[0].isSuccess == false)
-        #expect(results[0].suggestedAction == Action.openNotificationSettings)
+        #expect(results.count == 2)
+        #expect(results[0].isSuccess == true)
+        #expect(results[1].isSuccess == false)
+        #expect(results[1].suggestedAction == Action.openNotificationSettings)
     }
 
     @Test func test_testNotifications_when_registered_for_self_driven_PN_then_returns_success() async {
@@ -214,19 +215,21 @@ struct SupportDiagnosticsServiceTests {
         let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
         mockUserNotificationCenter.authorizationStatus = .authorized
         let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123])
+        let network = makeNetworkWithJetpackActive()
         let sut = makeSUT(
             userNotificationCenter: mockUserNotificationCenter,
             pushNotesManager: mockPushNotesManager,
+            network: network,
             siteID: 123
         )
-        sut.setActivePluginsForTesting([SystemPlugin.fake().copy(plugin: "jetpack/jetpack")])
 
         // When
-        let results = await sut.runTests([Test.notifications])
+        let results = await sut.runTests([Test.site, Test.notifications])
 
         // Then
-        #expect(results.count == 1)
+        #expect(results.count == 2)
         #expect(results[0].isSuccess == true)
+        #expect(results[1].isSuccess == true)
     }
 
     @Test func test_testNotifications_when_device_not_registered_then_returns_failure_with_registerDevice_action() async {
@@ -234,19 +237,21 @@ struct SupportDiagnosticsServiceTests {
         let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
         mockUserNotificationCenter.authorizationStatus = .authorized
         let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: nil)
+        let network = makeNetworkWithJetpackActive()
         let sut = makeSUT(
             userNotificationCenter: mockUserNotificationCenter,
-            pushNotesManager: mockPushNotesManager
+            pushNotesManager: mockPushNotesManager,
+            network: network
         )
-        sut.setActivePluginsForTesting([SystemPlugin.fake().copy(plugin: "jetpack/jetpack")])
 
         // When
-        let results = await sut.runTests([Test.notifications])
+        let results = await sut.runTests([Test.site, Test.notifications])
 
         // Then
-        #expect(results.count == 1)
-        #expect(results[0].isSuccess == false)
-        #expect(results[0].suggestedAction == Action.registerDevice)
+        #expect(results.count == 2)
+        #expect(results[0].isSuccess == true)
+        #expect(results[1].isSuccess == false)
+        #expect(results[1].suggestedAction == Action.registerDevice)
     }
 
     // MARK: - Sequential Test Execution
@@ -372,6 +377,7 @@ struct SupportDiagnosticsServiceTests {
         connectivityObserver: ConnectivityObserver? = nil,
         userNotificationCenter: UserNotificationsCenterAdapter? = nil,
         pushNotesManager: PushNotesManager? = nil,
+        network: MockNetwork? = nil,
         siteID: Int64 = 123
     ) -> SupportDiagnosticsService {
         let site = Site.fake().copy(siteID: siteID)
@@ -381,7 +387,14 @@ struct SupportDiagnosticsServiceTests {
             stores: stores ?? MockStoresManager(sessionManager: session),
             connectivityObserver: connectivityObserver ?? MockConnectivityObserver(),
             userNotificationCenter: userNotificationCenter ?? MockUserNotificationsCenterAdapter(),
-            pushNotesManager: pushNotesManager ?? MockPushNotificationsManager()
+            pushNotesManager: pushNotesManager ?? MockPushNotificationsManager(),
+            network: network
         )
+    }
+
+    private func makeNetworkWithJetpackActive() -> MockNetwork {
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "system_status", filename: "system-status-with-jetpack-active")
+        return network
     }
 }

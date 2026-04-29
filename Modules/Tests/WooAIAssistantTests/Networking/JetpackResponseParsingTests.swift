@@ -4,8 +4,6 @@ import Testing
 
 struct JetpackResponseParsingTests {
 
-    // MARK: - unwrapJetpackEnvelope
-
     @Test
     func test_unwrapJetpackEnvelope_when_jetpack_wrapped_then_returns_inner_data() throws {
         // Given
@@ -71,8 +69,6 @@ struct JetpackResponseParsingTests {
         #expect(unwrapped == input)
     }
 
-    // MARK: - splitAPIVersion
-
     @Test
     func test_splitAPIVersion_when_wc_v3_path_then_mark3() {
         // Given
@@ -123,6 +119,19 @@ struct JetpackResponseParsingTests {
         // Then
         #expect(result.apiVersion == .mark3)
         #expect(result.subpath == "made_up_ns/orders")
+    }
+
+    @Test
+    func test_splitAPIVersion_when_prefix_lacks_trailing_slash_then_falls_back_to_mark3_with_full_path() {
+        // Given
+        let path = "wc/v3"
+
+        // When
+        let result = JetpackResponseParsing.splitAPIVersion(from: path)
+
+        // Then
+        #expect(result.apiVersion == .mark3)
+        #expect(result.subpath == "wc/v3")
     }
 
     @Test

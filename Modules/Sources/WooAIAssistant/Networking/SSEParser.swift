@@ -32,8 +32,6 @@ public struct SSEParser {
         return []
     }
 
-    // MARK: - Private
-
     private mutating func processed(line: String) -> Event? {
         if line.isEmpty {
             guard !pendingData.isEmpty else { return nil }
@@ -63,12 +61,18 @@ public struct SSEParser {
     }
 
     private func firstLineBreak(in string: String) -> Range<String.Index>? {
-        // Swift normalizes "\r\n" into a single grapheme cluster, so check it
-        // explicitly before the bare \r case.
+        // Swift normalizes "\r\n" into one grapheme; check it before the bare \r case.
+        // A trailing \r at the very end of the buffer waits for the next chunk so a
+        // CRLF split across feeds doesn't produce two events.
         for index in string.indices {
             let ch = string[index]
-            if ch == "\r\n" || ch == "\n" || ch == "\r" {
+            if ch == "\r\n" || ch == "\n" {
                 return index..<string.index(after: index)
+            }
+            if ch == "\r" {
+                let next = string.index(after: index)
+                if next == string.endIndex { return nil }
+                return index..<next
             }
         }
         return nil

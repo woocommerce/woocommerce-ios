@@ -95,10 +95,12 @@ struct SSEParserTests {
         var parser = SSEParser()
 
         // When
-        let events = parser.feed("data: line1\rdata: line2\r\r")
+        let live = parser.feed("data: line1\rdata: line2\r\r")
+        let drained = parser.finish()
 
         // Then
-        #expect(events == [SSEParser.Event(data: "line1\nline2")])
+        #expect(live.isEmpty)
+        #expect(drained == [SSEParser.Event(data: "line1\nline2")])
     }
 
     @Test
@@ -125,5 +127,19 @@ struct SSEParserTests {
 
         // Then
         #expect(events == [SSEParser.Event(data: "no-space")])
+    }
+
+    @Test
+    func test_feed_when_crlf_split_across_chunks_then_treated_as_single_terminator() {
+        // Given
+        var parser = SSEParser()
+
+        // When
+        let firstChunk = parser.feed("data: hello\r")
+        let secondChunk = parser.feed("\ndata: world\r\n\r\n")
+
+        // Then
+        #expect(firstChunk.isEmpty)
+        #expect(secondChunk == [SSEParser.Event(data: "hello\nworld")])
     }
 }

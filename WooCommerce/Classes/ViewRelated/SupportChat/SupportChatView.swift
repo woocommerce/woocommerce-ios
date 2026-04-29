@@ -7,15 +7,16 @@ struct SupportChatView: View {
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
-        VStack(spacing: 0) {
-            messageList
-
-            if viewModel.shouldPromptHumanSupport {
-                humanSupportBanner
-            } else {
-                Divider()
-
-                inputArea
+        Group {
+            switch viewModel.phase {
+            case .issuePicker:
+                issuePickerView
+            case .runningDiagnostics:
+                diagnosticsProgressView
+            case .showingResults:
+                resultsView
+            case .chatting:
+                chatView
             }
         }
         .background(Color(.listBackground))
@@ -38,6 +39,124 @@ struct SupportChatView: View {
                 }
             }
         )
+    }
+
+    // MARK: - Issue Picker
+
+    private var issuePickerView: some View {
+        List {
+            Section {
+                ForEach(SupportIssueType.allCases, id: \.self) { issue in
+                    Button {
+                        Task {
+                            await viewModel.selectIssue(issue)
+                        }
+                    } label: {
+                        Text(issue.displayName)
+                            .foregroundStyle(Color(.label))
+                    }
+                }
+            } header: {
+                Text(Localization.issuePickerHeader)
+            }
+        }
+        .listStyle(.insetGrouped)
+    }
+
+    // MARK: - Diagnostics Progress
+
+    private var diagnosticsProgressView: some View {
+        VStack(spacing: Layout.progressSpacing) {
+            ProgressView()
+                .scaleEffect(Layout.progressScale)
+
+            Text(Localization.runningDiagnostics)
+                .font(.headline)
+
+            if let issue = viewModel.selectedIssue {
+                Text(issue.displayName)
+                    .font(.subheadline)
+                    .foregroundStyle(Color(.secondaryLabel))
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    // MARK: - Results View
+
+    private var resultsView: some View {
+        ScrollView {
+            VStack(spacing: Layout.resultsSpacing) {
+                ForEach(viewModel.diagnosticResults, id: \.test) { result in
+                    resultCard(for: result)
+                }
+
+                proceedToChatButton
+            }
+            .padding()
+        }
+    }
+
+    private func resultCard(for result: SupportDiagnosticsService.Result) -> some View {
+        VStack(alignment: .leading, spacing: Layout.cardSpacing) {
+            HStack {
+                Image(systemName: result.isSuccess ? "checkmark.circle.fill" : "xmark.circle.fill")
+                    .foregroundStyle(result.isSuccess ? Color.green : Color.red)
+
+                Text(result.test.title)
+                    .font(.headline)
+
+                Spacer()
+            }
+
+            if !result.isSuccess {
+                if let errorMessage = result.errorMessage {
+                    Text(errorMessage)
+                        .font(.subheadline)
+                        .foregroundStyle(Color(.secondaryLabel))
+                }
+
+                if let action = result.suggestedAction {
+                    Button {
+                        Task {
+                            await viewModel.executeAction(action)
+                        }
+                    } label: {
+                        Label(action.title, systemImage: action.systemImage)
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                }
+            }
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: Layout.cardCornerRadius))
+    }
+
+    private var proceedToChatButton: some View {
+        Button {
+            viewModel.proceedToChat()
+        } label: {
+            Text(Localization.continueToChat)
+        }
+        .buttonStyle(PrimaryButtonStyle())
+        .padding(.top)
+    }
+
+    // MARK: - Chat View
+
+    private var chatView: some View {
+        VStack(spacing: 0) {
+            messageList
+
+            if viewModel.shouldPromptHumanSupport {
+                humanSupportBanner
+            } else {
+                Divider()
+
+                inputArea
+            }
+        }
         .onAppear {
             viewModel.showGreeting()
         }
@@ -139,8 +258,20 @@ struct SupportChatView: View {
     }
 }
 
+// MARK: - Layout Constants
+
+private extension SupportChatView {
+    enum Layout {
+        static let progressSpacing: CGFloat = 16
+        static let progressScale: CGFloat = 1.5
+        static let resultsSpacing: CGFloat = 16
+        static let cardSpacing: CGFloat = 12
+        static let cardCornerRadius: CGFloat = 12
+    }
+}
+
 // MARK: - Localization
-//
+
 private extension SupportChatView {
     enum Localization {
         static let title = NSLocalizedString(
@@ -173,17 +304,42 @@ private extension SupportChatView {
             value: "Contact Support",
             comment: "Button to contact human support from the chat"
         )
+        static let issuePickerHeader = NSLocalizedString(
+            "supportChatView.issuePickerHeader",
+            value: "What are you having trouble with?",
+            comment: "Header for the issue picker in support chat"
+        )
+        static let runningDiagnostics = NSLocalizedString(
+            "supportChatView.runningDiagnostics",
+            value: "Running diagnostics...",
+            comment: "Message shown while running diagnostics in support chat"
+        )
+        static let continueToChat = NSLocalizedString(
+            "supportChatView.continueToChat",
+            value: "Continue to Chat",
+            comment: "Button to proceed from diagnostics results to chat"
+        )
     }
 }
 
-#Preview {
+#Preview("Issue Picker") {
     NavigationStack {
         SupportChatView(
             viewModel: SupportChatViewModel(
+                entryPoint: .helpAndSupport,
                 onContactHumanSupport: { _ in }
             )
         )
-        .navigationTitle("Chat with Support")
-        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+#Preview("Chat") {
+    NavigationStack {
+        SupportChatView(
+            viewModel: SupportChatViewModel(
+                entryPoint: .connectivityTool,
+                onContactHumanSupport: { _ in }
+            )
+        )
     }
 }

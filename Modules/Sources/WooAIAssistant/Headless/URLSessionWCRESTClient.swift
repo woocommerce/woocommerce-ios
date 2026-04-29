@@ -1,5 +1,6 @@
 import Foundation
 import CocoaLumberjackSwift
+import NetworkingCore
 
 /// `WCRESTClient` that talks straight to a WooCommerce store's
 /// `/wp-json/...` endpoints over HTTP Basic auth. The harness deliberately
@@ -67,6 +68,7 @@ public struct URLSessionWCRESTClient: WCRESTClient {
         request.httpMethod = method.uppercased()
         request.setValue(basicAuthHeader, forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
         if let mcpAPIKeyHeader {
             request.setValue(mcpAPIKeyHeader, forHTTPHeaderField: "X-MCP-API-Key")
         }

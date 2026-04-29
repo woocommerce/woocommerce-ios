@@ -43,6 +43,29 @@ public actor WooAssistantHeadless {
         }
     }
 
+    /// Loads credentials from `/tmp/woo-ai-assistant-credentials.json` (the path
+    /// the smoke skill writes). Returns nil when the file is missing or malformed
+    /// so smoke runs that lack credentials skip without failing the test build.
+    public nonisolated static func credentialsFromEnvironmentOrFile() -> Credentials? {
+        let path = "/tmp/woo-ai-assistant-credentials.json"
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else { return nil }
+        struct Stored: Decodable {
+            let siteURL: String
+            let siteID: Int64
+            let username: String
+            let appPassword: String
+            let wcConsumerKey: String?
+            let wcConsumerSecret: String?
+        }
+        guard let stored = try? JSONDecoder().decode(Stored.self, from: data) else { return nil }
+        return Credentials(siteURL: stored.siteURL,
+                           siteID: stored.siteID,
+                           username: stored.username,
+                           appPassword: stored.appPassword,
+                           wcConsumerKey: stored.wcConsumerKey,
+                           wcConsumerSecret: stored.wcConsumerSecret)
+    }
+
     public struct Configuration: Sendable {
         public var maxIterations: Int
         public var readOnlyMode: Bool
@@ -106,6 +129,7 @@ public actor WooAssistantHeadless {
         let normalizedSiteURL = Self.normalizeSiteURL(credentials.siteURL)
         let jwtProvider = URLSessionJetpackAIJWTClient(
             siteURL: normalizedSiteURL,
+            blogID: credentials.siteID,
             username: credentials.username,
             appPassword: credentials.appPassword
         )

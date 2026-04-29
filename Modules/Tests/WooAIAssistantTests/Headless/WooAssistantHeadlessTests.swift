@@ -131,19 +131,22 @@ struct WooAssistantHeadlessTests {
 
     @Test
     func test_jwt_cache_when_concurrent_callers_same_credentials_then_single_mint() async throws {
-        // Given
-        await JWTCache.testReset()
+        // Given a valid-shape stub JWT so the cache's CachedJWT validation passes.
+        await URLSessionJetpackAIJWTClient.providerCache.reset()
         let mintCounter = HeadlessMintCounter()
+        let stubToken = Self.makeStubJWT(blogID: 12345, expiresIn: 3600)
         let mint: URLSessionJetpackAIJWTClient.Mint = { _, _, _ in
             await mintCounter.increment()
-            return "stub-jwt-token"
+            return stubToken
         }
         let siteURL = URL(string: "https://store.example.com").unsafelyUnwrapped
         let providerA = URLSessionJetpackAIJWTClient(siteURL: siteURL,
+                                                     blogID: 12345,
                                                      username: "merchant",
                                                      appPassword: "abcd efgh ijkl mnop",
                                                      mint: mint)
         let providerB = URLSessionJetpackAIJWTClient(siteURL: siteURL,
+                                                     blogID: 12345,
                                                      username: "merchant",
                                                      appPassword: "abcd efgh ijkl mnop",
                                                      mint: mint)
@@ -155,10 +158,24 @@ struct WooAssistantHeadlessTests {
         let resolvedB = try await tokenB
 
         // Then
-        #expect(resolvedA == "stub-jwt-token")
-        #expect(resolvedB == "stub-jwt-token")
+        #expect(resolvedA == stubToken)
+        #expect(resolvedB == stubToken)
         let calls = await mintCounter.value
         #expect(calls == 1, "concurrent callers with identical credentials must share one mint")
+    }
+
+    private static func makeStubJWT(blogID: Int64, expiresIn seconds: Int) -> String {
+        let header = #"{"alg":"HS256","typ":"JWT"}"#
+        let exp = Int(Date().timeIntervalSince1970) + seconds
+        let payload = "{\"blog_id\":\(blogID),\"exp\":\(exp)}"
+        return [header, payload].map { Self.base64URLEncode(Data($0.utf8)) }.joined(separator: ".") + ".sig"
+    }
+
+    private static func base64URLEncode(_ data: Data) -> String {
+        data.base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
     }
 
     private func makeTestCredentials() -> WooAssistantHeadless.Credentials {
@@ -176,8 +193,3 @@ actor HeadlessMintCounter {
     func increment() { value += 1 }
 }
 
-extension JWTCache {
-    static func testReset() async {
-        await URLSessionJetpackAIJWTClient.cache.reset()
-    }
-}

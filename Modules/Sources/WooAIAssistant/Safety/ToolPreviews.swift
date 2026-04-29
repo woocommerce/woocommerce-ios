@@ -69,7 +69,9 @@ public enum ToolPreviews {
         }
         var changes: [String] = []
         if let status = patch.status {
-            changes.append(String.localizedStringWithFormat(Localization.changeStatus, status))
+            let baseChange = String.localizedStringWithFormat(Localization.changeStatus, status)
+            let suffix = customerNotifyingStatuses.contains(status) ? Localization.emailsCustomersSuffix : ""
+            changes.append(baseChange + suffix)
         }
         if patch.customer_note != nil { changes.append(Localization.changeCustomerNote) }
         if let email = patch.billing_email {
@@ -292,7 +294,12 @@ public enum ToolPreviews {
         static let emailsCustomerSuffix = NSLocalizedString(
             "ai.assistant.preview.suffix.emails_customer",
             value: " (emails the customer)",
-            comment: "Trailing suffix appended to an order-status confirmation preview when the new status triggers a customer email. Includes the leading space."
+            comment: "Trailing suffix appended to a single-order status confirmation preview when the new status triggers a customer email. Includes the leading space."
+        )
+        static let emailsCustomersSuffix = NSLocalizedString(
+            "ai.assistant.preview.suffix.emails_customers",
+            value: " (emails customers)",
+            comment: "Trailing suffix appended to a bulk-order status confirmation preview when the new status triggers customer emails for each affected order. Includes the leading space."
         )
 
         static let changeEditFields = NSLocalizedString(

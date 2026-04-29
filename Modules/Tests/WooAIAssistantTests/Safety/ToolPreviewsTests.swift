@@ -9,7 +9,7 @@ struct ToolPreviewsTests {
          "Set order #42 to processing (emails the customer)"),
         (OrdersBulkUpdateTool.name,
          #"{"ids":[1,2,3,4,5],"patch":{"status":"completed"}}"#,
-         "Update 5 orders: status -> completed"),
+         "Update 5 orders: status -> completed (emails customers)"),
         (ProductsUpdateTool.name,
          #"{"id":7,"regular_price":"24.99","stock_quantity":100}"#,
          "Update product #7: price -> $24.99, stock -> 100"),

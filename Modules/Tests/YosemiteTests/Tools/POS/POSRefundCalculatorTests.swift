@@ -206,4 +206,75 @@ struct POSRefundCalculatorTests {
         // Then
         #expect(request.amount == Decimal(string: "11.666"))
     }
+
+    // MARK: - Lump-sum lines (custom amounts / fees)
+
+    @Test func buildRefundRequest_when_lump_sum_then_emits_quantity_zero() {
+        // Given
+        let items = [
+            POSRefundableItem(itemID: 99, lineItemTotal: Decimal(15), totalTax: Decimal.zero, originalQuantity: 1, isLumpSum: true)
+        ]
+
+        // When
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: defaultDecimals)
+
+        // Then
+        #expect(request.items.count == 1)
+        #expect(request.items[0].itemID == 99)
+        #expect(request.items[0].quantity == 0)
+        #expect(request.items[0].refundTotal == Decimal(15))
+    }
+
+    @Test func buildRefundRequest_when_lump_sum_with_tax_then_uses_full_tax() {
+        // Given
+        let items = [
+            POSRefundableItem(itemID: 99, lineItemTotal: Decimal(20), totalTax: Decimal(2), originalQuantity: 1, isLumpSum: true)
+        ]
+
+        // When
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: defaultDecimals)
+
+        // Then
+        #expect(request.amount == Decimal(22))
+        #expect(request.items[0].refundTax == Decimal(2))
+    }
+
+    @Test func buildRefundRequest_when_mixing_products_and_lump_sum_then_each_is_emitted_with_correct_quantity() throws {
+        // Given
+        let items = [
+            // Two units of a product
+            POSRefundableItem(itemID: 1, lineItemTotal: Decimal(50), totalTax: Decimal(5), originalQuantity: 2),
+            POSRefundableItem(itemID: 1, lineItemTotal: Decimal(50), totalTax: Decimal(5), originalQuantity: 2),
+            // One lump-sum fee
+            POSRefundableItem(itemID: 99, lineItemTotal: Decimal(15), totalTax: Decimal.zero, originalQuantity: 1, isLumpSum: true)
+        ]
+
+        // When
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: defaultDecimals)
+
+        // Then
+        #expect(request.items.count == 2)
+        let product = try #require(request.items.first(where: { $0.itemID == 1 }))
+        let fee = try #require(request.items.first(where: { $0.itemID == 99 }))
+        #expect(product.quantity == 2)
+        #expect(product.refundTotal == Decimal(50))
+        #expect(fee.quantity == 0)
+        #expect(fee.refundTotal == Decimal(15))
+        #expect(request.amount == Decimal(70))
+    }
+
+    @Test func calculateRefundAmounts_when_lump_sum_then_uses_full_subtotal_and_tax() {
+        // Given
+        let items = [
+            POSRefundableItem(itemID: 99, lineItemTotal: Decimal(15), totalTax: Decimal(1), originalQuantity: 1, isLumpSum: true)
+        ]
+
+        // When
+        let amounts = sut.calculateRefundAmounts(for: items, numberOfDecimals: defaultDecimals)
+
+        // Then
+        #expect(amounts.subtotal == Decimal(15))
+        #expect(amounts.tax == Decimal(1))
+        #expect(amounts.total == Decimal(16))
+    }
 }

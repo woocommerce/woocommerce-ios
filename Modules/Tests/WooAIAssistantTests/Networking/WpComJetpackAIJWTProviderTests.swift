@@ -80,6 +80,45 @@ struct WpComJetpackAIJWTProviderTests {
     }
 
     @Test
+    func test_currentJWT_when_token_within_clock_skew_margin_then_mints_fresh() async throws {
+        // Given a token whose true `exp` is within the 60s clock-skew margin
+        let blogID: Int64 = 12345
+        let nearExpiry = makeJWT(blogID: blogID, expiresIn: 30)
+        let fresh = makeJWT(blogID: blogID, expiresIn: 3600)
+        let counter = MintCounter(script: [nearExpiry, fresh])
+        let provider = WpComJetpackAIJWTProvider(blogID: blogID,
+                                                 mint: counter.makeMintScript())
+        _ = try await provider.currentJWT()
+
+        // When
+        let second = try await provider.currentJWT()
+
+        // Then a fresh mint replaces the still-valid-on-the-clock token
+        #expect(second == fresh)
+        #expect(await counter.count == 2)
+    }
+
+    @Test
+    func test_currentJWT_when_first_mint_throws_then_next_call_retries() async throws {
+        // Given
+        let blogID: Int64 = 12345
+        let token = makeJWT(blogID: blogID, expiresIn: 3600)
+        let mintBox = ThrowingMintFactory(failuresBeforeSuccess: 1, token: token)
+        let provider = WpComJetpackAIJWTProvider(blogID: blogID, mint: mintBox.makeMint())
+
+        // When / Then
+        do {
+            _ = try await provider.currentJWT()
+            Issue.record("Expected the first mint to throw.")
+        } catch {
+            // expected
+        }
+        let recovered = try await provider.currentJWT()
+        #expect(recovered == token)
+        #expect(await mintBox.callCount == 2)
+    }
+
+    @Test
     func test_invalidate_when_called_then_next_currentJWT_mints_fresh() async throws {
         // Given
         let blogID: Int64 = 12345
@@ -99,8 +138,6 @@ struct WpComJetpackAIJWTProviderTests {
         #expect(await counter.count == 2)
     }
 
-    // header.payload.signature; signature is a constant since the provider
-    // never validates it (the proxy does).
     private func makeJWT(blogID: Int64, expiresIn seconds: Int) -> String {
         let header = #"{"alg":"HS256","typ":"JWT"}"#
         let exp = Int(Date().timeIntervalSince1970) + seconds
@@ -147,5 +184,31 @@ private actor MintCounter {
             throw AssistantError(kind: .auth, message: "mint script exhausted")
         }
         return script.removeFirst()
+    }
+}
+
+private actor ThrowingMintFactory {
+    private var failuresRemaining: Int
+    private let token: String
+    private(set) var callCount = 0
+
+    init(failuresBeforeSuccess: Int, token: String) {
+        self.failuresRemaining = failuresBeforeSuccess
+        self.token = token
+    }
+
+    nonisolated func makeMint() -> WpComJetpackAIJWTProvider.Mint {
+        { @Sendable _ in
+            try await self.next()
+        }
+    }
+
+    private func next() throws -> String {
+        callCount += 1
+        if failuresRemaining > 0 {
+            failuresRemaining -= 1
+            throw AssistantError(kind: .auth, message: "scripted mint failure")
+        }
+        return token
     }
 }

@@ -22,11 +22,7 @@ struct JetpackAIQueryClientTests {
         let events = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
 
         // Then
-        let textDeltas = events.compactMap { event -> String? in
-            if case .textDelta(let text) = event { return text }
-            return nil
-        }
-        #expect(textDeltas.joined() == "Hello, world!")
+        #expect(textDeltas(in: events).joined() == "Hello, world!")
         if case .completed(let reason) = events.last {
             #expect(reason == .stop)
         } else {
@@ -54,11 +50,7 @@ struct JetpackAIQueryClientTests {
 
         // Then
         #expect(await transport.callCount == 3)
-        let textDeltas = events.compactMap { event -> String? in
-            if case .textDelta(let text) = event { return text }
-            return nil
-        }
-        #expect(textDeltas.joined() == "ok")
+        #expect(textDeltas(in: events).joined() == "ok")
         let recordedDelays = await sleepRecorder.delays
         #expect(recordedDelays == [2_000_000_000, 4_000_000_000])
     }
@@ -132,11 +124,80 @@ struct JetpackAIQueryClientTests {
         let events = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
 
         // Then
-        let textDeltas = events.compactMap { event -> String? in
-            if case .textDelta(let text) = event { return text }
-            return nil
+        #expect(textDeltas(in: events).joined() == "Hi \u{1F680}!")
+    }
+
+    @Test
+    func test_streamTurn_when_response_streams_one_tool_call_then_emits_assembled_toolCall() async throws {
+        // Given
+        let frames = [
+            toolCallSkeletonFrame(index: 0, id: "call_42", name: "orders_get"),
+            toolCallArgsFrame(index: 0, args: "{\"order_id\":"),
+            toolCallArgsFrame(index: 0, args: "42}"),
+            finishFrame(reason: "tool_calls"),
+            "data: [DONE]\n\n"
+        ]
+        let client = makeClient(streamingResult: .successChunks([Data(frames.joined().utf8)]))
+
+        // When
+        let events = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let calls = toolCalls(in: events)
+        #expect(calls.count == 1)
+        #expect(calls.first?.id == "call_42")
+        #expect(calls.first?.function.name == "orders_get")
+        #expect(calls.first?.function.arguments == "{\"order_id\":42}")
+        if case .completed(let reason) = events.last {
+            #expect(reason == .toolCalls)
+        } else {
+            Issue.record("Expected the final event to be completed.")
         }
-        #expect(textDeltas.joined() == "Hi \u{1F680}!")
+    }
+
+    @Test
+    func test_streamTurn_when_response_streams_two_tool_calls_then_emits_them_in_index_order() async throws {
+        // Given
+        let frames = [
+            toolCallSkeletonFrame(index: 0, id: "a", name: "first"),
+            toolCallSkeletonFrame(index: 1, id: "b", name: "second"),
+            toolCallArgsFrame(index: 0, args: "{}"),
+            toolCallArgsFrame(index: 1, args: "{}"),
+            finishFrame(reason: "tool_calls"),
+            "data: [DONE]\n\n"
+        ]
+        let client = makeClient(streamingResult: .successChunks([Data(frames.joined().utf8)]))
+
+        // When
+        let events = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let calls = toolCalls(in: events)
+        #expect(calls.map(\.id) == ["a", "b"])
+        #expect(calls.map(\.function.name) == ["first", "second"])
+        #expect(calls.map(\.function.arguments) == ["{}", "{}"])
+    }
+
+    @Test
+    func test_streamTurn_when_403_then_surfaces_without_retry_or_invalidate() async throws {
+        // Given
+        let body = Data(#"{"code":"jetpack_ai_forbidden","message":"forbidden","data":{"status":403}}"#.utf8)
+        let jwtProvider = ScriptedJWTProvider(tokens: ["t"])
+        let transport = ScriptedTransport(scenarios: [.errorBody(status: 403, body: body)])
+        let client = JetpackAIQueryClient(jwtProvider: jwtProvider,
+                                          streamingTransport: transport.handler,
+                                          sleep: noOpSleep)
+
+        // When / Then
+        do {
+            _ = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected 403 to surface.")
+        } catch let error as AssistantError {
+            #expect(error.code == "403")
+            #expect(error.kind == .auth)
+        }
+        #expect(await transport.callCount == 1)
+        #expect(await jwtProvider.invalidateCount == 0)
     }
 
     @Test
@@ -159,11 +220,7 @@ struct JetpackAIQueryClientTests {
         #expect(await transport.callCount == 2)
         #expect(await jwtProvider.invalidateCount == 1)
         #expect(await jwtProvider.handedOut == ["stale-token", "fresh-token"])
-        let textDeltas = events.compactMap { event -> String? in
-            if case .textDelta(let text) = event { return text }
-            return nil
-        }
-        #expect(textDeltas.joined() == "after refresh")
+        #expect(textDeltas(in: events).joined() == "after refresh")
     }
 
     @Test
@@ -305,6 +362,38 @@ struct JetpackAIQueryClientTests {
         return events
     }
 
+    private func textDeltas(in events: [ChatStreamEvent]) -> [String] {
+        events.compactMap { event in
+            if case .textDelta(let text) = event { return text }
+            return nil
+        }
+    }
+
+    private func toolCalls(in events: [ChatStreamEvent]) -> [OpenAIChat.ToolCall] {
+        events.compactMap { event in
+            if case .toolCall(let call) = event { return call }
+            return nil
+        }
+    }
+
+    private func toolCallSkeletonFrame(index: Int, id: String, name: String) -> String {
+        let payload = "{\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[" +
+            "{\"index\":\(index),\"id\":\"\(id)\",\"type\":\"function\"," +
+            "\"function\":{\"name\":\"\(name)\",\"arguments\":\"\"}}]}}]}"
+        return "data: \(payload)\n\n"
+    }
+
+    private func toolCallArgsFrame(index: Int, args: String) -> String {
+        let escaped = args.replacingOccurrences(of: "\"", with: "\\\"")
+        let payload = "{\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[" +
+            "{\"index\":\(index),\"function\":{\"arguments\":\"\(escaped)\"}}]}}]}"
+        return "data: \(payload)\n\n"
+    }
+
+    private func finishFrame(reason: String) -> String {
+        "data: {\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"\(reason)\"}]}\n\n"
+    }
+
     private func chunkifyAwkwardly(_ string: String) -> [Data] {
         let bytes = Array(string.utf8)
         var chunks: [Data] = []
@@ -401,6 +490,7 @@ private actor ScriptedTransport {
         guard !scenarios.isEmpty else {
             throw AssistantError(kind: .network, message: "scripted transport exhausted")
         }
+        let url = request.url ?? URL(string: "https://test.invalid")!
         let scenario = scenarios.removeFirst()
         switch scenario {
         case .successChunks(let chunks):
@@ -410,20 +500,14 @@ private actor ScriptedTransport {
                 }
                 continuation.finish()
             }
-            let http = HTTPURLResponse(url: request.url ?? URL(string: "https://test.invalid")!,
-                                       statusCode: 200,
-                                       httpVersion: nil,
-                                       headerFields: nil)!
+            let http = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!
             return (stream, http)
         case .errorBody(let status, let body):
             let stream = AsyncThrowingStream<Data, Error> { continuation in
                 continuation.yield(body)
                 continuation.finish()
             }
-            let http = HTTPURLResponse(url: request.url ?? URL(string: "https://test.invalid")!,
-                                       statusCode: status,
-                                       httpVersion: nil,
-                                       headerFields: nil)!
+            let http = HTTPURLResponse(url: url, statusCode: status, httpVersion: nil, headerFields: nil)!
             return (stream, http)
         }
     }

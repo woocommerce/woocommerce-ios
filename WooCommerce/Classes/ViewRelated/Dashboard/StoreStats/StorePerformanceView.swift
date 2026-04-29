@@ -171,16 +171,16 @@ private extension StorePerformanceView {
     }
 
     /// Segmented control above the stats view that lets the merchant pick which revenue metric
-    /// (Net / Total / Gross) is displayed in the card total and the chart.
+    /// (Total / Gross / Net) is displayed in the card total and the chart. Order mirrors Android.
     var revenueTypeSelector: some View {
         Picker(Localization.revenueTypeAccessibilityLabel,
                selection: Binding(
                 get: { viewModel.revenueType },
                 set: { viewModel.didSelectRevenueType($0) }
                )) {
-            Text(Localization.revenueTypeNet).tag(DashboardRevenueStatsType.net)
             Text(Localization.revenueTypeTotal).tag(DashboardRevenueStatsType.total)
             Text(Localization.revenueTypeGross).tag(DashboardRevenueStatsType.gross)
+            Text(Localization.revenueTypeNet).tag(DashboardRevenueStatsType.net)
         }
         .pickerStyle(.segmented)
         .accessibilityIdentifier("performance-revenue-type-picker")

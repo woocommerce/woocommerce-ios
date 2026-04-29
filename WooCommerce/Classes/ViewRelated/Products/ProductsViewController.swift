@@ -1648,7 +1648,7 @@ private extension ProductsViewController {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
         static let headerDefaultHeight = CGFloat(130)
-        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        static let headerContainerInsets = UIEdgeInsets.zero
         static let toolbarButtonInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
     }
 

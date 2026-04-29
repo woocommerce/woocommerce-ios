@@ -1,4 +1,5 @@
 import SwiftUI
+import TipKit
 import WooFoundation
 
 struct CartView: View {
@@ -24,6 +25,7 @@ struct CartView: View {
 
     @State private var headerSize: CGSize = .zero
     @State private var showBarcodeScanningModal: Bool = false
+    @State private var showAddCustomAmountSheet: Bool = false
 
     var body: some View {
         ZStack {
@@ -32,7 +34,8 @@ struct CartView: View {
                     shouldApplyHeaderBottomShadow: shouldApplyHeaderBottomShadow,
                     shouldShowClearCartButton: shouldShowClearCartButton,
                     itemCount: posModel.cart.purchasableItems.count,
-                    backgroundColor: backgroundColor
+                    backgroundColor: backgroundColor,
+                    onAddCustomAmountTapped: { showAddCustomAmountSheet = true }
                 )
                 .zIndex(1)
                 .trackSize(size: $headerSize)
@@ -60,6 +63,9 @@ struct CartView: View {
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
+            .posModal(isPresented: $showAddCustomAmountSheet) {
+                AddCustomAmountView(isPresented: $showAddCustomAmountSheet)
+            }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)
             .background(content: {
@@ -77,12 +83,20 @@ struct CartView: View {
 private struct CartHeaderView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posFeatureFlags) private var featureFlags
     private let viewHelper = CartViewHelper()
 
     let shouldApplyHeaderBottomShadow: Bool
     let shouldShowClearCartButton: Bool
     let itemCount: Int
     let backgroundColor: Color
+    let onAddCustomAmountTapped: () -> Void
+
+    private var shouldShowAddCustomAmountButton: Bool {
+        viewHelper.shouldShowAddCustomAmountButton(
+            featureFlags: featureFlags,
+            orderStage: posModel.orderStage)
+    }
 
     private var shouldPreventCartEditing: Bool {
         viewHelper.shouldPreventCartEditing(
@@ -115,6 +129,10 @@ private struct CartHeaderView: View {
                         .minimumScaleFactor(0.5)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         .foregroundColor(Color.posOnSurfaceVariantLowest)
+                }
+
+                if shouldShowAddCustomAmountButton {
+                    CartAddCustomAmountButton(onTap: onAddCustomAmountTapped)
                 }
 
                 CartClearMenuButton(removeAllItemsFromCart: {
@@ -260,7 +278,34 @@ private extension CartView {
         }
         .background(backgroundColor.ignoresSafeArea(.all))
     }
+}
 
+private struct CartAddCustomAmountButton: View {
+    let onTap: () -> Void
+
+    @State private var tip = AddCustomAmountTip()
+
+    var body: some View {
+        Button(action: {
+            tip.invalidate(reason: .actionPerformed)
+            onTap()
+        }) {
+            Image(systemName: "plus")
+                .font(.posButtonSymbolMedium)
+                .foregroundStyle(Color.posOnSurface)
+                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                .accessibilityLabel(Localization.addCustomAmountAccessibilityLabel)
+        }
+        .popoverTip(tip, arrowEdge: .top)
+        .accessibilityIdentifier("pos-add-custom-amount-header-button")
+    }
+
+    enum Localization {
+        static let addCustomAmountAccessibilityLabel = NSLocalizedString(
+            "pos.cartView.addCustomAmount.header.accessibilityLabel",
+            value: "Add custom amount",
+            comment: "Accessibility label for the Point of Sale cart header button that opens the add custom amount form.")
+    }
 }
 
 private struct CartClearMenuButton: View {

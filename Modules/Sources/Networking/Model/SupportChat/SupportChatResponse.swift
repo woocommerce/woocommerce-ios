@@ -38,6 +38,7 @@ public struct SupportChatResponse: Decodable, Equatable {
 ///
 public enum SupportChatRole: String, Decodable, Equatable {
     case bot
+    case user
     case unknown
 
     public init(from decoder: Decoder) throws {

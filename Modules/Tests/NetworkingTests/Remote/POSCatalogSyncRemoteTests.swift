@@ -8,12 +8,12 @@ struct POSCatalogSyncRemoteTests {
     private let mockBackgroundDownloader = MockBackgroundDownloader()
     private let mockFileManager = MockFileManager()
     private let sampleSiteID: Int64 = 1234
-    private let testDefaults: UserDefaults
+    private let backgroundDownloadStateStore: BackgroundDownloadStateStore
 
     init() {
         // Create isolated UserDefaults suite for this test
-        testDefaults = UserDefaults(suiteName: "POSCatalogSyncRemoteTests.\(UUID().uuidString)")!
-        BackgroundDownloadState.configure(userDefaults: testDefaults)
+        let testDefaults = UserDefaults(suiteName: "POSCatalogSyncRemoteTests.\(UUID().uuidString)")!
+        backgroundDownloadStateStore = BackgroundDownloadStateStore(userDefaults: testDefaults)
     }
 
     @Test func loadProducts_sets_correct_parameters() async throws {
@@ -1033,7 +1033,10 @@ import NetworkingTestsResponsesFixtures
 
 private extension POSCatalogSyncRemoteTests {
     func createRemote() -> POSCatalogSyncRemote {
-        POSCatalogSyncRemote(network: network, backgroundDownloader: mockBackgroundDownloader, fileManager: mockFileManager)
+        POSCatalogSyncRemote(network: network,
+                             backgroundDownloader: mockBackgroundDownloader,
+                             fileManager: mockFileManager,
+                             backgroundDownloadStateStore: backgroundDownloadStateStore)
     }
 
     /// Loads test data from bundle response file.
@@ -1091,7 +1094,7 @@ extension POSCatalogSyncRemoteTests {
             mockBackgroundDownloader.onDownloadStarted = {
                 // Download has started, state should be saved now
                 if let sessionIdentifier = mockBackgroundDownloader.lastSessionIdentifier {
-                    let state = BackgroundDownloadState.load(for: sessionIdentifier)
+                    let state = backgroundDownloadStateStore.load(for: sessionIdentifier)
                     continuation.resume(returning: state)
                 } else {
                     continuation.resume(returning: nil)
@@ -1124,7 +1127,7 @@ extension POSCatalogSyncRemoteTests {
         _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
 
         // Then - state should be cleared after successful completion
-        let savedState = BackgroundDownloadState.load(for: mockBackgroundDownloader.lastSessionIdentifier ?? "")
+        let savedState = backgroundDownloadStateStore.load(for: mockBackgroundDownloader.lastSessionIdentifier ?? "")
         #expect(savedState == nil)
 
         // Cleanup
@@ -1151,6 +1154,6 @@ extension POSCatalogSyncRemoteTests {
         #expect(secondSessionID?.hasPrefix("com.woocommerce.pos.catalog.download") == true)
 
         // Cleanup
-        BackgroundDownloadState.clear()
+        backgroundDownloadStateStore.clear()
     }
 }

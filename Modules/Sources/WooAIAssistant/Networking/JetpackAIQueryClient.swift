@@ -37,9 +37,8 @@ struct JetpackAIQueryClient: AIChatService {
             guard let http = response as? HTTPURLResponse else {
                 throw AssistantError(kind: .network, message: Localization.nonHTTPResponse)
             }
-            // Cancelling only the wrapping Swift Task leaves the URL loader holding the
-            // socket; an idle SSE connection never produces a cancellation through the
-            // byte iterator. Cancel the URL task too.
+            // Cancelling only the Swift Task leaves the URL loader holding the socket;
+            // an idle SSE connection never throws via the byte iterator.
             let urlSessionTask = bytes.task
             let stream = AsyncThrowingStream<Data, Error> { continuation in
                 let task = Task {
@@ -90,9 +89,8 @@ struct JetpackAIQueryClient: AIChatService {
         }
     }
 
-    // 401 before any event lands → invalidate JWT + retry once. Replaying after an event
-    // crosses the seam would emit a duplicate prefix or a torn tool call. Android applies
-    // the same gate for 401 only; 403 is treated as terminal.
+    // Replaying after an event crosses the seam would emit a duplicate prefix or a torn
+    // tool call, so 401 retry only fires before any event has been yielded.
     private func runWithAuthRetry(messages: [OpenAIChat.Message],
                                   tools: [OpenAIChat.ToolDefinition]?,
                                   toolChoice: OpenAIChat.ToolChoice?,
@@ -124,7 +122,6 @@ struct JetpackAIQueryClient: AIChatService {
         return error.code == "401"
     }
 
-    // 429 retries (3 attempts, 2s + 4s) only run before any event crosses the seam.
     private func runWithRateLimitRetry(messages: [OpenAIChat.Message],
                                        tools: [OpenAIChat.ToolDefinition]?,
                                        toolChoice: OpenAIChat.ToolChoice?,
@@ -169,10 +166,8 @@ struct JetpackAIQueryClient: AIChatService {
                                        jwt: jwt)
         let (byteStream, http) = try await streamingTransport(request)
 
-        // jetpack-ai-query validates before opening the stream, so a non-2xx body is
-        // a single JSON error payload (the proxy uses the same wrapped shape for HTTP
-        // failures and soft failures). The HTTP status drives retry classification;
-        // the envelope's text just enriches the message for the consumer.
+        // jetpack-ai-query validates before opening the stream, so a non-2xx body is a
+        // single JSON error payload, not SSE frames.
         if !(200..<300).contains(http.statusCode) {
             var buffer = Data()
             for try await chunk in byteStream {
@@ -189,8 +184,8 @@ struct JetpackAIQueryClient: AIChatService {
         var toolCallBuffers: [Int: ToolCallAssembly] = [:]
         var toolCallOrder: [Int] = []
         var finishReason: OpenAIChat.FinishReason?
-        // Multi-byte UTF-8 chars that straddle a chunk boundary fail `String(data:encoding:)`
-        // and the chunk would be dropped wholesale. Carry up to 3 trailing bytes forward.
+        // Carry up to 3 trailing bytes when a multi-byte UTF-8 char straddles a chunk;
+        // otherwise `String(data:encoding:)` drops the whole chunk.
         var pendingBytes = Data()
 
         for try await rawChunk in byteStream {
@@ -242,8 +237,7 @@ struct JetpackAIQueryClient: AIChatService {
         if trimmed.isEmpty || trimmed == "[DONE]" { return }
         guard let data = trimmed.data(using: .utf8) else { return }
 
-        // Some soft errors come back as 200 + a wrapped envelope (no `choices`). Surface
-        // as a typed error as long as nothing has crossed the seam yet.
+        // Soft errors can ship as 200 + envelope; surface as a typed error before any event lands.
         if await bridge.didEmitAnyEvent == false, let envelope = Self.decodeWrappedError(from: data) {
             throw WrappedEnvelopeError(assistantError: envelope)
         }
@@ -299,9 +293,7 @@ struct JetpackAIQueryClient: AIChatService {
         func markEmitted() { didEmitAnyEvent = true }
     }
 
-    // Source-tagging wrapper: envelope-derived AssistantErrors travel inside this so the
-    // HTTP retry guards (which key on `error.code`) skip them. `streamTurn` unwraps it
-    // before yielding the inner AssistantError to the consumer.
+    // Wraps envelope errors so they bypass the HTTP retry guards keyed on `error.code`.
     private struct WrappedEnvelopeError: Error {
         let assistantError: AssistantError
     }

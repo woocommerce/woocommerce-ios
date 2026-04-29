@@ -1,11 +1,8 @@
 import Foundation
 import CocoaLumberjackSwift
 
-// Concurrent `currentJWT()` callers share one in-flight mint via a stored Task.
-// Plain actor isolation isn't enough: `await mint(...)` suspends, the actor lets the
-// next caller re-enter, that caller sees the still-unset cache and starts a second
-// mint. Holding a Task<String, Error> while the first call is in flight makes
-// followers await the same value.
+// Single-flight via a stored in-flight Task. Actor isolation alone isn't enough:
+// `await mint(...)` suspends, lets a second caller see the unset cache, and double-mints.
 public actor WpComJetpackAIJWTProvider: AssistantJWTProviding {
 
     public typealias Mint = @Sendable (Int64) async throws -> String
@@ -82,14 +79,11 @@ struct CachedJWT: Equatable, Sendable {
         blogID == id
     }
 
-    // Expire 60s early so a token whose true `exp` is just past `now` doesn't get
-    // shipped on a request that the proxy will then reject. Mirrors typical
-    // clock-skew margin and avoids 401-then-retry cycles at the boundary.
+    // 60s clock-skew margin avoids 401-then-retry cycles at the expiry boundary.
     var isExpired: Bool {
         Date() >= expiresAt.addingTimeInterval(-60)
     }
 
-    // JWT payload is base64url (`-_` instead of `+/`) with padding elided.
     private static func base64URLDecode(_ input: String) -> Data? {
         var base64 = input
             .replacingOccurrences(of: "-", with: "+")

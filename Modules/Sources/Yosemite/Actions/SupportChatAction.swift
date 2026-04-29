@@ -38,23 +38,23 @@ public enum SupportChatAction: Action {
     ///   - wpcomUserID: Secondary identifier. Pass `0` for non-WPCom-authenticated users.
     ///   - botSlug: Assistant slug backing the chat.
     ///   - firstUserMessage: Used to derive the chat's title. Trimmed and clamped to 50 chars.
-    ///   - onCompletion: Delivered on the main thread. `nil` on success.
+    ///   - onCompletion: Delivered on the main thread once the row is persisted.
     case registerChat(chatID: Int64,
                       siteID: Int64,
                       wpcomUserID: Int64,
                       botSlug: String,
                       firstUserMessage: String,
-                      onCompletion: (Error?) -> Void)
+                      onCompletion: () -> Void)
 
     /// Bumps the `updatedAt` timestamp for an existing chat so it surfaces at the top of history.
     ///
-    /// Idempotent: if no row exists for `chatID`, completes without error.
+    /// Idempotent: if no row exists for `chatID`, completes without doing anything.
     ///
     /// - Parameters:
     ///   - chatID: Identifier of the chat to bump.
-    ///   - onCompletion: Delivered on the main thread. `nil` on success.
+    ///   - onCompletion: Delivered on the main thread once the bump is persisted.
     case touchChat(chatID: Int64,
-                   onCompletion: (Error?) -> Void)
+                   onCompletion: () -> Void)
 
     /// Loads all locally-persisted chat bookmarks for a site, sorted newest first.
     ///
@@ -62,13 +62,13 @@ public enum SupportChatAction: Action {
     ///   - siteID: Scoping key.
     ///   - onCompletion: Delivered on the main thread with the list of summaries.
     case loadChatHistory(siteID: Int64,
-                         onCompletion: (Result<[SupportChatSummary], Error>) -> Void)
+                         onCompletion: ([SupportChatSummary]) -> Void)
 
     /// Deletes a single chat bookmark from local storage.
     ///
     /// - Parameters:
     ///   - chatID: Identifier of the chat to delete.
-    ///   - onCompletion: Delivered on the main thread. `nil` on success.
+    ///   - onCompletion: Delivered on the main thread once the row is removed.
     case deleteChat(chatID: Int64,
-                    onCompletion: (Error?) -> Void)
+                    onCompletion: () -> Void)
 }

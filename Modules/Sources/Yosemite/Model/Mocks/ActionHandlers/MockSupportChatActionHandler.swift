@@ -15,13 +15,13 @@ struct MockSupportChatActionHandler: MockActionHandler {
         case let .fetchChat(_, _, completion):
             completion(.success(Self.emptyResponse))
         case let .registerChat(_, _, _, _, _, onCompletion):
-            onCompletion(nil)
+            onCompletion()
         case let .touchChat(_, onCompletion):
-            onCompletion(nil)
+            onCompletion()
         case let .loadChatHistory(_, onCompletion):
-            onCompletion(.success([]))
+            onCompletion([])
         case let .deleteChat(_, onCompletion):
-            onCompletion(nil)
+            onCompletion()
         }
     }
 

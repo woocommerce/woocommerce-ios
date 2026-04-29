@@ -41,19 +41,16 @@ struct SupportChatStoreTests {
         let chatID: Int64 = 4242
 
         // When
-        let error = await withCheckedContinuation { continuation in
+        await withCheckedContinuation { continuation in
             store.onAction(SupportChatAction.registerChat(chatID: chatID,
                                                           siteID: sampleSiteID,
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
                                                           firstUserMessage: "How do I configure shipping?",
-                                                          onCompletion: { error in
-                continuation.resume(returning: error)
-            }))
+                                                          onCompletion: { continuation.resume() }))
         }
 
         // Then
-        #expect(error == nil)
         #expect(storedChatCount == 1)
         let stored = try #require(viewStorage.loadSupportChat(chatID: chatID))
         #expect(stored.chatID == chatID)
@@ -75,24 +72,21 @@ struct SupportChatStoreTests {
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
                                                           firstUserMessage: "first",
-                                                          onCompletion: { _ in continuation.resume() }))
+                                                          onCompletion: { continuation.resume() }))
         }
         #expect(storedChatCount == 1)
 
         // When — register again with the same chatID but a different message
-        let error = await withCheckedContinuation { continuation in
+        await withCheckedContinuation { continuation in
             store.onAction(SupportChatAction.registerChat(chatID: chatID,
                                                           siteID: sampleSiteID,
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
                                                           firstUserMessage: "second",
-                                                          onCompletion: { error in
-                continuation.resume(returning: error)
-            }))
+                                                          onCompletion: { continuation.resume() }))
         }
 
         // Then — still one row, original title preserved.
-        #expect(error == nil)
         #expect(storedChatCount == 1)
         let stored = try #require(viewStorage.loadSupportChat(chatID: chatID))
         #expect(stored.title == "first")
@@ -110,7 +104,7 @@ struct SupportChatStoreTests {
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
                                                           firstUserMessage: longMessage,
-                                                          onCompletion: { _ in continuation.resume() }))
+                                                          onCompletion: { continuation.resume() }))
         }
 
         // Then — leading/trailing whitespace trimmed, then clamped to 50 chars.
@@ -132,7 +126,7 @@ struct SupportChatStoreTests {
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
                                                           firstUserMessage: "hi",
-                                                          onCompletion: { _ in continuation.resume() }))
+                                                          onCompletion: { continuation.resume() }))
         }
         let initialUpdatedAt = try #require(viewStorage.loadSupportChat(chatID: chatID)?.updatedAt)
 
@@ -140,14 +134,11 @@ struct SupportChatStoreTests {
         try await Task.sleep(for: .milliseconds(20))
 
         // When
-        let error = await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.touchChat(chatID: chatID, onCompletion: { error in
-                continuation.resume(returning: error)
-            }))
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.touchChat(chatID: chatID, onCompletion: { continuation.resume() }))
         }
 
         // Then
-        #expect(error == nil)
         let bumpedUpdatedAt = try #require(viewStorage.loadSupportChat(chatID: chatID)?.updatedAt)
         #expect(bumpedUpdatedAt > initialUpdatedAt)
     }
@@ -157,14 +148,11 @@ struct SupportChatStoreTests {
         let store = makeStore()
 
         // When — touch a chatID that was never registered.
-        let error = await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.touchChat(chatID: 9999, onCompletion: { error in
-                continuation.resume(returning: error)
-            }))
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.touchChat(chatID: 9999, onCompletion: { continuation.resume() }))
         }
 
-        // Then — idempotent: no error, no row created.
-        #expect(error == nil)
+        // Then — idempotent: no row created.
         #expect(storedChatCount == 0)
     }
 
@@ -180,20 +168,19 @@ struct SupportChatStoreTests {
                                                               wpcomUserID: sampleWPComUserID,
                                                               botSlug: sampleBotSlug,
                                                               firstUserMessage: "chat \(chatID)",
-                                                              onCompletion: { _ in continuation.resume() }))
+                                                              onCompletion: { continuation.resume() }))
             }
             try await Task.sleep(for: .milliseconds(10))
         }
 
         // When
-        let result = await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.loadChatHistory(siteID: sampleSiteID, onCompletion: { result in
-                continuation.resume(returning: result)
+        let summaries = await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.loadChatHistory(siteID: sampleSiteID, onCompletion: { summaries in
+                continuation.resume(returning: summaries)
             }))
         }
 
         // Then
-        let summaries = try result.get()
         #expect(summaries.map(\.chatID) == [3, 2, 1])
     }
 
@@ -207,7 +194,7 @@ struct SupportChatStoreTests {
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
                                                           firstUserMessage: "ours",
-                                                          onCompletion: { _ in continuation.resume() }))
+                                                          onCompletion: { continuation.resume() }))
         }
         await withCheckedContinuation { continuation in
             store.onAction(SupportChatAction.registerChat(chatID: 2,
@@ -215,34 +202,32 @@ struct SupportChatStoreTests {
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
                                                           firstUserMessage: "theirs",
-                                                          onCompletion: { _ in continuation.resume() }))
+                                                          onCompletion: { continuation.resume() }))
         }
 
         // When
-        let result = await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.loadChatHistory(siteID: sampleSiteID, onCompletion: { result in
-                continuation.resume(returning: result)
+        let summaries = await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.loadChatHistory(siteID: sampleSiteID, onCompletion: { summaries in
+                continuation.resume(returning: summaries)
             }))
         }
 
         // Then — only the row scoped to sampleSiteID is returned.
-        let summaries = try result.get()
         #expect(summaries.map(\.chatID) == [1])
     }
 
-    @Test func loadChatHistory_when_no_rows_then_returns_empty() async throws {
+    @Test func loadChatHistory_when_no_rows_then_returns_empty() async {
         // Given
         let store = makeStore()
 
         // When
-        let result = await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.loadChatHistory(siteID: sampleSiteID, onCompletion: { result in
-                continuation.resume(returning: result)
+        let summaries = await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.loadChatHistory(siteID: sampleSiteID, onCompletion: { summaries in
+                continuation.resume(returning: summaries)
             }))
         }
 
         // Then
-        let summaries = try result.get()
         #expect(summaries.isEmpty)
     }
 
@@ -258,19 +243,16 @@ struct SupportChatStoreTests {
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
                                                           firstUserMessage: "hi",
-                                                          onCompletion: { _ in continuation.resume() }))
+                                                          onCompletion: { continuation.resume() }))
         }
         #expect(storedChatCount == 1)
 
         // When
-        let error = await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.deleteChat(chatID: chatID, onCompletion: { error in
-                continuation.resume(returning: error)
-            }))
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.deleteChat(chatID: chatID, onCompletion: { continuation.resume() }))
         }
 
         // Then
-        #expect(error == nil)
         #expect(storedChatCount == 0)
     }
 
@@ -279,14 +261,12 @@ struct SupportChatStoreTests {
         let store = makeStore()
 
         // When
-        let error = await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.deleteChat(chatID: 9999, onCompletion: { error in
-                continuation.resume(returning: error)
-            }))
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.deleteChat(chatID: 9999, onCompletion: { continuation.resume() }))
         }
 
         // Then — idempotent.
-        #expect(error == nil)
+        #expect(storedChatCount == 0)
     }
 
     // MARK: - fetchChat

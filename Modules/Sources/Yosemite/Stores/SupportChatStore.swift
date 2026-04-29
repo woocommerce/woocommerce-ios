@@ -100,7 +100,7 @@ private extension SupportChatStore {
                       wpcomUserID: Int64,
                       botSlug: String,
                       firstUserMessage: String,
-                      onCompletion: @escaping (Error?) -> Void) {
+                      onCompletion: @escaping () -> Void) {
         let title = Self.deriveTitle(from: firstUserMessage)
         let now = Date()
 
@@ -118,11 +118,11 @@ private extension SupportChatStore {
             chat.createdAt = now
             chat.updatedAt = now
         }, completion: {
-            onCompletion(nil)
+            onCompletion()
         }, on: .main)
     }
 
-    func touchChat(chatID: Int64, onCompletion: @escaping (Error?) -> Void) {
+    func touchChat(chatID: Int64, onCompletion: @escaping () -> Void) {
         let now = Date()
         storageManager.performAndSave({ storage in
             guard let chat = storage.loadSupportChat(chatID: chatID) else {
@@ -131,23 +131,23 @@ private extension SupportChatStore {
             }
             chat.updatedAt = now
         }, completion: {
-            onCompletion(nil)
+            onCompletion()
         }, on: .main)
     }
 
     func loadChatHistory(siteID: Int64,
-                         onCompletion: @escaping (Result<[SupportChatSummary], Error>) -> Void) {
+                         onCompletion: @escaping ([SupportChatSummary]) -> Void) {
         let summaries = storageManager.viewStorage
             .loadSupportChats(siteID: siteID)
             .map { $0.toReadOnly() }
-        onCompletion(.success(summaries))
+        onCompletion(summaries)
     }
 
-    func deleteChat(chatID: Int64, onCompletion: @escaping (Error?) -> Void) {
+    func deleteChat(chatID: Int64, onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
             storage.deleteSupportChat(chatID: chatID)
         }, completion: {
-            onCompletion(nil)
+            onCompletion()
         }, on: .main)
     }
 }

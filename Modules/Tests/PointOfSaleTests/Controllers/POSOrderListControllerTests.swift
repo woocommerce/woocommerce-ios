@@ -1435,6 +1435,81 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func test_displayedCustomAmounts_when_fee_fully_refunded_then_filters_it_out() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
+        let order = makeOrder(
+            lineItems: [],
+            customAmounts: [customAmount],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$5.00")]
+        )
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$5.00", items: [
+                POSRefundItem(refundedItemID: 777,
+                              quantity: 1,
+                              name: "Discount Fee",
+                              formattedPrice: "$5.00",
+                              formattedTotal: "-$5.00",
+                              imageSrc: nil,
+                              isLumpSum: true)
+            ])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        #expect(sut.displayedCustomAmounts.isEmpty)
+    }
+
+    @MainActor
+    @Test func test_displayedCustomAmounts_when_other_fee_unrefunded_then_keeps_it() async throws {
+        // Given - one fee refunded, another not
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = makeOrder(
+            lineItems: [],
+            customAmounts: [
+                makePOSOrderCustomAmount(id: 777, name: "Discount Fee"),
+                makePOSOrderCustomAmount(id: 888, name: "Tip")
+            ],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$5.00")]
+        )
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$5.00", items: [
+                POSRefundItem(refundedItemID: 777,
+                              quantity: 1,
+                              name: "Discount Fee",
+                              formattedPrice: "$5.00",
+                              formattedTotal: "-$5.00",
+                              imageSrc: nil,
+                              isLumpSum: true)
+            ])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        #expect(sut.displayedCustomAmounts.count == 1)
+        #expect(sut.displayedCustomAmounts.first?.id == 888)
+    }
+
+    @MainActor
+    @Test func test_displayedCustomAmounts_when_feature_flag_disabled_then_returns_all_custom_amounts() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = false
+        let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
+        let order = makeOrder(lineItems: [], customAmounts: [customAmount])
+        sut.selectOrder(order)
+
+        // Then
+        #expect(sut.displayedCustomAmounts.count == 1)
+    }
+
+    @MainActor
     @Test func test_displayedLineItems_when_feature_flag_disabled_then_returns_all_items() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = false

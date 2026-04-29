@@ -58,11 +58,9 @@ struct POSOrderDetailsView: View {
                     if !orderListModel.ordersController.displayedLineItems.isEmpty {
                         productsSection(orderListModel.ordersController.displayedLineItems)
                     }
-                    // Fee refunds are out of scope for this PR. When they land, this read should
-                    // move to a `displayedCustomAmounts` computed property on the controller that
-                    // mirrors `displayedLineItems` and filters refunded fees out by id.
-                    if !order.customAmounts.isEmpty {
-                        customAmountsSection(order.customAmounts)
+                    let displayedCustomAmounts = orderListModel.ordersController.displayedCustomAmounts
+                    if !displayedCustomAmounts.isEmpty {
+                        customAmountsSection(displayedCustomAmounts)
                     }
                     if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
                         ghostRefundedProductsSection

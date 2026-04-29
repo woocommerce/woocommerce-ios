@@ -69,7 +69,6 @@ final class SessionManager: SessionManagerProtocol {
                                      storeName: defaultSite?.name ?? "",
                                      currencySettings: ServiceLocator.currencySettings,
                                      credentials: credentials,
-                                     supportsJetpackVisitorStats: defaultSite?.supportsJetpackVisitorStats ?? false,
                                      enablesCrashReports: defaults[.userOptedInCrashLogging] ?? true,
                                      account: defaultAccount)
         }()
@@ -189,7 +188,6 @@ final class SessionManager: SessionManagerProtocol {
     @Published var defaultSite: Site? {
         didSet {
             watchDependenciesSynchronizer.storeName = defaultSite?.name
-            watchDependenciesSynchronizer.supportsJetpackVisitorStats = defaultSite?.supportsJetpackVisitorStats ?? false
         }
     }
 

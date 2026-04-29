@@ -131,6 +131,75 @@ struct POSRefundMapperTests {
         #expect(result.count == 3)
         #expect(result.map(\.name) == ["Item A", "Item B", "Item C"])
     }
+
+    @Test func test_map_when_refundedItemID_matches_custom_amount_then_marks_lump_sum() {
+        // Given
+        let refund = makeRefund(items: [makeRefundItem(name: "Discount Fee", refundedItemID: "777")])
+        let customAmount = makeCustomAmount(id: 777, name: "Discount Fee")
+
+        // When
+        let result = sut.map(refund: refund,
+                             orderItems: [],
+                             customAmounts: [customAmount],
+                             currencyFormatter: currencyFormatter,
+                             currency: currency)
+
+        // Then
+        #expect(result.first?.isLumpSum == true)
+    }
+
+    @Test func test_map_when_refundedItemID_matches_order_item_then_does_not_mark_lump_sum() {
+        // Given
+        let refund = makeRefund(items: [makeRefundItem(name: "Mug", refundedItemID: "42")])
+        let orderItem = makeOrderItem(itemID: 42, imageSrc: nil)
+        let customAmount = makeCustomAmount(id: 777, name: "Discount Fee")
+
+        // When
+        let result = sut.map(refund: refund,
+                             orderItems: [orderItem],
+                             customAmounts: [customAmount],
+                             currencyFormatter: currencyFormatter,
+                             currency: currency)
+
+        // Then
+        #expect(result.first?.isLumpSum == false)
+    }
+
+    @Test func test_map_when_no_custom_amounts_passed_then_does_not_mark_lump_sum() {
+        // Given
+        let refund = makeRefund(items: [makeRefundItem(name: "Mug", refundedItemID: "42")])
+
+        // When
+        let result = sut.map(refund: refund,
+                             orderItems: [],
+                             currencyFormatter: currencyFormatter,
+                             currency: currency)
+
+        // Then
+        #expect(result.first?.isLumpSum == false)
+    }
+
+    @Test func test_map_with_mixed_items_then_flags_only_fee_lines() {
+        // Given
+        let refund = makeRefund(items: [
+            makeRefundItem(name: "Mug", refundedItemID: "42"),
+            makeRefundItem(name: "Discount Fee", refundedItemID: "777")
+        ])
+        let orderItem = makeOrderItem(itemID: 42, imageSrc: nil)
+        let customAmount = makeCustomAmount(id: 777, name: "Discount Fee")
+
+        // When
+        let result = sut.map(refund: refund,
+                             orderItems: [orderItem],
+                             customAmounts: [customAmount],
+                             currencyFormatter: currencyFormatter,
+                             currency: currency)
+
+        // Then
+        #expect(result.count == 2)
+        #expect(result.first(where: { $0.name == "Mug" })?.isLumpSum == false)
+        #expect(result.first(where: { $0.name == "Discount Fee" })?.isLumpSum == true)
+    }
 }
 
 private extension POSRefundMapperTests {
@@ -194,6 +263,14 @@ private extension POSRefundMapperTests {
                      formattedTotal: "$10.00",
                      imageSrc: imageSrc,
                      attributes: [])
+    }
+
+    func makeCustomAmount(id: Int64, name: String) -> POSOrderCustomAmount {
+        POSOrderCustomAmount(id: id,
+                             name: name,
+                             formattedTotal: "$5.00",
+                             total: 5,
+                             totalTax: 0)
     }
 }
 

@@ -9,8 +9,9 @@ struct ARParcelSceneView: UIViewRepresentable {
 
     func makeCoordinator() -> ARParcelSceneCoordinator {
         let coordinator = ARParcelSceneCoordinator()
-        coordinator.onPlaced = { [self] in isPlaced = true }
-        coordinator.onRemoved = { [self] in isPlaced = false }
+        let placedBinding = $isPlaced
+        coordinator.onPlaced = { placedBinding.wrappedValue = true }
+        coordinator.onRemoved = { placedBinding.wrappedValue = false }
         return coordinator
     }
 

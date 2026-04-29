@@ -294,12 +294,12 @@ public enum ToolPreviews {
         static let emailsCustomerSuffix = NSLocalizedString(
             "ai.assistant.preview.suffix.emails_customer",
             value: " (emails the customer)",
-            comment: "Trailing suffix appended to a single-order status confirmation preview when the new status triggers a customer email. Includes the leading space."
+            comment: "Suffix on a single-order status preview when the status triggers a customer email. Leading space included."
         )
         static let emailsCustomersSuffix = NSLocalizedString(
             "ai.assistant.preview.suffix.emails_customers",
             value: " (emails customers)",
-            comment: "Trailing suffix appended to a bulk-order status confirmation preview when the new status triggers customer emails for each affected order. Includes the leading space."
+            comment: "Suffix on a bulk-order status preview when the status triggers customer emails. Leading space included."
         )
 
         static let changeEditFields = NSLocalizedString(
@@ -313,14 +313,14 @@ public enum ToolPreviews {
             comment: "Change description for a name field. %1$@ is the new name."
         )
         static let changeRegularPrice = NSLocalizedString(
-            "ai.assistant.preview.change.regular_price",
-            value: "price -> $%1$@",
-            comment: "Change description for the regular price. %1$@ is the new price as a string."
+            "ai.assistant.preview.change.regular_price.no_currency",
+            value: "price -> %1$@",
+            comment: "Regular price change. %1$@ is the raw amount; no currency symbol because store currency varies."
         )
         static let changeSalePrice = NSLocalizedString(
-            "ai.assistant.preview.change.sale_price",
-            value: "sale -> $%1$@",
-            comment: "Change description for the sale price. %1$@ is the new sale price as a string."
+            "ai.assistant.preview.change.sale_price.no_currency",
+            value: "sale -> %1$@",
+            comment: "Sale price change. %1$@ is the raw amount; no currency symbol because store currency varies."
         )
         static let changeSaleOff = NSLocalizedString(
             "ai.assistant.preview.change.sale_off",

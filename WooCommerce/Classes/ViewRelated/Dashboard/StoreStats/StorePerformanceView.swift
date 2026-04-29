@@ -1,5 +1,6 @@
 import SwiftUI
 import enum Yosemite.StatsTimeRangeV4
+import enum Yosemite.DashboardRevenueStatsType
 import struct Yosemite.DashboardCard
 
 /// View for store performance on Dashboard screen
@@ -44,6 +45,11 @@ struct StorePerformanceView: View {
                     .shimmering(active: viewModel.showRedactedState)
 
                 Divider()
+
+                revenueTypeSelector
+                    .padding(.horizontal, Layout.padding)
+                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                    .shimmering(active: viewModel.showRedactedState)
 
                 statsView
                     .padding(.vertical, Layout.padding)
@@ -162,6 +168,24 @@ private extension StorePerformanceView {
             .disabled(viewModel.syncingData)
             .accessibilityIdentifier("performance-time-range-menu")
         }
+    }
+
+    /// Segmented control above the stats view that lets the merchant pick which revenue metric
+    /// (Net / Total / Gross) is displayed in the card total and the chart.
+    var revenueTypeSelector: some View {
+        Picker(Localization.revenueTypeAccessibilityLabel,
+               selection: Binding(
+                get: { viewModel.revenueType },
+                set: { viewModel.didSelectRevenueType($0) }
+               )) {
+            Text(Localization.revenueTypeNet).tag(DashboardRevenueStatsType.net)
+            Text(Localization.revenueTypeTotal).tag(DashboardRevenueStatsType.total)
+            Text(Localization.revenueTypeGross).tag(DashboardRevenueStatsType.gross)
+        }
+        .pickerStyle(.segmented)
+        .accessibilityIdentifier("performance-revenue-type-picker")
+        .accessibilityLabel(Localization.revenueTypeAccessibilityLabel)
+        .disabled(viewModel.syncingData)
     }
 
     @ViewBuilder
@@ -425,6 +449,26 @@ private extension StorePerformanceView {
             "storePerformanceView.unavailableAnalyticsView.title",
             value: "Unable to display your store's performance",
             comment: "Title when the Performance card is disabled because the analytics feature is unavailable"
+        )
+        static let revenueTypeTotal = NSLocalizedString(
+            "storePerformanceView.revenueType.total",
+            value: "Total",
+            comment: "Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android."
+        )
+        static let revenueTypeGross = NSLocalizedString(
+            "storePerformanceView.revenueType.gross",
+            value: "Gross",
+            comment: "Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android."
+        )
+        static let revenueTypeNet = NSLocalizedString(
+            "storePerformanceView.revenueType.net",
+            value: "Net",
+            comment: "Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android."
+        )
+        static let revenueTypeAccessibilityLabel = NSLocalizedString(
+            "storePerformanceView.revenueType.accessibilityLabel",
+            value: "Revenue type",
+            comment: "Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card."
         )
     }
 }

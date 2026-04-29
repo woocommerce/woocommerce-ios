@@ -1,6 +1,7 @@
 import Foundation
 import enum Yosemite.StatsTimeRangeV4
 import enum Yosemite.AnalyticsOrderDateType
+import enum Yosemite.DashboardRevenueStatsType
 import struct Yosemite.Site
 
 extension WooAnalyticsEvent {
@@ -87,6 +88,18 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .dashboardStatsOrderDateTypeUpdateFailed,
                               properties: [Keys.type: statsCardType],
                               error: error)
+        }
+
+        // MARK: Revenue type segmented control
+
+        /// Tracked when the merchant picks a revenue metric (Gross / Net / Total) on the Performance card.
+        /// Mirrors Android's `DASHBOARD_STATS_REVENUE_TYPE_SELECTED` event so cross-platform telemetry
+        /// can be aggregated by `option`.
+        /// - Parameter revenueType: The newly selected revenue metric.
+        static func dashboardStatsRevenueTypeSelected(revenueType: DashboardRevenueStatsType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardStatsRevenueTypeSelected,
+                              properties: [Keys.type: statsCardType,
+                                           Keys.option: revenueType.rawValue])
         }
     }
 }

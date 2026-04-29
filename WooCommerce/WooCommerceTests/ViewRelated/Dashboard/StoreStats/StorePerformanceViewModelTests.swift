@@ -686,6 +686,101 @@ final class StorePerformanceViewModelTests: XCTestCase {
         // Cleanup
         DashboardTimestampStore.removeTimestamp(for: .performance, at: .today)
     }
+
+    // MARK: Revenue type segmented control
+
+    @MainActor
+    func test_revenueType_when_load_returns_value_then_published() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadLastSelectedDashboardRevenueStatsType(_, onCompletion):
+                onCompletion(.gross)
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+
+        // Then
+        XCTAssertEqual(viewModel.revenueType, .total) // initial fallback
+        waitUntil {
+            viewModel.revenueType == .gross
+        }
+    }
+
+    @MainActor
+    func test_didSelectRevenueType_when_new_type_then_persists_and_clears_chart_selection() {
+        // Given
+        var savedRevenueType: DashboardRevenueStatsType?
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .setLastSelectedDashboardRevenueStatsType(_, revenueType):
+                savedRevenueType = revenueType
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        viewModel.didSelectStatsInterval(at: 1)
+
+        // When
+        viewModel.didSelectRevenueType(.net)
+
+        // Then
+        XCTAssertEqual(viewModel.revenueType, .net)
+        XCTAssertEqual(savedRevenueType, .net)
+        // Switching the metric clears the highlighted chart point so the card header reverts to the period total.
+        waitUntil {
+            viewModel.shouldHighlightStats == false
+        }
+    }
+
+    @MainActor
+    func test_didSelectRevenueType_when_same_type_then_noop() {
+        // Given
+        var saveCallCount = 0
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .setLastSelectedDashboardRevenueStatsType:
+                saveCallCount += 1
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        XCTAssertEqual(viewModel.revenueType, .total)
+
+        // When
+        viewModel.didSelectRevenueType(.total)
+
+        // Then — no save dispatched, no event tracked.
+        XCTAssertEqual(saveCallCount, 0)
+    }
+
+    @MainActor
+    func test_didSelectRevenueType_then_tracks_event_with_option_property() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  usageTracksEventEmitter: .init(),
+                                                  analytics: analytics)
+
+        // When
+        viewModel.didSelectRevenueType(.gross)
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("dashboard_stats_revenue_type_selected"))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties.last as? [String: AnyHashable])
+        XCTAssertEqual(properties["option"] as? String, "gross")
+        XCTAssertEqual(properties["type"] as? String, "dashboard_stats")
+    }
 }
 
 // MARK: - Private helpers

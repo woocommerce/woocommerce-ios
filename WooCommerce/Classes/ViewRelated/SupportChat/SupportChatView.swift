@@ -104,7 +104,7 @@ struct SupportChatView: View {
     private func issuePickerBubble(issues: [SupportIssueType]) -> some View {
         VStack(alignment: .leading, spacing: Layout.bubbleSpacing) {
             Text(Localization.issuePickerHeader)
-                .font(.subheadline)
+                .font(.body)
                 .foregroundStyle(Color(.secondaryLabel))
 
             ForEach(issues, id: \.self) { issue in
@@ -229,14 +229,8 @@ struct SupportChatView: View {
                     }
                 } label: {
                     Label(action.title, systemImage: action.systemImage)
-                        .font(.body.weight(.medium))
-                        .frame(maxWidth: .infinity)
-                        .padding(Layout.issueButtonPadding)
-                        .background(Color.accentColor)
-                        .foregroundStyle(Color.white)
-                        .clipShape(RoundedRectangle(cornerRadius: Layout.issueButtonRadius))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
             } else {
                 Button {
                     viewModel.proceedToChat()

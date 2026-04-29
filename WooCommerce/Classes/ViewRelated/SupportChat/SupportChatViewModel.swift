@@ -130,6 +130,7 @@ final class SupportChatViewModel {
     }
 
     private(set) var hasProceededToChat: Bool = false
+    private(set) var isExecutingAction: Bool = false
 
     var inputText: String = ""
 
@@ -244,6 +245,9 @@ final class SupportChatViewModel {
     /// Executes a fix action and re-runs the relevant test.
     ///
     func executeAction(_ action: SupportDiagnosticsService.Action) async {
+        isExecutingAction = true
+        defer { isExecutingAction = false }
+
         do {
             switch action {
             case .enableAnalytics:
@@ -272,10 +276,44 @@ final class SupportChatViewModel {
     /// Re-runs a specific test and updates the results.
     ///
     private func rerunTest(_ test: SupportDiagnosticsService.Test) async {
+        // Find the failure message and convert it to progress state
+        guard let messageIndex = messages.lastIndex(where: {
+            if case .diagnosticsFailure = $0.content { return true }
+            return false
+        }) else { return }
+
+        let messageId = messages[messageIndex].id
+
+        // Show progress state with the test running
+        let progressSteps: [(test: SupportDiagnosticsService.Test, status: TestStatus)] = [(test, .running)]
+        messages[messageIndex] = ChatMessage(
+            id: messageId,
+            role: .bot,
+            content: .diagnosticsProgress(progressSteps)
+        )
+
+        // Run the test
         let newResults = await diagnosticsService.runTests([test])
-        if let newResult = newResults.first,
-           let index = diagnosticResults.firstIndex(where: { $0.test == test }) {
+        guard let newResult = newResults.first else { return }
+
+        // Update diagnostic results
+        if let index = diagnosticResults.firstIndex(where: { $0.test == test }) {
             diagnosticResults[index] = newResult
+        }
+
+        // Update message with result
+        if newResult.isSuccess {
+            messages[messageIndex] = ChatMessage(
+                id: messageId,
+                role: .bot,
+                content: .diagnosticsSuccess
+            )
+        } else {
+            messages[messageIndex] = ChatMessage(
+                id: messageId,
+                role: .bot,
+                content: .diagnosticsFailure(newResult)
+            )
         }
     }
 

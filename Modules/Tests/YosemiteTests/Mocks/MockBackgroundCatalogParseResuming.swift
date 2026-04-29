@@ -7,6 +7,7 @@ final class MockBackgroundCatalogParseResuming: BackgroundCatalogParseResuming, 
     var pendingResume: (fileURL: URL, siteID: Int64)?
 
     private(set) var resumePendingParseIfNeededCallCount = 0
+    private(set) var discardPendingParseCallCount = 0
     private(set) var lastParseHandlerError: Error?
 
     func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async {
@@ -19,5 +20,10 @@ final class MockBackgroundCatalogParseResuming: BackgroundCatalogParseResuming, 
             // this spy so tests can assert they were swallowed by the coordinator.
             lastParseHandlerError = error
         }
+    }
+
+    func discardPendingParse() async {
+        discardPendingParseCallCount += 1
+        pendingResume = nil
     }
 }

@@ -6,6 +6,12 @@ import CocoaLumberjackSwift
 /// only the parse step is retried.
 public protocol BackgroundCatalogParseResuming {
     func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async
+
+    /// Drops any pending parse state without attempting it. Deletes the staged file on
+    /// disk and clears the persisted record. Use when a fresh download supersedes the
+    /// pending data — otherwise a stale pending file could overwrite fresh catalog data
+    /// on the next foreground entry.
+    func discardPendingParse() async
 }
 
 /// Coordinates background catalog downloads, including handling app wake events.
@@ -41,6 +47,10 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
         parseHandler: @escaping (URL, Int64) async throws -> Void
     ) async {
         DDLogInfo("🟣 Handling background session event for: \(sessionIdentifier)")
+
+        // If a previous wake event left a pending parse, discard it now — this new download
+        // supersedes it. Prevents staged-file orphaning in Caches/POSPendingCatalog/.
+        await discardPendingParse()
 
         // Load the saved download state to know which site this is for
         guard let state = backgroundDownloadStateStore.load(for: sessionIdentifier) else {
@@ -114,6 +124,13 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
             pendingCatalogFileStore.clear()
         }
         // On failure: leave file + record in place for the next foreground entry.
+    }
+
+    public func discardPendingParse() async {
+        guard let pending = pendingCatalogFileStore.load() else { return }
+        try? fileManager.removeItem(atPath: pending.filePath)
+        pendingCatalogFileStore.clear()
+        DDLogInfo("🟣 Discarded pending parse state (superseded by fresh download)")
     }
 }
 

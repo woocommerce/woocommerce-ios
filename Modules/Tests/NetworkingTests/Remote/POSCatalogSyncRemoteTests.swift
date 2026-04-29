@@ -1134,6 +1134,32 @@ extension POSCatalogSyncRemoteTests {
         try? FileManager.default.removeItem(at: mockFileURL)
     }
 
+    @Test func downloadCatalog_when_pending_parse_exists_then_discards_it_before_starting() async throws {
+        // Given
+        let mockResumer = MockBackgroundCatalogParseResumingForRemote()
+        let remote = POSCatalogSyncRemote(network: network,
+                                          backgroundDownloader: mockBackgroundDownloader,
+                                          fileManager: mockFileManager,
+                                          backgroundDownloadStateStore: backgroundDownloadStateStore,
+                                          pendingParseResumer: mockResumer)
+        mockBackgroundDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/catalog.json")
+        network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-download")
+
+        // Spy: capture the order of pending-parse discard vs. download start
+        mockBackgroundDownloader.onDownloadStarted = {
+            mockResumer.discardCallCountAtDownloadStart = mockResumer.discardPendingParseCallCount
+        }
+
+        // When
+        _ = try? await remote.downloadCatalog(for: sampleSiteID,
+                                              downloadURL: "https://example.com/catalog.json",
+                                              allowCellular: true)
+
+        // Then — discard was called, and it was called before the download started
+        #expect(mockResumer.discardPendingParseCallCount == 1)
+        #expect(mockResumer.discardCallCountAtDownloadStart == 1)
+    }
+
     @Test func downloadCatalog_creates_unique_session_identifiers() async throws {
         // Given
         let remote = createRemote()
@@ -1155,5 +1181,19 @@ extension POSCatalogSyncRemoteTests {
 
         // Cleanup
         backgroundDownloadStateStore.clear()
+    }
+}
+
+/// Minimal mock for `POSCatalogSyncRemote` tests that need to verify the resumer is invoked.
+/// The full `MockBackgroundCatalogParseResuming` lives in YosemiteTests; duplicating a
+/// trimmed version here avoids cross-target mock sharing for one test.
+private final class MockBackgroundCatalogParseResumingForRemote: BackgroundCatalogParseResuming, @unchecked Sendable {
+    var discardPendingParseCallCount = 0
+    var discardCallCountAtDownloadStart: Int?
+
+    func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async {}
+
+    func discardPendingParse() async {
+        discardPendingParseCallCount += 1
     }
 }

@@ -275,10 +275,40 @@ final class SupportChatViewModel {
                    UIApplication.shared.canOpenURL(selectedURL) {
                     await UIApplication.shared.open(selectedURL)
                 }
+                replaceActionWithRetry(for: .notifications)
+
+            case .retryDiagnostic(let test):
+                await rerunTest(test)
             }
         } catch {
             DDLogError("⛔️ Failed to execute action \(action): \(error)")
         }
+    }
+
+    /// Replaces the current failure action with a retry action for the given test.
+    ///
+    private func replaceActionWithRetry(for test: SupportDiagnosticsService.Test) {
+        guard let messageIndex = messages.lastIndex(where: {
+            if case .diagnosticsFailure = $0.content { return true }
+            return false
+        }),
+              case .diagnosticsFailure(let result) = messages[messageIndex].content else {
+            return
+        }
+
+        let updatedResult = SupportDiagnosticsService.Result(
+            test: result.test,
+            isSuccess: result.isSuccess,
+            errorMessage: result.errorMessage,
+            technicalDetails: result.technicalDetails,
+            suggestedAction: .retryDiagnostic(test)
+        )
+
+        messages[messageIndex] = ChatMessage(
+            id: messages[messageIndex].id,
+            role: .bot,
+            content: .diagnosticsFailure(updatedResult)
+        )
     }
 
     /// Re-runs a specific test and updates the results.

@@ -62,6 +62,7 @@ final class SupportDiagnosticsService {
         case enableOrderNotifications(settings: NotificationSettings)
         case setupJetpack
         case openNotificationSettings
+        case retryDiagnostic(Test)
 
         static func == (lhs: Action, rhs: Action) -> Bool {
             switch (lhs, rhs) {
@@ -72,6 +73,8 @@ final class SupportDiagnosticsService {
                 return true
             case (.enableOrderNotifications, .enableOrderNotifications):
                 return true
+            case (.retryDiagnostic(let lhsTest), .retryDiagnostic(let rhsTest)):
+                return lhsTest == rhsTest
             default:
                 return false
             }
@@ -89,6 +92,8 @@ final class SupportDiagnosticsService {
                 return Localization.Action.setupJetpack
             case .openNotificationSettings:
                 return Localization.Action.openSettings
+            case .retryDiagnostic:
+                return Localization.Action.retryDiagnostic
             }
         }
 
@@ -100,6 +105,8 @@ final class SupportDiagnosticsService {
                 return "bolt.fill"
             case .openNotificationSettings:
                 return "gear"
+            case .retryDiagnostic:
+                return "arrow.clockwise"
             }
         }
     }
@@ -623,6 +630,11 @@ private extension SupportDiagnosticsService {
                 "supportDiagnosticsService.action.openSettings",
                 value: "Open Settings",
                 comment: "Action button to open device notification settings"
+            )
+            static let retryDiagnostic = NSLocalizedString(
+                "supportDiagnosticsService.action.retryDiagnostic",
+                value: "Retry",
+                comment: "Action button to retry a diagnostic test"
             )
         }
 

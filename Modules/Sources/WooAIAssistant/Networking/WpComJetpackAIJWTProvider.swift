@@ -1,8 +1,10 @@
 import Foundation
 
-// Single-flight is automatic via actor isolation: concurrent callers serialize on
-// `currentJWT()`, so the second caller observes the freshly-minted token rather
-// than triggering a second mint.
+// Concurrent `currentJWT()` callers share one in-flight mint via a stored Task.
+// Plain actor isolation isn't enough: `await mint(...)` suspends, the actor lets the
+// next caller re-enter, that caller sees the still-unset cache and starts a second
+// mint. Holding a Task<String, Error> while the first call is in flight makes
+// followers await the same value.
 public actor WpComJetpackAIJWTProvider: AssistantJWTProviding {
 
     public typealias Mint = @Sendable (Int64) async throws -> String
@@ -10,6 +12,7 @@ public actor WpComJetpackAIJWTProvider: AssistantJWTProviding {
     private let blogID: Int64
     private let mint: Mint
     private var cached: CachedJWT?
+    private var inflight: Task<String, Error>?
 
     public init(blogID: Int64, mint: @escaping Mint) {
         self.blogID = blogID
@@ -20,9 +23,16 @@ public actor WpComJetpackAIJWTProvider: AssistantJWTProviding {
         if let cached, cached.matchesBlog(blogID), !cached.isExpired {
             return cached.token
         }
-        let fresh = try await mint(blogID)
-        let parsed = try CachedJWT(token: fresh)
-        cached = parsed
+        if let inflight {
+            return try await inflight.value
+        }
+        let blogID = self.blogID
+        let mint = self.mint
+        let task = Task<String, Error> { try await mint(blogID) }
+        inflight = task
+        defer { inflight = nil }
+        let fresh = try await task.value
+        cached = try CachedJWT(token: fresh)
         return fresh
     }
 
@@ -66,8 +76,11 @@ struct CachedJWT: Equatable, Sendable {
         blogID == id
     }
 
+    // Expire 60s early so a token whose true `exp` is just past `now` doesn't get
+    // shipped on a request that the proxy will then reject. Mirrors typical
+    // clock-skew margin and avoids 401-then-retry cycles at the boundary.
     var isExpired: Bool {
-        Date() >= expiresAt
+        Date() >= expiresAt.addingTimeInterval(-60)
     }
 
     // JWT payload is base64url (`-_` instead of `+/`) with padding elided.

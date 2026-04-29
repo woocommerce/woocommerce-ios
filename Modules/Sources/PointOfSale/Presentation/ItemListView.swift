@@ -5,6 +5,7 @@ import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @EnvironmentObject var modalManager: POSModalManager
@@ -60,6 +61,15 @@ struct ItemListView: View {
 
     private var shouldShowHeaderItems: Bool {
         !isSearching
+    }
+
+    private func shouldShowCustomAmountEntryRow(_ itemListType: ItemListType) -> Bool {
+        // Only render the entry row in the products tab, when the feature flag is on,
+        // the merchant is building the order, and not currently searching.
+        guard case .products = itemListType else { return false }
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleCustomAmounts) else { return false }
+        guard posModel.orderStage == .building else { return false }
+        return !isSearching
     }
 
     @State private var showCouponCreationModal: Bool = false
@@ -188,6 +198,13 @@ struct ItemListView: View {
                 itemActionHandler: actionHandler(itemListType),
                 willLoadMore: {
                     analyticsTracker.trackNextPageWillLoad()
+                },
+                headerView: {
+                    if shouldShowCustomAmountEntryRow(itemListType) {
+                        CustomAmountEntryRow(onTap: {
+                            posModel.presentAddCustomAmount()
+                        })
+                    }
                 }
             )
             .refreshable {

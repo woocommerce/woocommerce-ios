@@ -164,7 +164,23 @@ struct WooCarrierPackagesSelectionView: View {
         }
         .fullScreenCover(isPresented: $isARFitCheckPresented) {
             ARParcelFitCheckView(
-                availableCarriers: viewModel.carrierPackages,
+                availableCarriers: viewModel.carrierPackages.map { carrier in
+                    ParcelPresetCarrier(
+                        id: carrier.id,
+                        name: carrier.carrier.name,
+                        packages: carrier.packageGroups.flatMap { group in
+                            group.packages.map { pkg in
+                                ParcelPresetPackage(
+                                    id: pkg.id,
+                                    name: pkg.name,
+                                    length: pkg.length,
+                                    width: pkg.width,
+                                    height: pkg.height
+                                )
+                            }
+                        }
+                    )
+                },
                 initialPackageID: viewModel.selectedCarriersPackageId,
                 onCancel: {
                     isARFitCheckPresented = false

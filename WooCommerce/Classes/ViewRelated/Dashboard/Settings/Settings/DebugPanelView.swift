@@ -118,55 +118,27 @@ struct DebugPanelView: View {
     /// Hardcoded carriers + packages so the carrier flow can be exercised
     /// from the debug panel without going through the full shipping label
     /// flow.
-    private static let debugCarrierPackages: [WooShippingCarrierPackages] = [
-        WooShippingCarrierPackages(
-            carrier: .usps,
-            packageGroups: [
-                WooPackageGroup(
-                    name: "Flat Rate Boxes",
-                    packages: [
-                        WooShippingPackageData(
-                            id: "usps_small_flat_rate",
-                            name: "Small Flat Rate Box",
-                            length: "8.6", width: "5.4", height: "1.6", weight: "",
-                            source: .predefined(sourceTitle: "Debug", sourceID: "debug"), packageType: "box"
-                        ),
-                        WooShippingPackageData(
-                            id: "usps_medium_flat_rate",
-                            name: "Medium Flat Rate Box",
-                            length: "11.0", width: "8.5", height: "5.5", weight: "",
-                            source: .predefined(sourceTitle: "Debug", sourceID: "debug"), packageType: "box"
-                        ),
-                        WooShippingPackageData(
-                            id: "usps_large_flat_rate",
-                            name: "Large Flat Rate Box",
-                            length: "12.0", width: "12.0", height: "6.0", weight: "",
-                            source: .predefined(sourceTitle: "Debug", sourceID: "debug"), packageType: "box"
-                        ),
-                    ]
-                )
+    private static let debugCarrierPackages: [ParcelPresetCarrier] = [
+        ParcelPresetCarrier(
+            id: "usps",
+            name: "USPS",
+            packages: [
+                ParcelPresetPackage(id: "usps_small_flat_rate", name: "Small Flat Rate Box",
+                                    length: "8.6", width: "5.4", height: "1.6"),
+                ParcelPresetPackage(id: "usps_medium_flat_rate", name: "Medium Flat Rate Box",
+                                    length: "11.0", width: "8.5", height: "5.5"),
+                ParcelPresetPackage(id: "usps_large_flat_rate", name: "Large Flat Rate Box",
+                                    length: "12.0", width: "12.0", height: "6.0"),
             ]
         ),
-        WooShippingCarrierPackages(
-            carrier: .upsdap,
-            packageGroups: [
-                WooPackageGroup(
-                    name: "UPS Standard Boxes",
-                    packages: [
-                        WooShippingPackageData(
-                            id: "ups_small",
-                            name: "Small Box",
-                            length: "13.0", width: "11.0", height: "2.0", weight: "",
-                            source: .predefined(sourceTitle: "Debug", sourceID: "debug"), packageType: "box"
-                        ),
-                        WooShippingPackageData(
-                            id: "ups_medium",
-                            name: "Medium Box",
-                            length: "16.0", width: "11.0", height: "3.0", weight: "",
-                            source: .predefined(sourceTitle: "Debug", sourceID: "debug"), packageType: "box"
-                        ),
-                    ]
-                )
+        ParcelPresetCarrier(
+            id: "upsdap",
+            name: "UPS",
+            packages: [
+                ParcelPresetPackage(id: "ups_small", name: "Small Box",
+                                    length: "13.0", width: "11.0", height: "2.0"),
+                ParcelPresetPackage(id: "ups_medium", name: "Medium Box",
+                                    length: "16.0", width: "11.0", height: "3.0"),
             ]
         ),
     ]

@@ -1,6 +1,27 @@
 import SwiftUI
 
-/// Carrier-flow AR view: drop a translucent cuboid sized to a chosen carrier
+// MARK: - Local models (no WooShipping dependency)
+
+/// A carrier with a flat list of package presets. Mapped from WooShipping
+/// types at the call site — the AR view itself knows nothing about the
+/// shipping label domain.
+struct ParcelPresetCarrier: Identifiable {
+    let id: String
+    let name: String
+    let packages: [ParcelPresetPackage]
+}
+
+struct ParcelPresetPackage: Identifiable {
+    let id: String
+    let name: String
+    let length: String
+    let width: String
+    let height: String
+}
+
+// MARK: - View
+
+/// Carrier-flow AR view: drop a wireframe cuboid sized to a chosen carrier
 /// package preset, drag and rotate it over the real parcel to see whether it
 /// fits. Two `Picker`s let the user swap carrier and package without
 /// dismissing the AR view.
@@ -8,9 +29,9 @@ import SwiftUI
 /// The cuboid itself isn't resizable in this flow — its dimensions are
 /// driven by whichever carrier package is currently selected.
 struct ARParcelFitCheckView: View {
-    let availableCarriers: [WooShippingCarrierPackages]
+    let availableCarriers: [ParcelPresetCarrier]
     private let onCancel: () -> Void
-    private let onConfirm: (any WooShippingPackageDataRepresentable) -> Void
+    private let onConfirm: (ParcelPresetPackage) -> Void
 
     @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
 
@@ -20,24 +41,21 @@ struct ARParcelFitCheckView: View {
     @State private var isPlaced: Bool = false
     @State private var resetTrigger: Int = 0
 
-    init(availableCarriers: [WooShippingCarrierPackages],
+    init(availableCarriers: [ParcelPresetCarrier],
          initialPackageID: String? = nil,
          onCancel: @escaping () -> Void,
-         onConfirm: @escaping (any WooShippingPackageDataRepresentable) -> Void) {
+         onConfirm: @escaping (ParcelPresetPackage) -> Void) {
         self.availableCarriers = availableCarriers
         self.onCancel = onCancel
         self.onConfirm = onConfirm
 
-        // Resolve the carrier + package that match the initial selection if any.
         let initialCarrier = availableCarriers.first { carrier in
-            carrier.packageGroups.contains(where: { group in
-                group.packages.contains(where: { $0.id == initialPackageID })
-            })
+            carrier.packages.contains(where: { $0.id == initialPackageID })
         } ?? availableCarriers.first
 
         self._selectedCarrierID = State(initialValue: initialCarrier?.id)
         self._selectedPackageID = State(
-            initialValue: initialPackageID ?? initialCarrier?.packageGroups.first?.packages.first?.id
+            initialValue: initialPackageID ?? initialCarrier?.packages.first?.id
         )
     }
 
@@ -128,14 +146,13 @@ struct ARParcelFitCheckView: View {
                     .foregroundStyle(.white)
                 Spacer()
                 Picker("Carrier", selection: $selectedCarrierID) {
-                    ForEach(availableCarriers, id: \.id) { carrier in
-                        Text(carrier.carrier.name).tag(Optional(carrier.id))
+                    ForEach(availableCarriers) { carrier in
+                        Text(carrier.name).tag(Optional(carrier.id))
                     }
                 }
                 .pickerStyle(.menu)
                 .tint(.blue)
                 .onChange(of: selectedCarrierID) { _, _ in
-                    // Snap to first package of the new carrier.
                     selectedPackageID = currentCarrierPackages.first?.id
                 }
             }
@@ -146,7 +163,7 @@ struct ARParcelFitCheckView: View {
                     .foregroundStyle(.white)
                 Spacer()
                 Picker("Package", selection: $selectedPackageID) {
-                    ForEach(currentCarrierPackages, id: \.id) { package in
+                    ForEach(currentCarrierPackages) { package in
                         Text(package.name).tag(Optional(package.id))
                     }
                 }
@@ -158,16 +175,15 @@ struct ARParcelFitCheckView: View {
 
     // MARK: - Selection helpers
 
-    private var currentCarrier: WooShippingCarrierPackages? {
+    private var currentCarrier: ParcelPresetCarrier? {
         availableCarriers.first { $0.id == selectedCarrierID }
     }
 
-    private var currentCarrierPackages: [any WooShippingPackageDataRepresentable] {
-        guard let groups = currentCarrier?.packageGroups else { return [] }
-        return groups.flatMap { $0.packages }
+    private var currentCarrierPackages: [ParcelPresetPackage] {
+        currentCarrier?.packages ?? []
     }
 
-    private var currentPackage: (any WooShippingPackageDataRepresentable)? {
+    private var currentPackage: ParcelPresetPackage? {
         currentCarrierPackages.first { $0.id == selectedPackageID }
     }
 
@@ -175,7 +191,6 @@ struct ARParcelFitCheckView: View {
         dimensionsUnit.isEmpty ? "in" : dimensionsUnit
     }
 
-    /// Convert from the store's configured unit to metres for ARKit.
     private var dimensionsInMeters: SIMD3<Float> {
         let factor = DimensionUnitConversion.metersPerUnit(unit)
         let defaults = DimensionUnitConversion.defaultDimensions(for: unit)

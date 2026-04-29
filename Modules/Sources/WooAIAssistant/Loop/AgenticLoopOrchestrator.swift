@@ -1,12 +1,8 @@
 import Foundation
 import CocoaLumberjackSwift
 
-/// Runs the client-side agentic loop on top of an `AIChatService`, a `ToolRegistry`, and a
-/// `SafetyPolicy`.
-///
-/// Actor-isolated because unsafe tool calls suspend the loop while the merchant resolves a
-/// confirmation card; the pending continuation has to live somewhere safe from concurrent access.
-/// Callers resume the loop via `confirm(proposalID:)` / `cancel(proposalID:)`.
+/// Drives one merchant turn over `AIChatService` + `ToolRegistry` + `SafetyPolicy`. Actor-isolated
+/// because unsafe tool calls suspend on a confirmation continuation that needs a serial home.
 actor AgenticLoopOrchestrator {
 
     static let defaultMaxIterations = 5
@@ -101,8 +97,7 @@ actor AgenticLoopOrchestrator {
         }
     }
 
-    /// Suspends until termination is fully settled. Resolves immediately if the loop has already
-    /// reached a terminal state; otherwise waits for the cleanup path to stamp `lastOutcome`.
+    /// Resolves to the terminal `LoopOutcome`, suspending if it has not been stamped yet.
     func awaitTermination() async -> LoopOutcome {
         if let outcome = lastOutcome { return outcome }
         return await withCheckedContinuation { continuation in
@@ -453,8 +448,6 @@ actor AgenticLoopOrchestrator {
         }
     }
 
-    /// Translate a `ToolResult` into the model-visible JSON payload that ends up as the tool message
-    /// content, while also yielding the AssistantEvents the UI needs.
     private func handleToolResult(_ result: ToolResult,
                                   for call: OpenAIChat.ToolCall,
                                   continuation: AsyncThrowingStream<AssistantEvent, Error>.Continuation) -> String {

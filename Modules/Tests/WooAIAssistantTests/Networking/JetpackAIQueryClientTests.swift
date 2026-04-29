@@ -291,9 +291,10 @@ struct JetpackAIQueryClientTests {
     }
 
     @Test
-    func test_default_endpoint_matches_NetworkingCore_wpcom_base_url() {
+    func test_default_endpoint_matches_NetworkingCore_wpcom_base_url() throws {
         // Given the configurable WPCOM base URL from NetworkingCore.Settings
-        let expected = URL(string: Settings.wordpressApiBaseURL + "wpcom/v2/jetpack-ai-query")!
+        let base = try #require(URL(string: Settings.wordpressApiBaseURL))
+        let expected = try #require(URL(string: "wpcom/v2/jetpack-ai-query", relativeTo: base)?.absoluteURL)
 
         // When constructing a client with the default endpoint
         let mirror = Mirror(reflecting: JetpackAIQueryClient(jwtProvider: stubJWTProvider()))

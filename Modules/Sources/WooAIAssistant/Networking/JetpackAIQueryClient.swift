@@ -14,13 +14,27 @@ struct JetpackAIQueryClient: AIChatService {
     private let sleep: Sleep
 
     init(jwtProvider: AssistantJWTProviding,
-         endpoint: URL = URL(string: Settings.wordpressApiBaseURL + "wpcom/v2/jetpack-ai-query")!,
+         endpoint: URL? = nil,
          streamingTransport: StreamingHTTPTransport? = nil,
          sleep: Sleep? = nil) {
         self.jwtProvider = jwtProvider
-        self.endpoint = endpoint
+        self.endpoint = endpoint ?? Self.defaultEndpoint()
         self.streamingTransport = streamingTransport ?? Self.urlSessionStreamingTransport(Self.sharedLLMSession)
         self.sleep = sleep ?? { nanoseconds in try await Task.sleep(nanoseconds: nanoseconds) }
+    }
+
+    private static let endpointPath = "wpcom/v2/jetpack-ai-query"
+
+    // Compose against `Settings.wordpressApiBaseURL` so launch-arg overrides
+    // (`mocked-wpcom-api`, `wpcom-api-base-url=...`) reroute the chat traffic too.
+    // Falls back to the production URL if the dynamic base is somehow malformed.
+    private static func defaultEndpoint() -> URL {
+        if let base = URL(string: Settings.wordpressApiBaseURL),
+           let composed = URL(string: endpointPath, relativeTo: base)?.absoluteURL {
+            return composed
+        }
+        DDLogError("⛔️ Settings.wordpressApiBaseURL malformed: \(Settings.wordpressApiBaseURL); falling back.")
+        return URL(string: "https://public-api.wordpress.com/\(endpointPath)") ?? URL(fileURLWithPath: "/")
     }
 
     // httpMaximumConnectionsPerHost overrides URLSession.shared's 6-conn cap.

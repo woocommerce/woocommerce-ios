@@ -1,19 +1,5 @@
 import SwiftUI
 
-struct ParcelPresetCarrier: Identifiable {
-    let id: String
-    let name: String
-    let packages: [ParcelPresetPackage]
-}
-
-struct ParcelPresetPackage: Identifiable {
-    let id: String
-    let name: String
-    let length: String
-    let width: String
-    let height: String
-}
-
 struct ARParcelFitCheckView: View {
     private let onCancel: () -> Void
     private let onConfirm: (ParcelPresetPackage) -> Void
@@ -22,7 +8,7 @@ struct ARParcelFitCheckView: View {
     @State private var isPlaced: Bool = false
     @State private var resetTrigger: Int = 0
 
-    init(unit: DimensionUnit,
+    init(unit: UnitLength,
          availableCarriers: [ParcelPresetCarrier],
          initialPackageID: String? = nil,
          onCancel: @escaping () -> Void,

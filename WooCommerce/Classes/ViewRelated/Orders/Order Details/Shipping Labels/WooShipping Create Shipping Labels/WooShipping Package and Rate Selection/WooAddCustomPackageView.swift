@@ -1,4 +1,5 @@
 import SwiftUI
+import ParcelFittingCheck
 
 struct WooAddCustomPackageView: View {
     enum Constants {
@@ -15,7 +16,6 @@ struct WooAddCustomPackageView: View {
     @State private var isSavingPackage = false
     @State private var showingSavingError = false
     @State private var foundInvalidDimensions = false
-    @State private var isARParcelSizingPresented = false
 
     @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
     @Environment(\.shippingWeightUnit) private var weightUnit
@@ -85,7 +85,7 @@ struct WooAddCustomPackageView: View {
 
                             if viewModel.isParcelFittingCheckEnabled {
                                 Button {
-                                    isARParcelSizingPresented = true
+                                    presentParcelSizing()
                                 } label: {
                                     HStack {
                                         Image(systemName: "ruler")
@@ -180,25 +180,6 @@ struct WooAddCustomPackageView: View {
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .disabled(isSavingPackage)
-                .fullScreenCover(isPresented: $isARParcelSizingPresented) {
-                    ARParcelSizingView(
-                        unit: DimensionUnit(storeUnit: dimensionsUnit),
-                        initial: ParcelDimensions(
-                            length: Float(viewModel.fieldValues[.length] ?? "") ?? -1,
-                            width: Float(viewModel.fieldValues[.width] ?? "") ?? -1,
-                            height: Float(viewModel.fieldValues[.height] ?? "") ?? -1
-                        ),
-                        onCancel: {
-                            isARParcelSizingPresented = false
-                        },
-                        onConfirm: { dims in
-                            viewModel.fieldValues[.length] = String(format: "%.1f", dims.length)
-                            viewModel.fieldValues[.width] = String(format: "%.1f", dims.width)
-                            viewModel.fieldValues[.height] = String(format: "%.1f", dims.height)
-                            isARParcelSizingPresented = false
-                        }
-                    )
-                }
                 .alert(Localization.SavingPackageError.title, isPresented: $showingSavingError, actions: {
                     Button(role: .cancel) {} label: {
                         Text(Localization.SavingPackageError.cancel)
@@ -217,6 +198,24 @@ struct WooAddCustomPackageView: View {
 }
 
 private extension WooAddCustomPackageView {
+    func presentParcelSizing() {
+        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
+        ParcelFittingCheckCoordinator.presentSizing(
+            from: presenter,
+            unit: .fromStoreUnit(dimensionsUnit),
+            initial: ParcelDimensions(
+                length: Float(viewModel.fieldValues[.length] ?? "") ?? -1,
+                width: Float(viewModel.fieldValues[.width] ?? "") ?? -1,
+                height: Float(viewModel.fieldValues[.height] ?? "") ?? -1
+            ),
+            onConfirm: { dims in
+                viewModel.fieldValues[.length] = String(format: "%.1f", dims.length)
+                viewModel.fieldValues[.width] = String(format: "%.1f", dims.width)
+                viewModel.fieldValues[.height] = String(format: "%.1f", dims.height)
+            }
+        )
+    }
+
     var selectionButtonDisabled: Bool {
         !viewModel.validateCustomPackageInputFields()
     }

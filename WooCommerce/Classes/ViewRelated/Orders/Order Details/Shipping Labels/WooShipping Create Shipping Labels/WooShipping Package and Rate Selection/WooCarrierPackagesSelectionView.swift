@@ -1,5 +1,6 @@
 import SwiftUI
 import Foundation
+import ParcelFittingCheck
 
 // Holds the data needed to display a tab in list of Carrier packages.
 struct WooShippingCarrierPackages: Identifiable {
@@ -87,7 +88,6 @@ struct WooCarrierPackagesSelectionView: View {
     private let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
     private let addingCustomPackageHandler: () -> Void
 
-    @State private var isARFitCheckPresented = false
 
     init(viewModel: WooShippingAddPackageViewModel,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void,
@@ -139,7 +139,7 @@ struct WooCarrierPackagesSelectionView: View {
             VStack(spacing: 8) {
                 if viewModel.isParcelFittingCheckEnabled && viewModel.carrierTabs.isNotEmpty {
                     Button {
-                        isARFitCheckPresented = true
+                        presentParcelFitCheck()
                     } label: {
                         HStack {
                             Image(systemName: "ruler")
@@ -163,40 +163,34 @@ struct WooCarrierPackagesSelectionView: View {
             }
             .padding()
         }
-        .fullScreenCover(isPresented: $isARFitCheckPresented) {
-            ARParcelFitCheckView(
-                unit: DimensionUnit(storeUnit: dimensionsUnit),
-                availableCarriers: viewModel.carrierPackages.map { carrier in
-                    ParcelPresetCarrier(
-                        id: carrier.id,
-                        name: carrier.carrier.name,
-                        packages: carrier.packageGroups.flatMap { group in
-                            group.packages.map { pkg in
-                                ParcelPresetPackage(
-                                    id: pkg.id,
-                                    name: pkg.name,
-                                    length: pkg.length,
-                                    width: pkg.width,
-                                    height: pkg.height
-                                )
-                            }
-                        }
-                    )
-                },
-                initialPackageID: viewModel.selectedCarriersPackageId,
-                onCancel: {
-                    isARFitCheckPresented = false
-                },
-                onConfirm: { package in
-                    viewModel.selectedCarriersPackageId = package.id
-                    isARFitCheckPresented = false
-                }
-            )
-        }
     }
 }
 
 private extension WooCarrierPackagesSelectionView {
+    func presentParcelFitCheck() {
+        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
+        ParcelFittingCheckCoordinator.presentFitCheck(
+            from: presenter,
+            unit: .fromStoreUnit(dimensionsUnit),
+            carriers: viewModel.carrierPackages.map { carrier in
+                ParcelPresetCarrier(
+                    id: carrier.id,
+                    name: carrier.carrier.name,
+                    packages: carrier.packageGroups.flatMap { group in
+                        group.packages.map { pkg in
+                            ParcelPresetPackage(id: pkg.id, name: pkg.name,
+                                                length: pkg.length, width: pkg.width, height: pkg.height)
+                        }
+                    }
+                )
+            },
+            initialPackageID: viewModel.selectedCarriersPackageId,
+            onConfirm: { package in
+                viewModel.selectedCarriersPackageId = package.id
+            }
+        )
+    }
+
     var selectionButtonDisabled: Bool {
         viewModel.selectedCarriersPackageId == nil
     }

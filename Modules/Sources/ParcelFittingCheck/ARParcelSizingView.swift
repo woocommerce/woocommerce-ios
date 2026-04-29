@@ -8,7 +8,7 @@ struct ARParcelSizingView: View {
     @State private var isPlaced: Bool = false
     @State private var resetTrigger: Int = 0
 
-    init(unit: DimensionUnit,
+    init(unit: UnitLength,
          initial: ParcelDimensions = .unset,
          onCancel: @escaping () -> Void,
          onConfirm: @escaping (ParcelDimensions) -> Void) {
@@ -93,7 +93,7 @@ struct ARParcelSizingView: View {
             HStack {
                 Text(label).font(.subheadline)
                 Spacer()
-                Text(String(format: "%.1f %@", value.wrappedValue, viewModel.unit.displayLabel))
+                Text(String(format: "%.1f %@", value.wrappedValue, viewModel.unit.symbol))
                     .font(.subheadline.monospacedDigit())
             }
             .foregroundStyle(.white)

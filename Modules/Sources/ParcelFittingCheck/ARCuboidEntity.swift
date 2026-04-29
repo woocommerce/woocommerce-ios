@@ -1,3 +1,4 @@
+import UIKit
 import RealityKit
 
 /// Unit-cube wireframe (12 edges, no fill). Callers set `transform.scale`

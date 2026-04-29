@@ -2,12 +2,12 @@ import Foundation
 
 @Observable
 final class ARParcelFitCheckViewModel {
-    let unit: DimensionUnit
+    let unit: UnitLength
     let availableCarriers: [ParcelPresetCarrier]
     var selectedCarrierID: String?
     var selectedPackageID: String?
 
-    init(unit: DimensionUnit, availableCarriers: [ParcelPresetCarrier], initialPackageID: String? = nil) {
+    init(unit: UnitLength, availableCarriers: [ParcelPresetCarrier], initialPackageID: String? = nil) {
         self.unit = unit
         self.availableCarriers = availableCarriers
         let carrier = availableCarriers.first { $0.packages.contains { $0.id == initialPackageID } }
@@ -35,18 +35,17 @@ final class ARParcelFitCheckViewModel {
 
     var dimensionsLabel: String? {
         guard let p = currentPackage else { return nil }
-        return "\(p.length) × \(p.width) × \(p.height) \(unit.displayLabel)"
+        return "\(p.length) × \(p.width) × \(p.height) \(unit.symbol)"
     }
 
     var dimensionsInMeters: SIMD3<Float> {
-        let defaults = unit.defaultDimensions
         guard let p = currentPackage else {
-            return defaults.toMeters(unit: unit)
+            return ParcelDimensions(length: 20, width: 15, height: 10).toMeters(unit: .centimeters)
         }
         return ParcelDimensions(
-            length: Float(p.length) ?? defaults.length,
-            width: Float(p.width) ?? defaults.width,
-            height: Float(p.height) ?? defaults.height
+            length: Float(p.length) ?? 20,
+            width: Float(p.width) ?? 15,
+            height: Float(p.height) ?? 10
         ).toMeters(unit: unit)
     }
 }

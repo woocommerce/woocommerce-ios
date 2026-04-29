@@ -404,14 +404,21 @@ actor AgenticLoopOrchestrator {
         }
 
         // Mirror primary errors/cancellations directly rather than wrapping them in a success envelope.
+        // Track the ordinal of each secondary within its signature so `[A, A, A]` escalates the third
+        // call past the soft-replay threshold the same way across-turn duplicates do.
+        var intraBatchOrdinal: [String: Int] = [:]
         for (secondaryIndex, primaryIndex) in intraBatchSecondaryToPrimary.sorted(by: { $0.key < $1.key }) {
             let call = calls[secondaryIndex]
+            let signature = Self.canonicalCallSignature(name: call.function.name,
+                                                        argumentsJSON: call.function.arguments)
+            intraBatchOrdinal[signature, default: 0] += 1
+            let priorSeen = intraBatchOrdinal[signature] ?? 1
             if let primaryPayload = resolvedResults[primaryIndex] {
                 let replay: String
                 if Self.payloadIsErrorOrCancelled(primaryPayload) {
                     replay = primaryPayload
                 } else {
-                    replay = Self.duplicateReplayJSON(priorSeen: 1,
+                    replay = Self.duplicateReplayJSON(priorSeen: priorSeen,
                                                       name: call.function.name,
                                                       cachedPayload: primaryPayload)
                 }

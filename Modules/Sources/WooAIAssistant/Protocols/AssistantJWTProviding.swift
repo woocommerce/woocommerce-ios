@@ -4,5 +4,6 @@ public protocol AssistantJWTProviding: Sendable {
 }
 
 public extension AssistantJWTProviding {
+    // Default for non-caching conformers (e.g. test stubs) that have no token to drop.
     func invalidate() async {}
 }

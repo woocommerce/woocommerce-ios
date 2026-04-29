@@ -26,7 +26,13 @@ public actor WpComJetpackAIJWTProvider: AssistantJWTProviding {
         }
         let blogID = self.blogID
         let mint = self.mint
-        let task = Task<String, Error> { try await mint(blogID) }
+        // Validate inside the Task body so concurrent sharers all see the same
+        // throw if the proxy ever returns a malformed JWT.
+        let task = Task<String, Error> {
+            let fresh = try await mint(blogID)
+            _ = try CachedJWT(token: fresh)
+            return fresh
+        }
         inflight = task
         defer { inflight = nil }
         let fresh = try await task.value
@@ -34,6 +40,9 @@ public actor WpComJetpackAIJWTProvider: AssistantJWTProviding {
         return fresh
     }
 
+    // Clears the cache. An in-flight mint started before invalidate is allowed
+    // to complete and write the fresh token; that's the desired outcome - a
+    // concurrent caller pays the network cost once and everyone benefits.
     public func invalidate() async {
         cached = nil
     }

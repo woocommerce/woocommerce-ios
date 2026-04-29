@@ -1,4 +1,5 @@
 import Foundation
+import CocoaLumberjackSwift
 import NetworkingCore
 
 typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
@@ -205,7 +206,14 @@ struct JetpackAIQueryClient: AIChatService {
         if !pendingBytes.isEmpty,
            let tail = String(data: pendingBytes, encoding: .utf8),
            !tail.isEmpty {
-            _ = parser.feed(tail)
+            for event in parser.feed(tail) {
+                try await handle(event: event,
+                                 bridge: bridge,
+                                 continuation: continuation,
+                                 buffers: &toolCallBuffers,
+                                 order: &toolCallOrder,
+                                 finishReason: &finishReason)
+            }
         }
         for event in parser.finish() {
             try await handle(event: event,
@@ -217,13 +225,15 @@ struct JetpackAIQueryClient: AIChatService {
         }
 
         for index in toolCallOrder {
-            guard let asm = toolCallBuffers[index], let id = asm.id, let name = asm.name else { continue }
+            guard let asm = toolCallBuffers[index], let id = asm.id, let name = asm.name else {
+                DDLogError("⛔️ Skipping tool call at index \(index): id or name absent.")
+                continue
+            }
             await bridge.markEmitted()
             continuation.yield(.toolCall(OpenAIChat.ToolCall(id: id,
                                                              function: .init(name: name,
                                                                              arguments: asm.arguments))))
         }
-        await bridge.markEmitted()
         continuation.yield(.completed(finishReason))
     }
 
@@ -331,20 +341,21 @@ struct JetpackAIQueryClient: AIChatService {
         struct ErrorData: Decodable {
             let status: Int?
         }
+
+        var formattedReason: String { "[\(code)] \(message)" }
     }
 
     static func decodeWrappedError(from data: Data) -> AssistantError? {
         guard let envelope = decodeEnvelope(from: data) else { return nil }
         let httpStatus = envelope.data?.status
-        let codeString = httpStatus.map(String.init)
         let kind = httpStatus.map(HTTPStatusClassification.errorKind(forStatusCode:)) ?? .upstreamFailure
         return AssistantError(kind: kind,
-                              code: codeString,
-                              message: "[\(envelope.code)] \(envelope.message)")
+                              code: httpStatus.map(String.init),
+                              message: envelope.formattedReason)
     }
 
     static func envelopeReason(from data: Data) -> String? {
-        decodeEnvelope(from: data).map { "[\($0.code)] \($0.message)" }
+        decodeEnvelope(from: data)?.formattedReason
     }
 
     private static func decodeEnvelope(from data: Data) -> WrappedError? {

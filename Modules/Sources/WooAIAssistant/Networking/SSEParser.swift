@@ -1,16 +1,16 @@
 import Foundation
 
-public struct SSEParser {
-    public struct Event: Equatable, Sendable {
-        public let data: String
+struct SSEParser {
+    struct Event: Equatable, Sendable {
+        let data: String
     }
 
     private var buffer = ""
     private var pendingData = ""
 
-    public init() {}
+    init() {}
 
-    public mutating func feed(_ chunk: String) -> [Event] {
+    mutating func feed(_ chunk: String) -> [Event] {
         buffer.append(chunk)
         var events: [Event] = []
         while let newlineRange = firstLineBreak(in: buffer) {
@@ -23,7 +23,7 @@ public struct SSEParser {
         return events
     }
 
-    public mutating func finish() -> [Event] {
+    mutating func finish() -> [Event] {
         if !pendingData.isEmpty {
             let event = Event(data: pendingData)
             pendingData = ""

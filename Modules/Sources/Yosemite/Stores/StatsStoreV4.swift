@@ -269,27 +269,18 @@ private extension StatsStoreV4 {
                                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: siteTimezone)
 
-        retrieveJetpackBlogID { [weak self] result in
-            guard let self else { return }
+        loadJetpackSiteVisitStatsForLocalSite(siteID: siteID,
+                                              siteTimezone: siteTimezone,
+                                              unit: timeRange.siteVisitStatsGranularity,
+                                              latestDateToInclude: latestDateToInclude,
+                                              quantity: quantity) { [weak self] result in
             switch result {
-            case .success(let blogID):
-                siteStatsRemote.loadJetpackSiteVisitorStats(for: blogID,
-                                                            siteTimezone: siteTimezone,
-                                                            unit: timeRange.siteVisitStatsGranularity,
-                                                            latestDateToInclude: latestDateToInclude,
-                                                            quantity: quantity) { [weak self] result in
-                    switch result {
-                    case .success(let siteVisitStats):
-                        let localSiteVisitStats = siteVisitStats.copy(siteID: siteID)
-                        self?.upsertStoredSiteVisitStats(readOnlyStats: localSiteVisitStats, timeRange: timeRange) {
-                            onCompletion(.success(()))
-                        }
-                    case .failure(let error):
-                        onCompletion(.failure(SiteStatsStoreError(error: error)))
-                    }
+            case .success(let siteVisitStats):
+                self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats, timeRange: timeRange) {
+                    onCompletion(.success(()))
                 }
             case .failure(let error):
-                onCompletion(.failure(SiteStatsStoreError(error: error)))
+                onCompletion(.failure(error))
             }
         }
     }
@@ -334,13 +325,9 @@ private extension StatsStoreV4 {
                                                  quantity: quantity) { result in
                 switch result {
                 case .success(let siteVisitStats):
-                    let totalViews = siteVisitStats.items?.map({ $0.views }).reduce(0, +) ?? 0
-                    let totalVisitors = siteVisitStats.items?.map({ $0.visitors }).reduce(0, +) ?? 0
-                    let summaryStats = SiteSummaryStats(siteID: siteID,
-                                                        date: siteVisitStats.date,
-                                                        period: siteVisitStats.granularity,
-                                                        visitors: totalVisitors,
-                                                        views: totalViews)
+                    let summaryStats = Self.convertSiteVisitStatsIntoSummary(siteID: siteID,
+                                                                             siteVisitStats: siteVisitStats,
+                                                                             period: siteVisitStats.granularity)
                     onCompletion(.success(summaryStats))
                 case .failure(let error):
                     onCompletion(.failure(SiteStatsStoreError(error: error)))
@@ -358,39 +345,57 @@ private extension StatsStoreV4 {
                                          latestDateToInclude: Date,
                                          saveInStorage: Bool,
                                          onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> Void) {
-        retrieveJetpackBlogID { [weak self] result in
-            guard let self else { return }
+        loadJetpackSiteVisitStatsForLocalSite(siteID: siteID,
+                                              siteTimezone: siteTimezone,
+                                              unit: period,
+                                              latestDateToInclude: latestDateToInclude,
+                                              quantity: quantity) { [weak self] result in
             switch result {
-            case .success(let blogID):
-                siteStatsRemote.loadJetpackSiteVisitorStats(for: blogID,
-                                                            siteTimezone: siteTimezone,
-                                                            unit: period,
-                                                            latestDateToInclude: latestDateToInclude,
-                                                            quantity: quantity) { [weak self] result in
-                    switch result {
-                    case .success(let siteVisitStats):
-                        let siteSummaryStats = Self.convertSiteVisitStatsIntoSummary(siteID: siteID,
-                                                                                     siteVisitStats: siteVisitStats,
-                                                                                     period: period)
-                        if saveInStorage {
-                            self?.upsertStoredSiteSummaryStats(readOnlyStats: siteSummaryStats) {
-                                onCompletion(.success(siteSummaryStats))
-                            }
-                        } else {
-                            onCompletion(.success(siteSummaryStats))
-                        }
-                    case .failure(let error):
-                        onCompletion(.failure(SiteStatsStoreError(error: error)))
+            case .success(let siteVisitStats):
+                let siteSummaryStats = Self.convertSiteVisitStatsIntoSummary(siteID: siteID,
+                                                                             siteVisitStats: siteVisitStats,
+                                                                             period: period)
+                if saveInStorage {
+                    self?.upsertStoredSiteSummaryStats(readOnlyStats: siteSummaryStats) {
+                        onCompletion(.success(siteSummaryStats))
                     }
+                } else {
+                    onCompletion(.success(siteSummaryStats))
                 }
             case .failure(let error):
-                onCompletion(.failure(SiteStatsStoreError(error: error)))
+                onCompletion(.failure(error))
             }
         }
     }
 
     func retrieveJetpackBlogID(onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         jetpackConnectionRemote.fetchJetpackBlogID(completion: onCompletion)
+    }
+
+    func loadJetpackSiteVisitStatsForLocalSite(siteID: Int64,
+                                               siteTimezone: TimeZone,
+                                               unit: StatGranularity,
+                                               latestDateToInclude: Date,
+                                               quantity: Int,
+                                               onCompletion: @escaping (Result<SiteVisitStats, SiteStatsStoreError>) -> Void) {
+        retrieveJetpackBlogID { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let blogID):
+                siteStatsRemote.loadJetpackSiteVisitorStats(for: blogID,
+                                                            siteTimezone: siteTimezone,
+                                                            unit: unit,
+                                                            latestDateToInclude: latestDateToInclude,
+                                                            quantity: quantity) { result in
+                    let localSiteVisitStats = result
+                        .map { $0.copy(siteID: siteID) }
+                        .mapError { SiteStatsStoreError(error: $0) }
+                    onCompletion(localSiteVisitStats)
+                }
+            case .failure(let error):
+                onCompletion(.failure(SiteStatsStoreError(error: error)))
+            }
+        }
     }
 
     static func convertSiteVisitStatsIntoSummary(siteID: Int64,

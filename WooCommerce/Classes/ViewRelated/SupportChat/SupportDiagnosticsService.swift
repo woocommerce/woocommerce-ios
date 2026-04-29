@@ -24,14 +24,14 @@ final class SupportDiagnosticsService {
 
     /// Diagnostic tests that can be run.
     ///
-    enum Test: Int, CaseIterable {
-        case internetConnection = 0
-        case wpComServers = 1
-        case site = 2
-        case siteOrders = 3
-        case loadingProducts = 4
-        case analyticsSetting = 5
-        case notifications = 6
+    enum Test: CaseIterable {
+        case internetConnection
+        case wpComServers
+        case site
+        case siteOrders
+        case loadingProducts
+        case analyticsSetting
+        case notifications
 
         var title: String {
             switch self {
@@ -63,21 +63,6 @@ final class SupportDiagnosticsService {
         case setupJetpack
         case openNotificationSettings
         case retryDiagnostics
-
-        static func == (lhs: Action, rhs: Action) -> Bool {
-            switch (lhs, rhs) {
-            case (.enableAnalytics, .enableAnalytics),
-                 (.registerDevice, .registerDevice),
-                 (.setupJetpack, .setupJetpack),
-                 (.openNotificationSettings, .openNotificationSettings),
-                 (.retryDiagnostics, .retryDiagnostics):
-                return true
-            case (.enableOrderNotifications, .enableOrderNotifications):
-                return true
-            default:
-                return false
-            }
-        }
 
         var title: String {
             switch self {
@@ -182,12 +167,6 @@ final class SupportDiagnosticsService {
 
     private var isJetpackPluginActive: Bool {
         activeSystemPlugins.contains { $0.plugin.hasPrefix("jetpack/") }
-    }
-
-    /// Sets active plugins for testing purposes.
-    ///
-    func setActivePluginsForTesting(_ plugins: [SystemPlugin]) {
-        activeSystemPlugins = plugins
     }
 
     // MARK: - Initialization

@@ -1,4 +1,5 @@
 import Foundation
+import CocoaLumberjackSwift
 
 // Concurrent `currentJWT()` callers share one in-flight mint via a stored Task.
 // Plain actor isolation isn't enough: `await mint(...)` suspends, the actor lets the
@@ -49,23 +50,28 @@ struct CachedJWT: Equatable, Sendable {
     init(token: String) throws {
         let segments = token.split(separator: ".", omittingEmptySubsequences: false)
         guard segments.count == 3 else {
-            throw AssistantError(kind: .auth, message: "Jetpack AI JWT does not have three segments.")
+            DDLogError("⛔️ Jetpack AI JWT does not have three segments")
+            throw AssistantError(kind: .auth, message: Localization.invalidJWT)
         }
         let payloadSegment = String(segments[1])
         guard let payloadData = Self.base64URLDecode(payloadSegment) else {
-            throw AssistantError(kind: .auth, message: "Jetpack AI JWT payload is not valid base64url.")
+            DDLogError("⛔️ Jetpack AI JWT payload is not valid base64url")
+            throw AssistantError(kind: .auth, message: Localization.invalidJWT)
         }
         let decoded: Payload
         do {
             decoded = try JSONDecoder().decode(Payload.self, from: payloadData)
         } catch {
-            throw AssistantError(kind: .auth, message: "Jetpack AI JWT payload is not valid JSON: \(error).")
+            DDLogError("⛔️ Jetpack AI JWT payload is not valid JSON: \(error)")
+            throw AssistantError(kind: .auth, message: Localization.invalidJWT)
         }
         guard let blogID = decoded.blogID else {
-            throw AssistantError(kind: .auth, message: "Jetpack AI JWT payload is missing blog_id.")
+            DDLogError("⛔️ Jetpack AI JWT payload is missing blog_id")
+            throw AssistantError(kind: .auth, message: Localization.invalidJWT)
         }
         guard let exp = decoded.exp else {
-            throw AssistantError(kind: .auth, message: "Jetpack AI JWT payload is missing exp.")
+            DDLogError("⛔️ Jetpack AI JWT payload is missing exp")
+            throw AssistantError(kind: .auth, message: Localization.invalidJWT)
         }
         self.token = token
         self.blogID = blogID

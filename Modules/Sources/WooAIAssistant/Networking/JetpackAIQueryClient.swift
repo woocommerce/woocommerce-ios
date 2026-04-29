@@ -35,7 +35,7 @@ struct JetpackAIQueryClient: AIChatService {
         return { request in
             let (bytes, response) = try await session.bytes(for: request)
             guard let http = response as? HTTPURLResponse else {
-                throw AssistantError(kind: .network, message: "Non-HTTP response.")
+                throw AssistantError(kind: .network, message: Localization.nonHTTPResponse)
             }
             // Cancelling only the wrapping Swift Task leaves the URL loader holding the
             // socket; an idle SSE connection never produces a cancellation through the
@@ -178,7 +178,8 @@ struct JetpackAIQueryClient: AIChatService {
             for try await chunk in byteStream {
                 buffer.append(chunk)
             }
-            let reason = Self.envelopeReason(from: buffer) ?? "jetpack-ai-query returned HTTP \(http.statusCode)."
+            let fallback = String.localizedStringWithFormat(Localization.httpFailureFallback, http.statusCode)
+            let reason = Self.envelopeReason(from: buffer) ?? fallback
             throw AssistantError(kind: HTTPStatusClassification.errorKind(forStatusCode: http.statusCode),
                                  code: String(http.statusCode),
                                  message: reason)

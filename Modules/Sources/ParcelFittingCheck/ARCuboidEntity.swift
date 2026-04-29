@@ -3,7 +3,9 @@ import RealityKit
 
 /// Unit-cube wireframe (12 edges, no fill). Callers set `transform.scale`
 /// to the desired dimensions in metres. Bottom at y=0, top at y=1.
-enum ARCuboidEntity {
+struct ARCuboidEntity {
+    private init() {}
+
     static func build(color: UIColor = .systemBlue) -> ModelEntity {
         let root = ModelEntity()
         let material = UnlitMaterial(color: color)

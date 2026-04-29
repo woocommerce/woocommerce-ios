@@ -25,7 +25,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var isCIABBookingsEnabled: Bool
     var isCIABBookingRescheduleEnabled: Bool
     var selfDrivenPushToken: Bool
-    var isParcelFittingCheckEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -47,8 +46,7 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          isProductImageOptimizedHandlingEnabled: Bool = false,
          isCIABBookingsEnabled: Bool = false,
          isCIABBookingRescheduleEnabled: Bool = false,
-         selfDrivenPushToken: Bool = false,
-         isParcelFittingCheckEnabled: Bool = false) {
+         selfDrivenPushToken: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -70,7 +68,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.isCIABBookingsEnabled = isCIABBookingsEnabled
         self.isCIABBookingRescheduleEnabled = isCIABBookingRescheduleEnabled
         self.selfDrivenPushToken = selfDrivenPushToken
-        self.isParcelFittingCheckEnabled = isParcelFittingCheckEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -123,8 +120,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return isCIABBookingRescheduleEnabled
         case .selfDrivenPushToken:
             return selfDrivenPushToken
-        case .parcelFittingCheck:
-            return isParcelFittingCheckEnabled
         default:
             return false
         }

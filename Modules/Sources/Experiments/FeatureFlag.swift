@@ -207,6 +207,10 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case clientSideDashboardBanner
 
+    /// Enables configurable store stats widgets
+    ///
+    case configurableStoreStatsWidgets
+
     /// Enables age range verification features
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
@@ -220,8 +224,11 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case loggedOutFFPanel
 
-    /// Enables AR-based parcel sizing on the Custom tab and AR-based fit check on the Carrier tab
-    /// of the shipping label package picker.
+    /// Enables the AI-powered support chat
     ///
-    case parcelFittingCheck
+    case aiSupportChat
+
+    /// Enables the WooAI Assistant.
+    ///
+    case wooAIAssistant
 }

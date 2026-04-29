@@ -99,14 +99,18 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .configurableStoreStatsWidgets:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
             return false
         case .ciabBookingReschedule:
             return !buildConfig.isProduction
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
-        case .parcelFittingCheck:
-            return false
+        case .aiSupportChat:
+            return !buildConfig.isProduction
+        case .wooAIAssistant:
+            return !buildConfig.isProduction
         default:
             return true
         }

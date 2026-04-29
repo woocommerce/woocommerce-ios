@@ -2,7 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 24.7
 -----
-- [*] Performance card: switch between Gross, Net, and Total revenue from a segmented control, and pick which order date type drives the totals from a bottom sheet. [https://github.com/woocommerce/woocommerce-ios/pull/17012]
+- [*] Performance card: switch between Gross, Net, and Total revenue from a segmented control. [https://github.com/woocommerce/woocommerce-ios/pull/17012]
 - [*] Add FedEx Terms of Service handling for shipping label purchases [https://github.com/woocommerce/woocommerce-ios/pull/16925]
 - [*] POS: Update empty orders state copy and replace "Learn more" with "Refresh" [https://github.com/woocommerce/woocommerce-ios/pull/16961]
 

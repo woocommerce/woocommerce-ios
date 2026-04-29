@@ -19,8 +19,8 @@ public final class ParcelFittingCheckCoordinator {
         let view = ARParcelSizingView(
             unit: unit,
             initial: initial,
-            onCancel: { [weak weakHosting] in weakHosting?.dismiss(animated: true) },
-            onConfirm: { [weak weakHosting] dims in
+            onCancel: { weakHosting?.dismiss(animated: true) },
+            onConfirm: { dims in
                 weakHosting?.dismiss(animated: true)
                 onConfirm(dims)
             }
@@ -43,8 +43,8 @@ public final class ParcelFittingCheckCoordinator {
             unit: unit,
             availableCarriers: carriers,
             initialPackageID: initialPackageID,
-            onCancel: { [weak weakHosting] in weakHosting?.dismiss(animated: true) },
-            onConfirm: { [weak weakHosting] package in
+            onCancel: { weakHosting?.dismiss(animated: true) },
+            onConfirm: { package in
                 weakHosting?.dismiss(animated: true)
                 onConfirm(package)
             }

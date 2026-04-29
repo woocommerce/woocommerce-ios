@@ -2,13 +2,23 @@ import RealityKit
 import ARKit
 import SwiftUI
 
-final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate {
+final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARCoachingOverlayViewDelegate {
     weak var arView: ARView?
     var dimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
     var lastResetTrigger: Int = 0
 
     var onPlaced: (() -> Void)?
     var onRemoved: (() -> Void)?
+    var onARReady: (() -> Void)?
+    var onARLost: (() -> Void)?
+
+    func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
+        onARReady?()
+    }
+
+    func coachingOverlayViewWillActivate(_ coachingOverlayView: ARCoachingOverlayView) {
+        onARLost?()
+    }
 
     private var placed = false
     private var cuboidAnchor: AnchorEntity?

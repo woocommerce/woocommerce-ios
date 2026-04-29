@@ -5,6 +5,7 @@ struct ARParcelSizingView: View {
     private let onConfirm: (ParcelDimensions) -> Void
 
     @State private var viewModel: ARParcelSizingViewModel
+    @State private var isARReady: Bool = false
     @State private var isPlaced: Bool = false
     @State private var resetTrigger: Int = 0
 
@@ -22,6 +23,7 @@ struct ARParcelSizingView: View {
             ARParcelSceneView(
                 dimensions: viewModel.dimensionsInMeters,
                 isPlaced: $isPlaced,
+                isARReady: $isARReady,
                 resetTrigger: resetTrigger
             )
             .ignoresSafeArea()
@@ -29,7 +31,7 @@ struct ARParcelSizingView: View {
             VStack {
                 topToolbar
 
-                if !isPlaced {
+                if isARReady && !isPlaced {
                     Text("Tap on the surface to place the fitting box")
                         .font(.callout)
                         .foregroundStyle(.white)

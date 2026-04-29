@@ -5,20 +5,24 @@ import ARKit
 struct ARParcelSceneView: UIViewRepresentable {
     let dimensions: SIMD3<Float>
     @Binding var isPlaced: Bool
+    @Binding var isARReady: Bool
     let resetTrigger: Int
 
     func makeCoordinator() -> ARParcelSceneCoordinator {
         let coordinator = ARParcelSceneCoordinator()
         let placedBinding = $isPlaced
+        let readyBinding = $isARReady
         coordinator.onPlaced = { placedBinding.wrappedValue = true }
         coordinator.onRemoved = { placedBinding.wrappedValue = false }
+        coordinator.onARReady = { readyBinding.wrappedValue = true }
+        coordinator.onARLost = { readyBinding.wrappedValue = false }
         return coordinator
     }
 
     func makeUIView(context: Context) -> ARView {
         let arView = ARView(frame: .zero)
         configureSession(for: arView)
-        addCoachingOverlay(to: arView)
+        addCoachingOverlay(to: arView, coordinator: context.coordinator)
         addGestures(to: arView, coordinator: context.coordinator)
         context.coordinator.arView = arView
         context.coordinator.dimensions = dimensions
@@ -51,9 +55,10 @@ private extension ARParcelSceneView {
         arView.renderOptions.insert(.disableGroundingShadows)
     }
 
-    func addCoachingOverlay(to arView: ARView) {
+    func addCoachingOverlay(to arView: ARView, coordinator: ARParcelSceneCoordinator) {
         let coaching = ARCoachingOverlayView()
         coaching.session = arView.session
+        coaching.delegate = coordinator
         coaching.goal = .horizontalPlane
         coaching.activatesAutomatically = true
         coaching.translatesAutoresizingMaskIntoConstraints = false
@@ -64,6 +69,7 @@ private extension ARParcelSceneView {
             coaching.leadingAnchor.constraint(equalTo: arView.leadingAnchor),
             coaching.trailingAnchor.constraint(equalTo: arView.trailingAnchor),
         ])
+        coaching.setActive(true, animated: true)
     }
 
     func addGestures(to arView: ARView, coordinator: ARParcelSceneCoordinator) {

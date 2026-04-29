@@ -1,5 +1,4 @@
 import SwiftUI
-import ParcelFittingCheck
 
 struct WooAddCustomPackageView: View {
     enum Constants {
@@ -81,19 +80,6 @@ struct WooAddCustomPackageView: View {
                             // showing weight input only if we are saving the template
                             if viewModel.showSaveTemplate {
                                 unitInputView(for: WooShippingPackageUnitType.weight, unit: weightUnit)
-                            }
-
-                            if viewModel.isParcelFittingCheckEnabled {
-                                Button {
-                                    presentParcelSizing()
-                                } label: {
-                                    HStack {
-                                        Image(systemName: "ruler")
-                                        Text(Localization.measureWithCamera)
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                }
-                                .buttonStyle(SecondaryButtonStyle())
                             }
                         }
                         .toolbar {
@@ -198,24 +184,6 @@ struct WooAddCustomPackageView: View {
 }
 
 private extension WooAddCustomPackageView {
-    func presentParcelSizing() {
-        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
-        ParcelFittingCheckCoordinator.presentSizing(
-            from: presenter,
-            unit: .fromStoreUnit(dimensionsUnit),
-            initial: ParcelDimensions(
-                length: Float(viewModel.fieldValues[.length] ?? "") ?? -1,
-                width: Float(viewModel.fieldValues[.width] ?? "") ?? -1,
-                height: Float(viewModel.fieldValues[.height] ?? "") ?? -1
-            ),
-            onConfirm: { dims in
-                viewModel.fieldValues[.length] = String(format: "%.1f", dims.length)
-                viewModel.fieldValues[.width] = String(format: "%.1f", dims.width)
-                viewModel.fieldValues[.height] = String(format: "%.1f", dims.height)
-            }
-        )
-    }
-
     var selectionButtonDisabled: Bool {
         !viewModel.validateCustomPackageInputFields()
     }
@@ -321,11 +289,6 @@ extension WooAddCustomPackageView {
             "wooShipping.createLabel.addPackage.invalidDimensions",
             value: "Package dimensions should all be larger than 0",
             comment: "Message when user attempts to confirm a package with invalid dimension in the shipping label creation flow"
-        )
-        static let measureWithCamera = NSLocalizedString(
-            "wooShipping.createLabel.addPackage.measureWithCamera",
-            value: "Measure with camera",
-            comment: "Button on the custom package screen that opens an AR view to measure a parcel"
         )
         enum SavingPackageError {
             static let title = NSLocalizedString(

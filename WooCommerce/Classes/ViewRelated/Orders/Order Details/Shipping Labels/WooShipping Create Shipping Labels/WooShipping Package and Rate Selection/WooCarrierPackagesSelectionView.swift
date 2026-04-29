@@ -1,6 +1,5 @@
 import SwiftUI
 import Foundation
-import ParcelFittingCheck
 
 // Holds the data needed to display a tab in list of Carrier packages.
 struct WooShippingCarrierPackages: Identifiable {
@@ -84,10 +83,8 @@ struct WooCarrierPackagesSelectionView: View {
     }
 
     @ObservedObject private var viewModel: WooShippingAddPackageViewModel
-    @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
     private let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
     private let addingCustomPackageHandler: () -> Void
-
 
     init(viewModel: WooShippingAddPackageViewModel,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void,
@@ -136,30 +133,16 @@ struct WooCarrierPackagesSelectionView: View {
             }
             Spacer()
             Divider()
-            VStack(spacing: 8) {
-                if viewModel.isParcelFittingCheckEnabled && viewModel.carrierTabs.isNotEmpty {
-                    Button {
-                        presentParcelFitCheck()
-                    } label: {
-                        HStack {
-                            Image(systemName: "ruler")
-                            Text(Localization.fitCheckWithCamera)
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
-                }
-                Button(selectionButtonText) {
-                    addPackageButtonTapped()
-                }
-                .renderedIf(viewModel.carrierTabs.isNotEmpty)
-                .disabled(selectionButtonDisabled)
-                .if(viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
-                    $0.buttonStyle(SecondaryButtonStyle())
-                }
-                .if(!viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
-                    $0.buttonStyle(PrimaryButtonStyle())
-                }
+            Button(selectionButtonText) {
+                addPackageButtonTapped()
+            }
+            .renderedIf(viewModel.carrierTabs.isNotEmpty)
+            .disabled(selectionButtonDisabled)
+            .if(viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
+                $0.buttonStyle(SecondaryButtonStyle())
+            }
+            .if(!viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
+                $0.buttonStyle(PrimaryButtonStyle())
             }
             .padding()
         }
@@ -167,30 +150,6 @@ struct WooCarrierPackagesSelectionView: View {
 }
 
 private extension WooCarrierPackagesSelectionView {
-    func presentParcelFitCheck() {
-        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
-        ParcelFittingCheckCoordinator.presentFitCheck(
-            from: presenter,
-            unit: .fromStoreUnit(dimensionsUnit),
-            carriers: viewModel.carrierPackages.map { carrier in
-                ParcelPresetCarrier(
-                    id: carrier.id,
-                    name: carrier.carrier.name,
-                    packages: carrier.packageGroups.flatMap { group in
-                        group.packages.map { pkg in
-                            ParcelPresetPackage(id: pkg.id, name: pkg.name,
-                                                length: pkg.length, width: pkg.width, height: pkg.height)
-                        }
-                    }
-                )
-            },
-            initialPackageID: viewModel.selectedCarriersPackageId,
-            onConfirm: { package in
-                viewModel.selectedCarriersPackageId = package.id
-            }
-        )
-    }
-
     var selectionButtonDisabled: Bool {
         viewModel.selectedCarriersPackageId == nil
     }
@@ -292,11 +251,6 @@ private extension WooCarrierPackagesSelectionView {
             "wooShipping.packagesSelectionView.createCustomPackageCTA",
             value: "Create a custom package",
             comment: "Button to navigate to the custom package screen in the shipping label creation flow"
-        )
-        static let fitCheckWithCamera = NSLocalizedString(
-            "wooShipping.packagesSelectionView.fitCheckWithCamera",
-            value: "Fit check with camera",
-            comment: "Button on the carrier packages screen that opens an AR view to compare a parcel against the selected carrier package"
         )
     }
 }

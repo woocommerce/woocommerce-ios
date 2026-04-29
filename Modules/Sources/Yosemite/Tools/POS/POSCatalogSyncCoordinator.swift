@@ -150,7 +150,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
                 analytics: Analytics? = nil,
                 connectivityObserver: ConnectivityObserver? = nil,
-                usesCatalogAPI: Bool = false) {
+                usesCatalogAPI: Bool = false,
+                backgroundDownloadResumer: BackgroundCatalogDownloadResuming = BackgroundCatalogDownloadCoordinator()) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
@@ -159,6 +160,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.analytics = analytics
         self.connectivityObserver = connectivityObserver
         self.syncStrategy = usesCatalogAPI ? .localCatalogFile : .localCatalog
+        self.backgroundDownloadResumer = backgroundDownloadResumer
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool, isBackgroundSync: Bool) async throws {

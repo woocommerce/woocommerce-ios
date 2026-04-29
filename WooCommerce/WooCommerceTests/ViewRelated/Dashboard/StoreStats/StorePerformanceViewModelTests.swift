@@ -663,6 +663,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
                                                   totalOrders: 3,
                                                   totalItemsSold: 5,
                                                   grossRevenue: 800,
+                                                  grossSales: 0,
                                                   netRevenue: 800,
                                                   averageOrderValue: 266
                                               )

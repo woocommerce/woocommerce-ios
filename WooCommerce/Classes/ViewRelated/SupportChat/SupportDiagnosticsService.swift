@@ -63,20 +63,6 @@ final class SupportDiagnosticsService {
         case setupJetpack
         case openNotificationSettings
 
-        static func == (lhs: Action, rhs: Action) -> Bool {
-            switch (lhs, rhs) {
-            case (.enableAnalytics, .enableAnalytics),
-                 (.registerDevice, .registerDevice),
-                 (.setupJetpack, .setupJetpack),
-                 (.openNotificationSettings, .openNotificationSettings):
-                return true
-            case (.enableOrderNotifications, .enableOrderNotifications):
-                return true
-            default:
-                return false
-            }
-        }
-
         var title: String {
             switch self {
             case .enableAnalytics:

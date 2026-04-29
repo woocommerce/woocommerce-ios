@@ -8,9 +8,21 @@ struct POSRefundedProductRowView: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
-            POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.imageSize, scale: 1)
+            if item.isLumpSum {
+                ZStack {
+                    Color.posSurfaceContainerLow
+
+                    Image(systemName: "tag")
+                        .font(.posButtonSymbolMedium)
+                        .foregroundColor(.posOnSurface)
+                }
                 .frame(width: Constants.imageSize, height: Constants.imageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            } else {
+                POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.imageSize, scale: 1)
+                    .frame(width: Constants.imageSize, height: Constants.imageSize)
+                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            }
 
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                 Text(item.name)
@@ -18,9 +30,11 @@ struct POSRefundedProductRowView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text(Localization.quantityLabel(item.quantity.intValue, item.formattedPrice))
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                if !item.isLumpSum {
+                    Text(Localization.quantityLabel(item.quantity.intValue, item.formattedPrice))
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
             }
 
             Spacer()
@@ -34,7 +48,10 @@ struct POSRefundedProductRowView: View {
     }
 
     private var defaultAccessibilityLabel: String {
-        Localization.defaultAccessibilityLabel(
+        if item.isLumpSum {
+            return Localization.lumpSumAccessibilityLabel(name: item.name, total: item.formattedTotal)
+        }
+        return Localization.defaultAccessibilityLabel(
             name: item.name,
             quantity: "\(item.quantity.intValue)",
             price: item.formattedPrice,
@@ -65,5 +82,15 @@ private enum Localization {
             "%1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total."
         )
         return String(format: format, name, quantity, price, total)
+    }
+
+    static func lumpSumAccessibilityLabel(name: String, total: String) -> String {
+        let format = NSLocalizedString(
+            "pos.refundedProductRow.lumpSumAccessibilityLabel",
+            value: "%1$@, Refunded %2$@",
+            comment: "Accessibility label for refunded custom amount/fee row. " +
+            "%1$@ is the custom amount name, %2$@ is the refund total."
+        )
+        return String(format: format, name, total)
     }
 }

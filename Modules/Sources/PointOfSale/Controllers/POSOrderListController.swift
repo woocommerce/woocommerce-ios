@@ -303,7 +303,7 @@ enum RefundActionAvailability {
         let refundedQuantitiesByItemID = refundsResult.refunds.flatMap(\.items).refundedQuantitiesByItemID()
 
         // Build selectable items excluding already refunded quantities
-        refundSelectableItems = order.lineItems.flatMap { item -> [POSRefundSelectableItem] in
+        let productSelectables = order.lineItems.flatMap { item -> [POSRefundSelectableItem] in
             let originalQuantity = NSDecimalNumber(decimal: item.quantity).intValue
             let refundedQuantity = refundedQuantitiesByItemID[item.itemID] ?? 0
             let availableQuantity = originalQuantity - refundedQuantity
@@ -313,6 +313,17 @@ enum RefundActionAvailability {
                 POSRefundSelectableItem(from: item, isSelected: true, index: index)
             }
         }
+
+        let alreadyRefundedItemIDs: Set<Int64> = Set(
+            refundsResult.refunds
+                .flatMap(\.items)
+                .compactMap(\.refundedItemID)
+        )
+        let feeSelectables = order.customAmounts
+            .filter { !alreadyRefundedItemIDs.contains($0.id) }
+            .map { POSRefundSelectableItem(from: $0, isSelected: true) }
+
+        refundSelectableItems = productSelectables + feeSelectables
 
         return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
     }
@@ -352,7 +363,8 @@ enum RefundActionAvailability {
                 itemID: item.itemID,
                 lineItemTotal: item.lineItemTotal,
                 totalTax: item.totalTax,
-                originalQuantity: item.originalQuantity
+                originalQuantity: item.originalQuantity,
+                isLumpSum: item.isLumpSum
             )
         }
 
@@ -407,7 +419,8 @@ enum RefundActionAvailability {
                 itemID: item.itemID,
                 lineItemTotal: item.lineItemTotal,
                 totalTax: item.totalTax,
-                originalQuantity: item.originalQuantity
+                originalQuantity: item.originalQuantity,
+                isLumpSum: item.isLumpSum
             )
         }
 

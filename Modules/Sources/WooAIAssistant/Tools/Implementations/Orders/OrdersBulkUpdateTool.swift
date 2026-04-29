@@ -43,7 +43,8 @@ public enum OrdersBulkUpdateTool {
                 ])
             ]),
             "required": .array([.string("ids"), .string("patch")])
-        ])
+        ]),
+        safetyLevel: .unsafe
     )
 
     private struct Args: Decodable, Sendable {

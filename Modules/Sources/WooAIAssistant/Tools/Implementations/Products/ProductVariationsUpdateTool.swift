@@ -45,7 +45,8 @@ public enum ProductVariationsUpdateTool {
                 ])
             ]),
             "required": .array([.string("product_id"), .string("id")])
-        ])
+        ]),
+        safetyLevel: .unsafe
     )
 
     private struct Args: Decodable, Sendable {

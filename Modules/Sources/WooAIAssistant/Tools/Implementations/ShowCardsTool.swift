@@ -53,7 +53,8 @@ public enum ShowCardsTool {
                     ])
                 ])
             ])
-        ])
+        ]),
+        safetyLevel: .safe
     )
 
     private static let executor: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in

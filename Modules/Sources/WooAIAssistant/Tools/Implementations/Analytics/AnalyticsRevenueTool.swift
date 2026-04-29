@@ -40,7 +40,8 @@ public enum AnalyticsRevenueTool {
                 ])
             ]),
             "required": .array([.string("after"), .string("before")])
-        ])
+        ]),
+        safetyLevel: .safe
     )
 
     private struct Args: Decodable, Sendable {

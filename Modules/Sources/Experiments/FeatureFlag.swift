@@ -199,6 +199,10 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleRefundsi1
 
+    /// Enables adding custom amounts to the cart in Point of Sale
+    ///
+    case pointOfSaleCustomAmounts
+
     /// Enables self driven push token registration
     ///
     case selfDrivenPushToken

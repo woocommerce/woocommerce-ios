@@ -67,8 +67,7 @@ struct SSEParserTests {
 
     @Test
     func test_feed_when_done_sentinel_then_emitted_as_regular_event() {
-        // Given - documents the transport-level decision: parser does NOT
-        // special-case `[DONE]`. The chat client interprets it.
+        // Given
         var parser = SSEParser()
 
         // When
@@ -118,7 +117,7 @@ struct SSEParserTests {
 
     @Test
     func test_feed_when_no_space_after_colon_then_value_kept_intact() {
-        // Given - per SSE spec the leading space after the colon is optional.
+        // Given
         var parser = SSEParser()
 
         // When

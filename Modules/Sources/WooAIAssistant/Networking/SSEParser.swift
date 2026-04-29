@@ -1,10 +1,5 @@
 import Foundation
 
-/// Buffered Server-Sent Events parser. Feed bytes, drain events.
-///
-/// Transport-level seam: emits raw `data:` strings without interpreting the
-/// payload. The OpenAI `[DONE]` sentinel surfaces as a normal event whose
-/// `data` is `"[DONE]"` so the chat client decides what to do with it.
 public struct SSEParser {
     public struct Event: Equatable, Sendable {
         public let data: String
@@ -15,7 +10,6 @@ public struct SSEParser {
 
     public init() {}
 
-    /// Appends bytes and returns any fully-terminated events.
     public mutating func feed(_ chunk: String) -> [Event] {
         buffer.append(chunk)
         var events: [Event] = []
@@ -29,7 +23,6 @@ public struct SSEParser {
         return events
     }
 
-    /// Drains any remaining buffered event at end-of-stream.
     public mutating func finish() -> [Event] {
         if !pendingData.isEmpty {
             let event = Event(data: pendingData)

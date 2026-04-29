@@ -1,21 +1,10 @@
 import Foundation
 import CocoaLumberjackSwift
 
-/// Shape helpers shared between the production REST client adaptor and the
-/// module's unit tests. Kept out of the adaptor so the parsing logic stays
-/// test-covered without pulling Networking / Jetpack dependencies into the
-/// module.
 public enum JetpackResponseParsing {
 
-    /// Jetpack-tunneled responses come wrapped as `{"data":<inner>,...}`.
-    /// Direct REST returns the naked WC response. Peel the envelope so
-    /// downstream parsers see the same shape regardless of auth route.
-    ///
-    /// Guards against the WP error envelope `{"code","message","data":{...}}`
-    /// which also has a `data` key but whose inner value is error metadata -
-    /// peeling it would hand callers `{"status":404}` as if a tool returned
-    /// a row. Error envelopes pass through unchanged so the higher layer
-    /// surfaces them.
+    /// Leaves the WP error envelope `{"code","message","data":{...}}` untouched - peeling its `data`
+    /// key would hand callers `{"status":404}` as if a tool returned a row.
     public static func unwrapJetpackEnvelope(_ data: Data) -> Data {
         guard !data.isEmpty else { return data }
         let json: [String: Any]
@@ -40,11 +29,6 @@ public enum JetpackResponseParsing {
         }
     }
 
-    /// Splits a tool path like `"wc/v3/orders"` or
-    /// `"wc-analytics/reports/orders"` into the API-version prefix plus the
-    /// sub-path beneath it. Unknown prefixes fall back to `.mark3` with the
-    /// full path intact so a typo at least reaches a valid WC namespace
-    /// that 404s loudly.
     public static func splitAPIVersion(from path: String) -> (apiVersion: WCAPIVersion, subpath: String) {
         let trimmed = path.hasPrefix("/") ? String(path.dropFirst()) : path
         if trimmed.hasPrefix("wc-analytics/") {
@@ -63,9 +47,7 @@ public enum JetpackResponseParsing {
     }
 }
 
-/// Mirror of Networking's `WooAPIVersion`. Duplicated to keep this module's
-/// dependency surface small - Networking is a heavy target. The app-target
-/// adaptor translates this into the real `WooAPIVersion` at the boundary.
+/// Mirror of Networking's `WooAPIVersion`. Duplicated so this module avoids importing Networking.
 public enum WCAPIVersion: String, Sendable, Equatable {
     case mark1 = "wc/v1"
     case mark2 = "wc/v2"

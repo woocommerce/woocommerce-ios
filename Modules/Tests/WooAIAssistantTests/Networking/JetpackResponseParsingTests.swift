@@ -36,10 +36,7 @@ struct JetpackResponseParsingTests {
 
     @Test
     func test_unwrapJetpackEnvelope_when_wp_error_envelope_with_code_field_then_returned_unchanged() {
-        // Given - WP error envelope ALSO has a `data` key but its inner value
-        // is error metadata, not a row. The presence of a non-empty `code`
-        // sibling is the signal to leave the bytes alone so the higher layer
-        // can surface the error.
+        // Given
         let raw = #"{"code":"rest_no_route","message":"No route was found","data":{"status":404}}"#
         let input = Data(raw.utf8)
 
@@ -117,8 +114,7 @@ struct JetpackResponseParsingTests {
 
     @Test
     func test_splitAPIVersion_when_unknown_prefix_then_falls_back_to_mark3_with_full_path() {
-        // Given - typo / unknown prefix should reach a valid namespace that
-        // 404s loudly rather than silently succeeding.
+        // Given
         let path = "made_up_ns/orders"
 
         // When

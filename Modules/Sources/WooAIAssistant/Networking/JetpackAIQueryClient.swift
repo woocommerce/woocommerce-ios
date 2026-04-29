@@ -21,8 +21,7 @@ struct JetpackAIQueryClient: AIChatService {
         self.sleep = sleep ?? { nanoseconds in try await Task.sleep(nanoseconds: nanoseconds) }
     }
 
-    // 64 conns/host (URLSession.shared caps at 6) + long timeouts cover the
-    // long tail of model thinking before any byte is delivered.
+    // httpMaximumConnectionsPerHost overrides URLSession.shared's 6-conn cap.
     private static let sharedLLMSession: URLSession = {
         let config = URLSessionConfiguration.default
         config.httpMaximumConnectionsPerHost = 64
@@ -31,7 +30,7 @@ struct JetpackAIQueryClient: AIChatService {
         return URLSession(configuration: config)
     }()
 
-    static func urlSessionStreamingTransport(_ session: URLSession) -> StreamingHTTPTransport {
+    private static func urlSessionStreamingTransport(_ session: URLSession) -> StreamingHTTPTransport {
         return { request in
             let (bytes, response) = try await session.bytes(for: request)
             guard let http = response as? HTTPURLResponse else {
@@ -80,6 +79,8 @@ struct JetpackAIQueryClient: AIChatService {
                                                     toolChoice: toolChoice,
                                                     continuation: continuation)
                     continuation.finish()
+                } catch let envelope as WrappedEnvelopeError {
+                    continuation.finish(throwing: envelope.assistantError)
                 } catch {
                     continuation.finish(throwing: error)
                 }
@@ -88,8 +89,9 @@ struct JetpackAIQueryClient: AIChatService {
         }
     }
 
-    // 401/403 before any event lands → invalidate JWT + retry once. Once an event
-    // crosses the seam, retrying would emit a duplicate prefix or torn tool call.
+    // 401 before any event lands → invalidate JWT + retry once. Replaying after an event
+    // crosses the seam would emit a duplicate prefix or a torn tool call. Android applies
+    // the same gate for 401 only; 403 is treated as terminal.
     private func runWithAuthRetry(messages: [OpenAIChat.Message],
                                   tools: [OpenAIChat.ToolDefinition]?,
                                   toolChoice: OpenAIChat.ToolChoice?,
@@ -116,10 +118,9 @@ struct JetpackAIQueryClient: AIChatService {
     }
 
     private func shouldRetryAuth(error: AssistantError, bridge: StreamBridge, attempt: Int) async -> Bool {
-        guard attempt < 1 else { return false }
+        guard attempt == 0 else { return false }
         guard await bridge.didEmitAnyEvent == false else { return false }
-        guard let code = error.code, code == "401" || code == "403" else { return false }
-        return true
+        return error.code == "401"
     }
 
     // 429 retries (3 attempts, 2s + 4s) only run before any event crosses the seam.
@@ -168,23 +169,21 @@ struct JetpackAIQueryClient: AIChatService {
         let (byteStream, http) = try await streamingTransport(request)
 
         // jetpack-ai-query validates before opening the stream, so a non-2xx body is
-        // a single JSON error payload, not SSE frames.
+        // a single JSON error payload (the proxy uses the same wrapped shape for HTTP
+        // failures and soft failures). The HTTP status drives retry classification;
+        // the envelope's text just enriches the message for the consumer.
         if !(200..<300).contains(http.statusCode) {
             var buffer = Data()
             for try await chunk in byteStream {
                 buffer.append(chunk)
             }
-            try Self.validate(http: http, body: buffer)
-            if let envelope = Self.decodeWrappedError(from: buffer) {
-                throw envelope
-            }
-            throw AssistantError(kind: Self.errorKind(forStatus: http.statusCode),
+            let reason = Self.envelopeReason(from: buffer) ?? "jetpack-ai-query returned HTTP \(http.statusCode)."
+            throw AssistantError(kind: HTTPStatusClassification.errorKind(forStatusCode: http.statusCode),
                                  code: String(http.statusCode),
-                                 message: "jetpack-ai-query returned HTTP \(http.statusCode).")
+                                 message: reason)
         }
 
         var parser = SSEParser()
-        var firstDecodedChunkSeen = false
         var toolCallBuffers: [Int: ToolCallAssembly] = [:]
         var toolCallOrder: [Int] = []
         var finishReason: OpenAIChat.FinishReason?
@@ -197,34 +196,13 @@ struct JetpackAIQueryClient: AIChatService {
             let (decoded, remainder) = Self.decodeUTF8WithBoundaryCarry(pendingBytes)
             pendingBytes = remainder
             guard let text = decoded, !text.isEmpty else { continue }
-            let events = parser.feed(text)
-            for event in events {
-                let trimmed = event.data.trimmingCharacters(in: .whitespaces)
-                if trimmed == "[DONE]" { continue }
-                guard let data = trimmed.data(using: .utf8) else { continue }
-
-                // Some soft errors come back as 200 + a wrapped envelope (no `choices`).
-                // Surface as a typed error before attempting the chunk decode.
-                if !firstDecodedChunkSeen, let envelope = Self.decodeWrappedError(from: data) {
-                    throw envelope
-                }
-                firstDecodedChunkSeen = true
-
-                guard let chunk = try? JSONDecoder().decode(OpenAIChat.Chunk.self, from: data) else { continue }
-                guard let choice = chunk.choices.first else { continue }
-
-                if let text = choice.delta.content, !text.isEmpty {
-                    await bridge.markEmitted()
-                    continuation.yield(.textDelta(text))
-                }
-                if let deltaCalls = choice.delta.toolCalls {
-                    for delta in deltaCalls {
-                        apply(delta: delta, to: &toolCallBuffers, order: &toolCallOrder)
-                    }
-                }
-                if let reason = choice.finishReason {
-                    finishReason = reason
-                }
+            for event in parser.feed(text) {
+                try await handle(event: event,
+                                 bridge: bridge,
+                                 continuation: continuation,
+                                 buffers: &toolCallBuffers,
+                                 order: &toolCallOrder,
+                                 finishReason: &finishReason)
             }
         }
         if !pendingBytes.isEmpty,
@@ -233,24 +211,12 @@ struct JetpackAIQueryClient: AIChatService {
             _ = parser.feed(tail)
         }
         for event in parser.finish() {
-            let trimmed = event.data.trimmingCharacters(in: .whitespaces)
-            if trimmed.isEmpty || trimmed == "[DONE]" { continue }
-            if let data = trimmed.data(using: .utf8),
-               let chunk = try? JSONDecoder().decode(OpenAIChat.Chunk.self, from: data),
-               let choice = chunk.choices.first {
-                if let text = choice.delta.content, !text.isEmpty {
-                    await bridge.markEmitted()
-                    continuation.yield(.textDelta(text))
-                }
-                if let deltaCalls = choice.delta.toolCalls {
-                    for delta in deltaCalls {
-                        apply(delta: delta, to: &toolCallBuffers, order: &toolCallOrder)
-                    }
-                }
-                if let reason = choice.finishReason {
-                    finishReason = reason
-                }
-            }
+            try await handle(event: event,
+                             bridge: bridge,
+                             continuation: continuation,
+                             buffers: &toolCallBuffers,
+                             order: &toolCallOrder,
+                             finishReason: &finishReason)
         }
 
         for index in toolCallOrder {
@@ -262,6 +228,39 @@ struct JetpackAIQueryClient: AIChatService {
         }
         await bridge.markEmitted()
         continuation.yield(.completed(finishReason))
+    }
+
+    private func handle(event: SSEParser.Event,
+                        bridge: StreamBridge,
+                        continuation: AsyncThrowingStream<ChatStreamEvent, Error>.Continuation,
+                        buffers: inout [Int: ToolCallAssembly],
+                        order: inout [Int],
+                        finishReason: inout OpenAIChat.FinishReason?) async throws {
+        let trimmed = event.data.trimmingCharacters(in: .whitespaces)
+        if trimmed.isEmpty || trimmed == "[DONE]" { return }
+        guard let data = trimmed.data(using: .utf8) else { return }
+
+        // Some soft errors come back as 200 + a wrapped envelope (no `choices`). Surface
+        // as a typed error as long as nothing has crossed the seam yet.
+        if await bridge.didEmitAnyEvent == false, let envelope = Self.decodeWrappedError(from: data) {
+            throw WrappedEnvelopeError(assistantError: envelope)
+        }
+
+        guard let chunk = try? JSONDecoder().decode(OpenAIChat.Chunk.self, from: data) else { return }
+        guard let choice = chunk.choices.first else { return }
+
+        if let text = choice.delta.content, !text.isEmpty {
+            await bridge.markEmitted()
+            continuation.yield(.textDelta(text))
+        }
+        if let deltaCalls = choice.delta.toolCalls {
+            for delta in deltaCalls {
+                apply(delta: delta, to: &buffers, order: &order)
+            }
+        }
+        if let reason = choice.finishReason {
+            finishReason = reason
+        }
     }
 
     private func buildRequest(messages: [OpenAIChat.Message],
@@ -288,7 +287,6 @@ struct JetpackAIQueryClient: AIChatService {
 
     private struct ToolCallAssembly {
         var id: String?
-        var type: String?
         var name: String?
         var arguments: String = ""
     }
@@ -296,6 +294,13 @@ struct JetpackAIQueryClient: AIChatService {
     private actor StreamBridge {
         private(set) var didEmitAnyEvent = false
         func markEmitted() { didEmitAnyEvent = true }
+    }
+
+    // Source-tagging wrapper: envelope-derived AssistantErrors travel inside this so the
+    // HTTP retry guards (which key on `error.code`) skip them. `streamTurn` unwraps it
+    // before yielding the inner AssistantError to the consumer.
+    private struct WrappedEnvelopeError: Error {
+        let assistantError: AssistantError
     }
 
     static func decodeUTF8WithBoundaryCarry(_ buffer: Data) -> (decoded: String?, remainder: Data) {
@@ -317,7 +322,6 @@ struct JetpackAIQueryClient: AIChatService {
                        order: inout [Int]) {
         var asm = buffers[delta.index] ?? ToolCallAssembly()
         if asm.id == nil, let id = delta.id { asm.id = id }
-        if asm.type == nil, let type = delta.type { asm.type = type }
         if asm.name == nil, let name = delta.function?.name { asm.name = name }
         if let args = delta.function?.arguments { asm.arguments.append(args) }
         buffers[delta.index] = asm
@@ -334,55 +338,28 @@ struct JetpackAIQueryClient: AIChatService {
         }
     }
 
-    // jetpack-ai-query wraps soft failures (context overflow, moderation, schema
-    // rejection) as `{code, message, data:{status}}` over HTTP 200. Both fields
-    // must be populated so a successful chat response (no top-level `code`)
-    // doesn't get misclassified.
     static func decodeWrappedError(from data: Data) -> AssistantError? {
+        guard let envelope = decodeEnvelope(from: data) else { return nil }
+        let httpStatus = envelope.data?.status
+        let codeString = httpStatus.map(String.init)
+        let kind = httpStatus.map(HTTPStatusClassification.errorKind(forStatusCode:)) ?? .upstreamFailure
+        return AssistantError(kind: kind,
+                              code: codeString,
+                              message: "[\(envelope.code)] \(envelope.message)")
+    }
+
+    static func envelopeReason(from data: Data) -> String? {
+        decodeEnvelope(from: data).map { "[\($0.code)] \($0.message)" }
+    }
+
+    private static func decodeEnvelope(from data: Data) -> WrappedError? {
         let envelope: WrappedError
         do {
             envelope = try JSONDecoder().decode(WrappedError.self, from: data)
         } catch {
             return nil
         }
-        guard !envelope.code.isEmpty, !envelope.message.isEmpty else {
-            return nil
-        }
-        let httpStatus = envelope.data?.status
-        let codeString = httpStatus.map(String.init)
-        let kind = httpStatus.map(errorKind(forStatus:)) ?? .upstreamFailure
-        return AssistantError(kind: kind,
-                              code: codeString,
-                              message: "[\(envelope.code)] \(envelope.message)")
-    }
-
-    static func validate(http: HTTPURLResponse, body: Data) throws {
-        if http.statusCode == 401 || http.statusCode == 403 {
-            throw AssistantError(kind: .auth,
-                                 code: String(http.statusCode),
-                                 message: "Authentication to jetpack-ai-query failed (HTTP \(http.statusCode)).")
-        }
-        if http.statusCode == 429 {
-            throw AssistantError(kind: .rateLimit,
-                                 code: "429",
-                                 message: "Rate-limited by jetpack-ai-query. Please try again shortly.")
-        }
-        if !(200..<300).contains(http.statusCode) {
-            let snippet = String(data: body.prefix(300), encoding: .utf8) ?? ""
-            throw AssistantError(kind: errorKind(forStatus: http.statusCode),
-                                 code: String(http.statusCode),
-                                 message: "jetpack-ai-query returned HTTP \(http.statusCode): \(snippet)")
-        }
-    }
-
-    private static func errorKind(forStatus status: Int) -> AssistantErrorKind {
-        switch status {
-        case 401, 403: return .auth
-        case 429: return .rateLimit
-        case 408: return .timeout
-        case 400..<500: return .upstreamFailure
-        case 500..<600: return .upstreamFailure
-        default: return .unknown
-        }
+        guard !envelope.code.isEmpty, !envelope.message.isEmpty else { return nil }
+        return envelope
     }
 }

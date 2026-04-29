@@ -1,4 +1,5 @@
 import Foundation
+import NetworkingCore
 
 typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
 
@@ -272,6 +273,7 @@ struct JetpackAIQueryClient: AIChatService {
         urlRequest.setValue("Bearer \(jwt)", forHTTPHeaderField: "Authorization")
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("text/event-stream", forHTTPHeaderField: "Accept")
+        urlRequest.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
         let body = OpenAIChat.Request(messages: messages,
                                       tools: tools,

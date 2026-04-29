@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import NetworkingCore
 @testable import WooAIAssistant
 
 struct JetpackAIQueryClientTests {
@@ -230,6 +231,25 @@ struct JetpackAIQueryClientTests {
             #expect(error.kind == .upstreamFailure)
         }
         #expect(await transport.callCount == 1)
+    }
+
+    @Test
+    func test_streamTurn_when_request_is_built_then_carries_woo_user_agent_and_auth_headers() async throws {
+        // Given
+        let frame = "data: {\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ok\"},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n"
+        let transport = ScriptedTransport(scenarios: [.successChunks([Data(frame.utf8)])])
+        let client = JetpackAIQueryClient(jwtProvider: stubJWTProvider(),
+                                          streamingTransport: transport.handler,
+                                          sleep: noOpSleep)
+
+        // When
+        _ = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = try #require(await transport.lastRequest)
+        #expect(captured.value(forHTTPHeaderField: "User-Agent") == UserAgent.defaultUserAgent)
+        #expect(captured.value(forHTTPHeaderField: "Authorization") == "Bearer stub-token")
+        #expect(captured.value(forHTTPHeaderField: "Accept") == "text/event-stream")
     }
 
     @Test

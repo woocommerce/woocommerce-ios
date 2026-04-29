@@ -140,6 +140,39 @@ struct LoopAdditionalEdgeCasesTests {
     }
 
     @Test
+    func test_run_when_completed_with_nil_finish_reason_then_emits_upstreamFailure() async throws {
+        // Given a transport that emits `.completed(nil)` - a malformed stream where no
+        // chunk carried `finish_reason`. Treated identically to a stream that ended
+        // without any `.completed` event at all.
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [.textDelta("Partial..."), .completed(nil)]
+        ])
+        let registry = MockToolRegistry()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat, toolRegistry: registry)
+
+        // When
+        var events: [AssistantEvent] = []
+        for try await event in orchestrator.run(prompt: "Anything") {
+            events.append(event)
+        }
+
+        // Then
+        let failedEvent: AssistantError? = events.compactMap { event in
+            if case .failed(let error) = event { return error }
+            return nil
+        }.first
+        #expect(failedEvent?.kind == .upstreamFailure)
+
+        let outcome = await orchestrator.lastOutcome
+        if case .failed = outcome {
+            #expect(true)
+        } else {
+            Issue.record("Expected lastOutcome == .failed, got \(String(describing: outcome))")
+        }
+    }
+
+    @Test
     func test_run_when_chatService_throws_mid_stream_then_emits_failed_and_lastOutcome_is_failed() async throws {
         // Given
         let chat = MockAIChatService()

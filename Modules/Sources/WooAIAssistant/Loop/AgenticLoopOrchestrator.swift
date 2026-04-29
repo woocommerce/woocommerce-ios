@@ -218,7 +218,6 @@ actor AgenticLoopOrchestrator {
         var pendingCalls: [OpenAIChat.ToolCall] = []
         var didEmitText = false
         var finishReason: OpenAIChat.FinishReason?
-        var didReceiveCompletedEvent = false
 
         let stream = chatService.streamTurn(messages: messages,
                                             tools: tools,
@@ -233,12 +232,12 @@ actor AgenticLoopOrchestrator {
                 pendingCalls.append(call)
             case .completed(let reason):
                 finishReason = reason
-                didReceiveCompletedEvent = true
             }
         }
 
-        // A stream ending without `.completed` is an upstream truncation, not a clean finish.
-        if !didReceiveCompletedEvent {
+        // A missing `.completed` event OR `.completed(nil)` both signal upstream
+        // truncation rather than a clean finish.
+        guard let finishReason else {
             throw AssistantError(kind: .upstreamFailure,
                                  message: Localization.noFinishEvent)
         }

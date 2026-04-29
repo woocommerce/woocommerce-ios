@@ -138,43 +138,21 @@ struct SupportChatView: View {
     private func diagnosticsProgressBubble(
         steps: [(test: SupportDiagnosticsService.Test, status: SupportChatViewModel.TestStatus)]
     ) -> some View {
-        VStack(alignment: .leading, spacing: Layout.resultRowSpacing) {
-            ForEach(steps, id: \.test) { step in
-                HStack(alignment: .top, spacing: Layout.resultIconSpacing) {
-                    statusIcon(for: step.status)
-                        .font(.body)
+        HStack(alignment: .center, spacing: Layout.resultIconSpacing) {
+            let currentStep = steps.first { $0.status == .running } ?? steps.first { $0.status == .pending }
+            if let step = currentStep {
+                ProgressView()
+                    .controlSize(.small)
 
-                    Text(step.test.title)
-                        .font(.body)
-                        .foregroundStyle(step.status == .pending ? Color(.tertiaryLabel) : Color(.label))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
+                Text(step.test.title)
+                    .font(.body)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .padding(SupportChatLayout.bubblePadding)
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
         .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
-    }
-
-    private func statusIcon(for status: SupportChatViewModel.TestStatus) -> some View {
-        VStack {
-            switch status {
-            case .pending:
-                Image(systemName: "circle")
-                    .foregroundStyle(Color(.tertiaryLabel))
-            case .running:
-                ProgressView()
-                    .controlSize(.small)
-            case .passed:
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color.green)
-            case .failed:
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundStyle(Color.red)
-            }
-        }
-        .frame(width: Layout.resultIconSize)
     }
 
     // MARK: - Diagnostics Success Bubble
@@ -344,9 +322,7 @@ private extension SupportChatView {
         static let issueButtonRadius: CGFloat = 8
         static let progressSpacing: CGFloat = 8
         static let resultsSpacing: CGFloat = 12
-        static let resultRowSpacing: CGFloat = 8
         static let resultIconSpacing: CGFloat = 6
-        static let resultIconSize: CGFloat = 24
     }
 }
 
@@ -406,7 +382,7 @@ private extension SupportChatView {
         )
         static let allChecksPassed = NSLocalizedString(
             "supportChatView.allChecksPassed",
-            value: "All checks completed with no issues",
+            value: "All checks completed with no issues.",
             comment: "Message shown when all diagnostic checks pass"
         )
         static let resumedChatHeader = NSLocalizedString(

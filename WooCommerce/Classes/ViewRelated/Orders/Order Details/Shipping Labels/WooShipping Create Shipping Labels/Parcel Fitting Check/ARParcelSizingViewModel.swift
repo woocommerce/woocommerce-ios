@@ -2,22 +2,19 @@ import Foundation
 
 @Observable
 final class ARParcelSizingViewModel {
-    var unit: String = "in"
-    var length: Float
-    var width: Float
-    var height: Float
+    var unit: String
+    var dimensions: ParcelDimensions
 
-    init(initialLength: Float? = nil, initialWidth: Float? = nil, initialHeight: Float? = nil) {
-        self.length = initialLength ?? -1
-        self.width = initialWidth ?? -1
-        self.height = initialHeight ?? -1
+    init(unit: String, initial: ParcelDimensions = .unset) {
+        self.unit = unit
+        self.dimensions = initial
     }
 
     func resolveDefaults() {
         let defaults = DimensionUnitConversion.defaultDimensions(for: unit)
-        if length < 0 { length = defaults.length }
-        if width < 0 { width = defaults.width }
-        if height < 0 { height = defaults.height }
+        if dimensions.length < 0 { dimensions.length = defaults.length }
+        if dimensions.width < 0 { dimensions.width = defaults.width }
+        if dimensions.height < 0 { dimensions.height = defaults.height }
     }
 
     var sliderRange: ClosedRange<Float> {
@@ -25,22 +22,19 @@ final class ARParcelSizingViewModel {
     }
 
     var dimensionsInMeters: SIMD3<Float> {
-        let factor = DimensionUnitConversion.metersPerUnit(unit)
-        let r = resolvedDimensions
-        return SIMD3(r.length * factor, r.height * factor, r.width * factor)
+        resolvedDimensions.toMeters(unit: unit)
     }
 
-    var confirmedDimensions: (length: Double, width: Double, height: Double) {
-        let r = resolvedDimensions
-        return (Double(r.length), Double(r.width), Double(r.height))
+    var confirmedDimensions: ParcelDimensions {
+        resolvedDimensions
     }
 
-    private var resolvedDimensions: (length: Float, width: Float, height: Float) {
+    private var resolvedDimensions: ParcelDimensions {
         let defaults = DimensionUnitConversion.defaultDimensions(for: unit)
-        return (
-            length >= 0 ? length : defaults.length,
-            width >= 0 ? width : defaults.width,
-            height >= 0 ? height : defaults.height
+        return ParcelDimensions(
+            length: dimensions.length >= 0 ? dimensions.length : defaults.length,
+            width: dimensions.width >= 0 ? dimensions.width : defaults.width,
+            height: dimensions.height >= 0 ? dimensions.height : defaults.height
         )
     }
 }

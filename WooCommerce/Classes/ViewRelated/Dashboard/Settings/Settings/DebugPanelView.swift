@@ -102,12 +102,14 @@ struct DebugPanelView: View {
         }
         .fullScreenCover(isPresented: $isARParcelSizingPresented) {
             ARParcelSizingView(
+                unit: Self.debugDimensionsUnit,
                 onCancel: { isARParcelSizingPresented = false },
-                onConfirm: { _, _, _ in isARParcelSizingPresented = false }
+                onConfirm: { _ in isARParcelSizingPresented = false }
             )
         }
         .fullScreenCover(isPresented: $isARFitCheckPresented) {
             ARParcelFitCheckView(
+                unit: Self.debugDimensionsUnit,
                 availableCarriers: Self.debugCarrierPackages,
                 onCancel: { isARFitCheckPresented = false },
                 onConfirm: { _ in isARFitCheckPresented = false }
@@ -118,6 +120,10 @@ struct DebugPanelView: View {
     /// Hardcoded carriers + packages so the carrier flow can be exercised
     /// from the debug panel without going through the full shipping label
     /// flow.
+    private static var debugDimensionsUnit: String {
+        ServiceLocator.shippingSettingsService.dimensionUnit ?? "in"
+    }
+
     private static let debugCarrierPackages: [ParcelPresetCarrier] = [
         ParcelPresetCarrier(
             id: "usps",

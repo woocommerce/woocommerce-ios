@@ -18,17 +18,17 @@ struct ARParcelFitCheckView: View {
     private let onCancel: () -> Void
     private let onConfirm: (ParcelPresetPackage) -> Void
 
-    @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
     @State private var viewModel: ARParcelFitCheckViewModel
-
     @State private var isPlaced: Bool = false
     @State private var resetTrigger: Int = 0
 
-    init(availableCarriers: [ParcelPresetCarrier],
+    init(unit: String,
+         availableCarriers: [ParcelPresetCarrier],
          initialPackageID: String? = nil,
          onCancel: @escaping () -> Void,
          onConfirm: @escaping (ParcelPresetPackage) -> Void) {
         self._viewModel = State(initialValue: ARParcelFitCheckViewModel(
+            unit: unit,
             availableCarriers: availableCarriers,
             initialPackageID: initialPackageID
         ))
@@ -67,9 +67,6 @@ struct ARParcelFitCheckView: View {
             .animation(.easeInOut(duration: 0.2), value: isPlaced)
         }
         .background(Color.black)
-        .onAppear {
-            viewModel.unit = dimensionsUnit.isEmpty ? "in" : dimensionsUnit
-        }
     }
 
     private var topToolbar: some View {

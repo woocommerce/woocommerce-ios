@@ -83,6 +83,7 @@ struct WooCarrierPackagesSelectionView: View {
     }
 
     @ObservedObject private var viewModel: WooShippingAddPackageViewModel
+    @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
     private let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
     private let addingCustomPackageHandler: () -> Void
 
@@ -164,6 +165,7 @@ struct WooCarrierPackagesSelectionView: View {
         }
         .fullScreenCover(isPresented: $isARFitCheckPresented) {
             ARParcelFitCheckView(
+                unit: dimensionsUnit,
                 availableCarriers: viewModel.carrierPackages.map { carrier in
                     ParcelPresetCarrier(
                         id: carrier.id,

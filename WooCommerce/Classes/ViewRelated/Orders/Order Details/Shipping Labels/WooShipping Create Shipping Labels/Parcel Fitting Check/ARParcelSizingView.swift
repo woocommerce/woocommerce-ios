@@ -2,24 +2,17 @@ import SwiftUI
 
 struct ARParcelSizingView: View {
     private let onCancel: () -> Void
-    private let onConfirm: (_ length: Double, _ width: Double, _ height: Double) -> Void
+    private let onConfirm: (ParcelDimensions) -> Void
 
-    @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
     @State private var viewModel: ARParcelSizingViewModel
-
     @State private var isPlaced: Bool = false
     @State private var resetTrigger: Int = 0
 
-    init(initialLength: Double? = nil,
-         initialWidth: Double? = nil,
-         initialHeight: Double? = nil,
+    init(unit: String,
+         initial: ParcelDimensions = .unset,
          onCancel: @escaping () -> Void,
-         onConfirm: @escaping (_ length: Double, _ width: Double, _ height: Double) -> Void) {
-        self._viewModel = State(initialValue: ARParcelSizingViewModel(
-            initialLength: initialLength.map(Float.init),
-            initialWidth: initialWidth.map(Float.init),
-            initialHeight: initialHeight.map(Float.init)
-        ))
+         onConfirm: @escaping (ParcelDimensions) -> Void) {
+        self._viewModel = State(initialValue: ARParcelSizingViewModel(unit: unit, initial: initial))
         self.onCancel = onCancel
         self.onConfirm = onConfirm
     }
@@ -56,7 +49,6 @@ struct ARParcelSizingView: View {
         }
         .background(Color.black)
         .onAppear {
-            viewModel.unit = dimensionsUnit.isEmpty ? "in" : dimensionsUnit
             viewModel.resolveDefaults()
         }
     }
@@ -77,14 +69,11 @@ struct ARParcelSizingView: View {
     private var bottomControls: some View {
         if isPlaced {
             VStack(spacing: 14) {
-                slider(label: "Length", value: $viewModel.length)
-                slider(label: "Width", value: $viewModel.width)
-                slider(label: "Height", value: $viewModel.height)
+                slider(label: "Length", value: $viewModel.dimensions.length)
+                slider(label: "Width", value: $viewModel.dimensions.width)
+                slider(label: "Height", value: $viewModel.dimensions.height)
 
-                Button {
-                    let dims = viewModel.confirmedDimensions
-                    onConfirm(dims.length, dims.width, dims.height)
-                } label: {
+                Button { onConfirm(viewModel.confirmedDimensions) } label: {
                     Text("Use these dimensions")
                         .font(.headline)
                         .frame(maxWidth: .infinity)

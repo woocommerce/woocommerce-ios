@@ -99,15 +99,4 @@ public struct WatchDependencies: Codable, Equatable {
                   account: account)
     }
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(storeID, forKey: .storeID)
-        try container.encode(storeName, forKey: .storeName)
-        try container.encode(currencySettings, forKey: .currencySettings)
-        try container.encode(credentials, forKey: .credentials)
-        try container.encode(supportsJetpackVisitorStats, forKey: .supportsJetpackVisitorStats)
-        try container.encodeIfPresent(applicationPassword, forKey: .applicationPassword)
-        try container.encode(enablesCrashReports, forKey: .enablesCrashReports)
-        try container.encodeIfPresent(account, forKey: .account)
-    }
 }

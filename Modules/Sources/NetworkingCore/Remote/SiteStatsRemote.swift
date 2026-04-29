@@ -48,6 +48,7 @@ public class SiteStatsRemote: Remote {
                                             latestDateToInclude: Date,
                                             quantity: Int,
                                             completion: @escaping (Result<SiteVisitStats, Error>) -> Void) {
+        let path = "\(Path.jetpackStatsApp)/\(siteID)/\(Path.siteVisitStats)"
         let dateFormatter = DateFormatter.Stats.statsDayFormatter
         if let siteTimezone {
             dateFormatter.timeZone = siteTimezone
@@ -59,7 +60,7 @@ public class SiteStatsRemote: Remote {
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .get,
                                      siteID: siteID,
-                                     path: "\(Path.jetpackStatsApp)/\(siteID)/\(Path.siteVisitStats)",
+                                     path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
         let mapper = SiteVisitStatsMapper(siteID: siteID)

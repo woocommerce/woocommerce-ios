@@ -1,5 +1,5 @@
 import SwiftUI
-import enum Networking.SupportChatRole
+import enum Yosemite.SupportChatRole
 
 /// Shared layout constants for the support chat UI.
 ///

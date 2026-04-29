@@ -83,6 +83,10 @@ let package = Package(
             name: "PointOfSale",
             targets: ["PointOfSale"]
         ),
+        .library(
+            name: "WooAIAssistant",
+            targets: ["WooAIAssistant"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -267,6 +271,12 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(
+            name: "WooAIAssistant",
+            dependencies: [
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
+            ]
+        ),
+        .target(
             name: "NetworkingTestsResponsesFixtures",
             path: "Tests/NetworkingTestsResponsesFixtures",
             resources: [.process("Responses")]
@@ -346,6 +356,12 @@ let package = Package(
                 "Fakes",
                 "TestKit",
                 "WooFoundation"
+            ]
+        ),
+        .testTarget(
+            name: "WooAIAssistantTests",
+            dependencies: [
+                .target(name: "WooAIAssistant"),
             ]
         ),
         .binaryTarget(
@@ -439,6 +455,7 @@ enum XcodeSupport {
                     "WPMediaPicker",
                     "Yosemite",
                     "PointOfSale",
+                    "WooAIAssistant",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Algorithms", package: "swift-algorithms"),
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),

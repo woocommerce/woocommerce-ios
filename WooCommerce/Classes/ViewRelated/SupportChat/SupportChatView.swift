@@ -203,7 +203,7 @@ private extension SupportChatView {
     NavigationStack {
         SupportChatView(
             viewModel: SupportChatViewModel(
-                onContactHumanSupport: {}
+                onContactHumanSupport: { _ in }
             )
         )
         .navigationTitle("Chat with Support")

@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import Yosemite
+import enum Networking.SupportChatRole
 import protocol WooFoundation.Analytics
 
 /// View model for the AI support chat interface.
@@ -32,16 +33,11 @@ final class SupportChatViewModel {
     ///
     struct ChatMessage: Identifiable, Equatable {
         let id: UUID
-        let role: Role
+        let role: SupportChatRole
         let content: String
         let timestamp: Date
 
-        enum Role {
-            case user
-            case assistant
-        }
-
-        init(id: UUID = UUID(), role: Role, content: String, timestamp: Date = Date()) {
+        init(id: UUID = UUID(), role: SupportChatRole, content: String, timestamp: Date = Date()) {
             self.id = id
             self.role = role
             self.content = content
@@ -68,7 +64,7 @@ final class SupportChatViewModel {
     private let botSlug: String
     private let stores: StoresManager
     private let initialContext: [String: Any]?
-    private let onContactHumanSupport: () -> Void
+    private let onContactHumanSupport: (_ transcript: String) -> Void
 
     // MARK: - Initialization
 
@@ -76,7 +72,7 @@ final class SupportChatViewModel {
          stores: StoresManager = ServiceLocator.stores,
          initialContext: [String: Any]? = nil,
          chatID: Int64? = nil,
-         onContactHumanSupport: @escaping () -> Void) {
+         onContactHumanSupport: @escaping (_ transcript: String) -> Void) {
         self.botSlug = botSlug
         self.stores = stores
         self.initialContext = initialContext
@@ -95,7 +91,7 @@ final class SupportChatViewModel {
 
         Task {
             try? await Task.sleep(for: .seconds(1))
-            let greetingMessage = ChatMessage(role: .assistant, content: Localization.greetingMessage)
+            let greetingMessage = ChatMessage(role: .bot, content: Localization.greetingMessage)
             messages.append(greetingMessage)
             state = .idle
         }
@@ -143,7 +139,24 @@ final class SupportChatViewModel {
     }
 
     func contactHumanSupport() {
-        onContactHumanSupport()
+        onContactHumanSupport(generateTranscript())
+    }
+
+    private func generateTranscript() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .short
+
+        return messages.map { message in
+            let roleName: String
+            switch message.role {
+            case .user: roleName = "User"
+            case .bot: roleName = "Bot"
+            case .unknown: roleName = "Unknown"
+            }
+            let timestamp = dateFormatter.string(from: message.timestamp)
+            return "[\(timestamp)] \(roleName): \(message.content)"
+        }.joined(separator: "\n\n")
     }
 
     func dismissError() {
@@ -164,7 +177,7 @@ final class SupportChatViewModel {
 
             if let lastBotMessage = response.messages.last(where: { $0.role == .bot }) {
                 let assistantMessage = ChatMessage(
-                    role: .assistant,
+                    role: .bot,
                     content: lastBotMessage.content
                 )
                 messages.append(assistantMessage)

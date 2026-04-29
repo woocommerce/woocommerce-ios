@@ -251,9 +251,9 @@ final class StorePerformanceViewModel: ObservableObject {
         usageTracksEventEmitter.interacted()
     }
 
-    /// Tracks the chevron tap on the Performance card order type label.
-    func trackOrderTypeChevronTapped() {
-        analytics.track(event: .Dashboard.performanceCardOrderTypeChevronTapped())
+    /// Tracks the tap on the Performance card order date type selector label.
+    func trackOrderDateTypeSelectorTapped() {
+        analytics.track(event: .Dashboard.performanceCardOrderDateTypeSelectorTapped())
     }
 
     /// Updates the analytics order date type setting and refreshes dashboard stats.
@@ -263,7 +263,6 @@ final class StorePerformanceViewModel: ObservableObject {
     func didSelectOrderType(_ newOrderType: AnalyticsOrderDateType) async {
         guard !isUpdatingOrderType, orderType != newOrderType else { return }
         hasUserSelectedOrderType = true
-        analytics.track(event: .Dashboard.performanceCardOrderTypeSelected(newOrderType))
         isUpdatingOrderType = true
         orderTypeUpdateError = nil
         defer { isUpdatingOrderType = false }
@@ -275,13 +274,15 @@ final class StorePerformanceViewModel: ObservableObject {
                 stores.dispatch(action)
             }
             orderType = newOrderType
+            // Tracked only after a successful API update — matches Android, where the event fires on save success.
+            analytics.track(event: .Dashboard.performanceCardOrderDateTypeSelected(newOrderType))
             // Server-side filter changed: invalidate the cached timestamp so the next sync hits the network.
             DashboardTimestampStore.removeTimestamp(for: .performance, at: timeRange.timestampRange)
             await reloadDataIfNeeded(forceRefresh: true)
         } catch {
             DDLogError("⛔️ Error updating analytics order date type: \(error)")
             orderTypeUpdateError = error
-            analytics.track(event: .Dashboard.performanceCardOrderTypeUpdateFailed(error: error))
+            analytics.track(event: .Dashboard.performanceCardOrderDateTypeUpdateFailed(error: error))
         }
     }
 }

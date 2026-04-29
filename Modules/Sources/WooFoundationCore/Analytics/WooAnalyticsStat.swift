@@ -147,10 +147,10 @@ public enum WooAnalyticsStat: String {
     case dashboardStatsCustomRangeEditButtonTapped = "dashboard_stats_custom_range_edit_button_tapped"
     case dashboardStatsCustomRangeInteracted = "dashboard_stats_custom_range_interacted"
 
-    // MARK: Performance card order type bottom sheet
-    case dashboardMainStatsOrderTypeChevronTapped = "dashboard_main_stats_order_type_chevron_tapped"
-    case dashboardMainStatsOrderTypeSelected = "dashboard_main_stats_order_type_selected"
-    case dashboardMainStatsOrderTypeUpdateFailed = "dashboard_main_stats_order_type_update_failed"
+    // MARK: Performance card order date type bottom sheet
+    case dashboardStatsOrderDateTypeSelectorTapped = "dashboard_stats_order_date_type_selector_tapped"
+    case dashboardStatsOrderDateTypeSelected = "dashboard_stats_order_date_type_selected"
+    case dashboardStatsOrderDateTypeUpdateFailed = "dashboard_stats_order_date_type_update_failed"
 
     // MARK: Dashboard Stats v3/v4 Events
     //

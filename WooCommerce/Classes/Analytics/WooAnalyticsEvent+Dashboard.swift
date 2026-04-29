@@ -11,8 +11,14 @@ extension WooAnalyticsEvent {
             static let localTimezone = "local_timezone"
             static let storeTimezone = "store_timezone"
             static let siteConnectionType = "site_connection_type"
-            static let orderType = "order_type"
+            static let type = "type"
+            static let option = "option"
         }
+
+        /// Shared `type` value for all stats card events. Mirrors the Android
+        /// `trackEventForStatsCard` helper so the iOS and Android pipelines emit
+        /// the same `type` discriminator for dashboard stats events.
+        private static let statsCardType = "dashboard_stats"
 
         /// Tracked once per session when the site connection type is identified on the dashboard.
         /// - Parameter siteConnectionType: the type of connection for the site.
@@ -57,39 +63,30 @@ extension WooAnalyticsEvent {
                                                   Keys.localTimezone: localTimezoneText])
         }
 
-        // MARK: Order type bottom sheet
+        // MARK: Order date type bottom sheet
 
-        /// Tracked when the merchant taps the chevron next to the order type label on the Performance card.
-        static func performanceCardOrderTypeChevronTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .dashboardMainStatsOrderTypeChevronTapped, properties: [:])
+        /// Tracked when the merchant taps the order date type label / selector on the Performance card.
+        static func performanceCardOrderDateTypeSelectorTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardStatsOrderDateTypeSelectorTapped,
+                              properties: [Keys.type: statsCardType])
         }
 
-        /// Tracked when the merchant selects an order type from the bottom sheet.
-        /// - Parameter orderType: The selected order type.
-        static func performanceCardOrderTypeSelected(_ orderType: AnalyticsOrderDateType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .dashboardMainStatsOrderTypeSelected,
-                              properties: [Keys.orderType: orderType.analyticsValue])
+        /// Tracked when the merchant picks an order date type and the API update succeeds.
+        /// Only fire on successful save — Android emits this event on success only.
+        /// - Parameter orderType: The newly applied order date type.
+        static func performanceCardOrderDateTypeSelected(_ orderType: AnalyticsOrderDateType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardStatsOrderDateTypeSelected,
+                              properties: [Keys.type: statsCardType,
+                                           Keys.option: orderType.rawValue])
         }
 
-        /// Tracked when updating the order type setting fails.
+        /// Tracked when updating the order date type setting fails. iOS-only: not part of the
+        /// shared cross-platform plan, kept as a diagnostic counterpart to the success event.
         /// - Parameter error: The error reported by the data layer.
-        static func performanceCardOrderTypeUpdateFailed(error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .dashboardMainStatsOrderTypeUpdateFailed,
-                              properties: [:],
+        static func performanceCardOrderDateTypeUpdateFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardStatsOrderDateTypeUpdateFailed,
+                              properties: [Keys.type: statsCardType],
                               error: error)
-        }
-    }
-}
-
-private extension AnalyticsOrderDateType {
-    var analyticsValue: String {
-        switch self {
-        case .paid:
-            return "paid"
-        case .allOrders:
-            return "all_orders"
-        case .completed:
-            return "completed"
         }
     }
 }

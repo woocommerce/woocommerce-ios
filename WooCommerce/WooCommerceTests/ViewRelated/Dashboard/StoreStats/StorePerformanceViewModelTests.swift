@@ -537,7 +537,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_didSelectOrderType_tracks_selected_event_with_order_type_property() async throws {
+    func test_didSelectOrderType_when_save_succeeds_then_tracks_selected_event_with_type_and_option() async throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -574,23 +574,56 @@ final class StorePerformanceViewModelTests: XCTestCase {
         await viewModel.didSelectOrderType(.allOrders)
 
         // Then
-        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dashboard_main_stats_order_type_selected" }))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dashboard_stats_order_date_type_selected" }))
         let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
-        XCTAssertEqual(properties?["order_type"], "all_orders")
+        XCTAssertEqual(properties?["type"], "dashboard_stats")
+        XCTAssertEqual(properties?["option"], "date_created")
     }
 
     @MainActor
-    func test_trackOrderTypeChevronTapped_tracks_chevron_event() throws {
+    func test_didSelectOrderType_when_save_fails_then_does_not_track_selected_event() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case .updateAnalyticsOrderDateType(_, _, let onCompletion):
+                onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init(),
+                                                  analytics: analytics)
+
+        // When
+        await viewModel.didSelectOrderType(.completed)
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("dashboard_stats_order_date_type_selected"))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("dashboard_stats_order_date_type_update_failed"))
+    }
+
+    @MainActor
+    func test_trackOrderDateTypeSelectorTapped_tracks_selector_event_with_type_property() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init(), analytics: analytics)
 
         // When
-        viewModel.trackOrderTypeChevronTapped()
+        viewModel.trackOrderDateTypeSelectorTapped()
 
         // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains("dashboard_main_stats_order_type_chevron_tapped"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dashboard_stats_order_date_type_selector_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["type"], "dashboard_stats")
     }
 
     @MainActor

@@ -258,7 +258,7 @@ private extension StorePerformanceView {
                 .foregroundStyle(statsValueColor)
             Button {
                 viewModel.trackInteraction()
-                viewModel.trackOrderTypeChevronTapped()
+                viewModel.trackOrderDateTypeSelectorTapped()
                 showingOrderTypePicker = true
             } label: {
                 HStack(alignment: .center, spacing: Layout.orderTypeChevronSpacing) {

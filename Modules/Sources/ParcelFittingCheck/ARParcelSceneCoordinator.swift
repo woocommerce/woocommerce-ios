@@ -50,8 +50,8 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate {
         guard let cuboidEntity else { return }
         switch gesture.state {
         case .began:
-            let q = cuboidEntity.transform.rotation
-            rotationStartYaw = 2 * atan2(q.imag.y, q.real)
+            let currentRotation = cuboidEntity.transform.rotation
+            rotationStartYaw = 2 * atan2(currentRotation.imag.y, currentRotation.real)
         case .changed:
             let yaw = rotationStartYaw - Float(gesture.rotation)
             cuboidEntity.transform.rotation = simd_quatf(angle: yaw, axis: SIMD3(0, 1, 0))

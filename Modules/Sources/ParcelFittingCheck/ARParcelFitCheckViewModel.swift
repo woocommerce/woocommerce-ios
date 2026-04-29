@@ -34,19 +34,19 @@ final class ARParcelFitCheckViewModel {
     }
 
     var dimensionsLabel: String? {
-        guard let p = currentPackage else { return nil }
-        return "\(p.length) × \(p.width) × \(p.height) \(unit.symbol)"
+        guard let package = currentPackage else { return nil }
+        return "\(package.length) × \(package.width) × \(package.height) \(unit.symbol)"
     }
 
     var dimensionsInMeters: SIMD3<Float> {
         let defaults = Self.defaultDimensions(for: unit)
-        guard let p = currentPackage else {
+        guard let package = currentPackage else {
             return defaults.toMeters(unit: unit)
         }
         return ParcelDimensions(
-            length: Float(p.length) ?? defaults.length,
-            width: Float(p.width) ?? defaults.width,
-            height: Float(p.height) ?? defaults.height
+            length: Float(package.length) ?? defaults.length,
+            width: Float(package.width) ?? defaults.width,
+            height: Float(package.height) ?? defaults.height
         ).toMeters(unit: unit)
     }
 

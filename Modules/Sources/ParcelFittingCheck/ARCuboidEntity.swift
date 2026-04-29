@@ -43,9 +43,9 @@ private extension ARCuboidEntity {
         var edges: [EdgeSpec] = []
 
         for faceY in [UnitCube.bottomY, UnitCube.topY] {
-            let t = faceY == UnitCube.bottomY ? EdgeThickness.bottom : EdgeThickness.regular
+            let thickness = faceY == UnitCube.bottomY ? EdgeThickness.bottom : EdgeThickness.regular
             for depthZ in extents {
-                edges.append(EdgeSpec(center: SIMD3(0, faceY, depthZ), size: SIMD3(1, t, t)))
+                edges.append(EdgeSpec(center: SIMD3(0, faceY, depthZ), size: SIMD3(1, thickness, thickness)))
             }
         }
         for sideX in extents {
@@ -58,8 +58,8 @@ private extension ARCuboidEntity {
         }
         for sideX in extents {
             for faceY in [UnitCube.bottomY, UnitCube.topY] {
-                let t = faceY == UnitCube.bottomY ? EdgeThickness.bottom : EdgeThickness.regular
-                edges.append(EdgeSpec(center: SIMD3(sideX, faceY, 0), size: SIMD3(t, t, 1)))
+                let thickness = faceY == UnitCube.bottomY ? EdgeThickness.bottom : EdgeThickness.regular
+                edges.append(EdgeSpec(center: SIMD3(sideX, faceY, 0), size: SIMD3(thickness, thickness, 1)))
             }
         }
         return edges

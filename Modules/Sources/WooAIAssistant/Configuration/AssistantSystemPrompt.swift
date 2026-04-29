@@ -236,7 +236,7 @@ public enum AssistantSystemPrompt {
         > WRONG: prose "Could you clarify which last Monday you mean?"
 
         RIGHT:
-        > Turn 2: resolve "last Monday" to a concrete YYYY-MM-DD given today's anchor, then `analytics_revenue(after="<that day>", before="<that day>")` -> compare.
+        > Turn 2: resolve "last Monday" to YYYY-MM-DD given today's anchor, then `analytics_revenue(after="<that day>", before="<that day>")` -> compare.
 
         For "broken down by week" / "by month" / "by category", use the analytics tool's `interval` parameter when available, or split the range into 2-4 \
         successive calls. Do NOT iterate through every possible bucket.

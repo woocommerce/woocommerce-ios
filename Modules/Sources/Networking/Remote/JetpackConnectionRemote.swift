@@ -1,5 +1,7 @@
 import Foundation
+import enum NetworkingCore.JetpackConnectionError
 import struct NetworkingCore.JetpackConnectionProvisionMapper
+import enum NetworkingCore.WooConstants
 
 /// Handle API requests to the Jetpack REST API.
 ///
@@ -97,6 +99,30 @@ public final class JetpackConnectionRemote: Remote {
         let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: Path.jetpackConnectionData, availableAsRESTRequest: true)
         let mapper = JetpackConnectionDataMapper()
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Fetches the WP.com blog ID for the current Jetpack-connected site.
+    ///
+    public func fetchJetpackBlogID(siteID: Int64 = WooConstants.placeholderSiteID, completion: @escaping (Result<Int64, Error>) -> Void) {
+        fetchJetpackConnectionData(siteID: siteID) { result in
+            let mappedResult = result.flatMap { connectionData -> Result<Int64, Error> in
+                guard let blogID = connectionData.blogID else {
+                    return .failure(JetpackConnectionError.blogIDUnavailable)
+                }
+                return .success(blogID)
+            }
+            completion(mappedResult)
+        }
+    }
+
+    /// Fetches the WP.com blog ID for the current Jetpack-connected site.
+    ///
+    public func fetchJetpackBlogID(siteID: Int64 = WooConstants.placeholderSiteID) async throws -> Int64 {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchJetpackBlogID(siteID: siteID) { result in
+                continuation.resume(with: result)
+            }
+        }
     }
 
     /// Establishes a site-level connection between the site and WordPress.com using Jetpack.

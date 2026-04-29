@@ -1,6 +1,5 @@
 import Foundation
 import Networking
-import NetworkingCore
 import Storage
 import WooFoundation
 
@@ -391,15 +390,7 @@ private extension StatsStoreV4 {
     }
 
     func retrieveJetpackBlogID(onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        jetpackConnectionRemote.fetchJetpackConnectionData(siteID: NetworkingCore.WooConstants.placeholderSiteID) { result in
-            let mappedResult = result.flatMap { connectionData -> Result<Int64, Error> in
-                guard let blogID = connectionData.blogID else {
-                    return .failure(JetpackSiteStatsError.blogIDUnavailable)
-                }
-                return .success(blogID)
-            }
-            onCompletion(mappedResult)
-        }
+        jetpackConnectionRemote.fetchJetpackBlogID(completion: onCompletion)
     }
 
     static func convertSiteVisitStatsIntoSummary(siteID: Int64,
@@ -737,10 +728,6 @@ public extension StatsStoreV4 {
 //
 public enum StatsStoreV4Error: Error {
     case missingTopProducts
-}
-
-private enum JetpackSiteStatsError: Error {
-    case blogIDUnavailable
 }
 
 /// An error that occurs while fetching site visit stats.

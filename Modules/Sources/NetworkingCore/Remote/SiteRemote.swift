@@ -436,6 +436,7 @@ public enum JetpackConnectionError: Error, Equatable {
     case malformedURL
     case accountConnectionURLNotFound
     case invalidAuthorizationURL
+    case blogIDUnavailable
     case alreadyConnected
     case connectionRequestFailed(message: String)
 }

@@ -115,7 +115,7 @@ private struct TooltipOverlay: View {
             .padding()
         }
         .shadow(color: Color.secondary, radius: Layout.toolTipShadowCornerRadius)
-        .offset(offset ?? CGSize(width: 0, height: 0))
+        .offset(offset ?? CGSize.zero)
         .padding(insets: safeAreaInsets)
     }
 

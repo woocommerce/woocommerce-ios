@@ -26,7 +26,7 @@ public enum ToolResult: Sendable {
         public let uiStructured: UIStructured?
 
         public init(toolName: String,
-                    toolCallID: String,
+                    toolCallID: String = "",
                     structured: AnyCodableJSON,
                     uiStructured: UIStructured? = nil) {
             self.toolName = toolName
@@ -41,18 +41,15 @@ public enum ToolResult: Sendable {
         public let toolCallID: String
         public let kind: AssistantErrorKind
         public let reason: String
-        public let code: String?
 
         public init(toolName: String,
-                    toolCallID: String,
+                    toolCallID: String = "",
                     kind: AssistantErrorKind,
-                    reason: String,
-                    code: String? = nil) {
+                    reason: String) {
             self.toolName = toolName
             self.toolCallID = toolCallID
             self.kind = kind
             self.reason = reason
-            self.code = code
         }
     }
 
@@ -61,7 +58,7 @@ public enum ToolResult: Sendable {
         public let toolCallID: String
         public let reason: String
 
-        public init(toolName: String, toolCallID: String, reason: String) {
+        public init(toolName: String, toolCallID: String = "", reason: String) {
             self.toolName = toolName
             self.toolCallID = toolCallID
             self.reason = reason
@@ -73,10 +70,33 @@ public enum ToolResult: Sendable {
         public let toolCallID: String
         public let proposal: AnyCodableJSON
 
-        public init(toolName: String, toolCallID: String, proposal: AnyCodableJSON) {
+        public init(toolName: String, toolCallID: String = "", proposal: AnyCodableJSON) {
             self.toolName = toolName
             self.toolCallID = toolCallID
             self.proposal = proposal
+        }
+    }
+
+    func stamping(toolCallID: String) -> ToolResult {
+        switch self {
+        case .success(let s):
+            return .success(.init(toolName: s.toolName,
+                                  toolCallID: toolCallID,
+                                  structured: s.structured,
+                                  uiStructured: s.uiStructured))
+        case .failed(let f):
+            return .failed(.init(toolName: f.toolName,
+                                 toolCallID: toolCallID,
+                                 kind: f.kind,
+                                 reason: f.reason))
+        case .rejectedBySafety(let r):
+            return .rejectedBySafety(.init(toolName: r.toolName,
+                                           toolCallID: toolCallID,
+                                           reason: r.reason))
+        case .awaitingConfirmation(let p):
+            return .awaitingConfirmation(.init(toolName: p.toolName,
+                                               toolCallID: toolCallID,
+                                               proposal: p.proposal))
         }
     }
 }

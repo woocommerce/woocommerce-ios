@@ -7,20 +7,20 @@ struct HelpAndSupportViewModel {
     private let isMacCatalyst: Bool
     private let hasLoginSiteURL: Bool
     private let developerFFPanelEnabled: Bool
-    private let isAISupportChatEnabled: Bool
+    private let isAIChatEnabled: Bool
 
     init(isAuthenticated: Bool,
          isZendeskEnabled: Bool,
          isMacCatalyst: Bool,
          hasLoginSiteURL: Bool = false,
          developerFFPanelEnabled: Bool = false,
-         isAISupportChatEnabled: Bool = false) {
+         isAIChatEnabled: Bool = false) {
         self.isAuthenticated = isAuthenticated
         self.isZendeskEnabled = isZendeskEnabled
         self.isMacCatalyst = isMacCatalyst
         self.developerFFPanelEnabled = developerFFPanelEnabled
         self.hasLoginSiteURL = hasLoginSiteURL
-        self.isAISupportChatEnabled = isAISupportChatEnabled
+        self.isAIChatEnabled = isAIChatEnabled
     }
 
     func getRows() -> [HelpAndSupportRow] {
@@ -36,11 +36,12 @@ struct HelpAndSupportViewModel {
         if isAuthenticated {
             rows.append(.systemStatusReport)
         }
-        if isAuthenticated && isAISupportChatEnabled {
-            rows.append(.aiSupportChat)
-        }
         if !isAuthenticated && hasLoginSiteURL {
             rows.append(.siteCompatibility)
+        }
+        if isAuthenticated && isAIChatEnabled {
+            rows.append(.aiSupportChat)
+            rows.append(.chatHistory)
         }
         return rows
     }

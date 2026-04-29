@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import Yosemite
 @testable import Storage
+@testable import Networking
 
 struct POSCatalogSyncCoordinatorTests {
     private let mockSyncService: MockPOSCatalogFullSyncService
@@ -9,6 +10,7 @@ struct POSCatalogSyncCoordinatorTests {
     private let grdbManager: GRDBManager
     private let mockSiteSettings: MockSiteSpecificAppSettingsStoreMethods
     private let mockEligibilityChecker: MockPOSLocalCatalogEligibilityService
+    private let mockPendingParseResumer: MockBackgroundCatalogParseResuming
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
     private let sampleMaxAge: TimeInterval = 60 * 60
@@ -19,12 +21,14 @@ struct POSCatalogSyncCoordinatorTests {
         self.grdbManager = try GRDBManager()
         self.mockSiteSettings = MockSiteSpecificAppSettingsStoreMethods()
         self.mockEligibilityChecker = MockPOSLocalCatalogEligibilityService()
+        self.mockPendingParseResumer = MockBackgroundCatalogParseResuming()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
-            siteSettings: mockSiteSettings
+            siteSettings: mockSiteSettings,
+            pendingParseResumer: mockPendingParseResumer
         )
     }
 
@@ -1550,5 +1554,57 @@ extension POSCatalogSyncCoordinatorTests {
 extension POSCatalogSyncCoordinator {
     func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
         try await performFullSyncIfApplicable(for: siteID, maxAge: maxAge, regenerateCatalog: false, isBackgroundSync: false)
+    }
+}
+
+// MARK: - Pending Parse Resume Tests
+
+extension POSCatalogSyncCoordinatorTests {
+    @Test func performSmartSync_when_no_pending_background_download_then_does_not_call_parseAndPersistBackgroundDownload() async throws {
+        // Given: resumer has no pending staged file
+        mockPendingParseResumer.pendingResume = nil
+        await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
+
+        // Then: resumer was consulted but parse-and-persist was not invoked
+        #expect(mockPendingParseResumer.resumePendingParseIfNeededCallCount == 1)
+        #expect(mockSyncService.parseAndPersistBackgroundDownloadCallCount == 0)
+    }
+
+    @Test func performSmartSync_when_pending_background_download_then_calls_parseAndPersistBackgroundDownload_with_staged_file() async throws {
+        // Given: resumer has a pending staged file for this site
+        let stagedURL = URL(fileURLWithPath: "/tmp/pos-pending-\(sampleSiteID).json")
+        mockPendingParseResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID)
+        await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
+
+        // Then: parse-and-persist was invoked with the staged file and siteID
+        #expect(mockSyncService.parseAndPersistBackgroundDownloadCallCount == 1)
+        #expect(mockSyncService.lastBackgroundDownloadFileURL == stagedURL)
+        #expect(mockSyncService.lastBackgroundDownloadSiteID == sampleSiteID)
+    }
+
+    @Test func performSmartSync_when_parseAndPersistBackgroundDownload_throws_then_normal_sync_still_proceeds() async throws {
+        // Given: pending file exists but parse-and-persist will throw
+        let stagedURL = URL(fileURLWithPath: "/tmp/pos-pending-\(sampleSiteID).json")
+        mockPendingParseResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID)
+        let resumeError = NSError(domain: "parse", code: 1, userInfo: nil)
+        mockSyncService.parseAndPersistBackgroundDownloadResult = .failure(resumeError)
+        await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When: smart sync should not propagate the resume error — a fresh sync overwrites anyway
+        try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
+
+        // Then: parse-and-persist was attempted, error was surfaced by the mock, normal full sync still ran
+        #expect(mockSyncService.parseAndPersistBackgroundDownloadCallCount == 1)
+        #expect(mockPendingParseResumer.lastParseHandlerError as NSError? == resumeError)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 }

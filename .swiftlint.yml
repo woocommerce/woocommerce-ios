@@ -63,6 +63,9 @@ only_rules:
   # Prefer the shorthand `if let foo` form over `if let foo = foo`.
   - shorthand_optional_binding
 
+  # Prefer `0` over explicit type initializers like `CGFloat(0)`.
+  - prefer_zero_over_explicit_init
+
   # Prefer `someBool.toggle()` over `someBool = !someBool`.
   - toggle_bool
 

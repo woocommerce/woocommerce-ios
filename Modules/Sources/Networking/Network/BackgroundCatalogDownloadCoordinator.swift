@@ -11,11 +11,17 @@ public protocol BackgroundCatalogDownloadResuming {
 public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogDownloadResuming {
     private let backgroundDownloader: BackgroundDownloadProtocol
     private let fileManager: FileManager
+    private let pendingCatalogFileStore: PendingCatalogFileStore
+    private let backgroundDownloadStateStore: BackgroundDownloadStateStore
 
     public init(backgroundDownloader: BackgroundDownloadProtocol = BackgroundDownloadService(),
-                fileManager: FileManager = .default) {
+                fileManager: FileManager = .default,
+                pendingCatalogFileStore: PendingCatalogFileStore = .init(),
+                backgroundDownloadStateStore: BackgroundDownloadStateStore = .init()) {
         self.backgroundDownloader = backgroundDownloader
         self.fileManager = fileManager
+        self.pendingCatalogFileStore = pendingCatalogFileStore
+        self.backgroundDownloadStateStore = backgroundDownloadStateStore
     }
 
     /// Handles a background URLSession wake event.
@@ -36,7 +42,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogDownloadResu
         DDLogInfo("🟣 Handling background session event for: \(sessionIdentifier)")
 
         // Load the saved download state to know which site this is for
-        guard let state = BackgroundDownloadState.load(for: sessionIdentifier) else {
+        guard let state = backgroundDownloadStateStore.load(for: sessionIdentifier) else {
             DDLogError("⛔️ No saved state found for background download session: \(sessionIdentifier)")
             completionHandler()
             return
@@ -47,7 +53,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogDownloadResu
                                                                           allowCellular: true,
                                                                           completionHandler: completionHandler) else {
             DDLogError("⛔️ Failed to reconnect to background download session")
-            BackgroundDownloadState.clear()
+            backgroundDownloadStateStore.clear()
             return
         }
 
@@ -58,14 +64,14 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogDownloadResu
         let stagedURL: URL
         do {
             stagedURL = try stageDownloadedFile(fileURL, siteID: state.siteID)
-            PendingCatalogFile.save(.init(filePath: stagedURL.path, siteID: state.siteID))
+            pendingCatalogFileStore.save(.init(filePath: stagedURL.path, siteID: state.siteID))
             DDLogInfo("🟣 Staged background catalog at: \(stagedURL.path)")
         } catch {
             DDLogError("⛔️ Failed to stage background download: \(error). Falling back to original URL.")
             // If staging fails we still attempt parse from the temp URL
             // Result ignored: no staged file was written, so there's nothing to clean up either way.
             _ = await runParse(url: fileURL, siteID: state.siteID, parseHandler: parseHandler)
-            BackgroundDownloadState.clear()
+            backgroundDownloadStateStore.clear()
             return
         }
 
@@ -74,10 +80,10 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogDownloadResu
 
         if success {
             try? fileManager.removeItem(at: stagedURL)
-            PendingCatalogFile.clear()
+            pendingCatalogFileStore.clear()
         }
         // On failure: leave the staged file + pending record so the next foreground entry retries.
-        BackgroundDownloadState.clear()
+        backgroundDownloadStateStore.clear()
     }
 
     /// Retries a previously-staged catalog file from disk, if one exists.
@@ -86,7 +92,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogDownloadResu
     public func resumePendingDownloadIfNeeded(
         parseHandler: @escaping (URL, Int64) async throws -> Void
     ) async {
-        guard let pending = PendingCatalogFile.load() else {
+        guard let pending = pendingCatalogFileStore.load() else {
             return
         }
 
@@ -94,7 +100,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogDownloadResu
 
         guard fileManager.fileExists(atPath: pending.filePath) else {
             DDLogWarn("⚠️ Pending catalog file missing at \(pending.filePath); clearing record")
-            PendingCatalogFile.clear()
+            pendingCatalogFileStore.clear()
             return
         }
 
@@ -103,7 +109,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogDownloadResu
 
         if success {
             try? fileManager.removeItem(at: fileURL)
-            PendingCatalogFile.clear()
+            pendingCatalogFileStore.clear()
         }
         // On failure: leave file + record in place for the next foreground entry.
     }

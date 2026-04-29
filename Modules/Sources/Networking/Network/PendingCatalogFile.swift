@@ -14,30 +14,36 @@ public struct PendingCatalogFile: Codable {
         self.filePath = filePath
         self.siteID = siteID
     }
+}
 
-    private static let userDefaultsKey = "com.woocommerce.pos.pendingCatalogFile"
-    private static var userDefaults: UserDefaults = .standard
+/// Persists `PendingCatalogFile` to `UserDefaults`.
+///
+/// `key` is the seam for site-scoped storage: callers can pass a site-suffixed key
+/// (e.g. `"com.woocommerce.pos.pendingCatalogFile.\(siteID)"`)
+public struct PendingCatalogFileStore {
+    private let userDefaults: UserDefaults
+    private let key: String
 
-    /// Configure UserDefaults instance for testing.
-    // periphery:ignore - required by tests
-    public static func configure(userDefaults: UserDefaults) {
+    public init(userDefaults: UserDefaults = .standard,
+                key: String = "com.woocommerce.pos.pendingCatalogFile") {
         self.userDefaults = userDefaults
+        self.key = key
     }
 
-    public static func save(_ pending: PendingCatalogFile) {
+    public func save(_ pending: PendingCatalogFile) {
         if let encoded = try? JSONEncoder().encode(pending) {
-            userDefaults.set(encoded, forKey: userDefaultsKey)
+            userDefaults.set(encoded, forKey: key)
         }
     }
 
-    public static func load() -> PendingCatalogFile? {
-        guard let data = userDefaults.data(forKey: userDefaultsKey) else {
+    public func load() -> PendingCatalogFile? {
+        guard let data = userDefaults.data(forKey: key) else {
             return nil
         }
         return try? JSONDecoder().decode(PendingCatalogFile.self, from: data)
     }
 
-    public static func clear() {
-        userDefaults.removeObject(forKey: userDefaultsKey)
+    public func clear() {
+        userDefaults.removeObject(forKey: key)
     }
 }

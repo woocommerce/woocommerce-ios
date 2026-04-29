@@ -2,16 +2,15 @@ import Foundation
 import Testing
 @testable import Networking
 
-@Suite(.serialized)
 struct BackgroundCatalogDownloadCoordinatorTests {
-    private let testDefaults: UserDefaults
+    private let pendingFileStore: PendingCatalogFileStore
+    private let downloadStateStore: BackgroundDownloadStateStore
     private let fileManager: FileManager
 
     init() {
-        // Create isolated UserDefaults suite for this test
-        testDefaults = UserDefaults(suiteName: "BackgroundCatalogDownloadCoordinatorTests.\(UUID().uuidString)")!
-        BackgroundDownloadState.configure(userDefaults: testDefaults)
-        PendingCatalogFile.configure(userDefaults: testDefaults)
+        let testDefaults = UserDefaults(suiteName: "BackgroundCatalogDownloadCoordinatorTests.\(UUID().uuidString)")!
+        pendingFileStore = PendingCatalogFileStore(userDefaults: testDefaults)
+        downloadStateStore = BackgroundDownloadStateStore(userDefaults: testDefaults)
         fileManager = .default
     }
 
@@ -23,11 +22,11 @@ struct BackgroundCatalogDownloadCoordinatorTests {
             sessionIdentifier: sessionIdentifier,
             siteID: siteID
         )
-        BackgroundDownloadState.save(state)
+        downloadStateStore.save(state)
 
         let mockDownloader = MockBackgroundDownloader()
         mockDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/test.json")
-        let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: mockDownloader)
+        let coordinator = makeCoordinator(downloader: mockDownloader)
 
         var parsedSiteID: Int64?
         var parsedFileURL: URL?
@@ -51,7 +50,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Given
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.999"
         let mockDownloader = MockBackgroundDownloader()
-        let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: mockDownloader)
+        let coordinator = makeCoordinator(downloader: mockDownloader)
 
         var completionCalled = false
         var parseCalled = false
@@ -79,11 +78,11 @@ struct BackgroundCatalogDownloadCoordinatorTests {
             sessionIdentifier: sessionIdentifier,
             siteID: 111
         )
-        BackgroundDownloadState.save(state)
+        downloadStateStore.save(state)
 
         let mockDownloader = MockBackgroundDownloader()
         mockDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/test.json")
-        let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: mockDownloader)
+        let coordinator = makeCoordinator(downloader: mockDownloader)
 
         // When
         await coordinator.handleBackgroundSessionEvent(
@@ -93,7 +92,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         )
 
         // Then - state should be cleared
-        let loadedState = BackgroundDownloadState.load(for: sessionIdentifier)
+        let loadedState = downloadStateStore.load(for: sessionIdentifier)
         #expect(loadedState == nil)
     }
 
@@ -104,11 +103,11 @@ struct BackgroundCatalogDownloadCoordinatorTests {
             sessionIdentifier: sessionIdentifier,
             siteID: 222
         )
-        BackgroundDownloadState.save(state)
+        downloadStateStore.save(state)
 
         let mockDownloader = MockBackgroundDownloader()
         mockDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/catalog.json")
-        let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: mockDownloader)
+        let coordinator = makeCoordinator(downloader: mockDownloader)
 
         // When
         await coordinator.handleBackgroundSessionEvent(
@@ -126,12 +125,12 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Given
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.ok"
         let siteID: Int64 = 111
-        BackgroundDownloadState.save(.init(sessionIdentifier: sessionIdentifier, siteID: siteID))
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: siteID))
 
         let downloadedFile = try makeDownloadedFile(named: "catalog.json")
         let mockDownloader = MockBackgroundDownloader()
         mockDownloader.mockFileURL = downloadedFile
-        let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: mockDownloader)
+        let coordinator = makeCoordinator(downloader: mockDownloader)
 
         var stagedPath: String?
 
@@ -145,8 +144,8 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         )
 
         // Then
-        #expect(BackgroundDownloadState.load(for: sessionIdentifier) == nil)
-        #expect(PendingCatalogFile.load() == nil)
+        #expect(downloadStateStore.load(for: sessionIdentifier) == nil)
+        #expect(pendingFileStore.load() == nil)
         if let stagedPath {
             #expect(fileManager.fileExists(atPath: stagedPath) == false)
         }
@@ -156,12 +155,12 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Given
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.fail"
         let siteID: Int64 = 222
-        BackgroundDownloadState.save(.init(sessionIdentifier: sessionIdentifier, siteID: siteID))
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: siteID))
 
         let downloadedFile = try makeDownloadedFile(named: "catalog.json")
         let mockDownloader = MockBackgroundDownloader()
         mockDownloader.mockFileURL = downloadedFile
-        let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: mockDownloader)
+        let coordinator = makeCoordinator(downloader: mockDownloader)
 
         struct ParseError: Error {}
         var stagedPath: String?
@@ -177,8 +176,8 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         )
 
         // Then
-        #expect(BackgroundDownloadState.load(for: sessionIdentifier) == nil) // session state always cleared
-        let pending = try #require(PendingCatalogFile.load())
+        #expect(downloadStateStore.load(for: sessionIdentifier) == nil) // session state always cleared
+        let pending = try #require(pendingFileStore.load())
         #expect(pending.siteID == siteID)
         let staged = try #require(stagedPath)
         #expect(pending.filePath == staged)
@@ -190,8 +189,8 @@ struct BackgroundCatalogDownloadCoordinatorTests {
 
     @Test func resumePendingDownloadIfNeeded_when_no_pending_record_then_does_nothing() async {
         // Given
-        PendingCatalogFile.clear()
-        let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: MockBackgroundDownloader())
+        pendingFileStore.clear()
+        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
 
         var parseCalled = false
 
@@ -206,8 +205,8 @@ struct BackgroundCatalogDownloadCoordinatorTests {
 
     @Test func resumePendingDownloadIfNeeded_when_pending_record_but_file_missing_then_clears_record() async {
         // Given
-        PendingCatalogFile.save(.init(filePath: "/does/not/exist/catalog.json", siteID: 333))
-        let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: MockBackgroundDownloader())
+        pendingFileStore.save(.init(filePath: "/does/not/exist/catalog.json", siteID: 333))
+        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
 
         var parseCalled = false
 
@@ -218,14 +217,14 @@ struct BackgroundCatalogDownloadCoordinatorTests {
 
         // Then
         #expect(parseCalled == false)
-        #expect(PendingCatalogFile.load() == nil)
+        #expect(pendingFileStore.load() == nil)
     }
 
     @Test func resumePendingDownloadIfNeeded_when_file_exists_and_parse_succeeds_then_deletes_file_and_clears_record() async throws {
         // Given
         let downloadedFile = try makeDownloadedFile(named: "pending.json")
-        PendingCatalogFile.save(.init(filePath: downloadedFile.path, siteID: 444))
-        let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: MockBackgroundDownloader())
+        pendingFileStore.save(.init(filePath: downloadedFile.path, siteID: 444))
+        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
 
         var parsedSiteID: Int64?
 
@@ -237,15 +236,15 @@ struct BackgroundCatalogDownloadCoordinatorTests {
 
         // Then
         #expect(parsedSiteID == 444)
-        #expect(PendingCatalogFile.load() == nil)
+        #expect(pendingFileStore.load() == nil)
         #expect(fileManager.fileExists(atPath: downloadedFile.path) == false)
     }
 
     @Test func resumePendingDownloadIfNeeded_when_parse_throws_then_leaves_file_for_next_retry() async throws {
         // Given
         let downloadedFile = try makeDownloadedFile(named: "pending.json")
-        PendingCatalogFile.save(.init(filePath: downloadedFile.path, siteID: 555))
-        let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: MockBackgroundDownloader())
+        pendingFileStore.save(.init(filePath: downloadedFile.path, siteID: 555))
+        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
 
         struct ParseError: Error {}
 
@@ -255,7 +254,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         }
 
         // Then
-        let pending = try #require(PendingCatalogFile.load())
+        let pending = try #require(pendingFileStore.load())
         #expect(pending.filePath == downloadedFile.path)
         #expect(fileManager.fileExists(atPath: downloadedFile.path) == true)
 
@@ -263,16 +262,15 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         try? fileManager.removeItem(at: downloadedFile)
     }
 
-    // MARK: - PendingCatalogFile round-trips (nested to share the serialized trait)
+    // MARK: - PendingCatalogFile round-trips
 
     @Suite
     struct PendingCatalogFileStorage {
-        private let testDefaults: UserDefaults
+        private let store: PendingCatalogFileStore
 
         init() {
-            testDefaults = UserDefaults(suiteName: "PendingCatalogFileStorage.\(UUID().uuidString)")!
-            PendingCatalogFile.configure(userDefaults: testDefaults)
-            PendingCatalogFile.clear()
+            let testDefaults = UserDefaults(suiteName: "PendingCatalogFileStorage.\(UUID().uuidString)")!
+            store = PendingCatalogFileStore(userDefaults: testDefaults)
         }
 
         @Test func save_then_load_round_trips_the_value() {
@@ -280,8 +278,8 @@ struct BackgroundCatalogDownloadCoordinatorTests {
             let pending = PendingCatalogFile(filePath: "/tmp/catalog.json", siteID: 42)
 
             // When
-            PendingCatalogFile.save(pending)
-            let loaded = PendingCatalogFile.load()
+            store.save(pending)
+            let loaded = store.load()
 
             // Then
             #expect(loaded?.filePath == "/tmp/catalog.json")
@@ -290,23 +288,31 @@ struct BackgroundCatalogDownloadCoordinatorTests {
 
         @Test func clear_removes_the_stored_value() {
             // Given
-            PendingCatalogFile.save(.init(filePath: "/tmp/x", siteID: 1))
+            store.save(.init(filePath: "/tmp/x", siteID: 1))
 
             // When
-            PendingCatalogFile.clear()
+            store.clear()
 
             // Then
-            #expect(PendingCatalogFile.load() == nil)
+            #expect(store.load() == nil)
         }
 
         @Test func load_returns_nil_when_nothing_stored() {
-            // Given cleared in init
+            // Given fresh isolated suite
             // Then
-            #expect(PendingCatalogFile.load() == nil)
+            #expect(store.load() == nil)
         }
     }
 
     // MARK: - Helpers
+
+    private func makeCoordinator(downloader: BackgroundDownloadProtocol) -> BackgroundCatalogDownloadCoordinator {
+        BackgroundCatalogDownloadCoordinator(
+            backgroundDownloader: downloader,
+            pendingCatalogFileStore: pendingFileStore,
+            backgroundDownloadStateStore: downloadStateStore
+        )
+    }
 
     private func makeDownloadedFile(named name: String) throws -> URL {
         // Simulate iOS's ephemeral temp download location — outside Caches/POSPendingCatalog,

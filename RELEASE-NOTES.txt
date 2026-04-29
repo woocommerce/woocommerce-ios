@@ -12,6 +12,7 @@
 - [*] POS: update prices on checkout if they've changed since last catalog sync [https://github.com/woocommerce/woocommerce-ios/pull/16921]
 - [*] Update Tap to Pay requirement to iOS 18.0.1 [https://github.com/woocommerce/woocommerce-ios/pull/16914]
 - [*] Add clear button to search fields [https://github.com/woocommerce/woocommerce-ios/pull/16913]
+- [*] Fix localization issue in watch app [https://github.com/woocommerce/woocommerce-ios/pull/16968]
 - [Internal] Tag CIAB support tickets with commerce_in_a_box for proper routing [https://github.com/woocommerce/woocommerce-ios/pull/16910]
 - [Internal] Fix analytics crash caused by concurrent access to TracksService [https://github.com/woocommerce/woocommerce-ios/pull/16944]
 

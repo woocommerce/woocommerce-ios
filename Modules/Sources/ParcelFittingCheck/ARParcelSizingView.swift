@@ -9,7 +9,7 @@ struct ARParcelSizingView: View {
     @State private var resetTrigger: Int = 0
 
     init(unit: UnitLength,
-         initial: ParcelDimensions = .unset,
+         initial: ParcelDimensions? = nil,
          onCancel: @escaping () -> Void,
          onConfirm: @escaping (ParcelDimensions) -> Void) {
         self._viewModel = State(initialValue: ARParcelSizingViewModel(unit: unit, initial: initial))
@@ -48,9 +48,6 @@ struct ARParcelSizingView: View {
             .animation(.easeInOut(duration: 0.2), value: isPlaced)
         }
         .background(Color.black)
-        .onAppear {
-            viewModel.resolveDefaults()
-        }
     }
 
     private var topToolbar: some View {
@@ -79,7 +76,7 @@ struct ARParcelSizingView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                         .background(.blue, in: Capsule())
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.white)
                 }
             }
             .padding(16)

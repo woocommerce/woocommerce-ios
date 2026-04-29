@@ -39,13 +39,20 @@ final class ARParcelFitCheckViewModel {
     }
 
     var dimensionsInMeters: SIMD3<Float> {
+        let defaults = Self.defaultDimensions(for: unit)
         guard let p = currentPackage else {
-            return ParcelDimensions(length: 20, width: 15, height: 10).toMeters(unit: .centimeters)
+            return defaults.toMeters(unit: unit)
         }
         return ParcelDimensions(
-            length: Float(p.length) ?? 20,
-            width: Float(p.width) ?? 15,
-            height: Float(p.height) ?? 10
+            length: Float(p.length) ?? defaults.length,
+            width: Float(p.width) ?? defaults.width,
+            height: Float(p.height) ?? defaults.height
         ).toMeters(unit: unit)
+    }
+
+    private static func defaultDimensions(for unit: UnitLength) -> ParcelDimensions {
+        unit == .inches
+            ? ParcelDimensions(length: 8.0, width: 6.0, height: 4.0)
+            : ParcelDimensions(length: 20.0, width: 15.0, height: 10.0)
     }
 }

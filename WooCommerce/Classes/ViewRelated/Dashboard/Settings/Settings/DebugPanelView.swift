@@ -8,7 +8,6 @@ struct DebugPanelView: View {
 
     @State private var minimumWooVersionOverride: String = UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications] ?? ""
 
-
     var body: some View {
         List {
             Button {

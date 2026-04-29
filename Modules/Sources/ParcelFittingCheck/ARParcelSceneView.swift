@@ -8,7 +8,10 @@ struct ARParcelSceneView: UIViewRepresentable {
     let resetTrigger: Int
 
     func makeCoordinator() -> ARParcelSceneCoordinator {
-        ARParcelSceneCoordinator(isPlaced: $isPlaced)
+        let coordinator = ARParcelSceneCoordinator()
+        coordinator.onPlaced = { [self] in isPlaced = true }
+        coordinator.onRemoved = { [self] in isPlaced = false }
+        return coordinator
     }
 
     func makeUIView(context: Context) -> ARView {
@@ -75,8 +78,6 @@ private extension ARParcelSceneView {
         coordinator.rotationGesture = rotation
     }
 }
-
-// MARK: - Shared chrome
 
 struct ARCuboidCircleIconButton: View {
     let systemName: String

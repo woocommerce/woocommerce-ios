@@ -4,10 +4,13 @@ import SwiftUI
 
 final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate {
     weak var arView: ARView?
-    @Binding var isPlaced: Bool
     var dimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
     var lastResetTrigger: Int = 0
 
+    var onPlaced: (() -> Void)?
+    var onRemoved: (() -> Void)?
+
+    private var placed = false
     private var cuboidAnchor: AnchorEntity?
     private var cuboidEntity: ModelEntity?
     private var installedGestures: [EntityGestureRecognizer] = []
@@ -16,21 +19,15 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate {
     var rotationGesture: UIRotationGestureRecognizer?
     private var rotationStartYaw: Float = 0
 
-    init(isPlaced: Binding<Bool>) {
-        self._isPlaced = isPlaced
-    }
-
     @objc func handleTap(_ gesture: UITapGestureRecognizer) {
-        guard !isPlaced, let arView else { return }
+        guard !placed, let arView else { return }
         let location = gesture.location(in: arView)
         guard let world = raycastWorldPosition(from: location, in: arView) else { return }
 
         placeCuboid(at: world)
         installGestures()
-        // Deferred — writing @Binding during updateUIView is silently dropped.
-        DispatchQueue.main.async { [weak self] in
-            self?.isPlaced = true
-        }
+        placed = true
+        onPlaced?()
     }
 
     func removeCuboid() {
@@ -40,9 +37,8 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate {
         }
         cuboidAnchor = nil
         cuboidEntity = nil
-        DispatchQueue.main.async { [weak self] in
-            self?.isPlaced = false
-        }
+        placed = false
+        onRemoved?()
     }
 
     func updateDimensions(_ dims: SIMD3<Float>) {

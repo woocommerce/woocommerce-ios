@@ -85,7 +85,7 @@ struct ARParcelFitCheckView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                         .background(.blue, in: Capsule())
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.white)
                 }
                 .disabled(viewModel.currentPackage == nil)
             }

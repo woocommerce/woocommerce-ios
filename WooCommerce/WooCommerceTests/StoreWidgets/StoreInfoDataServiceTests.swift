@@ -1,6 +1,5 @@
 import XCTest
 @testable import Networking
-@testable import NetworkingCore
 @testable import WooCommerce
 
 final class StoreInfoDataServiceTests: XCTestCase {
@@ -8,11 +7,11 @@ final class StoreInfoDataServiceTests: XCTestCase {
     func test_fetchTodayStats_when_wpcom_visitors_are_available_then_returns_stats_with_visitors() async throws {
         // Given
         let orderStats = makeOrderStats(totalOrders: 4, grossRevenue: 120)
-        let siteSummaryStats = SiteSummaryStats(siteID: 123,
-                                                date: "2026-04-28",
-                                                period: .day,
-                                                visitors: 10,
-                                                views: 30)
+        let siteSummaryStats = Networking.SiteSummaryStats(siteID: 123,
+                                                           date: "2026-04-28",
+                                                           period: .day,
+                                                           visitors: 10,
+                                                           views: 30)
         let service = StoreInfoDataService(visitorStatsSource: .wpcomSummary,
                                            fetchTodaysRevenueAndOrders: { _ in orderStats },
                                            fetchTodaysWPComVisitors: { _ in siteSummaryStats },
@@ -27,19 +26,19 @@ final class StoreInfoDataServiceTests: XCTestCase {
         // Then
         XCTAssertEqual(stats.revenue, 120)
         XCTAssertEqual(stats.totalOrders, 4)
-        XCTAssertEqual(stats.totalVisitors, 10)
-        XCTAssertEqual(stats.conversion, 0.4)
+        XCTAssertEqual(stats.totalVisitors, Optional(10))
+        XCTAssertEqual(stats.conversion, Optional(0.4))
     }
 
     func test_fetchTodayStats_when_jetpack_visitors_are_available_then_returns_stats_with_visitors() async throws {
         // Given
         let orderStats = makeOrderStats(totalOrders: 5, grossRevenue: 200)
-        let siteVisitStats = SiteVisitStats(siteID: 123,
-                                            date: "2026-04-28",
-                                            granularity: .day,
-                                            items: [
-                                                .init(period: "2026-04-28", visitors: 8, views: 21),
-                                            ])
+        let siteVisitStats = Networking.SiteVisitStats(siteID: 123,
+                                                       date: "2026-04-28",
+                                                       granularity: .day,
+                                                       items: [
+                                                           .init(period: "2026-04-28", visitors: 8, views: 21),
+                                                       ])
         let service = StoreInfoDataService(visitorStatsSource: .jetpackSiteVisits,
                                            fetchTodaysRevenueAndOrders: { _ in orderStats },
                                            fetchTodaysWPComVisitors: { _ in
@@ -54,8 +53,8 @@ final class StoreInfoDataServiceTests: XCTestCase {
         // Then
         XCTAssertEqual(stats.revenue, 200)
         XCTAssertEqual(stats.totalOrders, 5)
-        XCTAssertEqual(stats.totalVisitors, 8)
-        XCTAssertEqual(stats.conversion, 0.625)
+        XCTAssertEqual(stats.totalVisitors, Optional(8))
+        XCTAssertEqual(stats.conversion, Optional(0.625))
     }
 
     func test_fetchTodayStats_when_jetpack_visitor_fetch_fails_then_falls_back_to_revenue_and_orders_only() async throws {
@@ -108,20 +107,20 @@ final class StoreInfoDataServiceTests: XCTestCase {
 
 private extension StoreInfoDataServiceTests {
 
-    func makeOrderStats(totalOrders: Int, grossRevenue: Decimal) -> OrderStatsV4 {
-        let totals = OrderStatsV4Totals(totalOrders: totalOrders,
-                                        totalItemsSold: totalOrders,
-                                        grossRevenue: grossRevenue,
-                                        netRevenue: grossRevenue,
-                                        averageOrderValue: grossRevenue)
-        let interval = OrderStatsV4Interval(interval: "2026-04-28",
-                                            dateStart: "2026-04-28T00:00:00",
-                                            dateEnd: "2026-04-28T23:59:59",
-                                            subtotals: totals)
-        return OrderStatsV4(siteID: 123,
-                            granularity: .hourly,
-                            totals: totals,
-                            intervals: [interval])
+    func makeOrderStats(totalOrders: Int, grossRevenue: Decimal) -> Networking.OrderStatsV4 {
+        let totals = Networking.OrderStatsV4Totals(totalOrders: totalOrders,
+                                                   totalItemsSold: totalOrders,
+                                                   grossRevenue: grossRevenue,
+                                                   netRevenue: grossRevenue,
+                                                   averageOrderValue: grossRevenue)
+        let interval = Networking.OrderStatsV4Interval(interval: "2026-04-28",
+                                                       dateStart: "2026-04-28T00:00:00",
+                                                       dateEnd: "2026-04-28T23:59:59",
+                                                       subtotals: totals)
+        return Networking.OrderStatsV4(siteID: 123,
+                                       granularity: .hourly,
+                                       totals: totals,
+                                       intervals: [interval])
     }
 
     enum TestError: Error {

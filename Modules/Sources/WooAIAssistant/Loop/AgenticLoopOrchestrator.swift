@@ -496,29 +496,28 @@ actor AgenticLoopOrchestrator {
         let thisTurn = Array(messages[(lastUserIdx + 1)...])
         guard !thisTurn.isEmpty else { return }
 
+        // Pair tool results to their originating call by `toolCallID` so parallel
+        // calls in one assistant message don't all peek at the same next message.
+        var toolResultByID: [String: String] = [:]
+        for msg in thisTurn where msg.role == .tool {
+            if let id = msg.toolCallID, let content = msg.content {
+                toolResultByID[id] = content
+            }
+        }
+
         var callCountByName: [String: Int] = [:]
         var emptyListTools: Set<String> = []
-        for (i, msg) in thisTurn.enumerated() {
-            guard msg.role == .assistant, let calls = msg.toolCalls else { continue }
+        for msg in thisTurn where msg.role == .assistant {
+            guard let calls = msg.toolCalls else { continue }
             for call in calls {
                 let name = call.function.name
                 callCountByName[name, default: 0] += 1
-                if i + 1 < thisTurn.count {
-                    let next = thisTurn[i + 1]
-                    let isListLikeTool = name.hasSuffix("_list") || name.hasSuffix("_search")
-                    if next.role == .tool,
-                       let content = next.content,
-                       let data = content.data(using: .utf8),
-                       isListLikeTool {
-                        do {
-                            let parsed = try JSONSerialization.jsonObject(with: data)
-                            if let array = parsed as? [Any], array.isEmpty {
-                                emptyListTools.insert(name)
-                            }
-                        } catch {
-                            DDLogError("AgenticLoopOrchestrator empty-list nudge parse failed: \(error)")
-                        }
-                    }
+                let isListLikeTool = name.hasSuffix("_list") || name.hasSuffix("_search")
+                guard isListLikeTool,
+                      let content = toolResultByID[call.id],
+                      let data = content.data(using: .utf8) else { continue }
+                if Self.toolPayloadIsEmpty(data) {
+                    emptyListTools.insert(name)
                 }
             }
         }
@@ -571,6 +570,24 @@ actor AgenticLoopOrchestrator {
     }
 
     // MARK: - Error JSON encoding
+
+    // Recognizes the canonical "no matches" signal for our list/search tools
+    // (`{"count": 0, "ids": []}` and friends) plus the legacy top-level `[]`
+    // shape. Used by the empty-list nudge to avoid the model retrying with
+    // capitalisation / spelling variants.
+    static func toolPayloadIsEmpty(_ data: Data) -> Bool {
+        do {
+            let parsed = try JSONSerialization.jsonObject(with: data)
+            if let array = parsed as? [Any] { return array.isEmpty }
+            if let obj = parsed as? [String: Any], let count = obj["count"] as? Int, count == 0 {
+                return true
+            }
+            return false
+        } catch {
+            DDLogError("AgenticLoopOrchestrator toolPayloadIsEmpty parse failed: \(error)")
+            return false
+        }
+    }
 
     private static func payloadIsErrorOrCancelled(_ payload: String) -> Bool {
         guard let data = payload.data(using: .utf8) else { return false }

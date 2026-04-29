@@ -140,6 +140,96 @@ struct LoopAdditionalEdgeCasesTests {
     }
 
     @Test
+    func test_emptyList_nudge_when_summary_object_carries_count_zero_then_nudge_fires() async throws {
+        // Given a list-shaped summary tool whose canonical empty result is
+        // `{"count": 0, ...}` rather than a top-level `[]`.
+        let listTool = AITool(name: "products_search",
+                              description: "Search products",
+                              parametersSchema: .object([:]),
+                              safetyLevel: .safe)
+        let chat = MockAIChatService()
+        let firstCall = OpenAIChat.ToolCall(id: "call_1",
+                                            function: .init(name: "products_search",
+                                                            arguments: "{\"search\":\"scarf\"}"))
+        let retryCall = OpenAIChat.ToolCall(id: "call_2",
+                                            function: .init(name: "products_search",
+                                                            arguments: "{\"search\":\"scarves\"}"))
+        await chat.setScriptedTurns([
+            [.toolCall(firstCall), .completed(.toolCalls)],
+            [.toolCall(retryCall), .completed(.toolCalls)],
+            [.textDelta("No matches."), .completed(.stop)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([listTool])
+        await registry.setResult(for: "products_search",
+                                 result: .success(.init(toolName: "products_search",
+                                                        structured: .object(["count": .int(0)]))))
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat, toolRegistry: registry)
+
+        // When
+        for try await _ in orchestrator.run(prompt: "Show scarves") {}
+
+        // Then a nudge system message about not retrying spelling variants reached the model.
+        let captured = await chat.capturedRequests
+        let nudged = captured.contains { request in
+            request.messages.contains { message in
+                guard message.role == .system, let content = message.content else { return false }
+                return content.contains("`products_search` returned no matches")
+            }
+        }
+        #expect(nudged)
+    }
+
+    @Test
+    func test_emptyList_nudge_when_assistant_emits_parallel_calls_then_pairs_results_by_toolCallID() async throws {
+        // Given two parallel list calls in the same assistant message: the first returns
+        // empty, the second returns one row. Pairing by position-of-next-message would
+        // associate both calls with whichever tool-result message comes first; pairing
+        // by toolCallID associates each call to its own result.
+        let ordersList = AITool(name: "orders_list",
+                                description: "List orders",
+                                parametersSchema: .object([:]),
+                                safetyLevel: .safe)
+        let customersList = AITool(name: "customers_list",
+                                   description: "List customers",
+                                   parametersSchema: .object([:]),
+                                   safetyLevel: .safe)
+        let chat = MockAIChatService()
+        let ordersCall = OpenAIChat.ToolCall(id: "call_orders",
+                                             function: .init(name: "orders_list", arguments: "{}"))
+        let customersCall = OpenAIChat.ToolCall(id: "call_customers",
+                                                function: .init(name: "customers_list", arguments: "{}"))
+        await chat.setScriptedTurns([
+            [.toolCall(ordersCall), .toolCall(customersCall), .completed(.toolCalls)],
+            [.textDelta("Done."), .completed(.stop)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([ordersList, customersList])
+        await registry.setResult(for: "customers_list",
+                                 result: .success(.init(toolName: "customers_list",
+                                                        structured: .object(["count": .int(0)]))))
+        await registry.setResult(for: "orders_list",
+                                 result: .success(.init(toolName: "orders_list",
+                                                        structured: .object(["count": .int(3)]))))
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat, toolRegistry: registry)
+
+        // When
+        for try await _ in orchestrator.run(prompt: "Anything") {}
+
+        // Then only `customers_list` (the empty one) gets a nudge - `orders_list` is non-empty.
+        let captured = await chat.capturedRequests
+        let systemMessages = captured.flatMap { $0.messages }.filter { $0.role == .system }
+        let customersNudgeFired = systemMessages.contains {
+            ($0.content ?? "").contains("`customers_list` returned no matches")
+        }
+        let ordersNudgeFired = systemMessages.contains {
+            ($0.content ?? "").contains("`orders_list` returned no matches")
+        }
+        #expect(customersNudgeFired)
+        #expect(!ordersNudgeFired)
+    }
+
+    @Test
     func test_run_when_completed_with_nil_finish_reason_then_emits_upstreamFailure() async throws {
         // Given a transport that emits `.completed(nil)` - a malformed stream where no
         // chunk carried `finish_reason`. Treated identically to a stream that ended

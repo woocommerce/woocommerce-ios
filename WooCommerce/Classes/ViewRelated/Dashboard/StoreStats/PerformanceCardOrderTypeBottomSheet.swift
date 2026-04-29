@@ -7,50 +7,12 @@ struct PerformanceCardOrderTypeBottomSheet: View {
     @ObservedObject var viewModel: StorePerformanceViewModel
     @Environment(\.dismiss) private var dismiss
 
-    /// The order type whose update is currently in flight, if any.
-    /// Used to render an inline progress indicator next to the row being saved
-    /// and to disable other rows while a save is in progress.
-    @State private var updatingType: AnalyticsOrderDateType?
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                Text(Localization.title)
-                    .font(.title3.weight(.semibold))
-                    .padding(.top, Layout.titleTopPadding)
-
-                Text(Localization.description)
-                    .font(.body.weight(.regular))
-                    .padding(.top, Layout.titleToDescriptionSpacing)
-
-                VStack(alignment: .leading, spacing: Layout.rowSpacing) {
-                    ForEach(AnalyticsOrderDateType.allCases, id: \.rawValue) { type in
-                        Button {
-                            handleSelection(of: type)
-                        } label: {
-                            row(for: type)
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(updatingType != nil)
-                        .accessibilityIdentifier("performance-order-type-\(type.rawValue)")
-                    }
-                }
-                .padding(.top, Layout.descriptionToOptionsSpacing)
-
-                if viewModel.orderTypeUpdateError != nil {
-                    HStack(spacing: Layout.errorSpacing) {
-                        Image(systemName: "exclamationmark.triangle")
-                            .foregroundStyle(Color(.error))
-                        Text(Localization.updateError)
-                            .footnoteStyle(isError: true)
-                    }
-                    .padding(.top, Layout.errorTopSpacing)
-                }
-
-                Text(Localization.footer)
-                    .font(.footnote.weight(.regular))
-                    .foregroundStyle(.secondary)
-                    .padding(.top, Layout.optionsToFooterSpacing)
+                header
+                typeSelector
+                footer
             }
             .padding(.horizontal, Layout.horizontalPadding)
             .padding(.bottom, Layout.bottomPadding)
@@ -60,20 +22,55 @@ struct PerformanceCardOrderTypeBottomSheet: View {
         .presentationDragIndicator(.visible)
     }
 
-    private func handleSelection(of type: AnalyticsOrderDateType) {
-        // Tapping the currently-selected row just dismisses; nothing to save.
-        if viewModel.orderType == type {
-            dismiss()
-            return
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(Localization.title)
+                .font(.title3.weight(.semibold))
+                .padding(.top, Layout.titleTopPadding)
+
+            Text(Localization.description)
+                .font(.body.weight(.regular))
+                .padding(.top, Layout.titleToDescriptionSpacing)
         }
+    }
+
+    private var typeSelector: some View {
+        VStack(alignment: .leading, spacing: Layout.rowSpacing) {
+            ForEach(AnalyticsOrderDateType.allCases, id: \.rawValue) { type in
+                Button {
+                    handleSelection(of: type)
+                } label: {
+                    row(for: type)
+                }
+                .buttonStyle(.plain)
+                .disabled(viewModel.updatingOrderType != nil)
+                .accessibilityIdentifier("performance-order-type-\(type.rawValue)")
+            }
+        }
+        .padding(.top, Layout.descriptionToOptionsSpacing)
+    }
+
+    @ViewBuilder
+    private var footer: some View {
+        if viewModel.orderTypeUpdateError != nil {
+            HStack(spacing: Layout.errorSpacing) {
+                Image(systemName: "exclamationmark.triangle")
+                    .foregroundStyle(Color(.error))
+                Text(Localization.updateError)
+                    .footnoteStyle(isError: true)
+            }
+            .padding(.top, Layout.errorTopSpacing)
+        }
+
+        Text(Localization.footer)
+            .font(.footnote.weight(.regular))
+            .foregroundStyle(.secondary)
+            .padding(.top, Layout.optionsToFooterSpacing)
+    }
+
+    private func handleSelection(of type: AnalyticsOrderDateType) {
         Task { @MainActor in
-            updatingType = type
-            await viewModel.didSelectOrderType(type)
-            updatingType = nil
-            // Dismiss only if the save actually took effect on the view model.
-            // If the save failed (or the server returned a value that doesn't match), the sheet stays
-            // open so the inline error block remains visible.
-            if viewModel.orderType == type {
+            if await viewModel.handleOrderTypeSelection(type) {
                 dismiss()
             }
         }
@@ -82,7 +79,7 @@ struct PerformanceCardOrderTypeBottomSheet: View {
     @ViewBuilder
     private func row(for type: AnalyticsOrderDateType) -> some View {
         let isSelected = viewModel.orderType == type
-        let isUpdating = updatingType == type
+        let isUpdating = viewModel.updatingOrderType == type
         HStack(alignment: .top, spacing: Layout.rowCheckmarkSpacing) {
             VStack(alignment: .leading, spacing: Layout.rowTitleSubtitleSpacing) {
                 Text(type.localizedTitle)

@@ -43,8 +43,10 @@ final class StorePerformanceViewModel: ObservableObject {
     /// while the value is being loaded for the first time.
     @Published private(set) var orderType: AnalyticsOrderDateType = .paid
 
-    /// `true` while an order type update is in flight.
-    @Published private(set) var isUpdatingOrderType = false
+    /// The order type whose update is currently in flight, if any. Used by the bottom sheet to render
+    /// an inline progress indicator next to the row being saved and to disable other rows while a
+    /// save is in progress.
+    @Published private(set) var updatingOrderType: AnalyticsOrderDateType?
 
     /// Set when the most recent order type update fails. Cleared when a save succeeds or when the
     /// merchant initiates a new selection.
@@ -256,16 +258,33 @@ final class StorePerformanceViewModel: ObservableObject {
         analytics.track(event: .Dashboard.performanceCardOrderDateTypeSelectorTapped())
     }
 
+    /// Handles the merchant tapping a row in the order date type bottom sheet.
+    ///
+    /// Returns `true` when the bottom sheet should dismiss:
+    /// - the tapped option is already selected (no save round-trip needed), or
+    /// - the save succeeded.
+    ///
+    /// Returns `false` when the save failed so the sheet stays open and the inline error remains visible.
+    @MainActor
+    func handleOrderTypeSelection(_ newOrderType: AnalyticsOrderDateType) async -> Bool {
+        // Tapping the currently-selected row just dismisses; nothing to save.
+        if orderType == newOrderType {
+            return true
+        }
+        await updateOrderType(newOrderType)
+        // Dismiss only if the save actually took effect on the view model.
+        return orderType == newOrderType
+    }
+
     /// Updates the analytics order date type setting and refreshes dashboard stats.
-    /// No-op if `newOrderType` matches the current selection.
     /// On failure, sets `orderTypeUpdateError` so the bottom sheet can present an inline error.
     @MainActor
-    func didSelectOrderType(_ newOrderType: AnalyticsOrderDateType) async {
-        guard !isUpdatingOrderType, orderType != newOrderType else { return }
+    private func updateOrderType(_ newOrderType: AnalyticsOrderDateType) async {
+        guard updatingOrderType == nil else { return }
         hasUserSelectedOrderType = true
-        isUpdatingOrderType = true
+        updatingOrderType = newOrderType
         orderTypeUpdateError = nil
-        defer { isUpdatingOrderType = false }
+        defer { updatingOrderType = nil }
         do {
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
                 let action = SettingAction.updateAnalyticsOrderDateType(siteID: siteID, value: newOrderType) { result in

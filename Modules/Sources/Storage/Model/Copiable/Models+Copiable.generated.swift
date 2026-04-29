@@ -122,6 +122,7 @@ extension Storage.GeneralStoreSettings {
         analyticsHubCards: NullableCopiableProp<[AnalyticsCard]> = .copy,
         dashboardCards: NullableCopiableProp<[DashboardCard]> = .copy,
         lastSelectedPerformanceTimeRange: CopiableProp<String> = .copy,
+        lastSelectedDashboardRevenueStatsType: CopiableProp<String> = .copy,
         lastSelectedTopPerformersTimeRange: CopiableProp<String> = .copy,
         lastSelectedMostActiveCouponsTimeRange: CopiableProp<String> = .copy,
         lastSelectedStockType: NullableCopiableProp<String> = .copy,
@@ -147,6 +148,7 @@ extension Storage.GeneralStoreSettings {
         let analyticsHubCards = analyticsHubCards ?? self.analyticsHubCards
         let dashboardCards = dashboardCards ?? self.dashboardCards
         let lastSelectedPerformanceTimeRange = lastSelectedPerformanceTimeRange ?? self.lastSelectedPerformanceTimeRange
+        let lastSelectedDashboardRevenueStatsType = lastSelectedDashboardRevenueStatsType ?? self.lastSelectedDashboardRevenueStatsType
         let lastSelectedTopPerformersTimeRange = lastSelectedTopPerformersTimeRange ?? self.lastSelectedTopPerformersTimeRange
         let lastSelectedMostActiveCouponsTimeRange = lastSelectedMostActiveCouponsTimeRange ?? self.lastSelectedMostActiveCouponsTimeRange
         let lastSelectedStockType = lastSelectedStockType ?? self.lastSelectedStockType
@@ -173,6 +175,7 @@ extension Storage.GeneralStoreSettings {
             analyticsHubCards: analyticsHubCards,
             dashboardCards: dashboardCards,
             lastSelectedPerformanceTimeRange: lastSelectedPerformanceTimeRange,
+            lastSelectedDashboardRevenueStatsType: lastSelectedDashboardRevenueStatsType,
             lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange,
             lastSelectedMostActiveCouponsTimeRange: lastSelectedMostActiveCouponsTimeRange,
             lastSelectedStockType: lastSelectedStockType,

@@ -1,15 +1,19 @@
 import SwiftUI
 import WidgetKit
 
-/// Local routing flag for the medium home-screen widget.
+/// Routing flag for the medium home-screen widget.
 ///
 /// `false`: render the legacy `StoreInfoView` / `StatsCard` (consumes pre-formatted String fields).
 /// `true`: render the metric-catalog driven `StoreInfoMetricsView` / `StoreInfoMetricsCard`.
 ///
-/// Hard-coded for now so the new path can be exercised in dev without affecting shipped builds.
-/// A later step will read the same intent from App Group `UserDefaults` so the main app can flip it.
+/// Mirrored into the App Group by `StoreWidgetsFeatureFlagSynchronizer` from the local
+/// `FeatureFlag.configurableStoreStatsWidgets` (enabled by default on local/alpha builds, off on
+/// App Store). View-level gating: the widget kind / supported families never change, so flipping
+/// the flag does not orphan installed tiles — only the rendered body switches.
 ///
-private let useMetricsHomescreenWidget = false
+private var useMetricsHomescreenWidget: Bool {
+    UserDefaults.group?.configurableStoreStatsWidgetsEnabled ?? false
+}
 
 /// Entry point for StoreInfo Home Screen Widget
 ///

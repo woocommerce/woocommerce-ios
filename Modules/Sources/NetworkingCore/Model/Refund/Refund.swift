@@ -27,6 +27,10 @@ public struct Refund: Codable, GeneratedFakeable, GeneratedCopiable {
     /// Optional because WC stores with lower versions than `4.8.0` don't return any information about shipping refunds
     public let shippingLines: [ShippingLine]?
 
+    /// Refunded fee lines (custom amounts). Defaults to empty for stores or
+    /// older API versions that omit `fee_lines` from the refund response.
+    public let feeLines: [OrderFeeLine]
+
     /// Refund struct initializer
     ///
     public init(refundID: Int64,
@@ -39,7 +43,8 @@ public struct Refund: Codable, GeneratedFakeable, GeneratedCopiable {
                 isAutomated: Bool?,
                 createAutomated: Bool?,
                 items: [OrderItemRefund],
-                shippingLines: [ShippingLine]?) {
+                shippingLines: [ShippingLine]?,
+                feeLines: [OrderFeeLine] = []) {
         self.refundID = refundID
         self.orderID = orderID
         self.siteID = siteID
@@ -51,6 +56,7 @@ public struct Refund: Codable, GeneratedFakeable, GeneratedCopiable {
         self.createAutomated = createAutomated
         self.items = items
         self.shippingLines = shippingLines
+        self.feeLines = feeLines
     }
 
     /// The public initializer for a Refund
@@ -74,6 +80,7 @@ public struct Refund: Codable, GeneratedFakeable, GeneratedCopiable {
         let isAutomated = try container.decodeIfPresent(Bool.self, forKey: .automatedRefund)
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
         let shippingLines = try container.decodeIfPresent([ShippingLine].self, forKey: .shippingLines)
+        let feeLines = (try? container.decodeIfPresent([OrderFeeLine].self, forKey: .feeLines)) ?? []
 
         self.init(refundID: refundID,
                   orderID: orderID,
@@ -85,7 +92,8 @@ public struct Refund: Codable, GeneratedFakeable, GeneratedCopiable {
                   isAutomated: isAutomated,
                   createAutomated: nil,
                   items: items,
-                  shippingLines: shippingLines)
+                  shippingLines: shippingLines,
+                  feeLines: feeLines)
     }
 
     /// The public initializer for an encodable Refund
@@ -123,6 +131,7 @@ private extension Refund {
         case automatedRefund        = "refunded_payment"    // read-only
         case items                  = "line_items"
         case shippingLines          = "shipping_lines"
+        case feeLines               = "fee_lines"
     }
 
     enum EncodingKeys: String, CodingKey {
@@ -152,7 +161,8 @@ extension Refund: Equatable {
             lhs.isAutomated == rhs.isAutomated &&
             lhs.items.count == rhs.items.count &&
             Set(lhs.items) == Set(rhs.items) &&
-            lhs.shippingLines?.sorted() == rhs.shippingLines?.sorted()
+            lhs.shippingLines?.sorted() == rhs.shippingLines?.sorted() &&
+            lhs.feeLines == rhs.feeLines
     }
 }
 

@@ -1,5 +1,6 @@
 import Foundation
 import struct NetworkingCore.Refund
+import struct NetworkingCore.OrderFeeLine
 import class WooFoundationCore.CurrencyFormatter
 
 struct POSRefundMapper {
@@ -11,7 +12,7 @@ struct POSRefundMapper {
         let orderItemsByID = Dictionary(uniqueKeysWithValues: orderItems.map { ($0.itemID, $0) })
         let feeIDs = Set(customAmounts.map(\.id))
 
-        return refund.items.map { item in
+        let lineItemRows = refund.items.map { item -> POSRefundItem in
             let refundedItemID = item.refundedItemID.flatMap { Int64($0) }
             let matchedOrderItem = refundedItemID.flatMap { orderItemsByID[$0] }
             let isLumpSum = refundedItemID.map(feeIDs.contains) ?? false
@@ -29,11 +30,31 @@ struct POSRefundMapper {
                 isLumpSum: isLumpSum
             )
         }
+
+        let feeRows = refund.feeLines.map { fee -> POSRefundItem in
+            let totalDecimal = Decimal(string: fee.total) ?? .zero
+            let formattedAmount = currencyFormatter.formatAmount(abs(totalDecimal), with: currency) ?? ""
+            let formattedTotal = currencyFormatter.formatAmount(fee.total, with: currency) ?? ""
+
+            return POSRefundItem(
+                refundedItemID: fee.feeID,
+                quantity: 1,
+                name: fee.name ?? "",
+                formattedPrice: formattedAmount,
+                formattedTotal: formattedTotal,
+                imageSrc: nil,
+                isLumpSum: true
+            )
+        }
+
+        return lineItemRows + feeRows
     }
 
     /// Computes formatted items subtotal and tax for a refund.
     /// - `item.total` is the line item refund amount (negative from API, made absolute).
     /// - `item.totalTax` is the tax for that item (negative from API, made absolute).
+    /// Fee lines (custom amounts) are summed alongside line items so refunded
+    /// custom amounts contribute to the displayed subtotal and tax.
     func mapSubtotalAndTax(refund: NetworkingCore.Refund,
                            currencyFormatter: CurrencyFormatter,
                            currency: String) -> (formattedSubtotal: String, formattedTax: String) {
@@ -43,6 +64,11 @@ struct POSRefundMapper {
         for item in refund.items {
             subtotal += abs(Decimal(string: item.total) ?? .zero)
             tax += abs(Decimal(string: item.totalTax) ?? .zero)
+        }
+
+        for fee in refund.feeLines {
+            subtotal += abs(Decimal(string: fee.total) ?? .zero)
+            tax += abs(Decimal(string: fee.totalTax) ?? .zero)
         }
 
         let formattedSubtotal = currencyFormatter.formatAmount(subtotal, with: currency) ?? ""

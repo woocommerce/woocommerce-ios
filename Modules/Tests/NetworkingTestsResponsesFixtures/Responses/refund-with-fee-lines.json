@@ -1,0 +1,32 @@
+{
+    "data": {
+        "id": 901,
+        "date_created": "2026-04-29T10:00:00",
+        "date_created_gmt": "2026-04-29T10:00:00",
+        "amount": "5.00",
+        "reason": "Custom amount refund",
+        "refunded_by": 1,
+        "refunded_payment": true,
+        "meta_data": [],
+        "line_items": [],
+        "shipping_lines": [],
+        "fee_lines": [
+            {
+                "id": 777,
+                "name": "Discount Fee",
+                "tax_class": "",
+                "tax_status": "taxable",
+                "amount": "-5.00",
+                "total": "-5.00",
+                "total_tax": "-0.50",
+                "taxes": [
+                    {
+                        "id": 1,
+                        "total": "-0.50",
+                        "subtotal": ""
+                    }
+                ]
+            }
+        ]
+    }
+}

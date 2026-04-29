@@ -114,6 +114,31 @@ final class RefundMapperTests: XCTestCase {
         XCTAssertTrue(dictionaryEquals)
     }
 
+    func test_refund_fee_lines_are_correctly_parsed() {
+        // Given
+        guard let refund = mapRefund(from: "refund-with-fee-lines") else {
+            XCTFail("Failed to load `refund-with-fee-lines.json` file.")
+            return
+        }
+
+        // Then
+        XCTAssertEqual(refund.feeLines.count, 1)
+        let fee = refund.feeLines[0]
+        XCTAssertEqual(fee.feeID, 777)
+        XCTAssertEqual(fee.name, "Discount Fee")
+        XCTAssertEqual(fee.total, "-5.00")
+        XCTAssertEqual(fee.totalTax, "-0.50")
+    }
+
+    func test_refund_fee_lines_default_to_empty_when_response_omits_them() {
+        guard let refund = mapLoadRefundResponse() else {
+            XCTFail("Failed to load `refund-single.json` file.")
+            return
+        }
+
+        XCTAssertEqual(refund.feeLines, [])
+    }
+
     func test_refund_is_encoded_correctly_with_items_and_no_taxes() throws {
         // Given
         let refund = sampleRefund(includeTaxes: false)

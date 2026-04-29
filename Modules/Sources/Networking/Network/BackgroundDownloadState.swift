@@ -5,28 +5,31 @@ import Foundation
 public struct BackgroundDownloadState: Codable {
     let sessionIdentifier: String
     let siteID: Int64
+}
 
-    private static let userDefaultsKey = "com.woocommerce.pos.backgroundDownloadState"
-    private static var userDefaults: UserDefaults = .standard
+/// Persists `BackgroundDownloadState` to `UserDefaults`.
+///
+/// `key` is the seam for site-scoped storage: callers can pass a site-suffixed key
+/// (e.g. `"com.woocommerce.pos.backgroundDownloadState.\(siteID)"`)
+public struct BackgroundDownloadStateStore {
+    private let userDefaults: UserDefaults
+    private let key: String
 
-    /// Configure UserDefaults instance for testing.
-    /// - Parameter userDefaults: The UserDefaults instance to use for persistence.
-    // periphery:ignore - required by tests
-    public static func configure(userDefaults: UserDefaults) {
+    public init(userDefaults: UserDefaults = .standard,
+                key: String = "com.woocommerce.pos.backgroundDownloadState") {
         self.userDefaults = userDefaults
+        self.key = key
     }
 
-    /// Saves download state for later retrieval.
-    public static func save(_ state: BackgroundDownloadState) {
-        let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(state) {
-            userDefaults.set(encoded, forKey: userDefaultsKey)
+    public func save(_ state: BackgroundDownloadState) {
+        if let encoded = try? JSONEncoder().encode(state) {
+            userDefaults.set(encoded, forKey: key)
         }
     }
 
-    /// Loads saved download state for a specific session identifier.
-    public static func load(for sessionIdentifier: String) -> BackgroundDownloadState? {
-        guard let data = userDefaults.data(forKey: userDefaultsKey),
+    /// Loads saved download state, returning it only if its session identifier matches.
+    public func load(for sessionIdentifier: String) -> BackgroundDownloadState? {
+        guard let data = userDefaults.data(forKey: key),
               let state = try? JSONDecoder().decode(BackgroundDownloadState.self, from: data),
               state.sessionIdentifier == sessionIdentifier else {
             return nil
@@ -34,8 +37,7 @@ public struct BackgroundDownloadState: Codable {
         return state
     }
 
-    /// Clears saved download state.
-    public static func clear() {
-        userDefaults.removeObject(forKey: userDefaultsKey)
+    public func clear() {
+        userDefaults.removeObject(forKey: key)
     }
 }

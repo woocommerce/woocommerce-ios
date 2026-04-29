@@ -19,13 +19,8 @@ final class SupportChatHistoryViewModel {
     }
 
     func load() {
-        let action = SupportChatAction.loadChatHistory(siteID: siteID) { [weak self] result in
-            switch result {
-            case .success(let summaries):
-                self?.summaries = summaries
-            case .failure(let error):
-                DDLogError("⛔️ Failed to load support chat history: \(error)")
-            }
+        let action = SupportChatAction.loadChatHistory(siteID: siteID) { [weak self] summaries in
+            self?.summaries = summaries
         }
         stores.dispatch(action)
     }
@@ -37,7 +32,7 @@ final class SupportChatHistoryViewModel {
         summaries.remove(atOffsets: indexSet)
 
         for chatID in chatIDsToDelete {
-            let action = SupportChatAction.deleteChat(chatID: chatID, onCompletion: { _ in })
+            let action = SupportChatAction.deleteChat(chatID: chatID, onCompletion: {})
             stores.dispatch(action)
         }
     }

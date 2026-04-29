@@ -205,7 +205,7 @@ final class SupportChatViewModel {
                 case .user:
                     return ChatMessage(role: .user, content: message.content)
                 case .bot:
-                    return ChatMessage(role: .assistant, content: message.content)
+                    return ChatMessage(role: .bot, content: message.content)
                 case .unknown:
                     return nil
                 }
@@ -237,11 +237,11 @@ final class SupportChatViewModel {
                                                        wpcomUserID: wpcomUserID,
                                                        botSlug: botSlug,
                                                        firstUserMessage: firstUserMessage,
-                                                       onCompletion: { _ in })
+                                                       onCompletion: {})
             stores.dispatch(action)
         } else {
             let action = SupportChatAction.touchChat(chatID: response.chatID,
-                                                    onCompletion: { _ in })
+                                                    onCompletion: {})
             stores.dispatch(action)
         }
     }

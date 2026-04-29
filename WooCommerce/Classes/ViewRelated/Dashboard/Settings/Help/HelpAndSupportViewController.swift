@@ -472,7 +472,7 @@ private extension HelpAndSupportViewController {
         let chatViewModel = SupportChatViewModel(
             botSlug: summary.botSlug,
             chatID: summary.chatID,
-            onContactHumanSupport: { [weak self] in
+            onContactHumanSupport: { [weak self] _ in
                 self?.navigationController?.popViewController(animated: true)
             }
         )

@@ -1,11 +1,12 @@
 import Foundation
 import CocoaLumberjackSwift
+import NetworkingCore
 
-public enum JetpackResponseParsing {
+enum JetpackResponseParsing {
 
     /// Leaves the WP error envelope `{"code","message","data":{...}}` untouched - peeling its `data`
     /// key would hand callers `{"status":404}` as if a tool returned a row.
-    public static func unwrapJetpackEnvelope(_ data: Data) -> Data {
+    static func unwrapJetpackEnvelope(_ data: Data) -> Data {
         guard !data.isEmpty else { return data }
         let json: [String: Any]
         do {
@@ -29,12 +30,12 @@ public enum JetpackResponseParsing {
         }
     }
 
-    public static func splitAPIVersion(from path: String) -> (apiVersion: WCAPIVersion, subpath: String) {
+    static func splitAPIVersion(from path: String) -> (apiVersion: WooAPIVersion, subpath: String) {
         let trimmed = path.hasPrefix("/") ? String(path.dropFirst()) : path
         if trimmed.hasPrefix("wc-analytics/") {
             return (.wcAnalytics, String(trimmed.dropFirst("wc-analytics/".count)))
         }
-        let versioned: [(String, WCAPIVersion)] = [
+        let versioned: [(String, WooAPIVersion)] = [
             ("wc/v4/", .mark4),
             ("wc/v3/", .mark3),
             ("wc/v2/", .mark2),
@@ -45,13 +46,4 @@ public enum JetpackResponseParsing {
         }
         return (.mark3, trimmed)
     }
-}
-
-/// Mirror of Networking's `WooAPIVersion`. Duplicated so this module avoids importing Networking.
-public enum WCAPIVersion: String, Sendable, Equatable {
-    case mark1 = "wc/v1"
-    case mark2 = "wc/v2"
-    case mark3 = "wc/v3"
-    case mark4 = "wc/v4"
-    case wcAnalytics = "wc-analytics"
 }

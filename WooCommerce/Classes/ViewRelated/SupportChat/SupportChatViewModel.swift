@@ -146,7 +146,7 @@ final class SupportChatViewModel {
 
     // MARK: - Initialization
 
-    init(botSlug: String = "woo-workflow-support_mobile_inapp",
+    init(botSlug: String = "woo-workflow-support_mobile_inapp_all_users",
          entryPoint: EntryPoint,
          stores: StoresManager = ServiceLocator.stores,
          initialContext: [String: Any]? = nil,

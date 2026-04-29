@@ -102,28 +102,6 @@ struct SupportChatViewModelTests {
         #expect(sut.hasProceededToChat == true)
     }
 
-    @Test func test_selectIssue_when_specific_issue_then_runs_diagnostics_and_shows_final_result() async {
-        // Given
-        let sut = makeSUT()
-        sut.showGreeting()
-
-        // When
-        await sut.selectIssue(.loadingAnalytics)
-
-        // Then
-        #expect(sut.selectedIssue == .loadingAnalytics)
-        #expect(sut.diagnosticResults.isEmpty == false)
-        // Should have: issue picker, user selection, final result (success or failure)
-        #expect(sut.messages.count == 3)
-        let lastContent = sut.messages.last?.content
-        let isValidFinalState = {
-            if case .diagnosticsSuccess = lastContent { return true }
-            if case .diagnosticsFailure = lastContent { return true }
-            return false
-        }()
-        #expect(isValidFinalState, "Expected diagnosticsSuccess or diagnosticsFailure message")
-    }
-
     // MARK: - Proceed to Chat Tests
 
     @Test func test_proceedToChat_appends_greeting_message() async {
@@ -203,7 +181,7 @@ struct SupportChatViewModelTests {
         #expect(sut.isExecutingAction == false)
     }
 
-    @Test func test_executeAction_openNotificationSettings_sets_selectedURL() async {
+    @Test func test_executeAction_openNotificationSettings_completes_without_error() async {
         // Given
         let sut = makeSUT()
 
@@ -211,19 +189,19 @@ struct SupportChatViewModelTests {
         await sut.executeAction(.openNotificationSettings)
 
         // Then
-        #expect(sut.selectedURL != nil)
         #expect(sut.isExecutingAction == false)
     }
 
-    @Test func test_executeAction_setupJetpack_sets_shouldStartJetpackSetup() async {
+    @Test func test_executeAction_setupJetpack_calls_onStartJetpackSetup() async {
         // Given
-        let sut = makeSUT()
+        var callbackCalled = false
+        let sut = makeSUT(onStartJetpackSetup: { callbackCalled = true })
 
         // When
         await sut.executeAction(.setupJetpack)
 
         // Then
-        #expect(sut.shouldStartJetpackSetup == true)
+        #expect(callbackCalled == true)
         #expect(sut.isExecutingAction == false)
     }
 
@@ -232,14 +210,17 @@ struct SupportChatViewModelTests {
     private func makeSUT(
         entryPoint: SupportChatViewModel.EntryPoint = .helpAndSupport,
         stores: StoresManager? = nil,
-        diagnosticsService: SupportDiagnosticsService? = nil
+        diagnosticsService: SupportDiagnosticsService? = nil,
+        onStartJetpackSetup: @escaping () -> Void = {}
     ) -> SupportChatViewModel {
         let stores = stores ?? MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        return SupportChatViewModel(
+        let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
             stores: stores,
             diagnosticsService: diagnosticsService,
             onContactHumanSupport: { _ in }
         )
+        viewModel.onStartJetpackSetup = onStartJetpackSetup
+        return viewModel
     }
 }

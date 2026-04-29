@@ -2,7 +2,6 @@ import Foundation
 import Observation
 import UIKit
 import Yosemite
-import enum Networking.SupportChatRole
 import protocol WooFoundation.Analytics
 
 /// View model for the AI support chat interface.

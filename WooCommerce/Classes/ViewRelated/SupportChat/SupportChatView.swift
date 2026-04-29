@@ -109,26 +109,20 @@ struct SupportChatView: View {
         VStack(alignment: .leading, spacing: Layout.bubbleSpacing) {
             Text(Localization.issuePickerHeader)
                 .font(.body)
-                .foregroundStyle(Color(.secondaryLabel))
+                .foregroundStyle(Color(.text))
 
             ForEach(issues, id: \.self) { issue in
-                Button {
+                Button(issue.displayName) {
                     Task {
                         await viewModel.selectIssue(issue)
                     }
-                } label: {
-                    Text(issue.displayName)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(Layout.issueButtonPadding)
-                        .background(Color(.tertiarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: Layout.issueButtonRadius))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(SecondaryButtonStyle())
                 .disabled(viewModel.selectedIssue != nil)
             }
         }
         .padding(SupportChatLayout.bubblePadding)
-        .background(Color(.secondarySystemBackground))
+        .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
         .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
@@ -150,7 +144,7 @@ struct SupportChatView: View {
             }
         }
         .padding(SupportChatLayout.bubblePadding)
-        .background(Color(.secondarySystemBackground))
+        .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
         .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
@@ -167,21 +161,13 @@ struct SupportChatView: View {
                     .font(.body)
             }
 
-            Button {
+            Button(Localization.continueToChat) {
                 viewModel.proceedToChat()
-            } label: {
-                Text(Localization.continueToChat)
-                    .font(.body.weight(.medium))
-                    .frame(maxWidth: .infinity)
-                    .padding(Layout.issueButtonPadding)
-                    .background(Color.accentColor)
-                    .foregroundStyle(Color.white)
-                    .clipShape(RoundedRectangle(cornerRadius: Layout.issueButtonRadius))
             }
-            .buttonStyle(.plain)
+            .buttonStyle(SecondaryButtonStyle())
         }
         .padding(SupportChatLayout.bubblePadding)
-        .background(Color(.secondarySystemBackground))
+        .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
         .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
@@ -214,22 +200,14 @@ struct SupportChatView: View {
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
             } else {
-                Button {
+                Button(Localization.continueToChat) {
                     viewModel.proceedToChat()
-                } label: {
-                    Text(Localization.continueToChat)
-                        .font(.body.weight(.medium))
-                        .frame(maxWidth: .infinity)
-                        .padding(Layout.issueButtonPadding)
-                        .background(Color(.tertiarySystemBackground))
-                        .foregroundStyle(Color(.label))
-                        .clipShape(RoundedRectangle(cornerRadius: Layout.issueButtonRadius))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(SecondaryButtonStyle())
             }
         }
         .padding(SupportChatLayout.bubblePadding)
-        .background(Color(.secondarySystemBackground))
+        .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
         .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
@@ -318,11 +296,13 @@ struct SupportChatView: View {
 private extension SupportChatView {
     enum Layout {
         static let bubbleSpacing: CGFloat = 8
-        static let issueButtonPadding: CGFloat = 12
-        static let issueButtonRadius: CGFloat = 8
         static let progressSpacing: CGFloat = 8
         static let resultsSpacing: CGFloat = 12
         static let resultIconSpacing: CGFloat = 6
+    }
+
+    enum Colors {
+        static let botBubbleBackground = Color(.listForeground(modal: false))
     }
 }
 

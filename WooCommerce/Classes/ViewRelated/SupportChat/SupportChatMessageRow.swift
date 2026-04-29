@@ -70,7 +70,7 @@ struct SupportChatMessageRow: View {
         case .user:
             return Color(.accent)
         case .bot, .unknown:
-            return Color(.systemGray5)
+            return Color(.listForeground(modal: false))
         }
     }
 
@@ -102,7 +102,7 @@ struct TypingIndicatorRow: View {
                 }
             }
             .padding(SupportChatLayout.bubblePadding)
-            .background(Color(.systemGray5))
+            .background(Color(.listForeground(modal: false)))
             .cornerRadius(SupportChatLayout.bubbleCornerRadius)
 
             Spacer()

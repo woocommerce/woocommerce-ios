@@ -203,10 +203,6 @@ private extension StorePerformanceView {
                         .foregroundStyle(statsValueColor)
                         .largeTitleStyle()
                         .accessibilityIdentifier("revenue-value")
-
-                    Text(Localization.revenue)
-                        .if(!viewModel.hasRevenue) { $0.foregroundStyle(Color(.textSubtle)) }
-                        .font(Font(StyleManager.statsTitleFont))
                 }
 
                 HStack(alignment: .bottom) {
@@ -405,11 +401,6 @@ private extension StorePerformanceView {
             "storePerformanceView.custom",
             value: "Custom",
             comment: "Title of the custom time range on the store performance card on the Dashboard screen"
-        )
-        static let revenue = NSLocalizedString(
-            "storePerformanceView.totalSales",
-            value: "Total sales",
-            comment: "Total sales stat label on dashboard — shows revenue including taxes and shipping."
         )
         static let noRevenueText = NSLocalizedString(
             "storePerformanceView.noRevenueText",

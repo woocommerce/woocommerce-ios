@@ -2,14 +2,6 @@ import SwiftUI
 import RealityKit
 import ARKit
 
-/// AR scene controller that manages the session, coaching overlay,
-/// tap-to-place, drag, and two-finger rotation for the parcel fitting
-/// check. The visual cuboid itself is built by `ARCuboidEntity`.
-///
-/// State machine:
-/// - Pre-placement: user taps anywhere on the AR view to place the cuboid.
-/// - Post-placement: drag to translate, two-finger twist to rotate. The
-///   trash button (in the parent) returns to pre-placement state.
 struct ARParcelSceneView: UIViewRepresentable {
     let dimensions: SIMD3<Float>
     @Binding var isPlaced: Bool
@@ -80,13 +72,9 @@ struct ARParcelSceneView: UIViewRepresentable {
         uiView.session.pause()
     }
 
-    // MARK: - Coordinator
-
     final class Coordinator: NSObject, UIGestureRecognizerDelegate {
         weak var arView: ARView?
-
         @Binding var isPlaced: Bool
-
         var dimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
         var lastResetTrigger: Int = 0
 
@@ -102,24 +90,18 @@ struct ARParcelSceneView: UIViewRepresentable {
             self._isPlaced = isPlaced
         }
 
-        // MARK: Tap-to-place
-
         @objc func handleTap(_ gesture: UITapGestureRecognizer) {
             guard !isPlaced, let arView else { return }
             let location = gesture.location(in: arView)
-
-            guard let world = raycastWorldPosition(from: location, in: arView) else {
-                return
-            }
+            guard let world = raycastWorldPosition(from: location, in: arView) else { return }
 
             placeCuboid(at: world)
             installGestures()
+            // Deferred — writing @Binding during updateUIView is silently dropped.
             DispatchQueue.main.async { [weak self] in
                 self?.isPlaced = true
             }
         }
-
-        // MARK: Public actions
 
         func removeCuboid() {
             uninstallGestures()
@@ -138,11 +120,8 @@ struct ARParcelSceneView: UIViewRepresentable {
             cuboidEntity?.transform.scale = dims
         }
 
-        // MARK: Placement
-
         private func placeCuboid(at world: SIMD3<Float>) {
             guard let arView else { return }
-
             let entity = ARCuboidEntity.build()
             entity.position = world
             entity.transform.scale = dimensions
@@ -155,20 +134,16 @@ struct ARParcelSceneView: UIViewRepresentable {
             cuboidEntity = entity
         }
 
-        // MARK: Gestures
-
         private func installGestures() {
             guard let arView, let cuboidEntity else { return }
+            // Offset matches the unit cube (bottom at y=0, top at y=1).
             cuboidEntity.collision = CollisionComponent(
                 shapes: [
                     .generateBox(size: SIMD3(1, 1, 1))
                         .offsetBy(translation: SIMD3(0, 0.5, 0))
                 ]
             )
-            installedGestures = arView.installGestures(
-                [.translation],
-                for: cuboidEntity
-            )
+            installedGestures = arView.installGestures([.translation], for: cuboidEntity)
             tapGesture?.isEnabled = false
             rotationGesture?.isEnabled = true
         }
@@ -185,17 +160,13 @@ struct ARParcelSceneView: UIViewRepresentable {
 
         @objc func handleRotation(_ gesture: UIRotationGestureRecognizer) {
             guard let cuboidEntity else { return }
-
             switch gesture.state {
             case .began:
                 let q = cuboidEntity.transform.rotation
                 rotationStartYaw = 2 * atan2(q.imag.y, q.real)
             case .changed:
                 let yaw = rotationStartYaw - Float(gesture.rotation)
-                cuboidEntity.transform.rotation = simd_quatf(
-                    angle: yaw,
-                    axis: SIMD3(0, 1, 0)
-                )
+                cuboidEntity.transform.rotation = simd_quatf(angle: yaw, axis: SIMD3(0, 1, 0))
             default:
                 break
             }
@@ -208,32 +179,14 @@ struct ARParcelSceneView: UIViewRepresentable {
             true
         }
 
-        // MARK: Helpers
-
         private func raycastWorldPosition(from location: CGPoint, in arView: ARView) -> SIMD3<Float>? {
-            if let strict = arView.makeRaycastQuery(
-                from: location,
-                allowing: .existingPlaneGeometry,
-                alignment: .horizontal
-            ),
+            if let strict = arView.makeRaycastQuery(from: location, allowing: .existingPlaneGeometry, alignment: .horizontal),
                let hit = arView.session.raycast(strict).first {
-                return SIMD3(
-                    hit.worldTransform.columns.3.x,
-                    hit.worldTransform.columns.3.y,
-                    hit.worldTransform.columns.3.z
-                )
+                return SIMD3(hit.worldTransform.columns.3.x, hit.worldTransform.columns.3.y, hit.worldTransform.columns.3.z)
             }
-            if let estimated = arView.makeRaycastQuery(
-                from: location,
-                allowing: .estimatedPlane,
-                alignment: .horizontal
-            ),
+            if let estimated = arView.makeRaycastQuery(from: location, allowing: .estimatedPlane, alignment: .horizontal),
                let hit = arView.session.raycast(estimated).first {
-                return SIMD3(
-                    hit.worldTransform.columns.3.x,
-                    hit.worldTransform.columns.3.y,
-                    hit.worldTransform.columns.3.z
-                )
+                return SIMD3(hit.worldTransform.columns.3.x, hit.worldTransform.columns.3.y, hit.worldTransform.columns.3.z)
             }
             return nil
         }

@@ -1,10 +1,5 @@
 import SwiftUI
 
-// MARK: - Local models (no WooShipping dependency)
-
-/// A carrier with a flat list of package presets. Mapped from WooShipping
-/// types at the call site — the AR view itself knows nothing about the
-/// shipping label domain.
 struct ParcelPresetCarrier: Identifiable {
     let id: String
     let name: String
@@ -19,24 +14,12 @@ struct ParcelPresetPackage: Identifiable {
     let height: String
 }
 
-// MARK: - View
-
-/// Carrier-flow AR view: drop a wireframe cuboid sized to a chosen carrier
-/// package preset, drag and rotate it over the real parcel to see whether it
-/// fits. Two `Picker`s let the user swap carrier and package without
-/// dismissing the AR view.
-///
-/// The cuboid itself isn't resizable in this flow — its dimensions are
-/// driven by whichever carrier package is currently selected.
 struct ARParcelFitCheckView: View {
-    let availableCarriers: [ParcelPresetCarrier]
     private let onCancel: () -> Void
     private let onConfirm: (ParcelPresetPackage) -> Void
 
     @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
-
-    @State private var selectedCarrierID: String?
-    @State private var selectedPackageID: String?
+    @State private var viewModel: ARParcelFitCheckViewModel
 
     @State private var isPlaced: Bool = false
     @State private var resetTrigger: Int = 0
@@ -45,24 +28,18 @@ struct ARParcelFitCheckView: View {
          initialPackageID: String? = nil,
          onCancel: @escaping () -> Void,
          onConfirm: @escaping (ParcelPresetPackage) -> Void) {
-        self.availableCarriers = availableCarriers
+        self._viewModel = State(initialValue: ARParcelFitCheckViewModel(
+            availableCarriers: availableCarriers,
+            initialPackageID: initialPackageID
+        ))
         self.onCancel = onCancel
         self.onConfirm = onConfirm
-
-        let initialCarrier = availableCarriers.first { carrier in
-            carrier.packages.contains(where: { $0.id == initialPackageID })
-        } ?? availableCarriers.first
-
-        self._selectedCarrierID = State(initialValue: initialCarrier?.id)
-        self._selectedPackageID = State(
-            initialValue: initialPackageID ?? initialCarrier?.packages.first?.id
-        )
     }
 
     var body: some View {
         ZStack {
             ARParcelSceneView(
-                dimensions: dimensionsInMeters,
+                dimensions: viewModel.dimensionsInMeters,
                 isPlaced: $isPlaced,
                 resetTrigger: resetTrigger
             )
@@ -90,6 +67,9 @@ struct ARParcelFitCheckView: View {
             .animation(.easeInOut(duration: 0.2), value: isPlaced)
         }
         .background(Color.black)
+        .onAppear {
+            viewModel.unit = dimensionsUnit.isEmpty ? "in" : dimensionsUnit
+        }
     }
 
     private var topToolbar: some View {
@@ -97,9 +77,7 @@ struct ARParcelFitCheckView: View {
             ARCuboidCircleIconButton(systemName: "xmark", action: onCancel)
             Spacer()
             if isPlaced {
-                ARCuboidCircleIconButton(systemName: "trash") {
-                    resetTrigger += 1
-                }
+                ARCuboidCircleIconButton(systemName: "trash") { resetTrigger += 1 }
             }
         }
         .padding(.horizontal, 16)
@@ -112,16 +90,12 @@ struct ARParcelFitCheckView: View {
             VStack(spacing: 12) {
                 pickers
 
-                if let package = currentPackage {
-                    Text("\(package.length) × \(package.width) × \(package.height) \(unit)")
-                        .font(.subheadline.monospacedDigit())
-                        .foregroundStyle(.white)
+                if let label = viewModel.dimensionsLabel {
+                    Text(label).font(.subheadline.monospacedDigit()).foregroundStyle(.white)
                 }
 
                 Button {
-                    if let package = currentPackage {
-                        onConfirm(package)
-                    }
+                    if let package = viewModel.currentPackage { onConfirm(package) }
                 } label: {
                     Text("Use this package")
                         .font(.headline)
@@ -130,7 +104,7 @@ struct ARParcelFitCheckView: View {
                         .background(.blue, in: Capsule())
                         .foregroundStyle(.black)
                 }
-                .disabled(currentPackage == nil)
+                .disabled(viewModel.currentPackage == nil)
             }
             .padding(16)
             .background(.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 16))
@@ -141,29 +115,25 @@ struct ARParcelFitCheckView: View {
     private var pickers: some View {
         VStack(spacing: 8) {
             HStack {
-                Text("Carrier")
-                    .font(.subheadline)
-                    .foregroundStyle(.white)
+                Text("Carrier").font(.subheadline).foregroundStyle(.white)
                 Spacer()
-                Picker("Carrier", selection: $selectedCarrierID) {
-                    ForEach(availableCarriers) { carrier in
+                Picker("Carrier", selection: $viewModel.selectedCarrierID) {
+                    ForEach(viewModel.availableCarriers) { carrier in
                         Text(carrier.name).tag(Optional(carrier.id))
                     }
                 }
                 .pickerStyle(.menu)
                 .tint(.blue)
-                .onChange(of: selectedCarrierID) { _, _ in
-                    selectedPackageID = currentCarrierPackages.first?.id
+                .onChange(of: viewModel.selectedCarrierID) { _, newID in
+                    viewModel.selectCarrier(newID)
                 }
             }
 
             HStack {
-                Text("Package")
-                    .font(.subheadline)
-                    .foregroundStyle(.white)
+                Text("Package").font(.subheadline).foregroundStyle(.white)
                 Spacer()
-                Picker("Package", selection: $selectedPackageID) {
-                    ForEach(currentCarrierPackages) { package in
+                Picker("Package", selection: $viewModel.selectedPackageID) {
+                    ForEach(viewModel.currentCarrierPackages) { package in
                         Text(package.name).tag(Optional(package.id))
                     }
                 }
@@ -171,37 +141,5 @@ struct ARParcelFitCheckView: View {
                 .tint(.blue)
             }
         }
-    }
-
-    // MARK: - Selection helpers
-
-    private var currentCarrier: ParcelPresetCarrier? {
-        availableCarriers.first { $0.id == selectedCarrierID }
-    }
-
-    private var currentCarrierPackages: [ParcelPresetPackage] {
-        currentCarrier?.packages ?? []
-    }
-
-    private var currentPackage: ParcelPresetPackage? {
-        currentCarrierPackages.first { $0.id == selectedPackageID }
-    }
-
-    private var unit: String {
-        dimensionsUnit.isEmpty ? "in" : dimensionsUnit
-    }
-
-    private var dimensionsInMeters: SIMD3<Float> {
-        let factor = DimensionUnitConversion.metersPerUnit(unit)
-        let defaults = DimensionUnitConversion.defaultDimensions(for: unit)
-        guard let package = currentPackage else {
-            return SIMD3(defaults.length * factor,
-                         defaults.height * factor,
-                         defaults.width * factor)
-        }
-        let l = (Float(package.length) ?? defaults.length) * factor
-        let w = (Float(package.width) ?? defaults.width) * factor
-        let h = (Float(package.height) ?? defaults.height) * factor
-        return SIMD3(l, h, w)
     }
 }

@@ -132,7 +132,7 @@ private extension ProductImagesGalleryViewController {
             "Remove",
             comment: "Confirm button on the alert when the user taps to delete a Product image"
         ), style: .destructive) { [weak self] _ in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             if let index = self.currentImageIndex {

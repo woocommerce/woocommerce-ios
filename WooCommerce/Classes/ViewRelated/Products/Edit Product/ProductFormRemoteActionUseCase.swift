@@ -150,7 +150,7 @@ final class ProductFormRemoteActionUseCase {
         }
 
         group.notify(queue: .main) {
-            guard let productResult = productResult, let passwordResult = passwordResult else {
+            guard let productResult, let passwordResult else {
                 assertionFailure("Unexpected nil result after updating product and password remotely")
                 onCompletion(.failure(.unexpected))
                 return

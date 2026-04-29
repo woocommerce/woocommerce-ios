@@ -59,7 +59,7 @@ struct FeatureAnnouncementCardView: View {
             }
         }
         .overlay(alignment: .topTrailing) {
-            if let dismiss = dismiss {
+            if let dismiss {
                 Menu {
                     Button(Localization.hideContent) {
                         viewModel.dontShowAgainTapped()

@@ -13,7 +13,7 @@ extension ShippingLabelAddress {
     var fullNameWithCompanyAndAddress: String {
         var output: [String] = [fullNameWithCompany]
 
-        if let formattedPostalAddress = formattedPostalAddress, formattedPostalAddress.isNotEmpty {
+        if let formattedPostalAddress, formattedPostalAddress.isNotEmpty {
             output.append(formattedPostalAddress)
         }
 

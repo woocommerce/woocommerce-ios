@@ -22,7 +22,7 @@ final class ProductPriceSettingsValidator {
     /// Returns the decimal value from a price string.
     ///
     func getDecimalPrice(_ price: String?) -> NSDecimalNumber? {
-        guard let price = price else {
+        guard let price else {
             return nil
         }
         return currencyFormatter.convertToDecimal(price)

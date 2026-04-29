@@ -15,7 +15,7 @@ final class WeightFormatter {
         self.weightUnit = weightUnit
         formatter = MeasurementFormatter()
         formatter.unitOptions = .providedUnit
-        if let locale = locale {
+        if let locale {
             formatter.locale = locale
         }
     }
@@ -70,7 +70,7 @@ private extension WeightFormatter {
     }
 
     func coalesceWeight(_ weight: String?) -> String {
-        guard let weight = weight, weight.isNotEmpty else {
+        guard let weight, weight.isNotEmpty else {
             return "0"
         }
         return weight

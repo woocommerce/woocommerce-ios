@@ -34,7 +34,7 @@ final class CardPresentModalNonRetryableErrorEmailSent: CardPresentPaymentsModal
 
 
     var accessibilityLabel: String? {
-        guard let bottomTitle = bottomTitle else {
+        guard let bottomTitle else {
             return topTitle
         }
 

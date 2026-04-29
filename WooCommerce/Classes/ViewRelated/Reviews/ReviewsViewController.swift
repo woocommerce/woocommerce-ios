@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 // MARK: - ReviewsViewController
 //
@@ -104,10 +105,16 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 
     // MARK: - Initializers
     //
-    convenience init(siteID: Int64) {
+    convenience init(siteID: Int64,
+                     stores: StoresManager = ServiceLocator.stores,
+                     pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+        let supportsWPComNotifications = pushNotesManager.supportsWPComNotifications(for: siteID, stores: stores)
         self.init(viewModel: ReviewsViewModel(siteID: siteID,
                                               data: ReviewsDataSource(siteID: siteID,
-                                                                             customizer: GlobalReviewsDataSourceCustomizer())))
+                                                                      customizer: GlobalReviewsDataSourceCustomizer(),
+                                                                      supportsWPComNotifications: supportsWPComNotifications),
+                                              stores: stores,
+                                              supportsWPComNotifications: supportsWPComNotifications))
     }
 
     init(viewModel: ViewModel) {
@@ -267,11 +274,11 @@ private extension ReviewsViewController {
             let tracks = ServiceLocator.analytics
             tracks.track(.reviewsMarkAllRead)
 
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
                 self.hapticGenerator.notificationOccurred(.error)
 
@@ -521,7 +528,7 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState(pageNumber: pageNumber)
         viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.transitionToResultsUpdatedState()
             if let error = self.viewModel.dataLoadingError {
                 self.showTopBannerView(for: error)

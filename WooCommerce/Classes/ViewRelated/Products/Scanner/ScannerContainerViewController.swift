@@ -5,7 +5,7 @@ final class ScannerContainerViewController: UIViewController {
     private lazy var barcodeScannerChildViewController: CodeScannerViewController = {
         return CodeScannerViewController(instructionText: instructionText,
                                             format: .barcode { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             guard self.hasDetectedBarcode == false else {
                 return
             }

@@ -130,7 +130,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.posProductsOnly: String(posProductsOnly)
         ]
 
-        if let includeStatus = includeStatus {
+        if let includeStatus {
             parameters[ParameterKey.includeStatus] = includeStatus
         }
 

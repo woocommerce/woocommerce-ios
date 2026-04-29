@@ -250,7 +250,7 @@ private extension PaymentCaptureOrchestrator {
             return
         }
 
-        guard let walletSuppressionRequestToken = walletSuppressionRequestToken, walletSuppressionRequestToken != 0 else {
+        guard let walletSuppressionRequestToken, walletSuppressionRequestToken != 0 else {
             return
         }
 
@@ -317,7 +317,9 @@ private extension PaymentCaptureOrchestrator {
             return nil
         }
 
-        let fee = orderTotal.multiplying(by: Constants.canadaPercentageFee).adding(Constants.canadaFlatFee)
+        let fee = orderTotal.multiplying(by: Constants.canadaPercentageFee)
+            .adding(Constants.canadaFlatFee)
+            .adding(Constants.interacFlatFee)
 
         let numberHandler = NSDecimalNumberHandler(roundingMode: .plain,
                                                    scale: 2,
@@ -354,8 +356,12 @@ private extension PaymentCaptureOrchestrator {
 
 private extension PaymentCaptureOrchestrator {
     enum Constants {
-        static let canadaFlatFee = NSDecimalNumber(string: "0.15")
-        static let canadaPercentageFee = NSDecimalNumber(0)
+        // The base Canada fee and percentage are overwritten by Transact Server at the
+        // capture step for non-Interac payments. Interac payments have no capture step,
+        // so the full combined fee (base + Interac + percentage) is what Stripe charges.
+        static let canadaFlatFee = NSDecimalNumber(string: "0.05")
+        static let interacFlatFee = NSDecimalNumber(string: "0.15")
+        static let canadaPercentageFee = NSDecimalNumber(string: "0.027")
     }
 }
 

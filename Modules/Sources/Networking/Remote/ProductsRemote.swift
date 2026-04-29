@@ -811,7 +811,7 @@ private extension ProductsRemote {
     /// Returns the category Id in string format, or empty string if the product category is nil
     ///
     func filterProductCategoryParemeterValue(from productCategory: ProductCategory?) -> String {
-        guard let productCategory = productCategory else {
+        guard let productCategory else {
             return ""
         }
 

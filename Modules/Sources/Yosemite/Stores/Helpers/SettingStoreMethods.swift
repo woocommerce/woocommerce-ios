@@ -36,7 +36,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
         siteSettingsRemote.loadGeneralSettings(for: siteID) { [weak self] (settings, error) in
-            guard let settings = settings else {
+            guard let settings else {
                 onCompletion(error)
                 return
             }
@@ -51,7 +51,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
         siteSettingsRemote.loadProductSettings(for: siteID) { [weak self] (settings, error) in
-            guard let settings = settings else {
+            guard let settings else {
                 onCompletion(error)
                 return
             }
@@ -80,7 +80,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         siteSettingsRemote.loadSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -97,7 +97,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         siteSettingsRemote.updateSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons, value: SettingValue.yes) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -113,7 +113,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         siteSettingsRemote.loadSetting(for: siteID, settingGroup: .advanced, settingID: SettingKeys.analytics) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -133,7 +133,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
                                             settingGroup: .advanced,
                                             settingID: SettingKeys.analytics,
                                             value: SettingValue.yes) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -149,7 +149,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping (Result<TaxBasedOnSetting, Error>) -> Void) {
         siteSettingsRemote.loadSetting(for: siteID, settingGroup: .custom("tax"), settingID: SettingKeys.taxBasedOn) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {

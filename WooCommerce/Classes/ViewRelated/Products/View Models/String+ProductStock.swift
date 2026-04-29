@@ -20,7 +20,7 @@ extension String {
 
         switch stockStatus {
         case .inStock:
-            if let stockQuantity = stockQuantity, manageStock {
+            if let stockQuantity, manageStock {
                 let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
                 return String.localizedStringWithFormat(Localization.stockQuantity, localizedStockQuantity)
             } else {

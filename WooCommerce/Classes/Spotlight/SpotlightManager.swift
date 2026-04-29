@@ -25,7 +25,7 @@ struct SpotlightManager {
     }
 
     private static func trackActivityBeingOpenedIfNecessary(with type: WooActivityType?) {
-        guard let type = type else {
+        guard let type else {
             return
         }
 

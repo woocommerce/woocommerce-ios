@@ -119,7 +119,7 @@ private extension RefundConfirmationViewController {
 
     func configureButtonTableFooterView() {
         tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.onRefundButtonAction?()
             self.viewModel.trackSummaryButtonTapped()
         }

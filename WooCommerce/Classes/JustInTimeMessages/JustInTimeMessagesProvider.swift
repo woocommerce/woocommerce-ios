@@ -31,7 +31,7 @@ final class JustInTimeMessagesProvider {
                 siteID: siteID,
                 screen: source,
                 hook: .adminNotices) { [weak self] result in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     switch result {
                     case let .success(messages):
                         guard let message = messages.first else {

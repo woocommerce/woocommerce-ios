@@ -87,29 +87,29 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleHistoricalOrdersi1:
             return true
-        case .pointOfSaleLocalCatalogi1:
-            return true
         case .pointOfSaleFTSSearch:
             return true
         case .ciabBookings:
             return !buildConfig.isProduction
         case .pointOfSaleCatalogAPI:
-            return false
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleRefundsi1:
             return true
-        case .pointOfSaleBookings:
-            return true
-        case .selfDrivenPushTokenWPCom:
-            return false
-        case .selfDrivenPushTokenAppPasswords:
+        case .selfDrivenPushToken:
             return false
         case .clientSideDashboardBanner:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .configurableStoreStatsWidgets:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
             return false
         case .ciabBookingReschedule:
             return !buildConfig.isProduction
         case .loggedOutFFPanel:
+            return !buildConfig.isProduction
+        case .aiSupportChat:
+            return !buildConfig.isProduction
+        case .wooAIAssistant:
             return !buildConfig.isProduction
         default:
             return true

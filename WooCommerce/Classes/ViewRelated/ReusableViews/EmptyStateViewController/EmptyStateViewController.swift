@@ -121,7 +121,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     private var topBannerView: TopBannerView?
 
     convenience init(style: Style = .basic, configuration: Config? = nil, zendeskManager: ZendeskManagerProtocol? = nil) {
-        if let zendeskManager = zendeskManager {
+        if let zendeskManager {
             self.init(style: style, configuration: configuration, zendesk: zendeskManager)
         } else {
             #if !targetEnvironment(macCatalyst)
@@ -158,7 +158,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
 
-        if let configuration = configuration {
+        if let configuration {
             configure(configuration)
         }
     }
@@ -188,19 +188,19 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
             switch config {
             case .withLink(_, _, _, _, let linkURL, _):
                 return { [weak self] in
-                    if let self = self {
+                    if let self {
                         WebviewHelper.launch(linkURL, with: self)
                     }
                 }
             case .withButton(_, _, _, _, let tapClosure, _):
                 return { [weak self] in
-                    if let self = self {
+                    if let self {
                         tapClosure(self.actionButton)
                     }
                 }
             case .withSupportRequest:
                 return { [weak self] in
-                    if let self = self {
+                    if let self {
                         let supportForm = SupportFormHostingController(viewModel: .init())
                         supportForm.show(from: self)
                     }

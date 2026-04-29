@@ -120,7 +120,7 @@ protocol PointOfSaleOrderControllerProtocol {
 
     @MainActor
     func collectCashPayment(changeDueAmount: String?) async throws {
-        guard let order = order else {
+        guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
 

@@ -47,7 +47,7 @@ private extension ProductTagStore {
 
         // Start fetching the provided initial page
         synchronizeProductTags(siteID: siteID, pageNumber: fromPageNumber, pageSize: Constants.defaultMaxPageSize) { [weak self] (result) in
-            guard let self = self  else {
+            guard let self  else {
                 return
             }
 

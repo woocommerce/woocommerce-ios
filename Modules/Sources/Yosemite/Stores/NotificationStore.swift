@@ -56,17 +56,21 @@ public class NotificationStore: Store {
             updateReadStatus(for: noteIDs, read: read, onCompletion: onCompletion)
         case .updateLocalDeletedStatus(let noteID, let deleteInProgress, let onCompletion):
             updateDeletedStatus(noteID: noteID, deleteInProgress: deleteInProgress, onCompletion: onCompletion)
-        case let .registerDeviceForSelfDrivenPushNotifications(siteID, device, applicationID, deviceLocale, appVersion, onCompletion):
+        case let .registerDeviceForSelfDrivenPushNotifications(siteID, device, applicationID, deviceLocale, appVersion, availableAsRESTRequest, onCompletion):
             registerDeviceForSelfDrivenPushNotifications(
                 siteID: siteID,
                 device: device,
                 applicationID: applicationID,
                 deviceLocale: deviceLocale,
                 appVersion: appVersion,
+                availableAsRESTRequest: availableAsRESTRequest,
                 onCompletion: onCompletion
             )
-        case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, onCompletion):
-            unregisterFromSelfDrivenPushNotifications(siteID: siteID, tokenID: tokenID, onCompletion: onCompletion)
+        case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, availableAsRESTRequest, onCompletion):
+            unregisterFromSelfDrivenPushNotifications(siteID: siteID,
+                                                      tokenID: tokenID,
+                                                      availableAsRESTRequest: availableAsRESTRequest,
+                                                      onCompletion: onCompletion)
         }
     }
 }
@@ -101,6 +105,7 @@ private extension NotificationStore {
                                                       applicationID: String,
                                                       deviceLocale: String,
                                                       appVersion: String,
+                                                      availableAsRESTRequest: Bool,
                                                       onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         Task { @MainActor in
             do {
@@ -109,7 +114,8 @@ private extension NotificationStore {
                     device: device,
                     applicationID: applicationID,
                     deviceLocale: deviceLocale,
-                    appVersion: appVersion
+                    appVersion: appVersion,
+                    availableAsRESTRequest: availableAsRESTRequest
                 )
                 onCompletion(.success(tokenID))
             } catch {
@@ -122,10 +128,15 @@ private extension NotificationStore {
     ///
     func unregisterFromSelfDrivenPushNotifications(siteID: Int64,
                                                    tokenID: Int64,
+                                                   availableAsRESTRequest: Bool,
                                                    onCompletion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
-                try await devicesRemote.unregisterFromSelfDrivenPushNotifications(siteID: siteID, tokenID: tokenID)
+                try await devicesRemote.unregisterFromSelfDrivenPushNotifications(
+                    siteID: siteID,
+                    tokenID: tokenID,
+                    availableAsRESTRequest: availableAsRESTRequest
+                )
                 onCompletion(.success(()))
             } catch {
                 onCompletion(.failure(error))
@@ -138,7 +149,7 @@ private extension NotificationStore {
     ///
     func synchronizeNotifications(onCompletion: @escaping (Error?) -> Void) {
         remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] (hashes, error) in
-            guard let hashes = hashes else {
+            guard let hashes else {
                 onCompletion(error)
                 return
             }
@@ -151,7 +162,7 @@ private extension NotificationStore {
                 }
 
                 self?.remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { result in
-                    guard let self = self else {
+                    guard let self else {
                         return
                     }
                     switch result {
@@ -176,7 +187,7 @@ private extension NotificationStore {
     ///
     func synchronizeNotification(with noteID: Int64, onCompletion: @escaping (Note?, Error?) -> Void) {
         remote.loadNotes(noteIDs: [noteID]) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             switch result {

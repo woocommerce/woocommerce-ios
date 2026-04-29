@@ -43,8 +43,10 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     private let mockedDeviceID: String?
-    let siteIDsRegisteredForWooPNs: [Int64]
+    let wooPushNotificationToken: String?
+    private(set) var siteIDsRegisteredForWooPNs: [Int64]
     let hasStoredSiteIDsRegisteredForWooPNs: Bool
+    private(set) var unmarkedSiteIDs: [Int64] = []
     var siteIDsRegisteredForWooPNsPublisher: AnyPublisher<[Int64], Never> {
         siteIDsRegisteredForWooPNsSubject.eraseToAnyPublisher()
     }
@@ -68,14 +70,23 @@ final class MockPushNotificationsManager: PushNotesManager {
     private var authorizationCompletion: ((Bool) -> Void)?
     var onRequestLocalNotificationCalled: (() -> Void)?
     var registerDeviceAndWaitForTokenAcceptanceResult: Result<Int64, Error> = .success(1)
+    var registerSiteForSelfDrivenPushNotificationsResult: Result<Void, Error> = .success(())
+    private(set) var registeredSiteIDsForSelfDrivenPushNotifications: [Int64] = []
 
     init(mockedDeviceID: String? = nil,
+         wooPushNotificationToken: String? = nil,
          siteIDsRegisteredForWooPNs: [Int64] = [],
          hasStoredSiteIDsRegisteredForWooPNs: Bool? = nil) {
         self.mockedDeviceID = mockedDeviceID
+        self.wooPushNotificationToken = wooPushNotificationToken
         self.siteIDsRegisteredForWooPNs = siteIDsRegisteredForWooPNs
         self.hasStoredSiteIDsRegisteredForWooPNs = hasStoredSiteIDsRegisteredForWooPNs ?? !siteIDsRegisteredForWooPNs.isEmpty
         self.siteIDsRegisteredForWooPNsSubject = CurrentValueSubject(siteIDsRegisteredForWooPNs)
+    }
+
+    func unmarkSiteAsRegisteredForWooPNs(_ siteID: Int64) {
+        unmarkedSiteIDs.append(siteID)
+        siteIDsRegisteredForWooPNs.removeAll { $0 == siteID }
     }
 
     func resetBadgeCount(type: Note.Kind) {
@@ -95,6 +106,15 @@ final class MockPushNotificationsManager: PushNotesManager {
         // Yield to allow MainActor scheduling to settle
         await Task.yield()
         return try registerDeviceAndWaitForTokenAcceptanceResult.get()
+    }
+
+    @MainActor
+    func registerSiteForSelfDrivenPushNotifications(_ siteID: Int64) async throws {
+        registeredSiteIDsForSelfDrivenPushNotifications.append(siteID)
+        try registerSiteForSelfDrivenPushNotificationsResult.get()
+        if !siteIDsRegisteredForWooPNs.contains(siteID) {
+            siteIDsRegisteredForWooPNs.append(siteID)
+        }
     }
 
     func registerForRemoteNotifications() {

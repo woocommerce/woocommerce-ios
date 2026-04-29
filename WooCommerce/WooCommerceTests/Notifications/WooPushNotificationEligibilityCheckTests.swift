@@ -19,9 +19,9 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - checkM1Eligibility
+    // MARK: - checkEligibility
 
-    func test_checkM1Eligibility_returns_true_when_remote_flag_is_enabled() async {
+    func test_checkEligibility_returns_true_when_remote_flag_is_enabled() async {
         // Given
         let checker = WooPushNotificationEligibilityCheck(
             featureFlagService: featureFlagService,
@@ -30,13 +30,13 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
         mockRemoteFeatureFlagAction(isEnabled: true)
 
         // When
-        let result = await checker.checkM1Eligibility()
+        let result = await checker.checkEligibility()
 
         // Then
         XCTAssertTrue(result)
     }
 
-    func test_checkM1Eligibility_returns_false_when_remote_flag_is_disabled() async {
+    func test_checkEligibility_returns_false_when_remote_flag_is_disabled() async {
         // Given
         let checker = WooPushNotificationEligibilityCheck(
             featureFlagService: featureFlagService,
@@ -45,15 +45,15 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
         mockRemoteFeatureFlagAction(isEnabled: false)
 
         // When
-        let result = await checker.checkM1Eligibility()
+        let result = await checker.checkEligibility()
 
         // Then
         XCTAssertFalse(result)
     }
 
-    func test_checkM1Eligibility_passes_local_feature_flag_as_default_value() async {
+    func test_checkEligibility_passes_local_feature_flag_as_default_value() async {
         // Given
-        featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
         let checker = WooPushNotificationEligibilityCheck(
             featureFlagService: featureFlagService,
             stores: storesManager
@@ -69,13 +69,13 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
         }
 
         // When
-        _ = await checker.checkM1Eligibility()
+        _ = await checker.checkEligibility()
 
         // Then
         XCTAssertEqual(capturedDefaultValue, true)
     }
 
-    func test_checkM1Eligibility_passes_correct_remote_feature_flag_key() async {
+    func test_checkEligibility_passes_correct_remote_feature_flag_key() async {
         // Given
         let checker = WooPushNotificationEligibilityCheck(
             featureFlagService: featureFlagService,
@@ -92,13 +92,13 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
         }
 
         // When
-        _ = await checker.checkM1Eligibility()
+        _ = await checker.checkEligibility()
 
         // Then
         XCTAssertEqual(capturedFeatureFlag, .selfDrivenPushNotificationsM1)
     }
 
-    func test_checkM1Eligibility_uses_cache() async {
+    func test_checkEligibility_uses_cache() async {
         // Given
         let checker = WooPushNotificationEligibilityCheck(
             featureFlagService: featureFlagService,
@@ -115,7 +115,7 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
         }
 
         // When
-        _ = await checker.checkM1Eligibility()
+        _ = await checker.checkEligibility()
 
         // Then
         XCTAssertEqual(capturedUseCache, true)

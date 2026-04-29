@@ -56,10 +56,10 @@ final class ProductSettingsViewModel {
             /// and user is authenticated with WP.com, enter here, otherwise we skip this.
             else if (product.password == nil || product.password?.isEmpty == true) && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
                 retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] (password, error) in
-                    guard let self = self else {
+                    guard let self else {
                         return
                     }
-                    guard error == nil, let password = password else {
+                    guard error == nil, let password else {
                         return
                     }
                     self.onPasswordRetrieved?(password)
@@ -77,7 +77,7 @@ final class ProductSettingsViewModel {
         let section = sections[indexPath.section]
         let row = section.rows[indexPath.row]
         row.handleTap(sourceViewController: sourceViewController) { [weak self] (settings) in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.productSettings = settings

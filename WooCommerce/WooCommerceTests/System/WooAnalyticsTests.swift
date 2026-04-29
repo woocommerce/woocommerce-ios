@@ -162,7 +162,7 @@ class WooAnalyticsTests: XCTestCase {
 
     func test_events_when_logged_in_include_site_properties() {
         // Given
-        guard let testingProvider = testingProvider else {
+        guard let testingProvider else {
             return XCTFail("Testing provider not available")
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
@@ -204,7 +204,7 @@ class WooAnalyticsTests: XCTestCase {
 
     func test_events_when_logged_out_do_not_include_site_properties() {
         // Given
-        guard let testingProvider = testingProvider else {
+        guard let testingProvider else {
             return XCTFail("Testing provider not available")
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false,
@@ -242,7 +242,7 @@ class WooAnalyticsTests: XCTestCase {
 
     func test_track_Trackable_when_authenticated_then_includes_site_properties() {
         // Given
-        guard let testingProvider = testingProvider else {
+        guard let testingProvider else {
             return XCTFail("Testing provider not available")
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
@@ -267,7 +267,7 @@ class WooAnalyticsTests: XCTestCase {
 
     func test_track_Trackable_when_not_authenticated_then_skips_site_properties() {
         // Given
-        guard let testingProvider = testingProvider else {
+        guard let testingProvider else {
             return XCTFail("Testing provider not available")
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))

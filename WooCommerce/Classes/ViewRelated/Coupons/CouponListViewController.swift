@@ -76,7 +76,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
         viewModel.$state
             .removeDuplicates()
             .sink { [weak self] state in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.resetViews()
                 switch state {
                 case .empty:
@@ -111,7 +111,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
 
         viewModel.$couponViewModels
             .sink { [weak self] viewModels in
-                guard let self = self else { return }
+                guard let self else { return }
                 var snapshot = NSDiffableDataSourceSnapshot<Section, CouponListViewModel.CellViewModel>()
                 snapshot.appendSections([.main])
                 snapshot.appendItems(viewModels, toSection: Section.main)
@@ -162,7 +162,7 @@ private extension CouponListViewController {
             self?.refreshCouponList()
         })
         let addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.dismiss(animated: true)
         })
         present(addEditHostingController, animated: true)
@@ -288,7 +288,7 @@ private extension CouponListViewController {
     /// Removes EmptyStateViewController child view controller if applicable.
     ///
     func removeNoResultsOverlay() {
-        guard let emptyStateViewController = emptyStateViewController,
+        guard let emptyStateViewController,
               emptyStateViewController.parent == self
         else { return }
 

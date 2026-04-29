@@ -56,42 +56,4 @@ struct POSPaymentFlowConfigurationTests {
         #expect(called == true)
     }
 
-    // MARK: - Bookings Configuration
-
-    @Test("bookings config has 'Done' success title")
-    func bookings_config_has_done_success_title() {
-        let config = POSPaymentFlowConfiguration.bookings(onDismiss: {})
-        #expect(config.successAction.title == "Done")
-    }
-
-    @Test("bookings config has 'Back to Booking' capture error exit title")
-    func bookings_config_has_back_to_booking_capture_error_exit_title() {
-        let config = POSPaymentFlowConfiguration.bookings(onDismiss: {})
-        #expect(config.captureErrorExitAction.title == "Back to booking")
-    }
-
-    @Test("bookings config has 'Back to Booking' intent creation error exit title")
-    func bookings_config_has_back_to_booking_intent_creation_error_exit_title() {
-        let config = POSPaymentFlowConfiguration.bookings(onDismiss: {})
-        #expect(config.intentCreationErrorExitAction.title == "Back to booking")
-    }
-
-    @Test("bookings config has close button")
-    func bookings_config_has_close_button() {
-        let config = POSPaymentFlowConfiguration.bookings(onDismiss: {})
-        #expect(config.showInitialCloseButton == true)
-    }
-
-    @Test("bookings config all actions call onDismiss")
-    @MainActor
-    func bookings_config_all_actions_call_onDismiss() {
-        var dismissCount = 0
-        let config = POSPaymentFlowConfiguration.bookings(onDismiss: { dismissCount += 1 })
-
-        config.successAction.action()
-        config.captureErrorExitAction.action()
-        config.intentCreationErrorExitAction.action()
-
-        #expect(dismissCount == 3)
-    }
 }

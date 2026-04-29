@@ -179,7 +179,7 @@ private extension ShippingLabelSuggestedAddressViewController {
             validationError: nil,
             countries: countries,
             completion: { [weak self] (newShippingLabelAddress) in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.onCompletion(newShippingLabelAddress)
                 self.navigationController?.popViewController(animated: true)
             })
@@ -302,7 +302,7 @@ private extension ShippingLabelSuggestedAddressViewController {
     }
 
     enum Constants {
-        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        static let headerContainerInsets = UIEdgeInsets.zero
     }
 
     enum SelectedAddress {

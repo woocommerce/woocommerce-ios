@@ -295,7 +295,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
 
         imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             onProductSave(result)
             if case let .failure(error) = result {
                 self.errorsSubject.send(.init(siteID: key.siteID,
@@ -367,7 +367,7 @@ private extension ProductImageUploader {
 
     func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
-            guard let self = self else { return }
+            guard let self else { return }
 
             if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
                 // Update the states in userDefaultsStatuses

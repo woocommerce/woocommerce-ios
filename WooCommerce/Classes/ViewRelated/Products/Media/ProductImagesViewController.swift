@@ -192,7 +192,7 @@ private extension ProductImagesViewController {
 
     func configureProductImagesObservation() {
         productImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -329,7 +329,7 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onCameraCaptureCompletion(asset: PHAsset?, error: Error?) {
-        guard let asset = asset else {
+        guard let asset else {
             displayErrorAlert(error: error)
             return
         }

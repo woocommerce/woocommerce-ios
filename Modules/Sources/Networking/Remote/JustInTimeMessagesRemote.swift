@@ -46,7 +46,7 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
     private func getParameters(messagePath: JustInTimeMessagesRemote.MessagePath,
                                     query: [String: String?]?) -> [String: String] {
         var parameters = [ParameterKey.messagePath: messagePath.requestValue]
-        if let query = query,
+        if let query,
            let queryString = justInTimeMessageQuery(from: query) {
             parameters[ParameterKey.query] = queryString
         }

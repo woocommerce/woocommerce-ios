@@ -129,7 +129,7 @@ private extension AddAttributeOptionsViewController {
 
     func observeViewModel() {
         viewModel.onChange = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.renderViewModel()
         }
     }
@@ -291,7 +291,7 @@ private extension AddAttributeOptionsViewController {
                                                          onTextChange: nil,
                                                          onTextDidBeginEditing: nil,
                                                          onTextDidReturn: { [weak self] text in
-                                                            if let text = text {
+                                                            if let text {
                                                                 self?.viewModel.addNewOption(name: text)
                                                             }
 
@@ -345,7 +345,7 @@ extension AddAttributeOptionsViewController {
 
     @objc private func nextButtonPressed() {
         viewModel.updateProductAttributes { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case let .success(product):
                 self.onCompletion(product)
@@ -410,7 +410,7 @@ extension AddAttributeOptionsViewController {
 
         alertController.addCancelActionWithTitle(Localization.cancelAction)
         alertController.addDestructiveActionWithTitle(Localization.removeAction) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.analytics.track(event: WooAnalyticsEvent.Variations.removeAttributeButtonTapped(productID: self.viewModel.product.productID))
             self.removeCurrentAttribute()
         }
@@ -422,7 +422,7 @@ extension AddAttributeOptionsViewController {
     ///
     func removeCurrentAttribute() {
         viewModel.removeCurrentAttribute { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case let .success(product):
                 self.onCompletion(product)

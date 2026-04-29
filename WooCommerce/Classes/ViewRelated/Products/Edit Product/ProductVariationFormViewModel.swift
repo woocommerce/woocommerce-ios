@@ -132,7 +132,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         self.isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
         self.productImagesUploader = productImagesUploader
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
-            guard let self = self else { return }
+            guard let self else { return }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
     }
@@ -404,7 +404,7 @@ extension ProductVariationFormViewModel {
 extension ProductVariationFormViewModel {
     func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
         let updateAction = ProductVariationAction.updateProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             switch result {
@@ -434,7 +434,7 @@ extension ProductVariationFormViewModel {
         let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
             switch result {
             case .success:
-                if let self = self {
+                if let self {
                     self.onVariationDeletion?(self.productVariation.productVariation)
                 }
                 onCompletion(.success(()))
@@ -457,7 +457,7 @@ extension ProductVariationFormViewModel {
                     .variation(productID: productVariation.productVariation.productID,
                                variationID: productVariation.productVariation.productVariationID),
                                                                         isLocalID: !productVariation.existsRemotely)) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case .success(let images):
                     let currentProduct = self.productVariation

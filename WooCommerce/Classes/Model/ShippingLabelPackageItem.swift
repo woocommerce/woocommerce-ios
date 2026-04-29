@@ -61,12 +61,12 @@ extension ShippingLabelPackageItem {
         let product = products.first { $0.productID == orderItem.productID }
         let productVariation = productVariations.first { $0.productVariationID == orderItem.variationID }
 
-        if isVariation, let productVariation = productVariation, !productVariation.virtual {
+        if isVariation, let productVariation, !productVariation.virtual {
             self.productOrVariationID = productVariation.productVariationID
             self.weight = Double(productVariation.weight ?? "0") ?? 0
             self.dimensions = productVariation.dimensions
             self.imageURL = productVariation.imageURL
-        } else if let product = product, !product.virtual {
+        } else if let product, !product.virtual {
             self.productOrVariationID = product.productID
             self.weight = Double(product.weight ?? "0") ?? 0
             self.dimensions = product.dimensions

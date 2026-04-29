@@ -45,6 +45,10 @@ only_rules:
   # Prefer checking `isEmpty` over comparing `string` to `""`.
   - empty_string
 
+  # When calling the `joined` method on an array of strings, omit an
+  # explicit empty-string separator since that is the default.
+  - joined_default_parameter
+
   - line_length
 
   # MARK comment should be in valid format.
@@ -55,6 +59,15 @@ only_rules:
   - opening_brace
 
   - overridden_super_call
+
+  # Prefer the shorthand `if let foo` form over `if let foo = foo`.
+  - shorthand_optional_binding
+
+  # Prefer `0` over explicit type initializers like `CGFloat(0)`.
+  - prefer_zero_over_explicit_init
+
+  # Prefer `someBool.toggle()` over `someBool = !someBool`.
+  - toggle_bool
 
   # Files should have a single trailing newline.
   - trailing_newline

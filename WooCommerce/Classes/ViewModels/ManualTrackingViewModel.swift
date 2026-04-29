@@ -151,14 +151,14 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 //
 extension AddTrackingViewModel {
     func saveSelectedShipmentProvider() {
-        guard let shipmentProvider = shipmentProvider else {
+        guard let shipmentProvider else {
             return
         }
 
         let siteID = order.siteID
 
         let action = AppSettingsAction.addTrackingProvider(siteID: siteID, providerName: shipmentProvider.name) { error in
-            guard let error = error else {
+            guard let error else {
                 return
             }
 
@@ -172,7 +172,7 @@ extension AddTrackingViewModel {
         let siteID = order.siteID
 
         let action = AppSettingsAction.loadTrackingProvider(siteID: siteID) { [weak self] (provider, providerGroup, error) in
-            guard let error = error else {
+            guard let error else {
                 self?.shipmentProvider = provider
                 self?.shipmentProviderGroupName = providerGroup?.name
                 return
@@ -238,8 +238,8 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     }
 
     var canCommit: Bool {
-        guard let providerName = providerName,
-                let trackingNumber = trackingNumber else {
+        guard let providerName,
+                let trackingNumber else {
             return false
         }
         return providerName.isNotEmpty && trackingNumber.isNotEmpty
@@ -265,14 +265,14 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
 
 extension AddCustomTrackingViewModel {
     func saveSelectedShipmentProvider() {
-        guard let providerName = providerName else {
+        guard let providerName else {
             return
         }
 
         let siteID = order.siteID
 
         let action = AppSettingsAction.addCustomTrackingProvider(siteID: siteID, providerName: providerName, providerURL: trackingLink) { error in
-            guard let error = error else {
+            guard let error else {
                 return
             }
 
@@ -286,7 +286,7 @@ extension AddCustomTrackingViewModel {
         let siteID = order.siteID
 
         let action = AppSettingsAction.loadCustomTrackingProvider(siteID: siteID) { [weak self] (provider, error) in
-            guard let error = error else {
+            guard let error else {
                 self?.providerName = provider?.name
                 self?.trackingLink = provider?.url
                 return

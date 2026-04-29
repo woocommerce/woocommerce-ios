@@ -43,7 +43,7 @@ final class CardReaderSettingsKnownReadersStorageTests: XCTestCase {
         var recordedObservations: [String] = []
 
         cancellable = readerList.knownReader.sink(receiveValue: { readerID in
-            guard let readerID = readerID else {
+            guard let readerID else {
                 return
             }
             recordedObservations.append(readerID)
@@ -69,7 +69,7 @@ final class CardReaderSettingsKnownReadersStorageTests: XCTestCase {
         var recordedObservations: [String] = []
 
         cancellable = readerList.knownReader.sink(receiveValue: { readerID in
-            guard let readerID = readerID else {
+            guard let readerID else {
                 return
             }
             recordedObservations.append(readerID)
@@ -97,7 +97,7 @@ final class CardReaderSettingsKnownReadersStorageTests: XCTestCase {
         var recordedObservations: [String] = []
 
         cancellable = readerList.knownReader.sink(receiveValue: { readerID in
-            guard let readerID = readerID else {
+            guard let readerID else {
                 recordedObservations.append("NIL")
                 expectation.fulfill()
                 return

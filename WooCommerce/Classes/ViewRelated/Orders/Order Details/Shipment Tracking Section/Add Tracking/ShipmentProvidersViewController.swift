@@ -86,7 +86,7 @@ private extension ShipmentProvidersViewController {
 
         let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
                                                                                    orderID: orderID) { [weak self] error in
-                                                                                    if let error = error {
+                                                                                    if let error {
                                                                                         self?.presentNotice(error)
                                                                                     }
                                                                                     ServiceLocator.analytics.track(.orderTrackingProvidersLoaded)
@@ -266,7 +266,7 @@ private extension ShipmentProvidersViewController {
 //
 private extension ShipmentProvidersViewController {
     func resetUIState(searchTerm: String?) {
-        guard let searchTerm = searchTerm,
+        guard let searchTerm,
             searchTerm.isEmpty == false else {
                 viewModel.clearFilters()
                 table.reloadData()

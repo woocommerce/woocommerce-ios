@@ -87,9 +87,6 @@ final class HubMenuViewModel: ObservableObject {
 
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
-    private var isIPPHiddenForCIAB: Bool {
-        siteCIABEligibilityChecker.isIPPHiddenForCurrentSite
-    }
     private let posEligibilityService: POSEligibilityServiceProtocol
     private let bookingsEligibilityCheckerFactory: (Site) -> BookingsTabEligibilityCheckerProtocol
     private let isPad: Bool
@@ -307,9 +304,7 @@ private extension HubMenuViewModel {
                                eligibleForBookings: Bool) -> [HubMenuItem] {
         var items: [HubMenuItem] = []
 
-        if !isIPPHiddenForCIAB {
-            items.append(Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil))
-        }
+        items.append(Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil))
 
         if shouldShowBookingsInMenu, eligibleForBookings {
             items.append(Bookings())

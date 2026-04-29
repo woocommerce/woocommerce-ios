@@ -67,7 +67,7 @@ private extension InboxNotesStore {
                            status: [InboxNotesRemote.Status]? = nil,
                            completion: @escaping (Result<[InboxNote], Error>) -> ()) {
         remote.loadAllInboxNotes(for: siteID, pageNumber: pageNumber, pageSize: pageSize, orderBy: orderBy, type: type, status: status) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -162,7 +162,7 @@ private extension InboxNotesStore {
                                             shouldDeleteExistingNotes: Bool,
                                             onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
-            guard let self = self else { return }
+            guard let self else { return }
 
             if shouldDeleteExistingNotes {
                 self.deleteStoredInboxNotes(siteID: siteID, in: storage)

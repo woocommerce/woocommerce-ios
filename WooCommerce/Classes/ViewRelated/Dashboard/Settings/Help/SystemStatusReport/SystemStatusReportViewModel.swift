@@ -28,7 +28,7 @@ final class SystemStatusReportViewModel: ObservableObject {
     func fetchReport() {
         errorFetchingReport = false
         let action = SystemStatusAction.fetchSystemStatusReport(siteID: siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let status):
                 self.statusReport = self.formatReport(with: status)

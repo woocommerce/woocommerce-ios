@@ -57,10 +57,10 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                 ParameterKeys.fields: ParameterValues.fieldValues,
             ]
 
-            if let after = after {
+            if let after {
                 parameters[ParameterKeys.after] = utcDateFormatter.string(from: after)
             }
-            if let before = before {
+            if let before {
                 parameters[ParameterKeys.before] = utcDateFormatter.string(from: before)
             }
             if let modifiedAfter {

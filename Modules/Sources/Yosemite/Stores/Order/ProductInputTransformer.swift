@@ -99,7 +99,7 @@ public struct ProductInputTransformer {
             return nil
         }()
 
-        guard let product = product else {
+        guard let product else {
             DDLogError("⛔️ Product with ID: \(item.productID) not found.")
             return nil
         }

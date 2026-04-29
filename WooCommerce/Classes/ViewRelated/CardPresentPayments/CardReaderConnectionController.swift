@@ -171,7 +171,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         Task { @MainActor [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             await self.cancelReconnection()
             self.onCompletion = onCompletion
             self.state = .initializing
@@ -197,7 +197,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 private extension CardReaderConnectionController {
     func configureResultsControllers() {
         dataSource.configureResultsControllers(onReload: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.gatewayID = self.dataSource.cardPresentPaymentGatewayID()
         })
         // Sets gateway ID from initial fetch.
@@ -316,7 +316,7 @@ private extension CardReaderConnectionController {
         knownCardReaderProvider.knownReader
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] readerID in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -345,7 +345,7 @@ private extension CardReaderConnectionController {
             siteID: siteID,
             discoveryMethod: .bluetoothScan,
             onReaderDiscovered: { [weak self] cardReaders in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 
@@ -403,7 +403,7 @@ private extension CardReaderConnectionController {
                 }
             },
             onError: { [weak self] error in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 self.analyticsTracker.discoveryFailed(error: error)
                 self.state = .discoveryFailed(error)
@@ -455,7 +455,7 @@ private extension CardReaderConnectionController {
     /// Opens a confirmation modal for the user to accept the candidate reader (or keep searching)
     ///
     func onFoundReader() {
-        guard let candidateReader = candidateReader else {
+        guard let candidateReader else {
             return
         }
 
@@ -483,7 +483,7 @@ private extension CardReaderConnectionController {
         alertsPresenter.foundSeveralReaders(
             readerIDs: getFoundReaderIDs(),
             connect: { [weak self] readerID in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
                 self.candidateReader = self.getFoundReaderByID(readerID: readerID)
@@ -500,7 +500,7 @@ private extension CardReaderConnectionController {
     func onUpdateProgress(progress: Float) {
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.state = .cancel(.readerSoftwareUpdate)
                 self.analyticsTracker.cardReaderSoftwareUpdateCancelTapped()
                 cancelable.cancel { [weak self] result in
@@ -576,19 +576,19 @@ private extension CardReaderConnectionController {
     /// Connect to the candidate card reader
     ///
     func onConnectToReader() {
-        guard let candidateReader = candidateReader else {
+        guard let candidateReader else {
             return
         }
 
         analyticsTracker.setCandidateReader(candidateReader)
 
         let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
-            guard let self = self else { return }
+            guard let self else { return }
 
             softwareUpdateEvents
                 .subscribe(on: DispatchQueue.main)
                 .sink { [weak self] event in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 switch event {
                 case .started(cancelable: let cancelable):
@@ -611,7 +611,7 @@ private extension CardReaderConnectionController {
         stores.dispatch(softwareUpdateAction)
 
         let action = CardPresentPaymentAction.connect(reader: candidateReader) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.analyticsTracker.setCandidateReader(nil)
 
@@ -736,7 +736,7 @@ private extension CardReaderConnectionController {
 
     private func openWCSettingsAction(adminUrl: URL?,
                                       retrySearch: @escaping () -> Void) -> (() -> Void)? {
-        if let adminUrl = adminUrl {
+        if let adminUrl {
             if isWPCOMStore() {
                 return { [weak self] in
                     self?.alertsPresenter.presentWCSettingsWebView(adminURL: adminUrl, completion: retrySearch)

@@ -130,7 +130,7 @@ final class OrderPaymentDetailsViewModel {
     /// Example: Oct 28, 2019 via Credit Card (Stripe)
     ///
     var refundSummary: String? {
-        guard let refund = refund else {
+        guard let refund else {
             return nil
         }
 

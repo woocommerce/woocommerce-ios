@@ -76,7 +76,7 @@ extension PrintShippingLabelViewController {
 // MARK: Action Handling
 private extension PrintShippingLabelViewController {
     func printShippingLabel() {
-        guard let selectedPaperSize = selectedPaperSize else {
+        guard let selectedPaperSize else {
             return
         }
         onAction?(.print(paperSize: selectedPaperSize))
@@ -149,7 +149,7 @@ private extension PrintShippingLabelViewController {
     func observeSelectedPaperSize() {
         viewModel.loadShippingLabelSettingsForDefaultPaperSize()
         viewModel.$selectedPaperSize.removeDuplicates().sink { [weak self] paperSize in
-            guard let self = self else { return }
+            guard let self else { return }
             self.selectedPaperSize = paperSize
             self.tableView.reloadData()
             self.reprintButton.isEnabled = paperSize != nil

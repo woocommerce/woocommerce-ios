@@ -20,6 +20,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let coordinator = AppCoordinator(window: window)
         self.appCoordinator = coordinator
         coordinator.start()
+        StoreWidgetsFeatureFlagSynchronizer.sync()
 
         // Scene-scoped initializations that need UI
         setupNoticePresenter()
@@ -77,6 +78,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Cache onboarding state to speed IPP process, then silently connect to Tap to Pay if previously connected, to speed up IPP
         AppDelegate.shared.refreshCardPresentPaymentsOnboardingIfNeeded()
+        StoreWidgetsFeatureFlagSynchronizer.sync()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -149,7 +151,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     private func setupUniversalLinkRouter() {
-        guard let tabBarController = tabBarController else { return }
+        guard let tabBarController else { return }
         universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter(tabBarController: tabBarController)
     }
 

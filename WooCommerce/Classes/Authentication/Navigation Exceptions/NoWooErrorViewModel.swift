@@ -68,11 +68,11 @@ final class NoWooErrorViewModel: ULErrorViewModel {
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         analytics.track(.loginWooCommerceSetupButtonTapped)
-        guard let viewController = viewController else {
+        guard let viewController else {
             return
         }
         let viewModel = WooSetupWebViewModel(siteURL: site.url, onCompletion: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             viewController.navigationController?.popViewController(animated: true)
             self.showInProgressView(in: viewController)
             self.handleSetupCompletion(in: viewController)
@@ -99,7 +99,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
     }
 
     func didTapRightBarButtonItem(in viewController: UIViewController?) {
-        guard let viewController = viewController else {
+        guard let viewController else {
             return
         }
         authentication.presentSupport(from: viewController, screen: .noWooError, siteURL: URL(string: site.url))
@@ -114,7 +114,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
 private extension NoWooErrorViewModel {
     func handleSetupCompletion(in viewController: UIViewController, retryCount: Int = 0) {
         let action = AccountAction.synchronizeSites(selectedSiteID: site.siteID) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let matcher = ULAccountMatcher()
             matcher.refreshStoredSites()

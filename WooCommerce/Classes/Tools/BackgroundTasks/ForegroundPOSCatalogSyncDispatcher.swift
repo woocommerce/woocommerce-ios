@@ -42,7 +42,7 @@ final actor ForegroundPOSCatalogSyncDispatcher {
     }
 
     func start() async {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) else {
             return
         }
 
@@ -129,7 +129,7 @@ final actor ForegroundPOSCatalogSyncDispatcher {
     }
 
     private func performSync() {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) else {
             DDLogInfo("📋 ForegroundPOSCatalogSyncDispatcher: Feature flag disabled, skipping sync")
             stop()
             return

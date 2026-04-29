@@ -47,7 +47,7 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
             self?.searchAndConnect()
         }
         rootView.showURL = { [weak self] url in
-            guard let self = self else { return }
+            guard let self else { return }
             WebviewHelper.launch(url, with: self)
         }
     }

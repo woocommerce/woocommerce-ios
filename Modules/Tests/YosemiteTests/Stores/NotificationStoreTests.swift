@@ -457,7 +457,8 @@ final class NotificationStoreTests: XCTestCase {
                 device: self.sampleAPNSDevice(),
                 applicationID: self.sampleApplicationID,
                 deviceLocale: "en_US",
-                appVersion: "1.0.0"
+                appVersion: "1.0.0",
+                availableAsRESTRequest: false
             ) { result in
                 promise(result)
             }
@@ -488,7 +489,8 @@ final class NotificationStoreTests: XCTestCase {
                 device: self.sampleAPNSDevice(),
                 applicationID: self.sampleApplicationID,
                 deviceLocale: "en_US",
-                appVersion: "1.0.0"
+                appVersion: "1.0.0",
+                availableAsRESTRequest: false
             ) { result in
                 promise(result)
             }
@@ -519,7 +521,8 @@ final class NotificationStoreTests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = NotificationAction.unregisterFromSelfDrivenPushNotifications(
                 siteID: self.sampleSiteID,
-                tokenID: self.sampleTokenID
+                tokenID: self.sampleTokenID,
+                availableAsRESTRequest: true
             ) { result in
                 promise(result)
             }
@@ -548,7 +551,8 @@ final class NotificationStoreTests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = NotificationAction.unregisterFromSelfDrivenPushNotifications(
                 siteID: self.sampleSiteID,
-                tokenID: self.sampleTokenID
+                tokenID: self.sampleTokenID,
+                availableAsRESTRequest: true
             ) { result in
                 promise(result)
             }

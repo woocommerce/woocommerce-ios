@@ -6,6 +6,7 @@ import struct Yosemite.Address
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
 @testable import PointOfSale
 
+@Suite(.timeLimit(.minutes(5)))
 struct POSPaymentModelTests {
 
     // MARK: - Init
@@ -56,10 +57,8 @@ struct POSPaymentModelTests {
         #expect(service.collectPaymentWasCalled == false)
 
         // Connect the reader and wait for the Combine chain to trigger collectPayment
-        await withCheckedContinuation { continuation in
-            service.onCollectPaymentCalled = {
-                continuation.resume()
-            }
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
             service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         }
 
@@ -679,13 +678,11 @@ struct POSPaymentModelTests {
 
         // Wait for cardReaderConnectionStatus to update, proving the Combine
         // chain fully processed the connection event.
-        await withCheckedContinuation { continuation in
+        await fireOnce { fire in
             withObservationTracking {
                 _ = sut.cardReaderConnectionStatus
             } onChange: {
-                Task { @MainActor in
-                    continuation.resume()
-                }
+                Task { @MainActor in fire() }
             }
             service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         }
@@ -999,10 +996,8 @@ struct POSPaymentModelTests {
         // Then: subscription should be restored - connecting a reader triggers payment
         #expect(service.collectPaymentWasCalled == false)
 
-        await withCheckedContinuation { continuation in
-            service.onCollectPaymentCalled = {
-                continuation.resume()
-            }
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
             service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         }
 
@@ -1042,14 +1037,10 @@ struct POSPaymentModelTests {
         let sut = makePaymentController(cardPresentPaymentService: service)
 
         // When
-        sut.connectCardReader()
-        sut.connectCardReader()
-
-        // Wait for the single enqueued Task to complete
-        await withCheckedContinuation { continuation in
-            service.onConnectReaderCalled = {
-                continuation.resume()
-            }
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
+            sut.connectCardReader()
+            sut.connectCardReader()
         }
 
         // Then - only one call made; guard rejected the second
@@ -1064,21 +1055,15 @@ struct POSPaymentModelTests {
         let sut = makePaymentController(cardPresentPaymentService: service)
 
         // When - first connect call completes
-        await withCheckedContinuation { continuation in
-            service.onConnectReaderCalled = {
-                continuation.resume()
-                service.onConnectReaderCalled = nil
-            }
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
             sut.connectCardReader()
         }
         #expect(service.connectReaderCallCount == 1)
 
         // When - second connect call after first completed
-        await withCheckedContinuation { continuation in
-            service.onConnectReaderCalled = {
-                continuation.resume()
-                service.onConnectReaderCalled = nil
-            }
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
             sut.connectCardReader()
         }
 
@@ -1086,43 +1071,39 @@ struct POSPaymentModelTests {
         #expect(service.connectReaderCallCount == 2)
     }
 
-    @Test("connectCardReader blocks second call while first is suspended in the service")
+    @Test("connectCardReader skips a second call while the first is in flight")
     @MainActor
-    func test_connectCardReader_when_second_call_while_first_suspended_then_blocks_second() async {
+    func test_connectCardReader_when_called_again_while_in_flight_then_skips_second() async {
         // Given
         let service = MockCardPresentPaymentService()
-        service.shouldSuspendConnectReader = true
         let sut = makePaymentController(cardPresentPaymentService: service)
 
-        // When - first call suspends inside connectReader
-        await withCheckedContinuation { continuation in
+        // When/Then: while the first call's mock body is running, a second
+        // call hits the SUT's task guard and is skipped.
+        await fireOnce { fire in
             service.onConnectReaderCalled = {
-                continuation.resume()
-                service.onConnectReaderCalled = nil
+                sut.connectCardReader()
+                #expect(service.connectReaderCallCount == 1)
+                fire()
             }
             sut.connectCardReader()
         }
-        #expect(service.connectReaderCallCount == 1)
 
-        // Second call while first is still awaiting in the mock
-        sut.connectCardReader()
-
-        // Resume the first connection to complete it
-        service.resumeConnectReader(with: .connected(CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.85)))
-
-        // Flush pending MainActor tasks by observing a publisher change
-        await withCheckedContinuation { continuation in
+        // After the first connect propagates to cardReaderConnectionStatus,
+        // verify no observer reactions caused a spurious re-call.
+        let reader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.85)
+        await fireOnce { fire in
             withObservationTracking {
                 _ = sut.cardReaderConnectionStatus
             } onChange: {
                 Task { @MainActor in
-                    continuation.resume()
+                    if case .connected = sut.cardReaderConnectionStatus {
+                        fire()
+                    }
                 }
             }
-            service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.85)
+            service.connectedReader = reader
         }
-
-        // Then - service was only called once; second call was blocked
         #expect(service.connectReaderCallCount == 1)
     }
 }

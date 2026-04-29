@@ -23,7 +23,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
     private let phAssetImageLoaderProvider: (() -> PHAssetImageLoader)?
     /// `PHAssetImageLoader` is lazy loaded to avoid triggering permission alert by initializing `PHImageManager` before it is used.
     private lazy var phAssetImageLoader: PHAssetImageLoader = {
-        guard let phAssetImageLoaderProvider = phAssetImageLoaderProvider else {
+        guard let phAssetImageLoaderProvider else {
             assertionFailure("Trying to call `PHAssetImageLoader` without setting a provider during initialization")
             return PHImageManager.default()
         }
@@ -48,7 +48,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         self.imageStorage = ImageStorage()
 
         assetUploadSubscription = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
-            guard let self = self else { return }
+            guard let self else { return }
             guard case let .success(productImage) = result else {
                 return
             }
@@ -89,7 +89,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
 
         if let imageFromCache = await withCheckedContinuation({ continuation in
             imageService.retrieveImageFromCache(with: url) { image in
-                if let image = image {
+                if let image {
                     continuation.resume(returning: image)
                 } else {
                     continuation.resume(returning: nil)
@@ -101,7 +101,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
 
         if let downloadedImage = await withCheckedContinuation({ continuation in
             _ = imageService.downloadImage(with: url, shouldCacheImage: true) { (image, error) in
-                if let image = image {
+                if let image {
                     continuation.resume(returning: image)
                 } else {
                     continuation.resume(returning: nil)

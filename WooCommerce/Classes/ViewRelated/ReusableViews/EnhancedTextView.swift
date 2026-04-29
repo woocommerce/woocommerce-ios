@@ -34,7 +34,7 @@ final class EnhancedTextView: UITextView {
 
     private func animatePlaceholder() {
         UIView.animate(withDuration: Constants.animationDuration) { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.placeholderLabel?.alpha = self.text.isEmpty && !self.isFirstResponder ? 1 : 0
@@ -43,7 +43,7 @@ final class EnhancedTextView: UITextView {
 
     private func hidePlaceholder() {
         UIView.animate(withDuration: Constants.animationDuration) { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.placeholderLabel?.alpha = 0

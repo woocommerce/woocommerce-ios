@@ -110,7 +110,7 @@ final class OrdersRootViewController: UIViewController {
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
         ///
         syncLocalOrdersSettings { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.configureStatusResultsController()
         }
     }
@@ -205,14 +205,14 @@ final class OrdersRootViewController: UIViewController {
     /// Coordinates the navigation between the different views involved in Order Creation, Editing, and Details
     ///
     private func setupNavigation(viewModel: EditableOrderViewModel) {
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             return
         }
 
         let viewController = OrderFormHostingController(viewModel: viewModel)
 
         viewModel.onFinished = { [weak self] order in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.dismiss(animated: true) {
                 self.navigateToOrderDetail(order)
@@ -245,7 +245,7 @@ final class OrdersRootViewController: UIViewController {
     @objc func presentOrderCreationFlowByProductScanning() {
         analytics.track(event: .Orders.orderAddNewFromBarcodeScanningTapped())
 
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             return
         }
 
@@ -255,7 +255,7 @@ final class OrdersRootViewController: UIViewController {
 
             self?.navigationItem.configureLeftBarButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case let .success(product):
                     self.analytics.track(event: .Orders.orderProductAdd(flow: .creation,
@@ -389,7 +389,7 @@ private extension OrdersRootViewController {
     ///
     func configureStatusResultsController() {
         statusResultsController.onDidChangeObject = { [weak self] (updatedOrdersStatus, _, _, _) in
-            guard let self = self else { return }
+            guard let self else { return }
             self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
         }
 

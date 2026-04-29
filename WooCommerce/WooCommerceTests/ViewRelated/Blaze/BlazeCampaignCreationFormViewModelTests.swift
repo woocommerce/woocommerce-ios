@@ -339,7 +339,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
         var expectedProductID: Int64?
         stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
-            guard let self = self else { return }
+            guard let self else { return }
             switch action {
             case let .fetchAISuggestions(_, productID, completion):
                 expectedProductID = productID
@@ -1087,7 +1087,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let textContent = String(attributedText.characters)
         if let range = textContent.range(of: "I can cancel anytime") {
             let attributedRange = Range(range, in: attributedText)
-            if let attributedRange = attributedRange {
+            if let attributedRange {
                 let linkAttributes = attributedText[attributedRange]
                 XCTAssertNotNil(linkAttributes.link, "I can cancel anytime text should have a link attribute")
             }

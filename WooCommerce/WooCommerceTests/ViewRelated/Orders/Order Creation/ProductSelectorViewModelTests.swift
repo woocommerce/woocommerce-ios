@@ -1406,9 +1406,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let displayingPopularIds = viewModel.productsSectionViewModels.first?.productRows.map { $0.productOrVariationID }
         let displayingLastSoldIds = viewModel.productsSectionViewModels[safe: 1]?.productRows.map { $0.productOrVariationID }
 
-        guard let displayingPopularIds = displayingPopularIds,
+        guard let displayingPopularIds,
               displayingPopularIds.isNotEmpty,
-              let displayingLastSoldIds = displayingLastSoldIds,
+              let displayingLastSoldIds,
               displayingLastSoldIds.isNotEmpty else {
             XCTFail()
 

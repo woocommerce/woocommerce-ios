@@ -199,7 +199,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         }
 
         // Used mostly in previews
-        if let noteContent = noteContent {
+        if let noteContent {
             noteViewModel = SimplePaymentsNoteViewModel(originalNote: noteContent)
         }
 
@@ -264,7 +264,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                                                            taxable: enableTaxes,
                                                            orderNote: noteContent,
                                                            email: email.isEmpty ? nil : email) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.showLoadingIndicator = false
 
             switch result {

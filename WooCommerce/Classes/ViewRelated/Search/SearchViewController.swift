@@ -439,7 +439,7 @@ private extension SearchViewController {
 
     func configureSearchResync() {
         searchUICommand.resynchronizeModels = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.synchronizeSearchResults(with: self.searchQuery)
         }
     }
@@ -498,7 +498,7 @@ extension SearchViewController: SyncingCoordinatorDelegate {
                                           pageNumber: pageNumber,
                                           pageSize: pageSize,
                                           onCompletion: { [weak self] isCompleted in
-            guard let self = self else { return }
+            guard let self else { return }
             // Disregard OPs that don't really match the latest keyword
             if keyword == self.searchUICommand.sanitizeKeyword(self.searchQuery) {
                 self.transitionToResultsUpdatedState()
@@ -701,7 +701,7 @@ private extension SearchViewController {
         searchUICommand.didSelectSearchResult(model: object, from: self, reloadData: { [weak self] in
             self?.tableView.reloadData()
         }, updateActionButton: { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.searchUICommand.configureActionButton(self.cancelButton, onDismiss: { [weak self] in

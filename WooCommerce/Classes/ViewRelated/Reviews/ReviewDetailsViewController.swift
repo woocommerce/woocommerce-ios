@@ -153,7 +153,7 @@ private extension ReviewDetailsViewController {
     ///
     func synchronizeReview(reviewID: Int64, onCompletion: @escaping () -> Void) {
         let action = ProductReviewAction.retrieveProductReview(siteID: siteID, reviewID: reviewID) { (productReview, error) in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error synchronizing product review [\(reviewID)]: \(error)")
                 ServiceLocator.analytics.track(.reviewLoadFailed,
                                                withError: error)
@@ -338,7 +338,7 @@ private extension ReviewDetailsViewController {
         let reviewSiteID = productReview.siteID
 
         commentCell.onApprove = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -349,7 +349,7 @@ private extension ReviewDetailsViewController {
         }
 
         commentCell.onUnapprove = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             ServiceLocator.analytics.track(.notificationReviewApprovedTapped)
@@ -359,7 +359,7 @@ private extension ReviewDetailsViewController {
         }
 
         commentCell.onTrash = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -370,7 +370,7 @@ private extension ReviewDetailsViewController {
         }
 
         commentCell.onSpam = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -409,7 +409,7 @@ private extension ReviewDetailsViewController {
 private extension ReviewDetailsViewController {
     func moderateReview(siteID: Int64, reviewID: Int64, doneStatus: ProductReviewStatus, undoStatus: ProductReviewStatus) {
         guard let undo = moderateReviewAction(siteID: siteID, reviewID: reviewID, status: undoStatus, onCompletion: { error in
-            guard let error = error else {
+            guard let error else {
                 ServiceLocator.analytics.track(.notificationReviewActionSuccess)
                 return
             }
@@ -422,7 +422,7 @@ private extension ReviewDetailsViewController {
         }
 
         guard let done = moderateReviewAction(siteID: siteID, reviewID: reviewID, status: doneStatus, onCompletion: { error in
-            guard let error = error else {
+            guard let error else {
                 ServiceLocator.analytics.track(.notificationReviewActionSuccess)
                 ReviewDetailsViewController.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
                     ServiceLocator.analytics.track(.notificationReviewActionUndo)
@@ -483,7 +483,7 @@ private extension ReviewDetailsViewController {
     /// Marks a specific Notification as read.
     ///
     func markAsReadIfNeeded(_ note: Note?) {
-        guard let note = note, note.read == false else {
+        guard let note, note.read == false else {
             return
         }
 
@@ -492,7 +492,7 @@ private extension ReviewDetailsViewController {
                                                         "remote_note_id": note.noteID])
 
         let action = NotificationAction.updateReadStatus(noteID: note.noteID, read: true) { (error) in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
                 ServiceLocator.analytics.track(.reviewMarkReadFailed,
                                                withError: error)

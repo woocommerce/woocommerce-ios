@@ -39,7 +39,7 @@ final class ProductReviewTableViewCell: UITableViewCell {
     ///
     private var starRating: Int? {
         didSet {
-            guard let starRating = starRating else {
+            guard let starRating else {
                 starRatingView.isHidden = true
                 return
             }

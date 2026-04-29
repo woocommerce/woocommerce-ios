@@ -43,14 +43,14 @@ private extension CloseAccountCoordinator {
         alertController.addActionWithTitle(Localization.ConfirmationAlert.cancelButtonTitle, style: .cancel) { _ in }
         let closeAccountAction = alertController.addActionWithTitle(Localization.ConfirmationAlert.removeButtonTitle,
                                                                     style: .destructive) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
 
             // TODO: 7068 - analytics
 
             self.presentInProgressUI()
 
             Task { @MainActor [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 var dismissInProgressUICompletion: () -> Void
 
@@ -102,7 +102,7 @@ private extension CloseAccountCoordinator {
                                                 message: generateLocalizedMessage(error: error),
                                                 preferredStyle: .alert)
         alertController.addActionWithTitle(Localization.ErrorAlert.contactSupportButtonTitle, style: .default) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             let supportForm = SupportFormHostingController(viewModel: .init())
             supportForm.show(from: self.sourceViewController)
         }

@@ -197,28 +197,22 @@ extension Analytics {
 // MARK: - Site Property Enrichment
 
 fileprivate extension Analytics {
-    /// Appends site properties (blog_id, is_wpcom_store, etc.) to the given properties dictionary.
+    /// Appends site properties (blog_id, is_wpcom_store, etc.) to the given properties dictionary,
+    /// using the currently selected site from the session. Delegates the per-site property mapping
+    /// to `Site.analyticsProperties` so per-target-site event factories can share the same logic.
     func appendSiteProperties(to properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
         guard ServiceLocator.stores.isAuthenticated else {
             return properties
         }
 
         var updatedProperties = properties ?? [:]
-        let site = ServiceLocator.stores.sessionManager.defaultSite
-        updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
-        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
-        updatedProperties[PropertyKeys.siteURL] = site?.url
-        updatedProperties[PropertyKeys.isJetpackInstalled] = site?.isJetpackThePluginInstalled
-        updatedProperties[PropertyKeys.isJetpackConnected] = site?.isJetpackConnected
-        updatedProperties[PropertyKeys.isJetpackCPConnected] = site?.isJetpackCPConnected
-        updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
-        updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion
-        if let site {
-            updatedProperties[PropertyKeys.isCIAB] = ServiceLocator.ciabEligibilityChecker.isSiteCIAB(site)
-            if let gardenPartner = site.gardenPartner {
-                updatedProperties[PropertyKeys.gardenPartner] = gardenPartner
+        if let site = ServiceLocator.stores.sessionManager.defaultSite {
+            for (key, value) in site.analyticsProperties {
+                updatedProperties[key] = value
             }
         }
+        updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
+        updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion
         return updatedProperties
     }
 }
@@ -235,7 +229,7 @@ private extension Analytics {
         let properties: [AnyHashable: Any]?
         let errorProperties = errorProperties(from: error)
 
-        if let passedProperties = passedProperties {
+        if let passedProperties {
             properties = passedProperties.merging(errorProperties ?? [:], uniquingKeysWith: { current, _ in
                 current
             })
@@ -246,7 +240,7 @@ private extension Analytics {
     }
 
     func errorProperties(from error: Error?) -> [AnyHashable: Any]? {
-        guard let error = error else {
+        guard let error else {
             return nil
         }
 
@@ -306,7 +300,7 @@ private extension WooAnalytics {
 
     @objc func trackApplicationOpened() {
         WidgetCenter.shared.getCurrentConfigurations { [weak self] configurationResult in
-            guard let self = self else { return }
+            guard let self else { return }
             self.track(.applicationOpened, withProperties: self.applicationOpenedProperties(configurationResult))
         }
         applicationOpenedTime = Date()
@@ -318,7 +312,7 @@ private extension WooAnalytics {
     }
 
     func applicationClosedProperties() -> [String: Any]? {
-        guard let applicationOpenedTime = applicationOpenedTime else {
+        guard let applicationOpenedTime else {
             return nil
         }
 
@@ -361,14 +355,6 @@ private enum Constants {
 
 private enum PropertyKeys {
     static let propertyKeyTimeInApp = "time_in_app"
-    static let blogIDKey            = "blog_id"
-    static let wpcomStoreKey        = "is_wpcom_store"
-    static let siteURL              = "site_url"
     static let storeID              = "store_id"
     static let cachedWooCommerceVersionKey = "cached_woo_core_version"
-    static let isCIAB               = "is_ciab"
-    static let gardenPartner        = "garden_partner"
-    static let isJetpackInstalled   = "is_jetpack_installed"
-    static let isJetpackConnected   = "is_jetpack_connected"
-    static let isJetpackCPConnected = "is_jetpack_cp_connected"
 }

@@ -124,6 +124,13 @@
         "identifier" : "PointOfSaleTests",
         "name" : "PointOfSaleTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "WooAIAssistantTests",
+        "name" : "WooAIAssistantTests"
+      }
     }
   ],
   "version" : 1

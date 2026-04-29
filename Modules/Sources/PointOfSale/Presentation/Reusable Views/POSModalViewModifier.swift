@@ -84,7 +84,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
     func body(content: Content) -> some View {
         content
             .onChange(of: item) { _, newItem in
-                if let newItem = newItem {
+                if let newItem {
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }
 

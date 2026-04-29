@@ -39,7 +39,7 @@ struct PaymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer {
             return nil
         }
 
-        guard let wcPay = wcPay,
+        guard let wcPay,
               paymentPluginsStatus == .onlyWCPayIsInstalledAndActive else {
             return order.billingAddress?.email
         }

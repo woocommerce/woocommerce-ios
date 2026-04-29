@@ -32,7 +32,7 @@ final class SilenceablePassthroughCardPresentPaymentAlertsPresenter<AlertPresent
         self.alertsPresenter = alertsPresenter
         alertSubscription = alertSubject.share().sink { viewModel in
             DispatchQueue.main.async {
-                guard let viewModel = viewModel else {
+                guard let viewModel else {
                     alertsPresenter.dismiss()
                     return
                 }

@@ -11,8 +11,6 @@ import protocol Yosemite.StoresManager
 import class Yosemite.POSEligibilityService
 import enum Yosemite.FeatureFlagAction
 import class Yosemite.SiteAddress
-import protocol Yosemite.CIABEligibilityCheckerProtocol
-import class Yosemite.CIABEligibilityChecker
 import enum Yosemite.POSCountryCurrencyValidator
 
 final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
@@ -22,22 +20,19 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
     init(site: Site,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
@@ -56,10 +51,6 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
-        guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
-            return false
-        }
-
         guard userInterfaceIdiom == .pad else {
             return false
         }

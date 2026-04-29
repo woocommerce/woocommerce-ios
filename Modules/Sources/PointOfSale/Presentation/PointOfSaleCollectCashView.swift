@@ -99,7 +99,7 @@ struct PointOfSaleCollectCashView: View {
                                     .foregroundColor(.posOnSurfaceVariantLowest)
                             }
 
-                            if let errorMessage = errorMessage {
+                            if let errorMessage {
                                 Text(errorMessage)
                                     .font(.posBodySmallRegular())
                                     .foregroundColor(.posError)

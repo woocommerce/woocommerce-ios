@@ -13,7 +13,7 @@ struct JetpackAIQueryClient: AIChatService {
     private let sleep: Sleep
 
     init(jwtProvider: AssistantJWTProviding,
-         endpoint: URL = URL(string: "https://public-api.wordpress.com/wpcom/v2/jetpack-ai-query")!,
+         endpoint: URL = URL(string: Settings.wordpressApiBaseURL + "wpcom/v2/jetpack-ai-query")!,
          streamingTransport: StreamingHTTPTransport? = nil,
          sleep: Sleep? = nil) {
         self.jwtProvider = jwtProvider

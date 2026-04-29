@@ -234,6 +234,20 @@ struct JetpackAIQueryClientTests {
     }
 
     @Test
+    func test_default_endpoint_matches_NetworkingCore_wpcom_base_url() {
+        // Given the configurable WPCOM base URL from NetworkingCore.Settings
+        let expected = URL(string: Settings.wordpressApiBaseURL + "wpcom/v2/jetpack-ai-query")!
+
+        // When constructing a client with the default endpoint
+        let mirror = Mirror(reflecting: JetpackAIQueryClient(jwtProvider: stubJWTProvider()))
+        let endpoint = mirror.descendant("endpoint") as? URL
+
+        // Then it composes against the same base, so launch-arg overrides
+        // (e.g. `mocked-wpcom-api` for WireMock) route the chat client too.
+        #expect(endpoint == expected)
+    }
+
+    @Test
     func test_streamTurn_when_request_is_built_then_carries_woo_user_agent_and_auth_headers() async throws {
         // Given
         let frame = "data: {\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ok\"},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n"

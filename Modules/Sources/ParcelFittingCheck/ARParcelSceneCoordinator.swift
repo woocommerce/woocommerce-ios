@@ -38,7 +38,12 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate {
         cuboidAnchor = nil
         cuboidEntity = nil
         placed = false
-        onRemoved?()
+        // Deferred — removeCuboid is called from updateUIView, which runs
+        // inside SwiftUI's render pass. Binding writes during a render pass
+        // are silently dropped.
+        DispatchQueue.main.async { [weak self] in
+            self?.onRemoved?()
+        }
     }
 
     func updateDimensions(_ dims: SIMD3<Float>) {

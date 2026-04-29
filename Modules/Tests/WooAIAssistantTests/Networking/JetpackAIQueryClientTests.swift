@@ -165,6 +165,93 @@ struct JetpackAIQueryClientTests {
         #expect(textDeltas.joined() == "after refresh")
     }
 
+    @Test
+    func test_streamTurn_when_401_repeats_then_surfaces_error_after_one_retry() async throws {
+        // Given
+        let unauthorizedBody = Data(#"{"code":"jetpack_ai_unauthorized","message":"unauthorized"}"#.utf8)
+        let jwtProvider = ScriptedJWTProvider(tokens: ["t1", "t2", "t3"])
+        let transport = ScriptedTransport(scenarios: [
+            .errorBody(status: 401, body: unauthorizedBody),
+            .errorBody(status: 401, body: unauthorizedBody)
+        ])
+        let client = JetpackAIQueryClient(jwtProvider: jwtProvider,
+                                          streamingTransport: transport.handler,
+                                          sleep: noOpSleep)
+
+        // When / Then
+        do {
+            _ = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected the second 401 to surface.")
+        } catch let error as AssistantError {
+            #expect(error.code == "401")
+        }
+        #expect(await transport.callCount == 2)
+        #expect(await jwtProvider.invalidateCount == 1)
+    }
+
+    @Test
+    func test_streamTurn_when_429_repeats_three_times_then_surfaces_after_two_retries() async throws {
+        // Given
+        let scenarios: [TransportScenario] = (0..<3).map { _ in
+            .errorBody(status: 429, body: rateLimitedBody())
+        }
+        let transport = ScriptedTransport(scenarios: scenarios)
+        let sleepRecorder = SleepRecorder()
+        let client = JetpackAIQueryClient(jwtProvider: stubJWTProvider(),
+                                          streamingTransport: transport.handler,
+                                          sleep: sleepRecorder.handler)
+
+        // When / Then
+        do {
+            _ = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected the third 429 to surface.")
+        } catch let error as AssistantError {
+            #expect(error.code == "429")
+        }
+        #expect(await transport.callCount == 3)
+        #expect(await sleepRecorder.delays == [2_000_000_000, 4_000_000_000])
+    }
+
+    @Test
+    func test_streamTurn_when_503_then_surfaces_without_retry() async throws {
+        // Given
+        let body = Data("upstream is down".utf8)
+        let transport = ScriptedTransport(scenarios: [.errorBody(status: 503, body: body)])
+        let client = JetpackAIQueryClient(jwtProvider: stubJWTProvider(),
+                                          streamingTransport: transport.handler,
+                                          sleep: noOpSleep)
+
+        // When / Then
+        do {
+            _ = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected 503 to surface.")
+        } catch let error as AssistantError {
+            #expect(error.code == "503")
+            #expect(error.kind == .upstreamFailure)
+        }
+        #expect(await transport.callCount == 1)
+    }
+
+    @Test
+    func test_streamTurn_when_wrapped_envelope_arrives_after_keepalive_then_throws_typed_AssistantError() async throws {
+        // Given
+        let envelope = #"{"code":"context_too_long","message":"context overflow","data":{"status":413}}"#
+        let frames = ":\n\n:\n\ndata: \(envelope)\n\n"
+        let transport = ScriptedTransport(scenarios: [.successChunks([Data(frames.utf8)])])
+        let client = JetpackAIQueryClient(jwtProvider: stubJWTProvider(),
+                                          streamingTransport: transport.handler,
+                                          sleep: noOpSleep)
+
+        // When / Then
+        do {
+            _ = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected wrapped envelope to surface even after keepalive comments.")
+        } catch let error as AssistantError {
+            #expect(error.code == "413")
+            #expect(error.message.contains("context_too_long"))
+        }
+    }
+
     private func makeClient(streamingResult: TransportScenario) -> JetpackAIQueryClient {
         let transport = ScriptedTransport(scenarios: [streamingResult])
         return JetpackAIQueryClient(jwtProvider: stubJWTProvider(),

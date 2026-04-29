@@ -6,64 +6,98 @@ import Yosemite
 @MainActor
 struct SupportChatViewModelTests {
 
-    // MARK: - Initial Phase Tests
+    // MARK: - Greeting Tests
 
-    @Test func test_init_when_entryPoint_is_helpAndSupport_then_phase_is_issuePicker() {
-        // Given / When
+    @Test func test_showGreeting_when_entryPoint_is_helpAndSupport_then_shows_issue_picker() {
+        // Given
         let sut = makeSUT(entryPoint: .helpAndSupport)
 
+        // When
+        sut.showGreeting()
+
         // Then
-        #expect(sut.phase == .issuePicker)
+        #expect(sut.messages.count == 1)
+        if case .issuePicker = sut.messages.first?.content {
+            // Success
+        } else {
+            Issue.record("Expected issue picker message")
+        }
     }
 
-    @Test func test_init_when_entryPoint_is_connectivityTool_then_phase_is_chatting() {
-        // Given / When
+    @Test func test_showGreeting_when_entryPoint_is_connectivityTool_then_shows_text_greeting() {
+        // Given
         let sut = makeSUT(entryPoint: .connectivityTool)
 
+        // When
+        sut.showGreeting()
+
         // Then
-        #expect(sut.phase == .chatting)
+        #expect(sut.messages.count == 1)
+        if case .text = sut.messages.first?.content {
+            // Success
+        } else {
+            Issue.record("Expected text greeting message")
+        }
     }
 
     // MARK: - Issue Selection Tests
 
-    @Test func test_selectIssue_when_other_then_skips_diagnostics_and_goes_to_chatting() async {
+    @Test func test_selectIssue_when_other_then_skips_diagnostics_and_shows_greeting() async {
         // Given
         let sut = makeSUT()
+        sut.showGreeting()
 
         // When
         await sut.selectIssue(.other)
 
         // Then
-        #expect(sut.phase == .chatting)
         #expect(sut.selectedIssue == .other)
         #expect(sut.diagnosticResults.isEmpty)
+        // Should have: issue picker, user selection, greeting
+        #expect(sut.messages.count == 3)
     }
 
-    @Test func test_selectIssue_when_specific_issue_then_runs_diagnostics_and_shows_results() async {
+    @Test func test_selectIssue_when_specific_issue_then_runs_diagnostics_and_shows_final_result() async {
         // Given
         let sut = makeSUT()
+        sut.showGreeting()
 
         // When
         await sut.selectIssue(.loadingAnalytics)
 
         // Then
-        #expect(sut.phase == .showingResults)
         #expect(sut.selectedIssue == .loadingAnalytics)
         #expect(sut.diagnosticResults.isEmpty == false)
+        // Should have: issue picker, user selection, final result (success or failure)
+        #expect(sut.messages.count == 3)
+        let lastContent = sut.messages.last?.content
+        let isValidFinalState = {
+            if case .diagnosticsSuccess = lastContent { return true }
+            if case .diagnosticsFailure = lastContent { return true }
+            return false
+        }()
+        #expect(isValidFinalState, "Expected diagnosticsSuccess or diagnosticsFailure message")
     }
 
     // MARK: - Proceed to Chat Tests
 
-    @Test func test_proceedToChat_transitions_to_chatting_phase() async {
+    @Test func test_proceedToChat_appends_greeting_message() async {
         // Given
         let sut = makeSUT()
+        sut.showGreeting()
         await sut.selectIssue(.loadingOrders)
+        let messageCountBeforeProceed = sut.messages.count
 
         // When
         sut.proceedToChat()
 
         // Then
-        #expect(sut.phase == .chatting)
+        #expect(sut.messages.count == messageCountBeforeProceed + 1)
+        if case .text = sut.messages.last?.content {
+            // Success
+        } else {
+            Issue.record("Expected text greeting after proceeding to chat")
+        }
     }
 
     // MARK: - Execute Action Tests

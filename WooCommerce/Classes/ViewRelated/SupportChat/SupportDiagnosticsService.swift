@@ -120,12 +120,19 @@ final class SupportDiagnosticsService {
 
     /// Result of a diagnostic test.
     ///
-    struct Result {
+    struct Result: Equatable {
         let test: Test
         let isSuccess: Bool
         let errorMessage: String?
         let technicalDetails: String?
         let suggestedAction: Action?
+
+        static func == (lhs: Result, rhs: Result) -> Bool {
+            lhs.test == rhs.test &&
+            lhs.isSuccess == rhs.isSuccess &&
+            lhs.errorMessage == rhs.errorMessage &&
+            lhs.suggestedAction == rhs.suggestedAction
+        }
 
         static func success(test: Test) -> Result {
             Result(test: test, isSuccess: true, errorMessage: nil, technicalDetails: nil, suggestedAction: nil)

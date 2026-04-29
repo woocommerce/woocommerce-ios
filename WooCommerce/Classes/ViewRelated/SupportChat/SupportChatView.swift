@@ -7,140 +7,27 @@ struct SupportChatView: View {
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
-        Group {
-            switch viewModel.phase {
-            case .issuePicker:
-                issuePickerView
-            case .runningDiagnostics:
-                diagnosticsProgressView
-            case .showingResults:
-                resultsView
-            case .chatting:
-                chatView
-            }
-        }
-        .background(Color(.listBackground))
-        .navigationTitle(Localization.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .alert(
-            Localization.errorTitle,
-            isPresented: .init(
-                get: { viewModel.state != .idle && viewModel.state != .sending },
-                set: { if !$0 { viewModel.dismissError() } }
-            ),
-            actions: {
-                Button(Localization.ok) {
-                    viewModel.dismissError()
-                }
-            },
-            message: {
-                if case .error(let message) = viewModel.state {
-                    Text(message)
-                }
-            }
-        )
-    }
-
-    // MARK: - Issue Picker
-
-    private var issuePickerView: some View {
-        List {
-            Section {
-                ForEach(SupportIssueType.allCases, id: \.self) { issue in
-                    Button {
-                        Task {
-                            await viewModel.selectIssue(issue)
-                        }
-                    } label: {
-                        Text(issue.displayName)
-                            .foregroundStyle(Color(.label))
+        chatView
+            .background(Color(.listBackground))
+            .navigationTitle(Localization.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .alert(
+                Localization.errorTitle,
+                isPresented: .init(
+                    get: { viewModel.state != .idle && viewModel.state != .sending },
+                    set: { if !$0 { viewModel.dismissError() } }
+                ),
+                actions: {
+                    Button(Localization.ok) {
+                        viewModel.dismissError()
+                    }
+                },
+                message: {
+                    if case .error(let message) = viewModel.state {
+                        Text(message)
                     }
                 }
-            } header: {
-                Text(Localization.issuePickerHeader)
-            }
-        }
-        .listStyle(.insetGrouped)
-    }
-
-    // MARK: - Diagnostics Progress
-
-    private var diagnosticsProgressView: some View {
-        VStack(spacing: Layout.progressSpacing) {
-            ProgressView()
-                .scaleEffect(Layout.progressScale)
-
-            Text(Localization.runningDiagnostics)
-                .font(.headline)
-
-            if let issue = viewModel.selectedIssue {
-                Text(issue.displayName)
-                    .font(.subheadline)
-                    .foregroundStyle(Color(.secondaryLabel))
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    // MARK: - Results View
-
-    private var resultsView: some View {
-        ScrollView {
-            VStack(spacing: Layout.resultsSpacing) {
-                ForEach(viewModel.diagnosticResults, id: \.test) { result in
-                    resultCard(for: result)
-                }
-
-                proceedToChatButton
-            }
-            .padding()
-        }
-    }
-
-    private func resultCard(for result: SupportDiagnosticsService.Result) -> some View {
-        VStack(alignment: .leading, spacing: Layout.cardSpacing) {
-            HStack {
-                Image(systemName: result.isSuccess ? "checkmark.circle.fill" : "xmark.circle.fill")
-                    .foregroundStyle(result.isSuccess ? Color.green : Color.red)
-
-                Text(result.test.title)
-                    .font(.headline)
-
-                Spacer()
-            }
-
-            if !result.isSuccess {
-                if let errorMessage = result.errorMessage {
-                    Text(errorMessage)
-                        .font(.subheadline)
-                        .foregroundStyle(Color(.secondaryLabel))
-                }
-
-                if let action = result.suggestedAction {
-                    Button {
-                        Task {
-                            await viewModel.executeAction(action)
-                        }
-                    } label: {
-                        Label(action.title, systemImage: action.systemImage)
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
-                }
-            }
-        }
-        .padding()
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: Layout.cardCornerRadius))
-    }
-
-    private var proceedToChatButton: some View {
-        Button {
-            viewModel.proceedToChat()
-        } label: {
-            Text(Localization.continueToChat)
-        }
-        .buttonStyle(PrimaryButtonStyle())
-        .padding(.top)
+            )
     }
 
     // MARK: - Chat View
@@ -151,7 +38,7 @@ struct SupportChatView: View {
 
             if viewModel.shouldPromptHumanSupport {
                 humanSupportBanner
-            } else {
+            } else if viewModel.shouldShowInputArea {
                 Divider()
 
                 inputArea
@@ -167,9 +54,9 @@ struct SupportChatView: View {
     private var messageList: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack(spacing: SupportChatLayout.messageSpacing) {
+                LazyVStack(alignment: .leading, spacing: SupportChatLayout.messageSpacing) {
                     ForEach(viewModel.messages) { message in
-                        SupportChatMessageRow(message: message)
+                        messageRow(for: message)
                             .id(message.id)
                     }
 
@@ -190,6 +77,185 @@ struct SupportChatView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func messageRow(for message: SupportChatViewModel.ChatMessage) -> some View {
+        switch message.content {
+        case .text(let text):
+            SupportChatMessageRow(role: message.role, text: text)
+
+        case .issuePicker(let issues):
+            issuePickerBubble(issues: issues)
+
+        case .diagnosticsProgress(let steps):
+            diagnosticsProgressBubble(steps: steps)
+
+        case .diagnosticsSuccess:
+            diagnosticsSuccessBubble()
+
+        case .diagnosticsFailure(let result):
+            diagnosticsFailureBubble(result: result)
+        }
+    }
+
+    // MARK: - Issue Picker Bubble
+
+    private func issuePickerBubble(issues: [SupportIssueType]) -> some View {
+        VStack(alignment: .leading, spacing: Layout.bubbleSpacing) {
+            Text(Localization.issuePickerHeader)
+                .font(.subheadline)
+                .foregroundStyle(Color(.secondaryLabel))
+
+            ForEach(issues, id: \.self) { issue in
+                Button {
+                    Task {
+                        await viewModel.selectIssue(issue)
+                    }
+                } label: {
+                    Text(issue.displayName)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(Layout.issueButtonPadding)
+                        .background(Color(.tertiarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: Layout.issueButtonRadius))
+                }
+                .buttonStyle(.plain)
+                .disabled(viewModel.selectedIssue != nil)
+            }
+        }
+        .padding(SupportChatLayout.bubblePadding)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
+        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
+    }
+
+    // MARK: - Diagnostics Progress Bubble
+
+    private func diagnosticsProgressBubble(
+        steps: [(test: SupportDiagnosticsService.Test, status: SupportChatViewModel.TestStatus)]
+    ) -> some View {
+        VStack(alignment: .leading, spacing: Layout.resultRowSpacing) {
+            ForEach(steps, id: \.test) { step in
+                HStack(alignment: .top, spacing: Layout.resultIconSpacing) {
+                    statusIcon(for: step.status)
+                        .font(.body)
+
+                    Text(step.test.title)
+                        .font(.body)
+                        .foregroundStyle(step.status == .pending ? Color(.tertiaryLabel) : Color(.label))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+        }
+        .padding(SupportChatLayout.bubblePadding)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
+        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
+    }
+
+    private func statusIcon(for status: SupportChatViewModel.TestStatus) -> some View {
+        VStack {
+            switch status {
+            case .pending:
+                Image(systemName: "circle")
+                    .foregroundStyle(Color(.tertiaryLabel))
+            case .running:
+                ProgressView()
+                    .controlSize(.small)
+            case .passed:
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(Color.green)
+            case .failed:
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundStyle(Color.red)
+            }
+        }
+        .frame(width: Layout.resultIconSize)
+    }
+
+    // MARK: - Diagnostics Success Bubble
+
+    private func diagnosticsSuccessBubble() -> some View {
+        VStack(alignment: .leading, spacing: Layout.resultsSpacing) {
+            HStack(alignment: .top, spacing: Layout.resultIconSpacing) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(Color.green)
+
+                Text(Localization.allChecksPassed)
+                    .font(.body)
+            }
+
+            Button {
+                viewModel.proceedToChat()
+            } label: {
+                Text(Localization.continueToChat)
+                    .font(.body.weight(.medium))
+                    .frame(maxWidth: .infinity)
+                    .padding(Layout.issueButtonPadding)
+                    .background(Color.accentColor)
+                    .foregroundStyle(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: Layout.issueButtonRadius))
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(SupportChatLayout.bubblePadding)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
+        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
+    }
+
+    // MARK: - Diagnostics Failure Bubble
+
+    private func diagnosticsFailureBubble(result: SupportDiagnosticsService.Result) -> some View {
+        VStack(alignment: .leading, spacing: Layout.resultsSpacing) {
+            HStack(alignment: .top, spacing: Layout.resultIconSpacing) {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundStyle(Color.red)
+
+                Text(result.test.title)
+                    .font(.body.weight(.semibold))
+            }
+
+            if let errorMessage = result.errorMessage {
+                Text(errorMessage)
+                    .font(.body)
+                    .foregroundStyle(Color(.secondaryLabel))
+            }
+
+            if let action = result.suggestedAction {
+                Button {
+                    Task {
+                        await viewModel.executeAction(action)
+                    }
+                } label: {
+                    Label(action.title, systemImage: action.systemImage)
+                        .font(.body.weight(.medium))
+                        .frame(maxWidth: .infinity)
+                        .padding(Layout.issueButtonPadding)
+                        .background(Color.accentColor)
+                        .foregroundStyle(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: Layout.issueButtonRadius))
+                }
+                .buttonStyle(.plain)
+            } else {
+                Button {
+                    viewModel.proceedToChat()
+                } label: {
+                    Text(Localization.continueToChat)
+                        .font(.body.weight(.medium))
+                        .frame(maxWidth: .infinity)
+                        .padding(Layout.issueButtonPadding)
+                        .background(Color(.tertiarySystemBackground))
+                        .foregroundStyle(Color(.label))
+                        .clipShape(RoundedRectangle(cornerRadius: Layout.issueButtonRadius))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(SupportChatLayout.bubblePadding)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
+        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
 
     private func scrollToBottom(proxy: ScrollViewProxy) {
@@ -262,11 +328,14 @@ struct SupportChatView: View {
 
 private extension SupportChatView {
     enum Layout {
-        static let progressSpacing: CGFloat = 16
-        static let progressScale: CGFloat = 1.5
-        static let resultsSpacing: CGFloat = 16
-        static let cardSpacing: CGFloat = 12
-        static let cardCornerRadius: CGFloat = 12
+        static let bubbleSpacing: CGFloat = 8
+        static let issueButtonPadding: CGFloat = 12
+        static let issueButtonRadius: CGFloat = 8
+        static let progressSpacing: CGFloat = 8
+        static let resultsSpacing: CGFloat = 12
+        static let resultRowSpacing: CGFloat = 8
+        static let resultIconSpacing: CGFloat = 6
+        static let resultIconSize: CGFloat = 24
     }
 }
 
@@ -306,8 +375,8 @@ private extension SupportChatView {
         )
         static let issuePickerHeader = NSLocalizedString(
             "supportChatView.issuePickerHeader",
-            value: "What are you having trouble with?",
-            comment: "Header for the issue picker in support chat"
+            value: "Hello! I'm your Woo Mobile Support Bot. What are you having trouble with today?",
+            comment: "Greeting and header for the issue picker in support chat"
         )
         static let runningDiagnostics = NSLocalizedString(
             "supportChatView.runningDiagnostics",
@@ -318,6 +387,16 @@ private extension SupportChatView {
             "supportChatView.continueToChat",
             value: "Continue to Chat",
             comment: "Button to proceed from diagnostics results to chat"
+        )
+        static let diagnosticsComplete = NSLocalizedString(
+            "supportChatView.diagnosticsComplete",
+            value: "Diagnostics Complete",
+            comment: "Header shown when diagnostics have finished running"
+        )
+        static let allChecksPassed = NSLocalizedString(
+            "supportChatView.allChecksPassed",
+            value: "All checks completed with no issues",
+            comment: "Message shown when all diagnostic checks pass"
         )
     }
 }

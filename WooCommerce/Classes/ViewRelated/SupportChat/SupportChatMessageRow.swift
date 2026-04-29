@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Networking.SupportChatRole
 
 /// Shared layout constants for the support chat UI.
 ///
@@ -22,14 +23,23 @@ enum SupportChatLayout {
     }
 }
 
-/// A chat bubble component that displays a single message.
+/// Shared constant for maximum bubble width.
+///
+extension SupportChatLayout {
+    static var maxBubbleWidth: CGFloat {
+        UIScreen.main.bounds.width * maxBubbleWidthRatio
+    }
+}
+
+/// A chat bubble component that displays a single text message.
 ///
 struct SupportChatMessageRow: View {
-    let message: SupportChatViewModel.ChatMessage
+    let role: SupportChatRole
+    let text: String
 
     var body: some View {
         HStack {
-            if message.role == .user {
+            if role == .user {
                 Spacer(minLength: UIScreen.main.bounds.width * (1 - SupportChatLayout.maxBubbleWidthRatio))
             }
 
@@ -39,7 +49,7 @@ struct SupportChatMessageRow: View {
                 .foregroundColor(bubbleForeground)
                 .cornerRadius(SupportChatLayout.bubbleCornerRadius)
 
-            if message.role == .bot {
+            if role == .bot {
                 Spacer(minLength: UIScreen.main.bounds.width * (1 - SupportChatLayout.maxBubbleWidthRatio))
             }
         }
@@ -47,16 +57,16 @@ struct SupportChatMessageRow: View {
 
     @ViewBuilder
     private var messageText: some View {
-        switch message.role {
+        switch role {
         case .user:
-            Text(message.content)
+            Text(text)
         case .bot, .unknown:
-            Text(.init(message.content))
+            Text(.init(text))
         }
     }
 
     private var bubbleBackground: Color {
-        switch message.role {
+        switch role {
         case .user:
             return Color(.accent)
         case .bot, .unknown:
@@ -65,7 +75,7 @@ struct SupportChatMessageRow: View {
     }
 
     private var bubbleForeground: Color {
-        switch message.role {
+        switch role {
         case .user:
             return .white
         case .bot, .unknown:
@@ -112,14 +122,16 @@ struct TypingIndicatorRow: View {
 
 #Preview("User Message") {
     SupportChatMessageRow(
-        message: .init(role: .user, content: "How do I fix my connection issue?")
+        role: .user,
+        text: "How do I fix my connection issue?"
     )
     .padding()
 }
 
 #Preview("Assistant Message") {
     SupportChatMessageRow(
-        message: .init(role: .bot, content: "I can help you troubleshoot your connection. Let's start by checking a few things.")
+        role: .bot,
+        text: "I can help you troubleshoot your connection. Let's start by checking a few things."
     )
     .padding()
 }

@@ -18,15 +18,6 @@ final class SupportChatViewModel {
         case connectivityTool // Goes directly to chat (context already provided)
     }
 
-    /// Current phase of the support chat flow.
-    ///
-    enum Phase: Equatable {
-        case issuePicker
-        case runningDiagnostics
-        case showingResults
-        case chatting
-    }
-
     /// Represents the current state of the chat.
     ///
     enum State: Equatable {
@@ -46,25 +37,72 @@ final class SupportChatViewModel {
         }
     }
 
+    /// Progress state for a diagnostic test.
+    ///
+    enum TestStatus: Equatable {
+        case pending
+        case running
+        case passed
+        case failed(String?) // error message
+    }
+
+    /// Content types for chat messages.
+    ///
+    enum MessageContent: Equatable {
+        case text(String)
+        case issuePicker([SupportIssueType])
+        /// Shows step-by-step progress: list of (test, status) pairs
+        case diagnosticsProgress([(test: SupportDiagnosticsService.Test, status: TestStatus)])
+        /// All tests passed - show simple success message
+        case diagnosticsSuccess
+        /// A test failed - show failure with optional action
+        case diagnosticsFailure(SupportDiagnosticsService.Result)
+
+        static func == (lhs: MessageContent, rhs: MessageContent) -> Bool {
+            switch (lhs, rhs) {
+            case (.text(let l), .text(let r)):
+                return l == r
+            case (.issuePicker(let l), .issuePicker(let r)):
+                return l == r
+            case (.diagnosticsProgress(let l), .diagnosticsProgress(let r)):
+                return l.map { $0.test } == r.map { $0.test } &&
+                       l.map { $0.status } == r.map { $0.status }
+            case (.diagnosticsSuccess, .diagnosticsSuccess):
+                return true
+            case (.diagnosticsFailure(let l), .diagnosticsFailure(let r)):
+                return l == r
+            default:
+                return false
+            }
+        }
+    }
+
     /// A message in the chat thread (local UI model).
     ///
     struct ChatMessage: Identifiable, Equatable {
         let id: UUID
         let role: SupportChatRole
-        let content: String
+        let content: MessageContent
         let timestamp: Date
 
-        init(id: UUID = UUID(), role: SupportChatRole, content: String, timestamp: Date = Date()) {
+        init(id: UUID = UUID(), role: SupportChatRole, content: MessageContent, timestamp: Date = Date()) {
             self.id = id
             self.role = role
             self.content = content
+            self.timestamp = timestamp
+        }
+
+        /// Convenience initializer for text messages.
+        init(id: UUID = UUID(), role: SupportChatRole, text: String, timestamp: Date = Date()) {
+            self.id = id
+            self.role = role
+            self.content = .text(text)
             self.timestamp = timestamp
         }
     }
 
     // MARK: - Published State
 
-    private(set) var phase: Phase
     private(set) var selectedIssue: SupportIssueType?
     private(set) var diagnosticResults: [SupportDiagnosticsService.Result] = []
     private(set) var messages: [ChatMessage] = []
@@ -78,6 +116,20 @@ final class SupportChatViewModel {
     /// Set to true when the user needs to start Jetpack setup.
     ///
     private(set) var shouldStartJetpackSetup: Bool = false
+
+    /// Whether the input area should be shown.
+    /// Hidden during issue picker and diagnostics phases.
+    ///
+    var shouldShowInputArea: Bool {
+        switch entryPoint {
+        case .connectivityTool:
+            return true
+        case .helpAndSupport:
+            return hasProceededToChat
+        }
+    }
+
+    private(set) var hasProceededToChat: Bool = false
 
     var inputText: String = ""
 
@@ -106,14 +158,6 @@ final class SupportChatViewModel {
         self.initialContext = initialContext
         self.diagnosticsService = diagnosticsService ?? SupportDiagnosticsService()
         self.onContactHumanSupport = onContactHumanSupport
-
-        // Set initial phase based on entry point
-        switch entryPoint {
-        case .helpAndSupport:
-            self.phase = .issuePicker
-        case .connectivityTool:
-            self.phase = .chatting
-        }
     }
 
     // MARK: - Issue Selection & Diagnostics
@@ -123,15 +167,78 @@ final class SupportChatViewModel {
     func selectIssue(_ issue: SupportIssueType) async {
         selectedIssue = issue
 
-        // "Other" skips diagnostics and goes directly to chat
-        guard issue != .other else {
-            phase = .chatting
+        // Add user's selection as a message
+        let userMessage = ChatMessage(role: .user, text: issue.displayName)
+        messages.append(userMessage)
+
+        // "Other" skips diagnostics and shows greeting
+        guard issue != .other, let tests = issue.testsToRun else {
+            let greetingMessage = ChatMessage(role: .bot, text: Localization.greetingMessage)
+            messages.append(greetingMessage)
+            hasProceededToChat = true
             return
         }
 
-        phase = .runningDiagnostics
-        diagnosticResults = await diagnosticsService.runTests(for: issue)
-        phase = .showingResults
+        // Initialize progress with all tests pending
+        var testStatuses: [(test: SupportDiagnosticsService.Test, status: TestStatus)] = tests.map { ($0, .pending) }
+        let progressMessage = ChatMessage(role: .bot, content: .diagnosticsProgress(testStatuses))
+        messages.append(progressMessage)
+        let progressIndex = messages.count - 1
+
+        // Run each test sequentially, updating progress
+        var failedResult: SupportDiagnosticsService.Result?
+
+        for (index, test) in tests.enumerated() {
+            // Mark current test as running
+            testStatuses[index].status = .running
+            messages[progressIndex] = ChatMessage(
+                id: messages[progressIndex].id,
+                role: .bot,
+                content: .diagnosticsProgress(testStatuses)
+            )
+
+            // Run the test
+            let results = await diagnosticsService.runTests([test])
+            guard let result = results.first else { continue }
+
+            diagnosticResults.append(result)
+
+            if result.isSuccess {
+                testStatuses[index].status = .passed
+            } else {
+                testStatuses[index].status = .failed(result.errorMessage)
+                failedResult = result
+                // Update progress to show failure
+                messages[progressIndex] = ChatMessage(
+                    id: messages[progressIndex].id,
+                    role: .bot,
+                    content: .diagnosticsProgress(testStatuses)
+                )
+                break
+            }
+
+            // Update progress
+            messages[progressIndex] = ChatMessage(
+                id: messages[progressIndex].id,
+                role: .bot,
+                content: .diagnosticsProgress(testStatuses)
+            )
+        }
+
+        // Replace progress with final result
+        if let failure = failedResult {
+            messages[progressIndex] = ChatMessage(
+                id: messages[progressIndex].id,
+                role: .bot,
+                content: .diagnosticsFailure(failure)
+            )
+        } else {
+            messages[progressIndex] = ChatMessage(
+                id: messages[progressIndex].id,
+                role: .bot,
+                content: .diagnosticsSuccess
+            )
+        }
     }
 
     /// Executes a fix action and re-runs the relevant test.
@@ -172,7 +279,7 @@ final class SupportChatViewModel {
         }
     }
 
-    /// Proceeds from results screen to chat, building context from diagnostics.
+    /// Proceeds from diagnostics results to chat, building context from diagnostics.
     ///
     func proceedToChat() {
         // Build context from diagnostic results
@@ -195,20 +302,31 @@ final class SupportChatViewModel {
         context["ios_version"] = UIDevice.current.systemVersion
 
         diagnosticsContext = context
-        phase = .chatting
+
+        // Add greeting message to continue chat
+        let greetingMessage = ChatMessage(role: .bot, text: Localization.postDiagnosticsGreeting)
+        messages.append(greetingMessage)
+        hasProceededToChat = true
     }
 
     // MARK: - Chat Actions
 
     func showGreeting() {
         guard messages.isEmpty else { return }
-        state = .sending
 
-        Task {
-            try? await Task.sleep(for: .seconds(1))
-            let greetingMessage = ChatMessage(role: .bot, content: Localization.greetingMessage)
+        switch entryPoint {
+        case .helpAndSupport:
+            // Show issue picker as first message
+            let pickerMessage = ChatMessage(
+                role: .bot,
+                content: .issuePicker(SupportIssueType.allCases)
+            )
+            messages.append(pickerMessage)
+
+        case .connectivityTool:
+            // Show standard greeting for connectivity tool entry
+            let greetingMessage = ChatMessage(role: .bot, text: Localization.greetingMessage)
             messages.append(greetingMessage)
-            state = .idle
         }
     }
 
@@ -217,7 +335,7 @@ final class SupportChatViewModel {
         guard !trimmedText.isEmpty else { return }
         guard state != .sending else { return }
 
-        let userMessage = ChatMessage(role: .user, content: trimmedText)
+        let userMessage = ChatMessage(role: .user, text: trimmedText)
         messages.append(userMessage)
         inputText = ""
         state = .sending
@@ -251,7 +369,7 @@ final class SupportChatViewModel {
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .short
 
-        return messages.map { message in
+        return messages.compactMap { message -> String? in
             let roleName: String
             switch message.role {
             case .user: roleName = "User"
@@ -259,7 +377,23 @@ final class SupportChatViewModel {
             case .unknown: roleName = "Unknown"
             }
             let timestamp = dateFormatter.string(from: message.timestamp)
-            return "[\(timestamp)] \(roleName): \(message.content)"
+
+            let contentText: String
+            switch message.content {
+            case .text(let text):
+                contentText = text
+            case .issuePicker:
+                contentText = "[Issue picker shown]"
+            case .diagnosticsProgress(let steps):
+                let summary = steps.map { "\($0.test.title): \($0.status)" }.joined(separator: ", ")
+                contentText = "[Running diagnostics: \(summary)]"
+            case .diagnosticsSuccess:
+                contentText = "[All diagnostics passed]"
+            case .diagnosticsFailure(let result):
+                contentText = "[Diagnostics failed: \(result.test.title) - \(result.errorMessage ?? "Unknown error")]"
+            }
+
+            return "[\(timestamp)] \(roleName): \(contentText)"
         }.joined(separator: "\n\n")
     }
 
@@ -277,7 +411,7 @@ final class SupportChatViewModel {
             if let lastBotMessage = response.messages.last(where: { $0.role == .bot }) {
                 let assistantMessage = ChatMessage(
                     role: .bot,
-                    content: lastBotMessage.content
+                    text: lastBotMessage.content
                 )
                 messages.append(assistantMessage)
 
@@ -303,6 +437,11 @@ private extension SupportChatViewModel {
             "supportChatViewModel.greetingMessage",
             value: "Hello! I'm your Woo Mobile Support Bot. Is there anything I can help you with today?",
             comment: "Initial greeting message from the AI support bot"
+        )
+        static let postDiagnosticsGreeting = NSLocalizedString(
+            "supportChatViewModel.postDiagnosticsGreeting",
+            value: "Please describe your issue in more detail so I can help.",
+            comment: "Message prompting user to describe their issue after diagnostics"
         )
         static let errorMessage = NSLocalizedString(
             "supportChatViewModel.errorMessage",

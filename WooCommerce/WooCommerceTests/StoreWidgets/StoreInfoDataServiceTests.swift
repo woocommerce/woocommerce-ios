@@ -16,7 +16,7 @@ final class StoreInfoDataServiceTests: XCTestCase {
         let service = StoreInfoDataService(visitorStatsSource: .wpcomSummary,
                                            fetchTodaysRevenueAndOrders: { _ in orderStats },
                                            fetchTodaysWPComVisitors: { _ in siteSummaryStats },
-                                           fetchTodaysJetpackVisitors: { _ in
+                                           fetchTodaysJetpackVisitors: {
                                                XCTFail("Unexpected Jetpack visitor fetch")
                                                throw TestError.unexpectedFetch
                                            })
@@ -46,7 +46,7 @@ final class StoreInfoDataServiceTests: XCTestCase {
                                                XCTFail("Unexpected WP.com visitor fetch")
                                                throw TestError.unexpectedFetch
                                            },
-                                           fetchTodaysJetpackVisitors: { _ in siteVisitStats })
+                                           fetchTodaysJetpackVisitors: { siteVisitStats })
 
         // When
         let stats = try await service.fetchTodayStats(for: 123)
@@ -67,7 +67,7 @@ final class StoreInfoDataServiceTests: XCTestCase {
                                                XCTFail("Unexpected WP.com visitor fetch")
                                                throw TestError.unexpectedFetch
                                            },
-                                           fetchTodaysJetpackVisitors: { _ in
+                                           fetchTodaysJetpackVisitors: {
                                                throw TestError.expectedFailure
                                            })
 
@@ -90,7 +90,7 @@ final class StoreInfoDataServiceTests: XCTestCase {
                                                XCTFail("Unexpected WP.com visitor fetch")
                                                throw TestError.unexpectedFetch
                                            },
-                                           fetchTodaysJetpackVisitors: { _ in
+                                           fetchTodaysJetpackVisitors: {
                                                XCTFail("Unexpected Jetpack visitor fetch")
                                                throw TestError.unexpectedFetch
                                            })

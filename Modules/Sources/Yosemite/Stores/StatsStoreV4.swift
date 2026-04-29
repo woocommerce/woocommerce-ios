@@ -16,6 +16,7 @@ public final class StatsStoreV4: Store {
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.siteStatsRemote = SiteStatsRemote(network: network)
+        // Only the placeholder-site JetpackRequest path is used here, so no site URL is required.
         self.jetpackConnectionRemote = JetpackConnectionRemote(siteURL: "", network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)

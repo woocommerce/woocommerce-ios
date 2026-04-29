@@ -22,7 +22,11 @@ final class StoreInfoDataService {
             case .wpcom:
                 self = .wpcomSummary
             case .wporg, .applicationPassword:
+#if canImport(Networking)
                 self = supportsJetpackVisitorStats ? .jetpackSiteVisits : .unavailable
+#else
+                self = .unavailable
+#endif
             }
         }
     }
@@ -39,7 +43,7 @@ final class StoreInfoDataService {
     private let visitorStatsSource: VisitorStatsSource
     private let fetchTodaysRevenueAndOrders: (Int64) async throws -> OrderStatsV4
     private let fetchTodaysWPComVisitors: (Int64) async throws -> SiteSummaryStats
-    private let fetchTodaysJetpackVisitors: (Int64) async throws -> SiteVisitStats
+    private let fetchTodaysJetpackVisitors: () async throws -> SiteVisitStats
 
     init(credentials: Credentials, supportsJetpackVisitorStats: Bool = false) {
         let remoteSource = RemoteSource(credentials: credentials)
@@ -53,7 +57,7 @@ final class StoreInfoDataService {
     init(visitorStatsSource: VisitorStatsSource,
          fetchTodaysRevenueAndOrders: @escaping (Int64) async throws -> OrderStatsV4,
          fetchTodaysWPComVisitors: @escaping (Int64) async throws -> SiteSummaryStats,
-         fetchTodaysJetpackVisitors: @escaping (Int64) async throws -> SiteVisitStats) {
+         fetchTodaysJetpackVisitors: @escaping () async throws -> SiteVisitStats) {
         self.visitorStatsSource = visitorStatsSource
         self.fetchTodaysRevenueAndOrders = fetchTodaysRevenueAndOrders
         self.fetchTodaysWPComVisitors = fetchTodaysWPComVisitors
@@ -97,7 +101,7 @@ final class StoreInfoDataService {
 
     private func todayStatsWithJetpackVisitors(for storeID: Int64) async throws -> Stats {
         async let revenueAndOrdersRequest = fetchTodaysRevenueAndOrders(storeID)
-        async let siteVisitStatsRequest = fetchTodaysJetpackVisitors(storeID)
+        async let siteVisitStatsRequest = fetchTodaysJetpackVisitors()
 
         do {
             let (revenueAndOrders, siteVisitStats) = try await (revenueAndOrdersRequest, siteVisitStatsRequest)
@@ -179,32 +183,20 @@ private extension StoreInfoDataService {
 
         /// Async wrapper that fetches todays visitors through the site-authenticated Jetpack endpoint.
         ///
-        func fetchTodaysJetpackVisitors(for storeID: Int64) async throws -> SiteVisitStats {
+        func fetchTodaysJetpackVisitors() async throws -> SiteVisitStats {
 #if canImport(Networking)
-            let blogID = try await fetchJetpackBlogID()
+            let blogID = try await jetpackConnectionRemote.fetchJetpackBlogID()
             return try await loadJetpackSiteVisitorStats(for: blogID)
 #else
-            return try await loadJetpackSiteVisitorStats(for: storeID)
+            throw JetpackConnectionError.blogIDUnavailable
 #endif
         }
 
-#if canImport(Networking)
-        private func fetchJetpackBlogID() async throws -> Int64 {
-            try await withCheckedThrowingContinuation { continuation in
-                Task { @MainActor in
-                    jetpackConnectionRemote.fetchJetpackBlogID { result in
-                        continuation.resume(with: result)
-                    }
-                }
-            }
-        }
-#endif
-
-        private func loadJetpackSiteVisitorStats(for storeID: Int64) async throws -> SiteVisitStats {
+        private func loadJetpackSiteVisitorStats(for blogID: Int64) async throws -> SiteVisitStats {
             try await withCheckedThrowingContinuation { continuation in
                 // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
                 Task { @MainActor in
-                    siteStatsRemote.loadJetpackSiteVisitorStats(for: storeID,
+                    siteStatsRemote.loadJetpackSiteVisitorStats(for: blogID,
                                                                 unit: .day,
                                                                 latestDateToInclude: Date().endOfDay(timezone: .current),
                                                                 quantity: 1) { result in

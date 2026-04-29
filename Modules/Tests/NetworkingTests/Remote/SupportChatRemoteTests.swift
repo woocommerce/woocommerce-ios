@@ -225,4 +225,91 @@ struct SupportChatRemoteTests {
                                          context: nil)
         }
     }
+
+    // MARK: - fetchChat
+
+    @Test func fetchChat_issues_get_request_to_chat_path() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let chatID: Int64 = 4522824
+
+        // When
+        _ = try? await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? DotcomRequest)
+        #expect(request.path == "odie/chat/\(botSlug)/\(chatID)")
+        #expect(request.method == .get)
+    }
+
+    @Test func fetchChat_when_response_is_valid_then_returns_every_turn_in_order() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let chatID: Int64 = 4522824
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)",
+                                 filename: "support-chat-fetch-chat")
+
+        // When
+        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+
+        // Then
+        #expect(response.chatID == chatID)
+        #expect(response.messages.count == 4)
+        #expect(response.messages.map(\.role) == [.user, .bot, .user, .bot])
+    }
+
+    @Test func fetchChat_when_response_contains_user_role_then_decodes_as_user_case() async throws {
+        // Given — GET surfaces user turns (POST only returns bot), so `.user` must decode cleanly.
+        let remote = SupportChatRemote(network: network)
+        let chatID: Int64 = 4522824
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)",
+                                 filename: "support-chat-fetch-chat")
+
+        // When
+        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+
+        // Then
+        let firstMessage = try #require(response.messages.first)
+        #expect(firstMessage.role == .user)
+        #expect(firstMessage.content == "Smoke test for GET endpoint — ignore.")
+    }
+
+    @Test func fetchChat_when_user_message_context_lacks_flags_and_sources_then_decodes_failsafe() async throws {
+        // Given — user messages carry a different `context` shape than bot messages (no flags/sources).
+        let remote = SupportChatRemote(network: network)
+        let chatID: Int64 = 4522824
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)",
+                                 filename: "support-chat-fetch-chat")
+
+        // When
+        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+
+        // Then — the failsafe decoder produces empty sources + nil flags rather than throwing.
+        let userMessageContext = try #require(response.messages.first?.context)
+        #expect(userMessageContext.sources.isEmpty)
+        #expect(userMessageContext.flags == nil)
+    }
+
+    @Test func fetchChat_when_no_response_stubbed_then_throws_notFound() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+
+        // When / Then
+        await #expect(throws: NetworkError.notFound()) {
+            try await remote.fetchChat(botSlug: botSlug, chatID: 4522824)
+        }
+    }
+
+    @Test func fetchChat_when_network_errors_then_propagates_error() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let chatID: Int64 = 4522824
+        network.simulateError(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)",
+                              error: NetworkError.timeout())
+
+        // When / Then
+        await #expect(throws: NetworkError.timeout()) {
+            try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+        }
+    }
 }

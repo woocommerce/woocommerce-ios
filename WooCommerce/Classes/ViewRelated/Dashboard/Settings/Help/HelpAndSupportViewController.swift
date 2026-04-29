@@ -510,6 +510,7 @@ private extension HelpAndSupportViewController {
     private func resumeChat(for summary: SupportChatSummary) {
         let chatViewModel = SupportChatViewModel(
             botSlug: summary.botSlug,
+            entryPoint: .chatHistory,
             chatID: summary.chatID,
             onContactHumanSupport: { [weak self] _ in
                 self?.navigationController?.popViewController(animated: true)

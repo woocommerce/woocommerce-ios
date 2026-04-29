@@ -16,6 +16,7 @@ final class SupportChatViewModel {
     enum EntryPoint {
         case helpAndSupport   // Shows issue picker first
         case connectivityTool // Goes directly to chat (context already provided)
+        case chatHistory      // Resuming a prior conversation from history
     }
 
     /// Represents the current state of the chat.
@@ -109,10 +110,6 @@ final class SupportChatViewModel {
     private(set) var state: State = .idle
     private(set) var shouldPromptHumanSupport: Bool = false
 
-    /// URL to open when a fix action requires opening settings.
-    ///
-    private(set) var selectedURL: URL?
-
     /// Set to true when the user needs to start Jetpack setup.
     ///
     private(set) var shouldStartJetpackSetup: Bool = false
@@ -122,7 +119,7 @@ final class SupportChatViewModel {
     ///
     var shouldShowInputArea: Bool {
         switch entryPoint {
-        case .connectivityTool:
+        case .connectivityTool, .chatHistory:
             return true
         case .helpAndSupport:
             return hasProceededToChat
@@ -153,7 +150,7 @@ final class SupportChatViewModel {
     // MARK: - Initialization
 
     init(botSlug: String = "woo-workflow-support_mobile_inapp",
-         entryPoint: EntryPoint = .helpAndSupport,
+         entryPoint: EntryPoint,
          stores: StoresManager = ServiceLocator.stores,
          initialContext: [String: Any]? = nil,
          diagnosticsService: SupportDiagnosticsService? = nil,
@@ -274,7 +271,10 @@ final class SupportChatViewModel {
                 shouldStartJetpackSetup = true
 
             case .openNotificationSettings:
-                selectedURL = diagnosticsService.openNotificationSettings()
+                if let selectedURL = diagnosticsService.openNotificationSettings(),
+                   UIApplication.shared.canOpenURL(selectedURL) {
+                    await UIApplication.shared.open(selectedURL)
+                }
             }
         } catch {
             DDLogError("⛔️ Failed to execute action \(action): \(error)")
@@ -362,7 +362,6 @@ final class SupportChatViewModel {
 
         // Resumed chats skip the greeting — the merchant is continuing a prior conversation.
         guard chatID == nil else { return }
-        state = .sending
 
         switch entryPoint {
         case .helpAndSupport:
@@ -374,9 +373,14 @@ final class SupportChatViewModel {
             messages.append(pickerMessage)
 
         case .connectivityTool:
+            state = .sending
             // Show standard greeting for connectivity tool entry
             let greetingMessage = ChatMessage(role: .bot, text: Localization.greetingMessage)
             messages.append(greetingMessage)
+
+        case .chatHistory:
+            // Chat history loads via resumeIfNeeded() — no greeting needed
+            break
         }
     }
 
@@ -507,7 +511,7 @@ final class SupportChatViewModel {
         switch result {
         case .success(let response):
             let rehydrated: [ChatMessage] = response.messages.compactMap { message in
-                switch message.role {       
+                switch message.role {
                 case .user:
                     return ChatMessage(role: .user, text: message.content)
                 case .bot:

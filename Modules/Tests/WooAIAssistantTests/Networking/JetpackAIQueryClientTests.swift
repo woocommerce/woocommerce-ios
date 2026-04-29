@@ -4,8 +4,6 @@ import Testing
 
 struct JetpackAIQueryClientTests {
 
-    // MARK: - 1. Streaming with split chunks
-
     @Test
     func test_streamTurn_when_streaming_with_split_chunks_then_assembles_text_in_order() async throws {
         // Given
@@ -16,7 +14,6 @@ struct JetpackAIQueryClientTests {
             "data: {\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\n",
             "data: [DONE]\n\n"
         ]
-        // Splits crafted to land mid-frame and mid-line, exercising the parser's buffering.
         let chunks = chunkifyAwkwardly(frames.joined())
         let client = makeClient(streamingResult: .successChunks(chunks))
 
@@ -35,8 +32,6 @@ struct JetpackAIQueryClientTests {
             Issue.record("Expected last event to be completed.")
         }
     }
-
-    // MARK: - 2. 429 retry with backoff
 
     @Test
     func test_streamTurn_when_429_then_retries_with_backoff() async throws {
@@ -64,11 +59,8 @@ struct JetpackAIQueryClientTests {
         }
         #expect(textDeltas.joined() == "ok")
         let recordedDelays = await sleepRecorder.delays
-        // 2s + 4s backoff = 2_000_000_000 + 4_000_000_000 nanoseconds.
         #expect(recordedDelays == [2_000_000_000, 4_000_000_000])
     }
-
-    // MARK: - 3. Wrapped-error envelope on HTTP 200
 
     @Test
     func test_streamTurn_when_wrapped_error_envelope_then_throws_typed_AssistantError() async throws {
@@ -89,8 +81,6 @@ struct JetpackAIQueryClientTests {
             #expect(error.message.contains("context_too_long"))
         }
     }
-
-    // MARK: - 4. Tool-calling assistant message encodes empty content
 
     @Test
     func test_streamTurn_when_assistant_message_carries_tool_calls_then_encodes_empty_content_string() async throws {
@@ -120,13 +110,10 @@ struct JetpackAIQueryClientTests {
         #expect(assistantOnWire["tool_calls"] != nil)
     }
 
-    // MARK: - 5. UTF-8 boundary carry
-
     @Test
     func test_streamTurn_when_utf8_boundary_split_then_recovers_full_character() async throws {
         // Given
-        // Rocket emoji U+1F680 encodes to 4 bytes: F0 9F 9A 80. Frame is split inside
-        // the emoji's byte sequence so the first chunk has only its leading bytes.
+        // Rocket emoji U+1F680 is 4 bytes (F0 9F 9A 80); the chunk break splits it 2/2.
         let prefix = "data: {\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hi "
         let suffix = "!\"},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n"
         let emojiBytes: [UInt8] = [0xF0, 0x9F, 0x9A, 0x80]
@@ -150,8 +137,6 @@ struct JetpackAIQueryClientTests {
         }
         #expect(textDeltas.joined() == "Hi \u{1F680}!")
     }
-
-    // MARK: - 6. 401 pre-data invalidates JWT and retries once
 
     @Test
     func test_streamTurn_when_401_pre_data_then_invalidates_jwt_and_retries_once() async throws {
@@ -179,8 +164,6 @@ struct JetpackAIQueryClientTests {
         }
         #expect(textDeltas.joined() == "after refresh")
     }
-
-    // MARK: - Helpers
 
     private func makeClient(streamingResult: TransportScenario) -> JetpackAIQueryClient {
         let transport = ScriptedTransport(scenarios: [streamingResult])
@@ -229,9 +212,6 @@ struct JetpackAIQueryClientTests {
     }
 }
 
-// MARK: - Test doubles
-
-/// Records the bytes the client passes to `sleep`. Calls produce no real wait.
 private actor SleepRecorder {
     private(set) var delays: [UInt64] = []
 
@@ -246,15 +226,11 @@ private actor SleepRecorder {
     }
 }
 
-/// Returns a fixed token forever; ignores `invalidate()`. Suitable for tests
-/// that don't exercise the auth-retry path.
 private struct FixedJWTProvider: AssistantJWTProviding {
     let token: String
     func currentJWT() async throws -> String { token }
 }
 
-/// Mints from a scripted list and counts invalidations. Used by the 401-retry
-/// test to assert the client asked the provider to invalidate exactly once.
 private actor ScriptedJWTProvider: AssistantJWTProviding {
     private var tokens: [String]
     private(set) var invalidateCount = 0
@@ -278,8 +254,6 @@ private actor ScriptedJWTProvider: AssistantJWTProviding {
     }
 }
 
-/// One scenario per call to the streaming transport. The scripted transport
-/// returns scenarios in order and records every request the client built.
 private enum TransportScenario {
     case successChunks([Data])
     case errorBody(status: Int, body: Data)

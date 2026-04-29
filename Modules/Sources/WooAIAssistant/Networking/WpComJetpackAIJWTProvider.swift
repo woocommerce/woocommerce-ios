@@ -1,10 +1,8 @@
 import Foundation
 
-/// Caches a Jetpack AI JWT in process and refreshes it on expiry / blog mismatch.
-///
-/// Single-flight is automatic via actor isolation: only one task runs inside the actor
-/// at a time, so concurrent callers serialize on `currentJWT()` and the second caller
-/// observes the freshly-minted token in the cache instead of triggering a second mint.
+// Single-flight is automatic via actor isolation: concurrent callers serialize on
+// `currentJWT()`, so the second caller observes the freshly-minted token rather
+// than triggering a second mint.
 public actor WpComJetpackAIJWTProvider: AssistantJWTProviding {
 
     public typealias Mint = @Sendable (Int64) async throws -> String
@@ -33,9 +31,6 @@ public actor WpComJetpackAIJWTProvider: AssistantJWTProviding {
     }
 }
 
-/// Decoded view of a Jetpack AI JWT. The provider only needs `blog_id` and `exp`
-/// from the payload to decide whether to reuse or refresh; signature is verified
-/// upstream by the proxy on each request, not here.
 struct CachedJWT: Equatable, Sendable {
     let token: String
     let blogID: Int64
@@ -75,8 +70,7 @@ struct CachedJWT: Equatable, Sendable {
         Date() >= expiresAt
     }
 
-    /// JWT payload uses base64url (`-_` instead of `+/`) and elides padding.
-    /// Convert to standard base64 and pad before handing to `Data(base64Encoded:)`.
+    // JWT payload is base64url (`-_` instead of `+/`) with padding elided.
     private static func base64URLDecode(_ input: String) -> Data? {
         var base64 = input
             .replacingOccurrences(of: "-", with: "+")

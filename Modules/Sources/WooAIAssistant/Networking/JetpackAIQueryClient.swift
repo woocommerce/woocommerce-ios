@@ -1,25 +1,9 @@
 import Foundation
 
-/// Streaming HTTP transport. Returns a byte stream alongside the status response
-/// so the caller can parse SSE frames incrementally on 2xx, or drain the (small)
-/// JSON error body on non-2xx. Production uses URLSession; tests pass a closure
-/// that records the request and returns canned bytes.
 typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
 
-/// Calls `POST /wpcom/v2/jetpack-ai-query` with an OpenAI-shape body.
-///
-/// Auth: `Authorization: Bearer <Jetpack AI JWT>`. The JWT is minted per
-/// site by `AssistantJWTProviding` and rotated on expiry; this client just
-/// asks for one before each call and asks the provider to invalidate when
-/// the upstream rejects it.
-///
-/// Streaming-only: the `feature` / `model` / `stream=true` parameters are
-/// pinned at construction from `AssistantConfiguration` so callers can't
-/// accidentally drift the wire shape per call.
 struct JetpackAIQueryClient: AIChatService {
 
-    /// Sleep hook so the 429-backoff branch is testable without `Task.sleep`
-    /// burning real wall-clock seconds. Production uses `Task.sleep(nanoseconds:)`.
     typealias Sleep = @Sendable (UInt64) async throws -> Void
 
     private let endpoint: URL
@@ -37,11 +21,8 @@ struct JetpackAIQueryClient: AIChatService {
         self.sleep = sleep ?? { nanoseconds in try await Task.sleep(nanoseconds: nanoseconds) }
     }
 
-    /// One URLSession per process for all LLM calls. Dedicated so we can raise the
-    /// per-host connection cap (URLSession.shared caps at 6/host) without affecting
-    /// other Networking-module call paths. 64 matches what URLSession itself uses
-    /// on iOS when explicitly raised; 120s/180s timeouts cover the long tail of
-    /// model thinking before any byte is delivered.
+    // 64 conns/host (URLSession.shared caps at 6) + long timeouts cover the
+    // long tail of model thinking before any byte is delivered.
     private static let sharedLLMSession: URLSession = {
         let config = URLSessionConfiguration.default
         config.httpMaximumConnectionsPerHost = 64
@@ -50,18 +31,15 @@ struct JetpackAIQueryClient: AIChatService {
         return URLSession(configuration: config)
     }()
 
-    /// Streaming transport backed by URLSession's AsyncBytes. Yields 4 KB `Data`
-    /// chunks so the SSE parser can drain frames as soon as they arrive.
     static func urlSessionStreamingTransport(_ session: URLSession) -> StreamingHTTPTransport {
         return { request in
             let (bytes, response) = try await session.bytes(for: request)
             guard let http = response as? HTTPURLResponse else {
                 throw AssistantError(kind: .network, message: "Non-HTTP response.")
             }
-            // Cancelling just the wrapping Swift Task isn't enough - URLSession keeps the
-            // socket open waiting for data, and an idle SSE connection never produces a
-            // cancellation error through `for try await byte in bytes`. Cancel the URL
-            // task too so the socket closes and resources release.
+            // Cancelling only the wrapping Swift Task leaves the URL loader holding the
+            // socket; an idle SSE connection never produces a cancellation through the
+            // byte iterator. Cancel the URL task too.
             let urlSessionTask = bytes.task
             let stream = AsyncThrowingStream<Data, Error> { continuation in
                 let task = Task {
@@ -110,11 +88,8 @@ struct JetpackAIQueryClient: AIChatService {
         }
     }
 
-    /// Outer envelope. Wraps the inner streaming call so a 401/403 error received before
-    /// any chunk is yielded triggers exactly one JWT-invalidate-and-retry. After the first
-    /// `ChatStreamEvent` is delivered to the consumer we never retry - that would emit a
-    /// duplicate prefix or a torn tool call. The 429 backoff lives one layer in
-    /// (`runWithRateLimitRetry`) so the two retries nest cleanly.
+    // 401/403 before any event lands → invalidate JWT + retry once. Once an event
+    // crosses the seam, retrying would emit a duplicate prefix or torn tool call.
     private func runWithAuthRetry(messages: [OpenAIChat.Message],
                                   tools: [OpenAIChat.ToolDefinition]?,
                                   toolChoice: OpenAIChat.ToolChoice?,
@@ -147,10 +122,7 @@ struct JetpackAIQueryClient: AIChatService {
         return true
     }
 
-    /// Inner envelope. 429 retries (3 attempts, 2s + 4s backoff) only run before any event
-    /// has been yielded - once the consumer has seen a delta we cannot replay safely. The
-    /// rate-limit ceiling exists because jetpack-ai-query throttles aggressively under
-    /// parallel smoke load and a brief wait usually clears it.
+    // 429 retries (3 attempts, 2s + 4s) only run before any event crosses the seam.
     private func runWithRateLimitRetry(messages: [OpenAIChat.Message],
                                        tools: [OpenAIChat.ToolDefinition]?,
                                        toolChoice: OpenAIChat.ToolChoice?,
@@ -195,9 +167,8 @@ struct JetpackAIQueryClient: AIChatService {
                                        jwt: jwt)
         let (byteStream, http) = try await streamingTransport(request)
 
-        // Non-2xx: jetpack-ai-query validates BEFORE opening the stream, so the body is
-        // a single JSON error payload (no SSE frames). Drain it fully and run through
-        // the standard validate + wrapped-envelope decoder.
+        // jetpack-ai-query validates before opening the stream, so a non-2xx body is
+        // a single JSON error payload, not SSE frames.
         if !(200..<300).contains(http.statusCode) {
             var buffer = Data()
             for try await chunk in byteStream {
@@ -218,8 +189,7 @@ struct JetpackAIQueryClient: AIChatService {
         var toolCallOrder: [Int] = []
         var finishReason: OpenAIChat.FinishReason?
         // Multi-byte UTF-8 chars that straddle a chunk boundary fail `String(data:encoding:)`
-        // and the entire chunk is dropped, manifesting as "the assistant skips characters"
-        // on emoji / non-ASCII content. Carry up to 3 trailing bytes forward.
+        // and the chunk would be dropped wholesale. Carry up to 3 trailing bytes forward.
         var pendingBytes = Data()
 
         for try await rawChunk in byteStream {
@@ -233,9 +203,8 @@ struct JetpackAIQueryClient: AIChatService {
                 if trimmed == "[DONE]" { continue }
                 guard let data = trimmed.data(using: .utf8) else { continue }
 
-                // Some soft errors come back as HTTP 200 with a wrapped JSON envelope that
-                // looks NOTHING like an SSE chunk (no `choices` field). Surface as typed
-                // error before we waste a JSON decode against the chunk shape.
+                // Some soft errors come back as 200 + a wrapped envelope (no `choices`).
+                // Surface as a typed error before attempting the chunk decode.
                 if !firstDecodedChunkSeen, let envelope = Self.decodeWrappedError(from: data) {
                     throw envelope
                 }
@@ -258,8 +227,6 @@ struct JetpackAIQueryClient: AIChatService {
                 }
             }
         }
-        // Flush any trailing event the buffer held onto. If the stream cut mid-multibyte
-        // we just drop the partial tail (no valid codepoint to emit).
         if !pendingBytes.isEmpty,
            let tail = String(data: pendingBytes, encoding: .utf8),
            !tail.isEmpty {
@@ -319,9 +286,6 @@ struct JetpackAIQueryClient: AIChatService {
         return urlRequest
     }
 
-    /// Accumulator for streaming tool-call fragments. OpenAI streams the skeleton
-    /// (`id` / `type` / `function.name`) in the first delta and the arguments as
-    /// string chunks across subsequent deltas, keyed by `tool_calls[<index>]`.
     private struct ToolCallAssembly {
         var id: String?
         var type: String?
@@ -329,17 +293,11 @@ struct JetpackAIQueryClient: AIChatService {
         var arguments: String = ""
     }
 
-    /// Tracks whether the consumer has observed any event, so retry envelopes
-    /// can short-circuit once a partial response has crossed the seam.
     private actor StreamBridge {
         private(set) var didEmitAnyEvent = false
         func markEmitted() { didEmitAnyEvent = true }
     }
 
-    /// Try to decode `buffer` as UTF-8 in one shot. If that fails, back off by up
-    /// to 3 bytes (max length of a UTF-8 sequence minus 1) searching for a valid
-    /// prefix - those last bytes are the start of a codepoint that'll complete on
-    /// the next network chunk.
     static func decodeUTF8WithBoundaryCarry(_ buffer: Data) -> (decoded: String?, remainder: Data) {
         if let full = String(data: buffer, encoding: .utf8) {
             return (full, Data())
@@ -366,9 +324,6 @@ struct JetpackAIQueryClient: AIChatService {
         if !order.contains(delta.index) { order.append(delta.index) }
     }
 
-    /// Wrapped-error envelope returned by jetpack-ai-query for soft failures
-    /// (context overflow, moderation, downstream JSON-schema rejection). HTTP
-    /// status is usually 200 - the real error lives in the body.
     private struct WrappedError: Decodable {
         let code: String
         let message: String
@@ -379,10 +334,10 @@ struct JetpackAIQueryClient: AIChatService {
         }
     }
 
-    /// Returns an `AssistantError` if the body decodes as a wrapped error envelope.
-    /// Returns nil when both `code` and `message` are not populated, which keeps
-    /// successful chat-completion responses (no top-level `code`) from being
-    /// misclassified.
+    // jetpack-ai-query wraps soft failures (context overflow, moderation, schema
+    // rejection) as `{code, message, data:{status}}` over HTTP 200. Both fields
+    // must be populated so a successful chat response (no top-level `code`)
+    // doesn't get misclassified.
     static func decodeWrappedError(from data: Data) -> AssistantError? {
         let envelope: WrappedError
         do {

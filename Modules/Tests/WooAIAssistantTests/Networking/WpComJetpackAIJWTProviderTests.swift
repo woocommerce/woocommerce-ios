@@ -4,8 +4,6 @@ import Testing
 
 struct WpComJetpackAIJWTProviderTests {
 
-    // MARK: - 1. Cache hit returns without minting
-
     @Test
     func test_currentJWT_when_cache_warm_and_not_expired_then_returns_cached_without_minting() async throws {
         // Given
@@ -22,8 +20,6 @@ struct WpComJetpackAIJWTProviderTests {
         #expect(second == token)
         #expect(await counter.count == 1)
     }
-
-    // MARK: - 2. Expired cached token mints fresh
 
     @Test
     func test_currentJWT_when_cached_token_expired_then_mints_fresh() async throws {
@@ -44,8 +40,6 @@ struct WpComJetpackAIJWTProviderTests {
         #expect(await counter.count == 2)
     }
 
-    // MARK: - 3. Blog-id mismatch mints fresh
-
     @Test
     func test_currentJWT_when_cached_token_blog_id_mismatch_then_mints_fresh() async throws {
         // Given
@@ -64,8 +58,6 @@ struct WpComJetpackAIJWTProviderTests {
         #expect(second == correctToken)
         #expect(await counter.count == 2)
     }
-
-    // MARK: - 4. Concurrent callers single-flight the mint
 
     @Test
     func test_currentJWT_when_concurrent_callers_then_mints_exactly_once() async throws {
@@ -87,8 +79,6 @@ struct WpComJetpackAIJWTProviderTests {
         #expect(await counter.count == 1)
     }
 
-    // MARK: - 5. invalidate forces a fresh mint
-
     @Test
     func test_invalidate_when_called_then_next_currentJWT_mints_fresh() async throws {
         // Given
@@ -109,11 +99,8 @@ struct WpComJetpackAIJWTProviderTests {
         #expect(await counter.count == 2)
     }
 
-    // MARK: - JWT fixture builder
-
-    /// Builds a JWT-shaped string with `header.payload.signature`. Header is a
-    /// minimal `{"alg":"HS256","typ":"JWT"}` and signature is a constant placeholder
-    /// (the provider only inspects the payload, not the signature).
+    // header.payload.signature; signature is a constant since the provider
+    // never validates it (the proxy does).
     private func makeJWT(blogID: Int64, expiresIn seconds: Int) -> String {
         let header = #"{"alg":"HS256","typ":"JWT"}"#
         let exp = Int(Date().timeIntervalSince1970) + seconds
@@ -128,8 +115,6 @@ struct WpComJetpackAIJWTProviderTests {
             .replacingOccurrences(of: "=", with: "")
     }
 }
-
-// MARK: - Test doubles
 
 private actor MintCounter {
     private(set) var count: Int = 0

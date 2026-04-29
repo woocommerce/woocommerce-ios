@@ -60,5 +60,4 @@ public struct WatchDependencies: Codable, Equatable {
         // Ideally this should be refactored to live in the credentials object.
         self.applicationPassword = ApplicationPasswordStorage().applicationPassword
     }
-
 }

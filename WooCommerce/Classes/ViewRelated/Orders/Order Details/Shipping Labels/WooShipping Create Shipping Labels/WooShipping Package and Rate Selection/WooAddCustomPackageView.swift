@@ -182,7 +182,7 @@ struct WooAddCustomPackageView: View {
                 .disabled(isSavingPackage)
                 .fullScreenCover(isPresented: $isARParcelSizingPresented) {
                     ARParcelSizingView(
-                        unit: dimensionsUnit,
+                        unit: DimensionUnit(storeUnit: dimensionsUnit),
                         initial: ParcelDimensions(
                             length: Float(viewModel.fieldValues[.length] ?? "") ?? -1,
                             width: Float(viewModel.fieldValues[.width] ?? "") ?? -1,

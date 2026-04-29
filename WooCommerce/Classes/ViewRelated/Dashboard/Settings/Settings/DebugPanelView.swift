@@ -120,8 +120,8 @@ struct DebugPanelView: View {
     /// Hardcoded carriers + packages so the carrier flow can be exercised
     /// from the debug panel without going through the full shipping label
     /// flow.
-    private static var debugDimensionsUnit: String {
-        ServiceLocator.shippingSettingsService.dimensionUnit ?? "in"
+    private static var debugDimensionsUnit: DimensionUnit {
+        DimensionUnit(storeUnit: ServiceLocator.shippingSettingsService.dimensionUnit ?? "in")
     }
 
     private static let debugCarrierPackages: [ParcelPresetCarrier] = [

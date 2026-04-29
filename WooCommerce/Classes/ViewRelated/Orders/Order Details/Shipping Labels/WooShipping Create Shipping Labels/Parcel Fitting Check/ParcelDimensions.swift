@@ -11,8 +11,8 @@ struct ParcelDimensions {
         length >= 0 && width >= 0 && height >= 0
     }
 
-    func toMeters(unit: String) -> SIMD3<Float> {
-        let factor = DimensionUnitConversion.metersPerUnit(unit)
+    func toMeters(unit: DimensionUnit) -> SIMD3<Float> {
+        let factor = unit.metersPerUnit
         return SIMD3(length * factor, height * factor, width * factor)
     }
 }

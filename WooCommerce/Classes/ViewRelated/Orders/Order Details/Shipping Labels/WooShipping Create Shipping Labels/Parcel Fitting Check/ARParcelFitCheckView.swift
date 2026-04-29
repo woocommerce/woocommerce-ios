@@ -22,7 +22,7 @@ struct ARParcelFitCheckView: View {
     @State private var isPlaced: Bool = false
     @State private var resetTrigger: Int = 0
 
-    init(unit: String,
+    init(unit: DimensionUnit,
          availableCarriers: [ParcelPresetCarrier],
          initialPackageID: String? = nil,
          onCancel: @escaping () -> Void,

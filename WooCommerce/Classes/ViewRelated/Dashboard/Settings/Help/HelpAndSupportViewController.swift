@@ -76,7 +76,8 @@ final class HelpAndSupportViewController: UIViewController {
         isMacCatalyst: isMacCatalyst,
         hasLoginSiteURL: loginSiteURL != nil,
         developerFFPanelEnabled: !ServiceLocator.stores.isAuthenticated
-            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel)
+            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel),
+        isAISupportChatEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
     )
 
     private var isMacCatalyst: Bool {
@@ -234,6 +235,8 @@ private extension HelpAndSupportViewController {
             configureSiteCompatibility(cell: cell)
         case let cell as ValueOneTableViewCell where row == .featureFlags:
             configureFeatureFlags(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .aiSupportChat:
+            configureAISupportChat(cell: cell)
         default:
             fatalError()
         }
@@ -317,6 +320,23 @@ private extension HelpAndSupportViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = "Override Feature Flags"
         cell.detailTextLabel?.text = "Toggle local feature flags"
+    }
+
+    /// AI Support Chat cell
+    ///
+    func configureAISupportChat(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString(
+            "helpAndSupport.aiSupportChat.title",
+            value: "Chat with Support",
+            comment: "Title for the AI support chat row on the Help screen"
+        )
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "helpAndSupport.aiSupportChat.subtitle",
+            value: "Get help from our AI assistant",
+            comment: "Subtitle for the AI support chat row on the Help screen"
+        )
     }
 
     func refreshViewContent() {
@@ -432,6 +452,25 @@ private extension HelpAndSupportViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 
+    /// AI Support Chat action
+    ///
+    func aiSupportChatWasPressed() {
+        let viewModel = SupportChatViewModel(
+            entryPoint: .helpAndSupport,
+            onContactHumanSupport: { [weak self] transcript in
+                self?.navigateToContactSupport(transcript: transcript)
+            }
+        )
+        let supportChatView = SupportChatView(viewModel: viewModel)
+        let controller = UIHostingController(rootView: supportChatView)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func navigateToContactSupport(transcript: String) {
+        let viewController = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag))
+        viewController.show(from: self)
+    }
+
     @objc func dismissWasPressed() {
         dismiss(animated: true, completion: nil)
     }
@@ -488,6 +527,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             siteCompatibilityWasPressed()
         case .featureFlags:
             featureFlagsWasPressed()
+        case .aiSupportChat:
+            aiSupportChatWasPressed()
         }
     }
 }
@@ -509,6 +550,7 @@ private struct Section {
 enum HelpAndSupportRow: CaseIterable {
     case helpCenter
     case contactSupport
+    case aiSupportChat
     case contactEmail
     case applicationLog
     case systemStatusReport
@@ -517,7 +559,8 @@ enum HelpAndSupportRow: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
-        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .siteCompatibility, .featureFlags:
+        case .helpCenter, .contactSupport, .aiSupportChat, .contactEmail, .applicationLog,
+             .systemStatusReport, .siteCompatibility, .featureFlags:
             return ValueOneTableViewCell.self
         }
     }

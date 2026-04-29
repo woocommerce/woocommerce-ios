@@ -2,13 +2,14 @@ import Foundation
 import CocoaLumberjackSwift
 
 /// Resumes parse + persist of a catalog file that was staged in a previous session
-/// but never finished its write transaction
-public protocol BackgroundCatalogDownloadResuming {
-    func resumePendingDownloadIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async
+/// but never finished its write transaction. The download itself is already complete —
+/// only the parse step is retried.
+public protocol BackgroundCatalogParseResuming {
+    func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async
 }
 
 /// Coordinates background catalog downloads, including handling app wake events.
-public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogDownloadResuming {
+public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResuming {
     private let backgroundDownloader: BackgroundDownloadProtocol
     private let fileManager: FileManager
     private let pendingCatalogFileStore: PendingCatalogFileStore
@@ -29,7 +30,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogDownloadResu
     ///
     /// Stages the downloaded file under Caches/ before attempting parse + persist, so that
     /// if the 30s background window is exceeded (or the parse throws), the file survives
-    /// for a retry via `resumePendingDownloadIfNeeded` on the next foreground entry.
+    /// for a retry via `resumePendingParseIfNeeded` on the next foreground entry.
     /// - Parameters:
     ///   - sessionIdentifier: The session identifier from the callback
     ///   - completionHandler: Completion handler to call when processing is done
@@ -86,10 +87,11 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogDownloadResu
         backgroundDownloadStateStore.clear()
     }
 
-    /// Retries a previously-staged catalog file from disk, if one exists.
-    /// Called on POS foreground entry — no iOS execution-time pressure here.
+    /// Retries the parse step for a previously-staged catalog file, if one exists.
+    /// The download itself already completed in a prior session — this only re-parses
+    /// the file on disk. Called on POS foreground entry — no iOS execution-time pressure here.
     /// Errors are logged but swallowed so normal sync can proceed.
-    public func resumePendingDownloadIfNeeded(
+    public func resumePendingParseIfNeeded(
         parseHandler: @escaping (URL, Int64) async throws -> Void
     ) async {
         guard let pending = pendingCatalogFileStore.load() else {

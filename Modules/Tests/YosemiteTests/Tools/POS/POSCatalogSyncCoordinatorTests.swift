@@ -10,7 +10,7 @@ struct POSCatalogSyncCoordinatorTests {
     private let grdbManager: GRDBManager
     private let mockSiteSettings: MockSiteSpecificAppSettingsStoreMethods
     private let mockEligibilityChecker: MockPOSLocalCatalogEligibilityService
-    private let mockBackgroundDownloadResumer: MockBackgroundCatalogDownloadResuming
+    private let mockPendingParseResumer: MockBackgroundCatalogParseResuming
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
     private let sampleMaxAge: TimeInterval = 60 * 60
@@ -21,14 +21,14 @@ struct POSCatalogSyncCoordinatorTests {
         self.grdbManager = try GRDBManager()
         self.mockSiteSettings = MockSiteSpecificAppSettingsStoreMethods()
         self.mockEligibilityChecker = MockPOSLocalCatalogEligibilityService()
-        self.mockBackgroundDownloadResumer = MockBackgroundCatalogDownloadResuming()
+        self.mockPendingParseResumer = MockBackgroundCatalogParseResuming()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            backgroundDownloadResumer: mockBackgroundDownloadResumer
+            pendingParseResumer: mockPendingParseResumer
         )
     }
 
@@ -1557,12 +1557,12 @@ extension POSCatalogSyncCoordinator {
     }
 }
 
-// MARK: - Background Download Resume Tests
+// MARK: - Pending Parse Resume Tests
 
 extension POSCatalogSyncCoordinatorTests {
     @Test func performSmartSync_when_no_pending_background_download_then_does_not_call_parseAndPersistBackgroundDownload() async throws {
         // Given: resumer has no pending staged file
-        mockBackgroundDownloadResumer.pendingResume = nil
+        mockPendingParseResumer.pendingResume = nil
         await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
 
@@ -1570,14 +1570,14 @@ extension POSCatalogSyncCoordinatorTests {
         try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then: resumer was consulted but parse-and-persist was not invoked
-        #expect(mockBackgroundDownloadResumer.resumePendingDownloadIfNeededCallCount == 1)
+        #expect(mockPendingParseResumer.resumePendingParseIfNeededCallCount == 1)
         #expect(mockSyncService.parseAndPersistBackgroundDownloadCallCount == 0)
     }
 
     @Test func performSmartSync_when_pending_background_download_then_calls_parseAndPersistBackgroundDownload_with_staged_file() async throws {
         // Given: resumer has a pending staged file for this site
         let stagedURL = URL(fileURLWithPath: "/tmp/pos-pending-\(sampleSiteID).json")
-        mockBackgroundDownloadResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID)
+        mockPendingParseResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID)
         await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
 
@@ -1593,7 +1593,7 @@ extension POSCatalogSyncCoordinatorTests {
     @Test func performSmartSync_when_parseAndPersistBackgroundDownload_throws_then_normal_sync_still_proceeds() async throws {
         // Given: pending file exists but parse-and-persist will throw
         let stagedURL = URL(fileURLWithPath: "/tmp/pos-pending-\(sampleSiteID).json")
-        mockBackgroundDownloadResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID)
+        mockPendingParseResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID)
         let resumeError = NSError(domain: "parse", code: 1, userInfo: nil)
         mockSyncService.parseAndPersistBackgroundDownloadResult = .failure(resumeError)
         await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
@@ -1604,7 +1604,7 @@ extension POSCatalogSyncCoordinatorTests {
 
         // Then: parse-and-persist was attempted, error was surfaced by the mock, normal full sync still ran
         #expect(mockSyncService.parseAndPersistBackgroundDownloadCallCount == 1)
-        #expect(mockBackgroundDownloadResumer.lastParseHandlerError as NSError? == resumeError)
+        #expect(mockPendingParseResumer.lastParseHandlerError as NSError? == resumeError)
         #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 }

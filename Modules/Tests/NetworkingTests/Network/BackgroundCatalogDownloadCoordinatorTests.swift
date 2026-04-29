@@ -187,7 +187,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         try? fileManager.removeItem(atPath: staged)
     }
 
-    @Test func resumePendingDownloadIfNeeded_when_no_pending_record_then_does_nothing() async {
+    @Test func resumePendingParseIfNeeded_when_no_pending_record_then_does_nothing() async {
         // Given
         pendingFileStore.clear()
         let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
@@ -195,7 +195,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         var parseCalled = false
 
         // When
-        await coordinator.resumePendingDownloadIfNeeded { _, _ in
+        await coordinator.resumePendingParseIfNeeded { _, _ in
             parseCalled = true
         }
 
@@ -203,7 +203,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         #expect(parseCalled == false)
     }
 
-    @Test func resumePendingDownloadIfNeeded_when_pending_record_but_file_missing_then_clears_record() async {
+    @Test func resumePendingParseIfNeeded_when_pending_record_but_file_missing_then_clears_record() async {
         // Given
         pendingFileStore.save(.init(filePath: "/does/not/exist/catalog.json", siteID: 333))
         let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
@@ -211,7 +211,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         var parseCalled = false
 
         // When
-        await coordinator.resumePendingDownloadIfNeeded { _, _ in
+        await coordinator.resumePendingParseIfNeeded { _, _ in
             parseCalled = true
         }
 
@@ -220,7 +220,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         #expect(pendingFileStore.load() == nil)
     }
 
-    @Test func resumePendingDownloadIfNeeded_when_file_exists_and_parse_succeeds_then_deletes_file_and_clears_record() async throws {
+    @Test func resumePendingParseIfNeeded_when_file_exists_and_parse_succeeds_then_deletes_file_and_clears_record() async throws {
         // Given
         let downloadedFile = try makeDownloadedFile(named: "pending.json")
         pendingFileStore.save(.init(filePath: downloadedFile.path, siteID: 444))
@@ -229,7 +229,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         var parsedSiteID: Int64?
 
         // When
-        await coordinator.resumePendingDownloadIfNeeded { url, siteID in
+        await coordinator.resumePendingParseIfNeeded { url, siteID in
             #expect(url.path == downloadedFile.path)
             parsedSiteID = siteID
         }
@@ -240,7 +240,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         #expect(fileManager.fileExists(atPath: downloadedFile.path) == false)
     }
 
-    @Test func resumePendingDownloadIfNeeded_when_parse_throws_then_leaves_file_for_next_retry() async throws {
+    @Test func resumePendingParseIfNeeded_when_parse_throws_then_leaves_file_for_next_retry() async throws {
         // Given
         let downloadedFile = try makeDownloadedFile(named: "pending.json")
         pendingFileStore.save(.init(filePath: downloadedFile.path, siteID: 555))
@@ -249,7 +249,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         struct ParseError: Error {}
 
         // When
-        await coordinator.resumePendingDownloadIfNeeded { _, _ in
+        await coordinator.resumePendingParseIfNeeded { _, _ in
             throw ParseError()
         }
 

@@ -126,7 +126,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let analytics: Analytics?
     private let connectivityObserver: ConnectivityObserver?
     private let syncStrategy: POSCatalogSyncStrategy
-    private let backgroundDownloadResumer: BackgroundCatalogDownloadResuming
+    private let pendingParseResumer: BackgroundCatalogParseResuming
 
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []
@@ -151,7 +151,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 analytics: Analytics? = nil,
                 connectivityObserver: ConnectivityObserver? = nil,
                 usesCatalogAPI: Bool = false,
-                backgroundDownloadResumer: BackgroundCatalogDownloadResuming = BackgroundCatalogDownloadCoordinator()) {
+                pendingParseResumer: BackgroundCatalogParseResuming = BackgroundCatalogDownloadCoordinator()) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
@@ -160,7 +160,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.analytics = analytics
         self.connectivityObserver = connectivityObserver
         self.syncStrategy = usesCatalogAPI ? .localCatalogFile : .localCatalog
-        self.backgroundDownloadResumer = backgroundDownloadResumer
+        self.pendingParseResumer = pendingParseResumer
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool, isBackgroundSync: Bool) async throws {
@@ -277,7 +277,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         // If a previous background download staged a catalog file but never finished
         // parse + persist (iOS killed the process within the ~30s window), retry it now that we're
         // in the foreground without time pressure. Errors are swallowed since a fresh sync would overwrite anyway.
-        await backgroundDownloadResumer.resumePendingDownloadIfNeeded { [weak self] fileURL, pendingSiteID in
+        await pendingParseResumer.resumePendingParseIfNeeded { [weak self] fileURL, pendingSiteID in
             guard let self else { return }
             _ = try await self.fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL, siteID: pendingSiteID)
         }

@@ -7,6 +7,7 @@ import struct Yosemite.DashboardCard
 struct StorePerformanceView: View {
     @ObservedObject private var viewModel: StorePerformanceViewModel
     @State private var showingCustomRangePicker = false
+    @State private var showingOrderTypePicker = false
 
     private var statsValueColor: Color {
         guard viewModel.hasRevenue else {
@@ -83,6 +84,9 @@ struct StorePerformanceView: View {
                 viewModel.trackCustomRangeEvent(.DashboardCustomRange.customRangeConfirmed(isEditing: viewModel.timeRange.isCustomTimeRange))
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
             })
+        }
+        .sheet(isPresented: $showingOrderTypePicker) {
+            PerformanceCardOrderTypeBottomSheet(viewModel: viewModel)
         }
         .onAppear {
             viewModel.onViewAppear()
@@ -183,10 +187,8 @@ private extension StorePerformanceView {
 
                 HStack(alignment: .bottom) {
                     Group {
-                        statsItemView(title: Localization.orders,
-                                      value: viewModel.orderStatsText,
-                                      redactMode: .none)
-                        .frame(maxWidth: .infinity)
+                        ordersStatsItemView
+                            .frame(maxWidth: .infinity)
 
                         statsItemView(title: Localization.visitors,
                                       value: viewModel.visitorStatsText,
@@ -245,6 +247,37 @@ private extension StorePerformanceView {
             viewModel.trackInteraction()
             onCustomRangeRedactedViewTap()
         }
+    }
+
+    /// "Orders" stats column with the order date type selector affordance.
+    /// Tapping the title or chevron opens the order type bottom sheet.
+    var ordersStatsItemView: some View {
+        VStack(spacing: Layout.contentVerticalSpacing) {
+            Text(viewModel.orderStatsText)
+                .font(Font(StyleManager.statsFont))
+                .foregroundStyle(statsValueColor)
+            Button {
+                viewModel.trackInteraction()
+                viewModel.trackOrderDateTypeSelectorTapped()
+                showingOrderTypePicker = true
+            } label: {
+                HStack(alignment: .center, spacing: Layout.orderTypeChevronSpacing) {
+                    Text(viewModel.orderType.localizedTitle)
+                        .font(Font(StyleManager.statsTitleFont))
+                        .lineLimit(2)
+                        .minimumScaleFactor(Layout.orderTypeLabelMinScale)
+                        .multilineTextAlignment(.center)
+                    Image(systemName: "chevron.down")
+                        .font(.caption2)
+                        .foregroundStyle(Color(.textSubtle))
+                }.padding(.leading)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("performance-order-type-button")
+            .accessibilityHint(Localization.orderTypeAccessibilityHint)
+            .disabled(viewModel.syncingData || viewModel.updatingOrderType != nil)
+        }
+        .contentShape(Rectangle())
     }
 
     func statValueRedactedView(withIcon: Bool) -> some View {
@@ -334,6 +367,8 @@ private extension StorePerformanceView {
         static let redactedViewIconOffset = CGSize(width: 16, height: 0)
         static let hideIconVerticalPadding: CGFloat = 8
         static let emptyViewSpacing: CGFloat = 24
+        static let orderTypeChevronSpacing: CGFloat = 4
+        static let orderTypeLabelMinScale: CGFloat = 0.7
     }
 
     enum Localization {
@@ -361,6 +396,11 @@ private extension StorePerformanceView {
             "storePerformanceView.orders",
             value: "Orders",
             comment: "Orders stat label on dashboard - should be plural."
+        )
+        static let orderTypeAccessibilityHint = NSLocalizedString(
+            "storePerformanceView.orderTypeAccessibilityHint",
+            value: "Opens a bottom sheet to change which orders are included in your performance totals.",
+            comment: "Accessibility hint for the order type chevron button on the dashboard Performance card."
         )
         static let visitors = NSLocalizedString(
             "storePerformanceView.visitors",

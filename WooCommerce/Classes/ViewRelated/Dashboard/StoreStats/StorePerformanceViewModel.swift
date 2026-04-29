@@ -39,6 +39,23 @@ final class StorePerformanceViewModel: ObservableObject {
 
     @Published private(set) var loadingError: Error?
 
+    /// Currently applied analytics order date type. Defaults to `.paid` (the WooCommerce backend default)
+    /// while the value is being loaded for the first time.
+    @Published private(set) var orderType: AnalyticsOrderDateType = .paid
+
+    /// The order type whose update is currently in flight, if any. Used by the bottom sheet to render
+    /// an inline progress indicator next to the row being saved and to disable other rows while a
+    /// save is in progress.
+    @Published private(set) var updatingOrderType: AnalyticsOrderDateType?
+
+    /// Set when the most recent order type update fails. Cleared when a save succeeds or when the
+    /// merchant initiates a new selection.
+    @Published var orderTypeUpdateError: Error?
+
+    /// Tracks whether the merchant has manually picked an order type during this session.
+    /// Prevents a late-arriving initial `loadOrderType` from clobbering a user selection.
+    private var hasUserSelectedOrderType = false
+
     let siteID: Int64
     let siteTimezone: TimeZone
     private let stores: StoresManager
@@ -109,12 +126,24 @@ final class StorePerformanceViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.analytics = analytics
 
+        // Seed from the locally cached SiteSetting (written by SettingStoreMethods on every
+        // successful retrieve/update) to avoid showing the default `.paid` for the network
+        // round-trip when the merchant has previously saved a different value. `loadOrderType`
+        // still runs and reconciles with the server.
+        if let cached = AnalyticsOrderDateType.cachedValue(siteID: siteID, storageManager: storageManager) {
+            self.orderType = cached
+        }
+
         observeSyncingCompletion()
         observeData()
         observeChartValueSelectedEvents()
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
+        }
+
+        Task { @MainActor in
+            await loadOrderType()
         }
     }
 
@@ -222,6 +251,58 @@ final class StorePerformanceViewModel: ObservableObject {
     func onViewAppear() {
         /// tracks `used_analytics`
         usageTracksEventEmitter.interacted()
+    }
+
+    /// Tracks the tap on the Performance card order date type selector label.
+    func trackOrderDateTypeSelectorTapped() {
+        analytics.track(event: .Dashboard.performanceCardOrderDateTypeSelectorTapped())
+    }
+
+    /// Handles the merchant tapping a row in the order date type bottom sheet.
+    ///
+    /// Returns `true` when the bottom sheet should dismiss:
+    /// - the tapped option is already selected (no save round-trip needed), or
+    /// - the save succeeded.
+    ///
+    /// Returns `false` when the save failed so the sheet stays open and the inline error remains visible.
+    @MainActor
+    func handleOrderTypeSelection(_ newOrderType: AnalyticsOrderDateType) async -> Bool {
+        // Tapping the currently-selected row just dismisses; nothing to save.
+        if orderType == newOrderType {
+            return true
+        }
+        await updateOrderType(newOrderType)
+        // Dismiss only if the save actually took effect on the view model.
+        return orderType == newOrderType
+    }
+
+    /// Updates the analytics order date type setting and refreshes dashboard stats.
+    /// On failure, sets `orderTypeUpdateError` so the bottom sheet can present an inline error.
+    @MainActor
+    private func updateOrderType(_ newOrderType: AnalyticsOrderDateType) async {
+        guard updatingOrderType == nil else { return }
+        hasUserSelectedOrderType = true
+        updatingOrderType = newOrderType
+        orderTypeUpdateError = nil
+        defer { updatingOrderType = nil }
+        do {
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                let action = SettingAction.updateAnalyticsOrderDateType(siteID: siteID, value: newOrderType) { result in
+                    continuation.resume(with: result)
+                }
+                stores.dispatch(action)
+            }
+            orderType = newOrderType
+            // Tracked only after a successful API update — matches Android, where the event fires on save success.
+            analytics.track(event: .Dashboard.performanceCardOrderDateTypeSelected(newOrderType))
+            // Server-side filter changed: invalidate the cached timestamp so the next sync hits the network.
+            DashboardTimestampStore.removeTimestamp(for: .performance, at: timeRange.timestampRange)
+            await reloadDataIfNeeded(forceRefresh: true)
+        } catch {
+            DDLogError("⛔️ Error updating analytics order date type: \(error)")
+            orderTypeUpdateError = error
+            analytics.track(event: .Dashboard.performanceCardOrderDateTypeUpdateFailed(error: error))
+        }
     }
 }
 
@@ -389,6 +470,27 @@ private extension StorePerformanceViewModel {
                 continuation.resume(returning: timeRange)
             }
             stores.dispatch(action)
+        }
+    }
+
+    /// Loads the current analytics order date type from the backend. Falls back to the existing
+    /// `orderType` value (default `.paid`) if the request fails — the merchant still gets a usable
+    /// default and can re-open the bottom sheet to retry.
+    @MainActor
+    func loadOrderType() async {
+        do {
+            let dateType: AnalyticsOrderDateType = try await withCheckedThrowingContinuation { continuation in
+                let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: siteID) { result in
+                    continuation.resume(with: result)
+                }
+                stores.dispatch(action)
+            }
+            // If the merchant already changed the order type while the initial fetch was in flight,
+            // honor their selection rather than overwriting it with the stale server value.
+            guard !hasUserSelectedOrderType else { return }
+            orderType = dateType
+        } catch {
+            DDLogWarn("⚠️ Could not fetch analytics order date type, falling back to default: \(error)")
         }
     }
 

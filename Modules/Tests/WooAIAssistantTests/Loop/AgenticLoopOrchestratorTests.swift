@@ -181,39 +181,25 @@ struct AgenticLoopOrchestratorTests {
                                  result: .success(.init(toolName: "orders_list",
                                                         structured: .object(["count": .int(0)]))))
 
-        // When + Then
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   maxIterations: 3)
+
+        // When
         var collected: [AssistantEvent] = []
-        var orchestratorRef: AgenticLoopOrchestrator?
-        await confirmation { confirmCapDiagnostic in
-            let orchestrator = AgenticLoopOrchestrator(chatService: chat,
-                                                       toolRegistry: registry,
-                                                       maxIterations: 3,
-                                                       diagnostics: { event in
-                                                           if case .maxIterationsHit(let iterations) = event,
-                                                              iterations == 3 {
-                                                               confirmCapDiagnostic()
-                                                           }
-                                                       })
-            orchestratorRef = orchestrator
-            do {
-                for try await event in orchestrator.run(prompt: "List everything") {
-                    collected.append(event)
-                }
-            } catch {
-                Issue.record("Stream failed: \(error)")
-            }
+        for try await event in orchestrator.run(prompt: "List everything") {
+            collected.append(event)
         }
 
+        // Then
         let textChunks: [String] = collected.compactMap { event in
-            if case .textChunk(let text) = event {
-                return text
-            }
+            if case .textChunk(let text) = event { return text }
             return nil
         }
         #expect(textChunks.contains { $0.contains("a few more steps than expected") })
         #expect(collected.contains(.completed(routeConfidence: nil)))
 
-        let outcome = await orchestratorRef?.lastOutcome
+        let outcome = await orchestrator.lastOutcome
         #expect(outcome == .maxIterations(iterations: 3))
     }
 }

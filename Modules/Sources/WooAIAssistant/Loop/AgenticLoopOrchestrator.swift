@@ -20,8 +20,6 @@ actor AgenticLoopOrchestrator {
     private var pendingDecisions: [UUID: CheckedContinuation<Bool, Never>] = [:]
     private var terminationContinuations: [CheckedContinuation<LoopOutcome, Never>] = []
 
-    private let diagnostics: LoopDiagnosticsHandler
-
     private(set) var lastOutcome: LoopOutcome?
 
     init(chatService: AIChatService,
@@ -29,15 +27,13 @@ actor AgenticLoopOrchestrator {
          safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
          systemPrompt: String? = nil,
          maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
-         perToolPerTurnCap: Int = AgenticLoopOrchestrator.defaultPerToolPerTurnCap,
-         diagnostics: @escaping LoopDiagnosticsHandler = noopLoopDiagnostics) {
+         perToolPerTurnCap: Int = AgenticLoopOrchestrator.defaultPerToolPerTurnCap) {
         self.chatService = chatService
         self.toolRegistry = toolRegistry
         self.safetyPolicy = safetyPolicy
         self.systemPrompt = systemPrompt
         self.maxIterations = maxIterations
         self.perToolPerTurnCap = perToolPerTurnCap
-        self.diagnostics = diagnostics
     }
 
     nonisolated func run(prompt: String,
@@ -172,8 +168,6 @@ actor AgenticLoopOrchestrator {
         let toolDefinitions = tools.isEmpty ? nil : tools.map { Self.openAIDefinition(for: $0) }
         let toolsByName = Dictionary(uniqueKeysWithValues: tools.map { ($0.name, $0) })
 
-        diagnostics(.turnStarted(prompt: prompt))
-
         // Each guard key fires at most once so we don't spam the model with duplicate system notes.
         var firedGuards: Set<String> = []
 
@@ -212,7 +206,6 @@ actor AgenticLoopOrchestrator {
             }
         }
 
-        diagnostics(.maxIterationsHit(iterations: maxIterations))
         // Soft-end the turn so the merchant sees a closing message rather than a bare error banner.
         continuation.yield(.textChunk(Localization.iterationCapClosing))
         continuation.yield(.completed(routeConfidence: nil))
@@ -367,11 +360,8 @@ actor AgenticLoopOrchestrator {
                                             toolCallID: call.id,
                                             preview: preview)
                 continuation.yield(.confirmationRequired(proposal: proposal))
-                diagnostics(.confirmationRequested(toolName: call.function.name,
-                                                   safetyLevel: tool.safetyLevel))
                 let approved = await waitForDecision(proposalID: proposal.id)
                 continuation.yield(.confirmationResolved(proposalID: proposal.id, approved: approved))
-                diagnostics(.confirmationResolved(toolName: call.function.name, approved: approved))
                 if approved {
                     approvedIndices.append(index)
                 } else {

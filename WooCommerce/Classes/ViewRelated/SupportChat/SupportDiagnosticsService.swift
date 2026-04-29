@@ -62,19 +62,18 @@ final class SupportDiagnosticsService {
         case enableOrderNotifications(settings: NotificationSettings)
         case setupJetpack
         case openNotificationSettings
-        case retryDiagnostic(Test)
+        case retryDiagnostics
 
         static func == (lhs: Action, rhs: Action) -> Bool {
             switch (lhs, rhs) {
             case (.enableAnalytics, .enableAnalytics),
                  (.registerDevice, .registerDevice),
                  (.setupJetpack, .setupJetpack),
-                 (.openNotificationSettings, .openNotificationSettings):
+                 (.openNotificationSettings, .openNotificationSettings),
+                 (.retryDiagnostics, .retryDiagnostics):
                 return true
             case (.enableOrderNotifications, .enableOrderNotifications):
                 return true
-            case (.retryDiagnostic(let lhsTest), .retryDiagnostic(let rhsTest)):
-                return lhsTest == rhsTest
             default:
                 return false
             }
@@ -92,8 +91,8 @@ final class SupportDiagnosticsService {
                 return Localization.Action.setupJetpack
             case .openNotificationSettings:
                 return Localization.Action.openSettings
-            case .retryDiagnostic:
-                return Localization.Action.retryDiagnostic
+            case .retryDiagnostics:
+                return Localization.Action.retryDiagnostics
             }
         }
 
@@ -105,7 +104,7 @@ final class SupportDiagnosticsService {
                 return "bolt.fill"
             case .openNotificationSettings:
                 return "gear"
-            case .retryDiagnostic:
+            case .retryDiagnostics:
                 return "arrow.clockwise"
             }
         }
@@ -631,10 +630,10 @@ private extension SupportDiagnosticsService {
                 value: "Open Settings",
                 comment: "Action button to open device notification settings"
             )
-            static let retryDiagnostic = NSLocalizedString(
-                "supportDiagnosticsService.action.retryDiagnostic",
+            static let retryDiagnostics = NSLocalizedString(
+                "supportDiagnosticsService.action.retryDiagnostics",
                 value: "Retry",
-                comment: "Action button to retry a diagnostic test"
+                comment: "Action button to retry diagnostic tests"
             )
         }
 

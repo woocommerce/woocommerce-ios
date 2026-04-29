@@ -481,8 +481,7 @@ private extension HelpAndSupportViewController {
                 self?.navigateToContactSupport(transcript: transcript)
             }
         )
-        let supportChatView = SupportChatView(viewModel: viewModel)
-        let controller = UIHostingController(rootView: supportChatView)
+        let controller = SupportChatHostingController(viewModel: viewModel)
         navigationController?.pushViewController(controller, animated: true)
     }
 

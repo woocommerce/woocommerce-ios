@@ -110,9 +110,6 @@ final class SupportChatViewModel {
     private(set) var state: State = .idle
     private(set) var shouldPromptHumanSupport: Bool = false
 
-    /// Set to true when the user needs to start Jetpack setup.
-    ///
-    private(set) var shouldStartJetpackSetup: Bool = false
 
     /// Whether the input area should be shown.
     /// Hidden during issue picker and diagnostics phases.
@@ -145,6 +142,7 @@ final class SupportChatViewModel {
     private var diagnosticsContext: [String: Any]?
     private let initialContext: [String: Any]?
     private let onContactHumanSupport: (_ transcript: String) -> Void
+    var onStartJetpackSetup: () -> Void
     private let diagnosticsService: SupportDiagnosticsService
 
     // MARK: - Initialization
@@ -155,7 +153,8 @@ final class SupportChatViewModel {
          initialContext: [String: Any]? = nil,
          diagnosticsService: SupportDiagnosticsService? = nil,
          chatID: Int64? = nil,
-         onContactHumanSupport: @escaping (_ transcript: String) -> Void) {
+         onContactHumanSupport: @escaping (_ transcript: String) -> Void,
+         onStartJetpackSetup: @escaping () -> Void = {}) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
         self.stores = stores
@@ -164,6 +163,7 @@ final class SupportChatViewModel {
         self.chatID = chatID
         self.isResumedChat = chatID != nil
         self.onContactHumanSupport = onContactHumanSupport
+        self.onStartJetpackSetup = onStartJetpackSetup
     }
 
     // MARK: - Issue Selection & Diagnostics
@@ -268,26 +268,26 @@ final class SupportChatViewModel {
                 await rerunTest(.notifications)
 
             case .setupJetpack:
-                shouldStartJetpackSetup = true
+                onStartJetpackSetup()
 
             case .openNotificationSettings:
                 if let selectedURL = diagnosticsService.openNotificationSettings(),
                    UIApplication.shared.canOpenURL(selectedURL) {
                     await UIApplication.shared.open(selectedURL)
                 }
-                replaceActionWithRetry(for: .notifications)
+                replaceActionWithRetry()
 
-            case .retryDiagnostic(let test):
-                await rerunTest(test)
+            case .retryDiagnostics:
+                await rerunAllTests()
             }
         } catch {
             DDLogError("⛔️ Failed to execute action \(action): \(error)")
         }
     }
 
-    /// Replaces the current failure action with a retry action for the given test.
+    /// Replaces the current failure action with a retry action.
     ///
-    private func replaceActionWithRetry(for test: SupportDiagnosticsService.Test) {
+    func replaceActionWithRetry() {
         guard let messageIndex = messages.lastIndex(where: {
             if case .diagnosticsFailure = $0.content { return true }
             return false
@@ -301,7 +301,7 @@ final class SupportChatViewModel {
             isSuccess: result.isSuccess,
             errorMessage: result.errorMessage,
             technicalDetails: result.technicalDetails,
-            suggestedAction: .retryDiagnostic(test)
+            suggestedAction: .retryDiagnostics
         )
 
         messages[messageIndex] = ChatMessage(
@@ -351,6 +351,84 @@ final class SupportChatViewModel {
                 id: messageId,
                 role: .bot,
                 content: .diagnosticsFailure(newResult)
+            )
+        }
+    }
+
+    /// Re-runs all tests for the selected issue.
+    ///
+    private func rerunAllTests() async {
+        guard let tests = selectedIssue?.testsToRun else { return }
+
+        // Find the failure message to update
+        guard let messageIndex = messages.lastIndex(where: {
+            if case .diagnosticsFailure = $0.content { return true }
+            return false
+        }) else { return }
+
+        let messageId = messages[messageIndex].id
+
+        // Clear previous results
+        diagnosticResults = []
+
+        // Initialize progress with all tests pending
+        var testStatuses: [(test: SupportDiagnosticsService.Test, status: TestStatus)] = tests.map { ($0, .pending) }
+        messages[messageIndex] = ChatMessage(
+            id: messageId,
+            role: .bot,
+            content: .diagnosticsProgress(testStatuses)
+        )
+
+        // Run each test sequentially, updating progress
+        var failedResult: SupportDiagnosticsService.Result?
+
+        for (index, test) in tests.enumerated() {
+            // Mark current test as running
+            testStatuses[index].status = .running
+            messages[messageIndex] = ChatMessage(
+                id: messageId,
+                role: .bot,
+                content: .diagnosticsProgress(testStatuses)
+            )
+
+            // Run the test
+            let results = await diagnosticsService.runTests([test])
+            guard let result = results.first else { continue }
+
+            diagnosticResults.append(result)
+
+            if result.isSuccess {
+                testStatuses[index].status = .passed
+            } else {
+                testStatuses[index].status = .failed(result.errorMessage)
+                failedResult = result
+                messages[messageIndex] = ChatMessage(
+                    id: messageId,
+                    role: .bot,
+                    content: .diagnosticsProgress(testStatuses)
+                )
+                break
+            }
+
+            messages[messageIndex] = ChatMessage(
+                id: messageId,
+                role: .bot,
+                content: .diagnosticsProgress(testStatuses)
+            )
+        }
+
+        // Replace progress with final result
+        if let failure = failedResult {
+            messages[messageIndex] = ChatMessage(
+                id: messageId,
+                role: .bot,
+                content: .diagnosticsFailure(failure)
+            )
+        } else {
+            messages[messageIndex] = ChatMessage(
+                id: messageId,
+                role: .bot,
+                content: .diagnosticsSuccess
             )
         }
     }

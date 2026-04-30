@@ -48,7 +48,13 @@ struct JetpackAIQueryClient: AIChatService {
 
     private static func urlSessionStreamingTransport(_ session: URLSession) -> StreamingHTTPTransport {
         return { request in
-            let (bytes, response) = try await session.bytes(for: request)
+            let bytes: URLSession.AsyncBytes
+            let response: URLResponse
+            do {
+                (bytes, response) = try await session.bytes(for: request)
+            } catch let urlError as URLError {
+                throw Self.mapURLError(urlError)
+            }
             guard let http = response as? HTTPURLResponse else {
                 throw AssistantError(kind: .network, message: Localization.nonHTTPResponse)
             }
@@ -70,6 +76,8 @@ struct JetpackAIQueryClient: AIChatService {
                             continuation.yield(buffer)
                         }
                         continuation.finish()
+                    } catch let urlError as URLError {
+                        continuation.finish(throwing: Self.mapURLError(urlError))
                     } catch {
                         continuation.finish(throwing: error)
                     }
@@ -81,6 +89,23 @@ struct JetpackAIQueryClient: AIChatService {
             }
             return (stream, http)
         }
+    }
+
+    static func mapURLError(_ error: URLError) -> AssistantError {
+        let kind: AssistantErrorKind
+        switch error.code {
+        case .timedOut:
+            kind = .timeout
+        case .cancelled:
+            kind = .cancelled
+        default:
+            // Catch-all to .network mirrors Android's IOException -> NETWORK mapping; the orchestrator
+            // would otherwise collapse these to .unknown via the AssistantError-typed catch only.
+            kind = .network
+        }
+        return AssistantError(kind: kind,
+                              code: String(error.code.rawValue),
+                              message: error.localizedDescription)
     }
 
     func streamTurn(messages: [OpenAIChat.Message],

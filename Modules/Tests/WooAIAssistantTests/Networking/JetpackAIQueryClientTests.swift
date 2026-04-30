@@ -365,6 +365,40 @@ struct JetpackAIQueryClientTests {
         }
     }
 
+    @Test
+    func test_streamTurn_when_transport_throws_timedOut_then_surfaces_AssistantError_timeout() async throws {
+        // Given
+        let transport = ScriptedTransport(scenarios: [.throwsError(URLError(.timedOut))])
+        let client = JetpackAIQueryClient(jwtProvider: stubJWTProvider(),
+                                          streamingTransport: transport.handler,
+                                          sleep: noOpSleep)
+
+        // When / Then
+        do {
+            _ = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected URLError to surface as typed AssistantError.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .timeout)
+        }
+    }
+
+    @Test
+    func test_streamTurn_when_transport_throws_notConnectedToInternet_then_surfaces_AssistantError_network() async throws {
+        // Given
+        let transport = ScriptedTransport(scenarios: [.throwsError(URLError(.notConnectedToInternet))])
+        let client = JetpackAIQueryClient(jwtProvider: stubJWTProvider(),
+                                          streamingTransport: transport.handler,
+                                          sleep: noOpSleep)
+
+        // When / Then
+        do {
+            _ = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected URLError to surface as typed AssistantError.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .network)
+        }
+    }
+
     private func makeClient(streamingResult: TransportScenario) -> JetpackAIQueryClient {
         let transport = ScriptedTransport(scenarios: [streamingResult])
         return JetpackAIQueryClient(jwtProvider: stubJWTProvider(),
@@ -489,6 +523,7 @@ private actor ScriptedJWTProvider: AssistantJWTProviding {
 private enum TransportScenario {
     case successChunks([Data])
     case errorBody(status: Int, body: Data)
+    case throwsError(Error)
 }
 
 private actor ScriptedTransport {
@@ -531,6 +566,13 @@ private actor ScriptedTransport {
             }
             let http = HTTPURLResponse(url: url, statusCode: status, httpVersion: nil, headerFields: nil)!
             return (stream, http)
+        case .throwsError(let error):
+            // Mirrors the production URLSession transport's URLError mapping so the scripted
+            // transport stays a faithful stand-in for the layer where URLErrors originate.
+            if let urlError = error as? URLError {
+                throw JetpackAIQueryClient.mapURLError(urlError)
+            }
+            throw error
         }
     }
 }

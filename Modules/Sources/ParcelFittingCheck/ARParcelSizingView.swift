@@ -24,16 +24,17 @@ struct ARParcelSizingView: View {
                 dimensions: viewModel.dimensionsInMeters,
                 isPlaced: $isPlaced,
                 isARReady: $isARReady,
-                resetTrigger: resetTrigger
+                resetTrigger: resetTrigger,
+                onDimensionsChanged: { viewModel.update(fromMeters: $0) }
             )
             .ignoresSafeArea()
 
             VStack {
                 topToolbar
 
-                if isARReady && !isPlaced {
-                    Text("Tap on the surface to place the fitting box")
-                        .font(.callout)
+                if let message = headerMessage {
+                    Text(message)
+                        .font(.callout.monospacedDigit())
                         .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 16)
@@ -45,11 +46,23 @@ struct ARParcelSizingView: View {
 
                 Spacer()
 
-                bottomControls
+                if isPlaced {
+                    confirmButton
+                }
             }
             .animation(.easeInOut(duration: 0.2), value: isPlaced)
         }
         .background(Color.black)
+    }
+
+    private var headerMessage: String? {
+        if isPlaced {
+            return viewModel.dimensionsLabel
+        }
+        if isARReady {
+            return "Tap on the surface to place the fitting box"
+        }
+        return nil
     }
 
     private var topToolbar: some View {
@@ -64,39 +77,16 @@ struct ARParcelSizingView: View {
         .padding(.top, 8)
     }
 
-    @ViewBuilder
-    private var bottomControls: some View {
-        if isPlaced {
-            VStack(spacing: 14) {
-                slider(label: "Length", value: $viewModel.dimensions.length)
-                slider(label: "Width", value: $viewModel.dimensions.width)
-                slider(label: "Height", value: $viewModel.dimensions.height)
-
-                Button { onConfirm(viewModel.confirmedDimensions) } label: {
-                    Text("Use these dimensions")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(.blue, in: Capsule())
-                        .foregroundStyle(.white)
-                }
-            }
-            .padding(16)
-            .background(.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 16))
-            .padding()
+    private var confirmButton: some View {
+        Button { onConfirm(viewModel.confirmedDimensions) } label: {
+            Text("Use these dimensions")
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(.blue, in: Capsule())
+                .foregroundStyle(.white)
         }
-    }
-
-    private func slider(label: String, value: Binding<Float>) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(label).font(.subheadline)
-                Spacer()
-                Text(String(format: "%.1f %@", value.wrappedValue, viewModel.unit.symbol))
-                    .font(.subheadline.monospacedDigit())
-            }
-            .foregroundStyle(.white)
-            Slider(value: value, in: viewModel.sliderRange).tint(.blue)
-        }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 16)
     }
 }

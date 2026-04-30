@@ -1,6 +1,7 @@
 import RealityKit
 import ARKit
 import SwiftUI
+import Combine
 
 final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARCoachingOverlayViewDelegate {
     weak var arView: ARView?
@@ -11,6 +12,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     var onRemoved: (() -> Void)?
     var onARReady: (() -> Void)?
     var onARLost: (() -> Void)?
+    var onDimensionsChanged: ((SIMD3<Float>) -> Void)?
 
     func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
         onARReady?()
@@ -22,12 +24,34 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
 
     private var placed = false
     private var cuboidAnchor: AnchorEntity?
-    private var cuboidEntity: ModelEntity?
+    private var cuboid: ARCuboidEntity?
+    private var sceneSubscription: Cancellable?
     private var installedGestures: [EntityGestureRecognizer] = []
 
     var tapGesture: UITapGestureRecognizer?
-    var rotationGesture: UIRotationGestureRecognizer?
+    var twoFingerGesture: TwoFingerCuboidGesture?
     private var rotationStartYaw: Float = 0
+    private var resizeContext: ResizeContext?
+
+    /// Minimum allowed cuboid size on any axis, in metres. Slightly larger than
+    /// the previous slider minimum (1 cm) per design intent.
+    private static let minSizeMeters: Float = 0.02
+
+    private struct ResizeContext {
+        let axis: ARCuboidEntity.Axis
+        let axisWorld: SIMD3<Float>
+        let cuboidCenterAtStart: SIMD3<Float>
+        let planeNormal: SIMD3<Float>
+        let initialScale: SIMD3<Float>
+        let initialPosition: SIMD3<Float>
+        let firstFinger: FingerLatch
+        let secondFinger: FingerLatch
+    }
+
+    private struct FingerLatch {
+        let face: ARCuboidEntity.Face
+        let initialAxisDisplacement: Float
+    }
 
     @objc func handleTap(_ gesture: UITapGestureRecognizer) {
         guard !placed, let arView else { return }
@@ -42,11 +66,14 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
 
     func removeCuboid() {
         uninstallGestures()
+        sceneSubscription?.cancel()
+        sceneSubscription = nil
         if let cuboidAnchor, let arView {
             arView.scene.removeAnchor(cuboidAnchor)
         }
         cuboidAnchor = nil
-        cuboidEntity = nil
+        cuboid = nil
+        resizeContext = nil
         placed = false
         // Deferred — removeCuboid is called from updateUIView, which runs
         // inside SwiftUI's render pass. Binding writes during a render pass
@@ -59,32 +86,51 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     func updateDimensions(_ dims: SIMD3<Float>) {
         guard dims != dimensions else { return }
         dimensions = dims
-        cuboidEntity?.transform.scale = dims
+        // While a gesture-driven resize is active the coordinator owns the cuboid
+        // scale; ignore external echoes coming back through the SwiftUI binding.
+        if resizeContext == nil {
+            cuboid?.root.transform.scale = dims
+        }
     }
 
     func tearDown() {
         uninstallGestures()
+        sceneSubscription?.cancel()
+        sceneSubscription = nil
         if let cuboidAnchor, let arView {
             arView.scene.removeAnchor(cuboidAnchor)
         }
         cuboidAnchor = nil
-        cuboidEntity = nil
+        cuboid = nil
+        resizeContext = nil
         arView = nil
         onPlaced = nil
         onRemoved = nil
         onARReady = nil
         onARLost = nil
+        onDimensionsChanged = nil
     }
 
-    @objc func handleRotation(_ gesture: UIRotationGestureRecognizer) {
-        guard let cuboidEntity else { return }
+    @objc func handleTwoFingerGesture(_ gesture: TwoFingerCuboidGesture) {
+        guard let cuboid else { return }
         switch gesture.state {
         case .began:
-            let currentRotation = cuboidEntity.transform.rotation
+            let currentRotation = cuboid.root.transform.rotation
             rotationStartYaw = 2 * atan2(currentRotation.imag.y, currentRotation.real)
+            resizeContext = nil
         case .changed:
-            let yaw = rotationStartYaw - Float(gesture.rotation)
-            cuboidEntity.transform.rotation = simd_quatf(angle: yaw, axis: SIMD3(0, 1, 0))
+            switch gesture.mode {
+            case .undecided:
+                break
+            case .rotate:
+                let yaw = rotationStartYaw - Float(gesture.rotationFromStart)
+                cuboid.root.transform.rotation = simd_quatf(angle: yaw, axis: SIMD3(0, 1, 0))
+            case .resize:
+                if resizeContext == nil { setupResize(gesture: gesture) }
+                applyResize(gesture: gesture)
+            }
+        case .ended, .cancelled, .failed:
+            resizeContext = nil
         default:
             break
         }
@@ -102,28 +148,43 @@ private extension ARParcelSceneCoordinator {
     func placeCuboid(at world: SIMD3<Float>) {
         guard let arView else { return }
         let entity = ARCuboidEntity.build()
-        entity.position = world
-        entity.transform.scale = dimensions
+        entity.root.position = world
+        entity.root.transform.scale = dimensions
 
         let anchor = AnchorEntity(world: matrix_identity_float4x4)
-        anchor.addChild(entity)
+        anchor.addChild(entity.root)
         arView.scene.addAnchor(anchor)
 
         cuboidAnchor = anchor
-        cuboidEntity = entity
+        cuboid = entity
+
+        sceneSubscription = arView.scene.subscribe(to: SceneEvents.Update.self) { [weak self] _ in
+            self?.updateMaterials()
+        }
+    }
+
+    func updateMaterials() {
+        guard let arView, let cuboid else { return }
+        let highlighted: Set<ARCuboidEntity.Face> = resizeContext.map {
+            Set([$0.firstFinger.face, $0.secondFinger.face])
+        } ?? []
+        cuboid.updateMaterials(
+            cameraPosition: arView.cameraTransform.translation,
+            highlightedFaces: highlighted
+        )
     }
 
     func installGestures() {
-        guard let arView, let cuboidEntity else { return }
-        cuboidEntity.collision = CollisionComponent(
+        guard let arView, let cuboid else { return }
+        cuboid.root.collision = CollisionComponent(
             shapes: [
                 .generateBox(size: SIMD3(1, 1, 1))
                     .offsetBy(translation: SIMD3(0, 0.5, 0))
             ]
         )
-        installedGestures = arView.installGestures([.translation], for: cuboidEntity)
+        installedGestures = arView.installGestures([.translation], for: cuboid.root)
         tapGesture?.isEnabled = false
-        rotationGesture?.isEnabled = true
+        twoFingerGesture?.isEnabled = true
     }
 
     func uninstallGestures() {
@@ -133,7 +194,7 @@ private extension ARParcelSceneCoordinator {
         }
         installedGestures.removeAll()
         tapGesture?.isEnabled = true
-        rotationGesture?.isEnabled = false
+        twoFingerGesture?.isEnabled = false
     }
 
     func raycastWorldPosition(from location: CGPoint, in arView: ARView) -> SIMD3<Float>? {
@@ -146,5 +207,221 @@ private extension ARParcelSceneCoordinator {
             return SIMD3(hit.worldTransform.columns.3.x, hit.worldTransform.columns.3.y, hit.worldTransform.columns.3.z)
         }
         return nil
+    }
+}
+
+// MARK: - Resize
+
+private extension ARParcelSceneCoordinator {
+    func setupResize(gesture: TwoFingerCuboidGesture) {
+        guard let arView, let cuboid else { return }
+
+        let yaw = currentYaw(of: cuboid.root)
+        let xAxis = SIMD3<Float>(cos(yaw), 0, -sin(yaw))
+        let yAxis = SIMD3<Float>(0, 1, 0)
+        let zAxis = SIMD3<Float>(sin(yaw), 0, cos(yaw))
+
+        let scale = cuboid.root.transform.scale
+        let position = cuboid.root.position
+        // The cuboid's local Y goes 0…1 (root is at the bottom); X and Z are
+        // centred on the root, so the geometric centre sits half-a-height up.
+        let cuboidCenter = position + 0.5 * scale.y * yAxis
+
+        guard let chosenAxis = pickActiveAxis(
+            arView: arView,
+            cuboidCenter: cuboidCenter,
+            xAxisWorld: xAxis,
+            yAxisWorld: yAxis,
+            zAxisWorld: zAxis,
+            firstScreen: gesture.startLocations.first,
+            secondScreen: gesture.startLocations.second
+        ) else { return }
+
+        let axisWorld: SIMD3<Float>
+        switch chosenAxis {
+        case .x: axisWorld = xAxis
+        case .y: axisWorld = yAxis
+        case .z: axisWorld = zAxis
+        }
+
+        let mat = arView.cameraTransform.matrix
+        let cameraForward = -SIMD3<Float>(mat.columns.2.x, mat.columns.2.y, mat.columns.2.z)
+
+        guard let hit0 = projectToPlane(
+            arView: arView,
+            screenPoint: gesture.startLocations.first,
+            planePoint: cuboidCenter,
+            planeNormal: cameraForward
+        ),
+              let hit1 = projectToPlane(
+                arView: arView,
+                screenPoint: gesture.startLocations.second,
+                planePoint: cuboidCenter,
+                planeNormal: cameraForward
+              ) else { return }
+
+        let disp0 = simd_dot(hit0 - cuboidCenter, axisWorld)
+        let disp1 = simd_dot(hit1 - cuboidCenter, axisWorld)
+        // Make the finger with the larger axis projection drive the +face and
+        // the other drive the -face, even when both fingers are on the same
+        // side of the cuboid centre.
+        let firstIsPositiveSide = disp0 >= disp1
+
+        let firstLatch = FingerLatch(
+            face: firstIsPositiveSide
+                ? .positiveSide(of: chosenAxis)
+                : .negativeSide(of: chosenAxis),
+            initialAxisDisplacement: disp0
+        )
+        let secondLatch = FingerLatch(
+            face: firstIsPositiveSide
+                ? .negativeSide(of: chosenAxis)
+                : .positiveSide(of: chosenAxis),
+            initialAxisDisplacement: disp1
+        )
+
+        resizeContext = ResizeContext(
+            axis: chosenAxis,
+            axisWorld: axisWorld,
+            cuboidCenterAtStart: cuboidCenter,
+            planeNormal: cameraForward,
+            initialScale: scale,
+            initialPosition: position,
+            firstFinger: firstLatch,
+            secondFinger: secondLatch
+        )
+    }
+
+    func applyResize(gesture: TwoFingerCuboidGesture) {
+        guard let arView, let cuboid, let context = resizeContext else { return }
+
+        guard let hit0 = projectToPlane(
+            arView: arView,
+            screenPoint: gesture.currentLocations.first,
+            planePoint: context.cuboidCenterAtStart,
+            planeNormal: context.planeNormal
+        ),
+              let hit1 = projectToPlane(
+                arView: arView,
+                screenPoint: gesture.currentLocations.second,
+                planePoint: context.cuboidCenterAtStart,
+                planeNormal: context.planeNormal
+              ) else { return }
+
+        let disp0 = simd_dot(hit0 - context.cuboidCenterAtStart, context.axisWorld)
+        let disp1 = simd_dot(hit1 - context.cuboidCenterAtStart, context.axisWorld)
+
+        let firstAxisDelta = disp0 - context.firstFinger.initialAxisDisplacement
+        let secondAxisDelta = disp1 - context.secondFinger.initialAxisDisplacement
+
+        let firstOutward = signedOutwardDelta(face: context.firstFinger.face, axisDelta: firstAxisDelta)
+        let secondOutward = signedOutwardDelta(face: context.secondFinger.face, axisDelta: secondAxisDelta)
+
+        let outwardPositive: Float
+        let outwardNegative: Float
+        if context.firstFinger.face.isPositiveSide {
+            outwardPositive = firstOutward
+            outwardNegative = secondOutward
+        } else {
+            outwardPositive = secondOutward
+            outwardNegative = firstOutward
+        }
+
+        let axisIndex = simdIndex(for: context.axis)
+        let oldAxisScale = context.initialScale[axisIndex]
+        let totalDelta = outwardPositive + outwardNegative
+        let unclampedScale = oldAxisScale + totalDelta
+        let newAxisScale = max(unclampedScale, Self.minSizeMeters)
+
+        // When the user shrinks past the floor, scale back the per-finger
+        // contributions proportionally so the geometric centre tracks both
+        // fingers smoothly (the cuboid stops shrinking but does not jump).
+        let actualTotal = newAxisScale - oldAxisScale
+        let scaleFactor: Float = abs(totalDelta) < 1e-6 ? 1 : actualTotal / totalDelta
+        let actualPositive = outwardPositive * scaleFactor
+        let actualNegative = outwardNegative * scaleFactor
+
+        var newScale = context.initialScale
+        newScale[axisIndex] = newAxisScale
+
+        var newPosition = context.initialPosition
+        // Y axis keeps the root at the floor (cuboid local Y is 0…1, so growing
+        // scale.y already moves only the top). X/Z are centred on the root, so
+        // an asymmetric resize requires shifting the root by half the imbalance.
+        if context.axis != .y {
+            let centerShift = (actualPositive - actualNegative) * 0.5
+            newPosition += centerShift * context.axisWorld
+        }
+
+        cuboid.root.transform.scale = newScale
+        cuboid.root.position = newPosition
+
+        dimensions = newScale
+        onDimensionsChanged?(newScale)
+    }
+
+    func pickActiveAxis(
+        arView: ARView,
+        cuboidCenter: SIMD3<Float>,
+        xAxisWorld: SIMD3<Float>,
+        yAxisWorld: SIMD3<Float>,
+        zAxisWorld: SIMD3<Float>,
+        firstScreen: CGPoint,
+        secondScreen: CGPoint
+    ) -> ARCuboidEntity.Axis? {
+        guard let centerScreen = arView.project(cuboidCenter),
+              let xEnd = arView.project(cuboidCenter + 0.1 * xAxisWorld),
+              let yEnd = arView.project(cuboidCenter + 0.1 * yAxisWorld),
+              let zEnd = arView.project(cuboidCenter + 0.1 * zAxisWorld) else { return nil }
+
+        let xDir = CGPoint(x: xEnd.x - centerScreen.x, y: xEnd.y - centerScreen.y)
+        let yDir = CGPoint(x: yEnd.x - centerScreen.x, y: yEnd.y - centerScreen.y)
+        let zDir = CGPoint(x: zEnd.x - centerScreen.x, y: zEnd.y - centerScreen.y)
+        let fingerDir = CGPoint(x: secondScreen.x - firstScreen.x, y: secondScreen.y - firstScreen.y)
+
+        let candidates: [(ARCuboidEntity.Axis, CGPoint)] = [(.x, xDir), (.y, yDir), (.z, zDir)]
+        var bestAxis: ARCuboidEntity.Axis?
+        var bestScore: CGFloat = 0
+        for (axis, dir) in candidates {
+            let length = max(hypot(dir.x, dir.y), 1)
+            let score = abs(fingerDir.x * dir.x + fingerDir.y * dir.y) / length
+            if score > bestScore {
+                bestScore = score
+                bestAxis = axis
+            }
+        }
+        return bestAxis
+    }
+
+    func signedOutwardDelta(face: ARCuboidEntity.Face, axisDelta: Float) -> Float {
+        if face == .negativeY { return 0 }
+        return face.isPositiveSide ? axisDelta : -axisDelta
+    }
+
+    func currentYaw(of entity: ModelEntity) -> Float {
+        let rotation = entity.transform.rotation
+        return 2 * atan2(rotation.imag.y, rotation.real)
+    }
+
+    func projectToPlane(
+        arView: ARView,
+        screenPoint: CGPoint,
+        planePoint: SIMD3<Float>,
+        planeNormal: SIMD3<Float>
+    ) -> SIMD3<Float>? {
+        guard let ray = arView.ray(through: screenPoint) else { return nil }
+        let denom = simd_dot(ray.direction, planeNormal)
+        guard abs(denom) > 1e-6 else { return nil }
+        let t = simd_dot(planePoint - ray.origin, planeNormal) / denom
+        guard t > 0 else { return nil }
+        return ray.origin + t * ray.direction
+    }
+
+    func simdIndex(for axis: ARCuboidEntity.Axis) -> Int {
+        switch axis {
+        case .x: return 0
+        case .y: return 1
+        case .z: return 2
+        }
     }
 }

@@ -7,6 +7,7 @@ struct ARParcelSceneView: UIViewRepresentable {
     @Binding var isPlaced: Bool
     @Binding var isARReady: Bool
     let resetTrigger: Int
+    var onDimensionsChanged: ((SIMD3<Float>) -> Void)?
 
     func makeCoordinator() -> ARParcelSceneCoordinator {
         let coordinator = ARParcelSceneCoordinator()
@@ -26,6 +27,7 @@ struct ARParcelSceneView: UIViewRepresentable {
         addGestures(to: arView, coordinator: context.coordinator)
         context.coordinator.arView = arView
         context.coordinator.dimensions = dimensions
+        context.coordinator.onDimensionsChanged = onDimensionsChanged
         return arView
     }
 
@@ -34,6 +36,7 @@ struct ARParcelSceneView: UIViewRepresentable {
             context.coordinator.lastResetTrigger = resetTrigger
             context.coordinator.removeCuboid()
         }
+        context.coordinator.onDimensionsChanged = onDimensionsChanged
         context.coordinator.updateDimensions(dimensions)
     }
 
@@ -79,11 +82,11 @@ private extension ARParcelSceneView {
         arView.addGestureRecognizer(tap)
         coordinator.tapGesture = tap
 
-        let rotation = UIRotationGestureRecognizer(target: coordinator, action: #selector(ARParcelSceneCoordinator.handleRotation(_:)))
-        rotation.delegate = coordinator
-        rotation.isEnabled = false
-        arView.addGestureRecognizer(rotation)
-        coordinator.rotationGesture = rotation
+        let twoFinger = TwoFingerCuboidGesture(target: coordinator, action: #selector(ARParcelSceneCoordinator.handleTwoFingerGesture(_:)))
+        twoFinger.delegate = coordinator
+        twoFinger.isEnabled = false
+        arView.addGestureRecognizer(twoFinger)
+        coordinator.twoFingerGesture = twoFinger
     }
 }
 

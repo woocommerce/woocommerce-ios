@@ -295,7 +295,7 @@ private extension StorePerformanceView {
             .buttonStyle(.plain)
             .accessibilityIdentifier("performance-order-type-button")
             .accessibilityHint(Localization.orderTypeAccessibilityHint)
-            .disabled(viewModel.syncingData || viewModel.isUpdatingOrderType)
+            .disabled(viewModel.syncingData || viewModel.updatingOrderType != nil)
         }
         .contentShape(Rectangle())
     }

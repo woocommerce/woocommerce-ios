@@ -83,6 +83,9 @@ extension UserDefaults {
 
         /// Debug override for the minimum WooCommerce plugin version required for WPCom connection setup
         case debugMinWooVersionForSelfDrivenPushNotifications
+
+        /// Whether configurable store stats widgets are enabled
+        case configurableStoreStatsWidgetsEnabled
     }
 }
 
@@ -90,6 +93,19 @@ extension UserDefaults {
     /// User defaults instance ready to be shared between extensions of the same group.
     ///
     static let group = UserDefaults(suiteName: WooConstants.sharedUserDefaultsSuiteName)
+}
+
+extension UserDefaults {
+    /// Whether configurable store stats widgets are enabled.
+    ///
+    var configurableStoreStatsWidgetsEnabled: Bool {
+        get {
+            object(forKey: .configurableStoreStatsWidgetsEnabled) ?? false
+        }
+        set {
+            set(newValue, forKey: .configurableStoreStatsWidgetsEnabled)
+        }
+    }
 }
 
 

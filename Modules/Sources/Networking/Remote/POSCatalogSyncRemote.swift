@@ -95,12 +95,15 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     private let dateFormatter = ISO8601DateFormatter()
     private let backgroundDownloader: BackgroundDownloadProtocol
     private let fileManager: FileManager
+    private let backgroundDownloadStateStore: BackgroundDownloadStateStore
 
     public init(network: Network,
                 backgroundDownloader: BackgroundDownloadProtocol = BackgroundDownloadService(),
-                fileManager: FileManager = .default) {
+                fileManager: FileManager = .default,
+                backgroundDownloadStateStore: BackgroundDownloadStateStore = .init()) {
         self.backgroundDownloader = backgroundDownloader
         self.fileManager = fileManager
+        self.backgroundDownloadStateStore = backgroundDownloadStateStore
         super.init(network: network)
     }
 
@@ -236,7 +239,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             sessionIdentifier: sessionIdentifier,
             siteID: siteID
         )
-        BackgroundDownloadState.save(downloadState)
+        backgroundDownloadStateStore.save(downloadState)
 
         let fileURL = try await backgroundDownloader.downloadFile(from: url,
                                                                    sessionIdentifier: sessionIdentifier,
@@ -246,7 +249,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         let catalogResponse = try await parseDownloadedCatalog(from: fileURL, siteID: siteID)
 
         // Clear the saved state since we successfully completed
-        BackgroundDownloadState.clear()
+        backgroundDownloadStateStore.clear()
 
         return catalogResponse
     }

@@ -1,0 +1,90 @@
+{
+    "chat_id": 4522824,
+    "wpcom_user_id": 2002,
+    "external_id": null,
+    "external_id_provider": null,
+    "session_id": "aa11bb22-cc33-dd44-ee55-ff6677889900",
+    "bot_slug": "woo-chat-allusers",
+    "bot_version": "1.4.3",
+    "created_at": "2026-04-24 09:04:29",
+    "zendesk_ticket_id": null,
+    "messages": [
+        {
+            "message_id": 18644627,
+            "role": "user",
+            "content": "Smoke test for GET endpoint — ignore.",
+            "created_at": "2026-04-24 09:04:29",
+            "context": {
+                "message": "Smoke test for GET endpoint — ignore.",
+                "wpcom_user_id": 2002,
+                "wpcom_user_name": "testuser",
+                "user_paid_support_eligibility": {
+                    "is_user_eligible": true,
+                    "is_chat_restricted": false,
+                    "wapuu_assistant_enabled": true,
+                    "support_level": "p2-plus",
+                    "user_field_flow_name": null
+                }
+            },
+            "ts": 1777021469
+        },
+        {
+            "message_id": 18644640,
+            "role": "bot",
+            "content": "Hi there! How can I help?",
+            "created_at": "2026-04-24 09:04:35",
+            "context": {
+                "sources": [
+                    {
+                        "title": "Placeholder Source",
+                        "url": "https://example.com/docs/source-a",
+                        "heading": "Excerpt",
+                        "content": "Chunk of source text."
+                    }
+                ],
+                "flags": {
+                    "forward_to_human_support": false,
+                    "canned_response": false,
+                    "logged_in": false,
+                    "branch": "default"
+                }
+            },
+            "ts": 1777021475
+        },
+        {
+            "message_id": 18644655,
+            "role": "user",
+            "content": "Follow-up turn to seed history.",
+            "created_at": "2026-04-24 09:04:48",
+            "context": {
+                "message": "Follow-up turn to seed history.",
+                "wpcom_user_id": 2002,
+                "wpcom_user_name": "testuser",
+                "user_paid_support_eligibility": {
+                    "is_user_eligible": true,
+                    "is_chat_restricted": false,
+                    "wapuu_assistant_enabled": true,
+                    "support_level": "p2-plus",
+                    "user_field_flow_name": null
+                }
+            },
+            "ts": 1777021488
+        },
+        {
+            "message_id": 18644670,
+            "role": "bot",
+            "content": "I'm here to help with any WooCommerce questions.",
+            "created_at": "2026-04-24 09:04:57",
+            "context": {
+                "sources": [],
+                "flags": {
+                    "forward_to_human_support": false,
+                    "canned_response": false,
+                    "logged_in": false,
+                    "branch": "default"
+                }
+            },
+            "ts": 1777021497
+        }
+    ]
+}

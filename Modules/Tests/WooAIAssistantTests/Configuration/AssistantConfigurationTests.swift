@@ -1,0 +1,12 @@
+import Testing
+@testable import WooAIAssistant
+
+struct AssistantConfigurationTests {
+    @Test
+    func test_pinned_constants_match_documented_values() {
+        #expect(AssistantConfiguration.chatModel == "gpt-4o-mini")
+        #expect(AssistantConfiguration.promptVersion == "v1")
+        #expect(AssistantConfiguration.toolCatalogVersion == "v1")
+        #expect(AssistantConfiguration.featureName == "woo-ai-assistant")
+    }
+}

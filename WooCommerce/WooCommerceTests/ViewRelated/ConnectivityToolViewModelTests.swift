@@ -409,6 +409,60 @@ struct ConnectivityToolViewModelTests {
         #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.viewDetails.id }))
     }
 
+    // MARK: - isBotChatSupported
+
+    @Test func test_isBotChatSupported_when_feature_flag_enabled_and_wpcom_authenticated_then_returns_true() {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = true
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        // When
+        let sut = ConnectivityToolViewModel(
+            session: SessionManager.makeForTesting(authenticated: true),
+            stores: stores,
+            featureFlagService: featureFlagService
+        )
+
+        // Then
+        #expect(sut.isBotChatSupported == true)
+    }
+
+    @Test func test_isBotChatSupported_when_feature_flag_disabled_then_returns_false() {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = false
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        // When
+        let sut = ConnectivityToolViewModel(
+            session: SessionManager.makeForTesting(authenticated: true),
+            stores: stores,
+            featureFlagService: featureFlagService
+        )
+
+        // Then
+        #expect(sut.isBotChatSupported == false)
+    }
+
+    @Test func test_isBotChatSupported_when_authenticated_without_wpcom_then_returns_false() {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = true
+        let session = SessionManager.makeForTesting(authenticated: true, isWPCom: false)
+        let stores = MockStoresManager(sessionManager: session)
+
+        // When
+        let sut = ConnectivityToolViewModel(
+            session: session,
+            stores: stores,
+            featureFlagService: featureFlagService
+        )
+
+        // Then
+        #expect(sut.isBotChatSupported == false)
+    }
+
 }
 
 // MARK: - Helpers

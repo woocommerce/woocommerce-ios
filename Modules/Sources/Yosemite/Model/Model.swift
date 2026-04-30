@@ -189,6 +189,7 @@ public typealias SupportChatMessage = Networking.SupportChatMessage
 public typealias SupportChatMessageContext = Networking.SupportChatMessageContext
 public typealias SupportChatSource = Networking.SupportChatSource
 public typealias SupportChatFlags = Networking.SupportChatFlags
+public typealias SupportChatRole = Networking.SupportChatRole
 public typealias SystemPlugin = Networking.SystemPlugin
 public typealias SystemStatus = Networking.SystemStatus
 public typealias SystemStatusReport = Networking.SystemStatusReport

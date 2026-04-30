@@ -22,14 +22,7 @@ final class AuthenticatedWebViewController: UIViewController {
     }()
 
     /// Main web view
-    private lazy var webView: WKWebView = {
-        let webView = WKWebView(frame: .zero)
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        webView.customUserAgent = UserAgent.defaultUserAgent
-        webView.navigationDelegate = self
-        webView.uiDelegate = self
-        return webView
-    }()
+    private let webView: WKWebView
 
     /// Progress bar for the web view
     private lazy var progressBar: UIProgressView = {
@@ -49,10 +42,30 @@ final class AuthenticatedWebViewController: UIViewController {
 
     private var isFirstNavigation = true
 
-    init(stores: StoresManager = ServiceLocator.stores,
-         viewModel: AuthenticatedWebViewModel,
-         extraCredentials: Credentials? = nil) {
+    convenience init(stores: StoresManager = ServiceLocator.stores,
+                     viewModel: AuthenticatedWebViewModel,
+                     extraCredentials: Credentials? = nil) {
+        self.init(stores: stores,
+                  viewModel: viewModel,
+                  extraCredentials: extraCredentials,
+                  webView: WKWebView(frame: .zero))
+    }
+
+    /// Hosts a JS-initiated popup web view supplied by WebKit's `createWebViewWith`.
+    /// The supplied web view must keep the `WKWebViewConfiguration` provided by WebKit.
+    convenience init(popupWebView: WKWebView) {
+        self.init(stores: ServiceLocator.stores,
+                  viewModel: PopupAuthenticatedWebViewModel(),
+                  extraCredentials: nil,
+                  webView: popupWebView)
+    }
+
+    private init(stores: StoresManager,
+                 viewModel: AuthenticatedWebViewModel,
+                 extraCredentials: Credentials?,
+                 webView: WKWebView) {
         self.viewModel = viewModel
+        self.webView = webView
         let currentCredentials = stores.sessionManager.defaultCredentials
 
         let siteCredentials: WordPressOrgCredentials? = {
@@ -94,6 +107,11 @@ final class AuthenticatedWebViewController: UIViewController {
         self.siteCredentials = siteCredentials
 
         super.init(nibName: nil, bundle: nil)
+
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.customUserAgent = UserAgent.defaultUserAgent
+        webView.navigationDelegate = self
+        webView.uiDelegate = self
 
         if let initialURL = viewModel.initialURL,
            var viewModel = viewModel as? WebviewReloadable {
@@ -306,6 +324,10 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
         activityIndicator.startAnimating()
     }
 
+    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        activityIndicator.stopAnimating()
+    }
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         activityIndicator.stopAnimating()
         guard let url = webView.url else {
@@ -329,12 +351,44 @@ extension AuthenticatedWebViewController: WKUIDelegate {
                  createWebViewWith configuration: WKWebViewConfiguration,
                  for navigationAction: WKNavigationAction,
                  windowFeatures: WKWindowFeatures) -> WKWebView? {
-        // Allows `target=_blank` links by opening them in the same view, otherwise tapping on these links is no-op.
-        // Reference: https://stackoverflow.com/a/25853806/9185596
-        if navigationAction.targetFrame == nil {
-            webView.load(navigationAction.request)
+        // Use the delegate-supplied `configuration` verbatim so the popup preserves the `window.opener` relationship.
+        return presentPopupWebView(with: configuration, for: navigationAction)
+    }
+
+    func webViewDidClose(_ webView: WKWebView) {
+        dismiss(animated: true)
+    }
+}
+
+private extension AuthenticatedWebViewController {
+    func presentPopupWebView(with configuration: WKWebViewConfiguration,
+                             for navigationAction: WKNavigationAction) -> WKWebView? {
+        guard navigationAction.targetFrame == nil else {
+            return nil
         }
-        return nil
+
+        let childWebView = WKWebView(frame: .zero, configuration: configuration)
+        let popupViewController = AuthenticatedWebViewController(popupWebView: childWebView)
+        popupViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(
+            systemItem: .done,
+            primaryAction: UIAction { [weak popupViewController] _ in
+                popupViewController?.dismiss(animated: true)
+            }
+        )
+        let navigationController = UINavigationController(rootViewController: popupViewController)
+        navigationController.modalPresentationStyle = .pageSheet
+        topmostViewController().present(navigationController, animated: true)
+
+        // WebKit loads `navigationAction.request` into the returned web view itself.
+        return childWebView
+    }
+
+    func topmostViewController() -> UIViewController {
+        var viewController: UIViewController = self
+        while let presented = viewController.presentedViewController {
+            viewController = presented
+        }
+        return viewController
     }
 }
 
@@ -344,4 +398,13 @@ private extension AuthenticatedWebViewController {
         static let jetpackSSOAction = "jetpack-sso"
         static let ssoRedirectCookieName = "jetpack_sso_redirect_to"
     }
+}
+
+/// No-op view model used when the controller hosts a JS-initiated popup web view.
+private final class PopupAuthenticatedWebViewModel: AuthenticatedWebViewModel {
+    let title = ""
+    let initialURL: URL? = nil
+    func handleDismissal() {}
+    func handleRedirect(for url: URL?) {}
+    func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy { .allow }
 }

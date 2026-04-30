@@ -116,25 +116,43 @@ final class MockOrderService: OrderServiceProtocol {
 }
 ```
 
-### Continuation-Based Mocks for Async Control
+### Mock Callback Hooks for In-Flight Observation
+
+When a test needs to assert state or mutate the SUT *while* it is awaiting the mock, expose a callback that the mock fires inside its body, before returning:
+
 ```swift
 final class MockRefundsService: RefundsServiceProtocol {
-    private var continuation: CheckedContinuation<Void, Never>?
+    var resultToReturn: [Refund] = []
+    var onLoadCalled: (@MainActor (Order) -> Void)?
 
-    var shouldSuspend = false
-
-    func awaitServiceCall() async {
-        await withCheckedContinuation { cont in
-            continuation = cont
-        }
-    }
-
-    func resumeService() {
-        continuation?.resume()
-        continuation = nil
+    @MainActor
+    func load(for order: Order) async throws -> [Refund] {
+        onLoadCalled?(order)
+        return resultToReturn
     }
 }
 ```
+
+The hook runs on the same actor as the SUT, so the test can synchronously mutate state or assert intermediate values inside the hook, then the mock returns and the SUT proceeds. No `Task`, no continuations, no race surface. Mark the hook `@MainActor` whenever the SUT it touches is `@MainActor`-isolated, and pin the mock method itself to `@MainActor` to keep the invocation a same-actor call.
+
+For tests where the in-flight body itself needs to do async work, make the hook async:
+
+```swift
+var onSyncCalled: (@MainActor () async -> Void)?
+
+func sync(...) async throws {
+    await onSyncCalled?()
+    ...
+}
+```
+
+### Anti-Pattern: Mock Suspension via `awaitX` / `resumeX`
+
+Do not write mocks that hold themselves open with one continuation while signalling readiness through a second one. The two continuations are written and read from different actors, so the test's `resumeX` can fire before the mock has stored the suspension continuation, leaving the mock parked on a continuation no one will resume — the test hangs. Use the callback hook pattern above instead.
+
+### Cap Suite Runtime With `.timeLimit`
+
+Add `@Suite(.timeLimit(.minutes(5)))` to test suites that use async patterns (continuations, callback hooks, `withObservationTracking`). A regression in this category fails as a single test in minutes instead of consuming a job-level timeout. Five minutes is recommended because Swift Testing's `.timeLimit` only accepts minute granularity, well-written tests finish in well under a minute, and one minute is too tight for the slowest legitimate tests (Core Data migrations, simulator boot, contended cooperative pool under heavy parallel load).
 
 ## Test Data Factories
 Use static factory methods for consistent test data:

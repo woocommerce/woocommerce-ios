@@ -1,4 +1,6 @@
+import CocoaLumberjackSwift
 import SwiftUI
+import TipKit
 import class WooFoundation.CurrencyFormatter
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
@@ -175,6 +177,12 @@ public struct PointOfSaleEntryPointView: View {
             }
         }
         .task {
+            do {
+                try Tips.configure()
+            } catch {
+                DDLogError("⛔️ Failed to configure TipKit: \(error)")
+            }
+
             // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.
             // Confusingly, init can be called more than once, but `task` matches the lifecycle.
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.

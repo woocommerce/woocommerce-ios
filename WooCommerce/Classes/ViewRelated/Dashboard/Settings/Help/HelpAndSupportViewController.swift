@@ -76,7 +76,9 @@ final class HelpAndSupportViewController: UIViewController {
         isMacCatalyst: isMacCatalyst,
         hasLoginSiteURL: loginSiteURL != nil,
         developerFFPanelEnabled: !ServiceLocator.stores.isAuthenticated
-            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel)
+            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel),
+        isAIChatEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
+            && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false
     )
 
     private var isMacCatalyst: Bool {
@@ -234,6 +236,10 @@ private extension HelpAndSupportViewController {
             configureSiteCompatibility(cell: cell)
         case let cell as ValueOneTableViewCell where row == .featureFlags:
             configureFeatureFlags(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .aiSupportChat:
+            configureAISupportChat(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .chatHistory:
+            configureChatHistory(cell: cell)
         default:
             fatalError()
         }
@@ -317,6 +323,40 @@ private extension HelpAndSupportViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = "Override Feature Flags"
         cell.detailTextLabel?.text = "Toggle local feature flags"
+    }
+
+    /// AI Support Chat cell
+    ///
+    func configureAISupportChat(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString(
+            "helpAndSupport.aiSupportChat.title",
+            value: "Chat with Support",
+            comment: "Title for the AI support chat row on the Help screen"
+        )
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "helpAndSupport.aiSupportChat.subtitle",
+            value: "Get help from our AI assistant",
+            comment: "Subtitle for the AI support chat row on the Help screen"
+        )
+    }
+
+    /// Chat History cell
+    ///
+    func configureChatHistory(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString(
+            "helpAndSupport.chatHistory.title",
+            value: "Chat History",
+            comment: "Title for the support chat history row on the Help screen"
+        )
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "helpAndSupport.chatHistory.subtitle",
+            value: "Revisit past support conversations",
+            comment: "Subtitle for the support chat history row on the Help screen"
+        )
     }
 
     func refreshViewContent() {
@@ -432,6 +472,53 @@ private extension HelpAndSupportViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 
+    /// AI Support Chat action
+    ///
+    func aiSupportChatWasPressed() {
+        let viewModel = SupportChatViewModel(
+            entryPoint: .helpAndSupport,
+            onContactHumanSupport: { [weak self] transcript in
+                self?.navigateToContactSupport(transcript: transcript)
+            }
+        )
+        let controller = SupportChatHostingController(viewModel: viewModel)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func navigateToContactSupport(transcript: String) {
+        let viewController = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag))
+        viewController.show(from: self)
+    }
+
+    /// Chat History action
+    ///
+    func chatHistoryWasPressed() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        let historyViewModel = SupportChatHistoryViewModel(siteID: siteID)
+        let rootView = SupportChatHistoryView(viewModel: historyViewModel) { [weak self] summary in
+            self?.resumeChat(for: summary)
+        }
+        let controller = UIHostingController(rootView: rootView)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    /// Pushes the support chat UI seeded with a prior `chatID` so the conversation
+    /// continues on the assistant's side when the merchant sends the next message.
+    private func resumeChat(for summary: SupportChatSummary) {
+        let chatViewModel = SupportChatViewModel(
+            botSlug: summary.botSlug,
+            entryPoint: .chatHistory,
+            chatID: summary.chatID,
+            onContactHumanSupport: { [weak self] _ in
+                self?.navigationController?.popViewController(animated: true)
+            }
+        )
+        let controller = SupportChatHostingController(viewModel: chatViewModel)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
     @objc func dismissWasPressed() {
         dismiss(animated: true, completion: nil)
     }
@@ -488,6 +575,10 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             siteCompatibilityWasPressed()
         case .featureFlags:
             featureFlagsWasPressed()
+        case .aiSupportChat:
+            aiSupportChatWasPressed()
+        case .chatHistory:
+            chatHistoryWasPressed()
         }
     }
 }
@@ -509,15 +600,18 @@ private struct Section {
 enum HelpAndSupportRow: CaseIterable {
     case helpCenter
     case contactSupport
+    case aiSupportChat
     case contactEmail
     case applicationLog
     case systemStatusReport
     case siteCompatibility
     case featureFlags
+    case chatHistory
 
     var type: UITableViewCell.Type {
         switch self {
-        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .siteCompatibility, .featureFlags:
+        case .helpCenter, .contactSupport, .aiSupportChat, .contactEmail, .applicationLog,
+             .systemStatusReport, .siteCompatibility, .featureFlags, .chatHistory:
             return ValueOneTableViewCell.self
         }
     }

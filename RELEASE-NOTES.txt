@@ -3,6 +3,7 @@
 24.7
 -----
 - [*] Performance card: switch between Gross, Net, and Total revenue from a segmented control. [https://github.com/woocommerce/woocommerce-ios/pull/17012]
+- [*] Performance card: pick which order date type drives the totals (paid, placed, or completed) from a bottom sheet. [https://github.com/woocommerce/woocommerce-ios/pull/16988]
 - [*] Add FedEx Terms of Service handling for shipping label purchases [https://github.com/woocommerce/woocommerce-ios/pull/16925]
 - [*] POS: Update empty orders state copy and replace "Learn more" with "Refresh" [https://github.com/woocommerce/woocommerce-ios/pull/16961]
 

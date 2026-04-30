@@ -12,7 +12,10 @@ public final class AssistantController {
 
     private let backend: AssistantBackend
     private let context: AssistantContext
-    private var activeTask: Task<Void, Never>?
+
+    /// Visible to tests via `@testable` so they can await the in-flight
+    /// turn's Task without polling. Production callers go through `canSend`.
+    private(set) var activeTask: Task<Void, Never>?
 
     /// Per-turn UUID captured at `run()` entry. The cleanup at exit only clears
     /// `activeTask` when this token is still the active one. A newer `send()`

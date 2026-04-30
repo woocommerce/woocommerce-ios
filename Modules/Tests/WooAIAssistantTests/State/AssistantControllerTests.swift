@@ -16,7 +16,7 @@ struct AssistantControllerTests {
 
         // When
         controller.send("first")
-        try await Self.waitUntilStreamCount(backend, equals: 1)
+        await backend.awaitTurnStarted(at: 0)
         controller.send("second")
 
         // Then
@@ -25,7 +25,6 @@ struct AssistantControllerTests {
         #expect(receivedTurns.first?.prompt == "first")
         #expect(controller.canSend == false)
 
-        // Cleanup
         await backend.finishOldestStream()
     }
 
@@ -62,7 +61,7 @@ struct AssistantControllerTests {
 
         // When
         controller.send("hi")
-        try await Self.waitUntilCanSend(controller)
+        await controller.activeTask?.value
 
         // Then
         let messages = controller.conversation.messages
@@ -88,7 +87,7 @@ struct AssistantControllerTests {
 
         // When
         controller.cancelProposal(proposalID)
-        try await Self.waitUntilCancelled(backend, has: proposalID)
+        await backend.awaitProposalCancelled(proposalID)
 
         // Then
         let cancelled = await backend.cancelledProposalIDs
@@ -107,7 +106,7 @@ struct AssistantControllerTests {
 
         // When
         controller.send("first")
-        try await Self.waitUntilStreamCount(backend, equals: 1)
+        await backend.awaitTurnStarted(at: 0)
         controller.cancel()
         // Start turn 2 while turn 1's stream is still open and the older Task
         // hasn't reached its cleanup yet. With the per-turn UUID token, the
@@ -115,16 +114,19 @@ struct AssistantControllerTests {
         // bumps the token; without it, this is where the chat freezes after
         // a follow-up question.
         controller.send("second")
-        try await Self.waitUntilStreamCount(backend, equals: 2)
+        await backend.awaitTurnStarted(at: 1)
+        let secondTask = controller.activeTask
         await backend.finishOldestStream()
-        for _ in 0..<10 { await Task.yield() }
+        await backend.awaitTurnFinished(at: 0)
 
         // Then
         #expect(controller.canSend == false)
+        #expect(secondTask != nil)
         let turns = await backend.receivedTurns
         #expect(turns.map(\.prompt) == ["first", "second"])
 
         await backend.finishOldestStream()
+        await secondTask?.value
     }
 
     @Test
@@ -142,18 +144,19 @@ struct AssistantControllerTests {
 
         // When
         controller.send("first")
-        try await Self.waitUntilStreamCount(backend, equals: 1)
+        await backend.awaitTurnStarted(at: 0)
         controller.cancel()
         controller.send("second")
-        try await Self.waitUntilStreamCount(backend, equals: 2)
-        for _ in 0..<10 { await Task.yield() }
+        await backend.awaitTurnStarted(at: 1)
+        let secondTask = controller.activeTask
         await backend.finishOldestStream()
-        for _ in 0..<10 { await Task.yield() }
+        await backend.awaitTurnFinished(at: 0)
 
         // Then
         #expect(controller.conversation.streamingState == .streaming)
 
         await backend.finishOldestStream()
+        await secondTask?.value
     }
 
     @Test
@@ -174,55 +177,53 @@ struct AssistantControllerTests {
 
         // When
         controller.send("first")
-        try await Self.waitUntilStreamCount(backend, equals: 1)
+        await backend.awaitTurnStarted(at: 0)
         await backend.finishOldestStream()
-        try await Self.waitUntilCanSend(controller)
+        await controller.activeTask?.value
         controller.send("second")
-        try await Self.waitUntilStreamCount(backend, equals: 1)
-        for _ in 0..<10 { await Task.yield() }
+        await backend.awaitTurnStarted(at: 1)
+        let secondTask = controller.activeTask
 
         // Then
         #expect(controller.canSend == false)
         #expect(controller.conversation.streamingState == .streaming)
 
         await backend.finishOldestStream()
+        await secondTask?.value
     }
 
-    // MARK: - Helpers
+    @Test
+    func test_cancel_when_stream_in_flight_then_streamingState_idle_and_no_orphan_task()
+    async throws {
+        // Given
+        let backend = MockAssistantBackend()
+        await backend.setAutoFinishStreams(false)
+        await backend.setScriptedYields([
+            [.event(.textChunk("partial"))]
+        ])
+        let controller = AssistantController(backend: backend,
+                                             context: Self.defaultContext)
+
+        // When
+        controller.send("hi")
+        await backend.awaitTurnStarted(at: 0)
+        let inFlight = controller.activeTask
+        controller.cancel()
+
+        // Then
+        #expect(controller.conversation.streamingState == .idle)
+        #expect(controller.activeTask == nil)
+
+        await backend.finishOldestStream()
+        await inFlight?.value
+        let messageCountBeforeLateYield = controller.conversation.messages.count
+        await backend.finishOldestStream()
+        #expect(controller.conversation.messages.count == messageCountBeforeLateYield)
+    }
 
     private static let defaultContext = AssistantContext(
         siteID: 1,
         siteURL: URL(string: "https://example.com")!,
         blogID: nil
     )
-
-    /// Polls the mock by yielding the MainActor between checks. Cheaper than
-    /// scheduling timers and stays within the test's actor isolation.
-    private static func waitUntilStreamCount(_ backend: MockAssistantBackend,
-                                              equals expected: Int) async throws {
-        for _ in 0..<200 {
-            let count = await backend.pendingStreamCount()
-            if count == expected { return }
-            await Task.yield()
-        }
-        Issue.record("backend never reached pending stream count \(expected)")
-    }
-
-    private static func waitUntilCanSend(_ controller: AssistantController) async throws {
-        for _ in 0..<200 {
-            if controller.canSend { return }
-            await Task.yield()
-        }
-        Issue.record("controller never returned to canSend")
-    }
-
-    private static func waitUntilCancelled(_ backend: MockAssistantBackend,
-                                            has proposalID: UUID) async throws {
-        for _ in 0..<200 {
-            let ids = await backend.cancelledProposalIDs
-            if ids.contains(proposalID) { return }
-            await Task.yield()
-        }
-        Issue.record("backend never recorded cancellation for \(proposalID)")
-    }
 }

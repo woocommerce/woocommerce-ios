@@ -130,6 +130,11 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         guard let cuboid else { return }
         switch gesture.state {
         case .began:
+            // RealityKit's installed translation gesture would otherwise fire
+            // concurrently and write to cuboid.root.position from the touch
+            // centroid, fighting our resize/rotate writes (most visibly during
+            // height resize, where we keep position locked).
+            setInstalledGesturesEnabled(false)
             let currentRotation = cuboid.root.transform.rotation
             rotationStartYaw = 2 * atan2(currentRotation.imag.y, currentRotation.real)
             resizeContext = nil
@@ -146,10 +151,17 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
                 applyResize(gesture: gesture)
             }
         case .ended, .cancelled, .failed:
+            setInstalledGesturesEnabled(true)
             resizeContext = nil
             lastAppliedFingerPositions = nil
         default:
             break
+        }
+    }
+
+    private func setInstalledGesturesEnabled(_ enabled: Bool) {
+        for gesture in installedGestures {
+            gesture.isEnabled = enabled
         }
     }
 

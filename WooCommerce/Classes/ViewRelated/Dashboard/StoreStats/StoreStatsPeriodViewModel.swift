@@ -15,6 +15,11 @@ final class StoreStatsPeriodViewModel {
     /// Updated externally from user interactions with the chart.
     @Published var selectedIntervalIndex: Int? = nil
 
+    /// Updated externally when the merchant picks a different revenue metric on the Performance card.
+    /// Drives `revenueStatsText`. Defaults to `.total` to preserve existing behavior when the
+    /// merchant has not yet made a selection.
+    @Published var revenueType: DashboardRevenueStatsType = .total
+
     /// Emits order stats text values based on order stats and selected time interval.
     private(set) lazy var orderStatsText: AnyPublisher<String, Never> =
     Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
@@ -24,14 +29,20 @@ final class StoreStatsPeriodViewModel {
         .removeDuplicates()
         .eraseToAnyPublisher()
 
-    /// Emits revenue stats text values based on order stats, selected time interval, and currency code.
-    private(set) lazy var revenueStatsText: AnyPublisher<String, Never> = $orderStatsData.combineLatest($selectedIntervalIndex, currencySettings.$currencyCode)
-        .compactMap { [weak self] orderStatsData, selectedIntervalIndex, currencyCode in
+    /// Emits revenue stats text values based on order stats, selected time interval, currency code,
+    /// and the selected revenue metric.
+    private(set) lazy var revenueStatsText: AnyPublisher<String, Never> =
+    Publishers.CombineLatest4($orderStatsData.eraseToAnyPublisher(),
+                              $selectedIntervalIndex.eraseToAnyPublisher(),
+                              currencySettings.$currencyCode.eraseToAnyPublisher(),
+                              $revenueType.eraseToAnyPublisher())
+        .compactMap { [weak self] orderStatsData, selectedIntervalIndex, currencyCode, revenueType in
             guard let self else { return "-" }
-            return StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStatsData.stats,
-                                                                selectedIntervalIndex: selectedIntervalIndex,
-                                                                currencyFormatter: self.currencyFormatter,
-                                                                currencyCode: currencyCode.rawValue)
+            return StatsDataTextFormatter.createRevenueText(orderStats: orderStatsData.stats,
+                                                            selectedIntervalIndex: selectedIntervalIndex,
+                                                            revenueType: revenueType,
+                                                            currencyFormatter: self.currencyFormatter,
+                                                            currencyCode: currencyCode.rawValue)
         }
         .removeDuplicates()
         .eraseToAnyPublisher()

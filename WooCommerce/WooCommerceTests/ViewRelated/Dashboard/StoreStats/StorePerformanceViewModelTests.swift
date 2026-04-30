@@ -717,6 +717,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
                                                   totalOrders: 3,
                                                   totalItemsSold: 5,
                                                   grossRevenue: 800,
+                                                  grossSales: 0,
                                                   netRevenue: 800,
                                                   averageOrderValue: 266
                                               )
@@ -738,6 +739,154 @@ final class StorePerformanceViewModelTests: XCTestCase {
 
         // Cleanup
         DashboardTimestampStore.removeTimestamp(for: .performance, at: .today)
+    }
+
+    // MARK: Revenue type segmented control
+
+    @MainActor
+    func test_revenueType_when_load_returns_value_then_published() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadLastSelectedDashboardRevenueStatsType(_, onCompletion):
+                onCompletion(.gross)
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+
+        // Then
+        XCTAssertEqual(viewModel.revenueType, .total) // initial fallback
+        waitUntil {
+            viewModel.revenueType == .gross
+        }
+    }
+
+    @MainActor
+    func test_didSelectRevenueType_when_new_type_then_persists_and_clears_chart_selection() {
+        // Given
+        var savedRevenueType: DashboardRevenueStatsType?
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .setLastSelectedDashboardRevenueStatsType(_, revenueType):
+                savedRevenueType = revenueType
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        viewModel.didSelectStatsInterval(at: 1)
+
+        // When
+        viewModel.didSelectRevenueType(.net)
+
+        // Then
+        XCTAssertEqual(viewModel.revenueType, .net)
+        XCTAssertEqual(savedRevenueType, .net)
+        // Switching the metric clears the highlighted chart point so the card header reverts to the period total.
+        waitUntil {
+            viewModel.shouldHighlightStats == false
+        }
+    }
+
+    @MainActor
+    func test_didSelectRevenueType_when_same_type_then_noop() {
+        // Given
+        var saveCallCount = 0
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .setLastSelectedDashboardRevenueStatsType:
+                saveCallCount += 1
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        XCTAssertEqual(viewModel.revenueType, .total)
+
+        // When
+        viewModel.didSelectRevenueType(.total)
+
+        // Then — no save dispatched, no event tracked.
+        XCTAssertEqual(saveCallCount, 0)
+    }
+
+    @MainActor
+    func test_didSelectRevenueType_after_async_loaders_resolve_then_chart_data_persists_for_new_metric() {
+        // Given — the user has saved `.thisMonth` as the last range, so init creates two
+        // period view models: one for the initial `.today`, then one for `.thisMonth`. Without the
+        // periodViewModelSubscriptions cleanup, the initial `.today` VM's chart pipeline leaks and
+        // overwrites `$statsIntervalData` with empty data on every metric switch.
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadLastSelectedPerformanceTimeRange(_, onCompletion):
+                onCompletion(.thisMonth)
+            case let .loadLastSelectedDashboardRevenueStatsType(_, onCompletion):
+                onCompletion(.total) // user starts on .total
+            default:
+                break
+            }
+        }
+
+        // Insert stats so .thisMonth has non-zero values for ALL three metrics in subtotals.
+        let interval = OrderStatsV4Interval(interval: "2025-04-01",
+                                            dateStart: "2025-04-01 00:00:00",
+                                            dateEnd: "2025-04-30 23:59:59",
+                                            subtotals: .fake().copy(grossRevenue: 500,
+                                                                    grossSales: 480,
+                                                                    netRevenue: 450))
+        let orderStats = OrderStatsV4(siteID: 123,
+                                      granularity: .monthly,
+                                      totals: .fake().copy(grossRevenue: 500, grossSales: 480, netRevenue: 450),
+                                      intervals: [interval])
+
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
+
+        // Wait for the async timeRange load to settle, then insert the .thisMonth stats so
+        // the period view model's results controller picks them up.
+        waitUntil { viewModel.timeRange == .thisMonth }
+        insertOrderStats(orderStats, timeRange: .thisMonth)
+
+        // Confirm initial state: `.total` shows data.
+        waitUntil { viewModel.hasRevenue == true }
+        XCTAssertEqual(viewModel.revenueType, .total)
+        XCTAssertTrue(viewModel.hasRevenue, "Initial .total should show data")
+
+        // When — switch to `.net`.
+        viewModel.didSelectRevenueType(.net)
+
+        // Then — chart data should still be present (subtotals.netRevenue = 450).
+        XCTAssertEqual(viewModel.revenueType, .net)
+        XCTAssertTrue(viewModel.hasRevenue, "After switching to .net, chart should still show data — netRevenue=450 is non-zero")
+    }
+
+    @MainActor
+    func test_didSelectRevenueType_then_tracks_event_with_option_property() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  usageTracksEventEmitter: .init(),
+                                                  analytics: analytics)
+
+        // When
+        viewModel.didSelectRevenueType(.gross)
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("dashboard_stats_revenue_type_selected"))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties.last as? [String: AnyHashable])
+        XCTAssertEqual(properties["option"] as? String, "gross")
+        XCTAssertEqual(properties["type"] as? String, "dashboard_stats")
     }
 }
 

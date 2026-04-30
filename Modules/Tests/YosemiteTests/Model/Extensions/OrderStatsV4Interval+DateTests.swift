@@ -2,7 +2,12 @@ import XCTest
 @testable import Yosemite
 
 final class OrderStatsV4Interval_DateTests: XCTestCase {
-    private let mockIntervalSubtotals = OrderStatsV4Totals(totalOrders: 0, totalItemsSold: 0, grossRevenue: 0, netRevenue: 0, averageOrderValue: 0)
+    private let mockIntervalSubtotals = OrderStatsV4Totals(totalOrders: 0,
+                                                            totalItemsSold: 0,
+                                                            grossRevenue: 0,
+                                                            grossSales: 0,
+                                                            netRevenue: 0,
+                                                            averageOrderValue: 0)
 
     func testDateStartAndDateEnd() {
         let dateStringInSiteTimeZone = "2019-08-08 10:45:00"

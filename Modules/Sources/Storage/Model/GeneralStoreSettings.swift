@@ -62,6 +62,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     /// The raw value string of `StatsTimeRangeV4` that indicates the last selected time range tab in Performance dashboard card.
     public var lastSelectedPerformanceTimeRange: String
 
+    /// The raw value of `DashboardRevenueStatsType` indicating the last selected revenue metric on the Performance card.
+    /// Empty string means "use the default" (Total).
+    public var lastSelectedDashboardRevenueStatsType: String
+
     /// The raw value string of `StatsTimeRangeV4` that indicates the last selected time range tab in Top Performers dashboard card.
     public var lastSelectedTopPerformersTimeRange: String
 
@@ -116,6 +120,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 analyticsHubCards: [AnalyticsCard]? = nil,
                 dashboardCards: [DashboardCard]? = nil,
                 lastSelectedPerformanceTimeRange: String = "",
+                lastSelectedDashboardRevenueStatsType: String = "",
                 lastSelectedTopPerformersTimeRange: String = "",
                 lastSelectedMostActiveCouponsTimeRange: String = "",
                 lastSelectedStockType: String? = nil,
@@ -140,6 +145,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.analyticsHubCards = analyticsHubCards
         self.dashboardCards = dashboardCards
         self.lastSelectedPerformanceTimeRange = lastSelectedPerformanceTimeRange
+        self.lastSelectedDashboardRevenueStatsType = lastSelectedDashboardRevenueStatsType
         self.lastSelectedTopPerformersTimeRange = lastSelectedTopPerformersTimeRange
         self.lastSelectedMostActiveCouponsTimeRange = lastSelectedMostActiveCouponsTimeRange
         self.lastSelectedStockType = lastSelectedStockType
@@ -167,6 +173,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              analyticsHubCards: analyticsHubCards,
                              dashboardCards: dashboardCards,
                              lastSelectedPerformanceTimeRange: lastSelectedPerformanceTimeRange,
+                             lastSelectedDashboardRevenueStatsType: lastSelectedDashboardRevenueStatsType,
                              lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange,
                              lastSelectedStockType: lastSelectedStockType,
                              lastSelectedOrderStatus: lastSelectedOrderStatus,
@@ -201,6 +208,7 @@ extension GeneralStoreSettings {
         self.dashboardCards = try container.decodeIfPresent([DashboardCard].self, forKey: .dashboardCards)
 
         self.lastSelectedPerformanceTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedPerformanceTimeRange) ?? ""
+        self.lastSelectedDashboardRevenueStatsType = try container.decodeIfPresent(String.self, forKey: .lastSelectedDashboardRevenueStatsType) ?? ""
         self.lastSelectedTopPerformersTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedTopPerformersTimeRange) ?? ""
         self.lastSelectedMostActiveCouponsTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedMostActiveCouponsTimeRange) ?? ""
         self.lastSelectedStockType = try container.decodeIfPresent(String.self, forKey: .lastSelectedStockType)

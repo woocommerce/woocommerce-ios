@@ -152,6 +152,9 @@ public enum WooAnalyticsStat: String {
     case dashboardStatsOrderDateTypeSelected = "dashboard_stats_order_date_type_selected"
     case dashboardStatsOrderDateTypeUpdateFailed = "dashboard_stats_order_date_type_update_failed"
 
+    // MARK: Performance card revenue type segmented control
+    case dashboardStatsRevenueTypeSelected = "dashboard_stats_revenue_type_selected"
+
     // MARK: Dashboard Stats v3/v4 Events
     //
     case dashboardNewStatsAvailabilityBannerCancelTapped = "dashboard_new_stats_availability_banner_cancel_tapped"

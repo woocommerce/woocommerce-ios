@@ -27,8 +27,6 @@ public struct AssistantTurn: Sendable {
     }
 }
 
-/// Site-scoping context passed through every turn. Backends that don't need
-/// per-site routing can ignore the fields they don't care about.
 public struct AssistantContext: Sendable {
     public let siteID: Int64
     public let siteURL: URL
@@ -41,9 +39,6 @@ public struct AssistantContext: Sendable {
     }
 }
 
-/// One element on the backend's stream. `event` carries UI-relevant data;
-/// `sessionUpdate` lets the controller persist a backend's session handle
-/// between turns without the UI having to know what's in it.
 public enum BackendYield: Sendable {
     case event(AssistantEvent)
     case sessionUpdate(AssistantSession)

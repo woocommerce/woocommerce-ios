@@ -119,8 +119,6 @@ public final class AssistantConversation {
         session = newSession
     }
 
-    // MARK: - Helpers
-
     private func resultSummary(from json: String?) -> String? {
         guard let json else { return nil }
         let limit = 120

@@ -267,9 +267,7 @@ struct AgenticChatBackendTests {
     )
 }
 
-/// `OSAllocatedUnfairLock` keeps the counter Sendable without resorting
-/// to `@unchecked`; the closure that captures it runs on whatever Task
-/// the orchestrator is on each turn, but the test sequences turns serially.
+/// Sendable counter without `@unchecked`.
 private final class ProviderCallCounter: Sendable {
     private let lock = OSAllocatedUnfairLock(initialState: 0)
 

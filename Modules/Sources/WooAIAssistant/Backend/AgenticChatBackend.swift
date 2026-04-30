@@ -30,8 +30,6 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
                                                     maxIterations: maxIterations)
     }
 
-    /// Static-prompt convenience for tests and callers that don't need per-turn
-    /// freshness.
     public convenience init(chatService: AIChatService,
                             toolRegistry: ToolRegistry? = nil,
                             safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
@@ -101,7 +99,6 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
         return (matchedCalls, matchedResults)
     }
 
-    /// Drop accumulated history. Call when the merchant starts a fresh chat.
     public func reset() async {
         await transcript.reset()
     }

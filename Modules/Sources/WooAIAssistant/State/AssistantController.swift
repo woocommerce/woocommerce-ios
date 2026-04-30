@@ -34,8 +34,6 @@ public final class AssistantController {
         self.conversation = conversation ?? AssistantConversation()
     }
 
-    // MARK: - Intents
-
     public func send(_ prompt: String) {
         let trimmed = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, activeTask == nil else { return }
@@ -64,8 +62,6 @@ public final class AssistantController {
         activeTask == nil
     }
 
-    // MARK: - Confirmation forwarders
-
     public func confirmProposal(_ id: UUID) {
         guard let gate = backend as? AssistantBackendConfirming else { return }
         Task { await gate.confirmProposal(id) }
@@ -75,8 +71,6 @@ public final class AssistantController {
         guard let gate = backend as? AssistantBackendConfirming else { return }
         Task { await gate.cancelProposal(id) }
     }
-
-    // MARK: - Run loop
 
     private func run(prompt: String,
                      assistantMessageID: ChatMessage.ID,

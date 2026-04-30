@@ -106,6 +106,22 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 contactlessLimitAmount: 10000,
                 minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
+        case .FR:
+                    self.init(
+                        countryCode: country,
+                        paymentMethods: [.cardPresent],
+                        currencies: [.EUR],
+                        paymentGateways: [WCPayAccount.gatewayID],
+                        supportedReaders: [.wisepad3],
+                        supportedPluginVersions: [
+                            .init(plugin: .wcPay, minimumVersion: "4.4.0")
+                        ],
+                        minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                        stripeSmallestCurrencyUnitMultiplier: 100,
+                        contactlessLimitAmount: 10000,
+                        minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
+                    )
+                
         default:
             self.init(
                 countryCode: country,

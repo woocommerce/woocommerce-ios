@@ -63,14 +63,14 @@ struct CartView: View {
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
-            .posFullScreenCover(isPresented: $posModel.isCustomAmountSheetPresented) {
+            .posFullScreenCover(item: $posModel.editingCustomAmount) { customAmount in
                 AddCustomAmountView(
-                    isPresented: $posModel.isCustomAmountSheetPresented,
                     currencySettings: currencyProvider.currencySettings,
-                    editing: posModel.editingCustomAmount,
-                    onSubmit: { customAmount in
-                        let mode: WooAnalyticsEvent.PointOfSale.CustomAmountMode = posModel.editingCustomAmount != nil ? .edit : .add
-                        posModel.upsertCustomAmount(customAmount, mode: mode)
+                    editing: customAmount,
+                    dismissalStyle: .modal,
+                    onDismiss: { posModel.editingCustomAmount = nil },
+                    onSubmit: { updated in
+                        posModel.upsertCustomAmount(updated, mode: .edit)
                     }
                 )
             }
@@ -430,7 +430,7 @@ private struct CustomAmountsCartSection: View {
                 let isInteractive = posModel.orderStage == .building
                 CustomAmountRowView(
                     customAmount: customAmount,
-                    onEdit: isInteractive ? { posModel.presentEditCustomAmount(customAmount) } : nil,
+                    onEdit: isInteractive ? { posModel.editingCustomAmount = customAmount } : nil,
                     onRemove: isInteractive ? {
                         analytics.track(
                             event: .PointOfSale.itemRemovedFromCart(

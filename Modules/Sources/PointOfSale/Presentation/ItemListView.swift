@@ -73,6 +73,7 @@ struct ItemListView: View {
     }
 
     @State private var showCouponCreationModal: Bool = false
+    @State private var isAddingCustomAmount: Bool = false
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -107,6 +108,10 @@ struct ItemListView: View {
         .navigationDestination(for: POSItem.self, destination: { item in
             childListView(parentItem: item)
         })
+        .modifier(CustomAmountFormPushModifier(
+            isPresented: $isAddingCustomAmount,
+            destination: { addCustomAmountFormDestination }
+        ))
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
         .posCouponCreationSheet(isPresented: $showCouponCreationModal,
@@ -202,7 +207,7 @@ struct ItemListView: View {
                 headerView: {
                     if shouldShowCustomAmountEntryRow(itemListType) {
                         CustomAmountEntryRow(onTap: {
-                            posModel.presentAddCustomAmount()
+                            isAddingCustomAmount = true
                         })
                     }
                 }
@@ -312,6 +317,47 @@ struct ItemListView: View {
             }
         default:
             EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private var addCustomAmountFormDestination: some View {
+        AddCustomAmountView(
+            currencySettings: currencyProvider.currencySettings,
+            dismissalStyle: .push,
+            onDismiss: { isAddingCustomAmount = false },
+            onSubmit: { customAmount in
+                analytics.track(
+                    event: .PointOfSale.customAmountSubmitted(mode: .add, isTaxable: customAmount.isTaxable)
+                )
+                posModel.upsertCustomAmount(customAmount)
+            }
+        )
+    }
+}
+
+/// Pushes a destination from a `Bool` flag, with separate paths for iOS 18+ (`navigationDestination`)
+/// and iOS 17 (programmatic `NavigationLink` to avoid the `navigationDestination(for:)` runtime
+/// warnings reported on `NavigationView`).
+private struct CustomAmountFormPushModifier<Destination: View>: ViewModifier {
+    @Binding var isPresented: Bool
+    let destination: () -> Destination
+
+    func body(content: Content) -> some View {
+        if #available(iOS 18.0, *) {
+            content.navigationDestination(isPresented: $isPresented) {
+                destination()
+            }
+        } else {
+            content.background(
+                NavigationLink(
+                    destination: destination(),
+                    isActive: $isPresented,
+                    label: { EmptyView() }
+                )
+                .opacity(0)
+                .frame(width: 0, height: 0)
+            )
         }
     }
 }

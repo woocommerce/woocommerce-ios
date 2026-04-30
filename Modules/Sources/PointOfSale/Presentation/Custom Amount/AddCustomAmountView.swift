@@ -3,8 +3,17 @@ import WooFoundation
 import struct Yosemite.POSCustomAmount
 
 struct AddCustomAmountView: View {
-    @Binding var isPresented: Bool
+    /// Style for the form's leading back button.
+    /// - `.modal` shows an `xmark` (used when the form is presented as a sheet/full-screen cover).
+    /// - `.push` shows a chevron-back (used when the form is pushed inside a navigation stack).
+    enum DismissalStyle {
+        case modal
+        case push
+    }
+
+    let onDismiss: () -> Void
     let onSubmit: (POSCustomAmount) -> Void
+    private let dismissalStyle: DismissalStyle
 
     @State private var viewModel: AddCustomAmountFormViewModel
     @FocusState private var isAmountFocused: Bool
@@ -17,11 +26,13 @@ struct AddCustomAmountView: View {
         )
     }
 
-    init(isPresented: Binding<Bool>,
-         currencySettings: CurrencySettings,
+    init(currencySettings: CurrencySettings,
          editing: POSCustomAmount? = nil,
+         dismissalStyle: DismissalStyle = .modal,
+         onDismiss: @escaping () -> Void,
          onSubmit: @escaping (POSCustomAmount) -> Void) {
-        self._isPresented = isPresented
+        self.dismissalStyle = dismissalStyle
+        self.onDismiss = onDismiss
         self.onSubmit = onSubmit
         self._viewModel = State(wrappedValue: AddCustomAmountFormViewModel(
             currencySettings: currencySettings,
@@ -35,8 +46,8 @@ struct AddCustomAmountView: View {
                 title: viewModel.isEditing ? Localization.editTitle : Localization.title,
                 backButtonConfiguration: .init(
                     state: .enabled,
-                    action: { isPresented = false },
-                    buttonIcon: "xmark"
+                    action: { onDismiss() },
+                    buttonIcon: dismissalStyle == .modal ? "xmark" : "chevron.backward"
                 )
             )
 
@@ -151,7 +162,7 @@ struct AddCustomAmountView: View {
     private func submit() {
         guard let customAmount = viewModel.resolvedCustomAmount() else { return }
         onSubmit(customAmount)
-        isPresented = false
+        onDismiss()
     }
 }
 
@@ -193,20 +204,33 @@ private extension AddCustomAmountView {
 }
 
 #if DEBUG
-#Preview {
+#Preview("Modal") {
     AddCustomAmountView(
-        isPresented: .constant(true),
         currencySettings: CurrencySettings(),
+        dismissalStyle: .modal,
+        onDismiss: {},
         onSubmit: { _ in }
     )
 }
 
-#Preview("Editing") {
+#Preview("Editing — Modal") {
     AddCustomAmountView(
-        isPresented: .constant(true),
         currencySettings: CurrencySettings(),
         editing: POSCustomAmount(name: "Service fee", amount: "12.50", isTaxable: false),
+        dismissalStyle: .modal,
+        onDismiss: {},
         onSubmit: { _ in }
     )
+}
+
+#Preview("Push") {
+    NavigationStack {
+        AddCustomAmountView(
+            currencySettings: CurrencySettings(),
+            dismissalStyle: .push,
+            onDismiss: {},
+            onSubmit: { _ in }
+        )
+    }
 }
 #endif

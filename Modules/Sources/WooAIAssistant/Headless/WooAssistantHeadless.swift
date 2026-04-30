@@ -3,16 +3,17 @@ import CocoaLumberjackSwift
 import NetworkingCore
 
 /// Headless test driver for the WooCommerce AI Assistant. Wires the same
-/// `AgenticLoopOrchestrator`, REST tool registry, and safety policy that the
+/// `AgenticChatBackend`, REST tool registry, and safety policy that the
 /// app target ships with, but reads dependencies from caller-supplied
 /// credentials so smoke runs and unit tests can drive real conversations
 /// without `ServiceLocator`, `Networking`, or any SwiftUI surface.
 ///
-/// Each `send(_:)` call builds a fresh orchestrator so the harness is
-/// stateless from the caller's perspective - no shared session, no carry-over
-/// safety state. Each harness instance owns its own `WpComJetpackAIJWTProvider`,
-/// so two concurrent instances against the same merchant will each mint a
-/// JWT (one extra mint per instance). Smoke runs typically have one instance.
+/// Each harness instance owns one long-lived `AgenticChatBackend`, so successive
+/// `send(_:)` calls share its `TranscriptStore` and accumulate multi-turn memory
+/// just like the in-app chat surface. Each harness instance also owns its own
+/// `WpComJetpackAIJWTProvider`, so two concurrent instances against the same
+/// merchant will each mint a JWT (one extra mint per instance). Smoke runs
+/// typically have one instance.
 public actor WooAssistantHeadless {
 
     // MARK: - Public types
@@ -224,8 +225,7 @@ public actor WooAssistantHeadless {
 
     private let credentials: Credentials
     private let configuration: Configuration
-    private let chatService: AIChatService
-    private let restClient: WCRESTClient
+    private let backend: AgenticChatBackend
 
     // MARK: - Init
 
@@ -258,35 +258,42 @@ public actor WooAssistantHeadless {
          restClient: WCRESTClient) {
         self.credentials = credentials
         self.configuration = configuration
-        self.chatService = chatService
-        self.restClient = restClient
+        let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.allTools())
+        let prompt = configuration.systemPrompt
+        self.backend = AgenticChatBackend(
+            chatService: chatService,
+            toolRegistry: toolRegistry,
+            safetyPolicy: DefaultSafetyPolicy(),
+            systemPromptProvider: { prompt },
+            maxIterations: configuration.maxIterations
+        )
     }
 
     // MARK: - Driving a turn
 
-    /// Send one user prompt through a freshly-built orchestrator and collect
-    /// the full turn result. Optionally override confirmation handling via
-    /// `resolveConfirmation`; when nil, `configuration.defaultConfirmationPolicy`
-    /// applies.
+    /// Send one user prompt through the long-lived `AgenticChatBackend` and collect
+    /// the full turn result. Successive calls share the backend's transcript so
+    /// the harness sees the same multi-turn memory the in-app chat surface does.
+    /// Optionally override confirmation handling via `resolveConfirmation`; when
+    /// nil, `configuration.defaultConfirmationPolicy` applies.
     public func send(_ message: String,
                      resolveConfirmation: ConfirmationResolver? = nil) async throws -> ConversationTurnResult {
-        let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.allTools())
-        let orchestrator = AgenticLoopOrchestrator(
-            chatService: chatService,
-            toolRegistry: toolRegistry,
-            safetyPolicy: DefaultSafetyPolicy(),
-            systemPrompt: configuration.systemPrompt,
-            maxIterations: configuration.maxIterations
-        )
-
         var result = ConversationTurnResult()
         // Tool calls land via `.toolCallStarted` before their `.toolCallCompleted`; index by id so
         // the completed event can attach the result to the same record without rebuilding the array.
         var toolCallIndexByID: [String: Int] = [:]
         let policy = configuration.defaultConfirmationPolicy
 
-        let stream = orchestrator.run(prompt: message)
-        for try await event in stream {
+        let turn = AssistantTurn(prompt: message)
+        let context = AssistantContext(
+            siteID: credentials.siteID,
+            siteURL: Self.normalizeSiteURL(credentials.siteURL),
+            blogID: credentials.siteID
+        )
+
+        let stream = backend.send(turn: turn, context: context, session: nil)
+        for try await yield in stream {
+            guard case .event(let event) = yield else { continue }
             switch event {
             case .textChunk(let text):
                 result.assistantText += text
@@ -348,9 +355,9 @@ public actor WooAssistantHeadless {
                     decision: decisionLabel
                 ))
                 if approved {
-                    await orchestrator.confirm(proposalID: proposal.id)
+                    await backend.confirmProposal(proposal.id)
                 } else {
-                    await orchestrator.cancel(proposalID: proposal.id)
+                    await backend.cancelProposal(proposal.id)
                 }
 
             case .confirmationResolved:

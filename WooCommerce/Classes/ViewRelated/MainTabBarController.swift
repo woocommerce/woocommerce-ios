@@ -160,6 +160,14 @@ final class MainTabBarController: UITabBarController {
     private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
     private var bookingsEligibilityCheckTask: Task<Void, Never>?
 
+    /// Refreshes the per-site IPP country expansion eligibility cache (RSM-637) when the site changes.
+    private lazy var cardPresentExpansionRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher = {
+        CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
+        )
+    }()
+    private var cardPresentExpansionRefreshTask: Task<Void, Never>?
+
     private var isPOSTabVisible: Bool = false
     private var isBookingsTabVisible: Bool = false
     private var isBookingsFeatureAvailable: Bool = false
@@ -216,6 +224,7 @@ final class MainTabBarController: UITabBarController {
     }
 
     deinit {
+        cardPresentExpansionRefreshTask?.cancel()
         cancellableSiteID?.cancel()
         posEligibilityCheckTask?.cancel()
         bookingsEligibilityCheckTask?.cancel()
@@ -827,7 +836,36 @@ private extension MainTabBarController {
 
                 observePOSEligibilityForPOSTabVisibility(site: site)
                 observeBookingsEligibilityForBookingsTabVisibility(site: site)
+                refreshCardPresentPaymentsCountryExpansionEligibility(for: site)
             }
+    }
+
+    /// Refreshes the per-site IPP country expansion eligibility cache (RSM-637) when the site changes.
+    /// Waits for the first non-empty site settings event for the site so we have a country code,
+    /// then dispatches the relevant remote feature flag check via the refresher and persists the result.
+    func refreshCardPresentPaymentsCountryExpansionEligibility(for site: Site) {
+        cardPresentExpansionRefreshTask?.cancel()
+        cardPresentExpansionRefreshTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            let siteSettings = await waitForSiteSettings(siteID: site.siteID)
+            guard !Task.isCancelled else { return }
+            let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
+            await cardPresentExpansionRefresher.refresh(siteID: site.siteID, countryCode: countryCode)
+        }
+    }
+
+    /// Waits for the first non-empty site settings event matching the given site ID.
+    /// Mirrors `POSTabVisibilityChecker.waitForSiteSettingsRefresh()`.
+    private func waitForSiteSettings(siteID: Int64) async -> [SiteSetting] {
+        for await event in ServiceLocator.selectedSiteSettings.settingsStream.values {
+            guard event.siteID == siteID,
+                  event.settings.isNotEmpty,
+                  event.source != .initialLoad else {
+                continue
+            }
+            return event.settings
+        }
+        return []
     }
 
     func observeSiteIDForViewControllers() {

@@ -17,6 +17,8 @@ struct POSTabEligibilityCheckerTests {
     private var mockSiteSettingService: MockPOSSiteSettingService!
     private let site = Site.fake().copy(siteID: 2)
     private var siteID: Int64 { site.siteID }
+    private let ineligibleExpansionService = StubCardPresentExpansionEligibilityService(isEligible: false)
+    private let eligibleExpansionService = StubCardPresentExpansionEligibilityService(isEligible: true)
 
     init() async throws {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -455,6 +457,104 @@ struct POSTabEligibilityCheckerTests {
         // Then
         #expect(result == .ineligible(reason: .wooCommercePluginNotFound))
     }
+
+    // MARK: - IPP Country Expansion Gate Tests
+
+    @Test(arguments: [
+        (country: Country.de, currency: CurrencyCode.EUR),
+        (country: Country.es, currency: CurrencyCode.EUR),
+        (country: Country.fr, currency: CurrencyCode.EUR),
+        (country: Country.sg, currency: CurrencyCode.SGD),
+        (country: Country.nz, currency: CurrencyCode.NZD)
+    ])
+    fileprivate func is_eligible_when_expansion_eligibility_is_enabled(country: Country, currency: CurrencyCode) async throws {
+        // Given
+        setupCountry(country: country, currency: currency)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService,
+                                               expansionEligibilityService: eligibleExpansionService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .eligible)
+    }
+
+    @Test(arguments: [
+        Country.de,
+        Country.es,
+        Country.sg,
+        Country.nz
+    ])
+    fileprivate func is_ineligible_when_expansion_eligibility_is_disabled(country: Country) async throws {
+        // Given - currencies that would be valid if eligibility were enabled
+        let currency: CurrencyCode = country == .sg ? .SGD : (country == .nz ? .NZD : .EUR)
+        setupCountry(country: country, currency: currency)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService,
+                                               expansionEligibilityService: ineligibleExpansionService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then - falls through with `siteSettingsNotAvailable` (the unsupportedCountry path is mapped here)
+        #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
+    }
+
+    @Test func expansion_country_with_mismatched_currency_is_ineligible_when_expansion_eligibility_is_enabled() async throws {
+        // Given - DE store with USD currency (mismatch)
+        setupCountry(country: .de, currency: .USD)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService,
+                                               expansionEligibilityService: eligibleExpansionService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: .DE, supportedCurrencies: [.EUR])))
+    }
+
+    @Test func australia_is_ineligible_even_when_expansion_eligibility_is_enabled() async throws {
+        // Given - Australia is intentionally excluded pending EFTPOS support (RSM-642 / RSM-643)
+        setupCountry(country: .au, currency: .AUD)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService,
+                                               expansionEligibilityService: eligibleExpansionService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
+    }
+}
+
+// MARK: - Test Helper
+
+private final class StubCardPresentExpansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol {
+    private var isEligibleValue: Bool
+
+    init(isEligible: Bool) {
+        self.isEligibleValue = isEligible
+    }
+
+    func isEligible(siteID: Int64) -> Bool {
+        isEligibleValue
+    }
+
+    func cacheEligibility(siteID: Int64, isEligible: Bool) {
+        isEligibleValue = isEligible
+    }
 }
 
 private extension POSTabEligibilityCheckerTests {
@@ -488,6 +588,11 @@ private extension POSTabEligibilityCheckerTests {
         case ca = "CA:NS"
         case gb = "GB"
         case es = "ES"
+        case de = "DE"
+        case fr = "FR"
+        case sg = "SG"
+        case nz = "NZ"
+        case au = "AU"
 
         var countryCode: CountryCode {
             switch self {
@@ -499,6 +604,16 @@ private extension POSTabEligibilityCheckerTests {
                 return .GB
             case .es:
                 return .ES
+            case .de:
+                return .DE
+            case .fr:
+                return .FR
+            case .sg:
+                return .SG
+            case .nz:
+                return .NZ
+            case .au:
+                return .AU
             }
         }
     }

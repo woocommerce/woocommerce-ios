@@ -103,6 +103,13 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var lastSunsetWarningDismissedDate: Date?
 
+    /// Whether this site is eligible for the In-Person Payments country expansion (RSM-637).
+    /// `nil` until the eligibility refresher has run for the first time. Cached based on
+    /// the relevant remote feature flag (`inPersonPaymentsCountryExpansion` or
+    /// `inPersonPaymentsCountryExpansionEUExtended`) for the site's country, with US/PR/CA/GB
+    /// short-circuited to `true`.
+    public var isCardPresentPaymentsCountryExpansionEligible: Bool?
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -126,7 +133,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 lastPOSOpenedDate: Date? = nil,
                 firstPOSCatalogSyncDate: Date? = nil,
                 syncPOSCatalogOverCellular: Bool = true,
-                lastSunsetWarningDismissedDate: Date? = nil) {
+                lastSunsetWarningDismissedDate: Date? = nil,
+                isCardPresentPaymentsCountryExpansionEligible: Bool? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -151,6 +159,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
         self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
         self.lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate
+        self.isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -175,7 +184,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              isPOSTabVisible: isPOSTabVisible,
                              lastPOSOpenedDate: lastPOSOpenedDate,
                              firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
-                             lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate)
+                             lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
+                             isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible)
     }
 }
 
@@ -214,6 +224,10 @@ extension GeneralStoreSettings {
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
         self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true
         self.lastSunsetWarningDismissedDate = try container.decodeIfPresent(Date.self, forKey: .lastSunsetWarningDismissedDate)
+        self.isCardPresentPaymentsCountryExpansionEligible = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .isCardPresentPaymentsCountryExpansionEligible
+        )
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

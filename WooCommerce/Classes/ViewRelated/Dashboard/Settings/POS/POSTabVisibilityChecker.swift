@@ -12,6 +12,8 @@ import class Yosemite.POSEligibilityService
 import enum Yosemite.FeatureFlagAction
 import class Yosemite.SiteAddress
 import enum Yosemite.POSCountryCurrencyValidator
+import protocol Yosemite.CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
+import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityService
 
 final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let site: Site
@@ -20,19 +22,22 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
 
     init(site: Site,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService()) {
         self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.expansionEligibilityService = expansionEligibilityService
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
@@ -109,7 +114,12 @@ private extension POSTabVisibilityChecker {
     }
 
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> SiteSettingsEligibilityState {
-        let validationResult = POSCountryCurrencyValidator.validate(countryCode: countryCode, currencyCode: currencyCode)
+        let validationResult = POSCountryCurrencyValidator.validate(
+            countryCode: countryCode,
+            currencyCode: currencyCode,
+            siteID: site.siteID,
+            eligibilityService: expansionEligibilityService
+        )
 
         switch validationResult {
         case .eligible:

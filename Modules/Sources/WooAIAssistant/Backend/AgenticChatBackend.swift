@@ -7,13 +7,16 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
     private let orchestrator: AgenticLoopOrchestrator
     private let transcript = TranscriptStore()
     private let systemPromptProvider: @Sendable () -> String?
+    private let historyBudgeter: HistoryBudgeter
 
     public init(chatService: AIChatService,
                 toolRegistry: ToolRegistry? = nil,
                 safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
                 systemPromptProvider: @escaping @Sendable () -> String? = { nil },
+                historyBudgeter: HistoryBudgeter = SlidingWindowHistoryBudgeter(),
                 maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations) {
         self.systemPromptProvider = systemPromptProvider
+        self.historyBudgeter = historyBudgeter
         self.orchestrator = AgenticLoopOrchestrator(chatService: chatService,
                                                     toolRegistry: toolRegistry,
                                                     safetyPolicy: safetyPolicy,
@@ -25,12 +28,14 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
                             toolRegistry: ToolRegistry? = nil,
                             safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
                             systemPrompt: String?,
+                            historyBudgeter: HistoryBudgeter = SlidingWindowHistoryBudgeter(),
                             maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations) {
         let captured = systemPrompt
         self.init(chatService: chatService,
                   toolRegistry: toolRegistry,
                   safetyPolicy: safetyPolicy,
                   systemPromptProvider: { captured },
+                  historyBudgeter: historyBudgeter,
                   maxIterations: maxIterations)
     }
 
@@ -38,11 +43,14 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
                      context: AssistantContext,
                      session: AssistantSession?) -> AsyncThrowingStream<BackendYield, Error> {
         AsyncThrowingStream { continuation in
-            let task = Task { [orchestrator, transcript, systemPromptProvider] in
-                var prior = await transcript.messages()
-                if let systemPrompt = systemPromptProvider() {
-                    prior.insert(.init(role: .system, content: systemPrompt), at: 0)
+            let task = Task { [orchestrator, transcript, systemPromptProvider, historyBudgeter] in
+                let rawTranscript = await transcript.messages()
+                let systemMessage: OpenAIChat.Message? = systemPromptProvider().map {
+                    .init(role: .system, content: $0)
                 }
+                let prior = historyBudgeter.budget(systemPrompt: systemMessage,
+                                                   priorMessages: rawTranscript,
+                                                   currentUserPrompt: turn.prompt)
 
                 var pendingText = ""
                 var pendingToolCalls: [OpenAIChat.ToolCall] = []

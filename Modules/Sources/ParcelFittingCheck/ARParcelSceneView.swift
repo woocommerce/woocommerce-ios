@@ -7,6 +7,7 @@ struct ARParcelSceneView: UIViewRepresentable {
     @Binding var isPlaced: Bool
     @Binding var isARReady: Bool
     let resetTrigger: Int
+    var isResizeEnabled: Bool = true
     var onDimensionsChanged: ((SIMD3<Float>) -> Void)?
 
     func makeCoordinator() -> ARParcelSceneCoordinator {
@@ -24,7 +25,7 @@ struct ARParcelSceneView: UIViewRepresentable {
         let arView = ARView(frame: .zero)
         configureSession(for: arView)
         addCoachingOverlay(to: arView, coordinator: context.coordinator)
-        addGestures(to: arView, coordinator: context.coordinator)
+        addGestures(to: arView, coordinator: context.coordinator, isResizeEnabled: isResizeEnabled)
         context.coordinator.arView = arView
         context.coordinator.dimensions = dimensions
         context.coordinator.onDimensionsChanged = onDimensionsChanged
@@ -76,7 +77,7 @@ private extension ARParcelSceneView {
         coaching.setActive(true, animated: true)
     }
 
-    func addGestures(to arView: ARView, coordinator: ARParcelSceneCoordinator) {
+    func addGestures(to arView: ARView, coordinator: ARParcelSceneCoordinator, isResizeEnabled: Bool) {
         let tap = UITapGestureRecognizer(target: coordinator, action: #selector(ARParcelSceneCoordinator.handleTap(_:)))
         tap.delegate = coordinator
         arView.addGestureRecognizer(tap)
@@ -85,6 +86,7 @@ private extension ARParcelSceneView {
         let twoFinger = TwoFingerCuboidGesture(target: coordinator, action: #selector(ARParcelSceneCoordinator.handleTwoFingerGesture(_:)))
         twoFinger.delegate = coordinator
         twoFinger.isEnabled = false
+        twoFinger.isResizeEnabled = isResizeEnabled
         arView.addGestureRecognizer(twoFinger)
         coordinator.twoFingerGesture = twoFinger
     }

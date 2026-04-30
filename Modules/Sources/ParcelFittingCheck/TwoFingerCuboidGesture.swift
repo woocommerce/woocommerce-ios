@@ -7,6 +7,8 @@ import UIKit.UIGestureRecognizerSubclass
 final class TwoFingerCuboidGesture: UIGestureRecognizer {
     enum Mode { case undecided, rotate, resize }
 
+    var isResizeEnabled: Bool = true
+
     private(set) var mode: Mode = .undecided
     private(set) var startLocations: (first: CGPoint, second: CGPoint) = (.zero, .zero)
     private(set) var currentLocations: (first: CGPoint, second: CGPoint) = (.zero, .zero)
@@ -56,11 +58,15 @@ final class TwoFingerCuboidGesture: UIGestureRecognizer {
         rotationFromStart = rot
 
         if mode == .undecided {
-            let distanceCrossed = abs(distanceFromStart) > Threshold.distancePoints
-                && abs(distanceFromStart) > Threshold.distanceFraction * initialDistance
             let angleCrossed = abs(rotationFromStart) > Threshold.angleRadians
-            if distanceCrossed && (!angleCrossed || abs(distanceFromStart) >= Threshold.distancePoints * 1.5) {
-                mode = .resize
+            if isResizeEnabled {
+                let distanceCrossed = abs(distanceFromStart) > Threshold.distancePoints
+                    && abs(distanceFromStart) > Threshold.distanceFraction * initialDistance
+                if distanceCrossed && (!angleCrossed || abs(distanceFromStart) >= Threshold.distancePoints * 1.5) {
+                    mode = .resize
+                } else if angleCrossed {
+                    mode = .rotate
+                }
             } else if angleCrossed {
                 mode = .rotate
             }

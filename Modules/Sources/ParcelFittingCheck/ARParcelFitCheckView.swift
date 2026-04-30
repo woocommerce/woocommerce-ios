@@ -29,7 +29,8 @@ struct ARParcelFitCheckView: View {
                 dimensions: viewModel.dimensionsInMeters,
                 isPlaced: $isPlaced,
                 isARReady: $isARReady,
-                resetTrigger: resetTrigger
+                resetTrigger: resetTrigger,
+                isResizeEnabled: false
             )
             .ignoresSafeArea()
 

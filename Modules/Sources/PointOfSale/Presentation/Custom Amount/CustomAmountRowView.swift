@@ -24,15 +24,9 @@ struct CustomAmountRowView: View {
 
     var body: some View {
         HStack(spacing: Constants.horizontalElementSpacing) {
-            ZStack {
-                Color.posSurfaceContainerLow
-
-                Image(systemName: "tag")
-                    .font(.posButtonSymbolMedium)
-                    .foregroundColor(.posOnSurface)
-            }
-            .frame(width: dimension, height: dimension)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
+            CustomAmountAvatar(name: customAmount.name)
+                .frame(width: dimension, height: dimension)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
 
             VStack(alignment: .leading, spacing: POSSpacing.xSmall * (1 / scale)) {
                 Text(customAmount.name)

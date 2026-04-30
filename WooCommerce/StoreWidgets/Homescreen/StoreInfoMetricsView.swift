@@ -10,10 +10,10 @@ import WidgetKit
 struct StoreInfoMetricsView: View {
     let entryData: StoreInfoData
 
-    @Environment(\.sizeCategory) var category
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    var accessibilityCategory: ContentSizeCategory {
-        return .extraLarge
+    var accessibilityDynamicTypeSize: DynamicTypeSize {
+        return .xLarge
     }
 
     var body: some View {
@@ -30,7 +30,7 @@ struct StoreInfoMetricsView: View {
                     .statRangeStyle()
             }
 
-            if category > accessibilityCategory {
+            if dynamicTypeSize > accessibilityDynamicTypeSize {
                 MetricsAccessibilityCard(entryData: entryData)
             } else {
                 StoreInfoMetricsCard(metrics: entryData.metrics)
@@ -75,7 +75,7 @@ struct StoreInfoMetricsCard: View {
         }
     }
 
-    enum Layout {
+    private enum Layout {
         static let metricsPerRow = 2
     }
 }
@@ -153,7 +153,7 @@ struct StoreInfoMetricsView_Previews: PreviewProvider {
 
         StoreInfoMetricsView(entryData: exampleData)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
-            .environment(\.sizeCategory, .extraExtraLarge)
+            .environment(\.dynamicTypeSize, .xxLarge)
             .previewDisplayName("XXL font")
     }
 }

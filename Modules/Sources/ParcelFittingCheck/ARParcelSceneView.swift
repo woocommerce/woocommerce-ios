@@ -51,11 +51,11 @@ private extension ARParcelSceneView {
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.horizontal]
         config.isLightEstimationEnabled = false
-        if ARWorldTrackingConfiguration.supportsSceneReconstruction(.mesh) {
-            config.sceneReconstruction = .mesh
-        }
         arView.session.run(config)
-        arView.environment.sceneUnderstanding.options = [.occlusion]
+        // Mesh-based occlusion is intentionally off: on LIDAR devices it would
+        // hide wireframe edges behind objects placed inside the cuboid, which
+        // defeats the fit-check.
+        arView.environment.sceneUnderstanding.options = []
         arView.renderOptions.insert(.disableGroundingShadows)
     }
 

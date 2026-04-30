@@ -73,6 +73,12 @@ struct ItemListView: View {
     }
 
     @State private var showCouponCreationModal: Bool = false
+
+    /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
+    ///
+    /// Add lives in local view state because the push is scoped to this view's `NavigationStack`
+    /// (left pane). Edit, by contrast, can be triggered from the cart pane and is a modal cover,
+    /// so it lives on the aggregate model as `editingCustomAmount` for cross-pane reach.
     @State private var isAddingCustomAmount: Bool = false
 
     var body: some View {
@@ -324,13 +330,10 @@ struct ItemListView: View {
     private var addCustomAmountFormDestination: some View {
         AddCustomAmountView(
             currencySettings: currencyProvider.currencySettings,
-            dismissalStyle: .push,
+            backButtonStyle: .back,
             onDismiss: { isAddingCustomAmount = false },
             onSubmit: { customAmount in
-                analytics.track(
-                    event: .PointOfSale.customAmountSubmitted(mode: .add, isTaxable: customAmount.isTaxable)
-                )
-                posModel.upsertCustomAmount(customAmount)
+                posModel.upsertCustomAmount(customAmount, mode: .add)
             }
         )
         // Hide the system nav bar so only the form's own POSPageHeaderView is visible
@@ -356,6 +359,10 @@ private struct CustomAmountFormPushModifier<Destination: View>: ViewModifier {
                 destination()
             }
         } else {
+            // The `NavigationLink(destination:isActive:label:)` initializer is deprecated since
+            // iOS 16, but its replacement (`navigationDestination(isPresented:)`) doesn't work
+            // reliably under the `NavigationView` wrapper we still use on iOS 17 for the memory-leak
+            // workaround documented in `ItemList.swift`. Mirrors the variations push fallback.
             content.background(
                 NavigationLink(
                     destination: destination(),

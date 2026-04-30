@@ -3,17 +3,25 @@ import WooFoundation
 import struct Yosemite.POSCustomAmount
 
 struct AddCustomAmountView: View {
-    /// Style for the form's leading back button.
-    /// - `.modal` shows an `xmark` (used when the form is presented as a sheet/full-screen cover).
-    /// - `.push` shows a chevron-back (used when the form is pushed inside a navigation stack).
-    enum DismissalStyle {
-        case modal
-        case push
+    /// Glyph for the form's leading back button. The actual dismissal mechanism is
+    /// always provided by `onDismiss`; this only chooses how the back button looks.
+    /// - `.close` shows an `xmark` (typical for modal/sheet/full-screen-cover presentations).
+    /// - `.back` shows a chevron-back (typical for navigation-stack pushes).
+    enum BackButtonStyle {
+        case close
+        case back
+
+        var iconName: String {
+            switch self {
+            case .close: return "xmark"
+            case .back: return "chevron.backward"
+            }
+        }
     }
 
     let onDismiss: () -> Void
     let onSubmit: (POSCustomAmount) -> Void
-    private let dismissalStyle: DismissalStyle
+    private let backButtonStyle: BackButtonStyle
 
     @State private var viewModel: AddCustomAmountFormViewModel
     @FocusState private var isAmountFocused: Bool
@@ -28,10 +36,10 @@ struct AddCustomAmountView: View {
 
     init(currencySettings: CurrencySettings,
          editing: POSCustomAmount? = nil,
-         dismissalStyle: DismissalStyle = .modal,
+         backButtonStyle: BackButtonStyle = .close,
          onDismiss: @escaping () -> Void,
          onSubmit: @escaping (POSCustomAmount) -> Void) {
-        self.dismissalStyle = dismissalStyle
+        self.backButtonStyle = backButtonStyle
         self.onDismiss = onDismiss
         self.onSubmit = onSubmit
         self._viewModel = State(wrappedValue: AddCustomAmountFormViewModel(
@@ -47,7 +55,7 @@ struct AddCustomAmountView: View {
                 backButtonConfiguration: .init(
                     state: .enabled,
                     action: { onDismiss() },
-                    buttonIcon: dismissalStyle == .modal ? "xmark" : "chevron.backward"
+                    buttonIcon: backButtonStyle.iconName
                 )
             )
 
@@ -207,7 +215,7 @@ private extension AddCustomAmountView {
 #Preview("Modal") {
     AddCustomAmountView(
         currencySettings: CurrencySettings(),
-        dismissalStyle: .modal,
+        backButtonStyle: .close,
         onDismiss: {},
         onSubmit: { _ in }
     )
@@ -217,7 +225,7 @@ private extension AddCustomAmountView {
     AddCustomAmountView(
         currencySettings: CurrencySettings(),
         editing: POSCustomAmount(name: "Service fee", amount: "12.50", isTaxable: false),
-        dismissalStyle: .modal,
+        backButtonStyle: .close,
         onDismiss: {},
         onSubmit: { _ in }
     )
@@ -227,7 +235,7 @@ private extension AddCustomAmountView {
     NavigationStack {
         AddCustomAmountView(
             currencySettings: CurrencySettings(),
-            dismissalStyle: .push,
+            backButtonStyle: .back,
             onDismiss: {},
             onSubmit: { _ in }
         )

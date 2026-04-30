@@ -63,11 +63,16 @@ struct CartView: View {
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
+            // Cart-side edit only: the add path pushes from the products list and tracks
+            // its own `mode: .add` analytics inline in `ItemListView`.
             .posFullScreenCover(item: $posModel.editingCustomAmount) { customAmount in
                 AddCustomAmountView(
                     currencySettings: currencyProvider.currencySettings,
                     editing: customAmount,
-                    dismissalStyle: .modal,
+                    backButtonStyle: .close,
+                    // Explicit-dismiss path (back button + post-submit). System-driven dismissal
+                    // already nils the `item` binding; this closure handles the user-driven cases
+                    // where `submit()` calls `onDismiss()` to close the cover.
                     onDismiss: { posModel.editingCustomAmount = nil },
                     onSubmit: { updated in
                         posModel.upsertCustomAmount(updated, mode: .edit)

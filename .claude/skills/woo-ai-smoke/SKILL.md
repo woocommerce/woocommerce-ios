@@ -196,12 +196,13 @@ struct SmokeRun {
         let harness = WooAssistantHeadless(credentials: creds)
         for (index, turn) in arg.scenario.turns.enumerated() {
             let turnNum = index + 1
-            // `resolveConfirmation` returns Bool meaning "approved" — false
-            // DECLINES the write. If `autoDeclineWrites` is true we must
-            // return false. Getting this inverted means the demo store
-            // actually mutates (destructive writes get approved).
-            let resolver: @Sendable (String, AIToolClassification, String) -> Bool = { _, _, _ in
-                !turn.autoDeclineWrites
+            // `resolveConfirmation` returns a `ConfirmationDecision` for each
+            // pending confirmation. `.decline` blocks the write. If
+            // `autoDeclineWrites` is true we must return `.decline`. Getting
+            // this inverted means the demo store actually mutates
+            // (destructive writes get approved).
+            let resolver: WooAssistantHeadless.ConfirmationResolver = { _ in
+                turn.autoDeclineWrites ? .decline : .approve
             }
             let result: WooAssistantHeadless.ConversationTurnResult
             do {
@@ -218,7 +219,7 @@ struct SmokeRun {
     static func dump(scenario: Scenario, sample: Int, turn: Int, prompt: String, result: WooAssistantHeadless.ConversationTurnResult) {
         let tools = result.toolCalls.map(\.name)
         let toolArgs = result.toolCalls.map { "\($0.name)(\($0.argumentsJSON.prefix(120)))" }
-        let cards = Array(Set(result.cards.map(\.kind.rawValue))).sorted().joined(separator: ",")
+        let cards = Array(Set(result.cards.map(\.kind))).sorted().joined(separator: ",")
         let confirmations = result.confirmations.map { "\($0.toolName)[\($0.classification)]=\($0.decision)" }
         let fail = result.failureMessage ?? ""
         let textEscaped = result.assistantText

@@ -32,6 +32,11 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     var twoFingerGesture: TwoFingerCuboidGesture?
     private var rotationStartYaw: Float = 0
     private var resizeContext: ResizeContext?
+    private var lastAppliedFingerPositions: (first: CGPoint, second: CGPoint)?
+
+    /// Per-frame screen-space dead zone, in points. Below this, finger movement
+    /// is treated as touch-sensor jitter and the resize update is skipped.
+    private static let jitterThresholdPoints: CGFloat = 1.5
 
     /// Minimum allowed cuboid size on any axis, in metres. Slightly larger than
     /// the previous slider minimum (1 cm) per design intent.
@@ -74,6 +79,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         cuboidAnchor = nil
         cuboid = nil
         resizeContext = nil
+        lastAppliedFingerPositions = nil
         placed = false
         // Deferred — removeCuboid is called from updateUIView, which runs
         // inside SwiftUI's render pass. Binding writes during a render pass
@@ -103,6 +109,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         cuboidAnchor = nil
         cuboid = nil
         resizeContext = nil
+        lastAppliedFingerPositions = nil
         arView = nil
         onPlaced = nil
         onRemoved = nil
@@ -118,6 +125,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
             let currentRotation = cuboid.root.transform.rotation
             rotationStartYaw = 2 * atan2(currentRotation.imag.y, currentRotation.real)
             resizeContext = nil
+            lastAppliedFingerPositions = nil
         case .changed:
             switch gesture.mode {
             case .undecided:
@@ -131,6 +139,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
             }
         case .ended, .cancelled, .failed:
             resizeContext = nil
+            lastAppliedFingerPositions = nil
         default:
             break
         }
@@ -300,10 +309,25 @@ private extension ARParcelSceneCoordinator {
             firstFinger: firstLatch,
             secondFinger: secondLatch
         )
+        lastAppliedFingerPositions = gesture.startLocations
     }
 
     func applyResize(gesture: TwoFingerCuboidGesture) {
         guard let arView, let cuboid, let context = resizeContext else { return }
+
+        if let last = lastAppliedFingerPositions {
+            let firstDelta = hypot(
+                gesture.currentLocations.first.x - last.first.x,
+                gesture.currentLocations.first.y - last.first.y
+            )
+            let secondDelta = hypot(
+                gesture.currentLocations.second.x - last.second.x,
+                gesture.currentLocations.second.y - last.second.y
+            )
+            if firstDelta < Self.jitterThresholdPoints && secondDelta < Self.jitterThresholdPoints {
+                return
+            }
+        }
 
         guard let hit0 = projectToPlane(
             arView: arView,
@@ -365,6 +389,7 @@ private extension ARParcelSceneCoordinator {
 
         cuboid.root.transform.scale = newScale
         cuboid.root.position = newPosition
+        lastAppliedFingerPositions = gesture.currentLocations
 
         dimensions = newScale
         onDimensionsChanged?(newScale)

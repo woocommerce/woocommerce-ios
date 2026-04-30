@@ -3,12 +3,12 @@ import CocoaLumberjackSwift
 
 /// Drives one merchant turn over `AIChatService` + `ToolRegistry` + `SafetyPolicy`. Actor-isolated
 /// because unsafe tool calls suspend on a confirmation continuation that needs a serial home.
-actor AgenticLoopOrchestrator {
+public actor AgenticLoopOrchestrator {
 
-    static let defaultMaxIterations = 5
+    public static let defaultMaxIterations = 5
 
     /// 4 keeps "list + 3 drill-downs" flows legitimate while catching varied-args fanouts.
-    static let defaultPerToolPerTurnCap = 4
+    public static let defaultPerToolPerTurnCap = 4
 
     private let chatService: AIChatService
     private let toolRegistry: ToolRegistry?
@@ -22,12 +22,12 @@ actor AgenticLoopOrchestrator {
 
     private(set) var lastOutcome: LoopOutcome?
 
-    init(chatService: AIChatService,
-         toolRegistry: ToolRegistry?,
-         safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
-         systemPrompt: String? = nil,
-         maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
-         perToolPerTurnCap: Int = AgenticLoopOrchestrator.defaultPerToolPerTurnCap) {
+    public init(chatService: AIChatService,
+                toolRegistry: ToolRegistry?,
+                safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
+                systemPrompt: String? = nil,
+                maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
+                perToolPerTurnCap: Int = AgenticLoopOrchestrator.defaultPerToolPerTurnCap) {
         self.chatService = chatService
         self.toolRegistry = toolRegistry
         self.safetyPolicy = safetyPolicy
@@ -36,8 +36,12 @@ actor AgenticLoopOrchestrator {
         self.perToolPerTurnCap = perToolPerTurnCap
     }
 
+    public nonisolated func run(prompt: String) -> AsyncThrowingStream<AssistantEvent, Error> {
+        run(prompt: prompt, priorMessages: [])
+    }
+
     nonisolated func run(prompt: String,
-                         priorMessages: [OpenAIChat.Message] = []) -> AsyncThrowingStream<AssistantEvent, Error> {
+                         priorMessages: [OpenAIChat.Message]) -> AsyncThrowingStream<AssistantEvent, Error> {
         AsyncThrowingStream { continuation in
             let task = Task { [weak self] in
                 guard let self else {
@@ -73,13 +77,13 @@ actor AgenticLoopOrchestrator {
 
     // MARK: - External confirmation entry points
 
-    func confirm(proposalID: UUID) {
+    public func confirm(proposalID: UUID) {
         if let continuation = pendingDecisions.removeValue(forKey: proposalID) {
             continuation.resume(returning: true)
         }
     }
 
-    func cancel(proposalID: UUID) {
+    public func cancel(proposalID: UUID) {
         if let continuation = pendingDecisions.removeValue(forKey: proposalID) {
             continuation.resume(returning: false)
         }
@@ -836,8 +840,10 @@ private enum TurnOutcome {
 
 /// Degenerate policy used when the caller hasn't specified safety at
 /// all (tests, read-only prototypes). Every call executes.
-struct AlwaysExecuteSafetyPolicy: SafetyPolicy {
-    func decision(for name: String, arguments: String, tool: AITool) -> SafetyDecision {
+public struct AlwaysExecuteSafetyPolicy: SafetyPolicy {
+    public init() {}
+
+    public func decision(for name: String, arguments: String, tool: AITool) -> SafetyDecision {
         .execute
     }
 }

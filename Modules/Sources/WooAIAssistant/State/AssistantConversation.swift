@@ -87,7 +87,9 @@ public final class AssistantConversation {
                 streamingState = .outcomeUnknown(error.message)
             default:
                 messages[index].markCompleted()
-                streamingState = .failed(error.message)
+                if !outcomeUnknownObserved {
+                    streamingState = .failed(error.message)
+                }
             }
         }
     }

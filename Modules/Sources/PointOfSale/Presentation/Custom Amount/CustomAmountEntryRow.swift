@@ -16,7 +16,7 @@ struct CustomAmountEntryRow: View {
                 ZStack {
                     Color.posSurfaceContainerLow
 
-                    Image(systemName: "tag")
+                    Image(systemName: "tag.badge.plus")
                         .font(.posButtonSymbolMedium)
                         .foregroundColor(.posOnSurface)
                 }
@@ -60,7 +60,7 @@ private extension CustomAmountEntryRow {
             comment: "Title for the row in the Point of Sale products list that opens the custom amount form.")
         static let subtitle = NSLocalizedString(
             "pos.itemList.customAmountEntryRow.subtitle",
-            value: "Tap to add a one-off charge",
+            value: "Add a one-off charge.",
             comment: "Subtitle for the row in the Point of Sale products list that opens the custom amount form.")
     }
 }

@@ -2,12 +2,10 @@ import AppIntents
 import WidgetKit
 
 /// `AppIntentTimelineProvider` conformance for `StoreInfoProvider`. Kept in a separate file
-/// so the legacy `TimelineProvider` path stays a clean focal point and so this conformance
-/// can be removed in a single edit once the configurable widget rollout completes and the
-/// `StaticConfiguration` path retires.
+/// so the data-fetching logic on the main type stays a clean focal point.
 ///
-/// `placeholder(in:)` is satisfied by the conformance on the main type — both protocols
-/// use the same signature.
+/// `placeholder(in:)` is satisfied by the conformance on the main type — both the snapshot
+/// path here and the gallery placeholder share the same redacted sample entry.
 ///
 extension StoreInfoProvider: AppIntentTimelineProvider {
     typealias Intent = StoreStatsConfigurationIntent
@@ -17,6 +15,6 @@ extension StoreInfoProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: StoreStatsConfigurationIntent, in context: Context) async -> Timeline<StoreInfoEntry> {
-        await loadTimeline()
+        await loadTimeline(dateRange: configuration.dateRange)
     }
 }

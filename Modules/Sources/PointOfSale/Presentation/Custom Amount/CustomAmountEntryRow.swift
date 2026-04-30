@@ -43,6 +43,9 @@ struct CustomAmountEntryRow: View {
             .posItemCardBorderStyles()
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(Localization.title))
+        .accessibilityHint(Text(Localization.subtitle))
         .accessibilityIdentifier("pos-custom-amount-entry-row")
     }
 }

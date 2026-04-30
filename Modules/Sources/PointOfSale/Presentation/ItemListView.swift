@@ -64,12 +64,12 @@ struct ItemListView: View {
     }
 
     private func shouldShowCustomAmountEntryRow(_ itemListType: ItemListType) -> Bool {
-        // Only render the entry row in the products tab, when the feature flag is on,
-        // the merchant is building the order, and not currently searching.
-        guard case .products = itemListType else { return false }
-        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleCustomAmounts) else { return false }
-        guard posModel.orderStage == .building else { return false }
-        return !isSearching
+        ItemListViewHelper().shouldShowCustomAmountEntryRow(
+            itemListType: itemListType,
+            isCustomAmountsFeatureEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleCustomAmounts),
+            orderStage: posModel.orderStage,
+            isSearching: isSearching
+        )
     }
 
     @State private var showCouponCreationModal: Bool = false

@@ -40,6 +40,7 @@ struct HelpAndSupportViewModel {
             rows.append(.siteCompatibility)
         }
         if isAuthenticated && isAIChatEnabled {
+            rows.append(.aiSupportChat)
             rows.append(.chatHistory)
         }
         return rows

@@ -233,7 +233,8 @@ extension NetworkingCore.OrderFeeLine {
             total: .fake(),
             totalTax: .fake(),
             taxes: .fake(),
-            attributes: .fake()
+            attributes: .fake(),
+            refundedItemID: .fake()
         )
     }
 }

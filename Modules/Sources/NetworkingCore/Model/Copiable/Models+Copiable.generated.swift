@@ -396,7 +396,8 @@ extension NetworkingCore.OrderFeeLine {
         total: CopiableProp<String> = .copy,
         totalTax: CopiableProp<String> = .copy,
         taxes: CopiableProp<[OrderItemTax]> = .copy,
-        attributes: CopiableProp<[OrderItemAttribute]> = .copy
+        attributes: CopiableProp<[OrderItemAttribute]> = .copy,
+        refundedItemID: NullableCopiableProp<Int64> = .copy
     ) -> NetworkingCore.OrderFeeLine {
         let feeID = feeID ?? self.feeID
         let name = name ?? self.name
@@ -406,6 +407,7 @@ extension NetworkingCore.OrderFeeLine {
         let totalTax = totalTax ?? self.totalTax
         let taxes = taxes ?? self.taxes
         let attributes = attributes ?? self.attributes
+        let refundedItemID = refundedItemID ?? self.refundedItemID
 
         return NetworkingCore.OrderFeeLine(
             feeID: feeID,
@@ -415,7 +417,8 @@ extension NetworkingCore.OrderFeeLine {
             total: total,
             totalTax: totalTax,
             taxes: taxes,
-            attributes: attributes
+            attributes: attributes,
+            refundedItemID: refundedItemID
         )
     }
 }

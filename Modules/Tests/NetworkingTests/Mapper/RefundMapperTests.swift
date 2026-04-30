@@ -121,10 +121,11 @@ final class RefundMapperTests: XCTestCase {
             return
         }
 
-        // Then
+        // Then - feeID is the refund's own id, refundedItemID points back to the order's fee
         XCTAssertEqual(refund.feeLines.count, 1)
         let fee = refund.feeLines[0]
-        XCTAssertEqual(fee.feeID, 777)
+        XCTAssertEqual(fee.feeID, 12345)
+        XCTAssertEqual(fee.refundedItemID, 777)
         XCTAssertEqual(fee.name, "Discount Fee")
         XCTAssertEqual(fee.total, "-5.00")
         XCTAssertEqual(fee.totalTax, "-0.50")

@@ -202,8 +202,11 @@ struct POSRefundMapperTests {
     }
 
     @Test func test_map_when_refund_has_fee_lines_then_appends_lump_sum_rows() {
-        // Given
-        let refund = makeRefund(items: [], feeLines: [makeFeeLine(feeID: 777, name: "Discount Fee", total: "-5.00")])
+        // Given - the refund's fee_line has its own id (12345) and points back via _refunded_item_id (777)
+        let refund = makeRefund(
+            items: [],
+            feeLines: [makeFeeLine(feeID: 12345, name: "Discount Fee", total: "-5.00", refundedItemID: 777)]
+        )
 
         // When
         let result = sut.map(refund: refund,
@@ -211,7 +214,7 @@ struct POSRefundMapperTests {
                              currencyFormatter: currencyFormatter,
                              currency: currency)
 
-        // Then
+        // Then - refundedItemID resolves to the original order fee id, not the refund-side id
         #expect(result.count == 1)
         let row = try! #require(result.first)
         #expect(row.refundedItemID == 777)
@@ -222,11 +225,25 @@ struct POSRefundMapperTests {
         #expect(row.formattedTotal.contains("-"))
     }
 
+    @Test func test_map_when_fee_line_has_no_refunded_meta_then_falls_back_to_fee_id() {
+        // Given - missing _refunded_item_id meta (defensive fallback)
+        let refund = makeRefund(items: [], feeLines: [makeFeeLine(feeID: 12345, name: "Discount Fee", total: "-5.00")])
+
+        // When
+        let result = sut.map(refund: refund,
+                             orderItems: [],
+                             currencyFormatter: currencyFormatter,
+                             currency: currency)
+
+        // Then
+        #expect(result.first?.refundedItemID == 12345)
+    }
+
     @Test func test_map_with_fee_line_and_line_item_then_returns_both_rows_in_order() {
         // Given
         let refund = makeRefund(
             items: [makeRefundItem(name: "Mug", refundedItemID: "42")],
-            feeLines: [makeFeeLine(feeID: 777, name: "Discount Fee", total: "-5.00")]
+            feeLines: [makeFeeLine(feeID: 12345, name: "Discount Fee", total: "-5.00", refundedItemID: 777)]
         )
 
         // When
@@ -241,6 +258,7 @@ struct POSRefundMapperTests {
         #expect(result[0].isLumpSum == false)
         #expect(result[1].name == "Discount Fee")
         #expect(result[1].isLumpSum == true)
+        #expect(result[1].refundedItemID == 777)
     }
 }
 
@@ -263,7 +281,8 @@ private extension POSRefundMapperTests {
     func makeFeeLine(feeID: Int64,
                      name: String,
                      total: String,
-                     totalTax: String = "0.00") -> OrderFeeLine {
+                     totalTax: String = "0.00",
+                     refundedItemID: Int64? = nil) -> OrderFeeLine {
         OrderFeeLine(feeID: feeID,
                      name: name,
                      taxClass: "",
@@ -271,7 +290,8 @@ private extension POSRefundMapperTests {
                      total: total,
                      totalTax: totalTax,
                      taxes: [],
-                     attributes: [])
+                     attributes: [],
+                     refundedItemID: refundedItemID)
     }
 
     func makeRefundItem(name: String = "Test Item",

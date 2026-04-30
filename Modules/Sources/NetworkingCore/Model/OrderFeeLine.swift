@@ -19,6 +19,10 @@ public struct OrderFeeLine: Equatable, Codable, Sendable, GeneratedFakeable, Gen
     public let taxes: [OrderItemTax]
     public let attributes: [OrderItemAttribute]
 
+    /// When this fee line is part of a refund response, points back to the original order's
+    /// fee line id (extracted from `_refunded_item_id` in `meta_data`). `nil` for fees on orders.
+    public let refundedItemID: Int64?
+
     /// OrderFeeLine struct initializer.
     ///
     public init(feeID: Int64,
@@ -28,7 +32,8 @@ public struct OrderFeeLine: Equatable, Codable, Sendable, GeneratedFakeable, Gen
                 total: String,
                 totalTax: String,
                 taxes: [OrderItemTax],
-                attributes: [OrderItemAttribute]) {
+                attributes: [OrderItemAttribute],
+                refundedItemID: Int64? = nil) {
         self.feeID = feeID
         self.name = name
         self.taxClass = taxClass
@@ -37,6 +42,7 @@ public struct OrderFeeLine: Equatable, Codable, Sendable, GeneratedFakeable, Gen
         self.totalTax = totalTax
         self.taxes = taxes
         self.attributes = attributes
+        self.refundedItemID = refundedItemID
     }
 
     public init(from decoder: Decoder) throws {
@@ -52,6 +58,17 @@ public struct OrderFeeLine: Equatable, Codable, Sendable, GeneratedFakeable, Gen
         // Use failsafe decoding to discard any attributes with non-string values (currently not supported).
         let attributes = container.failsafeDecodeIfPresent(lossyList: [OrderItemAttribute].self, forKey: .attributes)
 
+        // When this fee line belongs to a refund response, WC stores the original fee line id
+        // in `meta_data` under the `_refunded_item_id` key. Decode it lossily so the field stays
+        // `nil` for fees on orders (where the meta entry is absent).
+        let refundedItemID: Int64? = {
+            guard let metaData = try? container.decode([MetaData].self, forKey: .attributes),
+                  let raw = metaData.first(where: { $0.key == "_refunded_item_id" })?.value.stringValue else {
+                return nil
+            }
+            return Int64(raw)
+        }()
+
         self.init(feeID: feeID,
                   name: name,
                   taxClass: taxClass,
@@ -59,7 +76,8 @@ public struct OrderFeeLine: Equatable, Codable, Sendable, GeneratedFakeable, Gen
                   total: total,
                   totalTax: totalTax,
                   taxes: taxes,
-                  attributes: attributes)
+                  attributes: attributes,
+                  refundedItemID: refundedItemID)
     }
 }
 

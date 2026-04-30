@@ -12,7 +12,7 @@
         "shipping_lines": [],
         "fee_lines": [
             {
-                "id": 777,
+                "id": 12345,
                 "name": "Discount Fee",
                 "tax_class": "",
                 "tax_status": "taxable",
@@ -24,6 +24,13 @@
                         "id": 1,
                         "total": "-0.50",
                         "subtotal": ""
+                    }
+                ],
+                "meta_data": [
+                    {
+                        "id": 999,
+                        "key": "_refunded_item_id",
+                        "value": "777"
                     }
                 ]
             }

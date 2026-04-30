@@ -36,8 +36,11 @@ struct POSRefundMapper {
             let formattedAmount = currencyFormatter.formatAmount(abs(totalDecimal), with: currency) ?? ""
             let formattedTotal = currencyFormatter.formatAmount(fee.total, with: currency) ?? ""
 
+            // WC assigns the refund's fee_line a brand new id; the original order fee id
+            // lives in `_refunded_item_id` meta. Prefer that so the order details view can
+            // match this refund back to the customAmount it refunded.
             return POSRefundItem(
-                refundedItemID: fee.feeID,
+                refundedItemID: fee.refundedItemID ?? fee.feeID,
                 quantity: 1,
                 name: fee.name ?? "",
                 formattedPrice: formattedAmount,

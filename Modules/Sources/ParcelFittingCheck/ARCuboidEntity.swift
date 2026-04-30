@@ -95,9 +95,9 @@ struct ARCuboidEntity {
     }
 
     /// Per-frame update: classifies each edge as front (solid) or back
-    /// (dashed) based on which faces are camera-facing, applies the highlight
-    /// color where requested, and toggles which presentation is visible.
-    /// Highlighted edges stay solid regardless of front/back classification.
+    /// (dashed) based on which faces are camera-facing, and applies the
+    /// highlight colour where requested. Highlight changes colour only —
+    /// the dashing pattern is the same whether an edge is highlighted or not.
     func updateMaterials(cameraPosition: SIMD3<Float>, highlightedFaces: Set<Face> = []) {
         guard !edges.isEmpty else { return }
 
@@ -116,7 +116,7 @@ struct ARCuboidEntity {
             let (face1, face2) = edge.adjacentFaces
             let isHighlighted = highlightedFaces.contains(face1) || highlightedFaces.contains(face2)
             let isFront = cameraFacing.contains(face1) || cameraFacing.contains(face2)
-            let useSolid = isHighlighted || isFront
+            let useSolid = isFront
 
             edge.solid.isEnabled = useSolid
             edge.dashedGroup.isEnabled = !useSolid

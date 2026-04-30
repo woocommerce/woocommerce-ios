@@ -13,6 +13,7 @@ public final class AssistantController {
 
     private(set) var activeTask: Task<Void, Never>?
     private var activeTurnToken: UUID?
+    private var activeAssistantMessageID: ChatMessage.ID?
 
     public init(backend: AssistantBackend,
                 context: AssistantContext,
@@ -27,6 +28,7 @@ public final class AssistantController {
         guard !trimmed.isEmpty, activeTask == nil else { return }
         _ = conversation.appendUserMessage(trimmed)
         let assistantMessageID = conversation.beginAssistantMessage()
+        activeAssistantMessageID = assistantMessageID
         conversation.setStreaming(.sending)
         let token = UUID()
         activeTurnToken = token
@@ -41,6 +43,10 @@ public final class AssistantController {
         activeTask?.cancel()
         activeTask = nil
         activeTurnToken = nil
+        if let messageID = activeAssistantMessageID {
+            conversation.markCancelled(messageID: messageID)
+        }
+        activeAssistantMessageID = nil
         conversation.setStreaming(.idle)
     }
 
@@ -97,6 +103,7 @@ public final class AssistantController {
         if activeTurnToken == token {
             activeTask = nil
             activeTurnToken = nil
+            activeAssistantMessageID = nil
         }
     }
 }

@@ -100,6 +100,12 @@ public final class AssistantConversation {
         streamingState = state
     }
 
+    func markCancelled(messageID: ChatMessage.ID) {
+        guard let index = messages.firstIndex(where: { $0.id == messageID }) else { return }
+        messages[index].markCompleted()
+        messages[index].cancelPendingConfirmations()
+    }
+
     func replaceSession(_ newSession: AssistantSession) {
         session = newSession
     }

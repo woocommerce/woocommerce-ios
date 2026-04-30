@@ -174,6 +174,58 @@ struct AssistantControllerTests {
     }
 
     @Test
+    func test_cancel_when_message_in_flight_then_message_marked_completed_and_pending_confirmations_cancelled()
+    async throws {
+        // Given
+        let backend = MockAssistantBackend()
+        let proposal = ToolProposal(toolName: "orders_update",
+                                    toolCallID: "c1",
+                                    preview: "Mark order 42 as processing")
+        backend.holdStream(at: 0)
+        backend.script([[.event(.confirmationRequired(proposal: proposal))]])
+        let controller = AssistantController(backend: backend, context: defaultContext)
+
+        // When
+        controller.send("update order")
+        let inFlight = try #require(controller.activeTask)
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            @MainActor
+            func observe() {
+                withObservationTracking {
+                    _ = controller.conversation.messages.last?.segments.count
+                } onChange: {
+                    Task { @MainActor in
+                        let hasConfirmation = controller.conversation.messages.last?.segments.contains { segment in
+                            if case .confirmation = segment { return true }
+                            return false
+                        } ?? false
+                        if hasConfirmation {
+                            continuation.resume()
+                        } else {
+                            observe()
+                        }
+                    }
+                }
+            }
+            observe()
+        }
+        controller.cancel()
+
+        // Then
+        let assistant = try #require(controller.conversation.messages.last)
+        #expect(assistant.role == .assistant)
+        #expect(assistant.isStreaming == false)
+        let confirmationStatus = assistant.segments.compactMap { segment -> ConfirmationStatus? in
+            if case .confirmation(_, _, _, _, let status) = segment { return status }
+            return nil
+        }.first
+        #expect(confirmationStatus == .cancelled)
+
+        backend.releaseStream(at: 0)
+        await inFlight.value
+    }
+
+    @Test
     func test_cancel_when_stream_in_flight_then_streamingState_idle_and_no_orphan_task()
     async throws {
         // Given

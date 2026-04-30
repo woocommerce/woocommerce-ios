@@ -74,6 +74,11 @@ final class StorePerformanceViewModel: ObservableObject {
     var onDismiss: (() -> Void)?
 
     private var subscriptions: Set<AnyCancellable> = []
+    /// Cleared every time `observePeriodViewModel()` runs so the previous period view model's
+    /// pipelines stop writing to the parent's `@Published` properties. Without this, the chart
+    /// pipeline (which combines with `$revenueType`) re-fires from leaked period VMs on every
+    /// metric switch and overwrites the current data with empty values.
+    private var periodViewModelSubscriptions: Set<AnyCancellable> = []
     private var currentDate = Date()
     private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
 
@@ -431,29 +436,37 @@ private extension StorePerformanceViewModel {
     }
 
     func observePeriodViewModel() {
+        periodViewModelSubscriptions.removeAll()
+
         guard let periodViewModel else {
             return
         }
 
         periodViewModel.timeRangeBarViewModel
             .map { $0.timeRangeText }
-            .assign(to: &$timeRangeText)
+            .sink { [weak self] in self?.timeRangeText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
         periodViewModel.timeRangeBarViewModel
             .map { $0.selectedDateText }
-            .assign(to: &$selectedDateText)
+            .sink { [weak self] in self?.selectedDateText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
         periodViewModel.revenueStatsText
-            .assign(to: &$revenueStatsText)
+            .sink { [weak self] in self?.revenueStatsText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
         periodViewModel.orderStatsText
-            .assign(to: &$orderStatsText)
+            .sink { [weak self] in self?.orderStatsText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
         periodViewModel.visitorStatsText
-            .assign(to: &$visitorStatsText)
+            .sink { [weak self] in self?.visitorStatsText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
         periodViewModel.conversionStatsText
-            .assign(to: &$conversionStatsText)
+            .sink { [weak self] in self?.conversionStatsText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
         Publishers.CombineLatest(periodViewModel.orderStatsIntervals.removeDuplicates(), $revenueType)
             .map { [weak self] intervals, revenueType in
@@ -462,7 +475,8 @@ private extension StorePerformanceViewModel {
                 }
                 return createOrderStatsIntervalData(orderStatsIntervals: intervals, revenueType: revenueType)
             }
-            .assign(to: &$statsIntervalData)
+            .sink { [weak self] in self?.statsIntervalData = $0 }
+            .store(in: &periodViewModelSubscriptions)
     }
 
     func createOrderStatsIntervalData(orderStatsIntervals: [OrderStatsV4Interval],

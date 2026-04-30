@@ -149,6 +149,7 @@ struct AssistantControllerTests {
         controller.send("second")
         await backend.awaitTurnStarted(at: 1)
         let secondTask = controller.activeTask
+        await Self.awaitStreamingState(controller, equals: .streaming)
         await backend.finishOldestStream()
         await backend.awaitTurnFinished(at: 0)
 
@@ -183,6 +184,7 @@ struct AssistantControllerTests {
         controller.send("second")
         await backend.awaitTurnStarted(at: 1)
         let secondTask = controller.activeTask
+        await Self.awaitStreamingState(controller, equals: .streaming)
 
         // Then
         #expect(controller.canSend == false)
@@ -226,4 +228,35 @@ struct AssistantControllerTests {
         siteURL: URL(string: "https://example.com")!,
         blogID: nil
     )
+
+    /// Suspends until `streamingState` matches `target`, using observation
+    /// tracking instead of polling. Re-arms after each willSet fire because
+    /// `onChange` fires once per transition.
+    private static func awaitStreamingState(
+        _ controller: AssistantController,
+        equals target: AssistantConversation.StreamingState
+    ) async {
+        if controller.conversation.streamingState == target { return }
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            armObservation(controller, target: target, continuation: continuation)
+        }
+    }
+
+    private static func armObservation(
+        _ controller: AssistantController,
+        target: AssistantConversation.StreamingState,
+        continuation: CheckedContinuation<Void, Never>
+    ) {
+        withObservationTracking {
+            _ = controller.conversation.streamingState
+        } onChange: {
+            Task { @MainActor in
+                if controller.conversation.streamingState == target {
+                    continuation.resume()
+                } else {
+                    armObservation(controller, target: target, continuation: continuation)
+                }
+            }
+        }
+    }
 }

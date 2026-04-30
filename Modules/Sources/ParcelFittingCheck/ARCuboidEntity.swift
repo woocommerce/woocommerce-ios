@@ -3,6 +3,11 @@ import RealityKit
 
 /// Unit-cube wireframe (12 edges, no fill). Callers set `root.transform.scale`
 /// to the desired dimensions in metres. Bottom at y=0, top at y=1.
+///
+/// Each edge has two presentations: a solid box and a dashed alternative.
+/// `updateMaterials` toggles visibility per frame so edges adjacent to a
+/// camera-facing face render as solid and edges that would be hidden by an
+/// opaque cuboid render as dashed — the standard CAD hidden-line look.
 struct ARCuboidEntity {
     enum Axis { case x, y, z }
 
@@ -42,11 +47,22 @@ struct ARCuboidEntity {
     }
 
     let root: ModelEntity
-    let edges: [ModelEntity]
+    private let edges: [Edge]
     private let baseColor: UIColor
     private let highlightColor: UIColor
 
-    private init(root: ModelEntity, edges: [ModelEntity], baseColor: UIColor, highlightColor: UIColor) {
+    private struct Edge {
+        let solid: ModelEntity
+        /// Parent of the dash segments. Toggling visibility on the parent
+        /// hides every segment in one shot. Children are rebuilt lazily by
+        /// `updateMaterials` whenever the cuboid scale changes the target
+        /// dash count for this edge.
+        let dashedGroup: ModelEntity
+        let adjacentFaces: (Face, Face)
+        let spec: EdgeSpec
+    }
+
+    private init(root: ModelEntity, edges: [Edge], baseColor: UIColor, highlightColor: UIColor) {
         self.root = root
         self.edges = edges
         self.baseColor = baseColor
@@ -55,50 +71,66 @@ struct ARCuboidEntity {
 
     static func build(color: UIColor = .systemBlue, highlightColor: UIColor = .systemYellow) -> ARCuboidEntity {
         let root = ModelEntity()
-        var bars: [ModelEntity] = []
-        bars.reserveCapacity(12)
-        for edge in unitBoxEdges() {
-            var material = UnlitMaterial()
-            material.color = .init(tint: color)
-            let bar = ModelEntity(mesh: .generateBox(size: edge.size), materials: [material])
-            bar.position = edge.center
-            root.addChild(bar)
-            bars.append(bar)
+        var edges: [Edge] = []
+        edges.reserveCapacity(12)
+        for spec in unitBoxEdges() {
+            let solid = makeBox(size: spec.size, color: color)
+            solid.position = spec.center
+            root.addChild(solid)
+
+            let dashedGroup = ModelEntity()
+            dashedGroup.position = spec.center
+            // Dashes are populated on the first updateMaterials call so the
+            // count tracks the cuboid's actual world-space dimensions.
+            root.addChild(dashedGroup)
+
+            edges.append(Edge(
+                solid: solid,
+                dashedGroup: dashedGroup,
+                adjacentFaces: adjacentFaces(for: spec),
+                spec: spec
+            ))
         }
-        return ARCuboidEntity(root: root, edges: bars, baseColor: color, highlightColor: highlightColor)
+        return ARCuboidEntity(root: root, edges: edges, baseColor: color, highlightColor: highlightColor)
     }
 
-    /// Per-frame material update: fades each edge by camera distance to disambiguate
-    /// front/back of the wireframe, and recolors edges of `highlightedFaces` so
-    /// the user can see which faces a gesture is currently controlling.
+    /// Per-frame update: classifies each edge as front (solid) or back
+    /// (dashed) based on which faces are camera-facing, applies the highlight
+    /// color where requested, and toggles which presentation is visible.
+    /// Highlighted edges stay solid regardless of front/back classification.
     func updateMaterials(cameraPosition: SIMD3<Float>, highlightedFaces: Set<Face> = []) {
         guard !edges.isEmpty else { return }
 
-        let highlightedIndices: Set<Int> = highlightedFaces.reduce(into: []) { acc, face in
-            acc.formUnion(Self.faceEdgeIndices[face] ?? [])
-        }
+        let scale = root.transform.scale
+        let cameraFacing = cameraFacingFaces(cameraPosition: cameraPosition)
 
-        var distances: [Float] = []
-        distances.reserveCapacity(edges.count)
-        var minDistance = Float.greatestFiniteMagnitude
-        var maxDistance: Float = 0
         for edge in edges {
-            let world = edge.position(relativeTo: nil)
-            let distance = simd_distance(world, cameraPosition)
-            distances.append(distance)
-            if distance < minDistance { minDistance = distance }
-            if distance > maxDistance { maxDistance = distance }
-        }
+            // Match the dash count to the edge's current world length so dashes
+            // stay roughly the same physical size across long and short edges.
+            let axisScale = scale[simdIndex(of: edge.spec.lengthAxis)]
+            let targetCount = dashCount(forWorldLength: axisScale)
+            if edge.dashedGroup.children.count != targetCount {
+                rebuildDashes(in: edge, count: targetCount)
+            }
 
-        let range = max(maxDistance - minDistance, AlphaFade.minRange)
-        for (index, edge) in edges.enumerated() {
-            let t = (distances[index] - minDistance) / range
-            let alpha = AlphaFade.near + (AlphaFade.far - AlphaFade.near) * t
-            let color = highlightedIndices.contains(index) ? highlightColor : baseColor
-            guard var material = edge.model?.materials.first as? UnlitMaterial else { continue }
-            material.color = .init(tint: color)
-            material.blending = .transparent(opacity: .init(floatLiteral: alpha))
-            edge.model?.materials[0] = material
+            let (face1, face2) = edge.adjacentFaces
+            let isHighlighted = highlightedFaces.contains(face1) || highlightedFaces.contains(face2)
+            let isFront = cameraFacing.contains(face1) || cameraFacing.contains(face2)
+            let useSolid = isHighlighted || isFront
+
+            edge.solid.isEnabled = useSolid
+            edge.dashedGroup.isEnabled = !useSolid
+
+            let color = isHighlighted ? highlightColor : baseColor
+            if useSolid {
+                applyColor(color, to: edge.solid)
+            } else {
+                for child in edge.dashedGroup.children {
+                    if let model = child as? ModelEntity {
+                        applyColor(color, to: model)
+                    }
+                }
+            }
         }
     }
 }
@@ -117,28 +149,27 @@ private extension ARCuboidEntity {
         static let bottom: Float = 0.014
     }
 
-    enum AlphaFade {
-        static let near: Float = 1.0
-        static let far: Float = 0.75
-        static let minRange: Float = 0.0001
+    enum DashPattern {
+        /// World-space length (metres) of one dash + one gap. A 2 cm unit
+        /// gives ~1 cm dashes spaced ~1 cm apart at the default dash fraction.
+        static let targetWorldUnitLength: Float = 0.02
+        /// Fraction of each cell occupied by the dash; the rest is the gap.
+        static let dashFraction: Float = 0.5
+        /// Minimum number of dashes per edge so very short edges still read
+        /// as dashed rather than collapsing to a single segment.
+        static let minSegmentCount: Int = 3
     }
 
     struct EdgeSpec {
         let center: SIMD3<Float>
         let size: SIMD3<Float>
-    }
 
-    /// Edge indices that bound each face. The order matches `unitBoxEdges()`:
-    /// 0–3 are X-aligned (top/bottom along Z), 4–7 are Y-aligned (vertical),
-    /// 8–11 are Z-aligned (top/bottom along X).
-    static let faceEdgeIndices: [Face: [Int]] = [
-        .positiveX: [6, 7, 10, 11],
-        .negativeX: [4, 5, 8, 9],
-        .positiveY: [2, 3, 9, 11],
-        .negativeY: [0, 1, 8, 10],
-        .positiveZ: [1, 3, 5, 7],
-        .negativeZ: [0, 2, 4, 6]
-    ]
+        var lengthAxis: Axis {
+            if size.x >= size.y && size.x >= size.z { return .x }
+            if size.y >= size.x && size.y >= size.z { return .y }
+            return .z
+        }
+    }
 
     static func unitBoxEdges() -> [EdgeSpec] {
         let half = UnitCube.halfExtent
@@ -166,5 +197,105 @@ private extension ARCuboidEntity {
             }
         }
         return edges
+    }
+
+    static func makeBox(size: SIMD3<Float>, color: UIColor) -> ModelEntity {
+        var material = UnlitMaterial()
+        material.color = .init(tint: color)
+        return ModelEntity(mesh: .generateBox(size: size), materials: [material])
+    }
+
+    func dashCount(forWorldLength length: Float) -> Int {
+        max(DashPattern.minSegmentCount, Int(round(length / DashPattern.targetWorldUnitLength)))
+    }
+
+    private func rebuildDashes(in edge: Edge, count: Int) {
+        for child in Array(edge.dashedGroup.children) {
+            child.removeFromParent()
+        }
+        for i in 0..<count {
+            let segment = Self.makeBox(
+                size: Self.dashSegmentSize(for: edge.spec, count: count),
+                color: baseColor
+            )
+            segment.position = Self.dashSegmentOffset(for: edge.spec, segmentIndex: i, count: count)
+            edge.dashedGroup.addChild(segment)
+        }
+    }
+
+    static func dashSegmentSize(for spec: EdgeSpec, count: Int) -> SIMD3<Float> {
+        let dashLength = Float(1) / Float(count) * DashPattern.dashFraction
+        switch spec.lengthAxis {
+        case .x: return SIMD3(dashLength, spec.size.y, spec.size.z)
+        case .y: return SIMD3(spec.size.x, dashLength, spec.size.z)
+        case .z: return SIMD3(spec.size.x, spec.size.y, dashLength)
+        }
+    }
+
+    static func dashSegmentOffset(for spec: EdgeSpec, segmentIndex: Int, count: Int) -> SIMD3<Float> {
+        let cellCenter = -0.5 + (Float(segmentIndex) + 0.5) / Float(count)
+        switch spec.lengthAxis {
+        case .x: return SIMD3(cellCenter, 0, 0)
+        case .y: return SIMD3(0, cellCenter, 0)
+        case .z: return SIMD3(0, 0, cellCenter)
+        }
+    }
+
+    func simdIndex(of axis: Axis) -> Int {
+        switch axis {
+        case .x: return 0
+        case .y: return 1
+        case .z: return 2
+        }
+    }
+
+    /// Returns the two faces of the unit cube that share `spec`'s edge.
+    static func adjacentFaces(for spec: EdgeSpec) -> (Face, Face) {
+        switch spec.lengthAxis {
+        case .x:
+            // X-aligned edges run along ±X; the two perpendicular signs (Y, Z)
+            // pick the adjacent faces.
+            let yFace: Face = spec.center.y >= UnitCube.midY ? .positiveY : .negativeY
+            let zFace: Face = spec.center.z >= 0 ? .positiveZ : .negativeZ
+            return (yFace, zFace)
+        case .y:
+            let xFace: Face = spec.center.x >= 0 ? .positiveX : .negativeX
+            let zFace: Face = spec.center.z >= 0 ? .positiveZ : .negativeZ
+            return (xFace, zFace)
+        case .z:
+            let xFace: Face = spec.center.x >= 0 ? .positiveX : .negativeX
+            let yFace: Face = spec.center.y >= UnitCube.midY ? .positiveY : .negativeY
+            return (xFace, yFace)
+        }
+    }
+
+    /// Returns the set of faces whose outward normal points toward the
+    /// camera. Computed in unit-cube local space so the cuboid's yaw and
+    /// scale are factored out.
+    func cameraFacingFaces(cameraPosition: SIMD3<Float>) -> Set<Face> {
+        let scale = root.transform.scale
+        let inverseRotation = root.transform.rotation.inverse
+        let relative = cameraPosition - root.position
+        let rotated = inverseRotation.act(relative)
+        let unitCam = SIMD3<Float>(
+            rotated.x / max(scale.x, 1e-6),
+            rotated.y / max(scale.y, 1e-6),
+            rotated.z / max(scale.z, 1e-6)
+        )
+
+        var result: Set<Face> = []
+        if unitCam.x > UnitCube.halfExtent { result.insert(.positiveX) }
+        if unitCam.x < -UnitCube.halfExtent { result.insert(.negativeX) }
+        if unitCam.y > UnitCube.topY { result.insert(.positiveY) }
+        if unitCam.y < UnitCube.bottomY { result.insert(.negativeY) }
+        if unitCam.z > UnitCube.halfExtent { result.insert(.positiveZ) }
+        if unitCam.z < -UnitCube.halfExtent { result.insert(.negativeZ) }
+        return result
+    }
+
+    func applyColor(_ color: UIColor, to entity: ModelEntity) {
+        guard var material = entity.model?.materials.first as? UnlitMaterial else { return }
+        material.color = .init(tint: color)
+        entity.model?.materials[0] = material
     }
 }

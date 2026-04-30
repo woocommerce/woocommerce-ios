@@ -237,6 +237,16 @@ private extension ARParcelSceneCoordinator {
             secondScreen: gesture.startLocations.second
         ) else { return }
 
+        // Height resize is intentionally strict: it engages only when a finger
+        // is actually on the top face. From most viewing angles a vertical
+        // screen-space pinch could plausibly mean X, Y, or Z; requiring the
+        // top-face touch removes that ambiguity.
+        if chosenAxis == .y {
+            let firstFace = hitTestCuboidFace(arView: arView, screenPoint: gesture.startLocations.first)
+            let secondFace = hitTestCuboidFace(arView: arView, screenPoint: gesture.startLocations.second)
+            guard firstFace == .positiveY || secondFace == .positiveY else { return }
+        }
+
         let axisWorld: SIMD3<Float>
         switch chosenAxis {
         case .x: axisWorld = xAxis
@@ -423,5 +433,25 @@ private extension ARParcelSceneCoordinator {
         case .y: return 1
         case .z: return 2
         }
+    }
+
+    func hitTestCuboidFace(arView: ARView, screenPoint: CGPoint) -> ARCuboidEntity.Face? {
+        guard let cuboid else { return nil }
+        let hits = arView.hitTest(screenPoint, query: .nearest, mask: .default)
+        guard let hit = hits.first(where: { $0.entity == cuboid.root }) else { return nil }
+        // The collision shape is a unit cube (offset to local Y 0…1), so the
+        // local-space face normal is one of ±X / ±Y / ±Z. Yaw is the only
+        // rotation applied, so unrotating the world normal recovers it.
+        let localNormal = cuboid.root.transform.rotation.inverse.act(hit.normal)
+        let absX = abs(localNormal.x)
+        let absY = abs(localNormal.y)
+        let absZ = abs(localNormal.z)
+        if absY >= absX && absY >= absZ {
+            return localNormal.y > 0 ? .positiveY : .negativeY
+        }
+        if absX >= absZ {
+            return localNormal.x > 0 ? .positiveX : .negativeX
+        }
+        return localNormal.z > 0 ? .positiveZ : .negativeZ
     }
 }

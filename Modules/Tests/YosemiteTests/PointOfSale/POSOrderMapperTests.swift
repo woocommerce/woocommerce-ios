@@ -178,7 +178,7 @@ struct POSOrderMapperTests {
     }
 
     @Test
-    func customAmounts_use_empty_name_when_fee_line_has_no_name() throws {
+    func customAmounts_use_default_name_when_fee_line_has_no_name() throws {
         // Given
         let fee = OrderFeeLine.fake().copy(feeID: 1, name: nil, total: "3.00")
         let order = makeOrder(currency: "USD", fees: [fee])
@@ -186,9 +186,22 @@ struct POSOrderMapperTests {
         // When
         let result = try sut.map(order: order)
 
+        // Then - falls back to a localized "Custom amount" placeholder so the row
+        // never renders with empty left-side text.
+        #expect(result.customAmounts.first?.name == "Custom amount")
+    }
+
+    @Test
+    func customAmounts_use_default_name_when_fee_line_name_is_blank() throws {
+        // Given
+        let fee = OrderFeeLine.fake().copy(feeID: 1, name: "   ", total: "3.00")
+        let order = makeOrder(currency: "USD", fees: [fee])
+
+        // When
+        let result = try sut.map(order: order)
+
         // Then
-        let firstName = try #require(result.customAmounts.first?.name)
-        #expect(firstName.isEmpty)
+        #expect(result.customAmounts.first?.name == "Custom amount")
     }
 }
 

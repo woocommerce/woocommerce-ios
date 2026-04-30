@@ -129,55 +129,6 @@ struct WooAssistantHeadlessTests {
         #expect(destructiveCallCount == 0, "destructive REST call must be suppressed when declined")
     }
 
-    @Test
-    func test_jwt_cache_when_concurrent_callers_same_credentials_then_single_mint() async throws {
-        // Given a valid-shape stub JWT so the cache's CachedJWT validation passes.
-        await URLSessionJetpackAIJWTClient.providerCache.reset()
-        let mintCounter = HeadlessMintCounter()
-        let stubToken = Self.makeStubJWT(blogID: 12345, expiresIn: 3600)
-        let mint: URLSessionJetpackAIJWTClient.Mint = { _, _, _ in
-            await mintCounter.increment()
-            return stubToken
-        }
-        let siteURL = URL(string: "https://store.example.com").unsafelyUnwrapped
-        let providerA = URLSessionJetpackAIJWTClient(siteURL: siteURL,
-                                                     blogID: 12345,
-                                                     username: "merchant",
-                                                     appPassword: "abcd efgh ijkl mnop",
-                                                     mint: mint)
-        let providerB = URLSessionJetpackAIJWTClient(siteURL: siteURL,
-                                                     blogID: 12345,
-                                                     username: "merchant",
-                                                     appPassword: "abcd efgh ijkl mnop",
-                                                     mint: mint)
-
-        // When
-        async let tokenA = providerA.currentJWT()
-        async let tokenB = providerB.currentJWT()
-        let resolvedA = try await tokenA
-        let resolvedB = try await tokenB
-
-        // Then
-        #expect(resolvedA == stubToken)
-        #expect(resolvedB == stubToken)
-        let calls = await mintCounter.value
-        #expect(calls == 1, "concurrent callers with identical credentials must share one mint")
-    }
-
-    private static func makeStubJWT(blogID: Int64, expiresIn seconds: Int) -> String {
-        let header = #"{"alg":"HS256","typ":"JWT"}"#
-        let exp = Int(Date().timeIntervalSince1970) + seconds
-        let payload = "{\"blog_id\":\(blogID),\"exp\":\(exp)}"
-        return [header, payload].map { Self.base64URLEncode(Data($0.utf8)) }.joined(separator: ".") + ".sig"
-    }
-
-    private static func base64URLEncode(_ data: Data) -> String {
-        data.base64EncodedString()
-            .replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "=", with: "")
-    }
-
     private func makeTestCredentials() -> WooAssistantHeadless.Credentials {
         WooAssistantHeadless.Credentials(
             siteURL: "https://store.example.com",
@@ -186,9 +137,4 @@ struct WooAssistantHeadlessTests {
             appPassword: "abcd efgh ijkl mnop"
         )
     }
-}
-
-actor HeadlessMintCounter {
-    private(set) var value = 0
-    func increment() { value += 1 }
 }

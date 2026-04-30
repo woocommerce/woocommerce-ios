@@ -1,5 +1,6 @@
 import Foundation
 import CocoaLumberjackSwift
+import NetworkingCore
 
 /// Headless test driver for the WooCommerce AI Assistant. Wires the same
 /// `AgenticLoopOrchestrator`, REST tool registry, and safety policy that the
@@ -9,9 +10,9 @@ import CocoaLumberjackSwift
 ///
 /// Each `send(_:)` call builds a fresh orchestrator so the harness is
 /// stateless from the caller's perspective - no shared session, no carry-over
-/// safety state. The JWT cache is the one piece of cross-call state and lives
-/// process-wide on `URLSessionJetpackAIJWTClient` so concurrent harness
-/// instances against the same merchant share one minted token.
+/// safety state. Each harness instance owns its own `WpComJetpackAIJWTProvider`,
+/// so two concurrent instances against the same merchant will each mint a
+/// JWT (one extra mint per instance). Smoke runs typically have one instance.
 public actor WooAssistantHeadless {
 
     // MARK: - Public types
@@ -233,17 +234,17 @@ public actor WooAssistantHeadless {
     public init(credentials: Credentials,
                 configuration: Configuration = .init()) {
         let normalizedSiteURL = Self.normalizeSiteURL(credentials.siteURL)
-        let jwtProvider = URLSessionJetpackAIJWTClient(
-            siteURL: normalizedSiteURL,
-            blogID: credentials.siteID,
-            username: credentials.username,
-            appPassword: credentials.appPassword
-        )
+        let basicAuthHeader = Self.basicAuthHeader(username: credentials.username, appPassword: credentials.appPassword)
+        let session = URLSession.shared
+        let jwtProvider = WpComJetpackAIJWTProvider(blogID: credentials.siteID) { _ in
+            try await Self.mintJetpackAIJWT(siteURL: normalizedSiteURL,
+                                            basicAuthHeader: basicAuthHeader,
+                                            session: session)
+        }
         let chatService = JetpackAIQueryClient(jwtProvider: jwtProvider)
-        let restClient = URLSessionWCRESTClient(
-            siteURL: normalizedSiteURL,
-            auth: .appPassword(user: credentials.username, key: credentials.appPassword)
-        )
+        let restClient = HeadlessURLSessionWCRESTClient(siteURL: normalizedSiteURL,
+                                                        basicAuthHeader: basicAuthHeader,
+                                                        session: session)
         self.init(credentials: credentials,
                   configuration: configuration,
                   chatService: chatService,
@@ -401,6 +402,56 @@ public actor WooAssistantHeadless {
         return URL(string: "about:blank") ?? URL(fileURLWithPath: "/")
     }
 
+    /// Builds the HTTP Basic auth header from a WP user + application password.
+    /// Strips whitespace from the app password before encoding - Atomic-hosted WC REST
+    /// and the Jetpack mint endpoint reject spaced "abcd efgh" passwords with a 401
+    /// even though wp-admin accepts them.
+    private static func basicAuthHeader(username: String, appPassword: String) -> String {
+        let stripped = appPassword.replacingOccurrences(of: " ", with: "")
+        let raw = "\(username):\(stripped)"
+        let encoded = Data(raw.utf8).base64EncodedString()
+        return "Basic \(encoded)"
+    }
+
+    /// POSTs to `<siteURL>/wp-json/jetpack/v4/jetpack-ai-jwt` over Basic auth and
+    /// extracts the minted token. The harness lives outside the Jetpack tunnel,
+    /// so the merchant's app password is the only viable credential.
+    private static func mintJetpackAIJWT(siteURL: URL,
+                                         basicAuthHeader: String,
+                                         session: URLSession) async throws -> String {
+        let endpoint = siteURL.appendingPathComponent("wp-json/jetpack/v4/jetpack-ai-jwt")
+        var request = URLRequest(url: endpoint)
+        request.httpMethod = "POST"
+        request.setValue(basicAuthHeader, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
+
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else {
+            throw AssistantError(kind: .network, message: "Headless JWT mint received a non-HTTP response.")
+        }
+        if !(200..<300).contains(http.statusCode) {
+            let snippet = String(data: data.prefix(500), encoding: .utf8) ?? ""
+            throw AssistantError(kind: .auth,
+                                 code: String(http.statusCode),
+                                 message: "Headless JWT mint failed (HTTP \(http.statusCode)): \(snippet)")
+        }
+        struct Envelope: Decodable {
+            let token: String?
+            let jwt: String?
+        }
+        do {
+            let decoded = try JSONDecoder().decode(Envelope.self, from: data)
+            if let token = decoded.token, !token.isEmpty { return token }
+            if let jwt = decoded.jwt, !jwt.isEmpty { return jwt }
+        } catch {
+            DDLogError("WooAssistantHeadless mint envelope decode failed: \(error)")
+        }
+        let snippet = String(data: data.prefix(500), encoding: .utf8) ?? ""
+        throw AssistantError(kind: .auth,
+                             message: "Headless JWT mint expected `token` in response body, got: \(snippet)")
+    }
+
     /// Production REST tool catalog. Mirrors what the app target wires into its
     /// `AgenticLoopOrchestrator`. Tests inject a different list when they need
     /// to simulate a single-tool subset.
@@ -422,4 +473,93 @@ public actor WooAssistantHeadless {
             ShowCardsTool.make()
         ]
     }
+}
+
+// MARK: - URLSession-backed REST transport
+
+/// `WCRESTClient` that talks straight to a WooCommerce store's `/wp-json/...`
+/// endpoints using HTTP Basic auth. The harness deliberately avoids the
+/// `Networking` module so it can run outside the Jetpack tunnel.
+///
+/// Non-2xx responses are returned to the caller as `WCRESTResponse(statusCode: ...)`
+/// per the protocol contract, not thrown. The struct is fileprivate to keep the
+/// harness as the only consumer; the chat loop sees it through `WCRESTClient`.
+private struct HeadlessURLSessionWCRESTClient: WCRESTClient {
+
+    private let siteURL: URL
+    private let basicAuthHeader: String
+    private let session: URLSession
+
+    init(siteURL: URL, basicAuthHeader: String, session: URLSession) {
+        self.siteURL = siteURL
+        self.basicAuthHeader = basicAuthHeader
+        self.session = session
+    }
+
+    func request(method: String,
+                 path: String,
+                 query: [String: String]?,
+                 body: Data?) async -> WCRESTResponse {
+        let url: URL
+        do {
+            url = try buildURL(path: path, query: query)
+        } catch {
+            DDLogError("HeadlessURLSessionWCRESTClient buildURL failed: \(error)")
+            return WCRESTResponse(data: Data(), statusCode: HTTPStatusClassification.transportFailure)
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = method.uppercased()
+        request.setValue(basicAuthHeader, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
+        if let body, !body.isEmpty {
+            request.httpBody = body
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        }
+
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let http = response as? HTTPURLResponse else {
+                return WCRESTResponse(data: Data(), statusCode: HTTPStatusClassification.transportFailure)
+            }
+            return WCRESTResponse(data: data,
+                                  statusCode: http.statusCode,
+                                  headers: Self.flattenHeaders(http.allHeaderFields))
+        } catch {
+            DDLogError("HeadlessURLSessionWCRESTClient transport failed: \(error)")
+            return WCRESTResponse(data: Data(), statusCode: HTTPStatusClassification.transportFailure)
+        }
+    }
+
+    private func buildURL(path: String, query: [String: String]?) throws -> URL {
+        let trimmedPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
+        let fullPath = "wp-json/\(trimmedPath)"
+        guard var components = URLComponents(
+            url: siteURL.appendingPathComponent(fullPath),
+            resolvingAgainstBaseURL: false
+        ) else {
+            throw HeadlessURLSessionWCRESTError.invalidURL
+        }
+        if let query, !query.isEmpty {
+            components.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
+        }
+        guard let url = components.url else {
+            throw HeadlessURLSessionWCRESTError.invalidURL
+        }
+        return url
+    }
+
+    private static func flattenHeaders(_ raw: [AnyHashable: Any]) -> [String: String] {
+        var out: [String: String] = [:]
+        for (key, value) in raw {
+            if let stringKey = key as? String, let stringValue = value as? String {
+                out[stringKey] = stringValue
+            }
+        }
+        return out
+    }
+}
+
+private enum HeadlessURLSessionWCRESTError: Error {
+    case invalidURL
 }

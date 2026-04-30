@@ -25,13 +25,10 @@ public struct SlidingWindowHistoryBudgeter: HistoryBudgeter {
             return output
         }
         var window = Array(priorMessages.suffix(windowSize))
-        // Drop leading orphan tool messages: OpenAI rejects a `.tool` message
-        // without a preceding `.assistant` message carrying matching tool_calls.
+        // OpenAI rejects orphan .tool messages without a preceding assistant tool_calls.
         while let first = window.first, first.role == .tool {
             window.removeFirst()
         }
-        // Second pass: an assistant with tool_calls whose IDs are not all
-        // matched by later .tool messages in the window is itself an orphan.
         if let first = window.first,
            first.role == .assistant,
            let calls = first.toolCalls, calls.isEmpty == false {

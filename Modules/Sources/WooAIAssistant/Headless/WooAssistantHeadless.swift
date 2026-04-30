@@ -33,23 +33,39 @@ public actor WooAssistantHeadless {
         }
     }
 
-    /// Loads credentials from `/tmp/woo-ai-assistant-credentials.json` (the path
-    /// the smoke skill writes). Returns nil when the file is missing or malformed
-    /// so smoke runs that lack credentials skip without failing the test build.
-    public nonisolated static func credentialsFromEnvironmentOrFile() -> Credentials? {
-        let path = "/tmp/woo-ai-assistant-credentials.json"
-        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else { return nil }
-        struct Stored: Decodable {
-            let siteURL: String
-            let siteID: Int64
-            let username: String
-            let appPassword: String
+    /// Loads credentials from `~/.woo-ai-smoke/store.env` (the dotenv the smoke
+    /// skill scaffolds). Returns nil when the file is missing or any required
+    /// key is absent so smoke runs that lack credentials skip without failing
+    /// the test build.
+    public nonisolated static func credentialsFromStoreEnv() -> Credentials? {
+        let path = ("~/.woo-ai-smoke/store.env" as NSString).expandingTildeInPath
+        guard let env = try? parseDotenv(at: URL(fileURLWithPath: path)) else { return nil }
+        guard let siteURL = env["WOO_SITE_URL"],
+              let siteIDString = env["WOO_SITE_ID"], let siteID = Int64(siteIDString),
+              let username = env["WOO_USERNAME"],
+              let appPassword = env["WOO_APP_PASSWORD"] else { return nil }
+        return Credentials(siteURL: siteURL,
+                           siteID: siteID,
+                           username: username,
+                           appPassword: appPassword)
+    }
+
+    private static func parseDotenv(at url: URL) throws -> [String: String] {
+        let raw = try String(contentsOf: url, encoding: .utf8)
+        var out: [String: String] = [:]
+        for line in raw.split(separator: "\n", omittingEmptySubsequences: false) {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            guard !trimmed.isEmpty, !trimmed.hasPrefix("#"),
+                  let eq = trimmed.firstIndex(of: "=") else { continue }
+            let key = String(trimmed[..<eq]).trimmingCharacters(in: .whitespaces)
+            var value = String(trimmed[trimmed.index(after: eq)...])
+                .trimmingCharacters(in: .whitespaces)
+            if (value.hasPrefix("\"") && value.hasSuffix("\"")) || (value.hasPrefix("'") && value.hasSuffix("'")) {
+                value = String(value.dropFirst().dropLast())
+            }
+            out[key] = value
         }
-        guard let stored = try? JSONDecoder().decode(Stored.self, from: data) else { return nil }
-        return Credentials(siteURL: stored.siteURL,
-                           siteID: stored.siteID,
-                           username: stored.username,
-                           appPassword: stored.appPassword)
+        return out
     }
 
     public struct Configuration: Sendable {

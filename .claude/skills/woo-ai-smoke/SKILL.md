@@ -39,18 +39,17 @@ Inputs:
 - head_sha: SHA         # from `git rev-parse --short HEAD`
 - branch: BRANCH        # from `git branch --show-current`
 
-Pipeline (execute in this order, no skipping). Arm a `trap` cleanup at the start so a build crash never leaves the temp Swift file or credentials file behind:
+Pipeline (execute in this order, no skipping). Arm a `trap` cleanup at the start so a build crash never leaves the temp Swift file or log behind:
 
 ```bash
-trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /tmp/woo-ai-smoke.log /tmp/woo-ai-assistant-credentials.json' EXIT
+trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /tmp/woo-ai-smoke.log' EXIT
 ```
 
-1. Ensure /tmp/woo-ai-assistant-credentials.json exists and is fresh per
-   the Credentials section of SKILL.md. Source ~/.woo-ai-smoke/store.env
-   for WOO_SITE_URL, WOO_USERNAME, WOO_APP_PASSWORD (env vars in the
-   calling shell take precedence). On first run the file doesn't exist:
-   scaffold it with placeholders, `open` it for editing, and stop with a
-   message instructing the engineer to fill it in and re-run.
+1. Verify ~/.woo-ai-smoke/store.env exists with all four required keys
+   (WOO_SITE_URL, WOO_SITE_ID, WOO_USERNAME, WOO_APP_PASSWORD). On first
+   run the file doesn't exist: scaffold it with placeholders per the
+   Credentials section of SKILL.md, `open` it for editing, and stop with
+   a message instructing the engineer to fill it in and re-run.
 2. Load the scenario set from .claude/skills/woo-ai-smoke/baseline.json
    (or build ad-hoc from the SUITE arg).
 3. Write Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift
@@ -79,7 +78,7 @@ trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /t
    SKILL.md Storage format).
 10. Compare against BASELINE: classify each scenario PASS / REGRESSION /
     FAIL / NEW / FLAKY per the Outcome classification table.
-11. Cleanup is automatic via the `trap` armed at step 0; verify the three
+11. Cleanup is automatic via the `trap` armed at step 0; verify the two
     artifacts are gone before returning.
 
 Return ONLY this markdown (no tool logs, no chain-of-thought, no raw
@@ -104,7 +103,7 @@ inside the subagent's context.
 ## How it works
 
 1. **Load scenarios** — default suite (24 scenarios) from `baseline.json`, or ad-hoc via `scenario "turn1; turn2"`.
-2. **Refresh credentials** at `/tmp/woo-ai-assistant-credentials.json` (see "Credentials" below). Needed so the simulator test target finds them.
+2. **Verify credentials** in `~/.woo-ai-smoke/store.env` (see "Credentials" below). Swift reads the dotenv directly each run.
 3. **Write `Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift`** using the template below. Scenarios get expanded into the `@Test(arguments:)` parametrised suite.
 4. **Run the smoke via `xcodebuild`**, capture stdout.
 5. **Parse each `[smoke|...]` line** into a turn record — prompt, tool names, tool arg snippets, tool results, assistant text, card kinds.
@@ -113,20 +112,20 @@ inside the subagent's context.
 8. **Write run** to `.claude/skills/woo-ai-smoke/runs/<ISO-timestamp>_<sha>.jsonl`.
 9. **Compare to baseline** — flag REGRESSION when hard invariants fail or rubric mean drops below `rubric_pass_threshold`.
 10. **Report** a markdown table + summary counts.
-11. **Delete** the temp Swift file, `/tmp/woo-ai-smoke.log`, and `/tmp/woo-ai-assistant-credentials.json` (via the `trap` armed at the start of the run).
+11. **Delete** the temp Swift file and `/tmp/woo-ai-smoke.log` (via the `trap` armed at the start of the run).
 
 ## Prerequisites
 
 - Xcode + iOS simulator (the project's `bootstrap` skill covers this).
 - A WooCommerce demo store with an admin **application password** and the **Jetpack AI** plugin enabled.
-- Required CLI tools (all macOS-default): `xcodebuild`, `xcrun simctl`, `curl`, `python3`, `base64`, `open`.
-- Store credentials in **`~/.woo-ai-smoke/store.env`** (env vars from the calling shell override this). On first run the skill creates the file with placeholders and opens it for editing — see Credentials below.
+- Required CLI tools (all macOS-default): `xcodebuild`, `xcrun simctl`, `open`.
+- Store credentials in **`~/.woo-ai-smoke/store.env`** with `WOO_SITE_URL`, `WOO_SITE_ID`, `WOO_USERNAME`, `WOO_APP_PASSWORD`. On first run the skill scaffolds the file with placeholders and opens it for editing — see Credentials below.
 
-The skill never commits credentials and writes them only to `/tmp/woo-ai-assistant-credentials.json` (chmod 600), which is deleted at the end of every run.
+The skill never commits credentials. Swift reads `~/.woo-ai-smoke/store.env` directly so nothing leaks to `/tmp`.
 
 ## Credentials
 
-The smoke harness reads `/tmp/woo-ai-assistant-credentials.json` (a simulator-readable path). Build/refresh it before each run. **First-run flow**: if `~/.woo-ai-smoke/store.env` doesn't exist, create it with placeholders, open it for the engineer to fill in, then stop — the engineer saves the file and re-runs the skill.
+The smoke harness reads `~/.woo-ai-smoke/store.env` directly via Swift (no intermediate file). **First-run flow**: if the dotenv doesn't exist, scaffold it with placeholders, open it for the engineer to fill in, then stop — the engineer saves the file and re-runs the skill.
 
 ```bash
 ENV_FILE="$HOME/.woo-ai-smoke/store.env"
@@ -136,7 +135,10 @@ if [ ! -f "$ENV_FILE" ]; then
   mkdir -p "$(dirname "$ENV_FILE")"
   cat > "$ENV_FILE" <<'TEMPLATE'
 # Woo AI smoke credentials - fill these in, save, then re-run the smoke skill.
+# WOO_SITE_ID is the WordPress.com blog id of the demo store. Find it in
+# wp-admin/options-general.php?page=jetpack or via the Jetpack AI JWT mint.
 WOO_SITE_URL=https://your-demo-store.example.com
+WOO_SITE_ID=123456
 WOO_USERNAME=your-admin-username
 WOO_APP_PASSWORD=xxxx xxxx xxxx xxxx xxxx xxxx
 TEMPLATE
@@ -145,29 +147,9 @@ TEMPLATE
   echo "Created $ENV_FILE with placeholders. Fill it in, save, then re-run the skill." >&2
   exit 0
 fi
-
-# Source the env file; existing env vars in the shell take precedence.
-set -a; . "$ENV_FILE"; set +a
-
-: "${WOO_SITE_URL:?WOO_SITE_URL is empty - edit ~/.woo-ai-smoke/store.env}"
-: "${WOO_USERNAME:?WOO_USERNAME is empty - edit ~/.woo-ai-smoke/store.env}"
-: "${WOO_APP_PASSWORD:?WOO_APP_PASSWORD is empty - edit ~/.woo-ai-smoke/store.env}"
-
-JWT=$(curl -fsS -u "$WOO_USERNAME:$WOO_APP_PASSWORD" -X POST \
-  "$WOO_SITE_URL/wp-json/jetpack/v4/jetpack-ai-jwt" \
-  | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
-SITE_ID=${WOO_SITE_ID:-$(echo "$JWT" | cut -d. -f2 | base64 -d 2>/dev/null \
-  | python3 -c "import sys,json; print(json.load(sys.stdin)['blog_id'])")}
-
-python3 - "$WOO_SITE_URL" "$SITE_ID" "$WOO_USERNAME" "$WOO_APP_PASSWORD" <<'PY' > /tmp/woo-ai-assistant-credentials.json
-import json, sys
-url, site_id, user, app_pw = sys.argv[1:5]
-print(json.dumps({"siteURL": url, "siteID": int(site_id), "username": user, "appPassword": app_pw}))
-PY
-chmod 600 /tmp/woo-ai-assistant-credentials.json
 ```
 
-If `/tmp/woo-ai-assistant-credentials.json` already exists and the source values haven't changed, the refresh is a no-op idempotently. The file is deleted at the end of every run (see Cleanup) — credentials never linger across runs or reboots.
+The engineer fills the four keys once. Swift reads the dotenv directly on each run — no JSON file is written outside the engineer's home directory.
 
 ## Swift smoke template
 
@@ -205,7 +187,7 @@ struct SmokeRun {
 
     @Test(arguments: expanded)
     func runScenario(_ arg: (scenario: Scenario, sample: Int)) async throws {
-        guard let creds = WooAssistantHeadless.credentialsFromEnvironmentOrFile() else { return }
+        guard let creds = WooAssistantHeadless.credentialsFromStoreEnv() else { return }
         let harness = WooAssistantHeadless(credentials: creds)
         for (index, turn) in arg.scenario.turns.enumerated() {
             let turnNum = index + 1
@@ -421,16 +403,15 @@ On yes: edit `baseline.json` to match the new tighter invariant, commit with a s
 Always before returning. The subagent should arm this with a `trap` so a build crash doesn't leave any artifact behind:
 
 ```bash
-trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /tmp/woo-ai-smoke.log /tmp/woo-ai-assistant-credentials.json' EXIT
+trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /tmp/woo-ai-smoke.log' EXIT
 ```
 
-Three artifacts are removed at the end of every run:
+Two artifacts are removed at the end of every run:
 
 - `Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift` (temp Swift file written from the template)
 - `/tmp/woo-ai-smoke.log` (xcodebuild output)
-- `/tmp/woo-ai-assistant-credentials.json` (contains the app password and JWT bits)
 
-The credentials file is recreated on the next run from env vars / dotenv. Never let it persist between runs.
+Credentials live in `~/.woo-ai-smoke/store.env` and are persistent — Swift reads them directly each run, so nothing needs to land in `/tmp`.
 
 ## Ad-hoc mode
 
@@ -451,7 +432,7 @@ Main Claude: do steps 1-2, then dispatch the subagent. The subagent does 3-15.
 1. (Main) Parse `$ARGUMENTS` → `suite=default` (N=3) or `scenario "..."` (N=1), `mode=rest|mcp|both` (default `rest`), and pick the baseline JSONL to compare against.
 2. (Main) Dispatch the subagent via Task tool with the prompt template from the Delegation model section. Wait for its markdown report, then relay verbatim.
 3. (Subagent) Arm the trap-based cleanup hook (see Cleanup section).
-4. (Subagent) Build `/tmp/woo-ai-assistant-credentials.json` from env vars or `~/.woo-ai-smoke/store.env` per the Credentials section. Stop with a clear error if neither source has the required fields.
+4. (Subagent) Verify `~/.woo-ai-smoke/store.env` exists with the four required keys (`WOO_SITE_URL`, `WOO_SITE_ID`, `WOO_USERNAME`, `WOO_APP_PASSWORD`); on first run scaffold + open + exit per the Credentials section. Swift reads the dotenv directly via `WooAssistantHeadless.credentialsFromStoreEnv()` — no JSON file gets written.
 5. (Subagent) Load scenarios from `baseline.json` (or build ad-hoc from args).
 6. (Subagent) Write `Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift` with `SAMPLES_PLACEHOLDER` replaced by actual N and the mode-specific `toolSource` wired in.
 7. (Subagent) Build + run via xcodebuild, tee to `/tmp/woo-ai-smoke.log`.
@@ -463,4 +444,4 @@ Main Claude: do steps 1-2, then dispatch the subagent. The subagent does 3-15.
 13. (Subagent) Compare to baseline, classify each scenario PASS/REGRESSION/FAIL/NEW/FLAKY.
 14. (Subagent) Return ONLY the markdown reporting table + summary + regression notes + JSONL path.
 15. (Subagent) Offer baseline refresh only as a line in the report if evidence supports tightening — main Claude will surface the question to the user.
-16. (Subagent) Verify all three temp artifacts (test file, smoke log, credentials JSON) are gone before returning. The `trap` armed at step 3 handles this on normal exit; do an explicit `rm -f` if anything lingers.
+16. (Subagent) Verify both temp artifacts (test file, smoke log) are gone before returning. The `trap` armed at step 3 handles this on normal exit; do an explicit `rm -f` if anything lingers.

@@ -9,15 +9,9 @@ struct POSRefundedProductRowView: View {
     var body: some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
             if item.isLumpSum {
-                ZStack {
-                    Color.posSurfaceContainerLow
-
-                    Image(systemName: "tag")
-                        .font(.posButtonSymbolMedium)
-                        .foregroundColor(.posOnSurface)
-                }
-                .frame(width: Constants.imageSize, height: Constants.imageSize)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                CustomAmountAvatar(name: item.name)
+                    .frame(width: Constants.imageSize, height: Constants.imageSize)
+                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
             } else {
                 POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.imageSize, scale: 1)
                     .frame(width: Constants.imageSize, height: Constants.imageSize)

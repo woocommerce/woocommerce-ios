@@ -16,15 +16,9 @@ struct POSRefundItemRow: View {
             POSCheckbox(isSelected: item.isSelected, onToggle: onToggle)
 
             if item.isLumpSum {
-                ZStack {
-                    Color.posSurfaceContainerLow
-
-                    Image(systemName: "tag")
-                        .font(.posButtonSymbolMedium)
-                        .foregroundColor(.posOnSurface)
-                }
-                .frame(width: imageSize, height: imageSize)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                CustomAmountAvatar(name: item.name)
+                    .frame(width: imageSize, height: imageSize)
+                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
             } else {
                 POSItemImageView(imageSource: item.imageSrc, imageSize: imageSize, scale: 1)
                     .frame(width: imageSize, height: imageSize)

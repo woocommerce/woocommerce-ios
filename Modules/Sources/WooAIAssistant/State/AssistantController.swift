@@ -1,9 +1,7 @@
 import Foundation
 import Observation
 
-/// Coordinates merchant intents against an `AssistantBackend` and routes the
-/// resulting events into an `AssistantConversation`. The chat UI talks to the
-/// controller, never directly to the backend, so backends can swap freely.
+/// Routes merchant intents into `AssistantBackend` and applies events to `AssistantConversation`.
 @MainActor
 @Observable
 public final class AssistantController {
@@ -13,17 +11,7 @@ public final class AssistantController {
     private let backend: AssistantBackend
     private let context: AssistantContext
 
-    /// Visible to tests via `@testable` so they can await the in-flight
-    /// turn's Task without polling. Production callers go through `canSend`.
     private(set) var activeTask: Task<Void, Never>?
-
-    /// Per-turn UUID captured at `run()` entry. The cleanup at exit only clears
-    /// `activeTask` when this token is still the active one. A newer `send()`
-    /// bumps the token, so a stale turn finishing late cannot nil out the
-    /// in-flight turn's reference - using `Task` identity instead has bitten
-    /// this controller before with a "follow-up question freezes the chat"
-    /// repro that survives because Task equality is not what intuition suggests
-    /// under cancellation.
     private var activeTurnToken: UUID?
 
     public init(backend: AssistantBackend,
@@ -56,8 +44,6 @@ public final class AssistantController {
         conversation.setStreaming(.idle)
     }
 
-    /// `false` while a turn is in flight OR while a confirmation segment is
-    /// awaiting the merchant's tap; either way the input bar disables.
     public var canSend: Bool {
         activeTask == nil
     }

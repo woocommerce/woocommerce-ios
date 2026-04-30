@@ -1,22 +1,13 @@
 import Foundation
 import CocoaLumberjackSwift
 
-/// `AssistantBackend` adapter that drives the chat UI through the `AgenticLoopOrchestrator`.
-///
-/// Wraps a long-lived orchestrator so multi-turn memory survives between sends. Each turn
-/// builds a fresh prompt prefix from the per-instance `TranscriptStore` actor and the
-/// caller-supplied `systemPromptProvider` so the embedded date stays current across midnight.
-///
-/// Forwards confirm/cancel taps from the UI straight into the orchestrator's continuation API
-/// so unsafe-tool flows resume on the same actor that suspended them.
+/// `AssistantBackend` adapter that drives the chat UI through `AgenticLoopOrchestrator`.
 public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
 
     private let orchestrator: AgenticLoopOrchestrator
     private let transcript = TranscriptStore()
     private let systemPromptProvider: @Sendable () -> String?
 
-    /// Per-turn `systemPromptProvider` rebuild keeps the embedded date fresh when a
-    /// session spans midnight, which `AssistantSystemPrompt.build()` cares about.
     public init(chatService: AIChatService,
                 toolRegistry: ToolRegistry? = nil,
                 safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
@@ -84,11 +75,7 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
         }
     }
 
-    /// OpenAI rejects an `assistant.tool_calls[i]` without a matching `tool`
-    /// message with the same `tool_call_id`. When the orchestrator throws
-    /// (or the transport drops) between `toolCallStarted` and
-    /// `toolCallCompleted`, dropping the unmatched pairs keeps the next turn
-    /// replay valid instead of leaving the chat unrecoverable.
+    // OpenAI rejects an assistant `tool_calls[i]` without a matching `tool` result.
     static func matchedPairs(toolCalls: [OpenAIChat.ToolCall],
                              toolResults: [(String, String)])
     -> ([OpenAIChat.ToolCall], [(String, String)]) {
@@ -111,9 +98,6 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
         await orchestrator.cancel(proposalID: id)
     }
 
-    /// `toolCallStarted` records the call shape so the next-turn prefix has
-    /// `assistant tool_calls` followed by the matching `tool` results, which
-    /// is the wire shape the upstream proxy validates.
     private static func accumulate(_ event: AssistantEvent,
                                    text: inout String,
                                    toolCalls: inout [OpenAIChat.ToolCall],
@@ -134,9 +118,6 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
     }
 }
 
-/// Holds the prefix the next turn needs - user prompts, assistant tool-call messages,
-/// and tool result messages in wire-protocol order. Actor isolation keeps the prefix
-/// consistent if a confirmation tap arrives while the loop is mid-turn.
 private actor TranscriptStore {
 
     private var stored: [OpenAIChat.Message] = []

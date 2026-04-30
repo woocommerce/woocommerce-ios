@@ -1,9 +1,7 @@
 import Foundation
 import Observation
 
-/// Observable source of truth for one chat conversation. Holds the ordered message
-/// list, a backend-opaque session handle, and the streaming state the input bar
-/// uses to swap between send and stop affordances.
+/// Observable source of truth for one chat conversation.
 @MainActor
 @Observable
 public final class AssistantConversation {
@@ -13,9 +11,6 @@ public final class AssistantConversation {
         case sending
         case streaming
         case failed(String)
-        /// Distinct from `.failed` so the UI can render a "I started this but
-        /// couldn't confirm it finished" message - the merchant should check
-        /// the native UI rather than treat the turn as a flat error.
         case outcomeUnknown(String)
     }
 
@@ -23,10 +18,6 @@ public final class AssistantConversation {
     public private(set) var streamingState: StreamingState = .idle
     public internal(set) var session: AssistantSession?
 
-    /// True from the moment the orchestrator emits `.failed(.outcomeUnknown)`
-    /// for this turn until the controller starts the next one. Lets the rest
-    /// of the turn (more text chunks, completion) flow through without
-    /// flipping `streamingState` back to `.streaming` or `.idle`.
     private(set) var outcomeUnknownObserved: Bool = false
 
     public init() {}
@@ -49,9 +40,6 @@ public final class AssistantConversation {
         return message.id
     }
 
-    /// Routes one orchestrator event into the targeted assistant message. The
-    /// segment identity in `ChatMessage` is preserved across mutations so the
-    /// SwiftUI list keeps stable rows under streaming updates.
     func apply(_ event: AssistantEvent, to assistantMessageID: ChatMessage.ID) {
         guard let index = messages.firstIndex(where: { $0.id == assistantMessageID }) else { return }
         switch event {
@@ -72,9 +60,7 @@ public final class AssistantConversation {
                                                toolName: toolName,
                                                payload: payload))
         case .cardRender(let toolCallID):
-            // Drop silently when no matching `toolResult` exists - the model
-            // referenced an id we never saw, the text answer still renders,
-            // and a missing card is a softer failure than a crash.
+            // Silently drop renders for unknown tool call IDs.
             if let match = Self.firstMatchingToolResult(in: messages[index].segments,
                                                        toolCallID: toolCallID) {
                 messages[index].append(.cardRender(id: UUID(),
@@ -96,10 +82,7 @@ public final class AssistantConversation {
         case .failed(let error):
             switch error.kind {
             case .outcomeUnknown:
-                // Per-call event: the orchestrator may still emit text
-                // chunks and a terminal `completed`. Don't mark the message
-                // done yet, but pin the state so the UI keeps the distinct
-                // "started, couldn't confirm" affordance.
+                // Per-call event; rest of turn keeps the distinct surface.
                 outcomeUnknownObserved = true
                 streamingState = .outcomeUnknown(error.message)
             default:

@@ -267,7 +267,6 @@ struct AgenticChatBackendTests {
     )
 }
 
-/// Sendable counter without `@unchecked`.
 private final class ProviderCallCounter: Sendable {
     private let lock = OSAllocatedUnfairLock(initialState: 0)
 

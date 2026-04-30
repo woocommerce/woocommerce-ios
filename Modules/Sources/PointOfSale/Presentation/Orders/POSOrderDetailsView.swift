@@ -218,15 +218,9 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func customAmountRow(customAmount: POSOrderCustomAmount) -> some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
-            ZStack {
-                Color.posSurfaceContainerLow
-
-                Image(systemName: "tag")
-                    .font(.posButtonSymbolMedium)
-                    .foregroundColor(.posOnSurface)
-            }
-            .frame(width: Constants.productImageSize, height: Constants.productImageSize)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            CustomAmountAvatar(name: customAmount.name)
+                .frame(width: Constants.productImageSize, height: Constants.productImageSize)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
 
             Text(customAmount.name)
                 .font(.posBodyLargeBold)

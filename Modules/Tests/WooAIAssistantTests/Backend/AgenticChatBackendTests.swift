@@ -227,6 +227,44 @@ struct AgenticChatBackendTests {
     }
 
     @Test
+    func test_send_when_turn_fails_mid_stream_then_transcript_not_polluted() async throws {
+        // Given
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [.textDelta("first ok"), .completed(.stop)],
+            [.textDelta("partial")],
+            [.textDelta("third"), .completed(.stop)]
+        ])
+        let backend = AgenticChatBackend(chatService: chat, systemPrompt: nil)
+
+        // When
+        let stream1 = backend.send(turn: .init(prompt: "t1"),
+                                   context: defaultContext,
+                                   session: nil)
+        for try await _ in stream1 {}
+        await chat.setStreamError(AssistantError(kind: .upstreamFailure, message: "boom"))
+        let stream2 = backend.send(turn: .init(prompt: "t2"),
+                                   context: defaultContext,
+                                   session: nil)
+        for try await _ in stream2 {}
+        await chat.setStreamError(nil)
+        let stream3 = backend.send(turn: .init(prompt: "t3"),
+                                   context: defaultContext,
+                                   session: nil)
+        for try await _ in stream3 {}
+
+        // Then
+        let captured = await chat.capturedRequests
+        let messagesOnTurn3 = captured.last?.messages ?? []
+        let userPrompts = messagesOnTurn3.filter { $0.role == .user }.compactMap { $0.content }
+        #expect(userPrompts == ["t1", "t3"])
+        let assistantTexts = messagesOnTurn3
+            .filter { $0.role == .assistant && $0.content != nil }
+            .compactMap { $0.content }
+        #expect(assistantTexts == ["first ok"])
+    }
+
+    @Test
     func test_systemPromptProvider_when_invoked_per_turn_then_rebuilt_each_call()
     async throws {
         // Given

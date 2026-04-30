@@ -47,6 +47,7 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
                 var pendingText = ""
                 var pendingToolCalls: [OpenAIChat.ToolCall] = []
                 var pendingToolResults: [(String, String)] = []
+                var didFail = false
 
                 do {
                     for try await event in orchestrator.run(prompt: turn.prompt,
@@ -55,20 +56,24 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
                                         text: &pendingText,
                                         toolCalls: &pendingToolCalls,
                                         toolResults: &pendingToolResults)
+                        if case .failed = event { didFail = true }
                         continuation.yield(.event(event))
                     }
                 } catch {
+                    didFail = true
                     let message = (error as? AssistantError)?.message ?? error.localizedDescription
                     continuation.yield(.event(.failed(.init(kind: .unknown, message: message))))
                 }
 
-                let (sanitizedToolCalls, sanitizedToolResults) =
-                    Self.matchedPairs(toolCalls: pendingToolCalls,
-                                      toolResults: pendingToolResults)
-                await transcript.append(userPrompt: turn.prompt,
-                                        assistantText: pendingText,
-                                        toolCalls: sanitizedToolCalls,
-                                        toolResults: sanitizedToolResults)
+                if !didFail && !Task.isCancelled {
+                    let (sanitizedToolCalls, sanitizedToolResults) =
+                        Self.matchedPairs(toolCalls: pendingToolCalls,
+                                          toolResults: pendingToolResults)
+                    await transcript.append(userPrompt: turn.prompt,
+                                            assistantText: pendingText,
+                                            toolCalls: sanitizedToolCalls,
+                                            toolResults: sanitizedToolResults)
+                }
                 continuation.finish()
             }
             continuation.onTermination = { _ in task.cancel() }

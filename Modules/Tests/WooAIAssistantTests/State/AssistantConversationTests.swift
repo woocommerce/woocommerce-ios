@@ -119,7 +119,36 @@ struct AssistantConversationTests {
         } else {
             Issue.record("expected outcomeUnknown streaming state, got \(conversation.streamingState)")
         }
+    }
+
+    @Test
+    func test_apply_when_outcomeUnknown_then_textChunk_then_completed_then_state_remains_outcomeUnknown()
+    async throws {
+        // Given
+        let conversation = AssistantConversation()
+        let messageID = conversation.beginAssistantMessage()
+        let unknownError = AssistantError(kind: .outcomeUnknown,
+                                          message: "Couldn't confirm completion.")
+
+        // When
+        conversation.apply(.failed(unknownError), to: messageID)
+        conversation.setStreaming(.streaming)
+        conversation.apply(.textChunk("ok"), to: messageID)
+        conversation.apply(.completed(routeConfidence: nil), to: messageID)
+        conversation.setStreaming(.idle)
+
+        // Then
+        if case .outcomeUnknown(let message) = conversation.streamingState {
+            #expect(message == "Couldn't confirm completion.")
+        } else {
+            Issue.record("expected outcomeUnknown streaming state, got \(conversation.streamingState)")
+        }
         #expect(conversation.messages.last?.isStreaming == false)
+        let textSegments = conversation.messages.last?.segments.compactMap { segment -> String? in
+            if case .text(_, let content) = segment { return content }
+            return nil
+        } ?? []
+        #expect(textSegments.contains("ok"))
     }
 
     @Test

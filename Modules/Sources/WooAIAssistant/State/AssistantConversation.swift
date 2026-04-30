@@ -23,13 +23,17 @@ public final class AssistantConversation {
     public private(set) var streamingState: StreamingState = .idle
     public internal(set) var session: AssistantSession?
 
+    /// True from the moment the orchestrator emits `.failed(.outcomeUnknown)`
+    /// for this turn until the controller starts the next one. Lets the rest
+    /// of the turn (more text chunks, completion) flow through without
+    /// flipping `streamingState` back to `.streaming` or `.idle`.
+    private(set) var outcomeUnknownObserved: Bool = false
+
     public init() {}
 
     init(seededMessages: [ChatMessage]) {
         self.messages = seededMessages
     }
-
-    // MARK: - Mutations
 
     func appendUserMessage(_ text: String) -> ChatMessage {
         let message = ChatMessage(role: .user,
@@ -41,6 +45,7 @@ public final class AssistantConversation {
     func beginAssistantMessage() -> ChatMessage.ID {
         let message = ChatMessage(role: .assistant, isStreaming: true)
         messages.append(message)
+        outcomeUnknownObserved = false
         return message.id
     }
 
@@ -89,17 +94,24 @@ public final class AssistantConversation {
         case .completed:
             messages[index].markCompleted()
         case .failed(let error):
-            messages[index].markCompleted()
             switch error.kind {
             case .outcomeUnknown:
+                // Per-call event: the orchestrator may still emit text
+                // chunks and a terminal `completed`. Don't mark the message
+                // done yet, but pin the state so the UI keeps the distinct
+                // "started, couldn't confirm" affordance.
+                outcomeUnknownObserved = true
                 streamingState = .outcomeUnknown(error.message)
             default:
+                messages[index].markCompleted()
                 streamingState = .failed(error.message)
             }
         }
     }
 
     func setStreaming(_ state: StreamingState) {
+        if outcomeUnknownObserved, case .streaming = state { return }
+        if outcomeUnknownObserved, case .idle = state { return }
         streamingState = state
     }
 

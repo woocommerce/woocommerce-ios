@@ -480,7 +480,6 @@ final class SupportChatViewModel {
             messages.append(pickerMessage)
 
         case .connectivityTool:
-            state = .sending
             // Show standard greeting for connectivity tool entry
             let greetingMessage = ChatMessage(role: .bot, text: Localization.greetingMessage)
             messages.append(greetingMessage)

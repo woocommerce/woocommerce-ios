@@ -344,6 +344,27 @@ struct JetpackAIQueryClientTests {
         }
     }
 
+    @Test
+    func test_streamTurn_when_data_frame_neither_chunk_nor_envelope_then_throws_invalidStream() async throws {
+        // Given
+        // Non-empty JSON that misses `choices` (so it won't decode as `OpenAIChat.Chunk`) and misses
+        // `code`/`message` (so it won't decode as a wrapped error envelope). Without the typed
+        // surface we'd silently drop this frame and let the turn complete with a partial response.
+        let frame = #"data: {"some":"unexpected","payload":42}"# + "\n\n"
+        let transport = ScriptedTransport(scenarios: [.successChunks([Data(frame.utf8)])])
+        let client = JetpackAIQueryClient(jwtProvider: stubJWTProvider(),
+                                          streamingTransport: transport.handler,
+                                          sleep: noOpSleep)
+
+        // When / Then
+        do {
+            _ = try await collect(client.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected malformed SSE chunk to surface as AssistantError(.invalidStream).")
+        } catch let error as AssistantError {
+            #expect(error.kind == .invalidStream)
+        }
+    }
+
     private func makeClient(streamingResult: TransportScenario) -> JetpackAIQueryClient {
         let transport = ScriptedTransport(scenarios: [streamingResult])
         return JetpackAIQueryClient(jwtProvider: stubJWTProvider(),

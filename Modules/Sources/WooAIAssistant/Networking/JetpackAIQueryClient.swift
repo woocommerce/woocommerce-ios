@@ -266,7 +266,16 @@ struct JetpackAIQueryClient: AIChatService {
             throw WrappedEnvelopeError(assistantError: envelope)
         }
 
-        guard let chunk = try? JSONDecoder().decode(OpenAIChat.Chunk.self, from: data) else { return }
+        // Past the [DONE]/empty/envelope filters this should decode as a chat chunk; surface a
+        // decode failure as `invalidStream` instead of swallowing so a corrupted frame can't let
+        // the turn finish silently with whatever partial content already streamed.
+        let chunk: OpenAIChat.Chunk
+        do {
+            chunk = try JSONDecoder().decode(OpenAIChat.Chunk.self, from: data)
+        } catch {
+            DDLogError("⛔️ Malformed SSE chunk dropped: \(error.localizedDescription)")
+            throw AssistantError(kind: .invalidStream, message: Localization.invalidStreamPayload)
+        }
         guard let choice = chunk.choices.first else { return }
 
         if let text = choice.delta.content, !text.isEmpty {

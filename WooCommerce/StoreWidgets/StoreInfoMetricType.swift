@@ -1,9 +1,11 @@
+import AppIntents
 import Foundation
 
 /// Catalog of metrics that store widgets can surface.
 ///
-/// The raw value is a stable, persistence-safe identifier — it is written into App Group storage
-/// and (later) into `AppIntentConfiguration` options. Do not rename cases without a migration.
+/// The raw value is the stable, persistence-safe identifier — written into App Group storage
+/// and into `AppIntentConfiguration` options (the intent system uses it as the entity `id`).
+/// Do not rename cases without a migration.
 ///
 enum StoreInfoMetricType: String, CaseIterable, Hashable {
     // ⚠️ Don't rename these raw values without a migration —
@@ -45,16 +47,40 @@ enum StoreInfoMetricType: String, CaseIterable, Hashable {
         case .conversion: return .percentage
         }
     }
+}
 
-    /// Whether the metric's data source requires WPCOM/Jetpack endpoints.
-    /// Used by the metric picker to filter options for self-hosted users.
-    ///
-    var requiresWPCom: Bool {
+// MARK: - AppEntity
+
+/// Surfaces the catalog as the element type for the `metrics` parameter on
+/// `StoreStatsConfigurationIntent`. Modeled as `AppEntity` because only the entity-array
+/// `IntentParameter` initializer accepts the family-keyed `size:` map.
+///
+/// Intent-UI strings here are English literals; the AppIntents metadata processor extracts
+/// them at build time and rejects runtime-evaluated expressions, and the project policy of
+/// "no `.strings` files in extensions" rules out the obvious workaround. Localization is
+/// tracked as a follow-up; in-widget cells continue to use `displayName` (host-bundle,
+/// fully localized).
+///
+extension StoreInfoMetricType: AppEntity {
+    var id: String { rawValue }
+
+    var displayRepresentation: DisplayRepresentation {
         switch self {
-        case .visitors, .conversion: return true
-        case .revenue, .netSales, .orders, .itemsSold, .averageOrderValue: return false
+        case .revenue: return "Total sales"
+        case .netSales: return "Net sales"
+        case .orders: return "Orders"
+        case .itemsSold: return "Items sold"
+        case .visitors: return "Visitors"
+        case .conversion: return "Conversion"
+        case .averageOrderValue: return "Average order value"
         }
     }
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        TypeDisplayRepresentation(name: "Metric")
+    }
+
+    static var defaultQuery: AvailableMetricsQuery { AvailableMetricsQuery() }
 }
 
 // MARK: - Localization

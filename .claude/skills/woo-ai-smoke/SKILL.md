@@ -42,7 +42,7 @@ Inputs:
 Pipeline (execute in this order, no skipping). Arm a `trap` cleanup at the start so a build crash never leaves the temp Swift file or log behind:
 
 ```bash
-trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /tmp/woo-ai-smoke.log' EXIT
+trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /tmp/woo-ai-smoke.log /tmp/woo-ai-smoke-store.env' EXIT
 ```
 
 1. Verify ~/.woo-ai-smoke/store.env exists with all four required keys
@@ -78,7 +78,7 @@ trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /t
    SKILL.md Storage format).
 10. Compare against BASELINE: classify each scenario PASS / REGRESSION /
     FAIL / NEW / FLAKY per the Outcome classification table.
-11. Cleanup is automatic via the `trap` armed at step 0; verify the two
+11. Cleanup is automatic via the `trap` armed at step 0; verify the three
     artifacts are gone before returning.
 
 Return ONLY this markdown (no tool logs, no chain-of-thought, no raw
@@ -112,7 +112,7 @@ inside the subagent's context.
 8. **Write run** to `.claude/skills/woo-ai-smoke/runs/<ISO-timestamp>_<sha>.jsonl`.
 9. **Compare to baseline** — flag REGRESSION when hard invariants fail or rubric mean drops below `rubric_pass_threshold`.
 10. **Report** a markdown table + summary counts.
-11. **Delete** the temp Swift file and `/tmp/woo-ai-smoke.log` (via the `trap` armed at the start of the run).
+11. **Delete** the temp Swift file, `/tmp/woo-ai-smoke.log`, and the `/tmp/woo-ai-smoke-store.env` mirror (via the `trap` armed at the start of the run).
 
 ## Prerequisites
 
@@ -125,10 +125,13 @@ The skill never commits credentials. Swift reads `~/.woo-ai-smoke/store.env` dir
 
 ## Credentials
 
-The smoke harness reads `~/.woo-ai-smoke/store.env` directly via Swift (no intermediate file). **First-run flow**: if the dotenv doesn't exist, scaffold it with placeholders, open it for the engineer to fill in, then stop — the engineer saves the file and re-runs the skill.
+The engineer maintains `~/.woo-ai-smoke/store.env` (the source of truth, dotenv format). The skill stages a `/tmp/woo-ai-smoke-store.env` mirror at run-start because the iOS simulator process sandboxes `~` to its own container and can't read the host's home directly; the `trap` cleanup deletes the `/tmp` mirror at run-end. Swift reads from `/tmp/woo-ai-smoke-store.env`.
+
+**First-run flow**: if `~/.woo-ai-smoke/store.env` doesn't exist, scaffold it with placeholders, open it for the engineer to fill in, then stop. The engineer saves the file and re-runs the skill.
 
 ```bash
 ENV_FILE="$HOME/.woo-ai-smoke/store.env"
+STAGED_ENV="/tmp/woo-ai-smoke-store.env"
 
 # First run: scaffold the file with placeholders, open it for editing, stop.
 if [ ! -f "$ENV_FILE" ]; then
@@ -147,9 +150,11 @@ TEMPLATE
   echo "Created $ENV_FILE with placeholders. Fill it in, save, then re-run the skill." >&2
   exit 0
 fi
-```
 
-The engineer fills the four keys once. Swift reads the dotenv directly on each run — no JSON file is written outside the engineer's home directory.
+# Stage a /tmp mirror the simulator process can read; trap deletes it at run-end.
+cp "$ENV_FILE" "$STAGED_ENV"
+chmod 600 "$STAGED_ENV"
+```
 
 ## Swift smoke template
 
@@ -403,15 +408,14 @@ On yes: edit `baseline.json` to match the new tighter invariant, commit with a s
 Always before returning. The subagent should arm this with a `trap` so a build crash doesn't leave any artifact behind:
 
 ```bash
-trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /tmp/woo-ai-smoke.log' EXIT
+trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /tmp/woo-ai-smoke.log /tmp/woo-ai-smoke-store.env' EXIT
 ```
 
-Two artifacts are removed at the end of every run:
+Three artifacts are removed at the end of every run:
 
 - `Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift` (temp Swift file written from the template)
 - `/tmp/woo-ai-smoke.log` (xcodebuild output)
-
-Credentials live in `~/.woo-ai-smoke/store.env` and are persistent — Swift reads them directly each run, so nothing needs to land in `/tmp`.
+- `/tmp/woo-ai-smoke-store.env` (transient mirror of the engineer's `~/.woo-ai-smoke/store.env`, staged so the simulator process can read it; the source of truth at `~/.woo-ai-smoke/store.env` stays in place)
 
 ## Ad-hoc mode
 

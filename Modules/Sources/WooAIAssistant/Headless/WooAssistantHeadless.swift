@@ -33,12 +33,15 @@ public actor WooAssistantHeadless {
         }
     }
 
-    /// Loads credentials from `~/.woo-ai-smoke/store.env` (the dotenv the smoke
-    /// skill scaffolds). Returns nil when the file is missing or any required
-    /// key is absent so smoke runs that lack credentials skip without failing
-    /// the test build.
+    /// Loads credentials from `/tmp/woo-ai-smoke-store.env`. The smoke skill
+    /// stages this file from `~/.woo-ai-smoke/store.env` (the engineer-owned
+    /// source of truth) at run-start, because the iOS simulator process
+    /// sandboxes `~` to its own container and cannot read the host's home
+    /// directly. The trap cleanup deletes the `/tmp` copy at run-end.
+    /// Returns nil when the file is missing or any required key is absent so
+    /// smoke runs that lack credentials skip without failing the test build.
     public nonisolated static func credentialsFromStoreEnv() -> Credentials? {
-        let path = ("~/.woo-ai-smoke/store.env" as NSString).expandingTildeInPath
+        let path = "/tmp/woo-ai-smoke-store.env"
         guard let env = try? parseDotenv(at: URL(fileURLWithPath: path)) else { return nil }
         guard let siteURL = env["WOO_SITE_URL"],
               let siteIDString = env["WOO_SITE_ID"], let siteID = Int64(siteIDString),

@@ -15,10 +15,6 @@ struct StoreInfoWidget: Widget {
     /// relaunch).
     ///
     private var supportedFamilies: [WidgetFamily] {
-        guard #available(iOSApplicationExtension 16.0, *) else {
-            return .wooFallbackFamilies
-        }
-
         /// Temporary developer flag
         /// Will be removed before feature rollout
         let isConfigurableEnabled = UserDefaults.group?.configurableStoreStatsWidgetsEnabled ?? false
@@ -42,7 +38,6 @@ struct StoreInfoWidget: Widget {
 
 /// Widget family constants
 private extension Array where Element == WidgetFamily {
-    static let wooFallbackFamilies: [WidgetFamily] = [.systemMedium]
     static let wooConfigurableFamilies: [WidgetFamily] = [
         .systemSmall,
         .systemLarge
@@ -62,24 +57,20 @@ private struct StoreInfoWidgetEntryView: View {
     let entry: StoreInfoEntry
 
     var body: some View {
-        if #available(iOSApplicationExtension 16.0, *) {
-            switch widgetFamily {
-            case .accessoryInline:
-                StoreInfoInlineWidget(entry: entry)
-            case .accessoryRectangular:
-                StoreInfoRectangularWidget(entry: entry)
-            case .accessoryCircular:
-                StoreInfoCircularWidget(entry: entry)
-            case .systemMedium, .systemSmall, .systemLarge:
-                // `.systemSmall` and `.systemLarge` only enter `supportedFamilies` when the
-                // configurable-widgets FF is on, so reaching them implies the metric-driven path.
-                // Layouts dedicated to these sizes will land in Tickets #7 / #8.
-                StoreInfoHomescreenWidget(entry: entry)
-            default:
-                EmptyView()
-            }
-        } else {
+        switch widgetFamily {
+        case .accessoryInline:
+            StoreInfoInlineWidget(entry: entry)
+        case .accessoryRectangular:
+            StoreInfoRectangularWidget(entry: entry)
+        case .accessoryCircular:
+            StoreInfoCircularWidget(entry: entry)
+        case .systemMedium, .systemSmall, .systemLarge:
+            // `.systemSmall` and `.systemLarge` only enter `supportedFamilies` when the
+            // configurable-widgets FF is on, so reaching them implies the metric-driven path.
+            // Layouts dedicated to these sizes will land in Tickets #7 / #8.
             StoreInfoHomescreenWidget(entry: entry)
+        default:
+            EmptyView()
         }
     }
 }

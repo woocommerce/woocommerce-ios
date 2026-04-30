@@ -246,14 +246,13 @@ private extension ARParcelSceneCoordinator {
             secondScreen: gesture.startLocations.second
         ) else { return }
 
-        // Height resize is intentionally strict: it engages only when a finger
-        // is actually on the top face. From most viewing angles a vertical
-        // screen-space pinch could plausibly mean X, Y, or Z; requiring the
-        // top-face touch removes that ambiguity.
+        // Height resize requires at least one finger on the upper half of the
+        // cuboid (top face *or* the upper portion of any side face). A strict
+        // top-face hit-test was too small a target for short cuboids.
         if chosenAxis == .y {
-            let firstFace = hitTestCuboidFace(arView: arView, screenPoint: gesture.startLocations.first)
-            let secondFace = hitTestCuboidFace(arView: arView, screenPoint: gesture.startLocations.second)
-            guard firstFace == .positiveY || secondFace == .positiveY else { return }
+            let firstUpper = hitTestCuboidUpperHalf(arView: arView, screenPoint: gesture.startLocations.first)
+            let secondUpper = hitTestCuboidUpperHalf(arView: arView, screenPoint: gesture.startLocations.second)
+            guard firstUpper || secondUpper else { return }
         }
 
         let axisWorld: SIMD3<Float>
@@ -382,9 +381,15 @@ private extension ARParcelSceneCoordinator {
         // Y axis keeps the root at the floor (cuboid local Y is 0…1, so growing
         // scale.y already moves only the top). X/Z are centred on the root, so
         // an asymmetric resize requires shifting the root by half the imbalance.
+        // The cap |shift| ≤ |scale change| / 2 prevents pure translation: when
+        // both fingers move in the same direction, scale stays put and the cap
+        // collapses to zero, so the cuboid does not slide. Single-finger drag
+        // is the only sanctioned way to move it.
         if context.axis != .y {
             let centerShift = (actualPositive - actualNegative) * 0.5
-            newPosition += centerShift * context.axisWorld
+            let maxShift = abs(actualTotal) * 0.5
+            let clampedShift = max(-maxShift, min(maxShift, centerShift))
+            newPosition += clampedShift * context.axisWorld
         }
 
         cuboid.root.transform.scale = newScale
@@ -460,23 +465,14 @@ private extension ARParcelSceneCoordinator {
         }
     }
 
-    func hitTestCuboidFace(arView: ARView, screenPoint: CGPoint) -> ARCuboidEntity.Face? {
-        guard let cuboid else { return nil }
+    /// Returns true when `screenPoint` ray-casts onto the upper half of the
+    /// cuboid (any face, but above the local-Y midline). The collision shape
+    /// is a unit cube spanning local Y 0…1, so the threshold is 0.5.
+    func hitTestCuboidUpperHalf(arView: ARView, screenPoint: CGPoint) -> Bool {
+        guard let cuboid else { return false }
         let hits = arView.hitTest(screenPoint, query: .nearest, mask: .default)
-        guard let hit = hits.first(where: { $0.entity == cuboid.root }) else { return nil }
-        // The collision shape is a unit cube (offset to local Y 0…1), so the
-        // local-space face normal is one of ±X / ±Y / ±Z. Yaw is the only
-        // rotation applied, so unrotating the world normal recovers it.
-        let localNormal = cuboid.root.transform.rotation.inverse.act(hit.normal)
-        let absX = abs(localNormal.x)
-        let absY = abs(localNormal.y)
-        let absZ = abs(localNormal.z)
-        if absY >= absX && absY >= absZ {
-            return localNormal.y > 0 ? .positiveY : .negativeY
-        }
-        if absX >= absZ {
-            return localNormal.x > 0 ? .positiveX : .negativeX
-        }
-        return localNormal.z > 0 ? .positiveZ : .negativeZ
+        guard let hit = hits.first(where: { $0.entity == cuboid.root }) else { return false }
+        let localPosition = cuboid.root.convert(position: hit.position, from: nil)
+        return localPosition.y > 0.5
     }
 }

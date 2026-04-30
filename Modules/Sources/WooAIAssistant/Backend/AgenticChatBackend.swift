@@ -80,14 +80,17 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
         }
     }
 
-    // OpenAI rejects an assistant `tool_calls[i]` without a matching `tool` result.
+    // OpenAI rejects an assistant `tool_calls[i]` without a matching `tool` result,
+    // and requires `tool` messages in the same order as the assistant's `tool_calls`.
     static func matchedPairs(toolCalls: [OpenAIChat.ToolCall],
                              toolResults: [(String, String)])
     -> ([OpenAIChat.ToolCall], [(String, String)]) {
-        let resultIDs = Set(toolResults.map(\.0))
-        let matchedCalls = toolCalls.filter { resultIDs.contains($0.id) }
-        let matchedCallIDs = Set(matchedCalls.map(\.id))
-        let matchedResults = toolResults.filter { matchedCallIDs.contains($0.0) }
+        let resultsByID = Dictionary(toolResults.map { ($0.0, $0.1) }, uniquingKeysWith: { first, _ in first })
+        let matchedCalls = toolCalls.filter { resultsByID[$0.id] != nil }
+        let matchedResults = matchedCalls.compactMap { call -> (String, String)? in
+            guard let payload = resultsByID[call.id] else { return nil }
+            return (call.id, payload)
+        }
         return (matchedCalls, matchedResults)
     }
 

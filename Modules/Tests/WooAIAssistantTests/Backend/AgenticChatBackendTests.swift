@@ -265,6 +265,35 @@ struct AgenticChatBackendTests {
     }
 
     @Test
+    func test_send_when_tool_calls_complete_in_reverse_order_then_transcript_replays_in_call_order()
+    async throws {
+        // Given
+        let firstCall = OpenAIChat.ToolCall(
+            id: "call_a",
+            function: .init(name: "tool_a", arguments: "{}")
+        )
+        let secondCall = OpenAIChat.ToolCall(
+            id: "call_b",
+            function: .init(name: "tool_b", arguments: "{}")
+        )
+        let resultsCompletedInReverseOrder: [(String, String)] = [
+            ("call_b", #"{"b":2}"#),
+            ("call_a", #"{"a":1}"#)
+        ]
+
+        // When
+        let (orderedCalls, orderedResults) = AgenticChatBackend.matchedPairs(
+            toolCalls: [firstCall, secondCall],
+            toolResults: resultsCompletedInReverseOrder
+        )
+
+        // Then
+        #expect(orderedCalls.map(\.id) == ["call_a", "call_b"])
+        #expect(orderedResults.map(\.0) == ["call_a", "call_b"])
+        #expect(orderedResults.map(\.1) == [#"{"a":1}"#, #"{"b":2}"#])
+    }
+
+    @Test
     func test_systemPromptProvider_when_invoked_per_turn_then_rebuilt_each_call()
     async throws {
         // Given

@@ -133,6 +133,32 @@ struct HistoryBudgeterTests {
     }
 
     @Test
+    func test_budget_when_window_keeps_partial_multi_tool_match_then_drops_invalid_pair() {
+        // Given
+        let budgeter = SlidingWindowHistoryBudgeter(windowSize: 4)
+        let transcript: [OpenAIChat.Message] = [
+            .init(role: .user, content: "u1"),
+            .init(role: .assistant, content: nil, toolCalls: [
+                .init(id: "c1", function: .init(name: "tool_one", arguments: "{}")),
+                .init(id: "c2", function: .init(name: "tool_two", arguments: "{}"))
+            ]),
+            .init(role: .tool, content: "{}", toolCallID: "c1"),
+            .init(role: .user, content: "u2"),
+            .init(role: .assistant, content: "a2")
+        ]
+
+        // When
+        let result = budgeter.budget(systemPrompt: nil,
+                                     priorMessages: transcript,
+                                     currentUserPrompt: "next")
+
+        // Then
+        #expect(result.map(\.role) == [.user, .assistant])
+        #expect(result.first?.role != .tool)
+        #expect(result.compactMap(\.content) == ["u2", "a2"])
+    }
+
+    @Test
     func test_budget_when_window_keeps_complete_tool_pair_then_pair_preserved() {
         // Given
         let budgeter = SlidingWindowHistoryBudgeter(windowSize: 3)

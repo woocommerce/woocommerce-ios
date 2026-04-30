@@ -25,22 +25,32 @@ public struct SlidingWindowHistoryBudgeter: HistoryBudgeter {
             return output
         }
         var window = Array(priorMessages.suffix(windowSize))
-        // OpenAI rejects orphan .tool messages without a preceding assistant tool_calls.
-        while let first = window.first, first.role == .tool {
-            window.removeFirst()
-        }
-        if let first = window.first,
-           first.role == .assistant,
-           let calls = first.toolCalls, calls.isEmpty == false {
-            let laterToolIDs = Set(window.dropFirst()
-                .filter { $0.role == .tool }
-                .compactMap { $0.toolCallID })
-            let allMatched = calls.allSatisfy { laterToolIDs.contains($0.id) }
-            if allMatched == false {
+        while let first = window.first {
+            if first.role == .tool {
                 window.removeFirst()
+                continue
             }
+            if first.hasUnmatchedToolCalls(in: window.dropFirst()) {
+                window.removeFirst()
+                continue
+            }
+            break
         }
         output.append(contentsOf: window)
         return output
+    }
+}
+
+private extension OpenAIChat.Message {
+    func hasUnmatchedToolCalls(in laterMessages: ArraySlice<OpenAIChat.Message>) -> Bool {
+        guard role == .assistant,
+              let calls = toolCalls,
+              calls.isEmpty == false else {
+            return false
+        }
+        let laterToolIDs = Set(laterMessages
+            .filter { $0.role == .tool }
+            .compactMap { $0.toolCallID })
+        return calls.contains { laterToolIDs.contains($0.id) == false }
     }
 }

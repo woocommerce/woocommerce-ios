@@ -14,7 +14,9 @@ public enum AnalyticsRevenueTool {
         Revenue analytics for a date range. Returns totals (gross sales, \
         refunds, taxes, shipping, net revenue) and per-interval subtotals \
         for revenue charts. Prefer this over orders_list for any aggregate \
-        revenue question.
+        revenue question. For breakdown requests (by week, by day), set the \
+        `interval` parameter directly to the implied dimension rather than \
+        asking the merchant which window or grain they meant.
         """,
         parametersSchema: .object([
             "type": .string("object"),

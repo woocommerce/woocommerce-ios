@@ -14,7 +14,9 @@ public enum ProductsUpdateTool {
         Update a product's allowlisted fields: name, regular_price, sale_price, \
         stock_quantity, status. Provide only the fields you want to change. For \
         variable products, prices live on each variation - use \
-        product_variations_update on the parent's variations instead.
+        product_variations_update on the parent's variations instead. Only call \
+        when the merchant has explicitly requested a change; never call to answer \
+        an information question.
         """,
         parametersSchema: .object([
             "type": .string("object"),

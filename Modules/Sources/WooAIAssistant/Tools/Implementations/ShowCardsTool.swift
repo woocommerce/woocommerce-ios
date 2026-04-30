@@ -14,9 +14,18 @@ public enum ShowCardsTool {
         Render rich cards for specific entities the user should see. Call \
         this whenever you would otherwise mention an order/product/customer \
         ID in prose. Supported families: order, product, product_variation, \
-        customer. For product_variation, parent_id is required and must be \
-        the parent product's id. Up to 10 references per call. Prefer 1-5 \
-        for list-style answers; summarize the rest in prose.
+        customer. `product_variation` references require both `id` and \
+        `parent_id` (the parent product's id). Order/product/customer \
+        references need only `id`. Up to 10 references per call. Prefer 1-5 \
+        for list-style answers; summarize the rest in prose. Cards already \
+        render the entity's full detail: customer cards include name, \
+        email, phone, billing/shipping address, and recent-order summary; \
+        order cards include id, number, status, total, date, customer \
+        name + email, and line items; product cards include name, price, \
+        stock status, and SKU. Do not fetch these fields separately when \
+        a card is already shown. Cards rendered in this turn remain \
+        referenced in subsequent turns; reuse their ids and fields rather \
+        than re-fetching.
         """,
         parametersSchema: .object([
             "type": .string("object"),

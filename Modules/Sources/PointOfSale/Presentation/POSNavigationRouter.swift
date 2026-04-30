@@ -10,6 +10,11 @@ struct POSNavigationRouter {
         navigationPath.append(.cashPayment(orderTotal: orderTotal))
     }
 
+    func pushScanToPay(orderTotal: String) {
+        guard navigationPath.isEmpty else { return }
+        navigationPath.append(.scanToPay(orderTotal: orderTotal))
+    }
+
     func pushEmailReceipt() {
         navigationPath.append(.emailReceipt)
     }
@@ -35,6 +40,16 @@ struct POSNavigationDestinationCashPaymentView: View {
         PointOfSaleCollectCashView(orderTotal: orderTotal,
                                    currencySettings: currencyProvider.currencySettings)
         .navigationBarHidden(true)
+    }
+}
+
+/// Thin wrapper that resolves environment dependencies for the scan-to-pay NavigationStack destination.
+struct POSNavigationDestinationScanToPayView: View {
+    let orderTotal: String
+
+    var body: some View {
+        PointOfSaleScanToPayView(orderTotal: orderTotal)
+            .navigationBarHidden(true)
     }
 }
 

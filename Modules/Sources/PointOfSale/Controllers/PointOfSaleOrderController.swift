@@ -40,6 +40,7 @@ protocol PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment(changeDueAmount: String?) async throws
+    func confirmScanToPayPayment() async throws
 }
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -130,6 +131,27 @@ protocol PointOfSaleOrderControllerProtocol {
             analytics.track(.pointOfSaleCashPaymentFailed)
             throw error
         }
+    }
+
+    @MainActor
+    func confirmScanToPayPayment() async throws {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+
+        try await orderService.addOrderNote(orderID: order.orderID,
+                                            isCustomerNote: false,
+                                            note: Localization.scanToPayNote)
+    }
+}
+
+private extension PointOfSaleOrderController {
+    enum Localization {
+        static let scanToPayNote = NSLocalizedString(
+            "pointOfSale.scanToPay.orderNote",
+            value: "Customer paid via Scan to Pay",
+            comment: "Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale."
+        )
     }
 }
 

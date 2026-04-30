@@ -3,19 +3,26 @@ import Foundation
 struct PointOfSalePaymentState: Equatable {
     var card: PointOfSaleCardPaymentState
     var cash: PointOfSaleCashPaymentState
+    var scanToPay: PointOfSaleScanToPayState
 
-    init(card: PointOfSaleCardPaymentState, cash: PointOfSaleCashPaymentState) {
+    init(card: PointOfSaleCardPaymentState,
+         cash: PointOfSaleCashPaymentState,
+         scanToPay: PointOfSaleScanToPayState = .idle) {
         self.card = card
         self.cash = cash
+        self.scanToPay = scanToPay
     }
 
     static var idle: PointOfSalePaymentState {
-        .init(card: .idle, cash: .idle)
+        .init(card: .idle, cash: .idle, scanToPay: .idle)
     }
 
     var activePaymentMethod: PointOfSalePaymentMethod {
         if cash != .idle {
             return .cash
+        }
+        if scanToPay != .idle {
+            return .scanToPay
         }
         return .card
     }
@@ -24,16 +31,20 @@ struct PointOfSalePaymentState: Equatable {
         switch activePaymentMethod {
         case .cash:
             return cash.shownFullScreen
+        case .scanToPay:
+            return scanToPay.shownFullScreen
         case .card:
             return card.shownFullScreen
         }
     }
 
     var isSuccess: Bool {
-        switch (card, cash) {
-        case (.cardPaymentSuccessful, _):
+        switch (card, cash, scanToPay) {
+        case (.cardPaymentSuccessful, _, _):
             return true
-        case (_, .paymentSuccess):
+        case (_, .paymentSuccess, _):
+            return true
+        case (_, _, .paymentSuccess):
             return true
         default:
             return false
@@ -41,6 +52,18 @@ struct PointOfSalePaymentState: Equatable {
     }
 
     var allowsCashPayment: Bool {
+        guard scanToPay == .idle else { return false }
+        switch card {
+        case .idle, .validatingOrderError, .paymentIntentCreationError, .acceptingCard:
+            return true
+        case .validatingOrder, .preparingReader, .cardInserted, .processingPayment,
+             .paymentError, .cardPaymentSuccessful:
+            return false
+        }
+    }
+
+    var allowsScanToPayPayment: Bool {
+        guard cash == .idle else { return false }
         switch card {
         case .idle, .validatingOrderError, .paymentIntentCreationError, .acceptingCard:
             return true
@@ -67,6 +90,12 @@ enum PointOfSaleCardPaymentState: Equatable {
 enum PointOfSaleCashPaymentState: Equatable {
     case idle
     case collectingCash
+    case paymentSuccess
+}
+
+enum PointOfSaleScanToPayState: Equatable {
+    case idle
+    case showingQRCode
     case paymentSuccess
 }
 
@@ -152,6 +181,17 @@ extension PointOfSaleCashPaymentState {
         case .idle:
             return false
         case .collectingCash, .paymentSuccess:
+            return true
+        }
+    }
+}
+
+extension PointOfSaleScanToPayState {
+    var shownFullScreen: Bool {
+        switch self {
+        case .idle:
+            return false
+        case .showingQRCode, .paymentSuccess:
             return true
         }
     }

@@ -80,6 +80,23 @@ class MockPOSOrderService: POSOrderServiceProtocol {
             throw error
         }
     }
+
+    var addOrderNoteWasCalled = false
+    var spyAddOrderNoteOrderID: Int64?
+    var spyAddOrderNoteIsCustomerNote: Bool?
+    var spyAddOrderNoteText: String?
+    func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {
+        addOrderNoteWasCalled = true
+        spyAddOrderNoteOrderID = orderID
+        spyAddOrderNoteIsCustomerNote = isCustomerNote
+        spyAddOrderNoteText = note
+        switch resultToReturn {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
 }
 
 enum MockPOSOrderServiceError: Error {

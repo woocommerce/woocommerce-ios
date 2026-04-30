@@ -11,7 +11,7 @@ struct TotalsViewHelper {
         }
 
         switch paymentState.activePaymentMethod {
-        case .cash:
+        case .cash, .scanToPay:
             return false
         case .card:
             switch paymentState.card {
@@ -52,6 +52,35 @@ struct TotalsViewHelper {
         return paymentViewHelper.shouldShowCashPaymentButton(paymentState: paymentState,
                                                              cardReaderConnectionStatus: cardReaderConnectionStatus,
                                                              isZeroTotal: isZeroTotal)
+    }
+
+    /// Scan-to-pay button visibility for the cart flow.
+    /// Mirrors the cash button rules and additionally requires a payment URL on the order.
+    func shouldShowScanToPayButton(orderState: PointOfSaleOrderState,
+                                   paymentState: PointOfSalePaymentState,
+                                   cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+                                   scanToPayURL: URL?) -> Bool {
+        guard orderState != .syncing else {
+            return false
+        }
+
+        if case .reconnecting = cardReaderConnectionStatus {
+            return false
+        }
+
+        guard scanToPayURL != nil else {
+            return false
+        }
+
+        let isZeroTotal: Bool = if case let .loaded(totals) = orderState {
+            totals.orderTotalDecimal.isZero
+        } else {
+            false
+        }
+
+        return paymentViewHelper.shouldShowScanToPayButton(paymentState: paymentState,
+                                                            cardReaderConnectionStatus: cardReaderConnectionStatus,
+                                                            isZeroTotal: isZeroTotal)
     }
 
     func shouldShowTotalDiscountField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {

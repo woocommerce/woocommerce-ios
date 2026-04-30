@@ -31,4 +31,13 @@ public protocol POSOrdersRemoteProtocol {
                          searchTerm: String,
                          pageNumber: Int,
                          pageSize: Int) async throws -> PagedItems<Order>
+
+    func addPOSOrderNote(siteID: Int64,
+                         orderID: Int64,
+                         isCustomerNote: Bool,
+                         note: String) async throws -> OrderNote
+}
+
+public enum POSOrdersRemoteError: Error {
+    case addOrderNoteFailed
 }

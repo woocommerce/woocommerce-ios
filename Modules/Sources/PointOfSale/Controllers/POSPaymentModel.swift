@@ -38,6 +38,7 @@ final class POSPaymentModel {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderProvider: POSPaymentOrderProviding
     private let cashPaymentHandler: POSCashPaymentHandling
+    private let scanToPayHandler: POSScanToPayHandling
     private let receiptSender: POSReceiptSending
     private let postPaymentStep: (() async throws -> Void)?
     let configuration: POSPaymentFlowConfiguration
@@ -59,10 +60,12 @@ final class POSPaymentModel {
     private var paymentSessionCancellables: Set<AnyCancellable> = []
     private var currentOrder: Order?
     private var formattedOrderTotalPrice: String?
+    private(set) var scanToPayURL: URL?
 
     init(cardPresentPaymentService: CardPresentPaymentFacade,
          orderProvider: POSPaymentOrderProviding,
          cashPaymentHandler: POSCashPaymentHandling,
+         scanToPayHandler: POSScanToPayHandling,
          receiptSender: POSReceiptSending,
          postPaymentStep: (() async throws -> Void)? = nil,
          configuration: POSPaymentFlowConfiguration,
@@ -73,6 +76,7 @@ final class POSPaymentModel {
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderProvider = orderProvider
         self.cashPaymentHandler = cashPaymentHandler
+        self.scanToPayHandler = scanToPayHandler
         self.receiptSender = receiptSender
         self.postPaymentStep = postPaymentStep
         self.configuration = configuration
@@ -283,6 +287,73 @@ extension POSPaymentModel {
     }
 }
 
+// MARK: - Scan to Pay
+extension POSPaymentModel {
+    func startScanToPayPayment() async {
+        guard paymentState.scanToPay == .idle else { return }
+        guard paymentState.allowsScanToPayPayment else { return }
+
+        DDLogInfo("📲 [ScanToPay] startScanToPayPayment called - card state: \(paymentState.card), scanToPay state: \(paymentState.scanToPay)")
+        analytics.track(.pointOfSaleCheckoutScanToPayPaymentTapped)
+
+        startPaymentOnCardReaderConnection?.cancel()
+        startPaymentOnCardReaderConnection = nil
+        startPaymentGeneration += 1
+
+        do {
+            let paymentOrder = try await orderProvider.provideOrder()
+            currentOrder = paymentOrder.order
+            formattedOrderTotalPrice = paymentOrder.formattedTotal
+            scanToPayURL = paymentOrder.paymentURL
+        } catch {
+            DDLogError("📲 [ScanToPay] failed to provide order: \(error)")
+        }
+
+        paymentState.scanToPay = .showingQRCode
+
+        cardPaymentCancelTask = Task { [weak self] in
+            do {
+                try await self?.cardPresentPaymentService.cancelPayment()
+            } catch {
+                DDLogWarn("📲 [ScanToPay] failed to cancel card payment: \(error)")
+            }
+        }
+    }
+
+    func cancelScanToPayPayment() async {
+        analytics.track(.pointOfSaleBackToCheckoutFromScanToPayTapped)
+        paymentState.scanToPay = .idle
+        paymentState.card = .idle
+        scanToPayURL = nil
+        cardPresentPaymentInlineMessage = nil
+
+        await cardPaymentCancelTask?.value
+        cardPaymentCancelTask = nil
+
+        await startPayment()
+    }
+
+    func completeScanToPayPayment() async throws {
+        let order: Order
+        if let currentOrder {
+            order = currentOrder
+        } else {
+            let paymentOrder = try await orderProvider.provideOrder()
+            order = paymentOrder.order
+            currentOrder = order
+        }
+        try await scanToPayHandler.completeScanToPayPayment(for: order)
+        try? await postPaymentStep?()
+        scanToPayPaymentSuccess()
+    }
+
+    private func scanToPayPaymentSuccess() {
+        paymentState.scanToPay = .paymentSuccess
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulScanToPayPayment()
+        celebration.celebrate()
+    }
+}
+
 // MARK: - Receipt
 extension POSPaymentModel {
     func sendReceipt(to emailAddress: String) async throws {
@@ -315,7 +386,8 @@ extension POSPaymentModel {
     /// For cash payments, restores session event subscriptions without activating the reader.
     func activate() async {
         DDLogInfo("▶️ [Session] activate called — isActive: \(isActive), " +
-                  "activeMethod: \(paymentState.activePaymentMethod), card: \(paymentState.card), cash: \(paymentState.cash)")
+                  "activeMethod: \(paymentState.activePaymentMethod), card: \(paymentState.card), " +
+                  "cash: \(paymentState.cash), scanToPay: \(paymentState.scanToPay)")
         guard !isActive else { return }
         if paymentState.activePaymentMethod == .card {
             await startPayment()
@@ -334,6 +406,7 @@ extension POSPaymentModel {
         cardPresentPaymentInlineMessage = nil
         currentOrder = nil
         formattedOrderTotalPrice = nil
+        scanToPayURL = nil
         cancelReaderPreparation()
     }
 
@@ -485,6 +558,17 @@ private extension POSPaymentModel {
                         paymentState.cash = .idle
                     } else {
                         DDLogInfo("💵 [CashPayment] ignoring non-committed card event \(cardPaymentState) during cash flow")
+                        return
+                    }
+                }
+                if paymentState.scanToPay != .idle {
+                    if cardPaymentState.requiresCashExit {
+                        DDLogWarn("📲 [ScanToPay] committed card event \(cardPaymentState) during scan-to-pay flow " +
+                                  "- transitioning to card view")
+                        paymentState.scanToPay = .idle
+                        scanToPayURL = nil
+                    } else {
+                        DDLogInfo("📲 [ScanToPay] ignoring non-committed card event \(cardPaymentState) during scan-to-pay flow")
                         return
                     }
                 }

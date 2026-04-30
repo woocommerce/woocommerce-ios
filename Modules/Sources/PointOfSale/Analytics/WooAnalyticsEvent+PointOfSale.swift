@@ -265,6 +265,12 @@ extension WooAnalyticsEvent {
             ])
         }
 
+        public static func scanToPayCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleScanToPayCollectPaymentSuccess, properties: [
+                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
+            ])
+        }
+
         static func searchButtonTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSaleSearchButtonTapped,

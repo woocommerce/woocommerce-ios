@@ -159,6 +159,7 @@ protocol PointOfSaleAggregateModelProtocol {
             cardPresentPaymentService: cardPresentPaymentService,
             orderProvider: POSCartPaymentOrderProvider(orderController: orderController),
             cashPaymentHandler: POSCartCashPaymentHandler(orderController: orderController),
+            scanToPayHandler: POSCartScanToPayHandler(orderController: orderController),
             receiptSender: receiptSender,
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
@@ -417,6 +418,21 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func collectCashPayment(changeDueAmount: String?) async throws {
         try await paymentModel.collectCashPayment(changeDueAmount: changeDueAmount)
+    }
+
+    @MainActor
+    func startScanToPayPayment() async {
+        await paymentModel.startScanToPayPayment()
+    }
+
+    @MainActor
+    func cancelScanToPayPayment() async {
+        await paymentModel.cancelScanToPayPayment()
+    }
+
+    @MainActor
+    func completeScanToPayPayment() async throws {
+        try await paymentModel.completeScanToPayPayment()
     }
 
     @MainActor

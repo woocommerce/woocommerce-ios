@@ -12,6 +12,13 @@ struct POSPaymentViewHelper {
             default:
                 return .clear
             }
+        case .scanToPay:
+            switch paymentState.scanToPay {
+            case .showingQRCode, .paymentSuccess:
+                return .posSurfaceBright
+            default:
+                return .clear
+            }
         case .card:
             switch paymentState.card {
             case .processingPayment:
@@ -31,7 +38,7 @@ struct POSPaymentViewHelper {
             return true
         }
         switch paymentState.activePaymentMethod {
-        case .cash:
+        case .cash, .scanToPay:
             return false
         case .card:
             if case .disconnected = cardReaderConnectionStatus,
@@ -42,9 +49,30 @@ struct POSPaymentViewHelper {
         }
     }
 
+    /// Scan-to-pay shares the cash button visibility rules: only shown on the card flow,
+    /// either while the reader is disconnected (initial state) or once card payment has actually
+    /// progressed past idle so we don't blanket hide it during the active card flow.
+    func shouldShowScanToPayButton(paymentState: PointOfSalePaymentState,
+                                   cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+                                   isZeroTotal: Bool = false) -> Bool {
+        if isZeroTotal, case .card = paymentState.activePaymentMethod {
+            return true
+        }
+        switch paymentState.activePaymentMethod {
+        case .cash, .scanToPay:
+            return false
+        case .card:
+            if case .disconnected = cardReaderConnectionStatus,
+               case .idle = paymentState.card {
+                return true
+            }
+            return paymentState.allowsScanToPayPayment && paymentState.card != .idle
+        }
+    }
+
     func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState.activePaymentMethod {
-        case .cash:
+        case .cash, .scanToPay:
             return false
         case .card:
             switch paymentState.card {
@@ -71,7 +99,7 @@ struct POSPaymentViewHelper {
         }
 
         switch paymentState.activePaymentMethod {
-        case .cash:
+        case .cash, .scanToPay:
             return false
         case .card:
             switch paymentState.card {
@@ -93,7 +121,7 @@ struct POSPaymentViewHelper {
 
     func shouldApplyPadding(paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState.activePaymentMethod {
-        case .cash:
+        case .cash, .scanToPay:
             return false
         case .card:
             switch paymentState.card {

@@ -18,13 +18,15 @@ struct POSPaymentContentView: View {
     private let viewHelper = POSPaymentViewHelper()
     @Namespace private var paymentMessageNamespace
 
-    /// Payment state with cash collection neutralized. Only `.collectingCash` is handled
-    /// by NavigationStack push. Success and idle are visible to this view.
-    /// TODO: Consider removing cash state entirely - it no longer drives the cash view.
+    /// Payment state with cash collection and scan-to-pay-in-progress neutralized.
+    /// Only `.collectingCash` and `.showingQRCode` are handled by NavigationStack push.
+    /// Success and idle are visible to this view.
     private var displayPaymentState: PointOfSalePaymentState {
         let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash
             ? .idle : paymentModel.paymentState.cash
-        return PointOfSalePaymentState(card: paymentModel.paymentState.card, cash: cash)
+        let scanToPay: PointOfSaleScanToPayState = paymentModel.paymentState.scanToPay == .showingQRCode
+            ? .idle : paymentModel.paymentState.scanToPay
+        return PointOfSalePaymentState(card: paymentModel.paymentState.card, cash: cash, scanToPay: scanToPay)
     }
 
     var body: some View {
@@ -43,7 +45,7 @@ struct POSPaymentContentView: View {
             Spacer()
                 .renderedIf(viewHelper.shouldApplyPadding(paymentState: displayPaymentState))
 
-            cashPaymentButtonView
+            secondaryPaymentButtonsView
         }
         .background(viewHelper.paymentBackgroundColor(for: displayPaymentState))
         .animation(.default, value: displayPaymentState.card)
@@ -98,6 +100,12 @@ struct POSPaymentContentView: View {
                 messageType: .paymentSuccess(
                     viewModel: .init(formattedOrderTotal: formattedTotal,
                                      paymentMethod: .cash)),
+                animation: .init(namespace: paymentMessageNamespace))
+        case .scanToPay:
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: formattedTotal,
+                                     paymentMethod: .scanToPay)),
                 animation: .init(namespace: paymentMessageNamespace))
         case .card:
             POSCardPaymentContentView(
@@ -177,24 +185,42 @@ struct POSPaymentContentView: View {
         .foregroundColor(Color.posOnSurface)
     }
 
-    // MARK: - Cash Payment Button
+    // MARK: - Secondary Payment Buttons
 
     @ViewBuilder
-    private var cashPaymentButtonView: some View {
-        if viewHelper.shouldShowCashPaymentButton(
-            paymentState: displayPaymentState,
-            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-            isZeroTotal: paymentModel.isZeroTotal) {
-            Button(action: {
-                paymentModel.startCashPayment()
-            }) {
-                Text(Localization.cashPaymentButton)
-                    .font(POSFontStyle.posBodyLargeBold)
+    private var secondaryPaymentButtonsView: some View {
+        VStack(spacing: POSSpacing.small) {
+            if viewHelper.shouldShowScanToPayButton(
+                paymentState: displayPaymentState,
+                cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                isZeroTotal: paymentModel.isZeroTotal),
+               paymentModel.scanToPayURL != nil {
+                Button(action: {
+                    Task { @MainActor in
+                        await paymentModel.startScanToPayPayment()
+                    }
+                }) {
+                    Text(Localization.scanToPayButton)
+                        .font(POSFontStyle.posBodyLargeBold)
+                }
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
-            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-            .padding(.horizontal, POSPadding.medium)
-            .safeAreaPadding(.bottom, POSPadding.medium)
+
+            if viewHelper.shouldShowCashPaymentButton(
+                paymentState: displayPaymentState,
+                cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                isZeroTotal: paymentModel.isZeroTotal) {
+                Button(action: {
+                    paymentModel.startCashPayment()
+                }) {
+                    Text(Localization.cashPaymentButton)
+                        .font(POSFontStyle.posBodyLargeBold)
+                }
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            }
         }
+        .padding(.horizontal, POSPadding.medium)
+        .safeAreaPadding(.bottom, POSPadding.medium)
     }
 }
 
@@ -224,6 +250,12 @@ private extension POSPaymentContentView {
             "pointOfSale.paymentContent.cashPaymentButton",
             value: "Cash payment",
             comment: "Button to start a cash payment in the payment flow"
+        )
+
+        static let scanToPayButton = NSLocalizedString(
+            "pointOfSale.paymentContent.scanToPayButton",
+            value: "Scan to Pay",
+            comment: "Button to start a Scan to Pay payment in the payment flow"
         )
     }
 }

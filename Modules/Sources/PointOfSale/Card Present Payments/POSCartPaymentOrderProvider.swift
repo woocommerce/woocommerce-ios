@@ -10,6 +10,7 @@ struct POSCartPaymentOrderProvider: POSPaymentOrderProviding {
         }
         return POSPaymentOrder(order: order,
                                formattedTotal: totals.orderTotal,
-                               totalDecimal: totals.orderTotalDecimal)
+                               totalDecimal: totals.orderTotalDecimal,
+                               paymentURL: order.paymentURL)
     }
 }

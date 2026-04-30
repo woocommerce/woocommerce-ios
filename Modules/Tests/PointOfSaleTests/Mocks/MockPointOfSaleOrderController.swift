@@ -45,4 +45,13 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
             throw sendReceiptErrorToThrow
         }
     }
+
+    var confirmScanToPayPaymentWasCalled = false
+    var confirmScanToPayPaymentErrorToThrow: Error?
+    func confirmScanToPayPayment() async throws {
+        confirmScanToPayPaymentWasCalled = true
+        if let confirmScanToPayPaymentErrorToThrow {
+            throw confirmScanToPayPaymentErrorToThrow
+        }
+    }
 }

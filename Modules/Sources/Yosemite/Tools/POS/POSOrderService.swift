@@ -15,6 +15,7 @@ public protocol POSOrderServiceProtocol {
     func loadOrder(orderID: Int64) async throws -> Order
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws
+    func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
@@ -95,6 +96,17 @@ public final class POSOrderService: POSOrderServiceProtocol {
     public func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {
         do {
             try await ordersRemote.updatePOSOrderEmail(siteID: siteID, orderID: orderID, emailAddress: recipientEmail)
+        } catch {
+            throw POSOrderServiceError.updateOrderFailed
+        }
+    }
+
+    public func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {
+        do {
+            _ = try await ordersRemote.addPOSOrderNote(siteID: siteID,
+                                                       orderID: orderID,
+                                                       isCustomerNote: isCustomerNote,
+                                                       note: note)
         } catch {
             throw POSOrderServiceError.updateOrderFailed
         }

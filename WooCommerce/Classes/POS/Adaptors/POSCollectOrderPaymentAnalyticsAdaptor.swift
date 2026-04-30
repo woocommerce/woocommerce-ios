@@ -81,6 +81,15 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         resetCheckoutTapCountTracker()
     }
 
+    func trackSuccessfulScanToPayPayment() {
+        let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
+
+        analytics.track(event: .PointOfSale.scanToPayCollectPaymentSuccess(
+            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
+        ))
+        resetCheckoutTapCountTracker()
+    }
+
     func trackPaymentFailure(with error: any Error) { }
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) { }
     func trackEmailTapped() { }

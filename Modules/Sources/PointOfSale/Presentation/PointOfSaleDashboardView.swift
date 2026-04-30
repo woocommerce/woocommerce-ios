@@ -195,7 +195,8 @@ struct PointOfSaleDashboardView: View {
                 NavigationStack(path: $navigationPath) {
                     HStack(spacing: POSSpacing.none) {
                         if !posModel.paymentState.card.shownFullScreen
-                            && posModel.paymentState.cash != .paymentSuccess {
+                            && posModel.paymentState.cash != .paymentSuccess
+                            && posModel.paymentState.scanToPay != .paymentSuccess {
                             CartView()
                                 .frame(width: cartWidth)
                                 .accessibilitySortPriority(1)
@@ -203,6 +204,7 @@ struct PointOfSaleDashboardView: View {
 
                         let totalsWidth = posModel.paymentState.card.shownFullScreen
                             || posModel.paymentState.cash == .paymentSuccess
+                            || posModel.paymentState.scanToPay == .paymentSuccess
                             ? cartWidth + checkoutWidth
                             : checkoutWidth
 
@@ -216,6 +218,8 @@ struct PointOfSaleDashboardView: View {
                         switch destination {
                         case .cashPayment(let orderTotal):
                             POSNavigationDestinationCashPaymentView(orderTotal: orderTotal)
+                        case .scanToPay(let orderTotal):
+                            POSNavigationDestinationScanToPayView(orderTotal: orderTotal)
                         case .emailReceipt:
                             POSNavigationDestinationEmailReceiptView()
                         }
@@ -231,6 +235,12 @@ struct PointOfSaleDashboardView: View {
                 if newValue == .collectingCash,
                    case .loaded(let totals) = posModel.orderState {
                     navigationRouter.pushCash(orderTotal: totals.orderTotal)
+                }
+            }
+            .onChange(of: posModel.paymentState.scanToPay) { _, newValue in
+                if newValue == .showingQRCode,
+                   case .loaded(let totals) = posModel.orderState {
+                    navigationRouter.pushScanToPay(orderTotal: totals.orderTotal)
                 }
             }
             .animation(.default, value: posModel.orderStage)

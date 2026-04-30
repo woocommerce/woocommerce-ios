@@ -17,6 +17,7 @@ struct PointOfSaleDashboardView: View {
 
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
+    @State private var floatingControlSuppressed: Bool = false
 
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
         posModel.viewStateCoordinatorForView
@@ -111,13 +112,16 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(viewState.showsFloatingControl)
+            .renderedIf(viewState.showsFloatingControl && !floatingControlSuppressed)
 
             POSConnectivityView()
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
+        .onPreferenceChange(POSHidesFloatingControlPreferenceKey.self) { hides in
+            floatingControlSuppressed = hides
+        }
         .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: viewState == .loading())
         .background(Color.posSurface)

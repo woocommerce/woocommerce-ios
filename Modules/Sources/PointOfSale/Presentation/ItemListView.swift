@@ -337,6 +337,9 @@ struct ItemListView: View {
         // (matches how `ChildItemList` handles the variations push).
         .toolbar(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden(true)
+        // Suppress the dashboard's floating control overlay so it doesn't sit on top
+        // of the form's submit button while the form is pushed.
+        .posHidesFloatingControl()
     }
 }
 

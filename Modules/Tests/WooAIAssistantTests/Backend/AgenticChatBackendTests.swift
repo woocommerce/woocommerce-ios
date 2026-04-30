@@ -166,6 +166,67 @@ struct AgenticChatBackendTests {
     }
 
     @Test
+    func test_send_when_third_turn_after_two_with_tool_calls_then_replays_in_correct_wire_order()
+    async throws {
+        // Given
+        let tool = AITool(name: "orders_list",
+                          description: "List orders",
+                          parametersSchema: .object([:]),
+                          safetyLevel: .safe)
+        let chat = MockAIChatService()
+        let firstCall = OpenAIChat.ToolCall(id: "c1",
+                                            function: .init(name: "orders_list",
+                                                            arguments: "{}"))
+        let secondCall = OpenAIChat.ToolCall(id: "c2",
+                                             function: .init(name: "orders_list",
+                                                             arguments: #"{"page":2}"#))
+        await chat.setScriptedTurns([
+            [.toolCall(firstCall), .completed(.toolCalls)],
+            [.textDelta("ok 1"), .completed(.stop)],
+            [.toolCall(secondCall), .completed(.toolCalls)],
+            [.textDelta("ok 2"), .completed(.stop)],
+            [.textDelta("done"), .completed(.stop)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([tool])
+        await registry.setResult(for: "orders_list",
+                                 result: .success(.init(toolName: "orders_list",
+                                                        structured: .object(["count": .int(1)]))))
+        let backend = AgenticChatBackend(chatService: chat,
+                                         toolRegistry: registry,
+                                         systemPrompt: nil)
+
+        // When
+        for prompt in ["t1", "t2", "t3"] {
+            let stream = backend.send(turn: .init(prompt: prompt),
+                                      context: Self.defaultContext,
+                                      session: nil)
+            for try await _ in stream {}
+        }
+
+        // Then
+        let captured = await chat.capturedRequests
+        let messagesOnTurn3 = captured.last?.messages ?? []
+        let roles = messagesOnTurn3.map(\.role)
+        #expect(roles == [.user, .assistant, .tool, .assistant,
+                          .user, .assistant, .tool, .assistant,
+                          .user])
+        let userPrompts = messagesOnTurn3.filter { $0.role == .user }.compactMap { $0.content }
+        #expect(userPrompts == ["t1", "t2", "t3"])
+        let assistantTextPair = messagesOnTurn3
+            .filter { $0.role == .assistant && $0.content != nil }
+            .compactMap { $0.content }
+        #expect(assistantTextPair == ["ok 1", "ok 2"])
+        let toolCallIDs = messagesOnTurn3
+            .filter { $0.role == .assistant }
+            .flatMap { $0.toolCalls ?? [] }
+            .map(\.id)
+        #expect(toolCallIDs == ["c1", "c2"])
+        let toolMessages = messagesOnTurn3.filter { $0.role == .tool }
+        #expect(toolMessages.compactMap(\.toolCallID) == ["c1", "c2"])
+    }
+
+    @Test
     func test_systemPromptProvider_when_invoked_per_turn_then_rebuilt_each_call()
     async throws {
         // Given

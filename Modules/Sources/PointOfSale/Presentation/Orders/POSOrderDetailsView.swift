@@ -59,19 +59,22 @@ struct POSOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    let displayedLineItems = orderListModel.ordersController.displayedLineItems
-                    let displayedCustomAmounts = orderListModel.ordersController.displayedCustomAmounts
-                    if !displayedLineItems.isEmpty || !displayedCustomAmounts.isEmpty {
-                        itemsSection(products: displayedLineItems, customAmounts: displayedCustomAmounts)
-                    }
-                    if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
+                    let isLoadingOrderRefunds = orderListModel.ordersController.isLoadingOrderRefunds
+                    if shouldShowDedicatedRefundsSection && isLoadingOrderRefunds {
+                        // Render skeletons for both sections while refund details load so
+                        // the items don't get rearranged when filtering kicks in.
+                        ghostItemsSection
                         ghostRefundedProductsSection
-                    }
-                    let refundedItems = order.refunds.flatMap { $0.items }
-                    if shouldShowDedicatedRefundsSection
-                        && !orderListModel.ordersController.isLoadingOrderRefunds
-                        && !refundedItems.isEmpty {
-                        refundedProductsSection(refundedItems)
+                    } else {
+                        let displayedLineItems = orderListModel.ordersController.displayedLineItems
+                        let displayedCustomAmounts = orderListModel.ordersController.displayedCustomAmounts
+                        if !displayedLineItems.isEmpty || !displayedCustomAmounts.isEmpty {
+                            itemsSection(products: displayedLineItems, customAmounts: displayedCustomAmounts)
+                        }
+                        let refundedItems = order.refunds.flatMap { $0.items }
+                        if shouldShowDedicatedRefundsSection && !refundedItems.isEmpty {
+                            refundedProductsSection(refundedItems)
+                        }
                     }
                     POSTotalsSectionView(
                         sectionTitle: Localization.totalsTitle,
@@ -220,6 +223,26 @@ private extension POSOrderDetailsView {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Localization.customAmountRowAccessibilityLabel(name: customAmount.name, total: customAmount.formattedTotal))
+    }
+
+    @ViewBuilder
+    var ghostItemsSection: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.itemsTitle)
+                .font(.posBodyXLargeRegular)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+
+            VStack(spacing: POSSpacing.small) {
+                ghostRefundedProductRow
+                divider
+                ghostRefundedProductRow
+            }
+        }
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+        .accessibilityHidden(true)
     }
 
     @ViewBuilder

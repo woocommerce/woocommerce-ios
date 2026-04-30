@@ -101,7 +101,6 @@ struct AssistantControllerTests {
         // Given
         let backend = MockAssistantBackend()
         await backend.setAutoFinishStreams(false)
-        // Two streams, both held open until the test releases them.
         await backend.setScriptedYields([[], []])
         let controller = AssistantController(backend: backend,
                                              context: Self.defaultContext)
@@ -117,11 +116,7 @@ struct AssistantControllerTests {
         // a follow-up question.
         controller.send("second")
         try await Self.waitUntilStreamCount(backend, equals: 2)
-        // Now release turn 1's stream so the stale Task wakes up and runs
-        // its cleanup. If the cleanup wrongly cleared the active task, the
-        // assertions below would flip.
         await backend.finishOldestStream()
-        // Yield enough times for the stale Task's cleanup to run on MainActor.
         for _ in 0..<10 { await Task.yield() }
 
         // Then
@@ -129,7 +124,67 @@ struct AssistantControllerTests {
         let turns = await backend.receivedTurns
         #expect(turns.map(\.prompt) == ["first", "second"])
 
-        // Cleanup
+        await backend.finishOldestStream()
+    }
+
+    @Test
+    func test_run_when_stale_turn_finishes_after_new_send_then_does_not_overwrite_new_turn_streaming_state()
+    async throws {
+        // Given
+        let backend = MockAssistantBackend()
+        await backend.setAutoFinishStreams(false)
+        await backend.setScriptedYields([
+            [],
+            [.event(.textChunk("hi from B"))]
+        ])
+        let controller = AssistantController(backend: backend,
+                                             context: Self.defaultContext)
+
+        // When
+        controller.send("first")
+        try await Self.waitUntilStreamCount(backend, equals: 1)
+        controller.cancel()
+        controller.send("second")
+        try await Self.waitUntilStreamCount(backend, equals: 2)
+        for _ in 0..<10 { await Task.yield() }
+        await backend.finishOldestStream()
+        for _ in 0..<10 { await Task.yield() }
+
+        // Then
+        #expect(controller.conversation.streamingState == .streaming)
+
+        await backend.finishOldestStream()
+    }
+
+    @Test
+    func test_run_when_stale_turn_naturally_completes_after_new_send_then_does_not_clear_activeTask()
+    async throws {
+        // Given
+        // Turn A finishes naturally between the user issuing it and the user
+        // following up; B is sent after A's stream finished but before A's
+        // post-loop cleanup necessarily ran on MainActor.
+        let backend = MockAssistantBackend()
+        await backend.setAutoFinishStreams(false)
+        await backend.setScriptedYields([
+            [.event(.textChunk("from A")), .event(.completed(routeConfidence: nil))],
+            [.event(.textChunk("from B"))]
+        ])
+        let controller = AssistantController(backend: backend,
+                                             context: Self.defaultContext)
+
+        // When
+        controller.send("first")
+        try await Self.waitUntilStreamCount(backend, equals: 1)
+        await backend.finishOldestStream()
+        try await Self.waitUntilCanSend(controller)
+        controller.send("second")
+        try await Self.waitUntilStreamCount(backend, equals: 1)
+        for _ in 0..<10 { await Task.yield() }
+
+        // Then
+        #expect(controller.canSend == false)
+        #expect(controller.conversation.streamingState == .streaming)
+
         await backend.finishOldestStream()
     }
 

@@ -85,6 +85,7 @@ public final class AssistantController {
         do {
             for try await yield in stream {
                 if Task.isCancelled { break }
+                guard activeTurnToken == token else { break }
                 switch yield {
                 case .event(let event):
                     conversation.apply(event, to: assistantMessageID)
@@ -95,16 +96,20 @@ public final class AssistantController {
                     conversation.replaceSession(session)
                 }
             }
-            switch conversation.streamingState {
-            case .failed, .outcomeUnknown:
-                break
-            default:
-                conversation.setStreaming(.idle)
+            if activeTurnToken == token {
+                switch conversation.streamingState {
+                case .failed, .outcomeUnknown:
+                    break
+                default:
+                    conversation.setStreaming(.idle)
+                }
             }
         } catch {
-            let message = (error as? AssistantError)?.message ?? error.localizedDescription
-            conversation.apply(.failed(.init(kind: .unknown, message: message)),
-                               to: assistantMessageID)
+            if activeTurnToken == token {
+                let message = (error as? AssistantError)?.message ?? error.localizedDescription
+                conversation.apply(.failed(.init(kind: .unknown, message: message)),
+                                   to: assistantMessageID)
+            }
         }
         if activeTurnToken == token {
             activeTask = nil

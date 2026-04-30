@@ -55,12 +55,10 @@ struct POSOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    if !orderListModel.ordersController.displayedLineItems.isEmpty {
-                        productsSection(orderListModel.ordersController.displayedLineItems)
-                    }
+                    let displayedLineItems = orderListModel.ordersController.displayedLineItems
                     let displayedCustomAmounts = orderListModel.ordersController.displayedCustomAmounts
-                    if !displayedCustomAmounts.isEmpty {
-                        customAmountsSection(displayedCustomAmounts)
+                    if !displayedLineItems.isEmpty || !displayedCustomAmounts.isEmpty {
+                        itemsSection(products: displayedLineItems, customAmounts: displayedCustomAmounts)
                     }
                     if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
                         ghostRefundedProductsSection
@@ -73,7 +71,7 @@ struct POSOrderDetailsView: View {
                     }
                     POSTotalsSectionView(
                         sectionTitle: Localization.totalsTitle,
-                        subtotalLabel: Localization.productsLabel,
+                        subtotalLabel: Localization.itemsLabel,
                         subtotalAmount: order.formattedSubtotal,
                         discountAmount: order.formattedDiscountTotal,
                         taxAmount: order.formattedTotalTax,
@@ -168,37 +166,22 @@ private struct POSRefundNothingToRefundError: LocalizedError {
 
 private extension POSOrderDetailsView {
     @ViewBuilder
-    func productsSection(_ items: [POSOrderItem]) -> some View {
+    func itemsSection(products: [POSOrderItem], customAmounts: [POSOrderCustomAmount]) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            Text(Localization.productsTitle)
+            Text(Localization.itemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                ForEach(Array(items.enumerated()), id: \.element.itemID) { index, item in
+                ForEach(Array(products.enumerated()), id: \.element.itemID) { index, item in
                     productRow(item: item)
 
-                    if index < items.count - 1 {
+                    if index < products.count - 1 || !customAmounts.isEmpty {
                         divider
                     }
                 }
-            }
-        }
-        .padding(POSPadding.medium)
-        .background(Color.posSurfaceContainerLowest)
-        .posItemCardBorderStyles()
-    }
 
-    @ViewBuilder
-    func customAmountsSection(_ customAmounts: [POSOrderCustomAmount]) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            Text(Localization.customAmountsTitle)
-                .font(.posBodyXLargeRegular)
-                .foregroundStyle(Color.posOnSurface)
-                .accessibilityAddTraits(.isHeader)
-
-            VStack(spacing: POSSpacing.small) {
                 ForEach(Array(customAmounts.enumerated()), id: \.element.id) { index, customAmount in
                     customAmountRow(customAmount: customAmount)
 
@@ -238,7 +221,7 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     var ghostRefundedProductsSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            Text(Localization.refundedProductsTitle)
+            Text(Localization.refundedItemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
@@ -278,7 +261,7 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func refundedProductsSection(_ items: [POSRefundItem]) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            Text(Localization.refundedProductsTitle)
+            Text(Localization.refundedItemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
@@ -571,22 +554,16 @@ private enum Constants {
 // MARK: - Localization
 
 private enum Localization {
-    static let productsTitle = NSLocalizedString(
-        "pos.orderDetailsView.productsTitle",
-        value: "Products",
-        comment: "Section title for the products list"
+    static let itemsTitle = NSLocalizedString(
+        "pos.orderDetailsView.itemsTitle",
+        value: "Items",
+        comment: "Section title for the order items list (products and custom amounts) in order details"
     )
 
-    static let refundedProductsTitle = NSLocalizedString(
-        "pos.orderDetailsView.refundedProductsTitle",
-        value: "Refunded products",
-        comment: "Section title for the refunded products list in order details"
-    )
-
-    static let customAmountsTitle = NSLocalizedString(
-        "pos.orderDetailsView.customAmountsTitle",
-        value: "Custom amounts",
-        comment: "Section title for the custom amounts list in order details"
+    static let refundedItemsTitle = NSLocalizedString(
+        "pos.orderDetailsView.refundedItemsTitle",
+        value: "Refunded items",
+        comment: "Section title for the refunded items list (products and custom amounts) in order details"
     )
 
     static func customAmountRowAccessibilityLabel(name: String, total: String) -> String {
@@ -622,10 +599,10 @@ private enum Localization {
         comment: "Section title for the order totals breakdown"
     )
 
-    static let productsLabel = NSLocalizedString(
-        "pos.orderDetailsView.productsLabel",
-        value: "Products",
-        comment: "Label for products subtotal in the totals section"
+    static let itemsLabel = NSLocalizedString(
+        "pos.orderDetailsView.itemsLabel",
+        value: "Items",
+        comment: "Label for items subtotal (products and custom amounts) in the totals section"
     )
 
     static func viaPaymentMethod(_ method: String) -> String {

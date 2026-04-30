@@ -18,7 +18,7 @@ struct AgenticChatBackendTests {
         // When
         var events: [AssistantEvent] = []
         let stream = backend.send(turn: .init(prompt: "Hi"),
-                                  context: Self.defaultContext,
+                                  context: defaultContext,
                                   session: nil)
         for try await yield in stream {
             if case .event(let event) = yield {
@@ -44,7 +44,7 @@ struct AgenticChatBackendTests {
         // When
         var events: [AssistantEvent] = []
         let stream = backend.send(turn: .init(prompt: "Hi"),
-                                  context: Self.defaultContext,
+                                  context: defaultContext,
                                   session: nil)
         for try await yield in stream {
             if case .event(let event) = yield {
@@ -73,11 +73,11 @@ struct AgenticChatBackendTests {
 
         // When
         let stream1 = backend.send(turn: .init(prompt: "first"),
-                                   context: Self.defaultContext,
+                                   context: defaultContext,
                                    session: nil)
         for try await _ in stream1 {}
         let stream2 = backend.send(turn: .init(prompt: "second"),
-                                   context: Self.defaultContext,
+                                   context: defaultContext,
                                    session: nil)
         for try await _ in stream2 {}
 
@@ -119,7 +119,7 @@ struct AgenticChatBackendTests {
 
         // When
         let stream = backend.send(turn: .init(prompt: "update order 1"),
-                                  context: Self.defaultContext,
+                                  context: defaultContext,
                                   session: nil)
         var events: [AssistantEvent] = []
         for try await yield in stream {
@@ -199,7 +199,7 @@ struct AgenticChatBackendTests {
         // When
         for prompt in ["t1", "t2", "t3"] {
             let stream = backend.send(turn: .init(prompt: prompt),
-                                      context: Self.defaultContext,
+                                      context: defaultContext,
                                       session: nil)
             for try await _ in stream {}
         }
@@ -243,11 +243,11 @@ struct AgenticChatBackendTests {
 
         // When
         let stream1 = backend.send(turn: .init(prompt: "one"),
-                                   context: Self.defaultContext,
+                                   context: defaultContext,
                                    session: nil)
         for try await _ in stream1 {}
         let stream2 = backend.send(turn: .init(prompt: "two"),
-                                   context: Self.defaultContext,
+                                   context: defaultContext,
                                    session: nil)
         for try await _ in stream2 {}
 
@@ -260,7 +260,7 @@ struct AgenticChatBackendTests {
         #expect(secondSystem == "prompt-2")
     }
 
-    private static let defaultContext = AssistantContext(
+    private let defaultContext = AssistantContext(
         siteID: 1,
         siteURL: URL(string: "https://example.com")!,
         blogID: nil

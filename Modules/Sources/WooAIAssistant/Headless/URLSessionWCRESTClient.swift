@@ -3,33 +3,20 @@ import CocoaLumberjackSwift
 import NetworkingCore
 
 /// `WCRESTClient` that talks straight to a WooCommerce store's
-/// `/wp-json/...` endpoints over HTTP Basic auth. The harness deliberately
-/// avoids the `Networking` module so it can run outside the Jetpack
-/// tunnel.
+/// `/wp-json/...` endpoints. Basic auth with WP user + application password.
+/// The harness deliberately avoids the `Networking` module so it can run
+/// outside the Jetpack tunnel.
 ///
-/// Two auth identities are supported:
-/// - WP user + application password (`.appPassword`). The default for
-///   merchants whose hosts let app passwords authenticate WC REST.
-/// - WooCommerce REST API consumer key + secret (`.consumerKey`).
-///   Required where Basic auth with app passwords returns
-///   `woocommerce_rest_cannot_view`. The same pair doubles as the
-///   `X-MCP-API-Key` header so a single secret covers REST and (future)
-///   MCP transports.
-///
-/// Both modes encode `username:password` into a Basic header on the wire;
-/// only the source pair differs. Non-2xx responses are returned to the
-/// caller as `WCRESTResponse(statusCode: ...)` per the protocol contract,
-/// not thrown.
+/// Non-2xx responses are returned to the caller as
+/// `WCRESTResponse(statusCode: ...)` per the protocol contract, not thrown.
 public struct URLSessionWCRESTClient: WCRESTClient {
 
     public enum Auth: Sendable {
         case appPassword(user: String, key: String)
-        case consumerKey(key: String, secret: String)
     }
 
     private let siteURL: URL
     private let basicAuthHeader: String
-    private let mcpAPIKeyHeader: String?
     private let session: URLSession
 
     public init(siteURL: URL,
@@ -44,10 +31,6 @@ public struct URLSessionWCRESTClient: WCRESTClient {
             // auth even though wp-admin accepts them.
             let stripped = key.replacingOccurrences(of: " ", with: "")
             raw = "\(user):\(stripped)"
-            self.mcpAPIKeyHeader = nil
-        case .consumerKey(let key, let secret):
-            raw = "\(key):\(secret)"
-            self.mcpAPIKeyHeader = "\(key):\(secret)"
         }
         let encoded = Data(raw.utf8).base64EncodedString()
         self.basicAuthHeader = "Basic \(encoded)"
@@ -69,9 +52,6 @@ public struct URLSessionWCRESTClient: WCRESTClient {
         request.setValue(basicAuthHeader, forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
-        if let mcpAPIKeyHeader {
-            request.setValue(mcpAPIKeyHeader, forHTTPHeaderField: "X-MCP-API-Key")
-        }
         if let body, !body.isEmpty {
             request.httpBody = body
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")

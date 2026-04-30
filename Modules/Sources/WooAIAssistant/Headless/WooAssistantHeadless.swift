@@ -21,25 +21,15 @@ public actor WooAssistantHeadless {
         public let siteID: Int64
         public let username: String
         public let appPassword: String
-        /// Optional WC REST consumer pair. When set, both Basic auth on REST
-        /// calls and the `X-MCP-API-Key` header use this pair instead of the
-        /// app password - some hosted setups gate WC REST behind capability
-        /// checks the app password fails.
-        public let wcConsumerKey: String?
-        public let wcConsumerSecret: String?
 
         public init(siteURL: String,
                     siteID: Int64,
                     username: String,
-                    appPassword: String,
-                    wcConsumerKey: String? = nil,
-                    wcConsumerSecret: String? = nil) {
+                    appPassword: String) {
             self.siteURL = siteURL
             self.siteID = siteID
             self.username = username
             self.appPassword = appPassword
-            self.wcConsumerKey = wcConsumerKey
-            self.wcConsumerSecret = wcConsumerSecret
         }
     }
 
@@ -54,16 +44,12 @@ public actor WooAssistantHeadless {
             let siteID: Int64
             let username: String
             let appPassword: String
-            let wcConsumerKey: String?
-            let wcConsumerSecret: String?
         }
         guard let stored = try? JSONDecoder().decode(Stored.self, from: data) else { return nil }
         return Credentials(siteURL: stored.siteURL,
                            siteID: stored.siteID,
                            username: stored.username,
-                           appPassword: stored.appPassword,
-                           wcConsumerKey: stored.wcConsumerKey,
-                           wcConsumerSecret: stored.wcConsumerSecret)
+                           appPassword: stored.appPassword)
     }
 
     public struct Configuration: Sendable {
@@ -134,19 +120,10 @@ public actor WooAssistantHeadless {
             appPassword: credentials.appPassword
         )
         let chatService = JetpackAIQueryClient(jwtProvider: jwtProvider)
-        let restClient: URLSessionWCRESTClient
-        if let key = credentials.wcConsumerKey, !key.isEmpty,
-           let secret = credentials.wcConsumerSecret, !secret.isEmpty {
-            restClient = URLSessionWCRESTClient(
-                siteURL: normalizedSiteURL,
-                auth: .consumerKey(key: key, secret: secret)
-            )
-        } else {
-            restClient = URLSessionWCRESTClient(
-                siteURL: normalizedSiteURL,
-                auth: .appPassword(user: credentials.username, key: credentials.appPassword)
-            )
-        }
+        let restClient = URLSessionWCRESTClient(
+            siteURL: normalizedSiteURL,
+            auth: .appPassword(user: credentials.username, key: credentials.appPassword)
+        )
         self.init(credentials: credentials,
                   configuration: configuration,
                   chatService: chatService,

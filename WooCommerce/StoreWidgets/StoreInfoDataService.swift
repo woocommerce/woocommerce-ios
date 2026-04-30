@@ -132,6 +132,24 @@ final class StoreInfoDataService {
     }
 }
 
+// MARK: - Placeholder sample
+
+extension StoreInfoDataService.Stats {
+    /// Sample values used by the widget's redacted/placeholder entry. Picked to render
+    /// non-zero, plausible numbers across all catalog metrics so the placeholder reads as
+    /// real data rather than a blank slate.
+    ///
+    static let placeholderSample = Self(
+        revenue: 132.234,
+        netRevenue: 120.000,
+        averageOrderValue: 5.75,
+        totalOrders: 23,
+        totalItemsSold: 41,
+        totalVisitors: 67,
+        conversion: 23.0 / 67.0
+    )
+}
+
 // MARK: - DateRange factories
 
 extension StoreInfoDataService.DateRange {

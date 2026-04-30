@@ -112,14 +112,14 @@ private extension ARCuboidEntity {
     }
 
     enum EdgeThickness {
-        static let regular: Float = 0.006
+        static let regular: Float = 0.008
         /// Bottom edges are thicker so the floor contact line reads clearly.
-        static let bottom: Float = 0.012
+        static let bottom: Float = 0.014
     }
 
     enum AlphaFade {
         static let near: Float = 1.0
-        static let far: Float = 0.5
+        static let far: Float = 0.75
         static let minRange: Float = 0.0001
     }
 

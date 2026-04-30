@@ -38,6 +38,10 @@ struct POSOrderDetailsView: View {
     }
 
     var body: some View {
+        // The `order` prop is captured at navigation time and goes stale once the controller
+        // refreshes refund details. Prefer the controller's live `selectedOrder` so the view
+        // re-renders when refunds are loaded or the order is refetched after a refund.
+        let order = orderListModel.ordersController.selectedOrder ?? self.order
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: POSOrderListView.Localization.orderTitle(order.number),

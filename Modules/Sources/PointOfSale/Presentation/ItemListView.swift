@@ -333,6 +333,10 @@ struct ItemListView: View {
                 posModel.upsertCustomAmount(customAmount)
             }
         )
+        // Hide the system nav bar so only the form's own POSPageHeaderView is visible
+        // (matches how `ChildItemList` handles the variations push).
+        .toolbar(.hidden, for: .navigationBar)
+        .navigationBarBackButtonHidden(true)
     }
 }
 

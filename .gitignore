@@ -109,10 +109,3 @@ vendor/Periphery/
 # AI Agents / Claude Code local config (personal, not shared)
 CLAUDE.local.md
 .claude/settings.local.json
-# Per-run smoke eval records — local only, grow unbounded, not interesting to diff
-.claude/skills/*/runs/
-# Defense in depth — the smoke skill writes credentials to /tmp by design, but
-# don't ever let them leak into the repo if anyone moves the path inside the tree.
-**/woo-ai-assistant-credentials*.json
-**/woocommerce_sites_environment*
-**/.woo-ai-smoke/store.env

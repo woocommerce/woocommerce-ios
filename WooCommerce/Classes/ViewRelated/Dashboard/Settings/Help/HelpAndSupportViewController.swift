@@ -474,8 +474,11 @@ private extension HelpAndSupportViewController {
     /// AI Support Chat action
     ///
     func aiSupportChatWasPressed() {
+        let entryPoint: SupportChatViewModel.EntryPoint = ServiceLocator.stores.isAuthenticated
+            ? .helpAndSupport
+            : .preLogin
         let viewModel = SupportChatViewModel(
-            entryPoint: .helpAndSupport,
+            entryPoint: entryPoint,
             onContactHumanSupport: { [weak self] transcript in
                 self?.navigateToContactSupport(transcript: transcript)
             }

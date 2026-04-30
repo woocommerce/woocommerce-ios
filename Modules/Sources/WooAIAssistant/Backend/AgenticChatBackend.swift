@@ -73,14 +73,32 @@ public final class AgenticChatBackend: AssistantBackendConfirming, @unchecked Se
                     continuation.yield(.event(.failed(.init(kind: .unknown, message: message))))
                 }
 
+                let (sanitizedToolCalls, sanitizedToolResults) =
+                    Self.matchedPairs(toolCalls: pendingToolCalls,
+                                      toolResults: pendingToolResults)
                 await transcript.append(userPrompt: turn.prompt,
                                         assistantText: pendingText,
-                                        toolCalls: pendingToolCalls,
-                                        toolResults: pendingToolResults)
+                                        toolCalls: sanitizedToolCalls,
+                                        toolResults: sanitizedToolResults)
                 continuation.finish()
             }
             continuation.onTermination = { _ in task.cancel() }
         }
+    }
+
+    /// OpenAI rejects an `assistant.tool_calls[i]` without a matching `tool`
+    /// message with the same `tool_call_id`. When the orchestrator throws
+    /// (or the transport drops) between `toolCallStarted` and
+    /// `toolCallCompleted`, dropping the unmatched pairs keeps the next turn
+    /// replay valid instead of leaving the chat unrecoverable.
+    static func matchedPairs(toolCalls: [OpenAIChat.ToolCall],
+                             toolResults: [(String, String)])
+    -> ([OpenAIChat.ToolCall], [(String, String)]) {
+        let resultIDs = Set(toolResults.map(\.0))
+        let matchedCalls = toolCalls.filter { resultIDs.contains($0.id) }
+        let matchedCallIDs = Set(matchedCalls.map(\.id))
+        let matchedResults = toolResults.filter { matchedCallIDs.contains($0.0) }
+        return (matchedCalls, matchedResults)
     }
 
     /// Drop accumulated history. Call when the merchant starts a fresh chat.

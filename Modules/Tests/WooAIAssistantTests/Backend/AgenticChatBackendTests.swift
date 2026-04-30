@@ -142,6 +142,30 @@ struct AgenticChatBackendTests {
     }
 
     @Test
+    func test_transcript_when_toolCallStarted_without_completed_then_orphan_dropped_in_next_turn()
+    async throws {
+        // Given
+        let started = OpenAIChat.ToolCall(
+            id: "started_only",
+            function: .init(name: "orders_list", arguments: "{}")
+        )
+        let paired = OpenAIChat.ToolCall(
+            id: "paired",
+            function: .init(name: "orders_list", arguments: "{}")
+        )
+
+        // When
+        let (calls, results) = AgenticChatBackend.matchedPairs(
+            toolCalls: [started, paired],
+            toolResults: [("paired", "{}")]
+        )
+
+        // Then
+        #expect(calls.map(\.id) == ["paired"])
+        #expect(results.map(\.0) == ["paired"])
+    }
+
+    @Test
     func test_systemPromptProvider_when_invoked_per_turn_then_rebuilt_each_call()
     async throws {
         // Given

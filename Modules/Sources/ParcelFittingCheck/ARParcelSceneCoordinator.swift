@@ -42,6 +42,14 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     /// the previous slider minimum (1 cm) per design intent.
     private static let minSizeMeters: Float = 0.02
 
+    /// When Y wins the screen-space alignment race, an X or Z axis whose
+    /// screen direction is close to Y's would be a plausible alternative, and
+    /// the gesture engages the strict upper-half hit-test fallback. Below this
+    /// ratio (second-best score / Y's score), Y is treated as the clear winner
+    /// and the hit-test is skipped — vertical pinch anywhere on the cuboid
+    /// resizes height. 0.7 ≈ roughly 45° of screen-direction separation.
+    private static let yAxisAmbiguityThreshold: Float = 0.7
+
     private struct ResizeContext {
         let axis: ARCuboidEntity.Axis
         let axisWorld: SIMD3<Float>
@@ -236,7 +244,7 @@ private extension ARParcelSceneCoordinator {
         // centred on the root, so the geometric centre sits half-a-height up.
         let cuboidCenter = position + 0.5 * scale.y * yAxis
 
-        guard let chosenAxis = pickActiveAxis(
+        guard let pick = pickActiveAxis(
             arView: arView,
             cuboidCenter: cuboidCenter,
             xAxisWorld: xAxis,
@@ -245,11 +253,14 @@ private extension ARParcelSceneCoordinator {
             firstScreen: gesture.startLocations.first,
             secondScreen: gesture.startLocations.second
         ) else { return }
+        let chosenAxis = pick.axis
 
-        // Height resize requires at least one finger on the upper half of the
-        // cuboid (top face *or* the upper portion of any side face). A strict
-        // top-face hit-test was too small a target for short cuboids.
-        if chosenAxis == .y {
+        // For Y, a vertical screen-space pinch is the natural cue. We accept
+        // it without a hit-test when Y dominates the alignment race; only when
+        // X or Z projects close to Y's screen direction do we fall back to
+        // requiring at least one finger on the upper half of the cuboid as
+        // explicit confirmation.
+        if chosenAxis == .y && pick.ambiguity > Self.yAxisAmbiguityThreshold {
             let firstUpper = hitTestCuboidUpperHalf(arView: arView, screenPoint: gesture.startLocations.first)
             let secondUpper = hitTestCuboidUpperHalf(arView: arView, screenPoint: gesture.startLocations.second)
             guard firstUpper || secondUpper else { return }
@@ -408,7 +419,7 @@ private extension ARParcelSceneCoordinator {
         zAxisWorld: SIMD3<Float>,
         firstScreen: CGPoint,
         secondScreen: CGPoint
-    ) -> ARCuboidEntity.Axis? {
+    ) -> (axis: ARCuboidEntity.Axis, ambiguity: Float)? {
         guard let centerScreen = arView.project(cuboidCenter),
               let xEnd = arView.project(cuboidCenter + 0.1 * xAxisWorld),
               let yEnd = arView.project(cuboidCenter + 0.1 * yAxisWorld),
@@ -422,15 +433,21 @@ private extension ARParcelSceneCoordinator {
         let candidates: [(ARCuboidEntity.Axis, CGPoint)] = [(.x, xDir), (.y, yDir), (.z, zDir)]
         var bestAxis: ARCuboidEntity.Axis?
         var bestScore: CGFloat = 0
+        var secondBestScore: CGFloat = 0
         for (axis, dir) in candidates {
             let length = max(hypot(dir.x, dir.y), 1)
             let score = abs(fingerDir.x * dir.x + fingerDir.y * dir.y) / length
             if score > bestScore {
+                secondBestScore = bestScore
                 bestScore = score
                 bestAxis = axis
+            } else if score > secondBestScore {
+                secondBestScore = score
             }
         }
-        return bestAxis
+        guard let bestAxis else { return nil }
+        let ambiguity: Float = bestScore > 0 ? Float(secondBestScore / bestScore) : 0
+        return (bestAxis, ambiguity)
     }
 
     func signedOutwardDelta(face: ARCuboidEntity.Face, axisDelta: Float) -> Float {

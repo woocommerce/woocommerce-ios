@@ -27,12 +27,35 @@ struct StoreInfoWidget: Widget {
     }
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: WooConstants.storeInfoWidgetKind, provider: StoreInfoProvider()) { entry in
+        // Compile-time gate on the configuration type — matches the runtime
+        // `configurableStoreStatsWidgets` FF policy (localDeveloper || alpha) at the build
+        // level. A runtime gate is not expressible: `Widget.body` is `some WidgetConfiguration`
+        // (opaque return — branches must agree on a single concrete type) and
+        // `WidgetBundleBuilder` explicitly disables `buildOptional` for runtime `if`. The
+        // configuration `kind` is identical across both branches, so existing tiles survive
+        // the compile-time switch when alpha builds upgrade to App Store builds and back.
+#if DEBUG || ALPHA
+        AppIntentConfiguration(
+            kind: WooConstants.storeInfoWidgetKind,
+            intent: StoreStatsConfigurationIntent.self,
+            provider: StoreInfoProvider()
+        ) { entry in
             StoreInfoWidgetEntryView(entry: entry)
         }
         .configurationDisplayName(Localization.title)
         .description(Localization.description)
         .supportedFamilies(supportedFamilies)
+#else
+        StaticConfiguration(
+            kind: WooConstants.storeInfoWidgetKind,
+            provider: StoreInfoProvider()
+        ) { entry in
+            StoreInfoWidgetEntryView(entry: entry)
+        }
+        .configurationDisplayName(Localization.title)
+        .description(Localization.description)
+        .supportedFamilies(supportedFamilies)
+#endif
     }
 }
 

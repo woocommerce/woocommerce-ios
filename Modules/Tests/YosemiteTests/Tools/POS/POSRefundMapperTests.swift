@@ -201,7 +201,7 @@ struct POSRefundMapperTests {
         #expect(result.first(where: { $0.name == "Discount Fee" })?.isLumpSum == true)
     }
 
-    @Test func test_map_when_refund_has_fee_lines_then_appends_lump_sum_rows() {
+    @Test func test_map_when_refund_has_fee_lines_then_appends_lump_sum_rows() throws {
         // Given - the refund's fee_line has its own id (12345) and points back via _refunded_item_id (777)
         let refund = makeRefund(
             items: [],
@@ -216,7 +216,7 @@ struct POSRefundMapperTests {
 
         // Then - refundedItemID resolves to the original order fee id, not the refund-side id
         #expect(result.count == 1)
-        let row = try! #require(result.first)
+        let row = try #require(result.first)
         #expect(row.refundedItemID == 777)
         #expect(row.name == "Discount Fee")
         #expect(row.isLumpSum == true)

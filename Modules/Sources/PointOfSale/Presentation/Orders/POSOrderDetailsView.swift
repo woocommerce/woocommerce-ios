@@ -63,7 +63,7 @@ struct POSOrderDetailsView: View {
                     if shouldShowDedicatedRefundsSection && isLoadingOrderRefunds {
                         // Render skeletons for both sections while refund details load so
                         // the items don't get rearranged when filtering kicks in.
-                        ghostItemsSection
+                        ghostItemsSection(rowCount: order.lineItems.count + order.customAmounts.count)
                         ghostRefundedProductsSection
                     } else {
                         let displayedLineItems = orderListModel.ordersController.displayedLineItems
@@ -226,7 +226,11 @@ private extension POSOrderDetailsView {
     }
 
     @ViewBuilder
-    var ghostItemsSection: some View {
+    func ghostItemsSection(rowCount: Int) -> some View {
+        // Pre-load we know the order's items count from `order.lineItems` + `order.customAmounts`,
+        // so render exactly that many placeholder rows. The layout doesn't shrink/grow when the
+        // refund details finish loading and the real rows replace the skeleton.
+        let count = max(1, rowCount)
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.itemsTitle)
                 .font(.posBodyXLargeRegular)
@@ -234,9 +238,13 @@ private extension POSOrderDetailsView {
                 .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                ghostRefundedProductRow
-                divider
-                ghostRefundedProductRow
+                ForEach(0..<count, id: \.self) { index in
+                    ghostRefundedProductRow
+
+                    if index < count - 1 {
+                        divider
+                    }
+                }
             }
         }
         .padding(POSPadding.medium)

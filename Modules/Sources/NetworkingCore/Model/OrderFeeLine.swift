@@ -60,9 +60,12 @@ public struct OrderFeeLine: Equatable, Codable, Sendable, GeneratedFakeable, Gen
 
         // When this fee line belongs to a refund response, WC stores the original fee line id
         // in `meta_data` under the `_refunded_item_id` key. Decode it lossily so the field stays
-        // `nil` for fees on orders (where the meta entry is absent).
+        // `nil` for fees on orders (where the meta entry is absent). Uses a separate keyed
+        // container so the JSON `meta_data` field is read as raw `[MetaData]` (preserving
+        // underscored keys) rather than as the filtered `[OrderItemAttribute]` decoded above.
         let refundedItemID: Int64? = {
-            guard let metaData = try? container.decode([MetaData].self, forKey: .attributes),
+            let metaContainer = try? decoder.container(keyedBy: MetaDataKeys.self)
+            guard let metaData = try? metaContainer?.decode([MetaData].self, forKey: .metaData),
                   let raw = metaData.first(where: { $0.key == "_refunded_item_id" })?.value.stringValue else {
                 return nil
             }
@@ -109,5 +112,11 @@ private extension OrderFeeLine {
         case totalTax   = "total_tax"
         case taxes      = "taxes"
         case attributes = "meta_data"
+    }
+
+    /// Used to decode `meta_data` as raw `[MetaData]` (preserving underscored keys like
+    /// `_refunded_item_id`) instead of as `[OrderItemAttribute]` via the main `CodingKeys`.
+    enum MetaDataKeys: String, CodingKey {
+        case metaData = "meta_data"
     }
 }

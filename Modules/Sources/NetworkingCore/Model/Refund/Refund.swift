@@ -80,7 +80,10 @@ public struct Refund: Codable, GeneratedFakeable, GeneratedCopiable {
         let isAutomated = try container.decodeIfPresent(Bool.self, forKey: .automatedRefund)
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
         let shippingLines = try container.decodeIfPresent([ShippingLine].self, forKey: .shippingLines)
-        let feeLines = (try? container.decodeIfPresent([OrderFeeLine].self, forKey: .feeLines)) ?? []
+        // Older WC stores omit `fee_lines` from refund responses; treat the field as optional
+        // (matching `shippingLines`) so a missing key isn't a decoding error, but propagate any
+        // decoding failure on a present-but-malformed array instead of silently dropping it.
+        let feeLines = try container.decodeIfPresent([OrderFeeLine].self, forKey: .feeLines) ?? []
 
         self.init(refundID: refundID,
                   orderID: orderID,

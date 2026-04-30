@@ -128,6 +128,14 @@ enum RefundActionAvailability {
         }
     }
 
+    /// Custom amounts to render in the order details items section, with already-refunded
+    /// fees filtered out.
+    ///
+    /// The exclusion relies on the refund response carrying `fee_lines` whose `_refunded_item_id`
+    /// meta points back to the original order's fee id. Stores on WooCommerce versions that
+    /// omit `fee_lines` (or the meta) will fall through and the refunded fee will keep showing
+    /// in this list — there is no other server-provided link from a refund back to the fee it
+    /// refunded.
     @MainActor
     var displayedCustomAmounts: [POSOrderCustomAmount] {
         guard let order = selectedOrder else { return [] }

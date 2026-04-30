@@ -4,6 +4,7 @@
 -----
 - [*] Add FedEx Terms of Service handling for shipping label purchases [https://github.com/woocommerce/woocommerce-ios/pull/16925]
 - [*] POS: Update empty orders state copy and replace "Learn more" with "Refresh" [https://github.com/woocommerce/woocommerce-ios/pull/16961]
+- [Internal] POS: Show custom amounts in the refund flow and order details [https://github.com/woocommerce/woocommerce-ios/pull/17014]
 
 
 24.6

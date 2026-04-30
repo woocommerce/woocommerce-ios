@@ -131,6 +131,13 @@
         "identifier" : "WooAIAssistantTests",
         "name" : "WooAIAssistantTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "ParcelFittingCheckTests",
+        "name" : "ParcelFittingCheckTests"
+      }
     }
   ],
   "version" : 1

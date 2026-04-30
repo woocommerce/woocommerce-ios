@@ -9,7 +9,7 @@ import CocoaLumberjackSwift
 ///
 /// Forwards confirm/cancel taps from the UI straight into the orchestrator's continuation API
 /// so unsafe-tool flows resume on the same actor that suspended them.
-public final class AgenticChatBackend: AssistantBackendConfirming, @unchecked Sendable {
+public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
 
     private let orchestrator: AgenticLoopOrchestrator
     private let transcript = TranscriptStore()

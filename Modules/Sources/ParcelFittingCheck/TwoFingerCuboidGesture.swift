@@ -51,22 +51,18 @@ final class TwoFingerCuboidGesture: UIGestureRecognizer {
 
         let currentDistance = hypot(p1.x - p0.x, p1.y - p0.y)
         let currentAngle = atan2(p1.y - p0.y, p1.x - p0.x)
+        let angleDiff = currentAngle - initialAngle
         distanceFromStart = currentDistance - initialDistance
-        var rot = currentAngle - initialAngle
-        while rot > .pi { rot -= 2 * .pi }
-        while rot < -.pi { rot += 2 * .pi }
-        rotationFromStart = rot
+        rotationFromStart = atan2(sin(angleDiff), cos(angleDiff))
 
         if mode == .undecided {
             let angleCrossed = abs(rotationFromStart) > Threshold.angleRadians
-            if isResizeEnabled {
-                let distanceCrossed = abs(distanceFromStart) > Threshold.distancePoints
-                    && abs(distanceFromStart) > Threshold.distanceFraction * initialDistance
-                if distanceCrossed && (!angleCrossed || abs(distanceFromStart) >= Threshold.distancePoints * 1.5) {
-                    mode = .resize
-                } else if angleCrossed {
-                    mode = .rotate
-                }
+            let distanceCrossed = isResizeEnabled
+                && abs(distanceFromStart) > Threshold.distancePoints
+                && abs(distanceFromStart) > Threshold.distanceFraction * initialDistance
+
+            if distanceCrossed && (!angleCrossed || abs(distanceFromStart) >= Threshold.distancePoints * 1.5) {
+                mode = .resize
             } else if angleCrossed {
                 mode = .rotate
             }

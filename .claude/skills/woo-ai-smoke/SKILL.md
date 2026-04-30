@@ -198,7 +198,7 @@ struct SmokeRun {
             let resolver: @Sendable (String, AIToolClassification, String) -> Bool = { _, _, _ in
                 !turn.autoDeclineWrites
             }
-            let result: ConversationTurnResult
+            let result: WooAssistantHeadless.ConversationTurnResult
             do {
                 result = try await harness.send(turn.prompt, resolveConfirmation: resolver)
             } catch {
@@ -210,7 +210,7 @@ struct SmokeRun {
         }
     }
 
-    static func dump(scenario: Scenario, sample: Int, turn: Int, prompt: String, result: ConversationTurnResult) {
+    static func dump(scenario: Scenario, sample: Int, turn: Int, prompt: String, result: WooAssistantHeadless.ConversationTurnResult) {
         let tools = result.toolCalls.map(\.name)
         let toolArgs = result.toolCalls.map { "\($0.name)(\($0.argumentsJSON.prefix(120)))" }
         let cards = Array(Set(result.cards.map(\.kind.rawValue))).sorted().joined(separator: ",")

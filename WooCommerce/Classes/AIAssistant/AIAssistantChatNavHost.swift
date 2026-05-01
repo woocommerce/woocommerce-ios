@@ -40,8 +40,6 @@ struct AIAssistantChatNavHost<Content: View>: UIViewControllerRepresentable {
         func navigationController(_ navigationController: UINavigationController,
                                   willShow viewController: UIViewController,
                                   animated: Bool) {
-            // Hide the nav bar on the chat root (its inner NavigationStack provides the toolbar);
-            // show it on every pushed detail VC so the back button is visible.
             let isRoot = viewController === navigationController.viewControllers.first
             navigationController.setNavigationBarHidden(isRoot, animated: animated)
         }

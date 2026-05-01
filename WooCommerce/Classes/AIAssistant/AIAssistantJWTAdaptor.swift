@@ -6,7 +6,6 @@ import enum NetworkingCore.Credentials
 import struct Alamofire.HTTPMethod
 import WooAIAssistant
 
-/// `Network` isn't declared `Sendable`, but the production instance is constructed once at launch.
 struct AIAssistantJWTAdaptor: @unchecked Sendable, AssistantJWTProviding {
 
     private let provider: WpComJetpackAIJWTProvider

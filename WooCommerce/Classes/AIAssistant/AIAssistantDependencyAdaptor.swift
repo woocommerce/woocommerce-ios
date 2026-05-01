@@ -34,8 +34,7 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
             .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
 
-        // The LLM endpoint authenticates as plain WPCOM; WC REST routes through the
-        // Jetpack tunnel so the same code path works for app-password and Jetpack sites.
+        // LLM endpoint goes plain WPCOM, WC REST goes through the Jetpack tunnel.
         let wpcomNetwork = AlamofireNetwork(credentials: credentials,
                                             selectedSite: nil,
                                             appPasswordSupportState: nil)

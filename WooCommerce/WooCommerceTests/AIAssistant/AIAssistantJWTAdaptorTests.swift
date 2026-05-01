@@ -101,7 +101,7 @@ private final class StubNetwork: Network, @unchecked Sendable {
             lastPath = dotcom.path
         }
         let payload = ["token": token]
-        return (try? JSONSerialization.data(withJSONObject: payload)) ?? Data()
+        return try! JSONSerialization.data(withJSONObject: payload)
     }
 }
 

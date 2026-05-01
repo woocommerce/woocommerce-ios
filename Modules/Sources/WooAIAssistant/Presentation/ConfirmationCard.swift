@@ -201,8 +201,7 @@ struct ParsedPreview {
             rawFields = Self.splitFieldList(trimmed)
         }
 
-        // Falling back to the raw preview when ANY clause fails to parse keeps merchants from
-        // approving a write whose proposed effects are partially hidden.
+        // Any unparsed clause aborts so the merchant sees the raw preview verbatim.
         var parsedFields: [Field] = []
         for raw in rawFields {
             guard let field = Self.parseField(raw) else { return nil }

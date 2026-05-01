@@ -4,9 +4,6 @@ import Yosemite
 import CocoaLumberjackSwift
 import protocol WooAIAssistant.AssistantExternalNavigationProviding
 
-/// `StoresManager` isn't declared `Sendable`, but the production instance is constructed once at launch.
-/// The `siteID` argument on each protocol method is intentionally ignored; the bound siteID wins so a
-/// model emitted for a stale session can't push detail into the wrong store.
 struct AIAssistantExternalNavigationAdaptor: AssistantExternalNavigationProviding, @unchecked Sendable {
 
     private let boundSiteID: Int64

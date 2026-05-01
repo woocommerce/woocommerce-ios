@@ -21,11 +21,11 @@ struct StoreInfoMetricsView: View {
         Group {
             switch family {
             case .systemSmall:
-                SmallView(data: entryData)
+                StoreInfoSmallMetricsView(data: entryData)
             case .systemMedium, .systemLarge, .systemExtraLarge:
                 mediumView()
             default:
-                let _ = assert(true, "This view only supports system families")
+                let _ = assertionFailure("This view only supports system families")
                 EmptyView()
             }
         }
@@ -141,7 +141,7 @@ extension StoreInfoMetricsView {
 }
 
 /// View that renders widget for .systemSmall family
-struct SmallView: View {
+private struct StoreInfoSmallMetricsView: View {
     let data: StoreInfoData
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -179,7 +179,6 @@ struct SmallView: View {
                 }
             }
         }
-        .padding(Layout.noSpacing)
     }
 
     private enum Layout {
@@ -188,8 +187,6 @@ struct SmallView: View {
         static let metricSpacing = 6.0
         static let logoSpacing = 4.0
         static let logoSize = 30.0
-        static let bigLogoSize = 50.0
-        static let messageSpacing = 8.0
         static let defaultMetricLimit = 2
         static let accessibilityMetricLimit = 1
     }

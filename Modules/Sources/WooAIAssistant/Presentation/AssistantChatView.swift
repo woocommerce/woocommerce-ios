@@ -90,6 +90,7 @@ public struct AssistantChatView: View {
         MessageListView(messages: controller.conversation.messages,
                         streamingState: controller.conversation.streamingState,
                         showIterationCapBanner: showIterationCapBanner,
+                        inputFocused: inputFocused,
                         onPickPrompt: { draft = $0; inputFocused = true })
     }
 

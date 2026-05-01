@@ -135,7 +135,7 @@ final class StoreInfoProvider: TimelineProvider {
         let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
         let service = StoreInfoDataService(credentials: dependencies.credentials)
         do {
-            let stats = try await service.fetchStats(for: dependencies.storeID, dateRange: dateRange.serviceDateRange)
+            let stats = try await service.fetchStats(for: dependencies.storeID, dateRange: dateRange.serviceDateRange).current
             let entry = Self.dataEntry(
                 for: stats,
                 dateRange: dateRange,

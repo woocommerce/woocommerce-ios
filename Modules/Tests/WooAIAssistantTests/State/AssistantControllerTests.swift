@@ -174,55 +174,88 @@ struct AssistantControllerTests {
     }
 
     @Test
-    func test_cancel_when_message_in_flight_then_message_marked_completed_and_pending_confirmations_cancelled()
+    func test_cancel_when_pending_confirmation_then_segment_becomes_cancelled_and_proposal_is_cancelled_in_backend()
     async throws {
         // Given
         let backend = MockAssistantBackend()
-        let proposal = ToolProposal(toolName: "orders_update",
-                                    toolCallID: "c1",
-                                    preview: "Mark order 42 as processing")
-        backend.holdStream(at: 0)
-        backend.script([[.event(.confirmationRequired(proposal: proposal))]])
-        let controller = AssistantController(backend: backend, context: defaultContext)
+        let proposalID = UUID()
+        let conversation = AssistantConversation(seededMessages: [
+            ChatMessage(role: .assistant,
+                        segments: [
+                            .confirmation(id: UUID(),
+                                          proposalID: proposalID,
+                                          toolName: "orders_update",
+                                          preview: "Set order to completed",
+                                          status: .pending)
+                        ])
+        ])
+        let controller = AssistantController(backend: backend,
+                                             context: defaultContext,
+                                             conversation: conversation)
 
         // When
-        controller.send("update order")
-        let inFlight = try #require(controller.activeTask)
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            @MainActor
-            func observe() {
-                withObservationTracking {
-                    _ = controller.conversation.messages.last?.segments.count
-                } onChange: {
-                    Task { @MainActor in
-                        let hasConfirmation = controller.conversation.messages.last?.segments.contains { segment in
-                            if case .confirmation = segment { return true }
-                            return false
-                        } ?? false
-                        if hasConfirmation {
-                            continuation.resume()
-                        } else {
-                            observe()
-                        }
-                    }
-                }
-            }
-            observe()
-        }
         controller.cancel()
+        await backend.waitForCancelledProposal(proposalID)
 
         // Then
-        let assistant = try #require(controller.conversation.messages.last)
-        #expect(assistant.role == .assistant)
-        #expect(assistant.isStreaming == false)
-        let confirmationStatus = assistant.segments.compactMap { segment -> ConfirmationStatus? in
+        #expect(controller.canSend == true)
+        #expect(controller.conversation.streamingState == .idle)
+        let assistantMessage = controller.conversation.messages.last
+        let confirmationSegments = assistantMessage?.segments.compactMap { segment -> ConfirmationStatus? in
             if case .confirmation(_, _, _, _, let status) = segment { return status }
             return nil
-        }.first
-        #expect(confirmationStatus == .cancelled)
+        } ?? []
+        #expect(confirmationSegments.contains(.cancelled))
+        #expect(backend.cancelledProposalIDs.contains(proposalID))
+    }
 
-        backend.releaseStream(at: 0)
-        await inFlight.value
+    @Test
+    func test_startNewConversation_when_called_then_resets_backend_and_clears_messages()
+    async throws {
+        // Given
+        let backend = MockAssistantBackend()
+        backend.script([
+            .event(.textChunk("Hello")),
+            .event(.completed(routeConfidence: nil))
+        ])
+        let controller = AssistantController(backend: backend, context: defaultContext)
+        controller.send("hi")
+        await controller.activeTask?.value
+        #expect(controller.conversation.messages.isEmpty == false)
+
+        // When
+        controller.startNewConversation()
+        await controller.activeTask?.value
+
+        // Then
+        #expect(controller.conversation.messages.isEmpty)
+        #expect(backend.resetCallCount == 1)
+    }
+
+    @Test
+    func test_startNewConversation_when_reset_pending_then_messages_remain_until_reset_completes()
+    async throws {
+        // Given
+        let backend = MockAssistantBackend()
+        backend.script([
+            .event(.textChunk("Hello")),
+            .event(.completed(routeConfidence: nil))
+        ])
+        let controller = AssistantController(backend: backend, context: defaultContext)
+        controller.send("hi")
+        await controller.activeTask?.value
+        let messagesBeforeReset = controller.conversation.messages.count
+        backend.holdReset()
+
+        // When
+        controller.startNewConversation()
+        await backend.waitForResetCall()
+
+        // Then
+        #expect(controller.conversation.messages.count == messagesBeforeReset)
+        backend.releaseReset()
+        await controller.activeTask?.value
+        #expect(controller.conversation.messages.isEmpty)
     }
 
     @Test

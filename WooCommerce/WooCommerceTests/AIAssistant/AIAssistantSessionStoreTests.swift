@@ -10,7 +10,7 @@ struct AIAssistantSessionStoreTests {
         // Given
         let sut = AIAssistantSessionStore()
         var buildCount = 0
-        let make: () -> AIAssistantDependencyAdaptor = {
+        let make: (AIAssistantNavigationHost) -> AIAssistantDependencyAdaptor = { _ in
             buildCount += 1
             return makeStubDependencies()
         }
@@ -28,11 +28,11 @@ struct AIAssistantSessionStoreTests {
     func test_resetSession_when_called_then_subsequent_controller_is_new_instance() {
         // Given
         let sut = AIAssistantSessionStore()
-        let first = sut.controller(for: 12, makeDependencies: makeStubDependencies)
+        let first = sut.controller(for: 12) { _ in makeStubDependencies() }
 
         // When
         sut.resetSession(for: 12)
-        let second = sut.controller(for: 12, makeDependencies: makeStubDependencies)
+        let second = sut.controller(for: 12) { _ in makeStubDependencies() }
 
         // Then
         #expect(first !== second)
@@ -54,13 +54,26 @@ struct AIAssistantSessionStoreTests {
     func test_hasSession_when_controller_built_then_true() {
         // Given
         let sut = AIAssistantSessionStore()
-        _ = sut.controller(for: 7, makeDependencies: makeStubDependencies)
+        _ = sut.controller(for: 7) { _ in makeStubDependencies() }
 
         // When
         let result = sut.hasSession(for: 7)
 
         // Then
         #expect(result == true)
+    }
+
+    @Test
+    func test_navigationHost_when_called_twice_for_same_site_then_returns_same_instance() {
+        // Given
+        let sut = AIAssistantSessionStore()
+
+        // When
+        let first = sut.navigationHost(for: 5)
+        let second = sut.navigationHost(for: 5)
+
+        // Then
+        #expect(first === second)
     }
 }
 

@@ -1,7 +1,7 @@
 import Experiments
 import Foundation
+import struct Yosemite.Site
 
-/// Gates the WooAI Assistant feature behind its feature flag.
 struct AIAssistantEligibilityChecker {
     private let featureFlagService: FeatureFlagService
 
@@ -9,7 +9,10 @@ struct AIAssistantEligibilityChecker {
         self.featureFlagService = featureFlagService
     }
 
-    var isEligible: Bool {
-        featureFlagService.isFeatureFlagEnabled(.wooAIAssistant)
+    func isEligible(for site: Site?) -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.wooAIAssistant), let site else {
+            return false
+        }
+        return site.isWordPressComStore || site.isAIAssistantFeatureActive || site.isJetpackConnected
     }
 }

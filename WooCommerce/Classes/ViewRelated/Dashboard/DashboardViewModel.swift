@@ -570,6 +570,11 @@ private extension DashboardViewModel {
                     if suggestWPComConnection {
                         allCards.insert(DashboardCard.connectWPCom, at: 0)
                     }
+
+                    let aiAssistantChecker = AIAssistantEligibilityChecker()
+                    if aiAssistantChecker.isEligible(for: self.stores.sessionManager.defaultSite) {
+                        allCards.insert(DashboardCard.aiAssistantCard, at: 0)
+                    }
                     return allCards
                 }()
                 showOnDashboardCards = cardsToShow
@@ -633,7 +638,7 @@ private extension DashboardViewModel {
                     group.addTask { [weak self] in
                         await self?.googleAdsDashboardCardViewModel.reloadCard()
                     }
-                case .inAppFeedback, .newCardsNotice, .shareStore, .connectWPCom:
+                case .inAppFeedback, .newCardsNotice, .shareStore, .connectWPCom, .aiAssistant:
                     break // do nothing
                 }
             }

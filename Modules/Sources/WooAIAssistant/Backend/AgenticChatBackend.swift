@@ -56,7 +56,9 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
                                         text: &pendingText,
                                         toolCalls: &pendingToolCalls,
                                         toolResults: &pendingToolResults)
-                        if case .failed = event { didFail = true }
+                        if case .failed(let err) = event, err.kind != .outcomeUnknown {
+                            didFail = true
+                        }
                         continuation.yield(.event(event))
                     }
                 } catch {

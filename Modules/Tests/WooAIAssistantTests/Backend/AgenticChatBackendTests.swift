@@ -323,6 +323,119 @@ struct AgenticChatBackendTests {
         #expect(firstSystem != secondSystem)
     }
 
+    @Test
+    func test_send_when_outcomeUnknown_emitted_mid_turn_then_next_turn_replays_full_transcript()
+    async throws {
+        // Given
+        let writeTool = AITool(name: "orders_update",
+                               description: "Update an order",
+                               parametersSchema: .object([:]),
+                               safetyLevel: .safe)
+        let chat = MockAIChatService()
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_u",
+            function: .init(name: "orders_update", arguments: #"{"id":42}"#)
+        )
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)],
+            [.textDelta("started — couldn't confirm"), .completed(.stop)],
+            [.textDelta("not sure"), .completed(.stop)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([writeTool])
+        await registry.setResult(for: "orders_update",
+                                 result: .failed(.init(toolName: "orders_update",
+                                                       kind: .outcomeUnknown,
+                                                       reason: "URL cancelled mid-write")))
+        let backend = AgenticChatBackend(chatService: chat,
+                                         toolRegistry: registry,
+                                         systemPrompt: nil)
+
+        // When
+        let stream1 = backend.send(turn: .init(prompt: "update order 42 to processing"),
+                                   context: defaultContext,
+                                   session: nil)
+        for try await _ in stream1 {}
+        let stream2 = backend.send(turn: .init(prompt: "did it work?"),
+                                   context: defaultContext,
+                                   session: nil)
+        for try await _ in stream2 {}
+
+        // Then
+        let captured = await chat.capturedRequests
+        let turn2Messages = try #require(captured.last?.messages)
+        let userPrompts = turn2Messages.filter { $0.role == .user }.compactMap { $0.content }
+        #expect(userPrompts == ["update order 42 to processing", "did it work?"])
+        let assistantToolCallIDs = turn2Messages
+            .filter { $0.role == .assistant }
+            .flatMap { $0.toolCalls ?? [] }
+            .map(\.id)
+        #expect(assistantToolCallIDs == ["call_u"])
+        let toolMessages = turn2Messages.filter { $0.role == .tool }
+        #expect(toolMessages.compactMap(\.toolCallID) == ["call_u"])
+        let assistantTexts = turn2Messages
+            .filter { $0.role == .assistant && $0.content != nil }
+            .compactMap { $0.content }
+        #expect(assistantTexts.contains("started — couldn't confirm"))
+    }
+
+    @Test
+    func test_send_when_terminal_failure_after_outcomeUnknown_then_transcript_not_appended()
+    async throws {
+        // Given
+        let writeTool = AITool(name: "orders_update",
+                               description: "Update an order",
+                               parametersSchema: .object([:]),
+                               safetyLevel: .safe)
+        let chat = MockAIChatService()
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_t",
+            function: .init(name: "orders_update", arguments: #"{"id":1}"#)
+        )
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([writeTool])
+        await registry.setResult(for: "orders_update",
+                                 result: .failed(.init(toolName: "orders_update",
+                                                       kind: .outcomeUnknown,
+                                                       reason: "transport drop")))
+        let backend = AgenticChatBackend(chatService: chat,
+                                         toolRegistry: registry,
+                                         systemPrompt: nil)
+
+        // When
+        var firstTurnEvents: [AssistantEvent] = []
+        let stream1 = backend.send(turn: .init(prompt: "first prompt"),
+                                   context: defaultContext,
+                                   session: nil)
+        for try await yield in stream1 {
+            if case .event(let event) = yield {
+                firstTurnEvents.append(event)
+            }
+        }
+        await chat.setScriptedTurns([
+            [.textDelta("second"), .completed(.stop)]
+        ])
+        let stream2 = backend.send(turn: .init(prompt: "second prompt"),
+                                   context: defaultContext,
+                                   session: nil)
+        for try await _ in stream2 {}
+
+        // Then
+        let failureKinds = firstTurnEvents.compactMap { event -> AssistantErrorKind? in
+            if case .failed(let error) = event { return error.kind }
+            return nil
+        }
+        #expect(failureKinds.contains(.outcomeUnknown))
+        #expect(failureKinds.contains(where: { $0 != .outcomeUnknown }))
+        let captured = await chat.capturedRequests
+        let turn2Messages = try #require(captured.last?.messages)
+        let userPrompts = turn2Messages.filter { $0.role == .user }.compactMap { $0.content }
+        #expect(userPrompts == ["second prompt"])
+    }
+
     private let defaultContext = AssistantContext(
         siteID: 1,
         siteURL: URL(string: "https://example.com")!,

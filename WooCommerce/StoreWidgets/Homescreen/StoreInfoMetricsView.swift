@@ -11,12 +11,28 @@ struct StoreInfoMetricsView: View {
     let entryData: StoreInfoData
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.widgetFamily) private var family
 
     var accessibilityDynamicTypeSize: DynamicTypeSize {
         return .xLarge
     }
 
     var body: some View {
+        Group {
+            switch family {
+            case .systemSmall:
+                SmallView(data: entryData)
+            case .systemMedium, .systemLarge, .systemExtraLarge:
+                mediumView()
+            default:
+                let _ = assert(true, "This view only supports system families")
+                EmptyView()
+            }
+        }
+        .widgetBackground(backgroundView: Color(.brand))
+    }
+
+    private func mediumView() -> some View {
         VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
             VStack(alignment: .leading, spacing: Layout.cardSpacing) {
                 HStack {
@@ -37,7 +53,11 @@ struct StoreInfoMetricsView: View {
             }
         }
         .padding(.horizontal)
-        .widgetBackground(backgroundView: Color(.brand))
+    }
+
+    fileprivate enum Layout {
+        static let sectionSpacing = 8.0
+        static let cardSpacing = 2.0
     }
 }
 
@@ -118,10 +138,60 @@ extension StoreInfoMetricsView {
             return LocalizedString.localizedStringWithFormat(format, updatedTime)
         }
     }
+}
 
-    enum Layout {
-        static let sectionSpacing = 8.0
-        static let cardSpacing = 2.0
+/// View that renders widget for .systemSmall family
+struct SmallView: View {
+    let data: StoreInfoData
+
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    private var visibleMetrics: [any MetricPresentable] {
+        let limit = dynamicTypeSize > .xLarge ? Layout.accessibilityMetricLimit : Layout.defaultMetricLimit
+        return Array(data.metrics.prefix(limit))
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Layout.headerSpacing) {
+            HStack(alignment: .top, spacing: Layout.noSpacing) {
+                Image("woo-mini-logo", bundle: nil)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: Layout.logoSize, height: Layout.logoSize)
+                    .accessibilityHidden(true)
+
+                Spacer(minLength: Layout.logoSpacing)
+
+                VStack(alignment: .leading, spacing: Layout.noSpacing) {
+                    Text(data.name)
+                        .storeNameStyle()
+
+                    Text(StoreInfoMetricsView.Localization.updatedAt(data.updatedTime))
+                        .statRangeStyle()
+                }
+            }
+
+            Spacer(minLength: Layout.metricSpacing)
+
+            VStack(alignment: .leading, spacing: Layout.metricSpacing) {
+                ForEach(Array(visibleMetrics.enumerated()), id: \.offset) { _, metric in
+                    MetricCellView(metric: metric)
+                }
+            }
+        }
+        .padding(Layout.noSpacing)
+    }
+
+    private enum Layout {
+        static let noSpacing = 0.0
+        static let headerSpacing = 6.0
+        static let metricSpacing = 6.0
+        static let logoSpacing = 4.0
+        static let logoSize = 30.0
+        static let bigLogoSize = 50.0
+        static let messageSpacing = 8.0
+        static let defaultMetricLimit = 2
+        static let accessibilityMetricLimit = 1
     }
 }
 
@@ -150,11 +220,21 @@ struct StoreInfoMetricsView_Previews: PreviewProvider {
     static var previews: some View {
         StoreInfoMetricsView(entryData: exampleData)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewDisplayName("Medium")
 
         StoreInfoMetricsView(entryData: exampleData)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
             .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("XXL font")
+            .previewDisplayName("Medium - XXL font")
+
+        StoreInfoMetricsView(entryData: exampleData)
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .previewDisplayName("Small")
+
+        StoreInfoMetricsView(entryData: exampleData)
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .environment(\.dynamicTypeSize, .xxLarge)
+            .previewDisplayName("Small - XXL font")
     }
 }
 #endif

@@ -60,7 +60,7 @@ struct AIAssistantDependencyAdaptorTests {
     }
 
     @Test
-    func test_default_when_called_then_system_prompt_provider_returns_non_nil() {
+    func test_default_when_called_then_system_prompt_provider_returns_woocommerce_prompt() {
         // Given
         let site = Site.fake().copy(siteID: 1, url: "https://store.test")
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -74,7 +74,6 @@ struct AIAssistantDependencyAdaptorTests {
         let prompt = result.systemPromptProvider()
 
         // Then
-        #expect(prompt != nil)
-        #expect(prompt?.isEmpty == false)
+        #expect(prompt?.contains("WooCommerce iOS app") == true)
     }
 }

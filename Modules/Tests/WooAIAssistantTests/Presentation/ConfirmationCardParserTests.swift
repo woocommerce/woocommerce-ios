@@ -26,7 +26,7 @@ struct ConfirmationCardParserTests {
         let parsed = ParsedPreview(text: preview)
 
         // Then
-        #expect(parsed?.fields == nil)
+        #expect(parsed == nil)
     }
 
     @Test

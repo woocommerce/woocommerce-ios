@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import Testing
 import Alamofire
+import WooAIAssistant
 @testable import Networking
 @testable import NetworkingCore
 @testable import WooCommerce
@@ -13,7 +14,7 @@ struct AIAssistantJWTAdaptorTests {
     func test_jwt_when_wpcom_credentials_then_calls_jetpack_openai_query_jwt() async throws {
         // Given
         let token = makeFakeJWT(blogID: 99, expiresIn: 3600)
-        let network = StubNetwork(token: token)
+        let network = StubNetwork(behavior: .returnToken(token))
         let credentials: Credentials = .wpcom(username: "u", authToken: "t", siteAddress: "https://store.test")
         let sut = AIAssistantJWTAdaptor(blogID: 99, network: network, credentials: credentials)
 
@@ -29,7 +30,7 @@ struct AIAssistantJWTAdaptorTests {
     func test_jwt_when_applicationPassword_credentials_then_routes_through_dotcom_request() async throws {
         // Given
         let token = makeFakeJWT(blogID: 42, expiresIn: 3600)
-        let network = StubNetwork(token: token)
+        let network = StubNetwork(behavior: .returnToken(token))
         let credentials: Credentials = .applicationPassword(username: "u", password: "p", siteAddress: "https://store.test")
         let sut = AIAssistantJWTAdaptor(blogID: 42, network: network, credentials: credentials)
 
@@ -45,63 +46,157 @@ struct AIAssistantJWTAdaptorTests {
     func test_jwt_when_wporg_credentials_then_throws_unsupported_auth() async {
         // Given
         let token = makeFakeJWT(blogID: 7, expiresIn: 3600)
-        let network = StubNetwork(token: token)
+        let network = StubNetwork(behavior: .returnToken(token))
         let credentials: Credentials = .wporg(username: "u", password: "p", siteAddress: "https://store.test")
         let sut = AIAssistantJWTAdaptor(blogID: 7, network: network, credentials: credentials)
 
+        // When / Then
+        await #expect(throws: AssistantError.self) {
+            _ = try await sut.currentJWT()
+        }
+        #expect(network.lastPath == nil)
+    }
+
+    @Test
+    func test_jwt_when_server_returns_empty_token_then_throws_invalid_response_error() async {
+        // Given
+        let network = StubNetwork(behavior: .returnToken(""))
+        let credentials: Credentials = .wpcom(username: "u", authToken: "t", siteAddress: "https://store.test")
+        let sut = AIAssistantJWTAdaptor(blogID: 99, network: network, credentials: credentials)
+
         // When
-        var didThrow = false
+        var caught: AssistantError?
         do {
             _ = try await sut.currentJWT()
-        } catch {
-            didThrow = true
+        } catch let error as AssistantError {
+            caught = error
+        } catch {}
+
+        // Then
+        #expect(caught?.kind == .auth)
+    }
+
+    @Test
+    func test_jwt_when_network_throws_then_error_propagates_to_caller() async {
+        // Given
+        let stubError = NSError(domain: "TestDomain", code: 99, userInfo: nil)
+        let network = StubNetwork(behavior: .throwError(stubError))
+        let credentials: Credentials = .wpcom(username: "u", authToken: "t", siteAddress: "https://store.test")
+        let sut = AIAssistantJWTAdaptor(blogID: 99, network: network, credentials: credentials)
+
+        // When
+        var caught: NSError?
+        do {
+            _ = try await sut.currentJWT()
+        } catch let error as NSError {
+            caught = error
         }
 
         // Then
-        #expect(didThrow == true)
-        #expect(network.lastPath == nil)
+        #expect(caught?.domain == "TestDomain")
+        #expect(caught?.code == 99)
+    }
+
+    @Test
+    func test_jwt_when_invalidate_then_next_currentJWT_calls_mint_again() async throws {
+        // Given
+        let token = makeFakeJWT(blogID: 99, expiresIn: 3600)
+        let network = StubNetwork(behavior: .returnToken(token))
+        let credentials: Credentials = .wpcom(username: "u", authToken: "t", siteAddress: "https://store.test")
+        let sut = AIAssistantJWTAdaptor(blogID: 99, network: network, credentials: credentials)
+
+        // When
+        _ = try await sut.currentJWT()
+        let cachedCallCount = network.callCount
+        _ = try await sut.currentJWT()
+        let stillCached = network.callCount
+        await sut.invalidate()
+        _ = try await sut.currentJWT()
+        let afterInvalidate = network.callCount
+
+        // Then
+        #expect(cachedCallCount == 1)
+        #expect(stillCached == 1)
+        #expect(afterInvalidate == 2)
     }
 }
 
 private final class StubNetwork: Network, @unchecked Sendable {
-    let token: String
-    private(set) var lastPath: String?
+    enum Behavior {
+        case returnToken(String)
+        case throwError(Error)
+    }
 
-    init(token: String) {
-        self.token = token
+    let behavior: Behavior
+    nonisolated(unsafe) private(set) var lastPath: String?
+    nonisolated(unsafe) private(set) var callCount: Int = 0
+
+    init(behavior: Behavior) {
+        self.behavior = behavior
     }
 
     var session: URLSession { URLSession(configuration: .default) }
 
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        let result = synthesize(for: request)
-        completion(result, nil)
+        switch behavior {
+        case .returnToken:
+            completion(synthesize(for: request), nil)
+        case .throwError(let error):
+            completion(nil, error)
+        }
     }
 
     func responseData(for request: URLRequestConvertible, completion: @escaping (Result<Data, Error>) -> Void) {
-        completion(.success(synthesize(for: request)))
+        switch behavior {
+        case .returnToken:
+            completion(.success(synthesize(for: request)))
+        case .throwError(let error):
+            completion(.failure(error))
+        }
     }
 
     func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
-        return (synthesize(for: request), nil)
+        switch behavior {
+        case .returnToken:
+            return (synthesize(for: request), nil)
+        case .throwError(let error):
+            recordPath(for: request)
+            throw error
+        }
     }
 
     func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Result<Data, Error>, Never> {
-        Just(.success(synthesize(for: request))).eraseToAnyPublisher()
+        switch behavior {
+        case .returnToken:
+            return Just(.success(synthesize(for: request))).eraseToAnyPublisher()
+        case .throwError(let error):
+            return Just(.failure(error)).eraseToAnyPublisher()
+        }
     }
 
     func uploadMultipartFormData(multipartFormData: @escaping (NetworkingCore.MultipartFormData) -> Void,
                                  to request: URLRequestConvertible,
                                  completion: @escaping (Data?, Error?) -> Void) {
-        completion(synthesize(for: request), nil)
+        switch behavior {
+        case .returnToken:
+            completion(synthesize(for: request), nil)
+        case .throwError(let error):
+            completion(nil, error)
+        }
     }
 
     private func synthesize(for request: URLRequestConvertible) -> Data {
+        recordPath(for: request)
+        guard case .returnToken(let token) = behavior else { return Data() }
+        let payload = ["token": token]
+        return try! JSONSerialization.data(withJSONObject: payload)
+    }
+
+    private func recordPath(for request: URLRequestConvertible) {
+        callCount += 1
         if let dotcom = request as? DotcomRequest {
             lastPath = dotcom.path
         }
-        let payload = ["token": token]
-        return try! JSONSerialization.data(withJSONObject: payload)
     }
 }
 

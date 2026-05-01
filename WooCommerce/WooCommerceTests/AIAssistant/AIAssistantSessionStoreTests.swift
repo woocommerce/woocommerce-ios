@@ -1,4 +1,5 @@
 import Testing
+import UIKit
 import WooAIAssistant
 @testable import WooCommerce
 
@@ -25,6 +26,19 @@ struct AIAssistantSessionStoreTests {
     }
 
     @Test
+    func test_controller_when_called_for_different_sites_then_returns_distinct_instances() {
+        // Given
+        let sut = AIAssistantSessionStore.makeForTesting()
+
+        // When
+        let firstSite = sut.controller(for: 11) { _ in makeStubDependencies() }
+        let secondSite = sut.controller(for: 22) { _ in makeStubDependencies() }
+
+        // Then
+        #expect(firstSite !== secondSite)
+    }
+
+    @Test
     func test_resetSession_when_called_then_subsequent_controller_is_new_instance() {
         // Given
         let sut = AIAssistantSessionStore.makeForTesting()
@@ -39,28 +53,17 @@ struct AIAssistantSessionStoreTests {
     }
 
     @Test
-    func test_hasSession_when_no_controller_then_false() {
+    func test_resetSession_when_called_then_pendingHost_for_that_site_is_cleared() {
         // Given
         let sut = AIAssistantSessionStore.makeForTesting()
+        let firstHost = sut.navigationHost(for: 33)
 
         // When
-        let result = sut.hasSession(for: 1)
+        sut.resetSession(for: 33)
+        let secondHost = sut.navigationHost(for: 33)
 
         // Then
-        #expect(result == false)
-    }
-
-    @Test
-    func test_hasSession_when_controller_built_then_true() {
-        // Given
-        let sut = AIAssistantSessionStore.makeForTesting()
-        _ = sut.controller(for: 7) { _ in makeStubDependencies() }
-
-        // When
-        let result = sut.hasSession(for: 7)
-
-        // Then
-        #expect(result == true)
+        #expect(firstHost !== secondHost)
     }
 
     @Test
@@ -74,6 +77,26 @@ struct AIAssistantSessionStoreTests {
 
         // Then
         #expect(first === second)
+    }
+
+    @Test
+    func test_navigationHost_when_set_then_controller_for_same_site_uses_that_host() {
+        // Given
+        let sut = AIAssistantSessionStore.makeForTesting()
+        let host = sut.navigationHost(for: 8)
+        let nav = UINavigationController()
+        host.attach(nav)
+
+        // When
+        var capturedHost: AIAssistantNavigationHost?
+        _ = sut.controller(for: 8) { resolvedHost in
+            capturedHost = resolvedHost
+            return makeStubDependencies()
+        }
+
+        // Then
+        #expect(capturedHost === host)
+        #expect(capturedHost?.navigationController === nav)
     }
 }
 

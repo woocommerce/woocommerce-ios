@@ -78,4 +78,16 @@ public struct ChatMessage: Identifiable, Equatable, Sendable {
     public mutating func markCompleted() {
         isStreaming = false
     }
+
+    public mutating func cancelPendingConfirmations() {
+        for index in segments.indices {
+            if case .confirmation(let id, let pid, let name, let preview, .pending) = segments[index] {
+                segments[index] = .confirmation(id: id,
+                                                proposalID: pid,
+                                                toolName: name,
+                                                preview: preview,
+                                                status: .cancelled)
+            }
+        }
+    }
 }

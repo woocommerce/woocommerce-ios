@@ -36,8 +36,8 @@ public enum AssistantSystemPrompt {
 
         # Worked examples (patterns, not specific calls)
 
-        These illustrate orchestration patterns. Tool names below describe roles - consult the catalog for the actual tool names and parameters. The one \
-        exception is `show_cards`, which is the internal UI tool you call to render entity cards in the iOS chat.
+        These illustrate orchestration patterns. Tool names below describe roles - consult the catalog for the actual tool names and parameters, including \
+        `show_cards`, the UI tool you call to render entity cards in the iOS chat. Treat `show_cards` like any other tool from the catalog.
 
         Pattern 1 - Order lists, details, and cards.
         Use the order list role for recent orders, searches, filtered lists, and results you will render as cards. If the merchant asks for an order field \

@@ -24,7 +24,7 @@ struct AIAssistantDashboardCard: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .frame(minHeight: 64)
-            .background(Color(.systemBackground))
+            .background(Color(.listForeground(modal: false)))
             .overlay(
                 RoundedRectangle(cornerRadius: 18)
                     .stroke(Color.primary.opacity(0.08), lineWidth: 0.5)

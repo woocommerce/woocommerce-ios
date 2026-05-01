@@ -201,7 +201,13 @@ struct ParsedPreview {
             rawFields = Self.splitFieldList(trimmed)
         }
 
-        let parsedFields = rawFields.compactMap(Self.parseField)
+        // Falling back to the raw preview when ANY clause fails to parse keeps merchants from
+        // approving a write whose proposed effects are partially hidden.
+        var parsedFields: [Field] = []
+        for raw in rawFields {
+            guard let field = Self.parseField(raw) else { return nil }
+            parsedFields.append(field)
+        }
         guard !parsedFields.isEmpty else { return nil }
 
         self.summary = summaryLine

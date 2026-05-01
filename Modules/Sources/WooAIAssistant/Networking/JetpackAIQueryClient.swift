@@ -2,21 +2,21 @@ import Foundation
 import CocoaLumberjackSwift
 import NetworkingCore
 
-typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
+public typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
 
-struct JetpackAIQueryClient: AIChatService {
+public struct JetpackAIQueryClient: AIChatService {
 
-    typealias Sleep = @Sendable (UInt64) async throws -> Void
+    public typealias Sleep = @Sendable (UInt64) async throws -> Void
 
     private let endpoint: URL
     private let jwtProvider: AssistantJWTProviding
     private let streamingTransport: StreamingHTTPTransport
     private let sleep: Sleep
 
-    init(jwtProvider: AssistantJWTProviding,
-         endpoint: URL? = nil,
-         streamingTransport: StreamingHTTPTransport? = nil,
-         sleep: Sleep? = nil) {
+    public init(jwtProvider: AssistantJWTProviding,
+                endpoint: URL? = nil,
+                streamingTransport: StreamingHTTPTransport? = nil,
+                sleep: Sleep? = nil) {
         self.jwtProvider = jwtProvider
         self.endpoint = endpoint ?? Self.defaultEndpoint()
         self.streamingTransport = streamingTransport ?? Self.urlSessionStreamingTransport(Self.sharedLLMSession)
@@ -108,9 +108,9 @@ struct JetpackAIQueryClient: AIChatService {
                               message: error.localizedDescription)
     }
 
-    func streamTurn(messages: [OpenAIChat.Message],
-                    tools: [OpenAIChat.ToolDefinition]?,
-                    toolChoice: OpenAIChat.ToolChoice?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
+    public func streamTurn(messages: [OpenAIChat.Message],
+                           tools: [OpenAIChat.ToolDefinition]?,
+                           toolChoice: OpenAIChat.ToolChoice?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
         AsyncThrowingStream { continuation in
             let task = Task {
                 do {

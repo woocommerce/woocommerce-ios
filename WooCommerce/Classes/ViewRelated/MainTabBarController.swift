@@ -160,7 +160,10 @@ final class MainTabBarController: UITabBarController {
     private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
     private var bookingsEligibilityCheckTask: Task<Void, Never>?
 
-    /// Refreshes the per-site IPP country expansion eligibility cache (RSM-637) when the site changes.
+    /// Refreshes the per-site IPP country expansion eligibility cache (RSM-637) on phones
+    /// where the POS visibility check is short-circuited and would otherwise not run the
+    /// refresher. iPad goes through `POSTabVisibilityChecker` which refreshes inline before
+    /// reading the cache.
     private lazy var cardPresentExpansionRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher = {
         CardPresentPaymentsCountryExpansionEligibilityRefresher(
             remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
@@ -224,10 +227,10 @@ final class MainTabBarController: UITabBarController {
     }
 
     deinit {
-        cardPresentExpansionRefreshTask?.cancel()
         cancellableSiteID?.cancel()
         posEligibilityCheckTask?.cancel()
         bookingsEligibilityCheckTask?.cancel()
+        cardPresentExpansionRefreshTask?.cancel()
     }
 
     // MARK: - Overridden Methods
@@ -836,14 +839,15 @@ private extension MainTabBarController {
 
                 observePOSEligibilityForPOSTabVisibility(site: site)
                 observeBookingsEligibilityForBookingsTabVisibility(site: site)
-                refreshCardPresentPaymentsCountryExpansionEligibility(for: site)
+                refreshCardPresentExpansionEligibilityIfNeeded(for: site)
             }
     }
 
-    /// Refreshes the per-site IPP country expansion eligibility cache (RSM-637) when the site changes.
-    /// Waits for the first non-empty site settings event for the site so we have a country code,
-    /// then dispatches the relevant remote feature flag check via the refresher and persists the result.
-    func refreshCardPresentPaymentsCountryExpansionEligibility(for site: Site) {
+    /// Refreshes the IPP country expansion eligibility cache for phones, where the
+    /// POS visibility check is skipped. On iPad the visibility checker handles this
+    /// inline before reading the cache, so we no-op to avoid a duplicate dispatch.
+    func refreshCardPresentExpansionEligibilityIfNeeded(for site: Site) {
+        guard !isPad else { return }
         cardPresentExpansionRefreshTask?.cancel()
         cardPresentExpansionRefreshTask = Task { @MainActor [weak self] in
             guard let self else { return }

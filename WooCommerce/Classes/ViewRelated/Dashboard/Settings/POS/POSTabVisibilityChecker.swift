@@ -14,6 +14,7 @@ import class Yosemite.SiteAddress
 import enum Yosemite.POSCountryCurrencyValidator
 import protocol Yosemite.CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
 import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityService
+import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityRefresher
 
 final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let site: Site
@@ -23,6 +24,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
+    private let expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher
 
     init(site: Site,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -30,7 +32,8 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService()) {
+         expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService(),
+         expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher? = nil) {
         self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
@@ -38,6 +41,10 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.expansionEligibilityService = expansionEligibilityService
+        self.expansionEligibilityRefresher = expansionEligibilityRefresher ?? CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            eligibilityService: expansionEligibilityService,
+            remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
+        )
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
@@ -98,6 +105,11 @@ private extension POSTabVisibilityChecker {
         // Conditions that can change if site settings are synced during the lifetime.
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
         let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
+
+        // Refresh the per-site IPP country expansion eligibility cache (RSM-637) before
+        // validating, so the country/currency check reflects the latest remote feature
+        // flag rather than a stale or empty cache on first launch.
+        await expansionEligibilityRefresher.refresh(siteID: site.siteID, countryCode: countryCode)
 
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
     }

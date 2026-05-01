@@ -101,6 +101,7 @@ struct POSTabEligibilityCheckerTests {
 
     @Test(arguments: [
         (country: Country.us, currency: CurrencyCode.USD),
+        (country: Country.pr, currency: CurrencyCode.USD),
         (country: Country.gb, currency: CurrencyCode.GBP)
     ])
     fileprivate func is_eligible_when_all_conditions_satisfied(country: Country, currency: CurrencyCode) async throws {
@@ -585,6 +586,7 @@ private extension POSTabEligibilityCheckerTests {
 
     enum Country: String {
         case us = "US:CA"
+        case pr = "PR"
         case ca = "CA:NS"
         case gb = "GB"
         case es = "ES"
@@ -598,6 +600,8 @@ private extension POSTabEligibilityCheckerTests {
             switch self {
             case .us:
                 return .US
+            case .pr:
+                return .PR
             case .ca:
                 return .CA
             case .gb:

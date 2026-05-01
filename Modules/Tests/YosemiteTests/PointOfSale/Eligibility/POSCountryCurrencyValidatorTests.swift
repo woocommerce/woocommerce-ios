@@ -30,6 +30,15 @@ struct POSCountryCurrencyValidatorTests {
         #expect(result == .eligible)
     }
 
+    @Test("PR with USD is eligible without expansion eligibility")
+    func test_PR_with_USD_is_eligible_without_expansion_eligibility() {
+        let result = POSCountryCurrencyValidator.validate(countryCode: .PR,
+                                                          currencyCode: .USD,
+                                                          siteID: siteID,
+                                                          eligibilityService: ineligibleService)
+        #expect(result == .eligible)
+    }
+
     // MARK: - Unsupported Countries (eligibility off)
 
     @Test("CA with USD is ineligible due to unsupported country when expansion eligibility off")
@@ -149,19 +158,21 @@ struct POSCountryCurrencyValidatorTests {
 
     // MARK: - Supported Countries List
 
-    @Test("Supported countries list contains only US and GB when expansion eligibility off")
+    @Test("Supported countries list contains only US, PR, and GB when expansion eligibility off")
     func testSupportedCountriesList() {
         let supportedCountries = POSCountryCurrencyValidator.supportedCountries(siteID: siteID, eligibilityService: ineligibleService)
-        #expect(supportedCountries.count == 2)
+        #expect(supportedCountries.count == 3)
         #expect(supportedCountries.contains(.US))
+        #expect(supportedCountries.contains(.PR))
         #expect(supportedCountries.contains(.GB))
     }
 
-    @Test("Supported countries list contains all 15 countries when expansion eligibility on")
+    @Test("Supported countries list contains all 16 countries when expansion eligibility on")
     func testSupportedCountriesIncludeExpansionCountriesWhenEligibilityOn() {
         let supportedCountries = POSCountryCurrencyValidator.supportedCountries(siteID: siteID, eligibilityService: eligibleService)
 
         #expect(supportedCountries.contains(.US))
+        #expect(supportedCountries.contains(.PR))
         #expect(supportedCountries.contains(.GB))
         for country in expansionCountries {
             #expect(supportedCountries.contains(country), "Expected \(country) to be supported when eligibility is on")
@@ -172,11 +183,12 @@ struct POSCountryCurrencyValidatorTests {
 
     // MARK: - Supported Currencies Map
 
-    @Test("Supported currencies map only contains US and GB entries when expansion eligibility off")
+    @Test("Supported currencies map only contains US, PR, and GB entries when expansion eligibility off")
     func testSupportedCurrenciesMap() {
         let supportedCurrencies = POSCountryCurrencyValidator.supportedCurrencies(siteID: siteID, eligibilityService: ineligibleService)
 
         #expect(supportedCurrencies[.US] == [.USD])
+        #expect(supportedCurrencies[.PR] == [.USD])
         #expect(supportedCurrencies[.GB] == [.GBP])
         #expect(supportedCurrencies[.CA] == nil)
         #expect(supportedCurrencies[.AT] == nil)

@@ -29,6 +29,7 @@ struct POSTabVisibilityCheckerTests {
 
     @Test(arguments: [
         (country: Country.us, currency: CurrencyCode.USD),
+        (country: Country.pr, currency: CurrencyCode.USD),
         (country: Country.gb, currency: CurrencyCode.GBP)
     ])
     fileprivate func is_visible_when_all_conditions_satisfied(country: Country, currency: CurrencyCode) async throws {
@@ -284,6 +285,7 @@ private extension POSTabVisibilityCheckerTests {
 
     enum Country: String {
         case us = "US:CA"
+        case pr = "PR"
         case ca = "CA:NS"
         case gb = "GB"
         case es = "ES"
@@ -292,6 +294,8 @@ private extension POSTabVisibilityCheckerTests {
             switch self {
             case .us:
                 return .US
+            case .pr:
+                return .PR
             case .ca:
                 return .CA
             case .gb:

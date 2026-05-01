@@ -7,16 +7,16 @@ import enum WooFoundation.CurrencyCode
 /// Single source of truth for the supported country/currency pairings. The 13 expansion
 /// countries (RSM-637) are accepted only when the supplied
 /// ``CardPresentPaymentsCountryExpansionEligibilityServiceProtocol`` reports the site as
-/// eligible. US/GB are always supported.
+/// eligible. US/PR/GB are always supported.
 public enum POSCountryCurrencyValidator {
     /// Supported countries for POS feature.
-    /// Always includes US and GB. The 13 expansion countries are added when the supplied
+    /// Always includes US, PR, and GB. The 13 expansion countries are added when the supplied
     /// eligibility service reports the site as eligible.
     public static func supportedCountries(
         siteID: Int64,
         eligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
     ) -> [CountryCode] {
-        var countries: [CountryCode] = [.US, .GB]
+        var countries: [CountryCode] = [.US, .PR, .GB]
         if eligibilityService.isEligible(siteID: siteID) {
             countries.append(contentsOf: expansionCountries)
         }
@@ -24,7 +24,7 @@ public enum POSCountryCurrencyValidator {
     }
 
     /// Supported currencies per country for POS feature.
-    /// Always includes US/USD and GB/GBP. Expansion entries are added when the supplied
+    /// Always includes US/USD, PR/USD, and GB/GBP. Expansion entries are added when the supplied
     /// eligibility service reports the site as eligible.
     public static func supportedCurrencies(
         siteID: Int64,
@@ -32,6 +32,7 @@ public enum POSCountryCurrencyValidator {
     ) -> [CountryCode: [CurrencyCode]] {
         var map: [CountryCode: [CurrencyCode]] = [
             .US: [.USD],
+            .PR: [.USD],
             .GB: [.GBP]
         ]
         if eligibilityService.isEligible(siteID: siteID) {

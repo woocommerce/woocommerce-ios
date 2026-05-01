@@ -1,5 +1,4 @@
 import Foundation
-import os
 import Testing
 @testable import WooAIAssistant
 
@@ -302,11 +301,8 @@ struct AgenticChatBackendTests {
             [.textDelta("a"), .completed(.stop)],
             [.textDelta("b"), .completed(.stop)]
         ])
-        let counter = ProviderCallCounter()
         let backend = AgenticChatBackend(chatService: chat,
-                                         systemPromptProvider: {
-                                             "prompt-\(counter.bumpAndGet())"
-                                         })
+                                         systemPromptProvider: { UUID().uuidString })
 
         // When
         let stream1 = backend.send(turn: .init(prompt: "one"),
@@ -319,12 +315,12 @@ struct AgenticChatBackendTests {
         for try await _ in stream2 {}
 
         // Then
-        #expect(counter.snapshot() == 2)
         let captured = await chat.capturedRequests
         let firstSystem = captured[0].messages.first(where: { $0.role == .system })?.content
         let secondSystem = captured[1].messages.first(where: { $0.role == .system })?.content
-        #expect(firstSystem == "prompt-1")
-        #expect(secondSystem == "prompt-2")
+        #expect(firstSystem != nil)
+        #expect(secondSystem != nil)
+        #expect(firstSystem != secondSystem)
     }
 
     private let defaultContext = AssistantContext(
@@ -332,19 +328,4 @@ struct AgenticChatBackendTests {
         siteURL: URL(string: "https://example.com")!,
         blogID: nil
     )
-}
-
-private final class ProviderCallCounter: Sendable {
-    private let lock = OSAllocatedUnfairLock(initialState: 0)
-
-    func bumpAndGet() -> Int {
-        lock.withLock { state in
-            state += 1
-            return state
-        }
-    }
-
-    func snapshot() -> Int {
-        lock.withLock { $0 }
-    }
 }

@@ -48,6 +48,7 @@ public actor AgenticLoopOrchestrator {
                     continuation.finish()
                     return
                 }
+                await self.clearOutcome()
                 do {
                     try await self.runLoop(prompt: prompt,
                                            priorMessages: priorMessages,
@@ -105,6 +106,10 @@ public actor AgenticLoopOrchestrator {
         }
     }
 
+    private func clearOutcome() {
+        lastOutcome = nil
+    }
+
     private func setOutcome(_ outcome: LoopOutcome) {
         lastOutcome = outcome
         resumeTerminationWaiters(with: outcome)
@@ -130,9 +135,6 @@ public actor AgenticLoopOrchestrator {
         }
     }
 
-    /// Suspend the loop until the UI resolves this proposal. The pre- and post-store `Task.isCancelled`
-    /// checks plus the `onCancel` hop guarantee the continuation is always resumed even if cancellation
-    /// arrives between yielding `.confirmationRequired` and registering the continuation here.
     private func waitForDecision(proposalID: UUID) async -> Bool {
         await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
@@ -387,7 +389,11 @@ public actor AgenticLoopOrchestrator {
                                                     name: call.function.name,
                                                     argumentsJSON: call.function.arguments))
             }
-            try await withThrowingTaskGroup(of: (Int, ToolResult).self) { group in
+            // withTaskGroup (not throwing) so a single tool failure no longer
+            // tears down sibling tasks. Errors from the registry get folded
+            // into a per-tool failed result and surface as toolCallCompleted
+            // events for every call - no orphan running pills.
+            await withTaskGroup(of: (Int, ToolResult).self) { group in
                 for index in approvedIndices {
                     let call = calls[index]
                     group.addTask {
@@ -397,7 +403,7 @@ public actor AgenticLoopOrchestrator {
                         return (index, result)
                     }
                 }
-                for try await (index, result) in group {
+                for await (index, result) in group {
                     let call = calls[index]
                     let payload = self.handleToolResult(result,
                                                         for: call,
@@ -457,6 +463,21 @@ public actor AgenticLoopOrchestrator {
             continuation.yield(.toolResult(toolCallID: call.id,
                                            toolName: call.function.name,
                                            payload: success.structured))
+            // Bridge `uiStructured.cards` into UI-visible `.cardRender` events so
+            // tools that pre-render (orders_get, products_get, show_cards, write
+            // mappers) actually surface in the transcript. The synthetic
+            // toolResult events are UI-only - the model transcript is the
+            // separate `messages` array in `run`.
+            if let cards = success.uiStructured?.cards, !cards.isEmpty {
+                for (index, card) in cards.enumerated() {
+                    let syntheticID = "\(call.id):card:\(index):\(card.family.rawValue):\(card.id)"
+                    let syntheticTool = "\(call.function.name).\(card.family.rawValue)"
+                    continuation.yield(.toolResult(toolCallID: syntheticID,
+                                                   toolName: syntheticTool,
+                                                   payload: card.element))
+                    continuation.yield(.cardRender(toolCallID: syntheticID))
+                }
+            }
             continuation.yield(.toolCallCompleted(id: call.id,
                                                    name: call.function.name,
                                                    resultJSON: payload))
@@ -838,8 +859,7 @@ private enum TurnOutcome {
     case toolCalls([OpenAIChat.ToolCall])
 }
 
-/// Degenerate policy used when the caller hasn't specified safety at
-/// all (tests, read-only prototypes). Every call executes.
+/// Tests/read-only prototypes that don't need a real safety check.
 public struct AlwaysExecuteSafetyPolicy: SafetyPolicy {
     public init() {}
 

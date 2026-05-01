@@ -7,10 +7,15 @@ final class MockAssistantBackend: AssistantBackendConfirming {
     private(set) var recordedTurns: [AssistantTurn] = []
     private(set) var confirmedProposalIDs: [UUID] = []
     private(set) var cancelledProposalIDs: [UUID] = []
+    private(set) var resetCallCount: Int = 0
 
     private var scripts: [[BackendYield]] = []
     private var heldIndices: Set<Int> = []
     private var pendingByIndex: [Int: AsyncThrowingStream<BackendYield, Error>.Continuation] = [:]
+    private var resetGate: CheckedContinuation<Void, Never>?
+    private var resetIsHeld = false
+    private var resetWaiter: CheckedContinuation<Void, Never>?
+    private var cancelledProposalWaiters: [UUID: CheckedContinuation<Void, Never>] = [:]
 
     func script(_ events: [BackendYield]) {
         scripts.append(events)
@@ -30,26 +35,58 @@ final class MockAssistantBackend: AssistantBackendConfirming {
         continuation.finish()
     }
 
-    nonisolated public func send(turn: AssistantTurn,
-                                 context: AssistantContext,
-                                 session: AssistantSession?) -> AsyncThrowingStream<BackendYield, Error> {
-        let index = MainActor.assumeIsolated { self.recordTurn(turn) }
+    func send(turn: AssistantTurn,
+              context: AssistantContext,
+              session: AssistantSession?) -> AsyncThrowingStream<BackendYield, Error> {
+        let index = recordTurn(turn)
         return AsyncThrowingStream { continuation in
-            MainActor.assumeIsolated {
-                self.start(index: index, continuation: continuation)
+            self.start(index: index, continuation: continuation)
+        }
+    }
+
+    func confirmProposal(_ id: UUID) async {
+        recordConfirmedProposal(id)
+    }
+
+    func cancelProposal(_ id: UUID) async {
+        recordCancelledProposal(id)
+    }
+
+    func reset() async {
+        resetCallCount += 1
+        if resetIsHeld {
+            await withCheckedContinuation { continuation in
+                resetGate = continuation
+                resetWaiter?.resume()
+                resetWaiter = nil
             }
+        } else {
+            resetWaiter?.resume()
+            resetWaiter = nil
         }
     }
 
-    public nonisolated func confirmProposal(_ id: UUID) async {
-        await MainActor.run {
-            self.confirmedProposalIDs.append(id)
+    func holdReset() {
+        resetIsHeld = true
+    }
+
+    func releaseReset() {
+        resetIsHeld = false
+        resetGate?.resume()
+        resetGate = nil
+    }
+
+    func waitForResetCall() async {
+        if resetCallCount > 0 { return }
+        await withCheckedContinuation { continuation in
+            resetWaiter = continuation
         }
     }
 
-    public nonisolated func cancelProposal(_ id: UUID) async {
-        await MainActor.run {
-            self.cancelledProposalIDs.append(id)
+    func waitForCancelledProposal(_ id: UUID) async {
+        if cancelledProposalIDs.contains(id) { return }
+        await withCheckedContinuation { continuation in
+            cancelledProposalWaiters[id] = continuation
         }
     }
 
@@ -69,4 +106,14 @@ final class MockAssistantBackend: AssistantBackendConfirming {
             continuation.finish()
         }
     }
+
+    private func recordConfirmedProposal(_ id: UUID) {
+        confirmedProposalIDs.append(id)
+    }
+
+    private func recordCancelledProposal(_ id: UUID) {
+        cancelledProposalIDs.append(id)
+        cancelledProposalWaiters.removeValue(forKey: id)?.resume()
+    }
+
 }

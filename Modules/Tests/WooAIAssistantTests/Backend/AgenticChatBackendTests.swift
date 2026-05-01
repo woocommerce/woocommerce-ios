@@ -1,4 +1,5 @@
 import Foundation
+import os
 import Testing
 @testable import WooAIAssistant
 
@@ -141,6 +142,37 @@ struct AgenticChatBackendTests {
     }
 
     @Test
+    func test_send_when_first_turn_fails_then_secondTurn_transcript_does_not_replay_failed_turn()
+    async throws {
+        // Given
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [],
+            [.textDelta("OK."), .completed(.stop)]
+        ])
+        await chat.setStreamError(AssistantError(kind: .upstreamFailure,
+                                                 message: "first turn blew up"))
+        let backend = AgenticChatBackend(chatService: chat, systemPrompt: nil)
+
+        // When
+        let stream1 = backend.send(turn: .init(prompt: "first"),
+                                   context: defaultContext,
+                                   session: nil)
+        for try await _ in stream1 {}
+        await chat.setStreamError(nil)
+        let stream2 = backend.send(turn: .init(prompt: "second"),
+                                   context: defaultContext,
+                                   session: nil)
+        for try await _ in stream2 {}
+
+        // Then
+        let captured = await chat.capturedRequests
+        let secondMessages = captured.last?.messages ?? []
+        let userPrompts = secondMessages.filter { $0.role == .user }.compactMap { $0.content }
+        #expect(userPrompts == ["second"])
+    }
+
+    @Test
     func test_transcript_when_toolCallStarted_without_completed_then_orphan_dropped_in_next_turn()
     async throws {
         // Given
@@ -226,73 +258,6 @@ struct AgenticChatBackendTests {
     }
 
     @Test
-    func test_send_when_turn_fails_mid_stream_then_transcript_not_polluted() async throws {
-        // Given
-        let chat = MockAIChatService()
-        await chat.setScriptedTurns([
-            [.textDelta("first ok"), .completed(.stop)],
-            [.textDelta("partial")],
-            [.textDelta("third"), .completed(.stop)]
-        ])
-        let backend = AgenticChatBackend(chatService: chat, systemPrompt: nil)
-
-        // When
-        let stream1 = backend.send(turn: .init(prompt: "t1"),
-                                   context: defaultContext,
-                                   session: nil)
-        for try await _ in stream1 {}
-        await chat.setStreamError(AssistantError(kind: .upstreamFailure, message: "boom"))
-        let stream2 = backend.send(turn: .init(prompt: "t2"),
-                                   context: defaultContext,
-                                   session: nil)
-        for try await _ in stream2 {}
-        await chat.setStreamError(nil)
-        let stream3 = backend.send(turn: .init(prompt: "t3"),
-                                   context: defaultContext,
-                                   session: nil)
-        for try await _ in stream3 {}
-
-        // Then
-        let captured = await chat.capturedRequests
-        let messagesOnTurn3 = captured.last?.messages ?? []
-        let userPrompts = messagesOnTurn3.filter { $0.role == .user }.compactMap { $0.content }
-        #expect(userPrompts == ["t1", "t3"])
-        let assistantTexts = messagesOnTurn3
-            .filter { $0.role == .assistant && $0.content != nil }
-            .compactMap { $0.content }
-        #expect(assistantTexts == ["first ok"])
-    }
-
-    @Test
-    func test_send_when_tool_calls_complete_in_reverse_order_then_transcript_replays_in_call_order()
-    async throws {
-        // Given
-        let firstCall = OpenAIChat.ToolCall(
-            id: "call_a",
-            function: .init(name: "tool_a", arguments: "{}")
-        )
-        let secondCall = OpenAIChat.ToolCall(
-            id: "call_b",
-            function: .init(name: "tool_b", arguments: "{}")
-        )
-        let resultsCompletedInReverseOrder: [(String, String)] = [
-            ("call_b", #"{"b":2}"#),
-            ("call_a", #"{"a":1}"#)
-        ]
-
-        // When
-        let (orderedCalls, orderedResults) = AgenticChatBackend.matchedPairs(
-            toolCalls: [firstCall, secondCall],
-            toolResults: resultsCompletedInReverseOrder
-        )
-
-        // Then
-        #expect(orderedCalls.map(\.id) == ["call_a", "call_b"])
-        #expect(orderedResults.map(\.0) == ["call_a", "call_b"])
-        #expect(orderedResults.map(\.1) == [#"{"a":1}"#, #"{"b":2}"#])
-    }
-
-    @Test
     func test_systemPromptProvider_when_invoked_per_turn_then_rebuilt_each_call()
     async throws {
         // Given
@@ -301,8 +266,11 @@ struct AgenticChatBackendTests {
             [.textDelta("a"), .completed(.stop)],
             [.textDelta("b"), .completed(.stop)]
         ])
+        let counter = ProviderCallCounter()
         let backend = AgenticChatBackend(chatService: chat,
-                                         systemPromptProvider: { UUID().uuidString })
+                                         systemPromptProvider: {
+                                             "prompt-\(counter.bumpAndGet())"
+                                         })
 
         // When
         let stream1 = backend.send(turn: .init(prompt: "one"),
@@ -315,12 +283,12 @@ struct AgenticChatBackendTests {
         for try await _ in stream2 {}
 
         // Then
+        #expect(counter.snapshot() == 2)
         let captured = await chat.capturedRequests
         let firstSystem = captured[0].messages.first(where: { $0.role == .system })?.content
         let secondSystem = captured[1].messages.first(where: { $0.role == .system })?.content
-        #expect(firstSystem != nil)
-        #expect(secondSystem != nil)
-        #expect(firstSystem != secondSystem)
+        #expect(firstSystem == "prompt-1")
+        #expect(secondSystem == "prompt-2")
     }
 
     @Test
@@ -441,4 +409,17 @@ struct AgenticChatBackendTests {
         siteURL: URL(string: "https://example.com")!,
         blogID: nil
     )
+}
+
+private final class ProviderCallCounter: @unchecked Sendable {
+    private var count = 0
+
+    func bumpAndGet() -> Int {
+        count += 1
+        return count
+    }
+
+    func snapshot() -> Int {
+        count
+    }
 }

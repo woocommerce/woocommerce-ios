@@ -46,7 +46,7 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
         let jwtAdaptor = AIAssistantJWTAdaptor(blogID: siteID,
                                                network: wpcomNetwork,
                                                credentials: credentials)
-        let chatService = JetpackAIQueryClient(jwtProvider: jwtAdaptor)
+        let chatService = makeJetpackAIChatService(jwtProvider: jwtAdaptor)
 
         let restClient = WCRESTClientAdaptor(network: restNetwork, siteID: siteID)
         let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.defaultTools())

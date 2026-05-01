@@ -8,7 +8,7 @@ struct AIAssistantSessionStoreTests {
     @Test
     func test_controller_when_called_twice_for_same_site_then_returns_same_instance() {
         // Given
-        let sut = AIAssistantSessionStore()
+        let sut = AIAssistantSessionStore.makeForTesting()
         var buildCount = 0
         let make: (AIAssistantNavigationHost) -> AIAssistantDependencyAdaptor = { _ in
             buildCount += 1
@@ -27,7 +27,7 @@ struct AIAssistantSessionStoreTests {
     @Test
     func test_resetSession_when_called_then_subsequent_controller_is_new_instance() {
         // Given
-        let sut = AIAssistantSessionStore()
+        let sut = AIAssistantSessionStore.makeForTesting()
         let first = sut.controller(for: 12) { _ in makeStubDependencies() }
 
         // When
@@ -41,7 +41,7 @@ struct AIAssistantSessionStoreTests {
     @Test
     func test_hasSession_when_no_controller_then_false() {
         // Given
-        let sut = AIAssistantSessionStore()
+        let sut = AIAssistantSessionStore.makeForTesting()
 
         // When
         let result = sut.hasSession(for: 1)
@@ -53,7 +53,7 @@ struct AIAssistantSessionStoreTests {
     @Test
     func test_hasSession_when_controller_built_then_true() {
         // Given
-        let sut = AIAssistantSessionStore()
+        let sut = AIAssistantSessionStore.makeForTesting()
         _ = sut.controller(for: 7) { _ in makeStubDependencies() }
 
         // When
@@ -66,7 +66,7 @@ struct AIAssistantSessionStoreTests {
     @Test
     func test_navigationHost_when_called_twice_for_same_site_then_returns_same_instance() {
         // Given
-        let sut = AIAssistantSessionStore()
+        let sut = AIAssistantSessionStore.makeForTesting()
 
         // When
         let first = sut.navigationHost(for: 5)

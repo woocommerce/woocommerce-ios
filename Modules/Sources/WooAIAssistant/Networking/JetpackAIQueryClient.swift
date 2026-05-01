@@ -2,21 +2,21 @@ import Foundation
 import CocoaLumberjackSwift
 import NetworkingCore
 
-public typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
+typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
 
-public struct JetpackAIQueryClient: AIChatService {
+struct JetpackAIQueryClient: AIChatService {
 
-    public typealias Sleep = @Sendable (UInt64) async throws -> Void
+    typealias Sleep = @Sendable (UInt64) async throws -> Void
 
     private let endpoint: URL
     private let jwtProvider: AssistantJWTProviding
     private let streamingTransport: StreamingHTTPTransport
     private let sleep: Sleep
 
-    public init(jwtProvider: AssistantJWTProviding,
-                endpoint: URL? = nil,
-                streamingTransport: StreamingHTTPTransport? = nil,
-                sleep: Sleep? = nil) {
+    init(jwtProvider: AssistantJWTProviding,
+         endpoint: URL? = nil,
+         streamingTransport: StreamingHTTPTransport? = nil,
+         sleep: Sleep? = nil) {
         self.jwtProvider = jwtProvider
         self.endpoint = endpoint ?? Self.defaultEndpoint()
         self.streamingTransport = streamingTransport ?? Self.urlSessionStreamingTransport(Self.sharedLLMSession)
@@ -108,9 +108,9 @@ public struct JetpackAIQueryClient: AIChatService {
                               message: error.localizedDescription)
     }
 
-    public func streamTurn(messages: [OpenAIChat.Message],
-                           tools: [OpenAIChat.ToolDefinition]?,
-                           toolChoice: OpenAIChat.ToolChoice?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
+    func streamTurn(messages: [OpenAIChat.Message],
+                    tools: [OpenAIChat.ToolDefinition]?,
+                    toolChoice: OpenAIChat.ToolChoice?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
         AsyncThrowingStream { continuation in
             let task = Task {
                 do {
@@ -416,4 +416,8 @@ public struct JetpackAIQueryClient: AIChatService {
         guard !envelope.code.isEmpty, !envelope.message.isEmpty else { return nil }
         return envelope
     }
+}
+
+public func makeJetpackAIChatService(jwtProvider: AssistantJWTProviding) -> some AIChatService {
+    JetpackAIQueryClient(jwtProvider: jwtProvider)
 }

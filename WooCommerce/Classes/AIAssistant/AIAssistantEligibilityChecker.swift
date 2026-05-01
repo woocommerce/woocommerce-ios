@@ -2,7 +2,11 @@ import Experiments
 import Foundation
 import struct Yosemite.Site
 
-struct AIAssistantEligibilityChecker {
+protocol AIAssistantEligibilityCheckerProtocol {
+    func isEligible(for site: Site?) -> Bool
+}
+
+struct AIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {
     private let featureFlagService: FeatureFlagService
 
     init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {

@@ -1,11 +1,7 @@
 import Foundation
 import WooAIAssistant
 
-/// Process-local cache so the chat survives drill-downs into detail VCs and re-presentations
-/// without losing the conversation. SwiftUI `@State` dies on dismissal of `.fullScreenCover`,
-/// so the controller has to live somewhere outside the view tree. The nav host is cached too
-/// because the external-nav adaptor holds a strong reference to it; rebuilding the host every
-/// presentation would leave the cached adaptor pointing at a dead nav controller.
+/// Survives `.fullScreenCover` dismissal so the chat resumes the prior conversation.
 @MainActor
 final class AIAssistantSessionStore {
 
@@ -19,8 +15,23 @@ final class AIAssistantSessionStore {
 
     private var entries: [Int64: Entry] = [:]
     private var pendingHosts: [Int64: AIAssistantNavigationHost] = [:]
+    private var logoutObserver: NSObjectProtocol?
 
-    init() {}
+    private init() {
+        logoutObserver = NotificationCenter.default.addObserver(forName: .logOutEventReceived,
+                                                                object: nil,
+                                                                queue: .main) { [weak self] _ in
+            Task { @MainActor in
+                self?.invalidateAll()
+            }
+        }
+    }
+
+    nonisolated deinit {
+        if let logoutObserver {
+            NotificationCenter.default.removeObserver(logoutObserver)
+        }
+    }
 
     func navigationHost(for siteID: Int64) -> AIAssistantNavigationHost {
         if let cached = entries[siteID] {
@@ -63,7 +74,20 @@ final class AIAssistantSessionStore {
         pendingHosts[siteID] = nil
     }
 
+    func invalidateAll() {
+        entries.removeAll()
+        pendingHosts.removeAll()
+    }
+
     func hasSession(for siteID: Int64) -> Bool {
         entries[siteID] != nil
     }
 }
+
+#if DEBUG
+extension AIAssistantSessionStore {
+    static func makeForTesting() -> AIAssistantSessionStore {
+        AIAssistantSessionStore()
+    }
+}
+#endif

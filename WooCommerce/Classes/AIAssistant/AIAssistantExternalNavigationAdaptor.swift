@@ -47,8 +47,7 @@ struct AIAssistantExternalNavigationAdaptor: AssistantExternalNavigationProvidin
     }
 
     func openCustomer(siteID: Int64, customerID: Int64) {
-        // Customer detail is currently no-op: the existing detail VM is wired against
-        // `WCAnalyticsCustomer` aggregate fields the chat doesn't have. Phase 2.
+        DDLogWarn("Assistant openCustomer is not implemented yet")
     }
 
     @MainActor

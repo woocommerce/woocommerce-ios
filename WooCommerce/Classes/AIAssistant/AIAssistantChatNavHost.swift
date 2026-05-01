@@ -12,17 +12,17 @@ struct AIAssistantChatNavHost<Content: View>: UIViewControllerRepresentable {
         let navigationController = UINavigationController(rootViewController: chatHosting)
         navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.delegate = context.coordinator
-        host.navigationController = navigationController
+        host.attach(navigationController)
         return navigationController
     }
 
     func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
-        host.navigationController = uiViewController
+        host.attach(uiViewController)
     }
 
     static func dismantleUIViewController(_ uiViewController: UINavigationController, coordinator: Coordinator) {
         if coordinator.host?.navigationController === uiViewController {
-            coordinator.host?.navigationController = nil
+            coordinator.host?.attach(nil)
         }
     }
 

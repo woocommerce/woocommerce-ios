@@ -1,5 +1,4 @@
 import Foundation
-import os
 import Testing
 @testable import WooAIAssistant
 
@@ -57,10 +56,9 @@ struct AgenticChatBackendHistoryBudgeterTests {
             [.textDelta("a4"), .completed(.stop)],
             [.textDelta("a5"), .completed(.stop)]
         ])
-        let spy = SpyHistoryBudgeter(inner: SlidingWindowHistoryBudgeter(windowSize: 2))
         let backend = AgenticChatBackend(chatService: chat,
                                          systemPrompt: nil,
-                                         historyBudgeter: spy)
+                                         historyBudgeter: PassthroughHistoryBudgeter())
 
         // When
         for prompt in ["t1", "t2", "t3", "t4", "t5"] {
@@ -71,11 +69,14 @@ struct AgenticChatBackendHistoryBudgeterTests {
         }
 
         // Then
-        let lastRaw = spy.lastPriorMessages()
-        let userContents = lastRaw.filter { $0.role == .user }.compactMap(\.content)
-        let assistantContents = lastRaw.filter { $0.role == .assistant }.compactMap(\.content)
+        let captured = await chat.capturedRequests
+        let lastMessages = try #require(captured.last?.messages)
+        let lastPriorMessages = lastMessages.dropLast()
+        let userContents = lastPriorMessages.filter { $0.role == .user }.compactMap(\.content)
+        let assistantContents = lastPriorMessages.filter { $0.role == .assistant }.compactMap(\.content)
         #expect(userContents == ["t1", "t2", "t3", "t4"])
         #expect(assistantContents == ["a1", "a2", "a3", "a4"])
+        #expect(lastMessages.last?.content == "t5")
     }
 
     @Test
@@ -111,25 +112,11 @@ struct AgenticChatBackendHistoryBudgeterTests {
     }
 }
 
-private struct SpyHistoryBudgeter: HistoryBudgeter {
-
-    private let inner: any HistoryBudgeter
-    private let lock = OSAllocatedUnfairLock<[[OpenAIChat.Message]]>(initialState: [])
-
-    init(inner: any HistoryBudgeter) {
-        self.inner = inner
-    }
+private struct PassthroughHistoryBudgeter: HistoryBudgeter {
 
     func budget(systemPrompt: OpenAIChat.Message?,
                 priorMessages: [OpenAIChat.Message],
                 currentUserPrompt: String) -> [OpenAIChat.Message] {
-        lock.withLock { $0.append(priorMessages) }
-        return inner.budget(systemPrompt: systemPrompt,
-                            priorMessages: priorMessages,
-                            currentUserPrompt: currentUserPrompt)
-    }
-
-    func lastPriorMessages() -> [OpenAIChat.Message] {
-        lock.withLock { $0.last ?? [] }
+        [systemPrompt].compactMap { $0 } + priorMessages
     }
 }

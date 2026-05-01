@@ -47,7 +47,37 @@ public final class AssistantController {
             conversation.markCancelled(messageID: messageID)
         }
         activeAssistantMessageID = nil
+        for proposalID in pendingProposalIDs() {
+            conversation.applyConfirmationResolution(proposalID: proposalID, approved: false)
+            cancelProposal(proposalID)
+        }
         conversation.setStreaming(.idle)
+    }
+
+    private func pendingProposalIDs() -> [UUID] {
+        var ids: [UUID] = []
+        for message in conversation.messages {
+            for segment in message.segments {
+                if case .confirmation(_, let proposalID, _, _, .pending) = segment {
+                    ids.append(proposalID)
+                }
+            }
+        }
+        return ids
+    }
+
+    public func startNewConversation() {
+        cancel()
+        let token = UUID()
+        activeTurnToken = token
+        activeTask = Task { [weak self] in
+            guard let self else { return }
+            await backend.reset()
+            guard activeTurnToken == token else { return }
+            conversation.reset()
+            activeTask = nil
+            activeTurnToken = nil
+        }
     }
 
     public var canSend: Bool {

@@ -1,7 +1,8 @@
 import Foundation
 @testable import WooAIAssistant
 
-final class MockAssistantBackend: AssistantBackendConfirming, @unchecked Sendable {
+@MainActor
+final class MockAssistantBackend: AssistantBackendConfirming {
 
     private(set) var recordedTurns: [AssistantTurn] = []
     private(set) var confirmedProposalIDs: [UUID] = []

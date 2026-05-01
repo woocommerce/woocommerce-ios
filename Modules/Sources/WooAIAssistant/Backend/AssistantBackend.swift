@@ -4,6 +4,11 @@ public protocol AssistantBackend: Sendable {
     func send(turn: AssistantTurn,
               context: AssistantContext,
               session: AssistantSession?) -> AsyncThrowingStream<BackendYield, Error>
+    func reset() async
+}
+
+public extension AssistantBackend {
+    func reset() async {}
 }
 
 public protocol AssistantBackendConfirming: AssistantBackend {

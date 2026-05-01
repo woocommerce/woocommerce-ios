@@ -26,6 +26,20 @@ public final class AssistantConversation {
         self.messages = seededMessages
     }
 
+    func reset() {
+        messages = []
+        streamingState = .idle
+        outcomeUnknownObserved = false
+        session = nil
+    }
+
+    func applyConfirmationResolution(proposalID: UUID, approved: Bool) {
+        for index in messages.indices {
+            messages[index].updateConfirmation(proposalID: proposalID,
+                                               to: approved ? .confirmed : .cancelled)
+        }
+    }
+
     func appendUserMessage(_ text: String) -> ChatMessage {
         let message = ChatMessage(role: .user,
                                   segments: [.text(id: UUID(), content: text)])

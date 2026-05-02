@@ -13,4 +13,17 @@ struct POSCartPaymentOrderProvider: POSPaymentOrderProviding {
                                totalDecimal: totals.orderTotalDecimal,
                                paymentURL: order.paymentURL)
     }
+
+    /// Promotes the order to `.pending` so the backend populates `paymentURL`,
+    /// then returns the refreshed order.
+    func provideOrderForScanToPay() async throws -> POSPaymentOrder {
+        guard case let .loaded(totals, _) = orderController.orderState else {
+            throw POSPaymentError.noOrder
+        }
+        let promoted = try await orderController.promoteCurrentOrderToPending()
+        return POSPaymentOrder(order: promoted,
+                               formattedTotal: totals.orderTotal,
+                               totalDecimal: totals.orderTotalDecimal,
+                               paymentURL: promoted.paymentURL)
+    }
 }

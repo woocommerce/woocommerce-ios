@@ -41,6 +41,13 @@ private extension PointOfSalePaymentSuccessViewModel {
             comment: "Message shown to users when a scan-to-pay payment is confirmed. %1$@ is a placeholder for the " +
             "order total, e.g $10.50. Please include %1$@ in your formatted string"
         )
+
+        static let messageMarkAsPaid = NSLocalizedString(
+            "pointOfSale.paymentSuccessful.message.markAsPaid.1",
+            value: "A payment of %1$@ was marked as received.",
+            comment: "Message shown to users when an order is marked as paid manually. %1$@ is a placeholder for the " +
+            "order total, e.g $10.50. Please include %1$@ in your formatted string"
+        )
     }
 }
 
@@ -55,6 +62,9 @@ private extension PointOfSalePaymentMethod {
 
         case .scanToPay:
             return PointOfSalePaymentSuccessViewModel.Localization.messageScanToPay
+
+        case .markAsPaid:
+            return PointOfSalePaymentSuccessViewModel.Localization.messageMarkAsPaid
         }
     }
 }

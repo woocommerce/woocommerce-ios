@@ -22,4 +22,16 @@ struct POSPaymentOrder {
 /// Provides an Order for the payment model to collect payment against.
 protocol POSPaymentOrderProviding {
     func provideOrder() async throws -> POSPaymentOrder
+
+    /// Returns an order ready for scan-to-pay. For POS this promotes the autoDraft to
+    /// `.pending` so the WC backend populates `paymentURL` (the same status the
+    /// order-creation flow uses by default).
+    func provideOrderForScanToPay() async throws -> POSPaymentOrder
+}
+
+extension POSPaymentOrderProviding {
+    /// Default falls back to the regular provider — useful for mocks that don't differentiate.
+    func provideOrderForScanToPay() async throws -> POSPaymentOrder {
+        try await provideOrder()
+    }
 }

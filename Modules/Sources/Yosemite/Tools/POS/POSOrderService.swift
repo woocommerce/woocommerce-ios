@@ -15,6 +15,10 @@ public protocol POSOrderServiceProtocol {
     func loadOrder(orderID: Int64) async throws -> Order
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws
+    func markOrderAsCompletedManually(order: Order) async throws
+    /// Promotes an `autoDraft` order to `pending` so the WC backend will populate `paymentURL`
+    /// (and the order becomes payable via gateway webhooks). Returns the updated order.
+    func promoteOrderToPending(order: Order) async throws -> Order
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws
 }
 
@@ -107,6 +111,46 @@ public final class POSOrderService: POSOrderServiceProtocol {
                                                        orderID: orderID,
                                                        isCustomerNote: isCustomerNote,
                                                        note: note)
+        } catch {
+            throw POSOrderServiceError.updateOrderFailed
+        }
+    }
+
+    public func promoteOrderToPending(order: Order) async throws -> Order {
+        // No-op when the order is already past auto-draft: the backend has already populated
+        // paymentURL, no need for another round-trip.
+        guard order.status == .autoDraft else {
+            return order
+        }
+        let updatedOrder = order.copy(status: .pending)
+        do {
+            return try await ordersRemote.updatePOSOrder(
+                siteID: siteID,
+                order: updatedOrder,
+                cashPaymentChangeDueAmount: nil,
+                fields: [.status]
+            )
+        } catch {
+            throw POSOrderServiceError.updateOrderFailed
+        }
+    }
+
+    public func markOrderAsCompletedManually(order: Order) async throws {
+        let fieldsToUpdate: [OrderUpdateField] = [
+            .status,
+            .paymentMethodID,
+            .paymentMethodTitle
+        ]
+        let updatedOrder = order.copy(status: .completed,
+                                      paymentMethodID: Constants.manualPaymentMethodID,
+                                      paymentMethodTitle: Localization.manualPaymentMethodTitle)
+        do {
+            _ = try await ordersRemote.updatePOSOrder(
+                siteID: siteID,
+                order: updatedOrder,
+                cashPaymentChangeDueAmount: nil,
+                fields: fieldsToUpdate
+            )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
         }
@@ -276,10 +320,21 @@ private extension POSOrderService {
             value: "Pay in Person",
             comment: "Title for the payment method used when collecting cash payment in Point of Sale."
         )
+        static let manualPaymentMethodTitle = NSLocalizedString(
+            "pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle",
+            value: "Other",
+            comment: "Title for the payment method used when manually marking an order as paid in Point of Sale."
+        )
         static let unknownProductName = NSLocalizedString(
             "pointOfSale.orderController.unknownProduct",
             value: "One or more products",
             comment: "Fallback name for a product that couldn't be identified in error handling."
         )
+    }
+
+    enum Constants {
+        /// Payment method slug used when the merchant marks an order as paid manually,
+        /// e.g. for an external reader, account credit, or any out-of-band collection.
+        static let manualPaymentMethodID = "other"
     }
 }

@@ -11,7 +11,7 @@ struct TotalsViewHelper {
         }
 
         switch paymentState.activePaymentMethod {
-        case .cash, .scanToPay:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             switch paymentState.card {
@@ -54,21 +54,17 @@ struct TotalsViewHelper {
                                                              isZeroTotal: isZeroTotal)
     }
 
-    /// Scan-to-pay button visibility for the cart flow.
-    /// Mirrors the cash button rules and additionally requires a payment URL on the order.
-    func shouldShowScanToPayButton(orderState: PointOfSaleOrderState,
-                                   paymentState: PointOfSalePaymentState,
-                                   cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus,
-                                   scanToPayURL: URL?) -> Bool {
+    /// "Other payment methods" button visibility for the cart flow.
+    /// Always available when the cash button rules pass — the sheet itself decides whether
+    /// each individual entry (Scan to Pay, Mark as paid) is enabled.
+    func shouldShowOtherPaymentMethodsButton(orderState: PointOfSaleOrderState,
+                                             paymentState: PointOfSalePaymentState,
+                                             cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus) -> Bool {
         guard orderState != .syncing else {
             return false
         }
 
         if case .reconnecting = cardReaderConnectionStatus {
-            return false
-        }
-
-        guard scanToPayURL != nil else {
             return false
         }
 
@@ -78,9 +74,9 @@ struct TotalsViewHelper {
             false
         }
 
-        return paymentViewHelper.shouldShowScanToPayButton(paymentState: paymentState,
-                                                            cardReaderConnectionStatus: cardReaderConnectionStatus,
-                                                            isZeroTotal: isZeroTotal)
+        return paymentViewHelper.shouldShowOtherPaymentMethodsButton(paymentState: paymentState,
+                                                                      cardReaderConnectionStatus: cardReaderConnectionStatus,
+                                                                      isZeroTotal: isZeroTotal)
     }
 
     func shouldShowTotalDiscountField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {

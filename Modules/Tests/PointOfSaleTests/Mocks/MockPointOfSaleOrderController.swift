@@ -54,4 +54,37 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
             throw confirmScanToPayPaymentErrorToThrow
         }
     }
+
+    var markOrderAsPaidManuallyWasCalled = false
+    var markOrderAsPaidManuallyErrorToThrow: Error?
+    func markOrderAsPaidManually() async throws {
+        markOrderAsPaidManuallyWasCalled = true
+        if let markOrderAsPaidManuallyErrorToThrow {
+            throw markOrderAsPaidManuallyErrorToThrow
+        }
+    }
+
+    var reloadCurrentOrderWasCalled = false
+    var reloadCurrentOrderResult: Result<Order, Error> = .success(.fake())
+    func reloadCurrentOrder() async throws -> Order {
+        reloadCurrentOrderWasCalled = true
+        switch reloadCurrentOrderResult {
+        case .success(let order):
+            return order
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    var promoteCurrentOrderToPendingWasCalled = false
+    var promoteCurrentOrderToPendingResult: Result<Order, Error> = .success(.fake())
+    func promoteCurrentOrderToPending() async throws -> Order {
+        promoteCurrentOrderToPendingWasCalled = true
+        switch promoteCurrentOrderToPendingResult {
+        case .success(let order):
+            return order
+        case .failure(let error):
+            throw error
+        }
+    }
 }

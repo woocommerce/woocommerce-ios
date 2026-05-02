@@ -1,4 +1,5 @@
 #if DEBUG
+import Foundation
 import enum Yosemite.OrderFactory
 import struct Yosemite.Order
 import Combine
@@ -27,5 +28,21 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
     func collectCashPayment(changeDueAmount: String?) async throws {}
 
     func confirmScanToPayPayment() async throws {}
+
+    func markOrderAsPaidManually() async throws {}
+
+    func reloadCurrentOrder() async throws -> Order {
+        guard case let .loaded(_, order) = orderState else {
+            throw NSError(domain: "PointOfSalePreviewOrderController", code: 0)
+        }
+        return order
+    }
+
+    func promoteCurrentOrderToPending() async throws -> Order {
+        guard case let .loaded(_, order) = orderState else {
+            throw NSError(domain: "PointOfSalePreviewOrderController", code: 0)
+        }
+        return order
+    }
 }
 #endif

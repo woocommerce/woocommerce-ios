@@ -36,6 +36,15 @@ struct PointOfSaleScanToPayView: View {
             }
     }
 
+    /// Pulls the verification status out of the underlying state so the view can render
+    /// the right indicator without leaking the enum shape into multiple places.
+    private var verificationStatus: ScanToPayVerificationStatus {
+        if case let .showingQRCode(verification) = paymentModel.paymentState.scanToPay {
+            return verification
+        }
+        return .waiting
+    }
+
     private var content: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -55,6 +64,8 @@ struct PointOfSaleScanToPayView: View {
 
                     qrCodeContent
 
+                    verificationStatusView
+
                     if let errorMessage {
                         Text(errorMessage)
                             .font(.posBodySmallRegular())
@@ -73,7 +84,7 @@ struct PointOfSaleScanToPayView: View {
                         Text(Localization.markPaymentCompletedButtonTitle)
                     })
                     .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
-                    .disabled(isLoading)
+                    .disabled(isLoading || paymentModel.isPreparingScanToPay)
                     .padding([.horizontal, .bottom], POSPadding.medium)
                     .frame(maxWidth: .infinity)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -104,6 +115,22 @@ struct PointOfSaleScanToPayView: View {
                     .cornerRadius(Layout.cornerRadius)
             }
             .padding(.horizontal, POSPadding.medium)
+        } else if paymentModel.isPreparingScanToPay {
+            // The QR is being generated server-side: still waiting on the autoDraft → pending
+            // promotion to populate `paymentURL`. Show a placeholder of the same size so the
+            // layout doesn't shift when the QR appears.
+            VStack(spacing: POSSpacing.medium) {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .scaleEffect(1.5)
+                    .frame(width: Layout.qrCodeSize, height: Layout.qrCodeSize)
+
+                Text(Localization.preparing)
+                    .font(.posBodyLargeRegular())
+                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.horizontal, POSPadding.medium)
         } else {
             Text(Localization.qrUnavailable)
                 .font(.posBodyLargeRegular())
@@ -116,6 +143,62 @@ struct PointOfSaleScanToPayView: View {
     private func generatedQRCodeImage() -> UIImage? {
         guard let url = paymentModel.scanToPayURL else { return nil }
         return url.generateQRCode()
+    }
+
+    /// Live status indicator showing whether the backend has detected payment.
+    /// Hidden while preparing the QR (the spinner inside the QR area covers that case) or
+    /// when the URL never came back (the unavailable message takes its place).
+    @ViewBuilder
+    private var verificationStatusView: some View {
+        if paymentModel.scanToPayURL != nil {
+            HStack(spacing: POSSpacing.small) {
+                statusIcon
+                Text(verificationStatusMessage)
+                    .font(.posBodyMediumRegular())
+                    .foregroundColor(verificationStatusColor)
+            }
+            .padding(.horizontal, POSPadding.medium)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(verificationStatusMessage)
+            .animation(.easeInOut, value: verificationStatus)
+        }
+    }
+
+    @ViewBuilder
+    private var statusIcon: some View {
+        switch verificationStatus {
+        case .waiting:
+            ProgressView()
+                .progressViewStyle(.circular)
+        case .error:
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundColor(.posError)
+        case .confirming:
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundColor(.posPrimary)
+        }
+    }
+
+    private var verificationStatusMessage: String {
+        switch verificationStatus {
+        case .waiting:
+            return Localization.statusWaiting
+        case .error:
+            return Localization.statusError
+        case .confirming:
+            return Localization.statusConfirming
+        }
+    }
+
+    private var verificationStatusColor: Color {
+        switch verificationStatus {
+        case .waiting:
+            return .posOnSurfaceVariantHighest
+        case .error:
+            return .posError
+        case .confirming:
+            return .posOnSurface
+        }
     }
 }
 
@@ -161,6 +244,11 @@ private extension PointOfSaleScanToPayView {
             value: "We couldn't generate a QR code for this order. Please try a different payment method.",
             comment: "Message shown when no payment URL is available to render a QR code in Point of Sale scan-to-pay."
         )
+        static let preparing = NSLocalizedString(
+            "pointOfSale.scanToPay.preparing.message",
+            value: "Generating QR code…",
+            comment: "Loading message shown while preparing the order for scan-to-pay (promoting it to pending)."
+        )
         static let markPaymentCompletedButtonTitle = NSLocalizedString(
             "pointOfSale.scanToPay.markpaymentcompleted.button.title",
             value: "Mark payment as complete",
@@ -170,6 +258,22 @@ private extension PointOfSaleScanToPayView {
             "pointOfSale.scanToPay.failedToConfirmPayment.errorMessage",
             value: "Error confirming payment. Try again.",
             comment: "Error message shown when confirming a scan-to-pay payment fails in Point of Sale."
+        )
+        static let statusWaiting = NSLocalizedString(
+            "pointOfSale.scanToPay.status.waiting",
+            value: "Waiting for payment…",
+            comment: "Status text shown under the scan-to-pay QR code while polling for payment."
+        )
+        static let statusError = NSLocalizedString(
+            "pointOfSale.scanToPay.status.error",
+            value: "Couldn't check payment status. Retrying…",
+            comment: "Status text shown when polling for scan-to-pay payment fails (network etc.). Polling will retry."
+        )
+        static let statusConfirming = NSLocalizedString(
+            "pointOfSale.scanToPay.status.confirming",
+            value: "Payment received. Confirming…",
+            comment: "Status text shown after the backend confirms a scan-to-pay payment, " +
+            "while the app finalizes success."
         )
     }
 }

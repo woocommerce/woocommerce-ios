@@ -1116,12 +1116,15 @@ private func makePaymentController(
     orderProvider: POSPaymentOrderProviding = MockPOSPaymentOrderProvider(),
     cashPaymentHandler: POSCashPaymentHandling = MockPOSCashPaymentHandler(),
     scanToPayHandler: POSScanToPayHandling = MockPOSScanToPayHandler(),
+    scanToPayVerifier: POSScanToPayVerifying? = nil,
+    markAsPaidHandler: POSMarkAsPaidHandling = MockPOSMarkAsPaidHandler(),
     receiptSender: POSReceiptSending = MockPOSReceiptSender(),
     postPaymentStep: (() async throws -> Void)? = nil,
     configuration: POSPaymentFlowConfiguration = .cart(onNewOrder: {}, onEditOrder: {}),
     analytics: POSAnalyticsProviding = MockPOSAnalytics(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     celebration: PaymentCaptureCelebrationProtocol = MockPaymentCaptureCelebration(),
+    scanToPayPollInterval: TimeInterval = 3,
     paymentState: PointOfSalePaymentState = .idle
 ) -> POSPaymentModel {
     POSPaymentModel(
@@ -1129,11 +1132,14 @@ private func makePaymentController(
         orderProvider: orderProvider,
         cashPaymentHandler: cashPaymentHandler,
         scanToPayHandler: scanToPayHandler,
+        scanToPayVerifier: scanToPayVerifier,
+        markAsPaidHandler: markAsPaidHandler,
         receiptSender: receiptSender,
         postPaymentStep: postPaymentStep,
         configuration: configuration,
         analytics: analytics,
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         celebration: celebration,
+        scanToPayPollInterval: scanToPayPollInterval,
         paymentState: paymentState)
 }

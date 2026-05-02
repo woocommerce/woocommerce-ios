@@ -41,6 +41,11 @@ protocol PointOfSaleOrderControllerProtocol {
     func clearOrder()
     func collectCashPayment(changeDueAmount: String?) async throws
     func confirmScanToPayPayment() async throws
+    func markOrderAsPaidManually() async throws
+    func reloadCurrentOrder() async throws -> Order
+    /// Promotes the current autoDraft order to `.pending` so the backend populates `paymentURL`.
+    /// Idempotent: returns the existing order if it's already past autoDraft.
+    func promoteCurrentOrderToPending() async throws -> Order
 }
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -142,6 +147,41 @@ protocol PointOfSaleOrderControllerProtocol {
         try await orderService.addOrderNote(orderID: order.orderID,
                                             isCustomerNote: false,
                                             note: Localization.scanToPayNote)
+    }
+
+    @MainActor
+    func markOrderAsPaidManually() async throws {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+
+        try await orderService.markOrderAsCompletedManually(order: order)
+    }
+
+    @MainActor
+    func reloadCurrentOrder() async throws -> Order {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+
+        let refreshed = try await orderService.loadOrder(orderID: order.orderID)
+        self.order = refreshed
+        return refreshed
+    }
+
+    @MainActor
+    func promoteCurrentOrderToPending() async throws -> Order {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+
+        let promoted = try await orderService.promoteOrderToPending(order: order)
+        self.order = promoted
+        // Keep the loaded totals in sync — they're driven off the same Order, but the status changed.
+        if case let .loaded(totals, _) = orderState {
+            orderState = .loaded(totals, promoted)
+        }
+        return promoted
     }
 }
 

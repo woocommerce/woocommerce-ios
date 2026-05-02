@@ -14,6 +14,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showDocumentation: Bool = false
     @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
+    @State private var markAsPaidError: String?
 
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
@@ -111,7 +112,7 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(viewState.showsFloatingControl)
+            .renderedIf(viewState.showsFloatingControl && !isShowingScanToPay)
 
             POSConnectivityView()
         }
@@ -138,6 +139,10 @@ struct PointOfSaleDashboardView: View {
             PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
+        .markAsPaidConfirmation(paymentModel: posModel.paymentModel,
+                                orderState: posModel.orderState,
+                                onSubmissionError: { markAsPaidError = $0 },
+                                error: markAsPaidError)
         .posRootModal()
         .posSheet(isPresented: $showSupport) {
             supportForm
@@ -175,6 +180,16 @@ struct PointOfSaleDashboardView: View {
         POSNavigationRouter(navigationPath: $navigationPath)
     }
 
+    /// True when the Scan to Pay screen is the top of the navigation stack. Used to hide the
+    /// floating dashboard controls (exit POS, settings, etc.) so the merchant can focus on
+    /// the QR-based payment flow without distractions.
+    private var isShowingScanToPay: Bool {
+        navigationPath.contains { destination in
+            if case .scanToPay = destination { return true }
+            return false
+        }
+    }
+
     private var contentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator
         return GeometryReader { geometry in
@@ -196,7 +211,8 @@ struct PointOfSaleDashboardView: View {
                     HStack(spacing: POSSpacing.none) {
                         if !posModel.paymentState.card.shownFullScreen
                             && posModel.paymentState.cash != .paymentSuccess
-                            && posModel.paymentState.scanToPay != .paymentSuccess {
+                            && posModel.paymentState.scanToPay != .paymentSuccess
+                            && posModel.paymentState.markAsPaid != .paymentSuccess {
                             CartView()
                                 .frame(width: cartWidth)
                                 .accessibilitySortPriority(1)
@@ -205,6 +221,7 @@ struct PointOfSaleDashboardView: View {
                         let totalsWidth = posModel.paymentState.card.shownFullScreen
                             || posModel.paymentState.cash == .paymentSuccess
                             || posModel.paymentState.scanToPay == .paymentSuccess
+                            || posModel.paymentState.markAsPaid == .paymentSuccess
                             ? cartWidth + checkoutWidth
                             : checkoutWidth
 
@@ -237,8 +254,8 @@ struct PointOfSaleDashboardView: View {
                     navigationRouter.pushCash(orderTotal: totals.orderTotal)
                 }
             }
-            .onChange(of: posModel.paymentState.scanToPay) { _, newValue in
-                if newValue == .showingQRCode,
+            .onChange(of: posModel.paymentState.scanToPay) { oldValue, newValue in
+                if newValue.isShowingQRCode, !oldValue.isShowingQRCode,
                    case .loaded(let totals) = posModel.orderState {
                     navigationRouter.pushScanToPay(orderTotal: totals.orderTotal)
                 }
@@ -355,6 +372,84 @@ private extension PointOfSaleDashboardView {
         } else {
             return .posContainerRegionToIgnore
         }
+    }
+}
+
+/// View modifier that wires the Mark-as-paid confirmation alert to the payment model state.
+/// Lives as an extension on `View` so the dashboard body stays readable.
+private extension View {
+    func markAsPaidConfirmation(paymentModel: POSPaymentModel,
+                                orderState: PointOfSaleOrderState,
+                                onSubmissionError: @escaping (String?) -> Void,
+                                error: String?) -> some View {
+        modifier(MarkAsPaidConfirmationModifier(paymentModel: paymentModel,
+                                                orderState: orderState,
+                                                onSubmissionError: onSubmissionError,
+                                                error: error))
+    }
+}
+
+private struct MarkAsPaidConfirmationModifier: ViewModifier {
+    let paymentModel: POSPaymentModel
+    let orderState: PointOfSaleOrderState
+    let onSubmissionError: (String?) -> Void
+    let error: String?
+
+    private var orderTotal: String {
+        if case let .loaded(totals) = orderState {
+            return totals.orderTotal
+        }
+        return ""
+    }
+
+    private var isShowing: Binding<Bool> {
+        Binding(
+            get: { paymentModel.paymentState.markAsPaid != .idle && paymentModel.paymentState.markAsPaid != .paymentSuccess },
+            set: { newValue in
+                if !newValue {
+                    Task { @MainActor in
+                        await paymentModel.cancelMarkAsPaidPayment()
+                        onSubmissionError(nil)
+                    }
+                }
+            }
+        )
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .posModal(isPresented: isShowing) {
+                PointOfSaleMarkAsPaidConfirmationView(
+                    orderTotal: orderTotal,
+                    isProcessing: paymentModel.paymentState.markAsPaid == .processing,
+                    errorMessage: error,
+                    onConfirm: {
+                        Task { @MainActor in
+                            do {
+                                try await paymentModel.confirmMarkAsPaidPayment()
+                                onSubmissionError(nil)
+                            } catch {
+                                onSubmissionError(MarkAsPaidConfirmationModifier.Localization.failureMessage)
+                            }
+                        }
+                    },
+                    onCancel: {
+                        Task { @MainActor in
+                            await paymentModel.cancelMarkAsPaidPayment()
+                            onSubmissionError(nil)
+                        }
+                    }
+                )
+                .posInteractiveDismissDisabled(paymentModel.paymentState.markAsPaid == .processing)
+            }
+    }
+
+    enum Localization {
+        static let failureMessage = NSLocalizedString(
+            "pointOfSale.markAsPaid.failureMessage",
+            value: "Couldn't mark this order as paid. Try again.",
+            comment: "Error shown on the Point of Sale Mark as paid confirmation alert when the network call fails."
+        )
     }
 }
 

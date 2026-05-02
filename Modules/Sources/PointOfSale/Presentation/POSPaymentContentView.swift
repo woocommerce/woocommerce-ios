@@ -18,15 +18,21 @@ struct POSPaymentContentView: View {
     private let viewHelper = POSPaymentViewHelper()
     @Namespace private var paymentMessageNamespace
 
-    /// Payment state with cash collection and scan-to-pay-in-progress neutralized.
-    /// Only `.collectingCash` and `.showingQRCode` are handled by NavigationStack push.
-    /// Success and idle are visible to this view.
+    /// Payment state with in-progress secondary methods neutralized.
+    /// Only `.collectingCash`, `.showingQRCode`, and the in-progress mark-as-paid stages live in
+    /// their own modal/navigation push. Only success and idle are visible here.
     private var displayPaymentState: PointOfSalePaymentState {
         let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash
             ? .idle : paymentModel.paymentState.cash
-        let scanToPay: PointOfSaleScanToPayState = paymentModel.paymentState.scanToPay == .showingQRCode
+        let scanToPay: PointOfSaleScanToPayState = paymentModel.paymentState.scanToPay.isShowingQRCode
             ? .idle : paymentModel.paymentState.scanToPay
-        return PointOfSalePaymentState(card: paymentModel.paymentState.card, cash: cash, scanToPay: scanToPay)
+        let markAsPaid: PointOfSaleMarkAsPaidState = paymentModel.paymentState.markAsPaid == .confirming
+            || paymentModel.paymentState.markAsPaid == .processing
+            ? .idle : paymentModel.paymentState.markAsPaid
+        return PointOfSalePaymentState(card: paymentModel.paymentState.card,
+                                       cash: cash,
+                                       scanToPay: scanToPay,
+                                       markAsPaid: markAsPaid)
     }
 
     var body: some View {
@@ -106,6 +112,12 @@ struct POSPaymentContentView: View {
                 messageType: .paymentSuccess(
                     viewModel: .init(formattedOrderTotal: formattedTotal,
                                      paymentMethod: .scanToPay)),
+                animation: .init(namespace: paymentMessageNamespace))
+        case .markAsPaid:
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: formattedTotal,
+                                     paymentMethod: .markAsPaid)),
                 animation: .init(namespace: paymentMessageNamespace))
         case .card:
             POSCardPaymentContentView(
@@ -187,20 +199,21 @@ struct POSPaymentContentView: View {
 
     // MARK: - Secondary Payment Buttons
 
+    @State private var isShowingOtherMethodsSheet = false
+    @Environment(\.posAnalytics) private var analytics
+
     @ViewBuilder
     private var secondaryPaymentButtonsView: some View {
         VStack(spacing: POSSpacing.small) {
-            if viewHelper.shouldShowScanToPayButton(
+            if viewHelper.shouldShowOtherPaymentMethodsButton(
                 paymentState: displayPaymentState,
                 cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                isZeroTotal: paymentModel.isZeroTotal),
-               paymentModel.scanToPayURL != nil {
+                isZeroTotal: paymentModel.isZeroTotal) {
                 Button(action: {
-                    Task { @MainActor in
-                        await paymentModel.startScanToPayPayment()
-                    }
+                    analytics.track(.pointOfSaleOtherPaymentMethodsTapped)
+                    isShowingOtherMethodsSheet = true
                 }) {
-                    Text(Localization.scanToPayButton)
+                    Text(Localization.otherPaymentMethodsButton)
                         .font(POSFontStyle.posBodyLargeBold)
                 }
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
@@ -221,6 +234,18 @@ struct POSPaymentContentView: View {
         }
         .padding(.horizontal, POSPadding.medium)
         .safeAreaPadding(.bottom, POSPadding.medium)
+        .posSheet(isPresented: $isShowingOtherMethodsSheet) {
+            PointOfSaleOtherPaymentMethodsSheet(
+                onScanToPay: {
+                    Task { @MainActor in
+                        await paymentModel.startScanToPayPayment()
+                    }
+                },
+                onMarkAsPaid: {
+                    paymentModel.startMarkAsPaidPayment()
+                }
+            )
+        }
     }
 }
 
@@ -256,6 +281,12 @@ private extension POSPaymentContentView {
             "pointOfSale.paymentContent.scanToPayButton",
             value: "Scan to Pay",
             comment: "Button to start a Scan to Pay payment in the payment flow"
+        )
+
+        static let otherPaymentMethodsButton = NSLocalizedString(
+            "pointOfSale.paymentContent.otherPaymentMethodsButton",
+            value: "Other payment methods",
+            comment: "Button that opens a sheet with secondary payment methods (Scan to Pay, Mark as paid)"
         )
     }
 }

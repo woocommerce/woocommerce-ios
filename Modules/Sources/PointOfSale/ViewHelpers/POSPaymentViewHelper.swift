@@ -19,6 +19,13 @@ struct POSPaymentViewHelper {
             default:
                 return .clear
             }
+        case .markAsPaid:
+            switch paymentState.markAsPaid {
+            case .paymentSuccess:
+                return .posSurfaceBright
+            default:
+                return .clear
+            }
         case .card:
             switch paymentState.card {
             case .processingPayment:
@@ -38,7 +45,7 @@ struct POSPaymentViewHelper {
             return true
         }
         switch paymentState.activePaymentMethod {
-        case .cash, .scanToPay:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             if case .disconnected = cardReaderConnectionStatus,
@@ -49,30 +56,29 @@ struct POSPaymentViewHelper {
         }
     }
 
-    /// Scan-to-pay shares the cash button visibility rules: only shown on the card flow,
-    /// either while the reader is disconnected (initial state) or once card payment has actually
-    /// progressed past idle so we don't blanket hide it during the active card flow.
-    func shouldShowScanToPayButton(paymentState: PointOfSalePaymentState,
-                                   cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus,
-                                   isZeroTotal: Bool = false) -> Bool {
+    /// Scan-to-pay and Mark-as-paid live behind the "Other payment methods" entry — this helper
+    /// gates whether that secondary button is visible at all.
+    func shouldShowOtherPaymentMethodsButton(paymentState: PointOfSalePaymentState,
+                                             cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+                                             isZeroTotal: Bool = false) -> Bool {
         if isZeroTotal, case .card = paymentState.activePaymentMethod {
             return true
         }
         switch paymentState.activePaymentMethod {
-        case .cash, .scanToPay:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             if case .disconnected = cardReaderConnectionStatus,
                case .idle = paymentState.card {
                 return true
             }
-            return paymentState.allowsScanToPayPayment && paymentState.card != .idle
+            return paymentState.allowsSecondaryPaymentMethod && paymentState.card != .idle
         }
     }
 
     func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState.activePaymentMethod {
-        case .cash, .scanToPay:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             switch paymentState.card {
@@ -99,7 +105,7 @@ struct POSPaymentViewHelper {
         }
 
         switch paymentState.activePaymentMethod {
-        case .cash, .scanToPay:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             switch paymentState.card {
@@ -121,7 +127,7 @@ struct POSPaymentViewHelper {
 
     func shouldApplyPadding(paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState.activePaymentMethod {
-        case .cash, .scanToPay:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             switch paymentState.card {

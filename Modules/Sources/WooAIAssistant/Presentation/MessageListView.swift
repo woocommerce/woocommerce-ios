@@ -9,7 +9,12 @@ struct MessageListView: View {
     var inputFocused: Bool = false
     var onPickPrompt: (String) -> Void = { _ in }
 
+    @State private var isPinnedToBottom: Bool = true
+    @State private var viewportHeight: CGFloat = 0
+
     private static let bottomAnchor = "scroll-bottom"
+    private static let scrollSpace = "assistantMessageList"
+    private static let pinnedThreshold: CGFloat = 60
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -41,20 +46,48 @@ struct MessageListView: View {
                     Color.clear
                         .frame(height: 1)
                         .id(Self.bottomAnchor)
+                        .background(bottomMarkerProbe)
                 }
                 .padding(.horizontal, AssistantSpacing.large)
                 .padding(.top, AssistantSpacing.large)
                 .padding(.bottom, AssistantSpacing.medium)
             }
+            .background(viewportProbe)
+            .coordinateSpace(name: Self.scrollSpace)
+            .onPreferenceChange(BottomDistancePreferenceKey.self) { distance in
+                guard viewportHeight > 0 else { return }
+                isPinnedToBottom = distance <= Self.pinnedThreshold
+            }
             .scrollDismissesKeyboard(.interactively)
             .onAppear { scrollToBottom(proxy: proxy, animated: false) }
-            .onChange(of: messages.count) { _, _ in scrollToBottom(proxy: proxy) }
+            .onChange(of: messages.count) { _, _ in
+                if isPinnedToBottom { scrollToBottom(proxy: proxy) }
+            }
             .onChange(of: messages.last?.segments.last?.fingerprint) { _, _ in
-                scrollToBottom(proxy: proxy)
+                if isPinnedToBottom { scrollToBottom(proxy: proxy) }
             }
             .onChange(of: inputFocused) { _, focused in
                 if focused { scrollToBottom(proxy: proxy) }
             }
+        }
+    }
+
+    private var viewportProbe: some View {
+        GeometryReader { geometry in
+            Color.clear
+                .preference(key: ViewportHeightPreferenceKey.self, value: geometry.size.height)
+        }
+        .onPreferenceChange(ViewportHeightPreferenceKey.self) { height in
+            viewportHeight = height
+        }
+    }
+
+    private var bottomMarkerProbe: some View {
+        GeometryReader { geometry in
+            let frame = geometry.frame(in: .named(Self.scrollSpace))
+            Color.clear
+                .preference(key: BottomDistancePreferenceKey.self,
+                            value: max(0, frame.maxY - viewportHeight))
         }
     }
 
@@ -66,6 +99,20 @@ struct MessageListView: View {
         } else {
             proxy.scrollTo(Self.bottomAnchor, anchor: .bottom)
         }
+    }
+}
+
+private struct ViewportHeightPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
+    }
+}
+
+private struct BottomDistancePreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 

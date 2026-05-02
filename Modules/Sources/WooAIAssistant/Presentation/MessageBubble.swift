@@ -29,7 +29,7 @@ struct MessageBubble: View {
         guard message.role == .assistant else { return message.segments }
 
         var lastToolCallID: UUID?
-        var fallbackToolResultID: UUID?
+        var renderableToolResultIDs: Set<UUID> = []
         let hasCardRender = message.segments.contains { if case .cardRender = $0 { return true }; return false }
 
         for segment in message.segments {
@@ -38,7 +38,7 @@ struct MessageBubble: View {
             }
         }
         if !hasCardRender, !message.isStreaming {
-            fallbackToolResultID = pickFallbackToolResultID()
+            renderableToolResultIDs = pickFallbackToolResultIDs()
         }
 
         return message.segments.filter { segment in
@@ -48,18 +48,23 @@ struct MessageBubble: View {
             case .toolCall(let id, _, _, _, _):
                 return showToolActivity && id == lastToolCallID
             case .toolResult(let id, _, _, _):
-                return id == fallbackToolResultID
+                return renderableToolResultIDs.contains(id)
             }
         }
     }
 
-    private func pickFallbackToolResultID() -> UUID? {
+    private func pickFallbackToolResultIDs() -> Set<UUID> {
         var firstSearchNonEmpty: UUID?
         var lastListNonEmpty: UUID?
         var lastStrictAny: UUID?
         var lastSingle: UUID?
+        var analyticsIDs: [UUID] = []
         for segment in message.segments {
             guard case .toolResult(let id, _, let name, let payload) = segment else { continue }
+            if name.hasPrefix("analytics_") {
+                analyticsIDs.append(id)
+                continue
+            }
             let isSearch = name.hasSuffix("_search")
             let isList = name.hasSuffix("_list")
             let isStrict = isSearch || isList
@@ -73,7 +78,11 @@ struct MessageBubble: View {
                 lastSingle = id
             }
         }
-        return firstSearchNonEmpty ?? lastListNonEmpty ?? lastStrictAny ?? lastSingle
+        var ids: Set<UUID> = Set(analyticsIDs)
+        if let pick = firstSearchNonEmpty ?? lastListNonEmpty ?? lastStrictAny ?? lastSingle {
+            ids.insert(pick)
+        }
+        return ids
     }
 
     private func arrayCount(_ value: AnyCodableJSON) -> Int {

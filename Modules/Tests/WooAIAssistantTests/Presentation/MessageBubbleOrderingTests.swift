@@ -58,6 +58,32 @@ struct MessageBubbleOrderingTests {
     }
 
     @Test
+    func test_orderedSegments_when_multiple_analytics_results_then_each_renders_in_emit_order() {
+        // Given
+        let firstID = UUID()
+        let secondID = UUID()
+        let textID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .toolResult(id: firstID,
+                        toolCallID: "call_1",
+                        toolName: "analytics_revenue",
+                        payload: .object(["after": .string("2026-04-07"), "before": .string("2026-04-07")])),
+            .toolResult(id: secondID,
+                        toolCallID: "call_2",
+                        toolName: "analytics_revenue",
+                        payload: .object(["after": .string("2026-05-01"), "before": .string("2026-05-01")])),
+            .text(id: textID, content: "May 1 outperformed April 7.")
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [firstID, secondID, textID])
+    }
+
+    @Test
     func test_orderedSegments_when_multiple_toolCalls_then_only_last_pill_is_kept_in_place() {
         // Given
         let firstCallID = UUID()

@@ -40,6 +40,7 @@ protocol PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment(changeDueAmount: String?) async throws
+    func markOrderAsPaidManually() async throws
 }
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -128,6 +129,20 @@ protocol PointOfSaleOrderControllerProtocol {
             try await orderService.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: changeDueAmount)
         } catch {
             analytics.track(.pointOfSaleCashPaymentFailed)
+            throw error
+        }
+    }
+
+    @MainActor
+    func markOrderAsPaidManually() async throws {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+
+        do {
+            try await orderService.markOrderAsCompletedManually(order: order)
+        } catch {
+            analytics.track(.pointOfSaleMarkAsPaidFailed)
             throw error
         }
     }

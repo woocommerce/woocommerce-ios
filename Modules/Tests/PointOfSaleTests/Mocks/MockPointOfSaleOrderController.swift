@@ -45,4 +45,13 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
             throw sendReceiptErrorToThrow
         }
     }
+
+    var markOrderAsPaidManuallyWasCalled = false
+    var markOrderAsPaidManuallyErrorToThrow: Error?
+    func markOrderAsPaidManually() async throws {
+        markOrderAsPaidManuallyWasCalled = true
+        if let markOrderAsPaidManuallyErrorToThrow {
+            throw markOrderAsPaidManuallyErrorToThrow
+        }
+    }
 }

@@ -16,6 +16,9 @@ struct PointOfSaleDashboardView: View {
     @State private var showDocumentation: Bool = false
     @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
+    /// Surfaced from the Mark as paid network call to render an inline error message
+    /// inside the confirmation alert without bouncing the merchant out of the sheet.
+    @State private var markAsPaidError: String?
 
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
@@ -145,6 +148,10 @@ struct PointOfSaleDashboardView: View {
             PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
+        .markAsPaidConfirmation(paymentModel: posModel.paymentModel,
+                                orderState: posModel.orderState,
+                                error: markAsPaidError,
+                                onSubmissionError: { markAsPaidError = $0 })
         .posRootModal()
         .posSheet(isPresented: $showSupport) {
             supportForm
@@ -452,7 +459,8 @@ struct PointOfSaleDashboardView: View {
                 NavigationStack(path: $navigationPath) {
                     HStack(spacing: POSSpacing.none) {
                         if !posModel.paymentState.card.shownFullScreen
-                            && posModel.paymentState.cash != .paymentSuccess {
+                            && posModel.paymentState.cash != .paymentSuccess
+                            && posModel.paymentState.markAsPaid != .paymentSuccess {
                             CartView()
                                 .frame(width: cartWidth)
                                 .accessibilitySortPriority(1)
@@ -460,6 +468,7 @@ struct PointOfSaleDashboardView: View {
 
                         let totalsWidth = posModel.paymentState.card.shownFullScreen
                             || posModel.paymentState.cash == .paymentSuccess
+                            || posModel.paymentState.markAsPaid == .paymentSuccess
                             ? cartWidth + checkoutWidth
                             : checkoutWidth
 
@@ -632,6 +641,93 @@ private extension PointOfSaleDashboardView {
         } else {
             return .posContainerRegionToIgnore
         }
+    }
+}
+
+// MARK: - Mark Order as Paid confirmation
+
+/// Wires the Mark-as-paid confirmation alert to the payment model state. Lives as a view
+/// modifier so the dashboard body stays readable, and so the alert observability rules
+/// (when to show, when to disable interactive dismiss, what error to render) live in one place.
+private extension View {
+    func markAsPaidConfirmation(paymentModel: POSPaymentModel,
+                                orderState: PointOfSaleOrderState,
+                                error: String?,
+                                onSubmissionError: @escaping (String?) -> Void) -> some View {
+        modifier(MarkAsPaidConfirmationModifier(paymentModel: paymentModel,
+                                                orderState: orderState,
+                                                error: error,
+                                                onSubmissionError: onSubmissionError))
+    }
+}
+
+private struct MarkAsPaidConfirmationModifier: ViewModifier {
+    let paymentModel: POSPaymentModel
+    let orderState: PointOfSaleOrderState
+    let error: String?
+    let onSubmissionError: (String?) -> Void
+
+    private var orderTotal: String {
+        if case let .loaded(totals) = orderState {
+            return totals.orderTotal
+        }
+        return ""
+    }
+
+    /// Show whenever the merchant is mid-flow (confirming or processing) and hide on idle/success.
+    /// Setting `false` from the binding means the merchant tapped outside or swiped to dismiss —
+    /// treat it like Cancel so the model state is reset cleanly.
+    private var isShowing: Binding<Bool> {
+        Binding(
+            get: {
+                paymentModel.paymentState.markAsPaid != .idle
+                    && paymentModel.paymentState.markAsPaid != .paymentSuccess
+            },
+            set: { newValue in
+                if !newValue {
+                    Task { @MainActor in
+                        await paymentModel.cancelMarkAsPaidPayment()
+                        onSubmissionError(nil)
+                    }
+                }
+            }
+        )
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .posModal(isPresented: isShowing) {
+                PointOfSaleMarkAsPaidConfirmationView(
+                    orderTotal: orderTotal,
+                    isProcessing: paymentModel.paymentState.markAsPaid == .processing,
+                    errorMessage: error,
+                    onConfirm: {
+                        Task { @MainActor in
+                            do {
+                                try await paymentModel.confirmMarkAsPaidPayment()
+                                onSubmissionError(nil)
+                            } catch {
+                                onSubmissionError(Localization.failureMessage)
+                            }
+                        }
+                    },
+                    onCancel: {
+                        Task { @MainActor in
+                            await paymentModel.cancelMarkAsPaidPayment()
+                            onSubmissionError(nil)
+                        }
+                    }
+                )
+                .posInteractiveDismissDisabled(paymentModel.paymentState.markAsPaid == .processing)
+            }
+    }
+
+    enum Localization {
+        static let failureMessage = NSLocalizedString(
+            "pointOfSale.markAsPaid.failureMessage",
+            value: "Couldn't mark this order as paid. Try again.",
+            comment: "Error shown on the Point of Sale Mark as paid confirmation alert when the network call fails."
+        )
     }
 }
 

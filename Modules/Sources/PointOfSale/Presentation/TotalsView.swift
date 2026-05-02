@@ -26,12 +26,19 @@ struct TotalsView: View {
     /// double-tap can't kick off two payment flows.
     @State private var isStartingPayment: Bool = false
 
-    /// Payment state with cash collection neutralized. Only `.collectingCash` is handled
-    /// by NavigationStack push. Success and idle are visible to TotalsView.
-    /// TODO: Consider removing cash state entirely - it no longer drives the cash view.
+    /// Payment state with in-progress secondary methods neutralized.
+    /// `.collectingCash` (cash flow) and `.confirming`/`.processing` (mark-as-paid flow) all live
+    /// in their own modal/navigation push, so we hide them from TotalsView. Only success and idle
+    /// remain visible.
     private var displayPaymentState: PointOfSalePaymentState {
-        let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash ? .idle : paymentModel.paymentState.cash
-        return PointOfSalePaymentState(card: paymentModel.paymentState.card, cash: cash)
+        let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash
+            ? .idle : paymentModel.paymentState.cash
+        let markAsPaid: PointOfSaleMarkAsPaidState = paymentModel.paymentState.markAsPaid == .confirming
+            || paymentModel.paymentState.markAsPaid == .processing
+            ? .idle : paymentModel.paymentState.markAsPaid
+        return PointOfSalePaymentState(card: paymentModel.paymentState.card,
+                                       cash: cash,
+                                       markAsPaid: markAsPaid)
     }
 
     private var shouldShowTotalsFields: Bool {
@@ -209,7 +216,7 @@ private extension TotalsView {
             return true
         case .connected, .disconnecting, .cancellingConnection, .reconnecting:
             switch displayPaymentState.activePaymentMethod {
-            case .cash:
+            case .cash, .markAsPaid:
                 return true
             case .card:
                 return paymentModel.cardPresentPaymentInlineMessage != nil ||
@@ -225,7 +232,7 @@ private extension TotalsView {
         }
 
         switch displayPaymentState.activePaymentMethod {
-        case .cash:
+        case .cash, .markAsPaid:
             return PaymentViewLayout(topPadding: POSPadding.none,
                                      bottomPadding: POSPadding.none,
                                      sidePadding: POSPadding.none)
@@ -544,6 +551,12 @@ private struct PaymentViewContent: View {
                 messageType: .paymentSuccess(
                     viewModel: .init(formattedOrderTotal: total.orderTotal,
                                      paymentMethod: .cash)),
+                animation: .init(namespace: paymentMessageNamespace))
+        } else if paymentState.markAsPaid == .paymentSuccess, case .loaded(let total) = orderState {
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                     paymentMethod: .markAsPaid)),
                 animation: .init(namespace: paymentMessageNamespace))
         } else {
             POSCardPaymentContentView(

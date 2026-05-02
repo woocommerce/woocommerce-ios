@@ -71,6 +71,7 @@ final class POSPaymentModel {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderProvider: POSPaymentOrderProviding
     private let cashPaymentHandler: POSCashPaymentHandling
+    private let markAsPaidHandler: POSMarkAsPaidHandling
     private let receiptSender: POSReceiptSending
     private let postPaymentStep: (() async throws -> Void)?
     let configuration: POSPaymentFlowConfiguration
@@ -117,6 +118,7 @@ final class POSPaymentModel {
     init(cardPresentPaymentService: CardPresentPaymentFacade,
          orderProvider: POSPaymentOrderProviding,
          cashPaymentHandler: POSCashPaymentHandling,
+         markAsPaidHandler: POSMarkAsPaidHandling,
          receiptSender: POSReceiptSending,
          postPaymentStep: (() async throws -> Void)? = nil,
          configuration: POSPaymentFlowConfiguration,
@@ -128,6 +130,7 @@ final class POSPaymentModel {
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderProvider = orderProvider
         self.cashPaymentHandler = cashPaymentHandler
+        self.markAsPaidHandler = markAsPaidHandler
         self.receiptSender = receiptSender
         self.postPaymentStep = postPaymentStep
         self.configuration = configuration
@@ -447,6 +450,77 @@ extension POSPaymentModel {
     private func cashPaymentSuccess() {
         paymentState.cash = .paymentSuccess
         collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment()
+        celebration.celebrate()
+    }
+}
+
+// MARK: - Mark Order as Paid
+extension POSPaymentModel {
+    /// Stage 1: merchant tapped "Mark order as paid" — show the confirmation alert.
+    /// The actual order update happens in `confirmMarkAsPaidPayment()`; this just transitions
+    /// state so the dashboard can present the alert and we can cancel any in-flight card payment.
+    func startMarkAsPaidPayment() {
+        guard paymentState.markAsPaid == .idle else { return }
+        guard paymentState.allowsMarkAsPaidPayment else { return }
+
+        DDLogInfo("✅ [MarkAsPaid] startMarkAsPaidPayment called - card state: \(paymentState.card)")
+        analytics.track(.pointOfSaleCheckoutMarkAsPaidTapped)
+
+        startPaymentOnCardReaderConnection?.cancel()
+        startPaymentOnCardReaderConnection = nil
+        startPaymentGeneration += 1
+
+        paymentState.markAsPaid = .confirming
+
+        cardPaymentCancelTask = Task { [weak self] in
+            do {
+                try await self?.cardPresentPaymentService.cancelPayment()
+            } catch {
+                DDLogWarn("✅ [MarkAsPaid] failed to cancel card payment: \(error)")
+            }
+        }
+    }
+
+    /// Stage 2 (cancel): merchant declined the confirmation. Re-arms the card flow so they can
+    /// fall back to a different payment method without restarting checkout.
+    func cancelMarkAsPaidPayment() async {
+        analytics.track(.pointOfSaleBackToCheckoutFromMarkAsPaidTapped)
+        paymentState.markAsPaid = .idle
+        paymentState.card = .idle
+
+        await cardPaymentCancelTask?.value
+        cardPaymentCancelTask = nil
+
+        await startPayment()
+    }
+
+    /// Stage 2 (confirm): merchant confirmed; mark the order as paid through the order
+    /// controller. On failure rolls back to the confirmation stage so the merchant can retry.
+    func confirmMarkAsPaidPayment() async throws {
+        let order: Order
+        if let currentOrder {
+            order = currentOrder
+        } else {
+            let paymentOrder = try await orderProvider.provideOrder()
+            order = paymentOrder.order
+            currentOrder = order
+        }
+        analytics.track(.pointOfSaleMarkAsPaidConfirmed)
+        paymentState.markAsPaid = .processing
+        do {
+            try await markAsPaidHandler.markOrderAsPaid(for: order)
+            try? await postPaymentStep?()
+            markAsPaidPaymentSuccess()
+        } catch {
+            // Roll back so the merchant can try again or cancel.
+            paymentState.markAsPaid = .confirming
+            throw error
+        }
+    }
+
+    private func markAsPaidPaymentSuccess() {
+        paymentState.markAsPaid = .paymentSuccess
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulMarkAsPaidPayment()
         celebration.celebrate()
     }
 }
@@ -782,8 +856,19 @@ private extension POSPaymentModel {
                         return
                     }
                 }
+                if paymentState.markAsPaid != .idle {
+                    if cardPaymentState.requiresCashExit {
+                        DDLogWarn("✅ [MarkAsPaid] committed card event \(cardPaymentState) during mark-as-paid flow " +
+                                  "- transitioning to card view")
+                        paymentState.markAsPaid = .idle
+                    } else {
+                        DDLogInfo("✅ [MarkAsPaid] ignoring non-committed card event \(cardPaymentState) during mark-as-paid flow")
+                        return
+                    }
+                }
                 DDLogInfo("🃏 [CardPayment] subscription setting card state: \(cardPaymentState), " +
-                          "current cash state: \(paymentState.cash)")
+                          "current cash state: \(paymentState.cash), " +
+                          "current markAsPaid state: \(paymentState.markAsPaid)")
                 paymentState.card = cardPaymentState
                 // Don't auto-clear `currentPaymentMethod` on `.idle` — Stripe
                 // emits `.idle` mid-cancel of a BT scan (before the merchant

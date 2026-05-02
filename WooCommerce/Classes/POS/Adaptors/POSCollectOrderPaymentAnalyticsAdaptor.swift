@@ -81,6 +81,15 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         resetCheckoutTapCountTracker()
     }
 
+    func trackSuccessfulScanToPayPayment() {
+        let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
+
+        analytics.track(event: .PointOfSale.scanToPayCollectPaymentSuccess(
+            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
+        ))
+        resetCheckoutTapCountTracker()
+    }
+
     func trackSuccessfulMarkAsPaidPayment() {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 

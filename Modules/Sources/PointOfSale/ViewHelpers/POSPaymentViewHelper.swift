@@ -12,6 +12,13 @@ struct POSPaymentViewHelper {
             default:
                 return .clear
             }
+        case .scanToPay:
+            switch paymentState.scanToPay {
+            case .showingQRCode, .paymentSuccess:
+                return .posSurfaceBright
+            case .idle:
+                return .clear
+            }
         case .markAsPaid:
             switch paymentState.markAsPaid {
             case .paymentSuccess:
@@ -38,7 +45,7 @@ struct POSPaymentViewHelper {
             return true
         }
         switch paymentState.activePaymentMethod {
-        case .cash, .markAsPaid:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             if case .disconnected = cardReaderConnectionStatus,
@@ -51,7 +58,7 @@ struct POSPaymentViewHelper {
 
     func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState.activePaymentMethod {
-        case .cash, .markAsPaid:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             switch paymentState.card {
@@ -78,7 +85,7 @@ struct POSPaymentViewHelper {
         }
 
         switch paymentState.activePaymentMethod {
-        case .cash, .markAsPaid:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             switch paymentState.card {
@@ -100,7 +107,7 @@ struct POSPaymentViewHelper {
 
     func shouldApplyPadding(paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState.activePaymentMethod {
-        case .cash, .markAsPaid:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             switch paymentState.card {

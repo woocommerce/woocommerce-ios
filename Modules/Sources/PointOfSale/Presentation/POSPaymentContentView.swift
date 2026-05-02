@@ -19,16 +19,20 @@ struct POSPaymentContentView: View {
     @Namespace private var paymentMessageNamespace
 
     /// Payment state with in-progress secondary methods neutralized.
-    /// `.collectingCash` (cash) and `.confirming`/`.processing` (mark-as-paid) all live in their
-    /// own modal/navigation push. Only success and idle remain visible here.
+    /// `.collectingCash` (cash), `.showingQRCode` (scan-to-pay), and `.confirming`/`.processing`
+    /// (mark-as-paid) all live in their own modal/navigation push. Only success and idle remain
+    /// visible here.
     private var displayPaymentState: PointOfSalePaymentState {
         let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash
             ? .idle : paymentModel.paymentState.cash
+        let scanToPay: PointOfSaleScanToPayState = paymentModel.paymentState.scanToPay.isShowingQRCode
+            ? .idle : paymentModel.paymentState.scanToPay
         let markAsPaid: PointOfSaleMarkAsPaidState = paymentModel.paymentState.markAsPaid == .confirming
             || paymentModel.paymentState.markAsPaid == .processing
             ? .idle : paymentModel.paymentState.markAsPaid
         return PointOfSalePaymentState(card: paymentModel.paymentState.card,
                                        cash: cash,
+                                       scanToPay: scanToPay,
                                        markAsPaid: markAsPaid)
     }
 
@@ -103,6 +107,12 @@ struct POSPaymentContentView: View {
                 messageType: .paymentSuccess(
                     viewModel: .init(formattedOrderTotal: formattedTotal,
                                      paymentMethod: .cash)),
+                animation: .init(namespace: paymentMessageNamespace))
+        case .scanToPay:
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: formattedTotal,
+                                     paymentMethod: .scanToPay)),
                 animation: .init(namespace: paymentMessageNamespace))
         case .markAsPaid:
             PointOfSaleCardPresentPaymentInLineMessage(

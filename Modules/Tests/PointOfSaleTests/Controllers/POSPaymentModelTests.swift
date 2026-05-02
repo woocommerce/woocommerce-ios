@@ -1459,6 +1459,8 @@ private func makePaymentController(
     cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
     orderProvider: POSPaymentOrderProviding = MockPOSPaymentOrderProvider(),
     cashPaymentHandler: POSCashPaymentHandling = MockPOSCashPaymentHandler(),
+    scanToPayHandler: POSScanToPayHandling = MockPOSScanToPayHandler(),
+    scanToPayVerifier: POSScanToPayVerifying? = nil,
     markAsPaidHandler: POSMarkAsPaidHandling = MockPOSMarkAsPaidHandler(),
     receiptSender: POSReceiptSending = MockPOSReceiptSender(),
     postPaymentStep: (() async throws -> Void)? = nil,
@@ -1466,12 +1468,15 @@ private func makePaymentController(
     analytics: POSAnalyticsProviding = MockPOSAnalytics(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     celebration: PaymentCaptureCelebrationProtocol = MockPaymentCaptureCelebration(),
+    scanToPayPollInterval: TimeInterval = 3,
     paymentState: PointOfSalePaymentState = .idle
 ) -> POSPaymentModel {
     POSPaymentModel(
         cardPresentPaymentService: cardPresentPaymentService,
         orderProvider: orderProvider,
         cashPaymentHandler: cashPaymentHandler,
+        scanToPayHandler: scanToPayHandler,
+        scanToPayVerifier: scanToPayVerifier,
         markAsPaidHandler: markAsPaidHandler,
         receiptSender: receiptSender,
         postPaymentStep: postPaymentStep,
@@ -1479,5 +1484,6 @@ private func makePaymentController(
         analytics: analytics,
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         celebration: celebration,
+        scanToPayPollInterval: scanToPayPollInterval,
         paymentState: paymentState)
 }

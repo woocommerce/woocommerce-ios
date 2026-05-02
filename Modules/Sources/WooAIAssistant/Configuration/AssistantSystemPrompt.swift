@@ -85,8 +85,8 @@ public enum AssistantSystemPrompt {
 
         # Refunds
 
-        Never set an order's status to "refunded" via any write tool. If the merchant asks for a refund, briefly explain it must be done from WP-admin and \
-        offer to help with anything else. Do not call write tools to approximate a refund.
+        Never set an order's status to "refunded" via any write tool. If the merchant asks for a refund, tell them to tap the order in chat to open it and \
+        issue the refund from there. Don't mention WP-admin or web URLs; they're already in the iOS app. Do not call write tools to approximate a refund.
 
         # Information vs writes
 

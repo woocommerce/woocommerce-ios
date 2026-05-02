@@ -1,8 +1,8 @@
 /// Allowed `status` values for `orders_update` and `orders_bulk_update`.
 /// `trash` is excluded: trashing an order is destructive and outside the
 /// v1 write-tool scope; deletion-style mutations require a different path.
-/// `refunded` is excluded: refunds must be issued from WP-admin, not the
-/// assistant.
+/// `refunded` is excluded: refunds must be issued from the order detail
+/// screen, not the assistant.
 enum AllowedOrderUpdateStatuses {
     static let values: Set<String> = [
         "pending", "processing", "on-hold", "completed", "cancelled", "failed"
@@ -14,5 +14,5 @@ enum AllowedOrderUpdateStatuses {
 /// instead of the generic allowlist error.
 enum OrderUpdateRefundGuard {
     static let blockedStatus = "refunded"
-    static let message = "Refunds cannot be issued from the assistant. Process the refund from WP-admin."
+    static let message = "Refunds cannot be issued from the assistant. Tap an order to issue the refund manually."
 }

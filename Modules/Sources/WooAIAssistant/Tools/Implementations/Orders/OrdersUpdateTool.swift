@@ -14,7 +14,7 @@ public enum OrdersUpdateTool {
         Update an order's allowlisted fields: status, customer_note, billing email. \
         Status changes such as completed/cancelled fire customer emails - the merchant \
         confirms before this dispatches. Refunds are NOT supported - the assistant \
-        cannot set status to "refunded"; refunds must be processed from WP-admin. \
+        cannot set status to "refunded"; the merchant taps an order to issue a refund. \
         Only call when the merchant has explicitly requested a change. Do NOT call to \
         trigger side effects (e.g. flipping a status to send a customer email) or to \
         answer information questions.

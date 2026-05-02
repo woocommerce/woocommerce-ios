@@ -107,6 +107,8 @@ struct OrdersBulkUpdateToolTests {
         }
         #expect(failed.kind == .invalidToolCall)
         #expect(failed.reason.contains("Refunds cannot be issued"))
+        #expect(failed.reason.contains("Tap an order"))
+        #expect(!failed.reason.contains("WP-admin"))
         #expect(await client.calls.isEmpty)
     }
 

@@ -18,7 +18,7 @@ public enum OrdersBulkUpdateTool {
         The same patch (status, customer_note, billing email) is applied to \
         every order id in the list. Per-order differences require separate \
         orders_update calls. Refunds are NOT supported - status cannot be \
-        set to "refunded"; refunds must be processed from WP-admin. \
+        set to "refunded"; the merchant taps each order to issue a refund. \
         Only call when the merchant has explicitly requested a bulk change \
         with a concrete list of ids.
         """,

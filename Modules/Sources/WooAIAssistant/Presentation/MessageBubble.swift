@@ -28,62 +28,49 @@ struct MessageBubble: View {
     var orderedSegments: [MessageSegment] {
         guard message.role == .assistant else { return message.segments }
 
-        var texts: [MessageSegment] = []
-        var lastToolCall: MessageSegment?
-        var cardRenders: [MessageSegment] = []
-        var toolResults: [MessageSegment] = []
-        var confirmations: [MessageSegment] = []
+        var lastToolCallID: UUID?
+        var fallbackToolResultID: UUID?
+        let hasCardRender = message.segments.contains { if case .cardRender = $0 { return true }; return false }
 
         for segment in message.segments {
+            if case .toolCall(let id, _, _, _, _) = segment {
+                lastToolCallID = id
+            }
+        }
+        if !hasCardRender, !message.isStreaming {
+            fallbackToolResultID = pickFallbackToolResultID()
+        }
+
+        return message.segments.filter { segment in
             switch segment {
-            case .text:
-                texts.append(segment)
-            case .toolCall:
-                lastToolCall = segment
-            case .toolResult:
-                toolResults.append(segment)
-            case .cardRender:
-                cardRenders.append(segment)
-            case .confirmation:
-                confirmations.append(segment)
+            case .text, .cardRender, .confirmation:
+                return true
+            case .toolCall(let id, _, _, _, _):
+                return showToolActivity && id == lastToolCallID
+            case .toolResult(let id, _, _, _):
+                return id == fallbackToolResultID
             }
         }
-
-        var result: [MessageSegment] = []
-        if showToolActivity, let pill = lastToolCall {
-            result.append(pill)
-        }
-        result.append(contentsOf: texts)
-
-        if !message.isStreaming {
-            if !cardRenders.isEmpty {
-                result.append(contentsOf: cardRenders)
-            } else if let fallback = fallbackCard(from: toolResults) {
-                result.append(fallback)
-            }
-        }
-        result.append(contentsOf: confirmations)
-        return result
     }
 
-    private func fallbackCard(from results: [MessageSegment]) -> MessageSegment? {
-        var firstSearchNonEmpty: MessageSegment?
-        var lastListNonEmpty: MessageSegment?
-        var lastStrictAny: MessageSegment?
-        var lastSingle: MessageSegment?
-        for segment in results {
-            guard case .toolResult(_, _, let name, let payload) = segment else { continue }
+    private func pickFallbackToolResultID() -> UUID? {
+        var firstSearchNonEmpty: UUID?
+        var lastListNonEmpty: UUID?
+        var lastStrictAny: UUID?
+        var lastSingle: UUID?
+        for segment in message.segments {
+            guard case .toolResult(let id, _, let name, let payload) = segment else { continue }
             let isSearch = name.hasSuffix("_search")
             let isList = name.hasSuffix("_list")
             let isStrict = isSearch || isList
             let rowCount = arrayCount(payload)
-            if isStrict { lastStrictAny = segment }
+            if isStrict { lastStrictAny = id }
             if isSearch, rowCount > 0, firstSearchNonEmpty == nil {
-                firstSearchNonEmpty = segment
+                firstSearchNonEmpty = id
             } else if isList, rowCount > 0 {
-                lastListNonEmpty = segment
+                lastListNonEmpty = id
             } else if !isStrict {
-                lastSingle = segment
+                lastSingle = id
             }
         }
         return firstSearchNonEmpty ?? lastListNonEmpty ?? lastStrictAny ?? lastSingle

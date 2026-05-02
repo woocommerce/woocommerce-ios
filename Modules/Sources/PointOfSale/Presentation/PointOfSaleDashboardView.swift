@@ -675,16 +675,28 @@ private struct MarkAsPaidConfirmationModifier: ViewModifier {
     }
 
     /// Show whenever the merchant is mid-flow (confirming or processing) and hide on idle/success.
-    /// Setting `false` from the binding means the merchant tapped outside or swiped to dismiss —
-    /// treat it like Cancel so the model state is reset cleanly.
+    ///
+    /// Setting `false` from the binding can mean two things:
+    /// 1. The merchant tapped outside / swiped to dismiss — treat as Cancel.
+    /// 2. The state machine just transitioned to `.paymentSuccess` so the alert auto-hid.
+    ///
+    /// Only case (1) should reset state — case (2) needs to leave `.paymentSuccess` intact
+    /// so the totals view picks up the success message (matching the cash flow's success UI).
     private var isShowing: Binding<Bool> {
         Binding(
             get: {
                 paymentModel.paymentState.markAsPaid != .idle
                     && paymentModel.paymentState.markAsPaid != .paymentSuccess
             },
-            set: { newValue in
+            set: { [paymentModel, onSubmissionError] newValue in
                 if !newValue {
+                    // Read state synchronously — by the time the dispatched Task runs, another
+                    // update could have changed it.
+                    let isAutoDismissingAfterSuccess = paymentModel.paymentState.markAsPaid == .paymentSuccess
+                    guard !isAutoDismissingAfterSuccess else {
+                        onSubmissionError(nil)
+                        return
+                    }
                     Task { @MainActor in
                         await paymentModel.cancelMarkAsPaidPayment()
                         onSubmissionError(nil)

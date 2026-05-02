@@ -41,7 +41,7 @@ struct MessageBubble: View {
             renderableToolResultIDs = pickFallbackToolResultIDs()
         }
 
-        return message.segments.filter { segment in
+        let filtered = message.segments.filter { segment in
             switch segment {
             case .text, .cardRender, .confirmation:
                 return true
@@ -51,6 +51,26 @@ struct MessageBubble: View {
                 return renderableToolResultIDs.contains(id)
             }
         }
+
+        return deferShowCardsCardRendersAfterText(filtered)
+    }
+
+    /// When a turn includes show_cards results, render the assistant's text
+    /// first and the cards after, even if the cards were emitted earlier.
+    private func deferShowCardsCardRendersAfterText(_ segments: [MessageSegment]) -> [MessageSegment] {
+        let hasText = segments.contains { if case .text = $0 { return true }; return false }
+        guard hasText else { return segments }
+        var deferred: [MessageSegment] = []
+        var rest: [MessageSegment] = []
+        for segment in segments {
+            if case .cardRender(_, _, let toolName, _) = segment, toolName.hasPrefix("show_cards.") {
+                deferred.append(segment)
+            } else {
+                rest.append(segment)
+            }
+        }
+        guard !deferred.isEmpty else { return segments }
+        return rest + deferred
     }
 
     private func pickFallbackToolResultIDs() -> Set<UUID> {

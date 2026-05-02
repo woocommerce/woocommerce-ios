@@ -29,6 +29,11 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         didCallTrackSuccessfulCashPayment = true
     }
 
+    var didCallTrackSuccessfulMarkAsPaidPayment = false
+    func trackSuccessfulMarkAsPaidPayment() {
+        didCallTrackSuccessfulMarkAsPaidPayment = true
+    }
+
     var connectedReaderModel: String?
 
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) {

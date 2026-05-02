@@ -15,6 +15,11 @@ public protocol POSOrderServiceProtocol {
     func loadOrder(orderID: Int64) async throws -> Order
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws
+    /// Marks an order as completed when payment was collected out-of-band (external reader,
+    /// gift card, account credit, etc.) and the merchant confirms it via the "Mark order as
+    /// paid" flow. The order's `paymentMethodID` is set to `"other"` so reporting can
+    /// distinguish it from cash and card-present payments.
+    func markOrderAsCompletedManually(order: Order) async throws
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
@@ -95,6 +100,27 @@ public final class POSOrderService: POSOrderServiceProtocol {
     public func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {
         do {
             try await ordersRemote.updatePOSOrderEmail(siteID: siteID, orderID: orderID, emailAddress: recipientEmail)
+        } catch {
+            throw POSOrderServiceError.updateOrderFailed
+        }
+    }
+
+    public func markOrderAsCompletedManually(order: Order) async throws {
+        let fieldsToUpdate: [OrderUpdateField] = [
+            .status,
+            .paymentMethodID,
+            .paymentMethodTitle
+        ]
+        let updatedOrder = order.copy(status: .completed,
+                                      paymentMethodID: Constants.manualPaymentMethodID,
+                                      paymentMethodTitle: Localization.manualPaymentMethodTitle)
+        do {
+            _ = try await ordersRemote.updatePOSOrder(
+                siteID: siteID,
+                order: updatedOrder,
+                cashPaymentChangeDueAmount: nil,
+                fields: fieldsToUpdate
+            )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
         }
@@ -264,10 +290,22 @@ private extension POSOrderService {
             value: "Pay in Person",
             comment: "Title for the payment method used when collecting cash payment in Point of Sale."
         )
+        static let manualPaymentMethodTitle = NSLocalizedString(
+            "pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle",
+            value: "Other",
+            comment: "Title for the payment method used when manually marking an order as paid in Point of Sale."
+        )
         static let unknownProductName = NSLocalizedString(
             "pointOfSale.orderController.unknownProduct",
             value: "One or more products",
             comment: "Fallback name for a product that couldn't be identified in error handling."
         )
+    }
+
+    enum Constants {
+        /// Payment method slug used when the merchant marks an order as paid manually,
+        /// e.g. for an external reader, account credit, gift card, or any out-of-band collection.
+        /// Distinct from `cashOnDeliveryGatewayID` so reporting can separate the two flows.
+        static let manualPaymentMethodID = "other"
     }
 }

@@ -80,6 +80,19 @@ class MockPOSOrderService: POSOrderServiceProtocol {
             throw error
         }
     }
+
+    var markOrderAsCompletedManuallyWasCalled = false
+    var spyMarkOrderAsCompletedManuallyOrder: Order?
+    func markOrderAsCompletedManually(order: Order) async throws {
+        markOrderAsCompletedManuallyWasCalled = true
+        spyMarkOrderAsCompletedManuallyOrder = order
+        switch resultToReturn {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
 }
 
 enum MockPOSOrderServiceError: Error {

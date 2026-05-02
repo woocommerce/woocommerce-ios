@@ -20,7 +20,7 @@ struct InputBar: View {
                     .padding(.horizontal, AssistantSpacing.medium)
             }
 
-            HStack(alignment: .center, spacing: AssistantSpacing.small) {
+            HStack(alignment: .center, spacing: AssistantSpacing.medium) {
                 TextField(Localization.placeholder, text: $draft, axis: .vertical)
                     .font(.assistantBody)
                     .lineLimit(1...6)
@@ -40,7 +40,7 @@ struct InputBar: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .padding(.trailing, AssistantSpacing.xSmall)
+                .padding(.trailing, AssistantSpacing.small)
                 .disabled(buttonDisabled)
                 .accessibilityLabel(showsStop ? Localization.stop : Localization.send)
             }

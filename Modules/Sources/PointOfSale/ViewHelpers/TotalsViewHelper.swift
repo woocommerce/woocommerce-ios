@@ -54,6 +54,24 @@ struct TotalsViewHelper {
                                                              isZeroTotal: isZeroTotal)
     }
 
+    /// "Other payment methods" button visibility for the cart flow.
+    /// Shown only when at least one of the secondary payment-method feature flags is enabled —
+    /// otherwise the sheet would have no rows to render. Otherwise mirrors the cash button rules.
+    func shouldShowOtherPaymentMethodsButton(orderState: PointOfSaleOrderState,
+                                             paymentState: PointOfSalePaymentState,
+                                             cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+                                             isAnySecondaryPaymentMethodEnabled: Bool) -> Bool {
+        guard isAnySecondaryPaymentMethodEnabled else {
+            return false
+        }
+
+        // Reuse the cash button's order-state and connection guards — the visibility envelope is
+        // identical for both buttons (we want them to appear/disappear together).
+        return shouldShowCollectCashPaymentButton(orderState: orderState,
+                                                   paymentState: paymentState,
+                                                   cardReaderConnectionStatus: cardReaderConnectionStatus)
+    }
+
     func shouldShowTotalDiscountField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {
         let hasCoupons = cart.coupons.isNotEmpty
         let orderIsLoading = orderTotals == nil

@@ -42,8 +42,7 @@ public struct AssistantChatView: View {
             .background(Color.assistantSurface)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.assistantSurface, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(.automatic, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: onClose) {

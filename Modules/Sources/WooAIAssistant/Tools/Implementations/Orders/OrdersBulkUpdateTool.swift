@@ -17,8 +17,10 @@ public enum OrdersBulkUpdateTool {
         Apply the same allowlisted update to many orders at once (max 100). \
         The same patch (status, customer_note, billing email) is applied to \
         every order id in the list. Per-order differences require separate \
-        orders_update calls. Only call when the merchant has explicitly \
-        requested a bulk change with a concrete list of ids.
+        orders_update calls. Refunds are NOT supported - status cannot be \
+        set to "refunded"; refunds must be processed from WP-admin. \
+        Only call when the merchant has explicitly requested a bulk change \
+        with a concrete list of ids.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -86,6 +88,11 @@ public enum OrdersBulkUpdateTool {
             return .failed(.init(toolName: name,
                                  kind: .invalidToolCall,
                                  reason: "ids has \(args.ids.count) entries; max is \(maxBatchSize)"))
+        }
+        if args.patch.status == OrderUpdateRefundGuard.blockedStatus {
+            return .failed(.init(toolName: name,
+                                 kind: .invalidToolCall,
+                                 reason: OrderUpdateRefundGuard.message))
         }
         if let status = args.patch.status, !allowedStatuses.contains(status) {
             return .failed(.init(toolName: name,

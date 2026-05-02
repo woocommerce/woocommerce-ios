@@ -92,6 +92,25 @@ struct OrdersBulkUpdateToolTests {
     }
 
     @Test
+    func test_ordersBulkUpdate_when_any_status_is_refunded_then_returns_invalidToolCall() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1, 2], "patch": {"status": "refunded"}}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed, got \(result)")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("Refunds cannot be issued"))
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
     func test_ordersBulkUpdate_when_408_after_upload_then_returns_outcomeUnknown() async throws {
         // Given
         let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 408))

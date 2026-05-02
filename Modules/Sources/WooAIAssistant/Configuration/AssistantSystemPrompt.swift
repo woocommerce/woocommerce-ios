@@ -83,6 +83,11 @@ public enum AssistantSystemPrompt {
         pointer to where the action lives.
         BAD: Approximate by issuing 50 individual update calls to trigger automatic notification emails as a side effect.
 
+        # Refunds
+
+        Never set an order's status to "refunded" via any write tool. If the merchant asks for a refund, briefly explain it must be done from WP-admin and \
+        offer to help with anything else. Do not call write tools to approximate a refund.
+
         # Information vs writes
 
         Information questions never trigger writes. "What is X", "who is Y", "how much was Z", "is X still pending", "show me", "tell me about" must never \

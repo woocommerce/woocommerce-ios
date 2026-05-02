@@ -12,9 +12,9 @@ public enum OrdersUpdateTool {
         name: name,
         description: """
         Update an order's allowlisted fields: status, customer_note, billing email. \
-        Status changes such as completed/cancelled/refunded fire customer emails - the \
-        merchant confirms before this dispatches. Do NOT use this to issue a refund - \
-        moving an order to "refunded" only changes the status, it does not return funds. \
+        Status changes such as completed/cancelled fire customer emails - the merchant \
+        confirms before this dispatches. Refunds are NOT supported - the assistant \
+        cannot set status to "refunded"; refunds must be processed from WP-admin. \
         Only call when the merchant has explicitly requested a change. Do NOT call to \
         trigger side effects (e.g. flipping a status to send a customer email) or to \
         answer information questions.
@@ -67,6 +67,11 @@ public enum OrdersUpdateTool {
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
+        }
+        if args.status == OrderUpdateRefundGuard.blockedStatus {
+            return .failed(.init(toolName: name,
+                                 kind: .invalidToolCall,
+                                 reason: OrderUpdateRefundGuard.message))
         }
         if let status = args.status, !allowedStatuses.contains(status) {
             return .failed(.init(toolName: name,

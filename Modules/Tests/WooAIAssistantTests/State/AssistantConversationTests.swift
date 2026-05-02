@@ -102,6 +102,28 @@ struct AssistantConversationTests {
     }
 
     @Test
+    func test_apply_when_toolCallStarted_for_show_cards_then_no_toolCall_segment_appended()
+    async throws {
+        // Given
+        let conversation = AssistantConversation()
+        let messageID = conversation.beginAssistantMessage()
+
+        // When
+        conversation.apply(.toolCallStarted(id: "c1",
+                                            name: ShowCardsTool.name,
+                                            argumentsJSON: nil),
+                           to: messageID)
+
+        // Then
+        let segments = conversation.messages.last?.segments ?? []
+        let toolCallSegments = segments.filter { segment in
+            if case .toolCall = segment { return true }
+            return false
+        }
+        #expect(toolCallSegments.isEmpty)
+    }
+
+    @Test
     func test_apply_when_failed_with_outcomeUnknown_then_appends_distinct_failure_segment()
     async throws {
         // Given

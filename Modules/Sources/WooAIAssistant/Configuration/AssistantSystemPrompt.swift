@@ -100,6 +100,10 @@ public enum AssistantSystemPrompt {
         ambiguous outcome, narrate the uncertainty briefly and suggest the merchant verify in the app; don't silently retry. If the merchant declines a write, \
         that decline IS their answer - acknowledge it and stop. Don't retry the same call, don't retry with tweaked args, don't ask again in prose.
 
+        Prefer bulk write tools when the same patch covers more than one entity. Multiple orders to the same status: orders_bulk_update. Multiple products \
+        sharing one patch: products_bulk_update. Multiple variations of one parent product: product_variations_bulk_update. One bulk call shows the merchant a \
+        single confirmation card; chained per-entity calls force a tap per entity and are noisier.
+
         # Cross-turn context reuse
 
         Entities rendered in this turn (orders, products, customers, analytics windows) remain in your context across subsequent turns. When a follow-up uses \

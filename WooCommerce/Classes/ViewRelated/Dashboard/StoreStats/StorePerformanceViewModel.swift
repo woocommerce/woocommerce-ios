@@ -39,6 +39,27 @@ final class StorePerformanceViewModel: ObservableObject {
 
     @Published private(set) var loadingError: Error?
 
+    /// Currently applied analytics order date type. Defaults to `.paid` (the WooCommerce backend default)
+    /// while the value is being loaded for the first time.
+    @Published private(set) var orderType: AnalyticsOrderDateType = .paid
+
+    /// Currently selected revenue metric on the Performance card. Defaults to `.total` which matches
+    /// the existing card behavior (API's `total_sales`). Persisted per-site via `AppSettingsAction`.
+    @Published private(set) var revenueType: DashboardRevenueStatsType = .total
+
+    /// The order type whose update is currently in flight, if any. Used by the bottom sheet to render
+    /// an inline progress indicator next to the row being saved and to disable other rows while a
+    /// save is in progress.
+    @Published private(set) var updatingOrderType: AnalyticsOrderDateType?
+
+    /// Set when the most recent order type update fails. Cleared when a save succeeds or when the
+    /// merchant initiates a new selection.
+    @Published var orderTypeUpdateError: Error?
+
+    /// Tracks whether the merchant has manually picked an order type during this session.
+    /// Prevents a late-arriving initial `loadOrderType` from clobbering a user selection.
+    private var hasUserSelectedOrderType = false
+
     let siteID: Int64
     let siteTimezone: TimeZone
     private let stores: StoresManager
@@ -55,6 +76,11 @@ final class StorePerformanceViewModel: ObservableObject {
     var onDismiss: (() -> Void)?
 
     private var subscriptions: Set<AnyCancellable> = []
+    /// Cleared every time `observePeriodViewModel()` runs so the previous period view model's
+    /// pipelines stop writing to the parent's `@Published` properties. Without this, the chart
+    /// pipeline (which combines with `$revenueType`) re-fires from leaked period VMs on every
+    /// metric switch and overwrites the current data with empty values.
+    private var periodViewModelSubscriptions: Set<AnyCancellable> = []
     private var currentDate = Date()
     private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
 
@@ -109,12 +135,28 @@ final class StorePerformanceViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.analytics = analytics
 
+        // Seed from the locally cached SiteSetting (written by SettingStoreMethods on every
+        // successful retrieve/update) to avoid showing the default `.paid` for the network
+        // round-trip when the merchant has previously saved a different value. `loadOrderType`
+        // still runs and reconciles with the server.
+        if let cached = AnalyticsOrderDateType.cachedValue(siteID: siteID, storageManager: storageManager) {
+            self.orderType = cached
+        }
+
         observeSyncingCompletion()
         observeData()
         observeChartValueSelectedEvents()
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
+        }
+
+        Task { @MainActor in
+            await loadOrderType()
+        }
+
+        Task { @MainActor in
+            self.revenueType = await loadLastRevenueType() ?? .total
         }
     }
 
@@ -223,6 +265,77 @@ final class StorePerformanceViewModel: ObservableObject {
         /// tracks `used_analytics`
         usageTracksEventEmitter.interacted()
     }
+
+    /// Tracks the tap on the Performance card order date type selector label.
+    func trackOrderDateTypeSelectorTapped() {
+        analytics.track(event: .Dashboard.performanceCardOrderDateTypeSelectorTapped())
+    }
+
+    /// Switches the displayed revenue metric and persists the choice for next launch. No-op if the
+    /// metric matches the current selection. Switching invalidates the highlighted chart point so the
+    /// merchant sees the totals for the new metric in the header instead of a stale data point.
+    func didSelectRevenueType(_ newRevenueType: DashboardRevenueStatsType) {
+        guard revenueType != newRevenueType else { return }
+
+        revenueType = newRevenueType
+        periodViewModel?.revenueType = newRevenueType
+
+        // Clear any selected chart interval so the card header reverts to the period total for the new metric.
+        didSelectStatsInterval(at: nil)
+
+        let action = AppSettingsAction.setLastSelectedDashboardRevenueStatsType(siteID: siteID, revenueType: newRevenueType)
+        stores.dispatch(action)
+
+        trackInteraction()
+        analytics.track(event: .Dashboard.dashboardStatsRevenueTypeSelected(revenueType: newRevenueType))
+    }
+
+    /// Handles the merchant tapping a row in the order date type bottom sheet.
+    ///
+    /// Returns `true` when the bottom sheet should dismiss:
+    /// - the tapped option is already selected (no save round-trip needed), or
+    /// - the save succeeded.
+    ///
+    /// Returns `false` when the save failed so the sheet stays open and the inline error remains visible.
+    @MainActor
+    func handleOrderTypeSelection(_ newOrderType: AnalyticsOrderDateType) async -> Bool {
+        // Tapping the currently-selected row just dismisses; nothing to save.
+        if orderType == newOrderType {
+            return true
+        }
+        await updateOrderType(newOrderType)
+        // Dismiss only if the save actually took effect on the view model.
+        return orderType == newOrderType
+    }
+
+    /// Updates the analytics order date type setting and refreshes dashboard stats.
+    /// On failure, sets `orderTypeUpdateError` so the bottom sheet can present an inline error.
+    @MainActor
+    private func updateOrderType(_ newOrderType: AnalyticsOrderDateType) async {
+        guard updatingOrderType == nil else { return }
+        hasUserSelectedOrderType = true
+        updatingOrderType = newOrderType
+        orderTypeUpdateError = nil
+        defer { updatingOrderType = nil }
+        do {
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                let action = SettingAction.updateAnalyticsOrderDateType(siteID: siteID, value: newOrderType) { result in
+                    continuation.resume(with: result)
+                }
+                stores.dispatch(action)
+            }
+            orderType = newOrderType
+            // Tracked only after a successful API update — matches Android, where the event fires on save success.
+            analytics.track(event: .Dashboard.performanceCardOrderDateTypeSelected(newOrderType))
+            // Server-side filter changed: invalidate the cached timestamp so the next sync hits the network.
+            DashboardTimestampStore.removeTimestamp(for: .performance, at: timeRange.timestampRange)
+            await reloadDataIfNeeded(forceRefresh: true)
+        } catch {
+            DDLogError("⛔️ Error updating analytics order date type: \(error)")
+            orderTypeUpdateError = error
+            analytics.track(event: .Dashboard.performanceCardOrderDateTypeUpdateFailed(error: error))
+        }
+    }
 }
 
 // MARK: - Data for `StorePerformanceView`
@@ -306,13 +419,17 @@ private extension StorePerformanceViewModel {
                 guard let self else {
                     return nil
                 }
-                return StoreStatsPeriodViewModel(siteID: siteID,
-                                                 timeRange: timeRange,
-                                                 siteTimezone: siteTimezone,
-                                                 currentDate: currentDate,
-                                                 currencyFormatter: currencyFormatter,
-                                                 currencySettings: currencySettings,
-                                                 storageManager: storageManager)
+                let viewModel = StoreStatsPeriodViewModel(siteID: siteID,
+                                                          timeRange: timeRange,
+                                                          siteTimezone: siteTimezone,
+                                                          currentDate: currentDate,
+                                                          currencyFormatter: currencyFormatter,
+                                                          currencySettings: currencySettings,
+                                                          storageManager: storageManager)
+                // Carry the current revenue metric over to the freshly created period VM so the
+                // revenue text reflects the merchant's choice immediately on time-range switches.
+                viewModel.revenueType = revenueType
+                return viewModel
             }
             .sink { [weak self] viewModel in
                 guard let self else { return }
@@ -338,44 +455,53 @@ private extension StorePerformanceViewModel {
     }
 
     func observePeriodViewModel() {
+        periodViewModelSubscriptions.removeAll()
+
         guard let periodViewModel else {
             return
         }
 
         periodViewModel.timeRangeBarViewModel
             .map { $0.timeRangeText }
-            .assign(to: &$timeRangeText)
+            .sink { [weak self] in self?.timeRangeText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
         periodViewModel.timeRangeBarViewModel
             .map { $0.selectedDateText }
-            .assign(to: &$selectedDateText)
+            .sink { [weak self] in self?.selectedDateText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
         periodViewModel.revenueStatsText
-            .assign(to: &$revenueStatsText)
+            .sink { [weak self] in self?.revenueStatsText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
         periodViewModel.orderStatsText
-            .assign(to: &$orderStatsText)
+            .sink { [weak self] in self?.orderStatsText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
         periodViewModel.visitorStatsText
-            .assign(to: &$visitorStatsText)
+            .sink { [weak self] in self?.visitorStatsText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
         periodViewModel.conversionStatsText
-            .assign(to: &$conversionStatsText)
+            .sink { [weak self] in self?.conversionStatsText = $0 }
+            .store(in: &periodViewModelSubscriptions)
 
-        periodViewModel.orderStatsIntervals
-            .removeDuplicates()
-            .map { [weak self] intervals in
+        Publishers.CombineLatest(periodViewModel.orderStatsIntervals.removeDuplicates(), $revenueType)
+            .map { [weak self] intervals, revenueType in
                 guard let self else {
                     return []
                 }
-                return createOrderStatsIntervalData(orderStatsIntervals: intervals)
+                return createOrderStatsIntervalData(orderStatsIntervals: intervals, revenueType: revenueType)
             }
-            .assign(to: &$statsIntervalData)
+            .sink { [weak self] in self?.statsIntervalData = $0 }
+            .store(in: &periodViewModelSubscriptions)
     }
 
-    func createOrderStatsIntervalData(orderStatsIntervals: [OrderStatsV4Interval]) -> [StoreStatsChartData] {
+    func createOrderStatsIntervalData(orderStatsIntervals: [OrderStatsV4Interval],
+                                      revenueType: DashboardRevenueStatsType) -> [StoreStatsChartData] {
             let intervalDates = orderStatsIntervals.map { $0.dateStart(timeZone: siteTimezone) }
-            let revenues = orderStatsIntervals.map { ($0.revenueValue as NSDecimalNumber).doubleValue }
+            let revenues = orderStatsIntervals.map { ($0.revenueValue(for: revenueType) as NSDecimalNumber).doubleValue }
             return zip(intervalDates, revenues)
                 .map { x, y -> StoreStatsChartData in
                     .init(date: x, revenue: y)
@@ -389,6 +515,39 @@ private extension StorePerformanceViewModel {
                 continuation.resume(returning: timeRange)
             }
             stores.dispatch(action)
+        }
+    }
+
+    /// Loads the merchant's previously selected revenue metric for the Performance card.
+    /// Returns `nil` if the merchant has not yet picked one — callers should fall back to `.total`.
+    @MainActor
+    func loadLastRevenueType() async -> DashboardRevenueStatsType? {
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadLastSelectedDashboardRevenueStatsType(siteID: siteID) { revenueType in
+                continuation.resume(returning: revenueType)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    /// Loads the current analytics order date type from the backend. Falls back to the existing
+    /// `orderType` value (default `.paid`) if the request fails — the merchant still gets a usable
+    /// default and can re-open the bottom sheet to retry.
+    @MainActor
+    func loadOrderType() async {
+        do {
+            let dateType: AnalyticsOrderDateType = try await withCheckedThrowingContinuation { continuation in
+                let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: siteID) { result in
+                    continuation.resume(with: result)
+                }
+                stores.dispatch(action)
+            }
+            // If the merchant already changed the order type while the initial fetch was in flight,
+            // honor their selection rather than overwriting it with the stale server value.
+            guard !hasUserSelectedOrderType else { return }
+            orderType = dateType
+        } catch {
+            DDLogWarn("⚠️ Could not fetch analytics order date type, falling back to default: \(error)")
         }
     }
 

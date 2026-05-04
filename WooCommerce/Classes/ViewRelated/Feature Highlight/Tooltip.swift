@@ -213,7 +213,7 @@ final class Tooltip: UIView {
         }
 
         let arrowPath = UIBezierPath()
-        arrowPath.move(to: CGPoint(x: 0, y: 0))
+        arrowPath.move(to: CGPoint.zero)
         let arrowOriginX = (Self.arrowWidth/2 - 1)
         // In order to have a full width of `arrowWidth`, first draw the left side of the triangle until arrowOriginX.
         arrowPath.addLine(to: CGPoint(x: arrowOriginX, y: arrowTipY))

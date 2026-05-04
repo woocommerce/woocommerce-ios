@@ -59,13 +59,14 @@ public final class POSOrderService: POSOrderServiceProtocol {
             .copy(siteID: siteID, status: .autoDraft)
             .addItems(cart.items)
             .addCoupons(cart.coupons)
+            .addCustomAmounts(cart.customAmounts)
 
         let createdOrder: Order
         do {
             createdOrder = try await ordersRemote.createPOSOrder(
                 siteID: siteID,
                 order: order,
-                fields: [.items, .status, .currency, .couponLines]
+                fields: [.items, .status, .currency, .couponLines, .feeLines]
             )
         } catch {
             // Check if this is a server validation error about missing products
@@ -135,6 +136,25 @@ private extension Order {
             .map { OrderFactory.newOrderCouponLine(code: $0.code) }
 
         return self.copy(coupons: newCoupons)
+    }
+
+    func addCustomAmounts(_ customAmounts: [POSCustomAmount]) -> Order {
+        customAmounts.reduce(self) { order, customAmount in
+            FeesInputTransformer.append(input: customAmount.toOrderFeeLine(), on: order)
+        }
+    }
+}
+
+private extension POSCustomAmount {
+    func toOrderFeeLine() -> OrderFeeLine {
+        OrderFeeLine(feeID: 0,
+                     name: name,
+                     taxClass: "",
+                     taxStatus: isTaxable ? .taxable : .none,
+                     total: amount,
+                     totalTax: "",
+                     taxes: [],
+                     attributes: [])
     }
 }
 

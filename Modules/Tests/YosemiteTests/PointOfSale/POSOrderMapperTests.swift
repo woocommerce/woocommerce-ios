@@ -142,6 +142,67 @@ struct POSOrderMapperTests {
         // Then
         #expect(result.formattedNetAmount == "$10.99")
     }
+
+    // MARK: - Custom Amounts
+
+    @Test
+    func customAmounts_are_mapped_from_active_order_fees() throws {
+        // Given
+        let fee = OrderFeeLine.fake().copy(feeID: 42, name: "Service fee", total: "10.00")
+        let order = makeOrder(currency: "USD", fees: [fee])
+
+        // When
+        let result = try sut.map(order: order)
+
+        // Then
+        #expect(result.customAmounts.count == 1)
+        let mapped = try #require(result.customAmounts.first)
+        #expect(mapped.id == 42)
+        #expect(mapped.name == "Service fee")
+        #expect(mapped.formattedTotal == "$10.00")
+    }
+
+    @Test
+    func customAmounts_skip_deleted_fee_lines() throws {
+        // Given
+        let liveFee = OrderFeeLine.fake().copy(feeID: 1, name: "Tip", total: "5.00")
+        let deletedFee = OrderFactory.deletedFeeLine(OrderFeeLine.fake().copy(feeID: 2, name: "Removed", total: "8.00"))
+        let order = makeOrder(currency: "USD", fees: [liveFee, deletedFee])
+
+        // When
+        let result = try sut.map(order: order)
+
+        // Then
+        #expect(result.customAmounts.count == 1)
+        #expect(result.customAmounts.first?.name == "Tip")
+    }
+
+    @Test
+    func customAmounts_use_default_name_when_fee_line_has_no_name() throws {
+        // Given
+        let fee = OrderFeeLine.fake().copy(feeID: 1, name: nil, total: "3.00")
+        let order = makeOrder(currency: "USD", fees: [fee])
+
+        // When
+        let result = try sut.map(order: order)
+
+        // Then - falls back to a localized "Custom amount" placeholder so the row
+        // never renders with empty left-side text.
+        #expect(result.customAmounts.first?.name == "Custom amount")
+    }
+
+    @Test
+    func customAmounts_use_default_name_when_fee_line_name_is_blank() throws {
+        // Given
+        let fee = OrderFeeLine.fake().copy(feeID: 1, name: "   ", total: "3.00")
+        let order = makeOrder(currency: "USD", fees: [fee])
+
+        // When
+        let result = try sut.map(order: order)
+
+        // Then
+        #expect(result.customAmounts.first?.name == "Custom amount")
+    }
 }
 
 // MARK: - Test Helpers
@@ -158,7 +219,8 @@ private extension POSOrderMapperTests {
         totalTax: String = "2.50",
         currency: String = "USD",
         refunds: [OrderRefundCondensed] = [],
-        items: [OrderItem] = []
+        items: [OrderItem] = [],
+        fees: [OrderFeeLine] = []
     ) -> NetworkingCore.Order {
         return NetworkingCore.Order.fake().copy(
             orderID: orderID,
@@ -171,7 +233,8 @@ private extension POSOrderMapperTests {
             total: total,
             totalTax: totalTax,
             items: items.isEmpty ? [makeOrderItem()] : items,
-            refunds: refunds
+            refunds: refunds,
+            fees: fees
         )
     }
 

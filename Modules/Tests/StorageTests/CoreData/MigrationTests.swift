@@ -2675,6 +2675,41 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(results.first?.value(forKey: "createdAt") as? Date, now)
         XCTAssertEqual(results.first?.value(forKey: "updatedAt") as? Date, now)
     }
+
+    func test_migrating_from_136_to_137_adds_grossSales_attribute_to_OrderStatsV4Totals() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 136")
+        let sourceContext = sourceContainer.viewContext
+
+        let totals = sourceContext.insert(entityName: "OrderStatsV4Totals", properties: [
+            "totalOrders": 5,
+            "totalItemsSold": 7,
+            "grossRevenue": 800,
+            "netRevenue": 700,
+            "averageOrderValue": 160
+        ])
+        try sourceContext.save()
+
+        XCTAssertNil(totals.entity.attributesByName["grossSales"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 137")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedTotals = try XCTUnwrap(targetContext.first(entityName: "OrderStatsV4Totals"))
+
+        XCTAssertNotNil(migratedTotals.entity.attributesByName["grossSales"])
+
+        // Default value should be 0 (per the model's defaultValueString).
+        XCTAssertEqual(migratedTotals.value(forKey: "grossSales") as? NSDecimalNumber, NSDecimalNumber(value: 0))
+
+        // Verify a value can be set and saved.
+        migratedTotals.setValue(NSDecimalNumber(value: 750), forKey: "grossSales")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedTotals.value(forKey: "grossSales") as? NSDecimalNumber, NSDecimalNumber(value: 750))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

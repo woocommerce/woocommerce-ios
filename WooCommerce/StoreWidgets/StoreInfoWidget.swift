@@ -4,27 +4,73 @@ import SwiftUI
 /// Main StoreInfo Widget type.
 ///
 struct StoreInfoWidget: Widget {
+    /// Bundle-level gate for the configurable widget surface. Reads the App Group mirror written
+    /// by `StoreWidgetsFeatureFlagSynchronizer` from the local
+    /// `FeatureFlag.configurableStoreStatsWidgets`. When enabled, the new home-screen sizes
+    /// (`.systemSmall`, `.systemLarge`) are exposed in the widget gallery alongside the existing
+    /// `.systemMedium`. Adding sizes is a one-way decision once shipped enabled to App Store.
+    ///
+    /// `supportedFamilies` is evaluated when iOS launches the widget extension process — not on
+    /// every timeline reload — so changes propagate non-deterministically (next extension
+    /// relaunch).
+    ///
     private var supportedFamilies: [WidgetFamily] {
-        if #available(iOSApplicationExtension 16.0, *) {
-            return [
-                .accessoryInline,
-                .accessoryRectangular,
-                .accessoryCircular,
-                .systemMedium
-            ]
-        } else {
-            return [.systemMedium]
+        /// Temporary developer flag
+        /// Will be removed before feature rollout
+        let isConfigurableEnabled = UserDefaults.group?.configurableStoreStatsWidgetsEnabled ?? false
+
+        if isConfigurableEnabled {
+            return .wooDefaultFamilies + .wooConfigurableFamilies
         }
+
+        return .wooDefaultFamilies
     }
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: WooConstants.storeInfoWidgetKind, provider: StoreInfoProvider()) { entry in
+        // Compile-time gate on the configuration type — matches the runtime
+        // `configurableStoreStatsWidgets` FF policy (localDeveloper || alpha) at the build
+        // level. A runtime gate is not expressible: `Widget.body` is `some WidgetConfiguration`
+        // (opaque return — branches must agree on a single concrete type) and
+        // `WidgetBundleBuilder` explicitly disables `buildOptional` for runtime `if`. The
+        // configuration `kind` is identical across both branches, so existing tiles survive
+        // the compile-time switch when alpha builds upgrade to App Store builds and back.
+#if DEBUG || ALPHA
+        AppIntentConfiguration(
+            kind: WooConstants.storeInfoWidgetKind,
+            intent: StoreStatsConfigurationIntent.self,
+            provider: StoreInfoProvider()
+        ) { entry in
             StoreInfoWidgetEntryView(entry: entry)
         }
         .configurationDisplayName(Localization.title)
         .description(Localization.description)
         .supportedFamilies(supportedFamilies)
+#else
+        StaticConfiguration(
+            kind: WooConstants.storeInfoWidgetKind,
+            provider: StoreInfoProvider()
+        ) { entry in
+            StoreInfoWidgetEntryView(entry: entry)
+        }
+        .configurationDisplayName(Localization.title)
+        .description(Localization.description)
+        .supportedFamilies(supportedFamilies)
+#endif
     }
+}
+
+/// Widget family constants
+private extension Array where Element == WidgetFamily {
+    static let wooConfigurableFamilies: [WidgetFamily] = [
+        .systemSmall,
+        .systemLarge
+    ]
+    static let wooDefaultFamilies: [WidgetFamily] = [
+        .accessoryInline,
+        .accessoryRectangular,
+        .accessoryCircular,
+        .systemMedium
+    ]
 }
 
 /// Entry view for StoreInfo Widget UI
@@ -34,21 +80,20 @@ private struct StoreInfoWidgetEntryView: View {
     let entry: StoreInfoEntry
 
     var body: some View {
-        if #available(iOSApplicationExtension 16.0, *) {
-            switch widgetFamily {
-            case .accessoryInline:
-                StoreInfoInlineWidget(entry: entry)
-            case .accessoryRectangular:
-                StoreInfoRectangularWidget(entry: entry)
-            case .accessoryCircular:
-                StoreInfoCircularWidget(entry: entry)
-            case .systemMedium:
-                StoreInfoHomescreenWidget(entry: entry)
-            default:
-                EmptyView()
-            }
-        } else {
+        switch widgetFamily {
+        case .accessoryInline:
+            StoreInfoInlineWidget(entry: entry)
+        case .accessoryRectangular:
+            StoreInfoRectangularWidget(entry: entry)
+        case .accessoryCircular:
+            StoreInfoCircularWidget(entry: entry)
+        case .systemMedium, .systemSmall, .systemLarge:
+            // `.systemSmall` and `.systemLarge` only enter `supportedFamilies` when the
+            // configurable-widgets FF is on, so reaching them implies the metric-driven path.
+            // Layouts dedicated to these sizes will land in Tickets #7 / #8.
             StoreInfoHomescreenWidget(entry: entry)
+        default:
+            EmptyView()
         }
     }
 }

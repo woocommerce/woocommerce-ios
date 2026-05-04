@@ -24,6 +24,7 @@ import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
 import struct Yosemite.PaymentIntent
 import struct Yosemite.POSOrder
+import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefund
@@ -314,6 +315,9 @@ struct POSPreviewHelpers {
                         OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
                     ]
                 )
+            ],
+            customAmounts: [
+                POSOrderCustomAmount(id: 1, name: "Service fee", formattedTotal: "$5.00")
             ],
             refunds: [],
             formattedDiscountTotal: "$0.00",

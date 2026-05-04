@@ -16,6 +16,15 @@ public protocol SupportChatRemoteProtocol {
                      message: String,
                      chatID: Int64?,
                      context: [String: Any]?) async throws -> SupportChatResponse
+
+    /// Fetches an existing chat thread by id, returning every turn (user + bot).
+    ///
+    /// - Parameters:
+    ///   - botSlug: Assistant slug the chat was created against.
+    ///   - chatID: Identifier returned by a previous `sendMessage` call.
+    /// - Returns: The full thread in `ts`-ascending order.
+    func fetchChat(botSlug: String,
+                   chatID: Int64) async throws -> SupportChatResponse
 }
 
 /// Remote for the support chat endpoint (`/wpcom/v2/odie/chat/{bot_slug}`).
@@ -43,6 +52,16 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
                                     path: path,
                                     parameters: parameters,
                                     encoding: JSONEncoding.default)
+        let mapper = SupportChatResponseMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    public func fetchChat(botSlug: String,
+                          chatID: Int64) async throws -> SupportChatResponse {
+        let path = "\(Path.chat)/\(botSlug)/\(chatID)"
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .get,
+                                    path: path)
         let mapper = SupportChatResponseMapper()
         return try await enqueue(request, mapper: mapper)
     }

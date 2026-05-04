@@ -53,6 +53,8 @@ extension WooAnalyticsEvent {
             static let hasReason = "has_reason"
             static let refundStep = "refund_step"
             static let action = "action"
+            static let mode = "mode"
+            static let isTaxable = "is_taxable"
         }
 
         /// Source of the event where the event is triggered
@@ -112,6 +114,7 @@ extension WooAnalyticsEvent {
         enum ItemType: String {
             case product
             case coupon
+            case customAmount = "custom_amount"
             case loading
             case error
 
@@ -186,6 +189,26 @@ extension WooAnalyticsEvent {
                 statName: .pointOfSaleAddItemToCart,
                 properties: properties,
                 error: error
+            )
+        }
+
+        /// Mode in which the custom amount form was submitted.
+        ///
+        enum CustomAmountMode: String {
+            case add
+            case edit
+        }
+
+        static func customAmountSubmitted(
+            mode: CustomAmountMode,
+            isTaxable: Bool
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .pointOfSaleCustomAmountSubmitted,
+                properties: [
+                    Key.mode: mode.rawValue,
+                    Key.isTaxable: isTaxable
+                ]
             )
         }
 

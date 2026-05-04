@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-06 20:54:50+0000 */
+/* Translation-Revision-Date: 2026-04-20 17:57:34+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -1072,6 +1072,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice message shown when a phone call cannot be initiated. */
 "BookingDetailsView.phoneNumberOptions.error" = "يتعذر إجراء مكالمة على هذا الرقم.";
+
+/* 'Reschedule' button title in appointment details section in booking details view. */
+"BookingDetailsView.rescheduleBookingButton.title" = "إعادة جدولة الحجز";
 
 /* Retry Action */
 "BookingDetailsView.retry.action" = "إعادة المحاولة";
@@ -4886,9 +4889,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "يرجى شحن القارئ";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "يرجى التحقق من أن هاتفك يستوفي هذه المتطلبات: iPhone XS أو أحدث يعمل بنظام التشغيل iOS 16.7 أو أعلى. اتصل بالدعم في حال ظهور هذا الخطأ على جهاز مدعوم.";
-
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "يرجى التحقق من الرصيد المتبقي لبطاقة الهدايا.";
 
@@ -5595,6 +5595,9 @@ If your translation of that term also happens to contains a hyphen, please be su
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "مطلوبة";
+
+/* Navigation bar title for the reschedule booking screen. */
+"RescheduleBookingView.title" = "إعادة جدولة الحجز";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "إعادة تعيين سجل النشاط";
@@ -9816,6 +9819,18 @@ which should be translated separately and considered part of this sentence. */
 /* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.saveReceiptAndContinue" = "حفظ الإيصال والمتابعة";
 
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
+"cardReader.error.unsupportedMobileDeviceConfiguration.message" = "يرجى التأكد من أن هاتفك يستوفي المتطلبات التالية: iPhone XS أو أحدث ويعمل بنظام iOS 18.0.1 أو أحدث. يُرجى التواصل مع الدعم إذا ظهر هذا الخطأ على جهاز مدعوم.";
+
+/* Settings > Manage Card Reader > Connected Reader > A button to cancel the reconnection attempt */
+"cardReaderSettingsConnectedViewController.cancelReconnectionButtonTitle.v2" = "إلغاء إعادة الاتصال";
+
+/* Settings > Manage Card Reader > Connected Reader > Button title shown while cancellation is in progress */
+"cardReaderSettingsConnectedViewController.cancellingReconnectionButtonTitle" = "جارٍ الإلغاء...";
+
+/* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
+"cardReaderSettingsConnectedViewController.reconnectingText" = "جارٍ إعادة الاتصال بقارئ البطاقات...";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "تسجيل تفاصيل المعاملات في مذكرة الطلب";
 
@@ -10027,7 +10042,7 @@ which should be translated separately and considered part of this sentence. */
 "connectivityToolViewModel.errorMessage.default" = "يبدو أن هناك مشكلة في موقعك.\n\nيُرجى الاتصال بمزوّد خدمة الاستضافة للحصول على مزيد من المساعدة.";
 
 /* Message when the device is not registered for push notifications in the connectivity tool */
-"connectivityToolViewModel.errorMessage.deviceNotRegistered" = "يبدو أن جهازك غير مُسجَّل لتلقي تنبيهات الدفع\n\nحاول تسجيل الخروج ثم العودة للتسجيل من جديد.";
+"connectivityToolViewModel.errorMessage.deviceNotRegisteredForPN" = "لا يبدو أن جهازك مسجّل لتلقي تنبيهات الدفع.";
 
 /* Message when we there is a jetpack error in the recovery tool */
 "connectivityToolViewModel.errorMessage.jetpackNotConnected" = "هناك مشكلة في محاولة اتصالك مع Jetpack.\n\nاقرأ المزيد حول هذا أو اتصل بفريق الدعم لدينا وسيسرنا مساعدتك.";
@@ -10804,6 +10819,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "لا يحتوي القارئ الذي تم إرجاعه من الاكتشاف على عنوان IP ولا يمكن ربطه به.";
 
+/* Subtitle for the site compatibility check row on the Help screen */
+"helpAndSupport.siteCompatibility.subtitle" = "اختبر توافق موقعك مع التطبيق";
+
+/* Title for the site compatibility check row on the Help screen */
+"helpAndSupport.siteCompatibility.title" = "التحقق من توافق الموقع";
+
 /* Title of the Bookings menu in the hub menu */
 "hubMenu.bookings" = "الحجوزات";
 
@@ -11484,6 +11505,15 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "الشحن";
 
+/* Fulfillment status badge text shown on CIAB order rows when the order has been fulfilled. */
+"orderFulfillmentStatus.badge.fulfilled" = "تم التنفيذ";
+
+/* Fulfillment status badge text with date, shown on the CIAB order details screen. %1$@ is the formatted date. */
+"orderFulfillmentStatus.badge.fulfilledWithDate" = "تم التنفيذ في %1$@";
+
+/* Fulfillment status badge text shown on CIAB order rows when the order has not been fulfilled. */
+"orderFulfillmentStatus.badge.unfulfilled" = "غير مُنفّذ";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "القسيمة";
 
@@ -11652,6 +11682,9 @@ which should be translated separately and considered part of this sentence. */
 /* A placeholder name when we can't determine the name of a variation for an error message */
 "pointOfSale.barcodeScanning.unresolved.variation.name" = "غير معروف";
 
+/* Button to cancel card reader reconnection, shown on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelReconnection.button.title" = "إلغاء إعادة الاتصال";
+
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.canceledOnReader.title" = "تم إلغاء عملية الدفع على القارئ";
 
@@ -11753,6 +11786,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
 "pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "لمعالجة هذا الدفع، يرجى الاتصال بالقارئ الخاص بك أو اختيار الدفع نقدًا.";
+
+/* Title shown on the Point of Sale Checkout when the card reader is reconnecting */
+"pointOfSale.cardPresent.reconnecting.title" = "جارٍ إعادة الاتصال بالقارئ...";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "التحقق من الطلب";
@@ -12006,11 +12042,17 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
 "pointOfSale.floatingButtons.bookings.button.title" = "الحجوزات";
 
+/* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
+"pointOfSale.floatingButtons.cancelReconnection.button.title" = "إلغاء إعادة الاتصال";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "يرجى الانتظار";
 
+/* The title of the floating button to indicate that the reader reconnection is being cancelled. */
+"pointOfSale.floatingButtons.cancellingReconnection.title" = "جارٍ الإلغاء…";
+
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
-"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "فصل ربط القارئ";
+"pointOfSale.floatingButtons.disconnectCardReader.button.title.2" = "فصل القارئ";
 
 /* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "إنهاء POS";
@@ -12026,6 +12068,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "فصل الربط";
+
+/* The title of the floating button to indicate that the reader is attempting to reconnect. */
+"pointOfSale.floatingButtons.readerReconnecting.title" = "جارٍ إعادة الاتصال…";
 
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "الإعدادات";
@@ -12159,6 +12204,12 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed on Point of Sale settings when card reader battery is unknown. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "غير معروف";
 
+/* Menu option to cancel card reader reconnection in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.cancelReconnectionTitle" = "إلغاء إعادة الاتصال";
+
+/* Button title shown when card reader reconnection is being cancelled in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.cancellingReconnectionTitle" = "جارٍ الإلغاء...";
+
 /* Subtitle for card reader connect button when no reader is connected. */
 "pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "يُرجى توصيل قارئ بطاقتك وبدء قبول المدفوعات";
 
@@ -12209,6 +12260,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text displayed on Point of Sale settings pointing to the card reader model. */
 "pointOfSaleSettingsHardwareDetailView.readerModelTitle.1" = "اسم الجهاز";
+
+/* Button title shown when card reader is reconnecting in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.reconnectingButtonTitle" = "جارٍ إعادة الاتصال…";
 
 /* Subtitle describing barcode scanner documentation in Point of Sale settings. */
 "pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "تعرف على المزيد حول المسح الضوئي للرمز الشريطي في نقطة البيع (POS)";
@@ -12822,7 +12876,13 @@ which should be translated separately and considered part of this sentence. */
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "تحديث الكتالوج";
 
-/* Title at the top of the Point of Sale product selector screen. */
+/* Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
+"pos.itemlistview.sunsetWarning.description" = "اعتبارًا من 1 أغسطس، سيتطلب نظام نقطة البيع WooCommerce بالإصدار 10.5.0 أو أحدث. حدّث لضمان استمرار الوصول دون انقطاع.";
+
+/* Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
+"pos.itemlistview.sunsetWarning.title" = "حدّث WooCommerce قريبًا";
+
+/* Title at the top of the point of sale product selector screen. */
 "pos.itemlistview.title" = "المنتجات";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
@@ -13348,6 +13408,84 @@ which should be translated separately and considered part of this sentence. */
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "تاريخ التحديث غير متوفر";
 
+/* Error message when REST API discovery fails in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.apiDiscoveryFailed" = "تعذّر العثور على نقطة نهاية واجهة برمجة تطبيقات REST.";
+
+/* Error message when application passwords are disabled in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.appPasswordsDisabled" = "كلمات مرور التطبيقات معطّلة.";
+
+/* Error message when application passwords are not available in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.appPasswordsUnavailable" = "كلمات مرور التطبيقات غير متوفرة.";
+
+/* Error message when REST API is unavailable in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.noRESTAPI" = "واجهة برمجة تطبيقات REST في ووردبريس غير متاحة على موقعك.";
+
+/* Error message when WooCommerce is not active in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.noWooCommerce" = "واجهة برمجة تطبيقات WooCommerce غير متاحة على موقعك.";
+
+/* Error message when site info lookup fails in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.siteInfoFailed" = "تعذّر استرجاع معلومات الموقع.";
+
+/* Site info line shown when the site is an eCommerce Garden (CIAB) site */
+"preLoginConnectivityTool.siteInfo.commerceGarden" = "موقع eCommerce Garden.";
+
+/* Site info line shown when Jetpack is active but not connected */
+"preLoginConnectivityTool.siteInfo.jetpackActiveNotConnected" = "Jetpack مثبت ومفعّل لكنه غير متصل.";
+
+/* Site info line shown when Jetpack is installed and connected */
+"preLoginConnectivityTool.siteInfo.jetpackConnected" = "Jetpack مثبت ومتصِل.";
+
+/* Site info line shown when Jetpack is installed but not active */
+"preLoginConnectivityTool.siteInfo.jetpackInstalledNotActive" = "Jetpack مثبت لكنه غير مفعّل.";
+
+/* Site info line shown when Jetpack is not installed */
+"preLoginConnectivityTool.siteInfo.jetpackNotInstalled" = "Jetpack غير مثبت.";
+
+/* Site info line shown when the site is a WordPress site */
+"preLoginConnectivityTool.siteInfo.wordPressDetected" = "تم اكتشاف موقع ووردبريس.";
+
+/* Site info line shown when the site is not a WordPress site */
+"preLoginConnectivityTool.siteInfo.wordPressNotDetected" = "تعذَر اكتشاف ووردبريس على هذا الموقع.";
+
+/* Success info when REST API discovery succeeds in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.apiDiscovered" = "تم اكتشاف نقطة نهاية واجهة برمجة تطبيقات REST.";
+
+/* Success info when application passwords are likely available in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.applicationPasswordsLikelyAvailable" = "يبدو أن كلمات مرور التطبيقات مدعومة.";
+
+/* Success info when REST API check passes in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.restAPIAvailable" = "واجهة برمجة تطبيقات REST في ووردبريس متاحة.";
+
+/* Success info when WooCommerce check passes in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.wooCommerceActive" = "WooCommerce مفعّل على موقعك.";
+
+/* Title for the REST API discovery test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.apiDiscovery" = "اكتشاف واجهة برمجة التطبيقات";
+
+/* Title for the application passwords test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.applicationPasswords" = "كلمات مرور التطبيقات";
+
+/* Title for the site info test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.siteInfo" = "معلومات الموقع";
+
+/* Title for the WooCommerce API test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.wooCommerceAPI" = "إضافة WooCommerce";
+
+/* Title for the WordPress REST API test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.wordPressRESTAPI" = "* واجهة برمجة تطبيقات REST في ووردبريس:";
+
+/* Contact support button in the pre-login connectivity tool */
+"preLoginConnectivityToolView.contactSupport" = "التواصل مع الدعم";
+
+/* Subtitle on the pre-login connectivity tool screen. The placeholder is the site address */
+"preLoginConnectivityToolView.subtitle" = "جارٍ التحقق من توافق موقعك %1$@ مع تطبيق WooCommerce.";
+
+/* Navigation title for the pre-login connectivity tool */
+"preLoginConnectivityToolView.title" = "توافق الموقع";
+
+/* Button to view technical diagnostic details for a failed connectivity check */
+"preLoginConnectivityToolView.viewDetails" = "عرض التفاصيل";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "إغلاق";
 
@@ -13816,6 +13954,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
 "salesChannelFilter.row.wpAdmin.description" = "مشرف WP";
 
+/* Accessibility label for the clear button in the search header */
+"searchHeader.clearButton.accessibilityLabel" = "مسح";
+
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "إلغاء";
 
@@ -13985,14 +14126,14 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the store performance section on the Dashboard screen */
 "storePerformanceView.hideCard" = "إخفاء الأداء";
 
-/* Net sales stat label on dashboard — shows revenue excluding taxes, shipping, and fees. */
-"storePerformanceView.netSales" = "صافي المبيعات";
-
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "لا توجد إيرادات للتواريخ المحددة";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "الطلبات";
+
+/* Total sales stat label on dashboard — shows revenue including taxes and shipping. */
+"storePerformanceView.totalSales" = "إجمالي المبيعات";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "يتعذر عرض أداء متجرك";
@@ -14008,6 +14149,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit the items to be displayed on the store picker */
 "storePicker.editList" = "تحرير";
+
+/* Body text for the store picker error screen when the permission check fails */
+"storePickerError.permissionErrorBody" = "حدثت مشكلة أثناء التحقق من صلاحياتك. يُرجى المحاولة مرة أخرى أو التواصل معنا، ويسعدنا مساعدتك!";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "الربط بمتجر موجود";
@@ -14025,7 +14169,7 @@ which should be translated separately and considered part of this sentence. */
 "storeStatsChart.ySelectedValue" = "الإيراد المحدد";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen */
-"storeStatsChart.yValueNetSales" = "صافي المبيعات";
+"storeStatsChart.yValueTotalSales" = "إجمالي المبيعات";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
 "storeStatsChart.zeroRevenue" = "لا توجد إيرادات";
@@ -14045,11 +14189,11 @@ which should be translated separately and considered part of this sentence. */
 /* Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "تحويل";
 
-/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
-"storeWidgets.infoView.netSales" = "صافي المبيعات";
-
 /* Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "الطلبات";
+
+/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+"storeWidgets.infoView.totalSales" = "إجمالي المبيعات";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "بدءًا من %1$@";
@@ -14072,11 +14216,11 @@ which should be translated separately and considered part of this sentence. */
 /* Revenue title label for the store info widget. %1$@ is the revenue amount. */
 "storeWidgets.storeInfoInlineWidget.revenueTitle" = "الإيرادات: %1$@";
 
-/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
-"storeWidgets.storeInfoRectangularWidget.netSales" = "صافي المبيعات";
-
 /* Label when the widget can't fetch data. */
 "storeWidgets.storeInfoRectangularWidget.noData" = "⚠ لا توجد بيانات";
+
+/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+"storeWidgets.storeInfoRectangularWidget.totalSales" = "إجمالي المبيعات";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "يتعذر إحضار إحصاءات اليوم";
@@ -14472,9 +14616,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error title on the watch store stats screen. */
 "watch.mystore.error.title" = "فشل تحميل بيانات المتجر";
 
-/* Net sales title on the watch store stats screen. */
-"watch.mystore.netSales.title" = "صافي المبيعات";
-
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "إعادة المحاولة";
 
@@ -14483,6 +14624,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Today title on the watch store stats screen. */
 "watch.mystore.today.title" = "اليوم";
+
+/* Total sales title on the watch store stats screen. */
+"watch.mystore.totalSales.title" = "إجمالي المبيعات";
 
 /* Title when there is an error loading an order notification on the watch app */
 "watch.notification.order.error" = "كان هناك خطأ في أثناء تحميل التنبيه";
@@ -14924,6 +15068,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when loading shipping label rates failed on the shipping label creation screen */
 "wooShipping.createLabels.rates.failedLoadingDataError" = "يتعذر علينا تحميل أسعار الشحن";
+
+/* Error message when shipping rates fail to load because the destination address name is invalid. */
+"wooShipping.createLabels.rates.invalidDestinationNameError" = "تعذّر تحميل أسعار الشحن. يُرجى إضافة الاسم الأول واسم العائلة إلى عنوان الوجهة ثم المحاولة مرة أخرى.";
 
 /* Message displayed when no destination address is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noDestinationAddressMessage" = "يتعين علينا معرفة المسار الذي يذهب إليه هذا الطرد قبل أن نتمكن من عرض أسعار الشحن المتوفرة.";

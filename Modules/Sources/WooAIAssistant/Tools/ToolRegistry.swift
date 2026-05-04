@@ -2,5 +2,11 @@
 /// rather than throwing, so error classification is part of the contract not a side effect.
 public protocol ToolRegistry: Sendable {
     func availableTools() async throws -> [AITool]
-    func execute(name: String, arguments: String) async -> ToolResult
+    func execute(name: String, arguments: String, toolCallID: String) async -> ToolResult
+}
+
+public extension ToolRegistry {
+    func execute(name: String, arguments: String) async -> ToolResult {
+        await execute(name: name, arguments: arguments, toolCallID: "")
+    }
 }

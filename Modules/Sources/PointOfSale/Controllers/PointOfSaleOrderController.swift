@@ -281,7 +281,7 @@ private extension POSCart {
             return POSCartItem(item: item, quantity: Decimal(purchasableItem.quantity))
         }
         let coupons = cart.coupons.map { POSCoupon(id: $0.posItemIdentifier, code: $0.code, summary: $0.summary) }
-        self.init(items: items, coupons: coupons)
+        self.init(items: items, coupons: coupons, customAmounts: cart.customAmounts)
     }
 }
 

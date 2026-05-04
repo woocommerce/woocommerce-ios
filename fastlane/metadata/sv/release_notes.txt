@@ -1,1 +1,1 @@
-Nu kontrollerar felsökningsverktyget dina analyser och inställningar för avisering, och gör det enklare att diagnostisera problem med din butik.
+Försäljningsplats blev precis mer tillförlitligt! Du kommer nu att se tydliga statusuppdateringar om din Bluetooth-kortläsare tillfälligt kopplas från och priser uppdateras automatiskt i kassan om de har ändrats. Vi har också lagt till ett felsökningsverktyg för inloggning för att hjälpa till att diagnostisera anslutningsproblem, plus visuell finjustering för iOS 26 och en praktisk knapp för att rensa i sökfälten.

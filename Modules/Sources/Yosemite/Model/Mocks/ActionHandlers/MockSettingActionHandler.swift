@@ -37,6 +37,10 @@ struct MockSettingActionHandler: MockActionHandler {
                                        localeIdentifier == "en-GB"
                 onCompletion(.success(isEligibleCountry))
             }
+        case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+            onCompletion(.success(.paid))
+        case .updateAnalyticsOrderDateType(_, _, let onCompletion):
+            onCompletion(.success(()))
         default: unimplementedAction(action: action)
         }
     }

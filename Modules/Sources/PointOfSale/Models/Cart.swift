@@ -2,11 +2,13 @@ import Foundation
 import protocol Yosemite.POSOrderableItem
 import enum Yosemite.POSItem
 import enum Yosemite.PointOfSaleBarcodeScanError
+import struct Yosemite.POSCustomAmount
 import struct Yosemite.POSItemIdentifier
 
 struct Cart {
     var purchasableItems: [Cart.PurchasableItem] = []
     var coupons: [Cart.CouponItem] = []
+    var customAmounts: [POSCustomAmount] = []
 
     var accessibilityFocusedItemID: UUID? = nil
 }
@@ -20,6 +22,7 @@ protocol CartItem {
 enum CartItemType: CaseIterable {
     case purchasableItem
     case coupon
+    case customAmount
 }
 
 extension Cart {
@@ -145,8 +148,20 @@ extension Cart {
         purchasableItems.removeAll(where: { $0.id == id })
     }
 
+    mutating func upsertCustomAmount(_ customAmount: POSCustomAmount) {
+        if let index = customAmounts.firstIndex(where: { $0.id == customAmount.id }) {
+            customAmounts[index] = customAmount
+        } else {
+            customAmounts.insert(customAmount, at: customAmounts.startIndex)
+        }
+    }
+
+    mutating func removeCustomAmount(id: UUID) {
+        customAmounts.removeAll(where: { $0.id == id })
+    }
+
     var isEmpty: Bool {
-        purchasableItems.isEmpty && coupons.isEmpty
+        purchasableItems.isEmpty && coupons.isEmpty && customAmounts.isEmpty
     }
 
     var isNotEmpty: Bool {

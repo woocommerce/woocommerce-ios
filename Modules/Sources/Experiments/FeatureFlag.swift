@@ -199,6 +199,10 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleRefundsi1
 
+    /// Enables adding custom amounts to the cart in Point of Sale
+    ///
+    case pointOfSaleCustomAmounts
+
     /// Enables self driven push token registration
     ///
     case selfDrivenPushToken
@@ -206,6 +210,10 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
     ///
     case clientSideDashboardBanner
+
+    /// Enables configurable store stats widgets
+    ///
+    case configurableStoreStatsWidgets
 
     /// Enables age range verification features
     /// https://developer.apple.com/news/?id=2ezb6jhj

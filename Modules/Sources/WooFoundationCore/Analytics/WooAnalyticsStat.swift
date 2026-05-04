@@ -147,6 +147,14 @@ public enum WooAnalyticsStat: String {
     case dashboardStatsCustomRangeEditButtonTapped = "dashboard_stats_custom_range_edit_button_tapped"
     case dashboardStatsCustomRangeInteracted = "dashboard_stats_custom_range_interacted"
 
+    // MARK: Performance card order date type bottom sheet
+    case dashboardStatsOrderDateTypeSelectorTapped = "dashboard_stats_order_date_type_selector_tapped"
+    case dashboardStatsOrderDateTypeSelected = "dashboard_stats_order_date_type_selected"
+    case dashboardStatsOrderDateTypeUpdateFailed = "dashboard_stats_order_date_type_update_failed"
+
+    // MARK: Performance card revenue type segmented control
+    case dashboardStatsRevenueTypeSelected = "dashboard_stats_revenue_type_selected"
+
     // MARK: Dashboard Stats v3/v4 Events
     //
     case dashboardNewStatsAvailabilityBannerCancelTapped = "dashboard_new_stats_availability_banner_cancel_tapped"
@@ -1283,6 +1291,7 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleItemsPullToRefresh = "items_pull_to_refresh"
     case pointOfSaleAddItemToCart = "item_added_to_cart"
     case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
+    case pointOfSaleCustomAmountSubmitted = "custom_amount_submitted"
     case pointOfSaleCheckoutTapped = "checkout_tapped"
     case pointOfSaleBackToCartTapped = "back_to_cart_tapped"
     case pointOfSaleCheckoutCashPaymentTapped = "checkout_cash_payment_tapped"

@@ -260,7 +260,6 @@ private extension CartView {
         }
         .background(backgroundColor.ignoresSafeArea(.all))
     }
-
 }
 
 private struct CartClearMenuButton: View {
@@ -313,6 +312,10 @@ private struct CartScrollViewContent: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(spacing: Constants.cartItemSpacing) {
+                    if posModel.cart.customAmounts.isNotEmpty {
+                        CustomAmountsCartSection()
+                    }
+
                     if posModel.cart.coupons.isNotEmpty {
                         CouponsCartSection(shouldShowItemImages: $shouldShowItemImages)
                     }
@@ -364,6 +367,7 @@ private struct CartScrollViewContent: View {
         }
         .animation(Constants.cartAnimation, value: posModel.cart.purchasableItems.map(\.id))
         .animation(Constants.cartAnimation, value: posModel.cart.coupons.map(\.id))
+        .animation(Constants.cartAnimation, value: posModel.cart.customAmounts.map(\.id))
         .geometryGroup()
     }
 
@@ -398,6 +402,34 @@ private struct CartScrollViewContent: View {
             450
         @unknown default:
             450
+        }
+    }
+}
+
+private struct CustomAmountsCartSection: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
+
+    var body: some View {
+        LazyVStack(spacing: Constants.cartItemSpacing) {
+            ForEach(posModel.cart.customAmounts, id: \.id) { customAmount in
+                let isInteractive = posModel.orderStage == .building
+                CustomAmountRowView(
+                    customAmount: customAmount,
+                    onEdit: isInteractive ? { posModel.presentEditCustomAmount(customAmount) } : nil,
+                    onRemove: isInteractive ? {
+                        analytics.track(
+                            event: .PointOfSale.itemRemovedFromCart(
+                                sourceView: .cart,
+                                itemType: .customAmount
+                            )
+                        )
+                        posModel.removeCustomAmount(id: customAmount.id)
+                    } : nil
+                )
+                .id(customAmount.id)
+                .transition(.opacity)
+            }
         }
     }
 }

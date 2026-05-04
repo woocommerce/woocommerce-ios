@@ -33,6 +33,8 @@ public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
     case posLocalCatalogM1
     case wooPosTabletPromoBanner
     case selfDrivenPushNotificationsM1
+    case inPersonPaymentsCountryExpansion
+    case inPersonPaymentsCountryExpansionEUExtended
 
     init?(rawValue: String) {
         switch rawValue {
@@ -48,6 +50,10 @@ public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
             self = .wooPosTabletPromoBanner
         case "woo_self_driven_push_notifications_m1":
             self = .selfDrivenPushNotificationsM1
+        case "woo_ipp_country_expansion":
+            self = .inPersonPaymentsCountryExpansion
+        case "woo_ipp_country_expansion_eu_extended":
+            self = .inPersonPaymentsCountryExpansionEUExtended
         default:
             return nil
         }

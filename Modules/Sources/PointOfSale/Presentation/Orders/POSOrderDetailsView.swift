@@ -1,6 +1,7 @@
 import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
+import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundItem
@@ -56,6 +57,12 @@ struct POSOrderDetailsView: View {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
                     if !orderListModel.ordersController.displayedLineItems.isEmpty {
                         productsSection(orderListModel.ordersController.displayedLineItems)
+                    }
+                    // Fee refunds are out of scope for this PR. When they land, this read should
+                    // move to a `displayedCustomAmounts` computed property on the controller that
+                    // mirrors `displayedLineItems` and filters refunded fees out by id.
+                    if !order.customAmounts.isEmpty {
+                        customAmountsSection(order.customAmounts)
                     }
                     if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
                         ghostRefundedProductsSection
@@ -183,6 +190,51 @@ private extension POSOrderDetailsView {
         .padding(POSPadding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
+    }
+
+    @ViewBuilder
+    func customAmountsSection(_ customAmounts: [POSOrderCustomAmount]) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.customAmountsTitle)
+                .font(.posBodyXLargeRegular)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+
+            VStack(spacing: POSSpacing.small) {
+                ForEach(Array(customAmounts.enumerated()), id: \.element.id) { index, customAmount in
+                    customAmountRow(customAmount: customAmount)
+
+                    if index < customAmounts.count - 1 {
+                        divider
+                    }
+                }
+            }
+        }
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+    }
+
+    @ViewBuilder
+    func customAmountRow(customAmount: POSOrderCustomAmount) -> some View {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            CustomAmountAvatar(name: customAmount.name)
+                .frame(width: Constants.productImageSize, height: Constants.productImageSize)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+
+            Text(customAmount.name)
+                .font(.posBodyLargeBold)
+                .foregroundStyle(Color.posOnSurface)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer()
+
+            Text(customAmount.formattedTotal)
+                .font(.posBodyMediumRegular())
+                .foregroundStyle(Color.posOnSurface)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Localization.customAmountRowAccessibilityLabel(name: customAmount.name, total: customAmount.formattedTotal))
     }
 
     @ViewBuilder
@@ -532,6 +584,21 @@ private enum Localization {
         value: "Refunded products",
         comment: "Section title for the refunded products list in order details"
     )
+
+    static let customAmountsTitle = NSLocalizedString(
+        "pos.orderDetailsView.customAmountsTitle",
+        value: "Custom amounts",
+        comment: "Section title for the custom amounts list in order details"
+    )
+
+    static func customAmountRowAccessibilityLabel(name: String, total: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.customAmountRow.accessibilityLabel",
+            value: "%1$@, %2$@",
+            comment: "Accessibility label for a custom amount row. %1$@ is the name, %2$@ is the formatted total."
+        )
+        return String(format: format, name, total)
+    }
 
     static func refundTitle(_ number: Int) -> String {
         let format = NSLocalizedString(

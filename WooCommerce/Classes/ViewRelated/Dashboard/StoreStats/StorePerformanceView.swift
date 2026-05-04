@@ -1,5 +1,6 @@
 import SwiftUI
 import enum Yosemite.StatsTimeRangeV4
+import enum Yosemite.DashboardRevenueStatsType
 import struct Yosemite.DashboardCard
 
 /// View for store performance on Dashboard screen
@@ -7,6 +8,7 @@ import struct Yosemite.DashboardCard
 struct StorePerformanceView: View {
     @ObservedObject private var viewModel: StorePerformanceViewModel
     @State private var showingCustomRangePicker = false
+    @State private var showingOrderTypePicker = false
 
     private var statsValueColor: Color {
         guard viewModel.hasRevenue else {
@@ -43,6 +45,11 @@ struct StorePerformanceView: View {
                     .shimmering(active: viewModel.showRedactedState)
 
                 Divider()
+
+                revenueTypeSelector
+                    .padding(.horizontal, Layout.padding)
+                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                    .shimmering(active: viewModel.showRedactedState)
 
                 statsView
                     .padding(.vertical, Layout.padding)
@@ -83,6 +90,9 @@ struct StorePerformanceView: View {
                 viewModel.trackCustomRangeEvent(.DashboardCustomRange.customRangeConfirmed(isEditing: viewModel.timeRange.isCustomTimeRange))
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
             })
+        }
+        .sheet(isPresented: $showingOrderTypePicker) {
+            PerformanceCardOrderTypeBottomSheet(viewModel: viewModel)
         }
         .onAppear {
             viewModel.onViewAppear()
@@ -160,6 +170,24 @@ private extension StorePerformanceView {
         }
     }
 
+    /// Segmented control above the stats view that lets the merchant pick which revenue metric
+    /// (Total / Gross / Net) is displayed in the card total and the chart. Order mirrors Android.
+    var revenueTypeSelector: some View {
+        Picker(Localization.revenueTypeAccessibilityLabel,
+               selection: Binding(
+                get: { viewModel.revenueType },
+                set: { viewModel.didSelectRevenueType($0) }
+               )) {
+            Text(Localization.revenueTypeTotal).tag(DashboardRevenueStatsType.total)
+            Text(Localization.revenueTypeGross).tag(DashboardRevenueStatsType.gross)
+            Text(Localization.revenueTypeNet).tag(DashboardRevenueStatsType.net)
+        }
+        .pickerStyle(.segmented)
+        .accessibilityIdentifier("performance-revenue-type-picker")
+        .accessibilityLabel(Localization.revenueTypeAccessibilityLabel)
+        .disabled(viewModel.syncingData)
+    }
+
     @ViewBuilder
     var statsView: some View {
         if viewModel.hasRevenue {
@@ -175,18 +203,12 @@ private extension StorePerformanceView {
                         .foregroundStyle(statsValueColor)
                         .largeTitleStyle()
                         .accessibilityIdentifier("revenue-value")
-
-                    Text(Localization.revenue)
-                        .if(!viewModel.hasRevenue) { $0.foregroundStyle(Color(.textSubtle)) }
-                        .font(Font(StyleManager.statsTitleFont))
                 }
 
                 HStack(alignment: .bottom) {
                     Group {
-                        statsItemView(title: Localization.orders,
-                                      value: viewModel.orderStatsText,
-                                      redactMode: .none)
-                        .frame(maxWidth: .infinity)
+                        ordersStatsItemView
+                            .frame(maxWidth: .infinity)
 
                         statsItemView(title: Localization.visitors,
                                       value: viewModel.visitorStatsText,
@@ -245,6 +267,37 @@ private extension StorePerformanceView {
             viewModel.trackInteraction()
             onCustomRangeRedactedViewTap()
         }
+    }
+
+    /// "Orders" stats column with the order date type selector affordance.
+    /// Tapping the title or chevron opens the order type bottom sheet.
+    var ordersStatsItemView: some View {
+        VStack(spacing: Layout.contentVerticalSpacing) {
+            Text(viewModel.orderStatsText)
+                .font(Font(StyleManager.statsFont))
+                .foregroundStyle(statsValueColor)
+            Button {
+                viewModel.trackInteraction()
+                viewModel.trackOrderDateTypeSelectorTapped()
+                showingOrderTypePicker = true
+            } label: {
+                HStack(alignment: .center, spacing: Layout.orderTypeChevronSpacing) {
+                    Text(viewModel.orderType.localizedTitle)
+                        .font(Font(StyleManager.statsTitleFont))
+                        .lineLimit(2)
+                        .minimumScaleFactor(Layout.orderTypeLabelMinScale)
+                        .multilineTextAlignment(.center)
+                    Image(systemName: "chevron.down")
+                        .font(.caption2)
+                        .foregroundStyle(Color(.textSubtle))
+                }.padding(.leading)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("performance-order-type-button")
+            .accessibilityHint(Localization.orderTypeAccessibilityHint)
+            .disabled(viewModel.syncingData || viewModel.updatingOrderType != nil)
+        }
+        .contentShape(Rectangle())
     }
 
     func statValueRedactedView(withIcon: Bool) -> some View {
@@ -334,6 +387,8 @@ private extension StorePerformanceView {
         static let redactedViewIconOffset = CGSize(width: 16, height: 0)
         static let hideIconVerticalPadding: CGFloat = 8
         static let emptyViewSpacing: CGFloat = 24
+        static let orderTypeChevronSpacing: CGFloat = 4
+        static let orderTypeLabelMinScale: CGFloat = 0.7
     }
 
     enum Localization {
@@ -347,11 +402,6 @@ private extension StorePerformanceView {
             value: "Custom",
             comment: "Title of the custom time range on the store performance card on the Dashboard screen"
         )
-        static let revenue = NSLocalizedString(
-            "storePerformanceView.totalSales",
-            value: "Total sales",
-            comment: "Total sales stat label on dashboard — shows revenue including taxes and shipping."
-        )
         static let noRevenueText = NSLocalizedString(
             "storePerformanceView.noRevenueText",
             value: "No revenue for selected dates",
@@ -361,6 +411,11 @@ private extension StorePerformanceView {
             "storePerformanceView.orders",
             value: "Orders",
             comment: "Orders stat label on dashboard - should be plural."
+        )
+        static let orderTypeAccessibilityHint = NSLocalizedString(
+            "storePerformanceView.orderTypeAccessibilityHint",
+            value: "Opens a bottom sheet to change which orders are included in your performance totals.",
+            comment: "Accessibility hint for the order type chevron button on the dashboard Performance card."
         )
         static let visitors = NSLocalizedString(
             "storePerformanceView.visitors",
@@ -385,6 +440,26 @@ private extension StorePerformanceView {
             "storePerformanceView.unavailableAnalyticsView.title",
             value: "Unable to display your store's performance",
             comment: "Title when the Performance card is disabled because the analytics feature is unavailable"
+        )
+        static let revenueTypeTotal = NSLocalizedString(
+            "storePerformanceView.revenueType.total",
+            value: "Total",
+            comment: "Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android."
+        )
+        static let revenueTypeGross = NSLocalizedString(
+            "storePerformanceView.revenueType.gross",
+            value: "Gross",
+            comment: "Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android."
+        )
+        static let revenueTypeNet = NSLocalizedString(
+            "storePerformanceView.revenueType.net",
+            value: "Net",
+            comment: "Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android."
+        )
+        static let revenueTypeAccessibilityLabel = NSLocalizedString(
+            "storePerformanceView.revenueType.accessibilityLabel",
+            value: "Revenue type",
+            comment: "Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card."
         )
     }
 }

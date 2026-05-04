@@ -41,7 +41,7 @@ struct EmptyStateView: View {
                     }
                 }
             }
-            .background(Color.assistantBubbleAssistant)
+            .background(Color(.quaternarySystemFill))
             .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.medium))
             .padding(.horizontal, AssistantSpacing.large)
         }

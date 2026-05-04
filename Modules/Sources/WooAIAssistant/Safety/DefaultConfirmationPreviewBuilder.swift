@@ -49,8 +49,8 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         if let status = args.status {
             fields.append(.init(name: "status",
                                 label: .localized(Strings.fieldStatus),
-                                value: statusValue(status, isBulk: false),
-                                priorValue: priorValue(for: "status", in: snapshot, currentValue: status)))
+                                value: orderStatusValue(status, isBulk: false),
+                                priorValue: priorOrderStatus(in: snapshot, currentValueRaw: status)))
         }
         if args.customer_note != nil {
             fields.append(.init(name: "customer_note",
@@ -89,7 +89,7 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         if let status = patch.status {
             fields.append(.init(name: "status",
                                 label: .localized(Strings.fieldStatus),
-                                value: statusValue(status, isBulk: true)))
+                                value: orderStatusValue(status, isBulk: true)))
         }
         if patch.customer_note != nil {
             fields.append(.init(name: "customer_note",
@@ -286,8 +286,8 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         if let status {
             fields.append(.init(name: "status",
                                 label: .localized(Strings.fieldStatus),
-                                value: .raw(status),
-                                priorValue: priorValue(for: "status", in: snapshot, currentValue: status)))
+                                value: .raw(Self.humanizedProductStatus(status)),
+                                priorValue: priorProductStatus(in: snapshot, currentValueRaw: status)))
         }
         if includeSku, let sku {
             fields.append(.init(name: "sku",
@@ -375,10 +375,43 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         }
     }
 
-    private func statusValue(_ status: String, isBulk: Bool) -> ConfirmationPreviewText {
-        guard customerNotifyingStatuses.contains(status) else { return .raw(status) }
+    private func orderStatusValue(_ status: String, isBulk: Bool) -> ConfirmationPreviewText {
+        let humanized = Self.humanizedOrderStatus(status)
+        guard customerNotifyingStatuses.contains(status) else { return .raw(humanized) }
         let template = isBulk ? Strings.statusValueEmailsCustomers : Strings.statusValueEmailsCustomer
-        return .localized(template, args: [.raw(status)])
+        return .localized(template, args: [.raw(humanized)])
+    }
+
+    private func priorOrderStatus(in snapshot: ConfirmationSnapshot?,
+                                  currentValueRaw: String) -> ConfirmationPreviewText? {
+        guard let snapshot, let prior = snapshot.currentValues["status"] else { return nil }
+        if case .raw(let priorRaw) = prior, priorRaw == currentValueRaw { return nil }
+        if case .raw(let priorRaw) = prior {
+            return .raw(Self.humanizedOrderStatus(priorRaw))
+        }
+        return prior
+    }
+
+    private func priorProductStatus(in snapshot: ConfirmationSnapshot?,
+                                    currentValueRaw: String) -> ConfirmationPreviewText? {
+        guard let snapshot, let prior = snapshot.currentValues["status"] else { return nil }
+        if case .raw(let priorRaw) = prior, priorRaw == currentValueRaw { return nil }
+        if case .raw(let priorRaw) = prior {
+            return .raw(Self.humanizedProductStatus(priorRaw))
+        }
+        return prior
+    }
+
+    private static func humanizedOrderStatus(_ raw: String) -> String {
+        switch raw {
+        case "on-hold": return "On hold"
+        case "checkout-draft": return "Checkout draft"
+        default: return raw.prefix(1).uppercased() + raw.dropFirst()
+        }
+    }
+
+    private static func humanizedProductStatus(_ raw: String) -> String {
+        raw.prefix(1).uppercased() + raw.dropFirst()
     }
 
     private func joined(_ parts: [ConfirmationPreviewText]) -> ConfirmationPreviewText {

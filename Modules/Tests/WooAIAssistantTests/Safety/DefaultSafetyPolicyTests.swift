@@ -39,7 +39,7 @@ struct DefaultSafetyPolicyTests {
             return
         }
         #expect(preview.fields.first?.name == "status")
-        #expect(preview.fields.first?.value == .raw("pending"))
+        #expect(preview.fields.first?.value == .raw("Pending"))
     }
 
     // The default-arg construction the production adaptor uses: real resolver + real builder, only the
@@ -68,7 +68,7 @@ struct DefaultSafetyPolicyTests {
             return
         }
         let field = preview.fields.first { $0.name == "status" }
-        #expect(field?.priorValue == .raw("processing"))
+        #expect(field?.priorValue == .raw("Processing"))
     }
 }
 

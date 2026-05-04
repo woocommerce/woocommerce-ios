@@ -37,7 +37,7 @@ struct DefaultConfirmationPreviewBuilderTests {
         #expect(unwrapped.isBulk == false)
         #expect(unwrapped.fields.count == 1)
         #expect(unwrapped.fields.first?.name == "status")
-        #expect(unwrapped.fields.first?.value == .raw("pending"))
+        #expect(unwrapped.fields.first?.value == .raw("Pending"))
         #expect(unwrapped.fields.first?.priorValue == nil)
     }
 
@@ -56,13 +56,13 @@ struct DefaultConfirmationPreviewBuilderTests {
         let unwrapped = try #require(preview)
         let field = try #require(unwrapped.fields.first)
         #expect(field.name == "status")
-        #expect(field.priorValue == .raw("processing"))
+        #expect(field.priorValue == .raw("Processing"))
         guard case .localized(let resource, let args) = field.value else {
             Issue.record("expected localized status value with emails-customer suffix, got \(field.value)")
             return
         }
         #expect(String(describing: resource).contains("emails_customer"))
-        #expect(args == [.raw("completed")])
+        #expect(args == [.raw("Completed")])
     }
 
     @Test
@@ -78,7 +78,27 @@ struct DefaultConfirmationPreviewBuilderTests {
 
         // Then
         let unwrapped = try #require(preview)
-        #expect(unwrapped.fields.first?.priorValue == .raw("pending"))
+        #expect(unwrapped.fields.first?.priorValue == .raw("Pending"))
+    }
+
+    @Test
+    func test_build_when_orders_update_status_on_hold_then_field_value_uses_human_label() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(toolName: OrdersUpdateTool.name,
+                                    arguments: #"{"id":42,"status":"on-hold"}"#,
+                                    snapshot: nil)
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first)
+        guard case .localized(_, let args) = field.value else {
+            Issue.record("expected localized status value with emails-customer suffix, got \(field.value)")
+            return
+        }
+        #expect(args == [.raw("On hold")])
     }
 
     @Test
@@ -335,7 +355,7 @@ struct DefaultConfirmationPreviewBuilderTests {
         let summary = try #require(preview).summary.flattened()
         #expect(!summary.contains("(null)"))
         #expect(summary.contains("42"))
-        #expect(summary.contains("pending"))
+        #expect(summary.contains("Pending"))
     }
 
     @Test
@@ -354,7 +374,7 @@ struct DefaultConfirmationPreviewBuilderTests {
         let summary = try #require(preview).summary.flattened()
         #expect(!summary.contains("(null)"))
         #expect(summary.contains("3"))
-        #expect(summary.contains("completed"))
+        #expect(summary.contains("Completed"))
     }
 
     @Test

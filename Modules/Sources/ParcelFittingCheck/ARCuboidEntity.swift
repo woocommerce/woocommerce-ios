@@ -27,8 +27,6 @@ struct ARCuboidEntity {
     /// `+X` face is at world `+x`, the `+Y` face is the top, etc.
     struct Face: Hashable {
         let axis: Axis
-        /// `true` for the face on the +ve side of `axis` (e.g. `+X`, top, far),
-        /// `false` for the face on the −ve side (e.g. `−X`, bottom, near).
         let isPositiveSide: Bool
 
         static let positiveX = Face(axis: .x, isPositiveSide: true)
@@ -145,9 +143,7 @@ private extension ARCuboidEntity {
     }
 
     enum EdgeThickness {
-        static let regular: Float = 0.008
-        /// Bottom edges are thicker so the floor contact line reads clearly.
-        static let bottom: Float = 0.014
+        static let regular: Float = 0.005
     }
 
     enum DashPattern {
@@ -175,10 +171,10 @@ private extension ARCuboidEntity {
     static func unitBoxEdges() -> [EdgeSpec] {
         let half = UnitCube.halfExtent
         let extents: [Float] = [-half, half]
+        let thickness = EdgeThickness.regular
         var edges: [EdgeSpec] = []
 
         for faceY in [UnitCube.bottomY, UnitCube.topY] {
-            let thickness = faceY == UnitCube.bottomY ? EdgeThickness.bottom : EdgeThickness.regular
             for depthZ in extents {
                 edges.append(EdgeSpec(center: SIMD3(0, faceY, depthZ), size: SIMD3(1, thickness, thickness)))
             }
@@ -187,13 +183,12 @@ private extension ARCuboidEntity {
             for depthZ in extents {
                 edges.append(EdgeSpec(
                     center: SIMD3(sideX, UnitCube.midY, depthZ),
-                    size: SIMD3(EdgeThickness.regular, 1, EdgeThickness.regular)
+                    size: SIMD3(thickness, 1, thickness)
                 ))
             }
         }
         for sideX in extents {
             for faceY in [UnitCube.bottomY, UnitCube.topY] {
-                let thickness = faceY == UnitCube.bottomY ? EdgeThickness.bottom : EdgeThickness.regular
                 edges.append(EdgeSpec(center: SIMD3(sideX, faceY, 0), size: SIMD3(thickness, thickness, 1)))
             }
         }

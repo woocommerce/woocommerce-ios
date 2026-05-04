@@ -55,6 +55,13 @@ protocol PointOfSaleAggregateModelProtocol {
         didSet { rebuildCartProductObservation() }
     }
 
+    /// Whether the custom amount entry sheet is currently presented.
+    var isCustomAmountSheetPresented: Bool = false
+
+    /// The custom amount currently being edited, if any. `nil` means the sheet was opened
+    /// to add a new entry rather than edit an existing one.
+    private(set) var editingCustomAmount: POSCustomAmount?
+
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
 
     let entryPointController: POSEntryPointController
@@ -224,6 +231,24 @@ extension PointOfSaleAggregateModel {
 
     func removeCustomAmount(id: UUID) {
         cart.removeCustomAmount(id: id)
+    }
+
+    @MainActor
+    func presentAddCustomAmount() {
+        editingCustomAmount = nil
+        isCustomAmountSheetPresented = true
+    }
+
+    @MainActor
+    func presentEditCustomAmount(_ customAmount: POSCustomAmount) {
+        editingCustomAmount = customAmount
+        isCustomAmountSheetPresented = true
+    }
+
+    @MainActor
+    func dismissCustomAmountSheet() {
+        isCustomAmountSheetPresented = false
+        editingCustomAmount = nil
     }
 
     @MainActor

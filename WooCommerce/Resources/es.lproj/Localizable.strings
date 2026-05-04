@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-07 15:55:39+0000 */
+/* Translation-Revision-Date: 2026-04-21 11:54:20+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -1072,6 +1072,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice message shown when a phone call cannot be initiated. */
 "BookingDetailsView.phoneNumberOptions.error" = "No se ha podido llamar a este número.";
+
+/* 'Reschedule' button title in appointment details section in booking details view. */
+"BookingDetailsView.rescheduleBookingButton.title" = "Reprogramar reserva";
 
 /* Retry Action */
 "BookingDetailsView.retry.action" = "Reintentar";
@@ -4886,9 +4889,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Carga el lector";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "Comprueba que tu teléfono cumple estos requisitos: iPhone XS o posterior con iOS 16.7 o superior. Ponte en contacto con el servicio de soporte si aparece este error en un dispositivo compatible.";
-
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "Comprueba el saldo restante de la tarjeta regalo.";
 
@@ -5595,6 +5595,9 @@ If your translation of that term also happens to contains a hyphen, please be su
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Obligatorio";
+
+/* Navigation bar title for the reschedule booking screen. */
+"RescheduleBookingView.title" = "Reprograma la reserva";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Restablecer registros de actividad";
@@ -9816,6 +9819,18 @@ which should be translated separately and considered part of this sentence. */
 /* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.saveReceiptAndContinue" = "Guardar recibo y continuar";
 
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
+"cardReader.error.unsupportedMobileDeviceConfiguration.message" = "Comprueba que tu teléfono cumple estos requisitos: iPhone XS o un modelo posterior con iOS 18.0.1 o versión posterior. Ponte en contacto con el soporte técnico si aparece este error en un dispositivo compatible.";
+
+/* Settings > Manage Card Reader > Connected Reader > A button to cancel the reconnection attempt */
+"cardReaderSettingsConnectedViewController.cancelReconnectionButtonTitle.v2" = "Cancelar reconexión";
+
+/* Settings > Manage Card Reader > Connected Reader > Button title shown while cancellation is in progress */
+"cardReaderSettingsConnectedViewController.cancellingReconnectionButtonTitle" = "Cancelando...";
+
+/* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
+"cardReaderSettingsConnectedViewController.reconnectingText" = "Volviendo a conectar con el lector de tarjetas...";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "Registrar detalles de la transacción en una nota del pedido";
 
@@ -10027,7 +10042,7 @@ which should be translated separately and considered part of this sentence. */
 "connectivityToolViewModel.errorMessage.default" = "Parece que hay un problema con tu sitio.\n\nConsulta a tu proveedor de alojamiento.";
 
 /* Message when the device is not registered for push notifications in the connectivity tool */
-"connectivityToolViewModel.errorMessage.deviceNotRegistered" = "Parece que tu dispositivo no está registrado para recibir notificaciones push.\n\nPrueba a cerrar sesión y volver a iniciar sesión para volver a registrarte.";
+"connectivityToolViewModel.errorMessage.deviceNotRegisteredForPN" = "Parece que tu dispositivo no está registrado para recibir notificaciones push.";
 
 /* Message when we there is a jetpack error in the recovery tool */
 "connectivityToolViewModel.errorMessage.jetpackNotConnected" = "Se ha producido un problema con la conexión de Jetpack.\n\nBusca algo más de información o consulta a nuestro equipo de soporte y te ayudaremos encantados.";
@@ -10804,6 +10819,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "El lector devuelto por la detección no tiene dirección IP y no es posible conectarse a él.";
 
+/* Subtitle for the site compatibility check row on the Help screen */
+"helpAndSupport.siteCompatibility.subtitle" = "Prueba si tu sitio funciona con la aplicación";
+
+/* Title for the site compatibility check row on the Help screen */
+"helpAndSupport.siteCompatibility.title" = "Comprueba la compatibilidad del sitio";
+
 /* Title of the Bookings menu in the hub menu */
 "hubMenu.bookings" = "Reservas";
 
@@ -11484,6 +11505,15 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "Envío";
 
+/* Fulfillment status badge text shown on CIAB order rows when the order has been fulfilled. */
+"orderFulfillmentStatus.badge.fulfilled" = "Completado";
+
+/* Fulfillment status badge text with date, shown on the CIAB order details screen. %1$@ is the formatted date. */
+"orderFulfillmentStatus.badge.fulfilledWithDate" = "Completado el %1$@";
+
+/* Fulfillment status badge text shown on CIAB order rows when the order has not been fulfilled. */
+"orderFulfillmentStatus.badge.unfulfilled" = "No completado";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Cupón";
 
@@ -11655,6 +11685,9 @@ which should be translated separately and considered part of this sentence. */
 /* A placeholder name when we can't determine the name of a variation for an error message */
 "pointOfSale.barcodeScanning.unresolved.variation.name" = "Desconocido";
 
+/* Button to cancel card reader reconnection, shown on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelReconnection.button.title" = "Cancelar reconexión";
+
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.canceledOnReader.title" = "Pago cancelado en el lector";
 
@@ -11756,6 +11789,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
 "pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "Para procesar este pago, conecta tu lector o selecciona el pago en efectivo.";
+
+/* Title shown on the Point of Sale Checkout when the card reader is reconnecting */
+"pointOfSale.cardPresent.reconnecting.title" = "Volviendo a conectar el lector…";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Comprobando pedido";
@@ -12009,11 +12045,17 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
 "pointOfSale.floatingButtons.bookings.button.title" = "Reservas";
 
+/* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
+"pointOfSale.floatingButtons.cancelReconnection.button.title" = "Cancelar reconexión";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Espera";
 
+/* The title of the floating button to indicate that the reader reconnection is being cancelled. */
+"pointOfSale.floatingButtons.cancellingReconnection.title" = "Cancelando...";
+
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
-"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Desconectar lector";
+"pointOfSale.floatingButtons.disconnectCardReader.button.title.2" = "Desconectar lector";
 
 /* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "Salir del punto de venta";
@@ -12029,6 +12071,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Desconectando";
+
+/* The title of the floating button to indicate that the reader is attempting to reconnect. */
+"pointOfSale.floatingButtons.readerReconnecting.title" = "Conectando de nuevo…";
 
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "Ajustes";
@@ -12162,6 +12207,12 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed on Point of Sale settings when card reader battery is unknown. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Desconocido";
 
+/* Menu option to cancel card reader reconnection in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.cancelReconnectionTitle" = "Cancelar reconexión";
+
+/* Button title shown when card reader reconnection is being cancelled in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.cancellingReconnectionTitle" = "Cancelando...";
+
 /* Subtitle for card reader connect button when no reader is connected. */
 "pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "Conecta tu lector de tarjetas y empieza a aceptar pagos";
 
@@ -12212,6 +12263,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text displayed on Point of Sale settings pointing to the card reader model. */
 "pointOfSaleSettingsHardwareDetailView.readerModelTitle.1" = "Nombre del dispositivo";
+
+/* Button title shown when card reader is reconnecting in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.reconnectingButtonTitle" = "Conectando de nuevo…";
 
 /* Subtitle describing barcode scanner documentation in Point of Sale settings. */
 "pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "Obtén más información sobre el escaneo de códigos de barras en el punto de venta";
@@ -12825,7 +12879,13 @@ which should be translated separately and considered part of this sentence. */
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "Actualizar catálogo";
 
-/* Title at the top of the Point of Sale product selector screen. */
+/* Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
+"pos.itemlistview.sunsetWarning.description" = "A partir del 1 de agosto, el punto de venta necesitará WooCommerce 10.5.0 o una versión posterior. Actualiza la versión para garantizar un acceso ininterrumpido.";
+
+/* Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
+"pos.itemlistview.sunsetWarning.title" = "Actualiza WooCommerce pronto";
+
+/* Title at the top of the point of sale product selector screen. */
 "pos.itemlistview.title" = "Productos";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
@@ -13351,6 +13411,84 @@ which should be translated separately and considered part of this sentence. */
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Fecha de actualización no disponible";
 
+/* Error message when REST API discovery fails in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.apiDiscoveryFailed" = "Variable de la API REST no encontrada.";
+
+/* Error message when application passwords are disabled in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.appPasswordsDisabled" = "Las contraseñas de aplicación están desactivadas.";
+
+/* Error message when application passwords are not available in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.appPasswordsUnavailable" = "Las contraseñas de aplicación no están disponibles.";
+
+/* Error message when REST API is unavailable in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.noRESTAPI" = "La API REST de WordPress no está accesible en tu sitio.";
+
+/* Error message when WooCommerce is not active in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.noWooCommerce" = "La API de WooCommerce no está accesible en tu sitio.";
+
+/* Error message when site info lookup fails in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.siteInfoFailed" = "No se ha podido recuperar la información del sitio.";
+
+/* Site info line shown when the site is an eCommerce Garden (CIAB) site */
+"preLoginConnectivityTool.siteInfo.commerceGarden" = "Sitio de eCommerce Garden.";
+
+/* Site info line shown when Jetpack is active but not connected */
+"preLoginConnectivityTool.siteInfo.jetpackActiveNotConnected" = "Jetpack se ha instalado y activado, pero no conectado.";
+
+/* Site info line shown when Jetpack is installed and connected */
+"preLoginConnectivityTool.siteInfo.jetpackConnected" = "Jetpack se ha instalado y conectado.";
+
+/* Site info line shown when Jetpack is installed but not active */
+"preLoginConnectivityTool.siteInfo.jetpackInstalledNotActive" = "Jetpack se ha instalado, pero no activado.";
+
+/* Site info line shown when Jetpack is not installed */
+"preLoginConnectivityTool.siteInfo.jetpackNotInstalled" = " Jetpack no se ha instalado.";
+
+/* Site info line shown when the site is a WordPress site */
+"preLoginConnectivityTool.siteInfo.wordPressDetected" = "Sitio de WordPress detectado.";
+
+/* Site info line shown when the site is not a WordPress site */
+"preLoginConnectivityTool.siteInfo.wordPressNotDetected" = "WordPress no se ha detectado en este sitio.";
+
+/* Success info when REST API discovery succeeds in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.apiDiscovered" = "Variable de la API REST descubierta.";
+
+/* Success info when application passwords are likely available in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.applicationPasswordsLikelyAvailable" = "Parece que las contraseñas de aplicación son compatibles.";
+
+/* Success info when REST API check passes in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.restAPIAvailable" = "La API REST de WordPress está disponible.";
+
+/* Success info when WooCommerce check passes in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.wooCommerceActive" = "WooCommerce está activo en tu sitio.";
+
+/* Title for the REST API discovery test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.apiDiscovery" = "Descubrimiento de la API";
+
+/* Title for the application passwords test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.applicationPasswords" = "Contraseñas de aplicación";
+
+/* Title for the site info test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.siteInfo" = "Información del sitio";
+
+/* Title for the WooCommerce API test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.wooCommerceAPI" = "Plugin de WooCommerce";
+
+/* Title for the WordPress REST API test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.wordPressRESTAPI" = "API REST de WordPress";
+
+/* Contact support button in the pre-login connectivity tool */
+"preLoginConnectivityToolView.contactSupport" = "Contactar con el soporte técnico";
+
+/* Subtitle on the pre-login connectivity tool screen. The placeholder is the site address */
+"preLoginConnectivityToolView.subtitle" = "Comprobando la compatibilidad de tu sitio %1$@ con la aplicación de WooCommerce.";
+
+/* Navigation title for the pre-login connectivity tool */
+"preLoginConnectivityToolView.title" = "Compatibilidad del sitio";
+
+/* Button to view technical diagnostic details for a failed connectivity check */
+"preLoginConnectivityToolView.viewDetails" = "Ver detalles";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Cerrar";
 
@@ -13819,6 +13957,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
 "salesChannelFilter.row.wpAdmin.description" = "WP-Admin";
 
+/* Accessibility label for the clear button in the search header */
+"searchHeader.clearButton.accessibilityLabel" = "Borrar";
+
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "Cancelar";
 
@@ -13988,14 +14129,14 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the store performance section on the Dashboard screen */
 "storePerformanceView.hideCard" = "Ocultar rendimiento";
 
-/* Net sales stat label on dashboard — shows revenue excluding taxes, shipping, and fees. */
-"storePerformanceView.netSales" = "Ventas netas";
-
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "No hay ingresos para las fechas seleccionadas";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Pedidos";
+
+/* Total sales stat label on dashboard — shows revenue including taxes and shipping. */
+"storePerformanceView.totalSales" = "Ventas totales";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "No se puede mostrar el rendimiento de tu tienda";
@@ -14011,6 +14152,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit the items to be displayed on the store picker */
 "storePicker.editList" = "Editar";
+
+/* Body text for the store picker error screen when the permission check fails */
+"storePickerError.permissionErrorBody" = "Se ha producido un problema al verificar tus permisos. Inténtalo de nuevo o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Conectar una tienda existente";
@@ -14028,7 +14172,7 @@ which should be translated separately and considered part of this sentence. */
 "storeStatsChart.ySelectedValue" = "Ingresos seleccionados";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen */
-"storeStatsChart.yValueNetSales" = "Ventas netas";
+"storeStatsChart.yValueTotalSales" = "Ventas totales";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
 "storeStatsChart.zeroRevenue" = "Cero ingresos";
@@ -14048,11 +14192,11 @@ which should be translated separately and considered part of this sentence. */
 /* Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "Conversión";
 
-/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
-"storeWidgets.infoView.netSales" = "Ventas netas";
-
 /* Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "Pedidos";
+
+/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+"storeWidgets.infoView.totalSales" = "Ventas totales";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "A las %1$@";
@@ -14075,11 +14219,11 @@ which should be translated separately and considered part of this sentence. */
 /* Revenue title label for the store info widget. %1$@ is the revenue amount. */
 "storeWidgets.storeInfoInlineWidget.revenueTitle" = "Ingresos: %1$@";
 
-/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
-"storeWidgets.storeInfoRectangularWidget.netSales" = "Ventas netas";
-
 /* Label when the widget can't fetch data. */
 "storeWidgets.storeInfoRectangularWidget.noData" = "⚠ No hay datos";
+
+/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+"storeWidgets.storeInfoRectangularWidget.totalSales" = "Ventas totales";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "No se han podido recuperar las estadísticas de hoy.";
@@ -14475,9 +14619,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error title on the watch store stats screen. */
 "watch.mystore.error.title" = "No se han podido cargar los datos de la tienda";
 
-/* Net sales title on the watch store stats screen. */
-"watch.mystore.netSales.title" = "Ventas netas";
-
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Reintentar";
 
@@ -14486,6 +14627,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Today title on the watch store stats screen. */
 "watch.mystore.today.title" = "Hoy";
+
+/* Total sales title on the watch store stats screen. */
+"watch.mystore.totalSales.title" = "Ventas totales";
 
 /* Title when there is an error loading an order notification on the watch app */
 "watch.notification.order.error" = "Ha habido un error al cargar la notificación";
@@ -14927,6 +15071,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when loading shipping label rates failed on the shipping label creation screen */
 "wooShipping.createLabels.rates.failedLoadingDataError" = "No podemos cargar las tarifas de envío";
+
+/* Error message when shipping rates fail to load because the destination address name is invalid. */
+"wooShipping.createLabels.rates.invalidDestinationNameError" = "No hemos podido cargar las tarifas de envío. Añade un nombre y apellidos a la dirección de destino e inténtalo de nuevo.";
 
 /* Message displayed when no destination address is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noDestinationAddressMessage" = "Necesitamos saber a dónde va este paquete para poder mostrar las tarifas de envío disponibles.";

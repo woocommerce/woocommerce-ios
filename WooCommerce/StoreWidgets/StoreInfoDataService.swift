@@ -52,9 +52,13 @@ final class StoreInfoDataService {
     /// render period-over-period deltas (today → yesterday, last 7 days → previous 7 days,
     /// last 30 days → previous 30 days).
     ///
+    /// `previous` is optional: a comparison-period failure should never tear down the whole
+    /// widget render. When the previous-period fetch fails, `previous` is `nil` and the
+    /// metric cells fall back to rendering without the trend badge.
+    ///
     struct StatsPeriod {
         let current: Stats
-        let previous: Stats
+        let previous: Stats?
     }
 
     /// Revenue & Orders remote source.
@@ -96,10 +100,16 @@ final class StoreInfoDataService {
     /// the matching previous period. The two fetches run concurrently via `async let` so
     /// the second fetch does not extend overall latency.
     ///
+    /// A previous-period failure is swallowed: the widget keeps rendering current-period
+    /// data without trend badges instead of surfacing an error tile. A current-period
+    /// failure still throws — there's no useful render without it.
+    ///
     func fetchStats(for storeID: Int64, dateRange: DateRange) async throws -> StatsPeriod {
         async let currentRequest = fetchSinglePeriodStats(for: storeID, dateRange: dateRange)
         async let previousRequest = fetchSinglePeriodStats(for: storeID, dateRange: dateRange.previousPeriod())
-        return try await StatsPeriod(current: currentRequest, previous: previousRequest)
+        let current = try await currentRequest
+        let previous = try? await previousRequest
+        return StatsPeriod(current: current, previous: previous)
     }
 
     /// Internal helper that fetches stats for a single date range. The public `fetchStats`

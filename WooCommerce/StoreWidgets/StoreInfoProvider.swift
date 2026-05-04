@@ -345,7 +345,7 @@ private extension StoreInfoProvider {
             StoreInfoMetric(
                 type: type,
                 value: stats.value(for: type, currencySettings: currencySettings),
-                previousValue: previousStats.value(for: type, currencySettings: currencySettings)
+                previousValue: previousStats?.value(for: type, currencySettings: currencySettings)
             )
         }
 

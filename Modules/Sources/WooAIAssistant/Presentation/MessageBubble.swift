@@ -52,7 +52,20 @@ struct MessageBubble: View {
             }
         }
 
-        return deferShowCardsCardRendersAfterText(filtered)
+        let reordered = deferShowCardsCardRendersAfterText(filtered)
+        return hideCardRendersWhileStreaming(reordered)
+    }
+
+    /// Cards arriving before the assistant text would shift the layout when
+    /// the text is appended above them. Suppress every cardRender segment
+    /// while the message is still streaming so cards reveal atomically once
+    /// the response finishes.
+    private func hideCardRendersWhileStreaming(_ segments: [MessageSegment]) -> [MessageSegment] {
+        guard message.isStreaming else { return segments }
+        return segments.filter { segment in
+            if case .cardRender = segment { return false }
+            return true
+        }
     }
 
     /// When a turn includes show_cards results, render the assistant's text

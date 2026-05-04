@@ -152,6 +152,58 @@ struct MessageBubbleOrderingTests {
     }
 
     @Test
+    func test_orderedSegments_when_message_is_streaming_then_cardRender_segments_are_hidden() {
+        // Given
+        let textID = UUID()
+        let firstCardID = UUID()
+        let secondCardID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .text(id: textID, content: "Here are your last 5 orders:"),
+            .cardRender(id: firstCardID,
+                        toolCallID: "call_1",
+                        toolName: "orders_list.order",
+                        payload: .object(["id": .int(1)])),
+            .cardRender(id: secondCardID,
+                        toolCallID: "call_2",
+                        toolName: "show_cards.product",
+                        payload: .object(["id": .int(2)]))
+        ], isStreaming: true)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [textID])
+    }
+
+    @Test
+    func test_orderedSegments_when_message_completes_streaming_then_cardRender_segments_appear() {
+        // Given
+        let textID = UUID()
+        let firstCardID = UUID()
+        let secondCardID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .text(id: textID, content: "Here are your last 5 orders:"),
+            .cardRender(id: firstCardID,
+                        toolCallID: "call_1",
+                        toolName: "orders_list.order",
+                        payload: .object(["id": .int(1)])),
+            .cardRender(id: secondCardID,
+                        toolCallID: "call_2",
+                        toolName: "show_cards.product",
+                        payload: .object(["id": .int(2)]))
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [textID, firstCardID, secondCardID])
+    }
+
+    @Test
     func test_orderedSegments_when_multiple_toolCalls_then_only_last_pill_is_kept_in_place() {
         // Given
         let firstCallID = UUID()

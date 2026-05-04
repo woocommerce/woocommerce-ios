@@ -140,6 +140,21 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
 }
 
 private extension ARParcelSceneCoordinator {
+    enum Constants {
+        /// Cuboid local Y is 0…1 with the root at the floor. Anything above
+        /// this threshold counts as the upper half for the height-resize
+        /// hit-test fallback.
+        static let upperHalfYThreshold: Float = 0.5
+
+        /// Vertical offset of the unit-cube collision shape so it spans local
+        /// Y 0…1 (matching the wireframe geometry). Half-height upward from
+        /// the root anchor.
+        static let collisionShapeYOffset: Float = 0.5
+
+        /// Numerical-stability epsilon for plane-ray intersection.
+        static let nearZeroEpsilon: Float = 1e-6
+    }
+
     func placeCuboid(at world: SIMD3<Float>) {
         guard let arView else { return }
         let entity = ARCuboidEntity.build()
@@ -171,7 +186,7 @@ private extension ARParcelSceneCoordinator {
         cuboid.root.collision = CollisionComponent(
             shapes: [
                 .generateBox(size: SIMD3(1, 1, 1))
-                    .offsetBy(translation: SIMD3(0, 0.5, 0))
+                    .offsetBy(translation: SIMD3(0, Constants.collisionShapeYOffset, 0))
             ]
         )
         installedGestures = arView.installGestures([.translation], for: cuboid.root)
@@ -250,7 +265,7 @@ private extension ARParcelSceneCoordinator {
                 let hits = arView.hitTest(screen, query: .nearest, mask: .default)
                 guard let hit = hits.first(where: { $0.entity == cuboid.root }) else { return false }
                 let localPosition = cuboid.root.convert(position: hit.position, from: nil)
-                return localPosition.y > 0.5
+                return localPosition.y > Constants.upperHalfYThreshold
             }
         )
     }
@@ -273,7 +288,7 @@ private extension ARParcelSceneCoordinator {
     ) -> SIMD3<Float>? {
         guard let ray = arView.ray(through: screenPoint) else { return nil }
         let denom = simd_dot(ray.direction, planeNormal)
-        guard abs(denom) > 1e-6 else { return nil }
+        guard abs(denom) > Constants.nearZeroEpsilon else { return nil }
         let t = simd_dot(planePoint - ray.origin, planeNormal) / denom
         guard t > 0 else { return nil }
         return ray.origin + t * ray.direction

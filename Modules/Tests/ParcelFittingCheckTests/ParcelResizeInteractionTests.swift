@@ -196,7 +196,7 @@ struct ParcelResizeInteractionTests {
         ))
 
         // Then
-        #expect(approxEqual(output.scale.x, ParcelResizeInteraction.minSizeMeters))
+        #expect(approxEqual(output.scale.x, ParcelResizeInteraction.Constants.minSizeMeters))
     }
 
     @Test func test_update_when_X_axis_move_is_asymmetric_then_shifts_position_by_half_the_imbalance() throws {

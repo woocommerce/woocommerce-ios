@@ -23,6 +23,10 @@ final class TwoFingerCuboidGesture: UIGestureRecognizer {
         static let distancePoints: CGFloat = 24
         static let distanceFraction: CGFloat = 0.06
         static let angleRadians: CGFloat = 8 * .pi / 180
+        /// Multiplier on `distancePoints` above which a pinch dominates over a
+        /// concurrent rotation cross — picks resize even when both thresholds
+        /// have been crossed.
+        static let pinchDominanceMultiplier: CGFloat = 1.5
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -61,7 +65,7 @@ final class TwoFingerCuboidGesture: UIGestureRecognizer {
                 && abs(distanceFromStart) > Threshold.distancePoints
                 && abs(distanceFromStart) > Threshold.distanceFraction * initialDistance
 
-            if distanceCrossed && (!angleCrossed || abs(distanceFromStart) >= Threshold.distancePoints * 1.5) {
+            if distanceCrossed && (!angleCrossed || abs(distanceFromStart) >= Threshold.distancePoints * Threshold.pinchDominanceMultiplier) {
                 mode = .resize
             } else if angleCrossed {
                 mode = .rotate

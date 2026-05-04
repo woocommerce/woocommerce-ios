@@ -23,18 +23,33 @@ final class ParcelResizeInteraction {
         var isUpperHalfHit: (_ screen: CGPoint) -> Bool
     }
 
-    /// Minimum allowed cuboid size on any axis, in metres.
-    static let minSizeMeters: Float = 0.02
+    enum Constants {
+        /// Minimum allowed cuboid size on any axis, in metres.
+        static let minSizeMeters: Float = 0.02
 
-    /// Per-frame screen-space dead zone, in points. Below this, finger movement
-    /// is treated as touch-sensor jitter and the resize update is skipped.
-    private static let jitterThresholdPoints: CGFloat = 1.5
+        /// Per-frame screen-space dead zone, in points. Below this, finger
+        /// movement is treated as touch-sensor jitter and the resize update
+        /// is skipped.
+        static let jitterThresholdPoints: CGFloat = 1.5
 
-    /// When Y wins the screen-space alignment race, an X or Z axis whose
-    /// screen direction is close to Y's is a plausible alternative; below this
-    /// ratio (second-best / best) Y is the clear winner and the hit-test is
-    /// skipped. 0.7 ≈ ~45° of screen-direction separation.
-    private static let yAxisAmbiguityThreshold: Float = 0.7
+        /// When Y wins the screen-space alignment race, an X or Z axis whose
+        /// screen direction is close to Y's is a plausible alternative; below
+        /// this ratio (second-best / best) Y is the clear winner and the
+        /// hit-test is skipped. 0.7 ≈ ~45° of screen-direction separation.
+        static let yAxisAmbiguityThreshold: Float = 0.7
+
+        /// Distance, in metres, of the axis probe from the cuboid centre when
+        /// projecting world-space axes into screen space for the pinch
+        /// direction match.
+        static let axisProbeDistance: Float = 0.1
+
+        /// Numerical-stability epsilon for divide-by-zero guards.
+        static let nearZeroEpsilon: Float = 1e-6
+
+        /// Floor for screen-direction lengths to avoid divide-by-zero when
+        /// scoring the axis pick.
+        static let minScreenDirectionLength: CGFloat = 1
+    }
 
     private struct FingerLatch {
         let face: ARCuboidEntity.Face
@@ -82,7 +97,7 @@ final class ParcelResizeInteraction {
         // it without a hit-test when Y dominates; only when X or Z projects
         // close to Y's screen direction do we fall back to requiring at least
         // one finger on the upper half of the cuboid.
-        if pick.axis == .y && pick.ambiguity > Self.yAxisAmbiguityThreshold {
+        if pick.axis == .y && pick.ambiguity > Constants.yAxisAmbiguityThreshold {
             let firstUpper = env.isUpperHalfHit(input.fingers.first)
             let secondUpper = env.isUpperHalfHit(input.fingers.second)
             guard firstUpper || secondUpper else { return }
@@ -133,7 +148,7 @@ final class ParcelResizeInteraction {
         if let last = lastFingers {
             let firstDelta = hypot(fingers.first.x - last.first.x, fingers.first.y - last.first.y)
             let secondDelta = hypot(fingers.second.x - last.second.x, fingers.second.y - last.second.y)
-            if firstDelta < Self.jitterThresholdPoints && secondDelta < Self.jitterThresholdPoints {
+            if firstDelta < Constants.jitterThresholdPoints && secondDelta < Constants.jitterThresholdPoints {
                 return nil
             }
         }
@@ -164,13 +179,13 @@ final class ParcelResizeInteraction {
         let axisIndex = context.axis.simdIndex
         let oldAxisScale = context.initialScale[axisIndex]
         let totalDelta = outwardPositive + outwardNegative
-        let newAxisScale = max(oldAxisScale + totalDelta, Self.minSizeMeters)
+        let newAxisScale = max(oldAxisScale + totalDelta, Constants.minSizeMeters)
 
         // When the user shrinks past the floor, scale per-finger contributions
         // back proportionally so the centre tracks both fingers smoothly (the
         // cuboid stops shrinking but does not jump).
         let actualTotal = newAxisScale - oldAxisScale
-        let scaleFactor: Float = abs(totalDelta) < 1e-6 ? 1 : actualTotal / totalDelta
+        let scaleFactor: Float = abs(totalDelta) < Constants.nearZeroEpsilon ? 1 : actualTotal / totalDelta
         let actualPositive = outwardPositive * scaleFactor
         let actualNegative = outwardNegative * scaleFactor
 
@@ -231,9 +246,9 @@ private extension ParcelResizeInteraction {
         environment env: Environment
     ) -> (axis: ARCuboidEntity.Axis, ambiguity: Float)? {
         guard let centerScreen = env.projectToScreen(cuboidCenter),
-              let xEnd = env.projectToScreen(cuboidCenter + 0.1 * axes.x),
-              let yEnd = env.projectToScreen(cuboidCenter + 0.1 * axes.y),
-              let zEnd = env.projectToScreen(cuboidCenter + 0.1 * axes.z) else { return nil }
+              let xEnd = env.projectToScreen(cuboidCenter + Constants.axisProbeDistance * axes.x),
+              let yEnd = env.projectToScreen(cuboidCenter + Constants.axisProbeDistance * axes.y),
+              let zEnd = env.projectToScreen(cuboidCenter + Constants.axisProbeDistance * axes.z) else { return nil }
 
         let xDir = CGPoint(x: xEnd.x - centerScreen.x, y: xEnd.y - centerScreen.y)
         let yDir = CGPoint(x: yEnd.x - centerScreen.x, y: yEnd.y - centerScreen.y)
@@ -245,7 +260,7 @@ private extension ParcelResizeInteraction {
         var bestScore: CGFloat = 0
         var secondBestScore: CGFloat = 0
         for (axis, dir) in candidates {
-            let length = max(hypot(dir.x, dir.y), 1)
+            let length = max(hypot(dir.x, dir.y), Constants.minScreenDirectionLength)
             let score = abs(fingerDir.x * dir.x + fingerDir.y * dir.y) / length
             if score > bestScore {
                 secondBestScore = bestScore

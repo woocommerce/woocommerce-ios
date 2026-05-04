@@ -32,7 +32,7 @@ struct CartViewHelper {
     func shouldShowCheckout(orderStage: PointOfSaleOrderStage, cart: Cart) -> Bool {
         guard case .building = orderStage else { return false }
 
-        return cart.purchasableItems.isNotEmpty
+        return cart.purchasableItems.isNotEmpty || cart.customAmounts.isNotEmpty
     }
 
     func hasUnresolvedItems(cart: Cart) -> Bool {

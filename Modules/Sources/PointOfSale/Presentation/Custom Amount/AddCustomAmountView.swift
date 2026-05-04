@@ -1,9 +1,10 @@
 import SwiftUI
 import WooFoundation
+import struct Yosemite.POSCustomAmount
 
 struct AddCustomAmountView: View {
     @Binding var isPresented: Bool
-    let onSubmit: (POSCustomAmountInput) -> Void
+    let onSubmit: (POSCustomAmount) -> Void
 
     @State private var viewModel: AddCustomAmountFormViewModel
     @FocusState private var isAmountFocused: Bool
@@ -18,16 +19,20 @@ struct AddCustomAmountView: View {
 
     init(isPresented: Binding<Bool>,
          currencySettings: CurrencySettings,
-         onSubmit: @escaping (POSCustomAmountInput) -> Void) {
+         editing: POSCustomAmount? = nil,
+         onSubmit: @escaping (POSCustomAmount) -> Void) {
         self._isPresented = isPresented
         self.onSubmit = onSubmit
-        self._viewModel = State(wrappedValue: AddCustomAmountFormViewModel(currencySettings: currencySettings))
+        self._viewModel = State(wrappedValue: AddCustomAmountFormViewModel(
+            currencySettings: currencySettings,
+            editing: editing
+        ))
     }
 
     var body: some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
-                title: Localization.title,
+                title: viewModel.isEditing ? Localization.editTitle : Localization.title,
                 backButtonConfiguration: .init(
                     state: .enabled,
                     action: { isPresented = false },
@@ -54,7 +59,7 @@ struct AddCustomAmountView: View {
             }
             .scrollDismissesKeyboard(.interactively)
 
-            addButton
+            submitButton
                 .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
                 .padding(.vertical, POSPadding.medium)
         }
@@ -133,9 +138,9 @@ struct AddCustomAmountView: View {
         }
     }
 
-    private var addButton: some View {
+    private var submitButton: some View {
         Button(action: submit) {
-            Text(Localization.addButton)
+            Text(viewModel.isEditing ? Localization.updateButton : Localization.addButton)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .frame(maxWidth: .infinity)
@@ -144,8 +149,8 @@ struct AddCustomAmountView: View {
     }
 
     private func submit() {
-        guard let input = viewModel.resolvedInput() else { return }
-        onSubmit(input)
+        guard let customAmount = viewModel.resolvedCustomAmount() else { return }
+        onSubmit(customAmount)
         isPresented = false
     }
 }
@@ -156,6 +161,10 @@ private extension AddCustomAmountView {
             "pos.addCustomAmount.title",
             value: "Custom amount",
             comment: "Title of the full-screen Point of Sale form for adding a custom amount to the order.")
+        static let editTitle = NSLocalizedString(
+            "pos.addCustomAmount.editTitle",
+            value: "Edit custom amount",
+            comment: "Title of the full-screen Point of Sale form when editing an existing custom amount on the order.")
         static let amountLabel = NSLocalizedString(
             "pos.addCustomAmount.amountLabel",
             value: "Amount",
@@ -176,6 +185,10 @@ private extension AddCustomAmountView {
             "pos.addCustomAmount.addButton",
             value: "Add custom amount",
             comment: "Primary button in the Point of Sale add custom amount form that adds the amount to the order.")
+        static let updateButton = NSLocalizedString(
+            "pos.addCustomAmount.updateButton",
+            value: "Update custom amount",
+            comment: "Primary button in the Point of Sale custom amount form when editing, that saves the changes to the order.")
     }
 }
 
@@ -184,6 +197,15 @@ private extension AddCustomAmountView {
     AddCustomAmountView(
         isPresented: .constant(true),
         currencySettings: CurrencySettings(),
+        onSubmit: { _ in }
+    )
+}
+
+#Preview("Editing") {
+    AddCustomAmountView(
+        isPresented: .constant(true),
+        currencySettings: CurrencySettings(),
+        editing: POSCustomAmount(name: "Service fee", amount: "12.50", isTaxable: false),
         onSubmit: { _ in }
     )
 }

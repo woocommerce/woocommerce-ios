@@ -21,39 +21,16 @@ struct ARCuboidEntity {
         }
     }
 
-    enum Face: Hashable {
-        case positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ
+    struct Face: Hashable {
+        let axis: Axis
+        let isPositiveSide: Bool
 
-        var axis: Axis {
-            switch self {
-            case .positiveX, .negativeX: return .x
-            case .positiveY, .negativeY: return .y
-            case .positiveZ, .negativeZ: return .z
-            }
-        }
-
-        var isPositiveSide: Bool {
-            switch self {
-            case .positiveX, .positiveY, .positiveZ: return true
-            case .negativeX, .negativeY, .negativeZ: return false
-            }
-        }
-
-        static func positiveSide(of axis: Axis) -> Face {
-            switch axis {
-            case .x: return .positiveX
-            case .y: return .positiveY
-            case .z: return .positiveZ
-            }
-        }
-
-        static func negativeSide(of axis: Axis) -> Face {
-            switch axis {
-            case .x: return .negativeX
-            case .y: return .negativeY
-            case .z: return .negativeZ
-            }
-        }
+        static let positiveX = Face(axis: .x, isPositiveSide: true)
+        static let negativeX = Face(axis: .x, isPositiveSide: false)
+        static let positiveY = Face(axis: .y, isPositiveSide: true)
+        static let negativeY = Face(axis: .y, isPositiveSide: false)
+        static let positiveZ = Face(axis: .z, isPositiveSide: true)
+        static let negativeZ = Face(axis: .z, isPositiveSide: false)
     }
 
     let root: ModelEntity

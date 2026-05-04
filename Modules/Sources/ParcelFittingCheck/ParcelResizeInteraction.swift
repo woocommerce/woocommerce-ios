@@ -119,11 +119,11 @@ final class ParcelResizeInteraction {
         let firstIsPositive = disp0 >= disp1
 
         let firstLatch = FingerLatch(
-            face: firstIsPositive ? .positiveSide(of: pick.axis) : .negativeSide(of: pick.axis),
+            face: ARCuboidEntity.Face(axis: pick.axis, isPositiveSide: firstIsPositive),
             initialAxisDisplacement: disp0
         )
         let secondLatch = FingerLatch(
-            face: firstIsPositive ? .negativeSide(of: pick.axis) : .positiveSide(of: pick.axis),
+            face: ARCuboidEntity.Face(axis: pick.axis, isPositiveSide: !firstIsPositive),
             initialAxisDisplacement: disp1
         )
 

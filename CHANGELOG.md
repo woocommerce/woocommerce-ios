@@ -2,7 +2,7 @@
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
 ## 24.7
-Get deeper insights with a revamped Performance card—quickly switch between Gross, Net, and Total revenue and choose which order date (paid, placed, or completed) drives your totals. We’ve also improved shipping label flows with FedEx TOS handling, refreshed POS empty states, and expanded POS availability to Puerto Rico.
+Get deeper insights with a revamped Performance card. Quickly switch between Gross, Net, and Total revenue, and choose which order date (paid, placed, or completed) drives your totals. We’ve also improved shipping label flows with FedEx TOS handling, refreshed POS empty states, and expanded POS availability to Puerto Rico.
 
 ## 24.6
 This update enhances Point of Sale reliability with clearer card reader status during reconnections, automatic price updates at checkout, and visual refinements for iOS 26. We've also added a login troubleshooting tool to help diagnose connection issues faster, plus a handy clear button in search fields for quicker navigation.

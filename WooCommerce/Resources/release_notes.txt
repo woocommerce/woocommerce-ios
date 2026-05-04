@@ -1,1 +1,6 @@
-Point of Sale just got more reliable! You'll now see clear status updates when your Bluetooth card reader temporarily disconnects, and prices automatically refresh at checkout if they've changed. We've also added a login troubleshooting tool to help diagnose connection issues, plus visual polish for iOS 26 and a convenient clear button in search fields.
+- [*] Performance card: switch between Gross, Net, and Total revenue from a segmented control. [https://github.com/woocommerce/woocommerce-ios/pull/17012]
+- [*] Performance card: pick which order date type drives the totals (paid, placed, or completed) from a bottom sheet. [https://github.com/woocommerce/woocommerce-ios/pull/16988]
+- [*] Add FedEx Terms of Service handling for shipping label purchases [https://github.com/woocommerce/woocommerce-ios/pull/16925]
+- [*] POS: Update empty orders state copy and replace "Learn more" with "Refresh" [https://github.com/woocommerce/woocommerce-ios/pull/16961]
+- [*] Point of Sale is now available for stores based in Puerto Rico. [https://github.com/woocommerce/woocommerce-ios/pull/17026]
+- [Internal] Add `inPersonPaymentsCountryExpansion` and `inPersonPaymentsCountryExpansionEUExtended` remote feature flags gating IPP and POS support for 13 new countries — `inPersonPaymentsCountryExpansion` covers FR/DE/IE/NL/SG/NZ; `inPersonPaymentsCountryExpansionEUExtended` covers AT/BE/FI/IT/LU/PT/ES. Eligibility is cached per site in `GeneralStoreSettings`. Existing supported countries (US, PR, CA, GB) are unaffected; AU is intentionally excluded pending EFTPOS support.

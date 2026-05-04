@@ -2,7 +2,17 @@ import Foundation
 
 extension ConfirmationPreview {
     public func flattenedSummary() -> String {
-        summary.flattened()
+        let head = summary.flattened()
+        guard !fields.isEmpty else { return head }
+        let parts = fields.map { field -> String in
+            let label = field.label.flattened()
+            let value = field.value.flattened()
+            if let prior = field.priorValue?.flattened() {
+                return "\(label) \(prior) -> \(value)"
+            }
+            return "\(label) \(value)"
+        }
+        return "\(head): \(parts.joined(separator: ", "))"
     }
 }
 

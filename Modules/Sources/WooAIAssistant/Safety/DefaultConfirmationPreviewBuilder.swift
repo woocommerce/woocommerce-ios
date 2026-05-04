@@ -64,8 +64,7 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         }
 
         return ConfirmationPreview(
-            summary: .localized(Strings.ordersUpdateSummary,
-                                args: [.raw(String(id)), changeSummary(for: fields, status: args.status, isBulk: false)]),
+            summary: .localized(Strings.ordersUpdateSummary, args: [.raw(String(id))]),
             fields: fields
         )
     }
@@ -106,7 +105,7 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             ids.count,
             singular: Strings.ordersBulkUpdateSummarySingular,
             plural: Strings.ordersBulkUpdateSummaryPlural,
-            args: [.raw(String(ids.count)), changeSummary(for: fields, status: patch.status, isBulk: true)]
+            args: [.raw(String(ids.count))]
         )
         return ConfirmationPreview(summary: summary, fields: fields, isBulk: true)
     }
@@ -137,8 +136,7 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
                                    includeSku: false,
                                    snapshot: snapshot)
         return ConfirmationPreview(
-            summary: .localized(Strings.productsUpdateSummary,
-                                args: [.raw(String(id)), changeSummary(for: fields, status: args.status, isBulk: false)]),
+            summary: .localized(Strings.productsUpdateSummary, args: [.raw(String(id))]),
             fields: fields
         )
     }
@@ -174,7 +172,7 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             ids.count,
             singular: Strings.productsBulkUpdateSummarySingular,
             plural: Strings.productsBulkUpdateSummaryPlural,
-            args: [.raw(String(ids.count)), changeSummary(for: fields, status: patch.status, isBulk: true)]
+            args: [.raw(String(ids.count))]
         )
         return ConfirmationPreview(summary: summary, fields: fields, isBulk: true)
     }
@@ -207,8 +205,7 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
                                    snapshot: snapshot)
         return ConfirmationPreview(
             summary: .localized(Strings.productVariationsUpdateSummary,
-                                args: [.raw(String(vid)), .raw(String(pid)),
-                                       changeSummary(for: fields, status: args.status, isBulk: false)]),
+                                args: [.raw(String(vid)), .raw(String(pid))]),
             fields: fields
         )
     }
@@ -335,46 +332,6 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         return prior
     }
 
-    private func changeSummary(for fields: [ConfirmationPreviewField],
-                               status: String?,
-                               isBulk: Bool) -> ConfirmationPreviewText {
-        guard !fields.isEmpty else {
-            return .localized(Strings.changeSummaryEmpty)
-        }
-        let parts: [ConfirmationPreviewText] = fields.map { field in
-            changeSummaryPart(for: field, status: status, isBulk: isBulk)
-        }
-        return joined(parts)
-    }
-
-    private func changeSummaryPart(for field: ConfirmationPreviewField,
-                                   status: String?,
-                                   isBulk: Bool) -> ConfirmationPreviewText {
-        switch field.name {
-        case "regular_price":
-            return .localized(Strings.changeSummaryRegularPrice, args: [field.value])
-        case "sale_price":
-            return .localized(Strings.changeSummarySalePrice, args: [field.value])
-        case "stock_quantity":
-            return .localized(Strings.changeSummaryStockQuantity, args: [field.value])
-        case "stock_status":
-            return .localized(Strings.changeSummaryStockStatus, args: [field.value])
-        case "sku":
-            return .localized(Strings.changeSummarySku, args: [field.value])
-        case "name":
-            return .localized(Strings.changeSummaryName, args: [field.value])
-        case "customer_note":
-            return .localized(Strings.changeSummaryCustomerNote)
-        case "billing_email":
-            return .localized(Strings.changeSummaryBillingEmail, args: [field.value])
-        case "status":
-            return .localized(Strings.changeSummaryStatus, args: [field.value])
-        default:
-            return .localized(Strings.changeSummaryGenericField,
-                              args: [.raw(field.name), field.value])
-        }
-    }
-
     private func orderStatusValue(_ status: String, isBulk: Bool) -> ConfirmationPreviewText {
         let humanized = Self.humanizedOrderStatus(status)
         guard customerNotifyingStatuses.contains(status) else { return .raw(humanized) }
@@ -414,15 +371,6 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         raw.prefix(1).uppercased() + raw.dropFirst()
     }
 
-    private func joined(_ parts: [ConfirmationPreviewText]) -> ConfirmationPreviewText {
-        guard let first = parts.first else {
-            return .localized(Strings.changeSummaryEmpty)
-        }
-        return parts.dropFirst().reduce(first) { left, right in
-            .localized(Strings.changeSummaryListSeparator, args: [left, right])
-        }
-    }
-
     private func decode<T: Decodable>(_ type: T.Type, from json: String) -> T? {
         guard let data = json.data(using: .utf8) else { return nil }
         do {
@@ -444,48 +392,48 @@ private enum Strings {
         defaultValue: "Update an order"
     )
     static let ordersUpdateSummary = LocalizedStringResource(
-        "ai.assistant.preview.orders_update.summary",
-        defaultValue: "Update order #%@: %@"
+        "ai.assistant.preview.orders_update.summary.headline",
+        defaultValue: "Update order #%@"
     )
     static let ordersBulkUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.orders_bulk_update.fallback",
         defaultValue: "Update many orders"
     )
     static let ordersBulkUpdateSummarySingular = LocalizedStringResource(
-        "ai.assistant.preview.orders_bulk_update.summary.singular",
-        defaultValue: "Update %@ order: %@"
+        "ai.assistant.preview.orders_bulk_update.summary.headline.singular",
+        defaultValue: "Update %@ order"
     )
     static let ordersBulkUpdateSummaryPlural = LocalizedStringResource(
-        "ai.assistant.preview.orders_bulk_update.summary.plural",
-        defaultValue: "Update %@ orders: %@"
+        "ai.assistant.preview.orders_bulk_update.summary.headline.plural",
+        defaultValue: "Update %@ orders"
     )
     static let productsUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.products_update.fallback",
         defaultValue: "Update a product"
     )
     static let productsUpdateSummary = LocalizedStringResource(
-        "ai.assistant.preview.products_update.summary",
-        defaultValue: "Update product #%@: %@"
+        "ai.assistant.preview.products_update.summary.headline",
+        defaultValue: "Update product #%@"
     )
     static let productsBulkUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.products_bulk_update.fallback",
         defaultValue: "Update many products"
     )
     static let productsBulkUpdateSummarySingular = LocalizedStringResource(
-        "ai.assistant.preview.products_bulk_update.summary.singular",
-        defaultValue: "Update %@ product: %@"
+        "ai.assistant.preview.products_bulk_update.summary.headline.singular",
+        defaultValue: "Update %@ product"
     )
     static let productsBulkUpdateSummaryPlural = LocalizedStringResource(
-        "ai.assistant.preview.products_bulk_update.summary.plural",
-        defaultValue: "Update %@ products: %@"
+        "ai.assistant.preview.products_bulk_update.summary.headline.plural",
+        defaultValue: "Update %@ products"
     )
     static let productVariationsUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.product_variations_update.fallback",
         defaultValue: "Update product variation"
     )
     static let productVariationsUpdateSummary = LocalizedStringResource(
-        "ai.assistant.preview.product_variations_update.summary",
-        defaultValue: "Update variation #%@ of product #%@: %@"
+        "ai.assistant.preview.product_variations_update.summary.headline",
+        defaultValue: "Update variation #%@ of product #%@"
     )
     static let productVariationsBulkUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.product_variations_bulk_update.fallback",
@@ -558,42 +506,6 @@ private enum Strings {
         defaultValue: "On backorder"
     )
 
-    static let changeSummaryEmpty = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.empty",
-        defaultValue: "edit fields"
-    )
-    static let changeSummaryListSeparator = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.separator",
-        defaultValue: "%@, %@"
-    )
-    static let changeSummaryName = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.name",
-        defaultValue: "name -> %@"
-    )
-    static let changeSummaryRegularPrice = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.regular_price",
-        defaultValue: "price -> %@"
-    )
-    static let changeSummarySalePrice = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.sale_price",
-        defaultValue: "sale -> %@"
-    )
-    static let changeSummaryStockQuantity = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.stock_quantity",
-        defaultValue: "stock -> %@"
-    )
-    static let changeSummaryStockStatus = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.stock_status",
-        defaultValue: "stock status -> %@"
-    )
-    static let changeSummarySku = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.sku",
-        defaultValue: "sku -> %@"
-    )
-    static let changeSummaryStatus = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.status",
-        defaultValue: "status -> %@"
-    )
     static let statusValueEmailsCustomer = LocalizedStringResource(
         "ai.assistant.preview.status_value.emails_customer",
         defaultValue: "%@ (emails the customer)"
@@ -601,17 +513,5 @@ private enum Strings {
     static let statusValueEmailsCustomers = LocalizedStringResource(
         "ai.assistant.preview.status_value.emails_customers",
         defaultValue: "%@ (emails customers)"
-    )
-    static let changeSummaryCustomerNote = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.customer_note",
-        defaultValue: "customer note updated"
-    )
-    static let changeSummaryBillingEmail = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.billing_email",
-        defaultValue: "billing email -> %@"
-    )
-    static let changeSummaryGenericField = LocalizedStringResource(
-        "ai.assistant.preview.change_summary.generic",
-        defaultValue: "%@ -> %@"
     )
 }

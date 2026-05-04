@@ -333,12 +333,75 @@ struct DefaultConfirmationPreviewBuilderTests {
         #expect(unwrapped.fields.isEmpty)
     }
 
+    // MARK: - Summary headline shape
+
+    @Test
+    func test_build_when_orders_update_then_summary_does_not_include_field_values() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(toolName: OrdersUpdateTool.name,
+                                    arguments: #"{"id":1234,"status":"pending"}"#,
+                                    snapshot: nil)
+
+        // Then
+        let unwrapped = try #require(preview)
+        let summary = unwrapped.summary.flattened()
+        #expect(summary == "Update order #1234")
+        #expect(!summary.contains("Pending"))
+        #expect(!summary.contains("->"))
+        #expect(unwrapped.fields.contains(where: { $0.name == "status" }))
+    }
+
+    @Test
+    func test_build_when_products_update_then_summary_does_not_include_field_values() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"id":12,"regular_price":"24.99","status":"publish"}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let summary = unwrapped.summary.flattened()
+        #expect(summary == "Update product #12")
+        #expect(!summary.contains("24.99"))
+        #expect(!summary.contains("Publish"))
+        #expect(unwrapped.fields.contains(where: { $0.name == "regular_price" }))
+    }
+
+    @Test
+    func test_build_when_product_variations_update_then_summary_does_not_include_field_values() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductVariationsUpdateTool.name,
+            arguments: #"{"product_id":7,"id":15,"regular_price":"19.99","sku":"CAP-RED"}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let summary = unwrapped.summary.flattened()
+        #expect(summary == "Update variation #15 of product #7")
+        #expect(!summary.contains("19.99"))
+        #expect(!summary.contains("CAP-RED"))
+        #expect(unwrapped.fields.contains(where: { $0.name == "regular_price" }))
+    }
+
     // MARK: - Flattened summary regression
 
     // Regression: the `LocalizedStringResource(defaultValue:)` interpolation
     // syntax `\(placeholder: .object)` rendered as the literal string `(null)`
     // when read via `String(localized:)`, which made the production card
-    // surface "Update order #(null): (null)" instead of "Update order #42: ...".
+    // surface "Update order #(null)" instead of "Update order #42".
     // Pin every summary template flattens to a substituted string with no `(null)`.
 
     @Test
@@ -355,11 +418,10 @@ struct DefaultConfirmationPreviewBuilderTests {
         let summary = try #require(preview).summary.flattened()
         #expect(!summary.contains("(null)"))
         #expect(summary.contains("42"))
-        #expect(summary.contains("Pending"))
     }
 
     @Test
-    func test_build_when_orders_bulk_update_then_summary_flattened_substitutes_count_and_change() throws {
+    func test_build_when_orders_bulk_update_then_summary_flattened_substitutes_count() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()
 
@@ -374,11 +436,10 @@ struct DefaultConfirmationPreviewBuilderTests {
         let summary = try #require(preview).summary.flattened()
         #expect(!summary.contains("(null)"))
         #expect(summary.contains("3"))
-        #expect(summary.contains("Completed"))
     }
 
     @Test
-    func test_build_when_product_variations_update_then_summary_flattened_substitutes_three_args() throws {
+    func test_build_when_product_variations_update_then_summary_flattened_substitutes_args() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()
 
@@ -394,6 +455,5 @@ struct DefaultConfirmationPreviewBuilderTests {
         #expect(!summary.contains("(null)"))
         #expect(summary.contains("15"))
         #expect(summary.contains("7"))
-        #expect(summary.contains("19.99"))
     }
 }

@@ -250,6 +250,34 @@ struct MessageBubbleOrderingTests {
     }
 
     @Test
+    func test_orderedSegments_when_two_list_summaries_with_object_payloads_then_picks_the_non_empty_one() {
+        // Given
+        let firstID = UUID()
+        let secondID = UUID()
+        let textID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .toolResult(id: firstID,
+                        toolCallID: "call_1",
+                        toolName: "products_list",
+                        payload: .object(["count": .int(5),
+                                          "ids": .array([.int(1), .int(2), .int(3), .int(4), .int(5)])])),
+            .toolResult(id: secondID,
+                        toolCallID: "call_2",
+                        toolName: "products_list",
+                        payload: .object(["count": .int(0),
+                                          "ids": .array([])])),
+            .text(id: textID, content: "Found products.")
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [textID, firstID])
+    }
+
+    @Test
     func test_orderedSegments_when_multiple_toolCalls_then_only_last_pill_is_kept_in_place() {
         // Given
         let firstCallID = UUID()

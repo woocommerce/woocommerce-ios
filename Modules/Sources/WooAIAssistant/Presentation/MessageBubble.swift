@@ -117,6 +117,9 @@ struct MessageBubble: View {
 
     private func arrayCount(_ value: AnyCodableJSON) -> Int {
         if case .array(let elements) = value { return elements.count }
+        if case .object(let fields) = value, case .int(let count) = fields["count"] {
+            return Int(count)
+        }
         return 0
     }
 

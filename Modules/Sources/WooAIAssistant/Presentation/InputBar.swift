@@ -10,6 +10,7 @@ struct InputBar: View {
     let onStop: () -> Void
 
     private static let sendButtonDiameter: CGFloat = 36
+    private static let sendButtonHitTarget: CGFloat = 44
 
     var body: some View {
         VStack(alignment: .leading, spacing: AssistantSpacing.small) {
@@ -36,6 +37,8 @@ struct InputBar: View {
                         .background(buttonBackground)
                         .clipShape(Circle())
                         .contentTransition(.symbolEffect(.replace))
+                        .frame(width: Self.sendButtonHitTarget,
+                               height: Self.sendButtonHitTarget)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)

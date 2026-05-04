@@ -136,6 +136,28 @@ struct DefaultConfirmationPreviewBuilderTests {
     }
 
     @Test
+    func test_build_when_orders_update_customer_note_then_value_is_capitalized_placeholder() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: OrdersUpdateTool.name,
+            arguments: #"{"id":42,"customer_note":"Thanks for the order"}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "customer_note" }))
+        guard case .localized(let resource, _) = field.value else {
+            Issue.record("expected customer_note value to be a localized placeholder, got \(field.value)")
+            return
+        }
+        #expect(String(localized: resource) == "Updated")
+    }
+
+    @Test
     func test_build_when_orders_update_id_only_then_returns_summary_with_no_fields() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()

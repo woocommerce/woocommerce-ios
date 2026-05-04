@@ -485,12 +485,12 @@ private enum Strings {
         defaultValue: "Billing email"
     )
     static let fieldValueUpdated = LocalizedStringResource(
-        "ai.assistant.preview.field.value.updated",
-        defaultValue: "updated"
+        "ai.assistant.preview.field.value.updated_marker",
+        defaultValue: "Updated"
     )
     static let fieldValueOff = LocalizedStringResource(
-        "ai.assistant.preview.field.value.off",
-        defaultValue: "off"
+        "ai.assistant.preview.field.value.off_marker",
+        defaultValue: "Off"
     )
 
     static let stockStatusInStock = LocalizedStringResource(

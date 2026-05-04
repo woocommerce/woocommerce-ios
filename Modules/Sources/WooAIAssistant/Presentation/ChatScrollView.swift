@@ -26,7 +26,7 @@ struct ChatScrollView<Content: View>: UIViewRepresentable {
         let host = UIHostingController(rootView: AnyView(content))
         host.view.translatesAutoresizingMaskIntoConstraints = false
         host.view.backgroundColor = .clear
-        host.disableSafeArea()
+        host.configureForChatHost()
         scrollView.addSubview(host.view)
 
         let contentGuide = scrollView.contentLayoutGuide
@@ -69,7 +69,7 @@ struct ChatScrollView<Content: View>: UIViewRepresentable {
 
         private func observeContentSize() {
             contentSizeObserver = scrollView?.observe(\.contentSize, options: [.new]) { [weak self] sv, _ in
-                MainActor.assumeIsolated { self?.handleContentSizeChange(sv) }
+                Task { @MainActor [weak self] in self?.handleContentSizeChange(sv) }
             }
         }
 
@@ -83,6 +83,7 @@ struct ChatScrollView<Content: View>: UIViewRepresentable {
 
         func scrollViewDidScroll(_ scrollView: UIScrollView) {
             let distance = scrollView.contentSize.height
+                + scrollView.adjustedContentInset.bottom
                 - scrollView.contentOffset.y
                 - scrollView.bounds.height
             let near = distance < 80
@@ -107,12 +108,10 @@ struct ChatScrollView<Content: View>: UIViewRepresentable {
 }
 
 private extension UIHostingController {
-    func disableSafeArea() {
-        // Allow the SwiftUI content to extend behind the keyboard / safe-area
-        // since the outer UIScrollView already adjusts contentInset.
+    // Outer UIScrollView already adjusts contentInset for the keyboard / safe-area,
+    // so the hosted SwiftUI content should not double-inset.
+    func configureForChatHost() {
         view.insetsLayoutMarginsFromSafeArea = false
-        if #available(iOS 16.0, *) {
-            sizingOptions = [.intrinsicContentSize]
-        }
+        sizingOptions = [.intrinsicContentSize]
     }
 }

@@ -9,6 +9,7 @@ struct MessageListView: View {
     var onPickPrompt: (String) -> Void = { _ in }
 
     @StateObject private var scrollController = ChatScrollController()
+    @State private var lastTickTime: Date = .distantPast
 
     var body: some View {
         if messages.isEmpty {
@@ -51,6 +52,9 @@ struct MessageListView: View {
             }
             .animation(.spring(duration: 0.2), value: scrollController.isNearBottom)
             .onChange(of: lastSegmentSignature) { _, _ in
+                let now = Date()
+                if now.timeIntervalSince(lastTickTime) < 0.03 { return }
+                lastTickTime = now
                 guard scrollController.isNearBottom else { return }
                 scrollController.scrollToBottom(animated: false)
             }

@@ -41,12 +41,8 @@ struct EmptyStateView: View {
                     }
                 }
             }
-            .background(Color.assistantSurfaceElevated)
+            .background(Color.assistantBubbleAssistant)
             .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.medium))
-            .overlay(
-                RoundedRectangle(cornerRadius: AssistantRadius.medium)
-                    .stroke(Color.assistantSurfaceBorder, lineWidth: 1)
-            )
             .padding(.horizontal, AssistantSpacing.large)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

@@ -11,6 +11,7 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
 
     let analytics: AssistantAnalyticsProviding
     let externalNavigation: AssistantExternalNavigationProviding
+    let externalViews: AssistantExternalViewProviding
     let jwtProvider: AssistantJWTProviding
 
     let chatService: AIChatService
@@ -59,6 +60,7 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
             externalNavigation: AIAssistantExternalNavigationAdaptor(siteID: siteID,
                                                                        navigationHost: navigationHost,
                                                                        stores: stores),
+            externalViews: AIAssistantExternalViewsAdaptor(),
             jwtProvider: jwtAdaptor,
             chatService: chatService,
             toolRegistry: toolRegistry,

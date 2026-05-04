@@ -535,11 +535,6 @@ private struct SecondaryPaymentButtons: View {
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             .accessibilityIdentifier("pos-cash-payment-button")
-            .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(
-                orderState: orderState,
-                paymentState: paymentState,
-                cardReaderConnectionStatus: cardReaderConnectionStatus
-            ))
 
             Button(action: {
                 startOtherPaymentMethodsAction()
@@ -552,15 +547,20 @@ private struct SecondaryPaymentButtons: View {
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             .accessibilityIdentifier("pos-other-payment-methods-button")
-            .renderedIf(viewHelper.shouldShowOtherPaymentMethodsButton(
-                orderState: orderState,
-                paymentState: paymentState,
-                cardReaderConnectionStatus: cardReaderConnectionStatus,
-                isAnySecondaryPaymentMethodEnabled: isAnySecondaryPaymentMethodEnabled
-            ))
+            .renderedIf(isAnySecondaryPaymentMethodEnabled)
         }
         .padding(.horizontal, TotalsView.Constants.buttonHorizontalPadding)
         .safeAreaPadding(.bottom, TotalsView.Constants.cashButtonBottomPadding)
+        // Gate the whole row on the cash visibility envelope. Without this, when the cash
+        // button is hidden (e.g. during card processing) the HStack still applies its
+        // safeAreaPadding(.bottom), reserving space at the bottom of the totals view that
+        // didn't exist before this row was introduced. Other-payment visibility shares the
+        // same envelope, so this single check is enough.
+        .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(
+            orderState: orderState,
+            paymentState: paymentState,
+            cardReaderConnectionStatus: cardReaderConnectionStatus
+        ))
     }
 }
 

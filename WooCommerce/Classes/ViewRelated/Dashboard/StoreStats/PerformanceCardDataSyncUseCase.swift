@@ -96,76 +96,52 @@ struct PerformanceCardDataSyncUseCase {
     /// Syncs visitor stats for dashboard UI.
     @MainActor
     func syncSiteVisitStats(timeRange: StatsTimeRangeV4, latestDateToInclude: Date) async throws {
-        switch visitorStatsEndpoint {
-        case .unavailable:
-            return
-        case .jetpackStatsApp:
-            try await withCheckedThrowingContinuation { continuation in
-                stores.dispatch(StatsActionV4.retrieveJetpackSiteVisitStats(siteID: siteID,
-                                                                            siteTimezone: siteTimezone,
-                                                                            timeRange: timeRange,
-                                                                            latestDateToInclude: latestDateToInclude,
-                                                                            onCompletion: { result in
-                    if case let .failure(error) = result {
-                        DDLogError("⛔️ Error synchronizing Jetpack visitor stats: \(error)")
-                    }
-                    continuation.resume(with: result)
-                }))
+        try await withCheckedThrowingContinuation { continuation in
+            let action = StatsActionV4.retrieveSiteVisitStats(for: visitorStatsEndpoint,
+                                                              siteID: siteID,
+                                                              siteTimezone: siteTimezone,
+                                                              timeRange: timeRange,
+                                                              latestDateToInclude: latestDateToInclude) { result in
+                if case let .failure(error) = result {
+                    DDLogError("⛔️ Error synchronizing stats: \(error)")
+                }
+
+                continuation.resume(with: result)
             }
-        case .wpComSummary:
-            try await withCheckedThrowingContinuation { continuation in
-                stores.dispatch(StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
-                                                                     siteTimezone: siteTimezone,
-                                                                     timeRange: timeRange,
-                                                                     latestDateToInclude: latestDateToInclude,
-                                                                     onCompletion: { result in
-                    if case let .failure(error) = result {
-                        DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                    }
-                    continuation.resume(with: result)
-                }))
+
+            guard let action else {
+                continuation.resume(returning: ())
+                return
             }
+
+            stores.dispatch(action)
         }
     }
 
     /// Syncs summary stats for dashboard UI.
     @MainActor
     func syncSiteSummaryStats(timeRange: StatsTimeRangeV4, latestDateToInclude: Date) async throws {
-        switch visitorStatsEndpoint {
-        case .unavailable:
-            return
-        case .jetpackStatsApp:
-            try await withCheckedThrowingContinuation { continuation in
-                stores.dispatch(StatsActionV4.retrieveJetpackSiteSummaryStats(siteID: siteID,
-                                                                              siteTimezone: siteTimezone,
-                                                                              period: timeRange.summaryStatsGranularity,
-                                                                              quantity: 1,
-                                                                              latestDateToInclude: latestDateToInclude,
-                                                                              saveInStorage: true) { result in
-                    if case let .failure(error) = result {
-                        DDLogError("⛔️ Error synchronizing Jetpack summary stats: \(error)")
-                    }
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            let action = StatsActionV4.retrieveSiteSummaryStats(for: visitorStatsEndpoint,
+                                                                siteID: siteID,
+                                                                siteTimezone: siteTimezone,
+                                                                period: timeRange.summaryStatsGranularity,
+                                                                quantity: 1,
+                                                                latestDateToInclude: latestDateToInclude,
+                                                                saveInStorage: true) { result in
+                if case let .failure(error) = result {
+                    DDLogError("⛔️ Error synchronizing stats: \(error)")
+                }
 
-                    let voidResult = result.map { _ in () } // Caller expects no entity in the result.
-                    continuation.resume(with: voidResult)
-                })
+                continuation.resume(with: result.map { _ in () })
             }
-        case .wpComSummary:
-            try await withCheckedThrowingContinuation { continuation in
-                stores.dispatch(StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
-                                                                       siteTimezone: siteTimezone,
-                                                                       period: timeRange.summaryStatsGranularity,
-                                                                       quantity: 1,
-                                                                       latestDateToInclude: latestDateToInclude,
-                                                                       saveInStorage: true) { result in
-                    if case let .failure(error) = result {
-                        DDLogError("⛔️ Error synchronizing summary stats: \(error)")
-                    }
 
-                    let voidResult = result.map { _ in () } // Caller expects no entity in the result.
-                    continuation.resume(with: voidResult)
-                })
+            guard let action else {
+                continuation.resume(returning: ())
+                return
             }
+
+            stores.dispatch(action)
         }
     }
 

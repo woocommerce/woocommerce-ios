@@ -112,3 +112,60 @@ public enum StatsActionV4: Action {
                                    forceRefresh: Bool,
                                    onCompletion: (Result<GiftCardStats, Error>) -> Void)
 }
+
+public extension StatsActionV4 {
+
+    static func retrieveSiteVisitStats(for endpoint: VisitorStatsEndpoint,
+                                       siteID: Int64,
+                                       siteTimezone: TimeZone,
+                                       timeRange: StatsTimeRangeV4,
+                                       latestDateToInclude: Date,
+                                       onCompletion: @escaping (Result<Void, Error>) -> Void) -> StatsActionV4? {
+        switch endpoint {
+        case .unavailable:
+            return nil
+        case .wpComSummary:
+            return .retrieveSiteVisitStats(siteID: siteID,
+                                           siteTimezone: siteTimezone,
+                                           timeRange: timeRange,
+                                           latestDateToInclude: latestDateToInclude,
+                                           onCompletion: onCompletion)
+        case .jetpackStatsApp:
+            return .retrieveJetpackSiteVisitStats(siteID: siteID,
+                                                  siteTimezone: siteTimezone,
+                                                  timeRange: timeRange,
+                                                  latestDateToInclude: latestDateToInclude,
+                                                  onCompletion: onCompletion)
+        }
+    }
+
+    static func retrieveSiteSummaryStats(for endpoint: VisitorStatsEndpoint,
+                                         siteID: Int64,
+                                         siteTimezone: TimeZone,
+                                         period: StatGranularity,
+                                         quantity: Int,
+                                         latestDateToInclude: Date,
+                                         saveInStorage: Bool,
+                                         onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> Void) -> StatsActionV4? {
+        switch endpoint {
+        case .unavailable:
+            return nil
+        case .wpComSummary:
+            return .retrieveSiteSummaryStats(siteID: siteID,
+                                             siteTimezone: siteTimezone,
+                                             period: period,
+                                             quantity: quantity,
+                                             latestDateToInclude: latestDateToInclude,
+                                             saveInStorage: saveInStorage,
+                                             onCompletion: onCompletion)
+        case .jetpackStatsApp:
+            return .retrieveJetpackSiteSummaryStats(siteID: siteID,
+                                                    siteTimezone: siteTimezone,
+                                                    period: period,
+                                                    quantity: quantity,
+                                                    latestDateToInclude: latestDateToInclude,
+                                                    saveInStorage: saveInStorage,
+                                                    onCompletion: onCompletion)
+        }
+    }
+}

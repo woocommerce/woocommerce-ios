@@ -99,7 +99,7 @@ public class WordPressComLanguageDatabase: NSObject {
         let search = languageCodeReplacements[slug] ?? slug
 
         // Use lazy evaluation so we stop filtering as soon as we got the first match
-        return all.lazy.filter({ $0.slug == search }).first
+        return all.lazy.first(where: { $0.slug == search })
     }
 
     /// Overrides the device language. For testing purposes only.

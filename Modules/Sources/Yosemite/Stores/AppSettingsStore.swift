@@ -652,9 +652,9 @@ private extension AppSettingsStore {
             return
         }
 
-        let providerName = allSavedProviders.filter {
+        let providerName = allSavedProviders.first(where: {
             $0.siteID == siteID
-        }.first?.providerName
+        })?.providerName
 
         guard let name = providerName else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
@@ -678,13 +678,13 @@ private extension AppSettingsStore {
             return
         }
 
-        let providerName = allSavedProviders.filter {
+        let providerName = allSavedProviders.first(where: {
             $0.siteID == siteID
-        }.first?.providerName
+        })?.providerName
 
-        let providerURL = allSavedProviders.filter {
+        let providerURL = allSavedProviders.first(where: {
             $0.siteID == siteID
-        }.first?.providerURL
+        })?.providerURL
 
         guard let name = providerName else {
             let error = AppSettingsStoreErrors.readPreselectedProvider

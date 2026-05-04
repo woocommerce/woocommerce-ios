@@ -53,7 +53,7 @@ struct AIAssistantEligibilityCheckerTests {
     }
 
     @Test
-    func test_isEligible_when_jetpack_connected_with_wpcom_credentials_then_true() {
+    func test_isEligible_when_jetpack_connected_only_with_wpcom_credentials_then_false() {
         // Given
         let flagService = MockFeatureFlagService()
         flagService.isFeatureFlagEnabledReturnValue[.wooAIAssistant] = true
@@ -66,18 +66,18 @@ struct AIAssistantEligibilityCheckerTests {
         let result = sut.isEligible(for: site)
 
         // Then
-        #expect(result == true)
+        #expect(result == false)
     }
 
     @Test
-    func test_isEligible_when_jetpack_connected_with_wporg_credentials_then_false() {
+    func test_isEligible_when_wpcom_store_with_application_password_credentials_then_false() {
         // Given
         let flagService = MockFeatureFlagService()
         flagService.isFeatureFlagEnabledReturnValue[.wooAIAssistant] = true
-        let sut = makeSUT(flagService: flagService, credentials: .wporgFake)
+        let sut = makeSUT(flagService: flagService, credentials: .applicationPasswordFake)
         let site = Site.fake().copy(isAIAssistantFeatureActive: false,
                                     isJetpackConnected: true,
-                                    isWordPressComStore: false)
+                                    isWordPressComStore: true)
 
         // When
         let result = sut.isEligible(for: site)
@@ -87,31 +87,31 @@ struct AIAssistantEligibilityCheckerTests {
     }
 
     @Test
-    func test_isEligible_when_jetpack_connected_with_application_password_credentials_then_true() {
+    func test_isEligible_when_wpcom_store_with_wporg_credentials_then_false() {
         // Given
         let flagService = MockFeatureFlagService()
         flagService.isFeatureFlagEnabledReturnValue[.wooAIAssistant] = true
-        let sut = makeSUT(flagService: flagService, credentials: .applicationPasswordFake)
+        let sut = makeSUT(flagService: flagService, credentials: .wporgFake)
         let site = Site.fake().copy(isAIAssistantFeatureActive: false,
                                     isJetpackConnected: true,
-                                    isWordPressComStore: false)
+                                    isWordPressComStore: true)
 
         // When
         let result = sut.isEligible(for: site)
 
         // Then
-        #expect(result == true)
+        #expect(result == false)
     }
 
     @Test
-    func test_isEligible_when_jetpack_connected_with_no_credentials_then_false() {
+    func test_isEligible_when_wpcom_store_with_no_credentials_then_false() {
         // Given
         let flagService = MockFeatureFlagService()
         flagService.isFeatureFlagEnabledReturnValue[.wooAIAssistant] = true
         let sut = makeSUT(flagService: flagService, credentials: nil)
         let site = Site.fake().copy(isAIAssistantFeatureActive: false,
                                     isJetpackConnected: true,
-                                    isWordPressComStore: false)
+                                    isWordPressComStore: true)
 
         // When
         let result = sut.isEligible(for: site)

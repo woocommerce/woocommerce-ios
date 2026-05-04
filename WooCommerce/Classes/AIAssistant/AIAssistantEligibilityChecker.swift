@@ -21,19 +21,9 @@ struct AIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {
         guard featureFlagService.isFeatureFlagEnabled(.wooAIAssistant), let site else {
             return false
         }
-        let baseEligibility = site.isWordPressComStore || site.isAIAssistantFeatureActive || site.isJetpackConnected
-        guard baseEligibility else {
+        guard case .wpcom = credentialsProvider() else {
             return false
         }
-        return canMintJWT(with: credentialsProvider())
-    }
-
-    private func canMintJWT(with credentials: Credentials?) -> Bool {
-        switch credentials {
-        case .wpcom, .applicationPassword:
-            return true
-        case .wporg, .none:
-            return false
-        }
+        return site.isWordPressComStore || site.isAIAssistantFeatureActive
     }
 }

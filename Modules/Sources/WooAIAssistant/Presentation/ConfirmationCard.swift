@@ -36,6 +36,7 @@ struct ConfirmationCard: View {
             Text(preview.summary.flattened())
                 .font(.assistantBody)
                 .foregroundStyle(Color.primary)
+                .tint(Color.primary)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -136,6 +137,7 @@ private struct DiffFieldRow: View {
 
     var body: some View {
         composedLine
+            .tint(Color.assistantBubbleAssistantText)
             .fixedSize(horizontal: false, vertical: true)
     }
 

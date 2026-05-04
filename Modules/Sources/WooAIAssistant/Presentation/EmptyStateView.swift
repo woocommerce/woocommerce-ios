@@ -2,14 +2,9 @@ import SwiftUI
 
 struct EmptyStateView: View {
 
-    let suggestions: [SuggestionItem]
     let onPick: (String) -> Void
 
-    init(suggestions: [SuggestionItem] = EmptyStateView.defaultSuggestions,
-         onPick: @escaping (String) -> Void) {
-        self.suggestions = suggestions
-        self.onPick = onPick
-    }
+    private let suggestions: [SuggestionItem] = EmptyStateView.defaultSuggestions
 
     struct SuggestionItem: Identifiable {
         let id = UUID()
@@ -49,7 +44,7 @@ struct EmptyStateView: View {
         .padding(.bottom, AssistantSpacing.large)
     }
 
-    static let defaultSuggestions: [SuggestionItem] = [
+    private static let defaultSuggestions: [SuggestionItem] = [
         SuggestionItem(symbol: "chart.bar.fill", title: Localization.suggestionTodaysSales),
         SuggestionItem(symbol: "shippingbox.fill", title: Localization.suggestionLowStock),
         SuggestionItem(symbol: "bag.fill", title: Localization.suggestionRecentOrders),

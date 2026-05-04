@@ -7,7 +7,7 @@ import WooAIAssistant
 struct AIAssistantSessionStoreTests {
 
     @Test
-    func test_controller_when_called_twice_for_same_site_then_returns_same_instance() {
+    func test_session_when_called_twice_for_same_site_then_returns_same_controller() {
         // Given
         let sut = AIAssistantSessionStore.makeForTesting()
         var buildCount = 0
@@ -17,86 +17,68 @@ struct AIAssistantSessionStoreTests {
         }
 
         // When
-        let first = sut.controller(for: 99, makeDependencies: make)
-        let second = sut.controller(for: 99, makeDependencies: make)
+        let first = sut.session(for: 99, makeDependencies: make)
+        let second = sut.session(for: 99, makeDependencies: make)
 
         // Then
-        #expect(first === second)
+        #expect(first.controller === second.controller)
         #expect(buildCount == 1)
     }
 
     @Test
-    func test_controller_when_called_for_different_sites_then_returns_distinct_instances() {
+    func test_session_when_called_for_different_sites_then_returns_distinct_controllers() {
         // Given
         let sut = AIAssistantSessionStore.makeForTesting()
 
         // When
-        let firstSite = sut.controller(for: 11) { _ in makeStubDependencies() }
-        let secondSite = sut.controller(for: 22) { _ in makeStubDependencies() }
+        let firstSite = sut.session(for: 11) { _ in makeStubDependencies() }
+        let secondSite = sut.session(for: 22) { _ in makeStubDependencies() }
 
         // Then
-        #expect(firstSite !== secondSite)
+        #expect(firstSite.controller !== secondSite.controller)
     }
 
     @Test
-    func test_resetSession_when_called_then_subsequent_controller_is_new_instance() {
+    func test_resetSession_when_called_then_subsequent_session_is_new_instance() {
         // Given
         let sut = AIAssistantSessionStore.makeForTesting()
-        let first = sut.controller(for: 12) { _ in makeStubDependencies() }
+        let first = sut.session(for: 12) { _ in makeStubDependencies() }
 
         // When
         sut.resetSession(for: 12)
-        let second = sut.controller(for: 12) { _ in makeStubDependencies() }
+        let second = sut.session(for: 12) { _ in makeStubDependencies() }
 
         // Then
-        #expect(first !== second)
+        #expect(first.controller !== second.controller)
     }
 
     @Test
-    func test_resetSession_when_called_then_pendingHost_for_that_site_is_cleared() {
-        // Given
-        let sut = AIAssistantSessionStore.makeForTesting()
-        let firstHost = sut.navigationHost(for: 33)
-
-        // When
-        sut.resetSession(for: 33)
-        let secondHost = sut.navigationHost(for: 33)
-
-        // Then
-        #expect(firstHost !== secondHost)
-    }
-
-    @Test
-    func test_navigationHost_when_called_twice_for_same_site_then_returns_same_instance() {
+    func test_session_when_called_twice_for_same_site_then_returns_same_navigation_host() {
         // Given
         let sut = AIAssistantSessionStore.makeForTesting()
 
         // When
-        let first = sut.navigationHost(for: 5)
-        let second = sut.navigationHost(for: 5)
+        let first = sut.session(for: 5) { _ in makeStubDependencies() }
+        let second = sut.session(for: 5) { _ in makeStubDependencies() }
 
         // Then
-        #expect(first === second)
+        #expect(first.navigationHost === second.navigationHost)
     }
 
     @Test
-    func test_navigationHost_when_set_then_controller_for_same_site_uses_that_host() {
+    func test_session_when_makeDependencies_called_then_resolved_host_matches_returned_session() {
         // Given
         let sut = AIAssistantSessionStore.makeForTesting()
-        let host = sut.navigationHost(for: 8)
-        let nav = UINavigationController()
-        host.attach(nav)
 
         // When
         var capturedHost: AIAssistantNavigationHost?
-        _ = sut.controller(for: 8) { resolvedHost in
+        let session = sut.session(for: 8) { resolvedHost in
             capturedHost = resolvedHost
             return makeStubDependencies()
         }
 
         // Then
-        #expect(capturedHost === host)
-        #expect(capturedHost?.navigationController === nav)
+        #expect(capturedHost === session.navigationHost)
     }
 }
 
@@ -105,7 +87,6 @@ private func makeStubDependencies() -> AIAssistantDependencyAdaptor {
     AIAssistantDependencyAdaptor(
         analytics: StubAnalytics(),
         externalNavigation: StubNavigation(),
-        externalViews: AIAssistantExternalViewsAdaptor(),
         jwtProvider: StubJWT(),
         chatService: StubChatService(),
         toolRegistry: StubToolRegistry(),

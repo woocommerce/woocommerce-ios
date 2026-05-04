@@ -3,7 +3,6 @@ import SwiftUI
 struct ConfirmationCard: View {
 
     let proposalID: UUID
-    let toolName: String
     let preview: String
     let status: ConfirmationStatus
     let onConfirm: () -> Void
@@ -300,7 +299,6 @@ struct ParsedPreview {
 
 #Preview("Pending standalone") {
     ConfirmationCard(proposalID: UUID(),
-                     toolName: "orders_update",
                      preview: "Update order #3479: status processing → completed",
                      status: .pending,
                      onConfirm: {},
@@ -310,7 +308,6 @@ struct ParsedPreview {
 
 #Preview("Confirmed") {
     ConfirmationCard(proposalID: UUID(),
-                     toolName: "orders_update",
                      preview: "Update order #3479: status processing → completed",
                      status: .confirmed,
                      onConfirm: {},
@@ -320,7 +317,6 @@ struct ParsedPreview {
 
 #Preview("Cancelled") {
     ConfirmationCard(proposalID: UUID(),
-                     toolName: "orders_update",
                      preview: "Update order #3479: status processing → completed",
                      status: .cancelled,
                      onConfirm: {},
@@ -330,7 +326,6 @@ struct ParsedPreview {
 
 #Preview("Multi-field") {
     ConfirmationCard(proposalID: UUID(),
-                     toolName: "orders_update",
                      preview: "Update order #3479: status processing → completed; total $45.00 → $60.00",
                      status: .pending,
                      onConfirm: {},

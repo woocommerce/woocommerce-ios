@@ -22,7 +22,7 @@ struct RawJSONCard: View {
     }
 
     var body: some View {
-        CardShell(label: toolName, trailingChevron: false) {
+        CardShell(label: toolName) {
             VStack(alignment: .leading, spacing: AssistantSpacing.small) {
                 Text(prettyJSON)
                     .font(.assistantMonospaced)

@@ -31,17 +31,16 @@ struct AIAssistantChatScreen: View {
     private func buildControllerIfNeeded() {
         guard controller == nil else { return }
         let store = AIAssistantSessionStore.shared
-        let host = store.navigationHost(for: site.siteID)
         let appPasswordSupport = appPasswordSupportState
             .$isAvailableAndEnabled
             .eraseToAnyPublisher()
-        let controllerInstance = store.controller(for: site.siteID) { resolvedHost in
+        let session = store.session(for: site.siteID) { resolvedHost in
             AIAssistantDependencyAdaptor.default(siteID: site.siteID,
                                                   site: site,
                                                   navigationHost: resolvedHost,
                                                   appPasswordSupport: appPasswordSupport)
         }
-        navigationHost = host
-        controller = controllerInstance
+        navigationHost = session.navigationHost
+        controller = session.controller
     }
 }

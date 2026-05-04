@@ -14,7 +14,6 @@ final class AIAssistantSessionStore {
     }
 
     private var entries: [Int64: Entry] = [:]
-    private var pendingHosts: [Int64: AIAssistantNavigationHost] = [:]
     private var logoutObserver: NSObjectProtocol?
 
     private init() {
@@ -33,25 +32,17 @@ final class AIAssistantSessionStore {
         }
     }
 
-    func navigationHost(for siteID: Int64) -> AIAssistantNavigationHost {
-        if let cached = entries[siteID] {
-            return cached.navigationHost
-        }
-        if let pending = pendingHosts[siteID] {
-            return pending
-        }
-        let host = AIAssistantNavigationHost()
-        pendingHosts[siteID] = host
-        return host
+    struct Session {
+        let controller: AssistantController
+        let navigationHost: AIAssistantNavigationHost
     }
 
-    func controller(for siteID: Int64,
-                    makeDependencies: (AIAssistantNavigationHost) -> AIAssistantDependencyAdaptor) -> AssistantController {
+    func session(for siteID: Int64,
+                 makeDependencies: (AIAssistantNavigationHost) -> AIAssistantDependencyAdaptor) -> Session {
         if let cached = entries[siteID] {
-            return cached.controller
+            return Session(controller: cached.controller, navigationHost: cached.navigationHost)
         }
-        let host = pendingHosts[siteID] ?? AIAssistantNavigationHost()
-        pendingHosts[siteID] = nil
+        let host = AIAssistantNavigationHost()
         let dependencies = makeDependencies(host)
         let backend = AgenticChatBackend(chatService: dependencies.chatService,
                                          toolRegistry: dependencies.toolRegistry,
@@ -62,7 +53,7 @@ final class AIAssistantSessionStore {
         entries[siteID] = Entry(controller: controller,
                                 dependencies: dependencies,
                                 navigationHost: host)
-        return controller
+        return Session(controller: controller, navigationHost: host)
     }
 
     func dependencies(for siteID: Int64) -> AIAssistantDependencyAdaptor? {
@@ -71,12 +62,10 @@ final class AIAssistantSessionStore {
 
     func resetSession(for siteID: Int64) {
         entries[siteID] = nil
-        pendingHosts[siteID] = nil
     }
 
     func invalidateAll() {
         entries.removeAll()
-        pendingHosts.removeAll()
     }
 
     func hasSession(for siteID: Int64) -> Bool {

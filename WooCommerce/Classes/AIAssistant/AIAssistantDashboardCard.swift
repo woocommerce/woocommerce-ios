@@ -6,7 +6,6 @@ struct AIAssistantDashboardCard: View {
     let site: Site
 
     @State private var isPresentingChat: Bool = false
-    @Namespace private var cardNamespace
 
     var body: some View {
         Button {
@@ -31,7 +30,6 @@ struct AIAssistantDashboardCard: View {
             )
             .clipShape(RoundedRectangle(cornerRadius: 18))
             .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
-            .matchedGeometryEffect(id: Self.transitionID, in: cardNamespace)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Localization.accessibilityLabel)
@@ -65,8 +63,6 @@ struct AIAssistantDashboardCard: View {
         .frame(width: 36, height: 36)
         .accessibilityHidden(true)
     }
-
-    private static let transitionID = "ai-assistant-card"
 
     private enum Localization {
         static let placeholder = NSLocalizedString(

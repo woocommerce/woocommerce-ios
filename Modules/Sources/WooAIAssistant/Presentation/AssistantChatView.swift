@@ -6,25 +6,13 @@ public struct AssistantChatView: View {
     @State private var draft: String = ""
     @FocusState private var inputFocused: Bool
 
-    private let showIterationCapBanner: Bool
     private let onClose: () -> Void
 
     public init(controller: AssistantController,
                 onClose: @escaping () -> Void = {}) {
         self.controller = controller
-        self.showIterationCapBanner = false
         self.onClose = onClose
     }
-
-    #if DEBUG
-    init(controller: AssistantController,
-         showIterationCapBanner: Bool,
-         onClose: @escaping () -> Void = {}) {
-        self.controller = controller
-        self.showIterationCapBanner = showIterationCapBanner
-        self.onClose = onClose
-    }
-    #endif
 
     public var body: some View {
         NavigationStack {
@@ -42,7 +30,6 @@ public struct AssistantChatView: View {
             .background(Color.assistantSurface)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.automatic, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: onClose) {
@@ -90,7 +77,6 @@ public struct AssistantChatView: View {
     private var messageList: some View {
         MessageListView(messages: controller.conversation.messages,
                         streamingState: controller.conversation.streamingState,
-                        showIterationCapBanner: showIterationCapBanner,
                         onPickPrompt: { draft = $0; inputFocused = true })
             .background(
                 Color.clear
@@ -157,9 +143,7 @@ extension AssistantChatView {
     @MainActor
     static func preview(_ scenario: AssistantChatScenario) -> some View {
         let configuration = AssistantChatScenarioBuilder(scenario: scenario).build()
-        return AssistantChatView(controller: configuration.controller,
-                                 showIterationCapBanner: configuration.showIterationCapBanner,
-                                 onClose: {})
+        return AssistantChatView(controller: configuration.controller, onClose: {})
     }
 }
 
@@ -173,6 +157,5 @@ extension AssistantChatView {
 #Preview("Pending confirmation (bulk)") { AssistantChatView.preview(.pendingConfirmationBulk) }
 #Preview("Failed mid-stream") { AssistantChatView.preview(.failedMidStream) }
 #Preview("Outcome unknown") { AssistantChatView.preview(.outcomeUnknown) }
-#Preview("Iteration cap") { AssistantChatView.preview(.iterationCap) }
 #Preview("Multi-turn") { AssistantChatView.preview(.multiTurn) }
 #endif

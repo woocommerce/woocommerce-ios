@@ -2,8 +2,6 @@ import Foundation
 
 public enum AssistantSystemPrompt {
 
-    public static let version = "v1.0.0"
-
     // The date anchor renders as `YYYY-MM-DD (Weekday)` because gpt-4o-mini
     // misreads the weekday from a bare ISO date about a quarter of the time.
     public static func build(todayISODate: String? = nil) -> String {

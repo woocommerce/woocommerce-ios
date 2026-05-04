@@ -4,8 +4,6 @@ struct MessageListView: View {
 
     let messages: [ChatMessage]
     let streamingState: AssistantConversation.StreamingState
-    var showToolActivity: Bool = true
-    var showIterationCapBanner: Bool = false
     var onPickPrompt: (String) -> Void = { _ in }
 
     @StateObject private var scrollController = ChatScrollController()
@@ -20,7 +18,7 @@ struct MessageListView: View {
                 ChatScrollView(controller: scrollController) {
                     LazyVStack(alignment: .leading, spacing: AssistantSpacing.large) {
                         ForEach(messages) { message in
-                            MessageBubble(message: message, showToolActivity: showToolActivity)
+                            MessageBubble(message: message)
                                 .id(message.id)
                         }
                         if isAssistantTyping {
@@ -32,9 +30,6 @@ struct MessageListView: View {
                         }
                         if case .outcomeUnknown(let reason) = streamingState {
                             OutcomeUnknownBanner(reason: reason)
-                        }
-                        if showIterationCapBanner {
-                            IterationCapBanner()
                         }
                     }
                     .padding(.horizontal, AssistantSpacing.large)

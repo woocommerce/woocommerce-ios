@@ -3,7 +3,6 @@ import SwiftUI
 struct MessageBubble: View {
 
     let message: ChatMessage
-    var showToolActivity: Bool = true
 
     @Environment(\.assistantConfirmationHandler) private var confirmationHandler
 
@@ -31,16 +30,50 @@ struct MessageBubble: View {
         guard message.role == .assistant else { return message.segments }
 
         var lastToolCallID: UUID?
-        var renderableToolResultIDs: Set<UUID> = []
-        let hasCardRender = message.segments.contains { if case .cardRender = $0 { return true }; return false }
+        var hasCardRender = false
+        var hasText = false
+        var firstSearchNonEmpty: UUID?
+        var lastListNonEmpty: UUID?
+        var lastStrictAny: UUID?
+        var lastSingle: UUID?
+        var analyticsIDs: [UUID] = []
 
         for segment in message.segments {
-            if case .toolCall(let id, _, _, _, _) = segment {
+            switch segment {
+            case .text:
+                hasText = true
+            case .cardRender:
+                hasCardRender = true
+            case .toolCall(let id, _, _, _, _):
                 lastToolCallID = id
+            case .toolResult(let id, _, let name, let payload):
+                if name.hasPrefix("analytics_") {
+                    analyticsIDs.append(id)
+                    continue
+                }
+                let isSearch = name.hasSuffix("_search")
+                let isList = name.hasSuffix("_list")
+                let isStrict = isSearch || isList
+                let rowCount = arrayCount(payload)
+                if isStrict { lastStrictAny = id }
+                if isSearch, rowCount > 0, firstSearchNonEmpty == nil {
+                    firstSearchNonEmpty = id
+                } else if isList, rowCount > 0 {
+                    lastListNonEmpty = id
+                } else if !isStrict {
+                    lastSingle = id
+                }
+            case .confirmation:
+                break
             }
         }
+
+        var renderableToolResultIDs: Set<UUID> = []
         if !hasCardRender, !message.isStreaming {
-            renderableToolResultIDs = pickFallbackToolResultIDs()
+            renderableToolResultIDs = Set(analyticsIDs)
+            if let pick = firstSearchNonEmpty ?? lastListNonEmpty ?? lastStrictAny ?? lastSingle {
+                renderableToolResultIDs.insert(pick)
+            }
         }
 
         let filtered = message.segments.filter { segment in
@@ -50,18 +83,16 @@ struct MessageBubble: View {
             case .cardRender:
                 return !message.isStreaming
             case .toolCall(let id, _, _, _, _):
-                return showToolActivity && id == lastToolCallID
+                return id == lastToolCallID
             case .toolResult(let id, _, _, _):
                 return renderableToolResultIDs.contains(id)
             }
         }
 
-        return deferCardsAfterText(filtered)
+        return hasText ? deferCardsAfterText(filtered) : filtered
     }
 
     private func deferCardsAfterText(_ segments: [MessageSegment]) -> [MessageSegment] {
-        let hasText = segments.contains { if case .text = $0 { return true }; return false }
-        guard hasText else { return segments }
         var deferred: [MessageSegment] = []
         var rest: [MessageSegment] = []
         for segment in segments {
@@ -84,38 +115,6 @@ struct MessageBubble: View {
         }
     }
 
-    private func pickFallbackToolResultIDs() -> Set<UUID> {
-        var firstSearchNonEmpty: UUID?
-        var lastListNonEmpty: UUID?
-        var lastStrictAny: UUID?
-        var lastSingle: UUID?
-        var analyticsIDs: [UUID] = []
-        for segment in message.segments {
-            guard case .toolResult(let id, _, let name, let payload) = segment else { continue }
-            if name.hasPrefix("analytics_") {
-                analyticsIDs.append(id)
-                continue
-            }
-            let isSearch = name.hasSuffix("_search")
-            let isList = name.hasSuffix("_list")
-            let isStrict = isSearch || isList
-            let rowCount = arrayCount(payload)
-            if isStrict { lastStrictAny = id }
-            if isSearch, rowCount > 0, firstSearchNonEmpty == nil {
-                firstSearchNonEmpty = id
-            } else if isList, rowCount > 0 {
-                lastListNonEmpty = id
-            } else if !isStrict {
-                lastSingle = id
-            }
-        }
-        var ids: Set<UUID> = Set(analyticsIDs)
-        if let pick = firstSearchNonEmpty ?? lastListNonEmpty ?? lastStrictAny ?? lastSingle {
-            ids.insert(pick)
-        }
-        return ids
-    }
-
     private func arrayCount(_ value: AnyCodableJSON) -> Int {
         if case .array(let elements) = value { return elements.count }
         return 0
@@ -134,9 +133,8 @@ struct MessageBubble: View {
             MessageCardHost(toolName: name, payload: payload)
         case .cardRender(_, _, let name, let payload):
             MessageCardHost(toolName: name, payload: payload)
-        case .confirmation(_, let proposalID, let toolName, let preview, let status):
+        case .confirmation(_, let proposalID, _, let preview, let status):
             ConfirmationCard(proposalID: proposalID,
-                             toolName: toolName,
                              preview: preview,
                              status: status,
                              onConfirm: { confirmationHandler.onConfirm(proposalID) },

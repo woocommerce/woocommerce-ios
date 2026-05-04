@@ -1,1 +1,1 @@
-Sorun giderme aracı artık analiz ve bildirim ayarlarınızı kontrol ederek mağazanızdaki sorunları tanılamayı kolaylaştırır.
+Satış Noktası artık daha güvenilir! Artık Bluetooth kart okuyucunuzun bağlantısı geçici olarak kesildiğinde ve fiyatlar değiştiyse ödeme sırasında otomatik olarak yenilendiğinde durum güncellemelerini göreceksiniz. Bağlantı sorunlarının tanılanmasına yardımcı olmak için bir oturum açma sorun giderme aracı, iOS 26 için görsel düzeltmeler ve arama alanlarında kullanışlı bir temizleme düğmesi de ekledik.

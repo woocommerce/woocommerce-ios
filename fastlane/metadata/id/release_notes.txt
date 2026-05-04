@@ -1,1 +1,1 @@
-Kini alat pemecahan masalah memeriksa pengaturan analitik dan pemberitahuan Anda, sehingga lebih mudah untuk mendiagnosis masalah yang terjadi di toko Anda.
+Titik Penjualan kini makin andal! Anda akan melihat pembaruan status yang jelas saat pembaca kartu Bluetooth Anda terputus untuk sementara, dan harga diperbarui secara otomatis saat checkout jika terjadi perubahan harga. Kami juga telah menambahkan alat pemecahan masalah login untuk membantu mendiagnosis masalah sambungan, serta penyempurnaan visual untuk iOS 26 dan tombol hapus yang praktis di kolom pencarian.

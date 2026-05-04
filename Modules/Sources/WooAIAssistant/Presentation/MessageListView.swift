@@ -67,7 +67,22 @@ struct MessageListView: View {
     }
 
     private var isAssistantTyping: Bool {
-        streamingState == .sending
+        Self.shouldShowLoadingIndicator(messages: messages, streamingState: streamingState)
+    }
+
+    /// Dots represent active work between turns. They must be hidden whenever
+    /// the agentic loop is paused on a pending confirmation, regardless of the
+    /// underlying `StreamingState`, because the assistant is waiting on the
+    /// merchant rather than generating a response.
+    static func shouldShowLoadingIndicator(messages: [ChatMessage],
+                                           streamingState: AssistantConversation.StreamingState) -> Bool {
+        guard !messages.hasPendingConfirmation else { return false }
+        switch streamingState {
+        case .sending:
+            return true
+        case .idle, .streaming, .failed, .outcomeUnknown:
+            return false
+        }
     }
 
     private var lastSegmentSignature: String {

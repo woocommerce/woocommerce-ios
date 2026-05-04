@@ -96,14 +96,7 @@ public struct AssistantChatView: View {
     }
 
     private var hasPendingConfirmation: Bool {
-        for message in controller.conversation.messages {
-            for segment in message.segments {
-                if case .confirmation(_, _, _, _, let status) = segment, status == .pending {
-                    return true
-                }
-            }
-        }
-        return false
+        controller.conversation.messages.hasPendingConfirmation
     }
 
     private func send() {

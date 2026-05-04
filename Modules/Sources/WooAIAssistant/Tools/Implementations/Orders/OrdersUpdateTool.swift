@@ -14,7 +14,10 @@ public enum OrdersUpdateTool {
         Update an order's allowlisted fields: status, customer_note, billing email. \
         Status changes such as completed/cancelled/refunded fire customer emails - the \
         merchant confirms before this dispatches. Do NOT use this to issue a refund - \
-        moving an order to "refunded" only changes the status, it does not return funds.
+        moving an order to "refunded" only changes the status, it does not return funds. \
+        Only call when the merchant has explicitly requested a change. Do NOT call to \
+        trigger side effects (e.g. flipping a status to send a customer email) or to \
+        answer information questions.
         """,
         parametersSchema: .object([
             "type": .string("object"),

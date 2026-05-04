@@ -14,7 +14,8 @@ public enum ProductVariationsUpdateTool {
         Update a product variation's allowlisted fields: regular_price, \
         sale_price, stock_quantity, stock_status, sku, status. Provide only \
         the fields you want to change. Requires product_id (parent) and id \
-        (variation).
+        (variation). Only call when the merchant has explicitly requested a \
+        change; never call to answer an information question.
         """,
         parametersSchema: .object([
             "type": .string("object"),

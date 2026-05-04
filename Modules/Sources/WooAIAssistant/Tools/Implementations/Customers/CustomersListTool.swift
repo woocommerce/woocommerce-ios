@@ -14,7 +14,10 @@ public enum CustomersListTool {
         List customers, optionally filtered by keyword (matches name, email, \
         username) or email. Use `include=[id]` to look up one customer by ID; \
         the per-id customer endpoint requires manage_woocommerce so include \
-        is the universal path.
+        is the universal path. After calling, pass results to `show_cards` \
+        to render. If a search returns no matches, do not retry with \
+        synonyms, capitalisation variants, or broader terms - say no match \
+        was found.
         """,
         parametersSchema: .object([
             "type": .string("object"),

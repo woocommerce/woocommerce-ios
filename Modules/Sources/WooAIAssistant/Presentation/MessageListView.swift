@@ -24,7 +24,6 @@ struct MessageListView: View {
                         }
                         if isAssistantTyping {
                             TypingIndicator()
-                                .padding(.leading, AssistantSpacing.medium)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         if case .failed(let reason) = streamingState {

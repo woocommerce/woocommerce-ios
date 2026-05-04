@@ -80,7 +80,7 @@ struct AgenticLoopOrchestratorTests {
         let proposal = try #require(confirmationProposal)
         #expect(proposal.toolName == "orders_update")
         #expect(proposal.toolCallID == "call_1")
-        #expect(proposal.preview.contains("42"))
+        #expect(proposal.preview.fields.first?.name == "status")
 
         let resolved: Bool? = events.compactMap { event in
             if case .confirmationResolved(let proposalID, let approved) = event,

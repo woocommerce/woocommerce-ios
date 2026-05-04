@@ -30,7 +30,7 @@ struct MessageSegmentTests {
             .confirmation(id: confirmationID,
                           proposalID: UUID(),
                           toolName: "orders_update",
-                          preview: "Mark order #1 completed",
+                          preview: ConfirmationPreview(summary: .raw("Mark order #1 completed")),
                           status: .pending)
         ]
 

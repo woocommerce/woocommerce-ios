@@ -98,7 +98,7 @@ struct ChatMessageTests {
                                   segments: [.confirmation(id: UUID(),
                                                            proposalID: proposalID,
                                                            toolName: "orders_update",
-                                                           preview: "Mark order #3551 completed",
+                                                           preview: ConfirmationPreview(summary: .raw("Mark order #3551 completed")),
                                                            status: .pending)])
 
         // When
@@ -166,7 +166,7 @@ struct ChatMessageTests {
         let original: [MessageSegment] = [.confirmation(id: UUID(),
                                                         proposalID: UUID(),
                                                         toolName: "orders_update",
-                                                        preview: "Mark order #1 completed",
+                                                        preview: ConfirmationPreview(summary: .raw("Mark order #1 completed")),
                                                         status: .pending)]
         var message = ChatMessage(role: .assistant, segments: original)
 
@@ -185,7 +185,7 @@ struct ChatMessageTests {
                                   segments: [.confirmation(id: UUID(),
                                                            proposalID: proposalID,
                                                            toolName: "orders_update",
-                                                           preview: "Mark order #1 completed",
+                                                           preview: ConfirmationPreview(summary: .raw("Mark order #1 completed")),
                                                            status: .pending)])
 
         // When

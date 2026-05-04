@@ -125,7 +125,9 @@ struct WooAssistantHeadlessTests {
         #expect(confirmation.toolName == "orders_update")
         #expect(confirmation.decision == "auto-declined")
         let restCalls = await restClient.calls
-        let destructiveCallCount = restCalls.filter { $0.path.contains("orders/42") }.count
+        let destructiveCallCount = restCalls.filter {
+            $0.path.contains("orders/42") && $0.method != "GET"
+        }.count
         #expect(destructiveCallCount == 0, "destructive REST call must be suppressed when declined")
     }
 

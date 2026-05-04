@@ -4,7 +4,7 @@ import Testing
 
 struct DefaultSafetyPolicyTests {
     @Test
-    func test_decision_when_tool_safe_then_execute() {
+    func test_decision_when_tool_safe_then_execute() async {
         // Given
         let tool = AITool(name: "orders_list",
                           description: "List orders",
@@ -13,14 +13,14 @@ struct DefaultSafetyPolicyTests {
         let policy = DefaultSafetyPolicy()
 
         // When
-        let decision = policy.decision(for: tool.name, arguments: "{}", tool: tool)
+        let decision = await policy.decision(for: tool.name, arguments: "{}", tool: tool)
 
         // Then
         #expect(decision == .execute)
     }
 
     @Test
-    func test_decision_when_tool_unsafe_then_requireConfirmation_with_preview() {
+    func test_decision_when_tool_unsafe_then_requireConfirmation_with_typed_preview() async {
         // Given
         let tool = AITool(name: "orders_update",
                           description: "Update an order",
@@ -29,16 +29,16 @@ struct DefaultSafetyPolicyTests {
         let policy = DefaultSafetyPolicy()
 
         // When
-        let decision = policy.decision(for: tool.name,
-                                       arguments: #"{"id":42,"status":"processing"}"#,
-                                       tool: tool)
+        let decision = await policy.decision(for: tool.name,
+                                             arguments: #"{"id":42,"status":"pending"}"#,
+                                             tool: tool)
 
         // Then
         guard case .requireConfirmation(let preview) = decision else {
             Issue.record("expected .requireConfirmation, got \(decision)")
             return
         }
-        #expect(preview.isEmpty == false)
-        #expect(preview.contains("42"))
+        #expect(preview.fields.first?.name == "status")
+        #expect(preview.fields.first?.value == .raw("pending"))
     }
 }

@@ -260,10 +260,11 @@ public actor WooAssistantHeadless {
         self.configuration = configuration
         let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.allTools())
         let prompt = configuration.systemPrompt
+        let resolver = DefaultConfirmationSnapshotResolver(client: restClient)
         self.backend = AgenticChatBackend(
             chatService: chatService,
             toolRegistry: toolRegistry,
-            safetyPolicy: DefaultSafetyPolicy(),
+            safetyPolicy: DefaultSafetyPolicy(snapshotResolver: resolver),
             systemPromptProvider: { prompt },
             maxIterations: configuration.maxIterations
         )
@@ -323,9 +324,10 @@ public actor WooAssistantHeadless {
                 break
 
             case .confirmationRequired(let proposal):
+                let flatPreview = proposal.preview.flattenedSummary()
                 let pending = PendingConfirmation(
                     toolName: proposal.toolName,
-                    preview: proposal.preview,
+                    preview: flatPreview,
                     classification: Self.classificationString(for: proposal.toolName)
                 )
                 let approved: Bool
@@ -351,7 +353,7 @@ public actor WooAssistantHeadless {
                 result.confirmations.append(.init(
                     toolName: proposal.toolName,
                     classification: pending.classification,
-                    preview: proposal.preview,
+                    preview: flatPreview,
                     decision: decisionLabel
                 ))
                 if approved {

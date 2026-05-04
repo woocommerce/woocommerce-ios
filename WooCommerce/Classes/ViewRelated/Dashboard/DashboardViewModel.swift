@@ -236,6 +236,10 @@ final class DashboardViewModel: ObservableObject {
     }
 
     private func observeAIAssistantEligibility() {
+        // Seed the eligibility flag from the current site so the dashboard reflects it on first load,
+        // even if the underlying site publisher does not replay its current value on subscription.
+        isAIAssistantEligible = aiAssistantEligibilityChecker.isEligible(for: stores.sessionManager.defaultSite)
+
         stores.sessionManager.defaultSitePublisher
             .map { [aiAssistantEligibilityChecker] site in
                 aiAssistantEligibilityChecker.isEligible(for: site)

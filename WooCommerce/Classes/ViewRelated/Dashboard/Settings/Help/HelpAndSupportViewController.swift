@@ -78,7 +78,6 @@ final class HelpAndSupportViewController: UIViewController {
         developerFFPanelEnabled: !ServiceLocator.stores.isAuthenticated
             && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel),
         isAIChatEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
-            && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false
     )
 
     private var isMacCatalyst: Bool {
@@ -236,6 +235,8 @@ private extension HelpAndSupportViewController {
             configureSiteCompatibility(cell: cell)
         case let cell as ValueOneTableViewCell where row == .featureFlags:
             configureFeatureFlags(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .aiSupportChat:
+            configureAISupportChat(cell: cell)
         case let cell as ValueOneTableViewCell where row == .chatHistory:
             configureChatHistory(cell: cell)
         default:
@@ -321,6 +322,23 @@ private extension HelpAndSupportViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = "Override Feature Flags"
         cell.detailTextLabel?.text = "Toggle local feature flags"
+    }
+
+    /// AI Support Chat cell
+    ///
+    func configureAISupportChat(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString(
+            "helpAndSupport.aiSupportChat.title",
+            value: "Chat with Support",
+            comment: "Title for the AI support chat row on the Help screen"
+        )
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "helpAndSupport.aiSupportChat.subtitle",
+            value: "Get help from our AI assistant",
+            comment: "Subtitle for the AI support chat row on the Help screen"
+        )
     }
 
     /// Chat History cell
@@ -453,6 +471,27 @@ private extension HelpAndSupportViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 
+    /// AI Support Chat action
+    ///
+    func aiSupportChatWasPressed() {
+        let entryPoint: SupportChatViewModel.EntryPoint = ServiceLocator.stores.isAuthenticated
+            ? .helpAndSupport
+            : .preLogin
+        let viewModel = SupportChatViewModel(
+            entryPoint: entryPoint,
+            onContactHumanSupport: { [weak self] transcript in
+                self?.navigateToContactSupport(transcript: transcript)
+            }
+        )
+        let controller = SupportChatHostingController(viewModel: viewModel)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func navigateToContactSupport(transcript: String) {
+        let viewController = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag))
+        viewController.show(from: self)
+    }
+
     /// Chat History action
     ///
     func chatHistoryWasPressed() {
@@ -472,6 +511,7 @@ private extension HelpAndSupportViewController {
     private func resumeChat(for summary: SupportChatSummary) {
         let chatViewModel = SupportChatViewModel(
             botSlug: summary.botSlug,
+            entryPoint: .chatHistory,
             chatID: summary.chatID,
             onContactHumanSupport: { [weak self] _ in
                 self?.navigationController?.popViewController(animated: true)
@@ -537,6 +577,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             siteCompatibilityWasPressed()
         case .featureFlags:
             featureFlagsWasPressed()
+        case .aiSupportChat:
+            aiSupportChatWasPressed()
         case .chatHistory:
             chatHistoryWasPressed()
         }
@@ -560,6 +602,7 @@ private struct Section {
 enum HelpAndSupportRow: CaseIterable {
     case helpCenter
     case contactSupport
+    case aiSupportChat
     case contactEmail
     case applicationLog
     case systemStatusReport
@@ -569,7 +612,8 @@ enum HelpAndSupportRow: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
-        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .siteCompatibility, .featureFlags, .chatHistory:
+        case .helpCenter, .contactSupport, .aiSupportChat, .contactEmail, .applicationLog,
+             .systemStatusReport, .siteCompatibility, .featureFlags, .chatHistory:
             return ValueOneTableViewCell.self
         }
     }

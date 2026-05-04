@@ -20,6 +20,8 @@ import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
 import enum PointOfSale.POSEligibilityState
 import enum PointOfSale.POSIneligibleReason
 import enum Yosemite.POSCountryCurrencyValidator
+import protocol Yosemite.CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
+import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityService
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
@@ -28,15 +30,18 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
     private let appPasswordSupportState: ApplicationPasswordsExperimentState
+    private let expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
 
     init(siteID: Int64,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          stores: StoresManager = ServiceLocator.stores,
          systemStatusService: POSSystemStatusServiceProtocol? = nil,
-         siteSettingService: POSSiteSettingServiceProtocol? = nil) {
+         siteSettingService: POSSiteSettingServiceProtocol? = nil,
+         expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService()) {
         self.siteID = siteID
         self.siteSettings = siteSettings
         self.stores = stores
+        self.expansionEligibilityService = expansionEligibilityService
         self.appPasswordSupportState = ApplicationPasswordsExperimentState()
 
         let credentials = stores.sessionManager.defaultCredentials
@@ -214,7 +219,12 @@ private extension POSTabEligibilityChecker {
     }
 
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> SiteSettingsEligibilityState {
-        let validationResult = POSCountryCurrencyValidator.validate(countryCode: countryCode, currencyCode: currencyCode)
+        let validationResult = POSCountryCurrencyValidator.validate(
+            countryCode: countryCode,
+            currencyCode: currencyCode,
+            siteID: siteID,
+            eligibilityService: expansionEligibilityService
+        )
 
         switch validationResult {
         case .eligible:

@@ -10,7 +10,7 @@ import YosemiteTestHelpers
 
 
 final class StorePerformanceViewModelTests: XCTestCase {
-    private var storageManager: StorageManagerType!
+    private var storageManager: MockStorageManager!
     private var storage: StorageType {
         storageManager.viewStorage
     }
@@ -364,6 +364,322 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(properties?["type"], "performance")
     }
 
+    // MARK: - Order type bottom sheet
+
+    @MainActor
+    func test_orderType_when_cached_SiteSetting_exists_then_seeded_synchronously_on_init() {
+        // Given — a previously persisted analytics order date type for this site.
+        let cachedSetting = SiteSetting.fake().copy(siteID: 123,
+                                                    settingID: "woocommerce_date_type",
+                                                    value: AnalyticsOrderDateType.allOrders.rawValue,
+                                                    settingGroupKey: "wc_admin")
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: cachedSetting)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+
+        // When
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
+
+        // Then — the cached value seeds `orderType` synchronously, before any network round-trip.
+        XCTAssertEqual(viewModel.orderType, .allOrders)
+    }
+
+    @MainActor
+    func test_orderType_when_loadOrderType_succeeds_then_value_is_published() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsOrderDateType(_, onCompletion):
+                onCompletion(.success(.completed))
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
+
+        // Then
+        XCTAssertEqual(viewModel.orderType, .paid) // initial fallback (no cached SiteSetting)
+        waitUntil {
+            viewModel.orderType == .completed
+        }
+    }
+
+    @MainActor
+    func test_orderType_when_loadOrderType_fails_then_value_falls_back_to_paid() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsOrderDateType(_, onCompletion):
+                onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
+
+        // Then — orderType remains the default `.paid` after failed fetch
+        XCTAssertEqual(viewModel.orderType, .paid)
+    }
+
+    @MainActor
+    func test_handleOrderTypeSelection_when_value_matches_current_then_no_action_dispatched_and_returns_true() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var updateActionDispatched = false
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case .updateAnalyticsOrderDateType:
+                updateActionDispatched = true
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
+
+        // When
+        let shouldDismiss = await viewModel.handleOrderTypeSelection(.paid)
+
+        // Then
+        XCTAssertTrue(shouldDismiss)
+        XCTAssertFalse(updateActionDispatched)
+        XCTAssertNil(viewModel.orderTypeUpdateError)
+    }
+
+    @MainActor
+    func test_handleOrderTypeSelection_when_save_succeeds_then_orderType_is_updated_and_returns_true() async {
+        // Given
+        var receivedValue: AnalyticsOrderDateType?
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case let .updateAnalyticsOrderDateType(_, value, onCompletion):
+                receivedValue = value
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        // Stub stats actions so reloadDataIfNeeded(forceRefresh:) doesn't hang.
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveStats(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteVisitStats(_, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
+
+        // When
+        let shouldDismiss = await viewModel.handleOrderTypeSelection(.completed)
+
+        // Then
+        XCTAssertTrue(shouldDismiss)
+        XCTAssertEqual(receivedValue, .completed)
+        XCTAssertEqual(viewModel.orderType, .completed)
+        XCTAssertNil(viewModel.orderTypeUpdateError)
+        XCTAssertNil(viewModel.updatingOrderType)
+    }
+
+    @MainActor
+    func test_handleOrderTypeSelection_when_save_fails_then_error_is_set_and_returns_false() async {
+        // Given
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case .updateAnalyticsOrderDateType(_, _, let onCompletion):
+                onCompletion(.failure(expectedError))
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
+
+        // When
+        let shouldDismiss = await viewModel.handleOrderTypeSelection(.allOrders)
+
+        // Then
+        XCTAssertFalse(shouldDismiss)
+        XCTAssertEqual(viewModel.orderType, .paid)
+        XCTAssertEqual(viewModel.orderTypeUpdateError as? NetworkError, expectedError)
+        XCTAssertNil(viewModel.updatingOrderType)
+    }
+
+    @MainActor
+    func test_handleOrderTypeSelection_while_save_is_in_flight_then_updatingOrderType_reflects_new_type() async {
+        // Given — hold the update-action completion so the save suspends mid-flight.
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var pendingUpdateCompletion: ((Result<Void, Error>) -> Void)?
+        let updateActionDispatched = expectation(description: "update action dispatched")
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case let .updateAnalyticsOrderDateType(_, _, onCompletion):
+                pendingUpdateCompletion = onCompletion
+                updateActionDispatched.fulfill()
+            default:
+                break
+            }
+        }
+        // Stub stats actions so the post-save reload doesn't hang.
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveStats(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteVisitStats(_, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
+        XCTAssertNil(viewModel.updatingOrderType)
+
+        // When — kick off the selection; it suspends waiting on `pendingUpdateCompletion`.
+        let task = Task { @MainActor in
+            await viewModel.handleOrderTypeSelection(.completed)
+        }
+        await fulfillment(of: [updateActionDispatched], timeout: 1)
+
+        // Then — while the save is in flight, the in-flight type is exposed for the bottom sheet row spinner.
+        XCTAssertEqual(viewModel.updatingOrderType, .completed)
+
+        // Cleanup — release the suspended save and verify the in-flight state clears.
+        pendingUpdateCompletion?(.success(()))
+        _ = await task.value
+        XCTAssertNil(viewModel.updatingOrderType)
+    }
+
+    @MainActor
+    func test_handleOrderTypeSelection_when_save_succeeds_then_tracks_selected_event_with_type_and_option() async throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case .updateAnalyticsOrderDateType(_, _, let onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveStats(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteVisitStats(_, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init(),
+                                                  analytics: analytics)
+
+        // When
+        _ = await viewModel.handleOrderTypeSelection(.allOrders)
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dashboard_stats_order_date_type_selected" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["type"], "dashboard_stats")
+        XCTAssertEqual(properties?["option"], "date_created")
+    }
+
+    @MainActor
+    func test_handleOrderTypeSelection_when_save_fails_then_does_not_track_selected_event() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case .updateAnalyticsOrderDateType(_, _, let onCompletion):
+                onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init(),
+                                                  analytics: analytics)
+
+        // When
+        _ = await viewModel.handleOrderTypeSelection(.completed)
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("dashboard_stats_order_date_type_selected"))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("dashboard_stats_order_date_type_update_failed"))
+    }
+
+    @MainActor
+    func test_trackOrderDateTypeSelectorTapped_tracks_selector_event_with_type_property() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init(), analytics: analytics)
+
+        // When
+        viewModel.trackOrderDateTypeSelectorTapped()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dashboard_stats_order_date_type_selector_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["type"], "dashboard_stats")
+    }
+
     @MainActor
     func test_given_existing_cached_data_when_timestamp_is_fresh_then_cached_data_is_shown() async {
         // Given
@@ -401,6 +717,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
                                                   totalOrders: 3,
                                                   totalItemsSold: 5,
                                                   grossRevenue: 800,
+                                                  grossSales: 0,
                                                   netRevenue: 800,
                                                   averageOrderValue: 266
                                               )
@@ -422,6 +739,154 @@ final class StorePerformanceViewModelTests: XCTestCase {
 
         // Cleanup
         DashboardTimestampStore.removeTimestamp(for: .performance, at: .today)
+    }
+
+    // MARK: Revenue type segmented control
+
+    @MainActor
+    func test_revenueType_when_load_returns_value_then_published() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadLastSelectedDashboardRevenueStatsType(_, onCompletion):
+                onCompletion(.gross)
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+
+        // Then
+        XCTAssertEqual(viewModel.revenueType, .total) // initial fallback
+        waitUntil {
+            viewModel.revenueType == .gross
+        }
+    }
+
+    @MainActor
+    func test_didSelectRevenueType_when_new_type_then_persists_and_clears_chart_selection() {
+        // Given
+        var savedRevenueType: DashboardRevenueStatsType?
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .setLastSelectedDashboardRevenueStatsType(_, revenueType):
+                savedRevenueType = revenueType
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        viewModel.didSelectStatsInterval(at: 1)
+
+        // When
+        viewModel.didSelectRevenueType(.net)
+
+        // Then
+        XCTAssertEqual(viewModel.revenueType, .net)
+        XCTAssertEqual(savedRevenueType, .net)
+        // Switching the metric clears the highlighted chart point so the card header reverts to the period total.
+        waitUntil {
+            viewModel.shouldHighlightStats == false
+        }
+    }
+
+    @MainActor
+    func test_didSelectRevenueType_when_same_type_then_noop() {
+        // Given
+        var saveCallCount = 0
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .setLastSelectedDashboardRevenueStatsType:
+                saveCallCount += 1
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        XCTAssertEqual(viewModel.revenueType, .total)
+
+        // When
+        viewModel.didSelectRevenueType(.total)
+
+        // Then — no save dispatched, no event tracked.
+        XCTAssertEqual(saveCallCount, 0)
+    }
+
+    @MainActor
+    func test_didSelectRevenueType_after_async_loaders_resolve_then_chart_data_persists_for_new_metric() {
+        // Given — the user has saved `.thisMonth` as the last range, so init creates two
+        // period view models: one for the initial `.today`, then one for `.thisMonth`. Without the
+        // periodViewModelSubscriptions cleanup, the initial `.today` VM's chart pipeline leaks and
+        // overwrites `$statsIntervalData` with empty data on every metric switch.
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadLastSelectedPerformanceTimeRange(_, onCompletion):
+                onCompletion(.thisMonth)
+            case let .loadLastSelectedDashboardRevenueStatsType(_, onCompletion):
+                onCompletion(.total) // user starts on .total
+            default:
+                break
+            }
+        }
+
+        // Insert stats so .thisMonth has non-zero values for ALL three metrics in subtotals.
+        let interval = OrderStatsV4Interval(interval: "2025-04-01",
+                                            dateStart: "2025-04-01 00:00:00",
+                                            dateEnd: "2025-04-30 23:59:59",
+                                            subtotals: .fake().copy(grossRevenue: 500,
+                                                                    grossSales: 480,
+                                                                    netRevenue: 450))
+        let orderStats = OrderStatsV4(siteID: 123,
+                                      granularity: .monthly,
+                                      totals: .fake().copy(grossRevenue: 500, grossSales: 480, netRevenue: 450),
+                                      intervals: [interval])
+
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
+
+        // Wait for the async timeRange load to settle, then insert the .thisMonth stats so
+        // the period view model's results controller picks them up.
+        waitUntil { viewModel.timeRange == .thisMonth }
+        insertOrderStats(orderStats, timeRange: .thisMonth)
+
+        // Confirm initial state: `.total` shows data.
+        waitUntil { viewModel.hasRevenue == true }
+        XCTAssertEqual(viewModel.revenueType, .total)
+        XCTAssertTrue(viewModel.hasRevenue, "Initial .total should show data")
+
+        // When — switch to `.net`.
+        viewModel.didSelectRevenueType(.net)
+
+        // Then — chart data should still be present (subtotals.netRevenue = 450).
+        XCTAssertEqual(viewModel.revenueType, .net)
+        XCTAssertTrue(viewModel.hasRevenue, "After switching to .net, chart should still show data — netRevenue=450 is non-zero")
+    }
+
+    @MainActor
+    func test_didSelectRevenueType_then_tracks_event_with_option_property() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  usageTracksEventEmitter: .init(),
+                                                  analytics: analytics)
+
+        // When
+        viewModel.didSelectRevenueType(.gross)
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("dashboard_stats_revenue_type_selected"))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties.last as? [String: AnyHashable])
+        XCTAssertEqual(properties["option"] as? String, "gross")
+        XCTAssertEqual(properties["type"] as? String, "dashboard_stats")
     }
 }
 

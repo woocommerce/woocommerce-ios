@@ -16,7 +16,10 @@ final class StoreInfoDataService {
     ///
     struct Stats {
         let revenue: Decimal
+        let netRevenue: Decimal
+        let averageOrderValue: Decimal
         let totalOrders: Int
+        let totalItemsSold: Int
         let totalVisitors: Int?
         let conversion: Double?
     }
@@ -68,7 +71,10 @@ final class StoreInfoDataService {
             // Assemble stats data
             let conversion = siteStats.visitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(siteStats.visitors) : 0
             return Stats(revenue: revenueAndOrders.totals.grossRevenue,
+                         netRevenue: revenueAndOrders.totals.netRevenue,
+                         averageOrderValue: revenueAndOrders.totals.averageOrderValue,
                          totalOrders: revenueAndOrders.totals.totalOrders,
+                         totalItemsSold: revenueAndOrders.totals.totalItemsSold,
                          totalVisitors: siteStats.visitors,
                          conversion: min(conversion, 1))
 
@@ -86,7 +92,10 @@ final class StoreInfoDataService {
     private func todayStatsWithoutVisitors(for storeID: Int64) async throws -> Stats {
         let revenueAndOrders = try await fetchTodaysRevenueAndOrders(for: storeID)
         return Stats(revenue: revenueAndOrders.totals.grossRevenue,
+                     netRevenue: revenueAndOrders.totals.netRevenue,
+                     averageOrderValue: revenueAndOrders.totals.averageOrderValue,
                      totalOrders: revenueAndOrders.totals.totalOrders,
+                     totalItemsSold: revenueAndOrders.totals.totalItemsSold,
                      totalVisitors: nil,
                      conversion: nil)
     }

@@ -256,6 +256,48 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.customAmounts.first?.id == second.id)
         }
 
+        @Test func presentAddCustomAmount_sets_sheet_presented_and_clears_editing_target() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            sut.presentEditCustomAmount(POSCustomAmount(name: "Existing", amount: "5.00", isTaxable: true))
+            try #require(sut.editingCustomAmount != nil)
+
+            // When
+            sut.presentAddCustomAmount()
+
+            // Then
+            #expect(sut.isCustomAmountSheetPresented == true)
+            #expect(sut.editingCustomAmount == nil)
+        }
+
+        @Test func presentEditCustomAmount_sets_sheet_presented_and_records_editing_target() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let target = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+
+            // When
+            sut.presentEditCustomAmount(target)
+
+            // Then
+            #expect(sut.isCustomAmountSheetPresented == true)
+            #expect(sut.editingCustomAmount == target)
+        }
+
+        @Test func dismissCustomAmountSheet_after_edit_clears_both_sheet_and_editing_target() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            sut.presentEditCustomAmount(POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true))
+            try #require(sut.isCustomAmountSheetPresented == true)
+            try #require(sut.editingCustomAmount != nil)
+
+            // When
+            sut.dismissCustomAmountSheet()
+
+            // Then
+            #expect(sut.isCustomAmountSheetPresented == false)
+            #expect(sut.editingCustomAmount == nil)
+        }
+
         @Test func removeAllItemsFromCart_clears_custom_amounts_too() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)

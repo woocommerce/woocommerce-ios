@@ -62,6 +62,7 @@ final class SupportDiagnosticsService {
         case enableOrderNotifications(settings: NotificationSettings)
         case setupJetpack
         case openNotificationSettings
+        case retryDiagnostics
 
         var title: String {
             switch self {
@@ -75,6 +76,8 @@ final class SupportDiagnosticsService {
                 return Localization.Action.setupJetpack
             case .openNotificationSettings:
                 return Localization.Action.openSettings
+            case .retryDiagnostics:
+                return Localization.Action.retryDiagnostics
             }
         }
 
@@ -86,6 +89,8 @@ final class SupportDiagnosticsService {
                 return "bolt.fill"
             case .openNotificationSettings:
                 return "gear"
+            case .retryDiagnostics:
+                return "arrow.clockwise"
             }
         }
     }
@@ -106,12 +111,19 @@ final class SupportDiagnosticsService {
 
     /// Result of a diagnostic test.
     ///
-    struct Result {
+    struct Result: Equatable {
         let test: Test
         let isSuccess: Bool
         let errorMessage: String?
         let technicalDetails: String?
         let suggestedAction: Action?
+
+        static func == (lhs: Result, rhs: Result) -> Bool {
+            lhs.test == rhs.test &&
+            lhs.isSuccess == rhs.isSuccess &&
+            lhs.errorMessage == rhs.errorMessage &&
+            lhs.suggestedAction == rhs.suggestedAction
+        }
 
         static func success(test: Test) -> Result {
             Result(test: test, isSuccess: true, errorMessage: nil, technicalDetails: nil, suggestedAction: nil)
@@ -596,6 +608,11 @@ private extension SupportDiagnosticsService {
                 "supportDiagnosticsService.action.openSettings",
                 value: "Open Settings",
                 comment: "Action button to open device notification settings"
+            )
+            static let retryDiagnostics = NSLocalizedString(
+                "supportDiagnosticsService.action.retryDiagnostics",
+                value: "Retry",
+                comment: "Action button to retry diagnostic tests"
             )
         }
 

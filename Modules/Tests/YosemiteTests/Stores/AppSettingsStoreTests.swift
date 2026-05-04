@@ -1316,6 +1316,53 @@ extension AppSettingsStoreTests {
         XCTAssertNil(loadedTimeRange)
     }
 
+    // MARK: - Last selected revenue stats type for Performance card
+
+    func test_setLastSelectedDashboardRevenueStatsType_works_correctly() throws {
+        // Given
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
+
+        // When
+        let action = AppSettingsAction.setLastSelectedDashboardRevenueStatsType(siteID: TestConstants.siteID,
+                                                                                revenueType: .net)
+        subject?.onAction(action)
+
+        // Then
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
+        assertEqual(DashboardRevenueStatsType.net.rawValue, settingsForSite.lastSelectedDashboardRevenueStatsType)
+    }
+
+    func test_loadLastSelectedDashboardRevenueStatsType_returns_persisted_value() throws {
+        // Given
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings =
+        GeneralStoreSettings(lastSelectedDashboardRevenueStatsType: DashboardRevenueStatsType.gross.rawValue)
+
+        // When
+        var loadedRevenueType: DashboardRevenueStatsType?
+        let action = AppSettingsAction.loadLastSelectedDashboardRevenueStatsType(siteID: TestConstants.siteID) { revenueType in
+            loadedRevenueType = revenueType
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(DashboardRevenueStatsType.gross, loadedRevenueType)
+    }
+
+    func test_loadLastSelectedDashboardRevenueStatsType_returns_nil_when_no_data_was_saved() throws {
+        // Given
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
+
+        // When
+        var loadedRevenueType: DashboardRevenueStatsType?
+        let action = AppSettingsAction.loadLastSelectedDashboardRevenueStatsType(siteID: TestConstants.siteID) { revenueType in
+            loadedRevenueType = revenueType
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedRevenueType)
+    }
+
     // MARK: - Last selected time range for Top Performers card
 
     func test_setLastSelectedTopPerformersTimeRange_works_correctly() throws {

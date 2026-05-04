@@ -273,6 +273,8 @@ let package = Package(
         .target(
             name: "WooAIAssistant",
             dependencies: [
+                "WooFoundation",
+                "NetworkingCore",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ]
         ),

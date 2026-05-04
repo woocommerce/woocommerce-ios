@@ -18,7 +18,9 @@ public enum ProductsBulkUpdateTool {
         Good for category-wide repricing, flipping a set of products to draft, \
         or stock resets after a restock. Per-product differences require \
         separate products_update calls. Variable products in the batch will \
-        silently no-op price changes; use product_variations_update for those.
+        silently no-op price changes; use product_variations_update for those. \
+        Only call when the merchant has explicitly requested a bulk change \
+        with a concrete list of ids.
         """,
         parametersSchema: .object([
             "type": .string("object"),

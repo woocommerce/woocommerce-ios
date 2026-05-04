@@ -7,7 +7,7 @@ public extension UnitLength {
     }
 }
 
-public final class ParcelFittingCheckCoordinator {
+public final class ParcelFittingCheckPresenter {
 
     public static func presentSizing(
         from presenter: UIViewController,

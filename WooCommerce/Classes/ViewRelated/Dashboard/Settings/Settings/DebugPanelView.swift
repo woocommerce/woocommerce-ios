@@ -103,7 +103,7 @@ struct DebugPanelView: View {
     private func presentDebugSizing() {
         guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
         let unit: UnitLength = .fromStoreUnit(ServiceLocator.shippingSettingsService.dimensionUnit ?? "in")
-        ParcelFittingCheckCoordinator.presentSizing(from: presenter, unit: unit, onConfirm: { _ in })
+        ParcelFittingCheckPresenter.presentSizing(from: presenter, unit: unit, onConfirm: { _ in })
     }
 
     private func presentDebugFitCheck() {
@@ -125,7 +125,7 @@ struct DebugPanelView: View {
                                     length: 16.0, width: 11.0, height: 3.0),
             ]),
         ]
-        ParcelFittingCheckCoordinator.presentFitCheck(from: presenter, unit: unit, carriers: carriers, onConfirm: { _ in })
+        ParcelFittingCheckPresenter.presentFitCheck(from: presenter, unit: unit, carriers: carriers, onConfirm: { _ in })
     }
 
     private func fetchTestAnnouncement() {

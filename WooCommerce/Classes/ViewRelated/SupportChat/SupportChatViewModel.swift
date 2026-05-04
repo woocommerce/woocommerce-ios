@@ -481,7 +481,6 @@ final class SupportChatViewModel {
             messages.append(pickerMessage)
 
         case .connectivityTool, .preLogin:
-            // Show standard greeting; no issue picker (no authenticated diagnostics available pre-login)
             let greetingMessage = ChatMessage(role: .bot, text: Localization.greetingMessage)
             messages.append(greetingMessage)
 

@@ -136,6 +136,50 @@ struct DefaultConfirmationPreviewBuilderTests {
     }
 
     @Test
+    func test_build_when_orders_update_status_and_customer_note_with_snapshot_then_status_field_has_priorValue() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(currentValues: ["status": .raw("completed")])
+
+        // When
+        let preview = builder.build(
+            toolName: OrdersUpdateTool.name,
+            arguments: #"{"id":42,"status":"pending","customer_note":"Hi"}"#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let statusField = try #require(unwrapped.fields.first(where: { $0.name == "status" }))
+        #expect(statusField.priorValue == .raw("Completed"))
+        #expect(unwrapped.fields.contains(where: { $0.name == "customer_note" }))
+    }
+
+    @Test
+    func test_build_when_orders_update_status_and_billing_email_with_snapshot_then_both_fields_have_priorValue() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(currentValues: [
+            "status": .raw("processing"),
+            "billing_email": .raw("old@example.com")
+        ])
+
+        // When
+        let preview = builder.build(
+            toolName: OrdersUpdateTool.name,
+            arguments: #"{"id":42,"status":"completed","billing_email":"new@example.com"}"#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let statusField = try #require(unwrapped.fields.first(where: { $0.name == "status" }))
+        #expect(statusField.priorValue == .raw("Processing"))
+        let emailField = try #require(unwrapped.fields.first(where: { $0.name == "billing_email" }))
+        #expect(emailField.priorValue == .raw("old@example.com"))
+    }
+
+    @Test
     func test_build_when_orders_update_customer_note_then_value_is_capitalized_placeholder() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()
@@ -232,6 +276,36 @@ struct DefaultConfirmationPreviewBuilderTests {
     }
 
     @Test
+    func test_build_when_products_update_multiple_fields_with_snapshot_then_each_field_has_priorValue() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(currentValues: [
+            "name": .raw("Old name"),
+            "regular_price": .raw("9.99"),
+            "stock_quantity": .raw("3"),
+            "status": .raw("draft")
+        ])
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"id":7,"name":"New name","regular_price":"24.99","stock_quantity":12,"status":"publish"}"#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let nameField = try #require(unwrapped.fields.first(where: { $0.name == "name" }))
+        #expect(nameField.priorValue == .raw("Old name"))
+        let priceField = try #require(unwrapped.fields.first(where: { $0.name == "regular_price" }))
+        #expect(priceField.priorValue == .raw("9.99"))
+        let stockField = try #require(unwrapped.fields.first(where: { $0.name == "stock_quantity" }))
+        #expect(stockField.priorValue == .raw("3"))
+        let statusField = try #require(unwrapped.fields.first(where: { $0.name == "status" }))
+        #expect(statusField.priorValue == .raw("Draft"))
+    }
+
+    @Test
     func test_build_when_products_update_sale_price_empty_then_value_is_off_marker() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()
@@ -288,6 +362,40 @@ struct DefaultConfirmationPreviewBuilderTests {
         let unwrapped = try #require(preview)
         let names = unwrapped.fields.map(\.name)
         #expect(names == ["regular_price", "stock_status", "sku"])
+    }
+
+    @Test
+    func test_build_when_product_variations_update_multiple_fields_with_snapshot_then_each_field_has_priorValue() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(currentValues: [
+            "regular_price": .raw("9.99"),
+            "stock_status": .raw("instock"),
+            "sku": .raw("OLD-SKU"),
+            "status": .raw("draft")
+        ])
+
+        // When
+        let preview = builder.build(
+            toolName: ProductVariationsUpdateTool.name,
+            arguments: #"{"product_id":7,"id":15,"regular_price":"19.99","stock_status":"outofstock","sku":"NEW-SKU","status":"publish"}"#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let priceField = try #require(unwrapped.fields.first(where: { $0.name == "regular_price" }))
+        #expect(priceField.priorValue == .raw("9.99"))
+        let stockField = try #require(unwrapped.fields.first(where: { $0.name == "stock_status" }))
+        if case .localized(let resource, _) = stockField.priorValue {
+            #expect(String(describing: resource).contains("instock"))
+        } else {
+            Issue.record("expected stock_status priorValue to be a localized resource")
+        }
+        let skuField = try #require(unwrapped.fields.first(where: { $0.name == "sku" }))
+        #expect(skuField.priorValue == .raw("OLD-SKU"))
+        let statusField = try #require(unwrapped.fields.first(where: { $0.name == "status" }))
+        #expect(statusField.priorValue == .raw("Draft"))
     }
 
     @Test

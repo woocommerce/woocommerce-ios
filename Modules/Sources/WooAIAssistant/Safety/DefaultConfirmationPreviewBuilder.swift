@@ -45,23 +45,11 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             return ConfirmationPreview(summary: .localized(Strings.ordersUpdateFallback))
         }
 
-        var fields: [ConfirmationPreviewField] = []
-        if let status = args.status {
-            fields.append(.init(name: "status",
-                                label: .localized(Strings.fieldStatus),
-                                value: orderStatusValue(status, isBulk: false),
-                                priorValue: priorOrderStatus(in: snapshot, currentValueRaw: status)))
-        }
-        if args.customer_note != nil {
-            fields.append(.init(name: "customer_note",
-                                label: .localized(Strings.fieldCustomerNote),
-                                value: .localized(Strings.fieldValueUpdated)))
-        }
-        if let email = args.billing_email {
-            fields.append(.init(name: "billing_email",
-                                label: .localized(Strings.fieldBillingEmail),
-                                value: .raw(email)))
-        }
+        let fields = orderFields(status: args.status,
+                                 customerNote: args.customer_note,
+                                 billingEmail: args.billing_email,
+                                 snapshot: snapshot,
+                                 isBulk: false)
 
         return ConfirmationPreview(
             summary: .localized(Strings.ordersUpdateSummary, args: [.raw(String(id))]),
@@ -84,22 +72,11 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             return ConfirmationPreview(summary: .localized(Strings.ordersBulkUpdateFallback))
         }
 
-        var fields: [ConfirmationPreviewField] = []
-        if let status = patch.status {
-            fields.append(.init(name: "status",
-                                label: .localized(Strings.fieldStatus),
-                                value: orderStatusValue(status, isBulk: true)))
-        }
-        if patch.customer_note != nil {
-            fields.append(.init(name: "customer_note",
-                                label: .localized(Strings.fieldCustomerNote),
-                                value: .localized(Strings.fieldValueUpdated)))
-        }
-        if let email = patch.billing_email {
-            fields.append(.init(name: "billing_email",
-                                label: .localized(Strings.fieldBillingEmail),
-                                value: .raw(email)))
-        }
+        let fields = orderFields(status: patch.status,
+                                 customerNote: patch.customer_note,
+                                 billingEmail: patch.billing_email,
+                                 snapshot: nil,
+                                 isBulk: true)
 
         let summary: ConfirmationPreviewText = .quantity(
             ids.count,
@@ -108,6 +85,35 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             args: [.raw(String(ids.count))]
         )
         return ConfirmationPreview(summary: summary, fields: fields, isBulk: true)
+    }
+
+    private func orderFields(status: String?,
+                             customerNote: String?,
+                             billingEmail: String?,
+                             snapshot: ConfirmationSnapshot?,
+                             isBulk: Bool) -> [ConfirmationPreviewField] {
+        var fields: [ConfirmationPreviewField] = []
+        if let status {
+            fields.append(.init(name: "status",
+                                label: .localized(Strings.fieldStatus),
+                                value: orderStatusValue(status, isBulk: isBulk),
+                                priorValue: isBulk ? nil : priorOrderStatus(in: snapshot,
+                                                                            currentValueRaw: status)))
+        }
+        if customerNote != nil {
+            fields.append(.init(name: "customer_note",
+                                label: .localized(Strings.fieldCustomerNote),
+                                value: .localized(Strings.fieldValueUpdated)))
+        }
+        if let email = billingEmail {
+            fields.append(.init(name: "billing_email",
+                                label: .localized(Strings.fieldBillingEmail),
+                                value: .raw(email),
+                                priorValue: isBulk ? nil : priorValue(for: "billing_email",
+                                                                      in: snapshot,
+                                                                      currentValue: email)))
+        }
+        return fields
     }
 
     // MARK: - Products

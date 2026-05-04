@@ -27,13 +27,20 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
         guard let parsed = decode(Args.self, from: arguments), let id = parsed.id else {
             return nil
         }
-        struct OrderResponse: Decodable { let status: String? }
+        struct OrderResponse: Decodable {
+            let status: String?
+            let billing: Billing?
+            struct Billing: Decodable { let email: String? }
+        }
         guard let order = await fetch(OrderResponse.self, path: "wc/v3/orders/\(id)") else {
             return nil
         }
         var values: [String: ConfirmationPreviewText] = [:]
         if let status = order.status {
             values["status"] = .raw(Self.normalizeOrderStatus(status))
+        }
+        if let email = order.billing?.email, !email.isEmpty {
+            values["billing_email"] = .raw(email)
         }
         return values.isEmpty ? nil : ConfirmationSnapshot(currentValues: values)
     }

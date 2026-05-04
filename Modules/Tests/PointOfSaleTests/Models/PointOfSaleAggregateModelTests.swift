@@ -1064,7 +1064,7 @@ struct PointOfSaleAggregateModelTests {
             sut.cancelCardPaymentsOnboarding()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_dismissed" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "payments_onboarding_dismissed" }))
             let eventProperties = try #require(analytics.events.map(\.properties).first(where: { $0.keys.contains("onboarding_state")
             }))
             #expect(eventProperties["onboarding_state"] as? String == "no_connection_error")
@@ -1085,7 +1085,7 @@ struct PointOfSaleAggregateModelTests {
             sut.trackCardPaymentsOnboardingShown()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_shown" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "payments_onboarding_shown" }))
         }
 
         @Test func connectCardReader_when_tapped_then_tracks_event() {
@@ -1101,7 +1101,7 @@ struct PointOfSaleAggregateModelTests {
             sut.connectCardReader()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "card_reader_connection_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "card_reader_connection_tapped" }))
         }
 
         @Test func disconnectCardReader_when_tapped_then_tracks_event() {
@@ -1117,7 +1117,7 @@ struct PointOfSaleAggregateModelTests {
             sut.disconnectCardReader()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "card_reader_disconnect_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "card_reader_disconnect_tapped" }))
         }
 
         @Test func cancelReconnection_calls_cardPresentPaymentService_cancelReconnection() async {
@@ -1166,7 +1166,7 @@ struct PointOfSaleAggregateModelTests {
             await sut.cancelCashPayment()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "back_to_checkout_from_cash" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "back_to_checkout_from_cash" }))
         }
 
         @Test func startCashPayment_when_invoked_tracks_expected_event() throws {
@@ -1177,7 +1177,7 @@ struct PointOfSaleAggregateModelTests {
             sut.startCashPayment()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "checkout_cash_payment_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "checkout_cash_payment_tapped" }))
         }
 
         @Test func collectCashPayment_when_invoked_tracks_expected_event() async throws {

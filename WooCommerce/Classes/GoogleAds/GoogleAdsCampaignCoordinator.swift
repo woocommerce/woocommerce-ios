@@ -117,15 +117,15 @@ private extension GoogleAdsCampaignCoordinator {
     func checkIfCampaignCreationSucceeded(url: URL) {
         let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         let queryItems = components?.queryItems
-        let creationSucceeded = queryItems?.first(where: {
+        let creationSucceeded = queryItems?.contains(where: {
             $0.name == Constants.Parameters.campaign &&
             $0.value == Constants.ParameterValues.saved
-        }) != nil
-        let setupAndCreationSucceed = queryItems?.first(where: {
+        })
+        let setupAndCreationSucceed = queryItems?.contains(where: {
             $0.name == Constants.Parameters.guide &&
             ($0.value == Constants.ParameterValues.creationSuccess ||
              $0.value == Constants.ParameterValues.submissionSuccess)
-        }) != nil
+        })
         if creationSucceeded || setupAndCreationSucceed {
             analytics.track(event: .GoogleAds.campaignCreationSuccess(source: source))
 

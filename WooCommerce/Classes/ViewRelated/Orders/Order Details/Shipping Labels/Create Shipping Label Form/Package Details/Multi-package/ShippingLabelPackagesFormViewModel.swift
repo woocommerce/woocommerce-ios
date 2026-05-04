@@ -181,7 +181,7 @@ private extension ShippingLabelPackagesFormViewModel {
                 }
 
                 if !currentPackage.isOriginalPackaging {
-                    let hasMultipleItems = currentPackage.items.count > 1 || currentPackage.items.first(where: { $0.quantity > 1 }) != nil
+                    let hasMultipleItems = currentPackage.items.count > 1 || currentPackage.items.contains(where: { $0.quantity > 1 })
                     if hasMultipleItems {
                         // Add option to add item to new package if current package has more than one item.
                         buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
@@ -383,7 +383,7 @@ private extension ShippingLabelPackagesFormViewModel {
     /// Disable Done button if any of the package validation fails.
     ///
     func configureDoneButton() {
-        doneButtonEnabled = packagesValidation.first(where: { $0.value == false }) == nil
+        doneButtonEnabled = packagesValidation!.contains(where: { $0.value == false })
     }
 
     func configureResultsControllers() {

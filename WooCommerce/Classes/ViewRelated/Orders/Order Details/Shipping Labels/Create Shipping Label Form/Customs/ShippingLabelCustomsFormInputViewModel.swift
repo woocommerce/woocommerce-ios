@@ -233,7 +233,7 @@ private extension ShippingLabelCustomsFormInputViewModel {
                     !self.checkMissingITNForDestination(itn) &&
                     !self.checkMissingITN(itn, for: classesAbove2500usd) &&
                     !self.checkInvalidITN(itn) &&
-                    itemsValidation.values.first(where: { !$0 }) == nil
+                    itemsValidation.values!.contains(where: { !$0 })
             }
             .removeDuplicates()
             .assign(to: &$validForm)

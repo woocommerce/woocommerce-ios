@@ -106,7 +106,7 @@ private extension ProductSelectorViewModelTracker {
 
         let section = viewModel.sections.first(where: { $0.type == sectionType })
 
-        return section?.products.first(where: { $0.productID == productID}) != nil
+        return section?.products.contains(where: { $0.productID == productID})
     }
 }
 

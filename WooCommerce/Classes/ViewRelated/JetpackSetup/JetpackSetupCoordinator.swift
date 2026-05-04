@@ -375,7 +375,7 @@ private extension JetpackSetupCoordinator {
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: 0) { result in
                 switch result {
                 case let .success(systemInformation):
-                    if systemInformation.systemPlugins.first(where: { Plugin(systemPlugin: $0) == .jetpack && $0.active }) != nil {
+                    if systemInformation.systemPlugins.contains(where: { Plugin(systemPlugin: $0) == .jetpack && $0.active }) {
                         continuation.resume(returning: true)
                     } else {
                         continuation.resume(returning: false)

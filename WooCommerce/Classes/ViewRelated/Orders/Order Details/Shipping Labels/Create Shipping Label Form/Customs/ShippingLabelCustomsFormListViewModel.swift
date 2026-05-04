@@ -121,6 +121,6 @@ private extension ShippingLabelCustomsFormListViewModel {
     /// Check if all forms are validated to enable Done button.
     ///
     func configureDoneButton() {
-        doneButtonEnabled = customsFormValidation.values.first(where: { !$0 }) == nil
+        doneButtonEnabled = customsFormValidation.values!.contains(where: { !$0 })
     }
 }

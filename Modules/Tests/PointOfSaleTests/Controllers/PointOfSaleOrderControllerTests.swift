@@ -631,7 +631,7 @@ struct PointOfSaleOrderControllerTests {
             await sut.syncOrder(for: Cart(purchasableItems: [fakeCartItem]), retryHandler: { })
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "order_creation_success" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "order_creation_success" }))
         }
 
         @Test func syncOrder_when_create_order_fails_with_order_service_error_then_tracks_order_creation_failure_event() async throws {
@@ -646,7 +646,7 @@ struct PointOfSaleOrderControllerTests {
             await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "order_creation_failed" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "order_creation_failed" }))
         }
 
         @MainActor
@@ -673,7 +673,7 @@ struct PointOfSaleOrderControllerTests {
             })
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "cash_payment_failed" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "cash_payment_failed" }))
         }
     }
 }

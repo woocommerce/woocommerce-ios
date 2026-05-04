@@ -5,4 +5,5 @@ public enum AssistantConfiguration {
     public static let promptVersion = "v1"
     public static let toolCatalogVersion = "v1"
     public static let featureName = "woo-ai-assistant"
+    public static let historyWindowSize = 20
 }

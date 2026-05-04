@@ -13,8 +13,10 @@ struct MessageBubble: View {
             VStack(alignment: alignment, spacing: AssistantSpacing.large) {
                 ForEach(orderedSegments) { segment in
                     segmentView(for: segment)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
             }
+            .animation(.snappy(duration: 0.2), value: orderedSegments.map(\.id))
             if message.role == .assistant { Spacer(minLength: AssistantSpacing.xxLarge) }
         }
         .frame(maxWidth: .infinity,
@@ -52,20 +54,7 @@ struct MessageBubble: View {
             }
         }
 
-        let reordered = deferShowCardsCardRendersAfterText(filtered)
-        return hideCardRendersWhileStreaming(reordered)
-    }
-
-    /// Cards arriving before the assistant text would shift the layout when
-    /// the text is appended above them. Suppress every cardRender segment
-    /// while the message is still streaming so cards reveal atomically once
-    /// the response finishes.
-    private func hideCardRendersWhileStreaming(_ segments: [MessageSegment]) -> [MessageSegment] {
-        guard message.isStreaming else { return segments }
-        return segments.filter { segment in
-            if case .cardRender = segment { return false }
-            return true
-        }
+        return deferShowCardsCardRendersAfterText(filtered)
     }
 
     /// When a turn includes show_cards results, render the assistant's text

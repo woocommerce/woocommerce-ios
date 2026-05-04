@@ -152,7 +152,7 @@ struct MessageBubbleOrderingTests {
     }
 
     @Test
-    func test_orderedSegments_when_message_is_streaming_then_cardRender_segments_are_hidden() {
+    func test_orderedSegments_when_message_is_streaming_then_cardRender_segments_render_inline() {
         // Given
         let textID = UUID()
         let firstCardID = UUID()
@@ -174,7 +174,7 @@ struct MessageBubbleOrderingTests {
         let ids = bubble.orderedSegments.map(\.id)
 
         // Then
-        #expect(ids == [textID])
+        #expect(ids == [textID, firstCardID, secondCardID])
     }
 
     @Test

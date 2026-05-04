@@ -26,7 +26,6 @@ struct InputBar: View {
                     .lineLimit(1...6)
                     .padding(.leading, AssistantSpacing.large)
                     .padding(.vertical, AssistantSpacing.medium)
-                    .disabled(pendingConfirmation)
 
                 Button(action: actionTapped) {
                     Image(systemName: glyph)

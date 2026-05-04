@@ -9,6 +9,8 @@ struct MessageListView: View {
     var onPickPrompt: (String) -> Void = { _ in }
 
     @State private var bottomVisibleID: ChatMessage.ID?
+    @State private var streamingTick: Int = 0
+    @State private var lastTickTime: Date = .distantPast
 
     var body: some View {
         if messages.isEmpty {
@@ -56,6 +58,19 @@ struct MessageListView: View {
             .defaultScrollAnchor(.bottom)
             .trackBottomVisibleMessage(id: $bottomVisibleID)
             .scrollDismissesKeyboard(.interactively)
+            .overlay(alignment: .bottomTrailing) {
+                if !isPinnedToBottom {
+                    JumpToLatestChip {
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            proxy.scrollTo("bottom-anchor", anchor: .bottom)
+                        }
+                    }
+                    .padding(.trailing, AssistantSpacing.large)
+                    .padding(.bottom, AssistantSpacing.large)
+                    .transition(.scale.combined(with: .opacity))
+                }
+            }
+            .animation(.spring(duration: 0.2), value: isPinnedToBottom)
             .onChange(of: messages.count) { _, _ in
                 guard isPinnedToBottom else { return }
                 withAnimation(.easeOut(duration: 0.2)) {
@@ -63,8 +78,15 @@ struct MessageListView: View {
                 }
             }
             .onChange(of: lastSegmentFingerprint) { _, _ in
+                let now = Date()
+                if now.timeIntervalSince(lastTickTime) >= 0.05 {
+                    lastTickTime = now
+                    streamingTick &+= 1
+                }
+            }
+            .onChange(of: streamingTick) { _, _ in
                 guard isPinnedToBottom else { return }
-                withAnimation(.easeOut(duration: 0.2)) {
+                withAnimation(.easeOut(duration: 0.15)) {
                     proxy.scrollTo("bottom-anchor", anchor: .bottom)
                 }
             }

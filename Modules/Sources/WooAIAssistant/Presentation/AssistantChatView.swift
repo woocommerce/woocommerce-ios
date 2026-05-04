@@ -92,6 +92,11 @@ public struct AssistantChatView: View {
                         streamingState: controller.conversation.streamingState,
                         showIterationCapBanner: showIterationCapBanner,
                         onPickPrompt: { draft = $0; inputFocused = true })
+            .background(
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture { inputFocused = false }
+            )
     }
 
     private var isAssistantResponding: Bool {

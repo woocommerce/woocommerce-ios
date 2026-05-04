@@ -15,6 +15,7 @@ public protocol SupportChatRemoteProtocol {
     func sendMessage(botSlug: String,
                      message: String,
                      chatID: Int64?,
+                     sessionID: String?,
                      context: [String: Any]?) async throws -> SupportChatResponse
 
     /// Fetches an existing chat thread by id, returning every turn (user + bot).
@@ -34,6 +35,7 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
     public func sendMessage(botSlug: String,
                             message: String,
                             chatID: Int64?,
+                            sessionID: String?,
                             context: [String: Any]?) async throws -> SupportChatResponse {
         let path: String = {
             if let chatID {
@@ -45,6 +47,9 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
         var parameters: [String: Any] = [ParameterKey.message: message]
         if let context {
             parameters[ParameterKey.context] = context
+        }
+        if let sessionID {
+            parameters[ParameterKey.sessionID] = sessionID
         }
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
@@ -77,5 +82,6 @@ private extension SupportChatRemote {
     enum ParameterKey {
         static let message = "message"
         static let context = "context"
+        static let sessionID = "session_id"
     }
 }

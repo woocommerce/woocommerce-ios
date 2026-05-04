@@ -136,6 +136,7 @@ final class SupportChatViewModel {
     // MARK: - Private Properties
 
     private var chatID: Int64?
+    private var sessionID: String?
     private let entryPoint: EntryPoint
     private let botSlug: String
     private let stores: StoresManager
@@ -528,6 +529,7 @@ final class SupportChatViewModel {
             botSlug: botSlug,
             message: trimmedText,
             chatID: chatID,
+            sessionID: sessionID,
             context: context
         ) { [weak self] result in
             self?.handleSendMessageResult(result,
@@ -587,6 +589,7 @@ final class SupportChatViewModel {
         switch result {
         case .success(let response):
             chatID = response.chatID
+            sessionID = response.sessionID
             persistChatBookmark(wasNewChat: wasNewChat,
                                 response: response,
                                 firstUserMessage: firstUserMessage)

@@ -1,11 +1,9 @@
 import SwiftUI
 import WooFoundation
-import struct Yosemite.POSCustomAmount
 
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posCurrencyProvider) private var currencyProvider
     private let viewHelper = CartViewHelper()
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -28,7 +26,6 @@ struct CartView: View {
     @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {
-        @Bindable var posModel = posModel
         ZStack {
             VStack(spacing: 0) {
                 CartHeaderView(
@@ -62,17 +59,6 @@ struct CartView: View {
             .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
-            }
-            .posFullScreenCover(isPresented: $posModel.isCustomAmountSheetPresented) {
-                AddCustomAmountView(
-                    isPresented: $posModel.isCustomAmountSheetPresented,
-                    currencySettings: currencyProvider.currencySettings,
-                    editing: posModel.editingCustomAmount,
-                    onSubmit: { customAmount in
-                        let mode: WooAnalyticsEvent.PointOfSale.CustomAmountMode = posModel.editingCustomAmount != nil ? .edit : .add
-                        posModel.upsertCustomAmount(customAmount, mode: mode)
-                    }
-                )
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)

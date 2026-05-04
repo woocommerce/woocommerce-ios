@@ -1,10 +1,12 @@
 import SwiftUI
 import WooFoundation
+import struct Yosemite.POSCustomAmount
 
 struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
@@ -148,6 +150,25 @@ struct PointOfSaleDashboardView: View {
         }
         .posFullScreenCover(isPresented: $showSettings) {
             POSSettingsView(settingsController: posModel.settingsController)
+        }
+        // Custom amount entry sheet — hosted here (not in `CartView`) because the entry trigger
+        // lives in `ItemListView` and `CartView` is conditionally hidden during full-screen
+        // payment / cash success. `onDismiss` routes every dismissal (swipe, back button, submit)
+        // through `dismissCustomAmountSheet()` so `editingCustomAmount` is always cleared.
+        .posFullScreenCover(
+            isPresented: $posModel.isCustomAmountSheetPresented,
+            onDismiss: { posModel.dismissCustomAmountSheet() }
+        ) {
+            AddCustomAmountView(
+                isPresented: $posModel.isCustomAmountSheetPresented,
+                currencySettings: currencyProvider.currencySettings,
+                editing: posModel.editingCustomAmount,
+                onSubmit: { customAmount in
+                    let mode: WooAnalyticsEvent.PointOfSale.CustomAmountMode =
+                        posModel.editingCustomAmount != nil ? .edit : .add
+                    posModel.upsertCustomAmount(customAmount, mode: mode)
+                }
+            )
         }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }

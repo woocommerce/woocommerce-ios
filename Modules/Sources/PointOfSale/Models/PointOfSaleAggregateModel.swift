@@ -233,16 +233,19 @@ extension PointOfSaleAggregateModel {
         cart.removeCustomAmount(id: id)
     }
 
+    @MainActor
     func presentAddCustomAmount() {
         editingCustomAmount = nil
         isCustomAmountSheetPresented = true
     }
 
+    @MainActor
     func presentEditCustomAmount(_ customAmount: POSCustomAmount) {
         editingCustomAmount = customAmount
         isCustomAmountSheetPresented = true
     }
 
+    @MainActor
     func dismissCustomAmountSheet() {
         isCustomAmountSheetPresented = false
         editingCustomAmount = nil

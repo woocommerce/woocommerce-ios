@@ -8,116 +8,75 @@ struct MessageListView: View {
     var showIterationCapBanner: Bool = false
     var onPickPrompt: (String) -> Void = { _ in }
 
-    @State private var bottomVisibleID: ChatMessage.ID?
-    @State private var streamingTick: Int = 0
-    @State private var lastTickTime: Date = .distantPast
+    @StateObject private var scrollController = ChatScrollController()
 
     var body: some View {
         if messages.isEmpty {
-            emptyState
+            EmptyStateView(onPick: onPickPrompt)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         } else {
-            scrollableMessages
-        }
-    }
-
-    private var emptyState: some View {
-        EmptyStateView(onPick: onPickPrompt)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-    }
-
-    private var scrollableMessages: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: AssistantSpacing.large) {
-                    ForEach(messages) { message in
-                        MessageBubble(message: message,
-                                      showToolActivity: showToolActivity)
-                            .id(message.id)
-                    }
-                    if streamingState == .sending {
-                        TypingIndicator()
-                            .padding(.leading, AssistantSpacing.medium)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    if case .failed(let reason) = streamingState {
-                        ErrorBanner(reason: reason)
-                    }
-                    if case .outcomeUnknown(let reason) = streamingState {
-                        OutcomeUnknownBanner(reason: reason)
-                    }
-                    if showIterationCapBanner {
-                        IterationCapBanner()
-                    }
-                    Color.clear.frame(height: 1).id("bottom-anchor")
-                }
-                .padding(.horizontal, AssistantSpacing.large)
-                .padding(.top, AssistantSpacing.large)
-                .padding(.bottom, AssistantSpacing.medium)
-                .scrollTargetLayout()
-            }
-            .defaultScrollAnchor(.bottom)
-            .trackBottomVisibleMessage(id: $bottomVisibleID)
-            .scrollDismissesKeyboard(.interactively)
-            .overlay(alignment: .bottomTrailing) {
-                if !isPinnedToBottom {
-                    JumpToLatestChip {
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            proxy.scrollTo("bottom-anchor", anchor: .bottom)
+            ZStack(alignment: .bottomTrailing) {
+                ChatScrollView(controller: scrollController) {
+                    LazyVStack(alignment: .leading, spacing: AssistantSpacing.large) {
+                        ForEach(messages) { message in
+                            MessageBubble(message: message, showToolActivity: showToolActivity)
+                                .id(message.id)
                         }
+                        if isAssistantTyping {
+                            TypingIndicator()
+                                .padding(.leading, AssistantSpacing.medium)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        if case .failed(let reason) = streamingState {
+                            ErrorBanner(reason: reason)
+                        }
+                        if case .outcomeUnknown(let reason) = streamingState {
+                            OutcomeUnknownBanner(reason: reason)
+                        }
+                        if showIterationCapBanner {
+                            IterationCapBanner()
+                        }
+                    }
+                    .padding(.horizontal, AssistantSpacing.large)
+                    .padding(.top, AssistantSpacing.large)
+                    .padding(.bottom, AssistantSpacing.medium)
+                }
+                if !scrollController.isNearBottom {
+                    JumpToLatestChip {
+                        scrollController.scrollToBottom(animated: true)
                     }
                     .padding(.trailing, AssistantSpacing.large)
                     .padding(.bottom, AssistantSpacing.large)
                     .transition(.scale.combined(with: .opacity))
                 }
             }
-            .animation(.spring(duration: 0.2), value: isPinnedToBottom)
-            .onChange(of: messages.count) { _, _ in
-                guard isPinnedToBottom else { return }
-                withAnimation(.easeOut(duration: 0.2)) {
-                    proxy.scrollTo("bottom-anchor", anchor: .bottom)
+            .animation(.spring(duration: 0.2), value: scrollController.isNearBottom)
+            .onChange(of: lastSegmentSignature) { _, _ in
+                guard scrollController.isNearBottom else { return }
+                scrollController.scrollToBottom(animated: false)
+            }
+            .onChange(of: messages.count) { oldCount, newCount in
+                guard newCount > oldCount else { return }
+                let userJustSent = messages.suffix(newCount - oldCount).contains { $0.role == .user }
+                if userJustSent || scrollController.isNearBottom {
+                    scrollController.scrollToBottom(animated: false)
                 }
             }
-            .onChange(of: lastSegmentFingerprint) { _, _ in
-                let now = Date()
-                if now.timeIntervalSince(lastTickTime) >= 0.05 {
-                    lastTickTime = now
-                    streamingTick &+= 1
-                }
-            }
-            .onChange(of: streamingTick) { _, _ in
-                guard isPinnedToBottom else { return }
-                withAnimation(.easeOut(duration: 0.15)) {
-                    proxy.scrollTo("bottom-anchor", anchor: .bottom)
-                }
+            .onAppear {
+                scrollController.scrollToBottom(animated: false)
             }
         }
     }
 
-    private var lastSegmentFingerprint: String {
+    private var isAssistantTyping: Bool {
+        streamingState == .sending
+    }
+
+    private var lastSegmentSignature: String {
         guard let last = messages.last else { return "" }
         return last.segments.map(\.fingerprint).joined(separator: "|")
     }
-
-    // iOS 17.0-17.3 lacks scrollPosition(id:anchor:); on those versions we fall
-    // back to always scrolling because the at-bottom signal is unavailable.
-    private var isPinnedToBottom: Bool {
-        guard #available(iOS 17.4, *) else { return true }
-        guard let bottomVisibleID else { return true }
-        return bottomVisibleID == messages.last?.id
-    }
 }
-
-private extension View {
-    @ViewBuilder
-    func trackBottomVisibleMessage(id: Binding<ChatMessage.ID?>) -> some View {
-        if #available(iOS 17.4, *) {
-            self.scrollPosition(id: id, anchor: .bottom)
-        } else {
-            self
-        }
-    }
-}
-
 
 #if DEBUG
 #Preview("Empty") {

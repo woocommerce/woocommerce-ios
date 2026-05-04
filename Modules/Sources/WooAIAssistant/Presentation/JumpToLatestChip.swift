@@ -2,36 +2,30 @@ import SwiftUI
 
 struct JumpToLatestChip: View {
 
-    let onTap: () -> Void
-
-    private static let diameter: CGFloat = 36
+    let action: () -> Void
 
     var body: some View {
-        Button(action: onTap) {
+        Button(action: action) {
             Image(systemName: "chevron.down")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(Color.assistantOnAccent)
-                .frame(width: Self.diameter, height: Self.diameter)
-                .background(Color(.accent))
-                .clipShape(Circle())
-                .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 2)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(width: 36, height: 36)
+                .background(Color.accentColor, in: Circle())
+                .shadow(color: Color.black.opacity(0.12), radius: 6, y: 2)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(Localization.accessibility)
+        .accessibilityLabel(Localization.label)
     }
 
     private enum Localization {
-        static let accessibility = NSLocalizedString(
-            "assistantChat.jumpToLatest.accessibility",
+        static let label = NSLocalizedString(
+            "assistant.chat.jumpToLatest",
             value: "Jump to latest message",
-            comment: "Accessibility label for the floating chip that scrolls the AI Assistant chat to the latest message"
+            comment: "Accessibility label for the chat jump-to-latest chip"
         )
     }
 }
 
 #if DEBUG
-#Preview {
-    JumpToLatestChip(onTap: {})
-        .padding()
-}
+#Preview { JumpToLatestChip(action: {}).padding() }
 #endif

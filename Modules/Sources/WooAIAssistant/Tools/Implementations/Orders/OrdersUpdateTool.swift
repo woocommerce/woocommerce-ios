@@ -1,4 +1,5 @@
 import Foundation
+import CocoaLumberjackSwift
 
 public enum OrdersUpdateTool {
 
@@ -87,7 +88,11 @@ public enum OrdersUpdateTool {
                                  kind: .invalidToolCall,
                                  reason: "at least one editable field must be provided"))
         }
-        guard let payload = try? JSONSerialization.data(withJSONObject: body) else {
+        let payload: Data
+        do {
+            payload = try JSONSerialization.data(withJSONObject: body)
+        } catch {
+            DDLogError("[OrdersUpdateTool] Failed to encode update body: \(error)")
             return .failed(.init(toolName: name,
                                  kind: .toolFailed,
                                  reason: "could not serialize update body"))

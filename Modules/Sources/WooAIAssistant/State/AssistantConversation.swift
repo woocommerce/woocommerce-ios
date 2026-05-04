@@ -1,7 +1,6 @@
 import Foundation
 import Observation
 
-/// Observable source of truth for one chat conversation.
 @MainActor
 @Observable
 public final class AssistantConversation {

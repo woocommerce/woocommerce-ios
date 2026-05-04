@@ -1,4 +1,5 @@
 import Foundation
+import CocoaLumberjackSwift
 
 public enum OrdersBulkUpdateTool {
 
@@ -115,7 +116,11 @@ public enum OrdersBulkUpdateTool {
             entry["id"] = id
             return entry
         }
-        guard let payload = try? JSONSerialization.data(withJSONObject: ["update": updates]) else {
+        let payload: Data
+        do {
+            payload = try JSONSerialization.data(withJSONObject: ["update": updates])
+        } catch {
+            DDLogError("[OrdersBulkUpdateTool] Failed to encode batch body: \(error)")
             return .failed(.init(toolName: name,
                                  kind: .toolFailed,
                                  reason: "could not serialize batch body"))

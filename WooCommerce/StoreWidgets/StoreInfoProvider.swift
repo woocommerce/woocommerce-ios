@@ -130,6 +130,8 @@ final class StoreInfoProvider: TimelineProvider {
             let entry = Self.dataEntry(for: stats, dateRange: dateRange, with: dependencies)
             return Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
         } catch {
+            // WooFoundation does not expose `DDLOG` types. Should we include them?
+            print("⛔️ Error fetching today's widget stats: \(error)")
             return Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
         }
     }

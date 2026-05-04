@@ -904,6 +904,7 @@ private extension StatsStoreV4Tests {
         return OrderStatsV4Totals(totalOrders: 3,
                                   totalItemsSold: 5,
                                   grossRevenue: 800,
+                                  grossSales: 0,
                                   netRevenue: 800,
                                   averageOrderValue: 266)
     }
@@ -913,6 +914,7 @@ private extension StatsStoreV4Tests {
         return OrderStatsV4Totals(totalOrders: 3,
                                   totalItemsSold: 5,
                                   grossRevenue: 800,
+                                  grossSales: 0,
                                   netRevenue: 800,
                                   averageOrderValue: 266)
     }
@@ -950,6 +952,7 @@ private extension StatsStoreV4Tests {
         return OrderStatsV4Totals(totalOrders: 10,
                                   totalItemsSold: 0,
                                   grossRevenue: 0,
+                                  grossSales: 0,
                                   netRevenue: 0,
                                   averageOrderValue: 0)
     }

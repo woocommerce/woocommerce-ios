@@ -5,6 +5,7 @@ import WooFoundation
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posCurrencyProvider) private var currencyProvider
     private let viewHelper = CartViewHelper()
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -63,8 +64,14 @@ struct CartView: View {
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
-            .posModal(isPresented: $showAddCustomAmountSheet) {
-                AddCustomAmountView(isPresented: $showAddCustomAmountSheet)
+            .posFullScreenCover(isPresented: $showAddCustomAmountSheet) {
+                AddCustomAmountView(
+                    isPresented: $showAddCustomAmountSheet,
+                    currencySettings: currencyProvider.currencySettings,
+                    onSubmit: { _ in
+                        // Real wiring lands on the next branch.
+                    }
+                )
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)
@@ -281,13 +288,13 @@ private extension CartView {
 }
 
 private struct CartAddCustomAmountButton: View {
-    let onTap: () -> Void
+    static let tip = AddCustomAmountTip()
 
-    @State private var tip = AddCustomAmountTip()
+    let onTap: () -> Void
 
     var body: some View {
         Button(action: {
-            tip.invalidate(reason: .actionPerformed)
+            Self.tip.invalidate(reason: .actionPerformed)
             onTap()
         }) {
             Image(systemName: "plus")
@@ -296,7 +303,7 @@ private struct CartAddCustomAmountButton: View {
                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 .accessibilityLabel(Localization.addCustomAmountAccessibilityLabel)
         }
-        .popoverTip(tip, arrowEdge: .top)
+        .popoverTip(Self.tip, arrowEdge: .top)
         .accessibilityIdentifier("pos-add-custom-amount-header-button")
     }
 

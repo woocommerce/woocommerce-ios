@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 import TipKit
 import class WooFoundation.CurrencyFormatter
@@ -176,7 +177,11 @@ public struct PointOfSaleEntryPointView: View {
             }
         }
         .task {
-            try? Tips.configure()
+            do {
+                try Tips.configure()
+            } catch {
+                DDLogError("⛔️ Failed to configure TipKit: \(error)")
+            }
 
             // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.
             // Confusingly, init can be called more than once, but `task` matches the lifecycle.

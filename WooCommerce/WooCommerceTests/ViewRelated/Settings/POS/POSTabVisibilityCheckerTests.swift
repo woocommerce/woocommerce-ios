@@ -29,6 +29,7 @@ struct POSTabVisibilityCheckerTests {
 
     @Test(arguments: [
         (country: Country.us, currency: CurrencyCode.USD),
+        (country: Country.pr, currency: CurrencyCode.USD),
         (country: Country.gb, currency: CurrencyCode.GBP)
     ])
     fileprivate func is_visible_when_all_conditions_satisfied(country: Country, currency: CurrencyCode) async throws {
@@ -113,6 +114,47 @@ struct POSTabVisibilityCheckerTests {
 
         // Then
         #expect(result == true)
+    }
+
+    @Test func is_visible_for_expansion_country_when_expansion_flag_enabled_even_with_empty_cache() async throws {
+        // Given - ES (an expansion country) with an empty expansion-eligibility cache,
+        // and the country-expansion remote feature flag enabled.
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: .es, currency: .EUR)
+        accountWhitelistedInBackend(true, expansionFlagsEnabled: true)
+        let expansionEligibilityService = MockCardPresentPaymentsCountryExpansionEligibilityService()
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              expansionEligibilityService: expansionEligibilityService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then - checkVisibility refreshes the expansion eligibility cache before validating,
+        // so ES is reported as visible without requiring a prior pre-warm.
+        #expect(result == true)
+        #expect(expansionEligibilityService.isEligible(siteID: siteID) == true)
+    }
+
+    @Test func is_invisible_for_expansion_country_when_expansion_flag_disabled() async throws {
+        // Given - ES (an expansion country) with the country-expansion remote feature flag disabled.
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: .es, currency: .EUR)
+        accountWhitelistedInBackend(true, expansionFlagsEnabled: false)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
     }
 
     @Test func is_invisible_when_remote_feature_flag_disabled() async throws {
@@ -269,11 +311,22 @@ private extension POSTabVisibilityCheckerTests {
         ].publisher.eraseToAnyPublisher()
     }
 
-    func accountWhitelistedInBackend(_ isAllowed: Bool = false) {
+    /// Configures the mock stores to respond to `FeatureFlagAction.isRemoteFeatureFlagEnabled`.
+    /// `isAllowed` controls the `.pointOfSale` flag (whitelisting).
+    /// `expansionFlagsEnabled` controls the IPP country-expansion flags consulted by the
+    /// `CardPresentPaymentsCountryExpansionEligibilityRefresher` injected into the checker.
+    func accountWhitelistedInBackend(_ isAllowed: Bool = false, expansionFlagsEnabled: Bool = false) {
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case .isRemoteFeatureFlagEnabled(_, _, _, completion: let completion):
-                completion(isAllowed)
+            case let .isRemoteFeatureFlagEnabled(flag, _, _, completion):
+                switch flag {
+                case .pointOfSale:
+                    completion(isAllowed)
+                case .inPersonPaymentsCountryExpansion, .inPersonPaymentsCountryExpansionEUExtended:
+                    completion(expansionFlagsEnabled)
+                default:
+                    completion(false)
+                }
             }
         }
     }
@@ -284,6 +337,7 @@ private extension POSTabVisibilityCheckerTests {
 
     enum Country: String {
         case us = "US:CA"
+        case pr = "PR"
         case ca = "CA:NS"
         case gb = "GB"
         case es = "ES"
@@ -292,6 +346,8 @@ private extension POSTabVisibilityCheckerTests {
             switch self {
             case .us:
                 return .US
+            case .pr:
+                return .PR
             case .ca:
                 return .CA
             case .gb:

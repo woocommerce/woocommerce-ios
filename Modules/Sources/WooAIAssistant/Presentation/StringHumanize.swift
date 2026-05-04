@@ -1,0 +1,29 @@
+import Foundation
+
+extension String {
+
+    /// Humanises a snake/kebab-cased tool token so `"stock_quantity"` reads
+    /// as `"Stock Quantity"` in UI surfaces. Shared between tool pills and
+    /// confirmation diff labels so the two stay phrased consistently.
+    static func assistantHumanizedToolToken(_ raw: String) -> String {
+        let cleaned = raw.replacingOccurrences(of: "_", with: " ")
+            .replacingOccurrences(of: "-", with: " ")
+            .replacingOccurrences(of: "/", with: " ")
+        return cleaned.trimmingCharacters(in: .whitespacesAndNewlines).capitalized
+    }
+
+    /// Capitalises lowercase status-style values (`processing` -> `Processing`)
+    /// while leaving numbers, prices, and emails intact so currency/totals
+    /// don't get inadvertently re-cased.
+    static func assistantHumanizedValue(_ value: String) -> String {
+        guard !value.isEmpty else { return value }
+        if value.contains(where: { $0.isNumber || $0 == "@" || $0 == "$" || $0 == "." }) {
+            return value
+        }
+        let words = value.split(separator: " ").map { token -> String in
+            let lower = token.lowercased()
+            return lower.localizedCapitalized
+        }
+        return words.joined(separator: " ")
+    }
+}

@@ -17,15 +17,17 @@ public enum ShowCardsTool {
         customer. `product_variation` references require both `id` and \
         `parent_id` (the parent product's id). Order/product/customer \
         references need only `id`. Up to 10 references per call. Prefer 1-5 \
-        for list-style answers; summarize the rest in prose. Cards already \
-        render the entity's full detail: customer cards include name, \
-        email, phone, billing/shipping address, and recent-order summary; \
-        order cards include id, number, status, total, date, customer \
-        name + email, and line items; product cards include name, price, \
-        stock status, and SKU. Do not fetch these fields separately when \
-        a card is already shown. Cards rendered in this turn remain \
-        referenced in subsequent turns; reuse their ids and fields rather \
-        than re-fetching.
+        for list-style answers; summarize the rest in prose. Cards render \
+        the entity's full detail to the user, but the model-visible result \
+        is a compact summary only. Model-visible fields per family: order \
+        has id, number, status, total, currency, date_created, customer_name; \
+        product has id, name, sku, price, stock_status; product_variation \
+        adds parent_id; customer has id, first_name, last_name, email, \
+        orders_count. For any other field (line items, payment method, \
+        billing/shipping address, phone, recent-order details, etc.) use \
+        the appropriate get or list tool from the catalog. Cards rendered \
+        in this turn remain referenced; reuse their ids in follow-up tool \
+        calls.
         """,
         parametersSchema: .object([
             "type": .string("object"),

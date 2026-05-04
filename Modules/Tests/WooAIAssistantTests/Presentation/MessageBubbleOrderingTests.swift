@@ -58,7 +58,7 @@ struct MessageBubbleOrderingTests {
     }
 
     @Test
-    func test_orderedSegments_when_multiple_analytics_results_then_each_renders_in_emit_order() {
+    func test_orderedSegments_when_multiple_analytics_results_then_text_renders_first_and_results_after() {
         // Given
         let firstID = UUID()
         let secondID = UUID()
@@ -80,7 +80,7 @@ struct MessageBubbleOrderingTests {
         let ids = bubble.orderedSegments.map(\.id)
 
         // Then
-        #expect(ids == [firstID, secondID, textID])
+        #expect(ids == [textID, firstID, secondID])
     }
 
     @Test
@@ -131,7 +131,7 @@ struct MessageBubbleOrderingTests {
     }
 
     @Test
-    func test_orderedSegments_when_non_show_cards_cardRender_emitted_before_text_then_natural_order_preserved() {
+    func test_orderedSegments_when_non_show_cards_cardRender_emitted_before_text_then_text_renders_first_and_card_after() {
         // Given
         let cardID = UUID()
         let textID = UUID()
@@ -148,11 +148,57 @@ struct MessageBubbleOrderingTests {
         let ids = bubble.orderedSegments.map(\.id)
 
         // Then
-        #expect(ids == [cardID, textID])
+        #expect(ids == [textID, cardID])
     }
 
     @Test
-    func test_orderedSegments_when_message_is_streaming_then_cardRender_segments_render_inline() {
+    func test_orderedSegments_when_fallback_toolResult_emitted_before_text_then_text_renders_first_and_result_after() {
+        // Given
+        let resultID = UUID()
+        let textID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .toolResult(id: resultID,
+                        toolCallID: "call_1",
+                        toolName: "product_variations_list",
+                        payload: .object(["product_id": .int(99),
+                                          "count": .int(2),
+                                          "ids": .array([.int(1), .int(2)])])),
+            .text(id: textID, content: "Here are the variations.")
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [textID, resultID])
+    }
+
+    @Test
+    func test_orderedSegments_when_message_is_streaming_then_fallback_toolResult_is_hidden_until_completion() {
+        // Given
+        let resultID = UUID()
+        let textID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .toolResult(id: resultID,
+                        toolCallID: "call_1",
+                        toolName: "product_variations_list",
+                        payload: .object(["product_id": .int(99),
+                                          "count": .int(2),
+                                          "ids": .array([.int(1), .int(2)])])),
+            .text(id: textID, content: "One moment.")
+        ], isStreaming: true)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [textID])
+    }
+
+    @Test
+    func test_orderedSegments_when_message_is_streaming_then_cardRender_segments_are_hidden_until_completion() {
         // Given
         let textID = UUID()
         let firstCardID = UUID()
@@ -174,7 +220,7 @@ struct MessageBubbleOrderingTests {
         let ids = bubble.orderedSegments.map(\.id)
 
         // Then
-        #expect(ids == [textID, firstCardID, secondCardID])
+        #expect(ids == [textID])
     }
 
     @Test

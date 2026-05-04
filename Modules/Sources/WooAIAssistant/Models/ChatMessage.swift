@@ -90,4 +90,22 @@ public struct ChatMessage: Identifiable, Equatable, Sendable {
             }
         }
     }
+
+    public var hasPendingConfirmation: Bool {
+        for segment in segments {
+            if case .confirmation(_, _, _, _, .pending) = segment {
+                return true
+            }
+        }
+        return false
+    }
+}
+
+public extension Array where Element == ChatMessage {
+    /// True when any assistant message is awaiting a merchant decision on a
+    /// confirmation card. The agentic loop is suspended in this state, so the
+    /// chat surface should not show "assistant is thinking" affordances.
+    var hasPendingConfirmation: Bool {
+        contains { $0.hasPendingConfirmation }
+    }
 }

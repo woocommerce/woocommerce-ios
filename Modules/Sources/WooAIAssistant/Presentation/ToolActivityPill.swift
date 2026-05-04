@@ -43,7 +43,7 @@ struct ToolActivityPill: View {
         }
         .padding(.horizontal, AssistantSpacing.medium)
         .padding(.vertical, AssistantSpacing.small)
-        .frame(minHeight: 44, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
         .background(Color.assistantToolBackground)
         .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.medium))
     }

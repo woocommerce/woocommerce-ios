@@ -4,163 +4,92 @@ struct MessageListView: View {
 
     let messages: [ChatMessage]
     let streamingState: AssistantConversation.StreamingState
-    var showToolActivity: Bool = true
-    var showIterationCapBanner: Bool = false
     var onPickPrompt: (String) -> Void = { _ in }
 
-    private static let bottomSentinelID = "scroll-sentinel-bottom"
-    private static let anchorThreshold: CGFloat = 80
-
-    @State private var isAtBottom: Bool = true
-    @State private var unreadCount: Int = 0
+    @StateObject private var scrollController = ChatScrollController()
+    @State private var lastTickTime: Date = .distantPast
 
     var body: some View {
-        GeometryReader { outer in
-            ScrollViewReader { proxy in
-                ZStack(alignment: .bottom) {
-                    ScrollView {
-                        LazyVStack(alignment: .leading, spacing: AssistantSpacing.large) {
-                            if messages.isEmpty {
-                                EmptyStateView(onPick: onPickPrompt)
-                            }
-                            ForEach(messages) { message in
-                                MessageBubble(message: message,
-                                              showToolActivity: showToolActivity)
-                                    .id(message.id)
-                            }
-                            if streamingState == .sending {
-                                TypingIndicator()
-                                    .padding(.leading, AssistantSpacing.medium)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            if case .failed(let reason) = streamingState {
-                                ErrorBanner(reason: reason)
-                            }
-                            if case .outcomeUnknown(let reason) = streamingState {
-                                OutcomeUnknownBanner(reason: reason)
-                            }
-                            if showIterationCapBanner {
-                                IterationCapBanner()
-                            }
-
-                            GeometryReader { sentinel in
-                                Color.clear.preference(
-                                    key: BottomDistanceKey.self,
-                                    value: sentinel.frame(in: .global).minY - outer.frame(in: .global).maxY
-                                )
-                            }
-                            .frame(height: 1)
-                            .id(Self.bottomSentinelID)
+        if messages.isEmpty {
+            EmptyStateView(onPick: onPickPrompt)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        } else {
+            ZStack(alignment: .bottomTrailing) {
+                ChatScrollView(controller: scrollController) {
+                    LazyVStack(alignment: .leading, spacing: AssistantSpacing.large) {
+                        ForEach(messages) { message in
+                            MessageBubble(message: message)
+                                .id(message.id)
                         }
-                        .padding(.horizontal, AssistantSpacing.large)
-                        .padding(.top, AssistantSpacing.large)
-                        .padding(.bottom, AssistantSpacing.medium)
-                        .contentShape(Rectangle())
-                    }
-                    .scrollDismissesKeyboard(.interactively)
-                    .onPreferenceChange(BottomDistanceKey.self) { distance in
-                        let nowAtBottom = distance < Self.anchorThreshold
-                        if nowAtBottom { unreadCount = 0 }
-                        isAtBottom = nowAtBottom
-                    }
-                    .onChange(of: messages.count) { _, _ in
-                        handleNewContent(proxy: proxy, isNewMessage: true)
-                    }
-                    .onChange(of: messages.last?.segments.last?.fingerprint) { _, _ in
-                        handleNewContent(proxy: proxy, isNewMessage: false)
-                    }
-                    .onAppear {
-                        proxy.scrollTo(Self.bottomSentinelID, anchor: .bottom)
-                    }
-
-                    if let pillCount = effectivePillCount {
-                        NewMessagesPill(count: pillCount) {
-                            unreadCount = 0
-                            scrollToBottom(proxy: proxy)
+                        if isAssistantTyping {
+                            TypingIndicator()
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        .padding(.bottom, AssistantSpacing.medium)
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        if case .failed(let reason) = streamingState {
+                            ErrorBanner(reason: reason)
+                        }
+                        if case .outcomeUnknown(let reason) = streamingState {
+                            OutcomeUnknownBanner(reason: reason)
+                        }
                     }
+                    .padding(.horizontal, AssistantSpacing.large)
+                    .padding(.top, AssistantSpacing.large)
+                    .padding(.bottom, AssistantSpacing.medium)
                 }
-                .animation(.smooth(duration: AssistantMotion.transition), value: unreadCount)
-                .animation(.smooth(duration: AssistantMotion.transition), value: isAtBottom)
+                if !scrollController.isNearBottom {
+                    JumpToLatestChip {
+                        scrollController.scrollToBottom(animated: true)
+                    }
+                    .padding(.trailing, AssistantSpacing.large)
+                    .padding(.bottom, AssistantSpacing.large)
+                    .transition(.scale.combined(with: .opacity))
+                }
+            }
+            .animation(.spring(duration: 0.2), value: scrollController.isNearBottom)
+            .onChange(of: lastSegmentSignature) { _, _ in
+                let now = Date()
+                if now.timeIntervalSince(lastTickTime) < 0.03 { return }
+                lastTickTime = now
+                guard scrollController.isNearBottom else { return }
+                scrollController.scrollToBottom(animated: false)
+            }
+            .onChange(of: messages.count) { oldCount, newCount in
+                guard newCount > oldCount else { return }
+                let userJustSent = messages.suffix(newCount - oldCount).contains { $0.role == .user }
+                if userJustSent || scrollController.isNearBottom {
+                    scrollController.scrollToBottom(animated: false)
+                }
+            }
+            .onAppear {
+                scrollController.scrollToBottom(animated: false)
             }
         }
     }
 
-    private func handleNewContent(proxy: ScrollViewProxy, isNewMessage: Bool) {
-        if isAtBottom {
-            scrollToBottom(proxy: proxy)
-        } else if isNewMessage {
-            unreadCount += 1
+    private var isAssistantTyping: Bool {
+        Self.shouldShowLoadingIndicator(messages: messages, streamingState: streamingState)
+    }
+
+    /// Dots represent active work between turns. They must be hidden whenever
+    /// the agentic loop is paused on a pending confirmation, regardless of the
+    /// underlying `StreamingState`, because the assistant is waiting on the
+    /// merchant rather than generating a response.
+    static func shouldShowLoadingIndicator(messages: [ChatMessage],
+                                           streamingState: AssistantConversation.StreamingState) -> Bool {
+        guard !messages.hasPendingConfirmation else { return false }
+        switch streamingState {
+        case .sending:
+            return true
+        case .idle, .streaming, .failed, .outcomeUnknown:
+            return false
         }
     }
 
-    private func scrollToBottom(proxy: ScrollViewProxy) {
-        withAnimation(.smooth(duration: AssistantMotion.snap)) {
-            proxy.scrollTo(Self.bottomSentinelID, anchor: .bottom)
-        }
-    }
-
-    private var effectivePillCount: Int? {
-        guard unreadCount > 0, !isAtBottom else { return nil }
-        return unreadCount
+    private var lastSegmentSignature: String {
+        guard let last = messages.last else { return "" }
+        return last.segments.map(\.fingerprint).joined(separator: "|")
     }
 }
-
-private struct BottomDistanceKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
-    }
-}
-
-private struct NewMessagesPill: View {
-
-    let count: Int
-    let onTap: () -> Void
-
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: AssistantSpacing.xSmall) {
-                Image(systemName: "arrow.down")
-                    .font(.system(size: 12, weight: .semibold))
-                Text(label)
-                    .font(.assistantBodyEmphasized)
-            }
-            .padding(.horizontal, AssistantSpacing.medium)
-            .padding(.vertical, AssistantSpacing.medium)
-            .frame(minHeight: 44)
-            .foregroundStyle(Color.assistantOnAccent)
-            .background(
-                Capsule().fill(Color(.accent))
-            )
-            .shadow(color: Color.black.opacity(0.18), radius: 8, y: 2)
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var label: String {
-        if count == 1 {
-            return Localization.singular
-        }
-        return String(format: Localization.plural, count)
-    }
-
-    private enum Localization {
-        static let singular = NSLocalizedString(
-            "assistantChat.scroll.newMessage.singular",
-            value: "1 new message",
-            comment: "Pill shown above the input bar when one new message arrived while scrolled up"
-        )
-        static let plural = NSLocalizedString(
-            "assistantChat.scroll.newMessage.plural",
-            value: "%1$d new messages",
-            comment: "Pill shown above the input bar when multiple new messages arrived while scrolled up. %1$d is the count."
-        )
-    }
-}
-
 
 #if DEBUG
 #Preview("Empty") {

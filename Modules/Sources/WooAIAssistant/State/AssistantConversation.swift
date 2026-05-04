@@ -1,7 +1,6 @@
 import Foundation
 import Observation
 
-/// Observable source of truth for one chat conversation.
 @MainActor
 @Observable
 public final class AssistantConversation {
@@ -60,6 +59,9 @@ public final class AssistantConversation {
         case .textChunk(let chunk):
             messages[index].updateText(appending: chunk)
         case .toolCallStarted(let id, let name, let args):
+            // show_cards is a UI synthesis tool; the resulting cards stand on
+            // their own, so the activity pill would just add noise.
+            if name == ShowCardsTool.name { break }
             messages[index].append(.toolCall(id: UUID(),
                                              toolCallID: id,
                                              toolName: name,

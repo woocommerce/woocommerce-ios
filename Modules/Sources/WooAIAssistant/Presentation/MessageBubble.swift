@@ -3,7 +3,6 @@ import SwiftUI
 struct MessageBubble: View {
 
     let message: ChatMessage
-    var showToolActivity: Bool = true
 
     @Environment(\.assistantConfirmationHandler) private var confirmationHandler
 
@@ -13,8 +12,10 @@ struct MessageBubble: View {
             VStack(alignment: alignment, spacing: AssistantSpacing.large) {
                 ForEach(orderedSegments) { segment in
                     segmentView(for: segment)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
             }
+            .animation(.snappy(duration: 0.2), value: orderedSegments.map(\.id))
             if message.role == .assistant { Spacer(minLength: AssistantSpacing.xxLarge) }
         }
         .frame(maxWidth: .infinity,
@@ -28,69 +29,97 @@ struct MessageBubble: View {
     var orderedSegments: [MessageSegment] {
         guard message.role == .assistant else { return message.segments }
 
-        var texts: [MessageSegment] = []
-        var lastToolCall: MessageSegment?
-        var cardRenders: [MessageSegment] = []
-        var toolResults: [MessageSegment] = []
-        var confirmations: [MessageSegment] = []
+        var lastToolCallID: UUID?
+        var hasCardRender = false
+        var hasText = false
+        var firstSearchNonEmpty: UUID?
+        var lastListNonEmpty: UUID?
+        var lastStrictAny: UUID?
+        var lastSingle: UUID?
+        var analyticsIDs: [UUID] = []
 
         for segment in message.segments {
             switch segment {
             case .text:
-                texts.append(segment)
-            case .toolCall:
-                lastToolCall = segment
-            case .toolResult:
-                toolResults.append(segment)
+                hasText = true
             case .cardRender:
-                cardRenders.append(segment)
+                hasCardRender = true
+            case .toolCall(let id, _, _, _, _):
+                lastToolCallID = id
+            case .toolResult(let id, _, let name, let payload):
+                if name.hasPrefix("analytics_") {
+                    analyticsIDs.append(id)
+                    continue
+                }
+                let isSearch = name.hasSuffix("_search")
+                let isList = name.hasSuffix("_list")
+                let isStrict = isSearch || isList
+                let rowCount = arrayCount(payload)
+                if isStrict { lastStrictAny = id }
+                if isSearch, rowCount > 0, firstSearchNonEmpty == nil {
+                    firstSearchNonEmpty = id
+                } else if isList, rowCount > 0 {
+                    lastListNonEmpty = id
+                } else if !isStrict {
+                    lastSingle = id
+                }
             case .confirmation:
-                confirmations.append(segment)
+                break
             }
         }
 
-        var result: [MessageSegment] = []
-        if showToolActivity, let pill = lastToolCall {
-            result.append(pill)
-        }
-        result.append(contentsOf: texts)
-
-        if !message.isStreaming {
-            if !cardRenders.isEmpty {
-                result.append(contentsOf: cardRenders)
-            } else if let fallback = fallbackCard(from: toolResults) {
-                result.append(fallback)
+        var renderableToolResultIDs: Set<UUID> = []
+        if !hasCardRender, !message.isStreaming {
+            renderableToolResultIDs = Set(analyticsIDs)
+            if let pick = firstSearchNonEmpty ?? lastListNonEmpty ?? lastStrictAny ?? lastSingle {
+                renderableToolResultIDs.insert(pick)
             }
         }
-        result.append(contentsOf: confirmations)
-        return result
+
+        let filtered = message.segments.filter { segment in
+            switch segment {
+            case .text, .confirmation:
+                return true
+            case .cardRender:
+                return !message.isStreaming
+            case .toolCall(let id, _, _, _, _):
+                return id == lastToolCallID
+            case .toolResult(let id, _, _, _):
+                return renderableToolResultIDs.contains(id)
+            }
+        }
+
+        return hasText ? deferCardsAfterText(filtered) : filtered
     }
 
-    private func fallbackCard(from results: [MessageSegment]) -> MessageSegment? {
-        var firstSearchNonEmpty: MessageSegment?
-        var lastListNonEmpty: MessageSegment?
-        var lastStrictAny: MessageSegment?
-        var lastSingle: MessageSegment?
-        for segment in results {
-            guard case .toolResult(_, _, let name, let payload) = segment else { continue }
-            let isSearch = name.hasSuffix("_search")
-            let isList = name.hasSuffix("_list")
-            let isStrict = isSearch || isList
-            let rowCount = arrayCount(payload)
-            if isStrict { lastStrictAny = segment }
-            if isSearch, rowCount > 0, firstSearchNonEmpty == nil {
-                firstSearchNonEmpty = segment
-            } else if isList, rowCount > 0 {
-                lastListNonEmpty = segment
-            } else if !isStrict {
-                lastSingle = segment
+    private func deferCardsAfterText(_ segments: [MessageSegment]) -> [MessageSegment] {
+        var deferred: [MessageSegment] = []
+        var rest: [MessageSegment] = []
+        for segment in segments {
+            if isCardSegment(segment) {
+                deferred.append(segment)
+            } else {
+                rest.append(segment)
             }
         }
-        return firstSearchNonEmpty ?? lastListNonEmpty ?? lastStrictAny ?? lastSingle
+        guard !deferred.isEmpty else { return segments }
+        return rest + deferred
+    }
+
+    private func isCardSegment(_ segment: MessageSegment) -> Bool {
+        switch segment {
+        case .cardRender, .toolResult:
+            return true
+        case .text, .toolCall, .confirmation:
+            return false
+        }
     }
 
     private func arrayCount(_ value: AnyCodableJSON) -> Int {
         if case .array(let elements) = value { return elements.count }
+        if case .object(let fields) = value, case .int(let count) = fields["count"] {
+            return Int(count)
+        }
         return 0
     }
 
@@ -107,9 +136,8 @@ struct MessageBubble: View {
             MessageCardHost(toolName: name, payload: payload)
         case .cardRender(_, _, let name, let payload):
             MessageCardHost(toolName: name, payload: payload)
-        case .confirmation(_, let proposalID, let toolName, let preview, let status):
+        case .confirmation(_, let proposalID, _, let preview, let status):
             ConfirmationCard(proposalID: proposalID,
-                             toolName: toolName,
                              preview: preview,
                              status: status,
                              onConfirm: { confirmationHandler.onConfirm(proposalID) },

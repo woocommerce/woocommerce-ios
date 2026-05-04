@@ -1,8 +1,10 @@
-/// Allowed `status` values for `orders_update` and `orders_bulk_update`.
-/// `trash` is excluded: trashing an order is destructive and outside the
-/// v1 write-tool scope; deletion-style mutations require a different path.
 enum AllowedOrderUpdateStatuses {
     static let values: Set<String> = [
-        "pending", "processing", "on-hold", "completed", "cancelled", "refunded", "failed"
+        "pending", "processing", "on-hold", "completed", "cancelled", "failed"
     ]
+}
+
+enum OrderUpdateRefundGuard {
+    static let blockedStatus = "refunded"
+    static let message = "Refunds cannot be issued from the assistant. Tap an order to issue the refund manually."
 }

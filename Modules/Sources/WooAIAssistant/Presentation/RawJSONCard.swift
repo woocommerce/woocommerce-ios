@@ -8,10 +8,21 @@ struct RawJSONCard: View {
 
     @State private var isExpanded = false
 
-    private static let collapsedLines = 6
+    private static let collapsedLines = 3
+
+    private let prettyJSON: String
+    private let shouldOfferExpand: Bool
+
+    init(toolName: String, payload: AnyCodableJSON) {
+        self.toolName = toolName
+        self.payload = payload
+        let formatted = Self.encodePretty(payload)
+        self.prettyJSON = formatted
+        self.shouldOfferExpand = formatted.split(separator: "\n").count > Self.collapsedLines
+    }
 
     var body: some View {
-        CardShell(label: toolName, trailingChevron: false) {
+        CardShell(label: toolName) {
             VStack(alignment: .leading, spacing: AssistantSpacing.small) {
                 Text(prettyJSON)
                     .font(.assistantMonospaced)
@@ -37,7 +48,7 @@ struct RawJSONCard: View {
         }
     }
 
-    private var prettyJSON: String {
+    private static func encodePretty(_ payload: AnyCodableJSON) -> String {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         do {
@@ -47,10 +58,6 @@ struct RawJSONCard: View {
             DDLogError("RawJSONCard pretty-print failed: \(error)")
             return ""
         }
-    }
-
-    private var shouldOfferExpand: Bool {
-        prettyJSON.split(separator: "\n").count > Self.collapsedLines
     }
 
     private enum Localization {

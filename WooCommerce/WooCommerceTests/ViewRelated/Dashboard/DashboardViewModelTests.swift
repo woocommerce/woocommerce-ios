@@ -438,7 +438,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -477,7 +478,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -516,7 +518,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
 
         mockReloadingData(storeHasOrders: true)
 
@@ -597,7 +600,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
 
         let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
                            DashboardCard(type: .performance, availability: .show, enabled: true),
@@ -634,7 +638,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
 
         mockReloadingData()
 
@@ -870,7 +875,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(shouldShowInAppFeedback: true)
 
         // When
@@ -1178,6 +1184,59 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.dismissedWPComConnectionSuggestion)
     }
 
+    @MainActor
+    func test_dashboard_when_aiAssistant_eligible_then_card_appears() async {
+        // Given
+        mockReloadingData()
+        let checker = MockAIAssistantEligibilityChecker(isEligible: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: checker)
+
+        // When
+        await viewModel.reloadAllData()
+        await until { viewModel.showOnDashboardCards.contains(DashboardCard.aiAssistantCard) }
+
+        // Then
+        XCTAssertTrue(viewModel.showOnDashboardCards.contains(DashboardCard.aiAssistantCard))
+    }
+
+    @MainActor
+    func test_dashboard_when_aiAssistant_not_eligible_then_card_absent() async {
+        // Given
+        mockReloadingData()
+        let checker = MockAIAssistantEligibilityChecker(isEligible: false)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: checker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.showOnDashboardCards.contains(DashboardCard.aiAssistantCard))
+    }
+
+}
+
+private final class MockAIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {
+    let isEligibleResult: Bool
+
+    init(isEligible: Bool) {
+        self.isEligibleResult = isEligible
+    }
+
+    func isEligible(for site: Site?) -> Bool {
+        isEligibleResult
+    }
 }
 
 private extension DashboardViewModelTests {

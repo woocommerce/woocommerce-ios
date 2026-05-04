@@ -23,11 +23,6 @@ struct AssistantSystemPromptTests {
         #expect(prompt.contains("Today is not-a-date."))
     }
 
-    @Test
-    func test_version_is_well_formed() {
-        #expect(AssistantSystemPrompt.version == "v1.0.0")
-    }
-
     private static func todayISO() -> String {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .iso8601)

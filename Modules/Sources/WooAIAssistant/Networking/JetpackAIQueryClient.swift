@@ -417,3 +417,7 @@ struct JetpackAIQueryClient: AIChatService {
         return envelope
     }
 }
+
+public func makeJetpackAIChatService(jwtProvider: AssistantJWTProviding) -> some AIChatService {
+    JetpackAIQueryClient(jwtProvider: jwtProvider)
+}

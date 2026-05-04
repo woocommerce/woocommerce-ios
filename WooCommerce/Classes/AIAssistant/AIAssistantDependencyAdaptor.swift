@@ -42,9 +42,7 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
                                            selectedSite: defaultSitePublisher,
                                            appPasswordSupportState: appPasswordSupport)
 
-        let jwtAdaptor = AIAssistantJWTAdaptor(blogID: siteID,
-                                               network: wpcomNetwork,
-                                               credentials: credentials)
+        let jwtAdaptor = AIAssistantJWTAdaptor(blogID: siteID, network: wpcomNetwork)
         let chatService = makeJetpackAIChatService(jwtProvider: jwtAdaptor)
 
         let restClient = WCRESTClientAdaptor(network: restNetwork, siteID: siteID)

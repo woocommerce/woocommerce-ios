@@ -11,12 +11,11 @@ import WooAIAssistant
 struct AIAssistantJWTAdaptorTests {
 
     @Test
-    func test_jwt_when_wpcom_credentials_then_calls_jetpack_openai_query_jwt() async throws {
+    func test_jwt_when_called_then_routes_through_jetpack_openai_query_endpoint() async throws {
         // Given
         let token = makeFakeJWT(blogID: 99, expiresIn: 3600)
         let network = StubNetwork(behavior: .returnToken(token))
-        let credentials: Credentials = .wpcom(username: "u", authToken: "t", siteAddress: "https://store.test")
-        let sut = AIAssistantJWTAdaptor(blogID: 99, network: network, credentials: credentials)
+        let sut = AIAssistantJWTAdaptor(blogID: 99, network: network)
 
         // When
         let result = try await sut.currentJWT()
@@ -27,42 +26,10 @@ struct AIAssistantJWTAdaptorTests {
     }
 
     @Test
-    func test_jwt_when_applicationPassword_credentials_then_routes_through_dotcom_request() async throws {
-        // Given
-        let token = makeFakeJWT(blogID: 42, expiresIn: 3600)
-        let network = StubNetwork(behavior: .returnToken(token))
-        let credentials: Credentials = .applicationPassword(username: "u", password: "p", siteAddress: "https://store.test")
-        let sut = AIAssistantJWTAdaptor(blogID: 42, network: network, credentials: credentials)
-
-        // When
-        let result = try await sut.currentJWT()
-
-        // Then
-        #expect(result == token)
-        #expect(network.lastPath?.contains("sites/42/jetpack-openai-query/jwt") == true)
-    }
-
-    @Test
-    func test_jwt_when_wporg_credentials_then_throws_unsupported_auth() async {
-        // Given
-        let token = makeFakeJWT(blogID: 7, expiresIn: 3600)
-        let network = StubNetwork(behavior: .returnToken(token))
-        let credentials: Credentials = .wporg(username: "u", password: "p", siteAddress: "https://store.test")
-        let sut = AIAssistantJWTAdaptor(blogID: 7, network: network, credentials: credentials)
-
-        // When / Then
-        await #expect(throws: AssistantError.self) {
-            _ = try await sut.currentJWT()
-        }
-        #expect(network.lastPath == nil)
-    }
-
-    @Test
     func test_jwt_when_server_returns_empty_token_then_throws_invalid_response_error() async {
         // Given
         let network = StubNetwork(behavior: .returnToken(""))
-        let credentials: Credentials = .wpcom(username: "u", authToken: "t", siteAddress: "https://store.test")
-        let sut = AIAssistantJWTAdaptor(blogID: 99, network: network, credentials: credentials)
+        let sut = AIAssistantJWTAdaptor(blogID: 99, network: network)
 
         // When
         var caught: AssistantError?
@@ -81,8 +48,7 @@ struct AIAssistantJWTAdaptorTests {
         // Given
         let stubError = NSError(domain: "TestDomain", code: 99, userInfo: nil)
         let network = StubNetwork(behavior: .throwError(stubError))
-        let credentials: Credentials = .wpcom(username: "u", authToken: "t", siteAddress: "https://store.test")
-        let sut = AIAssistantJWTAdaptor(blogID: 99, network: network, credentials: credentials)
+        let sut = AIAssistantJWTAdaptor(blogID: 99, network: network)
 
         // When
         var caught: NSError?
@@ -102,8 +68,7 @@ struct AIAssistantJWTAdaptorTests {
         // Given
         let token = makeFakeJWT(blogID: 99, expiresIn: 3600)
         let network = StubNetwork(behavior: .returnToken(token))
-        let credentials: Credentials = .wpcom(username: "u", authToken: "t", siteAddress: "https://store.test")
-        let sut = AIAssistantJWTAdaptor(blogID: 99, network: network, credentials: credentials)
+        let sut = AIAssistantJWTAdaptor(blogID: 99, network: network)
 
         // When
         _ = try await sut.currentJWT()

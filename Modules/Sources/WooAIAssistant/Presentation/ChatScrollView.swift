@@ -75,7 +75,9 @@ struct ChatScrollView<Content: View>: UIViewRepresentable {
 
         private func handleContentSizeChange(_ scrollView: UIScrollView) {
             guard pendingBottomPin else { return }
-            let target = max(0, scrollView.contentSize.height - scrollView.bounds.height)
+            let target = max(0, scrollView.contentSize.height
+                + scrollView.adjustedContentInset.bottom
+                - scrollView.bounds.height)
             guard target > scrollView.contentOffset.y else { return }
             scrollView.setContentOffset(CGPoint(x: 0, y: target), animated: false)
             controller.isNearBottom = true
@@ -100,7 +102,9 @@ struct ChatScrollView<Content: View>: UIViewRepresentable {
             guard let sv = scrollView else { return }
             pendingBottomPin = true
             sv.layoutIfNeeded()
-            let target = max(0, sv.contentSize.height - sv.bounds.height)
+            let target = max(0, sv.contentSize.height
+                + sv.adjustedContentInset.bottom
+                - sv.bounds.height)
             sv.setContentOffset(CGPoint(x: 0, y: target), animated: animated)
             controller.isNearBottom = true
         }

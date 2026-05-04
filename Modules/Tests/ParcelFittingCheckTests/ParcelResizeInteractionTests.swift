@@ -64,68 +64,80 @@ struct ParcelResizeInteractionTests {
 
     // MARK: - Lifecycle
 
-    @Test("isActive is false before begin")
-    func isActive_isFalse_beforeBegin() {
+    @Test func test_isActive_when_interaction_is_fresh_then_returns_false() {
+        // Given
         let interaction = ParcelResizeInteraction()
+
+        // Then
         #expect(!interaction.isActive)
         #expect(interaction.highlightedFaces.isEmpty)
     }
 
-    @Test("begin then end resets state")
-    func begin_then_end_resetsState() {
+    @Test func test_end_when_called_after_begin_then_clears_state() {
+        // Given
         let interaction = ParcelResizeInteraction()
         let input = Self.makeBeginInput(fingers: (CGPoint(x: -50, y: 0), CGPoint(x: 50, y: 0)))
-
         interaction.begin(input: input, environment: Self.linearProjection())
         #expect(interaction.isActive)
         #expect(interaction.highlightedFaces == [.positiveX, .negativeX])
 
+        // When
         interaction.end()
+
+        // Then
         #expect(!interaction.isActive)
         #expect(interaction.highlightedFaces.isEmpty)
     }
 
     // MARK: - Begin
 
-    @Test("begin requires an upper-half hit-test when Y pick is ambiguous")
-    func begin_requiresUpperHalfHit_whenYIsAmbiguous() {
+    @Test func test_begin_when_Y_pick_is_ambiguous_and_no_upper_half_hit_then_does_not_activate() {
+        // Given
         let interaction = ParcelResizeInteraction()
         let input = Self.makeBeginInput(fingers: (CGPoint(x: 0, y: 100), CGPoint(x: 0, y: -100)))
 
+        // When
         interaction.begin(input: input, environment: Self.ambiguousYProjection(isUpperHalfHit: { _ in false }))
 
+        // Then
         #expect(!interaction.isActive)
     }
 
-    @Test("begin proceeds when Y is ambiguous but a finger hits the upper half")
-    func begin_proceeds_whenYIsAmbiguous_withUpperHalfHit() {
+    @Test func test_begin_when_Y_pick_is_ambiguous_and_finger_hits_upper_half_then_activates_on_Y() {
+        // Given
         let interaction = ParcelResizeInteraction()
         let upperFinger = CGPoint(x: 0, y: -100)
         let lowerFinger = CGPoint(x: 0, y: 100)
         let input = Self.makeBeginInput(fingers: (upperFinger, lowerFinger))
 
+        // When
         interaction.begin(input: input, environment: Self.ambiguousYProjection(isUpperHalfHit: { point in
             point == upperFinger
         }))
 
+        // Then
         #expect(interaction.isActive)
         #expect(interaction.highlightedFaces == [.positiveY, .negativeY])
     }
 
     // MARK: - Update
 
-    @Test("update returns nil before begin")
-    func update_returnsNil_beforeBegin() {
+    @Test func test_update_when_called_before_begin_then_returns_nil() {
+        // Given
         let interaction = ParcelResizeInteraction()
+
+        // When
         let result = interaction.update(
             fingers: (CGPoint(x: -50, y: 0), CGPoint(x: 50, y: 0)),
             environment: Self.linearProjection()
         )
+
+        // Then
         #expect(result == nil)
     }
 
-    @Test("update skips sub-jitter motion")
-    func update_skips_subJitterMotion() {
+    @Test func test_update_when_finger_motion_is_below_jitter_threshold_then_returns_nil() {
+        // Given
         let interaction = ParcelResizeInteraction()
         let env = Self.linearProjection()
         interaction.begin(
@@ -133,16 +145,18 @@ struct ParcelResizeInteractionTests {
             environment: env
         )
 
+        // When
         let result = interaction.update(
             fingers: (CGPoint(x: -50.5, y: 0), CGPoint(x: 50.5, y: 0)),
             environment: env
         )
 
+        // Then
         #expect(result == nil)
     }
 
-    @Test("symmetric outward pinch grows the chosen axis without shifting position")
-    func update_grows_axis_onSymmetricPinch() throws {
+    @Test func test_update_when_pinch_is_symmetric_then_grows_axis_without_shifting_position() throws {
+        // Given
         let interaction = ParcelResizeInteraction()
         let env = Self.linearProjection()
         interaction.begin(
@@ -150,6 +164,7 @@ struct ParcelResizeInteractionTests {
             environment: env
         )
 
+        // When
         // Each finger moves outward by 50 screen units = 0.05 world units, so
         // total axis growth = 0.1 metres.
         let output = try #require(interaction.update(
@@ -157,6 +172,7 @@ struct ParcelResizeInteractionTests {
             environment: env
         ))
 
+        // Then
         #expect(approxEqual(output.scale.x, Self.initialScale.x + 0.1))
         #expect(approxEqual(output.scale.y, Self.initialScale.y))
         #expect(approxEqual(output.scale.z, Self.initialScale.z))
@@ -164,8 +180,8 @@ struct ParcelResizeInteractionTests {
         #expect(approxEqual(output.position.z, Self.initialPosition.z))
     }
 
-    @Test("update clamps to minimum size when shrinking past floor")
-    func update_clampsToMinimum_whenShrinkingPastFloor() throws {
+    @Test func test_update_when_shrinking_past_floor_then_clamps_to_minimum_size() throws {
+        // Given
         let interaction = ParcelResizeInteraction()
         let env = Self.linearProjection()
         interaction.begin(
@@ -173,16 +189,18 @@ struct ParcelResizeInteractionTests {
             environment: env
         )
 
+        // When
         let output = try #require(interaction.update(
             fingers: (CGPoint(x: 0, y: 0), CGPoint(x: 0, y: 0)),
             environment: env
         ))
 
+        // Then
         #expect(approxEqual(output.scale.x, ParcelResizeInteraction.minSizeMeters))
     }
 
-    @Test("asymmetric X-axis move shifts position by half the imbalance")
-    func update_shiftsPosition_onAsymmetricXMove() throws {
+    @Test func test_update_when_X_axis_move_is_asymmetric_then_shifts_position_by_half_the_imbalance() throws {
+        // Given
         let interaction = ParcelResizeInteraction()
         let env = Self.linearProjection()
         interaction.begin(
@@ -190,6 +208,7 @@ struct ParcelResizeInteractionTests {
             environment: env
         )
 
+        // When
         // Only the +X finger moves outward by 0.1 m. Outward grows by 0.1,
         // total scale grows by 0.1, root shifts +0.05.
         let output = try #require(interaction.update(
@@ -197,12 +216,13 @@ struct ParcelResizeInteractionTests {
             environment: env
         ))
 
+        // Then
         #expect(approxEqual(output.scale.x, Self.initialScale.x + 0.1))
         #expect(approxEqual(output.position.x, Self.initialPosition.x + 0.05))
     }
 
-    @Test("Y-axis resize never shifts position")
-    func update_doesNotShiftPosition_onYResize() throws {
+    @Test func test_update_when_Y_axis_resizes_then_position_does_not_shift() throws {
+        // Given
         let interaction = ParcelResizeInteraction()
         let env = Self.linearProjection()
         interaction.begin(
@@ -211,11 +231,13 @@ struct ParcelResizeInteractionTests {
         )
         #expect(interaction.highlightedFaces == [.positiveY, .negativeY])
 
+        // When
         let output = try #require(interaction.update(
             fingers: (CGPoint(x: 0, y: -200), CGPoint(x: 0, y: 50)),
             environment: env
         ))
 
+        // Then
         #expect(output.scale.y > Self.initialScale.y)
         #expect(approxEqual(output.position.x, Self.initialPosition.x))
         #expect(approxEqual(output.position.y, Self.initialPosition.y))

@@ -23,7 +23,7 @@ struct ProductVariationsBulkUpdateToolTests {
         let result = await tool.executor(arguments, client)
 
         // Then
-        guard case .success = result else {
+        guard case .success(let success) = result else {
             Issue.record("expected success, got \(result)")
             return
         }
@@ -38,6 +38,8 @@ struct ProductVariationsBulkUpdateToolTests {
         for entry in updates {
             #expect(entry["regular_price"] as? String == "29.99")
         }
+        let cards = try #require(success.uiStructured?.cards)
+        #expect(cards.allSatisfy { $0.family == .productVariation })
     }
 
     @Test

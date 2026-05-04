@@ -163,6 +163,6 @@ public enum ProductVariationsBulkUpdateTool {
                                                          body: payload,
                                                          client: client,
                                                          toolName: name,
-                                                         family: .product)
+                                                         family: .productVariation)
     }
 }

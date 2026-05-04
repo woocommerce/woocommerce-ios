@@ -17,7 +17,8 @@ public enum OrdersBulkUpdateTool {
         Apply the same allowlisted update to many orders at once (max 100). \
         The same patch (status, customer_note, billing email) is applied to \
         every order id in the list. Per-order differences require separate \
-        orders_update calls.
+        orders_update calls. Only call when the merchant has explicitly \
+        requested a bulk change with a concrete list of ids.
         """,
         parametersSchema: .object([
             "type": .string("object"),

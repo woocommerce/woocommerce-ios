@@ -372,6 +372,36 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         // `orderStatsIntervals` is not emitted again after visitor stats are updated.
         assertEqual([[], orderStats.intervals], orderStatsIntervalsValues)
     }
+
+    // MARK: Revenue type
+
+    func test_revenueStatsText_when_revenueType_changes_then_emits_value_for_new_metric() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        observeStatsEmittedValues(viewModel: viewModel)
+
+        // When — totals expose all three revenue fields with distinct, non-integer values so the
+        // formatter renders explicit decimals (it strips them when the amount is integer).
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3,
+                                                           grossRevenue: 100.50, // total_sales
+                                                           grossSales: 80.25,    // gross_sales
+                                                           netRevenue: 60.10),
+                                      intervals: [.fake()])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Initially the default `.total` metric drives the text — `total_sales` is shown.
+        XCTAssertEqual(revenueStatsTextValues, ["-", "$100.50"])
+
+        // When — switch to `.gross` then `.net`.
+        viewModel.revenueType = .gross
+        viewModel.revenueType = .net
+
+        // Then — each switch produces a fresh emission with the corresponding amount.
+        XCTAssertEqual(revenueStatsTextValues, ["-", "$100.50", "$80.25", "$60.10"])
+    }
 }
 
 private extension StoreStatsPeriodViewModelTests {

@@ -8,9 +8,9 @@ struct OrdersListToolTests {
         // Given
         let body = """
         [
-            {"id": 3551, "number": "3551", "status": "processing", "total": "120.00", "currency": "USD"},
-            {"id": 3548, "number": "3548", "status": "on-hold", "total": "12.00", "currency": "USD"},
-            {"id": 3540, "number": "3540", "status": "completed", "total": "480.00", "currency": "USD"}
+            {"id": 3551, "number": "3551", "status": "processing", "total": "120.00", "currency": "USD", "customer_id": 11},
+            {"id": 3548, "number": "3548", "status": "on-hold", "total": "12.00", "currency": "USD", "customer_id": 22},
+            {"id": 3540, "number": "3540", "status": "completed", "total": "480.00", "currency": "USD", "customer_id": 0}
         ]
         """
         let client = MockWCRESTClient(response: StubResponses.ok(body))
@@ -31,6 +31,11 @@ struct OrdersListToolTests {
         }
         #expect(fields["count"] == .int(3))
         #expect(fields["ids"] == .array([.int(3551), .int(3548), .int(3540)]))
+        #expect(fields["rows"] == .array([
+            .object(["id": .int(3551), "customer_id": .int(11)]),
+            .object(["id": .int(3548), "customer_id": .int(22)]),
+            .object(["id": .int(3540), "customer_id": .int(0)])
+        ]))
         #expect(fields["status_counts"] == .object([
             "completed": .int(1),
             "on-hold": .int(1),

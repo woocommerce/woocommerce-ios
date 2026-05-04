@@ -226,6 +226,7 @@ final class ConnectivityToolViewModel {
         context["ios_version"] = UIDevice.current.systemVersion
 
         return SupportChatViewModel(
+            entryPoint: .connectivityTool,
             initialContext: context,
             onContactHumanSupport: onContactHumanSupport
         )

@@ -13,7 +13,10 @@ public enum AnalyticsOrdersTool {
         description: """
         Order analytics for a date range. Returns totals (order count, items \
         sold, gross/net sales, average order value) and per-interval \
-        subtotals. Prefer this over orders_list for any aggregate question.
+        subtotals. Prefer this over orders_list for any aggregate question. \
+        For breakdown requests (by week, by day), set the `interval` \
+        parameter directly to the implied dimension rather than asking the \
+        merchant which window or grain they meant.
         """,
         parametersSchema: .object([
             "type": .string("object"),

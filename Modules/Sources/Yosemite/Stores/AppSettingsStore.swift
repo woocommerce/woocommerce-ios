@@ -276,6 +276,10 @@ public class AppSettingsStore: Store {
             setLastSelectedPerformanceTimeRange(siteID: siteID, timeRange: timeRange)
         case let .loadLastSelectedPerformanceTimeRange(siteID, onCompletion):
             loadLastSelectedPerformanceTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case let .setLastSelectedDashboardRevenueStatsType(siteID, revenueType):
+            setLastSelectedDashboardRevenueStatsType(siteID: siteID, revenueType: revenueType)
+        case let .loadLastSelectedDashboardRevenueStatsType(siteID, onCompletion):
+            loadLastSelectedDashboardRevenueStatsType(siteID: siteID, onCompletion: onCompletion)
         case let .setLastSelectedTopPerformersTimeRange(siteID, timeRange):
             setLastSelectedTopPerformersTimeRange(siteID: siteID, timeRange: timeRange)
         case let .loadLastSelectedTopPerformersTimeRange(siteID, onCompletion):
@@ -1251,6 +1255,18 @@ private extension AppSettingsStore {
         let timeRangeRawValue = storeSettings.lastSelectedPerformanceTimeRange
         let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
         onCompletion(timeRange)
+    }
+
+    func setLastSelectedDashboardRevenueStatsType(siteID: Int64, revenueType: DashboardRevenueStatsType) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedDashboardRevenueStatsType: revenueType.rawValue)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedDashboardRevenueStatsType(siteID: Int64, onCompletion: (DashboardRevenueStatsType?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let rawValue = storeSettings.lastSelectedDashboardRevenueStatsType
+        onCompletion(DashboardRevenueStatsType(rawValue: rawValue))
     }
 
     func setLastSelectedTopPerformersTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4) {

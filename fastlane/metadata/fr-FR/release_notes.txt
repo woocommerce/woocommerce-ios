@@ -1,1 +1,1 @@
-L’outil de dépannage vérifie désormais vos paramètres d’analyse et de notification, ce qui facilite le diagnostic des problèmes de votre boutique.
+Point of Sale gagne en fiabilité ! Vous recevrez des notifications claires en cas de déconnexion temporaire de votre lecteur de cartes Bluetooth, et les prix se mettent automatiquement à jour à l’encaissement en cas de modification. Nous avons également ajouté un outil de diagnostic de connexion pour faciliter le dépannage, ainsi qu’une interface améliorée pour iOS 26 et un bouton « Effacer » pratique dans les champs de recherche.

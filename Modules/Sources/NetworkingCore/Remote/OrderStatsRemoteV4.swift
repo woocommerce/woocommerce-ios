@@ -70,6 +70,6 @@ private extension OrderStatsRemoteV4 {
     }
 
     enum ParameterValues {
-        static let fieldValues = ["orders_count", "num_items_sold", "total_sales", "net_revenue", "avg_order_value"]
+        static let fieldValues = ["orders_count", "num_items_sold", "total_sales", "gross_sales", "net_revenue", "avg_order_value"]
     }
 }

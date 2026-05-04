@@ -29,6 +29,8 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             onCompletion(false)
         case .loadLastSelectedPerformanceTimeRange(_, let onCompletion):
             onCompletion(StatsTimeRangeV4.thisMonth)
+        case .loadLastSelectedDashboardRevenueStatsType(_, let onCompletion):
+            onCompletion(nil)
         case .loadLastSelectedTopPerformersTimeRange(_, let onCompletion):
             onCompletion(StatsTimeRangeV4.thisMonth)
         case .loadLastSelectedMostActiveCouponsTimeRange(_, let onCompletion):

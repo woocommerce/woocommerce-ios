@@ -21,6 +21,11 @@ enum StoreInfoEntry: TimelineEntry {
 
 /// Type that represents the the widget state data.
 ///
+/// Field shape matches trunk so the legacy `StoreInfoView` / `StatsCard` and the lock-screen
+/// widgets keep building unchanged. The metric catalog (`metrics`) is defaulted so callers
+/// that only need the legacy String fields don't have to populate it. The main provider
+/// populates both shapes; view selection is controlled by `useMetricsHomescreenWidget`.
+///
 struct StoreInfoData {
     /// Eg: Today, Weekly, Monthly, Yearly
     ///
@@ -53,6 +58,29 @@ struct StoreInfoData {
     /// Time when the widget was last refreshed (eg: 10.24PM)
     ///
     var updatedTime: String
+
+    /// Resolved metric entries for the new metric-catalog driven path. Ordering here is
+    /// the source of truth; metric-driven views render entries in this order. Currency-typed
+    /// metrics carry their own `CurrencySettings`, so this struct doesn't need a global one.
+    ///
+    var metrics: [StoreInfoMetric] = []
+}
+
+extension StoreInfoData {
+    /// Returns the entry for the given metric type, or an `.unavailable` placeholder
+    /// if the metric isn't present in the current data set.
+    ///
+    /// A miss is treated as a wiring bug (provider didn't include an expected metric);
+    /// `assertionFailure` catches it in debug, while production falls through to the
+    /// placeholder so the widget still renders as `-` instead of crashing.
+    ///
+    func metric(of type: StoreInfoMetricType) -> StoreInfoMetric {
+        if let metric = metrics.first(where: { $0.type == type }) {
+            return metric
+        }
+        assertionFailure("StoreInfoData missing expected metric: \(type.rawValue)")
+        return StoreInfoMetric(type: type, value: .unavailable)
+    }
 }
 
 /// Type that provides data entries to the widget system.
@@ -162,40 +190,66 @@ private extension StoreInfoProvider {
     /// Redacted entry with sample data. If dependencies are available - store name and currency settings will be used.
     ///
     static func placeholderEntry(for dependencies: Dependencies?) -> StoreInfoEntry {
-        StoreInfoEntry.data(.init(range: Localization.today,
-                                  name: dependencies?.storeName ?? Localization.myShop,
-                                  revenue: StoreInfoFormatter.formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
-                                  revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: 132.234, with: dependencies?.storeCurrencySettings),
-                                  visitors: "67",
-                                  orders: "23",
-                                  conversion: StoreInfoFormatter.formattedConversionString(for: 23/67),
-                                  updatedTime: StoreInfoFormatter.currentFormattedTime()))
+        let currencySettings = dependencies?.storeCurrencySettings ?? CurrencySettings()
+        let revenueAmount: Decimal = 132.234
+        let metrics: [StoreInfoMetric] = [
+            StoreInfoMetric(type: .revenue, value: .currency(revenueAmount, currencySettings)),
+            StoreInfoMetric(type: .visitors, value: .count(67)),
+            StoreInfoMetric(type: .orders, value: .count(23)),
+            StoreInfoMetric(type: .conversion, value: .percentage(23.0 / 67.0))
+        ]
+        return .data(.init(
+            range: Localization.today,
+            name: dependencies?.storeName ?? Localization.myShop,
+            revenue: StoreInfoFormatter.formattedAmountString(for: revenueAmount, with: currencySettings),
+            revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: revenueAmount, with: currencySettings),
+            visitors: "67",
+            orders: "23",
+            conversion: StoreInfoFormatter.formattedConversionString(for: 23.0 / 67.0),
+            updatedTime: StoreInfoFormatter.currentFormattedTime(),
+            metrics: metrics
+        ))
     }
 
     /// Real data entry.
     ///
     static func dataEntry(for todayStats: StoreInfoDataService.Stats, with dependencies: Dependencies) -> StoreInfoEntry {
-        let visitors: String = {
+        let currencySettings = dependencies.storeCurrencySettings
+        let visitorsValue: StoreInfoMetricValue = todayStats.totalVisitors.map { .count($0) } ?? .unavailable
+        let conversionValue: StoreInfoMetricValue = todayStats.conversion.map { .percentage($0) } ?? .unavailable
+
+        // Today's medium-widget preset. A later ticket will let users pick this list.
+        let metrics: [StoreInfoMetric] = [
+            .init(type: .revenue, value: .currency(todayStats.revenue, currencySettings)),
+            .init(type: .visitors, value: visitorsValue),
+            .init(type: .orders, value: .count(todayStats.totalOrders)),
+            .init(type: .conversion, value: conversionValue)
+        ]
+
+        let visitorsString: String = {
             if let visitors = todayStats.totalVisitors {
                 return "\(visitors)"
             }
             return StoreInfoFormatter.Constants.valuePlaceholderText
         }()
-        let conversion: String = {
+        let conversionString: String = {
             if let conversion = todayStats.conversion {
                 return StoreInfoFormatter.formattedConversionString(for: conversion)
             }
             return StoreInfoFormatter.Constants.valuePlaceholderText
         }()
-        return StoreInfoEntry.data(.init(range: Localization.today,
-                                         name: dependencies.storeName,
-                                         revenue: StoreInfoFormatter.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
-                                         revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: todayStats.revenue,
-                                                                                                         with: dependencies.storeCurrencySettings),
-                                         visitors: visitors,
-                                         orders: "\(todayStats.totalOrders)",
-                                         conversion: conversion,
-                                         updatedTime: StoreInfoFormatter.currentFormattedTime()))
+
+        return .data(.init(
+            range: Localization.today,
+            name: dependencies.storeName,
+            revenue: StoreInfoFormatter.formattedAmountString(for: todayStats.revenue, with: currencySettings),
+            revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: todayStats.revenue, with: currencySettings),
+            visitors: visitorsString,
+            orders: "\(todayStats.totalOrders)",
+            conversion: conversionString,
+            updatedTime: StoreInfoFormatter.currentFormattedTime(),
+            metrics: metrics
+        ))
     }
 
     enum Localization {

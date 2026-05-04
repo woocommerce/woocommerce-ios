@@ -1,1 +1,1 @@
-The troubleshooting tool now checks your analytics and notification settings, making it easier to diagnose issues with your store.
+Point of Sale just got more reliable! You'll now see clear status updates when your Bluetooth card reader temporarily disconnects, and prices automatically refresh at checkout if they've changed. We've also added a login troubleshooting tool to help diagnose connection issues, plus visual polish for iOS 26 and a convenient clear button in search fields.

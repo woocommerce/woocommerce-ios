@@ -443,6 +443,7 @@ extension NetworkingCore.OrderStatsV4Totals {
             totalOrders: .fake(),
             totalItemsSold: .fake(),
             grossRevenue: .fake(),
+            grossSales: .fake(),
             netRevenue: .fake(),
             averageOrderValue: .fake()
         )

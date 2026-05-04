@@ -51,6 +51,31 @@ struct SupportChatViewModelTests {
         #expect(sut.state == .idle)
     }
 
+    @Test func test_showGreeting_when_entryPoint_is_preLogin_then_shows_text_greeting() {
+        // Given
+        let sut = makeSUT(entryPoint: .preLogin)
+
+        // When
+        sut.showGreeting()
+
+        // Then
+        #expect(sut.messages.count == 1)
+        if case .text = sut.messages.first?.content {
+            // Success
+        } else {
+            Issue.record("Expected text greeting message")
+        }
+        #expect(sut.state == .idle)
+    }
+
+    @Test func test_shouldShowInputArea_when_entryPoint_is_preLogin_then_returns_true() {
+        // Given
+        let sut = makeSUT(entryPoint: .preLogin)
+
+        // Then
+        #expect(sut.shouldShowInputArea == true)
+    }
+
     // MARK: - Input Area Visibility Tests
 
     @Test func test_shouldShowInputArea_when_entryPoint_is_connectivityTool_then_returns_true() {

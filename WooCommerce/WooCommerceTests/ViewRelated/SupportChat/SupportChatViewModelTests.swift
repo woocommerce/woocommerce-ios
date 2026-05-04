@@ -40,6 +40,17 @@ struct SupportChatViewModelTests {
         }
     }
 
+    @Test func test_showGreeting_when_entryPoint_is_connectivityTool_then_state_remains_idle() {
+        // Given
+        let sut = makeSUT(entryPoint: .connectivityTool)
+
+        // When
+        sut.showGreeting()
+
+        // Then
+        #expect(sut.state == .idle)
+    }
+
     // MARK: - Input Area Visibility Tests
 
     @Test func test_shouldShowInputArea_when_entryPoint_is_connectivityTool_then_returns_true() {

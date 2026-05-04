@@ -87,6 +87,7 @@ private func makeStubDependencies() -> AIAssistantDependencyAdaptor {
     AIAssistantDependencyAdaptor(
         analytics: StubAnalytics(),
         externalNavigation: StubNavigation(),
+        externalViews: StubExternalViews(),
         jwtProvider: StubJWT(),
         chatService: StubChatService(),
         toolRegistry: StubToolRegistry(),
@@ -108,6 +109,8 @@ private struct StubNavigation: AssistantExternalNavigationProviding {
     func openProduct(siteID: Int64, productID: Int64) {}
     func openCustomer(siteID: Int64, customerID: Int64) {}
 }
+
+private struct StubExternalViews: AssistantExternalViewProviding {}
 
 private struct StubJWT: AssistantJWTProviding {
     func currentJWT() async throws -> String { "stub" }

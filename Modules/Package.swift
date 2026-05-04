@@ -87,6 +87,10 @@ let package = Package(
             name: "WooAIAssistant",
             targets: ["WooAIAssistant"]
         ),
+        .library(
+            name: "ParcelFittingCheck",
+            targets: ["ParcelFittingCheck"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -257,6 +261,9 @@ let package = Package(
         .target(
             name: "YosemiteTestHelpers",
             dependencies: ["Yosemite"]
+        ),
+        .target(
+            name: "ParcelFittingCheck"
         ),
         .target(
             name: "PointOfSale",
@@ -456,6 +463,7 @@ enum XcodeSupport {
                     "WordPressUI",
                     "WPMediaPicker",
                     "Yosemite",
+                    "ParcelFittingCheck",
                     "PointOfSale",
                     "WooAIAssistant",
                     .product(name: "Alamofire", package: "Alamofire"),

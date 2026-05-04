@@ -114,8 +114,8 @@ struct ConfirmationCard: View {
             comment: "Eyebrow label on a pending confirmation card in the AI Assistant chat"
         )
         static let confirmed = NSLocalizedString(
-            "assistantChat.confirmation.confirmed",
-            value: "Applied",
+            "assistantChat.confirmation.confirmedEyebrow",
+            value: "Confirmed",
             comment: "Eyebrow label on a confirmed confirmation card in the AI Assistant chat"
         )
         static let cancelled = NSLocalizedString(

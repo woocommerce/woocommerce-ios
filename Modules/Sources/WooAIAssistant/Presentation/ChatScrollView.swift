@@ -56,10 +56,29 @@ struct ChatScrollView<Content: View>: UIViewRepresentable {
 
         let controller: ChatScrollController
         var host: UIHostingController<AnyView>?
-        weak var scrollView: UIScrollView?
+        weak var scrollView: UIScrollView? {
+            didSet { observeContentSize() }
+        }
+
+        private var contentSizeObserver: NSKeyValueObservation?
+        private var pendingBottomPin: Bool = false
 
         init(controller: ChatScrollController) {
             self.controller = controller
+        }
+
+        private func observeContentSize() {
+            contentSizeObserver = scrollView?.observe(\.contentSize, options: [.new]) { [weak self] sv, _ in
+                MainActor.assumeIsolated { self?.handleContentSizeChange(sv) }
+            }
+        }
+
+        private func handleContentSizeChange(_ scrollView: UIScrollView) {
+            guard pendingBottomPin else { return }
+            let target = max(0, scrollView.contentSize.height - scrollView.bounds.height)
+            guard target > scrollView.contentOffset.y else { return }
+            scrollView.setContentOffset(CGPoint(x: 0, y: target), animated: false)
+            controller.isNearBottom = true
         }
 
         func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -72,8 +91,14 @@ struct ChatScrollView<Content: View>: UIViewRepresentable {
             }
         }
 
+        func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+            pendingBottomPin = false
+        }
+
         func scrollToBottom(animated: Bool) {
             guard let sv = scrollView else { return }
+            pendingBottomPin = true
+            sv.layoutIfNeeded()
             let target = max(0, sv.contentSize.height - sv.bounds.height)
             sv.setContentOffset(CGPoint(x: 0, y: target), animated: animated)
             controller.isNearBottom = true

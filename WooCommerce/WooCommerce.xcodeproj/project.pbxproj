@@ -440,11 +440,7 @@
 		3F9860002F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				MetricPresentable.swift,
 				StoreInfoDataService.swift,
-				StoreInfoFormatter.swift,
-				StoreInfoMetric.swift,
-				StoreInfoMetricType.swift,
 			);
 			target = B56DB3DC2049BFAA00D4AA8E /* WooCommerceTests */;
 		};

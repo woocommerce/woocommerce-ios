@@ -105,6 +105,14 @@ struct ARCuboidEntity {
         let cameraFacing = cameraFacingFaces(cameraPosition: cameraPosition)
 
         for edge in edges {
+            // Counter-scale the edge so the parent's per-axis scale stretches
+            // the length but leaves world-space thickness constant. Without
+            // this, edges built on a unit cube get thinner along the shorter
+            // dimensions of the parcel.
+            let edgeScale = Self.compensatingScale(for: edge.spec, parentScale: scale)
+            edge.solid.transform.scale = edgeScale
+            edge.dashedGroup.transform.scale = edgeScale
+
             // Match the dash count to the edge's current world length so dashes
             // stay roughly the same physical size across long and short edges.
             let axisScale = scale[simdIndex(of: edge.spec.lengthAxis)]
@@ -197,6 +205,17 @@ private extension ARCuboidEntity {
             }
         }
         return edges
+    }
+
+    static func compensatingScale(for spec: EdgeSpec, parentScale: SIMD3<Float>) -> SIMD3<Float> {
+        let sx = max(parentScale.x, 1e-6)
+        let sy = max(parentScale.y, 1e-6)
+        let sz = max(parentScale.z, 1e-6)
+        switch spec.lengthAxis {
+        case .x: return SIMD3(1, 1 / sy, 1 / sz)
+        case .y: return SIMD3(1 / sx, 1, 1 / sz)
+        case .z: return SIMD3(1 / sx, 1 / sy, 1)
+        }
     }
 
     static func makeBox(size: SIMD3<Float>, color: UIColor) -> ModelEntity {

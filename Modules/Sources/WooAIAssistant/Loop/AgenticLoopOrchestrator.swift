@@ -3,12 +3,12 @@ import CocoaLumberjackSwift
 
 /// Drives one merchant turn over `AIChatService` + `ToolRegistry` + `SafetyPolicy`. Actor-isolated
 /// because unsafe tool calls suspend on a confirmation continuation that needs a serial home.
-actor AgenticLoopOrchestrator {
+public actor AgenticLoopOrchestrator {
 
-    static let defaultMaxIterations = 5
+    public static let defaultMaxIterations = 5
 
     /// 4 keeps "list + 3 drill-downs" flows legitimate while catching varied-args fanouts.
-    static let defaultPerToolPerTurnCap = 4
+    public static let defaultPerToolPerTurnCap = 4
 
     private let chatService: AIChatService
     private let toolRegistry: ToolRegistry?
@@ -22,12 +22,12 @@ actor AgenticLoopOrchestrator {
 
     private(set) var lastOutcome: LoopOutcome?
 
-    init(chatService: AIChatService,
-         toolRegistry: ToolRegistry?,
-         safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
-         systemPrompt: String? = nil,
-         maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
-         perToolPerTurnCap: Int = AgenticLoopOrchestrator.defaultPerToolPerTurnCap) {
+    public init(chatService: AIChatService,
+                toolRegistry: ToolRegistry?,
+                safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
+                systemPrompt: String? = nil,
+                maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
+                perToolPerTurnCap: Int = AgenticLoopOrchestrator.defaultPerToolPerTurnCap) {
         self.chatService = chatService
         self.toolRegistry = toolRegistry
         self.safetyPolicy = safetyPolicy
@@ -36,14 +36,19 @@ actor AgenticLoopOrchestrator {
         self.perToolPerTurnCap = perToolPerTurnCap
     }
 
+    public nonisolated func run(prompt: String) -> AsyncThrowingStream<AssistantEvent, Error> {
+        run(prompt: prompt, priorMessages: [])
+    }
+
     nonisolated func run(prompt: String,
-                         priorMessages: [OpenAIChat.Message] = []) -> AsyncThrowingStream<AssistantEvent, Error> {
+                         priorMessages: [OpenAIChat.Message]) -> AsyncThrowingStream<AssistantEvent, Error> {
         AsyncThrowingStream { continuation in
             let task = Task { [weak self] in
                 guard let self else {
                     continuation.finish()
                     return
                 }
+                await self.clearOutcome()
                 do {
                     try await self.runLoop(prompt: prompt,
                                            priorMessages: priorMessages,
@@ -73,13 +78,13 @@ actor AgenticLoopOrchestrator {
 
     // MARK: - External confirmation entry points
 
-    func confirm(proposalID: UUID) {
+    public func confirm(proposalID: UUID) {
         if let continuation = pendingDecisions.removeValue(forKey: proposalID) {
             continuation.resume(returning: true)
         }
     }
 
-    func cancel(proposalID: UUID) {
+    public func cancel(proposalID: UUID) {
         if let continuation = pendingDecisions.removeValue(forKey: proposalID) {
             continuation.resume(returning: false)
         }
@@ -99,6 +104,10 @@ actor AgenticLoopOrchestrator {
         return await withCheckedContinuation { continuation in
             terminationContinuations.append(continuation)
         }
+    }
+
+    private func clearOutcome() {
+        lastOutcome = nil
     }
 
     private func setOutcome(_ outcome: LoopOutcome) {
@@ -126,9 +135,6 @@ actor AgenticLoopOrchestrator {
         }
     }
 
-    /// Suspend the loop until the UI resolves this proposal. The pre- and post-store `Task.isCancelled`
-    /// checks plus the `onCancel` hop guarantee the continuation is always resumed even if cancellation
-    /// arrives between yielding `.confirmationRequired` and registering the continuation here.
     private func waitForDecision(proposalID: UUID) async -> Bool {
         await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
@@ -383,7 +389,11 @@ actor AgenticLoopOrchestrator {
                                                     name: call.function.name,
                                                     argumentsJSON: call.function.arguments))
             }
-            try await withThrowingTaskGroup(of: (Int, ToolResult).self) { group in
+            // withTaskGroup (not throwing) so a single tool failure no longer
+            // tears down sibling tasks. Errors from the registry get folded
+            // into a per-tool failed result and surface as toolCallCompleted
+            // events for every call - no orphan running pills.
+            await withTaskGroup(of: (Int, ToolResult).self) { group in
                 for index in approvedIndices {
                     let call = calls[index]
                     group.addTask {
@@ -393,7 +403,7 @@ actor AgenticLoopOrchestrator {
                         return (index, result)
                     }
                 }
-                for try await (index, result) in group {
+                for await (index, result) in group {
                     let call = calls[index]
                     let payload = self.handleToolResult(result,
                                                         for: call,
@@ -453,6 +463,21 @@ actor AgenticLoopOrchestrator {
             continuation.yield(.toolResult(toolCallID: call.id,
                                            toolName: call.function.name,
                                            payload: success.structured))
+            // Bridge `uiStructured.cards` into UI-visible `.cardRender` events so
+            // tools that pre-render (orders_get, products_get, show_cards, write
+            // mappers) actually surface in the transcript. The synthetic
+            // toolResult events are UI-only - the model transcript is the
+            // separate `messages` array in `run`.
+            if let cards = success.uiStructured?.cards, !cards.isEmpty {
+                for (index, card) in cards.enumerated() {
+                    let syntheticID = "\(call.id):card:\(index):\(card.family.rawValue):\(card.id)"
+                    let syntheticTool = "\(call.function.name).\(card.family.rawValue)"
+                    continuation.yield(.toolResult(toolCallID: syntheticID,
+                                                   toolName: syntheticTool,
+                                                   payload: card.element))
+                    continuation.yield(.cardRender(toolCallID: syntheticID))
+                }
+            }
             continuation.yield(.toolCallCompleted(id: call.id,
                                                    name: call.function.name,
                                                    resultJSON: payload))
@@ -834,10 +859,11 @@ private enum TurnOutcome {
     case toolCalls([OpenAIChat.ToolCall])
 }
 
-/// Degenerate policy used when the caller hasn't specified safety at
-/// all (tests, read-only prototypes). Every call executes.
-struct AlwaysExecuteSafetyPolicy: SafetyPolicy {
-    func decision(for name: String, arguments: String, tool: AITool) -> SafetyDecision {
+/// Tests/read-only prototypes that don't need a real safety check.
+public struct AlwaysExecuteSafetyPolicy: SafetyPolicy {
+    public init() {}
+
+    public func decision(for name: String, arguments: String, tool: AITool) -> SafetyDecision {
         .execute
     }
 }

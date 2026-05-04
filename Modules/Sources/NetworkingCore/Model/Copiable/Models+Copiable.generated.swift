@@ -704,12 +704,14 @@ extension NetworkingCore.OrderStatsV4Totals {
         totalOrders: CopiableProp<Int> = .copy,
         totalItemsSold: CopiableProp<Int> = .copy,
         grossRevenue: CopiableProp<Decimal> = .copy,
+        grossSales: CopiableProp<Decimal> = .copy,
         netRevenue: CopiableProp<Decimal> = .copy,
         averageOrderValue: CopiableProp<Decimal> = .copy
     ) -> NetworkingCore.OrderStatsV4Totals {
         let totalOrders = totalOrders ?? self.totalOrders
         let totalItemsSold = totalItemsSold ?? self.totalItemsSold
         let grossRevenue = grossRevenue ?? self.grossRevenue
+        let grossSales = grossSales ?? self.grossSales
         let netRevenue = netRevenue ?? self.netRevenue
         let averageOrderValue = averageOrderValue ?? self.averageOrderValue
 
@@ -717,6 +719,7 @@ extension NetworkingCore.OrderStatsV4Totals {
             totalOrders: totalOrders,
             totalItemsSold: totalItemsSold,
             grossRevenue: grossRevenue,
+            grossSales: grossSales,
             netRevenue: netRevenue,
             averageOrderValue: averageOrderValue
         )

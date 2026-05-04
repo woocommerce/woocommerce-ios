@@ -295,6 +295,55 @@ struct LoopAdditionalEdgeCasesTests {
     }
 
     @Test
+    func test_run_when_success_with_uiStructured_then_emits_synthetic_toolResult_and_cardRender_events() async throws {
+        // Given
+        let listTool = AITool(name: "show_cards",
+                              description: "Render cards",
+                              parametersSchema: .object([:]),
+                              safetyLevel: .safe)
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_show",
+            function: .init(name: "show_cards", arguments: #"{}"#)
+        )
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)],
+            [.textDelta("Done."), .completed(.stop)]
+        ])
+        let card = RenderedCardPayload(family: .order,
+                                       id: "42",
+                                       element: .object(["id": .int(42)]))
+        let success = ToolResult.Success(toolName: "show_cards",
+                                         structured: .object(["rendered": .int(1)]),
+                                         uiStructured: UIStructured(cards: [card]))
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([listTool])
+        await registry.setResult(for: "show_cards", result: .success(success))
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat, toolRegistry: registry)
+
+        // When
+        var events: [AssistantEvent] = []
+        for try await event in orchestrator.run(prompt: "Show order 42") {
+            events.append(event)
+        }
+
+        // Then
+        let cardRenderIDs: [String] = events.compactMap { event in
+            if case .cardRender(let id) = event { return id }
+            return nil
+        }
+        #expect(cardRenderIDs.count == 1)
+        let renderID = try #require(cardRenderIDs.first)
+        #expect(renderID.hasPrefix("call_show:card:"))
+
+        let syntheticToolResult = events.first { event in
+            if case .toolResult(let id, _, _) = event, id == renderID { return true }
+            return false
+        }
+        #expect(syntheticToolResult != nil)
+    }
+
+    @Test
     func test_run_when_success_with_uiStructured_then_only_structured_appears_in_resubmitted_tool_message() async throws {
         // Given
         let listTool = AITool(name: "orders_list",

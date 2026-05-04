@@ -120,12 +120,12 @@ private extension GoogleAdsCampaignCoordinator {
         let creationSucceeded = queryItems?.contains(where: {
             $0.name == Constants.Parameters.campaign &&
             $0.value == Constants.ParameterValues.saved
-        })
+        }) ?? false
         let setupAndCreationSucceed = queryItems?.contains(where: {
             $0.name == Constants.Parameters.guide &&
             ($0.value == Constants.ParameterValues.creationSuccess ||
              $0.value == Constants.ParameterValues.submissionSuccess)
-        })
+        }) ?? false
         if creationSucceeded || setupAndCreationSucceed {
             analytics.track(event: .GoogleAds.campaignCreationSuccess(source: source))
 

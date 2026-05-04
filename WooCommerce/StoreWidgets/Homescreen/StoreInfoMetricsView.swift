@@ -17,8 +17,10 @@ struct StoreInfoMetricsView: View {
             switch family {
             case .systemSmall:
                 StoreInfoSmallMetricsView(data: entryData)
-            case .systemMedium, .systemLarge, .systemExtraLarge:
+            case .systemMedium:
                 StoreInfoMediumMetricsView(data: entryData)
+            case .systemLarge, .systemExtraLarge:
+                StoreInfoLargeMetricsView(data: entryData)
             default:
                 let _ = assertionFailure("This view only supports system families")
                 EmptyView()
@@ -51,22 +53,39 @@ extension StoreInfoMetricsView {
 import class WooFoundation.CurrencySettings
 
 struct StoreInfoMetricsView_Previews: PreviewProvider {
-    static var exampleData = StoreInfoData(
-        range: "Today",
-        name: "Ernest Shop",
-        revenue: "$123,456,789",
-        revenueCompact: "$123M",
-        visitors: "67",
-        orders: "23",
-        conversion: "34%",
-        updatedTime: "10:24 PM",
-        metrics: [
+    static var allMetrics: [StoreInfoMetric] {
+        [
             .init(type: .revenue, value: .currency(123_456_789, CurrencySettings())),
-            .init(type: .visitors, value: .count(67)),
             .init(type: .orders, value: .count(23)),
+            .init(type: .itemsSold, value: .count(41)),
+            .init(type: .averageOrderValue, value: .currency(5_367, CurrencySettings())),
+            .init(type: .netSales, value: .currency(98_765_432, CurrencySettings())),
+            .init(type: .visitors, value: .count(67)),
             .init(type: .conversion, value: .percentage(23.0 / 67.0))
         ]
-    )
+    }
+
+    static var exampleData: StoreInfoData {
+        exampleData(metrics: Array(allMetrics.prefix(4)))
+    }
+
+    static var fullCatalogData: StoreInfoData {
+        exampleData(metrics: allMetrics)
+    }
+
+    static func exampleData(metrics: [StoreInfoMetric]) -> StoreInfoData {
+        StoreInfoData(
+            range: "Today",
+            name: "Ernest Shop",
+            revenue: "$123,456,789",
+            revenueCompact: "$123M",
+            visitors: "67",
+            orders: "23",
+            conversion: "34%",
+            updatedTime: "10:24 PM",
+            metrics: metrics
+        )
+    }
 
     static var previews: some View {
         StoreInfoMetricsView(entryData: exampleData)
@@ -78,11 +97,24 @@ struct StoreInfoMetricsView_Previews: PreviewProvider {
             .environment(\.dynamicTypeSize, .xxLarge)
             .previewDisplayName("Medium - XXL font")
 
-        StoreInfoMetricsView(entryData: exampleData)
+        StoreInfoMetricsView(entryData: fullCatalogData)
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .previewDisplayName("Large")
+
+        StoreInfoMetricsView(entryData: fullCatalogData)
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .environment(\.dynamicTypeSize, .xxLarge)
+            .previewDisplayName("Large - XXL font")
+
+        StoreInfoMetricsView(entryData: fullCatalogData)
+            .previewContext(WidgetPreviewContext(family: .systemExtraLarge))
+            .previewDisplayName("Extra Large")
+
+        StoreInfoMetricsView(entryData: fullCatalogData)
             .previewContext(WidgetPreviewContext(family: .systemSmall))
             .previewDisplayName("Small")
 
-        StoreInfoMetricsView(entryData: exampleData)
+        StoreInfoMetricsView(entryData: fullCatalogData)
             .previewContext(WidgetPreviewContext(family: .systemSmall))
             .environment(\.dynamicTypeSize, .xxLarge)
             .previewDisplayName("Small - XXL font")

@@ -15,13 +15,13 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
 
     /// User-selected metric set, in display order.
     ///
-    /// The `size:` map drives iOS's family-aware fixed-slot rendering — small shows 2 inline
-    /// rows, medium 4, large 7. The picker shows the full catalog; metrics whose data isn't
+    /// The `size:` map drives iOS's family-aware fixed-slot rendering — small shows 2 metrics,
+    /// medium 4, and large 7. The picker shows the full catalog; metrics whose data isn't
     /// available for the user's auth mode (`visitors`, `conversion` on self-hosted) render
     /// with the standard "-" placeholder in the cell.
     ///
-    /// The default lists all 7 catalog metrics in priority order so iOS persists enough state
-    /// to cover the largest family on first install. After a resize-up,
+    /// The default lists the full catalog in priority order so iOS persists enough state
+    /// to cover the largest family and available choices on first install. After a resize-up,
     /// `StoreInfoProvider.resolveMetricSelection` tops up undersized arrays from the same
     /// priority order so the widget body renders identically to a fresh install at the new
     /// family.
@@ -35,7 +35,7 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
         size: [
             .systemSmall: .init(exactly: 2),
             .systemMedium: .init(exactly: 4),
-            .systemLarge: .init(exactly: 7)
+            .systemLarge: .init(exactly: 7),
         ],
         query: AvailableMetricsQuery()
     )

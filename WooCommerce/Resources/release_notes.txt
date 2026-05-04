@@ -1,6 +1,1 @@
-- [*] Performance card: switch between Gross, Net, and Total revenue from a segmented control. [https://github.com/woocommerce/woocommerce-ios/pull/17012]
-- [*] Performance card: pick which order date type drives the totals (paid, placed, or completed) from a bottom sheet. [https://github.com/woocommerce/woocommerce-ios/pull/16988]
-- [*] Add FedEx Terms of Service handling for shipping label purchases [https://github.com/woocommerce/woocommerce-ios/pull/16925]
-- [*] POS: Update empty orders state copy and replace "Learn more" with "Refresh" [https://github.com/woocommerce/woocommerce-ios/pull/16961]
-- [*] Point of Sale is now available for stores based in Puerto Rico. [https://github.com/woocommerce/woocommerce-ios/pull/17026]
-- [Internal] Add `inPersonPaymentsCountryExpansion` and `inPersonPaymentsCountryExpansionEUExtended` remote feature flags gating IPP and POS support for 13 new countries — `inPersonPaymentsCountryExpansion` covers FR/DE/IE/NL/SG/NZ; `inPersonPaymentsCountryExpansionEUExtended` covers AT/BE/FI/IT/LU/PT/ES. Eligibility is cached per site in `GeneralStoreSettings`. Existing supported countries (US, PR, CA, GB) are unaffected; AU is intentionally excluded pending EFTPOS support.
+Get deeper insights with a revamped Performance card. Quickly switch between Gross, Net, and Total revenue, and choose which order date (paid, placed, or completed) drives your totals. We’ve also improved shipping label flows with FedEx TOS handling, refreshed POS empty states, and expanded POS availability to Puerto Rico.

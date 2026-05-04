@@ -85,11 +85,13 @@ extension StoreInfoData {
 
 /// Type that provides data entries to the widget system.
 ///
+/// Backs both the legacy `StaticConfiguration` path (via `TimelineProvider` here) and the
+/// `AppIntentConfiguration` path (via `AppIntentTimelineProvider` conformance in
+/// `StoreInfoProvider+AppIntentTimelineProvider.swift`). Sharing one provider keeps the
+/// data-fetching logic in a single place while the configurable widget rolls out behind
+/// `FeatureFlag.configurableStoreStatsWidgets`.
+///
 final class StoreInfoProvider: TimelineProvider {
-
-    /// Holds a reference to the service while a network request is being performed.
-    ///
-    private var networkService: StoreInfoDataService?
 
     /// Desired data reload interval provided to system = 30 minutes.
     ///
@@ -102,36 +104,35 @@ final class StoreInfoProvider: TimelineProvider {
         return Self.placeholderEntry(for: dependencies)
     }
 
-    /// Quick Snapshot. Required when previewing the widget.
-    ///
     func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
         completion(placeholder(in: context))
     }
 
-    /// Real data widget.
-    ///
     func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
+        Task {
+            let timeline = await loadTimeline()
+            completion(timeline)
+        }
+    }
+
+    /// Shared loader for both `TimelineProvider` and `AppIntentTimelineProvider` paths.
+    /// Visible to extensions in this module so the AppIntent conformance can share logic.
+    ///
+    func loadTimeline() async -> Timeline<StoreInfoEntry> {
         guard let dependencies = Self.fetchDependencies() else {
-            return completion(Timeline<StoreInfoEntry>(entries: [StoreInfoEntry.notConnected], policy: .never))
+            return Timeline<StoreInfoEntry>(entries: [.notConnected], policy: .never)
         }
 
-        let strongService = StoreInfoDataService(credentials: dependencies.credentials)
-        networkService = strongService
-        Task {
-            do {
-                let todayStats = try await strongService.fetchTodayStats(for: dependencies.storeID)
-                let entry = Self.dataEntry(for: todayStats, with: dependencies)
-                let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
-                let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
-                completion(timeline)
-            } catch {
-                // WooFoundation does not expose `DDLOG` types. Should we include them?
-                print("⛔️ Error fetching today's widget stats: \(error)")
-
-                let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
-                let timeline = Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
-                completion(timeline)
-            }
+        let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
+        let service = StoreInfoDataService(credentials: dependencies.credentials)
+        do {
+            let todayStats = try await service.fetchTodayStats(for: dependencies.storeID)
+            let entry = Self.dataEntry(for: todayStats, with: dependencies)
+            return Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
+        } catch {
+            // WooFoundation does not expose `DDLOG` types. Should we include them?
+            print("⛔️ Error fetching today's widget stats: \(error)")
+            return Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
         }
     }
 }

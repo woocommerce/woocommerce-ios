@@ -100,6 +100,7 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
     private func fetch<T: Decodable>(_ type: T.Type, path: String) async -> T? {
         let response = await client.request(method: "GET", path: path, query: nil, body: nil)
         guard (200..<300).contains(response.statusCode) else {
+            DDLogError("DefaultConfirmationSnapshotResolver fetch \(path) returned HTTP \(response.statusCode)")
             return nil
         }
         do {

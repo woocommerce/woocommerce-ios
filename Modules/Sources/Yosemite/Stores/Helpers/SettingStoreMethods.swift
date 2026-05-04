@@ -249,7 +249,7 @@ private extension SettingStoreMethods {
         // Now, remove any objects that exist in storageSiteSettings but not in readOnlySiteSettings
         if let storageSiteSettings {
             storageSiteSettings.forEach({ storageItem in
-                if readOnlySiteSettings!.contains(where: { $0.settingID == storageItem.settingID }) {
+                if !readOnlySiteSettings.contains(where: { $0.settingID == storageItem.settingID }) {
                     storage.deleteObject(storageItem)
                 }
             })

@@ -556,7 +556,7 @@ private extension ShippingLabelFormViewModel {
             return
         }
         // Add customs row if customs form is required
-        if customsFormRequired, rows!.contains(where: { $0.type == .customs }) {
+        if customsFormRequired, !rows.contains(where: { $0.type == .customs }) {
             guard let packageDetailsRow = rows.first(where: { $0.type == .packageDetails }),
                   let packageDetailsRowIndex = rows.firstIndex(of: packageDetailsRow) else {
                 return

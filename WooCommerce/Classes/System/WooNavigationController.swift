@@ -143,7 +143,7 @@ private extension WooNavigationControllerDelegate {
         // Only add banner view if it's not already added.
         guard let navigationController = viewController.navigationController,
               let view = viewController.view,
-              view.subviews!.contains(where: { $0 is OfflineBannerView }) else {
+              !view.subviews.contains(where: { $0 is OfflineBannerView }) else {
             return
         }
 

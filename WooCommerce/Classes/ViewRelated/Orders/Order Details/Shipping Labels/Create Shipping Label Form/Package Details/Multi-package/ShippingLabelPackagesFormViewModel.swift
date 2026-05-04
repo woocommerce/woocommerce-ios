@@ -383,7 +383,7 @@ private extension ShippingLabelPackagesFormViewModel {
     /// Disable Done button if any of the package validation fails.
     ///
     func configureDoneButton() {
-        doneButtonEnabled = packagesValidation!.contains(where: { $0.value == false })
+        doneButtonEnabled = !packagesValidation.contains(where: { $0.value == false })
     }
 
     func configureResultsControllers() {

@@ -128,7 +128,7 @@ extension ShipmentStore {
 
             // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingData
             storageTrackings?.forEach({ storageTracking in
-                if readOnlyShipmentTrackingData!.contains(where: { $0.trackingID == storageTracking.trackingID }) {
+                if !readOnlyShipmentTrackingData.contains(where: { $0.trackingID == storageTracking.trackingID }) {
                     storage.deleteObject(storageTracking)
                 }
             })
@@ -160,7 +160,7 @@ extension ShipmentStore {
 
         // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingProviderGroups
         storageTrackingGroups?.forEach({ storageTrackingGroup in
-            if readOnlyGroups!.contains(where: { $0.name == storageTrackingGroup.name }) {
+            if !readOnlyGroups.contains(where: { $0.name == storageTrackingGroup.name }) {
                 storage.deleteObject(storageTrackingGroup)
             }
         })
@@ -301,7 +301,7 @@ extension ShipmentStore {
 
         // Now, remove any objects that exist in storageGroup.providers but not in readOnlyGroup.providers
         storageProviders?.forEach({ storageProvider in
-            if readOnlyGroup.providers!.contains(where: { $0.name == storageProvider.name }) {
+            if !readOnlyGroup.providers.contains(where: { $0.name == storageProvider.name }) {
                 storageGroup.removeFromProviders(storageProvider)
                 storage.deleteObject(storageProvider)
             }

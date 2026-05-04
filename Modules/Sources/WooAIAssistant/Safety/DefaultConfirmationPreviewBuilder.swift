@@ -412,7 +412,7 @@ private enum Strings {
     )
     static let ordersUpdateSummary = LocalizedStringResource(
         "ai.assistant.preview.orders_update.summary",
-        defaultValue: "Update order #\(placeholder: .object): \(placeholder: .object)"
+        defaultValue: "Update order #%@: %@"
     )
     static let ordersBulkUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.orders_bulk_update.fallback",
@@ -420,11 +420,11 @@ private enum Strings {
     )
     static let ordersBulkUpdateSummarySingular = LocalizedStringResource(
         "ai.assistant.preview.orders_bulk_update.summary.singular",
-        defaultValue: "Update \(placeholder: .object) order: \(placeholder: .object)"
+        defaultValue: "Update %@ order: %@"
     )
     static let ordersBulkUpdateSummaryPlural = LocalizedStringResource(
         "ai.assistant.preview.orders_bulk_update.summary.plural",
-        defaultValue: "Update \(placeholder: .object) orders: \(placeholder: .object)"
+        defaultValue: "Update %@ orders: %@"
     )
     static let productsUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.products_update.fallback",
@@ -432,7 +432,7 @@ private enum Strings {
     )
     static let productsUpdateSummary = LocalizedStringResource(
         "ai.assistant.preview.products_update.summary",
-        defaultValue: "Update product #\(placeholder: .object): \(placeholder: .object)"
+        defaultValue: "Update product #%@: %@"
     )
     static let productsBulkUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.products_bulk_update.fallback",
@@ -440,11 +440,11 @@ private enum Strings {
     )
     static let productsBulkUpdateSummarySingular = LocalizedStringResource(
         "ai.assistant.preview.products_bulk_update.summary.singular",
-        defaultValue: "Update \(placeholder: .object) product: \(placeholder: .object)"
+        defaultValue: "Update %@ product: %@"
     )
     static let productsBulkUpdateSummaryPlural = LocalizedStringResource(
         "ai.assistant.preview.products_bulk_update.summary.plural",
-        defaultValue: "Update \(placeholder: .object) products: \(placeholder: .object)"
+        defaultValue: "Update %@ products: %@"
     )
     static let productVariationsUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.product_variations_update.fallback",
@@ -452,7 +452,7 @@ private enum Strings {
     )
     static let productVariationsUpdateSummary = LocalizedStringResource(
         "ai.assistant.preview.product_variations_update.summary",
-        defaultValue: "Update variation #\(placeholder: .object) of product #\(placeholder: .object): \(placeholder: .object)"
+        defaultValue: "Update variation #%@ of product #%@: %@"
     )
     static let productVariationsBulkUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.product_variations_bulk_update.fallback",
@@ -460,11 +460,11 @@ private enum Strings {
     )
     static let productVariationsBulkUpdateSummarySingular = LocalizedStringResource(
         "ai.assistant.preview.product_variations_bulk_update.summary.singular",
-        defaultValue: "Update \(placeholder: .object) variation of product #\(placeholder: .object)"
+        defaultValue: "Update %@ variation of product #%@"
     )
     static let productVariationsBulkUpdateSummaryPlural = LocalizedStringResource(
         "ai.assistant.preview.product_variations_bulk_update.summary.plural",
-        defaultValue: "Update \(placeholder: .object) variations of product #\(placeholder: .object)"
+        defaultValue: "Update %@ variations of product #%@"
     )
 
     static let fieldName = LocalizedStringResource(
@@ -531,43 +531,43 @@ private enum Strings {
     )
     static let changeSummaryListSeparator = LocalizedStringResource(
         "ai.assistant.preview.change_summary.separator",
-        defaultValue: "\(placeholder: .object), \(placeholder: .object)"
+        defaultValue: "%@, %@"
     )
     static let changeSummaryName = LocalizedStringResource(
         "ai.assistant.preview.change_summary.name",
-        defaultValue: "name -> \(placeholder: .object)"
+        defaultValue: "name -> %@"
     )
     static let changeSummaryRegularPrice = LocalizedStringResource(
         "ai.assistant.preview.change_summary.regular_price",
-        defaultValue: "price -> \(placeholder: .object)"
+        defaultValue: "price -> %@"
     )
     static let changeSummarySalePrice = LocalizedStringResource(
         "ai.assistant.preview.change_summary.sale_price",
-        defaultValue: "sale -> \(placeholder: .object)"
+        defaultValue: "sale -> %@"
     )
     static let changeSummaryStockQuantity = LocalizedStringResource(
         "ai.assistant.preview.change_summary.stock_quantity",
-        defaultValue: "stock -> \(placeholder: .object)"
+        defaultValue: "stock -> %@"
     )
     static let changeSummaryStockStatus = LocalizedStringResource(
         "ai.assistant.preview.change_summary.stock_status",
-        defaultValue: "stock status -> \(placeholder: .object)"
+        defaultValue: "stock status -> %@"
     )
     static let changeSummarySku = LocalizedStringResource(
         "ai.assistant.preview.change_summary.sku",
-        defaultValue: "sku -> \(placeholder: .object)"
+        defaultValue: "sku -> %@"
     )
     static let changeSummaryStatus = LocalizedStringResource(
         "ai.assistant.preview.change_summary.status",
-        defaultValue: "status -> \(placeholder: .object)"
+        defaultValue: "status -> %@"
     )
     static let statusValueEmailsCustomer = LocalizedStringResource(
         "ai.assistant.preview.status_value.emails_customer",
-        defaultValue: "\(placeholder: .object) (emails the customer)"
+        defaultValue: "%@ (emails the customer)"
     )
     static let statusValueEmailsCustomers = LocalizedStringResource(
         "ai.assistant.preview.status_value.emails_customers",
-        defaultValue: "\(placeholder: .object) (emails customers)"
+        defaultValue: "%@ (emails customers)"
     )
     static let changeSummaryCustomerNote = LocalizedStringResource(
         "ai.assistant.preview.change_summary.customer_note",
@@ -575,10 +575,10 @@ private enum Strings {
     )
     static let changeSummaryBillingEmail = LocalizedStringResource(
         "ai.assistant.preview.change_summary.billing_email",
-        defaultValue: "billing email -> \(placeholder: .object)"
+        defaultValue: "billing email -> %@"
     )
     static let changeSummaryGenericField = LocalizedStringResource(
         "ai.assistant.preview.change_summary.generic",
-        defaultValue: "\(placeholder: .object) -> \(placeholder: .object)"
+        defaultValue: "%@ -> %@"
     )
 }

@@ -312,4 +312,68 @@ struct DefaultConfirmationPreviewBuilderTests {
         #expect(unwrapped.isBulk == true)
         #expect(unwrapped.fields.isEmpty)
     }
+
+    // MARK: - Flattened summary regression
+
+    // Regression: the `LocalizedStringResource(defaultValue:)` interpolation
+    // syntax `\(placeholder: .object)` rendered as the literal string `(null)`
+    // when read via `String(localized:)`, which made the production card
+    // surface "Update order #(null): (null)" instead of "Update order #42: ...".
+    // Pin every summary template flattens to a substituted string with no `(null)`.
+
+    @Test
+    func test_build_when_orders_update_then_summary_flattened_substitutes_args() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(toolName: OrdersUpdateTool.name,
+                                    arguments: #"{"id":42,"status":"pending"}"#,
+                                    snapshot: nil)
+
+        // Then
+        let summary = try #require(preview).summary.flattened()
+        #expect(!summary.contains("(null)"))
+        #expect(summary.contains("42"))
+        #expect(summary.contains("pending"))
+    }
+
+    @Test
+    func test_build_when_orders_bulk_update_then_summary_flattened_substitutes_count_and_change() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: OrdersBulkUpdateTool.name,
+            arguments: #"{"ids":[1,2,3],"patch":{"status":"completed"}}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let summary = try #require(preview).summary.flattened()
+        #expect(!summary.contains("(null)"))
+        #expect(summary.contains("3"))
+        #expect(summary.contains("completed"))
+    }
+
+    @Test
+    func test_build_when_product_variations_update_then_summary_flattened_substitutes_three_args() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductVariationsUpdateTool.name,
+            arguments: #"{"product_id":7,"id":15,"regular_price":"19.99"}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let summary = try #require(preview).summary.flattened()
+        #expect(!summary.contains("(null)"))
+        #expect(summary.contains("15"))
+        #expect(summary.contains("7"))
+        #expect(summary.contains("19.99"))
+    }
 }

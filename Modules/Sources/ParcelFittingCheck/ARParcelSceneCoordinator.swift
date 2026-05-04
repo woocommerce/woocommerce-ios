@@ -32,6 +32,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     var twoFingerGesture: TwoFingerCuboidGesture?
     private var rotationStartYaw: Float = 0
     private let resizeInteraction = ParcelResizeInteraction()
+    private var cachedResizeEnvironment: ParcelResizeInteraction.Environment?
 
     @objc func handleTap(_ gesture: UITapGestureRecognizer) {
         guard !placed, let arView else { return }
@@ -54,6 +55,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         cuboidAnchor = nil
         cuboid = nil
         resizeInteraction.end()
+        cachedResizeEnvironment = nil
         placed = false
         // Deferred — removeCuboid is called from updateUIView, which runs
         // inside SwiftUI's render pass. Binding writes during a render pass
@@ -83,6 +85,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         cuboidAnchor = nil
         cuboid = nil
         resizeInteraction.end()
+        cachedResizeEnvironment = nil
         arView = nil
         onPlaced = nil
         onRemoved = nil
@@ -100,9 +103,9 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
             // centroid, fighting our resize/rotate writes (most visibly during
             // height resize, where we keep position locked).
             setInstalledGesturesEnabled(false)
-            let currentRotation = cuboid.root.transform.rotation
-            rotationStartYaw = 2 * atan2(currentRotation.imag.y, currentRotation.real)
+            rotationStartYaw = yaw(of: cuboid.root.transform.rotation)
             resizeInteraction.end()
+            cachedResizeEnvironment = makeResizeEnvironment()
         case .changed:
             switch gesture.mode {
             case .undecided:
@@ -116,6 +119,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         case .ended, .cancelled, .failed:
             setInstalledGesturesEnabled(true)
             resizeInteraction.end()
+            cachedResizeEnvironment = nil
         default:
             break
         }
@@ -198,13 +202,14 @@ private extension ARParcelSceneCoordinator {
     }
 
     func applyResize(gesture: TwoFingerCuboidGesture, cuboid: ARCuboidEntity) {
-        let env = resizeEnvironment()
+        guard let env = cachedResizeEnvironment else { return }
         if !resizeInteraction.isActive {
-            let startInput = makeResizeInput(cuboid: cuboid, fingers: gesture.startLocations)
-            resizeInteraction.begin(input: startInput, environment: env)
+            resizeInteraction.begin(
+                input: makeBeginInput(cuboid: cuboid, fingers: gesture.startLocations),
+                environment: env
+            )
         }
-        let updateInput = makeResizeInput(cuboid: cuboid, fingers: gesture.currentLocations)
-        guard let output = resizeInteraction.update(input: updateInput, environment: env) else { return }
+        guard let output = resizeInteraction.update(fingers: gesture.currentLocations, environment: env) else { return }
 
         cuboid.root.transform.scale = output.scale
         cuboid.root.position = output.position
@@ -212,29 +217,20 @@ private extension ARParcelSceneCoordinator {
         onDimensionsChanged?(output.scale)
     }
 
-    func makeResizeInput(
+    func makeBeginInput(
         cuboid: ARCuboidEntity,
         fingers: (first: CGPoint, second: CGPoint)
-    ) -> ParcelResizeInteraction.Input {
-        let cameraForward: SIMD3<Float>
-        if let arView {
-            let mat = arView.cameraTransform.matrix
-            cameraForward = -SIMD3<Float>(mat.columns.2.x, mat.columns.2.y, mat.columns.2.z)
-        } else {
-            cameraForward = SIMD3(0, 0, -1)
-        }
-        let rotation = cuboid.root.transform.rotation
-        let yaw = 2 * atan2(rotation.imag.y, rotation.real)
-        return ParcelResizeInteraction.Input(
+    ) -> ParcelResizeInteraction.BeginInput {
+        ParcelResizeInteraction.BeginInput(
             cuboidPosition: cuboid.root.position,
             cuboidScale: cuboid.root.transform.scale,
-            cuboidYaw: yaw,
-            cameraForward: cameraForward,
+            cuboidYaw: yaw(of: cuboid.root.transform.rotation),
+            cameraForward: cameraForward(),
             fingers: fingers
         )
     }
 
-    func resizeEnvironment() -> ParcelResizeInteraction.Environment {
+    func makeResizeEnvironment() -> ParcelResizeInteraction.Environment {
         ParcelResizeInteraction.Environment(
             projectToScreen: { [weak self] world in
                 guard let arView = self?.arView else { return nil }
@@ -257,6 +253,16 @@ private extension ARParcelSceneCoordinator {
                 return localPosition.y > 0.5
             }
         )
+    }
+
+    func yaw(of rotation: simd_quatf) -> Float {
+        2 * atan2(rotation.imag.y, rotation.real)
+    }
+
+    func cameraForward() -> SIMD3<Float> {
+        guard let arView else { return SIMD3(0, 0, -1) }
+        let mat = arView.cameraTransform.matrix
+        return -SIMD3<Float>(mat.columns.2.x, mat.columns.2.y, mat.columns.2.z)
     }
 
     static func projectToPlane(

@@ -9,7 +9,17 @@ import RealityKit
 /// camera-facing face render as solid and edges that would be hidden by an
 /// opaque cuboid render as dashed — the standard CAD hidden-line look.
 struct ARCuboidEntity {
-    enum Axis { case x, y, z }
+    enum Axis {
+        case x, y, z
+
+        var simdIndex: Int {
+            switch self {
+            case .x: return 0
+            case .y: return 1
+            case .z: return 2
+            }
+        }
+    }
 
     enum Face: Hashable {
         case positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ
@@ -106,16 +116,16 @@ struct ARCuboidEntity {
 
         for edge in edges {
             // Counter-scale the edge so the parent's per-axis scale stretches
-            // the length but leaves world-space thickness constant. Without
-            // this, edges built on a unit cube get thinner along the shorter
-            // dimensions of the parcel.
+            // the length but leaves world-space thickness constant. Skip the
+            // write when the parent scale has not changed — otherwise we would
+            // dirty the transform component every frame for an idle parcel.
             let edgeScale = Self.compensatingScale(for: edge.spec, parentScale: scale)
-            edge.solid.transform.scale = edgeScale
-            edge.dashedGroup.transform.scale = edgeScale
+            if edge.solid.transform.scale != edgeScale {
+                edge.solid.transform.scale = edgeScale
+                edge.dashedGroup.transform.scale = edgeScale
+            }
 
-            // Match the dash count to the edge's current world length so dashes
-            // stay roughly the same physical size across long and short edges.
-            let axisScale = scale[simdIndex(of: edge.spec.lengthAxis)]
+            let axisScale = scale[edge.spec.lengthAxis.simdIndex]
             let targetCount = dashCount(forWorldLength: axisScale)
             if edge.dashedGroup.children.count != targetCount {
                 rebuildDashes(in: edge, count: targetCount)
@@ -257,14 +267,6 @@ private extension ARCuboidEntity {
         case .x: return SIMD3(cellCenter, 0, 0)
         case .y: return SIMD3(0, cellCenter, 0)
         case .z: return SIMD3(0, 0, cellCenter)
-        }
-    }
-
-    func simdIndex(of axis: Axis) -> Int {
-        switch axis {
-        case .x: return 0
-        case .y: return 1
-        case .z: return 2
         }
     }
 

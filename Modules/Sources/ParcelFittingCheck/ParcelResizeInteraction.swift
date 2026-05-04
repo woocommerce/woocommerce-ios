@@ -3,14 +3,8 @@ import Foundation
 import simd
 
 /// Pure state machine for the two-finger resize interaction.
-///
-/// Takes a snapshot of scene state plus screen/plane projection callbacks and
-/// returns the new transform — no `ARView` access, no scene side effects. The
-/// coordinator is responsible for taking the snapshot, applying the output,
-/// and emitting callbacks. This separation lets the resize math be unit-tested
-/// without ARKit.
 final class ParcelResizeInteraction {
-    struct Input {
+    struct BeginInput {
         var cuboidPosition: SIMD3<Float>
         var cuboidScale: SIMD3<Float>
         var cuboidYaw: Float
@@ -29,18 +23,18 @@ final class ParcelResizeInteraction {
         var isUpperHalfHit: (_ screen: CGPoint) -> Bool
     }
 
-    /// Per-frame screen-space dead zone, in points. Below this, finger movement
-    /// is treated as touch-sensor jitter and the resize update is skipped.
-    static let jitterThresholdPoints: CGFloat = 1.5
-
     /// Minimum allowed cuboid size on any axis, in metres.
     static let minSizeMeters: Float = 0.02
+
+    /// Per-frame screen-space dead zone, in points. Below this, finger movement
+    /// is treated as touch-sensor jitter and the resize update is skipped.
+    private static let jitterThresholdPoints: CGFloat = 1.5
 
     /// When Y wins the screen-space alignment race, an X or Z axis whose
     /// screen direction is close to Y's is a plausible alternative; below this
     /// ratio (second-best / best) Y is the clear winner and the hit-test is
     /// skipped. 0.7 ≈ ~45° of screen-direction separation.
-    static let yAxisAmbiguityThreshold: Float = 0.7
+    private static let yAxisAmbiguityThreshold: Float = 0.7
 
     private struct FingerLatch {
         let face: ARCuboidEntity.Face
@@ -68,11 +62,9 @@ final class ParcelResizeInteraction {
         return [context.firstFinger.face, context.secondFinger.face]
     }
 
-    /// Initialise the resize state from the gesture's start positions. After
-    /// this call, `update` will produce transforms; without it, `update`
-    /// returns `nil`. May fail silently (no axis pick, missed Y hit-test,
-    /// projection failure) — the caller can retry on the next frame.
-    func begin(input: Input, environment env: Environment) {
+    /// May fail silently (no axis pick, missed Y hit-test, projection failure);
+    /// the caller can retry on the next gesture frame.
+    func begin(input: BeginInput, environment env: Environment) {
         let axes = localAxes(yaw: input.cuboidYaw)
         // Cuboid local Y is 0…1 with the root at the floor, so the geometric
         // centre sits half-a-height up.
@@ -98,11 +90,14 @@ final class ParcelResizeInteraction {
 
         let axisWorld = axes[pick.axis]
 
-        guard let hit0 = env.projectToPlane(input.fingers.first, cuboidCenter, input.cameraForward),
-              let hit1 = env.projectToPlane(input.fingers.second, cuboidCenter, input.cameraForward) else { return }
+        guard let (disp0, disp1) = axisDisplacements(
+            fingers: input.fingers,
+            planePoint: cuboidCenter,
+            planeNormal: input.cameraForward,
+            axisWorld: axisWorld,
+            environment: env
+        ) else { return }
 
-        let disp0 = simd_dot(hit0 - cuboidCenter, axisWorld)
-        let disp1 = simd_dot(hit1 - cuboidCenter, axisWorld)
         // The finger with the larger axis projection drives the +face and the
         // other drives the -face, even when both fingers are on the same side
         // of the cuboid centre.
@@ -130,25 +125,26 @@ final class ParcelResizeInteraction {
         lastFingers = input.fingers
     }
 
-    /// Apply gesture motion to the resize. Returns the new scale/position to
-    /// commit, or `nil` if the change should be skipped (jitter, missing
-    /// context, projection failure).
-    func update(input: Input, environment env: Environment) -> Output? {
+    /// Returns the new scale/position to commit, or `nil` if the change should
+    /// be skipped (jitter, missing context, projection failure).
+    func update(fingers: (first: CGPoint, second: CGPoint), environment env: Environment) -> Output? {
         guard let context else { return nil }
 
         if let last = lastFingers {
-            let firstDelta = hypot(input.fingers.first.x - last.first.x, input.fingers.first.y - last.first.y)
-            let secondDelta = hypot(input.fingers.second.x - last.second.x, input.fingers.second.y - last.second.y)
+            let firstDelta = hypot(fingers.first.x - last.first.x, fingers.first.y - last.first.y)
+            let secondDelta = hypot(fingers.second.x - last.second.x, fingers.second.y - last.second.y)
             if firstDelta < Self.jitterThresholdPoints && secondDelta < Self.jitterThresholdPoints {
                 return nil
             }
         }
 
-        guard let hit0 = env.projectToPlane(input.fingers.first, context.cuboidCenterAtStart, context.planeNormal),
-              let hit1 = env.projectToPlane(input.fingers.second, context.cuboidCenterAtStart, context.planeNormal) else { return nil }
-
-        let disp0 = simd_dot(hit0 - context.cuboidCenterAtStart, context.axisWorld)
-        let disp1 = simd_dot(hit1 - context.cuboidCenterAtStart, context.axisWorld)
+        guard let (disp0, disp1) = axisDisplacements(
+            fingers: fingers,
+            planePoint: context.cuboidCenterAtStart,
+            planeNormal: context.planeNormal,
+            axisWorld: context.axisWorld,
+            environment: env
+        ) else { return nil }
 
         let firstAxisDelta = disp0 - context.firstFinger.initialAxisDisplacement
         let secondAxisDelta = disp1 - context.secondFinger.initialAxisDisplacement
@@ -165,7 +161,7 @@ final class ParcelResizeInteraction {
             outwardNegative = firstOutward
         }
 
-        let axisIndex = simdIndex(for: context.axis)
+        let axisIndex = context.axis.simdIndex
         let oldAxisScale = context.initialScale[axisIndex]
         let totalDelta = outwardPositive + outwardNegative
         let newAxisScale = max(oldAxisScale + totalDelta, Self.minSizeMeters)
@@ -182,12 +178,11 @@ final class ParcelResizeInteraction {
         newScale[axisIndex] = newAxisScale
 
         var newPosition = context.initialPosition
-        // Y axis keeps the root at the floor (cuboid local Y is 0…1, so growing
-        // scale.y already moves only the top). X/Z are root-centred, so an
-        // asymmetric resize requires shifting the root by half the imbalance.
-        // The cap |shift| ≤ |scale change| / 2 prevents pure translation: when
-        // both fingers move in the same direction, scale stays put and the cap
-        // collapses to zero, so the cuboid does not slide.
+        // X/Z are root-centred, so an asymmetric resize requires shifting the
+        // root by half the imbalance. The cap |shift| ≤ |scale change| / 2
+        // collapses to zero when both fingers move the same direction, so the
+        // cuboid does not slide — single-finger drag is the only sanctioned
+        // way to translate. Y is anchored at the floor and never shifts.
         if context.axis != .y {
             let centerShift = (actualPositive - actualNegative) * 0.5
             let maxShift = abs(actualTotal) * 0.5
@@ -195,7 +190,7 @@ final class ParcelResizeInteraction {
             newPosition += clampedShift * context.axisWorld
         }
 
-        lastFingers = input.fingers
+        lastFingers = fingers
         return Output(scale: newScale, position: newPosition)
     }
 
@@ -265,16 +260,23 @@ private extension ParcelResizeInteraction {
         return (bestAxis, ambiguity)
     }
 
+    func axisDisplacements(
+        fingers: (first: CGPoint, second: CGPoint),
+        planePoint: SIMD3<Float>,
+        planeNormal: SIMD3<Float>,
+        axisWorld: SIMD3<Float>,
+        environment env: Environment
+    ) -> (Float, Float)? {
+        guard let hit0 = env.projectToPlane(fingers.first, planePoint, planeNormal),
+              let hit1 = env.projectToPlane(fingers.second, planePoint, planeNormal) else { return nil }
+        return (
+            simd_dot(hit0 - planePoint, axisWorld),
+            simd_dot(hit1 - planePoint, axisWorld)
+        )
+    }
+
     func signedOutwardDelta(face: ARCuboidEntity.Face, axisDelta: Float) -> Float {
         if face == .negativeY { return 0 }
         return face.isPositiveSide ? axisDelta : -axisDelta
-    }
-
-    func simdIndex(for axis: ARCuboidEntity.Axis) -> Int {
-        switch axis {
-        case .x: return 0
-        case .y: return 1
-        case .z: return 2
-        }
     }
 }

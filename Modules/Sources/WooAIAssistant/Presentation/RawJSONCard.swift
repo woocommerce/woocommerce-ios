@@ -8,7 +8,7 @@ struct RawJSONCard: View {
 
     @State private var isExpanded = false
 
-    private static let collapsedLines = 6
+    private static let collapsedLines = 3
 
     var body: some View {
         CardShell(label: toolName, trailingChevron: false) {

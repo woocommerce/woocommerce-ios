@@ -595,14 +595,15 @@ final class SupportChatViewModel {
                                 firstUserMessage: firstUserMessage)
 
             if let lastBotMessage = response.messages.last(where: { $0.role == .bot }) {
-                let assistantMessage = ChatMessage(
-                    role: .bot,
-                    text: lastBotMessage.content
-                )
-                messages.append(assistantMessage)
-
+                /// Skips displaying last bot message when human support is required. User is suggested to contact support manually.
                 if let flags = lastBotMessage.context?.flags, flags.forwardToHumanSupport {
                     shouldPromptHumanSupport = true
+                } else {
+                    let assistantMessage = ChatMessage(
+                        role: .bot,
+                        text: lastBotMessage.content
+                    )
+                    messages.append(assistantMessage)
                 }
             }
 

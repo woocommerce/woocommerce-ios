@@ -80,6 +80,9 @@ struct SupportChatView: View {
                     scrollToBottom(proxy: proxy)
                 }
             }
+            .onChange(of: viewModel.shouldPromptHumanSupport) {
+                scrollToBottom(proxy: proxy)
+            }
         }
     }
 
@@ -250,7 +253,7 @@ struct SupportChatView: View {
             .buttonStyle(SecondaryButtonStyle())
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.listBackground))
     }
 
     // MARK: - Input Area

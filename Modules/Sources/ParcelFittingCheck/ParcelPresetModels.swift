@@ -15,11 +15,11 @@ public struct ParcelPresetCarrier: Identifiable {
 public struct ParcelPresetPackage: Identifiable {
     public let id: String
     public let name: String
-    public let length: String
-    public let width: String
-    public let height: String
+    public let length: Float
+    public let width: Float
+    public let height: Float
 
-    public init(id: String, name: String, length: String, width: String, height: String) {
+    public init(id: String, name: String, length: Float, width: Float, height: Float) {
         self.id = id
         self.name = name
         self.length = length

@@ -11,26 +11,6 @@ import WooFoundationCore
 /// Orchestrator class that fetches today store stats data.
 ///
 final class StoreInfoDataService {
-
-    enum VisitorStatsSource {
-        case wpcomSummary
-        case jetpackSiteVisits
-        case unavailable
-
-        init(credentials: Credentials, supportsJetpackVisitorStats: Bool) {
-            switch credentials {
-            case .wpcom:
-                self = .wpcomSummary
-            case .wporg, .applicationPassword:
-#if canImport(Networking)
-                self = supportsJetpackVisitorStats ? .jetpackSiteVisits : .unavailable
-#else
-                self = .unavailable
-#endif
-            }
-        }
-    }
-
     /// Data extracted from networking types.
     ///
     struct Stats {
@@ -40,25 +20,24 @@ final class StoreInfoDataService {
         let conversion: Double?
     }
 
-    private let visitorStatsSource: VisitorStatsSource
+    private let visitorStatsEndpoint: VisitorStatsEndpoint
     private let fetchTodaysRevenueAndOrders: (Int64) async throws -> OrderStatsV4
     private let fetchTodaysWPComVisitors: (Int64) async throws -> SiteSummaryStats
     private let fetchTodaysJetpackVisitors: () async throws -> SiteVisitStats
 
-    init(credentials: Credentials, supportsJetpackVisitorStats: Bool = false) {
+    init(credentials: Credentials, visitorStatsEndpoint: VisitorStatsEndpoint? = nil) {
         let remoteSource = RemoteSource(credentials: credentials)
-        visitorStatsSource = VisitorStatsSource(credentials: credentials,
-                                                supportsJetpackVisitorStats: supportsJetpackVisitorStats)
+        self.visitorStatsEndpoint = visitorStatsEndpoint ?? VisitorStatsEndpoint.resolve(credentials: credentials)
         fetchTodaysRevenueAndOrders = remoteSource.fetchTodaysRevenueAndOrders
         fetchTodaysWPComVisitors = remoteSource.fetchTodaysWPComVisitors
         fetchTodaysJetpackVisitors = remoteSource.fetchTodaysJetpackVisitors
     }
 
-    init(visitorStatsSource: VisitorStatsSource,
+    init(visitorStatsEndpoint: VisitorStatsEndpoint,
          fetchTodaysRevenueAndOrders: @escaping (Int64) async throws -> OrderStatsV4,
          fetchTodaysWPComVisitors: @escaping (Int64) async throws -> SiteSummaryStats,
          fetchTodaysJetpackVisitors: @escaping () async throws -> SiteVisitStats) {
-        self.visitorStatsSource = visitorStatsSource
+        self.visitorStatsEndpoint = visitorStatsEndpoint
         self.fetchTodaysRevenueAndOrders = fetchTodaysRevenueAndOrders
         self.fetchTodaysWPComVisitors = fetchTodaysWPComVisitors
         self.fetchTodaysJetpackVisitors = fetchTodaysJetpackVisitors
@@ -67,11 +46,15 @@ final class StoreInfoDataService {
     /// Async function that fetches todays stats data.
     ///
     func fetchTodayStats(for storeID: Int64) async throws -> Stats {
-        switch visitorStatsSource {
-        case .wpcomSummary:
+        switch visitorStatsEndpoint {
+        case .wpComSummary:
             return try await todayStatsWithWPComVisitors(for: storeID)
-        case .jetpackSiteVisits:
+        case .jetpackStatsApp:
+#if canImport(Networking)
             return try await todayStatsWithJetpackVisitors(for: storeID)
+#else
+            return try await todayStatsWithoutVisitors(for: storeID)
+#endif
         case .unavailable:
             return try await todayStatsWithoutVisitors(for: storeID)
         }

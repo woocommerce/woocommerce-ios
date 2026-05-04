@@ -51,36 +51,6 @@ final class SiteConnectionTypeTests: XCTestCase {
         XCTAssertEqual(siteConnectionType, .fullJetpack)
     }
 
-    func test_supportsJetpackVisitorStats_returns_true_for_self_hosted_full_jetpack_site() {
-        // Given
-        let site = Site.fake().copy(isJetpackThePluginInstalled: true,
-                                    isJetpackConnected: true,
-                                    isWordPressComStore: false)
-
-        // Then
-        XCTAssertTrue(site.supportsJetpackVisitorStats)
-    }
-
-    func test_supportsJetpackVisitorStats_returns_false_for_wpcom_site() {
-        // Given
-        let site = Site.fake().copy(isJetpackThePluginInstalled: true,
-                                    isJetpackConnected: true,
-                                    isWordPressComStore: true)
-
-        // Then
-        XCTAssertFalse(site.supportsJetpackVisitorStats)
-    }
-
-    func test_supportsJetpackVisitorStats_returns_false_for_jetpack_connection_package_site() {
-        // Given
-        let site = Site.fake().copy(isJetpackThePluginInstalled: false,
-                                    isJetpackConnected: true,
-                                    isWordPressComStore: false)
-
-        // Then
-        XCTAssertFalse(site.supportsJetpackVisitorStats)
-    }
-
     // MARK: - analyticsValue tests
 
     func test_analyticsValue_for_nonJetpack_returns_correct_string() {

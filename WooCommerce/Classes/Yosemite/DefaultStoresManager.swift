@@ -9,6 +9,7 @@ import class WidgetKit.WidgetCenter
 import Experiments
 import WordPressAuthenticator
 import enum NetworkingCore.RequestAuthenticationMode
+import enum NetworkingCore.VisitorStatsEndpoint
 
 // MARK: - DefaultStoresManager
 //
@@ -863,12 +864,24 @@ private extension DefaultStoresManager {
         // Non-critical store info
         UserDefaults.group?[.defaultStoreID] = siteID
         UserDefaults.group?[.defaultStoreName] = sessionManager.defaultSite?.name
-        UserDefaults.group?[.defaultStoreSupportsJetpackVisitorStats] = sessionManager.defaultSite?.supportsJetpackVisitorStats ?? false
+        UserDefaults.group?[.defaultStoreVisitorStatsEndpoint] = visitorStatsEndpoint.rawValue
 
         // Currency Settings are stored in `SelectedSiteSettings.defaultStoreCurrencySettings`
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    private var visitorStatsEndpoint: VisitorStatsEndpoint {
+        guard let credentials = sessionManager.defaultCredentials else {
+            return .unavailable
+        }
+
+        guard let site = sessionManager.defaultSite else {
+            return VisitorStatsEndpoint.resolve(credentials: credentials)
+        }
+
+        return VisitorStatsEndpoint.resolve(site: site, credentials: credentials)
     }
 
     func trackSnapshotIfNeeded(siteID: Int64, orderStatuses: [OrderStatus]?, systemPlugins: [SystemPlugin]?) {

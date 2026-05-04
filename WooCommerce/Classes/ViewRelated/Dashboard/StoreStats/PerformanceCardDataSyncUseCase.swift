@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import enum NetworkingCore.VisitorStatsEndpoint
 
 /// Abstracts the code needed to sync the information for the Dashboard performance card.
 ///
@@ -95,11 +96,10 @@ struct PerformanceCardDataSyncUseCase {
     /// Syncs visitor stats for dashboard UI.
     @MainActor
     func syncSiteVisitStats(timeRange: StatsTimeRangeV4, latestDateToInclude: Date) async throws {
-        if stores.isAuthenticatedWithoutWPCom {
-            guard stores.sessionManager.defaultSite?.supportsJetpackVisitorStats == true else {
-                return
-            }
-
+        switch visitorStatsEndpoint {
+        case .unavailable:
+            return
+        case .jetpackStatsApp:
             try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(StatsActionV4.retrieveJetpackSiteVisitStats(siteID: siteID,
                                                                             siteTimezone: siteTimezone,
@@ -112,31 +112,29 @@ struct PerformanceCardDataSyncUseCase {
                     continuation.resume(with: result)
                 }))
             }
-            return
-        }
-
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
-                                                                 siteTimezone: siteTimezone,
-                                                                 timeRange: timeRange,
-                                                                 latestDateToInclude: latestDateToInclude,
-                                                                 onCompletion: { result in
-                if case let .failure(error) = result {
-                    DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                }
-                continuation.resume(with: result)
-            }))
+        case .wpComSummary:
+            try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
+                                                                     siteTimezone: siteTimezone,
+                                                                     timeRange: timeRange,
+                                                                     latestDateToInclude: latestDateToInclude,
+                                                                     onCompletion: { result in
+                    if case let .failure(error) = result {
+                        DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
+                    }
+                    continuation.resume(with: result)
+                }))
+            }
         }
     }
 
     /// Syncs summary stats for dashboard UI.
     @MainActor
     func syncSiteSummaryStats(timeRange: StatsTimeRangeV4, latestDateToInclude: Date) async throws {
-        if stores.isAuthenticatedWithoutWPCom {
-            guard stores.sessionManager.defaultSite?.supportsJetpackVisitorStats == true else {
-                return
-            }
-
+        switch visitorStatsEndpoint {
+        case .unavailable:
+            return
+        case .jetpackStatsApp:
             try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(StatsActionV4.retrieveJetpackSiteSummaryStats(siteID: siteID,
                                                                               siteTimezone: siteTimezone,
@@ -152,23 +150,34 @@ struct PerformanceCardDataSyncUseCase {
                     continuation.resume(with: voidResult)
                 })
             }
-            return
+        case .wpComSummary:
+            try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
+                                                                       siteTimezone: siteTimezone,
+                                                                       period: timeRange.summaryStatsGranularity,
+                                                                       quantity: 1,
+                                                                       latestDateToInclude: latestDateToInclude,
+                                                                       saveInStorage: true) { result in
+                    if case let .failure(error) = result {
+                        DDLogError("⛔️ Error synchronizing summary stats: \(error)")
+                    }
+
+                    let voidResult = result.map { _ in () } // Caller expects no entity in the result.
+                    continuation.resume(with: voidResult)
+                })
+            }
+        }
+    }
+
+    private var visitorStatsEndpoint: VisitorStatsEndpoint {
+        guard let credentials = stores.sessionManager.defaultCredentials else {
+            return .unavailable
         }
 
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
-                                                                   siteTimezone: siteTimezone,
-                                                                   period: timeRange.summaryStatsGranularity,
-                                                                   quantity: 1,
-                                                                   latestDateToInclude: latestDateToInclude,
-                                                                   saveInStorage: true) { result in
-                if case let .failure(error) = result {
-                    DDLogError("⛔️ Error synchronizing summary stats: \(error)")
-                }
-
-                let voidResult = result.map { _ in () } // Caller expects no entity in the result.
-                continuation.resume(with: voidResult)
-            })
+        guard let site = stores.sessionManager.defaultSite else {
+            return VisitorStatsEndpoint.resolve(credentials: credentials)
         }
+
+        return VisitorStatsEndpoint.resolve(site: site, credentials: credentials)
     }
 }

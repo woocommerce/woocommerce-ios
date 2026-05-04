@@ -133,7 +133,8 @@ extension Storage.GeneralStoreSettings {
         lastPOSOpenedDate: NullableCopiableProp<Date> = .copy,
         firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy,
         syncPOSCatalogOverCellular: CopiableProp<Bool> = .copy,
-        lastSunsetWarningDismissedDate: NullableCopiableProp<Date> = .copy
+        lastSunsetWarningDismissedDate: NullableCopiableProp<Date> = .copy,
+        isCardPresentPaymentsCountryExpansionEligible: NullableCopiableProp<Bool> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -160,6 +161,7 @@ extension Storage.GeneralStoreSettings {
         let firstPOSCatalogSyncDate = firstPOSCatalogSyncDate ?? self.firstPOSCatalogSyncDate
         let syncPOSCatalogOverCellular = syncPOSCatalogOverCellular ?? self.syncPOSCatalogOverCellular
         let lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate ?? self.lastSunsetWarningDismissedDate
+        let isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible ?? self.isCardPresentPaymentsCountryExpansionEligible
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -186,7 +188,8 @@ extension Storage.GeneralStoreSettings {
             lastPOSOpenedDate: lastPOSOpenedDate,
             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
             syncPOSCatalogOverCellular: syncPOSCatalogOverCellular,
-            lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate
+            lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
+            isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible
         )
     }
 }

@@ -16,6 +16,7 @@ final class SupportChatViewModel {
         case helpAndSupport   // Shows issue picker first
         case connectivityTool // Goes directly to chat (context already provided)
         case chatHistory      // Resuming a prior conversation from history
+        case preLogin         // Logged-out surfaces (Help, error screens, prologue, pre-login Connectivity Tool)
     }
 
     /// Represents the current state of the chat.
@@ -115,7 +116,7 @@ final class SupportChatViewModel {
     ///
     var shouldShowInputArea: Bool {
         switch entryPoint {
-        case .connectivityTool, .chatHistory:
+        case .connectivityTool, .chatHistory, .preLogin:
             return true
         case .helpAndSupport:
             return hasProceededToChat
@@ -479,9 +480,7 @@ final class SupportChatViewModel {
             )
             messages.append(pickerMessage)
 
-        case .connectivityTool:
-            state = .sending
-            // Show standard greeting for connectivity tool entry
+        case .connectivityTool, .preLogin:
             let greetingMessage = ChatMessage(role: .bot, text: Localization.greetingMessage)
             messages.append(greetingMessage)
 

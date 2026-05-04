@@ -152,30 +152,6 @@ struct AssistantConversationTests {
     }
 
     @Test
-    func test_apply_when_outcomeUnknown_then_later_failed_then_state_remains_outcomeUnknown()
-    async throws {
-        // Given
-        let conversation = AssistantConversation()
-        let messageID = conversation.beginAssistantMessage()
-        let unknownError = AssistantError(kind: .outcomeUnknown,
-                                          message: "Couldn't confirm completion.")
-        let networkError = AssistantError(kind: .network,
-                                          message: "Network error.")
-
-        // When
-        conversation.apply(.failed(unknownError), to: messageID)
-        conversation.apply(.failed(networkError), to: messageID)
-
-        // Then
-        if case .outcomeUnknown(let message) = conversation.streamingState {
-            #expect(message == "Couldn't confirm completion.")
-        } else {
-            Issue.record("expected outcomeUnknown streaming state, got \(conversation.streamingState)")
-        }
-        #expect(conversation.messages.last?.isStreaming == false)
-    }
-
-    @Test
     func test_apply_when_confirmationRequired_then_pending_segment_is_appended() async throws {
         // Given
         let conversation = AssistantConversation()

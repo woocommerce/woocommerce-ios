@@ -21,8 +21,14 @@ struct ARCuboidEntity {
         }
     }
 
+    /// One of the six faces of the cuboid, identified by which axis the face
+    /// is perpendicular to and which side along that axis it sits on. With the
+    /// cuboid centred on its X/Z root and rising from local Y 0 to 1, the
+    /// `+X` face is at world `+x`, the `+Y` face is the top, etc.
     struct Face: Hashable {
         let axis: Axis
+        /// `true` for the face on the +ve side of `axis` (e.g. `+X`, top, far),
+        /// `false` for the face on the −ve side (e.g. `−X`, bottom, near).
         let isPositiveSide: Bool
 
         static let positiveX = Face(axis: .x, isPositiveSide: true)

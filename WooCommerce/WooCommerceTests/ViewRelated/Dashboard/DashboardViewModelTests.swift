@@ -438,7 +438,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -477,7 +478,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -516,7 +518,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
 
         mockReloadingData(storeHasOrders: true)
 
@@ -597,7 +600,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
 
         let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
                            DashboardCard(type: .performance, availability: .show, enabled: true),
@@ -634,7 +638,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
 
         mockReloadingData()
 
@@ -870,7 +875,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(shouldShowInAppFeedback: true)
 
         // When

@@ -18,11 +18,14 @@ struct PointOfSaleScanToPayView: View {
     @Environment(POSPaymentModel.self) private var paymentModel
 
     private let orderTotal: String
-    /// Cached so we can restore screen brightness on disappear (only takes effect on device).
-    private let screenBrightnessAtViewCreation = UIScreen.main.brightness
 
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
+    /// Brightness captured the first time the view appears so we can restore it on disappear.
+    /// Stored in `@State` rather than a `let` because SwiftUI re-creates view structs on parent
+    /// re-renders; a stored property would be reinitialized to the current (already-bumped)
+    /// brightness, leaving the device stuck at max brightness after the merchant leaves the screen.
+    @State private var savedScreenBrightness: CGFloat?
 
     init(orderTotal: String) {
         self.orderTotal = orderTotal
@@ -31,10 +34,15 @@ struct PointOfSaleScanToPayView: View {
     var body: some View {
         content
             .onAppear {
+                if savedScreenBrightness == nil {
+                    savedScreenBrightness = UIScreen.main.brightness
+                }
                 UIScreen.main.brightness = 1.0
             }
             .onDisappear {
-                UIScreen.main.brightness = screenBrightnessAtViewCreation
+                if let savedScreenBrightness {
+                    UIScreen.main.brightness = savedScreenBrightness
+                }
             }
             .onChange(of: paymentModel.paymentState.scanToPay) { _, newValue in
                 switch newValue {

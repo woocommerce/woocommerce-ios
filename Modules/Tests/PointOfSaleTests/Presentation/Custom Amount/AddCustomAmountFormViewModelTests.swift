@@ -156,7 +156,7 @@ struct AddCustomAmountFormViewModelTests {
 
     @Test func test_init_when_editing_existing_with_default_name_then_leaves_name_field_empty() async throws {
         // Given
-        let existing = POSCustomAmount(name: AddCustomAmountFormViewModel.defaultName, amount: "5.00", isTaxable: true)
+        let existing = POSCustomAmount(name: AddCustomAmountFormViewModel.Localization.defaultName, amount: "5.00", isTaxable: true)
 
         // When
         let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings, editing: existing)

@@ -73,14 +73,8 @@ struct CartView: View {
                     currencySettings: currencyProvider.currencySettings,
                     editing: editingCustomAmount,
                     onSubmit: { customAmount in
-                        let isEditing = editingCustomAmount != nil
-                        analytics.track(
-                            event: .PointOfSale.customAmountSubmitted(
-                                mode: isEditing ? .edit : .add,
-                                isTaxable: customAmount.isTaxable
-                            )
-                        )
-                        posModel.upsertCustomAmount(customAmount)
+                        let mode: WooAnalyticsEvent.PointOfSale.CustomAmountMode = editingCustomAmount != nil ? .edit : .add
+                        posModel.upsertCustomAmount(customAmount, mode: mode)
                     }
                 )
             }

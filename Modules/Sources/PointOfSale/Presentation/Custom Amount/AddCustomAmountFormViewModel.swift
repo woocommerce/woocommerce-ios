@@ -4,17 +4,12 @@ import struct Yosemite.POSCustomAmount
 
 @Observable
 final class AddCustomAmountFormViewModel {
-    static let defaultName = NSLocalizedString(
-        "pos.addCustomAmount.defaultName",
-        value: "Custom amount",
-        comment: "Default name used for a Point of Sale custom amount when the merchant leaves the name field empty.")
-
     var amount: String = ""
     var name: String = ""
     var isTaxable: Bool = true
 
     let currencySymbol: String
-    let sanitizer: CurrencyInputSanitizer
+    private let sanitizer: CurrencyInputSanitizer
     private let numberFormatter: NumberFormatter
     private let editingID: UUID?
     private let resolvedID: UUID
@@ -38,7 +33,7 @@ final class AddCustomAmountFormViewModel {
             self.editingID = existing.id
             self.resolvedID = existing.id
             self.amount = sanitizer.sanitize(existing.amount) ?? existing.amount
-            self.name = existing.name == Self.defaultName ? "" : existing.name
+            self.name = Localization.isDefaultName(existing.name) ? "" : existing.name
             self.isTaxable = existing.isTaxable
         } else {
             self.editingID = nil
@@ -68,12 +63,27 @@ final class AddCustomAmountFormViewModel {
 
     var resolvedName: String {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? Self.defaultName : trimmed
+        return trimmed.isEmpty ? Localization.defaultName : trimmed
     }
 
     private var parsedAmount: Decimal? {
         let trimmed = amount.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
         return numberFormatter.number(from: trimmed)?.decimalValue
+    }
+}
+
+extension AddCustomAmountFormViewModel {
+    enum Localization {
+        static let defaultName = NSLocalizedString(
+            "pos.addCustomAmount.defaultName",
+            value: "Custom amount",
+            comment: "Default name used for a Point of Sale custom amount when the merchant leaves the name field empty.")
+
+        /// Whether `name` matches the localized default placeholder, used to clear the
+        /// field when the merchant re-opens an entry they originally submitted unnamed.
+        static func isDefaultName(_ name: String) -> Bool {
+            name == defaultName
+        }
     }
 }

@@ -122,4 +122,27 @@ struct POSCustomAmountTests {
         // When, Then
         #expect(sut.matches(order: order) == true)
     }
+
+    /// Locks in the documented behaviour on `[POSCustomAmount].matches(order:)`: matching
+    /// is on `(name, amount)` only, not `isTaxable`. The server's tax decision can legitimately
+    /// differ from the cart's intent (tax-exempt customer, store-level tax-class override),
+    /// and treating a divergence as a mismatch would force a redundant resync every time.
+    @Test(arguments: [
+        (cartTaxable: true, orderTaxStatus: OrderFeeTaxStatus.taxable),
+        (cartTaxable: true, orderTaxStatus: .none),
+        (cartTaxable: false, orderTaxStatus: .taxable),
+        (cartTaxable: false, orderTaxStatus: .none)
+    ])
+    func cart_matches_order_regardless_of_tax_status_when_name_and_amount_align(
+        cartTaxable: Bool,
+        orderTaxStatus: OrderFeeTaxStatus
+    ) async throws {
+        // Given
+        let fee = OrderFeeLine.fake().copy(name: "Tip", taxStatus: orderTaxStatus, total: "5.00")
+        let order = Order.fake().copy(fees: [fee])
+        let sut = [POSCustomAmount(name: "Tip", amount: "5.00", isTaxable: cartTaxable)]
+
+        // When, Then
+        #expect(sut.matches(order: order) == true)
+    }
 }

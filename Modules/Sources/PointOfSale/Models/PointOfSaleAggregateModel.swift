@@ -5,6 +5,7 @@ import Observation
 
 import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
@@ -215,7 +216,8 @@ extension PointOfSaleAggregateModel {
         }
     }
 
-    func upsertCustomAmount(_ customAmount: POSCustomAmount) {
+    func upsertCustomAmount(_ customAmount: POSCustomAmount, mode: WooAnalyticsEvent.PointOfSale.CustomAmountMode) {
+        analytics.track(event: .PointOfSale.customAmountSubmitted(mode: mode, isTaxable: customAmount.isTaxable))
         trackCustomerInteractionStarted()
         cart.upsertCustomAmount(customAmount)
     }

@@ -27,23 +27,6 @@ public struct POSCartItem {
     }
 }
 
-public struct POSCustomAmount: Equatable, Hashable, Identifiable {
-    public let id: UUID
-    public let name: String
-    public let amount: String
-    public let isTaxable: Bool
-
-    public init(id: UUID = UUID(),
-                name: String,
-                amount: String,
-                isTaxable: Bool) {
-        self.id = id
-        self.name = name
-        self.amount = amount
-        self.isTaxable = isTaxable
-    }
-}
-
 public extension POSCart {
     func matches(order: Order?) -> Bool {
         return items.matches(order: order)
@@ -271,31 +254,5 @@ extension [POSCoupon] {
         let orderCoupons = Set(order.coupons.map(\.code))
         let cartCoupons = Set(self.map(\.code))
         return orderCoupons == cartCoupons
-    }
-}
-
-extension [POSCustomAmount] {
-    func matches(order: Order?) -> Bool {
-        let activeOrderFees = order?.fees.filter { !$0.isDeleted } ?? []
-        guard self.count == activeOrderFees.count else {
-            return false
-        }
-
-        let cartSummaries = self
-            .map { CustomAmountSummary(name: $0.name, amount: $0.amount) }
-            .sorted()
-        let orderSummaries = activeOrderFees
-            .map { CustomAmountSummary(name: $0.name ?? "", amount: $0.total) }
-            .sorted()
-        return cartSummaries == orderSummaries
-    }
-
-    private struct CustomAmountSummary: Hashable, Comparable {
-        let name: String
-        let amount: String
-
-        static func < (lhs: Self, rhs: Self) -> Bool {
-            (lhs.name, lhs.amount) < (rhs.name, rhs.amount)
-        }
     }
 }

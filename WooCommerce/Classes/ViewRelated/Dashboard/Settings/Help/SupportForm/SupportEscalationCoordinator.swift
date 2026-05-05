@@ -57,7 +57,9 @@ final class SupportEscalationCoordinator {
             return
         }
 
-        if supportAreaInfo.isHighConfidence {
+        // Only create ticket directly if high confidence AND user identity exists.
+        // Without identity, Zendesk can't send email responses to the user.
+        if supportAreaInfo.isHighConfidence && zendeskProvider.haveUserIdentity {
             createTicketDirectly(with: supportAreaInfo)
         } else {
             showSupportForm(transcript: transcript, preselectedArea: supportAreaInfo.area)

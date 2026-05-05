@@ -221,7 +221,10 @@ struct PointOfSaleDashboardView: View {
                                  trailingHeaderAccessoryHiddenOnCoupons: AnyView(phoneOverflowMenu))
                     // Always shown — even with an empty cart — so the flow is always discoverable
                     // and the merchant has a consistent landmark at the bottom of the screen.
+                    // Suppressed when a pushed view (e.g. the custom amount form) signals via
+                    // POSHidesFloatingControlPreferenceKey that overlays should hide.
                     phoneCartButton
+                        .renderedIf(!floatingControlSuppressed)
                 }
             case .finalizing:
                 NavigationStack(path: $navigationPath) {

@@ -1,8 +1,9 @@
 import Foundation
+import SwiftUI
 import UIKit
 import Yosemite
 import CocoaLumberjackSwift
-import protocol WooAIAssistant.AssistantExternalNavigationProviding
+import WooAIAssistant
 
 @MainActor
 struct AIAssistantExternalNavigationAdaptor: AssistantExternalNavigationProviding {
@@ -19,70 +20,239 @@ struct AIAssistantExternalNavigationAdaptor: AssistantExternalNavigationProvidin
         self.stores = stores
     }
 
+    // MARK: - Orders
+
     func openOrder(orderID: Int64) {
-        let boundSiteID = self.boundSiteID
-        let navigationHost = self.navigationHost
-        let stores = self.stores
-        Task { @MainActor in
-            guard let order = await Self.fetchOrder(orderID: orderID, boundSiteID: boundSiteID, stores: stores) else { return }
-            let viewModel = OrderDetailsViewModel(order: order)
-            let detailVC = OrderDetailsViewController(viewModel: viewModel)
-            Self.push(detailVC, navigationHost: navigationHost)
-        }
+        let loader = OrderLoaderViewController(orderID: orderID, siteID: boundSiteID)
+        push(loader)
     }
 
-    func openProduct(productID: Int64) {
-        let boundSiteID = self.boundSiteID
-        let navigationHost = self.navigationHost
-        let stores = self.stores
-        Task { @MainActor in
-            guard let product = await Self.fetchProduct(productID: productID, boundSiteID: boundSiteID, stores: stores) else { return }
-            let detailVC = ProductDetailsFactory.productDetails(product: product,
-                                                                 presentationStyle: .navigationStack,
-                                                                 forceReadOnly: false)
-            Self.push(detailVC, navigationHost: navigationHost)
+    func openOrder(orderID: Int64, payload: AnyCodableJSON) {
+        if let order = decode(Order.self, from: payload) {
+            let viewModel = OrderDetailsViewModel(order: order)
+            let detail = OrderDetailsViewController(viewModel: viewModel)
+            push(detail)
+            return
         }
+        openOrder(orderID: orderID)
+    }
+
+    // MARK: - Products
+
+    func openProduct(productID: Int64) {
+        pushLoadingThen(
+            fetch: { await fetchProduct(productID: productID) },
+            detail: { ProductDetailNavigator.shared.makeDestination(product: $0, isReadOnly: false) }
+        )
+    }
+
+    func openProduct(productID: Int64, payload: AnyCodableJSON) {
+        if let product = decode(Product.self, from: payload) {
+            pushProductDetail(for: product)
+            return
+        }
+        openProduct(productID: productID)
     }
 
     func openProductVariation(productID: Int64, variationID: Int64) {
-        DDLogWarn("Assistant openProductVariation is not implemented yet")
+        pushLoadingThen(
+            fetch: { () -> UIViewController? in
+                async let parent = fetchProduct(productID: productID)
+                async let variation = fetchProductVariation(productID: productID, variationID: variationID)
+                guard let parent = await parent, let variation = await variation else { return nil }
+                return await withCheckedContinuation { continuation in
+                    ProductVariationDetailsFactory.productVariationDetails(productVariation: variation,
+                                                                           parentProduct: parent,
+                                                                           presentationStyle: .navigationStack,
+                                                                           forceReadOnly: false) { viewController in
+                        continuation.resume(returning: viewController)
+                    }
+                }
+            },
+            detail: { $0 }
+        )
     }
+
+    private func pushProductDetail(for product: Product) {
+        let detail = ProductDetailNavigator.shared.makeDestination(product: product, isReadOnly: false)
+        push(detail)
+    }
+
+    // MARK: - Customers
 
     func openCustomer(customerID: Int64) {
-        DDLogWarn("Assistant openCustomer is not implemented yet")
+        pushLoadingThen(
+            fetch: { await fetchCustomer(customerID: customerID) },
+            detail: { customer in
+                let viewModel = makeCustomerDetailViewModel(for: customer)
+                return UIHostingController(rootView: CustomerDetailView(viewModel: viewModel))
+            }
+        )
     }
 
-    @MainActor
-    private static func push(_ viewController: UIViewController, navigationHost: AIAssistantNavigationHost) {
+    func openCustomer(customerID: Int64, payload: AnyCodableJSON) {
+        if let customer = decode(Customer.self, from: payload) {
+            pushCustomerDetail(for: customer)
+            return
+        }
+        openCustomer(customerID: customerID)
+    }
+
+    private func pushCustomerDetail(for customer: Customer) {
+        let viewModel = makeCustomerDetailViewModel(for: customer)
+        let hosting = UIHostingController(rootView: CustomerDetailView(viewModel: viewModel))
+        push(hosting)
+    }
+
+    private func makeCustomerDetailViewModel(for customer: Customer) -> CustomerDetailViewModel {
+        let displayName: String = {
+            let combined = [customer.firstName, customer.lastName]
+                .compactMap { $0?.trimmingCharacters(in: .whitespaces) }
+                .filter { !$0.isEmpty }
+                .joined(separator: " ")
+            if !combined.isEmpty { return combined }
+            if let username = customer.username, !username.isEmpty { return username }
+            return customer.email
+        }()
+        return CustomerDetailViewModel(
+            siteID: customer.siteID,
+            customerID: customer.customerID,
+            name: displayName,
+            dateLastActive: nil,
+            email: nullifyBlank(customer.email),
+            ordersCount: "-",
+            totalSpend: "-",
+            avgOrderValue: "-",
+            username: nullifyBlank(customer.username),
+            dateRegistered: nil,
+            country: nullifyBlank(customer.billing?.country),
+            region: nullifyBlank(customer.billing?.state),
+            city: nullifyBlank(customer.billing?.city),
+            postcode: nullifyBlank(customer.billing?.postcode)
+        )
+    }
+
+    private func nullifyBlank(_ value: String?) -> String? {
+        guard let trimmed = value?.trimmingCharacters(in: .whitespaces),
+              !trimmed.isEmpty else {
+            return nil
+        }
+        return trimmed
+    }
+
+    // MARK: - Analytics
+
+    func openAnalyticsHub(payload: AnyCodableJSON) {
+        let analyticsHubVC = AnalyticsHubHostingViewController(
+            siteID: boundSiteID,
+            timeZone: .siteTimezone,
+            timeRange: timeRange(fromAnalyticsPayload: payload),
+            usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()
+        )
+        push(analyticsHubVC)
+    }
+
+    func timeRange(fromAnalyticsPayload payload: AnyCodableJSON) -> StatsTimeRangeV4 {
+        guard let after = payload.assistantString("after"),
+              let before = payload.assistantString("before"),
+              let from = Self.isoDateFormatter.date(from: after),
+              let to = Self.isoDateFormatter.date(from: before) else {
+            return .today
+        }
+        return .custom(from: from, to: to)
+    }
+
+    private static let isoDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+
+    // MARK: - Helpers
+
+    private func push(_ viewController: UIViewController) {
         guard let nav = navigationHost.navigationController else { return }
         nav.pushViewController(viewController, animated: true)
     }
 
-    private static func fetchOrder(orderID: Int64, boundSiteID: Int64, stores: StoresManager) async -> Order? {
-        await withCheckedContinuation { continuation in
-            let action = OrderAction.retrieveOrderRemotely(siteID: boundSiteID, orderID: orderID) { result in
-                continuation.resume(returning: unwrap(result, label: "order"))
-            }
-            stores.dispatch(action)
+    // Pushes a placeholder, swaps it once `fetch` resolves. Identity lookup no-ops if the user popped.
+    private func pushLoadingThen<Value>(
+        fetch: @escaping () async -> Value?,
+        detail: @escaping (Value) -> UIViewController
+    ) {
+        let placeholder = AIAssistantLoadingPlaceholderViewController()
+        push(placeholder)
+        Task { @MainActor in
+            guard let value = await fetch() else { return }
+            guard let nav = navigationHost.navigationController else { return }
+            var stack = nav.viewControllers
+            guard let index = stack.firstIndex(where: { $0 === placeholder }) else { return }
+            stack[index] = detail(value)
+            nav.setViewControllers(stack, animated: false)
         }
     }
 
-    private static func fetchProduct(productID: Int64, boundSiteID: Int64, stores: StoresManager) async -> Product? {
+    // Networking model inits read siteID from decoder.userInfo, not the REST response.
+    private func decode<T: Decodable>(_ type: T.Type, from payload: AnyCodableJSON) -> T? {
+        do {
+            let data = try JSONEncoder().encode(payload)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+            decoder.userInfo[.siteID] = boundSiteID
+            return try decoder.decode(type, from: data)
+        } catch {
+            DDLogDebug("AIAssistantExternalNavigationAdaptor: \(type) cache miss \(error)")
+            return nil
+        }
+    }
+
+    private func fetchProduct(productID: Int64) async -> Product? {
         await withCheckedContinuation { continuation in
             let action = ProductAction.retrieveProduct(siteID: boundSiteID, productID: productID) { result in
-                continuation.resume(returning: unwrap(result, label: "product"))
+                switch result {
+                case .success(let product):
+                    continuation.resume(returning: product)
+                case .failure(let error):
+                    DDLogError("AIAssistantExternalNavigationAdaptor failed to fetch product: \(error)")
+                    continuation.resume(returning: nil)
+                }
             }
             stores.dispatch(action)
         }
     }
 
-    private static func unwrap<T, E: Error>(_ result: Result<T, E>, label: String) -> T? {
-        switch result {
-        case .success(let value):
-            return value
-        case .failure(let error):
-            DDLogError("⛔️ AIAssistantExternalNavigationAdaptor failed to fetch \(label): \(error)")
-            return nil
+    private func fetchProductVariation(productID: Int64, variationID: Int64) async -> ProductVariation? {
+        await withCheckedContinuation { continuation in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: boundSiteID,
+                                                                          productID: productID,
+                                                                          variationID: variationID) { result in
+                switch result {
+                case .success(let variation):
+                    continuation.resume(returning: variation)
+                case .failure(let error):
+                    DDLogError("AIAssistantExternalNavigationAdaptor failed to fetch variation: \(error)")
+                    continuation.resume(returning: nil)
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    private func fetchCustomer(customerID: Int64) async -> Customer? {
+        await withCheckedContinuation { continuation in
+            let action = CustomerAction.retrieveCustomer(siteID: boundSiteID, customerID: customerID) { result in
+                switch result {
+                case .success(let value):
+                    continuation.resume(returning: value)
+                case .failure(let error):
+                    DDLogError("AIAssistantExternalNavigationAdaptor failed to fetch customer: \(error)")
+                    continuation.resume(returning: nil)
+                }
+            }
+            stores.dispatch(action)
         }
     }
 }

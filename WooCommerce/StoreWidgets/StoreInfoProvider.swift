@@ -135,9 +135,9 @@ final class StoreInfoProvider: TimelineProvider {
         let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
         let service = StoreInfoDataService(credentials: dependencies.credentials)
         do {
-            let stats = try await service.fetchStats(for: dependencies.storeID, dateRange: dateRange.serviceDateRange)
+            let statsPeriod = try await service.fetchStats(for: dependencies.storeID, dateRange: dateRange.serviceDateRange)
             let entry = Self.dataEntry(
-                for: stats,
+                for: statsPeriod,
                 dateRange: dateRange,
                 with: dependencies,
                 metrics: metrics
@@ -332,13 +332,23 @@ private extension StoreInfoProvider {
     /// up by `resolveMetricSelection` for the AppIntent path, or the legacy hardcoded preset for
     /// the `StaticConfiguration` path. Ordering here is what the home-screen view renders.
     ///
-    static func dataEntry(for stats: StoreInfoDataService.Stats,
+    /// Each `StoreInfoMetric` carries both the current and the previous-period value so the
+    /// metric-driven home-screen view can render trend badges. The legacy String fields below
+    /// only reflect the current period.
+    ///
+    static func dataEntry(for statsPeriod: StoreInfoDataService.StatsPeriod,
                           dateRange: StoreStatsWidgetDateRange,
                           with dependencies: Dependencies,
                           metrics: [StoreInfoMetricType]) -> StoreInfoEntry {
         let currencySettings = dependencies.storeCurrencySettings
+        let stats = statsPeriod.current
+        let previousStats = statsPeriod.previous
         let resolvedMetrics: [StoreInfoMetric] = metrics.map { type in
-            StoreInfoMetric(type: type, value: stats.value(for: type, currencySettings: currencySettings))
+            StoreInfoMetric(
+                type: type,
+                value: stats.value(for: type, currencySettings: currencySettings),
+                previousValue: previousStats?.value(for: type, currencySettings: currencySettings)
+            )
         }
 
         let visitorsString: String = {

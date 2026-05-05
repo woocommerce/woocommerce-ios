@@ -48,6 +48,19 @@ final class StoreInfoDataService {
         let conversion: Double?
     }
 
+    /// Current-period stats paired with the matching previous-period stats so widgets can
+    /// render period-over-period deltas (today → yesterday, last 7 days → previous 7 days,
+    /// last 30 days → previous 30 days).
+    ///
+    /// `previous` is optional: a comparison-period failure should never tear down the whole
+    /// widget render. When the previous-period fetch fails, `previous` is `nil` and the
+    /// metric cells fall back to rendering without the trend badge.
+    ///
+    struct StatsPeriod {
+        let current: Stats
+        let previous: Stats?
+    }
+
     /// Revenue & Orders remote source.
     ///
     private let orderStatsRemoteV4: OrderStatsRemoteV4
@@ -76,15 +89,33 @@ final class StoreInfoDataService {
     }
 
     /// Async function that fetches today's stats. Preserved for the Woo Watch App, which
-    /// renders a fixed today preset.
+    /// renders a fixed today preset and does not need previous-period comparison — calling
+    /// it bypasses the parallel previous-period fetch in `fetchStats(for:dateRange:)`.
     ///
     func fetchTodayStats(for storeID: Int64) async throws -> Stats {
-        try await fetchStats(for: storeID, dateRange: .today())
+        try await fetchSinglePeriodStats(for: storeID, dateRange: .today())
     }
 
-    /// Async function that fetches stats for the given date range.
+    /// Async function that fetches stats for the given date range together with stats for
+    /// the matching previous period. The two fetches run concurrently via `async let` so
+    /// the second fetch does not extend overall latency.
     ///
-    func fetchStats(for storeID: Int64, dateRange: DateRange) async throws -> Stats {
+    /// A previous-period failure is swallowed: the widget keeps rendering current-period
+    /// data without trend badges instead of surfacing an error tile. A current-period
+    /// failure still throws — there's no useful render without it.
+    ///
+    func fetchStats(for storeID: Int64, dateRange: DateRange) async throws -> StatsPeriod {
+        async let currentRequest = fetchSinglePeriodStats(for: storeID, dateRange: dateRange)
+        async let previousRequest = fetchSinglePeriodStats(for: storeID, dateRange: dateRange.previousPeriod())
+        let current = try await currentRequest
+        let previous = try? await previousRequest
+        return StatsPeriod(current: current, previous: previous)
+    }
+
+    /// Internal helper that fetches stats for a single date range. The public `fetchStats`
+    /// invokes this twice in parallel (current and previous period).
+    ///
+    private func fetchSinglePeriodStats(for storeID: Int64, dateRange: DateRange) async throws -> Stats {
         /// If user is authenticated with site credentials only,
         /// fetch revenue and orders and skip visitor stats as its endpoint is not available.
         guard !isAuthenticatedWithoutWPCom else {
@@ -195,6 +226,45 @@ extension StoreInfoDataService.DateRange {
         calendar.timeZone = timezone
         let startOfReferenceDay = referenceDate.startOfDay(timezone: timezone)
         return calendar.date(byAdding: .day, value: -daysBack, to: startOfReferenceDay) ?? startOfReferenceDay
+    }
+}
+
+// MARK: - Previous-period comparison
+
+extension StoreInfoDataService.DateRange {
+    /// Returns the period of the same length immediately preceding this one. Used by
+    /// `fetchStats(for:dateRange:)` to run a parallel comparison fetch so widgets can
+    /// render period-over-period deltas (today → yesterday, last 7 days → previous 7 days,
+    /// last 30 days → previous 30 days).
+    ///
+    /// `latestDateToInclude` is one second before this period's `earliestDateToInclude`,
+    /// so the windows are contiguous. `summaryStatsPeriod` carries over so visitor stats
+    /// for the previous period continue to query the same calendar granularity (.day /
+    /// .week / .month) — the endpoint resolves it against the previous-period
+    /// `latestDateToInclude`.
+    ///
+    func previousPeriod() -> Self {
+        var calendar = Calendar.current
+        calendar.timeZone = timezone
+
+        // Derive the period length from the bounds rather than from `orderStatsGranularity`,
+        // so this stays correct for any future range that uses hourly granularity over
+        // multiple days. Both bounds are normalized to start-of-day first so DST transitions
+        // don't round the day count off by one.
+        let startOfEarliestDate = calendar.startOfDay(for: earliestDateToInclude)
+        let startOfLatestDate = calendar.startOfDay(for: latestDateToInclude)
+        let fullDays = calendar.dateComponents([.day], from: startOfEarliestDate, to: startOfLatestDate).day ?? 0
+        let durationInDays = fullDays + 1
+
+        let previousLatestDate = calendar.date(byAdding: .second, value: -1, to: earliestDateToInclude) ?? earliestDateToInclude
+        let previousEarliestDate = calendar.date(byAdding: .day, value: -durationInDays, to: earliestDateToInclude) ?? earliestDateToInclude
+
+        return Self(orderStatsGranularity: orderStatsGranularity,
+                    orderStatsQuantity: orderStatsQuantity,
+                    earliestDateToInclude: previousEarliestDate,
+                    latestDateToInclude: previousLatestDate,
+                    summaryStatsPeriod: summaryStatsPeriod,
+                    timezone: timezone)
     }
 }
 

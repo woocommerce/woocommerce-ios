@@ -252,27 +252,30 @@ struct PointOfSaleDashboardView: View {
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
         }
-        .posFullScreenCover(isPresented: $phoneShowingBarcodeScannerSetup) {
-            POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
-        }
-        // CartView's edit-custom-amount cover is gated to iPad — on phone we present it
-        // here, at the dashboard level, so it sits above the cart sheet (and the cart sheet's
-        // POSSheet binding can dismiss without tearing down the cover host).
+        // Phone-only covers presented at the dashboard level:
+        //  - Barcode scanner setup, triggered from the cart sheet.
+        //  - Edit-custom-amount, hosted here so it sits above the cart sheet (CartView's
+        //    edit cover is gated to iPad, and POSSheet dismissal can tear down covers
+        //    that live inside the sheet's content).
         .if(isPhoneLayout) { view in
-            view.posFullScreenCover(item: Binding(
-                get: { posModel.editingCustomAmount },
-                set: { posModel.editingCustomAmount = $0 }
-            )) { customAmount in
-                AddCustomAmountView(
-                    currencySettings: currencyProvider.currencySettings,
-                    editing: customAmount,
-                    backButtonStyle: .close,
-                    onDismiss: { posModel.editingCustomAmount = nil },
-                    onSubmit: { updated in
-                        posModel.upsertCustomAmount(updated, mode: .edit)
-                    }
-                )
-            }
+            view
+                .posFullScreenCover(isPresented: $phoneShowingBarcodeScannerSetup) {
+                    POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
+                }
+                .posFullScreenCover(item: Binding(
+                    get: { posModel.editingCustomAmount },
+                    set: { posModel.editingCustomAmount = $0 }
+                )) { customAmount in
+                    AddCustomAmountView(
+                        currencySettings: currencyProvider.currencySettings,
+                        editing: customAmount,
+                        backButtonStyle: .close,
+                        onDismiss: { posModel.editingCustomAmount = nil },
+                        onSubmit: { updated in
+                            posModel.upsertCustomAmount(updated, mode: .edit)
+                        }
+                    )
+                }
         }
         .animation(.default, value: posModel.orderStage)
         .ignoresSafeArea()

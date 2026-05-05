@@ -14,6 +14,15 @@ struct ItemListView: View {
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
+    private let trailingHeaderAccessory: AnyView?
+
+    init(selectedItemListType: Binding<ItemListType>,
+         searchTerm: Binding<String>,
+         trailingHeaderAccessory: AnyView? = nil) {
+        self._selectedItemListType = selectedItemListType
+        self._searchTerm = searchTerm
+        self.trailingHeaderAccessory = trailingHeaderAccessory
+    }
 
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
         PointOfSaleItemListAnalyticsTracker(
@@ -343,6 +352,13 @@ private extension ItemListView {
                             setSearch(true)
                         }
                         .transition(.opacity.combined(with: .scale))
+
+                        // Hidden on the Coupons tab where the createCouponButton already crowds the
+                        // trailing slot, otherwise the Products / Coupons tab titles get squeezed.
+                        if let trailingHeaderAccessory, !isAddingCouponAllowed {
+                            trailingHeaderAccessory
+                                .transition(.opacity.combined(with: .scale))
+                        }
                     }
 
                 }

@@ -115,7 +115,7 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(viewState.showsFloatingControl)
+            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout)
 
             POSConnectivityView()
         }
@@ -224,7 +224,8 @@ struct PointOfSaleDashboardView: View {
             case .building:
                 VStack(spacing: POSSpacing.none) {
                     ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                                 searchTerm: $viewStateCoordinator.searchTerm)
+                                 searchTerm: $viewStateCoordinator.searchTerm,
+                                 trailingHeaderAccessory: AnyView(phoneOverflowMenu))
                     if posModel.cart.isNotEmpty {
                         phoneCartButton
                     }
@@ -286,6 +287,46 @@ struct PointOfSaleDashboardView: View {
     }
 
     @State private var phoneShowingCart: Bool = false
+    @State private var phoneShowOrders: Bool = false
+
+    private var phoneOverflowMenu: some View {
+        Menu {
+            Button {
+                analytics.track(.pointOfSaleExitMenuItemTapped)
+                showExitPOSModal = true
+            } label: {
+                Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
+            }
+            Button {
+                analytics.track(.pointOfSaleSettingsMenuItemTapped)
+                showSettings = true
+            } label: {
+                Label(Localization.phoneMenuSettings, systemImage: "gearshape")
+            }
+            if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+                Button {
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
+                    phoneShowOrders = true
+                } label: {
+                    Label(Localization.phoneMenuOrders, systemImage: "text.document")
+                }
+            }
+        } label: {
+            Circle()
+                .foregroundColor(.posSurfaceContainerLow)
+                .overlay {
+                    Image(systemName: "ellipsis")
+                        .font(.posButtonSymbolSmall)
+                        .foregroundColor(.posOnSurface)
+                }
+                .frame(width: POSHeaderLayoutConstants.minHeight, height: POSHeaderLayoutConstants.minHeight)
+                .fixedSize()
+        }
+        .accessibilityIdentifier("pos-phone-overflow-menu")
+        .posFullScreenCover(isPresented: $phoneShowOrders) {
+            POSOrdersView(isPresented: $phoneShowOrders)
+        }
+    }
 
     private var phoneCartButton: some View {
         Button {
@@ -472,6 +513,21 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.phone.backToItems",
             value: "Items",
             comment: "Phone-only back button title to return from totals to the items list."
+        )
+        static let phoneMenuExit = NSLocalizedString(
+            "pointOfSaleDashboard.phone.menu.exit",
+            value: "Exit POS",
+            comment: "Phone-only overflow menu item to exit Point of Sale."
+        )
+        static let phoneMenuSettings = NSLocalizedString(
+            "pointOfSaleDashboard.phone.menu.settings",
+            value: "Settings",
+            comment: "Phone-only overflow menu item to open Point of Sale settings."
+        )
+        static let phoneMenuOrders = NSLocalizedString(
+            "pointOfSaleDashboard.phone.menu.orders",
+            value: "Orders",
+            comment: "Phone-only overflow menu item to open the historical orders view."
         )
     }
 }

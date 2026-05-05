@@ -2,34 +2,30 @@ import CoreGraphics
 import Foundation
 import simd
 
+struct ResizeEnvironment {
+    var projectToScreen: (SIMD3<Float>) -> CGPoint?
+    var isUpperHalfHit: (CGPoint) -> Bool
+}
+
+protocol AxisPicking {
+    func pick(input: CuboidResizeInteraction.BeginInput, environment: ResizeEnvironment) -> ARCuboidEntity.Axis?
+}
+
 /// Decides which cuboid axis a two-finger pinch controls by projecting the
 /// cuboid's local axes into screen space and picking the best alignment with
 /// the finger pair direction.
-enum ResizeAxisPicker {
-    struct Environment {
-        var projectToScreen: (SIMD3<Float>) -> CGPoint?
-        var isUpperHalfHit: (CGPoint) -> Bool
-    }
-
-    enum Constants {
+struct ResizeAxisPicker: AxisPicking {
+    private enum Constants {
         static let yAxisAmbiguityThreshold: Float = 0.7
         static let axisProbeDistance: Float = 0.1
         static let minScreenDirectionLength: CGFloat = 1
     }
 
-    /// Returns the axis the pinch should control, or nil if no axis can be
-    /// determined (projection failure, ambiguous Y without hit-test, etc.).
-    static func pick(
-        cuboidPosition: SIMD3<Float>,
-        cuboidScale: SIMD3<Float>,
-        cuboidYaw: Float,
-        fingers: (first: CGPoint, second: CGPoint),
-        environment env: Environment
-    ) -> ARCuboidEntity.Axis? {
-        let axisX = SIMD3<Float>(cos(cuboidYaw), 0, -sin(cuboidYaw))
+    func pick(input: CuboidResizeInteraction.BeginInput, environment env: ResizeEnvironment) -> ARCuboidEntity.Axis? {
+        let axisX = SIMD3<Float>(cos(input.cuboidYaw), 0, -sin(input.cuboidYaw))
         let axisY = SIMD3<Float>(0, 1, 0)
-        let axisZ = SIMD3<Float>(sin(cuboidYaw), 0, cos(cuboidYaw))
-        let cuboidCenter = cuboidPosition + 0.5 * cuboidScale.y * axisY
+        let axisZ = SIMD3<Float>(sin(input.cuboidYaw), 0, cos(input.cuboidYaw))
+        let cuboidCenter = input.cuboidPosition + 0.5 * input.cuboidScale.y * axisY
 
         guard let screenCenter = env.projectToScreen(cuboidCenter),
               let xEnd = env.projectToScreen(cuboidCenter + Constants.axisProbeDistance * axisX),
@@ -42,7 +38,8 @@ enum ResizeAxisPicker {
             (.z, CGPoint(x: zEnd.x - screenCenter.x, y: zEnd.y - screenCenter.y))
         ]
 
-        let fingerDir = CGPoint(x: fingers.second.x - fingers.first.x, y: fingers.second.y - fingers.first.y)
+        let fingerDir = CGPoint(x: input.fingers.second.x - input.fingers.first.x,
+                                y: input.fingers.second.y - input.fingers.first.y)
         var bestAxis: ARCuboidEntity.Axis?
         var bestScore: CGFloat = 0
         var secondBestScore: CGFloat = 0
@@ -61,7 +58,7 @@ enum ResizeAxisPicker {
         let ambiguity: Float = bestScore > 0 ? Float(secondBestScore / bestScore) : 0
 
         if bestAxis == .y && ambiguity > Constants.yAxisAmbiguityThreshold {
-            guard env.isUpperHalfHit(fingers.first) || env.isUpperHalfHit(fingers.second) else { return nil }
+            guard env.isUpperHalfHit(input.fingers.first) || env.isUpperHalfHit(input.fingers.second) else { return nil }
         }
 
         return bestAxis

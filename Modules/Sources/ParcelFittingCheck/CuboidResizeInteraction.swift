@@ -16,7 +16,7 @@ final class CuboidResizeInteraction {
         var position: SIMD3<Float>
     }
 
-    typealias Environment = ResizeAxisPicker.Environment
+    typealias Environment = ResizeEnvironment
 
     enum Constants {
         /// Minimum allowed cuboid size on any axis, in metres.
@@ -54,31 +54,21 @@ final class CuboidResizeInteraction {
         let secondFinger: FingerLatch
     }
 
-    typealias AxisPicker = (BeginInput, Environment) -> ARCuboidEntity.Axis?
-
-    private let pickAxis: AxisPicker
+    private let axisPicker: AxisPicking
     private var context: ResizeContext?
     private var lastFingers: (first: CGPoint, second: CGPoint)?
 
     var isActive: Bool { context != nil }
     private(set) var highlightedFaces: ARCuboidEntity.FaceSet = .empty
 
-    init(pickAxis: @escaping AxisPicker = { input, env in
-        ResizeAxisPicker.pick(
-            cuboidPosition: input.cuboidPosition,
-            cuboidScale: input.cuboidScale,
-            cuboidYaw: input.cuboidYaw,
-            fingers: input.fingers,
-            environment: env
-        )
-    }) {
-        self.pickAxis = pickAxis
+    init(axisPicker: AxisPicking = ResizeAxisPicker()) {
+        self.axisPicker = axisPicker
     }
 
     /// May fail silently (no axis pick, missed Y hit-test, projection failure);
     /// the caller can retry on the next gesture frame.
     func begin(input: BeginInput, environment env: Environment) {
-        guard let axis = pickAxis(input, env) else {
+        guard let axis = axisPicker.pick(input: input, environment: env) else {
             return
         }
 

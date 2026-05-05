@@ -26,4 +26,8 @@ public struct ParcelPresetPackage: Identifiable {
         self.width = width
         self.height = height
     }
+
+    var dimensions: ParcelDimensions {
+        ParcelDimensions(length: length, width: width, height: height)
+    }
 }

@@ -92,6 +92,23 @@ private extension ARParcelSceneView {
     }
 }
 
+struct ARCuboidSceneToolbar: View {
+    let onCancel: () -> Void
+    let onReset: (() -> Void)?
+
+    var body: some View {
+        HStack {
+            ARCuboidCircleIconButton(systemName: "xmark", action: onCancel)
+            Spacer()
+            if let onReset {
+                ARCuboidCircleIconButton(systemName: "trash", action: onReset)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
+    }
+}
+
 struct ARCuboidCircleIconButton: View {
     let systemName: String
     let action: () -> Void

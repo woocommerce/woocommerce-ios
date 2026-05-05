@@ -66,15 +66,7 @@ struct ARParcelSizingView: View {
     }
 
     private var topToolbar: some View {
-        HStack {
-            ARCuboidCircleIconButton(systemName: "xmark", action: onCancel)
-            Spacer()
-            if isPlaced {
-                ARCuboidCircleIconButton(systemName: "trash") { resetTrigger += 1 }
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
+        ARCuboidSceneToolbar(onCancel: onCancel, onReset: isPlaced ? { resetTrigger += 1 } : nil)
     }
 
     private var confirmButton: some View {

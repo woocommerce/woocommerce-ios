@@ -33,7 +33,6 @@ struct ARCuboidEntity {
         /// `updateMaterials` whenever the cuboid scale changes the target
         /// dash count for this edge.
         let dashedGroup: ModelEntity
-        let adjacentFaces: (Face, Face)
         let spec: EdgeSpec
     }
 
@@ -62,7 +61,6 @@ struct ARCuboidEntity {
             edges.append(Edge(
                 solid: solid,
                 dashedGroup: dashedGroup,
-                adjacentFaces: spec.adjacentFaces,
                 spec: spec
             ))
         }
@@ -96,16 +94,15 @@ struct ARCuboidEntity {
                 rebuildDashes(in: edge, count: targetCount)
             }
 
-            let (face1, face2) = edge.adjacentFaces
+            let (face1, face2) = edge.spec.adjacentFaces
             let isHighlighted = highlightedFaces.contains(face1) || highlightedFaces.contains(face2)
             let isFront = cameraFacing.contains(face1) || cameraFacing.contains(face2)
-            let useSolid = isFront
 
-            edge.solid.isEnabled = useSolid
-            edge.dashedGroup.isEnabled = !useSolid
+            edge.solid.isEnabled = isFront
+            edge.dashedGroup.isEnabled = !isFront
 
             let color = isHighlighted ? highlightColor : baseColor
-            if useSolid {
+            if isFront {
                 applyColor(color, to: edge.solid)
             } else {
                 for child in edge.dashedGroup.children {
@@ -124,10 +121,6 @@ private extension ARCuboidEntity {
         static let bottomY: Float = 0
         static let topY: Float = 1
         static let midY: Float = 0.5
-    }
-
-    enum EdgeThickness {
-        static let regular: Float = 0.005
     }
 
     enum DashPattern {
@@ -208,7 +201,7 @@ private extension ARCuboidEntity {
         static let unitCubeEdges: [EdgeSpec] = {
             let half = UnitCube.halfExtent
             let extents: [Float] = [-half, half]
-            let thickness = EdgeThickness.regular
+            let thickness: Float = 0.005
             var edges: [EdgeSpec] = []
 
             for faceY in [UnitCube.bottomY, UnitCube.topY] {
@@ -258,8 +251,8 @@ private extension ARCuboidEntity {
     }
 
     /// Returns the set of faces whose outward normal points toward the
-    /// camera. Computed in unit-cube local space so the cuboid's yaw and
-    /// scale are factored out.
+    /// camera. Computed in unit-cube local space (X/Z: ±0.5, Y: 0…1) so
+    /// the cuboid's yaw and scale are factored out.
     func cameraFacingFaces(cameraPosition: SIMD3<Float>) -> Set<Face> {
         let scale = root.transform.scale
         let inverseRotation = root.transform.rotation.inverse

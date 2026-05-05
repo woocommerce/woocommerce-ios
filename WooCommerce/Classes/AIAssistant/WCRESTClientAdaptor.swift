@@ -1,6 +1,7 @@
 import Foundation
 import Networking
 import struct NetworkingCore.JetpackRequest
+import protocol NetworkingCore.Mapper
 import enum NetworkingCore.NetworkError
 import enum NetworkingCore.WooAPIVersion
 import protocol NetworkingCore.Network
@@ -10,10 +11,10 @@ import struct WooAIAssistant.WCRESTResponse
 import protocol WooAIAssistant.WCRESTClient
 import CocoaLumberjackSwift
 
-/// `Network` isn't declared `Sendable`, but the production instance is constructed once at launch.
 struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
     private let network: Network
     private let siteID: Int64
+    private let responseMapper = AIToolResponseMapper()
 
     init(network: Network, siteID: Int64) {
         self.network = network
@@ -25,8 +26,8 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
                  query: [String: String]?,
                  body: Data?) async -> WCRESTResponse {
         let httpMethod = HTTPMethod(rawValue: method.uppercased())
-        let (apiVersion, subpath) = Self.splitAPIVersion(from: path)
-        let parameters = Self.parameters(forMethod: httpMethod, query: query, body: body)
+        let (apiVersion, subpath) = splitAPIVersion(from: path)
+        let parameters = self.parameters(forMethod: httpMethod, query: query, body: body)
 
         let jetpackRequest = JetpackRequest(wooApiVersion: apiVersion,
                                             method: httpMethod,
@@ -37,12 +38,13 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
 
         do {
             let (data, _) = try await network.responseDataAndHeaders(for: jetpackRequest)
-            return WCRESTResponse(data: data, statusCode: 200)
+            return WCRESTResponse(data: unwrap(data), statusCode: 200)
         } catch let error as NetworkError {
+            let body = unwrap(error.responseData ?? Data())
             if case .timeout = error {
-                return WCRESTResponse(data: error.responseData ?? Data(), statusCode: 408)
+                return WCRESTResponse(data: body, statusCode: 408)
             }
-            return WCRESTResponse(data: error.responseData ?? Data(),
+            return WCRESTResponse(data: body,
                                   statusCode: error.responseCode ?? HTTPStatusClassification.transportFailure)
         } catch let error as URLError where error.code == .timedOut {
             return WCRESTResponse(data: Data(), statusCode: 408)
@@ -51,7 +53,16 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
         }
     }
 
-    private static func splitAPIVersion(from path: String) -> (apiVersion: WooAPIVersion, subpath: String) {
+    private func unwrap(_ data: Data) -> Data {
+        do {
+            return try responseMapper.map(response: data)
+        } catch {
+            DDLogError("⛔️ WCRESTClientAdaptor failed to unwrap response envelope: \(error)")
+            return data
+        }
+    }
+
+    private func splitAPIVersion(from path: String) -> (apiVersion: WooAPIVersion, subpath: String) {
         let trimmed = path.hasPrefix("/") ? String(path.dropFirst()) : path
         let prefixes: [(String, WooAPIVersion)] = [
             ("wc-analytics/", .wcAnalytics),
@@ -66,9 +77,9 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
         return (.mark3, trimmed)
     }
 
-    private static func parameters(forMethod method: HTTPMethod,
-                                   query: [String: String]?,
-                                   body: Data?) -> [String: Any]? {
+    private func parameters(forMethod method: HTTPMethod,
+                            query: [String: String]?,
+                            body: Data?) -> [String: Any]? {
         switch method {
         case .post, .put, .patch:
             guard let body, !body.isEmpty else { return nil }
@@ -95,5 +106,17 @@ private extension NetworkError {
         case .invalidURL, .invalidCookieNonce:
             return nil
         }
+    }
+}
+
+/// Peels the Jetpack tunnel `{"data":<inner>}` wrap so tool responses reach the LLM as native JSON.
+struct AIToolResponseMapper: Mapper {
+    func map(response: Data) throws -> Data {
+        guard !response.isEmpty, hasDataEnvelope(in: response) else { return response }
+        guard let json = try JSONSerialization.jsonObject(with: response) as? [String: Any] else { return response }
+        // WP REST error envelopes share the wrap shape but mustn't be peeled - the `code` key disambiguates.
+        if json["code"] != nil { return response }
+        guard let inner = json["data"] else { return response }
+        return try JSONSerialization.data(withJSONObject: inner, options: [.fragmentsAllowed])
     }
 }

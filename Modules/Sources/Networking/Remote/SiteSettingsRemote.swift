@@ -3,6 +3,8 @@ import Foundation
 /// Protocol for SiteSettingsRemote to enable testing.
 public protocol SiteSettingsRemoteProtocol {
     func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool
+    func loadAnalyticsOrderDateType(for siteID: Int64) async throws -> SiteSetting
+    func updateAnalyticsOrderDateType(for siteID: Int64, value: String) async throws -> SiteSetting
 }
 
 /// Features that can be enabled/disabled in core, under WC Settings > Advanced > Features.
@@ -178,6 +180,45 @@ public class SiteSettingsRemote: Remote {
             throw SiteSettingsRemoteError.invalidResponse
         }
     }
+
+    /// Retrieves the current value of the WooCommerce Analytics order date-type setting (`woocommerce_date_type`).
+    ///
+    /// - Parameter siteID: Site for which we'll fetch the setting.
+    /// - Returns: The setting payload as returned by the wc-admin settings endpoint.
+    /// - Throws: An error if the request fails or the response cannot be parsed.
+    ///
+    public func loadAnalyticsOrderDateType(for siteID: Int64) async throws -> SiteSetting {
+        let path = Constants.siteSettingsPath + Constants.analyticsSettingsGroup + "/" + Constants.analyticsOrderDateTypeSettingID
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
+        let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: .custom(Constants.analyticsSettingsGroup))
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    /// Updates the WooCommerce Analytics order date-type setting (`woocommerce_date_type`).
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll update the setting.
+    ///   - value: New value for the setting (`date_paid`, `date_created`, or `date_completed`).
+    /// - Returns: The setting payload as returned by the wc-admin settings endpoint.
+    /// - Throws: An error if the request fails or the response cannot be parsed.
+    ///
+    public func updateAnalyticsOrderDateType(for siteID: Int64, value: String) async throws -> SiteSetting {
+        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let path = Constants.siteSettingsPath + Constants.analyticsSettingsGroup + "/" + Constants.analyticsOrderDateTypeSettingID
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .put,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: .custom(Constants.analyticsSettingsGroup))
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 extension SiteSettingsRemote: SiteSettingsRemoteProtocol {}
@@ -200,6 +241,8 @@ private extension SiteSettingsRemote {
         static let productSettingsGroup: String   = "products"
         static let advancedSettingsGroup: String   = "advanced"
         static let pointOfSaleSettingsGroup: String = "point-of-sale"
+        static let analyticsSettingsGroup: String = "wc_admin"
+        static let analyticsOrderDateTypeSettingID: String = "woocommerce_date_type"
         static let valueParameter: String = "value"
         static let featureEnabledValue: String = "yes"
         static let featureDisabledValue: String = "no"

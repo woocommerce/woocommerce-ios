@@ -1,4 +1,5 @@
 import Foundation
+import CocoaLumberjackSwift
 
 public enum OrdersUpdateTool {
 
@@ -12,9 +13,12 @@ public enum OrdersUpdateTool {
         name: name,
         description: """
         Update an order's allowlisted fields: status, customer_note, billing email. \
-        Status changes such as completed/cancelled/refunded fire customer emails - the \
-        merchant confirms before this dispatches. Do NOT use this to issue a refund - \
-        moving an order to "refunded" only changes the status, it does not return funds.
+        Status changes such as completed/cancelled fire customer emails - the merchant \
+        confirms before this dispatches. Refunds are NOT supported - the assistant \
+        cannot set status to "refunded"; the merchant taps an order to issue a refund. \
+        Only call when the merchant has explicitly requested a change. Do NOT call to \
+        trigger side effects (e.g. flipping a status to send a customer email) or to \
+        answer information questions.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -65,6 +69,11 @@ public enum OrdersUpdateTool {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
         }
+        if args.status == OrderUpdateRefundGuard.blockedStatus {
+            return .failed(.init(toolName: name,
+                                 kind: .invalidToolCall,
+                                 reason: OrderUpdateRefundGuard.message))
+        }
         if let status = args.status, !allowedStatuses.contains(status) {
             return .failed(.init(toolName: name,
                                  kind: .invalidToolCall,
@@ -79,7 +88,11 @@ public enum OrdersUpdateTool {
                                  kind: .invalidToolCall,
                                  reason: "at least one editable field must be provided"))
         }
-        guard let payload = try? JSONSerialization.data(withJSONObject: body) else {
+        let payload: Data
+        do {
+            payload = try JSONSerialization.data(withJSONObject: body)
+        } catch {
+            DDLogError("[OrdersUpdateTool] Failed to encode update body: \(error)")
             return .failed(.init(toolName: name,
                                  kind: .toolFailed,
                                  reason: "could not serialize update body"))

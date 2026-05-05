@@ -5,6 +5,8 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 ## Model 137 (Release 24.7.0.0)
 - @iamgabrielma 2026-04-24
   - Added `StoredSupportChat` entity with attributes: `chatID`, `siteID`, `wpcomUserID`, `botSlug`, `title`, `createdAt`, `updatedAt`.
+- @rafaelkayumov 2026-04-29
+  - Added `grossSales` attribute to `OrderStatsV4Totals` entity to support the Performance card revenue type selector (Gross/Net/Total).
 
 ## Model 136 (Release 24.6.0.0)
 - @rafaelkayumov 2026-04-06

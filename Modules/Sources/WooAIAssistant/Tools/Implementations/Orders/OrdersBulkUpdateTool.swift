@@ -1,4 +1,5 @@
 import Foundation
+import CocoaLumberjackSwift
 
 public enum OrdersBulkUpdateTool {
 
@@ -17,7 +18,10 @@ public enum OrdersBulkUpdateTool {
         Apply the same allowlisted update to many orders at once (max 100). \
         The same patch (status, customer_note, billing email) is applied to \
         every order id in the list. Per-order differences require separate \
-        orders_update calls.
+        orders_update calls. Refunds are NOT supported - status cannot be \
+        set to "refunded"; the merchant taps each order to issue a refund. \
+        Only call when the merchant has explicitly requested a bulk change \
+        with a concrete list of ids.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -86,6 +90,11 @@ public enum OrdersBulkUpdateTool {
                                  kind: .invalidToolCall,
                                  reason: "ids has \(args.ids.count) entries; max is \(maxBatchSize)"))
         }
+        if args.patch.status == OrderUpdateRefundGuard.blockedStatus {
+            return .failed(.init(toolName: name,
+                                 kind: .invalidToolCall,
+                                 reason: OrderUpdateRefundGuard.message))
+        }
         if let status = args.patch.status, !allowedStatuses.contains(status) {
             return .failed(.init(toolName: name,
                                  kind: .invalidToolCall,
@@ -107,7 +116,11 @@ public enum OrdersBulkUpdateTool {
             entry["id"] = id
             return entry
         }
-        guard let payload = try? JSONSerialization.data(withJSONObject: ["update": updates]) else {
+        let payload: Data
+        do {
+            payload = try JSONSerialization.data(withJSONObject: ["update": updates])
+        } catch {
+            DDLogError("[OrdersBulkUpdateTool] Failed to encode batch body: \(error)")
             return .failed(.init(toolName: name,
                                  kind: .toolFailed,
                                  reason: "could not serialize batch body"))

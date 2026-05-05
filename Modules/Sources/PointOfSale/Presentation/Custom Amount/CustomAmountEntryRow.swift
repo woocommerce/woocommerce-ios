@@ -55,6 +55,7 @@ struct CustomAmountEntryRow: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(Localization.title))
         .accessibilityHint(Text(Localization.subtitle))
+        .accessibilityAddTraits(.isButton)
         .accessibilityIdentifier("pos-custom-amount-entry-row")
     }
 }
@@ -75,8 +76,16 @@ private extension CustomAmountEntryRow {
 }
 
 #if DEBUG
-#Preview {
+#Preview("iPad") {
     CustomAmountEntryRow(onTap: {})
         .padding()
+        .frame(maxWidth: 320)
+}
+
+#Preview("iPad — Accessibility XL") {
+    CustomAmountEntryRow(onTap: {})
+        .padding()
+        .frame(maxWidth: 320)
+        .dynamicTypeSize(.accessibility3)
 }
 #endif

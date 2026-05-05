@@ -7,6 +7,9 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
 
     private let viewModel: SupportChatViewModel
 
+    /// Retains the Jetpack setup coordinator while the flow is active.
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
+
     init(viewModel: SupportChatViewModel) {
         self.viewModel = viewModel
         let view = SupportChatView(viewModel: viewModel)
@@ -14,6 +17,10 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
 
         self.hidesBottomBarWhenPushed = true
         self.title = Localization.title
+
+        viewModel.onStartJetpackSetup = { [weak self] in
+            self?.startJetpackSetup()
+        }
     }
 
     @available(*, unavailable)
@@ -24,6 +31,16 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.largeTitleDisplayMode = .never
+    }
+
+    private func startJetpackSetup() {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else { return }
+        let coordinator = JetpackSetupCoordinator(site: site, rootViewController: self, onCompletion: { [weak self] in
+            self?.viewModel.replaceActionWithRetry()
+            self?.jetpackSetupCoordinator = nil
+        })
+        jetpackSetupCoordinator = coordinator
+        coordinator.startSetup()
     }
 }
 

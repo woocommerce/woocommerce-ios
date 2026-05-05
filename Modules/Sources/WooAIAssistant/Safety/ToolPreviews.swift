@@ -15,6 +15,8 @@ public enum ToolPreviews {
             return productsBulkUpdate(arguments: arguments)
         case ProductVariationsUpdateTool.name:
             return productVariationsUpdate(arguments: arguments)
+        case ProductVariationsBulkUpdateTool.name:
+            return productVariationsBulkUpdate(arguments: arguments)
         default:
             return genericPreview(name: name, arguments: arguments)
         }
@@ -168,6 +170,24 @@ public enum ToolPreviews {
         return String.localizedStringWithFormat(Localization.productVariationsUpdateFull, vid, pid, summary)
     }
 
+    private static func productVariationsBulkUpdate(arguments: String) -> String {
+        struct A: Decodable {
+            let product_id: Int?
+            let variations: [V]?
+            struct V: Decodable {
+                let id: Int?
+            }
+        }
+        guard let a = decode(A.self, from: arguments),
+              let pid = a.product_id, let variations = a.variations else {
+            return Localization.productVariationsBulkUpdateFallback
+        }
+        let count = variations.count
+        let format = count == 1 ? Localization.productVariationsBulkUpdateSingular
+                                : Localization.productVariationsBulkUpdatePlural
+        return String.localizedStringWithFormat(format, count, pid)
+    }
+
     private static func productChanges(name: String?,
                                        regularPrice: String?,
                                        salePrice: String?,
@@ -289,6 +309,22 @@ public enum ToolPreviews {
             "ai.assistant.preview.product_variations_update.full",
             value: "Update variation #%1$d of product #%2$d: %3$@",
             comment: "Variation update preview. %1$d is the variation id, %2$d the parent product id, %3$@ the change list."
+        )
+
+        static let productVariationsBulkUpdateFallback = NSLocalizedString(
+            "ai.assistant.preview.product_variations_bulk_update.fallback",
+            value: "Update many variations",
+            comment: "Confirmation card preview when the product_variations_bulk_update tool call cannot be parsed."
+        )
+        static let productVariationsBulkUpdateSingular = NSLocalizedString(
+            "ai.assistant.preview.product_variations_bulk_update.singular",
+            value: "Update %1$d variation of product #%2$d",
+            comment: "Singular variations bulk preview. %1$d is the count (1), %2$d is the parent product id."
+        )
+        static let productVariationsBulkUpdatePlural = NSLocalizedString(
+            "ai.assistant.preview.product_variations_bulk_update.plural",
+            value: "Update %1$d variations of product #%2$d",
+            comment: "Plural variations bulk preview. %1$d is the count, %2$d is the parent product id."
         )
 
         static let emailsCustomerSuffix = NSLocalizedString(

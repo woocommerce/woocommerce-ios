@@ -39,6 +39,9 @@ struct HelpAndSupportViewModel {
         if !isAuthenticated && hasLoginSiteURL {
             rows.append(.siteCompatibility)
         }
+        if isAIChatEnabled {
+            rows.append(.aiSupportChat)
+        }
         if isAuthenticated && isAIChatEnabled {
             rows.append(.chatHistory)
         }

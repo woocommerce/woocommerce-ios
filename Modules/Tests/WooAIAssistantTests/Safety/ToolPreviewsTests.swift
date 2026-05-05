@@ -18,7 +18,13 @@ struct ToolPreviewsTests {
          "Update 1 product: status -> draft"),
         (ProductVariationsUpdateTool.name,
          #"{"product_id":7,"id":15,"regular_price":"19.99"}"#,
-         "Update variation #15 of product #7: price -> 19.99")
+         "Update variation #15 of product #7: price -> 19.99"),
+        (ProductVariationsBulkUpdateTool.name,
+         #"{"product_id":7,"variations":[{"id":15,"regular_price":"19.99"},{"id":16,"regular_price":"19.99"}]}"#,
+         "Update 2 variations of product #7"),
+        (ProductVariationsBulkUpdateTool.name,
+         #"{"product_id":7,"variations":[{"id":15,"regular_price":"19.99"}]}"#,
+         "Update 1 variation of product #7")
     ])
     func test_defaultBuilder_when_known_tool_then_returns_readable_preview(
         toolName: String,

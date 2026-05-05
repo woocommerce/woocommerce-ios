@@ -33,12 +33,21 @@ public struct POSRefundableItem {
     public let lineItemTotal: Decimal
     public let totalTax: Decimal
     public let originalQuantity: Decimal
+    /// `true` for lines that don't have a unit/quantity concept and refund as a single lump sum
+    /// (e.g. order fee lines / custom amounts). When true, the calculator emits the line as a
+    /// single request item with `quantity = 0` and uses `lineItemTotal`/`totalTax` directly.
+    public let isLumpSum: Bool
 
-    public init(itemID: Int64, lineItemTotal: Decimal, totalTax: Decimal, originalQuantity: Decimal) {
+    public init(itemID: Int64,
+                lineItemTotal: Decimal,
+                totalTax: Decimal,
+                originalQuantity: Decimal,
+                isLumpSum: Bool = false) {
         self.itemID = itemID
         self.lineItemTotal = lineItemTotal
         self.totalTax = totalTax
         self.originalQuantity = originalQuantity
+        self.isLumpSum = isLumpSum
     }
 }
 
@@ -80,9 +89,11 @@ private extension POSRefundCalculator {
 
     func buildRefundRequestItems(from groupedItems: [Int64: [POSRefundableItem]], numberOfDecimals: Int) -> [POSRefundRequestItem] {
         groupedItems.compactMap { itemID, items -> POSRefundRequestItem? in
-            guard items.first != nil else { return nil }
+            guard let firstItem = items.first else { return nil }
 
-            let quantityToRefund = items.count
+            // Lump-sum lines (e.g. fee/custom amount) refund as a single line with quantity 0,
+            // matching the WooCommerce REST refund API expectation for non-unit items.
+            let quantityToRefund = firstItem.isLumpSum ? 0 : items.count
             let refundTotal = calculateRefundTotal(for: items, numberOfDecimals: numberOfDecimals)
             let refundTax = calculateRefundTax(for: items, numberOfDecimals: numberOfDecimals)
 

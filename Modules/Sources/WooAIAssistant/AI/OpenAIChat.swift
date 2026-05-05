@@ -6,9 +6,9 @@ import Foundation
 /// shape verbatim, so a single set of types covers today's backend and the
 /// expected future swap. Tool calling follows the OpenAI spec
 /// (`finish_reason: "tool_calls"`, `tool_calls[i].function.{name,arguments}`).
-enum OpenAIChat {
+public enum OpenAIChat {
 
-    enum Role: String, Codable, Sendable {
+    public enum Role: String, Codable, Sendable {
         case system
         case user
         case assistant
@@ -22,16 +22,16 @@ enum OpenAIChat {
     ///   in a real response, but both fields exist for round-tripping.
     /// - `.tool`: `content` is the tool result (typically a JSON string),
     ///   `toolCallID` references the originating assistant tool call.
-    struct Message: Codable, Sendable, Equatable {
-        let role: Role
-        let content: String?
-        let toolCalls: [ToolCall]?
-        let toolCallID: String?
+    public struct Message: Codable, Sendable, Equatable {
+        public let role: Role
+        public let content: String?
+        public let toolCalls: [ToolCall]?
+        public let toolCallID: String?
 
-        init(role: Role,
-             content: String? = nil,
-             toolCalls: [ToolCall]? = nil,
-             toolCallID: String? = nil) {
+        public init(role: Role,
+                    content: String? = nil,
+                    toolCalls: [ToolCall]? = nil,
+                    toolCallID: String? = nil) {
             self.role = role
             self.content = content
             self.toolCalls = toolCalls
@@ -52,7 +52,7 @@ enum OpenAIChat {
         /// an empty string. OpenAI's downstream model ignores `content`
         /// when `tool_calls` is set, so the empty string is cosmetic but
         /// required to satisfy the proxy's validator.
-        func encode(to encoder: Encoder) throws {
+        public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(role, forKey: .role)
             if role == .assistant && toolCalls?.isEmpty == false {
@@ -68,49 +68,60 @@ enum OpenAIChat {
     /// `arguments` is a JSON string the caller must parse against the tool's
     /// declared schema; OpenAI sends arguments as a serialised string rather
     /// than an inline object.
-    struct ToolCall: Codable, Sendable, Equatable {
-        let id: String
-        let type: String
-        let function: FunctionCall
+    public struct ToolCall: Codable, Sendable, Equatable {
+        public let id: String
+        public let type: String
+        public let function: FunctionCall
 
-        init(id: String, function: FunctionCall) {
+        public init(id: String, function: FunctionCall) {
             self.id = id
             self.type = "function"
             self.function = function
         }
     }
 
-    struct FunctionCall: Codable, Sendable, Equatable {
-        let name: String
-        let arguments: String
+    public struct FunctionCall: Codable, Sendable, Equatable {
+        public let name: String
+        public let arguments: String
+
+        public init(name: String, arguments: String) {
+            self.name = name
+            self.arguments = arguments
+        }
     }
 
     /// `parameters` is a JSON Schema object describing the function's
     /// argument shape. Stored as `AnyCodableJSON` so any valid schema
     /// round-trips without bespoke decoding per tool.
-    struct ToolDefinition: Codable, Sendable, Equatable {
-        let type: String
-        let function: FunctionDefinition
+    public struct ToolDefinition: Codable, Sendable, Equatable {
+        public let type: String
+        public let function: FunctionDefinition
 
-        init(function: FunctionDefinition) {
+        public init(function: FunctionDefinition) {
             self.type = "function"
             self.function = function
         }
     }
 
-    struct FunctionDefinition: Codable, Sendable, Equatable {
-        let name: String
-        let description: String
-        let parameters: AnyCodableJSON
+    public struct FunctionDefinition: Codable, Sendable, Equatable {
+        public let name: String
+        public let description: String
+        public let parameters: AnyCodableJSON
+
+        public init(name: String, description: String, parameters: AnyCodableJSON) {
+            self.name = name
+            self.description = description
+            self.parameters = parameters
+        }
     }
 
     /// Encoded-only; `jetpack-ai-query` never returns `tool_choice`.
-    enum ToolChoice: Encodable, Sendable, Equatable {
+    public enum ToolChoice: Encodable, Sendable, Equatable {
         case auto
         case required
         case function(name: String)
 
-        func encode(to encoder: Encoder) throws {
+        public func encode(to encoder: Encoder) throws {
             var container = encoder.singleValueContainer()
             switch self {
             case .auto:
@@ -190,7 +201,7 @@ enum OpenAIChat {
     /// responses; matches Android's `FinishReason.OTHER` for cross-platform
     /// parity. Callers that need to react only to a terminal stop should
     /// match `.stop` explicitly.
-    enum FinishReason: String, Sendable, Equatable {
+    public enum FinishReason: String, Sendable, Equatable {
         case stop
         case toolCalls = "tool_calls"
         case length
@@ -259,7 +270,7 @@ enum OpenAIChat {
 }
 
 extension OpenAIChat.FinishReason: Decodable {
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let raw = try container.decode(String.self)
         self = OpenAIChat.FinishReason(rawValue: raw) ?? .other

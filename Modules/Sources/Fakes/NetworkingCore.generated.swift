@@ -233,7 +233,8 @@ extension NetworkingCore.OrderFeeLine {
             total: .fake(),
             totalTax: .fake(),
             taxes: .fake(),
-            attributes: .fake()
+            attributes: .fake(),
+            refundedItemID: .fake()
         )
     }
 }
@@ -443,6 +444,7 @@ extension NetworkingCore.OrderStatsV4Totals {
             totalOrders: .fake(),
             totalItemsSold: .fake(),
             grossRevenue: .fake(),
+            grossSales: .fake(),
             netRevenue: .fake(),
             averageOrderValue: .fake()
         )
@@ -510,7 +512,8 @@ extension NetworkingCore.Refund {
             isAutomated: .fake(),
             createAutomated: .fake(),
             items: .fake(),
-            shippingLines: .fake()
+            shippingLines: .fake(),
+            feeLines: .fake()
         )
     }
 }

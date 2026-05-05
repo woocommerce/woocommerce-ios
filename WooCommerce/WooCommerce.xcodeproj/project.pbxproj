@@ -471,6 +471,7 @@
 		3FA6FD9E2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				/Localized/Localizable.strings,
 				Sounds/o.caf,
 			);
 			target = 26F81B142BE433A2009EC58E /* Woo Watch App */;

@@ -14,7 +14,11 @@ public enum ProductsListTool {
         List products, optionally filtered by status, category, tag, sku, \
         or keyword search. For aggregate sales / top sellers prefer the \
         analytics tools. For prose questions about a specific product's \
-        stock quantity, prices, etc., call products_get with the ID.
+        stock quantity, prices, etc., call products_get with the ID. After \
+        calling, pass results to `show_cards` to render rather than \
+        re-fetching each product with products_get. If a search returns no \
+        matches, do not retry with synonyms or broader terms - say no match \
+        was found.
         """,
         parametersSchema: .object([
             "type": .string("object"),

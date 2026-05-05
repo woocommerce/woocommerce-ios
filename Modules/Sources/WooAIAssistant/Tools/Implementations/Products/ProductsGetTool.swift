@@ -14,7 +14,11 @@ public enum ProductsGetTool {
         Fetch a single product with full detail (price, stock, categories, \
         type). Use when the merchant references a specific product by ID. \
         For variable products use product_variations_list to inspect the \
-        variants.
+        variants. Do NOT call this tool to render a card after products_list \
+        - `show_cards` re-fetches product detail itself when given a reference. \
+        Use bounded fanout: only call after a list/card when the merchant \
+        asks for fields the list summary or card doesn't show, and limit to \
+        the specific entity referenced.
         """,
         parametersSchema: .object([
             "type": .string("object"),

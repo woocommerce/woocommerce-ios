@@ -28,6 +28,27 @@ struct ProductVariationsUpdateToolTests {
     }
 
     @Test
+    func test_productVariationsUpdate_when_success_then_card_family_is_productVariation() async throws {
+        // Given
+        let body = """
+        {"id": 33, "regular_price": "29.99"}
+        """
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = ProductVariationsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"product_id": 12, "id": 33, "regular_price": "29.99"}"#, client)
+
+        // Then
+        guard case .success(let success) = result else {
+            Issue.record("expected success, got \(result)")
+            return
+        }
+        let cards = try #require(success.uiStructured?.cards)
+        #expect(cards.allSatisfy { $0.family == .productVariation })
+    }
+
+    @Test
     func test_productVariationsUpdate_when_stock_quantity_set_then_request_carries_manage_stock_true() async throws {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok(#"{"id":33}"#))

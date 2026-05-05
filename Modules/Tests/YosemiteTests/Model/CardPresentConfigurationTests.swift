@@ -51,6 +51,62 @@ class CardPresentConfigurationTests: XCTestCase {
         assertEqual(10000, configuration.contactlessLimitAmount)
     }
 
+    // MARK: - Country Expansion (RSM-637)
+    //
+    // The model knows about all 13 expansion countries unconditionally; per-site exposure
+    // is gated upstream by `CardPresentConfigurationLoader` + the eligibility cache.
+
+    func test_configuration_for_each_EEA_Euro_expansion_country() {
+        let eeaCountries: [CountryCode] = [.AT, .BE, .FI, .FR, .DE, .IE, .IT, .LU, .NL, .PT, .ES]
+        for country in eeaCountries {
+            let configuration = CardPresentPaymentsConfiguration(country: country)
+            XCTAssertTrue(configuration.isSupportedCountry, "Expected \(country) to be supported by the model")
+            XCTAssertEqual(configuration.currencies, [.EUR])
+            XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
+            XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
+            XCTAssertEqual(configuration.supportedReaders, [.wisepad3])
+            XCTAssertEqual(configuration.supportedPluginVersions, [
+                .init(plugin: .wcPay, minimumVersion: "4.4.0"),
+                .init(plugin: .stripe, minimumVersion: "6.2.0")
+            ])
+            XCTAssertEqual(configuration.minimumAllowedChargeAmount, NSDecimalNumber(string: "0.5"))
+            // €50 — Stripe Terminal contactless CVM limit for EEA-Euro countries.
+            XCTAssertEqual(configuration.contactlessLimitAmount, 5000)
+            XCTAssertEqual(configuration.stripeSmallestCurrencyUnitMultiplier, 100)
+        }
+    }
+
+    func test_configuration_for_Singapore() {
+        let configuration = CardPresentPaymentsConfiguration(country: .SG)
+        XCTAssertTrue(configuration.isSupportedCountry)
+        XCTAssertEqual(configuration.currencies, [.SGD])
+        XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
+        XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
+        XCTAssertEqual(configuration.supportedReaders, [.wisepad3])
+        XCTAssertEqual(configuration.minimumAllowedChargeAmount, NSDecimalNumber(string: "0.5"))
+        // SG isn't in Stripe Terminal's published contactless limit table, so we leave it nil.
+        XCTAssertNil(configuration.contactlessLimitAmount)
+    }
+
+    func test_configuration_for_New_Zealand() {
+        let configuration = CardPresentPaymentsConfiguration(country: .NZ)
+        XCTAssertTrue(configuration.isSupportedCountry)
+        XCTAssertEqual(configuration.currencies, [.NZD])
+        XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
+        XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
+        XCTAssertEqual(configuration.supportedReaders, [.wisepad3])
+        XCTAssertEqual(configuration.minimumAllowedChargeAmount, NSDecimalNumber(string: "0.5"))
+        // NZD 200 — Stripe Terminal contactless CVM limit.
+        XCTAssertEqual(configuration.contactlessLimitAmount, 20000)
+    }
+
+    // Australia is intentionally excluded pending EFTPOS support (RSM-642 / RSM-643).
+    func test_configuration_for_Australia_is_unsupported() {
+        let configuration = CardPresentPaymentsConfiguration(country: .AU)
+        XCTAssertFalse(configuration.isSupportedCountry)
+        XCTAssertEqual(configuration.paymentMethods, [])
+        XCTAssertEqual(configuration.currencies, [])
+    }
 
     private enum Constants {
 

@@ -213,6 +213,35 @@ struct ParcelResizeInteractionTests {
         #expect(approxEqual(output.position.x, Self.initialPosition.x + 0.05))
     }
 
+    @Test func test_update_when_one_finger_pushes_inward_and_the_other_outward_then_each_face_moves_by_its_finger_delta() throws {
+        // Given
+        let interaction = ParcelResizeInteraction()
+        let env = Self.linearProjection()
+        interaction.begin(
+            input: Self.makeBeginInput(fingers: (CGPoint(x: -50, y: 0), CGPoint(x: 50, y: 0))),
+            environment: env
+        )
+
+        // When
+        // The −X finger pushes inward by 0.05 m (toward centre); the +X finger
+        // pushes outward by 0.10 m. Net scale grows by 0.05 m. Each face must
+        // move by exactly its finger's delta — no leakage between faces.
+        let output = try #require(interaction.update(
+            fingers: (CGPoint(x: 0, y: 0), CGPoint(x: 150, y: 0)),
+            environment: env
+        ))
+
+        // Then
+        #expect(approxEqual(output.scale.x, Self.initialScale.x + 0.05))
+        // Negative face: was at initialPosition.x − 0.5 * 0.20 = −0.10; now at
+        // newPosition.x − 0.5 * 0.25 = −0.05. Δ = +0.05 (moved inward).
+        let negativeFace = output.position.x - 0.5 * output.scale.x
+        #expect(approxEqual(negativeFace, Self.initialPosition.x - 0.5 * Self.initialScale.x + 0.05))
+        // Positive face: Δ = +0.10 (moved outward).
+        let positiveFace = output.position.x + 0.5 * output.scale.x
+        #expect(approxEqual(positiveFace, Self.initialPosition.x + 0.5 * Self.initialScale.x + 0.10))
+    }
+
     @Test func test_update_when_Y_axis_resizes_then_position_does_not_shift() throws {
         // Given
         let interaction = ParcelResizeInteraction()

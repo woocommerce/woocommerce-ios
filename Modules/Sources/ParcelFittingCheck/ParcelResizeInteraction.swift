@@ -86,13 +86,17 @@ final class ParcelResizeInteraction {
         // centre sits half-a-height up.
         let cuboidCenter = input.cuboidPosition + 0.5 * input.cuboidScale.y * axes.y
 
-        guard let projection = projectAxes(cuboidCenter: cuboidCenter, axes: axes, environment: env) else { return }
+        guard let projection = projectAxes(cuboidCenter: cuboidCenter, axes: axes, environment: env) else {
+            return
+        }
         let pick = pickActiveAxis(
             projection: projection,
             firstScreen: input.fingers.first,
             secondScreen: input.fingers.second
         )
-        guard let pick else { return }
+        guard let pick else {
+            return
+        }
 
         // For Y, a vertical screen-space pinch is the natural cue. We accept
         // it without a hit-test when Y dominates; only when X or Z projects
@@ -101,12 +105,16 @@ final class ParcelResizeInteraction {
         if pick.axis == .y && pick.ambiguity > Constants.yAxisAmbiguityThreshold {
             let firstUpper = env.isUpperHalfHit(input.fingers.first)
             let secondUpper = env.isUpperHalfHit(input.fingers.second)
-            guard firstUpper || secondUpper else { return }
+            guard firstUpper || secondUpper else {
+                return
+            }
         }
 
         let axisScreenVec = projection.axisVector(for: pick.axis)
         let length = hypot(axisScreenVec.x, axisScreenVec.y)
-        guard length > Constants.minScreenDirectionLength else { return }
+        guard length > Constants.minScreenDirectionLength else {
+            return
+        }
         let axisScreenUnit = CGPoint(x: axisScreenVec.x / length, y: axisScreenVec.y / length)
         let pixelsPerMeter = length / CGFloat(Constants.axisProbeDistance)
 
@@ -145,27 +153,26 @@ final class ParcelResizeInteraction {
         guard let context else { return nil }
 
         if let last = lastFingers {
-            let firstDelta = hypot(fingers.first.x - last.first.x, fingers.first.y - last.first.y)
-            let secondDelta = hypot(fingers.second.x - last.second.x, fingers.second.y - last.second.y)
-            if firstDelta < Constants.jitterThresholdPoints && secondDelta < Constants.jitterThresholdPoints {
+            let firstFrameDelta = hypot(fingers.first.x - last.first.x, fingers.first.y - last.first.y)
+            let secondFrameDelta = hypot(fingers.second.x - last.second.x, fingers.second.y - last.second.y)
+            if firstFrameDelta < Constants.jitterThresholdPoints && secondFrameDelta < Constants.jitterThresholdPoints {
                 return nil
             }
         }
 
+        let firstScreenDelta = CGPoint(
+            x: fingers.first.x - context.firstFinger.initialScreen.x,
+            y: fingers.first.y - context.firstFinger.initialScreen.y
+        )
+        let secondScreenDelta = CGPoint(
+            x: fingers.second.x - context.secondFinger.initialScreen.x,
+            y: fingers.second.y - context.secondFinger.initialScreen.y
+        )
         // Screen-delta math is camera-independent: a finger held still on
         // screen produces a zero delta even if the device drifts a little.
-        // Per-frame world raycasting would amplify camera tracking jitter
-        // into edge motion on the held-finger side.
-        let firstAxisDelta = axisDeltaInMetres(
-            fingerScreen: fingers.first,
-            initialScreen: context.firstFinger.initialScreen,
-            context: context
-        )
-        let secondAxisDelta = axisDeltaInMetres(
-            fingerScreen: fingers.second,
-            initialScreen: context.secondFinger.initialScreen,
-            context: context
-        )
+        let firstAxisDelta = axisDeltaInMetres(screenDelta: firstScreenDelta, context: context)
+        let secondAxisDelta = axisDeltaInMetres(screenDelta: secondScreenDelta, context: context)
+
         let firstOutward = signedOutwardDelta(face: context.firstFinger.face, axisDelta: firstAxisDelta)
         let secondOutward = signedOutwardDelta(face: context.secondFinger.face, axisDelta: secondAxisDelta)
 
@@ -197,15 +204,12 @@ final class ParcelResizeInteraction {
 
         var newPosition = context.initialPosition
         // X/Z are root-centred, so an asymmetric resize requires shifting the
-        // root by half the imbalance. The cap |shift| ≤ |scale change| / 2
-        // collapses to zero when both fingers move the same direction, so the
-        // cuboid does not slide — single-finger drag is the only sanctioned
-        // way to translate. Y is anchored at the floor and never shifts.
+        // root by half the imbalance. Each face then moves by exactly its
+        // finger's outward delta, including when one finger pushes inward and
+        // the other outward. Y is anchored at the floor and never shifts.
         if context.axis != .y {
             let centerShift = (actualPositive - actualNegative) * 0.5
-            let maxShift = abs(actualTotal) * 0.5
-            let clampedShift = max(-maxShift, min(maxShift, centerShift))
-            newPosition += clampedShift * context.axisWorld
+            newPosition += centerShift * context.axisWorld
         }
 
         lastFingers = fingers
@@ -310,14 +314,8 @@ private extension ParcelResizeInteraction {
         (point.x - origin.x) * axisScreenUnit.x + (point.y - origin.y) * axisScreenUnit.y
     }
 
-    private func axisDeltaInMetres(
-        fingerScreen: CGPoint,
-        initialScreen: CGPoint,
-        context: ResizeContext
-    ) -> Float {
-        let dx = fingerScreen.x - initialScreen.x
-        let dy = fingerScreen.y - initialScreen.y
-        let projected = dx * context.axisScreenUnit.x + dy * context.axisScreenUnit.y
+    private func axisDeltaInMetres(screenDelta: CGPoint, context: ResizeContext) -> Float {
+        let projected = screenDelta.x * context.axisScreenUnit.x + screenDelta.y * context.axisScreenUnit.y
         return Float(projected / context.pixelsPerMeter)
     }
 

@@ -35,6 +35,7 @@ struct ARCuboidEntity {
         let dashedGroup: ModelEntity
         let spec: EdgeSpec
         var lastColor: UIColor?
+        var lastIsFront: Bool?
     }
 
     private init(root: ModelEntity, edges: [Edge], baseColor: UIColor, highlightColor: UIColor) {
@@ -85,22 +86,23 @@ struct ARCuboidEntity {
                 edges[i].dashedGroup.transform.scale = edgeScale
             }
 
-            let axisScale = scale[edges[i].spec.lengthAxis.simdIndex]
-            let targetCount = dashCount(forWorldLength: axisScale)
-            if edges[i].dashedGroup.children.count != targetCount {
-                rebuildDashes(in: edges[i], count: targetCount)
-            }
-
             let (face1, face2) = edges[i].spec.adjacentFaces
             let isHighlighted = highlightedFaces.contains(face1) || highlightedFaces.contains(face2)
             let isFront = cameraFacing.contains(face1) || cameraFacing.contains(face2)
+            let color = isHighlighted ? highlightColor : baseColor
+
+            let axisScale = scale[edges[i].spec.lengthAxis.simdIndex]
+            let targetCount = dashCount(forWorldLength: axisScale)
+            if edges[i].dashedGroup.children.count != targetCount {
+                rebuildDashes(in: edges[i], count: targetCount, color: color)
+            }
 
             edges[i].solid.isEnabled = isFront
             edges[i].dashedGroup.isEnabled = !isFront
 
-            let color = isHighlighted ? highlightColor : baseColor
-            if color != edges[i].lastColor {
+            if color != edges[i].lastColor || isFront != edges[i].lastIsFront {
                 edges[i].lastColor = color
+                edges[i].lastIsFront = isFront
                 if isFront {
                     applyColor(color, to: edges[i].solid)
                 } else {
@@ -236,14 +238,14 @@ private extension ARCuboidEntity {
         max(DashPattern.minSegmentCount, Int(round(length / DashPattern.targetWorldUnitLength)))
     }
 
-    private func rebuildDashes(in edge: Edge, count: Int) {
+    private func rebuildDashes(in edge: Edge, count: Int, color: UIColor) {
         for child in Array(edge.dashedGroup.children) {
             child.removeFromParent()
         }
         for i in 0..<count {
             let segment = Self.makeBox(
                 size: edge.spec.dashSegmentSize(count: count),
-                color: baseColor
+                color: color
             )
             segment.position = edge.spec.dashSegmentOffset(segmentIndex: i, count: count)
             edge.dashedGroup.addChild(segment)

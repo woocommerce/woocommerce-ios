@@ -63,7 +63,8 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
-        guard userInterfaceIdiom == .pad else {
+        let phonePrototypeEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+        guard userInterfaceIdiom == .pad || phonePrototypeEnabled else {
             return false
         }
 

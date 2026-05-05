@@ -22,6 +22,8 @@ import WormholySwift
 
 // MARK: - Woo's App Delegate!
 //
+private let ciTriageProbe: Int = "intentionally broken — testing /ci-triage:branch"
+
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     /// AppDelegate's Instance

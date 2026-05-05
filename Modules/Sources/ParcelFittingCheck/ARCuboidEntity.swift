@@ -21,22 +21,6 @@ struct ARCuboidEntity {
         }
     }
 
-    /// One of the six faces of the cuboid, identified by which axis the face
-    /// is perpendicular to and which side along that axis it sits on. With the
-    /// cuboid centred on its X/Z root and rising from local Y 0 to 1, the
-    /// `+X` face is at world `+x`, the `+Y` face is the top, etc.
-    struct Face: Hashable {
-        let axis: Axis
-        let isPositiveSide: Bool
-
-        static let positiveX = Face(axis: .x, isPositiveSide: true)
-        static let negativeX = Face(axis: .x, isPositiveSide: false)
-        static let positiveY = Face(axis: .y, isPositiveSide: true)
-        static let negativeY = Face(axis: .y, isPositiveSide: false)
-        static let positiveZ = Face(axis: .z, isPositiveSide: true)
-        static let negativeZ = Face(axis: .z, isPositiveSide: false)
-    }
-
     let root: ModelEntity
     private let edges: [Edge]
     private let baseColor: UIColor
@@ -64,7 +48,7 @@ struct ARCuboidEntity {
         let root = ModelEntity()
         var edges: [Edge] = []
         edges.reserveCapacity(12)
-        for spec in unitBoxEdges() {
+        for spec in EdgeSpec.unitCubeEdges {
             let solid = makeBox(size: spec.size, color: color)
             solid.position = spec.center
             root.addChild(solid)
@@ -78,7 +62,7 @@ struct ARCuboidEntity {
             edges.append(Edge(
                 solid: solid,
                 dashedGroup: dashedGroup,
-                adjacentFaces: adjacentFaces(for: spec),
+                adjacentFaces: spec.adjacentFaces,
                 spec: spec
             ))
         }
@@ -100,7 +84,7 @@ struct ARCuboidEntity {
             // the length but leaves world-space thickness constant. Skip the
             // write when the parent scale has not changed — otherwise we would
             // dirty the transform component every frame for an idle parcel.
-            let edgeScale = Self.compensatingScale(for: edge.spec, parentScale: scale)
+            let edgeScale = edge.spec.compensatingScale(parentScale: scale)
             if edge.solid.transform.scale != edgeScale {
                 edge.solid.transform.scale = edgeScale
                 edge.dashedGroup.transform.scale = edgeScale
@@ -166,44 +150,87 @@ private extension ARCuboidEntity {
             if size.y >= size.x && size.y >= size.z { return .y }
             return .z
         }
-    }
 
-    static func unitBoxEdges() -> [EdgeSpec] {
-        let half = UnitCube.halfExtent
-        let extents: [Float] = [-half, half]
-        let thickness = EdgeThickness.regular
-        var edges: [EdgeSpec] = []
-
-        for faceY in [UnitCube.bottomY, UnitCube.topY] {
-            for depthZ in extents {
-                edges.append(EdgeSpec(center: SIMD3(0, faceY, depthZ), size: SIMD3(1, thickness, thickness)))
+        /// Per-axis scale that, applied to a child of a parent scaled by
+        /// `parentScale`, leaves the edge stretched along its length axis but
+        /// keeps its cross-section a fixed world-space thickness.
+        func compensatingScale(parentScale: SIMD3<Float>) -> SIMD3<Float> {
+            let sx = max(parentScale.x, 1e-6)
+            let sy = max(parentScale.y, 1e-6)
+            let sz = max(parentScale.z, 1e-6)
+            switch lengthAxis {
+            case .x: return SIMD3(1, 1 / sy, 1 / sz)
+            case .y: return SIMD3(1 / sx, 1, 1 / sz)
+            case .z: return SIMD3(1 / sx, 1 / sy, 1)
             }
         }
-        for sideX in extents {
-            for depthZ in extents {
-                edges.append(EdgeSpec(
-                    center: SIMD3(sideX, UnitCube.midY, depthZ),
-                    size: SIMD3(thickness, 1, thickness)
-                ))
+
+        func dashSegmentSize(count: Int) -> SIMD3<Float> {
+            let dashLength = Float(1) / Float(count) * DashPattern.dashFraction
+            switch lengthAxis {
+            case .x: return SIMD3(dashLength, size.y, size.z)
+            case .y: return SIMD3(size.x, dashLength, size.z)
+            case .z: return SIMD3(size.x, size.y, dashLength)
             }
         }
-        for sideX in extents {
+
+        func dashSegmentOffset(segmentIndex: Int, count: Int) -> SIMD3<Float> {
+            let cellCenter = -0.5 + (Float(segmentIndex) + 0.5) / Float(count)
+            switch lengthAxis {
+            case .x: return SIMD3(cellCenter, 0, 0)
+            case .y: return SIMD3(0, cellCenter, 0)
+            case .z: return SIMD3(0, 0, cellCenter)
+            }
+        }
+
+        /// The two faces of the unit cube that share this edge.
+        var adjacentFaces: (Face, Face) {
+            switch lengthAxis {
+            case .x:
+                // X-aligned edges run along ±X; the two perpendicular signs
+                // (Y, Z) pick the adjacent faces.
+                let yFace: Face = center.y >= UnitCube.midY ? .positiveY : .negativeY
+                let zFace: Face = center.z >= 0 ? .positiveZ : .negativeZ
+                return (yFace, zFace)
+            case .y:
+                let xFace: Face = center.x >= 0 ? .positiveX : .negativeX
+                let zFace: Face = center.z >= 0 ? .positiveZ : .negativeZ
+                return (xFace, zFace)
+            case .z:
+                let xFace: Face = center.x >= 0 ? .positiveX : .negativeX
+                let yFace: Face = center.y >= UnitCube.midY ? .positiveY : .negativeY
+                return (xFace, yFace)
+            }
+        }
+
+        /// The 12 edges of a unit cube (X spanning −0.5…+0.5, Y spanning 0…1,
+        /// Z spanning −0.5…+0.5), each with the regular wireframe thickness.
+        static let unitCubeEdges: [EdgeSpec] = {
+            let half = UnitCube.halfExtent
+            let extents: [Float] = [-half, half]
+            let thickness = EdgeThickness.regular
+            var edges: [EdgeSpec] = []
+
             for faceY in [UnitCube.bottomY, UnitCube.topY] {
-                edges.append(EdgeSpec(center: SIMD3(sideX, faceY, 0), size: SIMD3(thickness, thickness, 1)))
+                for depthZ in extents {
+                    edges.append(EdgeSpec(center: SIMD3(0, faceY, depthZ), size: SIMD3(1, thickness, thickness)))
+                }
             }
-        }
-        return edges
-    }
-
-    static func compensatingScale(for spec: EdgeSpec, parentScale: SIMD3<Float>) -> SIMD3<Float> {
-        let sx = max(parentScale.x, 1e-6)
-        let sy = max(parentScale.y, 1e-6)
-        let sz = max(parentScale.z, 1e-6)
-        switch spec.lengthAxis {
-        case .x: return SIMD3(1, 1 / sy, 1 / sz)
-        case .y: return SIMD3(1 / sx, 1, 1 / sz)
-        case .z: return SIMD3(1 / sx, 1 / sy, 1)
-        }
+            for sideX in extents {
+                for depthZ in extents {
+                    edges.append(EdgeSpec(
+                        center: SIMD3(sideX, UnitCube.midY, depthZ),
+                        size: SIMD3(thickness, 1, thickness)
+                    ))
+                }
+            }
+            for sideX in extents {
+                for faceY in [UnitCube.bottomY, UnitCube.topY] {
+                    edges.append(EdgeSpec(center: SIMD3(sideX, faceY, 0), size: SIMD3(thickness, thickness, 1)))
+                }
+            }
+            return edges
+        }()
     }
 
     static func makeBox(size: SIMD3<Float>, color: UIColor) -> ModelEntity {
@@ -222,49 +249,11 @@ private extension ARCuboidEntity {
         }
         for i in 0..<count {
             let segment = Self.makeBox(
-                size: Self.dashSegmentSize(for: edge.spec, count: count),
+                size: edge.spec.dashSegmentSize(count: count),
                 color: baseColor
             )
-            segment.position = Self.dashSegmentOffset(for: edge.spec, segmentIndex: i, count: count)
+            segment.position = edge.spec.dashSegmentOffset(segmentIndex: i, count: count)
             edge.dashedGroup.addChild(segment)
-        }
-    }
-
-    static func dashSegmentSize(for spec: EdgeSpec, count: Int) -> SIMD3<Float> {
-        let dashLength = Float(1) / Float(count) * DashPattern.dashFraction
-        switch spec.lengthAxis {
-        case .x: return SIMD3(dashLength, spec.size.y, spec.size.z)
-        case .y: return SIMD3(spec.size.x, dashLength, spec.size.z)
-        case .z: return SIMD3(spec.size.x, spec.size.y, dashLength)
-        }
-    }
-
-    static func dashSegmentOffset(for spec: EdgeSpec, segmentIndex: Int, count: Int) -> SIMD3<Float> {
-        let cellCenter = -0.5 + (Float(segmentIndex) + 0.5) / Float(count)
-        switch spec.lengthAxis {
-        case .x: return SIMD3(cellCenter, 0, 0)
-        case .y: return SIMD3(0, cellCenter, 0)
-        case .z: return SIMD3(0, 0, cellCenter)
-        }
-    }
-
-    /// Returns the two faces of the unit cube that share `spec`'s edge.
-    static func adjacentFaces(for spec: EdgeSpec) -> (Face, Face) {
-        switch spec.lengthAxis {
-        case .x:
-            // X-aligned edges run along ±X; the two perpendicular signs (Y, Z)
-            // pick the adjacent faces.
-            let yFace: Face = spec.center.y >= UnitCube.midY ? .positiveY : .negativeY
-            let zFace: Face = spec.center.z >= 0 ? .positiveZ : .negativeZ
-            return (yFace, zFace)
-        case .y:
-            let xFace: Face = spec.center.x >= 0 ? .positiveX : .negativeX
-            let zFace: Face = spec.center.z >= 0 ? .positiveZ : .negativeZ
-            return (xFace, zFace)
-        case .z:
-            let xFace: Face = spec.center.x >= 0 ? .positiveX : .negativeX
-            let yFace: Face = spec.center.y >= UnitCube.midY ? .positiveY : .negativeY
-            return (xFace, yFace)
         }
     }
 

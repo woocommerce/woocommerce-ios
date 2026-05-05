@@ -86,6 +86,9 @@ extension UserDefaults {
 
         /// Whether configurable store stats widgets are enabled
         case configurableStoreStatsWidgetsEnabled
+
+        /// Lightweight store list for configurable store stats widgets
+        case configurableStoreStatsWidgetStores
     }
 }
 

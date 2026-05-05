@@ -1,0 +1,153 @@
+import Foundation
+import WooFoundationCore
+
+struct StoreStatsSnapshot: Codable, Hashable, Identifiable {
+    let siteID: Int64
+    let name: String
+    let timeZoneIdentifier: String?
+    let gmtOffset: Double
+    let supportsVisitorStats: Bool
+    let isDefault: Bool
+    let isSelectableInStorePicker: Bool
+    let currencySettingsData: Data?
+
+    var id: Int64 {
+        siteID
+    }
+
+    var appEntityID: String {
+        String(siteID)
+    }
+
+    var timeZone: TimeZone {
+        if let timeZoneIdentifier,
+           !timeZoneIdentifier.isEmpty,
+           let timeZone = TimeZone(identifier: timeZoneIdentifier) {
+            return timeZone
+        }
+        return TimeZone(secondsFromGMT: Int(gmtOffset * 3600)) ?? .current
+    }
+
+    var currencySettings: CurrencySettings? {
+        guard let currencySettingsData else {
+            return nil
+        }
+        return try? JSONDecoder().decode(CurrencySettings.self, from: currencySettingsData)
+    }
+}
+
+struct StoreStatsStoredSite: Equatable {
+    let siteID: Int64
+    let name: String
+    let timeZoneIdentifier: String?
+    let gmtOffset: Double
+    let isWooCommerceActive: Bool
+    let supportsVisitorStats: Bool
+}
+
+enum StoreStatsSnapshotFactory {
+    static func snapshots(storedSites: [StoreStatsStoredSite],
+                          defaultSite: StoreStatsStoredSite?,
+                          defaultSiteID: Int64?,
+                          defaultCurrencySettingsData: Data?,
+                          exposesStorePicker: Bool) -> [StoreStatsSnapshot] {
+        guard exposesStorePicker else {
+            return []
+        }
+
+        let defaultID = defaultSiteID ?? defaultSite?.siteID
+        var candidates = storedSites.filter { $0.isWooCommerceActive }
+        if let defaultSite,
+           defaultSite.isWooCommerceActive,
+           candidates.contains(where: { $0.siteID == defaultSite.siteID }) == false {
+            candidates.append(defaultSite)
+        }
+
+        var seenSiteIDs = Set<Int64>()
+        return candidates
+            .filter { site in
+                guard seenSiteIDs.contains(site.siteID) == false else {
+                    return false
+                }
+                seenSiteIDs.insert(site.siteID)
+                return true
+            }
+            .map { site in
+                StoreStatsSnapshot(
+                    siteID: site.siteID,
+                    name: site.name,
+                    timeZoneIdentifier: site.timeZoneIdentifier,
+                    gmtOffset: site.gmtOffset,
+                    supportsVisitorStats: site.supportsVisitorStats,
+                    isDefault: site.siteID == defaultID,
+                    isSelectableInStorePicker: true,
+                    currencySettingsData: site.siteID == defaultID ? defaultCurrencySettingsData : nil
+                )
+            }
+            .sorted { lhs, rhs in
+                if lhs.isDefault != rhs.isDefault {
+                    return lhs.isDefault
+                }
+                return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+            }
+    }
+}
+
+struct StoreStatsSnapshotStore {
+    private let userDefaults: UserDefaults?
+
+    init(userDefaults: UserDefaults? = .group) {
+        self.userDefaults = userDefaults
+    }
+
+    func snapshots() -> [StoreStatsSnapshot] {
+        guard let data: Data = userDefaults?.object(forKey: .configurableStoreStatsWidgetStores) else {
+            return defaultStoreSnapshot().map { [$0] } ?? []
+        }
+
+        guard let snapshots = try? JSONDecoder().decode([StoreStatsSnapshot].self, from: data) else {
+            return defaultStoreSnapshot().map { [$0] } ?? []
+        }
+
+        return snapshots
+    }
+
+    func storePickerSnapshots() -> [StoreStatsSnapshot] {
+        let selectableSnapshots = snapshots().filter { $0.isSelectableInStorePicker }
+        if selectableSnapshots.isEmpty,
+           let defaultStoreSnapshot = defaultStoreSnapshot() {
+            return [defaultStoreSnapshot]
+        }
+        return selectableSnapshots
+    }
+
+    func save(_ snapshots: [StoreStatsSnapshot]) {
+        guard let data = try? JSONEncoder().encode(snapshots) else {
+            return
+        }
+        userDefaults?.set(data, forKey: .configurableStoreStatsWidgetStores)
+    }
+
+    func defaultStoreName() -> String? {
+        defaultStoreSnapshot()?.name
+    }
+
+    private func defaultStoreSnapshot() -> StoreStatsSnapshot? {
+        guard let storeID: Int64 = userDefaults?.object(forKey: .defaultStoreID),
+              let storeName: String = userDefaults?.object(forKey: .defaultStoreName) else {
+            return nil
+        }
+
+        let currencySettingsData: Data? = userDefaults?.object(forKey: .defaultStoreCurrencySettings)
+        return StoreStatsSnapshot(
+            siteID: storeID,
+            name: storeName,
+            timeZoneIdentifier: nil,
+            gmtOffset: 0,
+            supportsVisitorStats: true,
+            isDefault: true,
+            isSelectableInStorePicker: false,
+            currencySettingsData: currencySettingsData
+        )
+    }
+}

@@ -3,12 +3,14 @@ import WidgetKit
 
 /// Configuration intent for the Store Stats widget.
 ///
-/// Surfaces the user-facing widget settings (long-press → Edit Widget). The `store` picker is
-/// added by a later ticket on top of `dateRange` and `metrics`.
+/// Surfaces the user-facing widget settings (long-press → Edit Widget).
 ///
 struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Store Stats"
     static var description = IntentDescription("Choose how the WooCommerce stats widget is displayed.")
+
+    @Parameter(title: "Store")
+    var store: StoreStatsStoreEntity?
 
     @Parameter(title: "Date Range", default: .today)
     var dateRange: StoreStatsWidgetDateRange
@@ -40,6 +42,10 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
         query: AvailableMetricsQuery()
     )
     var metrics: [StoreInfoMetricType]
+
+    init() {
+        store = StoreStatsStoreEntity.defaultStore
+    }
 }
 
 /// Date ranges supported by the Store Stats widget.
@@ -93,14 +99,75 @@ extension StoreStatsWidgetDateRange {
     /// Maps the user-selected widget range to the primitive parameters consumed by
     /// `StoreInfoDataService.fetchStats(for:dateRange:)`.
     ///
-    var serviceDateRange: StoreInfoDataService.DateRange {
+    func serviceDateRange(timezone: TimeZone = .current) -> StoreInfoDataService.DateRange {
         switch self {
         case .today:
-            return .today()
+            return .today(timezone: timezone)
         case .last7Days:
-            return .last7Days()
+            return .last7Days(timezone: timezone)
         case .last30Days:
-            return .last30Days()
+            return .last30Days(timezone: timezone)
         }
+    }
+}
+
+struct StoreStatsStoreEntity: AppEntity, Hashable {
+    private static let defaultStoreID = "__default_store__"
+    static let defaultStore = StoreStatsStoreEntity(id: defaultStoreID, name: nil)
+
+    static var defaultQuery = StoreStatsStoreQuery()
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        TypeDisplayRepresentation(name: "Store")
+    }
+
+    let id: String
+    let name: String?
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: "\(displayName)")
+    }
+
+    init(snapshot: StoreStatsSnapshot) {
+        id = snapshot.appEntityID
+        name = snapshot.name
+    }
+
+    init(id: String, name: String?) {
+        self.id = id
+        self.name = name
+    }
+
+    static func isDefaultStoreID(_ id: String) -> Bool {
+        id == defaultStoreID
+    }
+
+    private var displayName: String {
+        if Self.isDefaultStoreID(id),
+           let defaultStoreName = StoreStatsSnapshotStore().defaultStoreName() {
+            return defaultStoreName
+        }
+        return name ?? "Store"
+    }
+}
+
+struct StoreStatsStoreQuery: EntityQuery {
+    func entities(for identifiers: [StoreStatsStoreEntity.ID]) async throws -> [StoreStatsStoreEntity] {
+        let identifiers = Set(identifiers)
+        let entities = StoreStatsSnapshotStore().storePickerSnapshots()
+            .filter { identifiers.contains($0.appEntityID) }
+            .map(StoreStatsStoreEntity.init(snapshot:))
+        guard identifiers.contains(where: StoreStatsStoreEntity.isDefaultStoreID) else {
+            return entities
+        }
+        return [StoreStatsStoreEntity.defaultStore] + entities
+    }
+
+    func suggestedEntities() async throws -> [StoreStatsStoreEntity] {
+        StoreStatsSnapshotStore().storePickerSnapshots().map(StoreStatsStoreEntity.init(snapshot:))
+    }
+
+    func defaultResult() async -> StoreStatsStoreEntity? {
+        StoreStatsStoreEntity.defaultStore
     }
 }

@@ -865,9 +865,52 @@ private extension DefaultStoresManager {
         UserDefaults.group?[.defaultStoreName] = sessionManager.defaultSite?.name
 
         // Currency Settings are stored in `SelectedSiteSettings.defaultStoreCurrencySettings`
+        updateStoreStatsWidgetStoreSnapshots(with: siteID)
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    private func updateStoreStatsWidgetStoreSnapshots(with siteID: Int64?) {
+        guard exposesStoreStatsWidgetStorePicker else {
+            StoreStatsSnapshotStore().save([])
+            return
+        }
+
+        let storedSites = ServiceLocator.storageManager.viewStorage.loadAllSites()
+            .map { site in
+                let isWordPressComStore = site.isWordPressStore?.boolValue ?? false
+                return StoreStatsStoredSite(siteID: site.siteID,
+                                            name: site.name ?? WooConstants.defaultStoreName,
+                                            timeZoneIdentifier: site.timezone,
+                                            gmtOffset: site.gmtOffset,
+                                            isWooCommerceActive: site.isWooCommerceActive?.boolValue ?? false,
+                                            supportsVisitorStats: site.isJetpackConnected || isWordPressComStore)
+            }
+
+        let defaultSite = sessionManager.defaultSite.map { site in
+            StoreStatsStoredSite(siteID: site.siteID,
+                                 name: site.name,
+                                 timeZoneIdentifier: site.timezone,
+                                 gmtOffset: site.gmtOffset,
+                                 isWooCommerceActive: site.isWooCommerceActive,
+                                 supportsVisitorStats: site.isJetpackConnected || site.isWordPressComStore)
+        }
+
+        let defaultCurrencySettingsData: Data? = UserDefaults.group?.object(forKey: .defaultStoreCurrencySettings)
+        let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
+                                                            defaultSite: defaultSite,
+                                                            defaultSiteID: siteID,
+                                                            defaultCurrencySettingsData: defaultCurrencySettingsData,
+                                                            exposesStorePicker: true)
+        StoreStatsSnapshotStore().save(snapshots)
+    }
+
+    private var exposesStoreStatsWidgetStorePicker: Bool {
+        if case .wpcom = sessionManager.defaultCredentials {
+            return true
+        }
+        return false
     }
 
     func trackSnapshotIfNeeded(siteID: Int64, orderStatuses: [OrderStatus]?, systemPlugins: [SystemPlugin]?) {

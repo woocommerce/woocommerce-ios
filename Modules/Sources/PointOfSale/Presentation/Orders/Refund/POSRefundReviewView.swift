@@ -13,6 +13,7 @@ struct POSRefundReviewView: View {
     let onEditRefund: (() -> Void)?
 
     @Environment(\.posModalParentSize) private var parentSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -22,7 +23,7 @@ struct POSRefundReviewView: View {
         }
         .background(Color.posSurfaceBright)
         .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding(for: horizontalSizeClass) * 2))
     }
 }
 

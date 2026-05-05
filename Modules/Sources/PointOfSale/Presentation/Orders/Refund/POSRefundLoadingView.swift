@@ -2,6 +2,7 @@ import SwiftUI
 
 struct POSRefundLoadingView: View {
     @Environment(\.posModalParentSize) private var parentSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
@@ -19,7 +20,7 @@ struct POSRefundLoadingView: View {
         .padding(.top, POSPadding.xxLarge)
         .background(Color.posSurfaceBright)
         .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding(for: horizontalSizeClass) * 2))
     }
 }
 

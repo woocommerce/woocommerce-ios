@@ -9,6 +9,7 @@ struct POSRefundDetailView: View {
     let onClose: () -> Void
 
     @Environment(\.posModalParentSize) private var parentSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -29,7 +30,8 @@ struct POSRefundDetailView: View {
         }
         .background(Color.posSurfaceBright)
         .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding(for: horizontalSizeClass) * 2))
+        .posModalFullScreen(horizontalSizeClass == .compact)
     }
 }
 

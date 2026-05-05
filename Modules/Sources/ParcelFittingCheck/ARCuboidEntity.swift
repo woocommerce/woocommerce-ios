@@ -79,8 +79,12 @@ struct ARCuboidEntity {
         let scale = root.transform.scale
         let cameraFacing = cameraFacingFaces(cameraPosition: cameraPosition)
 
+        let minAxis = min(scale.x, scale.y, scale.z)
+        let desiredThickness = min(max(minAxis * EdgeThickness.fraction, EdgeThickness.minimum), EdgeThickness.maximum)
+        let thicknessRatio = desiredThickness / EdgeThickness.mesh
+
         for i in edges.indices {
-            let edgeScale = edges[i].spec.compensatingScale(parentScale: scale)
+            let edgeScale = edges[i].spec.compensatingScale(parentScale: scale, thicknessRatio: thicknessRatio)
             if edges[i].solid.transform.scale != edgeScale {
                 edges[i].solid.transform.scale = edgeScale
                 edges[i].dashedGroup.transform.scale = edgeScale
@@ -125,6 +129,13 @@ private extension ARCuboidEntity {
         static let midY: Float = 0.5
     }
 
+    enum EdgeThickness {
+        static let mesh: Float = 0.005
+        static let fraction: Float = 0.03
+        static let minimum: Float = 0.0005
+        static let maximum: Float = 0.004
+    }
+
     enum DashPattern {
         /// World-space length (metres) of one dash + one gap. A 2 cm unit
         /// gives ~1 cm dashes spaced ~1 cm apart at the default dash fraction.
@@ -148,15 +159,16 @@ private extension ARCuboidEntity {
 
         /// Per-axis scale that, applied to a child of a parent scaled by
         /// `parentScale`, leaves the edge stretched along its length axis but
-        /// keeps its cross-section a fixed world-space thickness.
-        func compensatingScale(parentScale: SIMD3<Float>) -> SIMD3<Float> {
+        /// keeps its cross-section at the desired world-space thickness.
+        /// `thicknessRatio` is desired / mesh thickness (1.0 = original mesh size).
+        func compensatingScale(parentScale: SIMD3<Float>, thicknessRatio: Float) -> SIMD3<Float> {
             let sx = max(parentScale.x, 1e-6)
             let sy = max(parentScale.y, 1e-6)
             let sz = max(parentScale.z, 1e-6)
             switch lengthAxis {
-            case .x: return SIMD3(1, 1 / sy, 1 / sz)
-            case .y: return SIMD3(1 / sx, 1, 1 / sz)
-            case .z: return SIMD3(1 / sx, 1 / sy, 1)
+            case .x: return SIMD3(1, thicknessRatio / sy, thicknessRatio / sz)
+            case .y: return SIMD3(thicknessRatio / sx, 1, thicknessRatio / sz)
+            case .z: return SIMD3(thicknessRatio / sx, thicknessRatio / sy, 1)
             }
         }
 
@@ -203,7 +215,7 @@ private extension ARCuboidEntity {
         static let unitCubeEdges: [EdgeSpec] = {
             let half = UnitCube.halfExtent
             let extents: [Float] = [-half, half]
-            let thickness: Float = 0.005
+            let thickness = EdgeThickness.mesh
             var edges: [EdgeSpec] = []
 
             for faceY in [UnitCube.bottomY, UnitCube.topY] {

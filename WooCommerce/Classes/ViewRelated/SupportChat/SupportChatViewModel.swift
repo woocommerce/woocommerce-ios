@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import UIKit
 import Yosemite
+import enum Networking.NetworkError
 import protocol WooFoundation.Analytics
 
 /// View model for the AI support chat interface.
@@ -85,20 +86,32 @@ final class SupportChatViewModel {
         let role: SupportChatRole
         let content: MessageContent
         let timestamp: Date
+        /// `true` when sending this message failed. Drives the failed-bubble visual indicator.
+        let failed: Bool
 
-        init(id: UUID = UUID(), role: SupportChatRole, content: MessageContent, timestamp: Date = Date()) {
+        init(id: UUID = UUID(),
+             role: SupportChatRole,
+             content: MessageContent,
+             timestamp: Date = Date(),
+             failed: Bool = false) {
             self.id = id
             self.role = role
             self.content = content
             self.timestamp = timestamp
+            self.failed = failed
         }
 
         /// Convenience initializer for text messages.
-        init(id: UUID = UUID(), role: SupportChatRole, text: String, timestamp: Date = Date()) {
+        init(id: UUID = UUID(),
+             role: SupportChatRole,
+             text: String,
+             timestamp: Date = Date(),
+             failed: Bool = false) {
             self.id = id
             self.role = role
             self.content = .text(text)
             self.timestamp = timestamp
+            self.failed = failed
         }
     }
 
@@ -283,6 +296,7 @@ final class SupportChatViewModel {
             }
         } catch {
             DDLogError("⛔️ Failed to execute action \(action): \(error)")
+            state = .error(errorMessage(for: error))
         }
     }
 
@@ -611,8 +625,23 @@ final class SupportChatViewModel {
 
         case .failure(let error):
             DDLogError("⛔️ Support chat error: \(error)")
-            state = .error(Localization.errorMessage)
+            markLastUserMessageAsFailed()
+            state = .error(errorMessage(for: error))
         }
+    }
+
+    /// Replaces the most recent `.user` message with a copy that has `failed = true`,
+    /// so the UI can render the failed-bubble indicator.
+    private func markLastUserMessageAsFailed() {
+        guard let index = messages.lastIndex(where: { $0.role == .user }) else { return }
+        let prev = messages[index]
+        messages[index] = ChatMessage(
+            id: prev.id,
+            role: prev.role,
+            content: prev.content,
+            timestamp: prev.timestamp,
+            failed: true
+        )
     }
 
     /// Maps a fetched transcript into local `ChatMessage` values. Unknown roles are dropped
@@ -646,9 +675,19 @@ final class SupportChatViewModel {
         case .failure(let error):
             DDLogError("⛔️ Support chat resume error: \(error)")
             // Fail soft: the merchant can still send a new message into the existing chatID;
-            // they just won't see the prior transcript. Surface as a retry-able error.
-            state = .error(Localization.resumeErrorMessage)
+            // they just won't see the prior transcript.
+            state = .error(errorMessage(for: error))
         }
+    }
+
+    /// Maps a thrown error to user-facing copy. Rate-limit responses (HTTP 429) get an
+    /// explicit "you've reached the limit" message; everything else gets a generic one.
+    /// The actual error is logged separately via `DDLogError`.
+    private func errorMessage(for error: Error) -> String {
+        if let networkError = error as? NetworkError, networkError.responseCode == 429 {
+            return Localization.rateLimitErrorMessage
+        }
+        return Localization.errorMessage
     }
 
     /// Persists a local bookmark for the chat so it appears in the chat history UI.
@@ -693,13 +732,13 @@ private extension SupportChatViewModel {
         )
         static let errorMessage = NSLocalizedString(
             "supportChatViewModel.errorMessage",
-            value: "Something went wrong. Please try again.",
-            comment: "Error message shown when sending a support chat message fails"
+            value: "We couldn't connect to AI chat right now.",
+            comment: "Generic error message shown when an AI support chat request fails"
         )
-        static let resumeErrorMessage = NSLocalizedString(
-            "supportChatViewModel.resumeErrorMessage",
-            value: "We couldn't load the previous conversation. You can still send a new message.",
-            comment: "Error message shown when loading a prior support chat transcript fails on resume"
+        static let rateLimitErrorMessage = NSLocalizedString(
+            "supportChatViewModel.rateLimitErrorMessage",
+            value: "You've reached the chat limit. Please try again later.",
+            comment: "Error message shown when the AI support chat rate limit (HTTP 429) is hit"
         )
     }
 }

@@ -18,7 +18,11 @@ struct SupportChatView: View {
                     set: { if !$0 { viewModel.dismissError() } }
                 ),
                 actions: {
-                    Button(Localization.ok) {
+                    Button(Localization.contactSupport) {
+                        viewModel.dismissError()
+                        viewModel.contactHumanSupport()
+                    }
+                    Button(Localization.dismiss, role: .cancel) {
                         viewModel.dismissError()
                     }
                 },
@@ -90,7 +94,7 @@ struct SupportChatView: View {
     private func messageRow(for message: SupportChatViewModel.ChatMessage) -> some View {
         switch message.content {
         case .text(let text):
-            SupportChatMessageRow(role: message.role, text: text)
+            SupportChatMessageRow(role: message.role, text: text, failed: message.failed)
 
         case .issuePicker(let issues):
             issuePickerBubble(issues: issues)
@@ -328,10 +332,10 @@ private extension SupportChatView {
             value: "Error",
             comment: "Title for the error alert in support chat"
         )
-        static let ok = NSLocalizedString(
-            "supportChatView.ok",
-            value: "OK",
-            comment: "OK button in support chat error alert"
+        static let dismiss = NSLocalizedString(
+            "supportChatView.errorDismiss",
+            value: "Dismiss",
+            comment: "Cancel button in the support chat error alert"
         )
         static let humanSupportMessage = NSLocalizedString(
             "supportChatView.humanSupportMessage",

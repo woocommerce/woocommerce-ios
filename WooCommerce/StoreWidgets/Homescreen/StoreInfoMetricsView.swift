@@ -1,30 +1,104 @@
 import SwiftUI
 import WidgetKit
 
-/// Home-screen widget dispatcher driven by the metric catalog.
+/// Medium home-screen widget view driven by the metric catalog.
 ///
-/// Companion to the legacy `StoreInfoView`; both render the same widget families but consume
+/// Companion to the legacy `StoreInfoView`; both render the same widget family but consume
 /// different shapes off `StoreInfoData`. Selection happens in `StoreInfoHomescreenWidget`
 /// based on `useMetricsHomescreenWidget`.
 ///
 struct StoreInfoMetricsView: View {
     let entryData: StoreInfoData
 
-    @Environment(\.widgetFamily) private var family
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var accessibilityDynamicTypeSize: DynamicTypeSize {
+        return .xLarge
+    }
 
     var body: some View {
-        Group {
-            switch family {
-            case .systemSmall:
-                StoreInfoSmallMetricsView(data: entryData)
-            case .systemMedium, .systemLarge, .systemExtraLarge:
-                StoreInfoMediumMetricsView(data: entryData)
-            default:
-                let _ = assertionFailure("This view only supports system families")
-                EmptyView()
+        VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
+            VStack(alignment: .leading, spacing: Layout.cardSpacing) {
+                HStack {
+                    Text(entryData.name)
+                        .storeNameStyle()
+                    Spacer()
+                    Text(entryData.range)
+                        .statRangeStyle()
+                }
+                Text(Localization.updatedAt(entryData.updatedTime))
+                    .statRangeStyle()
+            }
+
+            if dynamicTypeSize > accessibilityDynamicTypeSize {
+                MetricsAccessibilityCard(entryData: entryData)
+            } else {
+                StoreInfoMetricsCard(metrics: entryData.metrics)
             }
         }
+        .padding(.horizontal)
         .widgetBackground(backgroundView: Color(.brand))
+    }
+}
+
+/// Renders an ordered list of metrics in a 2-column grid for the medium widget.
+/// Operates on the presentation protocol so the layout is decoupled from
+/// the concrete `StoreInfoMetric` type.
+///
+struct StoreInfoMetricsCard: View {
+    let metrics: [any MetricPresentable]
+
+    /// Chunks metrics into rows of two for the medium widget layout.
+    ///
+    private var rows: [[any MetricPresentable]] {
+        stride(from: 0, to: metrics.count, by: Layout.metricsPerRow).map { start in
+            Array(metrics[start..<min(start + Layout.metricsPerRow, metrics.count)])
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: StoreInfoMetricsView.Layout.sectionSpacing) {
+            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                HStack {
+                    ForEach(Array(row.enumerated()), id: \.offset) { _, metric in
+                        MetricCellView(metric: metric)
+                    }
+                    // Pad the last row so a trailing cell keeps the grid alignment
+                    // when the row has fewer metrics than the slot count.
+                    if row.count < Layout.metricsPerRow {
+                        ForEach(0..<(Layout.metricsPerRow - row.count), id: \.self) { _ in
+                            Color.clear.frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private enum Layout {
+        static let metricsPerRow = 2
+    }
+}
+
+/// Accessibility card for `StoreInfoMetricsView`. Shows only revenue and a `View More` button.
+///
+private struct MetricsAccessibilityCard: View {
+    let entryData: StoreInfoData
+
+    var body: some View {
+        let revenue = entryData.metric(of: .revenue)
+        Group {
+            VStack(alignment: .leading, spacing: StoreInfoMetricsView.Layout.cardSpacing) {
+                Text(revenue.title)
+                    .statTitleStyle()
+
+                Text(revenue.formattedValue)
+                    .statValueStyle()
+            }
+
+            Text(StoreInfoMetricsView.Localization.viewMore)
+                .statButtonStyle()
+        }
     }
 }
 
@@ -43,6 +117,11 @@ extension StoreInfoMetricsView {
                                             comment: "Displays the time when the widget was last updated. %1$@ is the time to render.")
             return LocalizedString.localizedStringWithFormat(format, updatedTime)
         }
+    }
+
+    enum Layout {
+        static let sectionSpacing = 8.0
+        static let cardSpacing = 2.0
     }
 }
 
@@ -71,21 +150,11 @@ struct StoreInfoMetricsView_Previews: PreviewProvider {
     static var previews: some View {
         StoreInfoMetricsView(entryData: exampleData)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
-            .previewDisplayName("Medium")
 
         StoreInfoMetricsView(entryData: exampleData)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
             .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Medium - XXL font")
-
-        StoreInfoMetricsView(entryData: exampleData)
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
-            .previewDisplayName("Small")
-
-        StoreInfoMetricsView(entryData: exampleData)
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
-            .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Small - XXL font")
+            .previewDisplayName("XXL font")
     }
 }
 #endif

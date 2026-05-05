@@ -180,7 +180,7 @@ struct SupportChatViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
-            if case let .sendMessage(_, _, _, _, completion) = action {
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
                 completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 429, response: nil)))
             }
         }
@@ -202,7 +202,7 @@ struct SupportChatViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
-            if case let .sendMessage(_, _, _, _, completion) = action {
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
                 completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
             }
         }
@@ -224,7 +224,7 @@ struct SupportChatViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
-            if case let .sendMessage(_, _, _, _, completion) = action {
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
                 completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
             }
         }
@@ -243,7 +243,7 @@ struct SupportChatViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
-            if case let .sendMessage(_, _, _, _, completion) = action {
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
                 completion(.failure(NetworkError.timeout(response: nil)))
             }
         }

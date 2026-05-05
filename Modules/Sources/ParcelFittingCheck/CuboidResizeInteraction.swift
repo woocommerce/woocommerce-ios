@@ -12,7 +12,7 @@ final class CuboidResizeInteraction {
     struct BeginInput {
         var cuboidPosition: SIMD3<Float>
         var cuboidScale: SIMD3<Float>
-        var cuboidYaw: Float
+        var cuboidRotation: simd_quatf
         var fingers: (first: CGPoint, second: CGPoint)
     }
 
@@ -133,7 +133,7 @@ final class CuboidResizeInteraction {
 
 private extension CuboidResizeInteraction {
     private func configureResize(input: BeginInput, environment env: Environment) -> ResizeContext? {
-        let localAxes = localAxesFromYaw(input.cuboidYaw)
+        let localAxes = localAxes(from: input.cuboidRotation)
         let cuboidCenter = input.cuboidPosition + 0.5 * input.cuboidScale.y * localAxes[1]
 
         guard let screenCenter = env.projectToScreen(cuboidCenter) else { return nil }
@@ -222,11 +222,11 @@ private extension CuboidResizeInteraction {
 // MARK: - Geometry helpers
 
 private extension CuboidResizeInteraction {
-    func localAxesFromYaw(_ yaw: Float) -> [SIMD3<Float>] {
+    func localAxes(from rotation: simd_quatf) -> [SIMD3<Float>] {
         [
-            SIMD3(cos(yaw), 0, -sin(yaw)),
-            SIMD3(0, 1, 0),
-            SIMD3(sin(yaw), 0, cos(yaw))
+            rotation.act(SIMD3(1, 0, 0)),
+            rotation.act(SIMD3(0, 1, 0)),
+            rotation.act(SIMD3(0, 0, 1))
         ]
     }
 

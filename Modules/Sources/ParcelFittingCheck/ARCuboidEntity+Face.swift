@@ -32,30 +32,39 @@ extension ARCuboidEntity {
             }
         }
 
-        fileprivate var bitIndex: Int { axis.simdIndex * 2 + (isPositiveSide ? 1 : 0) }
+        var faceSetMember: FaceSet {
+            switch self {
+            case .positiveX: return .positiveX
+            case .negativeX: return .negativeX
+            case .positiveY: return .positiveY
+            case .negativeY: return .negativeY
+            case .positiveZ: return .positiveZ
+            case .negativeZ: return .negativeZ
+            }
+        }
     }
 
-    /// Stack-allocated set of faces backed by a 6-bit mask. Avoids the
-    /// per-frame heap allocation that Set<Face> would incur.
-    struct FaceSet: Equatable {
-        private var bits: UInt8 = 0
+    /// Stack-allocated set of faces backed by a 6-bit mask.
+    struct FaceSet: OptionSet, Equatable {
+        let rawValue: UInt8
 
-        static let empty = FaceSet()
+        static let positiveX = FaceSet(rawValue: 1 << 0)
+        static let negativeX = FaceSet(rawValue: 1 << 1)
+        static let positiveY = FaceSet(rawValue: 1 << 2)
+        static let negativeY = FaceSet(rawValue: 1 << 3)
+        static let positiveZ = FaceSet(rawValue: 1 << 4)
+        static let negativeZ = FaceSet(rawValue: 1 << 5)
 
-        mutating func insert(_ face: Face) {
-            bits |= 1 << face.bitIndex
-        }
+        static let empty: FaceSet = []
+
+        init(rawValue: UInt8) { self.rawValue = rawValue }
+
+        init(_ face: Face) { self = face.faceSetMember }
+
+        init(_ a: Face, _ b: Face) { self = [a.faceSetMember, b.faceSetMember] }
 
         func contains(_ face: Face) -> Bool {
-            bits & (1 << face.bitIndex) != 0
-        }
-
-        var isEmpty: Bool { bits == 0 }
-
-        init() {}
-
-        init(_ faces: Face...) {
-            for face in faces { insert(face) }
+            contains(face.faceSetMember)
         }
     }
 }

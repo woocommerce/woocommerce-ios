@@ -173,7 +173,7 @@ struct TwoFingerCuboidGestureTests {
             context.move(t0, to: origin, t1, to: rotated(from: origin, radius: 100, byDegrees: 190))
 
             // Then — short-path rotation is +20°, not -340°.
-            #expect(approxEquals(context.gesture.rotationFromStart, .pi * 20 / 180, tolerance: 0.001))
+            #expect(approxEqual(context.gesture.rotationFromStart, .pi * 20 / 180, tolerance: 0.001))
             #expect(context.gesture.mode == .rotate)
         }
     }
@@ -333,8 +333,8 @@ private func rotated(from origin: CGPoint, radius: CGFloat, byDegrees degrees: C
     return CGPoint(x: origin.x + radius * cos(radians), y: origin.y + radius * sin(radians))
 }
 
-private func approxEquals(_ lhs: CGFloat, _ rhs: CGFloat, tolerance: CGFloat = 0.01) -> Bool {
-    abs(lhs - rhs) <= tolerance
+private func approxEqual<T: BinaryFloatingPoint>(_ a: T, _ b: T, tolerance: T = 0.01) -> Bool {
+    abs(a - b) < tolerance
 }
 
 private extension UIGestureRecognizer.State {

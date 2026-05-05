@@ -245,7 +245,7 @@ private extension ARParcelSceneCoordinator {
         CuboidResizeInteraction.BeginInput(
             cuboidPosition: cuboid.root.position,
             cuboidScale: cuboid.root.transform.scale,
-            cuboidYaw: yaw(of: cuboid.root.transform.rotation),
+            cuboidRotation: cuboid.root.transform.rotation,
             fingers: fingers
         )
     }

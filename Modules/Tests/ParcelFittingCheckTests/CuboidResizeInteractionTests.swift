@@ -49,7 +49,7 @@ struct CuboidResizeInteractionTests {
         CuboidResizeInteraction.BeginInput(
             cuboidPosition: initialPosition,
             cuboidScale: initialScale,
-            cuboidYaw: 0,
+            cuboidRotation: simd_quatf(angle: 0, axis: SIMD3(0, 1, 0)),
             fingers: fingers
         )
     }
@@ -266,6 +266,6 @@ struct CuboidResizeInteractionTests {
     }
 }
 
-private func approxEqual(_ a: Float, _ b: Float, tolerance: Float = 1e-4) -> Bool {
+private func approxEqual<T: BinaryFloatingPoint>(_ a: T, _ b: T, tolerance: T = 1e-4) -> Bool {
     abs(a - b) < tolerance
 }

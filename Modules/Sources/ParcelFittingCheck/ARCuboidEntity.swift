@@ -251,7 +251,7 @@ private extension ARCuboidEntity {
     }
 
     private func rebuildDashes(in edge: Edge, count: Int, color: UIColor) {
-        for child in Array(edge.dashedGroup.children) {
+        for child in edge.dashedGroup.children {
             child.removeFromParent()
         }
         for i in 0..<count {

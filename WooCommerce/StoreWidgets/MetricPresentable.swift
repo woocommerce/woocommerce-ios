@@ -11,11 +11,19 @@ protocol MetricPresentable {
     var trend: MetricTrendPresentation? { get }
     /// URL the cell should deep-link to when tapped. `nil` means non-tappable.
     var tapURL: URL? { get }
+    /// Time-series for the trailing per-cell chart. `nil` or `< 2` points renders no chart.
+    var chartData: [MetricChartPoint]? { get }
 }
 
 extension MetricPresentable {
     var trend: MetricTrendPresentation? { nil }
     var tapURL: URL? { nil }
+    var chartData: [MetricChartPoint]? { nil }
+}
+
+struct MetricChartPoint: Equatable {
+    let date: Date
+    let value: Double
 }
 
 /// Presentation-ready trend badge data: a direction (up/down) plus a localized
@@ -71,6 +79,10 @@ extension StoreInfoMetric: MetricPresentable {
         case .revenue, .netSales, .itemsSold, .visitors, .conversion, .averageOrderValue:
             return nil
         }
+    }
+
+    var chartData: [MetricChartPoint]? {
+        chartSeries
     }
 }
 

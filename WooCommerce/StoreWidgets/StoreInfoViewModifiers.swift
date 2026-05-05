@@ -30,7 +30,7 @@ public struct StatTitleStyle: ViewModifier {
 public struct StatValueStyle: ViewModifier {
     public func body(content: Content) -> some View {
         content
-            .font(.title2)
+            .font(.title3)
             .foregroundColor(Color(.white))
     }
 }

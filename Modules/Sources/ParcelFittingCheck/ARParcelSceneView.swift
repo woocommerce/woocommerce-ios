@@ -83,7 +83,7 @@ private extension ARParcelSceneView {
         arView.addGestureRecognizer(tap)
         coordinator.tapGesture = tap
 
-        let twoFinger = TwoFingerCuboidGesture(target: coordinator, action: #selector(ARParcelSceneCoordinator.handleTwoFingerGesture(_:)))
+        let twoFinger = TwoFingerCuboidGestureRecognizer(target: coordinator, action: #selector(ARParcelSceneCoordinator.handleTwoFingerGesture(_:)))
         twoFinger.delegate = coordinator
         twoFinger.isEnabled = false
         twoFinger.isResizeEnabled = isResizeEnabled

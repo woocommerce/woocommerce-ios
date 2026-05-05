@@ -3,7 +3,7 @@ import UIKit.UIGestureRecognizerSubclass
 /// Two-finger gesture that locks into either rotate or resize after the first
 /// significant motion crosses a threshold. The mode persists until both fingers
 /// lift, so a single pinch never mixes rotation and resize.
-final class TwoFingerCuboidGesture: UIGestureRecognizer {
+final class TwoFingerCuboidGestureRecognizer: UIGestureRecognizer {
     enum Mode { case undecided, rotate, resize }
 
     var isResizeEnabled: Bool = true

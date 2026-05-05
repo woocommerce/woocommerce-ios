@@ -31,7 +31,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     private var installedGestures: [EntityGestureRecognizer] = []
 
     var tapGesture: UITapGestureRecognizer?
-    var twoFingerGesture: TwoFingerCuboidGesture?
+    var twoFingerGesture: TwoFingerCuboidGestureRecognizer?
     private var rotationStartYaw: Float = 0
     private let resizeInteraction = CuboidResizeInteraction()
     private var cachedResizeEnvironment: CuboidResizeInteraction.Environment?
@@ -98,7 +98,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         onDimensionsChanged = nil
     }
 
-    @objc func handleTwoFingerGesture(_ gesture: TwoFingerCuboidGesture) {
+    @objc func handleTwoFingerGesture(_ gesture: TwoFingerCuboidGestureRecognizer) {
         guard let cuboid else { return }
         switch gesture.state {
         case .began:
@@ -222,7 +222,7 @@ private extension ARParcelSceneCoordinator {
         return nil
     }
 
-    func applyResize(gesture: TwoFingerCuboidGesture, cuboid: ARCuboidEntity) {
+    func applyResize(gesture: TwoFingerCuboidGestureRecognizer, cuboid: ARCuboidEntity) {
         guard let env = cachedResizeEnvironment else { return }
         if !resizeInteraction.isActive {
             resizeInteraction.begin(

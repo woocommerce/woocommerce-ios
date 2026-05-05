@@ -4,8 +4,8 @@ import UIKit
 @testable import ParcelFittingCheck
 
 @MainActor
-@Suite("TwoFingerCuboidGesture")
-struct TwoFingerCuboidGestureTests {
+@Suite("TwoFingerCuboidGestureRecognizer")
+struct TwoFingerCuboidGestureRecognizerTests {
 
     @MainActor
     @Suite("touchesBegan")
@@ -270,16 +270,16 @@ struct TwoFingerCuboidGestureTests {
 
 // MARK: - Test helpers
 
-/// Stages a `TwoFingerCuboidGesture` attached to a fresh view and exposes
+/// Stages a `TwoFingerCuboidGestureRecognizer` attached to a fresh view and exposes
 /// helpers for driving touches with stubbed locations.
 @MainActor
 private final class TestContext {
     let view: UIView
-    let gesture: TwoFingerCuboidGesture
+    let gesture: TwoFingerCuboidGestureRecognizer
 
     init(isResizeEnabled: Bool = true) {
         view = UIView(frame: CGRect(x: 0, y: 0, width: 2000, height: 2000))
-        gesture = TwoFingerCuboidGesture(target: nil, action: nil)
+        gesture = TwoFingerCuboidGestureRecognizer(target: nil, action: nil)
         gesture.isResizeEnabled = isResizeEnabled
         view.addGestureRecognizer(gesture)
     }

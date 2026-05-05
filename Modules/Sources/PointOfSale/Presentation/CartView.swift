@@ -1,10 +1,12 @@
 import SwiftUI
 import WooFoundation
+import struct Yosemite.POSCustomAmount
 
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posCurrencyProvider) private var currencyProvider
     private let viewHelper = CartViewHelper()
 
     /// Optional override for triggering the barcode-scanner setup from outside CartView.
@@ -34,6 +36,7 @@ struct CartView: View {
     @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {
+        @Bindable var posModel = posModel
         ZStack {
             VStack(spacing: 0) {
                 CartHeaderView(
@@ -70,6 +73,22 @@ struct CartView: View {
             // tear CartView down before the cover fully presents.
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
+            }
+            // Cart-side edit only: the add path pushes from the products list and tracks
+            // its own `mode: .add` analytics inline in `ItemListView`.
+            .posFullScreenCover(item: $posModel.editingCustomAmount) { customAmount in
+                AddCustomAmountView(
+                    currencySettings: currencyProvider.currencySettings,
+                    editing: customAmount,
+                    backButtonStyle: .close,
+                    // Explicit-dismiss path (back button + post-submit). System-driven dismissal
+                    // already nils the `item` binding; this closure handles the user-driven cases
+                    // where `submit()` calls `onDismiss()` to close the cover.
+                    onDismiss: { posModel.editingCustomAmount = nil },
+                    onSubmit: { updated in
+                        posModel.upsertCustomAmount(updated, mode: .edit)
+                    }
+                )
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)
@@ -431,7 +450,7 @@ private struct CustomAmountsCartSection: View {
                 let isInteractive = posModel.orderStage == .building
                 CustomAmountRowView(
                     customAmount: customAmount,
-                    onEdit: isInteractive ? { posModel.presentEditCustomAmount(customAmount) } : nil,
+                    onEdit: isInteractive ? { posModel.editingCustomAmount = customAmount } : nil,
                     onRemove: isInteractive ? {
                         analytics.track(
                             event: .PointOfSale.itemRemovedFromCart(

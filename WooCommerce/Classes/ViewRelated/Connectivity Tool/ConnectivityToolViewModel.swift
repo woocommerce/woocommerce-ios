@@ -51,7 +51,7 @@ final class ConnectivityToolViewModel {
     /// (not application password), since the chatbot requires WPCom authentication.
     ///
     var isBotChatSupported: Bool {
-        featureFlagService.isFeatureFlagEnabled(.aiSupportChat) && stores.isAuthenticatedWithoutWPCom == false
+        featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
     }
 
     /// Remote used to check the connection to WPCom servers.

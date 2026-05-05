@@ -21,6 +21,7 @@ final class MockSupportChatRemote: SupportChatRemoteProtocol {
     func sendMessage(botSlug: String,
                      message: String,
                      chatID: Int64?,
+                     sessionID: String?,
                      context: [String: Any]?) async throws -> SupportChatResponse {
         sendMessageInvocations.append((botSlug, message, chatID))
         guard let result = sendMessageResult else {

@@ -17,6 +17,7 @@ struct SupportChatRemoteTests {
         _ = try? await remote.sendMessage(botSlug: botSlug,
                                           message: "hi",
                                           chatID: nil,
+                                          sessionID: nil,
                                           context: nil)
 
         // Then
@@ -33,6 +34,7 @@ struct SupportChatRemoteTests {
         _ = try? await remote.sendMessage(botSlug: botSlug,
                                           message: "hi",
                                           chatID: chatID,
+                                          sessionID: nil,
                                           context: nil)
 
         // Then
@@ -49,6 +51,7 @@ struct SupportChatRemoteTests {
         _ = try? await remote.sendMessage(botSlug: botSlug,
                                           message: message,
                                           chatID: nil,
+                                          sessionID: nil,
                                           context: nil)
 
         // Then
@@ -68,6 +71,7 @@ struct SupportChatRemoteTests {
         _ = try? await remote.sendMessage(botSlug: botSlug,
                                           message: "hi",
                                           chatID: nil,
+                                          sessionID: nil,
                                           context: context)
 
         // Then
@@ -85,6 +89,7 @@ struct SupportChatRemoteTests {
         _ = try? await remote.sendMessage(botSlug: botSlug,
                                           message: "hi",
                                           chatID: nil,
+                                          sessionID: nil,
                                           context: nil)
 
         // Then
@@ -104,6 +109,7 @@ struct SupportChatRemoteTests {
         let response = try await remote.sendMessage(botSlug: botSlug,
                                                     message: "hi",
                                                     chatID: nil,
+                                                    sessionID: nil,
                                                     context: nil)
 
         // Then
@@ -129,6 +135,7 @@ struct SupportChatRemoteTests {
         let response = try await remote.sendMessage(botSlug: botSlug,
                                                     message: "hi",
                                                     chatID: nil,
+                                                    sessionID: nil,
                                                     context: nil)
 
         // Then
@@ -151,6 +158,7 @@ struct SupportChatRemoteTests {
         let response = try await remote.sendMessage(botSlug: botSlug,
                                                     message: "hi",
                                                     chatID: nil,
+                                                    sessionID: nil,
                                                     context: nil)
 
         // Then
@@ -171,6 +179,7 @@ struct SupportChatRemoteTests {
         let response = try await remote.sendMessage(botSlug: botSlug,
                                                     message: "hi",
                                                     chatID: nil,
+                                                    sessionID: nil,
                                                     context: nil)
 
         // Then — unrecognized roles must not crash decoding; they fall back to .unknown.
@@ -188,6 +197,7 @@ struct SupportChatRemoteTests {
         let response = try await remote.sendMessage(botSlug: botSlug,
                                                     message: "I need a human",
                                                     chatID: nil,
+                                                    sessionID: nil,
                                                     context: nil)
 
         // Then
@@ -207,6 +217,7 @@ struct SupportChatRemoteTests {
             try await remote.sendMessage(botSlug: botSlug,
                                          message: "hi",
                                          chatID: nil,
+                                         sessionID: nil,
                                          context: nil)
         }
     }
@@ -222,6 +233,7 @@ struct SupportChatRemoteTests {
             try await remote.sendMessage(botSlug: botSlug,
                                          message: "hi",
                                          chatID: nil,
+                                         sessionID: nil,
                                          context: nil)
         }
     }

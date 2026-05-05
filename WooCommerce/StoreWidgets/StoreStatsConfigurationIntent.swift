@@ -3,8 +3,8 @@ import WidgetKit
 
 /// Configuration intent for the Store Stats widget.
 ///
-/// Surfaces the user-facing widget settings (long-press → Edit Widget). Subsequent tickets
-/// add `@Parameter` declarations (metrics, store picker) on top of the date range here.
+/// Surfaces the user-facing widget settings (long-press → Edit Widget). The `store` picker is
+/// added by a later ticket on top of `dateRange` and `metrics`.
 ///
 struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Store Stats"
@@ -12,9 +12,37 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
 
     @Parameter(title: "Date Range", default: .today)
     var dateRange: StoreStatsWidgetDateRange
+
+    /// User-selected metric set, in display order.
+    ///
+    /// The `size:` map drives iOS's family-aware fixed-slot rendering — small shows 2 inline
+    /// rows, medium 4, large 7. The picker shows the full catalog; metrics whose data isn't
+    /// available for the user's auth mode (`visitors`, `conversion` on self-hosted) render
+    /// with the standard "-" placeholder in the cell.
+    ///
+    /// The default lists all 7 catalog metrics in priority order so iOS persists enough state
+    /// to cover the largest family on first install. After a resize-up,
+    /// `StoreInfoProvider.resolveMetricSelection` tops up undersized arrays from the same
+    /// priority order so the widget body renders identically to a fresh install at the new
+    /// family.
+    ///
+    @Parameter(
+        title: "Metrics",
+        default: [
+            .revenue, .orders, .itemsSold, .averageOrderValue,
+            .netSales, .visitors, .conversion
+        ],
+        size: [
+            .systemSmall: .init(exactly: 2),
+            .systemMedium: .init(exactly: 4),
+            .systemLarge: .init(exactly: 7)
+        ],
+        query: AvailableMetricsQuery()
+    )
+    var metrics: [StoreInfoMetricType]
 }
 
-/// Date ranges supported by the Store Stats widget. Mirrors the Shopify reference set
+/// Date ranges supported by the Store Stats widget.
 /// ("today / last 7 days / last 30 days") called out in the project's M1 scope.
 ///
 enum StoreStatsWidgetDateRange: String, AppEnum {

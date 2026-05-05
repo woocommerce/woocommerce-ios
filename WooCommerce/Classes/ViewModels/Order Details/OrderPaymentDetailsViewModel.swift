@@ -214,9 +214,9 @@ final class OrderPaymentDetailsViewModel {
             return nil
         }
 
-        let output = couponLines.reduce("") { (output, line) in
+        let output = couponLines.reduce(into: "") { output, line in
             let prefix = output.isEmpty ? "" : ","
-            return output + prefix + line.code
+            output += prefix + line.code
         }
 
         guard !output.isEmpty else {

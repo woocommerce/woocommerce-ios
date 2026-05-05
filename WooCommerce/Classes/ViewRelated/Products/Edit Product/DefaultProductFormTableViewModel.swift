@@ -83,7 +83,7 @@ private extension DefaultProductFormTableViewModel {
             default:
                 fatalError("Unexpected action in the primary section: \(action)")
             }
-        }.reduce([], +)
+        }.reduce(into: []) { $0 += $1 }
     }
 
     func settingsRows(productModel product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {

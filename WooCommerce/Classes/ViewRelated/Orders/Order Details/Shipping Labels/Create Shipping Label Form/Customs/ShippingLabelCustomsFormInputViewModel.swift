@@ -266,14 +266,12 @@ private extension ShippingLabelCustomsFormInputViewModel {
     ///
     func configureClassesAbove2500usd() {
         classesAbove2500usd = itemTariffNumbersAndValues.values
-            .reduce([String: Decimal]()) { accumulator, item in
-                var result = accumulator
+            .reduce(into: [String: Decimal]()) { result, item in
                 if let currentTotal = result[item.hsTariffNumber] {
                     result[item.hsTariffNumber] = currentTotal + item.totalValue
                 } else {
                     result[item.hsTariffNumber] = item.totalValue
                 }
-                return result
             }
             .filter { $0.value > Constants.minimumValueRequiredForITNValidation }
             .keys

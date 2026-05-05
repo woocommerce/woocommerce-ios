@@ -273,8 +273,8 @@ private extension JetpackRequestTests {
     /// Concatenates the specified collection of Parameters for the URLRequest's httpBody.
     ///
     func concatenate(_ parameters: [String: Any]) -> String {
-        return parameters.reduce("") { (output, parameter) in
-            return output + "&" + parameter.key + "=" + String(describing: parameter.value)
+        return parameters.reduce(into: "") { output, parameter in
+            output += "&" + parameter.key + "=" + String(describing: parameter.value)
         }
     }
 }

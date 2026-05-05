@@ -206,6 +206,44 @@ struct SupportChatRemoteTests {
         #expect(flags.branch == "escalation")
     }
 
+    @Test func sendMessage_when_response_has_support_area_then_area_is_decoded() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)",
+                                 filename: "support-chat-with-support-area")
+
+        // When
+        let response = try await remote.sendMessage(botSlug: botSlug,
+                                                    message: "My card reader won't connect",
+                                                    chatID: nil,
+                                                    sessionID: nil,
+                                                    context: nil)
+
+        // Then
+        let supportArea = try #require(response.messages.first?.context?.supportArea)
+        #expect(supportArea.area == .cardReader)
+        #expect(supportArea.confidence == .high)
+        #expect(supportArea.isHighConfidence == true)
+    }
+
+    @Test func sendMessage_when_response_lacks_support_area_then_support_area_is_nil() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)",
+                                 filename: "support-chat-forward-to-human")
+
+        // When
+        let response = try await remote.sendMessage(botSlug: botSlug,
+                                                    message: "hi",
+                                                    chatID: nil,
+                                                    sessionID: nil,
+                                                    context: nil)
+
+        // Then
+        let context = try #require(response.messages.first?.context)
+        #expect(context.supportArea == nil)
+    }
+
     // MARK: - Error paths
 
     @Test func sendMessage_when_no_response_stubbed_then_throws_notFound() async throws {

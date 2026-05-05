@@ -13,7 +13,7 @@ struct StoreInfoLargeMetricsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.headerSpacing) {
-            headerView
+            StoreInfoMetricsLogoHeader(data: data)
 
             Spacer(minLength: Layout.metricSpacing)
 
@@ -21,32 +21,9 @@ struct StoreInfoLargeMetricsView: View {
         }
     }
 
-    private var headerView: some View {
-        HStack(alignment: .top, spacing: Layout.noSpacing) {
-            Image("woo-mini-logo", bundle: nil)
-                .resizable()
-                .scaledToFit()
-                .frame(width: Layout.logoSize, height: Layout.logoSize)
-                .accessibilityHidden(true)
-
-            Spacer(minLength: Layout.logoSpacing)
-
-            VStack(alignment: .leading, spacing: Layout.noSpacing) {
-                Text(data.name)
-                    .storeNameStyle()
-
-                Text(StoreInfoMetricsView.Localization.updatedAt(data.updatedTime))
-                    .statRangeStyle()
-            }
-        }
-    }
-
     private enum Layout {
-        static let noSpacing = 0.0
         static let headerSpacing = 12.0
         static let metricSpacing = 12.0
-        static let logoSpacing = 4.0
-        static let logoSize = 30.0
         static let defaultMetricLimit = 7
         static let accessibilityMetricLimit = 4
     }

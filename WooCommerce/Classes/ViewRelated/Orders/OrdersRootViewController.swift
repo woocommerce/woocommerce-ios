@@ -37,8 +37,7 @@ final class OrdersRootViewController: UIViewController {
     /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
     ///
     private var filtersBar: FilteredOrdersHeaderBar = {
-        // swiftlint:disable:next redundant_type_annotation
-        let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
+        let filteredOrdersBar = FilteredOrdersHeaderBar.instantiateFromNib()
         return filteredOrdersBar
     }()
 

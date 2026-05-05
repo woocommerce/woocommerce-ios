@@ -233,7 +233,8 @@ extension NetworkingCore.OrderFeeLine {
             total: .fake(),
             totalTax: .fake(),
             taxes: .fake(),
-            attributes: .fake()
+            attributes: .fake(),
+            refundedItemID: .fake()
         )
     }
 }
@@ -511,7 +512,8 @@ extension NetworkingCore.Refund {
             isAutomated: .fake(),
             createAutomated: .fake(),
             items: .fake(),
-            shippingLines: .fake()
+            shippingLines: .fake(),
+            feeLines: .fake()
         )
     }
 }

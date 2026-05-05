@@ -521,6 +521,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
 
     var isLoadingOrderRefunds = false
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
+    var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
     var refundActionAvailability: RefundActionAvailability { .available }
 
     func loadOrders() async {}

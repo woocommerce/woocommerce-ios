@@ -29,4 +29,7 @@ final class ARParcelSizingViewModel {
         dimensions = ParcelDimensions.fromMeters(meters, unit: unit)
     }
 
+    func resetToDefaults() {
+        dimensions = .defaultDimensions(for: unit)
+    }
 }

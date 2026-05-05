@@ -5,6 +5,7 @@ struct ARParcelSizingView: View {
     private let onConfirm: (ParcelDimensions) -> Void
 
     @State private var viewModel: ARParcelSizingViewModel
+    @Environment(\.scenePhase) private var scenePhase
     @State private var isARReady: Bool = false
     @State private var isPlaced: Bool = false
     @State private var resetTrigger: Int = 0
@@ -53,6 +54,14 @@ struct ARParcelSizingView: View {
             .animation(.easeInOut(duration: 0.2), value: isPlaced)
         }
         .background(Color.black)
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase != .active { reset() }
+        }
+    }
+
+    private func reset() {
+        resetTrigger += 1
+        viewModel.resetToDefaults()
     }
 
     private var headerMessage: String? {
@@ -66,7 +75,7 @@ struct ARParcelSizingView: View {
     }
 
     private var topToolbar: some View {
-        ARCuboidSceneToolbar(onCancel: onCancel, onReset: isPlaced ? { resetTrigger += 1 } : nil)
+        ARCuboidSceneToolbar(onCancel: onCancel, onReset: isPlaced ? { reset() } : nil)
     }
 
     private var confirmButton: some View {

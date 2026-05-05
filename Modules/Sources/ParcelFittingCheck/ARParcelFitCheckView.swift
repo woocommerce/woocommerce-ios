@@ -5,6 +5,7 @@ struct ARParcelFitCheckView: View {
     private let onConfirm: (ParcelPresetPackage) -> Void
 
     @State private var viewModel: ARParcelFitCheckViewModel
+    @Environment(\.scenePhase) private var scenePhase
     @State private var isARReady: Bool = false
     @State private var isPlaced: Bool = false
     @State private var resetTrigger: Int = 0
@@ -56,6 +57,9 @@ struct ARParcelFitCheckView: View {
             .animation(.easeInOut(duration: 0.2), value: isPlaced)
         }
         .background(Color.black)
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase != .active { resetTrigger += 1 }
+        }
     }
 
     private var topToolbar: some View {

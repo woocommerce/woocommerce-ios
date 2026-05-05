@@ -36,7 +36,7 @@ private extension POSRefundConfirmationView {
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .lineLimit(1)
-                .minimumScaleFactor(0.5)
+                .minimumScaleFactor(0.7)
             Spacer()
             Button {
                 onClose()

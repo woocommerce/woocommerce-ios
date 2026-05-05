@@ -3,10 +3,11 @@ import Yosemite
 import Experiments
 import class WordPressShared.EmailFormatValidator
 import protocol Storage.StorageManagerType
+import SwiftUI
 
 /// Protocol to describe viewmodel of editable address
 ///
-protocol AddressFormViewModelProtocol: ObservableObject {
+protocol AddressFormViewModelProtocol: AnyObject, Observable {
 
     /// Site ID
     ///
@@ -202,6 +203,7 @@ struct AddressFormFields {
             }
         }
     }
+
 
     /// Set initial values from Address using the stored countries to compute the current selected country & state.
     ///

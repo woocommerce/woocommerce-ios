@@ -232,7 +232,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         let showPlaceholdersStates: [Bool] = waitFor { promise in
-            viewModel.$showPlaceholders
+            viewModel.showPlaceholdersPublisher
                 .dropFirst() // Drop initial value
                 .collect(2)  // Expect two state changes
                 .sink { emittedValues in

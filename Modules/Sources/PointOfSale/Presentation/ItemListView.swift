@@ -57,7 +57,17 @@ struct ItemListView: View {
 
     private var isBarcodeScanningEnabled: Binding<Bool> {
         Binding(
-            get: { !isSearching && !modalManager.isPresented && !sheetManager.isPresented && !coverManager.isPresented },
+            // Also gated on `isAddingCustomAmount` — that form is pushed via NavigationStack
+            // (not a sheet/cover) so none of the manager flags flip, and typing in its text
+            // field would otherwise feed each character to the HID barcode listener and add
+            // bogus rows to the cart.
+            get: {
+                !isSearching
+                && !modalManager.isPresented
+                && !sheetManager.isPresented
+                && !coverManager.isPresented
+                && !isAddingCustomAmount
+            },
             set: { _ in }
         )
     }

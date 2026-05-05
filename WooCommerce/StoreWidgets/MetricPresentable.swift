@@ -78,7 +78,7 @@ extension StoreInfoMetric: MetricPresentable {
 
 private extension StoreInfoMetricValue {
     /// Returns a presentation-ready trend, or `nil` when comparison is not meaningful
-    /// (missing previous value, non-numeric value, or zero delta).
+    /// (missing previous value, non-numeric value, zero delta, or delta that formats as zero).
     ///
     func trend(comparedTo previousValue: StoreInfoMetricValue?) -> MetricTrendPresentation? {
         guard let current = trendComparableValue,
@@ -96,8 +96,14 @@ private extension StoreInfoMetricValue {
         let direction: MetricTrendPresentation.Direction = delta > 0 ? .up : .down
         // Previous = 0 → any non-zero current is a 100% change relative to baseline.
         let ratio = previous == 0 ? 1 : abs(delta / previous)
+        guard let formattedPercentage = formattedTrendPercentage(for: ratio),
+              let zeroFormattedPercentage = formattedTrendPercentage(for: 0),
+              formattedPercentage != zeroFormattedPercentage else {
+            return nil
+        }
+
         return MetricTrendPresentation(direction: direction,
-                                       formattedPercentage: formattedTrendPercentage(for: ratio))
+                                       formattedPercentage: formattedPercentage)
     }
 
     /// Numeric projection used by the trend comparison. `.unavailable` returns `nil`
@@ -115,10 +121,10 @@ private extension StoreInfoMetricValue {
         }
     }
 
-    func formattedTrendPercentage(for ratio: Double) -> String {
+    func formattedTrendPercentage(for ratio: Double) -> String? {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
         formatter.maximumFractionDigits = 0
-        return formatter.string(from: NSNumber(value: ratio)) ?? StoreInfoFormatter.Constants.valuePlaceholderText
+        return formatter.string(from: NSNumber(value: ratio))
     }
 }

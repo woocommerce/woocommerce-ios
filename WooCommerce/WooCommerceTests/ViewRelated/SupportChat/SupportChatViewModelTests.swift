@@ -184,7 +184,7 @@ struct SupportChatViewModelTests {
                 completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 429, response: nil)))
             }
         }
-        let sut = makeSUT(stores: stores, entryPoint: .preLogin)
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
         sut.inputText = "hello"
 
         // When
@@ -192,7 +192,7 @@ struct SupportChatViewModelTests {
 
         // Then
         guard case let .error(message) = sut.state else {
-            Issue.record("Expected state to be .error after 429, got \(sut.state)")
+            Issue.record("Expected state to be .error after 429, got \(String(describing: sut.state))")
             return
         }
         #expect(message.contains("limit"), "Expected rate-limit copy, got: \(message)")
@@ -206,7 +206,7 @@ struct SupportChatViewModelTests {
                 completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
             }
         }
-        let sut = makeSUT(stores: stores, entryPoint: .preLogin)
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
         sut.inputText = "hello"
 
         // When
@@ -214,7 +214,7 @@ struct SupportChatViewModelTests {
 
         // Then
         guard case let .error(message) = sut.state else {
-            Issue.record("Expected state to be .error after 500, got \(sut.state)")
+            Issue.record("Expected state to be .error after 500, got \(String(describing: sut.state))")
             return
         }
         #expect(message.contains("couldn't connect"), "Expected generic copy, got: \(message)")
@@ -228,7 +228,7 @@ struct SupportChatViewModelTests {
                 completion(.failure(NetworkError.timeout(response: nil)))
             }
         }
-        let sut = makeSUT(stores: stores, entryPoint: .preLogin)
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
         sut.inputText = "hello"
 
         // When
@@ -236,7 +236,7 @@ struct SupportChatViewModelTests {
 
         // Then
         guard case let .error(message) = sut.state else {
-            Issue.record("Expected state to be .error after timeout, got \(sut.state)")
+            Issue.record("Expected state to be .error after timeout, got \(String(describing: sut.state))")
             return
         }
         #expect(message.contains("couldn't connect"), "Expected generic copy, got: \(message)")
@@ -313,7 +313,7 @@ struct SupportChatViewModelTests {
 
         // Then
         guard case .error = sut.state else {
-            Issue.record("Expected state to be .error after action failure, got \(sut.state)")
+            Issue.record("Expected state to be .error after action failure, got \(String(describing: sut.state))")
             return
         }
         #expect(sut.isExecutingAction == false)

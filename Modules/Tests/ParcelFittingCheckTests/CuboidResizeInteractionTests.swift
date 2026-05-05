@@ -183,7 +183,7 @@ struct CuboidResizeInteractionTests {
 
         // When
         let output = try #require(interaction.update(
-            fingers: (CGPoint(x: 0, y: 0), CGPoint(x: 0, y: 0)),
+            fingers: (.zero, .zero),
             environment: env
         ))
 
@@ -227,7 +227,7 @@ struct CuboidResizeInteractionTests {
         // pushes outward by 0.10 m. Net scale grows by 0.05 m. Each face must
         // move by exactly its finger's delta — no leakage between faces.
         let output = try #require(interaction.update(
-            fingers: (CGPoint(x: 0, y: 0), CGPoint(x: 150, y: 0)),
+            fingers: (.zero, CGPoint(x: 150, y: 0)),
             environment: env
         ))
 

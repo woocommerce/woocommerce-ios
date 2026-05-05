@@ -1,4 +1,3 @@
-import UIKit
 import UIKit.UIGestureRecognizerSubclass
 
 /// Two-finger gesture that locks into either rotate or resize after the first

@@ -348,30 +348,37 @@ struct PointOfSaleDashboardView: View {
             min(phoneOverflowMenuScaledSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
-    /// Total cart size — products + coupons — used to drive the cart-button pulse so adding
-    /// a coupon also gives visual feedback even though the displayed number stays products-only.
+    /// Tangible items shown in the cart count — products + custom amounts.
+    /// Coupons are tracked separately and pulse-only (see below).
+    private var phoneCartItemsCount: Int {
+        posModel.cart.purchasableItems.count + posModel.cart.customAmounts.count
+    }
+
+    /// Total cart size — products + custom amounts + coupons — used to drive the cart-button
+    /// pulse so adding a coupon also gives visual feedback even though the displayed number
+    /// stays items-only.
     private var phoneCartTotalCount: Int {
-        posModel.cart.purchasableItems.count + posModel.cart.coupons.count
+        phoneCartItemsCount + posModel.cart.coupons.count
     }
 
     private var phoneCartButton: some View {
         Button {
             phoneShowingCart = true
         } label: {
-            Text(String(format: Localization.phoneCart, posModel.cart.totalItemCount))
+            Text(String(format: Localization.phoneCart, phoneCartItemsCount))
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
                 // Number flips smoothly between values instead of snapping.
                 .contentTransition(.numericText())
-                .animation(.snappy(duration: 0.25), value: posModel.cart.purchasableItems.count)
+                .animation(.snappy(duration: 0.25), value: phoneCartItemsCount)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .padding(.horizontal, POSPadding.medium)
         .padding(.vertical, POSPadding.medium)
         // Quick pulse to confirm an item was added — only on count increases, so removing items
         // doesn't bounce the button distractingly. Watches the full cart count (products +
-        // coupons) so adding a coupon also pulses, even though the displayed number is
-        // products-only.
+        // custom amounts + coupons) so adding any of those pulses, even though the displayed
+        // number stays items-only (no coupons).
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
         .onChange(of: phoneCartTotalCount) { oldValue, newValue in
             guard newValue > oldValue else { return }

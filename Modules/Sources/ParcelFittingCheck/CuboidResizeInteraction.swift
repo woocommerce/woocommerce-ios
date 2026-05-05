@@ -54,22 +54,31 @@ final class CuboidResizeInteraction {
         let secondFinger: FingerLatch
     }
 
+    typealias AxisPicker = (BeginInput, Environment) -> ARCuboidEntity.Axis?
+
+    private let pickAxis: AxisPicker
     private var context: ResizeContext?
     private var lastFingers: (first: CGPoint, second: CGPoint)?
 
     var isActive: Bool { context != nil }
     private(set) var highlightedFaces: ARCuboidEntity.FaceSet = .empty
 
-    /// May fail silently (no axis pick, missed Y hit-test, projection failure);
-    /// the caller can retry on the next gesture frame.
-    func begin(input: BeginInput, environment env: Environment) {
-        guard let axis = ResizeAxisPicker.pick(
+    init(pickAxis: @escaping AxisPicker = { input, env in
+        ResizeAxisPicker.pick(
             cuboidPosition: input.cuboidPosition,
             cuboidScale: input.cuboidScale,
             cuboidYaw: input.cuboidYaw,
             fingers: input.fingers,
             environment: env
-        ) else {
+        )
+    }) {
+        self.pickAxis = pickAxis
+    }
+
+    /// May fail silently (no axis pick, missed Y hit-test, projection failure);
+    /// the caller can retry on the next gesture frame.
+    func begin(input: BeginInput, environment env: Environment) {
+        guard let axis = pickAxis(input, env) else {
             return
         }
 

@@ -29,6 +29,13 @@ final class CuboidResizeInteraction {
 
         /// Numerical-stability epsilon for divide-by-zero guards.
         static let nearZeroEpsilon: Float = 1e-6
+
+        /// Distance, in metres, of the axis probe from the cuboid centre when
+        /// projecting world-space axes into screen space.
+        static let axisProbeDistance: Float = 0.1
+
+        /// Floor for screen-direction lengths to avoid divide-by-zero.
+        static let minScreenDirectionLength: CGFloat = 1
     }
 
     private struct FingerLatch {
@@ -63,7 +70,18 @@ final class CuboidResizeInteraction {
     /// May fail silently (no axis pick, missed Y hit-test, projection failure);
     /// the caller can retry on the next gesture frame.
     func begin(input: BeginInput, environment env: Environment) {
-        guard let pick = ResizeAxisPicker.pick(
+        guard let axis = ResizeAxisPicker.pick(
+            cuboidPosition: input.cuboidPosition,
+            cuboidScale: input.cuboidScale,
+            cuboidYaw: input.cuboidYaw,
+            fingers: input.fingers,
+            environment: env
+        ) else {
+            return
+        }
+
+        guard let calibration = calibrate(
+            axis: axis,
             cuboidPosition: input.cuboidPosition,
             cuboidScale: input.cuboidScale,
             cuboidYaw: input.cuboidYaw,
@@ -74,14 +92,14 @@ final class CuboidResizeInteraction {
         }
 
         context = ResizeContext(
-            axis: pick.axis,
-            axisWorld: pick.axisWorld,
-            axisScreenUnit: pick.axisScreenUnit,
-            pixelsPerMeter: pick.pixelsPerMeter,
+            axis: axis,
+            axisWorld: calibration.axisWorld,
+            axisScreenUnit: calibration.axisScreenUnit,
+            pixelsPerMeter: calibration.pixelsPerMeter,
             initialScale: input.cuboidScale,
             initialPosition: input.cuboidPosition,
-            firstFinger: FingerLatch(face: pick.firstFingerFace, initialScreen: input.fingers.first),
-            secondFinger: FingerLatch(face: pick.secondFingerFace, initialScreen: input.fingers.second)
+            firstFinger: FingerLatch(face: calibration.firstFace, initialScreen: input.fingers.first),
+            secondFinger: FingerLatch(face: calibration.secondFace, initialScreen: input.fingers.second)
         )
         lastFingers = input.fingers
     }
@@ -162,6 +180,57 @@ final class CuboidResizeInteraction {
 }
 
 private extension CuboidResizeInteraction {
+    struct Calibration {
+        let axisWorld: SIMD3<Float>
+        let axisScreenUnit: CGPoint
+        let pixelsPerMeter: CGFloat
+        let firstFace: ARCuboidEntity.Face
+        let secondFace: ARCuboidEntity.Face
+    }
+
+    func calibrate(
+        axis: ARCuboidEntity.Axis,
+        cuboidPosition: SIMD3<Float>,
+        cuboidScale: SIMD3<Float>,
+        cuboidYaw: Float,
+        fingers: (first: CGPoint, second: CGPoint),
+        environment env: Environment
+    ) -> Calibration? {
+        let axisX = SIMD3<Float>(cos(cuboidYaw), 0, -sin(cuboidYaw))
+        let axisY = SIMD3<Float>(0, 1, 0)
+        let axisZ = SIMD3<Float>(sin(cuboidYaw), 0, cos(cuboidYaw))
+        let cuboidCenter = cuboidPosition + 0.5 * cuboidScale.y * axisY
+
+        let axisWorld: SIMD3<Float> = switch axis {
+        case .x: axisX
+        case .y: axisY
+        case .z: axisZ
+        }
+
+        guard let screenCenter = env.projectToScreen(cuboidCenter),
+              let axisEnd = env.projectToScreen(cuboidCenter + Constants.axisProbeDistance * axisWorld) else { return nil }
+
+        let axisScreenVec = CGPoint(x: axisEnd.x - screenCenter.x, y: axisEnd.y - screenCenter.y)
+        let length = hypot(axisScreenVec.x, axisScreenVec.y)
+        guard length > Constants.minScreenDirectionLength else { return nil }
+        let axisScreenUnit = CGPoint(x: axisScreenVec.x / length, y: axisScreenVec.y / length)
+        let pixelsPerMeter = length / CGFloat(Constants.axisProbeDistance)
+
+        let firstOffset = (fingers.first.x - screenCenter.x) * axisScreenUnit.x
+            + (fingers.first.y - screenCenter.y) * axisScreenUnit.y
+        let secondOffset = (fingers.second.x - screenCenter.x) * axisScreenUnit.x
+            + (fingers.second.y - screenCenter.y) * axisScreenUnit.y
+        let firstIsPositive = firstOffset >= secondOffset
+
+        return Calibration(
+            axisWorld: axisWorld,
+            axisScreenUnit: axisScreenUnit,
+            pixelsPerMeter: pixelsPerMeter,
+            firstFace: ARCuboidEntity.Face(axis: axis, isPositiveSide: firstIsPositive),
+            secondFace: ARCuboidEntity.Face(axis: axis, isPositiveSide: !firstIsPositive)
+        )
+    }
+
     private func axisDeltaInMetres(screenDelta: CGPoint, context: ResizeContext) -> Float {
         let projected = screenDelta.x * context.axisScreenUnit.x + screenDelta.y * context.axisScreenUnit.y
         return Float(projected / context.pixelsPerMeter)

@@ -15,6 +15,10 @@ extension StoreInfoProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: StoreStatsConfigurationIntent, in context: Context) async -> Timeline<StoreInfoEntry> {
-        await loadTimeline(dateRange: configuration.dateRange)
+        let metrics = StoreInfoProvider.resolveMetricSelection(
+            requested: configuration.metrics,
+            family: context.family
+        )
+        return await loadTimeline(dateRange: configuration.dateRange, metrics: metrics)
     }
 }

@@ -55,6 +55,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
             let items = mapper.map(
                 refund: refund,
                 orderItems: order.lineItems,
+                customAmounts: order.customAmounts,
                 currencyFormatter: currencyFormatter,
                 currency: currency
             )
@@ -90,6 +91,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
             POSRefund(items: mapper.map(
                 refund: refund,
                 orderItems: order.lineItems,
+                customAmounts: order.customAmounts,
                 currencyFormatter: currencyFormatter,
                 currency: currency
             ))

@@ -5,6 +5,7 @@ struct MessageListView: View {
     let messages: [ChatMessage]
     let streamingState: AssistantConversation.StreamingState
     var onPickPrompt: (String) -> Void = { _ in }
+    var onSendSuggestion: (String) -> Void = { _ in }
 
     @StateObject private var scrollController = ChatScrollController()
     @State private var lastTickTime: Date = .distantPast

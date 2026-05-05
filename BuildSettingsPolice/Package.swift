@@ -13,7 +13,7 @@ let package = Package(
     name: "BuildSettingsPolice",
     platforms: [.macOS(.v14)],
     dependencies: [
-        .package(url: "https://github.com/Automattic/xcode-build-settings-police.git", revision: "a0538abe3a2b56e6dda7a08c440fe79603fc1b34")
+        .package(url: "https://github.com/Automattic/xcode-build-settings-police.git", revision: "932eb94dca30a3b2efeaf1a46e3022cd6ed94808")
     ],
     targets: [.target(name: "BuildSettingsPoliceRunner", path: "")]
 )

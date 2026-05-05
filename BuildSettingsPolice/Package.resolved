@@ -1,5 +1,5 @@
 {
-  "originHash" : "ac552bbb7c707319683b7f9bf416f8e808e0fa8a34f361501993240482bf09b6",
+  "originHash" : "79c68527271a3334df0c27b914b2548271f921e07c07055f0dcef14957b11d92",
   "pins" : [
     {
       "identity" : "aexml",
@@ -42,16 +42,15 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Automattic/xcode-build-settings-police.git",
       "state" : {
-        "revision" : "a0538abe3a2b56e6dda7a08c440fe79603fc1b34"
+        "revision" : "932eb94dca30a3b2efeaf1a46e3022cd6ed94808"
       }
     },
     {
-      "identity" : "xcodeproj",
+      "identity" : "xcodeproj-tuist",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tuist/XcodeProj.git",
+      "location" : "https://github.com/mokagio/XcodeProj-Tuist.git",
       "state" : {
-        "revision" : "7dbe497dd963b6b29622b13711aa9a156e362ba5",
-        "version" : "9.11.0"
+        "revision" : "956d02f29c984edcadcc2313ce057e5fc66ddc0e"
       }
     }
   ],

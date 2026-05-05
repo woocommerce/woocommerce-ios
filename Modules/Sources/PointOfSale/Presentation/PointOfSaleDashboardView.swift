@@ -156,6 +156,9 @@ struct PointOfSaleDashboardView: View {
         .posFullScreenCover(isPresented: $showSettings) {
             POSSettingsView(settingsController: posModel.settingsController)
         }
+        .posFullScreenCover(isPresented: $phoneShowOrders) {
+            POSOrdersView(isPresented: $phoneShowOrders)
+        }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
             Task {
@@ -299,10 +302,8 @@ struct PointOfSaleDashboardView: View {
                 .frame(width: POSHeaderLayoutConstants.minHeight, height: POSHeaderLayoutConstants.minHeight)
                 .fixedSize()
         }
+        .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
         .accessibilityIdentifier("pos-phone-overflow-menu")
-        .posFullScreenCover(isPresented: $phoneShowOrders) {
-            POSOrdersView(isPresented: $phoneShowOrders)
-        }
     }
 
     private var phoneCartButton: some View {
@@ -520,6 +521,11 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.phone.menu.orders",
             value: "Orders",
             comment: "Phone-only overflow menu item to open the historical orders view."
+        )
+        static let phoneMenuAccessibilityLabel = NSLocalizedString(
+            "pointOfSaleDashboard.phone.menu.accessibilityLabel",
+            value: "More options",
+            comment: "VoiceOver label for the phone-only Point of Sale overflow menu button."
         )
     }
 }

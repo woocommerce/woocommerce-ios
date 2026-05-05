@@ -78,13 +78,16 @@ extension StoreInfoMetric: MetricPresentable {
 
 private extension StoreInfoMetricValue {
     /// Returns a presentation-ready trend, or `nil` when comparison is not meaningful
-    /// (missing previous value, non-numeric value, zero delta, or delta that formats as zero).
+    /// (missing previous value, non-numeric value, negative baseline, zero delta, or delta that formats as zero).
     ///
     func trend(comparedTo previousValue: StoreInfoMetricValue?) -> MetricTrendPresentation? {
         guard let current = trendComparableValue,
               let previous = previousValue?.trendComparableValue,
               current.isFinite,
               previous.isFinite else {
+            return nil
+        }
+        guard previous >= 0 else {
             return nil
         }
 

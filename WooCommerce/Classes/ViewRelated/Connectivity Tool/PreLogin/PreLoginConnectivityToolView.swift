@@ -21,26 +21,50 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
         rootView.onContactSupportTapped = { [weak self] in
             self?.showContactSupportForm()
         }
+
+        rootView.onChatWithSupportTapped = { [weak self] in
+            self?.showSupportChat()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func showContactSupportForm() {
-        let attachments: [ZendeskAttachment] = {
-            guard let description = viewModel.troubleshootingDescription(),
-                  let data = description.data(using: .utf8) else { return [] }
-            return [
-                ZendeskAttachment(
-                    data: data,
-                    filename: "prelogin_connectivitytest_log.md",
-                    contentType: "text/markdown"
-                )
-            ]
-        }()
+    private func showContactSupportForm(chatTranscript: String? = nil) {
+        var attachments: [ZendeskAttachment] = []
+
+        if let description = viewModel.troubleshootingDescription(),
+           let data = description.data(using: .utf8) {
+            attachments.append(ZendeskAttachment(
+                data: data,
+                filename: "prelogin_connectivitytest_log.md",
+                contentType: "text/markdown"
+            ))
+        }
+
+        if let transcript = chatTranscript,
+           !transcript.isEmpty,
+           let data = transcript.data(using: .utf8) {
+            attachments.append(ZendeskAttachment(
+                data: data,
+                filename: "support_chat_transcript.txt",
+                contentType: "text/plain"
+            ))
+        }
+
         let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(attachments: attachments))
         supportController.show(from: self)
+    }
+
+    private func showSupportChat() {
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] transcript in
+            self?.navigationController?.popViewController(animated: true)
+            self?.showContactSupportForm(chatTranscript: transcript)
+        }
+
+        let chatController = SupportChatHostingController(viewModel: chatViewModel)
+        chatController.show(from: self)
     }
 }
 
@@ -52,6 +76,9 @@ struct PreLoginConnectivityToolView: View {
 
     /// Closure invoked when the "Contact Support" button is tapped.
     var onContactSupportTapped: (() -> Void)?
+
+    /// Closure invoked when the "Chat with AI Support" button is tapped.
+    var onChatWithSupportTapped: (() -> Void)?
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -71,11 +98,19 @@ struct PreLoginConnectivityToolView: View {
                 }
             }
 
-            Button(Localization.contactSupport) {
-                onContactSupportTapped?()
+            if viewModel.showChatButton {
+                Button(Localization.chatWithSupport) {
+                    onChatWithSupportTapped?()
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .padding()
+            } else if viewModel.showContactSupportButton {
+                Button(Localization.contactSupport) {
+                    onContactSupportTapped?()
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .padding()
             }
-            .buttonStyle(SecondaryButtonStyle())
-            .padding()
         }
         .background(Color(uiColor: .listForeground(modal: false)))
         .navigationTitle(Localization.title)
@@ -188,6 +223,11 @@ private extension PreLoginConnectivityToolView {
             "preLoginConnectivityToolView.contactSupport",
             value: "Contact Support",
             comment: "Contact support button in the pre-login connectivity tool"
+        )
+        static let chatWithSupport = NSLocalizedString(
+            "preLoginConnectivityToolView.chatWithSupport",
+            value: "Chat with Support",
+            comment: "Chat with AI support button in the pre-login connectivity tool"
         )
     }
 }

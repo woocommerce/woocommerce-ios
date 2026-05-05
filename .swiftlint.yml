@@ -45,6 +45,9 @@ only_rules:
   # Prefer checking `isEmpty` over comparing `string` to `""`.
   - empty_string
 
+  # Prefer `flatMap { ... }` over `map { ... }.reduce([], +)`.
+  - flatmap_over_map_reduce
+
   # When calling the `joined` method on an array of strings, omit an
   # explicit empty-string separator since that is the default.
   - joined_default_parameter

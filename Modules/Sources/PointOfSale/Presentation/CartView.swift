@@ -4,7 +4,15 @@ import WooFoundation
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let viewHelper = CartViewHelper()
+
+    /// Optional override for triggering the barcode-scanner setup from outside CartView.
+    /// On phone this lets the dashboard host the scanner cover *above* the cart sheet (the cart
+    /// sheet's POSSheet binding hides itself whenever a descendant cover is presented, which
+    /// otherwise tears CartView down and the inner cover with it). On iPad this is nil and
+    /// the cover is presented from CartView directly.
+    var onPresentBarcodeScannerSetup: (() -> Void)? = nil
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
@@ -57,11 +65,10 @@ struct CartView: View {
                 }
             }
             .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
-            // Always presented via a fullscreen cover (not a posModal) because on phone the cart
-            // itself is a sheet, and the root modal manager sits *behind* sheets — the setup
-            // would appear dimmed under the cart with an unresponsive close button. iPad picks
-            // up the cover too, which is a sensible presentation there as well.
-            .posFullScreenCover(isPresented: $showBarcodeScanningModal) {
+            // iPad path only — on phone the dashboard hosts the cover above the cart sheet via
+            // `onPresentBarcodeScannerSetup`, otherwise POSSheet's coverManager interaction would
+            // tear CartView down before the cover fully presents.
+            .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
@@ -251,7 +258,11 @@ private extension CartView {
                 }
                 Button(action: {
                     analytics.track(.pointOfSaleEmptyCartSetupScannerTapped)
-                    showBarcodeScanningModal = true
+                    if let onPresentBarcodeScannerSetup {
+                        onPresentBarcodeScannerSetup()
+                    } else {
+                        showBarcodeScanningModal = true
+                    }
                 }, label: {
                     HStack {
                         Text(Localization.barcodeScanningSetup)

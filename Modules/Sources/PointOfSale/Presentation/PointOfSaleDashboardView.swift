@@ -263,6 +263,9 @@ struct PointOfSaleDashboardView: View {
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
         }
+        .posFullScreenCover(isPresented: $phoneShowingBarcodeScannerSetup) {
+            POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
+        }
         .animation(.default, value: posModel.orderStage)
         .ignoresSafeArea()
         .background(Color.posSurface.ignoresSafeArea())
@@ -295,6 +298,7 @@ struct PointOfSaleDashboardView: View {
 
     @State private var phoneShowingCart: Bool = false
     @State private var phoneShowOrders: Bool = false
+    @State private var phoneShowingBarcodeScannerSetup: Bool = false
 
     private var phoneOverflowMenu: some View {
         Menu {
@@ -351,7 +355,19 @@ struct PointOfSaleDashboardView: View {
 
     private var phoneCartSheetView: some View {
         // Drag indicator + swipe-down handle dismissal; an explicit close button isn't needed.
-        CartView()
+        // The barcode-scanner trigger is lifted to the dashboard level (via the closure here)
+        // so it presents above the cart sheet rather than being torn down by POSSheet's
+        // coverManager interaction.
+        var cart = CartView()
+        cart.onPresentBarcodeScannerSetup = {
+            phoneShowingCart = false
+            // Tiny delay so the cart sheet finishes dismissing before the cover presents,
+            // otherwise iOS rejects the simultaneous transitions and nothing shows.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                phoneShowingBarcodeScannerSetup = true
+            }
+        }
+        return cart
             .background(Color.posSurface)
     }
 

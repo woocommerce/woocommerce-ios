@@ -73,7 +73,7 @@ final class CuboidResizeInteraction {
             return
         }
 
-        guard let calibration = calibrate(
+        guard let binding = bindAxis(
             axis: axis,
             cuboidPosition: input.cuboidPosition,
             cuboidScale: input.cuboidScale,
@@ -86,15 +86,15 @@ final class CuboidResizeInteraction {
 
         context = ResizeContext(
             axis: axis,
-            axisWorld: calibration.axisWorld,
-            axisScreenUnit: calibration.axisScreenUnit,
-            pixelsPerMeter: calibration.pixelsPerMeter,
+            axisWorld: binding.axisWorld,
+            axisScreenUnit: binding.axisScreenUnit,
+            pixelsPerMeter: binding.pixelsPerMeter,
             initialScale: input.cuboidScale,
             initialPosition: input.cuboidPosition,
-            firstFinger: FingerLatch(face: calibration.firstFace, initialScreen: input.fingers.first),
-            secondFinger: FingerLatch(face: calibration.secondFace, initialScreen: input.fingers.second)
+            firstFinger: FingerLatch(face: binding.firstFace, initialScreen: input.fingers.first),
+            secondFinger: FingerLatch(face: binding.secondFace, initialScreen: input.fingers.second)
         )
-        highlightedFaces = ARCuboidEntity.FaceSet(calibration.firstFace, calibration.secondFace)
+        highlightedFaces = ARCuboidEntity.FaceSet(binding.firstFace, binding.secondFace)
         lastFingers = input.fingers
     }
 
@@ -175,7 +175,7 @@ final class CuboidResizeInteraction {
 }
 
 private extension CuboidResizeInteraction {
-    struct Calibration {
+    struct AxisBinding {
         let axisWorld: SIMD3<Float>
         let axisScreenUnit: CGPoint
         let pixelsPerMeter: CGFloat
@@ -183,14 +183,14 @@ private extension CuboidResizeInteraction {
         let secondFace: ARCuboidEntity.Face
     }
 
-    func calibrate(
+    func bindAxis(
         axis: ARCuboidEntity.Axis,
         cuboidPosition: SIMD3<Float>,
         cuboidScale: SIMD3<Float>,
         cuboidYaw: Float,
         fingers: (first: CGPoint, second: CGPoint),
         environment env: Environment
-    ) -> Calibration? {
+    ) -> AxisBinding? {
         let axisX = SIMD3<Float>(cos(cuboidYaw), 0, -sin(cuboidYaw))
         let axisY = SIMD3<Float>(0, 1, 0)
         let axisZ = SIMD3<Float>(sin(cuboidYaw), 0, cos(cuboidYaw))
@@ -217,7 +217,7 @@ private extension CuboidResizeInteraction {
             + (fingers.second.y - screenCenter.y) * axisScreenUnit.y
         let firstIsPositive = firstOffset >= secondOffset
 
-        return Calibration(
+        return AxisBinding(
             axisWorld: axisWorld,
             axisScreenUnit: axisScreenUnit,
             pixelsPerMeter: pixelsPerMeter,

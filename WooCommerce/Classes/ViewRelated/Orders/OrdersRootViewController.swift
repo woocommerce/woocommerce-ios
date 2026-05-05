@@ -313,7 +313,7 @@ final class OrdersRootViewController: UIViewController {
             DDLogError("⛔️ Unable to fetch stored statuses for Site \(siteID): \(error)")
         }
 
-        let fetchedStatuses: [OrderStatus] = statusResultsController.fetchedObjects.map { $0 }
+        let fetchedStatuses = Array(statusResultsController.fetchedObjects)
         let allowedStatuses = ciabEligibilityChecker.isCurrentSiteCIAB
             ? CIABOrderStatusMapper.mapFilterOptions(fetchedStatuses)
             : fetchedStatuses

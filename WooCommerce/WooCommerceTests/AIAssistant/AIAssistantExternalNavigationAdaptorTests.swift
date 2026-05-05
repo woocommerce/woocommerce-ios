@@ -152,7 +152,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     func test_openCustomer_when_fetch_returns_nil_then_placeholder_stays() async {
         // Given
         let stores = StubbingStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        stores.stubCustomerFetch = .failure(SampleError.fetchFailed)
+        stores.stubCustomerFetch = .failure(SampleError.first)
         let host = AIAssistantNavigationHost()
         let nav = UINavigationController(rootViewController: UIViewController())
         host.attach(nav)
@@ -286,7 +286,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     }
 }
 
-private final class ThreadCapturingStoresManager: MockStoresManager {
+private final class ThreadCapturingStoresManager: DefaultStoresManager {
     struct Capture {
         let action: Action
         let wasOnMainThread: Bool
@@ -315,9 +315,7 @@ private final class ThreadCapturingStoresManager: MockStoresManager {
     }
 }
 
-private enum SampleError: Error { case fetchFailed }
-
-private final class StubbingStoresManager: MockStoresManager {
+private final class StubbingStoresManager: DefaultStoresManager {
     var stubCustomerFetch: Result<Customer, Error>?
     var stubProductFetch: Result<Product, Error>?
     var stubProductVariationFetch: Result<ProductVariation, Error>?

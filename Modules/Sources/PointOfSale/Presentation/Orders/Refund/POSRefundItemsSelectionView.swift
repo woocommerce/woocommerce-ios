@@ -55,6 +55,7 @@ private extension POSRefundItemsSelectionView {
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .lineLimit(1)
+                .minimumScaleFactor(0.5)
             Spacer()
             Button {
                 onClose()

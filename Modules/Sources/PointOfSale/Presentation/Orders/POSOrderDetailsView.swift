@@ -514,9 +514,13 @@ private extension POSOrderDetailsView {
     func actionsSection(setup: OrderDetailsActionsSetup) -> some View {
         if let primary = setup.primary {
             HStack(spacing: POSSpacing.large) {
-                Button(primary.title, action: handler(for: primary))
-                    .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
-                    .accessibilityHint(primary.accessibilityHint)
+                Button(action: handler(for: primary)) {
+                    Text(primary.title)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                }
+                .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+                .accessibilityHint(primary.accessibilityHint)
             }
         }
 

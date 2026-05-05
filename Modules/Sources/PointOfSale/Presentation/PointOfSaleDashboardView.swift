@@ -218,24 +218,13 @@ struct PointOfSaleDashboardView: View {
                     ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
                                  searchTerm: $viewStateCoordinator.searchTerm,
                                  trailingHeaderAccessoryHiddenOnCoupons: AnyView(phoneOverflowMenu))
-                    if posModel.cart.isNotEmpty {
-                        phoneCartButton
-                    }
+                    // Always shown — even with an empty cart — so the flow is always discoverable
+                    // and the merchant has a consistent landmark at the bottom of the screen.
+                    phoneCartButton
                 }
             case .finalizing:
                 NavigationStack(path: $navigationPath) {
-                    TotalsView()
-                        .background(Color.posSurface)
-                        .toolbar {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                Button {
-                                    posModel.addMoreToCart()
-                                } label: {
-                                    Label(Localization.phoneBackToItems, systemImage: "chevron.backward")
-                                }
-                                .disabled(!canExitFinalizingOnPhone)
-                            }
-                        }
+                    phoneTotalsContainer
                         .posNavigationDestinations()
                 }
                 .environment(\.posNavigationRouter, navigationRouter)
@@ -269,6 +258,24 @@ struct PointOfSaleDashboardView: View {
             orderState: posModel.orderState,
             paymentState: posModel.paymentState
         )
+    }
+
+    /// Wraps `TotalsView` with an in-screen `POSPageHeaderView` back button so the phone totals
+    /// view follows the same pattern as cash payment, settings, and orders — instead of a
+    /// system nav bar back button.
+    private var phoneTotalsContainer: some View {
+        VStack(spacing: 0) {
+            POSPageHeaderView(
+                title: Localization.phoneCheckoutTitle,
+                backButtonConfiguration: .init(
+                    state: canExitFinalizingOnPhone ? .enabled : .disabled,
+                    action: { posModel.addMoreToCart() }
+                )
+            )
+            TotalsView()
+        }
+        .background(Color.posSurface)
+        .toolbar(.hidden, for: .navigationBar)
     }
 
     @State private var phoneShowOrders: Bool = false
@@ -321,6 +328,8 @@ struct PointOfSaleDashboardView: View {
             phoneShowingCart = true
         } label: {
             Text(String(format: Localization.phoneCart, posModel.cart.totalItemCount))
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .padding(.horizontal, POSPadding.medium)
@@ -512,10 +521,10 @@ private extension PointOfSaleDashboardView {
             value: "Cart (%1$d)",
             comment: "Phone-only floating button to open the cart from the items list. %1$d is the cart item count."
         )
-        static let phoneBackToItems = NSLocalizedString(
-            "pointOfSaleDashboard.phone.backToItems",
-            value: "Items",
-            comment: "Phone-only back button title to return from totals to the items list."
+        static let phoneCheckoutTitle = NSLocalizedString(
+            "pointOfSaleDashboard.phone.checkoutTitle",
+            value: "Checkout",
+            comment: "Phone-only header title shown above the totals view during checkout."
         )
         static let phoneMenuExit = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.exit",

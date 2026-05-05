@@ -289,7 +289,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
     @MainActor
     func test_siteVisitStatMode_is_hidden_if_syncing_stats_failed_with_noPermission_error() async {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
         mockSyncAllStats(with: stores, visitorStatsError: SiteStatsStoreError.noPermission)
 
@@ -305,7 +305,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         // Given
         let defaultSite = Site.fake().copy(isJetpackThePluginInstalled: false,
                                            isJetpackConnected: false)
-        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: defaultSite))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: defaultSite))
         let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
         mockSyncAllStats(with: stores, visitorStatsError: SiteStatsStoreError.statsModuleDisabled)
 
@@ -321,7 +321,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         // Given
         let defaultSite = Site.fake().copy(isJetpackThePluginInstalled: false,
                                            isJetpackConnected: true)
-        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: defaultSite))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: defaultSite))
         let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
         mockSyncAllStats(with: stores, visitorStatsError: SiteStatsStoreError.statsModuleDisabled)
 
@@ -905,13 +905,15 @@ private extension StorePerformanceViewModelTests {
                 } else {
                     onCompletion(.success(()))
                 }
-            case let .retrieveSiteVisitStats(_, _, _, _, onCompletion):
+            case let .retrieveSiteVisitStats(_, _, _, _, onCompletion),
+                 let .retrieveJetpackSiteVisitStats(_, _, _, _, onCompletion):
                 if let visitorStatsError {
                     onCompletion(.failure(visitorStatsError))
                 } else {
                     onCompletion(.success(()))
                 }
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, onCompletion):
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, onCompletion),
+                 let .retrieveJetpackSiteSummaryStats(_, _, _, _, _, _, onCompletion):
                 if let siteSummaryStatsError {
                     onCompletion(.failure(siteSummaryStatsError))
                 } else {

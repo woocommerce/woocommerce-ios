@@ -6,7 +6,6 @@ struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let viewHelper = CartViewHelper()
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -61,19 +60,12 @@ struct CartView: View {
                 }
             }
             .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
-            // On phone the cart itself is presented as a sheet, and `.posModal` renders via the
-            // root modal manager which sits *behind* sheets — so the barcode setup would appear
-            // dimmed under the cart with an unresponsive close button. Switch to a fullscreen
-            // cover for compact width so it sits above the cart sheet correctly.
-            .if(horizontalSizeClass == .compact) { view in
-                view.posFullScreenCover(isPresented: $showBarcodeScanningModal) {
-                    POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
-                }
-            }
-            .if(horizontalSizeClass != .compact) { view in
-                view.posModal(isPresented: $showBarcodeScanningModal) {
-                    POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
-                }
+            // Always presented via a fullscreen cover (not a posModal) because on phone the cart
+            // itself is a sheet, and the root modal manager sits *behind* sheets — the setup
+            // would appear dimmed under the cart with an unresponsive close button. iPad picks
+            // up the cover too, which is a sensible presentation there as well.
+            .posFullScreenCover(isPresented: $showBarcodeScanningModal) {
+                POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
             // Cart-side edit only: the add path pushes from the products list and tracks
             // its own `mode: .add` analytics inline in `ItemListView`.

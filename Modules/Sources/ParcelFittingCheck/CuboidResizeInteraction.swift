@@ -27,9 +27,6 @@ final class CuboidResizeInteraction {
         /// is skipped.
         static let jitterThresholdPoints: CGFloat = 1.5
 
-        /// Numerical-stability epsilon for divide-by-zero guards.
-        static let nearZeroEpsilon: Float = 1e-6
-
         /// Distance, in metres, of the axis probe from the cuboid centre when
         /// projecting world-space axes into screen space.
         static let axisProbeDistance: Float = 0.1
@@ -149,7 +146,7 @@ final class CuboidResizeInteraction {
         // back proportionally so the centre tracks both fingers smoothly (the
         // cuboid stops shrinking but does not jump).
         let actualTotal = newAxisScale - oldAxisScale
-        let scaleFactor: Float = abs(totalDelta) < Constants.nearZeroEpsilon ? 1 : actualTotal / totalDelta
+        let scaleFactor: Float = totalDelta == 0 ? 1 : actualTotal / totalDelta
         let actualPositive = outwardPositive * scaleFactor
         let actualNegative = outwardNegative * scaleFactor
 

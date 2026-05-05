@@ -214,19 +214,24 @@ struct PointOfSaleDashboardView: View {
     @ViewBuilder
     private var phoneContentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator
-        NavigationStack(path: $navigationPath) {
-            Group {
-                switch posModel.orderStage {
-                case .building:
-                    VStack(spacing: POSSpacing.none) {
-                        ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                                     searchTerm: $viewStateCoordinator.searchTerm,
-                                     trailingHeaderAccessory: AnyView(phoneOverflowMenu))
-                        if posModel.cart.isNotEmpty {
-                            phoneCartButton
-                        }
+        // Building stage: ItemListView (which carries its own NavigationStack for product drill-down)
+        //                 + bottom Cart button — NO outer NavigationStack here, otherwise nested stacks
+        //                 break .navigationDestination resolution for pushed views.
+        // Finalizing stage: a fresh NavigationStack siblinged to (not wrapping) the items list, used
+        //                   for pushing cash payment, email receipt, etc. via navigationPath.
+        Group {
+            switch posModel.orderStage {
+            case .building:
+                VStack(spacing: POSSpacing.none) {
+                    ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                                 searchTerm: $viewStateCoordinator.searchTerm,
+                                 trailingHeaderAccessory: AnyView(phoneOverflowMenu))
+                    if posModel.cart.isNotEmpty {
+                        phoneCartButton
                     }
-                case .finalizing:
+                }
+            case .finalizing:
+                NavigationStack(path: $navigationPath) {
                     TotalsView()
                         .background(Color.posSurface)
                         .toolbar {
@@ -239,15 +244,16 @@ struct PointOfSaleDashboardView: View {
                                 .disabled(!canExitFinalizingOnPhone)
                             }
                         }
+                        .navigationDestination(for: POSNavigationDestination.self) { destination in
+                            switch destination {
+                            case .cashPayment(let orderTotal):
+                                POSNavigationDestinationCashPaymentView(orderTotal: orderTotal)
+                            case .emailReceipt:
+                                POSNavigationDestinationEmailReceiptView()
+                            }
+                        }
                 }
-            }
-            .navigationDestination(for: POSNavigationDestination.self) { destination in
-                switch destination {
-                case .cashPayment(let orderTotal):
-                    POSNavigationDestinationCashPaymentView(orderTotal: orderTotal)
-                case .emailReceipt:
-                    POSNavigationDestinationEmailReceiptView()
-                }
+                .environment(\.posNavigationRouter, navigationRouter)
             }
         }
         .onChange(of: posModel.paymentState.cash) { _, newValue in
@@ -257,7 +263,7 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .onChange(of: posModel.orderStage) { _, newStage in
-            // Dismiss the cart cover automatically when checkout starts so the user lands
+            // Dismiss the cart sheet automatically when checkout starts so the user lands
             // on the totals view rather than seeing cart fading away.
             if newStage == .finalizing {
                 phoneShowingCart = false
@@ -271,7 +277,6 @@ struct PointOfSaleDashboardView: View {
         .animation(.default, value: posModel.orderStage)
         .ignoresSafeArea()
         .background(Color.posSurface.ignoresSafeArea())
-        .environment(\.posNavigationRouter, navigationRouter)
     }
 
     private var canExitFinalizingOnPhone: Bool {
@@ -340,6 +345,7 @@ struct PointOfSaleDashboardView: View {
         CartView()
             .background(Color.posSurface)
     }
+
 
     private var tabletContentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator

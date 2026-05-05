@@ -34,7 +34,7 @@ struct POSNavigationDestinationCashPaymentView: View {
     var body: some View {
         PointOfSaleCollectCashView(orderTotal: orderTotal,
                                    currencySettings: currencyProvider.currencySettings)
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 

@@ -4,7 +4,8 @@ import Yosemite
 import CocoaLumberjackSwift
 import protocol WooAIAssistant.AssistantExternalNavigationProviding
 
-struct AIAssistantExternalNavigationAdaptor: AssistantExternalNavigationProviding, @unchecked Sendable {
+@MainActor
+struct AIAssistantExternalNavigationAdaptor: AssistantExternalNavigationProviding {
 
     private let boundSiteID: Int64
     private let navigationHost: AIAssistantNavigationHost
@@ -18,7 +19,7 @@ struct AIAssistantExternalNavigationAdaptor: AssistantExternalNavigationProvidin
         self.stores = stores
     }
 
-    func openOrder(siteID: Int64, orderID: Int64) {
+    func openOrder(orderID: Int64) {
         let boundSiteID = self.boundSiteID
         let navigationHost = self.navigationHost
         let stores = self.stores
@@ -30,7 +31,7 @@ struct AIAssistantExternalNavigationAdaptor: AssistantExternalNavigationProvidin
         }
     }
 
-    func openProduct(siteID: Int64, productID: Int64) {
+    func openProduct(productID: Int64) {
         let boundSiteID = self.boundSiteID
         let navigationHost = self.navigationHost
         let stores = self.stores
@@ -43,7 +44,11 @@ struct AIAssistantExternalNavigationAdaptor: AssistantExternalNavigationProvidin
         }
     }
 
-    func openCustomer(siteID: Int64, customerID: Int64) {
+    func openProductVariation(productID: Int64, variationID: Int64) {
+        DDLogWarn("Assistant openProductVariation is not implemented yet")
+    }
+
+    func openCustomer(customerID: Int64) {
         DDLogWarn("Assistant openCustomer is not implemented yet")
     }
 

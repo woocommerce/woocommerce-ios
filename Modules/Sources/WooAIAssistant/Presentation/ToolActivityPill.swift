@@ -5,41 +5,14 @@ struct ToolActivityPill: View {
     let toolName: String
     let status: ToolCallStatus
 
-    @State private var isExpanded = false
-
     var body: some View {
-        if hasExpandableSummary {
-            Button(action: toggle) {
-                content
-            }
-            .buttonStyle(.plain)
-        } else {
-            content
-        }
-    }
-
-    private var content: some View {
-        VStack(alignment: .leading, spacing: AssistantSpacing.xSmall) {
-            HStack(spacing: AssistantSpacing.small) {
-                icon
-                    .accessibilityHidden(true)
-                Text(title)
-                    .font(.assistantCaption)
-                    .foregroundStyle(Color.assistantBubbleAssistantText)
-                Spacer(minLength: 0)
-                if hasExpandableSummary {
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(Color.assistantMuted)
-                        .accessibilityHidden(true)
-                }
-            }
-            if isExpanded, case .completed(let summary?) = status {
-                Text(summary)
-                    .font(.assistantMonospaced)
-                    .foregroundStyle(Color.assistantBubbleAssistantText)
-                    .lineLimit(3)
-            }
+        HStack(spacing: AssistantSpacing.small) {
+            icon
+                .accessibilityHidden(true)
+            Text(title)
+                .font(.assistantCaption)
+                .foregroundStyle(Color.assistantBubbleAssistantText)
+            Spacer(minLength: 0)
         }
         .padding(.horizontal, AssistantSpacing.medium)
         .padding(.vertical, AssistantSpacing.small)
@@ -50,18 +23,6 @@ struct ToolActivityPill: View {
             RoundedRectangle(cornerRadius: AssistantRadius.medium)
                 .stroke(Color.assistantSurfaceBorder, lineWidth: 1)
         )
-    }
-
-    private func toggle() {
-        guard hasExpandableSummary else { return }
-        withAnimation(.smooth(duration: AssistantMotion.snap)) {
-            isExpanded.toggle()
-        }
-    }
-
-    private var hasExpandableSummary: Bool {
-        if case .completed(let summary) = status, summary != nil { return true }
-        return false
     }
 
     @ViewBuilder

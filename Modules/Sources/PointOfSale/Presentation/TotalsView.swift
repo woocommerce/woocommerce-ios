@@ -353,6 +353,7 @@ private struct SubtotalFieldView: View {
     let title: String
     let formattedPrice: String?
     let shimmeringActive: Bool
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         content
@@ -364,7 +365,7 @@ private struct SubtotalFieldView: View {
     private var content: some View {
         if shimmeringActive {
             ShimmeringLineView(
-                width: TotalsView.Constants.shimmeringWidth,
+                width: horizontalSizeClass == .compact ? nil : TotalsView.Constants.shimmeringWidth,
                 height: TotalsView.Constants.subtotalsShimmeringHeight
             )
         } else {
@@ -384,6 +385,7 @@ private struct SubtotalFieldView: View {
 private struct TotalFieldView: View {
     let formattedPrice: String?
     let shimmeringActive: Bool
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         content
@@ -395,7 +397,7 @@ private struct TotalFieldView: View {
     private var content: some View {
         if shimmeringActive {
             ShimmeringLineView(
-                width: TotalsView.Constants.shimmeringWidth,
+                width: horizontalSizeClass == .compact ? nil : TotalsView.Constants.shimmeringWidth,
                 height: TotalsView.Constants.totalShimmeringHeight
             )
         } else {
@@ -416,15 +418,26 @@ private struct TotalFieldView: View {
 }
 
 private struct ShimmeringLineView: View {
-    let width: CGFloat
+    /// When nil, the bar stretches to the available container width (used on phone, where the
+    /// fixed iPad-tuned width would render asymmetrically inside a centered HStack).
+    let width: CGFloat?
     let height: CGFloat
 
     var body: some View {
-        Color.posOnSurfaceVariantLowest
-            .frame(width: width, height: height)
-            .fixedSize(horizontal: true, vertical: true)
-            .shimmering(active: true)
-            .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
+        if let width {
+            Color.posOnSurfaceVariantLowest
+                .frame(width: width, height: height)
+                .fixedSize(horizontal: true, vertical: true)
+                .shimmering(active: true)
+                .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
+        } else {
+            Color.posOnSurfaceVariantLowest
+                .frame(maxWidth: .infinity)
+                .frame(height: height)
+                .shimmering(active: true)
+                .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
+                .padding(.horizontal, POSPadding.medium)
+        }
     }
 }
 

@@ -513,8 +513,8 @@ private extension HelpAndSupportViewController {
             botSlug: summary.botSlug,
             entryPoint: .chatHistory,
             chatID: summary.chatID,
-            onContactHumanSupport: { [weak self] _ in
-                self?.navigationController?.popViewController(animated: true)
+            onContactHumanSupport: { [weak self] transcript in
+                self?.navigateToContactSupport(transcript: transcript)
             }
         )
         let controller = SupportChatHostingController(viewModel: chatViewModel)

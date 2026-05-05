@@ -11,13 +11,16 @@ struct AIAssistantExternalNavigationAdaptor: AssistantExternalNavigationProvidin
     private let boundSiteID: Int64
     private let navigationHost: AIAssistantNavigationHost
     private let stores: StoresManager
+    private let timeZone: TimeZone
 
     init(siteID: Int64,
          navigationHost: AIAssistantNavigationHost,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         timeZone: TimeZone = .siteTimezone) {
         self.boundSiteID = siteID
         self.navigationHost = navigationHost
         self.stores = stores
+        self.timeZone = timeZone
     }
 
     // MARK: - Orders
@@ -145,31 +148,35 @@ struct AIAssistantExternalNavigationAdaptor: AssistantExternalNavigationProvidin
     func openAnalyticsHub(payload: AnyCodableJSON) {
         let analyticsHubVC = AnalyticsHubHostingViewController(
             siteID: boundSiteID,
-            timeZone: .siteTimezone,
+            timeZone: timeZone,
             timeRange: timeRange(fromAnalyticsPayload: payload),
             usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()
         )
         push(analyticsHubVC)
     }
 
+    // The analytics screen interprets the range in the site timezone, so parse the
+    // YYYY-MM-DD strings in that same timezone to avoid an off-by-one shift in
+    // negative-UTC stores (e.g. May 4 displayed as May 3 in America/Los_Angeles).
     func timeRange(fromAnalyticsPayload payload: AnyCodableJSON) -> StatsTimeRangeV4 {
+        let formatter = makeISODateFormatter()
         guard let after = payload.assistantString("after"),
               let before = payload.assistantString("before"),
-              let from = Self.isoDateFormatter.date(from: after),
-              let to = Self.isoDateFormatter.date(from: before) else {
+              let from = formatter.date(from: after),
+              let to = formatter.date(from: before) else {
             return .today
         }
         return .custom(from: from, to: to)
     }
 
-    private static let isoDateFormatter: DateFormatter = {
+    private func makeISODateFormatter() -> DateFormatter {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .gregorian)
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(identifier: "UTC")
+        formatter.timeZone = timeZone
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter
-    }()
+    }
 
     // MARK: - Helpers
 

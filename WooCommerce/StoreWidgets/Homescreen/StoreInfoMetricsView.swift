@@ -54,15 +54,30 @@ import class WooFoundation.CurrencySettings
 
 struct StoreInfoMetricsView_Previews: PreviewProvider {
     static var allMetrics: [StoreInfoMetric] {
-        [
-            .init(type: .revenue, value: .currency(123_456_789, CurrencySettings())),
-            .init(type: .orders, value: .count(23)),
-            .init(type: .itemsSold, value: .count(41)),
-            .init(type: .averageOrderValue, value: .currency(5_367, CurrencySettings())),
-            .init(type: .netSales, value: .currency(98_765_432, CurrencySettings())),
-            .init(type: .visitors, value: .count(67)),
-            .init(type: .conversion, value: .percentage(23.0 / 67.0))
-        ]
+        let currencySettings = CurrencySettings()
+        let revenue = StoreInfoMetric(type: .revenue,
+                                      value: .currency(Decimal(123_456_789), currencySettings),
+                                      previousValue: .currency(Decimal(118_000_000), currencySettings))
+        let orders = StoreInfoMetric(type: .orders,
+                                     value: .count(23),
+                                     previousValue: .count(31))
+        let itemsSold = StoreInfoMetric(type: .itemsSold,
+                                        value: .count(41),
+                                        previousValue: .count(34))
+        let averageOrderValue = StoreInfoMetric(type: .averageOrderValue,
+                                                value: .currency(Decimal(5_367), currencySettings),
+                                                previousValue: .currency(Decimal(4_800), currencySettings))
+        let netSales = StoreInfoMetric(type: .netSales,
+                                       value: .currency(Decimal(98_765_432), currencySettings),
+                                       previousValue: .currency(Decimal(102_000_000), currencySettings))
+        let visitors = StoreInfoMetric(type: .visitors,
+                                       value: .count(67),
+                                       previousValue: .count(71))
+        let conversion = StoreInfoMetric(type: .conversion,
+                                         value: .percentage(23.0 / 67.0),
+                                         previousValue: .percentage(0.29))
+
+        return [revenue, orders, itemsSold, averageOrderValue, netSales, visitors, conversion]
     }
 
     static var exampleData: StoreInfoData {

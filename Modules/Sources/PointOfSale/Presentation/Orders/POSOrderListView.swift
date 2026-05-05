@@ -193,9 +193,16 @@ private struct POSOrderRowView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var minHeight: CGFloat {
         min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
+    }
+
+    /// Suppress the selection border on compact widths — there is no adjacent detail pane on phone,
+    /// so the border indicates nothing useful and looks like a stray visual artifact.
+    private var showsSelectionBorder: Bool {
+        isSelected && horizontalSizeClass == .regular
     }
 
     var body: some View {
@@ -211,7 +218,7 @@ private struct POSOrderRowView: View {
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .overlay {
-            if isSelected {
+            if showsSelectionBorder {
                 RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
                     .stroke(Color.posOnSurface, lineWidth: 2)
             }

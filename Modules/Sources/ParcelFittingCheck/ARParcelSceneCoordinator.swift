@@ -6,7 +6,9 @@ import Combine
 final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARCoachingOverlayViewDelegate {
     weak var arView: ARView?
     var dimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
+    private let initialDimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
     var lastResetTrigger: Int = 0
+    private var hasPlacedOnce = false
 
     var onPlaced: (() -> Void)?
     var onRemoved: (() -> Void)?
@@ -42,6 +44,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         placeCuboid(at: world)
         installGestures()
         placed = true
+        hasPlacedOnce = true
         onPlaced?()
     }
 
@@ -56,6 +59,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         cuboid = nil
         resizeInteraction.end()
         cachedResizeEnvironment = nil
+        dimensions = initialDimensions
         placed = false
         // Deferred — removeCuboid is called from updateUIView, which runs
         // inside SwiftUI's render pass. Binding writes during a render pass
@@ -206,7 +210,12 @@ private extension ARParcelSceneCoordinator {
            let hit = arView.session.raycast(strict).first {
             return SIMD3(hit.worldTransform.columns.3.x, hit.worldTransform.columns.3.y, hit.worldTransform.columns.3.z)
         }
-        if let estimated = arView.makeRaycastQuery(from: location, allowing: .estimatedPlane, alignment: .horizontal),
+        // Estimated planes are only used for the very first placement (before
+        // ARKit has detected real geometry). After trash, real planes should
+        // still be available — falling back to estimates here would place the
+        // cuboid at an unreliable height.
+        if !hasPlacedOnce,
+           let estimated = arView.makeRaycastQuery(from: location, allowing: .estimatedPlane, alignment: .horizontal),
            let hit = arView.session.raycast(estimated).first {
             return SIMD3(hit.worldTransform.columns.3.x, hit.worldTransform.columns.3.y, hit.worldTransform.columns.3.z)
         }

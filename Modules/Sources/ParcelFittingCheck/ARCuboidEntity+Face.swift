@@ -3,16 +3,34 @@ extension ARCuboidEntity {
     /// is perpendicular to and which side along that axis it sits on. With the
     /// cuboid centred on its X/Z root and rising from local Y 0 to 1, the
     /// `+X` face is at world `+x`, the `+Y` face is the top, etc.
-    struct Face: Hashable {
-        let axis: Axis
-        let isPositiveSide: Bool
+    enum Face {
+        case positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ
 
-        static let positiveX = Face(axis: .x, isPositiveSide: true)
-        static let negativeX = Face(axis: .x, isPositiveSide: false)
-        static let positiveY = Face(axis: .y, isPositiveSide: true)
-        static let negativeY = Face(axis: .y, isPositiveSide: false)
-        static let positiveZ = Face(axis: .z, isPositiveSide: true)
-        static let negativeZ = Face(axis: .z, isPositiveSide: false)
+        init(axis: Axis, isPositiveSide: Bool) {
+            switch (axis, isPositiveSide) {
+            case (.x, true): self = .positiveX
+            case (.x, false): self = .negativeX
+            case (.y, true): self = .positiveY
+            case (.y, false): self = .negativeY
+            case (.z, true): self = .positiveZ
+            case (.z, false): self = .negativeZ
+            }
+        }
+
+        var axis: Axis {
+            switch self {
+            case .positiveX, .negativeX: return .x
+            case .positiveY, .negativeY: return .y
+            case .positiveZ, .negativeZ: return .z
+            }
+        }
+
+        var isPositiveSide: Bool {
+            switch self {
+            case .positiveX, .positiveY, .positiveZ: return true
+            case .negativeX, .negativeY, .negativeZ: return false
+            }
+        }
 
         fileprivate var bitIndex: Int { axis.simdIndex * 2 + (isPositiveSide ? 1 : 0) }
     }

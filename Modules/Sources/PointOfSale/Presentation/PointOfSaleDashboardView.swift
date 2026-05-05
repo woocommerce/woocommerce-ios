@@ -299,6 +299,7 @@ struct PointOfSaleDashboardView: View {
     @State private var phoneShowingCart: Bool = false
     @State private var phoneShowOrders: Bool = false
     @State private var phoneShowingBarcodeScannerSetup: Bool = false
+    @State private var phoneCartButtonPulse: Bool = false
 
     private var phoneOverflowMenu: some View {
         Menu {
@@ -346,10 +347,27 @@ struct PointOfSaleDashboardView: View {
             Text(String(format: Localization.phoneCart, posModel.cart.purchasableItems.count))
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
+                // Number flips smoothly between values instead of snapping.
+                .contentTransition(.numericText())
+                .animation(.snappy(duration: 0.25), value: posModel.cart.purchasableItems.count)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .padding(.horizontal, POSPadding.medium)
         .padding(.vertical, POSPadding.medium)
+        // Quick pulse to confirm an item was added — only on count increases, so removing items
+        // doesn't bounce the button distractingly.
+        .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
+        .onChange(of: posModel.cart.purchasableItems.count) { oldValue, newValue in
+            guard newValue > oldValue else { return }
+            withAnimation(.spring(response: 0.18, dampingFraction: 0.5)) {
+                phoneCartButtonPulse = true
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    phoneCartButtonPulse = false
+                }
+            }
+        }
         .accessibilityIdentifier("pos-phone-cart-button")
     }
 

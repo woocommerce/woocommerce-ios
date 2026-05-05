@@ -617,11 +617,20 @@ final class SupportChatViewModel {
 
     /// Maps a fetched transcript into local `ChatMessage` values. Unknown roles are dropped
     /// rather than rendered as garbage; ordering from the server (ts-ascending) is preserved.
+    /// Bot messages flagged for human support are also filtered out.
     private func handleFetchChatResult(_ result: Result<SupportChatResponse, Error>) {
         switch result {
         case .success(let response):
             sessionID = response.sessionID
             let rehydrated: [ChatMessage] = response.messages.compactMap { message in
+                // Filter out bot messages flagged for human support
+                if message.role == .bot,
+                   let flags = message.context?.flags,
+                   flags.forwardToHumanSupport {
+                    shouldPromptHumanSupport = true
+                    return nil
+                }
+
                 switch message.role {
                 case .user:
                     return ChatMessage(role: .user, text: message.content)

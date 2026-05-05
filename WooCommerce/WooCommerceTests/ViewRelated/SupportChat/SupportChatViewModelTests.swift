@@ -241,6 +241,158 @@ struct SupportChatViewModelTests {
         #expect(sut.isExecutingAction == false)
     }
 
+    // MARK: - Resume Chat Tests
+
+    @Test(.timeLimit(.minutes(1)))
+    func test_resumeIfNeeded_when_chat_flagged_for_human_support_then_sets_shouldPromptHumanSupport() async {
+        // Given
+        let chatID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        await confirmation { fetchCompleted in
+            stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+                switch action {
+                case let .fetchChat(_, _, completion):
+                    let flaggedMessage = SupportChatMessage(
+                        messageID: 2,
+                        role: .bot,
+                        content: "Please contact support.",
+                        context: SupportChatMessageContext(
+                            sources: [],
+                            flags: SupportChatFlags(
+                                forwardToHumanSupport: true,
+                                cannedResponse: false,
+                                loggedIn: true,
+                                branch: nil
+                            )
+                        )
+                    )
+                    let response = SupportChatResponse(
+                        chatID: chatID,
+                        sessionID: "session-1",
+                        botSlug: "test-bot",
+                        botVersion: "1.0",
+                        messages: [
+                            SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil),
+                            flaggedMessage
+                        ]
+                    )
+                    completion(.success(response))
+                    fetchCompleted()
+                default:
+                    break
+                }
+            }
+            let sut = SupportChatViewModel(
+                entryPoint: .chatHistory,
+                stores: stores,
+                chatID: chatID,
+                onContactHumanSupport: { _ in }
+            )
+
+            // When
+            sut.resumeIfNeeded()
+        }
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func test_resumeIfNeeded_when_chat_flagged_for_human_support_then_filters_flagged_message() async {
+        // Given
+        let chatID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = SupportChatViewModel(
+            entryPoint: .chatHistory,
+            stores: stores,
+            chatID: chatID,
+            onContactHumanSupport: { _ in }
+        )
+
+        await confirmation { fetchCompleted in
+            stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+                switch action {
+                case let .fetchChat(_, _, completion):
+                    let flaggedMessage = SupportChatMessage(
+                        messageID: 2,
+                        role: .bot,
+                        content: "Please contact support.",
+                        context: SupportChatMessageContext(
+                            sources: [],
+                            flags: SupportChatFlags(
+                                forwardToHumanSupport: true,
+                                cannedResponse: false,
+                                loggedIn: true,
+                                branch: nil
+                            )
+                        )
+                    )
+                    let response = SupportChatResponse(
+                        chatID: chatID,
+                        sessionID: "session-1",
+                        botSlug: "test-bot",
+                        botVersion: "1.0",
+                        messages: [
+                            SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil),
+                            flaggedMessage
+                        ]
+                    )
+                    completion(.success(response))
+                    fetchCompleted()
+                default:
+                    break
+                }
+            }
+
+            // When
+            sut.resumeIfNeeded()
+        }
+
+        // Then
+        #expect(sut.shouldPromptHumanSupport == true)
+        #expect(sut.messages.count == 1)
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func test_resumeIfNeeded_when_chat_not_flagged_then_shouldPromptHumanSupport_is_false() async {
+        // Given
+        let chatID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = SupportChatViewModel(
+            entryPoint: .chatHistory,
+            stores: stores,
+            chatID: chatID,
+            onContactHumanSupport: { _ in }
+        )
+
+        await confirmation { fetchCompleted in
+            stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+                switch action {
+                case let .fetchChat(_, _, completion):
+                    let response = SupportChatResponse(
+                        chatID: chatID,
+                        sessionID: "session-1",
+                        botSlug: "test-bot",
+                        botVersion: "1.0",
+                        messages: [
+                            SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil),
+                            SupportChatMessage(messageID: 2, role: .bot, content: "How can I help?", context: nil)
+                        ]
+                    )
+                    completion(.success(response))
+                    fetchCompleted()
+                default:
+                    break
+                }
+            }
+
+            // When
+            sut.resumeIfNeeded()
+        }
+
+        // Then
+        #expect(sut.shouldPromptHumanSupport == false)
+        #expect(sut.messages.count == 2)
+    }
+
     // MARK: - Test Helpers
 
     private func makeSUT(

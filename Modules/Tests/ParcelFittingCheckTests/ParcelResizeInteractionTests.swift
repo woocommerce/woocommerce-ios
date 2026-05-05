@@ -10,7 +10,6 @@ struct ParcelResizeInteractionTests {
 
     private static let initialPosition = SIMD3<Float>(0, 0, 0)
     private static let initialScale = SIMD3<Float>(0.20, 0.10, 0.15)
-    private static let cameraForward = SIMD3<Float>(0, 0, -1)
 
     /// Linear orthographic projection: world X horizontal, world Y vertical
     /// (screen Y is down so it's negated), world Z dropped. With this
@@ -22,9 +21,6 @@ struct ParcelResizeInteractionTests {
         ParcelResizeInteraction.Environment(
             projectToScreen: { world in
                 CGPoint(x: CGFloat(world.x) * 1000, y: CGFloat(-world.y) * 1000)
-            },
-            projectToPlane: { screen, planePoint, _ in
-                SIMD3(Float(screen.x) / 1000, Float(-screen.y) / 1000, planePoint.z)
             },
             isUpperHalfHit: isUpperHalfHit
         )
@@ -43,9 +39,6 @@ struct ParcelResizeInteractionTests {
                     y: CGFloat(-world.y - 0.95 * world.z) * 1000
                 )
             },
-            projectToPlane: { screen, planePoint, _ in
-                SIMD3(Float(screen.x) / 1000, Float(-screen.y) / 1000, planePoint.z)
-            },
             isUpperHalfHit: isUpperHalfHit
         )
     }
@@ -57,7 +50,6 @@ struct ParcelResizeInteractionTests {
             cuboidPosition: initialPosition,
             cuboidScale: initialScale,
             cuboidYaw: 0,
-            cameraForward: cameraForward,
             fingers: fingers
         )
     }

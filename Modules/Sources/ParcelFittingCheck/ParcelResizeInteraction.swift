@@ -8,7 +8,6 @@ final class ParcelResizeInteraction {
         var cuboidPosition: SIMD3<Float>
         var cuboidScale: SIMD3<Float>
         var cuboidYaw: Float
-        var cameraForward: SIMD3<Float>
         var fingers: (first: CGPoint, second: CGPoint)
     }
 
@@ -19,7 +18,6 @@ final class ParcelResizeInteraction {
 
     struct Environment {
         var projectToScreen: (SIMD3<Float>) -> CGPoint?
-        var projectToPlane: (_ screen: CGPoint, _ planePoint: SIMD3<Float>, _ planeNormal: SIMD3<Float>) -> SIMD3<Float>?
         var isUpperHalfHit: (_ screen: CGPoint) -> Bool
     }
 
@@ -53,14 +51,17 @@ final class ParcelResizeInteraction {
 
     private struct FingerLatch {
         let face: ARCuboidEntity.Face
-        let initialAxisDisplacement: Float
+        let initialScreen: CGPoint
     }
 
     private struct ResizeContext {
         let axis: ARCuboidEntity.Axis
         let axisWorld: SIMD3<Float>
-        let cuboidCenterAtStart: SIMD3<Float>
-        let planeNormal: SIMD3<Float>
+        /// Unit vector along `axis` projected into screen space at gesture
+        /// start. Multiplied by `pixelsPerMeter`, it converts screen-pixel
+        /// movement along this direction into world-axis metres.
+        let axisScreenUnit: CGPoint
+        let pixelsPerMeter: CGFloat
         let initialScale: SIMD3<Float>
         let initialPosition: SIMD3<Float>
         let firstFinger: FingerLatch
@@ -85,13 +86,13 @@ final class ParcelResizeInteraction {
         // centre sits half-a-height up.
         let cuboidCenter = input.cuboidPosition + 0.5 * input.cuboidScale.y * axes.y
 
-        guard let pick = pickActiveAxis(
-            cuboidCenter: cuboidCenter,
-            axes: axes,
+        guard let projection = projectAxes(cuboidCenter: cuboidCenter, axes: axes, environment: env) else { return }
+        let pick = pickActiveAxis(
+            projection: projection,
             firstScreen: input.fingers.first,
-            secondScreen: input.fingers.second,
-            environment: env
-        ) else { return }
+            secondScreen: input.fingers.second
+        )
+        guard let pick else { return }
 
         // For Y, a vertical screen-space pinch is the natural cue. We accept
         // it without a hit-test when Y dominates; only when X or Z projects
@@ -103,35 +104,33 @@ final class ParcelResizeInteraction {
             guard firstUpper || secondUpper else { return }
         }
 
-        let axisWorld = axes[pick.axis]
+        let axisScreenVec = projection.axisVector(for: pick.axis)
+        let length = hypot(axisScreenVec.x, axisScreenVec.y)
+        guard length > Constants.minScreenDirectionLength else { return }
+        let axisScreenUnit = CGPoint(x: axisScreenVec.x / length, y: axisScreenVec.y / length)
+        let pixelsPerMeter = length / CGFloat(Constants.axisProbeDistance)
 
-        guard let (disp0, disp1) = axisDisplacements(
-            fingers: input.fingers,
-            planePoint: cuboidCenter,
-            planeNormal: input.cameraForward,
-            axisWorld: axisWorld,
-            environment: env
-        ) else { return }
-
-        // The finger with the larger axis projection drives the +face and the
-        // other drives the -face, even when both fingers are on the same side
-        // of the cuboid centre.
-        let firstIsPositive = disp0 >= disp1
+        // Score each finger's signed screen offset along the axis to decide
+        // which drives the +face vs the −face (the larger projection drives
+        // +face), even when both fingers are on the same side of the cuboid.
+        let firstAxisOffset = signedOffset(input.fingers.first, from: projection.center, along: axisScreenUnit)
+        let secondAxisOffset = signedOffset(input.fingers.second, from: projection.center, along: axisScreenUnit)
+        let firstIsPositive = firstAxisOffset >= secondAxisOffset
 
         let firstLatch = FingerLatch(
             face: ARCuboidEntity.Face(axis: pick.axis, isPositiveSide: firstIsPositive),
-            initialAxisDisplacement: disp0
+            initialScreen: input.fingers.first
         )
         let secondLatch = FingerLatch(
             face: ARCuboidEntity.Face(axis: pick.axis, isPositiveSide: !firstIsPositive),
-            initialAxisDisplacement: disp1
+            initialScreen: input.fingers.second
         )
 
         context = ResizeContext(
             axis: pick.axis,
-            axisWorld: axisWorld,
-            cuboidCenterAtStart: cuboidCenter,
-            planeNormal: input.cameraForward,
+            axisWorld: axes[pick.axis],
+            axisScreenUnit: axisScreenUnit,
+            pixelsPerMeter: pixelsPerMeter,
             initialScale: input.cuboidScale,
             initialPosition: input.cuboidPosition,
             firstFinger: firstLatch,
@@ -141,7 +140,7 @@ final class ParcelResizeInteraction {
     }
 
     /// Returns the new scale/position to commit, or `nil` if the change should
-    /// be skipped (jitter, missing context, projection failure).
+    /// be skipped (jitter, missing context).
     func update(fingers: (first: CGPoint, second: CGPoint), environment env: Environment) -> Output? {
         guard let context else { return nil }
 
@@ -153,16 +152,20 @@ final class ParcelResizeInteraction {
             }
         }
 
-        guard let (disp0, disp1) = axisDisplacements(
-            fingers: fingers,
-            planePoint: context.cuboidCenterAtStart,
-            planeNormal: context.planeNormal,
-            axisWorld: context.axisWorld,
-            environment: env
-        ) else { return nil }
-
-        let firstAxisDelta = disp0 - context.firstFinger.initialAxisDisplacement
-        let secondAxisDelta = disp1 - context.secondFinger.initialAxisDisplacement
+        // Screen-delta math is camera-independent: a finger held still on
+        // screen produces a zero delta even if the device drifts a little.
+        // Per-frame world raycasting would amplify camera tracking jitter
+        // into edge motion on the held-finger side.
+        let firstAxisDelta = axisDeltaInMetres(
+            fingerScreen: fingers.first,
+            initialScreen: context.firstFinger.initialScreen,
+            context: context
+        )
+        let secondAxisDelta = axisDeltaInMetres(
+            fingerScreen: fingers.second,
+            initialScreen: context.secondFinger.initialScreen,
+            context: context
+        )
         let firstOutward = signedOutwardDelta(face: context.firstFinger.face, axisDelta: firstAxisDelta)
         let secondOutward = signedOutwardDelta(face: context.secondFinger.face, axisDelta: secondAxisDelta)
 
@@ -230,6 +233,24 @@ private extension ParcelResizeInteraction {
         }
     }
 
+    /// Snapshot of the cuboid frame projected into screen space at gesture
+    /// start. Used to map world-axis selection to screen-pixel directions and
+    /// to convert finger screen movement into world-axis metres.
+    struct AxisProjection {
+        let center: CGPoint
+        let xVector: CGPoint
+        let yVector: CGPoint
+        let zVector: CGPoint
+
+        func axisVector(for axis: ARCuboidEntity.Axis) -> CGPoint {
+            switch axis {
+            case .x: return xVector
+            case .y: return yVector
+            case .z: return zVector
+            }
+        }
+    }
+
     func localAxes(yaw: Float) -> LocalAxes {
         LocalAxes(
             x: SIMD3(cos(yaw), 0, -sin(yaw)),
@@ -238,24 +259,34 @@ private extension ParcelResizeInteraction {
         )
     }
 
-    func pickActiveAxis(
+    func projectAxes(
         cuboidCenter: SIMD3<Float>,
         axes: LocalAxes,
-        firstScreen: CGPoint,
-        secondScreen: CGPoint,
         environment env: Environment
-    ) -> (axis: ARCuboidEntity.Axis, ambiguity: Float)? {
-        guard let centerScreen = env.projectToScreen(cuboidCenter),
+    ) -> AxisProjection? {
+        guard let center = env.projectToScreen(cuboidCenter),
               let xEnd = env.projectToScreen(cuboidCenter + Constants.axisProbeDistance * axes.x),
               let yEnd = env.projectToScreen(cuboidCenter + Constants.axisProbeDistance * axes.y),
               let zEnd = env.projectToScreen(cuboidCenter + Constants.axisProbeDistance * axes.z) else { return nil }
+        return AxisProjection(
+            center: center,
+            xVector: CGPoint(x: xEnd.x - center.x, y: xEnd.y - center.y),
+            yVector: CGPoint(x: yEnd.x - center.x, y: yEnd.y - center.y),
+            zVector: CGPoint(x: zEnd.x - center.x, y: zEnd.y - center.y)
+        )
+    }
 
-        let xDir = CGPoint(x: xEnd.x - centerScreen.x, y: xEnd.y - centerScreen.y)
-        let yDir = CGPoint(x: yEnd.x - centerScreen.x, y: yEnd.y - centerScreen.y)
-        let zDir = CGPoint(x: zEnd.x - centerScreen.x, y: zEnd.y - centerScreen.y)
+    func pickActiveAxis(
+        projection: AxisProjection,
+        firstScreen: CGPoint,
+        secondScreen: CGPoint
+    ) -> (axis: ARCuboidEntity.Axis, ambiguity: Float)? {
         let fingerDir = CGPoint(x: secondScreen.x - firstScreen.x, y: secondScreen.y - firstScreen.y)
-
-        let candidates: [(ARCuboidEntity.Axis, CGPoint)] = [(.x, xDir), (.y, yDir), (.z, zDir)]
+        let candidates: [(ARCuboidEntity.Axis, CGPoint)] = [
+            (.x, projection.xVector),
+            (.y, projection.yVector),
+            (.z, projection.zVector)
+        ]
         var bestAxis: ARCuboidEntity.Axis?
         var bestScore: CGFloat = 0
         var secondBestScore: CGFloat = 0
@@ -275,19 +306,19 @@ private extension ParcelResizeInteraction {
         return (bestAxis, ambiguity)
     }
 
-    func axisDisplacements(
-        fingers: (first: CGPoint, second: CGPoint),
-        planePoint: SIMD3<Float>,
-        planeNormal: SIMD3<Float>,
-        axisWorld: SIMD3<Float>,
-        environment env: Environment
-    ) -> (Float, Float)? {
-        guard let hit0 = env.projectToPlane(fingers.first, planePoint, planeNormal),
-              let hit1 = env.projectToPlane(fingers.second, planePoint, planeNormal) else { return nil }
-        return (
-            simd_dot(hit0 - planePoint, axisWorld),
-            simd_dot(hit1 - planePoint, axisWorld)
-        )
+    func signedOffset(_ point: CGPoint, from origin: CGPoint, along axisScreenUnit: CGPoint) -> CGFloat {
+        (point.x - origin.x) * axisScreenUnit.x + (point.y - origin.y) * axisScreenUnit.y
+    }
+
+    private func axisDeltaInMetres(
+        fingerScreen: CGPoint,
+        initialScreen: CGPoint,
+        context: ResizeContext
+    ) -> Float {
+        let dx = fingerScreen.x - initialScreen.x
+        let dy = fingerScreen.y - initialScreen.y
+        let projected = dx * context.axisScreenUnit.x + dy * context.axisScreenUnit.y
+        return Float(projected / context.pixelsPerMeter)
     }
 
     func signedOutwardDelta(face: ARCuboidEntity.Face, axisDelta: Float) -> Float {

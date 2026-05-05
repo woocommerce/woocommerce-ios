@@ -150,9 +150,6 @@ private extension ARParcelSceneCoordinator {
         /// Y 0…1 (matching the wireframe geometry). Half-height upward from
         /// the root anchor.
         static let collisionShapeYOffset: Float = 0.5
-
-        /// Numerical-stability epsilon for plane-ray intersection.
-        static let nearZeroEpsilon: Float = 1e-6
     }
 
     func placeCuboid(at world: SIMD3<Float>) {
@@ -240,7 +237,6 @@ private extension ARParcelSceneCoordinator {
             cuboidPosition: cuboid.root.position,
             cuboidScale: cuboid.root.transform.scale,
             cuboidYaw: yaw(of: cuboid.root.transform.rotation),
-            cameraForward: cameraForward(),
             fingers: fingers
         )
     }
@@ -250,15 +246,6 @@ private extension ARParcelSceneCoordinator {
             projectToScreen: { [weak self] world in
                 guard let arView = self?.arView else { return nil }
                 return arView.project(world)
-            },
-            projectToPlane: { [weak self] screen, planePoint, planeNormal in
-                guard let arView = self?.arView else { return nil }
-                return Self.projectToPlane(
-                    arView: arView,
-                    screenPoint: screen,
-                    planePoint: planePoint,
-                    planeNormal: planeNormal
-                )
             },
             isUpperHalfHit: { [weak self] screen in
                 guard let self, let arView = self.arView, let cuboid = self.cuboid else { return false }
@@ -272,25 +259,5 @@ private extension ARParcelSceneCoordinator {
 
     func yaw(of rotation: simd_quatf) -> Float {
         2 * atan2(rotation.imag.y, rotation.real)
-    }
-
-    func cameraForward() -> SIMD3<Float> {
-        guard let arView else { return SIMD3(0, 0, -1) }
-        let mat = arView.cameraTransform.matrix
-        return -SIMD3<Float>(mat.columns.2.x, mat.columns.2.y, mat.columns.2.z)
-    }
-
-    static func projectToPlane(
-        arView: ARView,
-        screenPoint: CGPoint,
-        planePoint: SIMD3<Float>,
-        planeNormal: SIMD3<Float>
-    ) -> SIMD3<Float>? {
-        guard let ray = arView.ray(through: screenPoint) else { return nil }
-        let denom = simd_dot(ray.direction, planeNormal)
-        guard abs(denom) > Constants.nearZeroEpsilon else { return nil }
-        let t = simd_dot(planePoint - ray.origin, planeNormal) / denom
-        guard t > 0 else { return nil }
-        return ray.origin + t * ray.direction
     }
 }

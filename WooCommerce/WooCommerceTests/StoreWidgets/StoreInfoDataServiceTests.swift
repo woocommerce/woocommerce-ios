@@ -58,6 +58,29 @@ struct StoreInfoDataServiceTests {
         #expect(previous.timezone == timeZone)
     }
 
+    @Test func previousPeriod_whenHourlyRangeSpansMultipleDays_thenDerivesDurationFromBounds() throws {
+        // Given
+        let range = StoreInfoDataService.DateRange(
+            orderStatsGranularity: .hourly,
+            orderStatsQuantity: 48,
+            earliestDateToInclude: try makeDate(year: 2026, month: 4, day: 28, hour: 0, minute: 0, second: 0),
+            latestDateToInclude: try makeDate(year: 2026, month: 4, day: 29, hour: 23, minute: 59, second: 59),
+            summaryStatsPeriod: .day,
+            timezone: timeZone
+        )
+
+        // When
+        let previous = range.previousPeriod()
+
+        // Then
+        #expect(previous.earliestDateToInclude == (try makeDate(year: 2026, month: 4, day: 26, hour: 0, minute: 0, second: 0)))
+        #expect(previous.latestDateToInclude == (try makeDate(year: 2026, month: 4, day: 27, hour: 23, minute: 59, second: 59)))
+        #expect(previous.orderStatsGranularity == range.orderStatsGranularity)
+        #expect(previous.orderStatsQuantity == range.orderStatsQuantity)
+        #expect(previous.summaryStatsPeriod == range.summaryStatsPeriod)
+        #expect(previous.timezone == timeZone)
+    }
+
     // MARK: - Contiguity invariant
 
     @Test func previousPeriod_whenRangeIsToday_thenIsContiguousWithCurrentPeriod() throws {

@@ -247,16 +247,14 @@ extension StoreInfoDataService.DateRange {
         var calendar = Calendar.current
         calendar.timeZone = timezone
 
-        // Number of calendar days the current period covers. `.today` uses hourly
-        // granularity over a single calendar day; the rolling 7/30-day ranges use
-        // `orderStatsQuantity` directly.
-        let durationInDays: Int
-        switch orderStatsGranularity {
-        case .hourly:
-            durationInDays = 1
-        default:
-            durationInDays = orderStatsQuantity
-        }
+        // Derive the period length from the bounds rather than from `orderStatsGranularity`,
+        // so this stays correct for any future range that uses hourly granularity over
+        // multiple days. Both bounds are normalized to start-of-day first so DST transitions
+        // don't round the day count off by one.
+        let startOfEarliestDate = calendar.startOfDay(for: earliestDateToInclude)
+        let startOfLatestDate = calendar.startOfDay(for: latestDateToInclude)
+        let fullDays = calendar.dateComponents([.day], from: startOfEarliestDate, to: startOfLatestDate).day ?? 0
+        let durationInDays = fullDays + 1
 
         let previousLatestDate = calendar.date(byAdding: .second, value: -1, to: earliestDateToInclude) ?? earliestDateToInclude
         let previousEarliestDate = calendar.date(byAdding: .day, value: -durationInDays, to: earliestDateToInclude) ?? earliestDateToInclude

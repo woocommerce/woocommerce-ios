@@ -91,7 +91,7 @@ struct SupportChatView: View {
     private func messageRow(for message: SupportChatViewModel.ChatMessage) -> some View {
         switch message.content {
         case .text(let text):
-            SupportChatMessageRow(role: message.role, text: text)
+            SupportChatMessageRow(role: message.role, text: text, failed: message.failed)
 
         case .issuePicker(let issues):
             issuePickerBubble(issues: issues)

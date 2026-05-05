@@ -220,6 +220,25 @@ struct SupportChatViewModelTests {
         #expect(message.contains("couldn't connect"), "Expected generic copy, got: \(message)")
     }
 
+    @Test func test_sendMessage_when_failure_then_marks_last_user_message_as_failed() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, completion) = action {
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
+            }
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "hello"
+
+        // When
+        sut.sendMessage()
+
+        // Then
+        let lastUserMessage = sut.messages.last { $0.role == .user }
+        #expect(lastUserMessage?.failed == true, "Expected the failed user bubble to be marked")
+    }
+
     @Test func test_sendMessage_when_failure_with_timeout_then_state_is_generic_error() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))

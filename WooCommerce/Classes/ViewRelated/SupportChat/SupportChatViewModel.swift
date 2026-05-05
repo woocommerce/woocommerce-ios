@@ -86,20 +86,32 @@ final class SupportChatViewModel {
         let role: SupportChatRole
         let content: MessageContent
         let timestamp: Date
+        /// `true` when sending this message failed. Drives the failed-bubble visual indicator.
+        let failed: Bool
 
-        init(id: UUID = UUID(), role: SupportChatRole, content: MessageContent, timestamp: Date = Date()) {
+        init(id: UUID = UUID(),
+             role: SupportChatRole,
+             content: MessageContent,
+             timestamp: Date = Date(),
+             failed: Bool = false) {
             self.id = id
             self.role = role
             self.content = content
             self.timestamp = timestamp
+            self.failed = failed
         }
 
         /// Convenience initializer for text messages.
-        init(id: UUID = UUID(), role: SupportChatRole, text: String, timestamp: Date = Date()) {
+        init(id: UUID = UUID(),
+             role: SupportChatRole,
+             text: String,
+             timestamp: Date = Date(),
+             failed: Bool = false) {
             self.id = id
             self.role = role
             self.content = .text(text)
             self.timestamp = timestamp
+            self.failed = failed
         }
     }
 
@@ -609,8 +621,23 @@ final class SupportChatViewModel {
 
         case .failure(let error):
             DDLogError("⛔️ Support chat error: \(error)")
+            markLastUserMessageAsFailed()
             state = .error(errorMessage(for: error))
         }
+    }
+
+    /// Replaces the most recent `.user` message with a copy that has `failed = true`,
+    /// so the UI can render the failed-bubble indicator.
+    private func markLastUserMessageAsFailed() {
+        guard let index = messages.lastIndex(where: { $0.role == .user }) else { return }
+        let prev = messages[index]
+        messages[index] = ChatMessage(
+            id: prev.id,
+            role: prev.role,
+            content: prev.content,
+            timestamp: prev.timestamp,
+            failed: true
+        )
     }
 
     /// Maps a fetched transcript into local `ChatMessage` values. Unknown roles are dropped

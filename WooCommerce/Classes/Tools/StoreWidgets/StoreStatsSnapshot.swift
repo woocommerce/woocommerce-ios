@@ -113,12 +113,7 @@ struct StoreStatsSnapshotStore {
     }
 
     func storePickerSnapshots() -> [StoreStatsSnapshot] {
-        let selectableSnapshots = snapshots().filter { $0.isSelectableInStorePicker }
-        if selectableSnapshots.isEmpty,
-           let defaultStoreSnapshot = defaultStoreSnapshot() {
-            return [defaultStoreSnapshot]
-        }
-        return selectableSnapshots
+        snapshots().filter { $0.isSelectableInStorePicker }
     }
 
     func save(_ snapshots: [StoreStatsSnapshot]) {

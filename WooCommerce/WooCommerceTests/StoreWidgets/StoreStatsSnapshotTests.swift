@@ -95,12 +95,10 @@ struct StoreStatsSnapshotTests {
         #expect(snapshots[0].name == "Default Store")
         #expect(snapshots[0].isDefault)
         #expect(snapshots[0].isSelectableInStorePicker == false)
-        #expect(pickerSnapshots.map(\.siteID) == [123])
-        #expect(pickerSnapshots[0].name == "Default Store")
-        #expect(pickerSnapshots[0].isSelectableInStorePicker == false)
+        #expect(pickerSnapshots.isEmpty)
     }
 
-    @Test func storePickerSnapshots_whenSavedListIsEmpty_thenReturnsDefaultStoreFallback() {
+    @Test func storePickerSnapshots_whenSavedListIsEmpty_thenReturnsNoSelectableStores() {
         // Given
         let userDefaults = makeUserDefaults()
         userDefaults.set(Int64(123), forKey: .defaultStoreID)
@@ -114,9 +112,7 @@ struct StoreStatsSnapshotTests {
 
         // Then
         #expect(snapshots.isEmpty)
-        #expect(pickerSnapshots.map(\.siteID) == [123])
-        #expect(pickerSnapshots[0].name == "Default Store")
-        #expect(pickerSnapshots[0].isSelectableInStorePicker == false)
+        #expect(pickerSnapshots.isEmpty)
     }
 
     @Test func storePickerSnapshots_whenSavedListHasSelectableStores_thenReturnsThoseStores() {

@@ -3,8 +3,8 @@ import Testing
 import simd
 @testable import ParcelFittingCheck
 
-@Suite("ParcelResizeInteraction")
-struct ParcelResizeInteractionTests {
+@Suite("CuboidResizeInteraction")
+struct CuboidResizeInteractionTests {
 
     // MARK: - Fixtures
 
@@ -17,8 +17,8 @@ struct ParcelResizeInteractionTests {
     /// Z is invisible so its score is zero.
     private static func linearProjection(
         isUpperHalfHit: @escaping (CGPoint) -> Bool = { _ in false }
-    ) -> ParcelResizeInteraction.Environment {
-        ParcelResizeInteraction.Environment(
+    ) -> CuboidResizeInteraction.Environment {
+        CuboidResizeInteraction.Environment(
             projectToScreen: { world in
                 CGPoint(x: CGFloat(world.x) * 1000, y: CGFloat(-world.y) * 1000)
             },
@@ -31,8 +31,8 @@ struct ParcelResizeInteractionTests {
     /// upper-half hit-test fallback.
     private static func ambiguousYProjection(
         isUpperHalfHit: @escaping (CGPoint) -> Bool
-    ) -> ParcelResizeInteraction.Environment {
-        ParcelResizeInteraction.Environment(
+    ) -> CuboidResizeInteraction.Environment {
+        CuboidResizeInteraction.Environment(
             projectToScreen: { world in
                 CGPoint(
                     x: CGFloat(world.x) * 1000,
@@ -45,8 +45,8 @@ struct ParcelResizeInteractionTests {
 
     private static func makeBeginInput(
         fingers: (first: CGPoint, second: CGPoint)
-    ) -> ParcelResizeInteraction.BeginInput {
-        ParcelResizeInteraction.BeginInput(
+    ) -> CuboidResizeInteraction.BeginInput {
+        CuboidResizeInteraction.BeginInput(
             cuboidPosition: initialPosition,
             cuboidScale: initialScale,
             cuboidYaw: 0,
@@ -58,7 +58,7 @@ struct ParcelResizeInteractionTests {
 
     @Test func test_isActive_when_interaction_is_fresh_then_returns_false() {
         // Given
-        let interaction = ParcelResizeInteraction()
+        let interaction = CuboidResizeInteraction()
 
         // Then
         #expect(!interaction.isActive)
@@ -67,7 +67,7 @@ struct ParcelResizeInteractionTests {
 
     @Test func test_end_when_called_after_begin_then_clears_state() {
         // Given
-        let interaction = ParcelResizeInteraction()
+        let interaction = CuboidResizeInteraction()
         let input = Self.makeBeginInput(fingers: (CGPoint(x: -50, y: 0), CGPoint(x: 50, y: 0)))
         interaction.begin(input: input, environment: Self.linearProjection())
         #expect(interaction.isActive)
@@ -85,7 +85,7 @@ struct ParcelResizeInteractionTests {
 
     @Test func test_begin_when_Y_pick_is_ambiguous_and_no_upper_half_hit_then_does_not_activate() {
         // Given
-        let interaction = ParcelResizeInteraction()
+        let interaction = CuboidResizeInteraction()
         let input = Self.makeBeginInput(fingers: (CGPoint(x: 0, y: 100), CGPoint(x: 0, y: -100)))
 
         // When
@@ -97,7 +97,7 @@ struct ParcelResizeInteractionTests {
 
     @Test func test_begin_when_Y_pick_is_ambiguous_and_finger_hits_upper_half_then_activates_on_Y() {
         // Given
-        let interaction = ParcelResizeInteraction()
+        let interaction = CuboidResizeInteraction()
         let upperFinger = CGPoint(x: 0, y: -100)
         let lowerFinger = CGPoint(x: 0, y: 100)
         let input = Self.makeBeginInput(fingers: (upperFinger, lowerFinger))
@@ -116,7 +116,7 @@ struct ParcelResizeInteractionTests {
 
     @Test func test_update_when_called_before_begin_then_returns_nil() {
         // Given
-        let interaction = ParcelResizeInteraction()
+        let interaction = CuboidResizeInteraction()
 
         // When
         let result = interaction.update(
@@ -130,7 +130,7 @@ struct ParcelResizeInteractionTests {
 
     @Test func test_update_when_finger_motion_is_below_jitter_threshold_then_returns_nil() {
         // Given
-        let interaction = ParcelResizeInteraction()
+        let interaction = CuboidResizeInteraction()
         let env = Self.linearProjection()
         interaction.begin(
             input: Self.makeBeginInput(fingers: (CGPoint(x: -50, y: 0), CGPoint(x: 50, y: 0))),
@@ -149,7 +149,7 @@ struct ParcelResizeInteractionTests {
 
     @Test func test_update_when_pinch_is_symmetric_then_grows_axis_without_shifting_position() throws {
         // Given
-        let interaction = ParcelResizeInteraction()
+        let interaction = CuboidResizeInteraction()
         let env = Self.linearProjection()
         interaction.begin(
             input: Self.makeBeginInput(fingers: (CGPoint(x: -50, y: 0), CGPoint(x: 50, y: 0))),
@@ -174,7 +174,7 @@ struct ParcelResizeInteractionTests {
 
     @Test func test_update_when_shrinking_past_floor_then_clamps_to_minimum_size() throws {
         // Given
-        let interaction = ParcelResizeInteraction()
+        let interaction = CuboidResizeInteraction()
         let env = Self.linearProjection()
         interaction.begin(
             input: Self.makeBeginInput(fingers: (CGPoint(x: -200, y: 0), CGPoint(x: 200, y: 0))),
@@ -188,12 +188,12 @@ struct ParcelResizeInteractionTests {
         ))
 
         // Then
-        #expect(approxEqual(output.scale.x, ParcelResizeInteraction.Constants.minSizeMeters))
+        #expect(approxEqual(output.scale.x, CuboidResizeInteraction.Constants.minSizeMeters))
     }
 
     @Test func test_update_when_X_axis_move_is_asymmetric_then_shifts_position_by_half_the_imbalance() throws {
         // Given
-        let interaction = ParcelResizeInteraction()
+        let interaction = CuboidResizeInteraction()
         let env = Self.linearProjection()
         interaction.begin(
             input: Self.makeBeginInput(fingers: (CGPoint(x: -50, y: 0), CGPoint(x: 50, y: 0))),
@@ -215,7 +215,7 @@ struct ParcelResizeInteractionTests {
 
     @Test func test_update_when_one_finger_pushes_inward_and_the_other_outward_then_each_face_moves_by_its_finger_delta() throws {
         // Given
-        let interaction = ParcelResizeInteraction()
+        let interaction = CuboidResizeInteraction()
         let env = Self.linearProjection()
         interaction.begin(
             input: Self.makeBeginInput(fingers: (CGPoint(x: -50, y: 0), CGPoint(x: 50, y: 0))),
@@ -244,7 +244,7 @@ struct ParcelResizeInteractionTests {
 
     @Test func test_update_when_Y_axis_resizes_then_position_does_not_shift() throws {
         // Given
-        let interaction = ParcelResizeInteraction()
+        let interaction = CuboidResizeInteraction()
         let env = Self.linearProjection()
         interaction.begin(
             input: Self.makeBeginInput(fingers: (CGPoint(x: 0, y: -50), CGPoint(x: 0, y: 50))),

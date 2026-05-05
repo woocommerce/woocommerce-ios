@@ -31,8 +31,8 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     var tapGesture: UITapGestureRecognizer?
     var twoFingerGesture: TwoFingerCuboidGesture?
     private var rotationStartYaw: Float = 0
-    private let resizeInteraction = ParcelResizeInteraction()
-    private var cachedResizeEnvironment: ParcelResizeInteraction.Environment?
+    private let resizeInteraction = CuboidResizeInteraction()
+    private var cachedResizeEnvironment: CuboidResizeInteraction.Environment?
 
     @objc func handleTap(_ gesture: UITapGestureRecognizer) {
         guard !placed, let arView else { return }
@@ -232,8 +232,8 @@ private extension ARParcelSceneCoordinator {
     func makeBeginInput(
         cuboid: ARCuboidEntity,
         fingers: (first: CGPoint, second: CGPoint)
-    ) -> ParcelResizeInteraction.BeginInput {
-        ParcelResizeInteraction.BeginInput(
+    ) -> CuboidResizeInteraction.BeginInput {
+        CuboidResizeInteraction.BeginInput(
             cuboidPosition: cuboid.root.position,
             cuboidScale: cuboid.root.transform.scale,
             cuboidYaw: yaw(of: cuboid.root.transform.rotation),
@@ -241,8 +241,8 @@ private extension ARParcelSceneCoordinator {
         )
     }
 
-    func makeResizeEnvironment() -> ParcelResizeInteraction.Environment {
-        ParcelResizeInteraction.Environment(
+    func makeResizeEnvironment() -> CuboidResizeInteraction.Environment {
+        CuboidResizeInteraction.Environment(
             projectToScreen: { [weak self] world in
                 guard let arView = self?.arView else { return nil }
                 return arView.project(world)

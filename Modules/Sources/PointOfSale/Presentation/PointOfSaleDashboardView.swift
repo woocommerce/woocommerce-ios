@@ -5,6 +5,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dismiss) private var dismiss
@@ -248,6 +249,25 @@ struct PointOfSaleDashboardView: View {
         }
         .posFullScreenCover(isPresented: $phoneShowingBarcodeScannerSetup) {
             POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
+        }
+        // CartView's edit-custom-amount cover is gated to iPad — on phone we present it
+        // here, at the dashboard level, so it sits above the cart sheet (and the cart sheet's
+        // POSSheet binding can dismiss without tearing down the cover host).
+        .if(isPhoneLayout) { view in
+            view.posFullScreenCover(item: Binding(
+                get: { posModel.editingCustomAmount },
+                set: { posModel.editingCustomAmount = $0 }
+            )) { customAmount in
+                AddCustomAmountView(
+                    currencySettings: currencyProvider.currencySettings,
+                    editing: customAmount,
+                    backButtonStyle: .close,
+                    onDismiss: { posModel.editingCustomAmount = nil },
+                    onSubmit: { updated in
+                        posModel.upsertCustomAmount(updated, mode: .edit)
+                    }
+                )
+            }
         }
         .animation(.default, value: posModel.orderStage)
         .ignoresSafeArea()

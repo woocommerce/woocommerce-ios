@@ -76,19 +76,26 @@ struct CartView: View {
             }
             // Cart-side edit only: the add path pushes from the products list and tracks
             // its own `mode: .add` analytics inline in `ItemListView`.
-            .posFullScreenCover(item: $posModel.editingCustomAmount) { customAmount in
-                AddCustomAmountView(
-                    currencySettings: currencyProvider.currencySettings,
-                    editing: customAmount,
-                    backButtonStyle: .close,
-                    // Explicit-dismiss path (back button + post-submit). System-driven dismissal
-                    // already nils the `item` binding; this closure handles the user-driven cases
-                    // where `submit()` calls `onDismiss()` to close the cover.
-                    onDismiss: { posModel.editingCustomAmount = nil },
-                    onSubmit: { updated in
-                        posModel.upsertCustomAmount(updated, mode: .edit)
-                    }
-                )
+            //
+            // iPad-only here. On phone the cart is presented as a sheet; presenting a
+            // .posFullScreenCover from inside it triggers POSSheet's coverManager check
+            // and the sheet dismisses CartView along with the cover. The dashboard hosts
+            // the same cover for compact width via `posModel.editingCustomAmount` directly.
+            .if(horizontalSizeClass != .compact) { view in
+                view.posFullScreenCover(item: $posModel.editingCustomAmount) { customAmount in
+                    AddCustomAmountView(
+                        currencySettings: currencyProvider.currencySettings,
+                        editing: customAmount,
+                        backButtonStyle: .close,
+                        // Explicit-dismiss path (back button + post-submit). System-driven dismissal
+                        // already nils the `item` binding; this closure handles the user-driven cases
+                        // where `submit()` calls `onDismiss()` to close the cover.
+                        onDismiss: { posModel.editingCustomAmount = nil },
+                        onSubmit: { updated in
+                            posModel.upsertCustomAmount(updated, mode: .edit)
+                        }
+                    )
+                }
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)

@@ -203,6 +203,12 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleCustomAmounts
 
+    /// Enables Point of Sale on iPhone (prototype).
+    /// When enabled, the iPad-only gate in `POSTabVisibilityChecker` is lifted and POS layouts
+    /// adapt to compact horizontal size class. Mirrors the Android `POS_ON_PHONES` flag.
+    ///
+    case pointOfSalePhonePrototype
+
     /// Enables self driven push token registration
     ///
     case selfDrivenPushToken

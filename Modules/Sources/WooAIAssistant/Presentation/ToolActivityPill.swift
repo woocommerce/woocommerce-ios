@@ -43,9 +43,13 @@ struct ToolActivityPill: View {
         }
         .padding(.horizontal, AssistantSpacing.medium)
         .padding(.vertical, AssistantSpacing.small)
-        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-        .background(Color.assistantToolBackground)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.medium))
+        .overlay(
+            RoundedRectangle(cornerRadius: AssistantRadius.medium)
+                .stroke(Color.assistantSurfaceBorder, lineWidth: 1)
+        )
     }
 
     private func toggle() {

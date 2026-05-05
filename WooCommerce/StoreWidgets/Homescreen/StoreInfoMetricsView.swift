@@ -1,21 +1,16 @@
 import SwiftUI
 import WidgetKit
 
-/// Medium home-screen widget view driven by the metric catalog.
+/// Home-screen widget dispatcher driven by the metric catalog.
 ///
-/// Companion to the legacy `StoreInfoView`; both render the same widget family but consume
+/// Companion to the legacy `StoreInfoView`; both render the same widget families but consume
 /// different shapes off `StoreInfoData`. Selection happens in `StoreInfoHomescreenWidget`
 /// based on `useMetricsHomescreenWidget`.
 ///
 struct StoreInfoMetricsView: View {
     let entryData: StoreInfoData
 
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.widgetFamily) private var family
-
-    var accessibilityDynamicTypeSize: DynamicTypeSize {
-        return .xLarge
-    }
 
     var body: some View {
         Group {
@@ -23,102 +18,13 @@ struct StoreInfoMetricsView: View {
             case .systemSmall:
                 StoreInfoSmallMetricsView(data: entryData)
             case .systemMedium, .systemLarge, .systemExtraLarge:
-                mediumView()
+                StoreInfoMediumMetricsView(data: entryData)
             default:
                 let _ = assertionFailure("This view only supports system families")
                 EmptyView()
             }
         }
         .widgetBackground(backgroundView: Color(.brand))
-    }
-
-    private func mediumView() -> some View {
-        VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
-            VStack(alignment: .leading, spacing: Layout.cardSpacing) {
-                HStack {
-                    Text(entryData.name)
-                        .storeNameStyle()
-                    Spacer()
-                    Text(entryData.range)
-                        .statRangeStyle()
-                }
-                Text(Localization.updatedAt(entryData.updatedTime))
-                    .statRangeStyle()
-            }
-
-            if dynamicTypeSize > accessibilityDynamicTypeSize {
-                MetricsAccessibilityCard(entryData: entryData)
-            } else {
-                StoreInfoMetricsCard(metrics: entryData.metrics)
-            }
-        }
-        .padding(.horizontal)
-    }
-
-    fileprivate enum Layout {
-        static let sectionSpacing = 8.0
-        static let cardSpacing = 2.0
-    }
-}
-
-/// Renders an ordered list of metrics in a 2-column grid for the medium widget.
-/// Operates on the presentation protocol so the layout is decoupled from
-/// the concrete `StoreInfoMetric` type.
-///
-struct StoreInfoMetricsCard: View {
-    let metrics: [any MetricPresentable]
-
-    /// Chunks metrics into rows of two for the medium widget layout.
-    ///
-    private var rows: [[any MetricPresentable]] {
-        stride(from: 0, to: metrics.count, by: Layout.metricsPerRow).map { start in
-            Array(metrics[start..<min(start + Layout.metricsPerRow, metrics.count)])
-        }
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: StoreInfoMetricsView.Layout.sectionSpacing) {
-            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                HStack {
-                    ForEach(Array(row.enumerated()), id: \.offset) { _, metric in
-                        MetricCellView(metric: metric)
-                    }
-                    // Pad the last row so a trailing cell keeps the grid alignment
-                    // when the row has fewer metrics than the slot count.
-                    if row.count < Layout.metricsPerRow {
-                        ForEach(0..<(Layout.metricsPerRow - row.count), id: \.self) { _ in
-                            Color.clear.frame(maxWidth: .infinity)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private enum Layout {
-        static let metricsPerRow = 2
-    }
-}
-
-/// Accessibility card for `StoreInfoMetricsView`. Shows only revenue and a `View More` button.
-///
-private struct MetricsAccessibilityCard: View {
-    let entryData: StoreInfoData
-
-    var body: some View {
-        let revenue = entryData.metric(of: .revenue)
-        Group {
-            VStack(alignment: .leading, spacing: StoreInfoMetricsView.Layout.cardSpacing) {
-                Text(revenue.title)
-                    .statTitleStyle()
-
-                Text(revenue.formattedValue)
-                    .statValueStyle()
-            }
-
-            Text(StoreInfoMetricsView.Localization.viewMore)
-                .statButtonStyle()
-        }
     }
 }
 
@@ -137,58 +43,6 @@ extension StoreInfoMetricsView {
                                             comment: "Displays the time when the widget was last updated. %1$@ is the time to render.")
             return LocalizedString.localizedStringWithFormat(format, updatedTime)
         }
-    }
-}
-
-/// View that renders widget for .systemSmall family
-private struct StoreInfoSmallMetricsView: View {
-    let data: StoreInfoData
-
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
-
-    private var visibleMetrics: [any MetricPresentable] {
-        let limit = dynamicTypeSize > .xLarge ? Layout.accessibilityMetricLimit : Layout.defaultMetricLimit
-        return Array(data.metrics.prefix(limit))
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Layout.headerSpacing) {
-            HStack(alignment: .top, spacing: Layout.noSpacing) {
-                Image("woo-mini-logo", bundle: nil)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: Layout.logoSize, height: Layout.logoSize)
-                    .accessibilityHidden(true)
-
-                Spacer(minLength: Layout.logoSpacing)
-
-                VStack(alignment: .leading, spacing: Layout.noSpacing) {
-                    Text(data.name)
-                        .storeNameStyle()
-
-                    Text(StoreInfoMetricsView.Localization.updatedAt(data.updatedTime))
-                        .statRangeStyle()
-                }
-            }
-
-            Spacer(minLength: Layout.metricSpacing)
-
-            VStack(alignment: .leading, spacing: Layout.metricSpacing) {
-                ForEach(Array(visibleMetrics.enumerated()), id: \.offset) { _, metric in
-                    MetricCellView(metric: metric)
-                }
-            }
-        }
-    }
-
-    private enum Layout {
-        static let noSpacing = 0.0
-        static let headerSpacing = 6.0
-        static let metricSpacing = 6.0
-        static let logoSpacing = 4.0
-        static let logoSize = 30.0
-        static let defaultMetricLimit = 2
-        static let accessibilityMetricLimit = 1
     }
 }
 

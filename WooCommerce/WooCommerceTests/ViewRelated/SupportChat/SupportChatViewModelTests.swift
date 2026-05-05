@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 import Yosemite
+import enum Networking.NetworkError
 @testable import WooCommerce
 
 @MainActor
@@ -173,6 +174,93 @@ struct SupportChatViewModelTests {
         #expect(sut.hasProceededToChat == true)
     }
 
+    // MARK: - Send Message Error Handling Tests
+
+    @Test func test_sendMessage_when_failure_with_429_then_state_is_rate_limit_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, completion) = action {
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 429, response: nil)))
+            }
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "hello"
+
+        // When
+        sut.sendMessage()
+
+        // Then
+        guard case let .error(message) = sut.state else {
+            Issue.record("Expected state to be .error after 429, got \(String(describing: sut.state))")
+            return
+        }
+        #expect(message.contains("limit"), "Expected rate-limit copy, got: \(message)")
+    }
+
+    @Test func test_sendMessage_when_failure_with_500_then_state_is_generic_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, completion) = action {
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
+            }
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "hello"
+
+        // When
+        sut.sendMessage()
+
+        // Then
+        guard case let .error(message) = sut.state else {
+            Issue.record("Expected state to be .error after 500, got \(String(describing: sut.state))")
+            return
+        }
+        #expect(message.contains("couldn't connect"), "Expected generic copy, got: \(message)")
+    }
+
+    @Test func test_sendMessage_when_failure_then_marks_last_user_message_as_failed() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, completion) = action {
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
+            }
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "hello"
+
+        // When
+        sut.sendMessage()
+
+        // Then
+        let lastUserMessage = sut.messages.last { $0.role == .user }
+        #expect(lastUserMessage?.failed == true, "Expected the failed user bubble to be marked")
+    }
+
+    @Test func test_sendMessage_when_failure_with_timeout_then_state_is_generic_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, completion) = action {
+                completion(.failure(NetworkError.timeout(response: nil)))
+            }
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "hello"
+
+        // When
+        sut.sendMessage()
+
+        // Then
+        guard case let .error(message) = sut.state else {
+            Issue.record("Expected state to be .error after timeout, got \(String(describing: sut.state))")
+            return
+        }
+        #expect(message.contains("couldn't connect"), "Expected generic copy, got: \(message)")
+    }
+
     // MARK: - Execute Action Tests
 
     @Test func test_executeAction_enableAnalytics_calls_service_and_reruns_test() async {
@@ -225,6 +313,28 @@ struct SupportChatViewModelTests {
         await sut.executeAction(.openNotificationSettings)
 
         // Then
+        #expect(sut.isExecutingAction == false)
+    }
+
+    @Test func test_executeAction_when_service_throws_then_state_is_error() async {
+        // Given — enableAnalytics fails
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .enableAnalyticsSetting(_, onCompletion) = action {
+                onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
+            }
+        }
+        let diagnosticsService = SupportDiagnosticsService(stores: stores)
+        let sut = makeSUT(stores: stores, diagnosticsService: diagnosticsService)
+
+        // When
+        await sut.executeAction(.enableAnalytics)
+
+        // Then
+        guard case .error = sut.state else {
+            Issue.record("Expected state to be .error after action failure, got \(String(describing: sut.state))")
+            return
+        }
         #expect(sut.isExecutingAction == false)
     }
 

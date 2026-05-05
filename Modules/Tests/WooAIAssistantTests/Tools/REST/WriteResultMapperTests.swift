@@ -124,7 +124,7 @@ struct WriteResultMapperTests {
     }
 
     @Test
-    func test_mapBatch_when_all_entries_succeed_then_summary_lists_updated_ids() {
+    func test_mapBatch_when_all_entries_succeed_then_summary_lists_updated_ids_and_no_cards() {
         // Given
         let body = """
         {"update": [{"id": 1, "status": "publish"}, {"id": 2, "status": "publish"}]}
@@ -132,9 +132,7 @@ struct WriteResultMapperTests {
         let response = WCRESTResponse(data: Data(body.utf8), statusCode: 200)
 
         // When
-        let result = WriteResultMapper.mapBatch(response,
-                                                toolName: "products_bulk_update",
-                                                family: .product)
+        let result = WriteResultMapper.mapBatch(response, toolName: "products_bulk_update")
 
         // Then
         guard case .success(let success) = result else {
@@ -150,7 +148,7 @@ struct WriteResultMapperTests {
                 Issue.record("expected updated_ids array")
             }
         }
-        #expect(success.uiStructured?.cards.count == 2)
+        #expect(success.uiStructured == nil)
     }
 
     @Test
@@ -165,9 +163,7 @@ struct WriteResultMapperTests {
         let response = WCRESTResponse(data: Data(body.utf8), statusCode: 200)
 
         // When
-        let result = WriteResultMapper.mapBatch(response,
-                                                toolName: "products_bulk_update",
-                                                family: .product)
+        let result = WriteResultMapper.mapBatch(response, toolName: "products_bulk_update")
 
         // Then
         guard case .success(let success) = result else {
@@ -186,9 +182,7 @@ struct WriteResultMapperTests {
         let response = WCRESTResponse(data: Data(), statusCode: 408)
 
         // When
-        let result = WriteResultMapper.mapBatch(response,
-                                                toolName: "orders_bulk_update",
-                                                family: .order)
+        let result = WriteResultMapper.mapBatch(response, toolName: "orders_bulk_update")
 
         // Then
         guard case .failed(let failed) = result else {

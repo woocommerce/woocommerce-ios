@@ -34,8 +34,7 @@ enum WriteResultMapper {
     /// WC's batch endpoint returns 200 even when individual entries fail, so the summary
     /// counts and surfaces per-entry errors rather than trusting the envelope status.
     static func mapBatch(_ response: WCRESTResponse,
-                         toolName: String,
-                         family: CardFamilyID) -> ToolResult {
+                         toolName: String) -> ToolResult {
         if let unknown = unknownOutcomeFailure(response: response, toolName: toolName) {
             return .failed(unknown)
         }
@@ -68,12 +67,10 @@ enum WriteResultMapper {
         if !failedEntries.isEmpty {
             summary["failed"] = .array(failedEntries)
         }
-        let cards = updatedIDs.map { id in
-            RenderedCardPayload(family: family, id: String(id), element: .object(["id": .int(id)]))
-        }
+        // Batch envelope carries only ids; surfacing per-id cards would render empty entity rows.
         return .success(.init(toolName: toolName,
                               structured: LLMPayloadCap.capped(.object(summary), toolName: toolName),
-                              uiStructured: cards.isEmpty ? nil : UIStructured(cards: cards)))
+                              uiStructured: nil))
     }
 
     private static func unknownOutcomeFailure(response: WCRESTResponse,

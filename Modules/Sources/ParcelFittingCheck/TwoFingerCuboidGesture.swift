@@ -31,10 +31,11 @@ final class TwoFingerCuboidGesture: UIGestureRecognizer {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         guard let view else { return }
+        let countBefore = trackedTouches.count
         for touch in touches where trackedTouches.count < 2 && !trackedTouches.contains(where: { $0 === touch }) {
             trackedTouches.append(touch)
         }
-        guard trackedTouches.count == 2 else { return }
+        guard countBefore < 2, trackedTouches.count == 2 else { return }
 
         let p0 = trackedTouches[0].location(in: view)
         let p1 = trackedTouches[1].location(in: view)

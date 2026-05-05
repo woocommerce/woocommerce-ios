@@ -71,7 +71,7 @@ struct CuboidResizeInteractionTests {
         let input = Self.makeBeginInput(fingers: (CGPoint(x: -50, y: 0), CGPoint(x: 50, y: 0)))
         interaction.begin(input: input, environment: Self.linearProjection())
         #expect(interaction.isActive)
-        #expect(interaction.highlightedFaces == [.positiveX, .negativeX])
+        #expect(interaction.highlightedFaces == ARCuboidEntity.FaceSet(.positiveX, .negativeX))
 
         // When
         interaction.end()
@@ -109,7 +109,7 @@ struct CuboidResizeInteractionTests {
 
         // Then
         #expect(interaction.isActive)
-        #expect(interaction.highlightedFaces == [.positiveY, .negativeY])
+        #expect(interaction.highlightedFaces == ARCuboidEntity.FaceSet(.positiveY, .negativeY))
     }
 
     // MARK: - Update
@@ -250,7 +250,7 @@ struct CuboidResizeInteractionTests {
             input: Self.makeBeginInput(fingers: (CGPoint(x: 0, y: -50), CGPoint(x: 0, y: 50))),
             environment: env
         )
-        #expect(interaction.highlightedFaces == [.positiveY, .negativeY])
+        #expect(interaction.highlightedFaces == ARCuboidEntity.FaceSet(.positiveY, .negativeY))
 
         // When
         let output = try #require(interaction.update(

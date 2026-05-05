@@ -61,11 +61,7 @@ final class CuboidResizeInteraction {
     private var lastFingers: (first: CGPoint, second: CGPoint)?
 
     var isActive: Bool { context != nil }
-
-    var highlightedFaces: Set<ARCuboidEntity.Face> {
-        guard let context else { return [] }
-        return [context.firstFinger.face, context.secondFinger.face]
-    }
+    private(set) var highlightedFaces: ARCuboidEntity.FaceSet = .empty
 
     /// May fail silently (no axis pick, missed Y hit-test, projection failure);
     /// the caller can retry on the next gesture frame.
@@ -101,6 +97,7 @@ final class CuboidResizeInteraction {
             firstFinger: FingerLatch(face: calibration.firstFace, initialScreen: input.fingers.first),
             secondFinger: FingerLatch(face: calibration.secondFace, initialScreen: input.fingers.second)
         )
+        highlightedFaces = ARCuboidEntity.FaceSet(calibration.firstFace, calibration.secondFace)
         lastFingers = input.fingers
     }
 
@@ -176,6 +173,7 @@ final class CuboidResizeInteraction {
     func end() {
         context = nil
         lastFingers = nil
+        highlightedFaces = .empty
     }
 }
 

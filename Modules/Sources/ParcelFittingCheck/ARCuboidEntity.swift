@@ -22,7 +22,7 @@ struct ARCuboidEntity {
     }
 
     let root: ModelEntity
-    private let edges: [Edge]
+    private var edges: [Edge]
     private let baseColor: UIColor
     private let highlightColor: UIColor
 
@@ -34,6 +34,7 @@ struct ARCuboidEntity {
         /// dash count for this edge.
         let dashedGroup: ModelEntity
         let spec: EdgeSpec
+        var lastColor: UIColor?
     }
 
     private init(root: ModelEntity, edges: [Edge], baseColor: UIColor, highlightColor: UIColor) {
@@ -71,43 +72,42 @@ struct ARCuboidEntity {
     /// (dashed) based on which faces are camera-facing, and applies the
     /// highlight colour where requested. Highlight changes colour only —
     /// the dashing pattern is the same whether an edge is highlighted or not.
-    func updateMaterials(cameraPosition: SIMD3<Float>, highlightedFaces: Set<Face> = []) {
+    mutating func updateMaterials(cameraPosition: SIMD3<Float>, highlightedFaces: FaceSet = .empty) {
         guard !edges.isEmpty else { return }
 
         let scale = root.transform.scale
         let cameraFacing = cameraFacingFaces(cameraPosition: cameraPosition)
 
-        for edge in edges {
-            // Counter-scale the edge so the parent's per-axis scale stretches
-            // the length but leaves world-space thickness constant. Skip the
-            // write when the parent scale has not changed — otherwise we would
-            // dirty the transform component every frame for an idle parcel.
-            let edgeScale = edge.spec.compensatingScale(parentScale: scale)
-            if edge.solid.transform.scale != edgeScale {
-                edge.solid.transform.scale = edgeScale
-                edge.dashedGroup.transform.scale = edgeScale
+        for i in edges.indices {
+            let edgeScale = edges[i].spec.compensatingScale(parentScale: scale)
+            if edges[i].solid.transform.scale != edgeScale {
+                edges[i].solid.transform.scale = edgeScale
+                edges[i].dashedGroup.transform.scale = edgeScale
             }
 
-            let axisScale = scale[edge.spec.lengthAxis.simdIndex]
+            let axisScale = scale[edges[i].spec.lengthAxis.simdIndex]
             let targetCount = dashCount(forWorldLength: axisScale)
-            if edge.dashedGroup.children.count != targetCount {
-                rebuildDashes(in: edge, count: targetCount)
+            if edges[i].dashedGroup.children.count != targetCount {
+                rebuildDashes(in: edges[i], count: targetCount)
             }
 
-            let (face1, face2) = edge.spec.adjacentFaces
+            let (face1, face2) = edges[i].spec.adjacentFaces
             let isHighlighted = highlightedFaces.contains(face1) || highlightedFaces.contains(face2)
             let isFront = cameraFacing.contains(face1) || cameraFacing.contains(face2)
 
-            edge.solid.isEnabled = isFront
-            edge.dashedGroup.isEnabled = !isFront
+            edges[i].solid.isEnabled = isFront
+            edges[i].dashedGroup.isEnabled = !isFront
 
             let color = isHighlighted ? highlightColor : baseColor
-            if isFront {
-                applyColor(color, to: edge.solid)
-            } else {
-                for child in edge.dashedGroup.children {
-                    if let model = child as? ModelEntity {
-                        applyColor(color, to: model)
+            if color != edges[i].lastColor {
+                edges[i].lastColor = color
+                if isFront {
+                    applyColor(color, to: edges[i].solid)
+                } else {
+                    for child in edges[i].dashedGroup.children {
+                        if let model = child as? ModelEntity {
+                            applyColor(color, to: model)
+                        }
                     }
                 }
             }
@@ -253,7 +253,7 @@ private extension ARCuboidEntity {
     /// Returns the set of faces whose outward normal points toward the
     /// camera. Computed in unit-cube local space (X/Z: ±0.5, Y: 0…1) so
     /// the cuboid's yaw and scale are factored out.
-    func cameraFacingFaces(cameraPosition: SIMD3<Float>) -> Set<Face> {
+    func cameraFacingFaces(cameraPosition: SIMD3<Float>) -> FaceSet {
         let scale = root.transform.scale
         let inverseRotation = root.transform.rotation.inverse
         let relative = cameraPosition - root.position
@@ -264,7 +264,7 @@ private extension ARCuboidEntity {
             rotated.z / max(scale.z, 1e-6)
         )
 
-        var result: Set<Face> = []
+        var result = FaceSet()
         if unitCam.x > UnitCube.halfExtent { result.insert(.positiveX) }
         if unitCam.x < -UnitCube.halfExtent { result.insert(.negativeX) }
         if unitCam.y > UnitCube.topY { result.insert(.positiveY) }

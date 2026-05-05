@@ -171,8 +171,8 @@ private extension ARParcelSceneCoordinator {
     }
 
     func updateMaterials() {
-        guard let arView, let cuboid else { return }
-        cuboid.updateMaterials(
+        guard let arView else { return }
+        cuboid?.updateMaterials(
             cameraPosition: arView.cameraTransform.translation,
             highlightedFaces: resizeInteraction.highlightedFaces
         )

@@ -1,4 +1,3 @@
-import Kingfisher
 import SwiftUI
 import struct Yosemite.ProductReport
 import struct Yosemite.DashboardCard
@@ -8,7 +7,6 @@ import WooFoundation
 ///
 struct ProductStockDashboardCard: View {
     @ObservedObject private var viewModel: ProductStockDashboardCardViewModel
-    @ScaledMetric private var scale: CGFloat = 1.0
     @State private var selectedItem: ProductReport?
 
     init(viewModel: ProductStockDashboardCardViewModel) {
@@ -45,9 +43,9 @@ struct ProductStockDashboardCard: View {
                     stockList
                 } else {
                     emptyView
+                        .padding(.horizontal, Layout.padding)
                 }
             }
-            .padding(.horizontal, Layout.padding)
             .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
             .shimmering(active: viewModel.syncingData)
             .renderedIf(viewModel.syncingError == nil)
@@ -124,50 +122,33 @@ private extension ProductStockDashboardCard {
                     .subheadlineStyle()
                     .fontWeight(.semibold)
             }
+            .padding(.horizontal, Layout.padding)
             ForEach(viewModel.reports) { element in
-                Button {
-                    ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .stock))
-
-                    selectedItem = element
-                } label: {
-                    HStack(alignment: .top) {
-                        // Thumbnail image
-                        KFImage(element.imageURL)
-                            .placeholder { Image(uiImage: .productPlaceholderImage)
-                                    .foregroundColor(Color(.listIcon))
-                            }
-                            .resizable()
-                            .frame(width: Layout.thumbnailSize * scale,
-                                   height: Layout.thumbnailSize * scale)
-                            .clipShape(RoundedRectangle(cornerSize: Layout.thumbnailCornerSize))
-
-                        // Details
-                        VStack {
-                            HStack(alignment: .firstTextBaseline) {
-                                VStack(alignment: .leading) {
-                                    Text(element.name)
-                                        .bodyStyle()
-                                        .multilineTextAlignment(.leading)
-                                    Text(element.itemsSold == 0 ? Localization.subtitleZero :
-                                            String.pluralize(element.itemsSold,
-                                                                  singular: Localization.subtitleSingular,
-                                                                  plural: Localization.subtitlePlural))
-                                    .subheadlineStyle()
-                                    .multilineTextAlignment(.leading)
-                                }
-                                Spacer()
-                                Text("\(element.stockQuantity ?? 0)")
-                                    .foregroundStyle(Color(.error))
-                                    .bodyStyle()
-                                    .fontWeight(.semibold)
-                            }
-                            Divider()
-                                .renderedIf(element != viewModel.reports.last)
-                        }
+                ProductStockRow(
+                    data: rowData(for: element),
+                    showDivider: element != viewModel.reports.last,
+                    tapHandler: {
+                        ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .stock))
+                        selectedItem = element
                     }
-                }
+                )
             }
         }
+    }
+
+    func rowData(for element: ProductReport) -> ProductStockRow.RowData {
+        let subtitle = element.itemsSold == 0
+            ? Localization.subtitleZero
+            : String.pluralize(element.itemsSold,
+                               singular: Localization.subtitleSingular,
+                               plural: Localization.subtitlePlural)
+        return ProductStockRow.RowData(
+            imageURL: element.imageURL,
+            name: element.name,
+            subtitle: subtitle,
+            accessoryText: "\(element.stockQuantity ?? 0)",
+            accessoryIsError: true
+        )
     }
 
     var emptyView: some View {
@@ -201,8 +182,6 @@ private extension ProductStockDashboardCard {
         static let padding: CGFloat = 16
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let hideIconVerticalPadding: CGFloat = 8
-        static let thumbnailSize: CGFloat = 40
-        static let thumbnailCornerSize = CGSize(width: 4.0, height: 4.0)
     }
 
     enum Localization {

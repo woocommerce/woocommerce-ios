@@ -34,9 +34,11 @@ struct AnalyticsReportCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.titleSpacing) {
 
-            Text(title)
-                .foregroundColor(Color(.text))
-                .footnoteStyle()
+            if !title.isEmpty {
+                Text(title)
+                    .foregroundColor(Color(.text))
+                    .footnoteStyle()
+            }
 
             HStack(alignment: .top, spacing: Layout.columnOutterSpacing) {
 
@@ -52,18 +54,19 @@ struct AnalyticsReportCard: View {
                         .redacted(reason: isRedacted ? .placeholder : [])
                         .shimmering(active: isRedacted)
 
-                    AdaptiveStack(horizontalAlignment: .leading) {
-                        if let leadingDelta, let leadingDeltaColor, let leadingDeltaTextColor {
-                            DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor, textColor: leadingDeltaTextColor)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .redacted(reason: isRedacted ? .placeholder : [])
-                                .shimmering(active: isRedacted)
-                        }
+                    if leadingDelta != nil || (leadingChartData.isNotEmpty && leadingChartColor != nil) {
+                        AdaptiveStack(horizontalAlignment: .leading) {
+                            if let leadingDelta, let leadingDeltaColor, let leadingDeltaTextColor {
+                                DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor, textColor: leadingDeltaTextColor)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .redacted(reason: isRedacted ? .placeholder : [])
+                                    .shimmering(active: isRedacted)
+                            }
 
-                        if leadingChartData.isNotEmpty, let leadingChartColor {
-                            AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingChartColor)
-                                .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
-                                .frame(maxWidth: scaledChartWidth)
+                            if leadingChartData.isNotEmpty, let leadingChartColor {
+                                AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingChartColor)
+                                    .frame(width: scaledChartWidth, height: scaledChartWidth / Layout.chartAspectRatio)
+                            }
                         }
                     }
 
@@ -81,18 +84,19 @@ struct AnalyticsReportCard: View {
                         .redacted(reason: isRedacted ? .placeholder : [])
                         .shimmering(active: isRedacted)
 
-                    AdaptiveStack(horizontalAlignment: .leading) {
-                        if let trailingDelta, let trailingDeltaColor, let trailingDeltaTextColor {
-                            DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor, textColor: trailingDeltaTextColor)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .redacted(reason: isRedacted ? .placeholder : [])
-                                .shimmering(active: isRedacted)
-                        }
+                    if trailingDelta != nil || (trailingChartData.isNotEmpty && trailingChartColor != nil) {
+                        AdaptiveStack(horizontalAlignment: .leading) {
+                            if let trailingDelta, let trailingDeltaColor, let trailingDeltaTextColor {
+                                DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor, textColor: trailingDeltaTextColor)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .redacted(reason: isRedacted ? .placeholder : [])
+                                    .shimmering(active: isRedacted)
+                            }
 
-                        if trailingChartData.isNotEmpty, let trailingChartColor {
-                            AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingChartColor)
-                                .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
-                                .frame(maxWidth: scaledChartWidth)
+                            if trailingChartData.isNotEmpty, let trailingChartColor {
+                                AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingChartColor)
+                                    .frame(width: scaledChartWidth, height: scaledChartWidth / Layout.chartAspectRatio)
+                            }
                         }
                     }
                 }
@@ -121,7 +125,6 @@ private extension AnalyticsReportCard {
         static let cardPadding: CGFloat = 16
         static let columnOutterSpacing: CGFloat = 28
         static let columnInnerSpacing: CGFloat = 10
-        static let chartHeight: CGFloat = 32
         static let chartWidth: CGFloat = 72
         static let chartAspectRatio: CGFloat = 2.25
     }

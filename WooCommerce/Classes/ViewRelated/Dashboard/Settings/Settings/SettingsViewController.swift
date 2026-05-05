@@ -108,7 +108,8 @@ private extension SettingsViewController {
         // Hence the container view with a defined frame.
         //
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
-        let footerView = TableFooterView.instantiateFromNib() as TableFooterView
+        // swiftlint:disable:next redundant_type_annotation
+        let footerView: TableFooterView = TableFooterView.instantiateFromNib() as TableFooterView
         footerView.iconImage = .heartOutlineImage
         footerView.footnote.attributedText = hiringAttributedText
         footerView.iconColor = .primary

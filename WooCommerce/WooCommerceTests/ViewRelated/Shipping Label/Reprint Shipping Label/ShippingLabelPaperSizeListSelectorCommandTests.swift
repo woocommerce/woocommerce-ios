@@ -52,7 +52,8 @@ final class ShippingLabelPaperSizeListSelectorCommandTests: XCTestCase {
     func test_configureCell_sets_cell_text_to_paper_size_description() {
         // Given
         let command = ShippingLabelPaperSizeListSelectorCommand(paperSizeOptions: [.legal, .label, .letter], selected: nil)
-        let cell = BasicTableViewCell.instantiateFromNib()
+        // swiftlint:disable:next redundant_type_annotation
+        let cell: BasicTableViewCell = BasicTableViewCell.instantiateFromNib()
 
         // When
         command.configureCell(cell: cell, model: .letter)

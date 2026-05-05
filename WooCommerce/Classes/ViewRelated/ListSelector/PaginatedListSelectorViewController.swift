@@ -409,7 +409,8 @@ private extension PaginatedListSelectorViewController {
     /// Displays the overlay when there are no results.
     ///
     func displayNoResultsOverlay() {
-        let overlayView = OverlayMessageView.instantiateFromNib()
+        // swiftlint:disable:next redundant_type_annotation
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = viewProperties.noResultsPlaceholderImage
         overlayView.messageImageTintColor = viewProperties.noResultsPlaceholderImageTintColor
         overlayView.messageText = viewProperties.noResultsPlaceholderText

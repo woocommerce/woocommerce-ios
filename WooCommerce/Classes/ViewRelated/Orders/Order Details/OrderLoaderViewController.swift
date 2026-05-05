@@ -178,7 +178,8 @@ private extension OrderLoaderViewController {
     /// Displays the Loading Overlay.
     ///
     func displayFailureOverlay() {
-        let overlayView = OverlayMessageView.instantiateFromNib()
+        // swiftlint:disable:next redundant_type_annotation
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("The Order couldn't be loaded!", comment: "Fetching an Order Failed")
         overlayView.actionText = NSLocalizedString("Retry", comment: "Retry the last action")

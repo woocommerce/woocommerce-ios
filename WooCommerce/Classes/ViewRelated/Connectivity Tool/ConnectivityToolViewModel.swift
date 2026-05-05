@@ -210,7 +210,7 @@ final class ConnectivityToolViewModel {
     /// Creates a SupportChatViewModel with the current troubleshooting context.
     ///
     @MainActor
-    func makeSupportChatViewModel(onContactHumanSupport: @escaping (_ transcript: String) -> Void) -> SupportChatViewModel {
+    func makeSupportChatViewModel(onContactHumanSupport: @escaping (_ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void) -> SupportChatViewModel {
         var context: [String: Any] = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {

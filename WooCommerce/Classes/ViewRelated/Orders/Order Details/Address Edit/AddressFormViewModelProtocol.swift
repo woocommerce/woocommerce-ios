@@ -184,10 +184,9 @@ struct AddressFormFields {
         didSet {
             self.country = selectedCountry?.name ?? ""
 
-            // When a country is selected, check if the new country has a state list.
-            // If it has, clear the selected state and its name in fields.
-            // If it doesn't only clear the selected state.
-            if selectedCountry?.states.isEmpty == false {
+            // When the country actually changes, reset both the picked state and the free-text state value
+            // so a previous country's state isn't carried into a different country's address.
+            if oldValue?.code != selectedCountry?.code {
                 self.state = ""
             }
             self.selectedState = nil

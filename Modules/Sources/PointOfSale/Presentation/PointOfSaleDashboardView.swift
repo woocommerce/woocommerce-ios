@@ -340,6 +340,12 @@ struct PointOfSaleDashboardView: View {
         }
     }
 
+    /// Total cart size — products + coupons — used to drive the cart-button pulse so adding
+    /// a coupon also gives visual feedback even though the displayed number stays products-only.
+    private var phoneCartTotalCount: Int {
+        posModel.cart.purchasableItems.count + posModel.cart.coupons.count
+    }
+
     private var phoneCartButton: some View {
         Button {
             phoneShowingCart = true
@@ -355,9 +361,11 @@ struct PointOfSaleDashboardView: View {
         .padding(.horizontal, POSPadding.medium)
         .padding(.vertical, POSPadding.medium)
         // Quick pulse to confirm an item was added — only on count increases, so removing items
-        // doesn't bounce the button distractingly.
+        // doesn't bounce the button distractingly. Watches the full cart count (products +
+        // coupons) so adding a coupon also pulses, even though the displayed number is
+        // products-only.
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
-        .onChange(of: posModel.cart.purchasableItems.count) { oldValue, newValue in
+        .onChange(of: phoneCartTotalCount) { oldValue, newValue in
             guard newValue > oldValue else { return }
             withAnimation(.spring(response: 0.18, dampingFraction: 0.5)) {
                 phoneCartButtonPulse = true

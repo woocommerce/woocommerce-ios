@@ -69,6 +69,9 @@ only_rules:
   # Prefer `someBool.toggle()` over `someBool = !someBool`.
   - toggle_bool
 
+  # Type annotations are redundant when the type can be inferred.
+  - redundant_type_annotation
+
   # Files should have a single trailing newline.
   - trailing_newline
 

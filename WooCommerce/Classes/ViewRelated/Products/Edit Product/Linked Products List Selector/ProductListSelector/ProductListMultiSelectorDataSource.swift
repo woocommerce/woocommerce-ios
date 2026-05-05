@@ -10,7 +10,7 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
     var productIDs: AnyPublisher<[Int64], Never> {
         productIDsSubject.eraseToAnyPublisher()
     }
-    private let productIDsSubject: PassthroughSubject<[Int64], Never> = PassthroughSubject<[Int64], Never>()
+    private let productIDsSubject = PassthroughSubject<[Int64], Never>()
 
     // Not used: since multiple products can be selected in this use case, the single selected product is not used.
     var selected: Product?

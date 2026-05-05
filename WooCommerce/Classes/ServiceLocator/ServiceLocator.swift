@@ -73,11 +73,11 @@ final class ServiceLocator {
 
     /// Selected Site Settings
     ///
-    private static var _selectedSiteSettings: SelectedSiteSettings = SelectedSiteSettings()
+    private static var _selectedSiteSettings = SelectedSiteSettings()
 
     /// Currency Settings
     ///
-    private static var _currencySettings: CurrencySettings = CurrencySettings()
+    private static var _currencySettings = CurrencySettings()
 
     /// CoreData Stack
     ///
@@ -125,9 +125,9 @@ final class ServiceLocator {
 
     /// Storage for general app settings
     ///
-    private static var _generalAppSettings: GeneralAppSettingsStorage = GeneralAppSettingsStorage()
+    private static var _generalAppSettings = GeneralAppSettingsStorage()
 
-    private static var _cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher =
+    private static var _cardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
 
     private static var _tapToPayReconnectionController = TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
@@ -136,7 +136,7 @@ final class ServiceLocator {
 
     /// Tracker for app startup waiting time
     ///
-    private static var _startupWaitingTimeTracker: AppStartupWaitingTimeTracker = AppStartupWaitingTimeTracker()
+    private static var _startupWaitingTimeTracker = AppStartupWaitingTimeTracker()
 
     /// Age range verification (Declared Age Range API wrapper)
     ///
@@ -144,7 +144,7 @@ final class ServiceLocator {
 
     /// Age rating change detector
     ///
-    private static var _ageRatingChangeDetector: AgeRatingChangeDetector = AgeRatingChangeDetector(
+    private static var _ageRatingChangeDetector = AgeRatingChangeDetector(
         defaults: .standard,
         provider: StoreKitAgeRatingProvider()
     )

@@ -18,7 +18,7 @@ final class SettingsViewController: UIViewController {
 
     private let viewModel: ViewModel
 
-    private lazy var woocommercePluginViewModel: PluginDetailsViewModel = PluginDetailsViewModel(
+    private lazy var woocommercePluginViewModel = PluginDetailsViewModel(
         siteID: stores.sessionManager.defaultStoreID ?? 0,
         pluginName: "WooCommerce")
 
@@ -30,7 +30,7 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    private lazy var closeAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
         guard let self else { throw CloseAccountError.presenterDeallocated }
         try await self.closeAccount()

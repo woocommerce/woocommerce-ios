@@ -128,7 +128,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Ids of those products that were most or last sold among the cached orders
     ///
-    private var topProductsFromCachedOrders: ProductSelectorTopProducts = ProductSelectorTopProducts.empty
+    private var topProductsFromCachedOrders = ProductSelectorTopProducts.empty
 
     private let tracker: ProductSelectorViewModelTracker
 

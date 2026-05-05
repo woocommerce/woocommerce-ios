@@ -13,7 +13,7 @@ class BookingListContainerViewModelTests {
 
     private let site = Site.fake()
     private let analyticsProvider = MockAnalyticsProvider()
-    private lazy var analytics: WooAnalytics = WooAnalytics(analyticsProvider: self.analyticsProvider)
+    private lazy var analytics = WooAnalytics(analyticsProvider: self.analyticsProvider)
     private var storageManager: StorageManagerType = MockStorageManager()
     private lazy var storage: StorageType = {
         storageManager.viewStorage

@@ -15,17 +15,17 @@ public class BottomSheetViewController: UIViewController {
 
         enum Header {
             static let spacing: CGFloat = 16
-            static let insets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 18)
+            static let insets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 18)
         }
 
         enum Button {
             static let height: CGFloat = 54
-            static let contentInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 35)
-            static let titleInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
+            static let contentInsets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 35)
+            static let titleInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
         }
 
         enum Stack {
-            static let insets: UIEdgeInsets = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)
+            static let insets = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)
         }
     }
 

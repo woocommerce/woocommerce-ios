@@ -86,7 +86,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
-    private lazy var filterButton: UIButton = UIButton(frame: .zero)
+    private lazy var filterButton = UIButton(frame: .zero)
 
     /// The bulk edit CTA in the navbar.
     private lazy var bulkEditButton: UIBarButtonItem = {
@@ -100,7 +100,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Container of the top banner that shows that the Products feature is still work in progress.
     ///
-    private lazy var topBannerContainerView: SwappableSubviewContainerView = SwappableSubviewContainerView()
+    private lazy var topBannerContainerView = SwappableSubviewContainerView()
 
     /// Top banner that shows that the Products feature is still work in progress.
     ///
@@ -162,7 +162,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private let imageUploader = ServiceLocator.productImageUploader
     private var activeUploadIds: [Int64] = []
 
-    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
+    private var filters = FilterProductListViewModel.Filters() {
         didSet {
             Task { @MainActor in
                 if filters != oldValue ||

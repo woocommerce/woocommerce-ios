@@ -4,16 +4,13 @@ struct CardShell<Content: View>: View {
 
     let label: String
     var accent: Bool = false
-    var trailingChevron: Bool = false
     let content: () -> Content
 
     init(label: String,
          accent: Bool = false,
-         trailingChevron: Bool = false,
          @ViewBuilder content: @escaping () -> Content) {
         self.label = label
         self.accent = accent
-        self.trailingChevron = trailingChevron
         self.content = content
     }
 
@@ -25,12 +22,6 @@ struct CardShell<Content: View>: View {
                     .textCase(.uppercase)
                     .foregroundStyle(accent ? Color(.accent) : Color.assistantTextFaint)
                 Spacer(minLength: 0)
-                if trailingChevron {
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(Color.assistantTextFaint)
-                        .accessibilityHidden(true)
-                }
             }
             content()
         }
@@ -55,8 +46,8 @@ struct CardShell<Content: View>: View {
     .padding()
 }
 
-#Preview("Accent + chevron") {
-    CardShell(label: "2 orders", accent: true, trailingChevron: true) {
+#Preview("Accent") {
+    CardShell(label: "2 orders", accent: true) {
         Text("Tap to drill in")
             .font(.assistantBody)
             .foregroundStyle(Color.assistantMuted)

@@ -117,7 +117,7 @@ public enum ProductVariationsUpdateTool {
                                                           body: payload,
                                                           client: client,
                                                           toolName: name,
-                                                          family: .product,
+                                                          family: .productVariation,
                                                           summarize: ProductSummary.make)
     }
 }

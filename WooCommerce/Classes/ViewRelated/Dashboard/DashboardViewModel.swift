@@ -103,10 +103,13 @@ final class DashboardViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
     private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
     private let clientSideBannerProvider: ClientSideBannerProvider
+
+    @Published private(set) var isAIAssistantEligible: Bool = false
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -158,6 +161,7 @@ final class DashboardViewModel: ObservableObject {
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
          siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol = AIAssistantEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
          tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
          clientSideBannerProvider: ClientSideBannerProvider? = nil) {
@@ -193,6 +197,7 @@ final class DashboardViewModel: ObservableObject {
 
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.siteIsCIABEligibilityChecker = siteIsCIABEligibilityChecker
+        self.aiAssistantEligibilityChecker = aiAssistantEligibilityChecker
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         self.blazeLocalNotificationScheduler = localNotificationScheduler ?? DefaultBlazeLocalNotificationScheduler(siteID: siteID,
@@ -223,10 +228,28 @@ final class DashboardViewModel: ObservableObject {
         configureOrdersResultController()
         setupDashboardCards()
         observeValuesForDashboardCards()
+        observeAIAssistantEligibility()
         observeDashboardCardsAndReload()
         observeWPCOMSiteSuspendedState()
         observeSelfDrivenPushTokenPersistence()
         bindClientSideBannerWebViewSheet()
+    }
+
+    private func observeAIAssistantEligibility() {
+        // Seed the eligibility flag from the current site so the dashboard reflects it on first load,
+        // even if the underlying site publisher does not replay its current value on subscription.
+        isAIAssistantEligible = aiAssistantEligibilityChecker.isEligible(for: stores.sessionManager.defaultSite)
+
+        stores.sessionManager.defaultSitePublisher
+            .map { [aiAssistantEligibilityChecker] site in
+                aiAssistantEligibilityChecker.isEligible(for: site)
+            }
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] eligible in
+                self?.isAIAssistantEligible = eligible
+            }
+            .store(in: &subscriptions)
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -544,9 +567,14 @@ private extension DashboardViewModel {
 
         $dashboardCards.combineLatest($isInAppFeedbackCardVisible, $shouldSuggestWPComConnection)
             .combineLatest($showNewCardsNotice, $hasOrders, $isReloadingAllData)
+            .combineLatest($isAIAssistantEligible)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let ((cards, showFeedbackCard, suggestWPComConnection), showNewCardsNotice, hasOrders, isReloading) = combinedResult
+                let (((cards, showFeedbackCard, suggestWPComConnection),
+                      showNewCardsNotice,
+                      hasOrders,
+                      isReloading),
+                     isAIAssistantEligible) = combinedResult
                 let cardsToShow: [DashboardCard] = {
                     var allCards = cards.filter { $0.availability == .show && $0.enabled }
 
@@ -569,6 +597,10 @@ private extension DashboardViewModel {
                     /// Insert card for connecting WPCom at the top if needed
                     if suggestWPComConnection {
                         allCards.insert(DashboardCard.connectWPCom, at: 0)
+                    }
+
+                    if isAIAssistantEligible {
+                        allCards.insert(DashboardCard.aiAssistantCard, at: 0)
                     }
                     return allCards
                 }()
@@ -633,7 +665,7 @@ private extension DashboardViewModel {
                     group.addTask { [weak self] in
                         await self?.googleAdsDashboardCardViewModel.reloadCard()
                     }
-                case .inAppFeedback, .newCardsNotice, .shareStore, .connectWPCom:
+                case .inAppFeedback, .newCardsNotice, .shareStore, .connectWPCom, .aiAssistant:
                     break // do nothing
                 }
             }

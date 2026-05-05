@@ -4,7 +4,8 @@ import WooFoundation
 
 public extension Color {
     static let assistantSurface = Color(.systemBackground)
-    static let assistantSurfaceElevated = Color(.secondarySystemBackground)
+    static let assistantSurfaceElevated = Color(.tertiarySystemFill)
+    static let assistantCardSurface = Color(.secondarySystemBackground)
     static let assistantSurfaceAlt = Color(.listBackground)
     static let assistantSurfaceBorder = Color(.divider).opacity(0.35)
     static let assistantSeparator = Color(.divider)
@@ -18,7 +19,7 @@ public extension Color {
     static let assistantMuted = Color(.textSubtle)
     static let assistantTextFaint = Color(.textTertiary)
     static let assistantAccentTint = Color(.infoBackground)
-    static let assistantToolBackground = Color(.quaternarySystemFill)
+    static let assistantToolBackground = Color(.tertiarySystemFill)
     static let assistantError = Color(.error)
     static let assistantSuccess = Color(.success)
     static let assistantWarning = Color(.warning)

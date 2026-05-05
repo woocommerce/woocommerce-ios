@@ -2,7 +2,6 @@
 import Foundation
 import SwiftUI
 
-/// Single source of truth for preview/snapshot states across components.
 enum AssistantChatScenario: String, CaseIterable {
     case empty
     case singleUserMessage
@@ -14,7 +13,6 @@ enum AssistantChatScenario: String, CaseIterable {
     case pendingConfirmationBulk
     case failedMidStream
     case outcomeUnknown
-    case iterationCap
     case multiTurn
 
     var displayName: String {
@@ -29,7 +27,6 @@ enum AssistantChatScenario: String, CaseIterable {
         case .pendingConfirmationBulk: return "Pending confirmation (bulk)"
         case .failedMidStream: return "Failed mid-stream"
         case .outcomeUnknown: return "Outcome unknown"
-        case .iterationCap: return "Iteration cap"
         case .multiTurn: return "Multi-turn"
         }
     }
@@ -145,17 +142,6 @@ struct AssistantChatScenarioBuilder {
                 streaming: .outcomeUnknown("The connection dropped before we got a confirmation. Verify the price before retrying.")
             ))
 
-        case .iterationCap:
-            let messages: [ChatMessage] = [
-                MockAssistantController.userMessage("Compare every order this month"),
-                MockAssistantController.assistantText(
-                    "I've gathered most of the data but had to stop short of finishing the comparison.",
-                    streaming: false
-                )
-            ]
-            return Configuration(controller: MockAssistantController.make(messages: messages),
-                                 showIterationCapBanner: true)
-
         case .multiTurn:
             let messages: [ChatMessage] = [
                 MockAssistantController.userMessage("Top product yesterday?"),
@@ -175,7 +161,6 @@ struct AssistantChatScenarioBuilder {
 
     struct Configuration {
         let controller: AssistantController
-        var showIterationCapBanner: Bool = false
     }
 }
 #endif

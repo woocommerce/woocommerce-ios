@@ -10,6 +10,7 @@ struct InputBar: View {
     let onStop: () -> Void
 
     private static let sendButtonDiameter: CGFloat = 36
+    private static let sendButtonHitTarget: CGFloat = 44
 
     var body: some View {
         VStack(alignment: .leading, spacing: AssistantSpacing.small) {
@@ -20,15 +21,12 @@ struct InputBar: View {
                     .padding(.horizontal, AssistantSpacing.medium)
             }
 
-            HStack(alignment: .center, spacing: AssistantSpacing.small) {
+            HStack(alignment: .center, spacing: AssistantSpacing.medium) {
                 TextField(Localization.placeholder, text: $draft, axis: .vertical)
                     .font(.assistantBody)
                     .lineLimit(1...6)
-                    .padding(.horizontal, AssistantSpacing.medium)
+                    .padding(.leading, AssistantSpacing.large)
                     .padding(.vertical, AssistantSpacing.medium)
-                    .background(textFieldBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.large))
-                    .disabled(pendingConfirmation)
 
                 Button(action: actionTapped) {
                     Image(systemName: glyph)
@@ -39,23 +37,26 @@ struct InputBar: View {
                         .background(buttonBackground)
                         .clipShape(Circle())
                         .contentTransition(.symbolEffect(.replace))
-                        .frame(minWidth: 44, minHeight: 44)
+                        .frame(width: Self.sendButtonHitTarget,
+                               height: Self.sendButtonHitTarget)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .padding(.trailing, AssistantSpacing.small)
                 .disabled(buttonDisabled)
                 .accessibilityLabel(showsStop ? Localization.stop : Localization.send)
             }
+            .background(pillBackground)
+            .clipShape(Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(Color.assistantSurfaceBorder, lineWidth: 0.5)
+            )
+            .shadow(color: Color.black.opacity(0.06), radius: 4, x: 0, y: 1)
         }
         .padding(.horizontal, AssistantSpacing.large)
         .padding(.top, AssistantSpacing.medium)
         .padding(.bottom, AssistantSpacing.medium)
-        .background(.regularMaterial)
-        .overlay(alignment: .top) {
-            Rectangle()
-                .fill(Color.assistantSeparator.opacity(0.5))
-                .frame(height: 0.5)
-        }
     }
 
     private var showsStop: Bool {
@@ -69,7 +70,7 @@ struct InputBar: View {
     private var buttonBackground: Color {
         if showsStop { return Color(.accent) }
         if canSend && !draftIsEmpty { return Color(.accent) }
-        return textFieldBackground
+        return Color.assistantSurfaceElevated
     }
 
     private var buttonForeground: Color {
@@ -89,8 +90,8 @@ struct InputBar: View {
         draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
-    private var textFieldBackground: Color {
-        Color.assistantSurfaceElevated
+    private var pillBackground: Color {
+        Color(.systemBackground)
     }
 
     private func actionTapped() {

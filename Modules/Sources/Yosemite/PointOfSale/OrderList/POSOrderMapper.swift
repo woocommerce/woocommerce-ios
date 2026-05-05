@@ -1,6 +1,7 @@
 import Foundation
 import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.Order
+import struct NetworkingCore.OrderFeeLine
 import struct NetworkingCore.OrderItem
 import struct NetworkingCore.OrderItemAttribute
 import struct NetworkingCore.OrderRefundCondensed
@@ -22,6 +23,10 @@ struct POSOrderMapper {
         let customerEmail = order.billingAddress?.email
 
         let posLineItems = try order.items.map { try map(orderItem: $0, currency: order.currency) }
+
+        let posCustomAmounts = order.fees
+            .filter { !$0.isDeleted }
+            .map { map(fee: $0, currency: order.currency) }
 
         let posRefunds = order.refunds.map { map(orderRefund: $0, currency: order.currency) }
 
@@ -56,6 +61,7 @@ struct POSOrderMapper {
             paymentMethodID: order.paymentMethodID,
             paymentMethodTitle: order.paymentMethodTitle,
             lineItems: posLineItems,
+            customAmounts: posCustomAmounts,
             refunds: posRefunds,
             formattedDiscountTotal: formattedDiscountTotal,
             formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
@@ -94,11 +100,35 @@ struct POSOrderMapper {
         )
     }
 
+    private func map(fee: OrderFeeLine, currency: String) -> POSOrderCustomAmount {
+        // `fee.name` is `String?` for decoder safety; in practice the WC API always
+        // sets a name for live fee lines. Fall back to a localized placeholder so a
+        // nil/blank value (e.g. malformed payload, fees created via another client)
+        // doesn't render as a row with no left-side text.
+        let trimmedName = (fee.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let resolvedName = trimmedName.isEmpty ? Localization.defaultFeeName : trimmedName
+        return POSOrderCustomAmount(
+            id: fee.feeID,
+            name: resolvedName,
+            formattedTotal: currencyFormatter.formatAmount(fee.total, with: currency) ?? ""
+        )
+    }
+
     private func map(orderRefund: NetworkingCore.OrderRefundCondensed, currency: String) -> POSOrderRefund {
         return POSOrderRefund(
             refundID: orderRefund.refundID,
             formattedTotal: currencyFormatter.formatAmount(orderRefund.total, with: currency) ?? "",
             reason: orderRefund.reason
+        )
+    }
+}
+
+private extension POSOrderMapper {
+    enum Localization {
+        static let defaultFeeName = NSLocalizedString(
+            "pos.orderMapper.defaultFeeName",
+            value: "Custom amount",
+            comment: "Fallback label shown for a fee on a Point of Sale order whose name is missing or blank."
         )
     }
 }

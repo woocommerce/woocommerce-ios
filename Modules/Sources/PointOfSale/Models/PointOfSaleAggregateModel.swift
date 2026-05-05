@@ -5,9 +5,11 @@ import Observation
 
 import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
+import struct Yosemite.POSCustomAmount
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
 import protocol Yosemite.POSSearchHistoryProviding
@@ -52,6 +54,13 @@ protocol PointOfSaleAggregateModelProtocol {
     private(set) var cart: Cart = .init() {
         didSet { rebuildCartProductObservation() }
     }
+
+    /// Whether the custom amount entry sheet is currently presented.
+    var isCustomAmountSheetPresented: Bool = false
+
+    /// The custom amount currently being edited, if any. `nil` means the sheet was opened
+    /// to add a new entry rather than edit an existing one.
+    private(set) var editingCustomAmount: POSCustomAmount?
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
 
@@ -192,6 +201,8 @@ extension PointOfSaleAggregateModel {
             cart.purchasableItems.removeAll { $0.id == cartItem.id }
         case .coupon:
             cart.coupons.removeAll { $0.id == cartItem.id }
+        case .customAmount:
+            cart.removeCustomAmount(id: cartItem.id)
         }
     }
 
@@ -206,8 +217,38 @@ extension PointOfSaleAggregateModel {
                 cart.purchasableItems.removeAll()
             case .coupon:
                 cart.coupons.removeAll()
+            case .customAmount:
+                cart.customAmounts.removeAll()
             }
         }
+    }
+
+    func upsertCustomAmount(_ customAmount: POSCustomAmount, mode: WooAnalyticsEvent.PointOfSale.CustomAmountMode) {
+        analytics.track(event: .PointOfSale.customAmountSubmitted(mode: mode, isTaxable: customAmount.isTaxable))
+        trackCustomerInteractionStarted()
+        cart.upsertCustomAmount(customAmount)
+    }
+
+    func removeCustomAmount(id: UUID) {
+        cart.removeCustomAmount(id: id)
+    }
+
+    @MainActor
+    func presentAddCustomAmount() {
+        editingCustomAmount = nil
+        isCustomAmountSheetPresented = true
+    }
+
+    @MainActor
+    func presentEditCustomAmount(_ customAmount: POSCustomAmount) {
+        editingCustomAmount = customAmount
+        isCustomAmountSheetPresented = true
+    }
+
+    @MainActor
+    func dismissCustomAmountSheet() {
+        isCustomAmountSheetPresented = false
+        editingCustomAmount = nil
     }
 
     @MainActor

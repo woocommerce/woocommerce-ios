@@ -3,7 +3,6 @@ import SwiftUI
 struct ConfirmationCard: View {
 
     let proposalID: UUID
-    let toolName: String
     let preview: String
     let status: ConfirmationStatus
     let onConfirm: () -> Void
@@ -114,8 +113,8 @@ struct ConfirmationCard: View {
             comment: "Eyebrow label on a pending confirmation card in the AI Assistant chat"
         )
         static let confirmed = NSLocalizedString(
-            "assistantChat.confirmation.confirmed",
-            value: "Applied",
+            "assistantChat.confirmation.confirmedEyebrow",
+            value: "Confirmed",
             comment: "Eyebrow label on a confirmed confirmation card in the AI Assistant chat"
         )
         static let cancelled = NSLocalizedString(
@@ -201,7 +200,12 @@ struct ParsedPreview {
             rawFields = Self.splitFieldList(trimmed)
         }
 
-        let parsedFields = rawFields.compactMap(Self.parseField)
+        // Any unparsed clause aborts so the merchant sees the raw preview verbatim.
+        var parsedFields: [Field] = []
+        for raw in rawFields {
+            guard let field = Self.parseField(raw) else { return nil }
+            parsedFields.append(field)
+        }
         guard !parsedFields.isEmpty else { return nil }
 
         self.summary = summaryLine
@@ -295,7 +299,6 @@ struct ParsedPreview {
 
 #Preview("Pending standalone") {
     ConfirmationCard(proposalID: UUID(),
-                     toolName: "orders_update",
                      preview: "Update order #3479: status processing → completed",
                      status: .pending,
                      onConfirm: {},
@@ -305,7 +308,6 @@ struct ParsedPreview {
 
 #Preview("Confirmed") {
     ConfirmationCard(proposalID: UUID(),
-                     toolName: "orders_update",
                      preview: "Update order #3479: status processing → completed",
                      status: .confirmed,
                      onConfirm: {},
@@ -315,7 +317,6 @@ struct ParsedPreview {
 
 #Preview("Cancelled") {
     ConfirmationCard(proposalID: UUID(),
-                     toolName: "orders_update",
                      preview: "Update order #3479: status processing → completed",
                      status: .cancelled,
                      onConfirm: {},
@@ -325,7 +326,6 @@ struct ParsedPreview {
 
 #Preview("Multi-field") {
     ConfirmationCard(proposalID: UUID(),
-                     toolName: "orders_update",
                      preview: "Update order #3479: status processing → completed; total $45.00 → $60.00",
                      status: .pending,
                      onConfirm: {},

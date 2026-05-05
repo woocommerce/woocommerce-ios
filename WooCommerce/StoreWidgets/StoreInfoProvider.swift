@@ -85,11 +85,13 @@ extension StoreInfoData {
 
 /// Type that provides data entries to the widget system.
 ///
+/// Backs both the legacy `StaticConfiguration` path (via `TimelineProvider` here) and the
+/// `AppIntentConfiguration` path (via `AppIntentTimelineProvider` conformance in
+/// `StoreInfoProvider+AppIntentTimelineProvider.swift`). Sharing one provider keeps the
+/// data-fetching logic in a single place while the configurable widget rolls out behind
+/// `FeatureFlag.configurableStoreStatsWidgets`.
+///
 final class StoreInfoProvider: TimelineProvider {
-
-    /// Holds a reference to the service while a network request is being performed.
-    ///
-    private var networkService: StoreInfoDataService?
 
     /// Desired data reload interval provided to system = 30 minutes.
     ///
@@ -102,36 +104,35 @@ final class StoreInfoProvider: TimelineProvider {
         return Self.placeholderEntry(for: dependencies)
     }
 
-    /// Quick Snapshot. Required when previewing the widget.
-    ///
     func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
         completion(placeholder(in: context))
     }
 
-    /// Real data widget.
-    ///
     func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
+        Task {
+            let timeline = await loadTimeline(dateRange: .today)
+            completion(timeline)
+        }
+    }
+
+    /// Shared loader for both `TimelineProvider` and `AppIntentTimelineProvider` paths.
+    /// Visible to extensions in this module so the AppIntent conformance can share logic.
+    ///
+    func loadTimeline(dateRange: StoreStatsWidgetDateRange) async -> Timeline<StoreInfoEntry> {
         guard let dependencies = Self.fetchDependencies() else {
-            return completion(Timeline<StoreInfoEntry>(entries: [StoreInfoEntry.notConnected], policy: .never))
+            return Timeline<StoreInfoEntry>(entries: [.notConnected], policy: .never)
         }
 
-        let strongService = StoreInfoDataService(credentials: dependencies.credentials)
-        networkService = strongService
-        Task {
-            do {
-                let todayStats = try await strongService.fetchTodayStats(for: dependencies.storeID)
-                let entry = Self.dataEntry(for: todayStats, with: dependencies)
-                let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
-                let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
-                completion(timeline)
-            } catch {
-                // WooFoundation does not expose `DDLOG` types. Should we include them?
-                print("⛔️ Error fetching today's widget stats: \(error)")
-
-                let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
-                let timeline = Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
-                completion(timeline)
-            }
+        let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
+        let service = StoreInfoDataService(credentials: dependencies.credentials)
+        do {
+            let stats = try await service.fetchStats(for: dependencies.storeID, dateRange: dateRange.serviceDateRange)
+            let entry = Self.dataEntry(for: stats, dateRange: dateRange, with: dependencies)
+            return Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
+        } catch {
+            // WooFoundation does not expose `DDLOG` types. Should we include them?
+            print("⛔️ Error fetching today's widget stats: \(error)")
+            return Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
         }
     }
 }
@@ -199,7 +200,7 @@ private extension StoreInfoProvider {
             StoreInfoMetric(type: .conversion, value: .percentage(23.0 / 67.0))
         ]
         return .data(.init(
-            range: Localization.today,
+            range: StoreStatsWidgetDateRange.today.localizedRangeLabel,
             name: dependencies?.storeName ?? Localization.myShop,
             revenue: StoreInfoFormatter.formattedAmountString(for: revenueAmount, with: currencySettings),
             revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: revenueAmount, with: currencySettings),
@@ -213,39 +214,41 @@ private extension StoreInfoProvider {
 
     /// Real data entry.
     ///
-    static func dataEntry(for todayStats: StoreInfoDataService.Stats, with dependencies: Dependencies) -> StoreInfoEntry {
+    static func dataEntry(for stats: StoreInfoDataService.Stats,
+                          dateRange: StoreStatsWidgetDateRange,
+                          with dependencies: Dependencies) -> StoreInfoEntry {
         let currencySettings = dependencies.storeCurrencySettings
-        let visitorsValue: StoreInfoMetricValue = todayStats.totalVisitors.map { .count($0) } ?? .unavailable
-        let conversionValue: StoreInfoMetricValue = todayStats.conversion.map { .percentage($0) } ?? .unavailable
+        let visitorsValue: StoreInfoMetricValue = stats.totalVisitors.map { .count($0) } ?? .unavailable
+        let conversionValue: StoreInfoMetricValue = stats.conversion.map { .percentage($0) } ?? .unavailable
 
-        // Today's medium-widget preset. A later ticket will let users pick this list.
+        // Medium-widget preset. A later ticket will let users pick this list.
         let metrics: [StoreInfoMetric] = [
-            .init(type: .revenue, value: .currency(todayStats.revenue, currencySettings)),
+            .init(type: .revenue, value: .currency(stats.revenue, currencySettings)),
             .init(type: .visitors, value: visitorsValue),
-            .init(type: .orders, value: .count(todayStats.totalOrders)),
+            .init(type: .orders, value: .count(stats.totalOrders)),
             .init(type: .conversion, value: conversionValue)
         ]
 
         let visitorsString: String = {
-            if let visitors = todayStats.totalVisitors {
+            if let visitors = stats.totalVisitors {
                 return "\(visitors)"
             }
             return StoreInfoFormatter.Constants.valuePlaceholderText
         }()
         let conversionString: String = {
-            if let conversion = todayStats.conversion {
+            if let conversion = stats.conversion {
                 return StoreInfoFormatter.formattedConversionString(for: conversion)
             }
             return StoreInfoFormatter.Constants.valuePlaceholderText
         }()
 
         return .data(.init(
-            range: Localization.today,
+            range: dateRange.localizedRangeLabel,
             name: dependencies.storeName,
-            revenue: StoreInfoFormatter.formattedAmountString(for: todayStats.revenue, with: currencySettings),
-            revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: todayStats.revenue, with: currencySettings),
+            revenue: StoreInfoFormatter.formattedAmountString(for: stats.revenue, with: currencySettings),
+            revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: stats.revenue, with: currencySettings),
             visitors: visitorsString,
-            orders: "\(todayStats.totalOrders)",
+            orders: "\(stats.totalOrders)",
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
             metrics: metrics
@@ -257,11 +260,6 @@ private extension StoreInfoProvider {
             "storeWidgets.infoProvider.myShop",
             value: "My Shop",
             comment: "Generic store name for the store info widget preview"
-        )
-        static let today = AppLocalizedString(
-            "storeWidgets.infoProvider.today",
-            value: "Today",
-            comment: "Range title for the today store info widget"
         )
     }
 }

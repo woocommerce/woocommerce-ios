@@ -1,0 +1,19 @@
+APP_DISPLAY_NAME = Woo (Dev)
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-Default
+CODE_SIGN_ENTITLEMENTS = Resources/Woo-Debug.entitlements
+CODE_SIGN_ENTITLEMENTS[sdk=macosx*] = Resources/Woo-Debug-macOS.entitlements
+CODE_SIGN_STYLE = Manual
+ENABLE_BITCODE = NO
+INFOPLIST_FILE = $(SRCROOT)/Resources/Info.plist
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/Frameworks
+OTHER_SWIFT_FLAGS = $(inherited)
+PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce
+PRODUCT_NAME = $(TARGET_NAME)
+PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*] = WooCommerce Development
+PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*] = WooCommerce Catalyst Development
+SUPPORTS_MACCATALYST = NO
+SWIFT_STRICT_CONCURRENCY = minimal
+SWIFT_VERSION = 5.0
+TARGETED_DEVICE_FAMILY = 1,2
+USER_HEADER_SEARCH_PATHS =
+VALID_ARCHS = $(ARCHS_STANDARD_64_BIT)

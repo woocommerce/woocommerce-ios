@@ -59,12 +59,21 @@ private struct StoreInfoLargeMetricsCard: View {
                     ForEach(Array(row.enumerated()), id: \.offset) { _, metric in
                         MetricCellView(metric: metric)
                     }
+                    if row.count < Layout.metricsPerRow {
+                        ForEach(0..<(Layout.metricsPerRow - row.count), id: \.self) { _ in
+                            Color.clear
+                                .frame(height: Layout.emptyColumnHeight)
+                                .frame(maxWidth: .infinity)
+                                .accessibilityHidden(true)
+                        }
+                    }
                 }
             }
         }
     }
 
     private enum Layout {
+        static let emptyColumnHeight = 0.0
         static let sectionSpacing = 8.0
         static let metricsPerRow = 2
     }

@@ -19,6 +19,7 @@ struct PointOfSaleDashboardView: View {
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
+    @State private var phoneShowingCart: Bool = false
 
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
         posModel.viewStateCoordinatorForView
@@ -267,8 +268,6 @@ struct PointOfSaleDashboardView: View {
             paymentState: posModel.paymentState
         )
     }
-
-    @State private var phoneShowingCart: Bool = false
 
     private var phoneCartButton: some View {
         Button {

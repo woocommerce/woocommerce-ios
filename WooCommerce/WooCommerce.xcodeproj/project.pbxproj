@@ -1455,28 +1455,9 @@
 		};
 		1A9690342359CF720061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 3FBE6D7B2FA879B800E5E6DE /* config */;
+			baseConfigurationReferenceRelativePath = "targets/WooCommerce-Release-Alpha.xcconfig";
 			buildSettings = {
-				APP_DISPLAY_NAME = "Woo (Pre-Alpha)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-PreAlpha";
-				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Alpha.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Resources/Woo-Alpha-macOS.entitlements";
-				CODE_SIGN_STYLE = Manual;
-				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.alpha.woocommerce;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match InHouse com.automattic.alpha.woocommerce";
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_STRICT_CONCURRENCY = minimal;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "";
-				VALID_ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 			};
 			name = "Release-Alpha";
 		};

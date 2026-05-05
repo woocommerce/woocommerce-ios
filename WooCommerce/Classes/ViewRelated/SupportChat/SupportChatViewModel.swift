@@ -620,6 +620,7 @@ final class SupportChatViewModel {
     private func handleFetchChatResult(_ result: Result<SupportChatResponse, Error>) {
         switch result {
         case .success(let response):
+            sessionID = response.sessionID
             let rehydrated: [ChatMessage] = response.messages.compactMap { message in
                 switch message.role {
                 case .user:

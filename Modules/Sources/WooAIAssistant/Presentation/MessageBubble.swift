@@ -59,7 +59,43 @@ struct MessageBubble: View {
             }
         }
 
-        return hasText ? deferCardsAfterText(filtered) : filtered
+        let deduped = MessageBubble.dedupedCardRenders(filtered)
+        return hasText ? deferCardsAfterText(deduped) : deduped
+    }
+
+    /// Drops earlier `.cardRender` segments that target the same `(family, entityID)`
+    /// as a later one. `orders_get` and `show_cards` both emit a card for the same
+    /// entity in some flows; without this, the renderer paints two rows for one id.
+    /// Last-wins so the dedicated `show_cards` typed payload takes precedence over
+    /// `orders_get`'s incidental raw card.
+    static func dedupedCardRenders(_ segments: [MessageSegment]) -> [MessageSegment] {
+        var keysSeen: Set<CardKey> = []
+        var dropIDs: Set<UUID> = []
+        for segment in segments.reversed() {
+            guard case .cardRender(let id, let toolCallID, _, _) = segment,
+                  let key = cardKey(fromSyntheticToolCallID: toolCallID) else { continue }
+            if keysSeen.contains(key) {
+                dropIDs.insert(id)
+            } else {
+                keysSeen.insert(key)
+            }
+        }
+        guard dropIDs.isEmpty == false else { return segments }
+        return segments.filter { dropIDs.contains($0.id) == false }
+    }
+
+    private struct CardKey: Hashable {
+        let family: String
+        let entityID: String
+    }
+
+    /// Synthetic `.cardRender` toolCallID format from `AgenticLoopOrchestrator`:
+    /// `"<callID>:card:<index>:<family>:<id>"`. Returns `nil` for any other shape
+    /// so unknown IDs survive dedupe untouched.
+    private static func cardKey(fromSyntheticToolCallID toolCallID: String) -> CardKey? {
+        let parts = toolCallID.split(separator: ":", omittingEmptySubsequences: false)
+        guard parts.count >= 5, parts[parts.count - 4] == "card" else { return nil }
+        return CardKey(family: String(parts[parts.count - 2]), entityID: String(parts[parts.count - 1]))
     }
 
     private func deferCardsAfterText(_ segments: [MessageSegment]) -> [MessageSegment] {

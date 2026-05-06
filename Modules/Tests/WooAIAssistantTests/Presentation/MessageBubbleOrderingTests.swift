@@ -178,6 +178,153 @@ struct MessageBubbleOrderingTests {
     }
 
     @Test
+    func test_orderedSegments_when_two_cardRenders_for_same_family_and_id_then_keeps_last() {
+        // Given
+        let firstID = UUID()
+        let secondID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .cardRender(id: firstID,
+                        toolCallID: "call_a:card:0:order:3692",
+                        toolName: "orders_get.order",
+                        payload: .object(["id": .int(3692)])),
+            .cardRender(id: secondID,
+                        toolCallID: "call_b:card:0:order:3692",
+                        toolName: "show_cards.order",
+                        payload: .object(["id": .int(3692), "customer_name": .string("Anil")]))
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [secondID])
+    }
+
+    @Test
+    func test_orderedSegments_when_two_cardRenders_for_same_family_different_ids_then_keeps_both() {
+        // Given
+        let firstID = UUID()
+        let secondID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .cardRender(id: firstID,
+                        toolCallID: "call_a:card:0:order:1",
+                        toolName: "show_cards.order",
+                        payload: .object(["id": .int(1)])),
+            .cardRender(id: secondID,
+                        toolCallID: "call_a:card:1:order:2",
+                        toolName: "show_cards.order",
+                        payload: .object(["id": .int(2)]))
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [firstID, secondID])
+    }
+
+    @Test
+    func test_orderedSegments_when_two_cardRenders_for_different_families_same_id_then_keeps_both() {
+        // Given
+        let orderID = UUID()
+        let productID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .cardRender(id: orderID,
+                        toolCallID: "call_a:card:0:order:7",
+                        toolName: "show_cards.order",
+                        payload: .object(["id": .int(7)])),
+            .cardRender(id: productID,
+                        toolCallID: "call_b:card:0:product:7",
+                        toolName: "show_cards.product",
+                        payload: .object(["id": .int(7)]))
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [orderID, productID])
+    }
+
+    @Test
+    func test_orderedSegments_when_three_cardRenders_for_same_entity_then_keeps_only_last() {
+        // Given
+        let firstID = UUID()
+        let secondID = UUID()
+        let thirdID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .cardRender(id: firstID,
+                        toolCallID: "call_a:card:0:order:42",
+                        toolName: "orders_get.order",
+                        payload: .object(["id": .int(42)])),
+            .cardRender(id: secondID,
+                        toolCallID: "call_b:card:0:order:42",
+                        toolName: "show_cards.order",
+                        payload: .object(["id": .int(42)])),
+            .cardRender(id: thirdID,
+                        toolCallID: "call_c:card:0:order:42",
+                        toolName: "show_cards.order",
+                        payload: .object(["id": .int(42)]))
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [thirdID])
+    }
+
+    @Test
+    func test_orderedSegments_when_no_cardRender_segments_then_passes_through_unchanged() {
+        // Given
+        let textID = UUID()
+        let confirmationID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .text(id: textID, content: "Working on it."),
+            .confirmation(id: confirmationID,
+                          proposalID: UUID(),
+                          toolName: "orders_update",
+                          preview: ConfirmationPreview(summary: .raw("Set order #1 to completed")),
+                          status: .pending)
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [textID, confirmationID])
+    }
+
+    @Test
+    func test_orderedSegments_when_cardRender_toolCallID_is_not_synthetic_then_skips_dedupe() {
+        // Given
+        let firstID = UUID()
+        let secondID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .cardRender(id: firstID,
+                        toolCallID: "call_1",
+                        toolName: "show_cards.order",
+                        payload: .object(["id": .int(1)])),
+            .cardRender(id: secondID,
+                        toolCallID: "call_2",
+                        toolName: "show_cards.order",
+                        payload: .object(["id": .int(1)]))
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [firstID, secondID])
+    }
+
+    @Test
     func test_orderedSegments_when_multiple_toolCalls_then_only_last_pill_is_kept_in_place() {
         // Given
         let firstCallID = UUID()

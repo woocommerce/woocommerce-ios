@@ -131,11 +131,12 @@ struct StoreStatsSnapshotStore {
         let currencySettings = currencySettingsData.flatMap {
             try? JSONDecoder().decode(CurrencySettings.self, from: $0)
         }
+        let timeZone = TimeZone.current
         return StoreStatsSnapshot(
             siteID: storeID,
             name: storeName,
-            timeZoneIdentifier: nil,
-            gmtOffset: 0,
+            timeZoneIdentifier: timeZone.identifier,
+            gmtOffset: Double(timeZone.secondsFromGMT()) / 3600,
             isSelectableInStorePicker: false,
             currencySettings: currencySettings
         )

@@ -120,6 +120,7 @@ struct StoreStatsSnapshotTests {
         // Then
         #expect(snapshots.map(\.siteID) == [123])
         #expect(snapshots[0].name == "Default Store")
+        #expect(snapshots[0].timeZone.identifier == TimeZone.current.identifier)
         #expect(snapshots[0].isSelectableInStorePicker == false)
         #expect(pickerSnapshots.isEmpty)
     }

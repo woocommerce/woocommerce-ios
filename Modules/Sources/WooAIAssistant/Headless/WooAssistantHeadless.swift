@@ -476,6 +476,7 @@ public actor WooAssistantHeadless {
             ProductsBulkUpdateTool.make(),
             ProductVariationsListTool.make(),
             ProductVariationsUpdateTool.make(),
+            ProductVariationsBulkUpdateTool.make(),
             CustomersListTool.make(),
             AnalyticsRevenueTool.make(),
             AnalyticsOrdersTool.make(),

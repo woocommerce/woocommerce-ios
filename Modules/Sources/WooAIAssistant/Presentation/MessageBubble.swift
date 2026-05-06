@@ -10,16 +10,20 @@ struct MessageBubble: View {
         HStack(alignment: .top, spacing: 0) {
             if message.role == .user { Spacer(minLength: AssistantSpacing.xxLarge) }
             VStack(alignment: alignment, spacing: AssistantSpacing.large) {
-                ForEach(orderedSegments) { segment in
-                    segmentView(for: segment)
+                ForEach(renderableGroups, id: \.identifier) { group in
+                    groupView(for: group)
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
             }
-            .animation(.snappy(duration: 0.2), value: orderedSegments.map(\.id))
+            .animation(.snappy(duration: 0.2), value: renderableGroups.map(\.identifier))
             if message.role == .assistant { Spacer(minLength: AssistantSpacing.xxLarge) }
         }
         .frame(maxWidth: .infinity,
                alignment: message.role == .user ? .trailing : .leading)
+    }
+
+    var renderableGroups: [MessageSegmentGrouping.Group] {
+        MessageSegmentGrouping.group(orderedSegments)
     }
 
     private var alignment: HorizontalAlignment {
@@ -121,6 +125,20 @@ struct MessageBubble: View {
             return Int(count)
         }
         return 0
+    }
+
+    @ViewBuilder
+    private func groupView(for group: MessageSegmentGrouping.Group) -> some View {
+        switch group {
+        case .solo(let segment):
+            segmentView(for: segment)
+        case .cardRun(let family, let segments):
+            let payloads = segments.compactMap { segment -> AnyCodableJSON? in
+                if case .cardRender(_, _, _, let payload) = segment { return payload }
+                return nil
+            }
+            MessageCardListHost(family: family, payloads: payloads)
+        }
     }
 
     @ViewBuilder

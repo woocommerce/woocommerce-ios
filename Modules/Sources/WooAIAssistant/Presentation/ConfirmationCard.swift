@@ -8,19 +8,65 @@ struct ConfirmationCard: View {
     let onConfirm: () -> Void
     let onCancel: () -> Void
 
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
-        BannerShell(title: cardTitle,
-                    tone: tone,
-                    eyebrow: eyebrowText,
-                    eyebrowSymbol: eyebrowSymbol) {
+        VStack(alignment: .leading, spacing: Layout.padding) {
+            VStack(alignment: .leading, spacing: AssistantSpacing.xSmall) {
+                eyebrowLabel
+
+                Text(cardTitle)
+                    .font(.assistantBodyEmphasized)
+                    .foregroundStyle(Color.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.horizontal, Layout.padding)
+
+            Divider()
+
             VStack(alignment: .leading, spacing: AssistantSpacing.small) {
                 diffBody
-
                 if status == .pending {
                     actionButtons
                         .padding(.top, AssistantSpacing.xSmall)
                 }
             }
+            .padding(.horizontal, Layout.padding)
+        }
+        .padding(.vertical, Layout.padding)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(backgroundColor)
+        .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.card))
+        .overlay(
+            RoundedRectangle(cornerRadius: AssistantRadius.card)
+                .stroke(Color.assistantSurfaceBorder, lineWidth: Layout.borderWidth)
+        )
+        .shadow(color: Color.black.opacity(Layout.shadowOpacity),
+                radius: Layout.shadowRadius,
+                x: 0,
+                y: Layout.shadowYOffset)
+    }
+
+    private var backgroundColor: Color {
+        let tintOpacity: CGFloat = colorScheme == .dark ? 0.08 : 0.16
+        switch status {
+        case .pending: return Color.assistantWarning.opacity(tintOpacity)
+        case .confirmed: return Color.assistantInfo.opacity(tintOpacity)
+        case .cancelled: return Color.assistantSurfaceElevated
+        }
+    }
+
+    private var eyebrowLabel: some View {
+        HStack(spacing: AssistantSpacing.xSmall) {
+            Image(systemName: eyebrowSymbol)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(eyebrowColor)
+                .accessibilityHidden(true)
+            Text(eyebrowText)
+                .font(.caption2.weight(.semibold))
+                .textCase(.uppercase)
+                .tracking(0.6)
+                .foregroundStyle(eyebrowColor)
         }
     }
 
@@ -88,12 +134,20 @@ struct ConfirmationCard: View {
         }
     }
 
-    private var tone: BannerTone {
+    private var eyebrowColor: Color {
         switch status {
-        case .pending: return .warning
-        case .confirmed: return .info
-        case .cancelled: return .neutral
+        case .pending: return Color.assistantWarning
+        case .confirmed: return Color.assistantInfo
+        case .cancelled: return Color.assistantMuted
         }
+    }
+
+    private enum Layout {
+        static let padding: CGFloat = 16
+        static let borderWidth: CGFloat = 1
+        static let shadowOpacity: Double = 0.06
+        static let shadowRadius: CGFloat = 4
+        static let shadowYOffset: CGFloat = 1
     }
 
     private enum Localization {

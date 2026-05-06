@@ -162,7 +162,6 @@ public enum ProductVariationsBulkUpdateTool {
                                                          path: "wc/v3/products/\(args.productID)/variations/batch",
                                                          body: payload,
                                                          client: client,
-                                                         toolName: name,
-                                                         family: .productVariation)
+                                                         toolName: name)
     }
 }

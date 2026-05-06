@@ -130,7 +130,6 @@ public enum ProductsBulkUpdateTool {
                                                          path: "wc/v3/products/batch",
                                                          body: payload,
                                                          client: client,
-                                                         toolName: name,
-                                                         family: .product)
+                                                         toolName: name)
     }
 }

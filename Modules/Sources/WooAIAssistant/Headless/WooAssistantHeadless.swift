@@ -153,11 +153,11 @@ public actor WooAssistantHeadless {
             }
         }
 
-        /// One structured tool payload captured from a `.toolResult` event. `kind`
-        /// is the tool name on trunk (e.g. `show_cards`, `orders_list`) since the
-        /// orchestrator no longer carries a separate result-kind tag.
-        /// `payloadJSON` is the canonical JSON encoding of the structured payload
-        /// the model received on its next turn.
+        /// One card the orchestrator authorized for render via a `.cardRender`
+        /// event. `kind` and `toolName` carry the orchestrator's synthetic tool
+        /// name (e.g. `show_cards.order`, `analytics_revenue`). `payloadJSON` is
+        /// the canonical JSON encoding of the rendered card payload, identical
+        /// to what `MessageCardHost` would receive in the SwiftUI surface.
         public struct CardRecord: Sendable, Equatable {
             public let kind: String
             public let toolName: String
@@ -197,9 +197,10 @@ public actor WooAssistantHeadless {
         /// Every tool dispatched by the loop, in call order.
         public var toolCalls: [ToolCallRecord]
 
-        /// Every `.toolResult` payload captured during the turn. Trunk emits one
-        /// per tool with a structured success payload, so this list mirrors the
-        /// successful-dispatch subset of `toolCalls`.
+        /// Every card the orchestrator authorized for render this turn, in
+        /// emission order, deduped last-wins by `(family, id)` to mirror the
+        /// SwiftUI surface. A turn whose tools never emit `.cardRender` (e.g. a
+        /// bare `orders_list` or `analytics_revenue`) yields an empty list here.
         public var cards: [CardRecord]
 
         /// Every confirmation surfaced and how it resolved.
@@ -283,6 +284,11 @@ public actor WooAssistantHeadless {
         // Tool calls land via `.toolCallStarted` before their `.toolCallCompleted`; index by id so
         // the completed event can attach the result to the same record without rebuilding the array.
         var toolCallIndexByID: [String: Int] = [:]
+        // The orchestrator emits a synthetic `.toolResult` immediately before each `.cardRender`.
+        // Buffer those payloads so the `.cardRender` arm can pick the right one up.
+        var pendingCardPayloads: [String: PendingCardPayload] = [:]
+        // Last-wins by (family, id) so cards survive the same dedupe the SwiftUI surface applies.
+        var cardIndexByKey: [SyntheticCardKey: Int] = [:]
         let policy = configuration.defaultConfirmationPolicy
 
         let turn = AssistantTurn(prompt: message)
@@ -312,16 +318,28 @@ public actor WooAssistantHeadless {
                     result.toolCalls[index].resultJSON = resultJSON
                 }
 
-            case .toolResult(_, let toolName, let payload):
-                let payloadJSON = Self.encodeJSON(payload)
-                result.cards.append(.init(kind: toolName,
-                                          toolName: toolName,
-                                          payloadJSON: payloadJSON))
+            case .toolResult(let toolCallID, let toolName, let payload):
+                // Only synthetic toolResults (paired with a cardRender) carry render payloads;
+                // the model-visible toolResult that precedes them has a non-card-shaped ID.
+                if Self.parseSyntheticCardID(toolCallID) != nil {
+                    pendingCardPayloads[toolCallID] = PendingCardPayload(
+                        toolName: toolName,
+                        payloadJSON: Self.encodeJSON(payload)
+                    )
+                }
 
-            case .cardRender:
-                // The headless harness records raw `toolResult` payloads above; the
-                // separate `cardRender` UI hint is meaningful only in the SwiftUI layer.
-                break
+            case .cardRender(let toolCallID):
+                guard let pending = pendingCardPayloads.removeValue(forKey: toolCallID),
+                      let key = Self.parseSyntheticCardID(toolCallID) else { continue }
+                let record = ConversationTurnResult.CardRecord(kind: pending.toolName,
+                                                               toolName: pending.toolName,
+                                                               payloadJSON: pending.payloadJSON)
+                if let priorIndex = cardIndexByKey[key] {
+                    result.cards[priorIndex] = record
+                } else {
+                    cardIndexByKey[key] = result.cards.count
+                    result.cards.append(record)
+                }
 
             case .confirmationRequired(let proposal):
                 let flatPreview = proposal.preview.flattenedSummary()
@@ -378,6 +396,26 @@ public actor WooAssistantHeadless {
     }
 
     // MARK: - Helpers
+
+    private struct PendingCardPayload: Sendable {
+        let toolName: String
+        let payloadJSON: String
+    }
+
+    private struct SyntheticCardKey: Hashable {
+        let family: String
+        let entityID: String
+    }
+
+    /// Parses the orchestrator's synthetic toolCallID `<callID>:card:<index>:<family>:<id>`.
+    /// Mirrors `MessageBubble.cardKey(fromSyntheticToolCallID:)` so the harness applies the
+    /// same `(family, id)` dedupe as the SwiftUI surface. Returns nil for any other shape.
+    private static func parseSyntheticCardID(_ toolCallID: String) -> SyntheticCardKey? {
+        let parts = toolCallID.split(separator: ":", omittingEmptySubsequences: false)
+        guard parts.count >= 5, parts[parts.count - 4] == "card" else { return nil }
+        return SyntheticCardKey(family: String(parts[parts.count - 2]),
+                                entityID: String(parts[parts.count - 1]))
+    }
 
     private static func encodeJSON(_ value: AnyCodableJSON) -> String {
         let encoder = JSONEncoder()

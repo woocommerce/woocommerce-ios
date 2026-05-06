@@ -1,6 +1,8 @@
 import Foundation
 import CocoaLumberjackSwift
 import NetworkingCore
+import Storage
+import Yosemite
 
 /// Headless test driver for the WooCommerce AI Assistant. Wires the same
 /// `AgenticChatBackend`, REST tool registry, and safety policy that the
@@ -227,11 +229,20 @@ public actor WooAssistantHeadless {
     private let credentials: Credentials
     private let configuration: Configuration
     private let backend: AgenticChatBackend
+    /// Retains the in-memory storage and the Yosemite stores so they outlive
+    /// `send()` calls. The Yosemite `Dispatcher` keeps stores via weak refs;
+    /// the harness must hold the strong refs itself.
+    private let storeRefs: [Any]
 
     // MARK: - Init
 
     /// Production wiring: real URLSession-backed transports talking to
-    /// `jetpack-ai-query` and the merchant's store.
+    /// `jetpack-ai-query` and the merchant's store. Cards flow through the
+    /// same cache-first providers the app target ships, backed by an
+    /// in-memory CoreData stack scoped to this harness instance.
+    /// `@MainActor` because the cache-first providers read `viewStorage`
+    /// from the main thread; constructing them must happen there too.
+    @MainActor
     public init(credentials: Credentials,
                 configuration: Configuration = .init()) {
         let normalizedSiteURL = Self.normalizeSiteURL(credentials.siteURL)
@@ -246,20 +257,51 @@ public actor WooAssistantHeadless {
         let restClient = HeadlessURLSessionWCRESTClient(siteURL: normalizedSiteURL,
                                                         basicAuthHeader: basicAuthHeader,
                                                         session: session)
+
+        let storageManager = HeadlessInMemoryStorageManager()
+        let strippedPassword = credentials.appPassword.replacingOccurrences(of: " ", with: "")
+        let yosemiteCredentials = NetworkingCore.Credentials.applicationPassword(
+            username: credentials.username,
+            password: strippedPassword,
+            siteAddress: credentials.siteURL
+        )
+        let network = AlamofireNetwork(credentials: yosemiteCredentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil)
+        let dispatcher = Dispatcher()
+        let storeRefs: [Any] = [
+            OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        ]
+        let dispatch: @Sendable (Action) -> Void = { dispatcher.dispatch($0) }
+        let tools = Self.productionTools(siteID: credentials.siteID,
+                                         storageManager: storageManager,
+                                         dispatchAction: dispatch,
+                                         client: restClient)
         self.init(credentials: credentials,
                   configuration: configuration,
                   chatService: chatService,
-                  restClient: restClient)
+                  restClient: restClient,
+                  tools: tools,
+                  storeRefs: storeRefs)
     }
 
-    // Internal seam used by the test target to inject a mock chat service and a stub REST client.
+    /// Internal seam used by the test target. When `tools` is `nil` the seam
+    /// builds a tool list with a stub `show_cards` that has no providers; tests
+    /// that don't exercise cards see them rejected as `.internalError`, which
+    /// is fine because no harness test asserts on `show_cards` output.
     init(credentials: Credentials,
          configuration: Configuration,
          chatService: AIChatService,
-         restClient: WCRESTClient) {
+         restClient: WCRESTClient,
+         tools: [RESTTool]? = nil,
+         storeRefs: [Any] = []) {
         self.credentials = credentials
         self.configuration = configuration
-        let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.allTools(client: restClient))
+        self.storeRefs = storeRefs
+        let resolvedTools = tools ?? Self.testStubTools()
+        let toolRegistry = RESTToolRegistry(client: restClient, tools: resolvedTools)
         let prompt = configuration.systemPrompt
         let resolver = DefaultConfirmationSnapshotResolver(client: restClient)
         self.backend = AgenticChatBackend(
@@ -503,18 +545,34 @@ public actor WooAssistantHeadless {
                              message: "Headless JWT mint expected `token` in response body, got: \(snippet)")
     }
 
-    /// Production REST tool catalog. Mirrors what the app target wires into its
-    /// `AgenticLoopOrchestrator`. The harness has no CoreData stack, so
-    /// `show_cards` uses REST-only providers in place of the cache-first ones
-    /// the app target ships.
-    static func allTools(client: WCRESTClient) -> [RESTTool] {
-        let providers: [CardFamily: any CardEntityProvider] = [
-            .order: RESTOrderCardProvider(client: client),
-            .product: RESTProductCardProvider(client: client),
-            .productVariation: RESTVariationCardProvider(client: client),
-            .customer: CustomerCardProvider(client: client)
+    /// Production tool catalog used by the public `init(credentials:configuration:)`.
+    /// Cards go through the same cache-first providers as the app target, so smoke
+    /// runs exercise the production path end-to-end.
+    @MainActor
+    static func productionTools(siteID: Int64,
+                                storageManager: StorageManagerType,
+                                dispatchAction: @escaping @Sendable (Action) -> Void,
+                                client: WCRESTClient) -> [RESTTool] {
+        Self.commonTools() + [
+            ShowCardsTool.make(siteID: siteID,
+                               storageManager: storageManager,
+                               dispatchAction: dispatchAction,
+                               restClient: client)
         ]
-        return [
+    }
+
+    /// Stubbed tool catalog used by the test seam when no `tools` array is
+    /// injected. `show_cards` has no providers; it rejects every ref with
+    /// `.internalError`. No harness test exercises `show_cards`, so this is
+    /// safe and avoids spinning up a CoreData stack per test.
+    static func testStubTools() -> [RESTTool] {
+        Self.commonTools() + [
+            ShowCardsTool.make(providers: [:])
+        ]
+    }
+
+    private static func commonTools() -> [RESTTool] {
+        [
             OrdersListTool.make(),
             OrdersGetTool.make(),
             OrdersUpdateTool.make(),
@@ -528,8 +586,7 @@ public actor WooAssistantHeadless {
             ProductVariationsBulkUpdateTool.make(),
             CustomersListTool.make(),
             AnalyticsRevenueTool.make(),
-            AnalyticsOrdersTool.make(),
-            ShowCardsTool.make(providers: providers)
+            AnalyticsOrdersTool.make()
         ]
     }
 }

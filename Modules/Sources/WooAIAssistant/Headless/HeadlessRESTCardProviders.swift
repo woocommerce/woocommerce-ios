@@ -26,7 +26,8 @@ final class RESTOrderCardProvider: CardEntityProvider {
         }
         let decoded: [OrderCardPayload]
         do {
-            decoded = try JSONDecoder().decode([OrderCardPayload].self, from: response.data)
+            let raw = try JSONDecoder().decode([RESTOrderResponse].self, from: response.data)
+            decoded = raw.map { $0.toCardPayload() }
         } catch {
             DDLogError("RESTOrderCardProvider failed to decode response: \(error)")
             return Dictionary(uniqueKeysWithValues: refs.map { ($0, .rejected(.internalError)) })
@@ -157,5 +158,65 @@ final class RESTVariationCardProvider: CardEntityProvider {
         // variations therefore happens only against the cache path. The REST
         // path skipping it matches what WC's nested variation endpoint exposes.
         return .found(.variation(withParent))
+    }
+}
+
+/// WC `/wc/v3/orders` returns no top-level `customer_name` / `customer_email` —
+/// those live under `billing.first_name` / `billing.last_name` / `billing.email`.
+/// Flatten them at decode time so the headless harness produces the same payload
+/// the cache provider does (which reads them via `Order.billingAddress`).
+private struct RESTOrderResponse: Decodable {
+    let id: Int64?
+    let number: String?
+    let status: String?
+    let total: String?
+    let currency: String?
+    let dateCreated: String?
+    let customerName: String?
+    let customerEmail: String?
+    let customerID: Int64?
+    let parentID: Int64?
+    let billing: Billing?
+
+    struct Billing: Decodable {
+        let firstName: String?
+        let lastName: String?
+        let email: String?
+
+        enum CodingKeys: String, CodingKey {
+            case firstName = "first_name"
+            case lastName = "last_name"
+            case email
+        }
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, number, status, total, currency, billing
+        case dateCreated = "date_created"
+        case customerName = "customer_name"
+        case customerEmail = "customer_email"
+        case customerID = "customer_id"
+        case parentID = "parent_id"
+    }
+
+    func toCardPayload() -> OrderCardPayload {
+        let synthesizedName: String? = {
+            if let customerName, customerName.isEmpty == false { return customerName }
+            let combined = [billing?.firstName, billing?.lastName]
+                .compactMap { $0?.isEmpty == false ? $0 : nil }
+                .joined(separator: " ")
+                .trimmingCharacters(in: .whitespaces)
+            return combined.isEmpty ? nil : combined
+        }()
+        return OrderCardPayload(id: id,
+                                number: number,
+                                status: status,
+                                total: total,
+                                currency: currency,
+                                dateCreated: dateCreated,
+                                customerName: synthesizedName,
+                                customerEmail: customerEmail ?? billing?.email,
+                                customerID: customerID,
+                                parentID: parentID)
     }
 }

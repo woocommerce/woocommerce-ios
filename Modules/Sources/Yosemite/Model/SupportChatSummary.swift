@@ -11,6 +11,7 @@ public struct SupportChatSummary: Equatable {
     public let siteID: Int64
     public let wpcomUserID: Int64
     public let botSlug: String
+    public let hasCreatedTicket: Bool
     public let title: String?
     public let createdAt: Date
     public let updatedAt: Date
@@ -19,6 +20,7 @@ public struct SupportChatSummary: Equatable {
                 siteID: Int64,
                 wpcomUserID: Int64,
                 botSlug: String,
+                hasCreatedTicket: Bool,
                 title: String?,
                 createdAt: Date,
                 updatedAt: Date) {
@@ -26,6 +28,7 @@ public struct SupportChatSummary: Equatable {
         self.siteID = siteID
         self.wpcomUserID = wpcomUserID
         self.botSlug = botSlug
+        self.hasCreatedTicket = hasCreatedTicket
         self.title = title
         self.createdAt = createdAt
         self.updatedAt = updatedAt

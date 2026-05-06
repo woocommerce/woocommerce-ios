@@ -22,8 +22,6 @@ struct ConfirmationCard: View {
             }
             .padding(.horizontal, Layout.padding)
 
-            Divider()
-
             VStack(alignment: .leading, spacing: AssistantSpacing.small) {
                 diffBody
                 if status == .pending {

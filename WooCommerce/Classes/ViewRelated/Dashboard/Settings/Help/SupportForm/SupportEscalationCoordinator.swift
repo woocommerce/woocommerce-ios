@@ -22,6 +22,9 @@ final class SupportEscalationCoordinator {
     private let analytics: Analytics
     private let stores: StoresManager
 
+    /// The chat ID to update when a ticket is created. Set via `handleEscalation`.
+    private var chatID: Int64?
+
     /// Creates a new coordinator.
     ///
     /// - Parameters:
@@ -49,9 +52,12 @@ final class SupportEscalationCoordinator {
     /// - Otherwise: Shows support form with optional pre-selection
     ///
     /// - Parameters:
+    ///   - chatID: The chat ID to associate with the created ticket (nil if chat not yet persisted).
     ///   - transcript: The chat transcript.
     ///   - supportAreaInfo: Optional support area information from AI chat.
-    func handleEscalation(transcript: String, supportAreaInfo: SupportAreaInfo?) {
+    func handleEscalation(chatID: Int64?, transcript: String, supportAreaInfo: SupportAreaInfo?) {
+        self.chatID = chatID
+
         guard let supportAreaInfo else {
             showSupportForm(transcript: transcript, preselectedArea: nil)
             return
@@ -76,7 +82,10 @@ final class SupportEscalationCoordinator {
             sourceTag: Tags.sourceTag,
             additionalTags: Tags.additionalTags,
             attachments: attachments,
-            preselectedArea: preselectedArea
+            preselectedArea: preselectedArea,
+            onTicketCreated: { [weak self] in
+                self?.persistTicketCreated()
+            }
         )
         let viewController = SupportFormHostingController(viewModel: viewModel)
 
@@ -112,6 +121,7 @@ final class SupportEscalationCoordinator {
                 switch result {
                 case .success:
                     self?.analytics.track(.supportNewRequestCreated)
+                    self?.persistTicketCreated()
                     self?.showSuccessAndPop()
                 case .failure:
                     self?.analytics.track(.supportNewRequestFailed)
@@ -125,6 +135,13 @@ final class SupportEscalationCoordinator {
         let notice = Notice(title: Localization.ticketCreatedSuccess, feedbackType: .success)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
         navigationController?.popViewController(animated: true)
+    }
+
+    /// Persists that a ticket was created for this chat.
+    private func persistTicketCreated() {
+        guard let chatID else { return }
+        let action = SupportChatAction.markTicketCreated(chatID: chatID) { }
+        stores.dispatch(action)
     }
 
     private func buildTranscriptAttachment(transcript: String) -> [ZendeskAttachment] {

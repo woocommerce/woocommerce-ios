@@ -84,10 +84,10 @@ struct POSNavigationDestinationMarkAsPaidView: View {
             orderTotal: orderTotal,
             isProcessing: paymentModel.paymentState.markAsPaid == .processing,
             errorMessage: errorMessage,
-            onConfirm: {
+            onConfirm: { note in
                 Task { @MainActor in
                     do {
-                        try await paymentModel.confirmMarkAsPaidPayment()
+                        try await paymentModel.confirmMarkAsPaidPayment(note: note)
                         errorMessage = nil
                     } catch {
                         errorMessage = Localization.failureMessage

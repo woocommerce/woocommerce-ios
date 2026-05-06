@@ -526,7 +526,11 @@ extension POSPaymentModel {
     /// controller. On failure rolls back to the confirmation stage so the merchant can retry.
     /// Analytics for failures fires here (not in the controller) so every failure path —
     /// `provideOrder()` and the handler call alike — funnels through one event.
-    func confirmMarkAsPaidPayment() async throws {
+    ///
+    /// - Parameter note: Optional merchant-supplied free-form note captured by the
+    ///   confirmation view (e.g. "Bank transfer from Maria"). Forwarded to the handler so it
+    ///   can be attached to the order as a private order note for reconciliation context.
+    func confirmMarkAsPaidPayment(note: String? = nil) async throws {
         do {
             let order: Order
             if let currentOrder {
@@ -538,7 +542,7 @@ extension POSPaymentModel {
             }
             analytics.track(.pointOfSaleMarkAsPaidConfirmed)
             paymentState.markAsPaid = .processing
-            try await markAsPaidHandler.markOrderAsPaid(for: order)
+            try await markAsPaidHandler.markOrderAsPaid(for: order, note: note)
             try? await postPaymentStep?()
             markAsPaidPaymentSuccess()
         } catch {

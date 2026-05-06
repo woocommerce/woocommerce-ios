@@ -132,9 +132,19 @@ final class SupportEscalationCoordinator {
     }
 
     private func showSuccessAndPop() {
-        let notice = Notice(title: Localization.ticketCreatedSuccess, feedbackType: .success)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-        navigationController?.popViewController(animated: true)
+        guard let topViewController = navigationController?.topViewController else {
+            return
+        }
+
+        let alert = UIAlertController(
+            title: Localization.ticketCreatedTitle,
+            message: Localization.ticketCreatedMessage,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: Localization.ok, style: .default) { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        })
+        topViewController.present(alert, animated: true)
     }
 
     /// Persists that a ticket was created for this chat.
@@ -165,10 +175,20 @@ private extension SupportEscalationCoordinator {
             value: "Creating support request...",
             comment: "Loading message shown while creating a support ticket"
         )
-        static let ticketCreatedSuccess = NSLocalizedString(
-            "supportEscalationCoordinator.ticketCreatedSuccess",
-            value: "Support request created successfully",
-            comment: "Success notice message after support ticket is created"
+        static let ticketCreatedTitle = NSLocalizedString(
+            "supportEscalationCoordinator.ticketCreatedTitle",
+            value: "Support Request Created",
+            comment: "Alert title shown after support ticket is created successfully"
+        )
+        static let ticketCreatedMessage = NSLocalizedString(
+            "supportEscalationCoordinator.ticketCreatedMessage",
+            value: "Your support request has been submitted. We'll respond via email.",
+            comment: "Alert message shown after support ticket is created successfully"
+        )
+        static let ok = NSLocalizedString(
+            "supportEscalationCoordinator.ok",
+            value: "OK",
+            comment: "OK button on the ticket created alert"
         )
     }
 }

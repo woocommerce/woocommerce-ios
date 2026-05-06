@@ -166,7 +166,7 @@ private func makeOrder(id: Int64) -> Order {
 }
 
 private func makeOrderRef(_ id: Int64) -> CardRef {
-    CardRef(family: .order, id: id, parentID: nil)
+    CardRef(family: .order, id: id, parentID: 0)
 }
 
 private func isResolvedOrder(_ outcome: CardEntityOutcome?, id: Int64) -> Bool {

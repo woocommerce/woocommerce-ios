@@ -163,7 +163,7 @@ private func makeProduct(id: Int64) -> Product {
 }
 
 private func makeProductRef(_ id: Int64) -> CardRef {
-    CardRef(family: .product, id: id, parentID: nil)
+    CardRef(family: .product, id: id, parentID: 0)
 }
 
 private func isResolvedProduct(_ outcome: CardEntityOutcome?, id: Int64) -> Bool {

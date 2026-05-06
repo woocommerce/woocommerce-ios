@@ -1,12 +1,14 @@
 import Foundation
 
-/// Post-validation form of a CardReference; parent id required only for variations.
+/// Post-validation form of a CardReference. `parentID` is meaningful only for
+/// `productVariation`; the resolver passes 0 for other families and providers
+/// for those families ignore it.
 public struct CardRef: Sendable, Hashable {
     public let family: CardFamily
     public let id: Int64
-    public let parentID: Int64?
+    public let parentID: Int64
 
-    public init(family: CardFamily, id: Int64, parentID: Int64?) {
+    public init(family: CardFamily, id: Int64, parentID: Int64) {
         self.family = family
         self.id = id
         self.parentID = parentID

@@ -24,13 +24,9 @@ public final class VariationCardProvider: CardEntityProvider {
         var outcomes: [CardRef: CardEntityOutcome] = [:]
         var misses: [CardRef] = []
         for ref in refs {
-            guard let parentID = ref.parentID else {
-                outcomes[ref] = .rejected(.malformed)
-                continue
-            }
             if let variation = storageManager.viewStorage
                 .loadProductVariation(siteID: siteID, productVariationID: ref.id)?.toReadOnly() {
-                outcomes[ref] = outcome(for: variation, parentID: parentID)
+                outcomes[ref] = outcome(for: variation, parentID: ref.parentID)
             } else {
                 misses.append(ref)
             }
@@ -40,12 +36,11 @@ public final class VariationCardProvider: CardEntityProvider {
 
         let fetchResults = await withTaskGroup(of: (CardRef, Result<Yosemite.ProductVariation, Error>).self) { group in
             for ref in misses {
-                guard let parentID = ref.parentID else { continue }
                 group.addTask { @MainActor [dispatchAction] in
                     let result = await withCheckedContinuation { (cont: CheckedContinuation<Result<Yosemite.ProductVariation, Error>, Never>) in
                         let action = ProductVariationAction.retrieveProductVariation(
                             siteID: self.siteID,
-                            productID: parentID,
+                            productID: ref.parentID,
                             variationID: ref.id
                         ) { result in
                             cont.resume(returning: result)
@@ -63,12 +58,11 @@ public final class VariationCardProvider: CardEntityProvider {
         }
 
         for ref in misses {
-            guard let parentID = ref.parentID else { continue }
             switch fetchResults[ref] {
             case .success:
                 if let variation = storageManager.viewStorage
                     .loadProductVariation(siteID: siteID, productVariationID: ref.id)?.toReadOnly() {
-                    outcomes[ref] = outcome(for: variation, parentID: parentID)
+                    outcomes[ref] = outcome(for: variation, parentID: ref.parentID)
                 } else {
                     outcomes[ref] = .rejected(.notFound)
                 }

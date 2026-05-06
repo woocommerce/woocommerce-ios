@@ -37,7 +37,7 @@ struct CardReferenceResolver: Sendable {
                 resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .malformed)
                 continue
             }
-            var parentParsed: Int64?
+            var parentParsed: Int64 = 0
             if reference.family == .productVariation {
                 guard let parentRaw = reference.parentID,
                       let parsedParent = Int64(parentRaw),

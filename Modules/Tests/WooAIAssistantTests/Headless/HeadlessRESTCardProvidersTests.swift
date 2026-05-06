@@ -14,7 +14,7 @@ struct RESTOrderCardProviderTests {
         """
         let client = SyncStubWCRESTClient(response: WCRESTResponse(data: Data(body.utf8), statusCode: 200))
         let provider = RESTOrderCardProvider(client: client)
-        let ref = CardRef(family: .order, id: 3551, parentID: nil)
+        let ref = CardRef(family: .order, id: 3551, parentID: 0)
 
         // When
         let outcomes = await provider.fetch(refs: [ref])
@@ -35,7 +35,7 @@ struct RESTOrderCardProviderTests {
         let body = #"[{"id": 1, "status": "trash"}]"#
         let client = SyncStubWCRESTClient(response: WCRESTResponse(data: Data(body.utf8), statusCode: 200))
         let provider = RESTOrderCardProvider(client: client)
-        let ref = CardRef(family: .order, id: 1, parentID: nil)
+        let ref = CardRef(family: .order, id: 1, parentID: 0)
 
         // When
         let outcomes = await provider.fetch(refs: [ref])
@@ -53,7 +53,7 @@ struct RESTOrderCardProviderTests {
         // Given
         let client = SyncStubWCRESTClient(response: WCRESTResponse(data: Data(), statusCode: 404))
         let provider = RESTOrderCardProvider(client: client)
-        let ref = CardRef(family: .order, id: 1, parentID: nil)
+        let ref = CardRef(family: .order, id: 1, parentID: 0)
 
         // When
         let outcomes = await provider.fetch(refs: [ref])
@@ -78,7 +78,7 @@ struct RESTProductCardProviderTests {
         """
         let client = SyncStubWCRESTClient(response: WCRESTResponse(data: Data(body.utf8), statusCode: 200))
         let provider = RESTProductCardProvider(client: client)
-        let ref = CardRef(family: .product, id: 42, parentID: nil)
+        let ref = CardRef(family: .product, id: 42, parentID: 0)
 
         // When
         let outcomes = await provider.fetch(refs: [ref])
@@ -99,7 +99,7 @@ struct RESTProductCardProviderTests {
         let body = #"[{"id": 1, "status": "trash"}]"#
         let client = SyncStubWCRESTClient(response: WCRESTResponse(data: Data(body.utf8), statusCode: 200))
         let provider = RESTProductCardProvider(client: client)
-        let ref = CardRef(family: .product, id: 1, parentID: nil)
+        let ref = CardRef(family: .product, id: 1, parentID: 0)
 
         // When
         let outcomes = await provider.fetch(refs: [ref])
@@ -117,7 +117,7 @@ struct RESTProductCardProviderTests {
         // Given
         let client = SyncStubWCRESTClient(response: WCRESTResponse(data: Data(), statusCode: 404))
         let provider = RESTProductCardProvider(client: client)
-        let ref = CardRef(family: .product, id: 1, parentID: nil)
+        let ref = CardRef(family: .product, id: 1, parentID: 0)
 
         // When
         let outcomes = await provider.fetch(refs: [ref])

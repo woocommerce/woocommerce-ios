@@ -112,14 +112,10 @@ final class RESTVariationCardProvider: CardEntityProvider {
         guard refs.isEmpty == false else { return [:] }
         return await withTaskGroup(of: (CardRef, CardEntityOutcome).self) { group in
             for ref in refs {
-                guard let parentID = ref.parentID else {
-                    group.addTask { (ref, .rejected(.malformed)) }
-                    continue
-                }
-                let path = "wc/v3/products/\(parentID)/variations/\(ref.id)"
+                let path = "wc/v3/products/\(ref.parentID)/variations/\(ref.id)"
                 group.addTask { [client] in
                     let response = await client.request(method: "GET", path: path, query: nil, body: nil)
-                    return (ref, Self.outcome(for: response, parentID: parentID))
+                    return (ref, Self.outcome(for: response, parentID: ref.parentID))
                 }
             }
             var outcomes: [CardRef: CardEntityOutcome] = [:]

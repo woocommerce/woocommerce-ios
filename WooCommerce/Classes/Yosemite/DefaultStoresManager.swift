@@ -179,14 +179,14 @@ class DefaultStoresManager: StoresManager {
     /// Forwards the Action to the current State.
     ///
     func dispatch(_ action: Action) {
-        state.onAction(action)
+        state.onAction(actionWithStoreStatsWidgetSnapshotUpdate(action))
     }
 
     /// Forwards the Actions to the current State.
     ///
     func dispatch(_ actions: [Action]) {
         for action in actions {
-            state.onAction(action)
+            dispatch(action)
         }
     }
 
@@ -865,9 +865,110 @@ private extension DefaultStoresManager {
         UserDefaults.group?[.defaultStoreName] = sessionManager.defaultSite?.name
 
         // Currency Settings are stored in `SelectedSiteSettings.defaultStoreCurrencySettings`
+        updateStoreStatsWidgetStoreSnapshots(with: siteID)
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    func actionWithStoreStatsWidgetSnapshotUpdate(_ action: Action) -> Action {
+        guard let accountAction = action as? AccountAction else {
+            return action
+        }
+
+        switch accountAction {
+        case let .loadAndSynchronizeSite(siteID, forcedUpdate, onCompletion):
+            return AccountAction.loadAndSynchronizeSite(siteID: siteID, forcedUpdate: forcedUpdate) { [weak self] result in
+                guard let self, case .success = result else {
+                    onCompletion(result)
+                    return
+                }
+                self.updateStoreStatsWidgetStoreSnapshotsAfterSiteListSynchronization(selectedSiteID: siteID) {
+                    onCompletion(result)
+                }
+            }
+        case let .synchronizeSites(selectedSiteID, onCompletion):
+            return AccountAction.synchronizeSites(selectedSiteID: selectedSiteID) { [weak self] result in
+                guard let self, case .success = result else {
+                    onCompletion(result)
+                    return
+                }
+                self.updateStoreStatsWidgetStoreSnapshotsAfterSiteListSynchronization(selectedSiteID: selectedSiteID) {
+                    onCompletion(result)
+                }
+            }
+        case let .synchronizeSitesAndReturnSelectedSiteInfo(siteAddress, onCompletion):
+            return AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: siteAddress) { [weak self] result in
+                guard let self, case let .success(site) = result else {
+                    onCompletion(result)
+                    return
+                }
+                self.updateStoreStatsWidgetStoreSnapshotsAfterSiteListSynchronization(selectedSiteID: site.siteID) {
+                    onCompletion(result)
+                }
+            }
+        default:
+            return action
+        }
+    }
+
+    private func updateStoreStatsWidgetStoreSnapshots(with siteID: Int64?) {
+        guard exposesStoreStatsWidgetStorePicker else {
+            StoreStatsSnapshotStore().save([])
+            return
+        }
+
+        let storedSites = ServiceLocator.storageManager.viewStorage.loadAllSites()
+            .map { site in
+                return StoreStatsStoredSite(siteID: site.siteID,
+                                            name: site.name ?? WooConstants.defaultStoreName,
+                                            timeZoneIdentifier: site.timezone,
+                                            gmtOffset: site.gmtOffset,
+                                            isWooCommerceActive: site.isWooCommerceActive?.boolValue ?? false)
+            }
+
+        let defaultSite = sessionManager.defaultSite.map { site in
+            StoreStatsStoredSite(siteID: site.siteID,
+                                 name: site.name,
+                                 timeZoneIdentifier: site.timezone,
+                                 gmtOffset: site.gmtOffset,
+                                 isWooCommerceActive: site.isWooCommerceActive)
+        }
+
+        let hiddenStoreIDs = Set(defaults.hiddenStoreIDs)
+        let defaultSiteID = siteID ?? defaultSite?.siteID
+        let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
+                                                            defaultSite: defaultSite,
+                                                            defaultSiteID: defaultSiteID,
+                                                            hiddenStoreIDs: hiddenStoreIDs,
+                                                            exposesStorePicker: true)
+        StoreStatsSnapshotStore().save(snapshots)
+    }
+
+    private func updateStoreStatsWidgetStoreSnapshotsAfterSiteListSynchronization(selectedSiteID: Int64?,
+                                                                                 onCompletion: @escaping () -> Void) {
+        let updateSnapshot = { [weak self] in
+            guard let self else {
+                onCompletion()
+                return
+            }
+            self.updateStoreStatsWidgetStoreSnapshots(with: selectedSiteID ?? self.sessionManager.defaultStoreID)
+            WidgetCenter.shared.reloadAllTimelines()
+            onCompletion()
+        }
+
+        if Thread.isMainThread {
+            updateSnapshot()
+        } else {
+            DispatchQueue.main.async(execute: updateSnapshot)
+        }
+    }
+
+    private var exposesStoreStatsWidgetStorePicker: Bool {
+        if case .wpcom = sessionManager.defaultCredentials {
+            return true
+        }
+        return false
     }
 
     func trackSnapshotIfNeeded(siteID: Int64, orderStatuses: [OrderStatus]?, systemPlugins: [SystemPlugin]?) {

@@ -173,6 +173,35 @@ struct AIAssistantExternalViewsAdaptorTests {
     }
 
     @Test
+    func test_chartData_when_intervals_arrive_in_descending_date_order_then_series_is_sorted_ascending() {
+        // Given
+        let sut = AIAssistantExternalViewsAdaptor()
+        let payload = AnyCodableJSON.object([
+            "totals": .object([
+                "total_sales": .string("300.00"),
+                "currency": .string("USD")
+            ]),
+            "interval_subtotals": .array([
+                .object(["interval": .string("2026-05-03"),
+                         "date_start": .string("2026-05-03 00:00:00"),
+                         "subtotals": .object(["total_sales": .double(80.0)])]),
+                .object(["interval": .string("2026-05-02"),
+                         "date_start": .string("2026-05-02 00:00:00"),
+                         "subtotals": .object(["total_sales": .double(120.0)])]),
+                .object(["interval": .string("2026-05-01"),
+                         "date_start": .string("2026-05-01 00:00:00"),
+                         "subtotals": .object(["total_sales": .double(100.0)])])
+            ])
+        ])
+
+        // When
+        let series = sut.testChartData(forKeys: ["total_sales", "gross_sales"], payload: payload)
+
+        // Then
+        #expect(series == [100.0, 120.0, 80.0])
+    }
+
+    @Test
     func test_statsCardView_when_tool_is_unrelated_then_returns_nil() {
         // Given
         let sut = AIAssistantExternalViewsAdaptor()

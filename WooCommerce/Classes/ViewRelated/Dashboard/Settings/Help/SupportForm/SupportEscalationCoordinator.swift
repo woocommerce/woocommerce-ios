@@ -141,7 +141,7 @@ final class SupportEscalationCoordinator {
             message: Localization.ticketCreatedMessage,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: Localization.ok, style: .default) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: Localization.gotIt, style: .default) { [weak self] _ in
             self?.navigationController?.popViewController(animated: true)
         })
         topViewController.present(alert, animated: true)
@@ -177,18 +177,18 @@ private extension SupportEscalationCoordinator {
         )
         static let ticketCreatedTitle = NSLocalizedString(
             "supportEscalationCoordinator.ticketCreatedTitle",
-            value: "Support Request Created",
+            value: "Request Sent!",
             comment: "Alert title shown after support ticket is created successfully"
         )
         static let ticketCreatedMessage = NSLocalizedString(
             "supportEscalationCoordinator.ticketCreatedMessage",
-            value: "Your support request has been submitted. We'll respond via email.",
+            value: "Your support request has landed safely in our inbox. We will reply via email as quickly as we can.",
             comment: "Alert message shown after support ticket is created successfully"
         )
-        static let ok = NSLocalizedString(
-            "supportEscalationCoordinator.ok",
-            value: "OK",
-            comment: "OK button on the ticket created alert"
+        static let gotIt = NSLocalizedString(
+            "supportEscalationCoordinator.gotIt",
+            value: "Got it",
+            comment: "Button on the ticket created alert"
         )
     }
 }

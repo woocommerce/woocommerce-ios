@@ -193,7 +193,6 @@ public struct PointOfSaleEntryPointView: View {
                 popularPurchasableItemsController: popularPurchasableItemsController,
                 barcodeScanService: barcodeScanService,
                 receiptSender: receiptSender,
-                preferredConnectionMethod: preferredConnectionMethod,
                 siteID: siteID,
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 cartProductObserver: cartProductObserver,

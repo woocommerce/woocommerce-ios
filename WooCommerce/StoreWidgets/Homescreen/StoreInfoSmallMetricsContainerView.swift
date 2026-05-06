@@ -13,7 +13,7 @@ struct StoreInfoSmallMetricsContainerView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.headerSpacing) {
-            StoreInfoMetricsLogoHeader(data: data)
+            StoreInfoMetricsLogoHeader(data: data, showsRange: false)
 
             Spacer(minLength: Layout.metricSpacing)
 

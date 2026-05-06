@@ -3,6 +3,12 @@ import SwiftUI
 /// Logo-led header shared by all metric layouts.
 struct StoreInfoMetricsLogoHeader: View {
     let data: StoreInfoData
+    private let showsRange: Bool
+
+    init(data: StoreInfoData, showsRange: Bool = true) {
+        self.data = data
+        self.showsRange = showsRange
+    }
 
     var body: some View {
         HStack(alignment: .top, spacing: Layout.logoSpacing) {
@@ -19,12 +25,14 @@ struct StoreInfoMetricsLogoHeader: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
 
-                    Spacer(minLength: Layout.rangeSpacing)
+                    if showsRange {
+                        Spacer(minLength: Layout.rangeSpacing)
 
-                    Text(data.range)
-                        .statRangeStyle()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                        Text(data.range)
+                            .statRangeStyle()
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                    }
                 }
 
                 Text(StoreInfoMetricsView.Localization.updatedAt(data.updatedTime))

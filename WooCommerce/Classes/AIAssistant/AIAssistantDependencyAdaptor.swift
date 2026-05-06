@@ -78,17 +78,12 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
         )
     }
 
+    @MainActor
     private static func defaultTools(siteID: Int64,
                                      storageManager: StorageManagerType,
                                      stores: StoresManager,
                                      restClient: WCRESTClient) -> [RESTTool] {
         let dispatch: @Sendable (Action) -> Void = { action in stores.dispatch(action) }
-        let providers: [CardFamily: any CardEntityProvider] = [
-            .order: OrderCardProvider(siteID: siteID, storageManager: storageManager, dispatchAction: dispatch),
-            .product: ProductCardProvider(siteID: siteID, storageManager: storageManager, dispatchAction: dispatch),
-            .productVariation: VariationCardProvider(siteID: siteID, storageManager: storageManager, dispatchAction: dispatch),
-            .customer: CustomerCardProvider(client: restClient)
-        ]
         return [
             OrdersListTool.make(),
             OrdersGetTool.make(),
@@ -104,7 +99,10 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
             CustomersListTool.make(),
             AnalyticsOrdersTool.make(),
             AnalyticsRevenueTool.make(),
-            ShowCardsTool.make(providers: providers)
+            ShowCardsTool.make(siteID: siteID,
+                               storageManager: storageManager,
+                               dispatchAction: dispatch,
+                               restClient: restClient)
         ]
     }
 }

@@ -3,7 +3,7 @@
 /// `malformed` collapses Android's `missingFamily`/`missingID`/`invalidID`
 /// triplet because Swift's `Decodable` rejects all three at the same boundary;
 /// preserving the sub-distinctions would only surface decoder noise.
-public enum CardRefRejectionReason: String, Sendable, Equatable {
+enum CardRefRejectionReason: String, Sendable, Equatable {
     case malformed
     case duplicate
     case overLimit

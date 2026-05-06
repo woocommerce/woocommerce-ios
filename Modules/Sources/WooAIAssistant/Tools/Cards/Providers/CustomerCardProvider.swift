@@ -4,15 +4,15 @@ import Foundation
 /// Customer entries are sparse in CoreData (Android also keeps customer REST-only).
 /// `customers/{id}` requires `manage_woocommerce`; `customers?include=` works under
 /// `read_customers` and is the universal path even for permissive shop_manager roles.
-public final class CustomerCardProvider: CardEntityProvider {
+final class CustomerCardProvider: CardEntityProvider {
 
     private let client: WCRESTClient
 
-    public init(client: WCRESTClient) {
+    init(client: WCRESTClient) {
         self.client = client
     }
 
-    public func fetch(refs: [CardRef]) async -> [CardRef: CardEntityOutcome] {
+    func fetch(refs: [CardRef]) async -> [CardRef: CardEntityOutcome] {
         guard refs.isEmpty == false else { return [:] }
 
         let ids = refs.map { String($0.id) }.joined(separator: ",")

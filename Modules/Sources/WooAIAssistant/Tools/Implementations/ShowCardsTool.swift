@@ -1,5 +1,7 @@
 import CocoaLumberjackSwift
 import Foundation
+import Storage
+import Yosemite
 
 public enum ShowCardsTool {
 
@@ -9,10 +11,21 @@ public enum ShowCardsTool {
         make(providers: [:])
     }
 
-    /// Wires the resolver with one provider per family. The runtime `client`
-    /// argument the registry passes is ignored; resolution flows entirely
-    /// through the typed providers.
-    public static func make(providers: [CardFamily: any CardEntityProvider]) -> RESTTool {
+    @MainActor
+    public static func make(siteID: Int64,
+                            storageManager: StorageManagerType,
+                            dispatchAction: @escaping @Sendable (Action) -> Void,
+                            restClient: WCRESTClient) -> RESTTool {
+        let providers: [CardFamily: any CardEntityProvider] = [
+            .order: OrderCardProvider(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
+            .product: ProductCardProvider(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
+            .productVariation: VariationCardProvider(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
+            .customer: CustomerCardProvider(client: restClient)
+        ]
+        return make(providers: providers)
+    }
+
+    static func make(providers: [CardFamily: any CardEntityProvider]) -> RESTTool {
         let resolver = CardReferenceResolver(providers: providers)
         let executor: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
             let request: ShowCardsRequest

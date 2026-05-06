@@ -940,10 +940,14 @@ private extension DefaultStoresManager {
                                  isWooCommerceActive: site.isWooCommerceActive)
         }
 
+        let hiddenStoreIDs = Set(defaults.hiddenStoreIDs)
         let defaultSiteID = siteID ?? defaultSite?.siteID
-        var candidateSiteIDs = Set(storedSites.filter { $0.isWooCommerceActive }.map(\.siteID))
+        var candidateSiteIDs = Set(storedSites
+            .filter { $0.isWooCommerceActive && hiddenStoreIDs.contains($0.siteID) == false }
+            .map(\.siteID))
         if let defaultSite,
-           defaultSite.isWooCommerceActive {
+           defaultSite.isWooCommerceActive,
+           hiddenStoreIDs.contains(defaultSite.siteID) == false {
             candidateSiteIDs.insert(defaultSite.siteID)
         }
 
@@ -955,6 +959,7 @@ private extension DefaultStoresManager {
                                                             defaultSite: defaultSite,
                                                             defaultSiteID: defaultSiteID,
                                                             currencySettingsBySiteID: currencySettingsBySiteID,
+                                                            hiddenStoreIDs: hiddenStoreIDs,
                                                             exposesStorePicker: true)
         StoreStatsSnapshotStore().save(snapshots)
         synchronizeMissingStoreStatsWidgetCurrencySettingsIfNeeded(selectedSiteID: defaultSiteID,

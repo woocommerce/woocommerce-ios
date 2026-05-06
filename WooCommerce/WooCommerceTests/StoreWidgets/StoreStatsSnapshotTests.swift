@@ -86,6 +86,37 @@ struct StoreStatsSnapshotTests {
         #expect(snapshots[1].currencySettings == nil)
     }
 
+    @Test func snapshots_whenStoreIsHidden_thenExcludesHiddenStore() {
+        // Given
+        let storedSites = [
+            StoreStatsStoredSite(siteID: 1,
+                                 name: "Default",
+                                 timeZoneIdentifier: "UTC",
+                                 gmtOffset: 0,
+                                 isWooCommerceActive: true),
+            StoreStatsStoredSite(siteID: 2,
+                                 name: "Hidden",
+                                 timeZoneIdentifier: "UTC",
+                                 gmtOffset: 0,
+                                 isWooCommerceActive: true),
+            StoreStatsStoredSite(siteID: 3,
+                                 name: "Visible",
+                                 timeZoneIdentifier: "UTC",
+                                 gmtOffset: 0,
+                                 isWooCommerceActive: true)
+        ]
+
+        // When
+        let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
+                                                            defaultSite: storedSites[0],
+                                                            defaultSiteID: 1,
+                                                            hiddenStoreIDs: [2],
+                                                            exposesStorePicker: true)
+
+        // Then
+        #expect(snapshots.map(\.siteID) == [1, 3])
+    }
+
     @Test func snapshots_whenStorePickerIsNotExposed_thenReturnsEmptyList() {
         // Given
         let storedSites = [

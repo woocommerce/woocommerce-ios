@@ -40,15 +40,19 @@ enum StoreStatsSnapshotFactory {
                           defaultSite: StoreStatsStoredSite?,
                           defaultSiteID: Int64?,
                           currencySettingsBySiteID: [Int64: CurrencySettings] = [:],
+                          hiddenStoreIDs: Set<Int64> = [],
                           exposesStorePicker: Bool) -> [StoreStatsSnapshot] {
         guard exposesStorePicker else {
             return []
         }
 
         let defaultID = defaultSiteID ?? defaultSite?.siteID
-        var candidates = storedSites.filter { $0.isWooCommerceActive }
+        var candidates = storedSites.filter { site in
+            site.isWooCommerceActive && hiddenStoreIDs.contains(site.siteID) == false
+        }
         if let defaultSite,
            defaultSite.isWooCommerceActive,
+           hiddenStoreIDs.contains(defaultSite.siteID) == false,
            candidates.contains(where: { $0.siteID == defaultSite.siteID }) == false {
             candidates.append(defaultSite)
         }

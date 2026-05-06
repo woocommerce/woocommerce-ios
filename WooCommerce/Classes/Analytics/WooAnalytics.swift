@@ -23,6 +23,8 @@ final class WooAnalytics: Analytics {
     ///
     private var applicationOpenedTime: Date?
 
+    private lazy var widgetSetupChangeTracker = WidgetSetupChangeTracker()
+
     /// Check user opt-in for analytics
     ///
     var userHasOptedIn: Bool {
@@ -305,6 +307,7 @@ private extension WooAnalytics {
             let properties = self.applicationOpenedProperties(configurationResult)
                 .merging(snapshot.analyticsProperties) { _, new in new }
             self.track(.applicationOpened, withProperties: properties)
+            self.widgetSetupChangeTracker.track(currentSnapshot: snapshot, analytics: self)
         }
         applicationOpenedTime = Date()
     }

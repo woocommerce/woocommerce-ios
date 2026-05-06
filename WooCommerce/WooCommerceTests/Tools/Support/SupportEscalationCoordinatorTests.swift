@@ -33,7 +33,7 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(navigationController: navigationController)
 
         // When
-        coordinator.handleEscalation(transcript: "Test transcript", supportAreaInfo: nil)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: nil)
 
         // Then - createSupportRequest should not be called, support form should be pushed
         XCTAssertTrue(zendesk.latestInvokedTags.isEmpty)
@@ -50,7 +50,7 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
 
         // Then - createSupportRequest should be called with expected tags
         XCTAssertTrue(zendesk.latestInvokedTags.contains("in_app_support_escalate"))
@@ -66,7 +66,7 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
 
         // Then - createSupportRequest should not be called, support form should be pushed
         XCTAssertTrue(zendesk.latestInvokedTags.isEmpty)
@@ -82,7 +82,7 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         let areaInfo = makeMediumConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
 
         // Then - createSupportRequest should not be called, support form should be pushed
         XCTAssertTrue(zendesk.latestInvokedTags.isEmpty)
@@ -98,7 +98,7 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         let areaInfo = makeLowConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
 
         // Then - createSupportRequest should not be called, support form should be pushed
         XCTAssertTrue(zendesk.latestInvokedTags.isEmpty)
@@ -117,7 +117,7 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("support_new_request_created"))
@@ -133,10 +133,100 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("support_new_request_failed"))
+    }
+
+    // MARK: - Ticket Persistence Tests
+
+    func test_createTicketDirectly_when_succeeds_and_has_chatID_then_dispatches_markTicketCreated() {
+        // Given
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+
+        var dispatchedChatID: Int64?
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .markTicketCreated(chatID, onCompletion) = action {
+                dispatchedChatID = chatID
+                onCompletion()
+            }
+        }
+
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = SupportEscalationCoordinator(
+            navigationController: navigationController,
+            stores: stores,
+            zendeskProvider: zendesk,
+            analytics: analytics
+        )
+        let areaInfo = makeHighConfidenceSupportAreaInfo()
+
+        // When
+        coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo)
+
+        // Then
+        XCTAssertEqual(dispatchedChatID, 123)
+    }
+
+    func test_createTicketDirectly_when_succeeds_and_no_chatID_then_does_not_dispatch_markTicketCreated() {
+        // Given
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+
+        var markTicketCreatedCalled = false
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case .markTicketCreated = action {
+                markTicketCreatedCalled = true
+            }
+        }
+
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = SupportEscalationCoordinator(
+            navigationController: navigationController,
+            stores: stores,
+            zendeskProvider: zendesk,
+            analytics: analytics
+        )
+        let areaInfo = makeHighConfidenceSupportAreaInfo()
+
+        // When
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
+
+        // Then
+        XCTAssertFalse(markTicketCreatedCalled)
+    }
+
+    func test_createTicketDirectly_when_fails_then_does_not_dispatch_markTicketCreated() {
+        // Given
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .failure(NSError(domain: "Test", code: 500)))
+
+        var markTicketCreatedCalled = false
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case .markTicketCreated = action {
+                markTicketCreatedCalled = true
+            }
+        }
+
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = SupportEscalationCoordinator(
+            navigationController: navigationController,
+            stores: stores,
+            zendeskProvider: zendesk,
+            analytics: analytics
+        )
+        let areaInfo = makeHighConfidenceSupportAreaInfo()
+
+        // When
+        coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo)
+
+        // Then
+        XCTAssertFalse(markTicketCreatedCalled)
     }
 
     // MARK: - Request Content Tests
@@ -167,7 +257,7 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         )
 
         // When
-        coordinator.handleEscalation(transcript: "Full transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Full transcript", supportAreaInfo: areaInfo)
 
         // Then
         XCTAssertEqual(capturedRequest?.description, "My app keeps crashing")
@@ -198,7 +288,7 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         )
 
         // When
-        coordinator.handleEscalation(transcript: "Transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Transcript", supportAreaInfo: areaInfo)
 
         // Then
         XCTAssertEqual(capturedRequest?.subject, "Card Reader Support Request")

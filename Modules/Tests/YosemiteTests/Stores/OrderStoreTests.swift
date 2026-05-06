@@ -1707,6 +1707,64 @@ final class OrderStoreTests: XCTestCase {
         let anotherOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 7 })
         XCTAssertEqual(anotherOrderItem["quantity"] as? Int64, 3)
     }
+
+    // MARK: - OrderAction.retrieveOrders
+
+    @MainActor
+    func test_retrieveOrders_when_request_succeeds_then_returns_orders_and_persists_them() async throws {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+
+        // When
+        let result: Result<[Yosemite.Order], Error> = await withCheckedContinuation { continuation in
+            orderStore.onAction(OrderAction.retrieveOrders(siteID: sampleSiteID, orderIDs: [1, 2, 3]) { result in
+                continuation.resume(returning: result)
+            })
+        }
+
+        // Then
+        let orders = try result.get()
+        XCTAssertEqual(orders.count, 4)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 4)
+    }
+
+    @MainActor
+    func test_retrieveOrders_when_orderIDs_is_empty_then_returns_empty_without_request() async throws {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<[Yosemite.Order], Error> = await withCheckedContinuation { continuation in
+            orderStore.onAction(OrderAction.retrieveOrders(siteID: sampleSiteID, orderIDs: []) { result in
+                continuation.resume(returning: result)
+            })
+        }
+
+        // Then
+        let orders = try result.get()
+        XCTAssertTrue(orders.isEmpty)
+        XCTAssertTrue(network.requestsForResponseData.isEmpty)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
+
+    @MainActor
+    func test_retrieveOrders_when_request_fails_then_returns_failure() async {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
+
+        // When
+        let result: Result<[Yosemite.Order], Error> = await withCheckedContinuation { continuation in
+            orderStore.onAction(OrderAction.retrieveOrders(siteID: sampleSiteID, orderIDs: [1, 2]) { result in
+                continuation.resume(returning: result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }
 
 

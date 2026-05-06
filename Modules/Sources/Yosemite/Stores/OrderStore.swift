@@ -35,6 +35,8 @@ public class OrderStore: Store {
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .retrieveOrderRemotely(let siteID, let orderID, let onCompletion):
             retrieveOrderRemotely(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        case .retrieveOrders(let siteID, let orderIDs, let onCompletion):
+            retrieveOrders(siteID: siteID, orderIDs: orderIDs, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case let .fetchFilteredOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, createdVia, writeStrategy, pageSize, onCompletion):
@@ -272,6 +274,26 @@ private extension OrderStore {
                 onCompletion(.success(order))
             } else {
                 onCompletion(.failure(RetrieveOrderError.noErrorAndOrderFromRemote))
+            }
+        }
+    }
+
+    func retrieveOrders(siteID: Int64,
+                        orderIDs: [Int64],
+                        onCompletion: @escaping (Result<[Order], Error>) -> Void) {
+        guard orderIDs.isEmpty == false else {
+            onCompletion(.success([]))
+            return
+        }
+
+        Task { @MainActor in
+            do {
+                let orders = try await remote.loadOrders(for: siteID, orderIDs: orderIDs)
+                upsertStoredOrdersInBackground(readOnlyOrders: orders) {
+                    onCompletion(.success(orders))
+                }
+            } catch {
+                onCompletion(.failure(error))
             }
         }
     }

@@ -88,6 +88,10 @@ public enum OrderAction: Action {
     ///
     case retrieveOrderRemotely(siteID: Int64, orderID: Int64, onCompletion: (Result<Order, Error>) -> Void)
 
+    /// Retrieves a specified list of Orders by id in a single batched request.
+    ///
+    case retrieveOrders(siteID: Int64, orderIDs: [Int64], onCompletion: (Result<[Order], Error>) -> Void)
+
     /// Updates a given Order's Status.
     ///
     case updateOrderStatus(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: (Error?) -> Void)

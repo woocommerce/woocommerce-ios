@@ -2,7 +2,7 @@ import Foundation
 
 /// Analytics ref args encoded into a single id segment, kept identical to the
 /// Android format so the catalog stays portable.
-/// Format: `analytics_<kind>:after:<YYYY-MM-DD>:before:<YYYY-MM-DD>[:interval:<value>]:currency:<ISO|none>`.
+/// Format: `analytics_<kind>:after:<YYYY-MM-DD>:before:<YYYY-MM-DD>:interval:<value>:currency:<ISO|none>`.
 struct AnalyticsCardSpec: Sendable, Equatable {
     static let currencyNoneSentinel = "none"
 
@@ -14,9 +14,11 @@ struct AnalyticsCardSpec: Sendable, Equatable {
 
     var encoded: String {
         var segments = ["analytics_\(kind.rawValue)", "after", after, "before", before]
-        if let interval, !interval.isEmpty {
-            segments.append(contentsOf: ["interval", interval])
-        }
+        let intervalValue: String = {
+            guard let interval, !interval.isEmpty else { return "day" }
+            return interval
+        }()
+        segments.append(contentsOf: ["interval", intervalValue])
         let currencyValue: String = {
             guard let currency, !currency.isEmpty else { return Self.currencyNoneSentinel }
             return currency
@@ -37,20 +39,18 @@ struct AnalyticsCardSpec: Sendable, Equatable {
               isValidDate(before) else {
             return nil
         }
-        let interval = segments["interval"]
-        if let interval, !validIntervals.contains(interval) { return nil }
-        let rawCurrency = segments["currency"]
+        guard let interval = segments["interval"],
+              validIntervals.contains(interval),
+              let rawCurrency = segments["currency"] else {
+            return nil
+        }
         let currency: String?
-        if let rawCurrency {
-            if rawCurrency == currencyNoneSentinel {
-                currency = nil
-            } else if isValidCurrency(rawCurrency) {
-                currency = rawCurrency
-            } else {
-                return nil
-            }
-        } else {
+        if rawCurrency == currencyNoneSentinel {
             currency = nil
+        } else if isValidCurrency(rawCurrency) {
+            currency = rawCurrency
+        } else {
+            return nil
         }
         let known: Set<String> = ["after", "before", "interval", "currency"]
         if segments.keys.contains(where: { !known.contains($0) }) { return nil }

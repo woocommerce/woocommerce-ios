@@ -16,7 +16,9 @@ public enum AnalyticsRevenueTool {
         for revenue charts. Prefer this over orders_list for any aggregate \
         revenue question. For breakdown requests (by week, by day), set the \
         `interval` parameter directly to the implied dimension rather than \
-        asking the merchant which window or grain they meant.
+        asking the merchant which window or grain they meant. When a request \
+        combines a grouping grain with a date window, interval follows the \
+        grouping grain.
         """,
         parametersSchema: .object([
             "type": .string("object"),

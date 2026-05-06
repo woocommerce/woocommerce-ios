@@ -178,7 +178,7 @@ struct MessageBubbleOrderingTests {
     }
 
     @Test
-    func test_orderedSegments_when_two_cardRenders_for_same_family_and_id_then_keeps_last() {
+    func test_orderedSegments_when_two_cardRenders_for_same_family_and_id_then_keeps_first() {
         // Given
         let firstID = UUID()
         let secondID = UUID()
@@ -198,7 +198,7 @@ struct MessageBubbleOrderingTests {
         let ids = bubble.orderedSegments.map(\.id)
 
         // Then
-        #expect(ids == [secondID])
+        #expect(ids == [firstID])
     }
 
     @Test
@@ -250,7 +250,7 @@ struct MessageBubbleOrderingTests {
     }
 
     @Test
-    func test_orderedSegments_when_three_cardRenders_for_same_entity_then_keeps_only_last() {
+    func test_orderedSegments_when_three_cardRenders_for_same_entity_then_keeps_only_first() {
         // Given
         let firstID = UUID()
         let secondID = UUID()
@@ -275,7 +275,38 @@ struct MessageBubbleOrderingTests {
         let ids = bubble.orderedSegments.map(\.id)
 
         // Then
-        #expect(ids == [thirdID])
+        #expect(ids == [firstID])
+    }
+
+    @Test
+    func test_orderedSegments_when_synthetic_ids_contain_colons_then_dedupes_by_full_id() {
+        // Given
+        let firstRevenueID = UUID()
+        let secondRevenueID = UUID()
+        let ordersID = UUID()
+        let revenueCardID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let ordersCardID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let message = ChatMessage(role: .assistant, segments: [
+            .cardRender(id: firstRevenueID,
+                        toolCallID: "call_a:card:0:analytics_stats:\(revenueCardID)",
+                        toolName: "analytics_revenue",
+                        payload: .object(["id": .string(revenueCardID)])),
+            .cardRender(id: secondRevenueID,
+                        toolCallID: "call_b:card:0:analytics_stats:\(revenueCardID)",
+                        toolName: "analytics_revenue",
+                        payload: .object(["id": .string(revenueCardID)])),
+            .cardRender(id: ordersID,
+                        toolCallID: "call_c:card:0:analytics_stats:\(ordersCardID)",
+                        toolName: "analytics_orders",
+                        payload: .object(["id": .string(ordersCardID)]))
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(ids == [firstRevenueID, ordersID])
     }
 
     @Test

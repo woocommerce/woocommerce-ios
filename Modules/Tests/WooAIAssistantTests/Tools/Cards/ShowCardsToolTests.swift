@@ -15,6 +15,7 @@ struct ShowCardsToolTests {
         #expect(definition.name == "show_cards")
         #expect(definition.description.contains("After a successful `analytics_revenue` or `analytics_orders`"))
         #expect(definition.description.contains("call this tool with family `analytics_stats`"))
+        #expect(definition.description.contains("A single call may mix families"))
         let schema = definition.parametersSchema
         guard case .object(let root) = schema,
               case .object(let properties) = root["properties"],
@@ -98,7 +99,7 @@ struct ShowCardsToolTests {
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
-            {"family": "analytics_stats", "id": "analytics_revenue:after:not-a-date:before:2026-04-30:currency:none"}
+            {"family": "analytics_stats", "id": "analytics_revenue:after:not-a-date:before:2026-04-30:interval:day:currency:none"}
         ]}
         """
 

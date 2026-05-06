@@ -63,15 +63,13 @@ struct MessageBubble: View {
         return hasText ? deferCardsAfterText(deduped) : deduped
     }
 
-    /// Drops earlier `.cardRender` segments that target the same `(family, entityID)`
-    /// as a later one. `orders_get` and `show_cards` both emit a card for the same
-    /// entity in some flows; without this, the renderer paints two rows for one id.
-    /// Last-wins so the dedicated `show_cards` typed payload takes precedence over
-    /// `orders_get`'s incidental raw card.
+    /// Drops later `.cardRender` segments that target the same `(family, entityID)`.
+    /// `orders_get` and `show_cards` can both emit a card for the same entity in
+    /// one turn; without this, the renderer paints two rows for one id.
     static func dedupedCardRenders(_ segments: [MessageSegment]) -> [MessageSegment] {
         var keysSeen: Set<CardKey> = []
         var dropIDs: Set<UUID> = []
-        for segment in segments.reversed() {
+        for segment in segments {
             guard case .cardRender(let id, let toolCallID, _, _) = segment,
                   let key = cardKey(fromSyntheticToolCallID: toolCallID) else { continue }
             if keysSeen.contains(key) {
@@ -94,8 +92,15 @@ struct MessageBubble: View {
     /// so unknown IDs survive dedupe untouched.
     private static func cardKey(fromSyntheticToolCallID toolCallID: String) -> CardKey? {
         let parts = toolCallID.split(separator: ":", omittingEmptySubsequences: false)
-        guard parts.count >= 5, parts[parts.count - 4] == "card" else { return nil }
-        return CardKey(family: String(parts[parts.count - 2]), entityID: String(parts[parts.count - 1]))
+        guard let markerIndex = parts.indices.first(where: { parts[$0] == "card" }),
+              let entityIDStartIndex = parts.index(markerIndex, offsetBy: 3, limitedBy: parts.endIndex),
+              entityIDStartIndex < parts.endIndex else {
+            return nil
+        }
+        let familyIndex = parts.index(markerIndex, offsetBy: 2)
+        let entityID = parts[entityIDStartIndex...].joined(separator: ":")
+        guard !parts[familyIndex].isEmpty, !entityID.isEmpty else { return nil }
+        return CardKey(family: String(parts[familyIndex]), entityID: entityID)
     }
 
     private func deferCardsAfterText(_ segments: [MessageSegment]) -> [MessageSegment] {

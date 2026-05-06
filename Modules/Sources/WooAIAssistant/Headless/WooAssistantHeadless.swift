@@ -198,7 +198,7 @@ public actor WooAssistantHeadless {
         public var toolCalls: [ToolCallRecord]
 
         /// Every card the orchestrator authorized for render this turn, in
-        /// emission order, deduped last-wins by `(family, id)` to mirror the
+        /// emission order, deduped first-wins by `(family, id)` to mirror the
         /// SwiftUI surface. A turn whose tools never emit `.cardRender` (e.g. a
         /// bare `orders_list` or `analytics_revenue`) yields an empty list here.
         public var cards: [CardRecord]
@@ -287,8 +287,7 @@ public actor WooAssistantHeadless {
         // The orchestrator emits a synthetic `.toolResult` immediately before each `.cardRender`.
         // Buffer those payloads so the `.cardRender` arm can pick the right one up.
         var pendingCardPayloads: [String: PendingCardPayload] = [:]
-        // Last-wins by (family, id) so cards survive the same dedupe the SwiftUI surface applies.
-        var cardIndexByKey: [SyntheticCardKey: Int] = [:]
+        var cardKeysSeen: Set<SyntheticCardKey> = []
         let policy = configuration.defaultConfirmationPolicy
 
         let turn = AssistantTurn(prompt: message)
@@ -334,10 +333,8 @@ public actor WooAssistantHeadless {
                 let record = ConversationTurnResult.CardRecord(kind: pending.toolName,
                                                                toolName: pending.toolName,
                                                                payloadJSON: pending.payloadJSON)
-                if let priorIndex = cardIndexByKey[key] {
-                    result.cards[priorIndex] = record
-                } else {
-                    cardIndexByKey[key] = result.cards.count
+                if !cardKeysSeen.contains(key) {
+                    cardKeysSeen.insert(key)
                     result.cards.append(record)
                 }
 
@@ -412,9 +409,16 @@ public actor WooAssistantHeadless {
     /// same `(family, id)` dedupe as the SwiftUI surface. Returns nil for any other shape.
     private static func parseSyntheticCardID(_ toolCallID: String) -> SyntheticCardKey? {
         let parts = toolCallID.split(separator: ":", omittingEmptySubsequences: false)
-        guard parts.count >= 5, parts[parts.count - 4] == "card" else { return nil }
-        return SyntheticCardKey(family: String(parts[parts.count - 2]),
-                                entityID: String(parts[parts.count - 1]))
+        guard let markerIndex = parts.indices.first(where: { parts[$0] == "card" }),
+              let entityIDStartIndex = parts.index(markerIndex, offsetBy: 3, limitedBy: parts.endIndex),
+              entityIDStartIndex < parts.endIndex else {
+            return nil
+        }
+        let familyIndex = parts.index(markerIndex, offsetBy: 2)
+        let entityID = parts[entityIDStartIndex...].joined(separator: ":")
+        guard !parts[familyIndex].isEmpty, !entityID.isEmpty else { return nil }
+        return SyntheticCardKey(family: String(parts[familyIndex]),
+                                entityID: entityID)
     }
 
     private static func encodeJSON(_ value: AnyCodableJSON) -> String {

@@ -4,7 +4,7 @@ import Testing
 
 struct AnalyticsCardSpecTests {
     @Test
-    func test_encoded_when_no_currency_then_emits_currency_none_sentinel() {
+    func test_encoded_when_interval_and_currency_missing_then_emits_day_and_currency_none_sentinel() {
         // Given
         let spec = AnalyticsCardSpec(kind: .revenue,
                                      after: "2026-04-01",
@@ -16,7 +16,7 @@ struct AnalyticsCardSpecTests {
         let encoded = spec.encoded
 
         // Then
-        #expect(encoded == "analytics_revenue:after:2026-04-01:before:2026-04-30:currency:none")
+        #expect(encoded == "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none")
     }
 
     @Test
@@ -36,17 +36,17 @@ struct AnalyticsCardSpecTests {
     }
 
     @Test
-    func test_decode_round_trips_for_all_kinds_and_optional_combinations() {
+    func test_decode_round_trips_for_all_kinds_and_currency_combinations() {
         // Given
         let cases: [AnalyticsCardSpec] = [
             AnalyticsCardSpec(kind: .revenue, after: "2026-04-01", before: "2026-04-30",
-                              interval: nil, currency: nil),
+                              interval: "day", currency: nil),
             AnalyticsCardSpec(kind: .orders, after: "2026-01-01", before: "2026-12-31",
                               interval: "month", currency: nil),
             AnalyticsCardSpec(kind: .revenue, after: "2026-05-01", before: "2026-05-07",
                               interval: "day", currency: "EUR"),
             AnalyticsCardSpec(kind: .orders, after: "2026-05-01", before: "2026-05-07",
-                              interval: nil, currency: "GBP")
+                              interval: "week", currency: "GBP")
         ]
 
         // When / Then
@@ -59,7 +59,7 @@ struct AnalyticsCardSpecTests {
     @Test
     func test_decode_when_currency_is_none_sentinel_then_returns_nil_currency() {
         // Given
-        let id = "analytics_revenue:after:2026-04-01:before:2026-04-30:currency:none"
+        let id = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
 
         // When
         let decoded = AnalyticsCardSpec.decode(id)
@@ -72,7 +72,7 @@ struct AnalyticsCardSpecTests {
     @Test
     func test_decode_when_prefix_missing_then_returns_nil() {
         // Given / When
-        let decoded = AnalyticsCardSpec.decode("revenue:after:2026-04-01:before:2026-04-30:currency:none")
+        let decoded = AnalyticsCardSpec.decode("revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none")
 
         // Then
         #expect(decoded == nil)
@@ -81,7 +81,7 @@ struct AnalyticsCardSpecTests {
     @Test
     func test_decode_when_kind_unknown_then_returns_nil() {
         // Given / When
-        let decoded = AnalyticsCardSpec.decode("analytics_profit:after:2026-04-01:before:2026-04-30:currency:none")
+        let decoded = AnalyticsCardSpec.decode("analytics_profit:after:2026-04-01:before:2026-04-30:interval:day:currency:none")
 
         // Then
         #expect(decoded == nil)
@@ -90,8 +90,8 @@ struct AnalyticsCardSpecTests {
     @Test
     func test_decode_when_required_after_or_before_missing_then_returns_nil() {
         // Given / When
-        let missingBefore = AnalyticsCardSpec.decode("analytics_revenue:after:2026-04-01:currency:none")
-        let missingAfter = AnalyticsCardSpec.decode("analytics_revenue:before:2026-04-30:currency:none")
+        let missingBefore = AnalyticsCardSpec.decode("analytics_revenue:after:2026-04-01:interval:day:currency:none")
+        let missingAfter = AnalyticsCardSpec.decode("analytics_revenue:before:2026-04-30:interval:day:currency:none")
 
         // Then
         #expect(missingBefore == nil)
@@ -102,7 +102,7 @@ struct AnalyticsCardSpecTests {
     func test_decode_when_dates_are_malformed_then_returns_nil() {
         // Given / When
         let decoded = AnalyticsCardSpec.decode(
-            "analytics_revenue:after:04-01-2026:before:04-30-2026:currency:none"
+            "analytics_revenue:after:04-01-2026:before:04-30-2026:interval:day:currency:none"
         )
 
         // Then
@@ -124,10 +124,10 @@ struct AnalyticsCardSpecTests {
     func test_decode_when_currency_is_not_three_uppercase_letters_then_returns_nil() {
         // Given / When
         let lowercase = AnalyticsCardSpec.decode(
-            "analytics_revenue:after:2026-04-01:before:2026-04-30:currency:usd"
+            "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:usd"
         )
         let tooShort = AnalyticsCardSpec.decode(
-            "analytics_revenue:after:2026-04-01:before:2026-04-30:currency:US"
+            "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:US"
         )
 
         // Then
@@ -139,10 +139,25 @@ struct AnalyticsCardSpecTests {
     func test_decode_when_unknown_segment_present_then_returns_nil() {
         // Given / When
         let decoded = AnalyticsCardSpec.decode(
-            "analytics_revenue:after:2026-04-01:before:2026-04-30:granularity:fine:currency:none"
+            "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:granularity:fine:currency:none"
         )
 
         // Then
         #expect(decoded == nil)
+    }
+
+    @Test
+    func test_decode_when_interval_or_currency_missing_then_returns_nil() {
+        // Given / When
+        let missingInterval = AnalyticsCardSpec.decode(
+            "analytics_revenue:after:2026-04-01:before:2026-04-30:currency:none"
+        )
+        let missingCurrency = AnalyticsCardSpec.decode(
+            "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day"
+        )
+
+        // Then
+        #expect(missingInterval == nil)
+        #expect(missingCurrency == nil)
     }
 }

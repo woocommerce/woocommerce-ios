@@ -158,7 +158,7 @@ struct WooAssistantHeadlessTests {
     }
 
     @Test
-    func test_send_when_two_calls_emit_cardRender_for_same_entity_then_dedupes_to_last() async throws {
+    func test_send_when_two_calls_emit_cardRender_for_same_entity_then_dedupes_to_first() async throws {
         // Given
         let chat = MockAIChatService()
         let getCall = OpenAIChat.ToolCall(
@@ -197,7 +197,7 @@ struct WooAssistantHeadlessTests {
         // Then
         #expect(result.cards.count == 1)
         let card = try #require(result.cards.first)
-        #expect(card.toolName == "show_cards.order")
+        #expect(card.toolName == "orders_get.order")
         #expect(card.payloadJSON.contains("4001"))
     }
 

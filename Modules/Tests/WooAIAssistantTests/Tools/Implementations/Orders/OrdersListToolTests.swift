@@ -4,6 +4,17 @@ import Testing
 
 struct OrdersListToolTests {
     @Test
+    func test_orders_list_definition_documents_latest_order_card_flow() {
+        // Given
+        let tool = OrdersListTool.make()
+
+        // Then
+        #expect(tool.definition.description.contains("latest/last single-order"))
+        #expect(tool.definition.description.contains("per_page=1"))
+        #expect(tool.definition.description.contains("then pass the result to `show_cards`"))
+    }
+
+    @Test
     func test_orders_list_when_response_is_array_then_structured_summary_lists_ids_and_total_range() async throws {
         // Given
         let body = """

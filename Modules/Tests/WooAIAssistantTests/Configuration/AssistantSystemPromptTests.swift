@@ -31,10 +31,50 @@ struct AssistantSystemPromptTests {
             $0.contains("answer plainly in prose") || $0.contains("answer directly in prose")
         }
 
-        #expect(analyticsPattern.contains("show_cards"))
-        #expect(analyticsPattern.contains("analytics_stats"))
-        #expect(analyticsPattern.contains("currency:none"))
+        #expect(analyticsPattern.contains("call `show_cards` to render the matching analytics card"))
+        #expect(analyticsPattern.contains("grouping grain with a date window"))
+        #expect(analyticsPattern.contains("Do not turn a monthly window into interval=month"))
         #expect(directProseLines.allSatisfy { !$0.localizedCaseInsensitiveContains("analytics") })
+    }
+
+    @Test
+    func test_build_documents_top_products_as_product_cards() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+
+        #expect(prompt.contains("Top / best-selling products are product-entity answers"))
+        #expect(prompt.contains("popularity sorting"))
+        #expect(prompt.contains("render product cards"))
+    }
+
+    @Test
+    func test_build_documents_singular_latest_mixed_entities_as_cards() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+
+        #expect(prompt.contains("Singular latest/last entity requests are card-backed entity answers too"))
+        #expect(prompt.contains("fetch one latest row"))
+        #expect(prompt.contains("When one turn asks for entities from multiple families"))
+        #expect(prompt.contains("one `show_cards` call"))
+        #expect(prompt.contains("Don't replace mixed entity cards with prose"))
+    }
+
+    @Test
+    func test_build_keeps_remote_tool_names_out_of_prompt() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let remoteToolNames = [
+            "orders_list",
+            "orders_get",
+            "products_list",
+            "products_get",
+            "analytics_revenue",
+            "analytics_orders",
+            "analytics_stats",
+            "orders_bulk_update",
+            "products_bulk_update",
+            "product_variations_bulk_update"
+        ]
+
+        #expect(prompt.contains("`show_cards`"))
+        #expect(remoteToolNames.allSatisfy { !prompt.contains($0) })
     }
 
     private func section(in text: String, from startMarker: String, to endMarker: String) -> Substring {

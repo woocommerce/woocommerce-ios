@@ -17,7 +17,8 @@ public enum ShowCardsTool {
         customer, analytics_stats. `product_variation` references require both \
         `id` and `parent_id` (the parent product's id). Order/product/customer \
         references need only `id`. Up to 10 references per call. Prefer 1-5 \
-        for list-style answers; summarize the rest in prose. Cards render \
+        for list-style answers; summarize the rest in prose. A single call may \
+        mix families when the user asks for different entity types. Cards render \
         the entity's full detail to the user, but the model-visible result \
         is a compact summary only. Model-visible fields per family: order \
         has id, number, status, total, currency, date_created, customer_name; \

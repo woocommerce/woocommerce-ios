@@ -1,4 +1,5 @@
 import SwiftUI
+import CocoaLumberjackSwift
 
 struct MessageCardHost: View {
 
@@ -103,11 +104,13 @@ struct MessageCardHost: View {
 
     private func payloadForTap<T: Encodable>(_ row: T, shape: CardShape) -> AnyCodableJSON {
         if shape == .single { return payload }
-        guard let data = try? JSONEncoder().encode(row),
-              let encoded = try? JSONDecoder().decode(AnyCodableJSON.self, from: data) else {
+        do {
+            let data = try JSONEncoder().encode(row)
+            return try JSONDecoder().decode(AnyCodableJSON.self, from: data)
+        } catch {
+            DDLogError("Failed to synthesize tap payload for assistant card row: \(error)")
             return .object([:])
         }
-        return encoded
     }
 
     @ViewBuilder

@@ -149,6 +149,7 @@ struct MessageBubble: View {
         Text(renderedText(content))
             .font(.assistantBody)
             .foregroundStyle(bubbleTextColor)
+            .tint(bubbleTextColor)
             .padding(.horizontal, AssistantSpacing.medium)
             .padding(.vertical, AssistantSpacing.bubbleVerticalInset)
             .background(bubbleBackground)

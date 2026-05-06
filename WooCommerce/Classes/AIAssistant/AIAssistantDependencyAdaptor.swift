@@ -47,6 +47,7 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
 
         let restClient = WCRESTClientAdaptor(network: restNetwork, siteID: siteID)
         let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.defaultTools())
+        let snapshotResolver = DefaultConfirmationSnapshotResolver(client: restClient)
 
         let siteURL = URL(string: site.url) ?? URL(fileURLWithPath: "/")
         let context = AssistantContext(siteID: siteID,
@@ -62,7 +63,7 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
             jwtProvider: jwtAdaptor,
             chatService: chatService,
             toolRegistry: toolRegistry,
-            safetyPolicy: DefaultSafetyPolicy(),
+            safetyPolicy: DefaultSafetyPolicy(snapshotResolver: snapshotResolver),
             systemPromptProvider: { AssistantSystemPrompt.build() },
             maxIterations: AgenticLoopOrchestrator.defaultMaxIterations,
             context: context

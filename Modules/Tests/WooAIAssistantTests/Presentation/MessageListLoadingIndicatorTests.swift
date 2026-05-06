@@ -12,7 +12,7 @@ struct MessageListLoadingIndicatorTests {
                                               segments: [.confirmation(id: UUID(),
                                                                        proposalID: UUID(),
                                                                        toolName: "orders_update",
-                                                                       preview: "Mark order 42 as processing",
+                                                                       preview: ConfirmationPreview(summary: .raw("Mark order 42 as processing")),
                                                                        status: .pending)],
                                               isStreaming: true)
 
@@ -52,7 +52,7 @@ struct MessageListLoadingIndicatorTests {
                                                segments: [.confirmation(id: UUID(),
                                                                         proposalID: proposalID,
                                                                         toolName: "orders_update",
-                                                                        preview: "Mark order 42 as processing",
+                                                                        preview: ConfirmationPreview(summary: .raw("Mark order 42 as processing")),
                                                                         status: .confirmed)],
                                                isStreaming: true)
 
@@ -86,7 +86,7 @@ struct MessageListLoadingIndicatorTests {
                                                segments: [.confirmation(id: UUID(),
                                                                         proposalID: UUID(),
                                                                         toolName: "orders_update",
-                                                                        preview: "Mark order 42 as processing",
+                                                                        preview: ConfirmationPreview(summary: .raw("Mark order 42 as processing")),
                                                                         status: .cancelled)],
                                                isStreaming: true)
 
@@ -105,7 +105,7 @@ struct MessageListLoadingIndicatorTests {
                                          segments: [.confirmation(id: UUID(),
                                                                   proposalID: UUID(),
                                                                   toolName: "orders_update",
-                                                                  preview: "Mark order 42 as processing",
+                                                                  preview: ConfirmationPreview(summary: .raw("Mark order 42 as processing")),
                                                                   status: .pending)],
                                          isStreaming: false)
         let userFollowUp = ChatMessage(role: .user,
@@ -126,12 +126,12 @@ struct MessageListLoadingIndicatorTests {
                                    segments: [.confirmation(id: UUID(),
                                                             proposalID: UUID(),
                                                             toolName: "orders_update",
-                                                            preview: "Mark order 42 as processing",
+                                                            preview: ConfirmationPreview(summary: .raw("Mark order 42 as processing")),
                                                             status: .confirmed),
                                               .confirmation(id: UUID(),
                                                             proposalID: UUID(),
                                                             toolName: "orders_update",
-                                                            preview: "Mark order 43 as processing",
+                                                            preview: ConfirmationPreview(summary: .raw("Mark order 43 as processing")),
                                                             status: .cancelled)])
 
         // When

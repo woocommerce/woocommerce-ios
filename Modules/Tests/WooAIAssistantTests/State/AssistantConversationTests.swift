@@ -180,7 +180,7 @@ struct AssistantConversationTests {
         let messageID = conversation.beginAssistantMessage()
         let proposal = ToolProposal(toolName: "orders_update",
                                     toolCallID: "c1",
-                                    preview: "Mark order 42 as processing")
+                                    preview: ConfirmationPreview(summary: .raw("Mark order 42 as processing")))
 
         // When
         conversation.apply(.confirmationRequired(proposal: proposal), to: messageID)

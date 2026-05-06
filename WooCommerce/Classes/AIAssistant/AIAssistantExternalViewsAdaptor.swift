@@ -2,7 +2,6 @@ import Foundation
 import SwiftUI
 import UIKit
 import Yosemite
-import NetworkingCore
 import WooAIAssistant
 import WooFoundation
 
@@ -43,7 +42,12 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
     @MainActor func productVariationRow(payload: ProductVariationCardPayload,
                                         showDivider: Bool,
                                         onTap: @escaping @MainActor () -> Void) -> AnyView? {
-        let displayName = (payload.name?.isEmpty == false) ? payload.name! : skuOrIDLabel(for: payload)
+        let displayName: String
+        if let name = payload.name, !name.isEmpty {
+            displayName = name
+        } else {
+            displayName = skuOrIDLabel(for: payload)
+        }
         let data = ProductStockRow.RowData(
             imageURL: payload.firstImageURL,
             name: displayName,

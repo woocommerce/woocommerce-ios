@@ -158,9 +158,9 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         let navigationController = UINavigationController(rootViewController: UIViewController())
         let coordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
-            stores: stores,
             zendeskProvider: zendesk,
-            analytics: analytics
+            analytics: analytics,
+            stores: stores
         )
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
@@ -187,9 +187,9 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         let navigationController = UINavigationController(rootViewController: UIViewController())
         let coordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
-            stores: stores,
             zendeskProvider: zendesk,
-            analytics: analytics
+            analytics: analytics,
+            stores: stores
         )
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
@@ -216,9 +216,9 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
         let navigationController = UINavigationController(rootViewController: UIViewController())
         let coordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
-            stores: stores,
             zendeskProvider: zendesk,
-            analytics: analytics
+            analytics: analytics,
+            stores: stores
         )
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 

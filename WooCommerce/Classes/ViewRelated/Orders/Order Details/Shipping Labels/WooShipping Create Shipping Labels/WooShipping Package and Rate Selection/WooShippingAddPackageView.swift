@@ -1,5 +1,6 @@
-import SwiftUI
 import Combine
+import ParcelFittingCheck
+import SwiftUI
 
 struct WooShippingAddPackageView: View {
     enum PackageProviderType: CaseIterable {
@@ -56,6 +57,15 @@ struct WooShippingAddPackageView: View {
                         Text(Localization.cancel)
                     })
                 }
+                if isARButtonVisible {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            presentARFlow()
+                        } label: {
+                            Image(systemName: "camera")
+                        }
+                    }
+                }
             }
             .navigationTitle(packagesViewModel.previousSelectedPackage != nil ? Localization.editPackage :  Localization.addPackage)
             .navigationBarTitleDisplayMode(.inline)
@@ -108,6 +118,53 @@ struct WooShippingAddPackageView: View {
                                           addingCustomPackageHandler: {
                 packagesViewModel.selectedPackageType = .custom
             })
+        }
+    }
+
+    private var isARButtonVisible: Bool {
+        switch packagesViewModel.selectedPackageType {
+        case .custom:
+            return packagesViewModel.isARParcelFittingAvailable && customPackageViewModel.packageType == .box
+        case .carrier:
+            return packagesViewModel.isARParcelFittingAvailable && packagesViewModel.carrierTabs.isNotEmpty
+        case .saved:
+            return false
+        }
+    }
+
+    private func presentARFlow() {
+        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
+        let unit: UnitLength = .fromStoreUnit(dimensionsUnit)
+
+        switch packagesViewModel.selectedPackageType {
+        case .custom:
+            let initial: ParcelDimensions? = {
+                guard let l = Float(customPackageViewModel.fieldValues[.length] ?? ""),
+                      let w = Float(customPackageViewModel.fieldValues[.width] ?? ""),
+                      let h = Float(customPackageViewModel.fieldValues[.height] ?? ""),
+                      l > 0, w > 0, h > 0 else {
+                    return nil
+                }
+                return ParcelDimensions(length: l, width: w, height: h)
+            }()
+            ParcelFittingCheckPresenter.presentSizing(from: presenter, unit: unit, initial: initial) { [weak customPackageViewModel] dimensions in
+                customPackageViewModel?.fieldValues[.length] = String(format: "%.1f", dimensions.length)
+                customPackageViewModel?.fieldValues[.width] = String(format: "%.1f", dimensions.width)
+                customPackageViewModel?.fieldValues[.height] = String(format: "%.1f", dimensions.height)
+            }
+        case .carrier:
+            let carriers = packagesViewModel.parcelPresetCarriers
+            guard carriers.isNotEmpty else { return }
+            ParcelFittingCheckPresenter.presentFitCheck(
+                from: presenter,
+                unit: unit,
+                carriers: carriers,
+                initialPackageID: packagesViewModel.selectedCarriersPackageId
+            ) { [weak packagesViewModel] selectedPackage in
+                packagesViewModel?.selectCarrierPackage(withID: selectedPackage.id)
+            }
+        case .saved:
+            break
         }
     }
 

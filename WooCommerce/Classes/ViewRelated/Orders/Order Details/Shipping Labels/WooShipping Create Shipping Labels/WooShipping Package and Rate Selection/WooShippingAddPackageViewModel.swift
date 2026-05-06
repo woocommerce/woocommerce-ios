@@ -1,6 +1,8 @@
+import ARKit
 import Combine
 import Experiments
 import Foundation
+import ParcelFittingCheck
 import SwiftUI
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -11,6 +13,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let stores: StoresManager
     private let storage: StorageManagerType
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     private let starAnimation: Animation = .spring(duration: 0.2)
 
@@ -21,11 +24,13 @@ final class WooShippingAddPackageViewModel: ObservableObject {
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         selectedPackageType = .custom
         previousSelectedPackage = selectedPackage
@@ -112,6 +117,52 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             return false
         }
         return previousSelectedPackage.id == selectedCarriersPackageId
+    }
+
+    // MARK: - AR Parcel Fitting
+
+    var isARParcelFittingAvailable: Bool {
+        featureFlagService.isFeatureFlagEnabled(.arParcelFitting)
+        && ARWorldTrackingConfiguration.isSupported
+    }
+
+    var parcelPresetCarriers: [ParcelPresetCarrier] {
+        carrierPackages.map { carrier in
+            let packages: [ParcelPresetPackage] = carrier.packageGroups.flatMap { group in
+                group.packages.compactMap { package in
+                    guard let length = Float(package.length),
+                          let width = Float(package.width),
+                          let height = Float(package.height),
+                          length > 0, width > 0, height > 0 else {
+                        return nil
+                    }
+                    return ParcelPresetPackage(
+                        id: package.id,
+                        name: package.name,
+                        length: length,
+                        width: width,
+                        height: height
+                    )
+                }
+            }
+            return ParcelPresetCarrier(
+                id: carrier.carrier.rawValue,
+                name: carrier.carrier.name,
+                packages: packages
+            )
+        }
+    }
+
+    func selectCarrierPackage(withID packageID: String) {
+        for (index, carrier) in carrierPackages.enumerated() {
+            for group in carrier.packageGroups {
+                if group.packages.contains(where: { $0.id == packageID }) {
+                    selectedCarriersTabIndex = index
+                    selectedCarriersPackageId = packageID
+                    return
+                }
+            }
+        }
     }
 
     // MARK: - Storage

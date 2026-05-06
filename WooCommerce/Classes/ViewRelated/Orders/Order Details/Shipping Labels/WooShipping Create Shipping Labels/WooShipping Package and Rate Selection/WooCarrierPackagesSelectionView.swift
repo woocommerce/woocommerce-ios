@@ -222,6 +222,7 @@ private extension WooCarrierPackagesSelectionView {
 
         addPackageAction(selectedPackage)
     }
+
 }
 
 private extension WooCarrierPackagesSelectionView {

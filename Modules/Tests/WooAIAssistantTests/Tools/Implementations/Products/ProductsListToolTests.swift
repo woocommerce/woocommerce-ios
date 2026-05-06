@@ -31,6 +31,23 @@ struct ProductsListToolTests {
         }
         #expect(fields["count"] == .int(3))
         #expect(fields["ids"] == .array([.int(101), .int(102), .int(103)]))
+        #expect(fields["rows"] == .array([
+            .object(["id": .int(101),
+                     "name": .string("Hoodie"),
+                     "sku": .string("HOOD-1"),
+                     "price": .string("49.00"),
+                     "stock_status": .string("instock")]),
+            .object(["id": .int(102),
+                     "name": .string("Tee"),
+                     "sku": .string("TEE-1"),
+                     "price": .string("19.00"),
+                     "stock_status": .string("outofstock")]),
+            .object(["id": .int(103),
+                     "name": .string("Jacket"),
+                     "sku": .string("JAC-1"),
+                     "price": .string("120.00"),
+                     "stock_status": .string("instock")])
+        ]))
         #expect(fields["stock_status_counts"] == .object([
             "instock": .int(2),
             "outofstock": .int(1)

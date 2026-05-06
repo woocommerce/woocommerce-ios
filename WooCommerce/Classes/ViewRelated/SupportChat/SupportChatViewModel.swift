@@ -454,21 +454,14 @@ final class SupportChatViewModel {
         // Build context from diagnostic results
         var context: [String: Any] = initialContext ?? [:]
 
-        if let issue = selectedIssue {
-            context["issue_type"] = String(describing: issue)
-        }
-
         if let troubleshootingDescription = SupportDiagnosticsService.troubleshootingDescription(from: diagnosticResults) {
-            context["troubleshooting_results"] = troubleshootingDescription
+            context["troubleshootingResults"] = troubleshootingDescription
         }
 
         if let site = stores.sessionManager.defaultSite {
-            context["site_id"] = site.siteID
+            context["selectedSiteId"] = site.siteID
             context["site_url"] = site.url
         }
-
-        context["app_version"] = Bundle.main.marketingVersion
-        context["ios_version"] = UIDevice.current.systemVersion
 
         diagnosticsContext = context
 

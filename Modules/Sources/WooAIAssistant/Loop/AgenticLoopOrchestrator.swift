@@ -353,9 +353,9 @@ public actor AgenticLoopOrchestrator {
                 continue
             }
 
-            let decision = safetyPolicy.decision(for: call.function.name,
-                                                 arguments: call.function.arguments,
-                                                 tool: tool)
+            let decision = await safetyPolicy.decision(for: call.function.name,
+                                                       arguments: call.function.arguments,
+                                                       tool: tool)
             switch decision {
             case .execute:
                 approvedIndices.append(index)
@@ -863,7 +863,7 @@ private enum TurnOutcome {
 public struct AlwaysExecuteSafetyPolicy: SafetyPolicy {
     public init() {}
 
-    public func decision(for name: String, arguments: String, tool: AITool) -> SafetyDecision {
+    public func decision(for name: String, arguments: String, tool: AITool) async -> SafetyDecision {
         .execute
     }
 }

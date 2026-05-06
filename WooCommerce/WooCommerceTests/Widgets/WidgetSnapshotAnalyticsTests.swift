@@ -17,8 +17,8 @@ struct WidgetSnapshotAnalyticsTests {
         #expect(props["widget_count"] == "0")
         #expect(props["widget_customized_count"] == "0")
         #expect(props["widget_default_count"] == "0")
-        #expect(props["info_widget_date_ranges_in_use"] == "")
-        #expect(props["info_widget_metrics_in_use"] == "")
+        #expect(props["info_widget_date_ranges_in_use"]?.isEmpty == true)
+        #expect(props["info_widget_metrics_in_use"]?.isEmpty == true)
     }
 
     @Test func single_default_storeStats_tile_counts_as_default() {
@@ -167,7 +167,7 @@ struct WidgetSnapshotAnalyticsTests {
         let props = snapshot.analyticsProperties
 
         // Then
-        #expect(props["info_widget_date_ranges_in_use"] == "")
+        #expect(props["info_widget_date_ranges_in_use"]?.isEmpty == true)
     }
 
     // MARK: - info_widget_metrics_in_use
@@ -222,6 +222,6 @@ struct WidgetSnapshotAnalyticsTests {
         let props = snapshot.analyticsProperties
 
         // Then
-        #expect(props["info_widget_metrics_in_use"] == "")
+        #expect(props["info_widget_metrics_in_use"]?.isEmpty == true)
     }
 }

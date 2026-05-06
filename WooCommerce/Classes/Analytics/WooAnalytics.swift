@@ -303,11 +303,22 @@ private extension WooAnalytics {
     @objc func trackApplicationOpened() {
         WidgetCenter.shared.getCurrentConfigurations { [weak self] configurationResult in
             guard let self else { return }
-            let snapshot = WidgetSnapshot(from: configurationResult)
-            let properties = self.applicationOpenedProperties(configurationResult)
-                .merging(snapshot.analyticsProperties) { _, new in new }
-            self.track(.applicationOpened, withProperties: properties)
-            self.widgetSetupChangeTracker.track(currentSnapshot: snapshot, analytics: self)
+
+            let applicationProperties = self.applicationOpenedProperties(configurationResult)
+
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(
+                .configurableStoreStatsWidgets
+            ) {
+                let snapshot = WidgetSnapshot(from: configurationResult)
+                let properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
+                self.track(.applicationOpened, withProperties: properties)
+                self.widgetSetupChangeTracker.track(currentSnapshot: snapshot, analytics: self)
+            } else {
+                self.track(
+                    .applicationOpened,
+                    withProperties: applicationProperties
+                )
+            }
         }
         applicationOpenedTime = Date()
     }

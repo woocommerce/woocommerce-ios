@@ -35,14 +35,85 @@ struct ShowCardsToolTests {
         #expect(familyEnum.contains(.string("product")))
         #expect(familyEnum.contains(.string("product_variation")))
         #expect(familyEnum.contains(.string("customer")))
+        #expect(familyEnum.contains(.string("analytics_stats")))
         #expect(id["type"] == .string("string"))
-        #expect(id["pattern"] == .string("^[1-9][0-9]*$"))
+        // No pattern on `id` - resolver-side AnalyticsCardSpec.decode validates synthetic format.
+        #expect(id["pattern"] == nil)
+        if case .string(let idDescription) = id["description"] {
+            #expect(idDescription.contains("analytics_stats"))
+        } else {
+            Issue.record("expected id.description string documenting the synthetic format")
+        }
         guard case .object(let parentID) = itemProperties["parent_id"] else {
             Issue.record("expected parent_id property in item schema")
             return
         }
         #expect(parentID["type"] == .string("string"))
         #expect(parentID["pattern"] == .string("^[1-9][0-9]*$"))
+    }
+
+    @Test
+    func test_executor_when_analytics_stats_reference_then_renders_card_and_emits_resolved_ref_with_id() async {
+        // Given
+        let body = """
+        {"totals":{"net_revenue":"123.45","gross_sales":"150.00"},
+         "intervals":[{"interval":"2026-04-01","date_start":"2026-04-01 00:00:00",
+                       "subtotals":{"net_revenue":"50.00"}}]}
+        """
+        let client = StubbedWCRESTClient()
+        await client.stub(path: "wc-analytics/reports/revenue/stats", response: StubResponses.ok(body))
+        let analyticsID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let tool = ShowCardsTool.make()
+        let arguments = """
+        {"references": [
+            {"family": "analytics_stats", "id": "\(analyticsID)"}
+        ]}
+        """
+
+        // When
+        let result = await tool.executor(arguments, client)
+
+        // Then
+        guard case .success(let success) = result,
+              case .object(let structured) = success.structured,
+              case .array(let resolvedRefs) = structured["resolved_refs"],
+              case .object(let entry) = resolvedRefs.first else {
+            Issue.record("expected resolved_refs with one entry")
+            return
+        }
+        #expect(entry["family"] == .string("analytics_stats"))
+        #expect(entry["id"] == .string(analyticsID))
+        let cards = success.uiStructured?.cards ?? []
+        #expect(cards.count == 1)
+        #expect(cards[0].family == .analyticsStats)
+        #expect(cards[0].id == analyticsID)
+    }
+
+    @Test
+    func test_executor_when_analytics_id_is_malformed_then_rejected_as_malformed() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        let tool = ShowCardsTool.make()
+        let arguments = """
+        {"references": [
+            {"family": "analytics_stats", "id": "analytics_revenue:after:not-a-date:before:2026-04-30:currency:none"}
+        ]}
+        """
+
+        // When
+        let result = await tool.executor(arguments, client)
+
+        // Then
+        guard case .success(let success) = result,
+              case .object(let structured) = success.structured,
+              case .array(let rejectedRefs) = structured["rejected_refs"],
+              case .object(let entry) = rejectedRefs.first else {
+            Issue.record("expected rejected_refs with one entry")
+            return
+        }
+        #expect(entry["family"] == .string("analytics_stats"))
+        #expect(entry["reason"] == .string("malformed"))
+        #expect(success.uiStructured == nil)
     }
 
     @Test

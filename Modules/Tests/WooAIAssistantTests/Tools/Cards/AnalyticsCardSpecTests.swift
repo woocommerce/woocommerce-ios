@@ -1,0 +1,148 @@
+import Foundation
+import Testing
+@testable import WooAIAssistant
+
+struct AnalyticsCardSpecTests {
+    @Test
+    func test_encoded_when_no_currency_then_emits_currency_none_sentinel() {
+        // Given
+        let spec = AnalyticsCardSpec(kind: .revenue,
+                                     after: "2026-04-01",
+                                     before: "2026-04-30",
+                                     interval: nil,
+                                     currency: nil)
+
+        // When
+        let encoded = spec.encoded
+
+        // Then
+        #expect(encoded == "analytics_revenue:after:2026-04-01:before:2026-04-30:currency:none")
+    }
+
+    @Test
+    func test_encoded_when_all_fields_present_then_appends_segments_in_order() {
+        // Given
+        let spec = AnalyticsCardSpec(kind: .orders,
+                                     after: "2026-04-01",
+                                     before: "2026-04-30",
+                                     interval: "week",
+                                     currency: "USD")
+
+        // When
+        let encoded = spec.encoded
+
+        // Then
+        #expect(encoded == "analytics_orders:after:2026-04-01:before:2026-04-30:interval:week:currency:USD")
+    }
+
+    @Test
+    func test_decode_round_trips_for_all_kinds_and_optional_combinations() {
+        // Given
+        let cases: [AnalyticsCardSpec] = [
+            AnalyticsCardSpec(kind: .revenue, after: "2026-04-01", before: "2026-04-30",
+                              interval: nil, currency: nil),
+            AnalyticsCardSpec(kind: .orders, after: "2026-01-01", before: "2026-12-31",
+                              interval: "month", currency: nil),
+            AnalyticsCardSpec(kind: .revenue, after: "2026-05-01", before: "2026-05-07",
+                              interval: "day", currency: "EUR"),
+            AnalyticsCardSpec(kind: .orders, after: "2026-05-01", before: "2026-05-07",
+                              interval: nil, currency: "GBP")
+        ]
+
+        // When / Then
+        for spec in cases {
+            let decoded = AnalyticsCardSpec.decode(spec.encoded)
+            #expect(decoded == spec, "round-trip failed for \(spec.encoded)")
+        }
+    }
+
+    @Test
+    func test_decode_when_currency_is_none_sentinel_then_returns_nil_currency() {
+        // Given
+        let id = "analytics_revenue:after:2026-04-01:before:2026-04-30:currency:none"
+
+        // When
+        let decoded = AnalyticsCardSpec.decode(id)
+
+        // Then
+        #expect(decoded?.currency == nil)
+        #expect(decoded?.kind == .revenue)
+    }
+
+    @Test
+    func test_decode_when_prefix_missing_then_returns_nil() {
+        // Given / When
+        let decoded = AnalyticsCardSpec.decode("revenue:after:2026-04-01:before:2026-04-30:currency:none")
+
+        // Then
+        #expect(decoded == nil)
+    }
+
+    @Test
+    func test_decode_when_kind_unknown_then_returns_nil() {
+        // Given / When
+        let decoded = AnalyticsCardSpec.decode("analytics_profit:after:2026-04-01:before:2026-04-30:currency:none")
+
+        // Then
+        #expect(decoded == nil)
+    }
+
+    @Test
+    func test_decode_when_required_after_or_before_missing_then_returns_nil() {
+        // Given / When
+        let missingBefore = AnalyticsCardSpec.decode("analytics_revenue:after:2026-04-01:currency:none")
+        let missingAfter = AnalyticsCardSpec.decode("analytics_revenue:before:2026-04-30:currency:none")
+
+        // Then
+        #expect(missingBefore == nil)
+        #expect(missingAfter == nil)
+    }
+
+    @Test
+    func test_decode_when_dates_are_malformed_then_returns_nil() {
+        // Given / When
+        let decoded = AnalyticsCardSpec.decode(
+            "analytics_revenue:after:04-01-2026:before:04-30-2026:currency:none"
+        )
+
+        // Then
+        #expect(decoded == nil)
+    }
+
+    @Test
+    func test_decode_when_interval_not_in_allowed_set_then_returns_nil() {
+        // Given / When
+        let decoded = AnalyticsCardSpec.decode(
+            "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:fortnight:currency:none"
+        )
+
+        // Then
+        #expect(decoded == nil)
+    }
+
+    @Test
+    func test_decode_when_currency_is_not_three_uppercase_letters_then_returns_nil() {
+        // Given / When
+        let lowercase = AnalyticsCardSpec.decode(
+            "analytics_revenue:after:2026-04-01:before:2026-04-30:currency:usd"
+        )
+        let tooShort = AnalyticsCardSpec.decode(
+            "analytics_revenue:after:2026-04-01:before:2026-04-30:currency:US"
+        )
+
+        // Then
+        #expect(lowercase == nil)
+        #expect(tooShort == nil)
+    }
+
+    @Test
+    func test_decode_when_unknown_segment_present_then_returns_nil() {
+        // Given / When
+        let decoded = AnalyticsCardSpec.decode(
+            "analytics_revenue:after:2026-04-01:before:2026-04-30:granularity:fine:currency:none"
+        )
+
+        // Then
+        #expect(decoded == nil)
+    }
+}

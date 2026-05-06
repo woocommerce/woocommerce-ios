@@ -471,7 +471,7 @@ public actor AgenticLoopOrchestrator {
             if let cards = success.uiStructured?.cards, !cards.isEmpty {
                 for (index, card) in cards.enumerated() {
                     let syntheticID = "\(call.id):card:\(index):\(card.family.rawValue):\(card.id)"
-                    let syntheticTool = "\(call.function.name).\(card.family.rawValue)"
+                    let syntheticTool = card.syntheticToolName(callName: call.function.name)
                     continuation.yield(.toolResult(toolCallID: syntheticID,
                                                    toolName: syntheticTool,
                                                    payload: card.element))

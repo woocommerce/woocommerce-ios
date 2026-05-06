@@ -27,7 +27,8 @@ public enum ShowCardsTool {
         billing/shipping address, phone, recent-order details, etc.) use \
         the appropriate get or list tool from the catalog. Cards rendered \
         in this turn remain referenced; reuse their ids in follow-up tool \
-        calls.
+        calls. Also accepts `analytics_stats` references whose `id` carries \
+        the synthetic analytics format described on the `id` property.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -49,12 +50,15 @@ public enum ShowCardsTool {
                                     .string("order"),
                                     .string("product"),
                                     .string("product_variation"),
-                                    .string("customer")
+                                    .string("customer"),
+                                    .string("analytics_stats")
                                 ])
                             ]),
                             "id": .object([
                                 "type": .string("string"),
-                                "pattern": .string("^[1-9][0-9]*$")
+                                "description": .string("Entity id, or " +
+                                    "analytics_<revenue|orders>:after:<YYYY-MM-DD>:before:<YYYY-MM-DD>:" +
+                                    "interval:<hour|day|week|month|year>:currency:<ISO|none> for analytics_stats.")
                             ]),
                             "parent_id": .object([
                                 "type": .string("string"),

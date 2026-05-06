@@ -9,9 +9,9 @@ import Storage
 /// and `performAndSave` for upserts after dispatched actions.
 ///
 /// The harness ships in the production binary, so we cannot reach the
-/// Storage module's internal `Bundle.module`. We resolve the data model by
-/// asking for the bundle that owns a public `Storage.Account` symbol; SPM
-/// places the model resource alongside that bundle.
+/// Storage module's internal `Bundle.module`. The model is loaded via
+/// `WooCommerceModelLoader`, the public seam Storage exposes for callers
+/// that need a model without going through `CoreDataManager`.
 final class HeadlessInMemoryStorageManager: StorageManagerType {
 
     let viewStorage: StorageType
@@ -19,10 +19,8 @@ final class HeadlessInMemoryStorageManager: StorageManagerType {
     private let persistentContainer: NSPersistentContainer
 
     init() {
-        let bundle = Bundle(for: Storage.Account.self)
-        guard let modelURL = bundle.url(forResource: "WooCommerce", withExtension: "momd"),
-              let model = NSManagedObjectModel(contentsOf: modelURL) else {
-            fatalError("HeadlessInMemoryStorageManager could not locate WooCommerce.momd")
+        guard let model = WooCommerceModelLoader.loadCurrentModel() else {
+            fatalError("HeadlessInMemoryStorageManager could not load the WooCommerce CoreData model")
         }
         let container = NSPersistentContainer(name: "WooCommerce", managedObjectModel: model)
         let description = NSPersistentStoreDescription()

@@ -9,11 +9,11 @@ struct ShowCardsRequest: Decodable, Sendable, Equatable {
 }
 
 struct CardReference: Decodable, Sendable, Equatable {
-    let family: CardFamilyID
+    let family: CardFamily
     let id: String
     let parentID: String?
 
-    init(family: CardFamilyID, id: String, parentID: String? = nil) {
+    init(family: CardFamily, id: String, parentID: String? = nil) {
         self.family = family
         self.id = id
         self.parentID = parentID
@@ -31,11 +31,6 @@ struct CardReference: Decodable, Sendable, Equatable {
 /// `uiStructured`, while both contribute to the model-visible `structured`
 /// summary so the model can see what it asked for and what it got back.
 enum Resolution: Sendable, Equatable {
-    case resolved(family: CardFamilyID,
-                  id: String,
-                  summary: AnyCodableJSON,
-                  rendered: RenderedCardPayload)
-    case rejected(family: CardFamilyID?,
-                  id: String?,
-                  reason: CardRefRejectionReason)
+    case resolved(family: CardFamily, id: String, entity: CardEntity)
+    case rejected(family: CardFamily?, id: String?, reason: CardRefRejectionReason)
 }

@@ -7,7 +7,7 @@ struct AnalyticsCardFetch: Sendable {
         self.client = client
     }
 
-    func fetch(_ spec: AnalyticsCardSpec) async -> CardFetchOutcome {
+    func fetch(_ spec: AnalyticsCardSpec) async -> CardEntityOutcome {
         guard let bounds = AnalyticsDateBounds.bounds(start: spec.after, end: spec.before) else {
             return .rejected(.malformed)
         }
@@ -30,6 +30,6 @@ struct AnalyticsCardFetch: Sendable {
         guard let payload = RESTResponseParsing.decodeJSON(response.data) else {
             return .rejected(.internalError)
         }
-        return .found(AnalyticsStatsSummary.make(from: payload, range: (spec.after, spec.before)))
+        return .found(.analyticsStats(AnalyticsStatsSummary.make(from: payload, range: (spec.after, spec.before))))
     }
 }

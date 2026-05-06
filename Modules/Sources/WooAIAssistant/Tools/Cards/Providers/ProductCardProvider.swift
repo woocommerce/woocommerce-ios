@@ -4,21 +4,21 @@ import Storage
 import Yosemite
 
 @MainActor
-final class ProductCardProvider: CardEntityProvider {
+public final class ProductCardProvider: CardEntityProvider {
 
     private let siteID: Int64
     private let storageManager: StorageManagerType
     private let dispatchAction: @Sendable (Action) -> Void
 
-    init(siteID: Int64,
-         storageManager: StorageManagerType,
-         dispatchAction: @escaping @Sendable (Action) -> Void) {
+    public init(siteID: Int64,
+                storageManager: StorageManagerType,
+                dispatchAction: @escaping @Sendable (Action) -> Void) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.dispatchAction = dispatchAction
     }
 
-    func fetch(refs: [CardRef]) async -> [CardRef: CardEntityOutcome] {
+    public func fetch(refs: [CardRef]) async -> [CardRef: CardEntityOutcome] {
         guard refs.isEmpty == false else { return [:] }
 
         var outcomes: [CardRef: CardEntityOutcome] = [:]

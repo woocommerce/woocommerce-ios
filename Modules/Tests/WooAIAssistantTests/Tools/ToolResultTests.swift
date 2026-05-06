@@ -191,7 +191,7 @@ struct ToolResultTests {
         let json = Data(#"["order","product","customer"]"#.utf8)
 
         // When
-        let decoded = try JSONDecoder().decode([CardFamilyID].self, from: json)
+        let decoded = try JSONDecoder().decode([CardFamily].self, from: json)
 
         // Then
         #expect(decoded == [.order, .product, .customer])

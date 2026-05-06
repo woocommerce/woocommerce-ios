@@ -3,18 +3,18 @@ import Foundation
 struct CardReferenceResolver: Sendable {
     static let maxReferencesPerCall = 10
 
-    private let client: WCRESTClient
+    private let providers: [CardFamily: any CardEntityProvider]
 
-    init(client: WCRESTClient) {
-        self.client = client
+    init(providers: [CardFamily: any CardEntityProvider]) {
+        self.providers = providers
     }
 
-    func resolve(_ references: [CardReference]) async -> [Resolution] {
+    func resolve(_ references: [CardReference], analyticsClient: WCRESTClient? = nil) async -> [Resolution] {
         let bounded = Array(references.prefix(Self.maxReferencesPerCall))
         var resolutions: [Resolution?] = Array(repeating: nil, count: bounded.count)
         var seen: Set<SeenKey> = []
-        var entitySlotsByFamily: [CardFamilyID: [EntityFetchSlot]] = [:]
-        var analyticsSlots: [AnalyticsFetchSlot] = []
+        var slotsByFamily: [CardFamily: [Slot]] = [:]
+        var analyticsSlots: [AnalyticsSlot] = []
 
         for (index, reference) in bounded.enumerated() {
             let key = SeenKey(family: reference.family, id: reference.id)
@@ -22,80 +22,74 @@ struct CardReferenceResolver: Sendable {
                 resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .duplicate)
                 continue
             }
-            switch reference.family {
-            case .analyticsStats:
+
+            if reference.family == .analyticsStats {
                 guard let spec = AnalyticsCardSpec.decode(reference.id) else {
                     resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .malformed)
                     continue
                 }
                 seen.insert(key)
-                analyticsSlots.append(AnalyticsFetchSlot(slot: index, id: reference.id, spec: spec))
-            case .order, .product, .productVariation, .customer:
-                guard let parsed = Int64(reference.id), parsed > 0 else {
+                analyticsSlots.append(AnalyticsSlot(index: index, id: reference.id, spec: spec))
+                continue
+            }
+
+            guard let parsed = Int64(reference.id), parsed > 0 else {
+                resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .malformed)
+                continue
+            }
+            var parentParsed: Int64?
+            if reference.family == .productVariation {
+                guard let parentRaw = reference.parentID,
+                      let parsedParent = Int64(parentRaw),
+                      parsedParent > 0 else {
                     resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .malformed)
                     continue
                 }
-                var parentParsed: Int64?
-                if reference.family == .productVariation {
-                    guard let parentRaw = reference.parentID,
-                          let parsedParent = Int64(parentRaw),
-                          parsedParent > 0 else {
-                        resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .malformed)
-                        continue
-                    }
-                    parentParsed = parsedParent
-                }
-                seen.insert(key)
-                entitySlotsByFamily[reference.family, default: []].append(
-                    EntityFetchSlot(slot: index, id: reference.id, parsed: parsed, parentParsed: parentParsed)
-                )
+                parentParsed = parsedParent
             }
+            seen.insert(key)
+            let ref = CardRef(family: reference.family, id: parsed, parentID: parentParsed)
+            slotsByFamily[reference.family, default: []].append(Slot(index: index, id: reference.id, ref: ref))
         }
 
-        let analyticsFetcher = AnalyticsCardFetch(client: client)
-
         await withTaskGroup(of: ResolverWork.self) { group in
-            for (familyID, slots) in entitySlotsByFamily {
-                let family = CardFamily.forID(familyID)
-                group.addTask {
-                    let outcomes: [Int64: CardFetchOutcome]
-                    switch family.pathStrategy {
-                    case .batchedList:
-                        outcomes = await family.fetch(ids: slots.map { $0.parsed }, client: client)
-                    case .nestedByParent:
-                        let nestedRefs: [(id: Int64, parentID: Int64)] = slots.compactMap { slot in
-                            guard let parent = slot.parentParsed else { return nil }
-                            return (id: slot.parsed, parentID: parent)
-                        }
-                        outcomes = await family.fetchNested(refs: nestedRefs, client: client)
+            for (family, slots) in slotsByFamily {
+                guard let provider = providers[family] else {
+                    for slot in slots {
+                        resolutions[slot.index] = .rejected(family: family, id: slot.id, reason: .internalError)
                     }
-                    return .entities(family: familyID, outcomes: outcomes)
+                    continue
                 }
-            }
-            for slot in analyticsSlots {
+                let refs = slots.map { $0.ref }
                 group.addTask {
-                    let outcome = await analyticsFetcher.fetch(slot.spec)
-                    return .analytics(slot: slot, outcome: outcome)
+                    let outcomes = await provider.fetch(refs: refs)
+                    return .entities(family: family, outcomes: outcomes)
                 }
             }
+            if let analyticsClient {
+                let analyticsFetcher = AnalyticsCardFetch(client: analyticsClient)
+                for slot in analyticsSlots {
+                    group.addTask {
+                        let outcome = await analyticsFetcher.fetch(slot.spec)
+                        return .analytics(slot: slot, outcome: outcome)
+                    }
+                }
+            } else {
+                for slot in analyticsSlots {
+                    resolutions[slot.index] = .rejected(family: .analyticsStats, id: slot.id, reason: .internalError)
+                }
+            }
+
             for await work in group {
                 switch work {
-                case .entities(let familyID, let outcomes):
-                    guard let slots = entitySlotsByFamily[familyID] else { continue }
-                    let family = CardFamily.forID(familyID)
-                    for entry in slots {
-                        let outcome = outcomes[entry.parsed] ?? .rejected(.notFound)
-                        resolutions[entry.slot] = resolution(family: familyID,
-                                                             id: entry.id,
-                                                             outcome: outcome,
-                                                             summarize: family.summarize)
+                case .entities(let family, let outcomes):
+                    guard let slots = slotsByFamily[family] else { continue }
+                    for slot in slots {
+                        let outcome = outcomes[slot.ref] ?? .rejected(.notFound)
+                        resolutions[slot.index] = resolution(family: family, id: slot.id, outcome: outcome)
                     }
                 case .analytics(let slot, let outcome):
-                    // AnalyticsStatsSummary.make already projects to model-visible shape.
-                    resolutions[slot.slot] = resolution(family: .analyticsStats,
-                                                        id: slot.id,
-                                                        outcome: outcome,
-                                                        summarize: { $0 })
+                    resolutions[slot.index] = resolution(family: .analyticsStats, id: slot.id, outcome: outcome)
                 }
             }
         }
@@ -104,9 +98,6 @@ struct CardReferenceResolver: Sendable {
         precondition(assigned.count == bounded.count, "every bounded slot must be assigned")
         var final = assigned
 
-        // Truncate-and-warn on overflow rather than rejecting the whole call:
-        // the merchant still gets the first 10 cards, and the model sees a
-        // count mismatch big enough to learn from.
         if references.count > Self.maxReferencesPerCall {
             let overflow = references.count - Self.maxReferencesPerCall
             final.append(contentsOf: Array(
@@ -117,40 +108,34 @@ struct CardReferenceResolver: Sendable {
         return final
     }
 
-    private func resolution(family: CardFamilyID,
-                            id: String,
-                            outcome: CardFetchOutcome,
-                            summarize: (AnyCodableJSON) -> AnyCodableJSON) -> Resolution {
+    private func resolution(family: CardFamily, id: String, outcome: CardEntityOutcome) -> Resolution {
         switch outcome {
         case .found(let entity):
-            let summary = summarize(entity)
-            let rendered = RenderedCardPayload(family: family, id: id, element: entity)
-            return .resolved(family: family, id: id, summary: summary, rendered: rendered)
+            return .resolved(family: family, id: id, entity: entity)
         case .rejected(let reason):
             return .rejected(family: family, id: id, reason: reason)
         }
     }
 
     private struct SeenKey: Hashable {
-        let family: CardFamilyID
+        let family: CardFamily
         let id: String
     }
 
-    private struct EntityFetchSlot {
-        let slot: Int
+    private struct Slot: Sendable {
+        let index: Int
         let id: String
-        let parsed: Int64
-        let parentParsed: Int64?
+        let ref: CardRef
     }
 
-    private struct AnalyticsFetchSlot: Sendable {
-        let slot: Int
+    private struct AnalyticsSlot: Sendable {
+        let index: Int
         let id: String
         let spec: AnalyticsCardSpec
     }
 
     private enum ResolverWork: Sendable {
-        case entities(family: CardFamilyID, outcomes: [Int64: CardFetchOutcome])
-        case analytics(slot: AnalyticsFetchSlot, outcome: CardFetchOutcome)
+        case entities(family: CardFamily, outcomes: [CardRef: CardEntityOutcome])
+        case analytics(slot: AnalyticsSlot, outcome: CardEntityOutcome)
     }
 }

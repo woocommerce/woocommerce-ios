@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 
 public enum ShowCardsTool {
@@ -5,7 +6,24 @@ public enum ShowCardsTool {
     public static let name = "show_cards"
 
     public static func make() -> RESTTool {
-        RESTTool(definition: definition, executor: executor)
+        make(providers: [:])
+    }
+
+    /// Wires the resolver with one provider per family. The runtime `client`
+    /// argument the registry passes is ignored; resolution flows entirely
+    /// through the typed providers.
+    public static func make(providers: [CardFamily: any CardEntityProvider]) -> RESTTool {
+        let resolver = CardReferenceResolver(providers: providers)
+        let executor: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+            let request: ShowCardsRequest
+            switch RESTToolDispatch.decodeArguments(ShowCardsRequest.self, from: arguments, toolName: name) {
+            case .success(let value): request = value
+            case .failure(let failed): return .failed(failed)
+            }
+            let resolutions = await resolver.resolve(request.references, analyticsClient: client)
+            return projection(of: resolutions, requested: request.references.count)
+        }
+        return RESTTool(definition: definition, executor: executor)
     }
 
     private static let definition = AITool(
@@ -80,17 +98,6 @@ public enum ShowCardsTool {
         safetyLevel: .safe
     )
 
-    private static let executor: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
-        let request: ShowCardsRequest
-        switch RESTToolDispatch.decodeArguments(ShowCardsRequest.self, from: arguments, toolName: name) {
-        case .success(let value): request = value
-        case .failure(let failed): return .failed(failed)
-        }
-        let resolver = CardReferenceResolver(client: client)
-        let resolutions = await resolver.resolve(request.references)
-        return projection(of: resolutions, requested: request.references.count)
-    }
-
     private static func projection(of resolutions: [Resolution], requested: Int) -> ToolResult {
         var resolvedRefs: [AnyCodableJSON] = []
         var missingRefs: [AnyCodableJSON] = []
@@ -99,13 +106,14 @@ public enum ShowCardsTool {
 
         for resolution in resolutions {
             switch resolution {
-            case .resolved(let family, let id, let summary, let rendered):
+            case .resolved(let family, let id, let entity):
+                let element = encodeEntity(entity)
                 resolvedRefs.append(.object([
                     "family": .string(family.rawValue),
                     "id": .string(id),
-                    "summary": summary
+                    "summary": summary(family: family, element: element)
                 ]))
-                cards.append(rendered)
+                cards.append(RenderedCardPayload(family: family, id: id, element: element))
             case .rejected(let family, let id, let reason):
                 var entry: [String: AnyCodableJSON] = [
                     "reason": .string(reason.rawValue)
@@ -134,5 +142,51 @@ public enum ShowCardsTool {
         return .success(.init(toolName: name,
                               structured: structured,
                               uiStructured: uiStructured))
+    }
+
+    private static func encodeEntity(_ entity: CardEntity) -> AnyCodableJSON {
+        do {
+            let data: Data
+            switch entity {
+            case .order(let payload): data = try JSONEncoder().encode(payload)
+            case .product(let payload): data = try JSONEncoder().encode(payload)
+            case .variation(let payload): data = try JSONEncoder().encode(payload)
+            case .customer(let payload): data = try JSONEncoder().encode(payload)
+            case .analyticsStats(let payload): return payload
+            }
+            return try JSONDecoder().decode(AnyCodableJSON.self, from: data)
+        } catch {
+            DDLogError("ShowCardsTool failed to encode card entity: \(error)")
+            return .object([:])
+        }
+    }
+
+    private static func summary(family: CardFamily, element: AnyCodableJSON) -> AnyCodableJSON {
+        if family == .analyticsStats {
+            return element
+        }
+        guard case .object(let dict) = element else { return .object([:]) }
+        var projected: [String: AnyCodableJSON] = [:]
+        for key in summaryKeys(for: family) {
+            if let value = dict[key] {
+                projected[key] = value
+            }
+        }
+        return .object(projected)
+    }
+
+    private static func summaryKeys(for family: CardFamily) -> [String] {
+        switch family {
+        case .order:
+            return ["id", "number", "status", "total", "currency", "date_created", "customer_name"]
+        case .product:
+            return ["id", "name", "sku", "price", "stock_status"]
+        case .productVariation:
+            return ["id", "name", "sku", "price", "stock_status", "parent_id"]
+        case .customer:
+            return ["id", "first_name", "last_name", "email", "orders_count"]
+        case .analyticsStats:
+            return []
+        }
     }
 }

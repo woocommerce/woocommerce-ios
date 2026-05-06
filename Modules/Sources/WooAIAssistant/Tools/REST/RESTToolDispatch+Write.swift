@@ -6,7 +6,7 @@ extension RESTToolDispatch {
                                     body: Data?,
                                     client: WCRESTClient,
                                     toolName: String,
-                                    family: CardFamilyID,
+                                    family: CardFamily,
                                     summarize: (AnyCodableJSON) -> AnyCodableJSON) async -> ToolResult {
         let response = await client.request(method: method,
                                             path: path,

@@ -5,7 +5,7 @@ import Foundation
 enum WriteResultMapper {
     static func mapEntity(_ response: WCRESTResponse,
                           toolName: String,
-                          family: CardFamilyID,
+                          family: CardFamily,
                           summarize: (AnyCodableJSON) -> AnyCodableJSON) -> ToolResult {
         if let unknown = unknownOutcomeFailure(response: response, toolName: toolName) {
             return .failed(unknown)

@@ -259,7 +259,7 @@ public actor WooAssistantHeadless {
          restClient: WCRESTClient) {
         self.credentials = credentials
         self.configuration = configuration
-        let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.allTools())
+        let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.allTools(client: restClient))
         let prompt = configuration.systemPrompt
         let resolver = DefaultConfirmationSnapshotResolver(client: restClient)
         self.backend = AgenticChatBackend(
@@ -504,10 +504,17 @@ public actor WooAssistantHeadless {
     }
 
     /// Production REST tool catalog. Mirrors what the app target wires into its
-    /// `AgenticLoopOrchestrator`. Tests inject a different list when they need
-    /// to simulate a single-tool subset.
-    static func allTools() -> [RESTTool] {
-        [
+    /// `AgenticLoopOrchestrator`. The harness has no CoreData stack, so
+    /// `show_cards` uses REST-only providers in place of the cache-first ones
+    /// the app target ships.
+    static func allTools(client: WCRESTClient) -> [RESTTool] {
+        let providers: [CardFamily: any CardEntityProvider] = [
+            .order: RESTOrderCardProvider(client: client),
+            .product: RESTProductCardProvider(client: client),
+            .productVariation: RESTVariationCardProvider(client: client),
+            .customer: CustomerCardProvider(client: client)
+        ]
+        return [
             OrdersListTool.make(),
             OrdersGetTool.make(),
             OrdersUpdateTool.make(),
@@ -522,7 +529,7 @@ public actor WooAssistantHeadless {
             CustomersListTool.make(),
             AnalyticsRevenueTool.make(),
             AnalyticsOrdersTool.make(),
-            ShowCardsTool.make()
+            ShowCardsTool.make(providers: providers)
         ]
     }
 }

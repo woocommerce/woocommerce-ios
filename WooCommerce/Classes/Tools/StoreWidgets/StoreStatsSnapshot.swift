@@ -6,7 +6,6 @@ struct StoreStatsSnapshot: Codable, Hashable, Identifiable {
     let name: String
     let timeZoneIdentifier: String?
     let gmtOffset: Double
-    let supportsVisitorStats: Bool
     let isSelectableInStorePicker: Bool
     let currencySettingsData: Data?
 
@@ -41,7 +40,6 @@ struct StoreStatsStoredSite: Equatable {
     let timeZoneIdentifier: String?
     let gmtOffset: Double
     let isWooCommerceActive: Bool
-    let supportsVisitorStats: Bool
 }
 
 enum StoreStatsSnapshotFactory {
@@ -79,7 +77,6 @@ enum StoreStatsSnapshotFactory {
                     name: site.name,
                     timeZoneIdentifier: site.timeZoneIdentifier,
                     gmtOffset: site.gmtOffset,
-                    supportsVisitorStats: site.supportsVisitorStats,
                     isSelectableInStorePicker: true,
                     currencySettingsData: currencySettingsData
                 )
@@ -145,7 +142,6 @@ struct StoreStatsSnapshotStore {
             name: storeName,
             timeZoneIdentifier: nil,
             gmtOffset: 0,
-            supportsVisitorStats: true,
             isSelectableInStorePicker: false,
             currencySettingsData: currencySettingsData
         )

@@ -138,8 +138,7 @@ final class StoreInfoProvider: TimelineProvider {
         do {
             let statsPeriod = try await service.fetchStats(
                 for: dependencies.store.storeID,
-                dateRange: dateRange.serviceDateRange(timezone: dependencies.store.storeTimeZone),
-                supportsVisitorStats: dependencies.store.supportsVisitorStats
+                dateRange: dateRange.serviceDateRange(timezone: dependencies.store.storeTimeZone)
             )
             let entry = Self.dataEntry(
                 for: statsPeriod,
@@ -270,7 +269,6 @@ private extension StoreInfoProvider {
         let storeName: String
         let storeCurrencySettings: CurrencySettings
         let storeTimeZone: TimeZone
-        let supportsVisitorStats: Bool
     }
 
     /// Fetches the required dependencies from the keychain and the shared users default.
@@ -316,8 +314,7 @@ private extension StoreInfoProvider {
         let store = StoreMetadata(storeID: selectedStore.siteID,
                                   storeName: selectedStore.name,
                                   storeCurrencySettings: storeCurrencySettings,
-                                  storeTimeZone: selectedStore.timeZone,
-                                  supportsVisitorStats: selectedStore.supportsVisitorStats)
+                                  storeTimeZone: selectedStore.timeZone)
         return StoreInfoProviderDependencies(credentials: credentials,
                                              store: store)
     }
@@ -333,8 +330,7 @@ private extension StoreInfoProvider {
         return StoreMetadata(storeID: storeID,
                              storeName: storeName,
                              storeCurrencySettings: storeCurrencySettings,
-                             storeTimeZone: .current,
-                             supportsVisitorStats: true)
+                             storeTimeZone: .current)
     }
 }
 

@@ -925,13 +925,11 @@ private extension DefaultStoresManager {
 
         let storedSites = ServiceLocator.storageManager.viewStorage.loadAllSites()
             .map { site in
-                let isWordPressComStore = site.isWordPressStore?.boolValue ?? false
                 return StoreStatsStoredSite(siteID: site.siteID,
                                             name: site.name ?? WooConstants.defaultStoreName,
                                             timeZoneIdentifier: site.timezone,
                                             gmtOffset: site.gmtOffset,
-                                            isWooCommerceActive: site.isWooCommerceActive?.boolValue ?? false,
-                                            supportsVisitorStats: site.isJetpackConnected || isWordPressComStore)
+                                            isWooCommerceActive: site.isWooCommerceActive?.boolValue ?? false)
             }
 
         let defaultSite = sessionManager.defaultSite.map { site in
@@ -939,8 +937,7 @@ private extension DefaultStoresManager {
                                  name: site.name,
                                  timeZoneIdentifier: site.timezone,
                                  gmtOffset: site.gmtOffset,
-                                 isWooCommerceActive: site.isWooCommerceActive,
-                                 supportsVisitorStats: site.isJetpackConnected || site.isWordPressComStore)
+                                 isWooCommerceActive: site.isWooCommerceActive)
         }
 
         let defaultSiteID = siteID ?? defaultSite?.siteID

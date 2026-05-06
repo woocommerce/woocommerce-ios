@@ -14,33 +14,28 @@ struct StoreStatsSnapshotTests {
                                  name: "Beta",
                                  timeZoneIdentifier: "Europe/Madrid",
                                  gmtOffset: 1,
-                                 isWooCommerceActive: true,
-                                 supportsVisitorStats: true),
+                                 isWooCommerceActive: true),
             StoreStatsStoredSite(siteID: 4,
                                  name: "No Woo",
                                  timeZoneIdentifier: "UTC",
                                  gmtOffset: 0,
-                                 isWooCommerceActive: false,
-                                 supportsVisitorStats: true),
+                                 isWooCommerceActive: false),
             StoreStatsStoredSite(siteID: 2,
                                  name: "Beta Duplicate",
                                  timeZoneIdentifier: "Europe/Madrid",
                                  gmtOffset: 1,
-                                 isWooCommerceActive: true,
-                                 supportsVisitorStats: true),
+                                 isWooCommerceActive: true),
             StoreStatsStoredSite(siteID: 1,
                                  name: "Alpha",
                                  timeZoneIdentifier: "UTC",
                                  gmtOffset: 0,
-                                 isWooCommerceActive: true,
-                                 supportsVisitorStats: false)
+                                 isWooCommerceActive: true)
         ]
         let defaultSite = StoreStatsStoredSite(siteID: 3,
                                                name: "Default",
                                                timeZoneIdentifier: "America/New_York",
                                                gmtOffset: -5,
-                                               isWooCommerceActive: true,
-                                               supportsVisitorStats: true)
+                                               isWooCommerceActive: true)
 
         // When
         let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
@@ -61,7 +56,6 @@ struct StoreStatsSnapshotTests {
         #expect(snapshots[0].currencySettingsData == defaultCurrencySettingsData)
         #expect(snapshots[1].currencySettingsData == alphaCurrencySettingsData)
         #expect(snapshots[2].currencySettingsData == betaCurrencySettingsData)
-        #expect(snapshots[1].supportsVisitorStats == false)
         #expect(snapshots[2].timeZone == TimeZone(identifier: "Europe/Madrid"))
     }
 
@@ -73,14 +67,12 @@ struct StoreStatsSnapshotTests {
                                  name: "Default",
                                  timeZoneIdentifier: "UTC",
                                  gmtOffset: 0,
-                                 isWooCommerceActive: true,
-                                 supportsVisitorStats: true),
+                                 isWooCommerceActive: true),
             StoreStatsStoredSite(siteID: 2,
                                  name: "Other",
                                  timeZoneIdentifier: "UTC",
                                  gmtOffset: 0,
-                                 isWooCommerceActive: true,
-                                 supportsVisitorStats: true)
+                                 isWooCommerceActive: true)
         ]
 
         // When
@@ -103,8 +95,7 @@ struct StoreStatsSnapshotTests {
                                  name: "Default",
                                  timeZoneIdentifier: "UTC",
                                  gmtOffset: 0,
-                                 isWooCommerceActive: true,
-                                 supportsVisitorStats: false)
+                                 isWooCommerceActive: true)
         ]
 
         // When
@@ -163,14 +154,12 @@ struct StoreStatsSnapshotTests {
                                name: "Default",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
-                               supportsVisitorStats: true,
                                isSelectableInStorePicker: true,
                                currencySettingsData: nil),
             StoreStatsSnapshot(siteID: 2,
                                name: "Hidden",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
-                               supportsVisitorStats: true,
                                isSelectableInStorePicker: false,
                                currencySettingsData: nil)
         ]
@@ -194,21 +183,18 @@ struct StoreStatsSnapshotTests {
                                name: "Default",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
-                               supportsVisitorStats: true,
                                isSelectableInStorePicker: true,
                                currencySettingsData: nil),
             StoreStatsSnapshot(siteID: 2,
                                name: "Other",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
-                               supportsVisitorStats: true,
                                isSelectableInStorePicker: true,
                                currencySettingsData: nil),
             StoreStatsSnapshot(siteID: 3,
                                name: "Other with currency",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
-                               supportsVisitorStats: true,
                                isSelectableInStorePicker: true,
                                currencySettingsData: otherCurrencySettingsData)
         ]
@@ -229,7 +215,6 @@ struct StoreStatsSnapshotTests {
                                                name: "Default",
                                                timeZoneIdentifier: nil,
                                                gmtOffset: 0,
-                                               supportsVisitorStats: true,
                                                isSelectableInStorePicker: true,
                                                currencySettingsData: staleSnapshotCurrencySettingsData)
 
@@ -249,14 +234,12 @@ struct StoreStatsSnapshotTests {
                                name: "Other",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
-                               supportsVisitorStats: true,
                                isSelectableInStorePicker: true,
                                currencySettingsData: nil),
             StoreStatsSnapshot(siteID: 1,
                                name: "Default",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
-                               supportsVisitorStats: true,
                                isSelectableInStorePicker: true,
                                currencySettingsData: nil)
         ]

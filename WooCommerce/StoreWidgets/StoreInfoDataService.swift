@@ -93,7 +93,7 @@ final class StoreInfoDataService {
     /// it bypasses the parallel previous-period fetch in `fetchStats(for:dateRange:)`.
     ///
     func fetchTodayStats(for storeID: Int64) async throws -> Stats {
-        try await fetchSinglePeriodStats(for: storeID, dateRange: .today(), supportsVisitorStats: true)
+        try await fetchSinglePeriodStats(for: storeID, dateRange: .today())
     }
 
     /// Async function that fetches stats for the given date range together with stats for
@@ -104,11 +104,9 @@ final class StoreInfoDataService {
     /// data without trend badges instead of surfacing an error tile. A current-period
     /// failure still throws — there's no useful render without it.
     ///
-    func fetchStats(for storeID: Int64, dateRange: DateRange, supportsVisitorStats: Bool = true) async throws -> StatsPeriod {
-        async let currentRequest = fetchSinglePeriodStats(for: storeID, dateRange: dateRange, supportsVisitorStats: supportsVisitorStats)
-        async let previousRequest = fetchSinglePeriodStats(for: storeID,
-                                                           dateRange: dateRange.previousPeriod(),
-                                                           supportsVisitorStats: supportsVisitorStats)
+    func fetchStats(for storeID: Int64, dateRange: DateRange) async throws -> StatsPeriod {
+        async let currentRequest = fetchSinglePeriodStats(for: storeID, dateRange: dateRange)
+        async let previousRequest = fetchSinglePeriodStats(for: storeID, dateRange: dateRange.previousPeriod())
         let current = try await currentRequest
         let previous = try? await previousRequest
         return StatsPeriod(current: current, previous: previous)
@@ -117,10 +115,10 @@ final class StoreInfoDataService {
     /// Internal helper that fetches stats for a single date range. The public `fetchStats`
     /// invokes this twice in parallel (current and previous period).
     ///
-    private func fetchSinglePeriodStats(for storeID: Int64, dateRange: DateRange, supportsVisitorStats: Bool) async throws -> Stats {
+    private func fetchSinglePeriodStats(for storeID: Int64, dateRange: DateRange) async throws -> Stats {
         /// If user is authenticated with site credentials only,
         /// fetch revenue and orders and skip visitor stats as its endpoint is not available.
-        guard supportsVisitorStats, !isAuthenticatedWithoutWPCom else {
+        guard !isAuthenticatedWithoutWPCom else {
             return try await statsWithoutVisitors(for: storeID, dateRange: dateRange)
         }
 

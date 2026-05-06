@@ -947,20 +947,20 @@ private extension DefaultStoresManager {
             candidateSiteIDs.insert(defaultSite.siteID)
         }
 
-        let defaultCurrencySettingsData: Data? = UserDefaults.group?.object(forKey: .defaultStoreCurrencySettings)
-        let currencySettingsDataBySiteID = storeStatsWidgetCurrencySettingsDataBySiteID(candidateSiteIDs: candidateSiteIDs,
-                                                                                       defaultSiteID: defaultSiteID,
-                                                                                       defaultCurrencySettingsData: defaultCurrencySettingsData)
+        let defaultCurrencySettings = storeStatsWidgetDefaultCurrencySettings()
+        let currencySettingsBySiteID = storeStatsWidgetCurrencySettingsBySiteID(candidateSiteIDs: candidateSiteIDs,
+                                                                               defaultSiteID: defaultSiteID,
+                                                                               defaultCurrencySettings: defaultCurrencySettings)
         let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
                                                             defaultSite: defaultSite,
                                                             defaultSiteID: defaultSiteID,
-                                                            defaultCurrencySettingsData: defaultCurrencySettingsData,
-                                                            currencySettingsDataBySiteID: currencySettingsDataBySiteID,
+                                                            defaultCurrencySettings: defaultCurrencySettings,
+                                                            currencySettingsBySiteID: currencySettingsBySiteID,
                                                             exposesStorePicker: true)
         StoreStatsSnapshotStore().save(snapshots)
         synchronizeMissingStoreStatsWidgetCurrencySettingsIfNeeded(selectedSiteID: defaultSiteID,
                                                                    candidateSiteIDs: candidateSiteIDs,
-                                                                   currencySettingsDataBySiteID: currencySettingsDataBySiteID)
+                                                                   currencySettingsBySiteID: currencySettingsBySiteID)
     }
 
     private func updateStoreStatsWidgetStoreSnapshotsAfterSiteListSynchronization(selectedSiteID: Int64?,
@@ -989,22 +989,29 @@ private extension DefaultStoresManager {
         return false
     }
 
-    private func storeStatsWidgetCurrencySettingsDataBySiteID(candidateSiteIDs: Set<Int64>,
-                                                              defaultSiteID: Int64?,
-                                                              defaultCurrencySettingsData: Data?) -> [Int64: Data] {
-        var currencySettingsDataBySiteID: [Int64: Data] = [:]
+    private func storeStatsWidgetDefaultCurrencySettings() -> CurrencySettings? {
+        let currencySettingsData: Data? = UserDefaults.group?.object(forKey: .defaultStoreCurrencySettings)
+        return currencySettingsData.flatMap {
+            try? JSONDecoder().decode(CurrencySettings.self, from: $0)
+        }
+    }
+
+    private func storeStatsWidgetCurrencySettingsBySiteID(candidateSiteIDs: Set<Int64>,
+                                                          defaultSiteID: Int64?,
+                                                          defaultCurrencySettings: CurrencySettings?) -> [Int64: CurrencySettings] {
+        var currencySettingsBySiteID: [Int64: CurrencySettings] = [:]
         for siteID in candidateSiteIDs {
-            currencySettingsDataBySiteID[siteID] = storeStatsWidgetCurrencySettingsData(for: siteID)
+            currencySettingsBySiteID[siteID] = storeStatsWidgetCurrencySettings(for: siteID)
         }
 
         if let defaultSiteID,
-           let defaultCurrencySettingsData {
-            currencySettingsDataBySiteID[defaultSiteID] = defaultCurrencySettingsData
+           let defaultCurrencySettings {
+            currencySettingsBySiteID[defaultSiteID] = defaultCurrencySettings
         }
-        return currencySettingsDataBySiteID
+        return currencySettingsBySiteID
     }
 
-    private func storeStatsWidgetCurrencySettingsData(for siteID: Int64) -> Data? {
+    private func storeStatsWidgetCurrencySettings(for siteID: Int64) -> CurrencySettings? {
         guard let storedSiteSettings = ServiceLocator.storageManager.viewStorage.loadSiteSettings(siteID: siteID,
                                                                                                   settingGroupKey: SiteSettingGroup.general.rawValue) else {
             return nil
@@ -1014,7 +1021,7 @@ private extension DefaultStoresManager {
         guard hasCurrencySettings(in: siteSettings) else {
             return nil
         }
-        return try? JSONEncoder().encode(CurrencySettings(siteSettings: siteSettings))
+        return CurrencySettings(siteSettings: siteSettings)
     }
 
     private func hasCurrencySettings(in siteSettings: [SiteSetting]) -> Bool {
@@ -1031,10 +1038,10 @@ private extension DefaultStoresManager {
 
     private func synchronizeMissingStoreStatsWidgetCurrencySettingsIfNeeded(selectedSiteID: Int64?,
                                                                             candidateSiteIDs: Set<Int64>,
-                                                                            currencySettingsDataBySiteID: [Int64: Data]) {
+                                                                            currencySettingsBySiteID: [Int64: CurrencySettings]) {
         guard let selectedSiteID,
               candidateSiteIDs.contains(selectedSiteID),
-              currencySettingsDataBySiteID[selectedSiteID] == nil,
+              currencySettingsBySiteID[selectedSiteID] == nil,
               storeStatsWidgetCurrencySettingsSyncSiteIDs.contains(selectedSiteID) == false else {
             return
         }

@@ -4,11 +4,11 @@ import Testing
 import WooFoundationCore
 
 struct StoreStatsSnapshotTests {
-    @Test func snapshots_whenStorePickerIsExposed_thenKeepsWooStoresWithDefaultFirst() throws {
+    @Test func snapshots_whenStorePickerIsExposed_thenKeepsWooStoresWithDefaultFirst() {
         // Given
-        let defaultCurrencySettingsData = try currencySettingsData(for: .USD)
-        let alphaCurrencySettingsData = try currencySettingsData(for: .EUR)
-        let betaCurrencySettingsData = try currencySettingsData(for: .GBP)
+        let defaultCurrencySettings = currencySettings(for: .USD)
+        let alphaCurrencySettings = currencySettings(for: .EUR)
+        let betaCurrencySettings = currencySettings(for: .GBP)
         let storedSites = [
             StoreStatsStoredSite(siteID: 2,
                                  name: "Beta",
@@ -41,11 +41,11 @@ struct StoreStatsSnapshotTests {
         let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
                                                             defaultSite: defaultSite,
                                                             defaultSiteID: 3,
-                                                            defaultCurrencySettingsData: defaultCurrencySettingsData,
-                                                            currencySettingsDataBySiteID: [
-                                                                1: alphaCurrencySettingsData,
-                                                                2: betaCurrencySettingsData,
-                                                                3: defaultCurrencySettingsData
+                                                            defaultCurrencySettings: defaultCurrencySettings,
+                                                            currencySettingsBySiteID: [
+                                                                1: alphaCurrencySettings,
+                                                                2: betaCurrencySettings,
+                                                                3: defaultCurrencySettings
                                                             ],
                                                             exposesStorePicker: true)
 
@@ -53,15 +53,15 @@ struct StoreStatsSnapshotTests {
         #expect(snapshots.map(\.siteID) == [3, 1, 2])
         #expect(snapshots.map(\.name) == ["Default", "Alpha", "Beta"])
         #expect(snapshots[0].isSelectableInStorePicker)
-        #expect(snapshots[0].currencySettingsData == defaultCurrencySettingsData)
-        #expect(snapshots[1].currencySettingsData == alphaCurrencySettingsData)
-        #expect(snapshots[2].currencySettingsData == betaCurrencySettingsData)
+        #expect(snapshots[0].currencySettings == defaultCurrencySettings)
+        #expect(snapshots[1].currencySettings == alphaCurrencySettings)
+        #expect(snapshots[2].currencySettings == betaCurrencySettings)
         #expect(snapshots[2].timeZone == TimeZone(identifier: "Europe/Madrid"))
     }
 
-    @Test func snapshots_whenNonDefaultStoreHasNoCurrencySettings_thenUsesDefaultCurrencySettings() throws {
+    @Test func snapshots_whenNonDefaultStoreHasNoCurrencySettings_thenUsesDefaultCurrencySettings() {
         // Given
-        let defaultCurrencySettingsData = try currencySettingsData(for: .USD)
+        let defaultCurrencySettings = currencySettings(for: .USD)
         let storedSites = [
             StoreStatsStoredSite(siteID: 1,
                                  name: "Default",
@@ -79,13 +79,13 @@ struct StoreStatsSnapshotTests {
         let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
                                                             defaultSite: storedSites[0],
                                                             defaultSiteID: 1,
-                                                            defaultCurrencySettingsData: defaultCurrencySettingsData,
-                                                            currencySettingsDataBySiteID: [1: defaultCurrencySettingsData],
+                                                            defaultCurrencySettings: defaultCurrencySettings,
+                                                            currencySettingsBySiteID: [1: defaultCurrencySettings],
                                                             exposesStorePicker: true)
 
         // Then
         #expect(snapshots.map(\.siteID) == [1, 2])
-        #expect(snapshots[1].currencySettingsData == defaultCurrencySettingsData)
+        #expect(snapshots[1].currencySettings == defaultCurrencySettings)
     }
 
     @Test func snapshots_whenStorePickerIsNotExposed_thenReturnsEmptyList() {
@@ -102,7 +102,7 @@ struct StoreStatsSnapshotTests {
         let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
                                                             defaultSite: storedSites[0],
                                                             defaultSiteID: 1,
-                                                            defaultCurrencySettingsData: nil,
+                                                            defaultCurrencySettings: nil,
                                                             exposesStorePicker: false)
 
         // Then
@@ -155,13 +155,13 @@ struct StoreStatsSnapshotTests {
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
                                isSelectableInStorePicker: true,
-                               currencySettingsData: nil),
+                               currencySettings: nil),
             StoreStatsSnapshot(siteID: 2,
                                name: "Hidden",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
                                isSelectableInStorePicker: false,
-                               currencySettingsData: nil)
+                               currencySettings: nil)
         ]
         store.save(snapshots)
 
@@ -172,31 +172,31 @@ struct StoreStatsSnapshotTests {
         #expect(pickerSnapshots.map(\.siteID) == [1])
     }
 
-    @Test func storePickerSnapshots_whenSavedNonDefaultStoreHasNoCurrencySettings_thenIncludesStore() throws {
+    @Test func storePickerSnapshots_whenSavedNonDefaultStoreHasNoCurrencySettings_thenIncludesStore() {
         // Given
         let userDefaults = makeUserDefaults()
         userDefaults.set(Int64(1), forKey: .defaultStoreID)
         let store = StoreStatsSnapshotStore(userDefaults: userDefaults)
-        let otherCurrencySettingsData = try currencySettingsData(for: .EUR)
+        let otherCurrencySettings = currencySettings(for: .EUR)
         let snapshots = [
             StoreStatsSnapshot(siteID: 1,
                                name: "Default",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
                                isSelectableInStorePicker: true,
-                               currencySettingsData: nil),
+                               currencySettings: nil),
             StoreStatsSnapshot(siteID: 2,
                                name: "Other",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
                                isSelectableInStorePicker: true,
-                               currencySettingsData: nil),
+                               currencySettings: nil),
             StoreStatsSnapshot(siteID: 3,
                                name: "Other with currency",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
                                isSelectableInStorePicker: true,
-                               currencySettingsData: otherCurrencySettingsData)
+                               currencySettings: otherCurrencySettings)
         ]
         store.save(snapshots)
 
@@ -207,16 +207,16 @@ struct StoreStatsSnapshotTests {
         #expect(pickerSnapshots.map(\.siteID) == [1, 2, 3])
     }
 
-    @Test func currencySettings_whenSelectedStoreIsDefault_thenUsesDefaultCurrencySettings() throws {
+    @Test func currencySettings_whenSelectedStoreIsDefault_thenUsesDefaultCurrencySettings() {
         // Given
-        let staleSnapshotCurrencySettingsData = try currencySettingsData(for: .USD)
+        let staleSnapshotCurrencySettings = currencySettings(for: .USD)
         let defaultCurrencySettings = currencySettings(for: .EUR)
         let selectedStore = StoreStatsSnapshot(siteID: 1,
                                                name: "Default",
                                                timeZoneIdentifier: nil,
                                                gmtOffset: 0,
                                                isSelectableInStorePicker: true,
-                                               currencySettingsData: staleSnapshotCurrencySettingsData)
+                                               currencySettings: staleSnapshotCurrencySettings)
 
         // When
         let resolvedCurrencySettings = StoreInfoProvider.currencySettings(for: selectedStore,
@@ -235,13 +235,13 @@ struct StoreStatsSnapshotTests {
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
                                isSelectableInStorePicker: true,
-                               currencySettingsData: nil),
+                               currencySettings: nil),
             StoreStatsSnapshot(siteID: 1,
                                name: "Default",
                                timeZoneIdentifier: nil,
                                gmtOffset: 0,
                                isSelectableInStorePicker: true,
-                               currencySettingsData: nil)
+                               currencySettings: nil)
         ]
 
         // When
@@ -266,10 +266,6 @@ struct StoreStatsSnapshotTests {
         let userDefaults = UserDefaults(suiteName: suiteName)!
         userDefaults.removePersistentDomain(forName: suiteName)
         return userDefaults
-    }
-
-    private func currencySettingsData(for currencyCode: CurrencyCode) throws -> Data {
-        try JSONEncoder().encode(currencySettings(for: currencyCode))
     }
 
     private func currencySettings(for currencyCode: CurrencyCode) -> CurrencySettings {

@@ -1,13 +1,13 @@
 import Foundation
 import WooFoundationCore
 
-struct StoreStatsSnapshot: Codable, Hashable, Identifiable {
+struct StoreStatsSnapshot: Codable, Identifiable {
     let siteID: Int64
     let name: String
     let timeZoneIdentifier: String?
     let gmtOffset: Double
     let isSelectableInStorePicker: Bool
-    let currencySettingsData: Data?
+    let currencySettings: CurrencySettings?
 
     var id: Int64 {
         siteID
@@ -25,13 +25,6 @@ struct StoreStatsSnapshot: Codable, Hashable, Identifiable {
         }
         return TimeZone(secondsFromGMT: Int(gmtOffset * 3600)) ?? .current
     }
-
-    var currencySettings: CurrencySettings? {
-        guard let currencySettingsData else {
-            return nil
-        }
-        return try? JSONDecoder().decode(CurrencySettings.self, from: currencySettingsData)
-    }
 }
 
 struct StoreStatsStoredSite: Equatable {
@@ -46,8 +39,8 @@ enum StoreStatsSnapshotFactory {
     static func snapshots(storedSites: [StoreStatsStoredSite],
                           defaultSite: StoreStatsStoredSite?,
                           defaultSiteID: Int64?,
-                          defaultCurrencySettingsData: Data?,
-                          currencySettingsDataBySiteID: [Int64: Data] = [:],
+                          defaultCurrencySettings: CurrencySettings?,
+                          currencySettingsBySiteID: [Int64: CurrencySettings] = [:],
                           exposesStorePicker: Bool) -> [StoreStatsSnapshot] {
         guard exposesStorePicker else {
             return []
@@ -71,14 +64,14 @@ enum StoreStatsSnapshotFactory {
                 return true
             }
             .map { site in
-                let currencySettingsData = currencySettingsDataBySiteID[site.siteID] ?? defaultCurrencySettingsData
+                let currencySettings = currencySettingsBySiteID[site.siteID] ?? defaultCurrencySettings
                 return StoreStatsSnapshot(
                     siteID: site.siteID,
                     name: site.name,
                     timeZoneIdentifier: site.timeZoneIdentifier,
                     gmtOffset: site.gmtOffset,
                     isSelectableInStorePicker: true,
-                    currencySettingsData: currencySettingsData
+                    currencySettings: currencySettings
                 )
             }
             .sorted { lhs, rhs in
@@ -137,13 +130,16 @@ struct StoreStatsSnapshotStore {
         }
 
         let currencySettingsData: Data? = userDefaults?.object(forKey: .defaultStoreCurrencySettings)
+        let currencySettings = currencySettingsData.flatMap {
+            try? JSONDecoder().decode(CurrencySettings.self, from: $0)
+        }
         return StoreStatsSnapshot(
             siteID: storeID,
             name: storeName,
             timeZoneIdentifier: nil,
             gmtOffset: 0,
             isSelectableInStorePicker: false,
-            currencySettingsData: currencySettingsData
+            currencySettings: currencySettings
         )
     }
 }

@@ -12,8 +12,8 @@ struct MessageListView: View {
 
     var body: some View {
         if messages.isEmpty {
-            EmptyStateView(onPick: onPickPrompt)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            EmptyStateView(onPick: onSendSuggestion)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         } else {
             ZStack(alignment: .bottomTrailing) {
                 ChatScrollView(controller: scrollController) {

@@ -289,7 +289,15 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
 
     private func chartData(for metric: StatsMetric, intervals: [AnyCodableJSON]) -> [Double] {
         guard !intervals.isEmpty else { return [] }
-        return intervals.map { interval in
+        let sorted = intervals.enumerated().sorted { lhs, rhs in
+            let lhsKey = chartSortKey(for: lhs.element)
+            let rhsKey = chartSortKey(for: rhs.element)
+            if lhsKey == rhsKey {
+                return lhs.offset < rhs.offset
+            }
+            return lhsKey < rhsKey
+        }.map { $0.element }
+        return sorted.map { interval in
             let subtotals = interval.assistantObject("subtotals")
             for key in metric.keys {
                 if let raw = subtotals?.assistantString(key), let value = Double(raw) {
@@ -301,6 +309,13 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
             }
             return 0
         }
+    }
+
+    private func chartSortKey(for interval: AnyCodableJSON) -> String {
+        if let date = interval.assistantString("date_start"), !date.isEmpty {
+            return date
+        }
+        return interval.assistantString("interval") ?? ""
     }
 
     func formatDateRange(after: String?, before: String?) -> String? {

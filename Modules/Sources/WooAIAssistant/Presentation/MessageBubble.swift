@@ -15,7 +15,6 @@ struct MessageBubble: View {
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
             }
-            .animation(.snappy(duration: 0.2), value: renderableGroups.map(\.identifier))
             if message.role == .assistant { Spacer(minLength: AssistantSpacing.xxLarge) }
         }
         .frame(maxWidth: .infinity,

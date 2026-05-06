@@ -14,14 +14,22 @@ struct ItemListView: View {
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
-    private let trailingHeaderAccessory: AnyView?
+    private let phoneHeaderAccessoryBuilder: ((PhoneHeaderAccessoryContext) -> AnyView)?
 
     init(selectedItemListType: Binding<ItemListType>,
          searchTerm: Binding<String>,
-         trailingHeaderAccessory: AnyView? = nil) {
+         phoneHeaderAccessoryBuilder: ((PhoneHeaderAccessoryContext) -> AnyView)? = nil) {
         self._selectedItemListType = selectedItemListType
         self._searchTerm = searchTerm
-        self.trailingHeaderAccessory = trailingHeaderAccessory
+        self.phoneHeaderAccessoryBuilder = phoneHeaderAccessoryBuilder
+    }
+
+    /// Context handed to the dashboard so the phone overflow menu can fold the
+    /// "create coupon" entry in when the merchant is on the Coupons tab. Avoids
+    /// leaking ItemListView's internal state up to the dashboard.
+    struct PhoneHeaderAccessoryContext {
+        let canCreateCoupon: Bool
+        let onCreateCoupon: () -> Void
     }
 
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
@@ -415,7 +423,12 @@ private extension ItemListView {
                         )
                         .transition(.opacity.combined(with: .move(edge: .trailing)))
                     } else {
-                        createCouponButton
+                        // Tablet keeps the inline + button. On phone (when a header
+                        // accessory builder is provided) the + folds into the overflow
+                        // menu so the menu chip is always visible.
+                        if phoneHeaderAccessoryBuilder == nil {
+                            createCouponButton
+                        }
 
                         POSPageHeaderActionButton(systemName: "magnifyingglass") {
                             analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
@@ -423,11 +436,17 @@ private extension ItemListView {
                         }
                         .transition(.opacity.combined(with: .scale))
 
-                        // Hidden on the Coupons tab where the createCouponButton already crowds the
-                        // trailing slot, otherwise the Products / Coupons tab titles get squeezed.
-                        if let trailingHeaderAccessory, !isAddingCouponAllowed {
-                            trailingHeaderAccessory
-                                .transition(.opacity.combined(with: .scale))
+                        if let phoneHeaderAccessoryBuilder {
+                            phoneHeaderAccessoryBuilder(
+                                PhoneHeaderAccessoryContext(
+                                    canCreateCoupon: isAddingCouponAllowed,
+                                    onCreateCoupon: {
+                                        analytics.track(.pointOfSaleCouponsCreateTapped)
+                                        showCouponCreationModal = true
+                                    }
+                                )
+                            )
+                            .transition(.opacity.combined(with: .scale))
                         }
                     }
 

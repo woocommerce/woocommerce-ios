@@ -207,9 +207,16 @@ struct PointOfSaleDashboardView: View {
             switch posModel.orderStage {
             case .building:
                 VStack(spacing: POSSpacing.none) {
-                    ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                                 searchTerm: $viewStateCoordinator.searchTerm,
-                                 trailingHeaderAccessory: AnyView(phoneOverflowMenu))
+                    ItemListView(
+                        selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                        searchTerm: $viewStateCoordinator.searchTerm,
+                        phoneHeaderAccessoryBuilder: { context in
+                            AnyView(phoneOverflowMenu(
+                                canCreateCoupon: context.canCreateCoupon,
+                                onCreateCoupon: context.onCreateCoupon
+                            ))
+                        }
+                    )
                     // Always shown — even with an empty cart — so the flow is always discoverable
                     // and the merchant has a consistent landmark at the bottom of the screen.
                     // Suppressed when a pushed view (e.g. the custom amount form) signals via
@@ -310,8 +317,17 @@ struct PointOfSaleDashboardView: View {
     @State private var phoneShowingBarcodeScannerSetup: Bool = false
     @State private var phoneCartButtonPulse: Bool = false
 
-    private var phoneOverflowMenu: some View {
+    @ViewBuilder
+    private func phoneOverflowMenu(canCreateCoupon: Bool,
+                                   onCreateCoupon: @escaping () -> Void) -> some View {
         Menu {
+            // Top of the menu when on the Coupons tab, so the create-coupon entry
+            // sits at the natural "primary action" slot for that tab.
+            if canCreateCoupon {
+                Button(action: onCreateCoupon) {
+                    Label(Localization.phoneMenuCreateCoupon, systemImage: "plus")
+                }
+            }
             Button {
                 analytics.track(.pointOfSaleExitMenuItemTapped)
                 showExitPOSModal = true
@@ -598,6 +614,11 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.phone.menu.orders",
             value: "Orders",
             comment: "Phone-only overflow menu item to open the historical orders view."
+        )
+        static let phoneMenuCreateCoupon = NSLocalizedString(
+            "pointOfSaleDashboard.phone.menu.createCoupon",
+            value: "Create coupon",
+            comment: "Phone-only overflow menu item to create a new coupon, shown when the merchant is on the Coupons tab."
         )
     }
 }

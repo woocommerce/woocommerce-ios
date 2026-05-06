@@ -247,4 +247,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables the WooAI Assistant.
     ///
     case wooAIAssistant
+
+    /// Enables AR parcel fitting for shipping
+    ///
+    case arParcelFitting
 }

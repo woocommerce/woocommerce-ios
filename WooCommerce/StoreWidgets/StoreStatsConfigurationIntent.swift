@@ -3,8 +3,7 @@ import WidgetKit
 
 /// Configuration intent for the Store Stats widget.
 ///
-/// Surfaces the user-facing widget settings (long-press → Edit Widget). The `store` picker is
-/// added by a later ticket on top of `dateRange` and `metrics`.
+/// Surfaces the user-facing widget settings (long-press → Edit Widget).
 ///
 struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Store Stats"
@@ -22,6 +21,9 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
         .systemMedium: 4,
         .systemLarge: 7
     ]
+
+    @Parameter(title: "Store")
+    var store: StoreStatsStoreEntity?
 
     @Parameter(title: "Date Range", default: .today)
     var dateRange: StoreStatsWidgetDateRange
@@ -53,4 +55,87 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
         query: AvailableMetricsQuery()
     )
     var metrics: [StoreInfoMetricType]
+
+    init() {
+        store = StoreStatsStoreEntity.defaultStore
+    }
+}
+
+enum StoreStatsStoreSelection {
+    static let defaultStoreEntityID = "__default_store__"
+
+    static func isDefaultStoreEntityID(_ id: String) -> Bool {
+        id == defaultStoreEntityID
+    }
+
+    static func entityID(for siteID: Int64) -> String {
+        String(siteID)
+    }
+}
+
+struct StoreStatsStoreEntity: AppEntity, Hashable {
+    static let defaultStore = StoreStatsStoreEntity(id: StoreStatsStoreSelection.defaultStoreEntityID, name: nil)
+
+    static var defaultQuery = StoreStatsStoreQuery()
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        TypeDisplayRepresentation(name: "Store")
+    }
+
+    let id: String
+    let name: String?
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: "\(displayName)")
+    }
+
+    init(site: WidgetSite) {
+        id = StoreStatsStoreSelection.entityID(for: site.siteID)
+        name = site.name
+    }
+
+    init(id: String, name: String?) {
+        self.id = id
+        self.name = name
+    }
+
+    static func isDefaultStoreID(_ id: String) -> Bool {
+        StoreStatsStoreSelection.isDefaultStoreEntityID(id)
+    }
+
+    private var displayName: String {
+        if Self.isDefaultStoreID(id),
+           let defaultStoreName = UserDefaults.group?[.defaultStoreName] as? String {
+            return defaultStoreName
+        }
+        return name ?? "Store"
+    }
+}
+
+struct StoreStatsStoreQuery: EntityQuery {
+    private let siteListStore: WidgetSiteListStore
+
+    init(siteListStore: WidgetSiteListStore = WidgetSiteListStore()) {
+        self.siteListStore = siteListStore
+    }
+
+    func entities(for identifiers: [StoreStatsStoreEntity.ID]) async throws -> [StoreStatsStoreEntity] {
+        let identifiers = Set(identifiers)
+        let entities = siteListStore.sites()
+            .filter { identifiers.contains(StoreStatsStoreSelection.entityID(for: $0.siteID)) }
+            .map(StoreStatsStoreEntity.init(site:))
+
+        guard identifiers.contains(where: StoreStatsStoreEntity.isDefaultStoreID) else {
+            return entities
+        }
+        return [StoreStatsStoreEntity.defaultStore] + entities
+    }
+
+    func suggestedEntities() async throws -> [StoreStatsStoreEntity] {
+        siteListStore.sites().map(StoreStatsStoreEntity.init(site:))
+    }
+
+    func defaultResult() async -> StoreStatsStoreEntity? {
+        StoreStatsStoreEntity.defaultStore
+    }
 }

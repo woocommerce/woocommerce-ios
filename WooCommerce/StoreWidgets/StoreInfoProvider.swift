@@ -341,6 +341,8 @@ extension StoreInfoProvider {
         guard selectedStore.siteID != defaultStoreID else {
             return defaultCurrencySettings
         }
+        // Non-default stores may not have synchronized general settings yet.
+        // Use the default store settings until the selected store settings are available.
         return selectedStore.currencySettings ?? defaultCurrencySettings
     }
 

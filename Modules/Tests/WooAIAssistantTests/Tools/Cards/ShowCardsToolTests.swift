@@ -13,6 +13,8 @@ struct ShowCardsToolTests {
 
         // Then
         #expect(definition.name == "show_cards")
+        #expect(definition.description.contains("After a successful `analytics_revenue` or `analytics_orders`"))
+        #expect(definition.description.contains("call this tool with family `analytics_stats`"))
         let schema = definition.parametersSchema
         guard case .object(let root) = schema,
               case .object(let properties) = root["properties"],

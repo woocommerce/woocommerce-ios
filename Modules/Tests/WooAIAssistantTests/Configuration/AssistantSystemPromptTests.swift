@@ -7,7 +7,7 @@ struct AssistantSystemPromptTests {
     @Test
     func test_build_when_no_date_passed_then_embeds_today_with_weekday() {
         let prompt = AssistantSystemPrompt.build()
-        let today = Self.todayISO()
+        let today = todayISO()
         #expect(prompt.contains("Today is \(today) ("))
     }
 
@@ -23,7 +23,30 @@ struct AssistantSystemPromptTests {
         #expect(prompt.contains("Today is not-a-date."))
     }
 
-    private static func todayISO() -> String {
+    @Test
+    func test_build_documents_analytics_cards_without_prose_only_exception() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let analyticsPattern = section(in: prompt, from: "Pattern 6 - Analytics breakdowns.", to: "Pattern 7 - Refusing")
+        let directProseLines = prompt.split(separator: "\n").filter {
+            $0.contains("answer plainly in prose") || $0.contains("answer directly in prose")
+        }
+
+        #expect(analyticsPattern.contains("show_cards"))
+        #expect(analyticsPattern.contains("analytics_stats"))
+        #expect(analyticsPattern.contains("currency:none"))
+        #expect(directProseLines.allSatisfy { !$0.localizedCaseInsensitiveContains("analytics") })
+    }
+
+    private func section(in text: String, from startMarker: String, to endMarker: String) -> Substring {
+        guard let start = text.range(of: startMarker)?.lowerBound,
+              let end = text.range(of: endMarker, range: start..<text.endIndex)?.lowerBound else {
+            Issue.record("Expected prompt section markers")
+            return ""
+        }
+        return text[start..<end]
+    }
+
+    private func todayISO() -> String {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .iso8601)
         formatter.locale = Locale(identifier: "en_US_POSIX")

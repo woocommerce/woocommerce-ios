@@ -14,8 +14,8 @@ public enum ShowCardsTool {
         Render rich cards for specific entities the user should see. Call \
         this whenever you would otherwise mention an order/product/customer \
         ID in prose. Supported families: order, product, product_variation, \
-        customer. `product_variation` references require both `id` and \
-        `parent_id` (the parent product's id). Order/product/customer \
+        customer, analytics_stats. `product_variation` references require both \
+        `id` and `parent_id` (the parent product's id). Order/product/customer \
         references need only `id`. Up to 10 references per call. Prefer 1-5 \
         for list-style answers; summarize the rest in prose. Cards render \
         the entity's full detail to the user, but the model-visible result \
@@ -27,8 +27,12 @@ public enum ShowCardsTool {
         billing/shipping address, phone, recent-order details, etc.) use \
         the appropriate get or list tool from the catalog. Cards rendered \
         in this turn remain referenced; reuse their ids in follow-up tool \
-        calls. Also accepts `analytics_stats` references whose `id` carries \
-        the synthetic analytics format described on the `id` property.
+        calls. After a successful `analytics_revenue` or `analytics_orders` \
+        call, call this tool with family `analytics_stats` and an id using \
+        the same after, before, and interval values to render the analytics \
+        card. Use the same currency value when the analytics call had one; \
+        otherwise use `currency:none`. The synthetic analytics id format is \
+        described on the `id` property.
         """,
         parametersSchema: .object([
             "type": .string("object"),

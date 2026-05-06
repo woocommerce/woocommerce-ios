@@ -380,7 +380,10 @@ struct PointOfSaleDashboardView: View {
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .padding(.horizontal, POSPadding.medium)
-        .padding(.vertical, POSPadding.medium)
+        .padding(.top, POSPadding.medium)
+        // Bottom padding clears the home indicator: the parent `phoneContentView` applies
+        // `.ignoresSafeArea()`, so the standard safe-area inset doesn't push the button up.
+        .padding(.bottom, POSPadding.xxLarge)
         // Quick pulse to confirm an item was added — only on count increases, so removing items
         // doesn't bounce the button distractingly. Watches the full cart count (products +
         // custom amounts + coupons) so adding any of those pulses, even though the displayed

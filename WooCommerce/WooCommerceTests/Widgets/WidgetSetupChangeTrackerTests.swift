@@ -74,8 +74,10 @@ struct WidgetSetupChangeTrackerTests {
         #expect(props["change_type"] as? String == "add")
         #expect(props["info_widget_date_ranges_added"] as? String == "last7Days")
         #expect(props["info_widget_date_ranges_removed"] == nil)
-        #expect(props["info_widget_metrics_combined_added"] as? String == "visitors")
-        #expect(props["info_widget_metrics_combined_removed"] == nil)
+        #expect(props["info_widget_metrics_added"] as? String == "visitors")
+        #expect(props["info_widget_metrics_removed"] == nil)
+        #expect(props["widgets_added"] as? String == "StoreInfoWidget-systemSmall")
+        #expect(props["widgets_removed"] == nil)
     }
 
     @Test func changed_snapshot_persists_new_state_after_emitting() {
@@ -118,8 +120,8 @@ struct WidgetSetupChangeTrackerTests {
         guard let idx = index else { return }
         let props = analytics.receivedProperties[idx]
         #expect(props["change_type"] as? String == "churn")
-        #expect(props["info_widget_metrics_combined_added"] == nil)
-        #expect(props["info_widget_metrics_combined_removed"] == nil)
+        #expect(props["info_widget_metrics_added"] == nil)
+        #expect(props["info_widget_metrics_removed"] == nil)
     }
 }
 

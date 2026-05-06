@@ -21,10 +21,12 @@ extension WidgetSnapshot {
                   let intent = info.widgetConfigurationIntent(of: StoreStatsConfigurationIntent.self) else {
                 return nil
             }
+            let slotCount = StoreStatsConfigurationIntent.metricsSlotCounts[info.family] ?? intent.metrics.count
+            let visibleMetrics = Array(intent.metrics.prefix(slotCount))
             return Tile(
                 kind: info.kind,
                 family: info.family,
-                configuration: .storeStats(dateRange: intent.dateRange, metrics: intent.metrics)
+                configuration: .storeStats(dateRange: intent.dateRange, metrics: visibleMetrics)
             )
         })
     }

@@ -18,7 +18,7 @@ struct WidgetSnapshotAnalyticsTests {
         #expect(props["widget_customized_count"] == "0")
         #expect(props["widget_default_count"] == "0")
         #expect(props["info_widget_date_ranges_in_use"] == "")
-        #expect(props["info_widget_metrics_in_use_combined"] == "")
+        #expect(props["info_widget_metrics_in_use"] == "")
     }
 
     @Test func single_default_storeStats_tile_counts_as_default() {
@@ -170,7 +170,7 @@ struct WidgetSnapshotAnalyticsTests {
         #expect(props["info_widget_date_ranges_in_use"] == "")
     }
 
-    // MARK: - info_widget_metrics_in_use_combined
+    // MARK: - info_widget_metrics_in_use
 
     @Test func single_storeStats_tile_reports_its_metrics_alphabetized() {
         // Given - metrics in user-defined order
@@ -185,7 +185,7 @@ struct WidgetSnapshotAnalyticsTests {
         let props = snapshot.analyticsProperties
 
         // Then - aggregate is alphabetized (loses order on purpose)
-        #expect(props["info_widget_metrics_in_use_combined"] == "orders,revenue")
+        #expect(props["info_widget_metrics_in_use"] == "orders,revenue")
     }
 
     @Test func multiple_tiles_combine_unique_metrics_no_repetitions() {
@@ -206,7 +206,7 @@ struct WidgetSnapshotAnalyticsTests {
         let props = snapshot.analyticsProperties
 
         // Then - union deduplicated and alphabetized: orders, revenue, visitors
-        #expect(props["info_widget_metrics_in_use_combined"] == "orders,revenue,visitors")
+        #expect(props["info_widget_metrics_in_use"] == "orders,revenue,visitors")
     }
 
     @Test func unconfigured_tile_excluded_from_metrics_combined() {
@@ -222,6 +222,6 @@ struct WidgetSnapshotAnalyticsTests {
         let props = snapshot.analyticsProperties
 
         // Then
-        #expect(props["info_widget_metrics_in_use_combined"] == "")
+        #expect(props["info_widget_metrics_in_use"] == "")
     }
 }

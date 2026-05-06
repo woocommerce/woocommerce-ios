@@ -94,6 +94,20 @@ struct WidgetSnapshotTests {
         #expect(WidgetSnapshot(tiles: [tileA]) != WidgetSnapshot(tiles: [tileB]))
     }
 
+    // MARK: - Family-aware metric slot count
+
+    @Test func systemSmall_keeps_correct_metric_slot_count() {
+        #expect(StoreStatsConfigurationIntent.metricsSlotCounts[.systemSmall] == 2)
+    }
+
+    @Test func systemMedium_keeps_correct_metric_slot_count() {
+        #expect(StoreStatsConfigurationIntent.metricsSlotCounts[.systemMedium] == 4)
+    }
+
+    @Test func systemLarge_keeps_correct_metric_slot_count() {
+        #expect(StoreStatsConfigurationIntent.metricsSlotCounts[.systemLarge] == 7)
+    }
+
     @Test func snapshots_with_different_date_range_are_not_equal() {
         // Given
         let tileA = WidgetSnapshot.Tile(

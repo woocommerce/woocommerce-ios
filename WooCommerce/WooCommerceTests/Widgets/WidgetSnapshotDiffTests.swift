@@ -199,4 +199,104 @@ struct WidgetSnapshotDiffTests {
         #expect(diff.addedMetrics.isEmpty)
         #expect(diff.addedDateRanges.isEmpty)
     }
+
+    // MARK: - addedWidgets / removedWidgets
+
+    @Test func addedWidgets_uses_kind_family_combined_analytics_name() {
+        // Given - previous: medium tile; current: medium + small tile
+        let previous = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue])
+        ])
+        let current = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue]),
+            Self.storeStatsTile(family: .systemSmall, dateRange: .today, metrics: [.orders])
+        ])
+
+        // When
+        let diff = WidgetSnapshotDiff(previous: previous, current: current)
+
+        // Then - `StoreInfoWidget-systemSmall` is the new kind:family combo
+        #expect(diff.addedWidgets == ["StoreInfoWidget-systemSmall"])
+        #expect(diff.removedWidgets == [])
+    }
+
+    @Test func removedWidgets_reports_disappeared_kind_family_combos() {
+        // Given
+        let previous = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue]),
+            Self.storeStatsTile(family: .systemLarge, dateRange: .today, metrics: [.revenue])
+        ])
+        let current = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue])
+        ])
+
+        // When
+        let diff = WidgetSnapshotDiff(previous: previous, current: current)
+
+        // Then
+        #expect(diff.addedWidgets == [])
+        #expect(diff.removedWidgets == ["StoreInfoWidget-systemLarge"])
+    }
+
+    @Test func unconfigured_tiles_use_their_own_analytics_name_in_diff() {
+        // Given - previous: storeInfo only; current: + appLink unconfigured
+        let previous = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue])
+        ])
+        let current = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue]),
+            Self.unconfiguredTile()
+        ])
+
+        // When
+        let diff = WidgetSnapshotDiff(previous: previous, current: current)
+
+        // Then
+        #expect(diff.addedWidgets == ["AppLinkWidget-accessoryCircular"])
+        #expect(diff.removedWidgets == [])
+    }
+
+    @Test func metric_replacement_with_already_used_value_reduces_combined_set_by_one() {
+        // Given - 2 tiles, combined metrics: {revenue, orders, visitors}
+        let previous = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue, .orders]),
+            Self.storeStatsTile(family: .systemSmall, dateRange: .today, metrics: [.orders, .visitors])
+        ])
+        // User changes tile A's first metric from `revenue` to `visitors`.
+        // Combined now: {visitors, orders} — one less than before.
+        let current = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.visitors, .orders]),
+            Self.storeStatsTile(family: .systemSmall, dateRange: .today, metrics: [.orders, .visitors])
+        ])
+
+        // When
+        let diff = WidgetSnapshotDiff(previous: previous, current: current)
+
+        // Then
+        #expect(diff.hasChanged)
+        #expect(diff.changeType == .churn)
+        #expect(diff.addedMetrics == [])
+        #expect(diff.removedMetrics == ["revenue"])
+        #expect(diff.addedDateRanges == [])
+        #expect(diff.removedDateRanges == [])
+    }
+
+    @Test func same_kind_family_with_different_configs_is_not_a_widget_diff() {
+        // Given - same medium kind:family but reconfigured contents
+        let previous = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue])
+        ])
+        let current = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .last7Days, metrics: [.visitors])
+        ])
+
+        // When
+        let diff = WidgetSnapshotDiff(previous: previous, current: current)
+
+        // Then - kind:family combo unchanged so widgets diff is empty; metric/dateRange diff non-empty
+        #expect(diff.addedWidgets == [])
+        #expect(diff.removedWidgets == [])
+        #expect(diff.addedDateRanges == ["last7Days"])
+        #expect(diff.removedDateRanges == ["today"])
+    }
 }

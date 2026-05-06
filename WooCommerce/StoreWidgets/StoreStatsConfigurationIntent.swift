@@ -17,6 +17,12 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
         .netSales, .visitors, .conversion
     ]
 
+    static let metricsSlotCounts: [WidgetFamily: Int] = [
+        .systemSmall: 2,
+        .systemMedium: 4,
+        .systemLarge: 7
+    ]
+
     @Parameter(title: "Date Range", default: .today)
     var dateRange: StoreStatsWidgetDateRange
 

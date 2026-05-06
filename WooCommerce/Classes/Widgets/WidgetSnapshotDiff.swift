@@ -42,8 +42,18 @@ extension WidgetSnapshotDiff {
         Array(previousMetrics.subtracting(currentMetrics)).sorted()
     }
 
+    var addedWidgets: [String] {
+        Array(currentWidgetNames.subtracting(previousWidgetNames)).sorted()
+    }
+
+    var removedWidgets: [String] {
+        Array(previousWidgetNames.subtracting(currentWidgetNames)).sorted()
+    }
+
     private var currentDateRanges: Set<String> { current.storeInfoDateRangesInUse }
     private var previousDateRanges: Set<String> { previous.storeInfoDateRangesInUse }
     private var currentMetrics: Set<String> { current.storeInfoMetricsInUse }
     private var previousMetrics: Set<String> { previous.storeInfoMetricsInUse }
+    private var currentWidgetNames: Set<String> { Set(current.tiles.map(\.analyticsName)) }
+    private var previousWidgetNames: Set<String> { Set(previous.tiles.map(\.analyticsName)) }
 }

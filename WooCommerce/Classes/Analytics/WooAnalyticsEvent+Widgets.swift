@@ -19,11 +19,19 @@ extension WooAnalyticsEvent.Widgets {
         }
         let metricsAdded = diff.addedMetrics.joined(separator: ",")
         if !metricsAdded.isEmpty {
-            properties["info_widget_metrics_combined_added"] = metricsAdded
+            properties["info_widget_metrics_added"] = metricsAdded
         }
         let metricsRemoved = diff.removedMetrics.joined(separator: ",")
         if !metricsRemoved.isEmpty {
-            properties["info_widget_metrics_combined_removed"] = metricsRemoved
+            properties["info_widget_metrics_removed"] = metricsRemoved
+        }
+        let widgetsAdded = diff.addedWidgets.joined(separator: ",")
+        if !widgetsAdded.isEmpty {
+            properties["widgets_added"] = widgetsAdded
+        }
+        let widgetsRemoved = diff.removedWidgets.joined(separator: ",")
+        if !widgetsRemoved.isEmpty {
+            properties["widgets_removed"] = widgetsRemoved
         }
 
         return WooAnalyticsEvent(statName: .widgetSetupChanged, properties: properties)

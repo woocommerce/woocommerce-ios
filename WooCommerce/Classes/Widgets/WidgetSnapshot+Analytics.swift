@@ -1,5 +1,11 @@
 import Foundation
 
+extension WidgetSnapshot.Tile {
+    var analyticsName: String {
+        "\(kind)-\(family)"
+    }
+}
+
 extension WidgetSnapshot {
     var storeInfoDateRangesInUse: Set<String> {
         Set(tiles.compactMap { tile -> String? in
@@ -25,7 +31,7 @@ extension WidgetSnapshot {
             "widget_customized_count": "\(tiles.filter { $0.configuration.isDefault == false }.count)",
             "widget_default_count": "\(tiles.filter { $0.configuration.isDefault == true }.count)",
             "info_widget_date_ranges_in_use": storeInfoDateRangesInUse.sorted().joined(separator: ","),
-            "info_widget_metrics_in_use_combined": storeInfoMetricsInUse.sorted().joined(separator: ",")
+            "info_widget_metrics_in_use": storeInfoMetricsInUse.sorted().joined(separator: ",")
         ]
     }
 }

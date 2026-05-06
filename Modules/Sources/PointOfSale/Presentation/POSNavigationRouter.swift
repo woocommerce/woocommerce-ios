@@ -106,6 +106,9 @@ struct POSNavigationDestinationMarkAsPaidView: View {
         // rather than a card landing on top.
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurface)
+        // Asks the dashboard to hide the floating control overlay (`…` menu, reader chip)
+        // so the merchant can focus on the confirmation step without distractions.
+        .posHidesFloatingControl()
     }
 
     private enum Localization {

@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import SwiftUI
 import UIKit
 import Yosemite
 import WooAIAssistant
@@ -11,7 +12,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_openOrder_pushes_a_loader_view_controller_synchronously() {
         // Given
-        let stores = ThreadCapturingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = ThreadCapturingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()
         let nav = UINavigationController(rootViewController: UIViewController())
         host.attach(nav)
@@ -27,7 +28,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_openProduct_dispatches_retrieve_on_main_thread() async {
         // Given
-        let stores = ThreadCapturingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = ThreadCapturingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()
         let sut = AIAssistantExternalNavigationAdaptor(siteID: 123, navigationHost: host, stores: stores)
 
@@ -43,7 +44,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_openProductVariation_dispatches_retrieve_on_main_thread() async {
         // Given
-        let stores = ThreadCapturingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = ThreadCapturingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()
         let sut = AIAssistantExternalNavigationAdaptor(siteID: 123, navigationHost: host, stores: stores)
 
@@ -59,7 +60,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_openCustomer_dispatches_on_main_thread() async {
         // Given
-        let stores = ThreadCapturingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = ThreadCapturingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()
         let sut = AIAssistantExternalNavigationAdaptor(siteID: 123, navigationHost: host, stores: stores)
 
@@ -75,7 +76,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_openProduct_pushes_loading_placeholder_synchronously() {
         // Given
-        let stores = ThreadCapturingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = ThreadCapturingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()
         let nav = UINavigationController(rootViewController: UIViewController())
         host.attach(nav)
@@ -91,7 +92,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_openProductVariation_pushes_loading_placeholder_synchronously() {
         // Given
-        let stores = ThreadCapturingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = ThreadCapturingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()
         let nav = UINavigationController(rootViewController: UIViewController())
         host.attach(nav)
@@ -107,7 +108,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_openCustomer_pushes_loading_placeholder_synchronously() {
         // Given
-        let stores = ThreadCapturingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = ThreadCapturingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()
         let nav = UINavigationController(rootViewController: UIViewController())
         host.attach(nav)
@@ -123,7 +124,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_openCustomer_when_fetch_succeeds_then_swaps_placeholder_for_detail() async {
         // Given
-        let stores = StubbingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = StubbingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let customer = Customer(siteID: 123,
                                 customerID: 7,
                                 email: "buyer@example.test",
@@ -151,7 +152,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_openCustomer_when_fetch_returns_nil_then_placeholder_stays() async {
         // Given
-        let stores = StubbingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = StubbingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         stores.stubCustomerFetch = .failure(SampleError.first)
         let host = AIAssistantNavigationHost()
         let nav = UINavigationController(rootViewController: UIViewController())
@@ -170,7 +171,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_openCustomer_when_placeholder_popped_before_fetch_resolves_then_no_swap() async {
         // Given
-        let stores = StubbingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = StubbingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let customer = Customer(siteID: 123,
                                 customerID: 7,
                                 email: "buyer@example.test",
@@ -202,7 +203,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_openAnalyticsHub_pushes_an_analytics_hub_view_controller() {
         // Given
-        let stores = ThreadCapturingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = ThreadCapturingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()
         let nav = UINavigationController(rootViewController: UIViewController())
         host.attach(nav)
@@ -218,7 +219,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_timeRange_when_payload_has_iso_dates_then_returns_custom_range() {
         // Given
-        let stores = ThreadCapturingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = ThreadCapturingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()
         let sut = AIAssistantExternalNavigationAdaptor(siteID: 123, navigationHost: host, stores: stores)
         let payload = AnyCodableJSON.object([
@@ -239,7 +240,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_timeRange_when_site_timezone_is_negative_utc_then_preserves_payload_dates() throws {
         // Given
-        let stores = ThreadCapturingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = ThreadCapturingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()
         let losAngeles = try #require(TimeZone(identifier: "America/Los_Angeles"))
         let sut = AIAssistantExternalNavigationAdaptor(siteID: 123,
@@ -274,7 +275,7 @@ struct AIAssistantExternalNavigationAdaptorTests {
     @Test
     func test_timeRange_when_payload_has_no_dates_then_returns_today() {
         // Given
-        let stores = ThreadCapturingStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = ThreadCapturingStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()
         let sut = AIAssistantExternalNavigationAdaptor(siteID: 123, navigationHost: host, stores: stores)
 

@@ -16,11 +16,11 @@ struct StoreInfoMetricsView: View {
         Group {
             switch family {
             case .systemSmall:
-                StoreInfoSmallMetricsView(data: entryData)
+                StoreInfoSmallMetricsContainerView(data: entryData)
             case .systemMedium:
-                StoreInfoMediumMetricsView(data: entryData)
+                StoreInfoMediumMetricsContainerView(data: entryData)
             case .systemLarge, .systemExtraLarge:
-                StoreInfoLargeMetricsView(data: entryData)
+                StoreInfoLargeMetricsContainerView(data: entryData)
             default:
                 let _ = assertionFailure("This view only supports system families")
                 EmptyView()

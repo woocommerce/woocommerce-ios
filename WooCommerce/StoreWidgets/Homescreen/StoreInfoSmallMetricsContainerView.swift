@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Renders the metrics layout used by the small home-screen widget family.
-struct StoreInfoSmallMetricsView: View {
+struct StoreInfoSmallMetricsContainerView: View {
     let data: StoreInfoData
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -38,14 +38,14 @@ struct StoreInfoSmallMetricsView: View {
 import class WooFoundation.CurrencySettings
 import WidgetKit
 
-struct StoreInfoSmallMetricsView_Previews: PreviewProvider {
+struct StoreInfoSmallMetricsContainerView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreInfoSmallMetricsView(data: StoreInfoMetricsView_Previews.exampleData)
+        StoreInfoSmallMetricsContainerView(data: StoreInfoMetricsView_Previews.exampleData)
             .widgetBackground(backgroundView: Color(.brand))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
             .previewDisplayName("Small")
 
-        StoreInfoSmallMetricsView(data: StoreInfoMetricsView_Previews.exampleData)
+        StoreInfoSmallMetricsContainerView(data: StoreInfoMetricsView_Previews.exampleData)
             .widgetBackground(backgroundView: Color(.brand))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
             .environment(\.dynamicTypeSize, .xxLarge)

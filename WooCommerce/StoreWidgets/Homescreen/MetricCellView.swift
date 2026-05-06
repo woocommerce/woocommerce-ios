@@ -10,16 +10,51 @@ struct MetricCellView: View {
     let metric: any MetricPresentable
 
     var body: some View {
-        if let url = metric.tapURL {
-            Link(destination: url) {
+        MetricCellLink(destination: metric.tapURL) {
+            MetricCellContent(metric: metric)
+        }
+    }
+}
+
+/// Full-row metric cell used by large widget layouts.
+///
+/// This keeps the same content treatment as `MetricCellView`; the grid controls
+/// the full-row layout by rendering this cell outside the two-column rows.
+struct MetricLargeCellView: View {
+    let metric: any MetricPresentable
+
+    var body: some View {
+        MetricCellLink(destination: metric.tapURL) {
+            MetricCellContent(metric: metric)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct MetricCellLink<Content: View>: View {
+    let destination: URL?
+    let content: Content
+
+    init(destination: URL?, @ViewBuilder content: () -> Content) {
+        self.destination = destination
+        self.content = content()
+    }
+
+    var body: some View {
+        if let destination {
+            Link(destination: destination) {
                 content
             }
         } else {
             content
         }
     }
+}
 
-    private var content: some View {
+private struct MetricCellContent: View {
+    let metric: any MetricPresentable
+
+    var body: some View {
         VStack(alignment: .leading, spacing: Layout.cardSpacing) {
             Text(metric.title)
                 .statTitleStyle()
@@ -41,7 +76,7 @@ struct MetricCellView: View {
     }
 }
 
-private extension MetricCellView {
+private extension MetricCellContent {
     enum Layout {
         static let cardSpacing = 2.0
         static let badgeSpacing = 16.0
@@ -144,6 +179,11 @@ struct MetricCellView_Previews: PreviewProvider {
                                                  formattedValue: "$12.3k",
                                                  trend: .init(direction: .down, formattedPercentage: "12%")))
                 .previewDisplayName("With trend down")
+
+            MetricLargeCellView(metric: PreviewMetric(title: "Total sales",
+                                                       formattedValue: "$12.3k",
+                                                       trend: .init(direction: .up, formattedPercentage: "6%")))
+                .previewDisplayName("Large cell")
         }
         .frame(width: 180)
         .padding()

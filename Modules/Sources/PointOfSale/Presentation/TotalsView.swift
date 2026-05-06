@@ -7,6 +7,7 @@ struct TotalsView: View {
     @Environment(POSPaymentModel.self) private var paymentModel
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let viewHelper = POSPaymentViewHelper()
     private let totalsViewHelper = TotalsViewHelper()
 
@@ -225,7 +226,12 @@ private extension TotalsView {
                 }
                 if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                                           paymentState: displayPaymentState) {
-                    return .primary
+                    // On phone, drop the 8pt sidePadding so the connect-reader button can
+                    // anchor to the same 16pt screen-edge insets as the cash button below
+                    // (which uses .padding(.horizontal, 16) directly off the screen).
+                    return horizontalSizeClass == .compact
+                        ? PaymentViewLayout(topPadding: nil, bottomPadding: POSPadding.small, sidePadding: 0)
+                        : .primary
                 }
             }
         }

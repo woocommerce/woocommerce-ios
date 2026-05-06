@@ -10,7 +10,7 @@ struct TotalsView: View {
     private let viewHelper = POSPaymentViewHelper()
     private let totalsViewHelper = TotalsViewHelper()
 
-    @State private var isShowingOtherPaymentMethodsSheet: Bool = false
+    @State private var isShowingOtherPaymentMethodsPopover: Bool = false
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -88,10 +88,19 @@ struct TotalsView: View {
                         cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                         isScanToPayEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
                         isMarkOrderAsPaidEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
+                        isShowingOtherPaymentMethodsPopover: $isShowingOtherPaymentMethodsPopover,
                         startCashPaymentAction: { paymentModel.startCashPayment() },
                         startOtherPaymentMethodsAction: {
                             analytics.track(.pointOfSaleOtherPaymentMethodsTapped)
-                            isShowingOtherPaymentMethodsSheet = true
+                            isShowingOtherPaymentMethodsPopover = true
+                        },
+                        startScanToPayAction: {
+                            Task { @MainActor in
+                                await paymentModel.startScanToPayPayment()
+                            }
+                        },
+                        startMarkOrderAsPaidAction: {
+                            paymentModel.startMarkAsPaidPayment()
                         }
                     )
                 }
@@ -116,20 +125,6 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields) {
             hideTotalsFieldsWithDelay(shouldShowTotalsFields)
-        }
-        .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
-            PointOfSaleOtherPaymentMethodsSheet(
-                isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
-                isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
-                onScanToPay: {
-                    Task { @MainActor in
-                        await paymentModel.startScanToPayPayment()
-                    }
-                },
-                onMarkOrderAsPaid: {
-                    paymentModel.startMarkAsPaidPayment()
-                }
-            )
         }
     }
 
@@ -532,14 +527,22 @@ private struct PaymentViewContent: View {
 /// "Other payment methods" button rendered side-by-side. When neither secondary payment-method
 /// flag is enabled, the layout collapses to the original single Cash button — the feature flags
 /// gate the second button entirely so App Store builds see no regression vs trunk.
+///
+/// The Other-payment popover is hosted *here*, anchored to its own button, rather than at the
+/// outer view level. SwiftUI's `.popover` requires an anchor view; pinning it to the trigger
+/// gives the merchant a clear "the menu came from this button" relationship and dismisses on
+/// outside tap without the modal-stack optics of the previous bottom-sheet implementation.
 private struct SecondaryPaymentButtons: View {
     let orderState: PointOfSaleOrderState
     let paymentState: PointOfSalePaymentState
     let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
     let isScanToPayEnabled: Bool
     let isMarkOrderAsPaidEnabled: Bool
+    @Binding var isShowingOtherPaymentMethodsPopover: Bool
     let startCashPaymentAction: () -> Void
     let startOtherPaymentMethodsAction: () -> Void
+    let startScanToPayAction: () -> Void
+    let startMarkOrderAsPaidAction: () -> Void
 
     private let viewHelper = TotalsViewHelper()
 
@@ -572,6 +575,16 @@ private struct SecondaryPaymentButtons: View {
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             .accessibilityIdentifier("pos-other-payment-methods-button")
+            .popover(isPresented: $isShowingOtherPaymentMethodsPopover,
+                     attachmentAnchor: .point(.top),
+                     arrowEdge: .bottom) {
+                PointOfSaleSecondaryPaymentMethodsPopover(
+                    isScanToPayAvailable: isScanToPayEnabled,
+                    isMarkOrderAsPaidAvailable: isMarkOrderAsPaidEnabled,
+                    onScanToPay: startScanToPayAction,
+                    onMarkOrderAsPaid: startMarkOrderAsPaidAction
+                )
+            }
             .renderedIf(isAnySecondaryPaymentMethodEnabled)
         }
         .padding(.horizontal, TotalsView.Constants.buttonHorizontalPadding)

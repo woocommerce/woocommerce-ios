@@ -41,7 +41,6 @@ struct StoreStatsSnapshotTests {
         let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
                                                             defaultSite: defaultSite,
                                                             defaultSiteID: 3,
-                                                            defaultCurrencySettings: defaultCurrencySettings,
                                                             currencySettingsBySiteID: [
                                                                 1: alphaCurrencySettings,
                                                                 2: betaCurrencySettings,
@@ -59,7 +58,7 @@ struct StoreStatsSnapshotTests {
         #expect(snapshots[2].timeZone == TimeZone(identifier: "Europe/Madrid"))
     }
 
-    @Test func snapshots_whenNonDefaultStoreHasNoCurrencySettings_thenUsesDefaultCurrencySettings() {
+    @Test func snapshots_whenNonDefaultStoreHasNoCurrencySettings_thenKeepsCurrencySettingsNil() {
         // Given
         let defaultCurrencySettings = currencySettings(for: .USD)
         let storedSites = [
@@ -79,13 +78,12 @@ struct StoreStatsSnapshotTests {
         let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
                                                             defaultSite: storedSites[0],
                                                             defaultSiteID: 1,
-                                                            defaultCurrencySettings: defaultCurrencySettings,
                                                             currencySettingsBySiteID: [1: defaultCurrencySettings],
                                                             exposesStorePicker: true)
 
         // Then
         #expect(snapshots.map(\.siteID) == [1, 2])
-        #expect(snapshots[1].currencySettings == defaultCurrencySettings)
+        #expect(snapshots[1].currencySettings == nil)
     }
 
     @Test func snapshots_whenStorePickerIsNotExposed_thenReturnsEmptyList() {
@@ -102,7 +100,6 @@ struct StoreStatsSnapshotTests {
         let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
                                                             defaultSite: storedSites[0],
                                                             defaultSiteID: 1,
-                                                            defaultCurrencySettings: nil,
                                                             exposesStorePicker: false)
 
         // Then
@@ -217,6 +214,25 @@ struct StoreStatsSnapshotTests {
                                                gmtOffset: 0,
                                                isSelectableInStorePicker: true,
                                                currencySettings: staleSnapshotCurrencySettings)
+
+        // When
+        let resolvedCurrencySettings = StoreInfoProvider.currencySettings(for: selectedStore,
+                                                                          defaultStoreID: 1,
+                                                                          defaultCurrencySettings: defaultCurrencySettings)
+
+        // Then
+        #expect(resolvedCurrencySettings.currencyCode == .EUR)
+    }
+
+    @Test func currencySettings_whenSelectedStoreHasNoCurrencySettings_thenUsesDefaultCurrencySettings() {
+        // Given
+        let defaultCurrencySettings = currencySettings(for: .EUR)
+        let selectedStore = StoreStatsSnapshot(siteID: 2,
+                                               name: "Other",
+                                               timeZoneIdentifier: nil,
+                                               gmtOffset: 0,
+                                               isSelectableInStorePicker: true,
+                                               currencySettings: nil)
 
         // When
         let resolvedCurrencySettings = StoreInfoProvider.currencySettings(for: selectedStore,

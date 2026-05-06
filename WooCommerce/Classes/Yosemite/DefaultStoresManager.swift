@@ -954,7 +954,6 @@ private extension DefaultStoresManager {
         let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
                                                             defaultSite: defaultSite,
                                                             defaultSiteID: defaultSiteID,
-                                                            defaultCurrencySettings: defaultCurrencySettings,
                                                             currencySettingsBySiteID: currencySettingsBySiteID,
                                                             exposesStorePicker: true)
         StoreStatsSnapshotStore().save(snapshots)

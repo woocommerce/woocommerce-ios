@@ -39,7 +39,6 @@ enum StoreStatsSnapshotFactory {
     static func snapshots(storedSites: [StoreStatsStoredSite],
                           defaultSite: StoreStatsStoredSite?,
                           defaultSiteID: Int64?,
-                          defaultCurrencySettings: CurrencySettings?,
                           currencySettingsBySiteID: [Int64: CurrencySettings] = [:],
                           exposesStorePicker: Bool) -> [StoreStatsSnapshot] {
         guard exposesStorePicker else {
@@ -64,14 +63,13 @@ enum StoreStatsSnapshotFactory {
                 return true
             }
             .map { site in
-                let currencySettings = currencySettingsBySiteID[site.siteID] ?? defaultCurrencySettings
                 return StoreStatsSnapshot(
                     siteID: site.siteID,
                     name: site.name,
                     timeZoneIdentifier: site.timeZoneIdentifier,
                     gmtOffset: site.gmtOffset,
                     isSelectableInStorePicker: true,
-                    currencySettings: currencySettings
+                    currencySettings: currencySettingsBySiteID[site.siteID]
                 )
             }
             .sorted { lhs, rhs in

@@ -65,7 +65,7 @@ struct StoreStatsSnapshotTests {
         #expect(snapshots[2].timeZone == TimeZone(identifier: "Europe/Madrid"))
     }
 
-    @Test func snapshots_whenNonDefaultStoreHasNoCurrencySettings_thenExcludesStore() throws {
+    @Test func snapshots_whenNonDefaultStoreHasNoCurrencySettings_thenUsesDefaultCurrencySettings() throws {
         // Given
         let defaultCurrencySettingsData = try currencySettingsData(for: .USD)
         let storedSites = [
@@ -92,7 +92,8 @@ struct StoreStatsSnapshotTests {
                                                             exposesStorePicker: true)
 
         // Then
-        #expect(snapshots.map(\.siteID) == [1])
+        #expect(snapshots.map(\.siteID) == [1, 2])
+        #expect(snapshots[1].currencySettingsData == defaultCurrencySettingsData)
     }
 
     @Test func snapshots_whenStorePickerIsNotExposed_thenReturnsEmptyList() {
@@ -182,7 +183,7 @@ struct StoreStatsSnapshotTests {
         #expect(pickerSnapshots.map(\.siteID) == [1])
     }
 
-    @Test func storePickerSnapshots_whenSavedNonDefaultStoreHasNoCurrencySettings_thenExcludesStore() throws {
+    @Test func storePickerSnapshots_whenSavedNonDefaultStoreHasNoCurrencySettings_thenIncludesStore() throws {
         // Given
         let userDefaults = makeUserDefaults()
         userDefaults.set(Int64(1), forKey: .defaultStoreID)
@@ -217,7 +218,7 @@ struct StoreStatsSnapshotTests {
         let pickerSnapshots = store.storePickerSnapshots()
 
         // Then
-        #expect(pickerSnapshots.map(\.siteID) == [1, 3])
+        #expect(pickerSnapshots.map(\.siteID) == [1, 2, 3])
     }
 
     @Test func selectedStoreSnapshot_whenDefaultStoreEntityIsSelected_thenReturnsDefaultSnapshot() {

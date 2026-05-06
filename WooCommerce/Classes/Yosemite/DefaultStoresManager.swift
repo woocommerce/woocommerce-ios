@@ -184,14 +184,14 @@ class DefaultStoresManager: StoresManager {
     /// Forwards the Action to the current State.
     ///
     func dispatch(_ action: Action) {
-        state.onAction(action)
+        state.onAction(actionWithStoreStatsWidgetSnapshotUpdate(action))
     }
 
     /// Forwards the Actions to the current State.
     ///
     func dispatch(_ actions: [Action]) {
         for action in actions {
-            state.onAction(action)
+            dispatch(action)
         }
     }
 
@@ -876,6 +876,47 @@ private extension DefaultStoresManager {
         WidgetCenter.shared.reloadAllTimelines()
     }
 
+    func actionWithStoreStatsWidgetSnapshotUpdate(_ action: Action) -> Action {
+        guard let accountAction = action as? AccountAction else {
+            return action
+        }
+
+        switch accountAction {
+        case let .loadAndSynchronizeSite(siteID, forcedUpdate, onCompletion):
+            return AccountAction.loadAndSynchronizeSite(siteID: siteID, forcedUpdate: forcedUpdate) { [weak self] result in
+                guard let self, case .success = result else {
+                    onCompletion(result)
+                    return
+                }
+                self.updateStoreStatsWidgetStoreSnapshotsAfterSiteListSynchronization(selectedSiteID: siteID) {
+                    onCompletion(result)
+                }
+            }
+        case let .synchronizeSites(selectedSiteID, onCompletion):
+            return AccountAction.synchronizeSites(selectedSiteID: selectedSiteID) { [weak self] result in
+                guard let self, case .success = result else {
+                    onCompletion(result)
+                    return
+                }
+                self.updateStoreStatsWidgetStoreSnapshotsAfterSiteListSynchronization(selectedSiteID: selectedSiteID) {
+                    onCompletion(result)
+                }
+            }
+        case let .synchronizeSitesAndReturnSelectedSiteInfo(siteAddress, onCompletion):
+            return AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: siteAddress) { [weak self] result in
+                guard let self, case let .success(site) = result else {
+                    onCompletion(result)
+                    return
+                }
+                self.updateStoreStatsWidgetStoreSnapshotsAfterSiteListSynchronization(selectedSiteID: site.siteID) {
+                    onCompletion(result)
+                }
+            }
+        default:
+            return action
+        }
+    }
+
     private func updateStoreStatsWidgetStoreSnapshots(with siteID: Int64?) {
         guard exposesStoreStatsWidgetStorePicker else {
             StoreStatsSnapshotStore().save([])
@@ -922,6 +963,25 @@ private extension DefaultStoresManager {
         StoreStatsSnapshotStore().save(snapshots)
         synchronizeMissingStoreStatsWidgetCurrencySettingsIfNeeded(candidateSiteIDs: candidateSiteIDs,
                                                                    currencySettingsDataBySiteID: currencySettingsDataBySiteID)
+    }
+
+    private func updateStoreStatsWidgetStoreSnapshotsAfterSiteListSynchronization(selectedSiteID: Int64?,
+                                                                                 onCompletion: @escaping () -> Void) {
+        let updateSnapshot = { [weak self] in
+            guard let self else {
+                onCompletion()
+                return
+            }
+            self.updateStoreStatsWidgetStoreSnapshots(with: selectedSiteID ?? self.sessionManager.defaultStoreID)
+            WidgetCenter.shared.reloadAllTimelines()
+            onCompletion()
+        }
+
+        if Thread.isMainThread {
+            updateSnapshot()
+        } else {
+            DispatchQueue.main.async(execute: updateSnapshot)
+        }
     }
 
     private var exposesStoreStatsWidgetStorePicker: Bool {

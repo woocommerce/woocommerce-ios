@@ -328,10 +328,7 @@ private extension StoreInfoProvider {
                                 supportsVisitorStats: selectedStore.supportsVisitorStats)
         }
 
-        guard let storeCurrencySettings = selectedStore.currencySettings else {
-            return defaultDependencies
-        }
-
+        let storeCurrencySettings = selectedStore.currencySettings ?? defaultStore.storeCurrencySettings
         return Dependencies(credentials: credentials,
                             storeID: selectedStore.siteID,
                             storeName: selectedStore.name,

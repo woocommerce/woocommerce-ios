@@ -72,12 +72,8 @@ enum StoreStatsSnapshotFactory {
                 seenSiteIDs.insert(site.siteID)
                 return true
             }
-            .compactMap { site in
-                let isDefaultStore = site.siteID == defaultID
-                let currencySettingsData = currencySettingsDataBySiteID[site.siteID] ?? (isDefaultStore ? defaultCurrencySettingsData : nil)
-                guard isDefaultStore || currencySettingsData != nil else {
-                    return nil
-                }
+            .map { site in
+                let currencySettingsData = currencySettingsDataBySiteID[site.siteID] ?? defaultCurrencySettingsData
                 return StoreStatsSnapshot(
                     siteID: site.siteID,
                     name: site.name,
@@ -119,8 +115,7 @@ struct StoreStatsSnapshotStore {
     }
 
     func storePickerSnapshots() -> [StoreStatsSnapshot] {
-        let defaultStoreID = defaultStoreID()
-        return snapshots().filter { $0.isSelectableInStorePicker && ($0.siteID == defaultStoreID || $0.currencySettings != nil) }
+        snapshots().filter { $0.isSelectableInStorePicker }
     }
 
     func save(_ snapshots: [StoreStatsSnapshot]) {

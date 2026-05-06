@@ -157,7 +157,7 @@ struct MessageSegmentGroupingTests {
     }
 
     @Test
-    func test_segments_when_cardRender_run_exceeds_visible_limit_then_truncates_to_limit() {
+    func test_segments_when_cardRender_run_exceeds_visible_limit_then_groups_all_segments_and_visible_caps_at_limit() {
         // Given
         let total = entityCardVisibleRowLimit + 5
         let segments: [MessageSegment] = (0..<total).map { index in
@@ -176,8 +176,8 @@ struct MessageSegmentGroupingTests {
                 return nil
             }
         }()
-        let listPayload = AnyCodableJSON.object(["rows": .array(payloads)])
-        let visible = EntityCardPayload.visible(EntityCardPayload.decodeOrderRows(listPayload))
+        let rows = payloads.compactMap { EntityCardPayload.decodeOrder($0) }
+        let visible = Array(rows.prefix(entityCardVisibleRowLimit))
 
         // Then
         #expect(groups.count == 1)

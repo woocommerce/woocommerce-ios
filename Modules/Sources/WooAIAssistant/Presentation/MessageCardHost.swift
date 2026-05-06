@@ -1,7 +1,162 @@
 import SwiftUI
-import CocoaLumberjackSwift
 
 struct MessageCardHost: View {
+
+    let toolName: String
+    let payload: AnyCodableJSON
+
+    var body: some View {
+        switch TypedCardDispatcher.route(for: toolName) {
+        case .analyticsStats:
+            AnalyticsStatsCardSection(toolName: toolName, payload: payload)
+        case .order:
+            OrderCardSection(rows: EntityCardPayload.decodeOrder(payload).map { [EntityCardEntry(payload: $0, source: payload)] } ?? [])
+        case .product:
+            ProductCardSection(rows: EntityCardPayload.decodeProduct(payload).map { [EntityCardEntry(payload: $0, source: payload)] } ?? [])
+        case .productVariation:
+            ProductVariationCardSection(rows: EntityCardPayload.decodeProductVariation(payload)
+                .map { [EntityCardEntry(payload: $0, source: payload)] } ?? [])
+        case .customer:
+            CustomerCardSection(rows: EntityCardPayload.decodeCustomer(payload).map { [EntityCardEntry(payload: $0, source: payload)] } ?? [])
+        case .unknown:
+            RawJSONCard(toolName: toolName, payload: payload)
+        }
+    }
+}
+
+private struct EntityCardEntry<Payload> {
+    let payload: Payload
+    let source: AnyCodableJSON
+}
+
+private struct OrderCardSection: View {
+
+    let rows: [EntityCardEntry<OrderCardPayload>]
+
+    @Environment(\.assistantExternalViews) private var externalViews
+    @Environment(\.assistantExternalNavigation) private var externalNavigation
+
+    var body: some View {
+        EntityCard(
+            title: Localization.title,
+            iconSystemName: "list.bullet.rectangle.portrait",
+            payloads: rows,
+            isEmpty: { $0.payload.isEmpty },
+            row: { entry, showDivider in
+                AnyView(externalViews.orderRow(payload: entry.payload, showDivider: showDivider, onTap: {
+                    guard let id = entry.payload.id else { return }
+                    externalNavigation.openOrder(orderID: id, payload: entry.source)
+                }) ?? AnyView(EmptyView()))
+            }
+        )
+    }
+
+    private enum Localization {
+        static let title = NSLocalizedString(
+            "assistantCard.order.listTitle",
+            value: "Orders",
+            comment: "Title for the orders assistant card. Always plural even for a single order."
+        )
+    }
+}
+
+private struct ProductCardSection: View {
+
+    let rows: [EntityCardEntry<ProductCardPayload>]
+
+    @Environment(\.assistantExternalViews) private var externalViews
+    @Environment(\.assistantExternalNavigation) private var externalNavigation
+
+    var body: some View {
+        EntityCard(
+            title: Localization.title,
+            iconSystemName: "tag",
+            payloads: rows,
+            isEmpty: { $0.payload.isEmpty },
+            row: { entry, showDivider in
+                AnyView(externalViews.productRow(payload: entry.payload, showDivider: showDivider, onTap: {
+                    guard let id = entry.payload.id else { return }
+                    externalNavigation.openProduct(productID: id, payload: entry.source)
+                }) ?? AnyView(EmptyView()))
+            }
+        )
+    }
+
+    private enum Localization {
+        static let title = NSLocalizedString(
+            "assistantCard.product.listTitle",
+            value: "Products",
+            comment: "Title for the products assistant card. Always plural even for a single product."
+        )
+    }
+}
+
+private struct ProductVariationCardSection: View {
+
+    let rows: [EntityCardEntry<ProductVariationCardPayload>]
+
+    @Environment(\.assistantExternalViews) private var externalViews
+    @Environment(\.assistantExternalNavigation) private var externalNavigation
+
+    var body: some View {
+        EntityCard(
+            title: Localization.title,
+            iconSystemName: "square.grid.2x2",
+            payloads: rows,
+            isEmpty: { $0.payload.isEmpty },
+            row: { entry, showDivider in
+                AnyView(externalViews.productVariationRow(payload: entry.payload, showDivider: showDivider, onTap: {
+                    guard let id = entry.payload.id,
+                          let parentID = ProductVariationCardPayload.resolveParentID(row: entry.payload, parent: entry.source) else { return }
+                    externalNavigation.openProductVariation(productID: parentID,
+                                                            variationID: id,
+                                                            payload: entry.source)
+                }) ?? AnyView(EmptyView()))
+            }
+        )
+    }
+
+    private enum Localization {
+        static let title = NSLocalizedString(
+            "assistantCard.productVariation.listTitle",
+            value: "Variations",
+            comment: "Title for the product variations assistant card. Mirrors the Products tab nav title."
+        )
+    }
+}
+
+private struct CustomerCardSection: View {
+
+    let rows: [EntityCardEntry<CustomerCardPayload>]
+
+    @Environment(\.assistantExternalViews) private var externalViews
+    @Environment(\.assistantExternalNavigation) private var externalNavigation
+
+    var body: some View {
+        EntityCard(
+            title: Localization.title,
+            iconSystemName: "person.2",
+            payloads: rows,
+            isEmpty: { $0.payload.isEmpty },
+            row: { entry, showDivider in
+                AnyView(externalViews.customerRow(payload: entry.payload, showDivider: showDivider, onTap: {
+                    guard let id = entry.payload.id, id > 0 else { return }
+                    externalNavigation.openCustomer(customerID: id, payload: entry.source)
+                }) ?? AnyView(EmptyView()))
+            }
+        )
+    }
+
+    private enum Localization {
+        static let title = NSLocalizedString(
+            "assistantCard.customer.listTitle",
+            value: "Customers",
+            comment: "Title for the customers assistant card. Always plural even for a single customer."
+        )
+    }
+}
+
+private struct AnalyticsStatsCardSection: View {
 
     let toolName: String
     let payload: AnyCodableJSON
@@ -10,111 +165,6 @@ struct MessageCardHost: View {
     @Environment(\.assistantExternalNavigation) private var externalNavigation
 
     var body: some View {
-        switch TypedCardDispatcher.route(for: toolName) {
-        case .ordersList:
-            orderCard(rows: EntityCardPayload.decodeOrderRows(payload), shape: .list)
-        case .productsList:
-            productCard(rows: EntityCardPayload.decodeProductRows(payload), shape: .list)
-        case .productVariationsList:
-            variationCard(rows: EntityCardPayload.decodeProductVariationRows(payload), shape: .list)
-        case .customersList:
-            customerCard(rows: EntityCardPayload.decodeCustomerRows(payload), shape: .list)
-        case .analyticsStats:
-            statsView
-        case .order:
-            orderCard(rows: EntityCardPayload.decodeOrder(payload).map { [$0] } ?? [], shape: .single)
-        case .product:
-            productCard(rows: EntityCardPayload.decodeProduct(payload).map { [$0] } ?? [], shape: .single)
-        case .productVariation:
-            variationCard(rows: EntityCardPayload.decodeProductVariation(payload).map { [$0] } ?? [], shape: .single)
-        case .customer:
-            customerCard(rows: EntityCardPayload.decodeCustomer(payload).map { [$0] } ?? [], shape: .single)
-        case .unknown:
-            RawJSONCard(toolName: toolName, payload: payload)
-        }
-    }
-
-    private enum CardShape {
-        case single
-        case list
-    }
-
-    private func orderCard(rows: [OrderCardPayload], shape: CardShape) -> some View {
-        EntityCard(
-            title: Localization.ordersTitle,
-            iconSystemName: "list.bullet.rectangle.portrait",
-            payloads: rows,
-            isEmpty: { $0.isEmpty },
-            row: { row, showDivider in
-                AnyView(externalViews.orderRow(payload: row, showDivider: showDivider, onTap: {
-                    guard let id = row.id else { return }
-                    externalNavigation.openOrder(orderID: id, payload: payloadForTap(row, shape: shape))
-                }) ?? AnyView(EmptyView()))
-            }
-        )
-    }
-
-    private func productCard(rows: [ProductCardPayload], shape: CardShape) -> some View {
-        EntityCard(
-            title: Localization.productsTitle,
-            iconSystemName: "tag",
-            payloads: rows,
-            isEmpty: { $0.isEmpty },
-            row: { row, showDivider in
-                AnyView(externalViews.productRow(payload: row, showDivider: showDivider, onTap: {
-                    guard let id = row.id else { return }
-                    externalNavigation.openProduct(productID: id, payload: payloadForTap(row, shape: shape))
-                }) ?? AnyView(EmptyView()))
-            }
-        )
-    }
-
-    private func variationCard(rows: [ProductVariationCardPayload], shape: CardShape) -> some View {
-        EntityCard(
-            title: Localization.variationsTitle,
-            iconSystemName: "square.grid.2x2",
-            payloads: rows,
-            isEmpty: { $0.isEmpty },
-            row: { row, showDivider in
-                AnyView(externalViews.productVariationRow(payload: row, showDivider: showDivider, onTap: {
-                    guard let id = row.id,
-                          let parentID = ProductVariationCardPayload.resolveParentID(row: row, parent: payload) else { return }
-                    externalNavigation.openProductVariation(productID: parentID,
-                                                            variationID: id,
-                                                            payload: payloadForTap(row, shape: shape))
-                }) ?? AnyView(EmptyView()))
-            }
-        )
-    }
-
-    private func customerCard(rows: [CustomerCardPayload], shape: CardShape) -> some View {
-        EntityCard(
-            title: Localization.customersTitle,
-            iconSystemName: "person.2",
-            payloads: rows,
-            isEmpty: { $0.isEmpty },
-            row: { row, showDivider in
-                AnyView(externalViews.customerRow(payload: row, showDivider: showDivider, onTap: {
-                    guard let id = row.id, id > 0 else { return }
-                    externalNavigation.openCustomer(customerID: id, payload: payloadForTap(row, shape: shape))
-                }) ?? AnyView(EmptyView()))
-            }
-        )
-    }
-
-    private func payloadForTap<T: Encodable>(_ row: T, shape: CardShape) -> AnyCodableJSON {
-        if shape == .single { return payload }
-        do {
-            let data = try JSONEncoder().encode(row)
-            return try JSONDecoder().decode(AnyCodableJSON.self, from: data)
-        } catch {
-            DDLogError("Failed to synthesize tap payload for assistant card row: \(error)")
-            return .object([:])
-        }
-    }
-
-    @ViewBuilder
-    private var statsView: some View {
         if let host = externalViews.statsCardView(toolName: toolName, payload: payload) {
             Button(action: { externalNavigation.openAnalyticsHub(payload: payload) }) {
                 host
@@ -123,29 +173,6 @@ struct MessageCardHost: View {
         } else {
             RawJSONCard(toolName: toolName, payload: payload)
         }
-    }
-
-    private enum Localization {
-        static let ordersTitle = NSLocalizedString(
-            "assistantCard.order.listTitle",
-            value: "Orders",
-            comment: "Title for the orders assistant card. Always plural even for a single order."
-        )
-        static let productsTitle = NSLocalizedString(
-            "assistantCard.product.listTitle",
-            value: "Products",
-            comment: "Title for the products assistant card. Always plural even for a single product."
-        )
-        static let variationsTitle = NSLocalizedString(
-            "assistantCard.productVariation.listTitle",
-            value: "Variations",
-            comment: "Title for the product variations assistant card. Mirrors the Products tab nav title."
-        )
-        static let customersTitle = NSLocalizedString(
-            "assistantCard.customer.listTitle",
-            value: "Customers",
-            comment: "Title for the customers assistant card. Always plural even for a single customer."
-        )
     }
 }
 
@@ -170,16 +197,23 @@ struct MessageCardListHost: View {
     let payloads: [AnyCodableJSON]
 
     var body: some View {
-        let listPayload = AnyCodableJSON.object(["rows": .array(payloads)])
         switch family {
         case .order:
-            MessageCardHost(toolName: OrdersListTool.name, payload: listPayload)
+            OrderCardSection(rows: payloads.compactMap { source in
+                EntityCardPayload.decodeOrder(source).map { EntityCardEntry(payload: $0, source: source) }
+            })
         case .product:
-            MessageCardHost(toolName: ProductsListTool.name, payload: listPayload)
+            ProductCardSection(rows: payloads.compactMap { source in
+                EntityCardPayload.decodeProduct(source).map { EntityCardEntry(payload: $0, source: source) }
+            })
         case .productVariation:
-            MessageCardHost(toolName: ProductVariationsListTool.name, payload: listPayload)
+            ProductVariationCardSection(rows: payloads.compactMap { source in
+                EntityCardPayload.decodeProductVariation(source).map { EntityCardEntry(payload: $0, source: source) }
+            })
         case .customer:
-            MessageCardHost(toolName: CustomersListTool.name, payload: listPayload)
+            CustomerCardSection(rows: payloads.compactMap { source in
+                EntityCardPayload.decodeCustomer(source).map { EntityCardEntry(payload: $0, source: source) }
+            })
         }
     }
 }
@@ -187,10 +221,6 @@ struct MessageCardListHost: View {
 enum TypedCardDispatcher {
 
     enum Route: Equatable {
-        case ordersList
-        case productsList
-        case productVariationsList
-        case customersList
         case analyticsStats
         case order
         case product
@@ -200,10 +230,6 @@ enum TypedCardDispatcher {
     }
 
     static func route(for toolName: String) -> Route {
-        if toolName == OrdersListTool.name { return .ordersList }
-        if toolName == ProductsListTool.name { return .productsList }
-        if toolName == ProductVariationsListTool.name { return .productVariationsList }
-        if toolName == CustomersListTool.name { return .customersList }
         if toolName == AnalyticsRevenueTool.name || toolName == AnalyticsOrdersTool.name { return .analyticsStats }
 
         let parts = toolName.split(separator: ".")

@@ -961,7 +961,8 @@ private extension DefaultStoresManager {
                                                             currencySettingsDataBySiteID: currencySettingsDataBySiteID,
                                                             exposesStorePicker: true)
         StoreStatsSnapshotStore().save(snapshots)
-        synchronizeMissingStoreStatsWidgetCurrencySettingsIfNeeded(candidateSiteIDs: candidateSiteIDs,
+        synchronizeMissingStoreStatsWidgetCurrencySettingsIfNeeded(selectedSiteID: defaultSiteID,
+                                                                   candidateSiteIDs: candidateSiteIDs,
                                                                    currencySettingsDataBySiteID: currencySettingsDataBySiteID)
     }
 
@@ -1031,28 +1032,33 @@ private extension DefaultStoresManager {
         return requiredSettingIDs.isSubset(of: settingIDs)
     }
 
-    private func synchronizeMissingStoreStatsWidgetCurrencySettingsIfNeeded(candidateSiteIDs: Set<Int64>,
+    private func synchronizeMissingStoreStatsWidgetCurrencySettingsIfNeeded(selectedSiteID: Int64?,
+                                                                            candidateSiteIDs: Set<Int64>,
                                                                             currencySettingsDataBySiteID: [Int64: Data]) {
-        let missingSiteIDs = candidateSiteIDs.filter { currencySettingsDataBySiteID[$0] == nil }
-        for siteID in missingSiteIDs where storeStatsWidgetCurrencySettingsSyncSiteIDs.contains(siteID) == false {
-            storeStatsWidgetCurrencySettingsSyncSiteIDs.insert(siteID)
-            let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
-                DispatchQueue.main.async {
-                    guard let self else {
-                        return
-                    }
-
-                    self.storeStatsWidgetCurrencySettingsSyncSiteIDs.remove(siteID)
-                    guard error == nil else {
-                        return
-                    }
-
-                    self.updateStoreStatsWidgetStoreSnapshots(with: self.sessionManager.defaultStoreID)
-                    WidgetCenter.shared.reloadAllTimelines()
-                }
-            }
-            dispatch(action)
+        guard let selectedSiteID,
+              candidateSiteIDs.contains(selectedSiteID),
+              currencySettingsDataBySiteID[selectedSiteID] == nil,
+              storeStatsWidgetCurrencySettingsSyncSiteIDs.contains(selectedSiteID) == false else {
+            return
         }
+
+        storeStatsWidgetCurrencySettingsSyncSiteIDs.insert(selectedSiteID)
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: selectedSiteID) { [weak self] error in
+            DispatchQueue.main.async {
+                guard let self else {
+                    return
+                }
+
+                self.storeStatsWidgetCurrencySettingsSyncSiteIDs.remove(selectedSiteID)
+                guard error == nil else {
+                    return
+                }
+
+                self.updateStoreStatsWidgetStoreSnapshots(with: selectedSiteID)
+                WidgetCenter.shared.reloadAllTimelines()
+            }
+        }
+        dispatch(action)
     }
 
     func trackSnapshotIfNeeded(siteID: Int64, orderStatuses: [OrderStatus]?, systemPlugins: [SystemPlugin]?) {

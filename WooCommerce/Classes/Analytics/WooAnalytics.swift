@@ -301,7 +301,10 @@ private extension WooAnalytics {
     @objc func trackApplicationOpened() {
         WidgetCenter.shared.getCurrentConfigurations { [weak self] configurationResult in
             guard let self else { return }
-            self.track(.applicationOpened, withProperties: self.applicationOpenedProperties(configurationResult))
+            let snapshot = WidgetSnapshot(from: configurationResult)
+            let properties = self.applicationOpenedProperties(configurationResult)
+                .merging(snapshot.analyticsProperties) { _, new in new }
+            self.track(.applicationOpened, withProperties: properties)
         }
         applicationOpenedTime = Date()
     }

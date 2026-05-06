@@ -282,6 +282,8 @@ let package = Package(
             dependencies: [
                 "WooFoundation",
                 "NetworkingCore",
+                "Storage",
+                "Yosemite",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ]
         ),
@@ -371,6 +373,8 @@ let package = Package(
             name: "WooAIAssistantTests",
             dependencies: [
                 .target(name: "WooAIAssistant"),
+                "Fakes",
+                "YosemiteTestHelpers",
             ]
         ),
         .binaryTarget(

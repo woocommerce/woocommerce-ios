@@ -33,49 +33,16 @@ struct MessageBubble: View {
         guard message.role == .assistant else { return message.segments }
 
         var lastToolCallID: UUID?
-        var hasCardRender = false
         var hasText = false
-        var firstSearchNonEmpty: UUID?
-        var lastListNonEmpty: UUID?
-        var lastStrictAny: UUID?
-        var lastSingle: UUID?
-        var analyticsIDs: [UUID] = []
 
         for segment in message.segments {
             switch segment {
             case .text:
                 hasText = true
-            case .cardRender:
-                hasCardRender = true
             case .toolCall(let id, _, _, _, _):
                 lastToolCallID = id
-            case .toolResult(let id, _, let name, let payload):
-                if name.hasPrefix("analytics_") {
-                    analyticsIDs.append(id)
-                    continue
-                }
-                let isSearch = name.hasSuffix("_search")
-                let isList = name.hasSuffix("_list")
-                let isStrict = isSearch || isList
-                let rowCount = arrayCount(payload)
-                if isStrict { lastStrictAny = id }
-                if isSearch, rowCount > 0, firstSearchNonEmpty == nil {
-                    firstSearchNonEmpty = id
-                } else if isList, rowCount > 0 {
-                    lastListNonEmpty = id
-                } else if !isStrict {
-                    lastSingle = id
-                }
-            case .confirmation:
+            case .cardRender, .toolResult, .confirmation:
                 break
-            }
-        }
-
-        var renderableToolResultIDs: Set<UUID> = []
-        if !hasCardRender, !message.isStreaming {
-            renderableToolResultIDs = Set(analyticsIDs)
-            if let pick = firstSearchNonEmpty ?? lastListNonEmpty ?? lastStrictAny ?? lastSingle {
-                renderableToolResultIDs.insert(pick)
             }
         }
 
@@ -87,8 +54,8 @@ struct MessageBubble: View {
                 return !message.isStreaming
             case .toolCall(let id, _, _, _, _):
                 return id == lastToolCallID
-            case .toolResult(let id, _, _, _):
-                return renderableToolResultIDs.contains(id)
+            case .toolResult:
+                return false
             }
         }
 
@@ -111,19 +78,11 @@ struct MessageBubble: View {
 
     private func isCardSegment(_ segment: MessageSegment) -> Bool {
         switch segment {
-        case .cardRender, .toolResult:
+        case .cardRender:
             return true
-        case .text, .toolCall, .confirmation:
+        case .text, .toolCall, .toolResult, .confirmation:
             return false
         }
-    }
-
-    private func arrayCount(_ value: AnyCodableJSON) -> Int {
-        if case .array(let elements) = value { return elements.count }
-        if case .object(let fields) = value, case .int(let count) = fields["count"] {
-            return Int(count)
-        }
-        return 0
     }
 
     @ViewBuilder
@@ -149,8 +108,9 @@ struct MessageBubble: View {
             }
         case .toolCall(_, _, let name, _, let status):
             ToolActivityPill(toolName: name, status: status)
-        case .toolResult(_, _, let name, let payload):
-            MessageCardHost(toolName: name, payload: payload)
+        case .toolResult:
+            // .toolResult is filtered in orderedSegments; arm kept so future leaks compile-error here.
+            EmptyView()
         case .cardRender(_, _, let name, let payload):
             MessageCardHost(toolName: name, payload: payload)
         case .confirmation(_, let proposalID, _, let preview, let status):

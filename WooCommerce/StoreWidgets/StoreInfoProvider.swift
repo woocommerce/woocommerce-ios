@@ -347,21 +347,14 @@ extension StoreInfoProvider {
     static func selectedStoreSnapshot(from snapshots: [StoreStatsSnapshot],
                                       selectedStoreID: StoreStatsStoreEntity.ID?,
                                       defaultStoreID: Int64? = nil) -> StoreStatsSnapshot? {
-        let defaultSnapshot = defaultStoreID.flatMap { defaultStoreID in
-            snapshots.first { $0.siteID == defaultStoreID }
-        } ?? snapshots.first
+        let defaultSnapshot = snapshots.first { $0.siteID == defaultStoreID } ?? snapshots.first
 
-        if let selectedStoreID,
-           StoreStatsStoreEntity.isDefaultStoreID(selectedStoreID) {
+        guard let selectedStoreID,
+              StoreStatsStoreEntity.isDefaultStoreID(selectedStoreID) == false else {
             return defaultSnapshot
         }
 
-        if let selectedStoreID,
-           let selectedStore = snapshots.first(where: { $0.appEntityID == selectedStoreID }) {
-            return selectedStore
-        }
-
-        return defaultSnapshot
+        return snapshots.first { $0.appEntityID == selectedStoreID } ?? defaultSnapshot
     }
 }
 

@@ -35,6 +35,38 @@ struct StoreStatsStoredSite: Equatable {
     let isWooCommerceActive: Bool
 }
 
+enum StoreStatsStoreSelection {
+    static let defaultStoreEntityID = "__default_store__"
+
+    static func isDefaultStoreEntityID(_ id: String) -> Bool {
+        id == defaultStoreEntityID
+    }
+
+    static func currencySettings(for selectedStore: StoreStatsSnapshot,
+                                 defaultStoreID: Int64,
+                                 defaultCurrencySettings: CurrencySettings) -> CurrencySettings {
+        guard selectedStore.siteID != defaultStoreID else {
+            return defaultCurrencySettings
+        }
+        // Non-default stores may not have synchronized general settings yet.
+        // Use the default store settings until the selected store settings are available.
+        return selectedStore.currencySettings ?? defaultCurrencySettings
+    }
+
+    static func selectedStoreSnapshot(from snapshots: [StoreStatsSnapshot],
+                                      selectedStoreID: String?,
+                                      defaultStoreID: Int64? = nil) -> StoreStatsSnapshot? {
+        let defaultSnapshot = snapshots.first { $0.siteID == defaultStoreID } ?? snapshots.first
+
+        guard let selectedStoreID,
+              isDefaultStoreEntityID(selectedStoreID) == false else {
+            return defaultSnapshot
+        }
+
+        return snapshots.first { $0.appEntityID == selectedStoreID } ?? defaultSnapshot
+    }
+}
+
 enum StoreStatsSnapshotFactory {
     static func snapshots(storedSites: [StoreStatsStoredSite],
                           defaultSite: StoreStatsStoredSite?,

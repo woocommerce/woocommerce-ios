@@ -248,9 +248,9 @@ struct StoreStatsSnapshotTests {
                                                currencySettings: staleSnapshotCurrencySettings)
 
         // When
-        let resolvedCurrencySettings = StoreInfoProvider.currencySettings(for: selectedStore,
-                                                                          defaultStoreID: 1,
-                                                                          defaultCurrencySettings: defaultCurrencySettings)
+        let resolvedCurrencySettings = StoreStatsStoreSelection.currencySettings(for: selectedStore,
+                                                                                 defaultStoreID: 1,
+                                                                                 defaultCurrencySettings: defaultCurrencySettings)
 
         // Then
         #expect(resolvedCurrencySettings.currencyCode == .EUR)
@@ -267,9 +267,9 @@ struct StoreStatsSnapshotTests {
                                                currencySettings: nil)
 
         // When
-        let resolvedCurrencySettings = StoreInfoProvider.currencySettings(for: selectedStore,
-                                                                          defaultStoreID: 1,
-                                                                          defaultCurrencySettings: defaultCurrencySettings)
+        let resolvedCurrencySettings = StoreStatsStoreSelection.currencySettings(for: selectedStore,
+                                                                                 defaultStoreID: 1,
+                                                                                 defaultCurrencySettings: defaultCurrencySettings)
 
         // Then
         #expect(resolvedCurrencySettings.currencyCode == .EUR)
@@ -293,20 +293,20 @@ struct StoreStatsSnapshotTests {
         ]
 
         // When
-        let selectedStore = StoreInfoProvider.selectedStoreSnapshot(from: snapshots,
-                                                                    selectedStoreID: StoreStatsStoreEntity.defaultStore.id,
-                                                                    defaultStoreID: 1)
+        let selectedStore = StoreStatsStoreSelection.selectedStoreSnapshot(from: snapshots,
+                                                                          selectedStoreID: StoreStatsStoreSelection.defaultStoreEntityID,
+                                                                          defaultStoreID: 1)
 
         // Then
         #expect(selectedStore?.siteID == 1)
     }
 
-    @Test func defaultResult_thenReturnsDefaultStoreEntity() async {
+    @Test func isDefaultStoreEntityID_whenDefaultEntityIDIsProvided_thenReturnsTrue() {
         // When
-        let defaultResult = await StoreStatsStoreQuery().defaultResult()
+        let isDefaultStoreEntityID = StoreStatsStoreSelection.isDefaultStoreEntityID(StoreStatsStoreSelection.defaultStoreEntityID)
 
         // Then
-        #expect(defaultResult?.id == StoreStatsStoreEntity.defaultStore.id)
+        #expect(isDefaultStoreEntityID)
     }
 
     private func makeUserDefaults() -> UserDefaults {

@@ -302,15 +302,15 @@ private extension StoreInfoProvider {
         let defaultDependencies = StoreInfoProviderDependencies(credentials: credentials,
                                                                store: defaultStore)
         let snapshots = StoreStatsSnapshotStore().snapshots()
-        guard let selectedStore = selectedStoreSnapshot(from: snapshots,
-                                                        selectedStoreID: selectedStoreID,
-                                                        defaultStoreID: defaultStore.storeID) else {
+        guard let selectedStore = StoreStatsStoreSelection.selectedStoreSnapshot(from: snapshots,
+                                                                                 selectedStoreID: selectedStoreID,
+                                                                                 defaultStoreID: defaultStore.storeID) else {
             return defaultDependencies
         }
 
-        let storeCurrencySettings = currencySettings(for: selectedStore,
-                                                     defaultStoreID: defaultStore.storeID,
-                                                     defaultCurrencySettings: defaultStore.storeCurrencySettings)
+        let storeCurrencySettings = StoreStatsStoreSelection.currencySettings(for: selectedStore,
+                                                                              defaultStoreID: defaultStore.storeID,
+                                                                              defaultCurrencySettings: defaultStore.storeCurrencySettings)
         let store = StoreMetadata(storeID: selectedStore.siteID,
                                   storeName: selectedStore.name,
                                   storeCurrencySettings: storeCurrencySettings,
@@ -331,32 +331,6 @@ private extension StoreInfoProvider {
                              storeName: storeName,
                              storeCurrencySettings: storeCurrencySettings,
                              storeTimeZone: .current)
-    }
-}
-
-extension StoreInfoProvider {
-    static func currencySettings(for selectedStore: StoreStatsSnapshot,
-                                 defaultStoreID: Int64,
-                                 defaultCurrencySettings: CurrencySettings) -> CurrencySettings {
-        guard selectedStore.siteID != defaultStoreID else {
-            return defaultCurrencySettings
-        }
-        // Non-default stores may not have synchronized general settings yet.
-        // Use the default store settings until the selected store settings are available.
-        return selectedStore.currencySettings ?? defaultCurrencySettings
-    }
-
-    static func selectedStoreSnapshot(from snapshots: [StoreStatsSnapshot],
-                                      selectedStoreID: StoreStatsStoreEntity.ID?,
-                                      defaultStoreID: Int64? = nil) -> StoreStatsSnapshot? {
-        let defaultSnapshot = snapshots.first { $0.siteID == defaultStoreID } ?? snapshots.first
-
-        guard let selectedStoreID,
-              StoreStatsStoreEntity.isDefaultStoreID(selectedStoreID) == false else {
-            return defaultSnapshot
-        }
-
-        return snapshots.first { $0.appEntityID == selectedStoreID } ?? defaultSnapshot
     }
 }
 

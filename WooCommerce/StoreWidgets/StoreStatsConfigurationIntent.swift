@@ -112,8 +112,7 @@ extension StoreStatsWidgetDateRange {
 }
 
 struct StoreStatsStoreEntity: AppEntity, Hashable {
-    private static let defaultStoreSentinelID = "__default_store__"
-    static let defaultStore = StoreStatsStoreEntity(id: defaultStoreSentinelID, name: nil)
+    static let defaultStore = StoreStatsStoreEntity(id: StoreStatsStoreSelection.defaultStoreEntityID, name: nil)
 
     static var defaultQuery = StoreStatsStoreQuery()
 
@@ -139,7 +138,7 @@ struct StoreStatsStoreEntity: AppEntity, Hashable {
     }
 
     static func isDefaultStoreID(_ id: String) -> Bool {
-        id == defaultStoreSentinelID
+        StoreStatsStoreSelection.isDefaultStoreEntityID(id)
     }
 
     private var displayName: String {

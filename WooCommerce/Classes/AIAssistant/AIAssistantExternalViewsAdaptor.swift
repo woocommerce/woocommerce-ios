@@ -363,6 +363,7 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
     private static let rangeDayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale.autoupdatingCurrent
+        formatter.timeZone = TimeZone(identifier: "UTC")
         formatter.dateFormat = "MMM d"
         return formatter
     }()

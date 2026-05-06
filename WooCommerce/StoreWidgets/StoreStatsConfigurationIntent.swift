@@ -10,6 +10,13 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Store Stats"
     static var description = IntentDescription("Choose how the WooCommerce stats widget is displayed.")
 
+    static let defaultDateRange: StoreStatsWidgetDateRange = .today
+
+    static let defaultMetrics: [StoreInfoMetricType] = [
+        .revenue, .orders, .itemsSold, .averageOrderValue,
+        .netSales, .visitors, .conversion
+    ]
+
     @Parameter(title: "Date Range", default: .today)
     var dateRange: StoreStatsWidgetDateRange
 

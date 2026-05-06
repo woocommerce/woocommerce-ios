@@ -221,6 +221,27 @@ struct StoreStatsSnapshotTests {
         #expect(pickerSnapshots.map(\.siteID) == [1, 2, 3])
     }
 
+    @Test func currencySettings_whenSelectedStoreIsDefault_thenUsesDefaultCurrencySettings() throws {
+        // Given
+        let staleSnapshotCurrencySettingsData = try currencySettingsData(for: .USD)
+        let defaultCurrencySettings = currencySettings(for: .EUR)
+        let selectedStore = StoreStatsSnapshot(siteID: 1,
+                                               name: "Default",
+                                               timeZoneIdentifier: nil,
+                                               gmtOffset: 0,
+                                               supportsVisitorStats: true,
+                                               isSelectableInStorePicker: true,
+                                               currencySettingsData: staleSnapshotCurrencySettingsData)
+
+        // When
+        let resolvedCurrencySettings = StoreInfoProvider.currencySettings(for: selectedStore,
+                                                                          defaultStoreID: 1,
+                                                                          defaultCurrencySettings: defaultCurrencySettings)
+
+        // Then
+        #expect(resolvedCurrencySettings.currencyCode == .EUR)
+    }
+
     @Test func selectedStoreSnapshot_whenDefaultStoreEntityIsSelected_thenReturnsDefaultSnapshot() {
         // Given
         let snapshots = [
@@ -265,8 +286,12 @@ struct StoreStatsSnapshotTests {
     }
 
     private func currencySettingsData(for currencyCode: CurrencyCode) throws -> Data {
+        try JSONEncoder().encode(currencySettings(for: currencyCode))
+    }
+
+    private func currencySettings(for currencyCode: CurrencyCode) -> CurrencySettings {
         let currencySettings = CurrencySettings()
         currencySettings.currencyCode = currencyCode
-        return try JSONEncoder().encode(currencySettings)
+        return currencySettings
     }
 }

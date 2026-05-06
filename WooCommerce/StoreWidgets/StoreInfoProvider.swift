@@ -318,17 +318,9 @@ private extension StoreInfoProvider {
             return defaultDependencies
         }
 
-        if selectedStore.siteID == defaultStore.storeID {
-            let storeCurrencySettings = selectedStore.currencySettings ?? defaultStore.storeCurrencySettings
-            return Dependencies(credentials: credentials,
-                                storeID: selectedStore.siteID,
-                                storeName: selectedStore.name,
-                                storeCurrencySettings: storeCurrencySettings,
-                                storeTimeZone: selectedStore.timeZone,
-                                supportsVisitorStats: selectedStore.supportsVisitorStats)
-        }
-
-        let storeCurrencySettings = selectedStore.currencySettings ?? defaultStore.storeCurrencySettings
+        let storeCurrencySettings = currencySettings(for: selectedStore,
+                                                     defaultStoreID: defaultStore.storeID,
+                                                     defaultCurrencySettings: defaultStore.storeCurrencySettings)
         return Dependencies(credentials: credentials,
                             storeID: selectedStore.siteID,
                             storeName: selectedStore.name,
@@ -354,6 +346,15 @@ private extension StoreInfoProvider {
 }
 
 extension StoreInfoProvider {
+    static func currencySettings(for selectedStore: StoreStatsSnapshot,
+                                 defaultStoreID: Int64,
+                                 defaultCurrencySettings: CurrencySettings) -> CurrencySettings {
+        guard selectedStore.siteID != defaultStoreID else {
+            return defaultCurrencySettings
+        }
+        return selectedStore.currencySettings ?? defaultCurrencySettings
+    }
+
     static func selectedStoreSnapshot(from snapshots: [StoreStatsSnapshot],
                                       selectedStoreID: StoreStatsStoreEntity.ID?,
                                       defaultStoreID: Int64? = nil) -> StoreStatsSnapshot? {

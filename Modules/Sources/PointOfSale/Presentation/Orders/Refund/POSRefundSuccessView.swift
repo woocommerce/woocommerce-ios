@@ -19,8 +19,7 @@ struct POSRefundSuccessView: View {
             buttonsSection
         }
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding(for: horizontalSizeClass) * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
         .onAppear {
             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                 isViewLoaded = true
@@ -90,7 +89,7 @@ private extension POSRefundSuccessView {
             Button(Localization.emailReceiptButton, action: onEmailReceipt)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .padding(POSPadding.xLarge)
+        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
         .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
         .opacity(isViewLoaded ? 1 : 0)
     }

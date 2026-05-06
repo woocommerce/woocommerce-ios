@@ -22,8 +22,7 @@ struct POSRefundConfirmationView: View {
             }
         }
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding(for: horizontalSizeClass) * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -81,7 +80,7 @@ private extension POSRefundConfirmationView {
             Button(Localization.backButton, action: onBack)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .padding(POSPadding.xLarge)
+        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

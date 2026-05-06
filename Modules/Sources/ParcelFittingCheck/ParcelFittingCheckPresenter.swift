@@ -3,7 +3,13 @@ import SwiftUI
 
 public extension UnitLength {
     static func fromStoreUnit(_ unit: String) -> UnitLength {
-        unit.lowercased() == "in" ? .inches : .centimeters
+        switch unit.lowercased() {
+        case "in": return .inches
+        case "m": return .meters
+        case "mm": return .millimeters
+        case "yd": return .yards
+        default: return .centimeters
+        }
     }
 }
 

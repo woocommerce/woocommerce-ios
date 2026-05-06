@@ -14,6 +14,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let storage: StorageManagerType
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
+    private let shippingSettingsService: ShippingSettingsService
 
     private let starAnimation: Animation = .spring(duration: 0.2)
 
@@ -25,12 +26,14 @@ final class WooShippingAddPackageViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
         self.siteID = siteID
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.shippingSettingsService = shippingSettingsService
 
         selectedPackageType = .custom
         previousSelectedPackage = selectedPackage
@@ -124,6 +127,10 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     var isARParcelFittingAvailable: Bool {
         featureFlagService.isFeatureFlagEnabled(.arParcelFitting)
         && ARWorldTrackingConfiguration.isSupported
+    }
+
+    var arDimensionUnit: UnitLength {
+        .fromStoreUnit(shippingSettingsService.dimensionUnit ?? "in")
     }
 
     var parcelPresetCarriers: [ParcelPresetCarrier] {

@@ -4,7 +4,13 @@ import Foundation
 final class ARParcelFitCheckViewModel {
     let unit: UnitLength
     let availableCarriers: [ParcelPresetCarrier]
-    var selectedCarrierID: String?
+    var selectedCarrierID: String? {
+        didSet {
+            if selectedCarrierID != oldValue {
+                selectedPackageID = currentCarrierPackages.first?.id
+            }
+        }
+    }
     var selectedPackageID: String?
 
     init(unit: UnitLength, availableCarriers: [ParcelPresetCarrier], initialPackageID: String? = nil) {
@@ -26,11 +32,6 @@ final class ARParcelFitCheckViewModel {
 
     var currentPackage: ParcelPresetPackage? {
         currentCarrierPackages.first { $0.id == selectedPackageID }
-    }
-
-    func selectCarrier(_ id: String?) {
-        selectedCarrierID = id
-        selectedPackageID = currentCarrierPackages.first?.id
     }
 
     var dimensionsLabel: String? {

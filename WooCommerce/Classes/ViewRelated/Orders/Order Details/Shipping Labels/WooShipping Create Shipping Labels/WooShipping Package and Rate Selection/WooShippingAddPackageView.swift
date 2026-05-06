@@ -134,7 +134,7 @@ struct WooShippingAddPackageView: View {
 
     private func presentARFlow() {
         guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
-        let unit: UnitLength = .fromStoreUnit(dimensionsUnit)
+        let unit = packagesViewModel.arDimensionUnit
 
         switch packagesViewModel.selectedPackageType {
         case .custom:

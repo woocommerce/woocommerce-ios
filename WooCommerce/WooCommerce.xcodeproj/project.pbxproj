@@ -406,7 +406,11 @@
 		3F985FFC2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				AvailableMetricsQuery.swift,
 				Entitlements,
+				StoreInfoMetricType.swift,
+				StoreStatsConfigurationIntent.swift,
+				StoreStatsWidgetDateRange.swift,
 				StoreWidgets.intentdefinition,
 			);
 			target = B56DB3C52049BFAA00D4AA8E /* WooCommerce */;

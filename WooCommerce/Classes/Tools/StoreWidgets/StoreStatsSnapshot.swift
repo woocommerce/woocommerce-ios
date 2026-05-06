@@ -7,7 +7,6 @@ struct StoreStatsSnapshot: Codable, Hashable, Identifiable {
     let timeZoneIdentifier: String?
     let gmtOffset: Double
     let supportsVisitorStats: Bool
-    let isDefault: Bool
     let isSelectableInStorePicker: Bool
     let currencySettingsData: Data?
 
@@ -50,6 +49,7 @@ enum StoreStatsSnapshotFactory {
                           defaultSite: StoreStatsStoredSite?,
                           defaultSiteID: Int64?,
                           defaultCurrencySettingsData: Data?,
+                          currencySettingsDataBySiteID: [Int64: Data] = [:],
                           exposesStorePicker: Bool) -> [StoreStatsSnapshot] {
         guard exposesStorePicker else {
             return []
@@ -72,21 +72,27 @@ enum StoreStatsSnapshotFactory {
                 seenSiteIDs.insert(site.siteID)
                 return true
             }
-            .map { site in
-                StoreStatsSnapshot(
+            .compactMap { site in
+                let isDefaultStore = site.siteID == defaultID
+                let currencySettingsData = currencySettingsDataBySiteID[site.siteID] ?? (isDefaultStore ? defaultCurrencySettingsData : nil)
+                guard isDefaultStore || currencySettingsData != nil else {
+                    return nil
+                }
+                return StoreStatsSnapshot(
                     siteID: site.siteID,
                     name: site.name,
                     timeZoneIdentifier: site.timeZoneIdentifier,
                     gmtOffset: site.gmtOffset,
                     supportsVisitorStats: site.supportsVisitorStats,
-                    isDefault: site.siteID == defaultID,
                     isSelectableInStorePicker: true,
-                    currencySettingsData: site.siteID == defaultID ? defaultCurrencySettingsData : nil
+                    currencySettingsData: currencySettingsData
                 )
             }
             .sorted { lhs, rhs in
-                if lhs.isDefault != rhs.isDefault {
-                    return lhs.isDefault
+                let lhsIsDefault = lhs.siteID == defaultID
+                let rhsIsDefault = rhs.siteID == defaultID
+                if lhsIsDefault != rhsIsDefault {
+                    return lhsIsDefault
                 }
                 return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
             }
@@ -113,7 +119,8 @@ struct StoreStatsSnapshotStore {
     }
 
     func storePickerSnapshots() -> [StoreStatsSnapshot] {
-        snapshots().filter { $0.isSelectableInStorePicker }
+        let defaultStoreID = defaultStoreID()
+        return snapshots().filter { $0.isSelectableInStorePicker && ($0.siteID == defaultStoreID || $0.currencySettings != nil) }
     }
 
     func save(_ snapshots: [StoreStatsSnapshot]) {
@@ -125,6 +132,10 @@ struct StoreStatsSnapshotStore {
 
     func defaultStoreName() -> String? {
         defaultStoreSnapshot()?.name
+    }
+
+    func defaultStoreID() -> Int64? {
+        userDefaults?.object(forKey: .defaultStoreID)
     }
 
     private func defaultStoreSnapshot() -> StoreStatsSnapshot? {
@@ -140,7 +151,6 @@ struct StoreStatsSnapshotStore {
             timeZoneIdentifier: nil,
             gmtOffset: 0,
             supportsVisitorStats: true,
-            isDefault: true,
             isSelectableInStorePicker: false,
             currencySettingsData: currencySettingsData
         )

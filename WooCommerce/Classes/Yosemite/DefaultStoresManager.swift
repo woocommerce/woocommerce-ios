@@ -9,6 +9,7 @@ import class WidgetKit.WidgetCenter
 import Experiments
 import WordPressAuthenticator
 import enum NetworkingCore.RequestAuthenticationMode
+import class WooFoundation.CurrencySettings
 
 // MARK: - DefaultStoresManager
 //
@@ -45,6 +46,10 @@ class DefaultStoresManager: StoresManager {
     /// Tracks site IDs that are eligible for app password support to prevent duplicate analytics events
     ///
     private var trackedEligibleSites: Set<Int64> = []
+
+    /// Tracks site IDs whose general settings are being synchronized for store stats widget snapshots.
+    ///
+    private var storeStatsWidgetCurrencySettingsSyncSiteIDs: Set<Int64> = []
 
     /// Network switching notification observers
     ///
@@ -897,13 +902,26 @@ private extension DefaultStoresManager {
                                  supportsVisitorStats: site.isJetpackConnected || site.isWordPressComStore)
         }
 
+        let defaultSiteID = siteID ?? defaultSite?.siteID
+        var candidateSiteIDs = Set(storedSites.filter { $0.isWooCommerceActive }.map(\.siteID))
+        if let defaultSite,
+           defaultSite.isWooCommerceActive {
+            candidateSiteIDs.insert(defaultSite.siteID)
+        }
+
         let defaultCurrencySettingsData: Data? = UserDefaults.group?.object(forKey: .defaultStoreCurrencySettings)
+        let currencySettingsDataBySiteID = storeStatsWidgetCurrencySettingsDataBySiteID(candidateSiteIDs: candidateSiteIDs,
+                                                                                       defaultSiteID: defaultSiteID,
+                                                                                       defaultCurrencySettingsData: defaultCurrencySettingsData)
         let snapshots = StoreStatsSnapshotFactory.snapshots(storedSites: storedSites,
                                                             defaultSite: defaultSite,
-                                                            defaultSiteID: siteID,
+                                                            defaultSiteID: defaultSiteID,
                                                             defaultCurrencySettingsData: defaultCurrencySettingsData,
+                                                            currencySettingsDataBySiteID: currencySettingsDataBySiteID,
                                                             exposesStorePicker: true)
         StoreStatsSnapshotStore().save(snapshots)
+        synchronizeMissingStoreStatsWidgetCurrencySettingsIfNeeded(candidateSiteIDs: candidateSiteIDs,
+                                                                   currencySettingsDataBySiteID: currencySettingsDataBySiteID)
     }
 
     private var exposesStoreStatsWidgetStorePicker: Bool {
@@ -911,6 +929,70 @@ private extension DefaultStoresManager {
             return true
         }
         return false
+    }
+
+    private func storeStatsWidgetCurrencySettingsDataBySiteID(candidateSiteIDs: Set<Int64>,
+                                                              defaultSiteID: Int64?,
+                                                              defaultCurrencySettingsData: Data?) -> [Int64: Data] {
+        var currencySettingsDataBySiteID: [Int64: Data] = [:]
+        for siteID in candidateSiteIDs {
+            currencySettingsDataBySiteID[siteID] = storeStatsWidgetCurrencySettingsData(for: siteID)
+        }
+
+        if let defaultSiteID,
+           let defaultCurrencySettingsData {
+            currencySettingsDataBySiteID[defaultSiteID] = defaultCurrencySettingsData
+        }
+        return currencySettingsDataBySiteID
+    }
+
+    private func storeStatsWidgetCurrencySettingsData(for siteID: Int64) -> Data? {
+        guard let storedSiteSettings = ServiceLocator.storageManager.viewStorage.loadSiteSettings(siteID: siteID,
+                                                                                                  settingGroupKey: SiteSettingGroup.general.rawValue) else {
+            return nil
+        }
+
+        let siteSettings = storedSiteSettings.map { $0.toReadOnly() }
+        guard hasCurrencySettings(in: siteSettings) else {
+            return nil
+        }
+        return try? JSONEncoder().encode(CurrencySettings(siteSettings: siteSettings))
+    }
+
+    private func hasCurrencySettings(in siteSettings: [SiteSetting]) -> Bool {
+        let requiredSettingIDs: Set<String> = [
+            CurrencySettings.Constants.currencyCodeKey,
+            CurrencySettings.Constants.currencyPositionKey,
+            CurrencySettings.Constants.thousandSeparatorKey,
+            CurrencySettings.Constants.decimalSeparatorKey,
+            CurrencySettings.Constants.numberOfDecimalsKey
+        ]
+        let settingIDs = Set(siteSettings.map(\.settingID))
+        return requiredSettingIDs.isSubset(of: settingIDs)
+    }
+
+    private func synchronizeMissingStoreStatsWidgetCurrencySettingsIfNeeded(candidateSiteIDs: Set<Int64>,
+                                                                            currencySettingsDataBySiteID: [Int64: Data]) {
+        let missingSiteIDs = candidateSiteIDs.filter { currencySettingsDataBySiteID[$0] == nil }
+        for siteID in missingSiteIDs where storeStatsWidgetCurrencySettingsSyncSiteIDs.contains(siteID) == false {
+            storeStatsWidgetCurrencySettingsSyncSiteIDs.insert(siteID)
+            let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
+                DispatchQueue.main.async {
+                    guard let self else {
+                        return
+                    }
+
+                    self.storeStatsWidgetCurrencySettingsSyncSiteIDs.remove(siteID)
+                    guard error == nil else {
+                        return
+                    }
+
+                    self.updateStoreStatsWidgetStoreSnapshots(with: self.sessionManager.defaultStoreID)
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
+            }
+            dispatch(action)
+        }
     }
 
     func trackSnapshotIfNeeded(siteID: Int64, orderStatuses: [OrderStatus]?, systemPlugins: [SystemPlugin]?) {

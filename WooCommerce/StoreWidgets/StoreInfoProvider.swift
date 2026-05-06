@@ -305,38 +305,39 @@ private extension StoreInfoProvider {
             return nil
         }
 
+        let defaultDependencies = Dependencies(credentials: credentials,
+                                               storeID: defaultStore.storeID,
+                                               storeName: defaultStore.storeName,
+                                               storeCurrencySettings: defaultStore.storeCurrencySettings,
+                                               storeTimeZone: defaultStore.storeTimeZone,
+                                               supportsVisitorStats: defaultStore.supportsVisitorStats)
         let snapshots = StoreStatsSnapshotStore().snapshots()
-        guard let selectedStore = selectedStoreSnapshot(from: snapshots, selectedStoreID: selectedStoreID) else {
-            return Dependencies(credentials: credentials,
-                                storeID: defaultStore.storeID,
-                                storeName: defaultStore.storeName,
-                                storeCurrencySettings: defaultStore.storeCurrencySettings,
-                                storeTimeZone: defaultStore.storeTimeZone,
-                                supportsVisitorStats: defaultStore.supportsVisitorStats)
+        guard let selectedStore = selectedStoreSnapshot(from: snapshots,
+                                                        selectedStoreID: selectedStoreID,
+                                                        defaultStoreID: defaultStore.storeID) else {
+            return defaultDependencies
         }
 
-        let storeCurrencySettings = selectedStore.currencySettings ?? defaultStore.storeCurrencySettings
+        if selectedStore.siteID == defaultStore.storeID {
+            let storeCurrencySettings = selectedStore.currencySettings ?? defaultStore.storeCurrencySettings
+            return Dependencies(credentials: credentials,
+                                storeID: selectedStore.siteID,
+                                storeName: selectedStore.name,
+                                storeCurrencySettings: storeCurrencySettings,
+                                storeTimeZone: selectedStore.timeZone,
+                                supportsVisitorStats: selectedStore.supportsVisitorStats)
+        }
+
+        guard let storeCurrencySettings = selectedStore.currencySettings else {
+            return defaultDependencies
+        }
+
         return Dependencies(credentials: credentials,
                             storeID: selectedStore.siteID,
                             storeName: selectedStore.name,
                             storeCurrencySettings: storeCurrencySettings,
                             storeTimeZone: selectedStore.timeZone,
                             supportsVisitorStats: selectedStore.supportsVisitorStats)
-    }
-
-    static func selectedStoreSnapshot(from snapshots: [StoreStatsSnapshot],
-                                      selectedStoreID: StoreStatsStoreEntity.ID?) -> StoreStatsSnapshot? {
-        if let selectedStoreID,
-           StoreStatsStoreEntity.isDefaultStoreID(selectedStoreID) {
-            return snapshots.first(where: { $0.isDefault }) ?? snapshots.first
-        }
-
-        if let selectedStoreID,
-           let selectedStore = snapshots.first(where: { $0.appEntityID == selectedStoreID }) {
-            return selectedStore
-        }
-
-        return snapshots.first(where: { $0.isDefault }) ?? snapshots.first
     }
 
     static func defaultStoreMetadata() -> StoreMetadata? {
@@ -352,6 +353,28 @@ private extension StoreInfoProvider {
                              storeCurrencySettings: storeCurrencySettings,
                              storeTimeZone: .current,
                              supportsVisitorStats: true)
+    }
+}
+
+extension StoreInfoProvider {
+    static func selectedStoreSnapshot(from snapshots: [StoreStatsSnapshot],
+                                      selectedStoreID: StoreStatsStoreEntity.ID?,
+                                      defaultStoreID: Int64? = nil) -> StoreStatsSnapshot? {
+        let defaultSnapshot = defaultStoreID.flatMap { defaultStoreID in
+            snapshots.first { $0.siteID == defaultStoreID }
+        } ?? snapshots.first
+
+        if let selectedStoreID,
+           StoreStatsStoreEntity.isDefaultStoreID(selectedStoreID) {
+            return defaultSnapshot
+        }
+
+        if let selectedStoreID,
+           let selectedStore = snapshots.first(where: { $0.appEntityID == selectedStoreID }) {
+            return selectedStore
+        }
+
+        return defaultSnapshot
     }
 }
 

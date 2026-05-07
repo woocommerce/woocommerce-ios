@@ -82,7 +82,7 @@ final class SupportEscalationCoordinator {
 
         if let supportAreaInfo {
             prefilledSubject = SupportFormViewModel.subject(for: supportAreaInfo.areaType)
-            prefilledDescription = "Following is the transcript of an in-app AI support chat session:\n\(transcript)"
+            prefilledDescription = [Localization.transcriptHeader, transcript].joined(separator: "\n\n")
         } else {
             prefilledSubject = nil
             prefilledDescription = nil
@@ -114,7 +114,7 @@ final class SupportEscalationCoordinator {
         )
         presentingVC.present(loadingViewController, animated: true)
 
-        let description = "Following is the transcript of an in-app AI support chat session:\n\(areaInfo.transcript)"
+        let description = [Localization.transcriptHeader, areaInfo.transcript].joined(separator: "\n\n")
         let attachments = additionalAttachmentsProvider()
 
         let siteAddress = stores.sessionManager.defaultSite?.url ?? ""
@@ -190,6 +190,11 @@ private extension SupportEscalationCoordinator {
             "supportEscalationCoordinator.gotIt",
             value: "Got it",
             comment: "Button on the ticket created alert"
+        )
+        static let transcriptHeader = NSLocalizedString(
+            "supportEscalationCoordinator.transcriptHeader",
+            value: "Following is the transcript of an in-app AI support chat session:",
+            comment: "Header text before the chat transcript in support ticket description"
         )
     }
 }

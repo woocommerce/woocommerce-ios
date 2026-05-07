@@ -343,6 +343,15 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
+        capturePayment(parameters) { _ in
+            Just(())
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    public func capturePayment(_ parameters: PaymentIntentParameters,
+                               beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>) -> AnyPublisher<PaymentIntent, Error> {
         // The documentation for this protocol method promises that this will produce either
         // a single value or it will fail.
         // This isn't enforced by the type system, but it is guaranteed as long as all the
@@ -355,13 +364,23 @@ extension StripeCardReaderService: CardReaderService {
             }.flatMap { intent in
                 self.collectPaymentMethod(intent: intent)
             }.flatMap { intent in
+                self.prepareForPaymentConfirmation(intent: intent, beforePaymentConfirmation: beforePaymentConfirmation)
+            }.flatMap { intent in
                 self.processPayment(intent: intent)
             }
             .map(PaymentIntent.init(intent:))
-            .eraseToAnyPublisher()
+                .eraseToAnyPublisher()
     }
 
     public func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error> {
+        retryActivePaymentIntent { _ in
+            Just(())
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    public func retryActivePaymentIntent(beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>) -> AnyPublisher<PaymentIntent, Error> {
         guard let activePaymentIntent else {
             return Fail(error: CardReaderServiceError.retryNotPossibleNoActivePayment)
                 .eraseToAnyPublisher()
@@ -369,6 +388,9 @@ extension StripeCardReaderService: CardReaderService {
         switch activePaymentIntent.status {
         case .requiresPaymentMethod:
             return collectPaymentMethod(intent: activePaymentIntent)
+                .flatMap { intent in
+                    self.prepareForPaymentConfirmation(intent: intent, beforePaymentConfirmation: beforePaymentConfirmation)
+                }
                 .flatMap { intent in
                     self.processPayment(intent: intent)
                 }
@@ -386,7 +408,10 @@ extension StripeCardReaderService: CardReaderService {
                 }
                 .eraseToAnyPublisher()
         case .requiresConfirmation:
-            return processPayment(intent: activePaymentIntent)
+            return prepareForPaymentConfirmation(intent: activePaymentIntent, beforePaymentConfirmation: beforePaymentConfirmation)
+                .flatMap { intent in
+                    self.processPayment(intent: intent)
+                }
                 .map(PaymentIntent.init(intent:))
                 .eraseToAnyPublisher()
         case .requiresCapture:
@@ -727,10 +752,14 @@ private extension StripeCardReaderService {
 
     func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
         let collectPaymentMethodFuture = Future<StripeTerminal.PaymentIntent, Error>() { [weak self] promise in
+            guard let collectConfiguration = self?.collectPaymentIntentConfiguration() else {
+                return promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: .internalServiceError)))
+            }
+
             /// Collect Payment method returns a cancellable
             /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel
-            self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
+            self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent, collectConfig: collectConfiguration) { (intent, error) in
                 if let error {
                     var underlyingError = Self.logAndDecodeError(error)
                     /// the completion block for collectPaymentMethod will be called
@@ -754,6 +783,7 @@ private extension StripeCardReaderService {
 
                 if let intent {
                     self?.paymentCancellable = nil
+                    self?.activePaymentIntent = intent
                     self?.sendReaderEvent(.cardDetailsCollected)
                     promise(.success(intent))
                 }
@@ -773,8 +803,28 @@ private extension StripeCardReaderService {
                     return CardReaderServiceError.paymentMethodCollection(
                         underlyingError: .paymentMethodCollectionTimedOut)
                 })
-                .eraseToAnyPublisher()
+            .eraseToAnyPublisher()
         }
+    }
+
+    func collectPaymentIntentConfiguration() -> StripeTerminal.CollectPaymentIntentConfiguration? {
+        do {
+            let builder = StripeTerminal.CollectPaymentIntentConfigurationBuilder()
+            builder.setUpdatePaymentIntent(true)
+            return try builder.build()
+        } catch {
+            DDLogError("Failed to build CollectPaymentIntentConfiguration. Error:\(error)")
+            return nil
+        }
+    }
+
+    func prepareForPaymentConfirmation(
+        intent: StripeTerminal.PaymentIntent,
+        beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
+    ) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
+        beforePaymentConfirmation(PaymentIntent(intent: intent))
+            .map { intent }
+            .eraseToAnyPublisher()
     }
 
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {

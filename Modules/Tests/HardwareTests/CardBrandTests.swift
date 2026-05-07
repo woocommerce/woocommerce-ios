@@ -67,6 +67,13 @@ final class CardBrandTests: XCTestCase {
         XCTAssertEqual(cardBrand, .cartesBancaires)
     }
 
+    func test_card_brand_maps_to_eftpos_au() {
+        let terminalCardBrand = StripeTerminal.CardBrand.eftposAu
+        let cardBrand = CardBrand(brand: terminalCardBrand)
+
+        XCTAssertEqual(cardBrand, .eftposAu)
+    }
+
     func test_card_brand_maps_to_girocard() {
         let terminalCardBrand = StripeTerminal.CardBrand.girocard
         let cardBrand = CardBrand(brand: terminalCardBrand)

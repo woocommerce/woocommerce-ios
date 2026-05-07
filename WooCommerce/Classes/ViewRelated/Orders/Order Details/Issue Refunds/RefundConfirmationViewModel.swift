@@ -343,14 +343,20 @@ private extension WCPayCardBrand {
         switch self {
         case .amex:
             return "•••• %1$@ (American Express)"
+        case .cartesBancaires:
+            return "•••• %1$@ (Cartes Bancaires)"
         case .diners:
             return "•••• %1$@ (Diners Club)"
         case .discover:
             return "•••• %1$@ (Discover)"
+        case .eftposAu:
+            return "•••• %1$@ (eftpos)"
         case .interac:
             return "•••• %1$@ (Interac)"
         case .jcb:
             return "•••• %1$@ (JCB)"
+        case .link:
+            return "•••• %1$@ (Link)"
         case .mastercard:
             return "•••• %1$@ (Mastercard)"
         case .unionpay:
@@ -366,14 +372,20 @@ private extension WCPayCardBrand {
         switch self {
         case .amex:
             return "American Express"
+        case .cartesBancaires:
+            return "Cartes Bancaires"
         case .diners:
             return "Diners Club"
         case .discover:
             return "Discover"
+        case .eftposAu:
+            return "eftpos"
         case .interac:
             return "Interac"
         case .jcb:
             return "JCB"
+        case .link:
+            return "Link"
         case .mastercard:
             return "Mastercard"
         case .unionpay:

@@ -35,6 +35,50 @@ public struct StatValueStyle: ViewModifier {
     }
 }
 
+public struct StatTitleLargeStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.subheadline.bold())
+            .foregroundColor(Color(.lightText))
+    }
+}
+
+public struct StatValueLargeStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.title2)
+            .foregroundColor(Color(.white))
+    }
+}
+
+public struct StatTrendIndicatorStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.system(size: 7, weight: .bold))
+    }
+}
+
+public struct StatTrendIndicatorLargeStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.system(size: 11, weight: .bold))
+    }
+}
+
+public struct StatTrendTextStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.system(size: 9, weight: .bold))
+    }
+}
+
+public struct StatTrendTextLargeStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.system(size: 13, weight: .bold))
+    }
+}
+
 public struct StatTextStyle: ViewModifier {
     public func body(content: Content) -> some View {
         content
@@ -67,6 +111,30 @@ extension View {
 
     func statValueStyle() -> some View {
         self.modifier(StatValueStyle())
+    }
+
+    func statTitleLargeStyle() -> some View {
+        self.modifier(StatTitleLargeStyle())
+    }
+
+    func statValueLargeStyle() -> some View {
+        self.modifier(StatValueLargeStyle())
+    }
+
+    func statTrendIndicatorStyle() -> some View {
+        self.modifier(StatTrendIndicatorStyle())
+    }
+
+    func statTrendIndicatorLargeStyle() -> some View {
+        self.modifier(StatTrendIndicatorLargeStyle())
+    }
+
+    func statTrendTextStyle() -> some View {
+        self.modifier(StatTrendTextStyle())
+    }
+
+    func statTrendTextLargeStyle() -> some View {
+        self.modifier(StatTrendTextLargeStyle())
     }
 
     func statTextStyle() -> some View {

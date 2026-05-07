@@ -509,6 +509,20 @@ private extension POSPaymentModel {
                     return nil
                 }
 
+                // On the TTP path the merchant never explicitly initiates a reader
+                // connection — pre-connect on checkout entry and the connect inside
+                // `startPaymentWithMethod` are both transparent. Suppress both the
+                // "Connecting to reader" in-progress alert and the "Reader connected"
+                // success alert; iPad / non-TTP phones still see them.
+                if preferredConnectionMethod == .tapToPay {
+                    switch eventDetails {
+                    case .connectingToReader, .connectionSuccess:
+                        return nil
+                    default:
+                        break
+                    }
+                }
+
                 return alertType
             }
             .sink(receiveValue: { [weak self] alertType in

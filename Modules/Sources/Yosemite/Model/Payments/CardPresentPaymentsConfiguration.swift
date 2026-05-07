@@ -13,6 +13,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
 
     /// `contactlessLimitAmount` is the upper limit for card transactions, expressed in the smallest currency unit.
     /// This limit may have different implications depending on the store's territory.
+    /// (see https://support.stripe.com/questions/what-are-the-regional-contactless-limits-for-stripe-terminal-transactions).
     public let contactlessLimitAmount: Int?
 
     /// `minimumOperatingSystemVersionOverride` allows us to override Stripe's `supportsReaders` check
@@ -126,7 +127,6 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 // €50 — Stripe Terminal contactless CVM limit, shared by all
-                // EEA-Euro countries we support (see https://docs.stripe.com/terminal/features/contactless).
                 contactlessLimitAmount: 5000,
                 minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
@@ -143,8 +143,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 ],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
-                // Stripe Terminal's published contactless limits don't include SG
-                // (see https://docs.stripe.com/terminal/features/contactless), so
+                // Stripe Terminal's published contactless limits don't include SG so
                 // we leave this `nil` to match the US/PR shape and let the reader
                 // apply its own scheme limits.
                 contactlessLimitAmount: nil,
@@ -165,6 +164,23 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 // NZD 200 — Stripe Terminal contactless CVM limit
                 // (see https://docs.stripe.com/terminal/features/contactless).
+                contactlessLimitAmount: 20000,
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
+            )
+        case .AU:
+            self.init(
+                countryCode: country,
+                paymentMethods: [.cardPresent],
+                currencies: [.AUD],
+                paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
+                supportedReaders: [.wisepad3],
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: Constants.minimumWCPayVersionForTerminalPaymentPreparation),
+                    .init(plugin: .stripe, minimumVersion: "6.2.0")
+                ],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                // AUD 200 — Stripe Terminal contactless CVM limit
                 contactlessLimitAmount: 20000,
                 minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
@@ -200,6 +216,7 @@ private enum Constants {
     static let fallbackInPersonPaymentsUrl = URL(string: "https://woocommerce.com/in-person-payments/")!
     static let purchaseReaderForCountryUrlBase = "https://woocommerce.com/products/hardware/"
     static let sharedMinimumIosVersion = OperatingSystemVersion(majorVersion: 18, minorVersion: 0, patchVersion: 1)
+    static let minimumWCPayVersionForTerminalPaymentPreparation = "10.8.0"
 }
 
 /// The `@retroactive` attribute is used to apply `Equatable` conformance to `OperatingSystemVersion` from the Foundation module.

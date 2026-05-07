@@ -119,15 +119,16 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         XCTAssertEqual(loader.configuration.currencies, [.NZD])
     }
 
-    func test_configuration_for_Australia_remains_unsupported_when_expansion_eligible() {
-        // Given - Australia is intentionally excluded pending EFTPOS support (RSM-642 / RSM-643)
+    func test_configuration_for_Australia_is_supported() {
+        // Given
         setupCountry(country: .au)
 
         // When
         let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: eligibleService)
 
         // Then
-        XCTAssertFalse(loader.configuration.isSupportedCountry)
+        XCTAssertTrue(loader.configuration.isSupportedCountry)
+        XCTAssertEqual(loader.configuration.currencies, [.AUD])
     }
 }
 

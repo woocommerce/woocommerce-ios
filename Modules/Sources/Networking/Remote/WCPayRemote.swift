@@ -51,6 +51,33 @@ public class WCPayRemote: Remote {
         return enqueue(request, mapper: mapper)
     }
 
+    /// Prepares a terminal payment before the payment intent is confirmed.
+    /// - Parameters:
+    ///   - siteID: Site for which we'll prepare the payment intent.
+    ///   - orderID: Order for which we are preparing the payment.
+    ///   - paymentIntentID: Stripe Payment Intent ID created using the Terminal SDK.
+    public func prepareTerminalPayment(for siteID: Int64,
+                                       orderID: Int64,
+                                       paymentIntentID: String) -> AnyPublisher<Result<RemotePaymentIntent, Error>, Never> {
+        let path = "\(Path.orders)/\(orderID)/\(Path.prepareTerminalPayment)"
+
+        let parameters = [
+            CaptureOrderPaymentKeys.fields: CaptureOrderPaymentValues.fieldValues,
+            CaptureOrderPaymentKeys.paymentIntentID: paymentIntentID
+        ]
+
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+
+        let mapper = RemotePaymentIntentMapper()
+
+        return enqueue(request, mapper: mapper)
+    }
+
     /// Fetches the details of a charge, if available. See https://stripe.com/docs/api/charges/object
     /// Also note that the JSON returned by the WCPay endpoint is an abridged copy of Stripe's response.
     /// - Parameters:
@@ -140,6 +167,7 @@ private extension WCPayRemote {
         static let accounts = "payments/accounts"
         static let orders = "payments/orders"
         static let captureTerminalPayment = "capture_terminal_payment"
+        static let prepareTerminalPayment = "prepare_terminal_payment"
         static let createCustomer = "create_customer"
         static let locations = "payments/terminal/locations/store"
         static let charges = "payments/charges"

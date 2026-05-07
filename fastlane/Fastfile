@@ -4,6 +4,8 @@ default_platform(:ios)
 fastlane_require 'dotenv'
 fastlane_require 'git'
 
+require_relative 'helpers/release_notes_pr_helper'
+
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
 USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
@@ -322,6 +324,136 @@ platform :ios do
     trigger_beta_build(branch_to_build: "release/#{release_version_current}")
 
     create_backmerge_pr
+  end
+
+  #####################################################################################
+  # create_release_notes_pr
+  # -----------------------------------------------------------------------------------
+  # Generates AI-drafted, merchant-facing release notes for the given version and
+  # opens (or reuses) a PR against `release/<version>` with the generated copy.
+  #
+  # Triggered by ReleasesV2 → Buildkite during Code Freeze.
+  # The release manager reviews and merges the resulting PR manually.
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane create_release_notes_pr version:<x.y[.z]> [skip_confirm:true] [dry_run:true]
+  #####################################################################################
+  desc 'Generates AI release notes and opens a PR against the release branch.'
+  lane :create_release_notes_pr do |version:, skip_confirm: false, dry_run: false|
+    # Buildkite passes booleans as strings — normalize them.
+    dry_run = dry_run.to_s == 'true'
+    skip_confirm = skip_confirm.to_s == 'true'
+
+    if (error = ReleaseNotesPRHelper.validate_version(version))
+      UI.user_error!(error)
+    end
+
+    release_branch = ReleaseNotesPRHelper.release_branch_name(version)
+    automation_branch = ReleaseNotesPRHelper.automation_branch_name(version)
+
+    # Idempotency: if an open PR already exists, reuse it and exit successfully.
+    existing_pr_url = find_existing_release_notes_pr_url(base: release_branch, head: automation_branch)
+    if existing_pr_url
+      UI.success("Found existing release notes PR: #{existing_pr_url}")
+      emit_release_notes_pr_url(existing_pr_url)
+      next
+    end
+
+    # Make sure the release branch exists, then check it out.
+    sh('git', 'fetch', 'origin', release_branch) do |status|
+      UI.user_error!("Release branch #{release_branch} does not exist on origin") unless status.success?
+    end
+    Fastlane::Helper::GitHelper.checkout_and_pull(release_branch)
+
+    # Extract the raw release-note items for this version. The helper returns the
+    # extracted text as a string, so no temporary file is needed.
+    raw_items = extract_release_notes_for_version(
+      version: version,
+      release_notes_file_path: RELEASE_NOTES_SOURCE_PATH
+    )
+    UI.user_error!("No release-note items found for #{version}") if raw_items.nil? || raw_items.strip.empty?
+
+    generated_notes = generate_ai_release_notes(version: version, raw_items: raw_items)
+
+    UI.important("Generated release notes — #{generated_notes.length} characters:")
+    UI.message(generated_notes)
+    if is_ci
+      buildkite_annotate(
+        style: 'info',
+        context: 'release-notes-preview',
+        message: "Generated release notes — #{generated_notes.length} characters:\n\n#{generated_notes}"
+      )
+    end
+
+    source_items = ReleaseNotesPRHelper.parse_source_items(raw_items)
+    enriched_source_items = enrich_source_items_with_authors(source_items)
+
+    pr_body = ReleaseNotesPRHelper.build_release_notes_pr_body(
+      version: version,
+      generated_notes: generated_notes,
+      source_items: enriched_source_items
+    )
+
+    if dry_run
+      UI.important('Dry run — skipping branch push and PR creation.')
+      UI.message("Intended PR title: #{ReleaseNotesPRHelper.pr_title(version)}")
+      UI.message("Intended PR base: #{release_branch}")
+      UI.message("Intended PR head: #{automation_branch}")
+      UI.message("Intended PR body:\n\n#{pr_body}")
+      emit_release_notes_pr_url('dry-run')
+      next
+    end
+
+    UI.user_error!('Terminating as requested.') unless skip_confirm || UI.confirm('Do you want to create a PR with these release notes?')
+
+    # Create the deterministic automation branch from the current release branch HEAD.
+    sh('git', 'checkout', '-B', automation_branch)
+
+    # Write the AI-generated copy as the only content of release_notes.txt
+    # (no attribution metadata leaks into the shipped file).
+    File.write(RELEASE_NOTES_PATH, "#{generated_notes}\n")
+
+    # Mirror the housekeeping done at code-freeze time so RELEASE-NOTES.txt
+    # stays in sync with the version we just generated copy for.
+    ios_update_release_notes(
+      new_version: version,
+      release_notes_file_path: RELEASE_NOTES_SOURCE_PATH
+    )
+
+    files_to_commit = [
+      RELEASE_NOTES_PATH,
+      RELEASE_NOTES_SOURCE_PATH
+    ].select { |path| File.exist?(path) }
+
+    git_add(path: files_to_commit, shell_escape: false)
+    git_commit(
+      path: files_to_commit,
+      message: "Update release notes for #{version}",
+      allow_nothing_to_commit: true
+    )
+
+    sh('git', 'push', '--force-with-lease', 'origin', "#{automation_branch}:#{automation_branch}")
+
+    pr_url = create_pull_request(
+      api_token: ENV.fetch('GITHUB_TOKEN', nil),
+      repo: GITHUB_REPO,
+      title: ReleaseNotesPRHelper.pr_title(version),
+      head: automation_branch,
+      base: release_branch,
+      body: pr_body,
+      labels: ['Releases']
+    ).to_s
+
+    UI.success("Created release notes PR: #{pr_url}")
+    emit_release_notes_pr_url(pr_url)
+
+    if is_ci
+      buildkite_annotate(
+        style: 'success',
+        context: 'release-notes-pr',
+        message: "Release notes PR: #{pr_url}"
+      )
+    end
   end
 
   # Updates the `AppStoreStrings.pot` file with the latest content from the `release_notes.txt` files and the other text sources.
@@ -1561,6 +1693,96 @@ end
 # -----------------------------------------------------------------------------------
 # Release Management Utils
 # -----------------------------------------------------------------------------------
+
+# Calls OpenAI via release-toolkit's `openai_ask` action, retrying once with a
+# stricter prompt if the first response exceeds the 350-character limit.
+def generate_ai_release_notes(version:, raw_items:)
+  previous_response = nil
+
+  ReleaseNotesPRHelper::AI_RELEASE_NOTES_MAX_ATTEMPTS.times do
+    question = ReleaseNotesPRHelper.build_ai_release_notes_prompt(
+      version: version,
+      raw_items: raw_items,
+      previous_response: previous_response
+    )
+
+    generated_notes = openai_ask(
+      prompt: :release_notes,
+      question: question,
+      api_token: get_required_env('OPENAI_API_TOKEN')
+    ).to_s.strip
+
+    if (error = ReleaseNotesPRHelper.validate_generated_release_notes_not_empty(generated_notes))
+      UI.user_error!(error)
+    end
+
+    if generated_notes.length <= ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH
+      UI.success("Generated release notes are #{generated_notes.length} characters.")
+      return generated_notes
+    end
+
+    UI.important(
+      "Generated release notes are #{generated_notes.length} characters, " \
+      "which exceeds the preferred #{ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH}-character limit."
+    )
+
+    previous_response = generated_notes
+  end
+
+  UI.user_error!(
+    "Generated release notes still exceed #{ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters " \
+    "after #{ReleaseNotesPRHelper::AI_RELEASE_NOTES_MAX_ATTEMPTS} attempts. Please create the release notes manually."
+  )
+end
+
+# Returns the `html_url` of an open PR for `head -> base` in the WCiOS
+# repository, or `nil` if no PR is found or the lookup fails.
+def find_existing_release_notes_pr_url(base:, head:)
+  token = ENV.fetch('GITHUB_TOKEN', nil)
+  return nil if token.nil? || token.empty?
+
+  client = Octokit::Client.new(access_token: token)
+  prs = client.pull_requests(
+    GITHUB_REPO,
+    state: 'open',
+    head: "#{GITHUB_REPO.split('/').first}:#{head}",
+    base: base
+  )
+  prs&.first&.dig(:html_url)
+rescue StandardError => e
+  UI.important("Could not check for existing release notes PR: #{e.message}")
+  nil
+end
+
+# Enriches each parsed source item with the GitHub author handle of the
+# associated PR/issue. Falls back to the original item (which renders `—`) on
+# any lookup failure so we never block the lane on author resolution.
+def enrich_source_items_with_authors(source_items)
+  token = ENV.fetch('GITHUB_TOKEN', nil)
+  return source_items if token.nil? || token.empty?
+
+  client = Octokit::Client.new(access_token: token)
+  source_items.map do |item|
+    next item unless item[:number] && item[:type]
+
+    begin
+      data = item[:type] == 'issue' ? client.issue(GITHUB_REPO, item[:number]) : client.pull_request(GITHUB_REPO, item[:number])
+      login = data&.user&.login
+      html_url = data&.user&.html_url
+      next item if login.nil? || html_url.nil?
+
+      item.merge(author_login: login, author_url: html_url)
+    rescue StandardError => e
+      UI.important("Could not look up author for ##{item[:number]}: #{e.message}")
+      item
+    end
+  end
+end
+
+# Emits the `RV2_OUTPUT` line that ReleasesV2 parses out of the Buildkite log.
+def emit_release_notes_pr_url(url)
+  UI.message("RV2_OUTPUT release_notes_pr_url=#{url}")
+end
 
 def create_backmerge_pr
   version = release_version_current

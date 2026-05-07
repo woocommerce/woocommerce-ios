@@ -19,6 +19,7 @@ struct TotalsView: View {
     // _should be_ showing, so that we can animate the change.
     // Default true so totals fields would be included in the view hiearchy on first render and animate with TotalsView
     @State private var isShowingTotalsFields: Bool = true
+    @State private var isShowingOtherPaymentMethodsSheet: Bool = false
 
     /// Payment state with cash collection neutralized. Only `.collectingCash` is handled
     /// by NavigationStack push. Success and idle are visible to TotalsView.
@@ -102,6 +103,11 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields) {
             hideTotalsFieldsWithDelay(shouldShowTotalsFields)
+        }
+        .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
+            POSOtherPaymentMethodsSheet(onCardReader: { paymentModel.connectCardReader() })
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
         }
     }
 
@@ -597,9 +603,7 @@ private extension TotalsView {
     }
 
     func handleOtherPaymentMethodsTapped() {
-        // Intentionally a no-op for now — the overflow sheet (initially just
-        // Card reader) is the next focused commit.
-        DDLogInfo("📱 [TapToPay] Other payment methods tapped (sheet wiring pending)")
+        isShowingOtherPaymentMethodsSheet = true
     }
 }
 

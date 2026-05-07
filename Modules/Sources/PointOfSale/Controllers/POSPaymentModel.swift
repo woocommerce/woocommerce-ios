@@ -463,7 +463,7 @@ extension POSPaymentModel {
         guard paymentState.markAsPaid == .idle else { return }
         guard paymentState.allowsMarkAsPaidPayment else { return }
 
-        DDLogInfo("✅ [MarkAsPaid] startMarkAsPaidPayment called - card state: \(paymentState.card)")
+        DDLogInfo("🪙 [MarkAsPaid] startMarkAsPaidPayment called - card state: \(paymentState.card)")
         analytics.track(.pointOfSaleCheckoutMarkAsPaidTapped)
 
         startPaymentOnCardReaderConnection?.cancel()
@@ -476,7 +476,7 @@ extension POSPaymentModel {
             do {
                 try await self?.cardPresentPaymentService.cancelPayment()
             } catch {
-                DDLogWarn("✅ [MarkAsPaid] failed to cancel card payment: \(error)")
+                DDLogWarn("🪙 [MarkAsPaid] failed to cancel card payment: \(error)")
             }
         }
     }
@@ -487,6 +487,10 @@ extension POSPaymentModel {
         analytics.track(.pointOfSaleBackToCheckoutFromMarkAsPaidTapped)
         paymentState.markAsPaid = .idle
         paymentState.card = .idle
+        // Mirror `cancelCashPayment`: clear any stale "Tap, swipe, or insert card" message that
+        // was published before the merchant entered the mark-as-paid flow. The card subscription
+        // will repopulate it once the reader publishes a fresh event.
+        cardPresentPaymentInlineMessage = nil
 
         await cardPaymentCancelTask?.value
         cardPaymentCancelTask = nil
@@ -496,24 +500,27 @@ extension POSPaymentModel {
 
     /// Stage 2 (confirm): merchant confirmed; mark the order as paid through the order
     /// controller. On failure rolls back to the confirmation stage so the merchant can retry.
+    /// Analytics for failures fires here (not in the controller) so every failure path —
+    /// `provideOrder()` and the handler call alike — funnels through one event.
     func confirmMarkAsPaidPayment() async throws {
-        let order: Order
-        if let currentOrder {
-            order = currentOrder
-        } else {
-            let paymentOrder = try await orderProvider.provideOrder()
-            order = paymentOrder.order
-            currentOrder = order
-        }
-        analytics.track(.pointOfSaleMarkAsPaidConfirmed)
-        paymentState.markAsPaid = .processing
         do {
+            let order: Order
+            if let currentOrder {
+                order = currentOrder
+            } else {
+                let paymentOrder = try await orderProvider.provideOrder()
+                order = paymentOrder.order
+                currentOrder = order
+            }
+            analytics.track(.pointOfSaleMarkAsPaidConfirmed)
+            paymentState.markAsPaid = .processing
             try await markAsPaidHandler.markOrderAsPaid(for: order)
             try? await postPaymentStep?()
             markAsPaidPaymentSuccess()
         } catch {
             // Roll back so the merchant can try again or cancel.
             paymentState.markAsPaid = .confirming
+            analytics.track(.pointOfSaleMarkAsPaidFailed)
             throw error
         }
     }
@@ -858,11 +865,13 @@ private extension POSPaymentModel {
                 }
                 if paymentState.markAsPaid != .idle {
                     if cardPaymentState.requiresCashExit {
-                        DDLogWarn("✅ [MarkAsPaid] committed card event \(cardPaymentState) during mark-as-paid flow " +
+                        DDLogWarn("🪙 [MarkAsPaid] committed card event \(cardPaymentState) during mark-as-paid flow " +
                                   "- transitioning to card view")
                         paymentState.markAsPaid = .idle
                     } else {
-                        DDLogInfo("✅ [MarkAsPaid] ignoring non-committed card event \(cardPaymentState) during mark-as-paid flow")
+                        // Verbose: the merchant can sit on the confirmation alert for a while;
+                        // every reader event would otherwise be logged repeatedly.
+                        DDLogVerbose("🪙 [MarkAsPaid] ignoring non-committed card event \(cardPaymentState) during mark-as-paid flow")
                         return
                     }
                 }

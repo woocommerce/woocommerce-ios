@@ -3,9 +3,7 @@ import Foundation
 struct WidgetSnapshotDiff: Equatable {
     let previous: WidgetSnapshot
     let current: WidgetSnapshot
-}
 
-extension WidgetSnapshotDiff {
     enum ChangeType: String {
         case add = "add"
         case remove = "remove"

@@ -308,8 +308,9 @@ private extension WooAnalytics {
 
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(
                 .configurableStoreStatsWidgets
-            ) {
-                let snapshot = WidgetSnapshot(from: configurationResult)
+            ),
+               let infos = try? configurationResult.get() {
+                let snapshot = WidgetSnapshot(from: infos)
                 let properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
                 self.track(.applicationOpened, withProperties: properties)
                 self.widgetSetupChangeTracker.track(currentSnapshot: snapshot, analytics: self)

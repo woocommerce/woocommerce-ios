@@ -6,15 +6,6 @@ struct WidgetSnapshot: Equatable, Hashable {
 }
 
 extension WidgetSnapshot {
-    init(from result: Result<[WidgetInfo], Error>) {
-        switch result {
-        case .success(let infos):
-            self.init(from: infos)
-        case .failure:
-            self.init(tiles: [])
-        }
-    }
-
     init(from infos: [WidgetInfo]) {
         self.init(tiles: infos.compactMap { info -> Tile? in
             guard info.kind == WooConstants.storeInfoWidgetKind,

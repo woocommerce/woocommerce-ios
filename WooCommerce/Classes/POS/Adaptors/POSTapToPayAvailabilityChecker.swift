@@ -51,16 +51,22 @@ final class POSTapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking {
 
 private extension POSTapToPayAvailabilityChecker {
     func deviceSupportsTapToPay() async -> Bool {
+        // `StoresManager.dispatch` asserts main-thread; `withCheckedContinuation`'s
+        // closure runs on whatever thread the awaiter is on, which after a prior
+        // suspension point may be a cooperative background thread. Hop to the main
+        // actor before dispatching.
         await withCheckedContinuation { continuation in
-            let action = CardPresentPaymentAction.checkDeviceSupport(
-                siteID: siteID,
-                cardReaderType: .tapToPay,
-                discoveryMethod: .tapToPay,
-                minimumOperatingSystemVersionOverride: nil
-            ) { isSupported in
-                continuation.resume(returning: isSupported)
+            Task { @MainActor in
+                let action = CardPresentPaymentAction.checkDeviceSupport(
+                    siteID: siteID,
+                    cardReaderType: .tapToPay,
+                    discoveryMethod: .tapToPay,
+                    minimumOperatingSystemVersionOverride: nil
+                ) { isSupported in
+                    continuation.resume(returning: isSupported)
+                }
+                stores.dispatch(action)
             }
-            stores.dispatch(action)
         }
     }
 

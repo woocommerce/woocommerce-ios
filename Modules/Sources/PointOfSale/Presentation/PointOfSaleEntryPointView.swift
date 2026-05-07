@@ -201,7 +201,10 @@ public struct PointOfSaleEntryPointView: View {
                 cartProductObserver: cartProductObserver,
                 isLocalCatalogEligible: isLocalCatalogEligible,
                 sunsetWarningChecker: sunsetWarningChecker,
-                tapToPayAvailabilityController: tapToPayAvailabilityChecker.map(POSTapToPayAvailabilityController.init))
+                tapToPayAvailabilityController: tapToPayAvailabilityChecker.map { checker in
+                    POSTapToPayAvailabilityController(availabilityChecker: checker,
+                                                      analytics: services.analytics)
+                })
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)

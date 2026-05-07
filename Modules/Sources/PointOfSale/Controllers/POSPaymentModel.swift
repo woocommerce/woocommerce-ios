@@ -550,11 +550,13 @@ private extension POSPaymentModel {
             })
             .store(in: &paymentSessionCancellables)
 
-        // TTP cancel-on-reader → drop back to the idle hero. Re-arms the gate so
-        // any stray Stripe Terminal events arriving during the cancel teardown
-        // (transient `.tapSwipeOrInsertCard` etc.) can't flicker the card state
-        // back out of `.idle`. The gate stays true until the next
-        // `startPaymentWithMethod`.
+        // TTP cancel-on-reader → drop back to the idle hero. Synchronously closes
+        // the gate, resets `paymentState.card` to `.idle`, and clears the inline
+        // message in the same run loop the event arrives on, so a stray
+        // `.tapSwipeOrInsertCard` arriving immediately after (or the previous
+        // one's cached state) can't keep the "Tap card" message visible. The
+        // actual Stripe cancel runs in a fire-and-forget Task — it's async, but
+        // we don't need to wait for it before flipping back to the hero.
         cardPresentPaymentService.paymentEventPublisher
             .filter { event in
                 if case .show(.cancelledOnReader) = event { return true }
@@ -563,10 +565,10 @@ private extension POSPaymentModel {
             .sink { [weak self] _ in
                 guard let self, self.preferredConnectionMethod == .tapToPay else { return }
                 self.isAwaitingExplicitPaymentStart = true
+                self.paymentState.card = .idle
+                self.cardPresentPaymentInlineMessage = nil
                 Task { @MainActor [weak self] in
                     try? await self?.cardPresentPaymentService.cancelPayment()
-                    self?.paymentState.card = .idle
-                    self?.cardPresentPaymentInlineMessage = nil
                 }
             }
             .store(in: &paymentSessionCancellables)

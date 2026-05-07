@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct CardReferenceResolverTests {
     @Test
     func test_resolve_when_three_mixed_family_references_then_all_resolved_in_input_order() async {
@@ -359,6 +360,40 @@ struct CardReferenceResolverTests {
             #expect(reason == .notFound)
         } else {
             Issue.record("expected rejected.notFound")
+        }
+    }
+
+    @Test
+    func test_resolve_when_variation_response_omits_parent_id_then_summary_and_rendered_carry_requested_parent() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        await client.stub(path: "wc/v3/products/12/variations/841",
+                    response: StubResponses.ok("""
+                    {"id": 841, "name": "Black", "sku": "BNY-BLK", "price": "74.99",
+                     "regular_price": "74.99", "sale_price": "", "stock_quantity": 5,
+                     "stock_status": "instock", "status": "publish",
+                     "attributes": [{"id": 1, "name": "Color", "option": "Black"}]}
+                    """))
+        let resolver = CardReferenceResolver(client: client)
+        let references = [CardReference(family: .productVariation, id: "841", parentID: "12")]
+
+        // When
+        let resolutions = await resolver.resolve(references)
+
+        // Then
+        guard case .resolved(_, _, let summary, let rendered) = resolutions[0] else {
+            Issue.record("expected resolved, got \(resolutions[0])")
+            return
+        }
+        if case .object(let fields) = summary {
+            #expect(fields["parent_id"] == .int(12))
+        } else {
+            Issue.record("expected object summary")
+        }
+        if case .object(let element) = rendered.element {
+            #expect(element["parent_id"] == .int(12))
+        } else {
+            Issue.record("expected rendered.element to be an object carrying parent_id")
         }
     }
 

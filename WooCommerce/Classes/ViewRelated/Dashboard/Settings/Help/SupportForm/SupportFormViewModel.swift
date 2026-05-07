@@ -106,7 +106,8 @@ public final class SupportFormViewModel: ObservableObject {
          analyticsProvider: Analytics = ServiceLocator.analytics,
          applicationLogsProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
          defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite,
-         attachments: [ZendeskAttachment] = []) {
+         attachments: [ZendeskAttachment] = [],
+         preselectedArea: Area? = nil) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.additionalTags = additionalTags
@@ -115,6 +116,7 @@ public final class SupportFormViewModel: ObservableObject {
         self.applicationLogsProvider = applicationLogsProvider
         self.defaultSite = defaultSite
         self.attachments = attachments
+        self.area = preselectedArea
     }
 
     /// Tracks when the support form is viewed.
@@ -244,11 +246,11 @@ private extension SupportFormViewModel {
 }
 
 // MARK: Constants
-private extension SupportFormViewModel {
+extension SupportFormViewModel {
 
     /// Default Woo Support Areas
     ///
-    static func wooSupportAreas() -> [Area] {
+    private static func wooSupportAreas() -> [Area] {
         let metadataProvider = SupportFormMetadataProvider()
         return [
             .init(title: Localization.mobileApp, datasource: MobileAppSupportDataSource(metadataProvider: metadataProvider)),

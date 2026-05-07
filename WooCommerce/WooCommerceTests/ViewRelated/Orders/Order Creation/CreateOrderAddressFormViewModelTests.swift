@@ -168,7 +168,7 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.secondaryFields.selectedState)
     }
 
-    func test_selecting_country_without_states_nullifies_selectedState_property_but_keeps_state_field() {
+    func test_selecting_country_without_states_nullifies_selectedState_property_and_state_field() {
         // Given
         let newCountry = Country(code: "GB", name: "United Kingdom", states: [])
 
@@ -188,7 +188,7 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         countryViewModel.command.handleSelectedChange(selected: newCountry, viewController: viewController)
 
         // Then
-        XCTAssertEqual(viewModel.secondaryFields.state, "New York")
+        XCTAssertEqual(viewModel.secondaryFields.state, "")
         XCTAssertNil(viewModel.secondaryFields.selectedState)
     }
 

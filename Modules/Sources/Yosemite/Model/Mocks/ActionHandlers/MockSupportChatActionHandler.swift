@@ -22,6 +22,8 @@ struct MockSupportChatActionHandler: MockActionHandler {
             onCompletion([])
         case let .deleteChat(_, onCompletion):
             onCompletion()
+        case let .markTicketCreated(_, onCompletion):
+            onCompletion()
         }
     }
 

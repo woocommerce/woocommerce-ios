@@ -385,7 +385,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .helpAndSupport,
-                onContactHumanSupport: { _ in }
+                onContactHumanSupport: { _, _ in }
             )
         )
     }
@@ -396,7 +396,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .connectivityTool,
-                onContactHumanSupport: { _ in }
+                onContactHumanSupport: { _, _ in }
             )
         )
     }

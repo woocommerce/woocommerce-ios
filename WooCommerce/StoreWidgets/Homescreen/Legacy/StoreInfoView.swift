@@ -4,7 +4,7 @@ import WidgetKit
 /// Routing flag for the medium home-screen widget.
 ///
 /// `false`: render the legacy `StoreInfoView` / `StatsCard` (consumes pre-formatted String fields).
-/// `true`: render the metric-catalog driven `StoreInfoMetricsView` / `StoreInfoMetricsCard`.
+/// `true`: render the metric-catalog driven `StoreInfoMetricsView`.
 ///
 /// Mirrored into the App Group by `StoreWidgetsFeatureFlagSynchronizer` from the local
 /// `FeatureFlag.configurableStoreStatsWidgets` (enabled by default on local/alpha builds, off on

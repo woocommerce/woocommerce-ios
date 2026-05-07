@@ -5,14 +5,15 @@ struct MessageListView: View {
     let messages: [ChatMessage]
     let streamingState: AssistantConversation.StreamingState
     var onPickPrompt: (String) -> Void = { _ in }
+    var onSendSuggestion: (String) -> Void = { _ in }
 
     @StateObject private var scrollController = ChatScrollController()
     @State private var lastTickTime: Date = .distantPast
 
     var body: some View {
         if messages.isEmpty {
-            EmptyStateView(onPick: onPickPrompt)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            EmptyStateView(onPick: onSendSuggestion)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         } else {
             ZStack(alignment: .bottomTrailing) {
                 ChatScrollView(controller: scrollController) {

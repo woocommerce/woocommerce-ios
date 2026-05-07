@@ -31,6 +31,7 @@ extension UserDefaults {
         case siteIDsWithSnapshotTracked
         case hasSavedPrivacyBannerSettings
         case usedProductDescriptionAI
+        case lastWidgetSnapshot
 
         // Tooltip
         case hasDismissedWriteWithAITooltip

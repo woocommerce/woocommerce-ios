@@ -80,6 +80,9 @@ final class HelpAndSupportViewController: UIViewController {
         isAIChatEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
     )
 
+    /// Retains the support escalation coordinator while the flow is active.
+    private var supportEscalationCoordinator: SupportEscalationCoordinator?
+
     private var isMacCatalyst: Bool {
         #if targetEnvironment(macCatalyst)
         return true
@@ -479,17 +482,17 @@ private extension HelpAndSupportViewController {
             : .preLogin
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
-            onContactHumanSupport: { [weak self] transcript in
-                self?.navigateToContactSupport(transcript: transcript)
+            onContactHumanSupport: { [weak self] transcript, supportAreaInfo in
+                self?.handleContactHumanSupport(transcript: transcript, supportAreaInfo: supportAreaInfo)
             }
         )
         let controller = SupportChatHostingController(viewModel: viewModel)
         navigationController?.pushViewController(controller, animated: true)
     }
 
-    private func navigateToContactSupport(transcript: String) {
-        let viewController = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag))
-        viewController.show(from: self)
+    private func handleContactHumanSupport(transcript: String, supportAreaInfo: SupportAreaInfo?) {
+        supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController)
+        supportEscalationCoordinator?.handleEscalation(transcript: transcript, supportAreaInfo: supportAreaInfo)
     }
 
     /// Chat History action
@@ -513,8 +516,8 @@ private extension HelpAndSupportViewController {
             botSlug: summary.botSlug,
             entryPoint: .chatHistory,
             chatID: summary.chatID,
-            onContactHumanSupport: { [weak self] transcript in
-                self?.navigateToContactSupport(transcript: transcript)
+            onContactHumanSupport: { [weak self] transcript, supportAreaInfo in
+                self?.handleContactHumanSupport(transcript: transcript, supportAreaInfo: supportAreaInfo)
             }
         )
         let controller = SupportChatHostingController(viewModel: chatViewModel)

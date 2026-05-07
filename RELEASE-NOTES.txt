@@ -4,6 +4,7 @@
 -----
 - [*] Show visitor stats for Jetpack-connected stores [https://github.com/woocommerce/woocommerce-ios/pull/17008]
 
+- [*] Customer details: fixed bugs in form when adding a customer on iPad [https://github.com/woocommerce/woocommerce-ios/pull/17074]
 
 24.7
 -----
@@ -11,6 +12,7 @@
 - [*] Performance card: pick which order date type drives the totals (paid, placed, or completed) from a bottom sheet. [https://github.com/woocommerce/woocommerce-ios/pull/16988]
 - [*] Add FedEx Terms of Service handling for shipping label purchases [https://github.com/woocommerce/woocommerce-ios/pull/16925]
 - [*] POS: Update empty orders state copy and replace "Learn more" with "Refresh" [https://github.com/woocommerce/woocommerce-ios/pull/16961]
+- [Internal] POS: Show custom amounts in the refund flow and order details [https://github.com/woocommerce/woocommerce-ios/pull/17014]
 - [*] Point of Sale is now available for stores based in Puerto Rico. [https://github.com/woocommerce/woocommerce-ios/pull/17026]
 - [Internal] Add `inPersonPaymentsCountryExpansion` and `inPersonPaymentsCountryExpansionEUExtended` remote feature flags gating IPP and POS support for 13 new countries — `inPersonPaymentsCountryExpansion` covers FR/DE/IE/NL/SG/NZ; `inPersonPaymentsCountryExpansionEUExtended` covers AT/BE/FI/IT/LU/PT/ES. Eligibility is cached per site in `GeneralStoreSettings`. Existing supported countries (US, PR, CA, GB) are unaffected; AU is intentionally excluded pending EFTPOS support.
 

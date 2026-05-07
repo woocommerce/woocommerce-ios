@@ -10,13 +10,17 @@ struct AIAssistantChatScreen: View {
 
     @State private var controller: AssistantController?
     @State private var navigationHost: AIAssistantNavigationHost?
+    @State private var externalNavigation: AssistantExternalNavigationProviding?
+    @State private var externalViews: AssistantExternalViewProviding?
     @State private var appPasswordSupportState = ApplicationPasswordsExperimentState()
 
     var body: some View {
         Group {
-            if let navigationHost, let controller {
+            if let navigationHost, let controller, let externalNavigation, let externalViews {
                 AIAssistantChatNavHost(host: navigationHost) {
                     AssistantChatView(controller: controller, onClose: onClose)
+                        .environment(\.assistantExternalNavigation, externalNavigation)
+                        .environment(\.assistantExternalViews, externalViews)
                 }
                 .ignoresSafeArea()
             } else {
@@ -42,5 +46,7 @@ struct AIAssistantChatScreen: View {
         }
         navigationHost = session.navigationHost
         controller = session.controller
+        externalNavigation = session.externalNavigation
+        externalViews = session.externalViews
     }
 }

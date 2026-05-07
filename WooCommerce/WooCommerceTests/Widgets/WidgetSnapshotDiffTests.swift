@@ -256,14 +256,14 @@ struct WidgetSnapshotDiffTests {
         #expect(diff.removedWidgets == [])
     }
 
-    @Test func metric_replacement_with_already_used_value_reduces_combined_set_by_one() {
-        // Given - 2 tiles, combined metrics: {revenue, orders, visitors}
+    @Test func metric_replacement_with_already_used_value_reports_multiset_delta() {
+        // Given - 2 tiles, combined metrics: [revenue, orders, orders, visitors]
         let previous = WidgetSnapshot(tiles: [
             Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue, .orders]),
             Self.storeStatsTile(family: .systemSmall, dateRange: .today, metrics: [.orders, .visitors])
         ])
         // User changes tile A's first metric from `revenue` to `visitors`.
-        // Combined now: {visitors, orders} — one less than before.
+        // Combined now: [visitors, orders, orders, visitors].
         let current = WidgetSnapshot(tiles: [
             Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.visitors, .orders]),
             Self.storeStatsTile(family: .systemSmall, dateRange: .today, metrics: [.orders, .visitors])
@@ -272,13 +272,51 @@ struct WidgetSnapshotDiffTests {
         // When
         let diff = WidgetSnapshotDiff(previous: previous, current: current)
 
-        // Then
+        // Then - revenue dropped out entirely (-1), visitors gained one extra (+1)
         #expect(diff.hasChanged)
         #expect(diff.changeType == .churn)
-        #expect(diff.addedMetrics == [])
+        #expect(diff.addedMetrics == ["visitors"])
         #expect(diff.removedMetrics == ["revenue"])
         #expect(diff.addedDateRanges == [])
         #expect(diff.removedDateRanges == [])
+    }
+
+    // MARK: - Multiset semantics (preserve duplicates)
+
+    @Test func added_metric_used_in_two_new_tiles_reports_two_occurrences() {
+        // Given
+        let previous = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemSmall, dateRange: .today, metrics: [.orders])
+        ])
+        let current = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemSmall, dateRange: .today, metrics: [.orders]),
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue, .revenue])
+        ])
+
+        // When
+        let diff = WidgetSnapshotDiff(previous: previous, current: current)
+
+        // Then - revenue is added twice across the new tile
+        #expect(diff.addedMetrics == ["revenue", "revenue"])
+        #expect(diff.removedMetrics == [])
+    }
+
+    @Test func added_widgets_preserves_duplicate_kind_family_combos() {
+        // Given - one medium tile, becomes two medium tiles
+        let previous = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue])
+        ])
+        let current = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue]),
+            Self.storeStatsTile(family: .systemMedium, dateRange: .last7Days, metrics: [.orders])
+        ])
+
+        // When
+        let diff = WidgetSnapshotDiff(previous: previous, current: current)
+
+        // Then - the second medium tile shows up as an added duplicate
+        #expect(diff.addedWidgets == ["StoreInfoWidget-systemMedium"])
+        #expect(diff.removedWidgets == [])
     }
 
     @Test func same_kind_family_with_different_configs_is_not_a_widget_diff() {

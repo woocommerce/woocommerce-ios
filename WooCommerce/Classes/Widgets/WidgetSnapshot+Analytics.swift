@@ -7,22 +7,22 @@ extension WidgetSnapshot.Tile {
 }
 
 extension WidgetSnapshot {
-    var storeInfoDateRangesInUse: Set<String> {
-        Set(tiles.compactMap { tile -> String? in
+    var storeInfoDateRangesInUse: [String] {
+        tiles.compactMap { tile -> String? in
             if case .storeStats(let dateRange, _) = tile.configuration {
                 return dateRange.rawValue
             }
             return nil
-        })
+        }
     }
 
-    var storeInfoMetricsInUse: Set<String> {
-        Set(tiles.flatMap { tile -> [String] in
+    var storeInfoMetricsInUse: [String] {
+        tiles.flatMap { tile -> [String] in
             if case .storeStats(_, let metrics) = tile.configuration {
                 return metrics.map(\.rawValue)
             }
             return []
-        })
+        }
     }
 
     var analyticsProperties: [String: String] {

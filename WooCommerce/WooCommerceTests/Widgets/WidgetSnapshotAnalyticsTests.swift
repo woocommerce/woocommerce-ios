@@ -128,7 +128,7 @@ struct WidgetSnapshotAnalyticsTests {
         #expect(props["info_widget_date_ranges_in_use"] == "today")
     }
 
-    @Test func multiple_tiles_report_unique_sorted_date_ranges() {
+    @Test func multiple_tiles_report_date_ranges_with_repetitions_sorted() {
         // Given - three tiles, two share the same dateRange
         let tileA = WidgetSnapshot.Tile(
             kind: WooConstants.storeInfoWidgetKind,
@@ -150,8 +150,8 @@ struct WidgetSnapshotAnalyticsTests {
         // When
         let props = snapshot.analyticsProperties
 
-        // Then - deduplicated and alphabetically sorted
-        #expect(props["info_widget_date_ranges_in_use"] == "last7Days,today")
+        // Then - multiset CSV preserves repetitions, alphabetically sorted
+        #expect(props["info_widget_date_ranges_in_use"] == "last7Days,today,today")
     }
 
     @Test func unconfigured_tile_excluded_from_date_ranges() {
@@ -188,7 +188,7 @@ struct WidgetSnapshotAnalyticsTests {
         #expect(props["info_widget_metrics_in_use"] == "orders,revenue")
     }
 
-    @Test func multiple_tiles_combine_unique_metrics_no_repetitions() {
+    @Test func multiple_tiles_combine_metrics_with_repetitions() {
         // Given - tiles with overlapping metrics
         let tileA = WidgetSnapshot.Tile(
             kind: WooConstants.storeInfoWidgetKind,
@@ -205,8 +205,8 @@ struct WidgetSnapshotAnalyticsTests {
         // When
         let props = snapshot.analyticsProperties
 
-        // Then - union deduplicated and alphabetized: orders, revenue, visitors
-        #expect(props["info_widget_metrics_in_use"] == "orders,revenue,visitors")
+        // Then - multiset CSV: orders appears twice, sorted alphabetically
+        #expect(props["info_widget_metrics_in_use"] == "orders,orders,revenue,visitors")
     }
 
     @Test func unconfigured_tile_excluded_from_metrics_combined() {

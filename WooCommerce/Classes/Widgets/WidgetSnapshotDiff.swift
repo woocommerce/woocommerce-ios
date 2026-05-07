@@ -25,33 +25,51 @@ struct WidgetSnapshotDiff: Equatable {
     }
 
     var addedDateRanges: [String] {
-        Array(currentDateRanges.subtracting(previousDateRanges)).sorted()
+        currentDateRanges.multisetDifference(from: previousDateRanges).sorted()
     }
 
     var removedDateRanges: [String] {
-        Array(previousDateRanges.subtracting(currentDateRanges)).sorted()
+        previousDateRanges.multisetDifference(from: currentDateRanges).sorted()
     }
 
     var addedMetrics: [String] {
-        Array(currentMetrics.subtracting(previousMetrics)).sorted()
+        currentMetrics.multisetDifference(from: previousMetrics).sorted()
     }
 
     var removedMetrics: [String] {
-        Array(previousMetrics.subtracting(currentMetrics)).sorted()
+        previousMetrics.multisetDifference(from: currentMetrics).sorted()
     }
 
     var addedWidgets: [String] {
-        Array(currentWidgetNames.subtracting(previousWidgetNames)).sorted()
+        currentWidgetNames.multisetDifference(from: previousWidgetNames).sorted()
     }
 
     var removedWidgets: [String] {
-        Array(previousWidgetNames.subtracting(currentWidgetNames)).sorted()
+        previousWidgetNames.multisetDifference(from: currentWidgetNames).sorted()
     }
 
-    private var currentDateRanges: Set<String> { current.storeInfoDateRangesInUse }
-    private var previousDateRanges: Set<String> { previous.storeInfoDateRangesInUse }
-    private var currentMetrics: Set<String> { current.storeInfoMetricsInUse }
-    private var previousMetrics: Set<String> { previous.storeInfoMetricsInUse }
-    private var currentWidgetNames: Set<String> { Set(current.tiles.map(\.analyticsName)) }
-    private var previousWidgetNames: Set<String> { Set(previous.tiles.map(\.analyticsName)) }
+    private var currentDateRanges: [String] { current.storeInfoDateRangesInUse }
+    private var previousDateRanges: [String] { previous.storeInfoDateRangesInUse }
+    private var currentMetrics: [String] { current.storeInfoMetricsInUse }
+    private var previousMetrics: [String] { previous.storeInfoMetricsInUse }
+    private var currentWidgetNames: [String] { current.tiles.map(\.analyticsName) }
+    private var previousWidgetNames: [String] { previous.tiles.map(\.analyticsName) }
+}
+
+private extension Array where Element: Hashable {
+    /// Returns the multiset difference `self - other`: each occurrence in `other` cancels one
+    /// occurrence in `self`, preserving the remaining duplicates and their original order.
+    func multisetDifference(from other: [Element]) -> [Element] {
+        var counts: [Element: Int] = [:]
+        for value in other {
+            counts[value, default: 0] += 1
+        }
+        return reduce(into: []) { result, value in
+            if let remaining = counts[value], remaining > 0 {
+                counts[value] = remaining - 1
+            } else {
+                result.append(value)
+            }
+        }
+    }
 }

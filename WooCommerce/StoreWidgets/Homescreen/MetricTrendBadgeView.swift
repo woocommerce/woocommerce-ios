@@ -4,21 +4,52 @@ import SwiftUI
 /// Color encodes direction (green up / red down). Hidden whenever the parent
 /// `MetricPresentable` returns `nil` for `trend`.
 ///
+/// `size` mirrors the parent text stack's `MetricCellTextSize` so the badge scales
+/// alongside the title and value.
+///
 struct MetricTrendBadgeView: View {
     let trend: MetricTrendPresentation
+    let size: MetricCellTextSize
 
     var body: some View {
         HStack(spacing: Layout.spacing) {
-            Image(systemName: symbolName)
-                .font(Layout.trendIndicatorFont)
-                .minimumScaleFactor(0.7)
-            Text(trend.formattedPercentage)
-                .font(Layout.trendTextFont)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+            indicator
+            text
         }
         .foregroundStyle(color)
         .accessibilityLabel(accessibilityLabel)
+    }
+}
+
+private extension MetricTrendBadgeView {
+    @ViewBuilder
+    var indicator: some View {
+        switch size {
+        case .regular:
+            Image(systemName: symbolName)
+                .statTrendIndicatorStyle()
+                .minimumScaleFactor(0.7)
+        case .large:
+            Image(systemName: symbolName)
+                .statTrendIndicatorLargeStyle()
+                .minimumScaleFactor(0.7)
+        }
+    }
+
+    @ViewBuilder
+    var text: some View {
+        switch size {
+        case .regular:
+            Text(trend.formattedPercentage)
+                .statTrendTextStyle()
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        case .large:
+            Text(trend.formattedPercentage)
+                .statTrendTextLargeStyle()
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
     }
 }
 
@@ -54,8 +85,6 @@ private extension MetricTrendBadgeView {
 private extension MetricTrendBadgeView {
     enum Layout {
         static let spacing = 2.0
-        static let trendTextFont: Font = .system(size: 9, weight: .bold)
-        static let trendIndicatorFont: Font = .system(size: 7, weight: .bold)
     }
 
     enum Localization {

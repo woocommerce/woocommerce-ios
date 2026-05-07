@@ -1,6 +1,5 @@
 import Foundation
 import Combine
-import Storage
 import Yosemite
 import struct NetworkingCore.JetpackSite
 import enum NetworkingCore.Credentials
@@ -27,7 +26,6 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
                           site: Yosemite.Site,
                           navigationHost: AIAssistantNavigationHost,
                           stores: StoresManager = ServiceLocator.stores,
-                          storageManager: StorageManagerType = ServiceLocator.storageManager,
                           analytics: Analytics = ServiceLocator.analytics,
                           appPasswordSupport: AnyPublisher<Bool, Never> = Just(false).eraseToAnyPublisher())
                           -> AIAssistantDependencyAdaptor {
@@ -51,7 +49,6 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
         let toolRegistry = RESTToolRegistry(
             client: restClient,
             tools: Self.defaultTools(siteID: siteID,
-                                     storageManager: storageManager,
                                      stores: stores,
                                      restClient: restClient)
         )
@@ -80,7 +77,6 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
 
     @MainActor
     private static func defaultTools(siteID: Int64,
-                                     storageManager: StorageManagerType,
                                      stores: StoresManager,
                                      restClient: WCRESTClient) -> [RESTTool] {
         let dispatch: @Sendable (Action) -> Void = { action in stores.dispatch(action) }
@@ -100,7 +96,7 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
             AnalyticsOrdersTool.make(),
             AnalyticsRevenueTool.make(),
             ShowCardsTool.make(siteID: siteID,
-                               storageManager: storageManager,
+                               storageManager: ServiceLocator.storageManager,
                                dispatchAction: dispatch,
                                restClient: restClient)
         ]

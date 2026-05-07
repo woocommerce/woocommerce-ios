@@ -284,6 +284,7 @@ let package = Package(
                 "NetworkingCore",
                 "Storage",
                 "Yosemite",
+                .product(name: "Alamofire", package: "Alamofire"),
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ]
         ),

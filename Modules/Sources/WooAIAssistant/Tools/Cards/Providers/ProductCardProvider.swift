@@ -42,9 +42,12 @@ final class ProductCardProvider: CardEntityProvider {
         }
 
         switch result {
-        case .success:
+        case .success(let result):
+            let productsByID = result.products.reduce(into: [Int64: Yosemite.Product]()) { keyed, product in
+                keyed[product.productID] = product
+            }
             for ref in misses {
-                if let product = storageManager.viewStorage.loadProduct(siteID: siteID, productID: ref.id)?.toReadOnly() {
+                if let product = productsByID[ref.id] {
                     outcomes[ref] = outcome(for: product)
                 } else {
                     outcomes[ref] = .rejected(.notFound)

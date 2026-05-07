@@ -43,9 +43,6 @@ struct ProductCardProviderTests {
             dispatched.append(action)
             guard let productAction = action as? ProductAction,
                   case .retrieveProducts(_, let ids, _, _, let onCompletion) = productAction else { return }
-            for id in ids {
-                storageManager.insertSampleProduct(readOnlyProduct: makeProduct(id: id))
-            }
             onCompletion(.success((products: ids.map { makeProduct(id: $0) }, hasNextPage: false)))
         })
         let refs = [makeProductRef(10), makeProductRef(11)]
@@ -71,9 +68,6 @@ struct ProductCardProviderTests {
             dispatched.append(action)
             guard let productAction = action as? ProductAction,
                   case .retrieveProducts(_, let ids, _, _, let onCompletion) = productAction else { return }
-            for id in ids {
-                storageManager.insertSampleProduct(readOnlyProduct: makeProduct(id: id))
-            }
             onCompletion(.success((products: ids.map { makeProduct(id: $0) }, hasNextPage: false)))
         })
         let refs = [makeProductRef(1), makeProductRef(2)]
@@ -120,9 +114,6 @@ struct ProductCardProviderTests {
             guard let productAction = action as? ProductAction,
                   case .retrieveProducts(_, let ids, _, _, let onCompletion) = productAction else { return }
             let returned = ids.filter { $0 == 10 }
-            for id in returned {
-                storageManager.insertSampleProduct(readOnlyProduct: makeProduct(id: id))
-            }
             onCompletion(.success((products: returned.map { makeProduct(id: $0) }, hasNextPage: false)))
         })
         let refs = [makeProductRef(10), makeProductRef(11)]

@@ -59,13 +59,8 @@ final class VariationCardProvider: CardEntityProvider {
 
         for ref in misses {
             switch fetchResults[ref] {
-            case .success:
-                if let variation = storageManager.viewStorage
-                    .loadProductVariation(siteID: siteID, productVariationID: ref.id)?.toReadOnly() {
-                    outcomes[ref] = outcome(for: variation, parentID: ref.parentID)
-                } else {
-                    outcomes[ref] = .rejected(.notFound)
-                }
+            case .success(let variation):
+                outcomes[ref] = outcome(for: variation, parentID: ref.parentID)
             case .failure(let error):
                 DDLogError("VariationCardProvider remote fetch failed for \(ref.id): \(error)")
                 outcomes[ref] = .rejected(.fetchFailed)

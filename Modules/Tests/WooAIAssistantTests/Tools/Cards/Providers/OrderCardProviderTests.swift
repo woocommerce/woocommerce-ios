@@ -46,9 +46,6 @@ struct OrderCardProviderTests {
                 Issue.record("expected retrieveOrders")
                 return
             }
-            for id in ids {
-                storageManager.insertSampleOrder(readOnlyOrder: makeOrder(id: id))
-            }
             onCompletion(.success(ids.map { makeOrder(id: $0) }))
         })
         let refs = [makeOrderRef(10), makeOrderRef(11)]
@@ -74,9 +71,6 @@ struct OrderCardProviderTests {
             dispatched.append(action)
             guard let orderAction = action as? OrderAction,
                   case .retrieveOrders(_, let ids, let onCompletion) = orderAction else { return }
-            for id in ids {
-                storageManager.insertSampleOrder(readOnlyOrder: makeOrder(id: id))
-            }
             onCompletion(.success(ids.map { makeOrder(id: $0) }))
         })
         let refs = [makeOrderRef(1), makeOrderRef(2)]
@@ -122,11 +116,7 @@ struct OrderCardProviderTests {
                                          dispatchAction: { action in
             guard let orderAction = action as? OrderAction,
                   case .retrieveOrders(_, let ids, let onCompletion) = orderAction else { return }
-            // Server returns only one of the two requested ids.
             let returned = ids.filter { $0 == 10 }
-            for id in returned {
-                storageManager.insertSampleOrder(readOnlyOrder: makeOrder(id: id))
-            }
             onCompletion(.success(returned.map { makeOrder(id: $0) }))
         })
         let refs = [makeOrderRef(10), makeOrderRef(11)]

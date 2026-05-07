@@ -1,4 +1,5 @@
 import Foundation
+import Alamofire
 import CocoaLumberjackSwift
 import NetworkingCore
 import Storage
@@ -265,9 +266,17 @@ public actor WooAssistantHeadless {
             password: strippedPassword,
             siteAddress: credentials.siteURL
         )
+        let networkConfiguration = URLSessionConfiguration.default
+        networkConfiguration.httpAdditionalHeaders = [
+            "Accept": "application/json",
+            "Authorization": basicAuthHeader,
+            "User-Agent": UserAgent.defaultUserAgent
+        ]
+        let sessionManager = Alamofire.Session(configuration: networkConfiguration)
         let network = AlamofireNetwork(credentials: yosemiteCredentials,
                                        selectedSite: nil,
-                                       appPasswordSupportState: nil)
+                                       appPasswordSupportState: nil,
+                                       sessionManager: sessionManager)
         let dispatcher = Dispatcher()
         let storeRefs: [Any] = [
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

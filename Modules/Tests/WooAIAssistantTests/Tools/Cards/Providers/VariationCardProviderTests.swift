@@ -105,15 +105,12 @@ struct VariationCardProviderTests {
     }
 
     @Test
-    func test_fetch_when_action_succeeds_but_storage_still_empty_then_rejected_as_notFound() async {
+    func test_fetch_when_action_succeeds_but_storage_still_empty_then_remote_result_resolves() async {
         // Given
         let storageManager = MockStorageManager()
         let provider = VariationCardProvider(siteID: variationTestSiteID,
                                              storageManager: storageManager,
                                              dispatchAction: { action in
-            // Simulate the action succeeding without writing through to storage,
-            // which is what happens when the server returns a 200 for an id
-            // the upsert path does not persist.
             guard let variationAction = action as? ProductVariationAction,
                   case .retrieveProductVariation(_, let productID, let variationID, let onCompletion) = variationAction else { return }
             onCompletion(.success(makeVariation(id: variationID, parentID: productID)))
@@ -124,7 +121,7 @@ struct VariationCardProviderTests {
         let outcomes = await provider.fetch(refs: [ref])
 
         // Then
-        #expect(isRejected(outcomes[ref], reason: .notFound))
+        #expect(isResolvedVariation(outcomes[ref], id: 5, parentID: 1))
     }
 
     @Test

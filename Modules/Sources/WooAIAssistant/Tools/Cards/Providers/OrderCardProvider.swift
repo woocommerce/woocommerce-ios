@@ -41,9 +41,12 @@ final class OrderCardProvider: CardEntityProvider {
         }
 
         switch result {
-        case .success:
+        case .success(let orders):
+            let ordersByID = orders.reduce(into: [Int64: Yosemite.Order]()) { keyed, order in
+                keyed[order.orderID] = order
+            }
             for ref in misses {
-                if let order = storageManager.viewStorage.loadOrder(siteID: siteID, orderID: ref.id)?.toReadOnly() {
+                if let order = ordersByID[ref.id] {
                     outcomes[ref] = outcome(for: order)
                 } else {
                     outcomes[ref] = .rejected(.notFound)

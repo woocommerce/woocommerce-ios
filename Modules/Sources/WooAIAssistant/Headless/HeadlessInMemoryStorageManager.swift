@@ -8,10 +8,8 @@ import Storage
 /// harness providers actually use - `viewStorage` for synchronous reads
 /// and `performAndSave` for upserts after dispatched actions.
 ///
-/// The harness ships in the production binary, so we cannot reach the
-/// Storage module's internal `Bundle.module`. The model is loaded via
-/// `WooCommerceModelLoader`, the public seam Storage exposes for callers
-/// that need a model without going through `CoreDataManager`.
+/// The harness ships in the production binary, so it uses a local bundle
+/// lookup to load the Storage model without adding a public Storage seam.
 final class HeadlessInMemoryStorageManager: StorageManagerType {
 
     let viewStorage: StorageType

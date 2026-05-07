@@ -24,7 +24,7 @@ struct AnalyticsCardFetchTests {
         let outcome = await fetch.fetch(spec)
 
         // Then
-        guard case .found(let summary) = outcome else {
+        guard case .found(.analyticsStats(let summary)) = outcome else {
             Issue.record("expected found, got \(outcome)")
             return
         }

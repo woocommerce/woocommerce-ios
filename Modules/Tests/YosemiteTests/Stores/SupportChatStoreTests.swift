@@ -269,6 +269,47 @@ struct SupportChatStoreTests {
         #expect(storedChatCount == 0)
     }
 
+    // MARK: - markTicketCreated
+
+    @Test func markTicketCreated_sets_hasCreatedTicket_on_existing_row() async throws {
+        // Given — register a chat first.
+        let store = makeStore()
+        let chatID: Int64 = 4242
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.registerChat(chatID: chatID,
+                                                          siteID: sampleSiteID,
+                                                          wpcomUserID: sampleWPComUserID,
+                                                          botSlug: sampleBotSlug,
+                                                          firstUserMessage: "hi",
+                                                          onCompletion: { continuation.resume() }))
+        }
+        #expect(viewStorage.loadSupportChat(chatID: chatID)?.hasCreatedTicket == false)
+
+        // When
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.markTicketCreated(chatID: chatID,
+                                                               onCompletion: { continuation.resume() }))
+        }
+
+        // Then
+        let stored = try #require(viewStorage.loadSupportChat(chatID: chatID))
+        #expect(stored.hasCreatedTicket == true)
+    }
+
+    @Test func markTicketCreated_when_row_does_not_exist_then_completes_without_error() async {
+        // Given
+        let store = makeStore()
+
+        // When — mark a chatID that was never registered.
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.markTicketCreated(chatID: 9999,
+                                                               onCompletion: { continuation.resume() }))
+        }
+
+        // Then — idempotent: no row created.
+        #expect(storedChatCount == 0)
+    }
+
     // MARK: - fetchChat
 
     @Test func fetchChat_forwards_to_remote_with_botSlug_and_chatID() async throws {

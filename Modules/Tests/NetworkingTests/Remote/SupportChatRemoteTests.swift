@@ -362,4 +362,70 @@ struct SupportChatRemoteTests {
             try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
         }
     }
+
+    // MARK: - submitFeedback
+
+    @Test func submitFeedback_posts_to_correct_path() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let messageID: Int64 = 123
+        let sessionID = "session-abc-123"
+        network.simulateResponse(requestUrlSuffix: "ai/feedback/\(sessionID)/rate",
+                                 filename: "generic_success")
+
+        // When
+        try await remote.submitFeedback(messageID: messageID, sessionID: sessionID, upvoted: true)
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? DotcomRequest)
+        #expect(request.path == "ai/feedback/\(sessionID)/rate")
+        #expect(request.method == .post)
+    }
+
+    @Test func submitFeedback_sends_messageID_and_up_rating_in_parameters() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let messageID: Int64 = 123
+        let sessionID = "session-abc-123"
+        network.simulateResponse(requestUrlSuffix: "ai/feedback/\(sessionID)/rate",
+                                 filename: "generic_success")
+
+        // When
+        try await remote.submitFeedback(messageID: messageID, sessionID: sessionID, upvoted: true)
+
+        // Then
+        let parameters = try #require(network.queryParametersDictionary)
+        #expect(parameters["message_id"] as? Int64 == messageID)
+        #expect(parameters["rating"] as? String == "up")
+        #expect(parameters["session_id"] == nil)
+    }
+
+    @Test func submitFeedback_sends_down_rating_in_parameters_when_downvoted() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let messageID: Int64 = 456
+        let sessionID = "session-xyz"
+        network.simulateResponse(requestUrlSuffix: "ai/feedback/\(sessionID)/rate",
+                                 filename: "generic_success")
+
+        // When
+        try await remote.submitFeedback(messageID: messageID, sessionID: sessionID, upvoted: false)
+
+        // Then
+        let parameters = try #require(network.queryParametersDictionary)
+        #expect(parameters["rating"] as? String == "down")
+    }
+
+    @Test func submitFeedback_when_network_errors_then_propagates_error() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let sessionID = "session-abc"
+        network.simulateError(requestUrlSuffix: "ai/feedback/\(sessionID)/rate",
+                              error: NetworkError.timeout())
+
+        // When / Then
+        await #expect(throws: NetworkError.timeout()) {
+            try await remote.submitFeedback(messageID: 123, sessionID: sessionID, upvoted: true)
+        }
+    }
 }

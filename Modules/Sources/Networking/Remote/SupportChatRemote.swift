@@ -26,6 +26,16 @@ public protocol SupportChatRemoteProtocol {
     /// - Returns: The full thread in `ts`-ascending order.
     func fetchChat(botSlug: String,
                    chatID: Int64) async throws -> SupportChatResponse
+
+    /// Submits feedback for a specific bot message.
+    ///
+    /// - Parameters:
+    ///   - messageID: Identifier of the message to rate.
+    ///   - sessionID: Session identifier of the chat.
+    ///   - upvoted: `true` for positive feedback (thumbs up), `false` for negative (thumbs down).
+    func submitFeedback(messageID: Int64,
+                        sessionID: String,
+                        upvoted: Bool) async throws
 }
 
 /// Remote for the support chat endpoint (`/wpcom/v2/odie/chat/{bot_slug}`).
@@ -70,6 +80,22 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
         let mapper = SupportChatResponseMapper()
         return try await enqueue(request, mapper: mapper)
     }
+
+    public func submitFeedback(messageID: Int64,
+                               sessionID: String,
+                               upvoted: Bool) async throws {
+        let path = "\(Path.feedback)/\(sessionID)/rate"
+        let parameters: [String: Any] = [
+            ParameterKey.messageID: messageID,
+            ParameterKey.rating: upvoted ? "up" : "down"
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .post,
+                                    path: path,
+                                    parameters: parameters,
+                                    encoding: JSONEncoding.default)
+        _ = try await enqueue(request)
+    }
 }
 
 // MARK: - Constants
@@ -77,11 +103,14 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
 private extension SupportChatRemote {
     enum Path {
         static let chat = "odie/chat"
+        static let feedback = "ai/feedback"
     }
 
     enum ParameterKey {
         static let message = "message"
         static let context = "context"
         static let sessionID = "session_id"
+        static let messageID = "message_id"
+        static let rating = "rating"
     }
 }

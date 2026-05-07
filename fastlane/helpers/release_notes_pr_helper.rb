@@ -5,7 +5,7 @@
 # These helpers are deliberately stateless and free of Fastlane / network
 # dependencies so they can be exercised by unit tests without touching
 # OpenAI, GitHub, or git.
-module ReleaseNotesPRHelper
+module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
   PREFERRED_RELEASE_NOTES_MAX_LENGTH = 350
   AI_RELEASE_NOTES_MAX_ATTEMPTS = 2
 
@@ -97,41 +97,41 @@ module ReleaseNotesPRHelper
   def parse_source_items(raw_items)
     return [] if raw_items.nil?
 
-    raw_items.lines.filter_map do |line|
-      stripped = line.strip
-      next if stripped.empty?
+    raw_items.lines.filter_map { |line| parse_source_item_line(line) }
+  end
 
-      # Drop the leading "- " bullet
-      content = stripped.sub(/\A-\s*/, '')
+  # Parses a single release-notes line into a source-item hash, or returns nil
+  # if the line should be skipped (blank, `[Internal]`, or empty after parsing).
+  def parse_source_item_line(line)
+    content = line.strip
+    return nil if content.empty?
 
-      # Ignore [Internal] items entirely
-      next if content.match?(/\A\[Internal\]/i)
+    content = content.sub(/\A-\s*/, '')
+    return nil if content.match?(/\A\[Internal\]/i)
 
-      # Strip a leading priority marker such as `[*]`, `[**]`, `[***]`
-      content = content.sub(/\A\[\*+\]\s*/, '')
+    content = content.sub(/\A\[\*+\]\s*/, '')
+    text, url_info = split_text_and_url(content)
+    return nil if text.empty?
 
-      # Pull off the trailing GitHub URL in square brackets, if present
-      url = nil
-      number = nil
-      type = nil
-      if (m = content.match(%r{\s*\[(?<url>https?://github\.com/[^\s\]]+)\]\s*\z}))
-        url = m[:url]
-        content = content.sub(m[0], '').rstrip
-        if (u = url.match(%r{github\.com/[^/]+/[^/]+/(?<kind>pull|issues)/(?<num>\d+)}))
-          type = u[:kind] == 'issues' ? 'issue' : 'pull'
-          number = Integer(u[:num])
-        end
-      end
+    { text: text, url: url_info[:url], number: url_info[:number], type: url_info[:type] }
+  end
 
-      next if content.empty?
+  # Splits the trailing `[https://github.com/.../pull/123]` token off the line.
+  # Returns `[text, { url:, number:, type: }]` (number/type may be nil).
+  def split_text_and_url(content)
+    match = content.match(%r{\s*\[(?<url>https?://github\.com/[^\s\]]+)\]\s*\z})
+    return [content, { url: nil, number: nil, type: nil }] unless match
 
-      {
-        text: content,
-        url: url,
-        number: number,
-        type: type
-      }
-    end
+    text = content.sub(match[0], '').rstrip
+    [text, parse_github_url(match[:url])]
+  end
+
+  # @return [Hash] url/number/type for a github.com/{org}/{repo}/(pull|issues)/{n} URL
+  def parse_github_url(url)
+    parts = url.match(%r{github\.com/[^/]+/[^/]+/(?<kind>pull|issues)/(?<num>\d+)})
+    return { url: url, number: nil, type: nil } unless parts
+
+    { url: url, number: Integer(parts[:num]), type: parts[:kind] == 'issues' ? 'issue' : 'pull' }
   end
 
   # Renders the Markdown table of source items for the PR body. Excludes any
@@ -142,24 +142,28 @@ module ReleaseNotesPRHelper
   def source_items_markdown_table(source_items)
     return '_No source items parsed._' if source_items.nil? || source_items.empty?
 
-    rows = source_items.map do |item|
-      source_text = item[:text]
-      source_link = item[:url] && item[:number] ? "[##{item[:number]}](#{item[:url]})" : '—'
-      author =
-        if item[:author_login] && item[:author_url]
-          "[@#{item[:author_login]}](#{item[:author_url]})"
-        else
-          '—'
-        end
-
-      "| #{source_text} | #{source_link} | #{author} |"
-    end
-
+    rows = source_items.map { |item| source_item_table_row(item) }
     [
       '| Source item | PR / Issue | Author |',
       '| --- | --- | --- |',
       *rows
     ].join("\n")
+  end
+
+  def source_item_table_row(item)
+    "| #{item[:text]} | #{format_source_link(item)} | #{format_author(item)} |"
+  end
+
+  def format_source_link(item)
+    return '—' unless item[:url] && item[:number]
+
+    "[##{item[:number]}](#{item[:url]})"
+  end
+
+  def format_author(item)
+    return '—' unless item[:author_login] && item[:author_url]
+
+    "[@#{item[:author_login]}](#{item[:author_url]})"
   end
 
   # Builds the PR body. No team-name column.

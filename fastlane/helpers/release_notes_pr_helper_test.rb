@@ -9,7 +9,8 @@
 require 'minitest/autorun'
 require_relative 'release_notes_pr_helper'
 
-class ReleaseNotesPRHelperTest < Minitest::Test
+# Unit tests for ReleaseNotesPRHelper.
+class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassLength
   Helper = ReleaseNotesPRHelper
 
   # --- Version validation ----------------------------------------------------

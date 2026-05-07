@@ -1762,20 +1762,28 @@ def enrich_source_items_with_authors(source_items)
   return source_items if token.nil? || token.empty?
 
   client = Octokit::Client.new(access_token: token)
-  source_items.map do |item|
-    next item unless item[:number] && item[:type]
+  source_items.map { |item| enrich_one_source_item_with_author(client, item) }
+end
 
-    begin
-      data = item[:type] == 'issue' ? client.issue(GITHUB_REPO, item[:number]) : client.pull_request(GITHUB_REPO, item[:number])
-      login = data&.user&.login
-      html_url = data&.user&.html_url
-      next item if login.nil? || html_url.nil?
+def enrich_one_source_item_with_author(client, item)
+  return item unless item[:number] && item[:type]
 
-      item.merge(author_login: login, author_url: html_url)
-    rescue StandardError => e
-      UI.important("Could not look up author for ##{item[:number]}: #{e.message}")
-      item
-    end
+  data = fetch_pr_or_issue(client, item)
+  login = data&.user&.login
+  html_url = data&.user&.html_url
+  return item if login.nil? || html_url.nil?
+
+  item.merge(author_login: login, author_url: html_url)
+rescue StandardError => e
+  UI.important("Could not look up author for ##{item[:number]}: #{e.message}")
+  item
+end
+
+def fetch_pr_or_issue(client, item)
+  if item[:type] == 'issue'
+    client.issue(GITHUB_REPO, item[:number])
+  else
+    client.pull_request(GITHUB_REPO, item[:number])
   end
 end
 

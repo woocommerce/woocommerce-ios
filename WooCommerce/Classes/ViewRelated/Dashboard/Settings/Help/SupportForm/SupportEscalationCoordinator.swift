@@ -59,7 +59,7 @@ final class SupportEscalationCoordinator {
         self.chatID = chatID
 
         guard let supportAreaInfo else {
-            showSupportForm(transcript: transcript, preselectedArea: nil)
+            showSupportForm(transcript: transcript, supportAreaInfo: nil)
             return
         }
 
@@ -68,21 +68,33 @@ final class SupportEscalationCoordinator {
         if supportAreaInfo.isHighConfidence && zendeskProvider.haveUserIdentity {
             createTicketDirectly(with: supportAreaInfo)
         } else {
-            showSupportForm(transcript: transcript, preselectedArea: supportAreaInfo.area)
+            showSupportForm(transcript: transcript, supportAreaInfo: supportAreaInfo)
         }
     }
 
     // MARK: - Private Methods
 
-    private func showSupportForm(transcript: String, preselectedArea: SupportFormViewModel.Area?) {
-        var attachments = buildTranscriptAttachment(transcript: transcript)
-        attachments.append(contentsOf: additionalAttachmentsProvider())
+    private func showSupportForm(transcript: String, supportAreaInfo: SupportAreaInfo?) {
+        let attachments = additionalAttachmentsProvider()
+
+        let prefilledSubject: String?
+        let prefilledDescription: String?
+
+        if let supportAreaInfo {
+            prefilledSubject = SupportFormViewModel.subject(for: supportAreaInfo.areaType)
+            prefilledDescription = "Following is the transcript of an in-app AI support chat session:\n\(transcript)"
+        } else {
+            prefilledSubject = nil
+            prefilledDescription = nil
+        }
 
         let viewModel = SupportFormViewModel(
             sourceTag: Tags.sourceTag,
             additionalTags: Tags.additionalTags,
             attachments: attachments,
-            preselectedArea: preselectedArea,
+            preselectedArea: supportAreaInfo?.area,
+            prefilledSubject: prefilledSubject,
+            prefilledDescription: prefilledDescription,
             onTicketCreated: { [weak self] in
                 self?.persistTicketCreated()
             }
@@ -125,7 +137,7 @@ final class SupportEscalationCoordinator {
                     self?.showSuccessAndPop()
                 case .failure:
                     self?.analytics.track(.supportNewRequestFailed)
-                    self?.showSupportForm(transcript: areaInfo.transcript, preselectedArea: areaInfo.area)
+                    self?.showSupportForm(transcript: areaInfo.transcript, supportAreaInfo: areaInfo)
                 }
             }
         }
@@ -152,17 +164,6 @@ final class SupportEscalationCoordinator {
         guard let chatID else { return }
         let action = SupportChatAction.markTicketCreated(chatID: chatID) { }
         stores.dispatch(action)
-    }
-
-    private func buildTranscriptAttachment(transcript: String) -> [ZendeskAttachment] {
-        guard !transcript.isEmpty, let data = transcript.data(using: .utf8) else {
-            return []
-        }
-        return [ZendeskAttachment(
-            data: data,
-            filename: "support_chat_transcript.txt",
-            contentType: "text/plain"
-        )]
     }
 }
 

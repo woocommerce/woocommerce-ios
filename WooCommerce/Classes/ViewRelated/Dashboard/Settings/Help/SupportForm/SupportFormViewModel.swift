@@ -111,6 +111,8 @@ public final class SupportFormViewModel: ObservableObject {
          defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite,
          attachments: [ZendeskAttachment] = [],
          preselectedArea: Area? = nil,
+         prefilledSubject: String? = nil,
+         prefilledDescription: String? = nil,
          onTicketCreated: (() -> Void)? = nil) {
         self.areas = areas
         self.sourceTag = sourceTag
@@ -122,6 +124,13 @@ public final class SupportFormViewModel: ObservableObject {
         self.attachments = attachments
         self.area = preselectedArea
         self.onTicketCreated = onTicketCreated
+
+        if let prefilledSubject {
+            self.subject = prefilledSubject
+        }
+        if let prefilledDescription {
+            self.description = prefilledDescription
+        }
     }
 
     /// Tracks when the support form is viewed.

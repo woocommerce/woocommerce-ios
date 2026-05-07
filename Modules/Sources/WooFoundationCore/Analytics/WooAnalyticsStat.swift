@@ -1308,6 +1308,8 @@ public enum WooAnalyticsStat: String {
     case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
     case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
     case pointOfSaleCardReaderConnectionTapped = "card_reader_connection_tapped"
+    case pointOfSaleCheckoutTapToPayTapped = "checkout_tap_to_pay_tapped"
+    case pointOfSaleTapToPayNotAvailable = "tap_to_pay_not_available"
     case pointOfSaleInteractionWithCustomerStarted = "interaction_with_customer_started"
     case pointOfSaleViewDocsTapped = "view_docs_tapped"
     case pointOfSaleReaderReadyForCardPayment = "reader_ready_for_card_payment"

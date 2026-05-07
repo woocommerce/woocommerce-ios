@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import WooFoundationCore
 
 /// Owns the resolved Tap to Pay availability state for the POS session and exposes it
 /// to views. Kicks off a single async check on init via the injected checker, then holds
@@ -11,13 +12,24 @@ import Observation
     public private(set) var state: POSTapToPayAvailabilityState = .unknown
 
     private let availabilityChecker: POSTapToPayAvailabilityChecking
+    private let analytics: POSAnalyticsProviding?
 
-    public init(availabilityChecker: POSTapToPayAvailabilityChecking) {
+    public init(availabilityChecker: POSTapToPayAvailabilityChecking,
+                analytics: POSAnalyticsProviding? = nil) {
         self.availabilityChecker = availabilityChecker
+        self.analytics = analytics
 
         Task { @MainActor in
-            self.state = await availabilityChecker.checkAvailability()
+            let resolved = await availabilityChecker.checkAvailability()
+            self.state = resolved
+            self.trackResolved(resolved)
         }
+    }
+
+    private func trackResolved(_ state: POSTapToPayAvailabilityState) {
+        guard case .unavailable(let reason) = state else { return }
+        analytics?.track(.pointOfSaleTapToPayNotAvailable,
+                         parameters: ["reason": reason.rawValue])
     }
 }
 

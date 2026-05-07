@@ -68,12 +68,12 @@ struct TotalsView: View {
 
                     Spacer()
 
-                    CashPaymentButton(
-                        orderState: posModel.orderState,
-                        paymentState: displayPaymentState,
-                        cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                        startCashPaymentAction: { paymentModel.startCashPayment() }
-                    )
+                    if !checkoutPaymentMethods.isEmpty {
+                        POSCheckoutPaymentButtonsRow(
+                            methods: checkoutPaymentMethods,
+                            onSelect: handlePaymentMethodSelection
+                        )
+                    }
                 }
                 .scrollVerticallyIfNeeded()
                 .animation(.default, value: isShowingPaymentView)
@@ -493,32 +493,43 @@ private struct PaymentViewContent: View {
     }
 }
 
-private struct CashPaymentButton: View {
-    let orderState: PointOfSaleOrderState
-    let paymentState: PointOfSalePaymentState
-    let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
-    let startCashPaymentAction: () -> Void
+private extension TotalsView {
+    /// Builds the ordered list of payment methods rendered in the bottom buttons row.
+    ///
+    /// When the cash button visibility checks fail (syncing, reconnecting, zero total)
+    /// the row is hidden entirely. When the reader is disconnected the merchant gets
+    /// `[.cardReader, .cashPayment]` — tapping Card reader starts the connect flow,
+    /// matching what the in-pane "Connect your reader" CTA used to do. With a reader
+    /// connected the row collapses to `[.cashPayment]`.
+    ///
+    /// `.tapToPay` is intentionally absent at this stage and lands in a later part of
+    /// the TTP stack; the row already supports rendering it.
+    var checkoutPaymentMethods: [POSCheckoutPaymentMethod] {
+        guard totalsViewHelper.shouldShowCollectCashPaymentButton(
+            orderState: posModel.orderState,
+            paymentState: displayPaymentState,
+            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus
+        ) else {
+            return []
+        }
+        let viewHelper = POSPaymentViewHelper()
+        let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
+            readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+            paymentState: displayPaymentState
+        )
+        return isReaderDisconnected ? [.cardReader, .cashPayment] : [.cashPayment]
+    }
 
-    private let viewHelper = TotalsViewHelper()
-
-    var body: some View {
-        Button(action: {
-            startCashPaymentAction()
-        }, label: {
-            Text(TotalsView.Localization.cashPaymentButtonTitle)
-                .font(POSFontStyle.posBodyLargeBold)
-        })
-        .layoutPriority(1)
-        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-        .accessibilityIdentifier("pos-cash-payment-button")
-        .padding(.horizontal, TotalsView.Constants.buttonHorizontalPadding)
-        .safeAreaPadding(.bottom, TotalsView.Constants.cashButtonBottomPadding)
-        .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(
-            orderState: orderState,
-            paymentState: paymentState,
-            cardReaderConnectionStatus: cardReaderConnectionStatus
-        ))
+    func handlePaymentMethodSelection(_ method: POSCheckoutPaymentMethod) {
+        switch method {
+        case .tapToPay:
+            // Wired in a later part of the TTP stack.
+            break
+        case .cardReader:
+            paymentModel.connectCardReader()
+        case .cashPayment:
+            paymentModel.startCashPayment()
+        }
     }
 }
 

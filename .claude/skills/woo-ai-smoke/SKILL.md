@@ -258,7 +258,9 @@ struct SmokeRun {
     @Test(arguments: expanded)
     func runScenario(_ arg: (scenario: Scenario, sample: Int)) async throws {
         guard let creds = WooAssistantHeadless.credentialsFromStoreEnv() else { return }
-        let harness = WooAssistantHeadless(credentials: creds)
+        let harness = await MainActor.run {
+            WooAssistantHeadless(credentials: creds)
+        }
         for (index, turn) in arg.scenario.turns.enumerated() {
             let turnNum = index + 1
             // `resolveConfirmation` returns a `ConfirmationDecision` for each

@@ -110,7 +110,7 @@ private extension MetricCellContent {
         static let titleRowSpacing = 6.0
         static let valueAndTrendSpacing = 5.0
         static let chartWidth = 70.0
-        static let chartHeight = 20.0
+        static let chartHeight = 16.0
     }
 }
 

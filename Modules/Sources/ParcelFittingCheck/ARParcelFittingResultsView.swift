@@ -5,137 +5,129 @@ struct ARParcelFittingResultsView: View {
     let onConfirm: (ParcelFittingResult) -> Void
     let onBack: () -> Void
 
-    @State private var selection: Selection = .custom
+    @State private var selection: Selection?
 
     enum Selection: Hashable {
         case carrier(String)
         case custom
     }
 
+    init(viewModel: ARParcelFittingResultsViewModel,
+         onConfirm: @escaping (ParcelFittingResult) -> Void,
+         onBack: @escaping () -> Void) {
+        self.viewModel = viewModel
+        self.onConfirm = onConfirm
+        self.onBack = onBack
+    }
+
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
+            List {
+                ForEach(viewModel.carrierResults) { result in
+                    carrierRow(result)
+                        .listRowInsets(EdgeInsets())
+                        .listRowSeparator(.hidden)
+                }
+                customRow
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
+            }
+            .listStyle(.plain)
+
+            Divider()
+            Button {
+                confirmSelection()
+            } label: {
+                Text("Use selected package")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+            }
+            .disabled(selection == nil)
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .padding()
+        }
+        .navigationTitle("Select a package")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
                 Button { onBack() } label: {
                     Image(systemName: "chevron.left")
-                        .font(.body.weight(.semibold))
                 }
-                Spacer()
-                Text("Select a package")
-                    .font(.headline)
-                Spacer()
-                Color.clear.frame(width: 24)
             }
-            .padding()
-
-            ScrollView {
-                VStack(spacing: 12) {
-                    ForEach(viewModel.carrierResults) { result in
-                        carrierRow(result)
-                    }
-                    customRow
-                }
-                .padding(.horizontal)
-            }
-
-            confirmButton
-                .padding()
         }
     }
 
     private func carrierRow(_ result: ARParcelFittingResultsViewModel.CarrierResult) -> some View {
         let isSelected = selection == .carrier(result.package.id)
-        return Button {
-            selection = .carrier(result.package.id)
-        } label: {
-            HStack(spacing: 12) {
-                if let logo = result.carrier.logo {
-                    Image(uiImage: logo)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 32, height: 32)
-                } else {
-                    Text(result.carrier.name.prefix(2))
-                        .font(.caption.bold())
-                        .frame(width: 32, height: 32)
-                        .background(Color.secondary.opacity(0.2), in: RoundedRectangle(cornerRadius: 6))
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(result.carrier.name)
-                        .font(.subheadline.bold())
+        return Button { selection = .carrier(result.package.id) } label: {
+            HStack(spacing: 0) {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .foregroundColor(isSelected ? .accentColor : .gray)
+                    .font(.title)
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 6) {
+                        if let logo = result.carrier.logo {
+                            Image(uiImage: logo)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 16)
+                        }
+                        Text(result.carrier.name)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                     Text(result.package.name)
-                        .font(.subheadline)
+                        .font(.body)
                     Text(Self.formatDimensions(result.package, unit: viewModel.unit))
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
+                .padding(.leading, 4)
                 Spacer()
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
-                    .font(.title3)
             }
-            .padding(12)
-            .background(isSelected ? Color.accentColor.opacity(0.08) : Color(.secondarySystemBackground),
-                        in: RoundedRectangle(cornerRadius: 10))
+            .padding(16)
         }
         .buttonStyle(.plain)
     }
 
     private var customRow: some View {
         let isSelected = selection == .custom
-        return Button {
-            selection = .custom
-        } label: {
-            HStack(spacing: 12) {
-                Image(systemName: "ruler")
-                    .font(.title3)
-                    .frame(width: 32, height: 32)
-                VStack(alignment: .leading, spacing: 2) {
+        return Button { selection = .custom } label: {
+            HStack(spacing: 0) {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .foregroundColor(isSelected ? .accentColor : .gray)
+                    .font(.title)
+                VStack(alignment: .leading, spacing: 4) {
                     Text("Custom dimensions")
-                        .font(.subheadline.bold())
+                        .font(.body)
                     Text(viewModel.dimensionsLabel)
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
+                .padding(.leading, 4)
                 Spacer()
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
-                    .font(.title3)
             }
-            .padding(12)
-            .background(isSelected ? Color.accentColor.opacity(0.08) : Color(.secondarySystemBackground),
-                        in: RoundedRectangle(cornerRadius: 10))
+            .padding(16)
         }
         .buttonStyle(.plain)
     }
 
-    private var confirmButton: some View {
-        Button {
-            switch selection {
-            case .carrier(let packageID):
-                if let result = viewModel.carrierResults.first(where: { $0.package.id == packageID }) {
-                    onConfirm(.carrierPackage(result.package))
-                }
-            case .custom:
-                onConfirm(.customDimensions(viewModel.measuredDimensions))
-            }
-        } label: {
-            Text(confirmButtonTitle)
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(Color.accentColor, in: Capsule())
-                .foregroundStyle(.white)
-        }
-    }
-
-    private var confirmButtonTitle: String {
+    private func confirmSelection() {
         switch selection {
-        case .carrier: return "Use selected package"
-        case .custom: return "Use custom dimensions"
+        case .carrier(let packageID):
+            if let result = viewModel.carrierResults.first(where: { $0.package.id == packageID }) {
+                onConfirm(.carrierPackage(result.package))
+            }
+        case .custom:
+            onConfirm(.customDimensions(viewModel.measuredDimensions))
+        case nil:
+            break
         }
     }
 
     private static func formatDimensions(_ package: ParcelPresetPackage, unit: UnitLength) -> String {
-        String(format: "%.1f × %.1f × %.1f %@", package.length, package.width, package.height, unit.symbol)
+        String(format: "%.2f × %.2f × %.2f %@", package.length, package.width, package.height, unit.symbol)
     }
 }

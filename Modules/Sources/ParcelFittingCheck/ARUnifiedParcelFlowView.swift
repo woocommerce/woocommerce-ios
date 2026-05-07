@@ -10,15 +10,18 @@ struct ARUnifiedParcelFlowView: View {
 
     var body: some View {
         if let dims = measuredDimensions {
-            ARParcelFittingResultsView(
-                viewModel: ARParcelFittingResultsViewModel(
-                    measuredDimensions: dims,
-                    unit: unit,
-                    carriers: carriers
-                ),
-                onConfirm: onConfirm,
-                onBack: { measuredDimensions = nil }
-            )
+            NavigationView {
+                ARParcelFittingResultsView(
+                    viewModel: ARParcelFittingResultsViewModel(
+                        measuredDimensions: dims,
+                        unit: unit,
+                        carriers: carriers
+                    ),
+                    onConfirm: onConfirm,
+                    onBack: { measuredDimensions = nil }
+                )
+            }
+            .navigationViewStyle(.stack)
         } else {
             ARParcelSizingView(
                 unit: unit,

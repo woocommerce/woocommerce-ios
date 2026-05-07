@@ -23,7 +23,7 @@ final class ARParcelFittingResultsViewModel {
     }
 
     var dimensionsLabel: String {
-        String(format: "%.1f × %.1f × %.1f %@",
+        String(format: "%.2f × %.2f × %.2f %@",
                measuredDimensions.length, measuredDimensions.width, measuredDimensions.height,
                unit.symbol)
     }

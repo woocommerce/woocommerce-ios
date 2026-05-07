@@ -812,6 +812,26 @@ private extension POSPaymentModel {
             })
             .store(in: &paymentSessionCancellables)
 
+        // TTP cancel-on-reader → drop back to the idle hero. Without this the
+        // card state machine stays stuck on `.acceptingCard` / `.preparingReader`
+        // (the standard `PointOfSaleCardPaymentState(from:)` mapper returns nil
+        // for cancelledOnReader, leaving the previous state in place) and neither
+        // the hero nor the inline view renders.
+        cardPresentPaymentService.paymentEventPublisher
+            .filter { event in
+                if case .show(.cancelledOnReader) = event { return true }
+                return false
+            }
+            .sink { [weak self] _ in
+                guard let self, self.preferredConnectionMethod == .tapToPay else { return }
+                Task { @MainActor [weak self] in
+                    try? await self?.cardPresentPaymentService.cancelPayment()
+                    self?.paymentState.card = .idle
+                    self?.cardPresentPaymentInlineMessage = nil
+                }
+            }
+            .store(in: &paymentSessionCancellables)
+
         // Payment events -> card payment state
         cardPresentPaymentService.paymentEventPublisher
             .compactMap { [weak self] paymentEvent -> PointOfSaleCardPaymentState? in
@@ -877,6 +897,15 @@ private extension POSPaymentModel {
     }
 
     func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {
+        // On the TTP path a merchant-cancelled-on-reader event drops the merchant
+        // back to the idle hero rather than the legacy iPad "Payment canceled /
+        // Try payment again" screen — Android does the same. Suppress the inline
+        // message here; `handleCancelledOnReaderForTapToPay` resets card state.
+        if preferredConnectionMethod == .tapToPay,
+           case .show(.cancelledOnReader) = event {
+            return nil
+        }
+
         guard case let .show(eventDetails) = event,
               case let .message(messageType) = presentationStyle(for: eventDetails) else {
             return nil

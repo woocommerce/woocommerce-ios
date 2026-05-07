@@ -190,12 +190,10 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
         var context: [String: Any] = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {
-            context["troubleshooting_results"] = troubleshootingDescription
+            context["troubleshootingResults"] = troubleshootingDescription
         }
 
         context["site_url"] = siteURL.absoluteString
-        context["app_version"] = Bundle.main.marketingVersion
-        context["ios_version"] = UIDevice.current.systemVersion
 
         return SupportChatViewModel(
             entryPoint: .connectivityTool,

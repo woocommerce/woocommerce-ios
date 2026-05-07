@@ -286,14 +286,16 @@ private extension OrderStore {
             return
         }
 
-        Task { @MainActor in
+        Task {
             do {
                 let orders = try await remote.loadOrders(for: siteID, orderIDs: orderIDs)
                 upsertStoredOrdersInBackground(readOnlyOrders: orders) {
                     onCompletion(.success(orders))
                 }
             } catch {
-                onCompletion(.failure(error))
+                await MainActor.run {
+                    onCompletion(.failure(error))
+                }
             }
         }
     }

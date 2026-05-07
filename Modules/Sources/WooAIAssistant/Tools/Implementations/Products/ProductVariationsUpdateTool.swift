@@ -1,11 +1,37 @@
 import Foundation
+import Storage
+import Yosemite
 
 public enum ProductVariationsUpdateTool {
-
     public static let name = "product_variations_update"
 
-    public static func make() -> RESTTool {
-        RESTTool(definition: definition, executor: execute)
+    @MainActor
+    public static func make(siteID: Int64,
+                            storageManager: StorageManagerType,
+                            dispatchAction: @escaping @MainActor @Sendable (Action) -> Void) -> RESTTool {
+        ProductVariationsUpdateToolImplementation(dataSource: AssistantProductVariationsDataSource(siteID: siteID,
+                                                                                                   storageManager: storageManager,
+                                                                                                   dispatchAction: dispatchAction)).makeRESTTool()
+    }
+
+    static func make(dataSource: any AssistantProductVariationsDataSourceProtocol) -> RESTTool {
+        ProductVariationsUpdateToolImplementation(dataSource: dataSource).makeRESTTool()
+    }
+}
+
+private struct ProductVariationsUpdateToolImplementation: Sendable {
+    private static let name = ProductVariationsUpdateTool.name
+
+    private let dataSource: any AssistantProductVariationsDataSourceProtocol
+
+    init(dataSource: any AssistantProductVariationsDataSourceProtocol) {
+        self.dataSource = dataSource
+    }
+
+    func makeRESTTool() -> RESTTool {
+        RESTTool(definition: Self.definition) { arguments, _ in
+            await execute(arguments: arguments)
+        }
     }
 
     private static let definition = AITool(
@@ -69,55 +95,59 @@ public enum ProductVariationsUpdateTool {
             case stockStatus = "stock_status"
             case sku, status
         }
+
+        var patch: ProductVariationUpdatePatch {
+            ProductVariationUpdatePatch(regularPrice: regularPrice,
+                                        salePrice: salePrice,
+                                        stockQuantity: stockQuantity,
+                                        stockStatus: stockStatus,
+                                        sku: sku,
+                                        status: status)
+        }
     }
 
     private static let allowedStatuses = AllowedProductUpdateStatuses.values
     private static let allowedStockStatuses: Set<String> = ["instock", "outofstock", "onbackorder"]
 
-    private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+    private func execute(arguments: String) async -> ToolResult {
         let args: Args
-        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
+        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: Self.name) {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
         }
-        if let status = args.status, !allowedStatuses.contains(status) {
-            return .failed(.init(toolName: name,
-                                 kind: .invalidToolCall,
-                                 reason: "status must be one of: \(allowedStatuses.sorted().joined(separator: ", "))"))
-        }
-        if let stockStatus = args.stockStatus, !allowedStockStatuses.contains(stockStatus) {
-            return .failed(.init(toolName: name,
-                                 kind: .invalidToolCall,
-                                 reason: "stock_status must be one of: \(allowedStockStatuses.sorted().joined(separator: ", "))"))
+        if let failure = validate(args: args) {
+            return .failed(failure)
         }
 
-        var body: [String: Any] = [:]
-        if let value = args.regularPrice { body["regular_price"] = value }
-        if let value = args.salePrice { body["sale_price"] = value }
-        if let value = args.stockQuantity {
-            body["stock_quantity"] = value
-            body["manage_stock"] = true
+        let builder = WriteToolResultBuilder(toolName: Self.name)
+        switch await dataSource.updateVariation(productID: Int64(args.productID),
+                                                variationID: Int64(args.id),
+                                                patch: args.patch) {
+        case .success(let variation):
+            return builder.cardSuccess(family: .productVariation,
+                                       id: variation.productVariationID,
+                                       payload: CardEntityPayloadFactory.payload(from: variation))
+        case .failure(let error):
+            return builder.failure(error)
         }
-        if let value = args.stockStatus { body["stock_status"] = value }
-        if let value = args.sku { body["sku"] = value }
-        if let value = args.status { body["status"] = value }
+    }
 
-        guard !body.isEmpty else {
-            return .failed(.init(toolName: name,
-                                 kind: .invalidToolCall,
-                                 reason: "at least one editable field must be provided"))
+    private func validate(args: Args) -> ToolResult.Failed? {
+        if let status = args.status, !Self.allowedStatuses.contains(status) {
+            return .init(toolName: Self.name,
+                         kind: .invalidToolCall,
+                         reason: RESTToolDispatch.allowedValuesMessage(field: "status", values: Self.allowedStatuses))
         }
-        guard let payload = try? JSONSerialization.data(withJSONObject: body) else {
-            return .failed(.init(toolName: name,
-                                 kind: .toolFailed,
-                                 reason: "could not serialize update body"))
+        if let stockStatus = args.stockStatus, !Self.allowedStockStatuses.contains(stockStatus) {
+            return .init(toolName: Self.name,
+                         kind: .invalidToolCall,
+                         reason: RESTToolDispatch.allowedValuesMessage(field: "stock_status", values: Self.allowedStockStatuses))
         }
-        return await RESTToolDispatch.dispatchEntityWrite(method: "PUT",
-                                                          path: "wc/v3/products/\(args.productID)/variations/\(args.id)",
-                                                          body: payload,
-                                                          client: client,
-                                                          toolName: name,
-                                                          family: .productVariation,
-                                                          summarize: ProductSummary.make)
+        guard args.patch.hasAnyField else {
+            return .init(toolName: Self.name,
+                         kind: .invalidToolCall,
+                         reason: "at least one editable field must be provided")
+        }
+        return nil
     }
 }

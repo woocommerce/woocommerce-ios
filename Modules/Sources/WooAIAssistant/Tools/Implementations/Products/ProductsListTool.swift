@@ -1,11 +1,21 @@
 import Foundation
 
 public enum ProductsListTool {
-
     public static let name = "products_list"
 
     public static func make() -> RESTTool {
-        RESTTool(definition: definition, executor: execute)
+        ProductsListToolImplementation().makeRESTTool()
+    }
+}
+
+private struct ProductsListToolImplementation: Sendable {
+
+    private static let name = ProductsListTool.name
+
+    func makeRESTTool() -> RESTTool {
+        RESTTool(definition: Self.definition) { arguments, client in
+            await execute(arguments: arguments, client: client)
+        }
     }
 
     private static let definition = AITool(
@@ -109,7 +119,7 @@ public enum ProductsListTool {
         }
     }
 
-    private static func query(from args: Args) -> [String: String] {
+    private func query(from args: Args) -> [String: String] {
         var query: [String: String] = [
             "orderby": args.orderby ?? "date",
             "order": args.order ?? "desc",
@@ -135,9 +145,9 @@ public enum ProductsListTool {
         return query
     }
 
-    private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+    private func execute(arguments: String, client: WCRESTClient) async -> ToolResult {
         let args: Args
-        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
+        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: Self.name) {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
         }
@@ -146,17 +156,17 @@ public enum ProductsListTool {
                                             query: query(from: args),
                                             body: nil)
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
-            return .failed(RESTToolDispatch.failed(from: response, toolName: name))
+            return .failed(RESTToolDispatch.failed(from: response, toolName: Self.name))
         }
         guard let payload = RESTResponseParsing.decodeJSON(response.data),
               let rows = RESTResponseParsing.arrayItems(payload) else {
-            return .failed(.init(toolName: name,
+            return .failed(.init(toolName: Self.name,
                                  kind: .toolFailed,
                                  reason: "expected JSON array"))
         }
         let summary = ProductsListSummary.make(from: rows)
-        return .success(.init(toolName: name,
-                              structured: LLMPayloadCap.capped(summary, toolName: name),
+        return .success(.init(toolName: Self.name,
+                              structured: LLMPayloadCap.capped(summary, toolName: Self.name),
                               uiStructured: nil))
     }
 }

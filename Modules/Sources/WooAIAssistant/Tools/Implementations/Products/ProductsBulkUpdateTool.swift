@@ -1,14 +1,39 @@
 import Foundation
+import Storage
+import Yosemite
 
 public enum ProductsBulkUpdateTool {
-
     public static let name = "products_bulk_update"
-
-    /// WC silently truncates batches above this server-side default; enforce locally to fail fast.
     public static let maxBatchSize = 100
 
-    public static func make() -> RESTTool {
-        RESTTool(definition: definition, executor: execute)
+    @MainActor
+    public static func make(siteID: Int64,
+                            storageManager: StorageManagerType,
+                            dispatchAction: @escaping @MainActor @Sendable (Action) -> Void) -> RESTTool {
+        ProductsBulkUpdateToolImplementation(dataSource: AssistantProductsDataSource(siteID: siteID,
+                                                                                     storageManager: storageManager,
+                                                                                     dispatchAction: dispatchAction)).makeRESTTool()
+    }
+
+    static func make(dataSource: any AssistantProductsDataSourceProtocol) -> RESTTool {
+        ProductsBulkUpdateToolImplementation(dataSource: dataSource).makeRESTTool()
+    }
+}
+
+private struct ProductsBulkUpdateToolImplementation: Sendable {
+    private static let name = ProductsBulkUpdateTool.name
+    private static let maxBatchSize = ProductsBulkUpdateTool.maxBatchSize
+
+    private let dataSource: any AssistantProductsDataSourceProtocol
+
+    init(dataSource: any AssistantProductsDataSourceProtocol) {
+        self.dataSource = dataSource
+    }
+
+    func makeRESTTool() -> RESTTool {
+        RESTTool(definition: Self.definition) { arguments, _ in
+            await execute(arguments: arguments)
+        }
     }
 
     private static let definition = AITool(
@@ -72,64 +97,53 @@ public enum ProductsBulkUpdateTool {
             case status
         }
 
-        var hasAnyField: Bool {
-            name != nil || regularPrice != nil || salePrice != nil || stockQuantity != nil || status != nil
+        var productPatch: ProductUpdatePatch {
+            ProductUpdatePatch(name: name,
+                               regularPrice: regularPrice,
+                               salePrice: salePrice,
+                               stockQuantity: stockQuantity,
+                               status: status)
         }
     }
 
     private static let allowedStatuses = AllowedProductUpdateStatuses.values
 
-    private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+    private func execute(arguments: String) async -> ToolResult {
         let args: Args
-        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
+        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: Self.name) {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
         }
+        if let failure = validate(args: args) {
+            return .failed(failure)
+        }
+
+        let builder = WriteToolResultBuilder(toolName: Self.name)
+        switch await dataSource.bulkUpdateProducts(ids: args.ids.map(Int64.init), patch: args.patch.productPatch) {
+        case .success(let result):
+            return builder.batchSuccess(result)
+        case .failure(let error):
+            return builder.failure(error)
+        }
+    }
+
+    private func validate(args: Args) -> ToolResult.Failed? {
         guard !args.ids.isEmpty else {
-            return .failed(.init(toolName: name,
-                                 kind: .invalidToolCall,
-                                 reason: "ids must not be empty"))
+            return .init(toolName: Self.name, kind: .invalidToolCall, reason: "ids must not be empty")
         }
-        guard args.ids.count <= maxBatchSize else {
-            return .failed(.init(toolName: name,
-                                 kind: .invalidToolCall,
-                                 reason: "ids has \(args.ids.count) entries; max is \(maxBatchSize)"))
+        guard args.ids.count <= Self.maxBatchSize else {
+            return .init(toolName: Self.name,
+                         kind: .invalidToolCall,
+                         reason: "ids has \(args.ids.count) entries; max is \(Self.maxBatchSize)")
         }
-        if let status = args.patch.status, !allowedStatuses.contains(status) {
-            return .failed(.init(toolName: name,
-                                 kind: .invalidToolCall,
-                                 reason: "status must be one of: \(allowedStatuses.sorted().joined(separator: ", "))"))
+        if let status = args.patch.status, !Self.allowedStatuses.contains(status) {
+            return .init(toolName: Self.name,
+                         kind: .invalidToolCall,
+                         reason: RESTToolDispatch.allowedValuesMessage(field: "status", values: Self.allowedStatuses))
         }
-        guard args.patch.hasAnyField else {
-            return .failed(.init(toolName: name,
-                                 kind: .invalidToolCall,
-                                 reason: "patch must set at least one field"))
+        guard args.patch.productPatch.hasAnyField else {
+            return .init(toolName: Self.name, kind: .invalidToolCall, reason: "patch must set at least one field")
         }
-
-        var template: [String: Any] = [:]
-        if let value = args.patch.name { template["name"] = value }
-        if let value = args.patch.regularPrice { template["regular_price"] = value }
-        if let value = args.patch.salePrice { template["sale_price"] = value }
-        if let value = args.patch.stockQuantity {
-            template["stock_quantity"] = value
-            template["manage_stock"] = true
-        }
-        if let value = args.patch.status { template["status"] = value }
-
-        let updates: [[String: Any]] = args.ids.map { id in
-            var entry = template
-            entry["id"] = id
-            return entry
-        }
-        guard let payload = try? JSONSerialization.data(withJSONObject: ["update": updates]) else {
-            return .failed(.init(toolName: name,
-                                 kind: .toolFailed,
-                                 reason: "could not serialize batch body"))
-        }
-        return await RESTToolDispatch.dispatchBatchWrite(method: "POST",
-                                                         path: "wc/v3/products/batch",
-                                                         body: payload,
-                                                         client: client,
-                                                         toolName: name)
+        return nil
     }
 }

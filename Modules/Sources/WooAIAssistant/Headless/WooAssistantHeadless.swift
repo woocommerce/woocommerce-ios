@@ -239,9 +239,9 @@ public actor WooAssistantHeadless {
 
     /// Production wiring: real URLSession-backed transports talking to
     /// `jetpack-ai-query` and the merchant's store. Cards flow through the
-    /// same cache-first providers the app target ships, backed by an
+    /// same cache-first data sources the app target ships, backed by an
     /// in-memory CoreData stack scoped to this harness instance.
-    /// `@MainActor` because the cache-first providers read `viewStorage`
+    /// `@MainActor` because the cache-first data sources read `viewStorage`
     /// from the main thread; constructing them must happen there too.
     @MainActor
     public init(credentials: Credentials,
@@ -283,7 +283,7 @@ public actor WooAssistantHeadless {
             ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
-        let dispatch: @Sendable (Action) -> Void = { dispatcher.dispatch($0) }
+        let dispatch: @MainActor @Sendable (Action) -> Void = { dispatcher.dispatch($0) }
         let tools = Self.productionTools(siteID: credentials.siteID,
                                          storageManager: storageManager,
                                          dispatchAction: dispatch,
@@ -297,7 +297,7 @@ public actor WooAssistantHeadless {
     }
 
     /// Internal seam used by the test target. When `tools` is `nil` the seam
-    /// builds a tool list with a stub `show_cards` that has no providers; tests
+    /// builds a tool list with a stub `show_cards` that has no data sources; tests
     /// that don't exercise cards see them rejected as `.internalError`, which
     /// is fine because no harness test asserts on `show_cards` output.
     init(credentials: Credentials,
@@ -555,14 +555,16 @@ public actor WooAssistantHeadless {
     }
 
     /// Production tool catalog used by the public `init(credentials:configuration:)`.
-    /// Cards go through the same cache-first providers as the app target, so smoke
+    /// Cards go through the same cache-first data sources as the app target, so smoke
     /// runs exercise the production path end-to-end.
     @MainActor
     static func productionTools(siteID: Int64,
                                 storageManager: StorageManagerType,
-                                dispatchAction: @escaping @Sendable (Action) -> Void,
+                                dispatchAction: @escaping @MainActor @Sendable (Action) -> Void,
                                 client: WCRESTClient) -> [RESTTool] {
-        Self.commonTools() + [
+        Self.productionCommonTools(siteID: siteID,
+                                   storageManager: storageManager,
+                                   dispatchAction: dispatchAction) + [
             ShowCardsTool.make(siteID: siteID,
                                storageManager: storageManager,
                                dispatchAction: dispatchAction,
@@ -571,12 +573,12 @@ public actor WooAssistantHeadless {
     }
 
     /// Stubbed tool catalog used by the test seam when no `tools` array is
-    /// injected. `show_cards` has no providers; it rejects every ref with
+    /// injected. `show_cards` has no data sources; it rejects every ref with
     /// `.internalError`. No harness test exercises `show_cards`, so this is
     /// safe and avoids spinning up a CoreData stack per test.
     static func testStubTools() -> [RESTTool] {
-        Self.commonTools() + [
-            ShowCardsTool.make(providers: [:])
+        Self.commonTools() + Self.testStubWriteTools() + [
+            ShowCardsTool.make(dataSources: [:])
         ]
     }
 
@@ -584,15 +586,56 @@ public actor WooAssistantHeadless {
         [
             OrdersListTool.make(),
             OrdersGetTool.make(),
-            OrdersUpdateTool.make(),
-            OrdersBulkUpdateTool.make(),
             ProductsListTool.make(),
             ProductsGetTool.make(),
-            ProductsUpdateTool.make(),
-            ProductsBulkUpdateTool.make(),
             ProductVariationsListTool.make(),
-            ProductVariationsUpdateTool.make(),
-            ProductVariationsBulkUpdateTool.make(),
+            CustomersListTool.make(),
+            AnalyticsRevenueTool.make(),
+            AnalyticsOrdersTool.make()
+        ]
+    }
+
+    private static func testStubWriteTools() -> [RESTTool] {
+        [
+            testStubWriteTool(named: OrdersUpdateTool.name),
+            testStubWriteTool(named: OrdersBulkUpdateTool.name),
+            testStubWriteTool(named: ProductsUpdateTool.name),
+            testStubWriteTool(named: ProductsBulkUpdateTool.name),
+            testStubWriteTool(named: ProductVariationsUpdateTool.name),
+            testStubWriteTool(named: ProductVariationsBulkUpdateTool.name)
+        ]
+    }
+
+    private static func testStubWriteTool(named name: String) -> RESTTool {
+        RESTTool(definition: AITool(name: name,
+                                    description: "Unavailable write tool stub for headless unit tests.",
+                                    parametersSchema: .object([
+                                        "type": .string("object"),
+                                        "additionalProperties": .bool(true)
+                                    ]),
+                                    safetyLevel: .unsafe)) { _, _ in
+            .failed(.init(toolName: name,
+                          kind: .toolFailed,
+                          reason: "Write tool is unavailable in this headless test catalog."))
+        }
+    }
+
+    @MainActor
+    private static func productionCommonTools(siteID: Int64,
+                                              storageManager: StorageManagerType,
+                                              dispatchAction: @escaping @MainActor @Sendable (Action) -> Void) -> [RESTTool] {
+        [
+            OrdersListTool.make(),
+            OrdersGetTool.make(),
+            OrdersUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
+            OrdersBulkUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
+            ProductsListTool.make(),
+            ProductsGetTool.make(),
+            ProductsUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
+            ProductsBulkUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
+            ProductVariationsListTool.make(),
+            ProductVariationsUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
+            ProductVariationsBulkUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
             CustomersListTool.make(),
             AnalyticsRevenueTool.make(),
             AnalyticsOrdersTool.make()

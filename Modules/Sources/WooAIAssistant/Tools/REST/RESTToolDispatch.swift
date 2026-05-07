@@ -40,4 +40,8 @@ enum RESTToolDispatch {
                      kind: HTTPStatusClassification.errorKind(forStatusCode: response.statusCode),
                      reason: reason)
     }
+
+    static func allowedValuesMessage(field: String, values: Set<String>) -> String {
+        "\(field) must be one of: \(values.sorted().joined(separator: ", "))"
+    }
 }

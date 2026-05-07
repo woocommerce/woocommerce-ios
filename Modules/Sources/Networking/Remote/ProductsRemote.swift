@@ -42,6 +42,7 @@ public protocol ProductsRemoteProtocol {
     func searchSku(for siteID: Int64,
                    sku: String,
                    completion: @escaping (Result<String, Error>) -> Void)
+    func updateProduct(siteID: Int64, productID: Int64, fields: ProductUpdateFields, completion: @escaping (Result<Product, Error>) -> Void)
     func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void)
     func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void)
@@ -558,6 +559,19 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         } catch {
             completion(.failure(error))
         }
+    }
+
+    public func updateProduct(siteID: Int64, productID: Int64, fields: ProductUpdateFields, completion: @escaping (Result<Product, Error>) -> Void) {
+        let path = "\(Path.products)/\(productID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: fields.parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
     }
 
     public func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {

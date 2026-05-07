@@ -7,26 +7,23 @@ public enum ShowCardsTool {
 
     public static let name = "show_cards"
 
-    public static func make() -> RESTTool {
-        make(providers: [:])
-    }
-
     @MainActor
     public static func make(siteID: Int64,
                             storageManager: StorageManagerType,
-                            dispatchAction: @escaping @Sendable (Action) -> Void,
+                            dispatchAction: @escaping @MainActor @Sendable (Action) -> Void,
                             restClient: WCRESTClient) -> RESTTool {
-        let providers: [CardFamily: any CardEntityProvider] = [
-            .order: OrderCardProvider(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
-            .product: ProductCardProvider(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
-            .productVariation: VariationCardProvider(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
-            .customer: CustomerCardProvider(client: restClient)
+        let dataSources: [CardFamily: any CardEntityDataSource] = [
+            .order: AssistantOrdersDataSource(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
+            .product: AssistantProductsDataSource(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
+            .productVariation: AssistantProductVariationsDataSource(siteID: siteID, storageManager: storageManager, dispatchAction: dispatchAction),
+            // Customer records are sparse in Yosemite storage, so customer cards stay REST-backed.
+            .customer: AssistantCustomersDataSource(client: restClient)
         ]
-        return make(providers: providers)
+        return make(dataSources: dataSources)
     }
 
-    static func make(providers: [CardFamily: any CardEntityProvider]) -> RESTTool {
-        let resolver = CardReferenceResolver(providers: providers)
+    static func make(dataSources: [CardFamily: any CardEntityDataSource]) -> RESTTool {
+        let resolver = CardReferenceResolver(dataSources: dataSources)
         let executor: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
             let request: ShowCardsRequest
             switch RESTToolDispatch.decodeArguments(ShowCardsRequest.self, from: arguments, toolName: name) {
@@ -158,48 +155,35 @@ public enum ShowCardsTool {
     }
 
     private static func encodeEntity(_ entity: CardEntity) -> AnyCodableJSON {
-        do {
-            let data: Data
-            switch entity {
-            case .order(let payload): data = try JSONEncoder().encode(payload)
-            case .product(let payload): data = try JSONEncoder().encode(payload)
-            case .variation(let payload): data = try JSONEncoder().encode(payload)
-            case .customer(let payload): data = try JSONEncoder().encode(payload)
-            case .analyticsStats(let payload): return payload
-            }
-            return try JSONDecoder().decode(AnyCodableJSON.self, from: data)
-        } catch {
-            DDLogError("ShowCardsTool failed to encode card entity: \(error)")
+        guard let json = CardEntityPayloadFactory.json(from: entity) else {
+            DDLogError("ShowCardsTool failed to encode card entity")
             return .object([:])
         }
+        return json
     }
 
     private static func summary(family: CardFamily, element: AnyCodableJSON) -> AnyCodableJSON {
-        if family == .analyticsStats {
+        let keys: [String]
+        switch family {
+        case .analyticsStats:
             return element
+        case .order:
+            keys = ["id", "number", "status", "total", "currency", "date_created", "customer_name"]
+        case .product:
+            keys = ["id", "name", "sku", "price", "stock_status"]
+        case .productVariation:
+            keys = ["id", "name", "sku", "price", "stock_status", "parent_id"]
+        case .customer:
+            keys = ["id", "first_name", "last_name", "email", "orders_count"]
         }
+
         guard case .object(let dict) = element else { return .object([:]) }
         var projected: [String: AnyCodableJSON] = [:]
-        for key in summaryKeys(for: family) {
+        for key in keys {
             if let value = dict[key] {
                 projected[key] = value
             }
         }
         return .object(projected)
-    }
-
-    private static func summaryKeys(for family: CardFamily) -> [String] {
-        switch family {
-        case .order:
-            return ["id", "number", "status", "total", "currency", "date_created", "customer_name"]
-        case .product:
-            return ["id", "name", "sku", "price", "stock_status"]
-        case .productVariation:
-            return ["id", "name", "sku", "price", "stock_status", "parent_id"]
-        case .customer:
-            return ["id", "first_name", "last_name", "email", "orders_count"]
-        case .analyticsStats:
-            return []
-        }
     }
 }

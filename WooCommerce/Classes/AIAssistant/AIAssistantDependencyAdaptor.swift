@@ -79,24 +79,25 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
     private static func defaultTools(siteID: Int64,
                                      stores: StoresManager,
                                      restClient: WCRESTClient) -> [RESTTool] {
-        let dispatch: @Sendable (Action) -> Void = { action in stores.dispatch(action) }
+        let dispatch: @MainActor @Sendable (Action) -> Void = { action in stores.dispatch(action) }
+        let storageManager = ServiceLocator.storageManager
         return [
             OrdersListTool.make(),
             OrdersGetTool.make(),
-            OrdersUpdateTool.make(),
-            OrdersBulkUpdateTool.make(),
+            OrdersUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatch),
+            OrdersBulkUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatch),
             ProductsListTool.make(),
             ProductsGetTool.make(),
-            ProductsUpdateTool.make(),
-            ProductsBulkUpdateTool.make(),
+            ProductsUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatch),
+            ProductsBulkUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatch),
             ProductVariationsListTool.make(),
-            ProductVariationsUpdateTool.make(),
-            ProductVariationsBulkUpdateTool.make(),
+            ProductVariationsUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatch),
+            ProductVariationsBulkUpdateTool.make(siteID: siteID, storageManager: storageManager, dispatchAction: dispatch),
             CustomersListTool.make(),
             AnalyticsOrdersTool.make(),
             AnalyticsRevenueTool.make(),
             ShowCardsTool.make(siteID: siteID,
-                               storageManager: ServiceLocator.storageManager,
+                               storageManager: storageManager,
                                dispatchAction: dispatch,
                                restClient: restClient)
         ]

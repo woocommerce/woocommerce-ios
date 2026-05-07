@@ -4,7 +4,7 @@ import Foundation
 /// Customer entries are sparse in CoreData (Android also keeps customer REST-only).
 /// `customers/{id}` requires `manage_woocommerce`; `customers?include=` works under
 /// `read_customers` and is the universal path even for permissive shop_manager roles.
-final class CustomerCardProvider: CardEntityProvider {
+final class AssistantCustomersDataSource: CardEntityDataSource {
 
     private let client: WCRESTClient
 
@@ -30,7 +30,7 @@ final class CustomerCardProvider: CardEntityProvider {
         do {
             decoded = try JSONDecoder().decode([CustomerCardPayload].self, from: response.data)
         } catch {
-            DDLogError("CustomerCardProvider failed to decode response: \(error)")
+            DDLogError("AssistantCustomersDataSource failed to decode response: \(error)")
             return Dictionary(uniqueKeysWithValues: refs.map { ($0, .rejected(.internalError)) })
         }
 

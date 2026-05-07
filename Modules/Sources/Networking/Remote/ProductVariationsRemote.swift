@@ -24,6 +24,11 @@ public protocol ProductVariationsRemoteProtocol {
                                  productID: Int64,
                                  productVariations: [CreateProductVariation],
                                  completion: @escaping (Result<[ProductVariation], Error>) -> Void)
+    func updateProductVariation(siteID: Int64,
+                                productID: Int64,
+                                variationID: Int64,
+                                fields: ProductVariationUpdateFields,
+                                completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func updateProductVariationImage(siteID: Int64,
                                      productID: Int64,
@@ -245,6 +250,23 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         } catch {
             completion(.failure(error))
         }
+    }
+
+    public func updateProductVariation(siteID: Int64,
+                                       productID: Int64,
+                                       variationID: Int64,
+                                       fields: ProductVariationUpdateFields,
+                                       completion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        let path = "\(Path.products)/\(productID)/variations/\(variationID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: fields.parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
+
+        enqueue(request, mapper: mapper, completion: completion)
     }
 
     /// Updates the image of a specific `ProductVariation`.

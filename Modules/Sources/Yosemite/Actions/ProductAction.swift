@@ -103,6 +103,13 @@ public enum ProductAction: Action {
     ///
     case updateProduct(product: Product, onCompletion: (Result<Product, ProductUpdateError>) -> Void)
 
+    /// Updates selected fields on a specified Product.
+    ///
+    case updateProductFields(siteID: Int64,
+                             productID: Int64,
+                             fields: ProductUpdateFields,
+                             onCompletion: (Result<Product, ProductUpdateError>) -> Void)
+
     /// Updates a specified Product's images.
     ///
     case updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], onCompletion: (Result<Product, ProductUpdateError>) -> Void)

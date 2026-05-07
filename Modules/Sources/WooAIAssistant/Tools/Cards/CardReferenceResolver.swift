@@ -3,10 +3,10 @@ import Foundation
 struct CardReferenceResolver: Sendable {
     static let maxReferencesPerCall = 10
 
-    private let providers: [CardFamily: any CardEntityProvider]
+    private let dataSources: [CardFamily: any CardEntityDataSource]
 
-    init(providers: [CardFamily: any CardEntityProvider]) {
-        self.providers = providers
+    init(dataSources: [CardFamily: any CardEntityDataSource]) {
+        self.dataSources = dataSources
     }
 
     func resolve(_ references: [CardReference], analyticsClient: WCRESTClient? = nil) async -> [Resolution] {
@@ -54,7 +54,7 @@ struct CardReferenceResolver: Sendable {
 
         await withTaskGroup(of: ResolverWork.self) { group in
             for (family, slots) in slotsByFamily {
-                guard let provider = providers[family] else {
+                guard let dataSource = dataSources[family] else {
                     for slot in slots {
                         resolutions[slot.index] = .rejected(family: family, id: slot.id, reason: .internalError)
                     }
@@ -62,7 +62,7 @@ struct CardReferenceResolver: Sendable {
                 }
                 let refs = slots.map { $0.ref }
                 group.addTask {
-                    let outcomes = await provider.fetch(refs: refs)
+                    let outcomes = await dataSource.fetch(refs: refs)
                     return .entities(family: family, outcomes: outcomes)
                 }
             }

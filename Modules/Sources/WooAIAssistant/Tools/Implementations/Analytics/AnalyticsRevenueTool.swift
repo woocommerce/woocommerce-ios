@@ -1,11 +1,21 @@
 import Foundation
 
 public enum AnalyticsRevenueTool {
-
     public static let name = "analytics_revenue"
 
     public static func make() -> RESTTool {
-        RESTTool(definition: definition, executor: execute)
+        AnalyticsRevenueToolImplementation().makeRESTTool()
+    }
+}
+
+private struct AnalyticsRevenueToolImplementation: Sendable {
+
+    private static let name = AnalyticsRevenueTool.name
+
+    func makeRESTTool() -> RESTTool {
+        RESTTool(definition: Self.definition) { arguments, client in
+            await execute(arguments: arguments, client: client)
+        }
     }
 
     private static let definition = AITool(
@@ -59,14 +69,14 @@ public enum AnalyticsRevenueTool {
         let currency: String?
     }
 
-    private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+    private func execute(arguments: String, client: WCRESTClient) async -> ToolResult {
         let args: Args
-        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
+        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: Self.name) {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
         }
         guard let bounds = AnalyticsDateBounds.bounds(start: args.after, end: args.before) else {
-            return .failed(.init(toolName: name,
+            return .failed(.init(toolName: Self.name,
                                  kind: .invalidToolCall,
                                  reason: "after and before must be YYYY-MM-DD"))
         }
@@ -85,16 +95,16 @@ public enum AnalyticsRevenueTool {
                                             query: query,
                                             body: nil)
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
-            return .failed(RESTToolDispatch.failed(from: response, toolName: name))
+            return .failed(RESTToolDispatch.failed(from: response, toolName: Self.name))
         }
         guard let payload = RESTResponseParsing.decodeJSON(response.data) else {
-            return .failed(.init(toolName: name,
+            return .failed(.init(toolName: Self.name,
                                  kind: .toolFailed,
                                  reason: "expected JSON object"))
         }
         let summary = AnalyticsStatsSummary.make(from: payload, range: (args.after, args.before))
-        return .success(.init(toolName: name,
-                              structured: LLMPayloadCap.capped(summary, toolName: name),
+        return .success(.init(toolName: Self.name,
+                              structured: LLMPayloadCap.capped(summary, toolName: Self.name),
                               uiStructured: nil))
     }
 }

@@ -217,12 +217,7 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
     }
 
     private func productVariationsBulkUpdate(arguments: String) -> ConfirmationPreview {
-        struct Args: Decodable {
-            let product_id: Int?
-            let variations: [V]?
-            struct V: Decodable { let id: Int? }
-        }
-        guard let args = decode(Args.self, from: arguments),
+        guard let args = decode(ProductVariationsBulkUpdateArgs.self, from: arguments),
               let pid = args.product_id, let variations = args.variations else {
             return ConfirmationPreview(summary: .localized(Strings.productVariationsBulkUpdateFallback))
         }
@@ -233,7 +228,8 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             plural: Strings.productVariationsBulkUpdateSummaryPlural,
             args: [.raw(String(count)), .raw(String(pid))]
         )
-        return ConfirmationPreview(summary: summary, fields: [], isBulk: true)
+        let fields = productVariationBulkFields(variations: variations)
+        return ConfirmationPreview(summary: summary, fields: fields, isBulk: true)
     }
 
     // MARK: - Product field helpers
@@ -308,6 +304,47 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         case "onbackorder": return .localized(Strings.stockStatusOnBackorder)
         default: return .raw(raw)
         }
+    }
+
+    private func productVariationBulkFields(variations: [ProductVariationBulkUpdateArgs]) -> [ConfirmationPreviewField] {
+        var fields: [ConfirmationPreviewField] = []
+        appendBulkField(name: "regular_price",
+                        label: Strings.fieldRegularPrice,
+                        values: variations.compactMap(\.regular_price),
+                        into: &fields)
+        appendBulkField(name: "sale_price",
+                        label: Strings.fieldSalePrice,
+                        values: variations.compactMap(\.sale_price),
+                        into: &fields)
+        appendBulkField(name: "stock_quantity",
+                        label: Strings.fieldStockQuantity,
+                        values: variations.compactMap { $0.stock_quantity.map(String.init) },
+                        into: &fields)
+        appendBulkField(name: "stock_status",
+                        label: Strings.fieldStockStatus,
+                        values: variations.compactMap { $0.stock_status.map { humanizedStockStatus($0).flattened() } },
+                        into: &fields)
+        appendBulkField(name: "sku",
+                        label: Strings.fieldSku,
+                        values: variations.compactMap(\.sku),
+                        into: &fields)
+        appendBulkField(name: "status",
+                        label: Strings.fieldStatus,
+                        values: variations.compactMap { $0.status.map(Self.humanizedProductStatus) },
+                        into: &fields)
+        return fields
+    }
+
+    private func appendBulkField(name: String,
+                                 label: LocalizedStringResource,
+                                 values: [String],
+                                 into fields: inout [ConfirmationPreviewField]) {
+        guard values.isEmpty == false else { return }
+        let uniqueValues = Array(Set(values)).sorted()
+        let value: ConfirmationPreviewText = uniqueValues.count == 1
+            ? .raw(uniqueValues[0])
+            : .localized(Strings.fieldValueMultipleValues, args: [.raw(String(uniqueValues.count))])
+        fields.append(.init(name: name, label: .localized(label), value: value))
     }
 
     private func priorValue(for name: String,
@@ -390,6 +427,23 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
     private let customerNotifyingStatuses: Set<String> = [
         "processing", "completed", "cancelled", "refunded", "on-hold"
     ]
+
+    private typealias ProductVariationBulkUpdateArgs = ProductVariationsBulkUpdateArgs.V
+}
+
+private struct ProductVariationsBulkUpdateArgs: Decodable {
+    let product_id: Int?
+    let variations: [V]?
+
+    struct V: Decodable {
+        let id: Int?
+        let regular_price: String?
+        let sale_price: String?
+        let stock_quantity: Int?
+        let stock_status: String?
+        let sku: String?
+        let status: String?
+    }
 }
 
 private enum Strings {
@@ -497,6 +551,10 @@ private enum Strings {
     static let fieldValueOff = LocalizedStringResource(
         "ai.assistant.preview.field.value.off_marker",
         defaultValue: "Off"
+    )
+    static let fieldValueMultipleValues = LocalizedStringResource(
+        "ai.assistant.preview.field.value.multiple_values",
+        defaultValue: "%@ values"
     )
 
     static let stockStatusInStock = LocalizedStringResource(

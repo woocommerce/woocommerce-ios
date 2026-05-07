@@ -1,11 +1,21 @@
 import Foundation
 
 public enum OrdersGetTool {
-
     public static let name = "orders_get"
 
     public static func make() -> RESTTool {
-        RESTTool(definition: definition, executor: execute)
+        OrdersGetToolImplementation().makeRESTTool()
+    }
+}
+
+private struct OrdersGetToolImplementation: Sendable {
+
+    private static let name = OrdersGetTool.name
+
+    func makeRESTTool() -> RESTTool {
+        RESTTool(definition: Self.definition) { arguments, client in
+            await execute(arguments: arguments, client: client)
+        }
     }
 
     private static let definition = AITool(
@@ -38,9 +48,9 @@ public enum OrdersGetTool {
         let id: Int
     }
 
-    private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+    private func execute(arguments: String, client: WCRESTClient) async -> ToolResult {
         let args: Args
-        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
+        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: Self.name) {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
         }
@@ -49,16 +59,16 @@ public enum OrdersGetTool {
                                             query: nil,
                                             body: nil)
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
-            return .failed(RESTToolDispatch.failed(from: response, toolName: name))
+            return .failed(RESTToolDispatch.failed(from: response, toolName: Self.name))
         }
         guard let entity = RESTResponseParsing.decodeJSON(response.data) else {
-            return .failed(.init(toolName: name,
+            return .failed(.init(toolName: Self.name,
                                  kind: .toolFailed,
                                  reason: "expected JSON object"))
         }
         let pruned = RESTPayloadPruning.prune(entity)
         let summary = OrderSummary.make(from: pruned)
-        return .success(.init(toolName: name,
-                              structured: LLMPayloadCap.capped(summary, toolName: name)))
+        return .success(.init(toolName: Self.name,
+                              structured: LLMPayloadCap.capped(summary, toolName: Self.name)))
     }
 }

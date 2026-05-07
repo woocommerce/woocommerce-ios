@@ -1,15 +1,39 @@
 import Foundation
-import CocoaLumberjackSwift
+import Storage
+import Yosemite
 
 public enum ProductVariationsBulkUpdateTool {
-
     public static let name = "product_variations_bulk_update"
-
-    /// WC silently truncates batches above this server-side default; enforce locally to fail fast.
     public static let maxBatchSize = 100
 
-    public static func make() -> RESTTool {
-        RESTTool(definition: definition, executor: execute)
+    @MainActor
+    public static func make(siteID: Int64,
+                            storageManager: StorageManagerType,
+                            dispatchAction: @escaping @MainActor @Sendable (Action) -> Void) -> RESTTool {
+        ProductVariationsBulkUpdateToolImplementation(dataSource: AssistantProductVariationsDataSource(siteID: siteID,
+                                                                                                       storageManager: storageManager,
+                                                                                                       dispatchAction: dispatchAction)).makeRESTTool()
+    }
+
+    static func make(dataSource: any AssistantProductVariationsDataSourceProtocol) -> RESTTool {
+        ProductVariationsBulkUpdateToolImplementation(dataSource: dataSource).makeRESTTool()
+    }
+}
+
+private struct ProductVariationsBulkUpdateToolImplementation: Sendable {
+    private static let name = ProductVariationsBulkUpdateTool.name
+    private static let maxBatchSize = ProductVariationsBulkUpdateTool.maxBatchSize
+
+    private let dataSource: any AssistantProductVariationsDataSourceProtocol
+
+    init(dataSource: any AssistantProductVariationsDataSourceProtocol) {
+        self.dataSource = dataSource
+    }
+
+    func makeRESTTool() -> RESTTool {
+        RESTTool(definition: Self.definition) { arguments, _ in
+            await execute(arguments: arguments)
+        }
     }
 
     private static let definition = AITool(
@@ -93,75 +117,67 @@ public enum ProductVariationsBulkUpdateTool {
             case sku, status
         }
 
-        var hasAnyField: Bool {
-            regularPrice != nil || salePrice != nil || stockQuantity != nil
-                || stockStatus != nil || sku != nil || status != nil
+        var patch: ProductVariationUpdatePatch {
+            ProductVariationUpdatePatch(regularPrice: regularPrice,
+                                        salePrice: salePrice,
+                                        stockQuantity: stockQuantity,
+                                        stockStatus: stockStatus,
+                                        sku: sku,
+                                        status: status)
         }
     }
 
     private static let allowedStatuses = AllowedProductUpdateStatuses.values
     private static let allowedStockStatuses: Set<String> = ["instock", "outofstock", "onbackorder"]
 
-    private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+    private func execute(arguments: String) async -> ToolResult {
         let args: Args
-        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
+        switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: Self.name) {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
         }
-        guard !args.variations.isEmpty else {
-            return .failed(.init(toolName: name,
-                                 kind: .invalidToolCall,
-                                 reason: "variations must not be empty"))
-        }
-        guard args.variations.count <= maxBatchSize else {
-            return .failed(.init(toolName: name,
-                                 kind: .invalidToolCall,
-                                 reason: "variations has \(args.variations.count) entries; max is \(maxBatchSize)"))
-        }
-        for variation in args.variations {
-            if let status = variation.status, !allowedStatuses.contains(status) {
-                return .failed(.init(toolName: name,
-                                     kind: .invalidToolCall,
-                                     reason: "status must be one of: \(allowedStatuses.sorted().joined(separator: ", "))"))
-            }
-            if let stockStatus = variation.stockStatus, !allowedStockStatuses.contains(stockStatus) {
-                return .failed(.init(toolName: name,
-                                     kind: .invalidToolCall,
-                                     reason: "stock_status must be one of: \(allowedStockStatuses.sorted().joined(separator: ", "))"))
-            }
-            guard variation.hasAnyField else {
-                return .failed(.init(toolName: name,
-                                     kind: .invalidToolCall,
-                                     reason: "each variation must set at least one editable field"))
-            }
+        if let failure = validate(args: args) {
+            return .failed(failure)
         }
 
-        let updates: [[String: Any]] = args.variations.map { variation in
-            var entry: [String: Any] = ["id": variation.id]
-            if let value = variation.regularPrice { entry["regular_price"] = value }
-            if let value = variation.salePrice { entry["sale_price"] = value }
-            if let value = variation.stockQuantity {
-                entry["stock_quantity"] = value
-                entry["manage_stock"] = true
+        let updates = args.variations.map {
+            ProductVariationBatchPatch(id: Int64($0.id), patch: $0.patch)
+        }
+        let builder = WriteToolResultBuilder(toolName: Self.name)
+        switch await dataSource.bulkUpdateVariations(productID: Int64(args.productID), patches: updates) {
+        case .success(let result):
+            return builder.batchSuccess(result)
+        case .failure(let error):
+            return builder.failure(error)
+        }
+    }
+
+    private func validate(args: Args) -> ToolResult.Failed? {
+        guard !args.variations.isEmpty else {
+            return .init(toolName: Self.name, kind: .invalidToolCall, reason: "variations must not be empty")
+        }
+        guard args.variations.count <= Self.maxBatchSize else {
+            return .init(toolName: Self.name,
+                         kind: .invalidToolCall,
+                         reason: "variations has \(args.variations.count) entries; max is \(Self.maxBatchSize)")
+        }
+        for variation in args.variations {
+            if let status = variation.status, !Self.allowedStatuses.contains(status) {
+                return .init(toolName: Self.name,
+                             kind: .invalidToolCall,
+                             reason: RESTToolDispatch.allowedValuesMessage(field: "status", values: Self.allowedStatuses))
             }
-            if let value = variation.stockStatus { entry["stock_status"] = value }
-            if let value = variation.sku { entry["sku"] = value }
-            if let value = variation.status { entry["status"] = value }
-            return entry
+            if let stockStatus = variation.stockStatus, !Self.allowedStockStatuses.contains(stockStatus) {
+                return .init(toolName: Self.name,
+                             kind: .invalidToolCall,
+                             reason: RESTToolDispatch.allowedValuesMessage(field: "stock_status", values: Self.allowedStockStatuses))
+            }
+            guard variation.patch.hasAnyField else {
+                return .init(toolName: Self.name,
+                             kind: .invalidToolCall,
+                             reason: "each variation must set at least one editable field")
+            }
         }
-        let payload: Data
-        do {
-            payload = try JSONSerialization.data(withJSONObject: ["update": updates])
-        } catch {
-            DDLogError("[ProductVariationsBulkUpdateTool] Failed to encode batch body: \(error)")
-            return .failed(.init(toolName: name,
-                                 kind: .toolFailed,
-                                 reason: "could not serialize batch body"))
-        }
-        return await RESTToolDispatch.dispatchBatchWrite(method: "POST",
-                                                         path: "wc/v3/products/\(args.productID)/variations/batch",
-                                                         body: payload,
-                                                         client: client,
-                                                         toolName: name)
+        return nil
     }
 }

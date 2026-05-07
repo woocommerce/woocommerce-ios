@@ -112,6 +112,8 @@ public class ProductStore: Store {
             requestMissingProducts(for: order, onCompletion: onCompletion)
         case .updateProduct(let product, let onCompletion):
             updateProduct(product: product, onCompletion: onCompletion)
+        case .updateProductFields(let siteID, let productID, let fields, let onCompletion):
+            updateProduct(siteID: siteID, productID: productID, fields: fields, onCompletion: onCompletion)
         case .updateProductImages(let siteID, let productID, let images, let onCompletion):
             updateProductImages(siteID: siteID, productID: productID, images: images, onCompletion: onCompletion)
         case .updateProducts(let siteID, let products, let onCompletion):
@@ -492,6 +494,26 @@ private extension ProductStore {
     ///
     func updateProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
         remote.updateProduct(product: product) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            case .success(let product):
+                self?.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
+                    guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
+                        onCompletion(.failure(.notFoundInStorage))
+                        return
+                    }
+                    onCompletion(.success(storageProduct.toReadOnly()))
+                }
+            }
+        }
+    }
+
+    func updateProduct(siteID: Int64,
+                       productID: Int64,
+                       fields: ProductUpdateFields,
+                       onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+        remote.updateProduct(siteID: siteID, productID: productID, fields: fields) { [weak self] result in
             switch result {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))

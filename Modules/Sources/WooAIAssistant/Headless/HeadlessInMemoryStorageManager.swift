@@ -5,7 +5,7 @@ import Storage
 
 /// In-memory `StorageManagerType` scoped to a single `WooAssistantHeadless`
 /// instance. Mirrors the slice of `MockStorageManager`'s setup that the
-/// harness providers actually use - `viewStorage` for synchronous reads
+/// harness data sources actually use - `viewStorage` for synchronous reads
 /// and `performAndSave` for upserts after dispatched actions.
 ///
 /// The harness ships in the production binary, so it uses a local bundle

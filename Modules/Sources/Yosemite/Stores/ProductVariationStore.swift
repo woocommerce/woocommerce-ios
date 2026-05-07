@@ -53,6 +53,12 @@ public final class ProductVariationStore: Store {
             createProductVariations(siteID: siteID, productID: productID, productVariations: productVariations, onCompletion: onCompletion)
         case .updateProductVariation(let productVariation, let onCompletion):
             updateProductVariation(productVariation: productVariation, onCompletion: onCompletion)
+        case .updateProductVariationFields(let siteID, let productID, let variationID, let fields, let onCompletion):
+            updateProductVariation(siteID: siteID,
+                                   productID: productID,
+                                   variationID: variationID,
+                                   fields: fields,
+                                   onCompletion: onCompletion)
         case .updateProductVariationImage(let siteID, let productID, let variationID, let image, let completion):
             updateProductVariationImage(siteID: siteID, productID: productID, variationID: variationID, image: image, completion: completion)
         case .requestMissingVariations(let order, let onCompletion):
@@ -227,6 +233,37 @@ private extension ProductVariationStore {
                                                                                             return
                                                                 }
                                                                 onCompletion(.success(storageProductVariation.toReadOnly()))
+                }
+            }
+        }
+    }
+
+    func updateProductVariation(siteID: Int64,
+                                productID: Int64,
+                                variationID: Int64,
+                                fields: ProductVariationUpdateFields,
+                                onCompletion: @escaping (Result<ProductVariation, ProductUpdateError>) -> Void) {
+        remote.updateProductVariation(siteID: siteID,
+                                      productID: productID,
+                                      variationID: variationID,
+                                      fields: fields) { [weak self] result in
+            guard let self else {
+                return
+            }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            case .success(let productVariation):
+                self.productVariationStorageManager.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],
+                                                                                               siteID: productVariation.siteID,
+                                                                                               productID: productVariation.productID) { [weak self] in
+                    guard let storageProductVariation = self?.storageManager.viewStorage
+                        .loadProductVariation(siteID: productVariation.siteID,
+                                              productVariationID: productVariation.productVariationID) else {
+                        onCompletion(.failure(.notFoundInStorage))
+                        return
+                    }
+                    onCompletion(.success(storageProductVariation.toReadOnly()))
                 }
             }
         }

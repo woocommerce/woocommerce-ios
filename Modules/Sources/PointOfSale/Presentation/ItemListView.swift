@@ -74,6 +74,13 @@ struct ItemListView: View {
 
     @State private var showCouponCreationModal: Bool = false
 
+    /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
+    ///
+    /// Add lives in local view state because the push is scoped to this view's `NavigationStack`
+    /// (left pane). Edit, by contrast, can be triggered from the cart pane and is a modal cover,
+    /// so it lives on the aggregate model as `editingCustomAmount` for cross-pane reach.
+    @State private var isAddingCustomAmount: Bool = false
+
     var body: some View {
         if #available(iOS 18.0, *) {
             NavigationStack {
@@ -107,6 +114,10 @@ struct ItemListView: View {
         .navigationDestination(for: POSItem.self, destination: { item in
             childListView(parentItem: item)
         })
+        .modifier(CustomAmountFormPushModifier(
+            isPresented: $isAddingCustomAmount,
+            destination: { addCustomAmountFormDestination }
+        ))
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
         .posCouponCreationSheet(isPresented: $showCouponCreationModal,
@@ -202,7 +213,7 @@ struct ItemListView: View {
                 headerView: {
                     if shouldShowCustomAmountEntryRow(itemListType) {
                         CustomAmountEntryRow(onTap: {
-                            posModel.presentAddCustomAmount()
+                            isAddingCustomAmount = true
                         })
                     }
                 }
@@ -312,6 +323,55 @@ struct ItemListView: View {
             }
         default:
             EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private var addCustomAmountFormDestination: some View {
+        AddCustomAmountView(
+            currencySettings: currencyProvider.currencySettings,
+            backButtonStyle: .back,
+            onDismiss: { isAddingCustomAmount = false },
+            onSubmit: { customAmount in
+                posModel.upsertCustomAmount(customAmount, mode: .add)
+            }
+        )
+        // Hide the system nav bar so only the form's own POSPageHeaderView is visible
+        // (matches how `ChildItemList` handles the variations push).
+        .toolbar(.hidden, for: .navigationBar)
+        .navigationBarBackButtonHidden(true)
+        // Suppress the dashboard's floating control overlay so it doesn't sit on top
+        // of the form's submit button while the form is pushed.
+        .posHidesFloatingControl()
+    }
+}
+
+/// Pushes a destination from a `Bool` flag, with separate paths for iOS 18+ (`navigationDestination`)
+/// and iOS 17 (programmatic `NavigationLink` to avoid the `navigationDestination(for:)` runtime
+/// warnings reported on `NavigationView`).
+private struct CustomAmountFormPushModifier<Destination: View>: ViewModifier {
+    @Binding var isPresented: Bool
+    let destination: () -> Destination
+
+    func body(content: Content) -> some View {
+        if #available(iOS 18.0, *) {
+            content.navigationDestination(isPresented: $isPresented) {
+                destination()
+            }
+        } else {
+            // The `NavigationLink(destination:isActive:label:)` initializer is deprecated since
+            // iOS 16, but its replacement (`navigationDestination(isPresented:)`) doesn't work
+            // reliably under the `NavigationView` wrapper we still use on iOS 17 for the memory-leak
+            // workaround documented in `ItemList.swift`. Mirrors the variations push fallback.
+            content.background(
+                NavigationLink(
+                    destination: destination(),
+                    isActive: $isPresented,
+                    label: { EmptyView() }
+                )
+                .opacity(0)
+                .frame(width: 0, height: 0)
+            )
         }
     }
 }

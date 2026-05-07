@@ -98,7 +98,7 @@ struct ChatMessageTests {
                                   segments: [.confirmation(id: UUID(),
                                                            proposalID: proposalID,
                                                            toolName: "orders_update",
-                                                           preview: "Mark order #3551 completed",
+                                                           preview: ConfirmationPreview(summary: .raw("Mark order #3551 completed")),
                                                            status: .pending)])
 
         // When
@@ -166,7 +166,7 @@ struct ChatMessageTests {
         let original: [MessageSegment] = [.confirmation(id: UUID(),
                                                         proposalID: UUID(),
                                                         toolName: "orders_update",
-                                                        preview: "Mark order #1 completed",
+                                                        preview: ConfirmationPreview(summary: .raw("Mark order #1 completed")),
                                                         status: .pending)]
         var message = ChatMessage(role: .assistant, segments: original)
 
@@ -178,6 +178,79 @@ struct ChatMessageTests {
     }
 
     @Test
+    func test_chatMessage_markCompleted_when_text_has_trailing_newlines_then_trims_them() {
+        // Given
+        let textID = UUID()
+        var message = ChatMessage(role: .assistant,
+                                  segments: [.text(id: textID, content: "Hello world.\n\n\n")],
+                                  isStreaming: true)
+
+        // When
+        message.markCompleted()
+
+        // Then
+        guard case .text(let id, let content) = message.segments[0] else {
+            Issue.record("expected .text, got \(message.segments[0])")
+            return
+        }
+        #expect(id == textID)
+        #expect(content == "Hello world.")
+    }
+
+    @Test
+    func test_chatMessage_markCompleted_when_text_has_trailing_spaces_and_tabs_then_trims_them() {
+        // Given
+        var message = ChatMessage(role: .assistant,
+                                  segments: [.text(id: UUID(), content: "Done.   \t\n")],
+                                  isStreaming: true)
+
+        // When
+        message.markCompleted()
+
+        // Then
+        guard case .text(_, let content) = message.segments[0] else {
+            Issue.record("expected .text, got \(message.segments[0])")
+            return
+        }
+        #expect(content == "Done.")
+    }
+
+    @Test
+    func test_chatMessage_markCompleted_preserves_leading_whitespace() {
+        // Given
+        var message = ChatMessage(role: .assistant,
+                                  segments: [.text(id: UUID(), content: "  Indented start.\n\n")],
+                                  isStreaming: true)
+
+        // When
+        message.markCompleted()
+
+        // Then
+        guard case .text(_, let content) = message.segments[0] else {
+            Issue.record("expected .text, got \(message.segments[0])")
+            return
+        }
+        #expect(content == "  Indented start.")
+    }
+
+    @Test
+    func test_chatMessage_updateText_mid_stream_does_not_trim() {
+        // Given
+        var message = ChatMessage(role: .assistant, isStreaming: true)
+
+        // When
+        message.updateText(appending: "Hello\n")
+        message.updateText(appending: "world.")
+
+        // Then
+        guard case .text(_, let content) = message.segments[0] else {
+            Issue.record("expected .text, got \(message.segments[0])")
+            return
+        }
+        #expect(content == "Hello\nworld.")
+    }
+
+    @Test
     func test_chatMessage_updateConfirmation_when_pending_then_resolves_to_cancelled() {
         // Given
         let proposalID = UUID()
@@ -185,7 +258,7 @@ struct ChatMessageTests {
                                   segments: [.confirmation(id: UUID(),
                                                            proposalID: proposalID,
                                                            toolName: "orders_update",
-                                                           preview: "Mark order #1 completed",
+                                                           preview: ConfirmationPreview(summary: .raw("Mark order #1 completed")),
                                                            status: .pending)])
 
         // When

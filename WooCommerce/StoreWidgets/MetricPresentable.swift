@@ -8,12 +8,27 @@ import Foundation
 protocol MetricPresentable {
     var title: String { get }
     var formattedValue: String { get }
+    var trend: MetricTrendPresentation? { get }
     /// URL the cell should deep-link to when tapped. `nil` means non-tappable.
     var tapURL: URL? { get }
 }
 
 extension MetricPresentable {
+    var trend: MetricTrendPresentation? { nil }
     var tapURL: URL? { nil }
+}
+
+/// Presentation-ready trend badge data: a direction (up/down) plus a localized
+/// formatted percentage delta (e.g. `"6%"`).
+///
+struct MetricTrendPresentation: Equatable {
+    enum Direction: Equatable {
+        case up
+        case down
+    }
+
+    let direction: Direction
+    let formattedPercentage: String
 }
 
 // MARK: - StoreInfoMetric
@@ -45,6 +60,10 @@ extension StoreInfoMetric: MetricPresentable {
         }
     }
 
+    var trend: MetricTrendPresentation? {
+        value.trend(comparedTo: previousValue)
+    }
+
     var tapURL: URL? {
         switch type {
         case .orders:
@@ -52,5 +71,63 @@ extension StoreInfoMetric: MetricPresentable {
         case .revenue, .netSales, .itemsSold, .visitors, .conversion, .averageOrderValue:
             return nil
         }
+    }
+}
+
+// MARK: - Trend computation
+
+private extension StoreInfoMetricValue {
+    /// Returns a presentation-ready trend, or `nil` when comparison is not meaningful
+    /// (missing previous value, non-numeric value, negative baseline, zero delta, or delta that formats as zero).
+    ///
+    func trend(comparedTo previousValue: StoreInfoMetricValue?) -> MetricTrendPresentation? {
+        guard let current = trendComparableValue,
+              let previous = previousValue?.trendComparableValue,
+              current.isFinite,
+              previous.isFinite else {
+            return nil
+        }
+        guard previous >= 0 else {
+            return nil
+        }
+
+        let delta = current - previous
+        guard delta != 0 else {
+            return nil
+        }
+
+        let direction: MetricTrendPresentation.Direction = delta > 0 ? .up : .down
+        // Previous = 0 → any non-zero current is a 100% change relative to baseline.
+        let ratio = previous == 0 ? 1 : abs(delta / previous)
+        guard let formattedPercentage = formattedTrendPercentage(for: ratio),
+              let zeroFormattedPercentage = formattedTrendPercentage(for: 0),
+              formattedPercentage != zeroFormattedPercentage else {
+            return nil
+        }
+
+        return MetricTrendPresentation(direction: direction,
+                                       formattedPercentage: formattedPercentage)
+    }
+
+    /// Numeric projection used by the trend comparison. `.unavailable` returns `nil`
+    /// so the cell renders without a trend badge.
+    var trendComparableValue: Double? {
+        switch self {
+        case .currency(let amount, _):
+            return NSDecimalNumber(decimal: amount).doubleValue
+        case .count(let count):
+            return Double(count)
+        case .percentage(let ratio):
+            return ratio
+        case .unavailable:
+            return nil
+        }
+    }
+
+    func formattedTrendPercentage(for ratio: Double) -> String? {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .percent
+        formatter.maximumFractionDigits = 0
+        return formatter.string(from: NSNumber(value: ratio))
     }
 }

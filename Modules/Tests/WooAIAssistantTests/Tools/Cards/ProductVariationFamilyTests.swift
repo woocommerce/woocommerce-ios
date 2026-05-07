@@ -60,6 +60,50 @@ struct ProductVariationFamilyTests {
     }
 
     @Test
+    func test_fetchNested_when_response_omits_parent_id_then_injects_requested_parent_into_entity() async {
+        // Given
+        let body = """
+        {"id": 841, "name": "Black", "sku": "BNY-BLK", "price": "74.99", "regular_price": "74.99",
+         "sale_price": "", "stock_quantity": 5, "stock_status": "instock", "status": "publish",
+         "attributes": [{"id": 1, "name": "Color", "option": "Black"}]}
+        """
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+
+        // When
+        let outcomes = await CardFamily.productVariation.fetchNested(refs: [(id: 841, parentID: 12)], client: client)
+
+        // Then
+        guard case .found(let entity) = outcomes[841] else {
+            Issue.record("expected found, got \(String(describing: outcomes[841]))")
+            return
+        }
+        guard case .object(let dict) = entity else {
+            Issue.record("expected object entity")
+            return
+        }
+        #expect(dict["parent_id"] == .int(12))
+    }
+
+    @Test
+    func test_fetchNested_when_response_carries_parent_id_then_response_value_wins() async {
+        // Given
+        let body = """
+        {"id": 822, "name": "Black", "price": "74.99", "stock_status": "instock", "parent_id": 821}
+        """
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+
+        // When
+        let outcomes = await CardFamily.productVariation.fetchNested(refs: [(id: 822, parentID: 821)], client: client)
+
+        // Then
+        guard case .found(let entity) = outcomes[822], case .object(let dict) = entity else {
+            Issue.record("expected found object entity")
+            return
+        }
+        #expect(dict["parent_id"] == .int(821))
+    }
+
+    @Test
     func test_fetchNested_when_remote_returns_404_then_rejects_as_notFound() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 404))

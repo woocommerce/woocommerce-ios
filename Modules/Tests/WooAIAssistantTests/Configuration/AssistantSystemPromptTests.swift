@@ -44,6 +44,17 @@ struct AssistantSystemPromptTests {
         #expect(prompt.contains("Top / best-selling products are product-entity answers"))
         #expect(prompt.contains("popularity sorting"))
         #expect(prompt.contains("render product cards"))
+        #expect(prompt.contains("The UI never renders cards on its own"))
+        #expect(prompt.contains("Use `show_cards` in the same assistant response as your prose"))
+    }
+
+    @Test
+    func test_build_documents_stock_queries_as_product_level_show_cards() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+
+        #expect(prompt.contains("Broad stock questions are product-level answers"))
+        #expect(prompt.contains("Do not inspect variations unless the merchant explicitly asks"))
+        #expect(prompt.contains("`show_cards` fetches and renders product"))
     }
 
     @Test

@@ -12,7 +12,9 @@ struct ProductsListToolTests {
         #expect(tool.definition.description.contains("orderby=popularity"))
         #expect(tool.definition.description.contains("latest/last single-product"))
         #expect(tool.definition.description.contains("per_page=1"))
-        #expect(tool.definition.description.contains("then pass results to `show_cards`"))
+        #expect(tool.definition.description.contains("pass returned ids to"))
+        #expect(tool.definition.description.contains("Terse merchant phrases"))
+        #expect(tool.definition.description.contains("never say no match was found unless the returned count is zero"))
     }
 
     @Test
@@ -43,23 +45,7 @@ struct ProductsListToolTests {
         }
         #expect(fields["count"] == .int(3))
         #expect(fields["ids"] == .array([.int(101), .int(102), .int(103)]))
-        #expect(fields["rows"] == .array([
-            .object(["id": .int(101),
-                     "name": .string("Hoodie"),
-                     "sku": .string("HOOD-1"),
-                     "price": .string("49.00"),
-                     "stock_status": .string("instock")]),
-            .object(["id": .int(102),
-                     "name": .string("Tee"),
-                     "sku": .string("TEE-1"),
-                     "price": .string("19.00"),
-                     "stock_status": .string("outofstock")]),
-            .object(["id": .int(103),
-                     "name": .string("Jacket"),
-                     "sku": .string("JAC-1"),
-                     "price": .string("120.00"),
-                     "stock_status": .string("instock")])
-        ]))
+        #expect(fields["rows"] == nil)
         #expect(fields["stock_status_counts"] == .object([
             "instock": .int(2),
             "outofstock": .int(1)

@@ -4,6 +4,17 @@ import Testing
 
 struct ProductVariationsListToolTests {
     @Test
+    func test_definition_limits_use_to_explicit_variation_level_questions() {
+        // Given
+        let tool = ProductVariationsListTool.make()
+
+        // Then
+        #expect(tool.definition.description.contains("explicitly"))
+        #expect(tool.definition.description.contains("product-level inventory"))
+        #expect(tool.definition.description.contains("separate WooCommerce concepts"))
+    }
+
+    @Test
     func test_product_variations_list_when_response_is_array_then_summary_carries_parent_id_and_ids() async throws {
         // Given
         let body = """

@@ -344,6 +344,47 @@ struct LoopAdditionalEdgeCasesTests {
     }
 
     @Test
+    func test_run_when_non_show_cards_success_has_uiStructured_then_does_not_emit_cardRender() async throws {
+        // Given
+        let listTool = AITool(name: "orders_list",
+                              description: "List orders",
+                              parametersSchema: .object([:]),
+                              safetyLevel: .safe)
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_orders",
+            function: .init(name: "orders_list", arguments: #"{}"#)
+        )
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)],
+            [.textDelta("Done."), .completed(.stop)]
+        ])
+        let card = RenderedCardPayload(family: .order,
+                                       id: "42",
+                                       element: .object(["id": .int(42)]))
+        let success = ToolResult.Success(toolName: "orders_list",
+                                         structured: .object(["count": .int(1)]),
+                                         uiStructured: UIStructured(cards: [card]))
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([listTool])
+        await registry.setResult(for: "orders_list", result: .success(success))
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat, toolRegistry: registry)
+
+        // When
+        var events: [AssistantEvent] = []
+        for try await event in orchestrator.run(prompt: "List orders") {
+            events.append(event)
+        }
+
+        // Then
+        let cardRenderEvents = events.filter {
+            if case .cardRender = $0 { return true }
+            return false
+        }
+        #expect(cardRenderEvents.isEmpty)
+    }
+
+    @Test
     func test_run_when_success_with_uiStructured_then_only_structured_appears_in_resubmitted_tool_message() async throws {
         // Given
         let listTool = AITool(name: "orders_list",

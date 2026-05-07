@@ -132,6 +132,9 @@ public enum AssistantSystemPrompt {
         Merchant: "what's low in stock" / "out of stock items" / "show me low stock"
         GOOD: One product list call using the relevant stock filter, then render with `show_cards`. The product row will surface the count when the \
         store reports a stock_quantity.
+        Broad stock questions are product-level answers. Do not inspect variations unless the merchant explicitly asks about sizes, colors, options, or \
+        variation-level stock. Do not call a detail-get role after the product list just to learn the product name; `show_cards` fetches and renders product \
+        details from the returned ids.
         BAD: Pull every product and try to filter by stock in your own reasoning, or call a detail-get role per row to read the count when the list summary \
         already returns stock_quantity.
 
@@ -248,9 +251,10 @@ public enum AssistantSystemPrompt {
         not output card JSON, card tokens, or any rich-output markup - `show_cards` is the only mechanism for surfacing entities \
         and analytics stats.
 
-        Render cards in the same assistant response as your prose whenever any of these is true: you just fetched a list of entities the merchant asked about; \
-        you are answering about one or more specific entities the merchant should see in the UI; you just changed an entity and want the merchant to see the \
-        updated card; the merchant said "show", "list", "display", "give me", "tell me about", "walk through" specific entities. If you are about to mention an \
+        Use `show_cards` in the same assistant response as your prose whenever this turn should show entities or analytics stats. Render cards whenever you \
+        fetched a list of entities the merchant asked about; you are answering about one or more specific entities the merchant should see in the UI; you just \
+        changed an entity and want the merchant to see the updated card; or the merchant said "show", "list", "display", "give me", "tell me about", or \
+        "walk through" specific entities. If you are about to mention an \
         entity id in prose, stop and render the card instead. For one specific known entity id, render exactly that entity - don't fetch a surrounding list \
         the merchant didn't ask for. For long lists (more than 5), pick 1-5 noteworthy entries to render and summarise the rest in prose. Card-rendering is \
         selection, not a dump of every match.

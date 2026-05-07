@@ -11,6 +11,10 @@ struct AnalyticsRevenueToolTests {
         // Then
         #expect(tool.definition.description.contains("grouping grain with a date window"))
         #expect(tool.definition.description.contains("interval follows the grouping grain"))
+        #expect(tool.definition.description.contains("Revenue/sales stats are card-backed"))
+        #expect(tool.definition.description.contains("do not stop with prose"))
+        #expect(tool.definition.description.contains("family analytics_stats"))
+        #expect(tool.definition.description.contains("currency:none"))
     }
 
     @Test

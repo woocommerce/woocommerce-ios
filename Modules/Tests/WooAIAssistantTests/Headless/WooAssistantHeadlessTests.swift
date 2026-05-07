@@ -94,7 +94,7 @@ struct WooAssistantHeadlessTests {
     }
 
     @Test
-    func test_send_when_orders_get_emitted_then_card_recorded_from_cardRender_event() async throws {
+    func test_send_when_orders_get_emitted_then_no_card_recorded_without_show_cards() async throws {
         // Given
         let chat = MockAIChatService()
         let toolCall = OpenAIChat.ToolCall(
@@ -118,10 +118,9 @@ struct WooAssistantHeadlessTests {
         let result = try await harness.send("show order 4001")
 
         // Then
-        #expect(result.cards.count == 1)
-        let card = try #require(result.cards.first)
-        #expect(card.toolName == "orders_get.order")
-        #expect(card.payloadJSON.contains("4001"))
+        #expect(result.cards.isEmpty)
+        #expect(result.toolCalls.count == 1)
+        #expect(result.toolCalls.first?.name == "orders_get")
     }
 
     @Test
@@ -158,7 +157,7 @@ struct WooAssistantHeadlessTests {
     }
 
     @Test
-    func test_send_when_two_calls_emit_cardRender_for_same_entity_then_dedupes_to_first() async throws {
+    func test_send_when_orders_get_then_show_cards_only_records_show_cards_card() async throws {
         // Given
         let chat = MockAIChatService()
         let getCall = OpenAIChat.ToolCall(
@@ -170,9 +169,6 @@ struct WooAssistantHeadlessTests {
             function: .init(name: "show_cards",
                             arguments: #"{"references":[{"family":"order","id":"4001"}]}"#)
         )
-        // Dispatch the calls in separate iterations so the orchestrator emits
-        // their cardRender events in deterministic order regardless of TaskGroup
-        // completion timing.
         await chat.setScriptedTurns([
             [.toolCall(getCall), .completed(.toolCalls)],
             [.toolCall(showCall), .completed(.toolCalls)],
@@ -197,7 +193,7 @@ struct WooAssistantHeadlessTests {
         // Then
         #expect(result.cards.count == 1)
         let card = try #require(result.cards.first)
-        #expect(card.toolName == "orders_get.order")
+        #expect(card.toolName == "show_cards.order")
         #expect(card.payloadJSON.contains("4001"))
     }
 

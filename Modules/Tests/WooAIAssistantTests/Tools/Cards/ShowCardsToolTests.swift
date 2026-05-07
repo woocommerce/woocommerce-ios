@@ -16,6 +16,7 @@ struct ShowCardsToolTests {
         #expect(definition.description.contains("After a successful `analytics_revenue` or `analytics_orders`"))
         #expect(definition.description.contains("call this tool with family `analytics_stats`"))
         #expect(definition.description.contains("A single call may mix families"))
+        #expect(definition.description.contains("For broad product inventory lists, render product"))
         let schema = definition.parametersSchema
         guard case .object(let root) = schema,
               case .object(let properties) = root["properties"],
@@ -53,6 +54,29 @@ struct ShowCardsToolTests {
         }
         #expect(parentID["type"] == .string("string"))
         #expect(parentID["pattern"] == .string("^[1-9][0-9]*$"))
+    }
+
+    @Test
+    func test_executor_when_product_reference_uses_numeric_id_then_returns_invalid_tool_call() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        let tool = ShowCardsTool.make()
+        let arguments = """
+        {"references": [
+            {"family": "product", "id": 3723}
+        ]}
+        """
+
+        // When
+        let result = await tool.executor(arguments, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed invalid tool call")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(await client.calls.isEmpty)
     }
 
     @Test

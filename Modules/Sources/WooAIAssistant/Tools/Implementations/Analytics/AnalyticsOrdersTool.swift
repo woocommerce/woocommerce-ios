@@ -17,7 +17,11 @@ public enum AnalyticsOrdersTool {
         For breakdown requests (by week, by day), set the `interval` \
         parameter directly to the implied dimension rather than asking the \
         merchant which window or grain they meant. When a request combines a \
-        grouping grain with a date window, interval follows the grouping grain.
+        grouping grain with a date window, interval follows the grouping grain. \
+        Order stats are card-backed: after any successful call for an aggregate \
+        order stats question, do not stop with prose; call show_cards with \
+        family analytics_stats and an id built from the same after/before/interval \
+        values and currency:none.
         """,
         parametersSchema: .object([
             "type": .string("object"),

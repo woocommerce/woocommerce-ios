@@ -120,10 +120,13 @@ private extension StoreInfoMetricType {
             value: "Conversion",
             comment: "Conversion rate metric title for the store info widget."
         )
+        // Shorter than the picker's "Average order value" so it doesn't shrink-to-fit on
+        // narrow cells (`.systemSmall` / 2-column `.systemMedium`). The full label is kept on
+        // the AppEntity `displayRepresentation` for the configuration picker.
         static let averageOrderValue = AppLocalizedString(
-            "storeWidgets.metric.averageOrderValue",
-            value: "Average order value",
-            comment: "Average order value (AOV) metric title for the store info widget."
+            "storeWidgets.metric.averageOrderValueShort",
+            value: "Avg. order",
+            comment: "Compact title for the average order value metric, shown on the widget cell."
         )
     }
 }

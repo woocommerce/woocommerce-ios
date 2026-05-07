@@ -1,158 +1,54 @@
 import SwiftUI
+import WidgetKit
 
-/// Reusable cell that renders a single metric on the home-screen widget.
+/// Compact metric cell used in the 2-column grid of medium and large widgets.
 ///
-/// Accepts any `MetricPresentable` so the view is testable with stubs and size/family-specific
-/// formatting can be swapped by changing the presenter, not the cell. When the metric exposes
-/// a `tapURL`, the cell becomes a `Link` so the system handles the deep-link.
+/// Owns a sparkline overlay anchored to the bottom-trailing of the cell, gated to
+/// non-small widget families.
 ///
 struct MetricCellView: View {
     let metric: any MetricPresentable
 
-    var body: some View {
-        MetricCellLink(destination: metric.tapURL) {
-            MetricCellContent(metric: metric)
-        }
-    }
-}
-
-/// Full-row metric cell used by large widget layouts.
-///
-/// This keeps the same content treatment as `MetricCellView`; the grid controls
-/// the full-row layout by rendering this cell outside the two-column rows.
-struct MetricLargeCellView: View {
-    let metric: any MetricPresentable
+    @Environment(\.widgetFamily) private var widgetFamily
 
     var body: some View {
         MetricCellLink(destination: metric.tapURL) {
-            MetricCellContent(metric: metric)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
+            ZStack(alignment: .bottomTrailing) {
+                MetricCellTextStack(
+                    metric: metric,
+                    trendPlacement: trendPlacement,
+                    size: .regular
+                )
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-private struct MetricCellLink<Content: View>: View {
-    let destination: URL?
-    let content: Content
-
-    init(destination: URL?, @ViewBuilder content: () -> Content) {
-        self.destination = destination
-        self.content = content()
-    }
-
-    var body: some View {
-        if let destination {
-            Link(destination: destination) {
-                content
-            }
-        } else {
-            content
-        }
-    }
-}
-
-private struct MetricCellContent: View {
-    let metric: any MetricPresentable
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Layout.cardSpacing) {
-            Text(metric.title)
-                .statTitleStyle()
-
-            HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Text(metric.formattedValue)
-                    .statValueStyle()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-
-                if let trend = metric.trend {
-                    Spacer(minLength: Layout.badgeSpacing)
-                    MetricTrendBadgeView(trend: trend)
+                if widgetFamily != .systemSmall, let chart = metric.chartData, chart.count > 1 {
+                    MetricChartView(data: chart, tone: chartTone)
+                        .frame(width: Layout.chartWidth, height: Layout.chartHeight)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
-private extension MetricCellContent {
+private extension MetricCellView {
+    /// Small widget cells stack vertically and have no chart, so the trend reads more naturally
+    /// next to the value. Grid cells (medium / large / extra large) keep the trend next to the
+    /// title so the value row stays clean alongside the trailing sparkline.
+    var trendPlacement: MetricCellTrendPlacement {
+        widgetFamily == .systemSmall ? .alongsideValue : .alongsideTitle
+    }
+
+    var chartTone: MetricChartView.Tone {
+        switch metric.trend?.direction {
+        case .up: return .up
+        case .down: return .down
+        case .flat, nil: return .neutral
+        }
+    }
+
     enum Layout {
-        static let cardSpacing = 2.0
-        static let badgeSpacing = 16.0
-    }
-}
-
-/// Compact trailing badge that pairs a chevron with the formatted percentage delta.
-/// Color encodes direction (green up / red down). Hidden whenever the parent
-/// `MetricPresentable` returns `nil` for `trend`.
-///
-private struct MetricTrendBadgeView: View {
-    let trend: MetricTrendPresentation
-
-    var body: some View {
-        HStack(spacing: Layout.spacing) {
-            Image(systemName: symbolName)
-                .font(.caption2.weight(.bold))
-            Text(trend.formattedPercentage)
-                .font(.caption2.weight(.bold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-        }
-        .foregroundStyle(color)
-        .fixedSize(horizontal: true, vertical: false)
-        .accessibilityLabel(accessibilityLabel)
-    }
-
-    private var symbolName: String {
-        switch trend.direction {
-        case .up:
-            return "chevron.up"
-        case .down:
-            return "chevron.down"
-        }
-    }
-
-    private var color: Color {
-        switch trend.direction {
-        case .up:
-            return Color(.systemGreen)
-        case .down:
-            return Color(.systemRed)
-        }
-    }
-
-    private var accessibilityLabel: Text {
-        switch trend.direction {
-        case .up:
-            return Text(Localization.increased(trend.formattedPercentage))
-        case .down:
-            return Text(Localization.decreased(trend.formattedPercentage))
-        }
-    }
-
-    private enum Localization {
-        static func increased(_ value: String) -> LocalizedString {
-            let format = AppLocalizedString(
-                "storeWidgets.metricTrend.increased",
-                value: "Increased by %1$@",
-                comment: "Accessibility label for an upward metric trend. %1$@ is the formatted percentage change."
-            )
-            return LocalizedString.localizedStringWithFormat(format, value)
-        }
-
-        static func decreased(_ value: String) -> LocalizedString {
-            let format = AppLocalizedString(
-                "storeWidgets.metricTrend.decreased",
-                value: "Decreased by %1$@",
-                comment: "Accessibility label for a downward metric trend. %1$@ is the formatted percentage change."
-            )
-            return LocalizedString.localizedStringWithFormat(format, value)
-        }
-    }
-
-    private enum Layout {
-        static let spacing = 1.0
+        static let chartWidth = 70.0
+        static let chartHeight = 16.0
     }
 }
 
@@ -163,6 +59,17 @@ struct MetricCellView_Previews: PreviewProvider {
         let title: String
         let formattedValue: String
         var trend: MetricTrendPresentation?
+        var chartData: [MetricChartPoint]?
+    }
+
+    private static var sampleChart: [MetricChartPoint] {
+        let now = Date()
+        return (0..<24).map { hour in
+            let date = now.addingTimeInterval(TimeInterval(-hour * 3600))
+            // Plausible-looking hourly pattern: midday peak.
+            let value = Double.random(in: 0...10) + max(0, 12 - Double(abs(12 - hour)))
+            return MetricChartPoint(date: date, value: value)
+        }.reversed()
     }
 
     static var previews: some View {
@@ -172,18 +79,15 @@ struct MetricCellView_Previews: PreviewProvider {
 
             MetricCellView(metric: PreviewMetric(title: "Total sales",
                                                  formattedValue: "$12.3k",
-                                                 trend: .init(direction: .up, formattedPercentage: "6%")))
-                .previewDisplayName("With trend up")
+                                                 trend: .init(direction: .up, formattedPercentage: "6%"),
+                                                 chartData: sampleChart))
+                .previewDisplayName("With trend up + chart")
 
             MetricCellView(metric: PreviewMetric(title: "Total sales",
                                                  formattedValue: "$12.3k",
-                                                 trend: .init(direction: .down, formattedPercentage: "12%")))
-                .previewDisplayName("With trend down")
-
-            MetricLargeCellView(metric: PreviewMetric(title: "Total sales",
-                                                       formattedValue: "$12.3k",
-                                                       trend: .init(direction: .up, formattedPercentage: "6%")))
-                .previewDisplayName("Large cell")
+                                                 trend: .init(direction: .down, formattedPercentage: "12%"),
+                                                 chartData: sampleChart))
+                .previewDisplayName("With trend down + chart")
         }
         .frame(width: 180)
         .padding()

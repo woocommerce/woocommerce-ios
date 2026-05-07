@@ -28,10 +28,11 @@ struct StoreInfoMetricsGrid: View {
         VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
             if let leadingMetric {
                 MetricLargeCellView(metric: leadingMetric)
+                    .padding(.bottom, Layout.leadingCellAdditionalBottomPadding)
             }
 
             ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                HStack {
+                HStack(spacing: Layout.columnSpacing) {
                     ForEach(Array(row.enumerated()), id: \.offset) { _, metric in
                         MetricCellView(metric: metric)
                     }
@@ -57,6 +58,8 @@ struct StoreInfoMetricsGrid: View {
     private enum Layout {
         static let sectionSpacing = 8.0
         static let metricsPerRow = 2
+        static let columnSpacing = 16.0
+        static let leadingCellAdditionalBottomPadding = 8.0
     }
 }
 

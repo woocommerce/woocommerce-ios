@@ -60,6 +60,8 @@ public enum CardPresentPaymentAction: Action {
     case collectPayment(siteID: Int64,
                         orderID: Int64,
                         parameters: PaymentParameters,
+                        countryCode: String,
+                        terminalPaymentPreparationEnabled: Bool,
                         onCardReaderMessage: (CardReaderEvent) -> Void,
                         onProcessingCompletion: (PaymentIntent) -> Void,
                         onCompletion: (Result<PaymentIntent, Error>) -> Void)
@@ -69,6 +71,8 @@ public enum CardPresentPaymentAction: Action {
 
     case retryPayment(siteID: Int64,
                       orderID: Int64,
+                      countryCode: String,
+                      terminalPaymentPreparationEnabled: Bool,
                       onCardReaderMessage: (CardReaderEvent) -> Void,
                       onProcessingCompletion: (PaymentIntent) -> Void,
                       onCompletion: (Result<PaymentIntent, Error>) -> Void)

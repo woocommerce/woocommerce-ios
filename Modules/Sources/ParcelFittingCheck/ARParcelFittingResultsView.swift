@@ -136,6 +136,47 @@ struct ARParcelFittingResultsView: View {
     }
 }
 
+#Preview("With carrier matches") {
+    NavigationView {
+        ARParcelFittingResultsView(
+            viewModel: ARParcelFittingResultsViewModel(
+                measuredDimensions: ParcelDimensions(length: 20.0, width: 15.0, height: 10.0),
+                unit: .centimeters,
+                carriers: [
+                    ParcelPresetCarrier(id: "usps", name: "USPS", packages: [
+                        ParcelPresetPackage(id: "usps_medium", name: "Priority Mail Medium Box",
+                                            length: 28.0, width: 22.0, height: 15.0),
+                    ]),
+                    ParcelPresetCarrier(id: "fedex", name: "FedEx", packages: [
+                        ParcelPresetPackage(id: "fedex_medium", name: "Medium Box (M2)",
+                                            length: 33.0, width: 24.0, height: 17.0),
+                    ]),
+                ]
+            ),
+            starredPackageIDs: ["usps_medium"],
+            onToggleStar: { _, _ in },
+            onConfirm: { _ in },
+            onBack: {}
+        )
+    }
+}
+
+#Preview("No carrier matches") {
+    NavigationView {
+        ARParcelFittingResultsView(
+            viewModel: ARParcelFittingResultsViewModel(
+                measuredDimensions: ParcelDimensions(length: 20.0, width: 15.0, height: 10.0),
+                unit: .centimeters,
+                carriers: []
+            ),
+            starredPackageIDs: [],
+            onToggleStar: nil,
+            onConfirm: { _ in },
+            onBack: {}
+        )
+    }
+}
+
 private extension ARParcelFittingResultsView {
     enum Constants {
         static let sectionSpacing: CGFloat = 24

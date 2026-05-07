@@ -1,8 +1,10 @@
 import Codegen
 import Combine
+import Networking
 import TestKit
 import XCTest
 import Yosemite
+import WooFoundation
 @testable import WooCommerce
 
 @MainActor
@@ -34,7 +36,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         setUpUseCase(order: order)
     }
 
-    private func setUpUseCase(order: Order) {
+    private func setUpUseCase(order: Order, configuration: CardPresentPaymentsConfiguration = Mocks.configuration) {
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case .retrieveOrderRemotely(_, _, let completion):
@@ -48,7 +50,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              order: order,
                                              formattedAmount: "1.5",
                                              rootViewController: MockViewControllerPresenting(),
-                                             configuration: Mocks.configuration,
+                                             configuration: configuration,
                                              stores: stores,
                                              paymentOrchestrator: mockPaymentOrchestrator,
                                              alertsPresenter: alertsPresenter,
@@ -96,6 +98,118 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // Then
         XCTAssert(mockAnalyticsTracker.didCallTrackSuccessfulPayment)
         assertEqual(interacPaymentMethod, mockAnalyticsTracker.spyTrackSuccessfulPaymentCapturedPaymentData?.paymentMethod)
+    }
+
+    func test_collectPayment_enables_terminal_payment_preparation_when_flag_is_enabled_and_route_is_available_for_Canada() throws {
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(country: .CA)
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
+        setUpUseCase(order: order, configuration: configuration)
+        mockTerminalPaymentPreparationFeatureFlag(isEnabled: true)
+        mockTerminalPaymentPreparationRoute(isAvailable: true)
+
+        let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: interacPaymentMethod,
+                                                                                                    receiptParameters: .fake()))
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+                promise(())
+            }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyTerminalPaymentPreparationEnabled, true)
+    }
+
+    func test_collectPayment_disables_terminal_payment_preparation_when_flag_is_disabled() throws {
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(country: .CA)
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
+        setUpUseCase(order: order, configuration: configuration)
+        mockTerminalPaymentPreparationFeatureFlag(isEnabled: false)
+
+        let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: interacPaymentMethod,
+                                                                                                    receiptParameters: .fake()))
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+                promise(())
+            }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyTerminalPaymentPreparationEnabled, false)
+    }
+
+    func test_collectPayment_disables_terminal_payment_preparation_when_route_is_not_available_for_Canada() throws {
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(country: .CA)
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
+        setUpUseCase(order: order, configuration: configuration)
+        mockTerminalPaymentPreparationFeatureFlag(isEnabled: true)
+        mockTerminalPaymentPreparationRoute(isAvailable: false)
+
+        let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: interacPaymentMethod,
+                                                                                                    receiptParameters: .fake()))
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+                promise(())
+            }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyTerminalPaymentPreparationEnabled, false)
+    }
+
+    func test_collectPayment_enables_terminal_payment_preparation_without_checking_route_for_Australia() throws {
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(country: .AU)
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
+        setUpUseCase(order: order, configuration: configuration)
+        mockTerminalPaymentPreparationFeatureFlag(isEnabled: true)
+        mockUnexpectedTerminalPaymentPreparationRouteCheck()
+
+        let eftposPaymentMethod = PaymentMethod.cardPresent(details: CardPresentTransactionDetails(last4: "0978",
+                                                                                                   expMonth: 12,
+                                                                                                   expYear: 2030,
+                                                                                                   cardholderName: nil,
+                                                                                                   brand: .eftposAu,
+                                                                                                   generatedCard: nil,
+                                                                                                   receipt: nil,
+                                                                                                   emvAuthData: nil,
+                                                                                                   wallet: nil,
+                                                                                                   network: nil))
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: eftposPaymentMethod)])
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: eftposPaymentMethod,
+                                                                                                    receiptParameters: .fake()))
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+                promise(())
+            }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyTerminalPaymentPreparationEnabled, true)
     }
 
     func test_collectPayment_success_with_customer_then_modal_presented_with_email() throws {
@@ -362,6 +476,20 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertEqual(mockPaymentOrchestrator.spyChannel, .pos)
     }
 
+    func test_collectPayment_configured_country_is_passed_to_payment_capture_orchestrator() throws {
+        // When
+        useCase.collectPayment(using: .bluetoothScan,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: {},
+                               onPaymentCompletion: {},
+                               onCompleted: {})
+        mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyCollectPaymentCountryCode, .US)
+    }
+
     func test_completion_called_after_alert_presentation() throws {
         receiptEligibilityUseCase.isEligibleForBackendReceipts = true
         let paymentMethod = PaymentMethod.cardPresent(details: .fake())
@@ -469,6 +597,47 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 }
 
 private extension CollectOrderPaymentUseCaseTests {
+    func mockTerminalPaymentPreparationFeatureFlag(isEnabled: Bool) {
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case let .isRemoteFeatureFlagEnabled(featureFlag, defaultValue, _, completion):
+                XCTAssertEqual(featureFlag, .inPersonPaymentsTerminalPaymentPreparation)
+                XCTAssertFalse(defaultValue)
+                completion(isEnabled)
+            }
+        }
+    }
+
+    func mockTerminalPaymentPreparationRoute(isAvailable: Bool) {
+        stores.whenReceivingAction(ofType: SettingAction.self) { [defaultSiteID] action in
+            switch action {
+            case let .retrieveSiteAPI(siteID, completion):
+                XCTAssertEqual(siteID, defaultSiteID)
+                completion(.success(SiteAPI(siteID: siteID,
+                                            namespaces: [],
+                                            applicationPasswordAvailable: false,
+                                            routes: isAvailable ? [Mocks.prepareTerminalPaymentRoute] : [])))
+            default:
+                XCTFail("Unexpected setting action: \(action)")
+            }
+        }
+    }
+
+    func mockUnexpectedTerminalPaymentPreparationRouteCheck() {
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveSiteAPI(siteID, completion):
+                XCTFail("AU terminal payment preparation should not depend on the site route list.")
+                completion(.success(SiteAPI(siteID: siteID,
+                                            namespaces: [],
+                                            applicationPasswordAvailable: false,
+                                            routes: [])))
+            default:
+                XCTFail("Unexpected setting action: \(action)")
+            }
+        }
+    }
+
     func mockSuccessfulCardPresentPaymentActions(intent: PaymentIntent, capturedPaymentData: CardPresentCapturedPaymentData) {
         mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
                                                               onWaitingForInput,
@@ -501,5 +670,6 @@ private extension CollectOrderPaymentUseCaseTests {
         static let configuration = CardPresentPaymentsConfiguration(country: .US)
         static let cardReaderModel: String = "WISEPAD_3"
         static let paymentGatewayAccount: String = "woocommerce-payments"
+        static let prepareTerminalPaymentRoute = "/wc/v3/payments/orders/(?P<order_id>\\w+)/prepare_terminal_payment"
     }
 }

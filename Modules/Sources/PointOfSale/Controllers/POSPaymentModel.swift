@@ -150,13 +150,39 @@ extension POSPaymentModel {
     func startPaymentWithMethod(_ method: CardReaderConnectionMethod) async {
         DDLogInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus)")
 
+        // Defensive re-entry guard: only kick a fresh flow off the idle state.
+        // If a payment is already mid-flight (preparing, accepting, processing,
+        // success, error), a second call from a stray closure / restored
+        // subscription / SwiftUI re-render could clobber generation tracking
+        // and confuse the Stripe Terminal state machine. The hero / sheet
+        // buttons in `TotalsView` already double-tap-protect via the
+        // `isStartingPayment` gate; this is the model-side belt to that.
+        guard paymentState.card == .idle else {
+            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — card state is \(paymentState.card)")
+            return
+        }
+
+        if method == .tapToPay {
+            analytics.track(.pointOfSaleCheckoutTapToPayTapped)
+        }
+
         subscribeToPaymentSessionEvents()
         // Merchant explicitly chose a method — open the gate so subsequent
         // Stripe Terminal events drive the state machine.
         isAwaitingExplicitPaymentStart = false
 
-        if method == .bluetooth, case .connected = cardReaderConnectionStatus {
-            await cardPresentPaymentService.disconnectReader()
+        // If a reader is connected via the *other* method, drop it before
+        // connecting via the chosen one. Stripe Terminal can only have one
+        // active reader; without the disconnect the new connect would be
+        // rejected. iPad never hits this branch (preferred is always
+        // bluetooth there), so the disconnect is scoped to the phone-with-TTP
+        // method-switch case.
+        if case .connected = cardReaderConnectionStatus {
+            if method == .bluetooth, preferredConnectionMethod == .tapToPay {
+                await cardPresentPaymentService.disconnectReader()
+            } else if method == .tapToPay, preferredConnectionMethod == .bluetooth {
+                await cardPresentPaymentService.disconnectReader()
+            }
         }
 
         if case .disconnected = cardReaderConnectionStatus {

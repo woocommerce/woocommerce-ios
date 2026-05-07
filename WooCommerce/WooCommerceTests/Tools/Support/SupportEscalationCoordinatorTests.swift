@@ -231,7 +231,7 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
 
     // MARK: - Request Content Tests
 
-    func test_createTicketDirectly_uses_first_user_message_as_description() {
+    func test_createTicketDirectly_uses_transcript_as_description() {
         // Given
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
         zendesk.whenCreateSupportRequest(thenReturn: .success(()))
@@ -252,15 +252,14 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
             areaType: .mobileApp,
             area: SupportFormViewModel.area(for: .mobileApp),
             confidence: .high,
-            transcript: "Full transcript here",
-            firstUserMessage: "My app keeps crashing"
+            transcript: "Full transcript here"
         )
 
         // When
         coordinator.handleEscalation(chatID: nil, transcript: "Full transcript", supportAreaInfo: areaInfo)
 
         // Then
-        XCTAssertEqual(capturedRequest?.description, "My app keeps crashing")
+        XCTAssertEqual(capturedRequest?.description, "Following is the transcript of an in-app AI support chat session:\nFull transcript here")
     }
 
     func test_createTicketDirectly_uses_area_based_subject() {
@@ -283,8 +282,7 @@ final class SupportEscalationCoordinatorTests: XCTestCase {
             areaType: .cardReader,
             area: SupportFormViewModel.area(for: .cardReader),
             confidence: .high,
-            transcript: "Transcript",
-            firstUserMessage: "Card reader issue"
+            transcript: "Transcript"
         )
 
         // When
@@ -311,8 +309,7 @@ private extension SupportEscalationCoordinatorTests {
             areaType: .mobileApp,
             area: SupportFormViewModel.area(for: .mobileApp),
             confidence: .high,
-            transcript: "Test transcript",
-            firstUserMessage: "Help me"
+            transcript: "Test transcript"
         )
     }
 
@@ -321,8 +318,7 @@ private extension SupportEscalationCoordinatorTests {
             areaType: .mobileApp,
             area: SupportFormViewModel.area(for: .mobileApp),
             confidence: .medium,
-            transcript: "Test transcript",
-            firstUserMessage: "Help me"
+            transcript: "Test transcript"
         )
     }
 
@@ -331,8 +327,7 @@ private extension SupportEscalationCoordinatorTests {
             areaType: .mobileApp,
             area: SupportFormViewModel.area(for: .mobileApp),
             confidence: .low,
-            transcript: "Test transcript",
-            firstUserMessage: "Help me"
+            transcript: "Test transcript"
         )
     }
 }

@@ -560,13 +560,11 @@ final class SupportChatViewModel {
 
         if let supportArea = latestSupportArea {
             let mappedArea = SupportFormViewModel.area(for: supportArea.area)
-            let firstUserMessage = extractFirstUserMessage()
             supportAreaInfo = SupportAreaInfo(
                 areaType: supportArea.area,
                 area: mappedArea,
                 confidence: supportArea.confidence,
-                transcript: transcript,
-                firstUserMessage: firstUserMessage
+                transcript: transcript
             )
         } else {
             supportAreaInfo = nil
@@ -574,14 +572,6 @@ final class SupportChatViewModel {
 
         onContactHumanSupport(chatID, transcript, supportAreaInfo)
     }
-
-    private func extractFirstUserMessage() -> String {
-        for message in messages {
-            if message.role == .user, case .text(let text) = message.content {
-                return text
-            }
-        }
-        return ""
     }
 
     private func generateTranscript() -> String {

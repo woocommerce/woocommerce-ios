@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ChatMessageTests {
     @Test
     func test_chatMessage_updateText_appends_to_trailing_text_segment() {

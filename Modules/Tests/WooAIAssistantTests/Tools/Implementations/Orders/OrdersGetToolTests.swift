@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct OrdersGetToolTests {
     @Test
     func test_orders_get_when_response_ok_then_uiStructured_carries_full_entity_card() async throws {

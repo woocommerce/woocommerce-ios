@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ProductsUpdateToolTests {
     @Test
     func test_productsUpdate_when_name_set_then_sends_minimal_body() async throws {

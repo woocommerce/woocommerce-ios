@@ -2,6 +2,7 @@ import SwiftUI
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct EntityCardTests {
 
     @Test

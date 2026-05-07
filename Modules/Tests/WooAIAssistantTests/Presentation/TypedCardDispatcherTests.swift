@@ -1,6 +1,7 @@
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct TypedCardDispatcherTests {
 
     @Test

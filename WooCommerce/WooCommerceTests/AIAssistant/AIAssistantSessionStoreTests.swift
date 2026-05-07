@@ -3,6 +3,7 @@ import UIKit
 import WooAIAssistant
 @testable import WooCommerce
 
+@Suite(.timeLimit(.minutes(1)))
 @MainActor
 struct AIAssistantSessionStoreTests {
 

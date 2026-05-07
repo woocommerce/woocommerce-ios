@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ConfirmationPreviewTests {
     @Test
     func test_field_when_priorValue_is_nil_then_only_value_is_set() {

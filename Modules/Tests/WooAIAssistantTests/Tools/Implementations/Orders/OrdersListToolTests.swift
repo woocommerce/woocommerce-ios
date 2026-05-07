@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct OrdersListToolTests {
     @Test
     func test_orders_list_when_response_is_array_then_structured_summary_lists_ids_and_total_range() async throws {

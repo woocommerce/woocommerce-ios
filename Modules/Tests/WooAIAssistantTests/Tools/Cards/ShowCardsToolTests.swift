@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ShowCardsToolTests {
     @Test
     func test_definition_advertises_show_cards_with_references_array_schema() {

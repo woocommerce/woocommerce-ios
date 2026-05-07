@@ -1766,17 +1766,28 @@ def enrich_source_items_with_authors(source_items)
 end
 
 def enrich_one_source_item_with_author(client, item)
-  return item unless item[:number] && item[:type]
+  return item unless lookupable_source_item?(item)
 
   data = fetch_pr_or_issue(client, item)
-  login = data&.user&.login
-  html_url = data&.user&.html_url
-  return item if login.nil? || html_url.nil?
+  author = extract_author(data)
+  return item if author.nil?
 
-  item.merge(author_login: login, author_url: html_url)
+  item.merge(author)
 rescue StandardError => e
   UI.important("Could not look up author for ##{item[:number]}: #{e.message}")
   item
+end
+
+def lookupable_source_item?(item)
+  item[:number] && item[:type]
+end
+
+def extract_author(data)
+  user = data&.user
+  return nil if user.nil?
+  return nil if user.login.nil? || user.html_url.nil?
+
+  { author_login: user.login, author_url: user.html_url }
 end
 
 def fetch_pr_or_issue(client, item)

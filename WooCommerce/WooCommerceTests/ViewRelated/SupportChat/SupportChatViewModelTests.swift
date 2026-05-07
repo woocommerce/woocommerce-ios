@@ -397,7 +397,7 @@ struct SupportChatViewModelTests {
                 entryPoint: .chatHistory,
                 stores: stores,
                 chatID: chatID,
-                onContactHumanSupport: { _ in }
+                onContactHumanSupport: { _, _ in }
             )
 
             // When
@@ -414,7 +414,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _ in }
+            onContactHumanSupport: { _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -470,7 +470,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _ in }
+            onContactHumanSupport: { _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -516,7 +516,7 @@ struct SupportChatViewModelTests {
             entryPoint: entryPoint,
             stores: stores,
             diagnosticsService: diagnosticsService,
-            onContactHumanSupport: { _ in }
+            onContactHumanSupport: { _, _ in }
         )
         viewModel.onStartJetpackSetup = onStartJetpackSetup
         return viewModel

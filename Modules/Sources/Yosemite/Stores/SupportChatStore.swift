@@ -50,6 +50,8 @@ public final class SupportChatStore: Store {
             loadChatHistory(siteID: siteID, onCompletion: onCompletion)
         case let .deleteChat(chatID, onCompletion):
             deleteChat(chatID: chatID, onCompletion: onCompletion)
+        case let .markTicketCreated(chatID, onCompletion):
+            markTicketCreated(chatID: chatID, onCompletion: onCompletion)
         }
     }
 }
@@ -148,6 +150,17 @@ private extension SupportChatStore {
     func deleteChat(chatID: Int64, onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
             storage.deleteSupportChat(chatID: chatID)
+        }, completion: {
+            onCompletion()
+        }, on: .main)
+    }
+
+    func markTicketCreated(chatID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let chat = storage.loadSupportChat(chatID: chatID) else {
+                return
+            }
+            chat.hasCreatedTicket = true
         }, completion: {
             onCompletion()
         }, on: .main)

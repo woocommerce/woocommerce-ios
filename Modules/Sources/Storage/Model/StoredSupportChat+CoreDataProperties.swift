@@ -12,6 +12,7 @@ extension StoredSupportChat {
     @NSManaged public var siteID: Int64
     @NSManaged public var wpcomUserID: Int64
     @NSManaged public var botSlug: String?
+    @NSManaged public var hasCreatedTicket: Bool
     @NSManaged public var title: String?
     @NSManaged public var createdAt: Date?
     @NSManaged public var updatedAt: Date?

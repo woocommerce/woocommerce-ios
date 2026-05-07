@@ -73,4 +73,14 @@ public enum SupportChatAction: Action {
     ///   - onCompletion: Delivered on the main thread once the row is removed.
     case deleteChat(chatID: Int64,
                     onCompletion: () -> Void)
+
+    /// Marks an existing chat as having created a support ticket.
+    ///
+    /// Called after a Zendesk support ticket is created for a chat session.
+    ///
+    /// - Parameters:
+    ///   - chatID: Identifier of the chat to update.
+    ///   - onCompletion: Delivered on the main thread once the update is persisted.
+    case markTicketCreated(chatID: Int64,
+                           onCompletion: () -> Void)
 }

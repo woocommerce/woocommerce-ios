@@ -131,7 +131,11 @@ struct WooShippingAddPackageView: View {
         ParcelFittingCheckPresenter.presentUnifiedFlow(
             from: presenter,
             unit: packagesViewModel.arDimensionUnit,
-            carriers: packagesViewModel.parcelPresetCarriers
+            carriers: packagesViewModel.parcelPresetCarriers,
+            starredPackageIDs: packagesViewModel.starredCarriersPackages,
+            onToggleStar: { [weak packagesViewModel] packageID, carrierID in
+                packagesViewModel?.starUnstarPackage(packageID, carrierID: carrierID)
+            }
         ) { [weak packagesViewModel, weak customPackageViewModel] result in
             guard let packagesViewModel, let customPackageViewModel else { return }
             switch result {

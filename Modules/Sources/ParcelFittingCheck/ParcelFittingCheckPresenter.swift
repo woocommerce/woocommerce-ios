@@ -35,12 +35,16 @@ public final class ParcelFittingCheckPresenter {
         from presenter: UIViewController,
         unit: UnitLength,
         carriers: [ParcelPresetCarrier],
+        starredPackageIDs: Set<String> = [],
+        onToggleStar: ((String, String) -> Void)? = nil,
         onConfirm: @escaping (ParcelFittingResult) -> Void
     ) {
         present(from: presenter) { dismiss in
             ARUnifiedParcelFlowView(
                 unit: unit,
                 carriers: carriers,
+                starredPackageIDs: starredPackageIDs,
+                onToggleStar: onToggleStar,
                 onCancel: dismiss,
                 onConfirm: { result in dismiss(); onConfirm(result) }
             )

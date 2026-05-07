@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 import WooFoundation
 import Experiments
@@ -520,13 +521,17 @@ private extension TotalsView {
     /// Builds the ordered list of payment methods rendered in the bottom buttons row.
     ///
     /// When the cash button visibility checks fail (syncing, reconnecting, zero total)
-    /// the row is hidden entirely. When the reader is disconnected the merchant gets
-    /// `[.cardReader, .cashPayment]` — tapping Card reader starts the connect flow,
-    /// matching what the in-pane "Connect your reader" CTA used to do. With a reader
-    /// connected the row collapses to `[.cashPayment]`.
+    /// the row is hidden entirely. Otherwise the row is composed from:
     ///
-    /// `.tapToPay` is intentionally absent at this stage and lands in a later part of
-    /// the TTP stack; the row already supports rendering it.
+    /// - `.tapToPay` — prepended when the availability controller has resolved
+    ///   `.available` (device + site eligibility passed and the feature flag is on).
+    ///   First slot, so it renders as the primary (filled) button on phone.
+    /// - `.cardReader` — included when no reader is connected. Tapping it starts the
+    ///   connect flow the in-pane "Connect your reader" CTA used to drive.
+    /// - `.cashPayment` — always last, always present when the row is visible.
+    ///
+    /// `.tapToPay`'s action is intentionally a no-op at this stage — wiring it to
+    /// the actual collection flow happens in a later, focused commit.
     var checkoutPaymentMethods: [POSCheckoutPaymentMethod] {
         guard totalsViewHelper.shouldShowCollectCashPaymentButton(
             orderState: posModel.orderState,
@@ -540,14 +545,26 @@ private extension TotalsView {
             readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
             paymentState: displayPaymentState
         )
-        return isReaderDisconnected ? [.cardReader, .cashPayment] : [.cashPayment]
+        let isTapToPayAvailable = posModel.tapToPayAvailabilityController?.state.isAvailable == true
+
+        var methods: [POSCheckoutPaymentMethod] = []
+        if isTapToPayAvailable {
+            methods.append(.tapToPay)
+        }
+        if isReaderDisconnected {
+            methods.append(.cardReader)
+        }
+        methods.append(.cashPayment)
+        return methods
     }
 
     func handlePaymentMethodSelection(_ method: POSCheckoutPaymentMethod) {
         switch method {
         case .tapToPay:
-            // Wired in a later part of the TTP stack.
-            break
+            // Intentionally a no-op for now. Action wiring (and any architectural
+            // changes it requires) lands in a later, focused commit so the row
+            // composition can be verified in isolation first.
+            DDLogInfo("📱 [TapToPay] row tapped (action wiring pending)")
         case .cardReader:
             paymentModel.connectCardReader()
         case .cashPayment:

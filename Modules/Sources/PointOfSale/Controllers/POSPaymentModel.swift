@@ -511,12 +511,18 @@ private extension POSPaymentModel {
 
                 // On the TTP path the merchant never explicitly initiates a reader
                 // connection — pre-connect on checkout entry and the connect inside
-                // `startPaymentWithMethod` are both transparent. Suppress both the
-                // "Connecting to reader" in-progress alert and the "Reader connected"
-                // success alert; iPad / non-TTP phones still see them.
+                // `startPaymentWithMethod` are both transparent. Suppress the discovery
+                // / connection lifecycle modals (scanning, found reader, connecting,
+                // connected) so the hero stays visible. Connection-failure modals are
+                // still surfaced — the merchant needs to act on those (TTP entitlement,
+                // Apple ToS not accepted, location services off, etc.). iPad / non-TTP
+                // phones see all of these as today.
                 if preferredConnectionMethod == .tapToPay {
                     switch eventDetails {
-                    case .connectingToReader, .connectionSuccess:
+                    case .scanningForReaders,
+                            .foundReader,
+                            .connectingToReader,
+                            .connectionSuccess:
                         return nil
                     default:
                         break

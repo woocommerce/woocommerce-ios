@@ -8,7 +8,7 @@ import YosemiteTestHelpers
 private let orderTestSiteID: Int64 = 123
 
 @MainActor
-struct OrderCardProviderTests {
+struct AssistantOrdersDataSourceTests {
 
     @Test
     func test_fetch_when_all_in_storage_then_no_remote_call() async {
@@ -17,13 +17,13 @@ struct OrderCardProviderTests {
         storageManager.insertSampleOrder(readOnlyOrder: makeOrder(id: 1))
         storageManager.insertSampleOrder(readOnlyOrder: makeOrder(id: 2))
         let dispatched = DispatchedActions()
-        let provider = OrderCardProvider(siteID: orderTestSiteID,
+        let dataSource = AssistantOrdersDataSource(siteID: orderTestSiteID,
                                          storageManager: storageManager,
                                          dispatchAction: { dispatched.append($0) })
         let refs = [makeOrderRef(1), makeOrderRef(2)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(outcomes.count == 2)
@@ -37,7 +37,7 @@ struct OrderCardProviderTests {
         // Given
         let storageManager = MockStorageManager()
         let dispatched = DispatchedActions()
-        let provider = OrderCardProvider(siteID: orderTestSiteID,
+        let dataSource = AssistantOrdersDataSource(siteID: orderTestSiteID,
                                          storageManager: storageManager,
                                          dispatchAction: { action in
             dispatched.append(action)
@@ -51,7 +51,7 @@ struct OrderCardProviderTests {
         let refs = [makeOrderRef(10), makeOrderRef(11)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(dispatched.count == 1)
@@ -65,7 +65,7 @@ struct OrderCardProviderTests {
         let storageManager = MockStorageManager()
         storageManager.insertSampleOrder(readOnlyOrder: makeOrder(id: 1))
         let dispatched = DispatchedActions()
-        let provider = OrderCardProvider(siteID: orderTestSiteID,
+        let dataSource = AssistantOrdersDataSource(siteID: orderTestSiteID,
                                          storageManager: storageManager,
                                          dispatchAction: { action in
             dispatched.append(action)
@@ -76,7 +76,7 @@ struct OrderCardProviderTests {
         let refs = [makeOrderRef(1), makeOrderRef(2)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(dispatched.count == 1)
@@ -90,7 +90,7 @@ struct OrderCardProviderTests {
         // Given
         let storageManager = MockStorageManager()
         storageManager.insertSampleOrder(readOnlyOrder: makeOrder(id: 1))
-        let provider = OrderCardProvider(siteID: orderTestSiteID,
+        let dataSource = AssistantOrdersDataSource(siteID: orderTestSiteID,
                                          storageManager: storageManager,
                                          dispatchAction: { action in
             guard let orderAction = action as? OrderAction,
@@ -100,7 +100,7 @@ struct OrderCardProviderTests {
         let refs = [makeOrderRef(1), makeOrderRef(99)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(isResolvedOrder(outcomes[refs[0]], id: 1))
@@ -111,7 +111,7 @@ struct OrderCardProviderTests {
     func test_fetch_when_action_returns_subset_then_missing_ids_rejected_as_notFound() async {
         // Given
         let storageManager = MockStorageManager()
-        let provider = OrderCardProvider(siteID: orderTestSiteID,
+        let dataSource = AssistantOrdersDataSource(siteID: orderTestSiteID,
                                          storageManager: storageManager,
                                          dispatchAction: { action in
             guard let orderAction = action as? OrderAction,
@@ -122,7 +122,7 @@ struct OrderCardProviderTests {
         let refs = [makeOrderRef(10), makeOrderRef(11)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(isResolvedOrder(outcomes[refs[0]], id: 10))
@@ -135,15 +135,52 @@ struct OrderCardProviderTests {
         let storageManager = MockStorageManager()
         let trashed = makeOrder(id: 1).copy(status: .custom("trash"))
         storageManager.insertSampleOrder(readOnlyOrder: trashed)
-        let provider = OrderCardProvider(siteID: orderTestSiteID,
+        let dataSource = AssistantOrdersDataSource(siteID: orderTestSiteID,
                                          storageManager: storageManager,
                                          dispatchAction: { _ in })
 
         // When
-        let outcomes = await provider.fetch(refs: [makeOrderRef(1)])
+        let outcomes = await dataSource.fetch(refs: [makeOrderRef(1)])
 
         // Then
         #expect(isRejected(outcomes[makeOrderRef(1)], reason: .staleReference))
+    }
+
+    @Test
+    func test_bulkUpdateOrders_when_lookup_fails_then_returns_failure_without_updating_cached_orders() async {
+        // Given
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleOrder(readOnlyOrder: makeOrder(id: 1))
+        let dispatched = DispatchedActions()
+        let dataSource = AssistantOrdersDataSource(siteID: orderTestSiteID,
+                                                   storageManager: storageManager,
+                                                   dispatchAction: { action in
+            dispatched.append(action)
+            guard let orderAction = action as? OrderAction else { return }
+            switch orderAction {
+            case .retrieveOrders(_, _, let onCompletion):
+                onCompletion(.failure(SampleError.boom))
+            case .updateOrder(_, _, _, _, let onCompletion):
+                onCompletion(.success(makeOrder(id: 1)))
+            default:
+                break
+            }
+        })
+
+        // When
+        let result = await dataSource.bulkUpdateOrders(ids: [1, 99],
+                                                       patch: OrderUpdatePatch(status: "completed",
+                                                                               customerNote: nil,
+                                                                               billingEmail: nil))
+
+        // Then
+        guard case .failure(let error) = result,
+              (error as? SampleError) == .boom else {
+            Issue.record("Expected lookup failure to abort the batch before updates")
+            return
+        }
+        #expect(dispatched.count == 1)
+        #expect(dispatched.lastRetrieveOrdersIDs == [99])
     }
 }
 
@@ -169,8 +206,9 @@ private func isRejected(_ outcome: CardEntityOutcome?, reason: CardRefRejectionR
     return actual == reason
 }
 
-private final class DispatchedActions: @unchecked Sendable {
-    nonisolated(unsafe) private(set) var actions: [Action] = []
+@MainActor
+private final class DispatchedActions {
+    private(set) var actions: [Action] = []
 
     var count: Int { actions.count }
 
@@ -183,4 +221,4 @@ private final class DispatchedActions: @unchecked Sendable {
     func append(_ action: Action) { actions.append(action) }
 }
 
-private enum SampleError: Error { case boom }
+private enum SampleError: Error, Equatable { case boom }

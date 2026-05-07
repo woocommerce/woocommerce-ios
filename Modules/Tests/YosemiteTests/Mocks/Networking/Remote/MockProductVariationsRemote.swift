@@ -176,6 +176,14 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
         }
     }
 
+    func updateProductVariation(siteID: Int64,
+                                productID: Int64,
+                                variationID: Int64,
+                                fields: ProductVariationUpdateFields,
+                                completion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        // no-op
+    }
+
     func updateProductVariationImage(siteID: Int64,
                                      productID: Int64,
                                      variationID: Int64,

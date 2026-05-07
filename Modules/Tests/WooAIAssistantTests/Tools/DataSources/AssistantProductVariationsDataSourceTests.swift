@@ -8,7 +8,7 @@ import YosemiteTestHelpers
 private let variationTestSiteID: Int64 = 123
 
 @MainActor
-struct VariationCardProviderTests {
+struct AssistantProductVariationsDataSourceTests {
 
     @Test
     func test_fetch_when_all_in_storage_then_no_remote_call() async {
@@ -16,13 +16,13 @@ struct VariationCardProviderTests {
         let storageManager = MockStorageManager()
         storageManager.insertSampleProductVariation(readOnlyProductVariation: makeVariation(id: 5, parentID: 1))
         let dispatched = DispatchedVariationActions()
-        let provider = VariationCardProvider(siteID: variationTestSiteID,
+        let dataSource = AssistantProductVariationsDataSource(siteID: variationTestSiteID,
                                              storageManager: storageManager,
                                              dispatchAction: { dispatched.append($0) })
         let refs = [makeVariationRef(5, parent: 1)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(isResolvedVariation(outcomes[refs[0]], id: 5, parentID: 1))
@@ -34,7 +34,7 @@ struct VariationCardProviderTests {
         // Given
         let storageManager = MockStorageManager()
         let dispatched = DispatchedVariationActions()
-        let provider = VariationCardProvider(siteID: variationTestSiteID,
+        let dataSource = AssistantProductVariationsDataSource(siteID: variationTestSiteID,
                                              storageManager: storageManager,
                                              dispatchAction: { action in
             dispatched.append(action)
@@ -47,7 +47,7 @@ struct VariationCardProviderTests {
         let refs = [makeVariationRef(10, parent: 1), makeVariationRef(11, parent: 1)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(dispatched.count == 2)
@@ -61,7 +61,7 @@ struct VariationCardProviderTests {
         let storageManager = MockStorageManager()
         storageManager.insertSampleProductVariation(readOnlyProductVariation: makeVariation(id: 5, parentID: 1))
         let dispatched = DispatchedVariationActions()
-        let provider = VariationCardProvider(siteID: variationTestSiteID,
+        let dataSource = AssistantProductVariationsDataSource(siteID: variationTestSiteID,
                                              storageManager: storageManager,
                                              dispatchAction: { action in
             dispatched.append(action)
@@ -74,7 +74,7 @@ struct VariationCardProviderTests {
         let refs = [makeVariationRef(5, parent: 1), makeVariationRef(6, parent: 1)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(dispatched.count == 1)
@@ -87,7 +87,7 @@ struct VariationCardProviderTests {
         // Given
         let storageManager = MockStorageManager()
         storageManager.insertSampleProductVariation(readOnlyProductVariation: makeVariation(id: 5, parentID: 1))
-        let provider = VariationCardProvider(siteID: variationTestSiteID,
+        let dataSource = AssistantProductVariationsDataSource(siteID: variationTestSiteID,
                                              storageManager: storageManager,
                                              dispatchAction: { action in
             guard let variationAction = action as? ProductVariationAction,
@@ -97,7 +97,7 @@ struct VariationCardProviderTests {
         let refs = [makeVariationRef(5, parent: 1), makeVariationRef(99, parent: 1)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(isResolvedVariation(outcomes[refs[0]], id: 5, parentID: 1))
@@ -108,7 +108,7 @@ struct VariationCardProviderTests {
     func test_fetch_when_action_succeeds_but_storage_still_empty_then_remote_result_resolves() async {
         // Given
         let storageManager = MockStorageManager()
-        let provider = VariationCardProvider(siteID: variationTestSiteID,
+        let dataSource = AssistantProductVariationsDataSource(siteID: variationTestSiteID,
                                              storageManager: storageManager,
                                              dispatchAction: { action in
             guard let variationAction = action as? ProductVariationAction,
@@ -118,7 +118,7 @@ struct VariationCardProviderTests {
         let ref = makeVariationRef(5, parent: 1)
 
         // When
-        let outcomes = await provider.fetch(refs: [ref])
+        let outcomes = await dataSource.fetch(refs: [ref])
 
         // Then
         #expect(isResolvedVariation(outcomes[ref], id: 5, parentID: 1))
@@ -130,12 +130,12 @@ struct VariationCardProviderTests {
         let storageManager = MockStorageManager()
         let trashed = makeVariation(id: 5, parentID: 1).copy(status: .trash)
         storageManager.insertSampleProductVariation(readOnlyProductVariation: trashed)
-        let provider = VariationCardProvider(siteID: variationTestSiteID,
+        let dataSource = AssistantProductVariationsDataSource(siteID: variationTestSiteID,
                                              storageManager: storageManager,
                                              dispatchAction: { _ in })
 
         // When
-        let outcomes = await provider.fetch(refs: [makeVariationRef(5, parent: 1)])
+        let outcomes = await dataSource.fetch(refs: [makeVariationRef(5, parent: 1)])
 
         // Then
         #expect(isRejected(outcomes[makeVariationRef(5, parent: 1)], reason: .staleReference))
@@ -150,7 +150,7 @@ struct VariationCardProviderTests {
         ]
 
         // When
-        let name = variationDisplayName(from: attributes)
+        let name = CardEntityPayloadFactory.payload(from: makeVariation(id: 5, parentID: 1).copy(attributes: attributes)).name
 
         // Then
         #expect(name == "Black, Large")
@@ -162,7 +162,7 @@ struct VariationCardProviderTests {
         let attributes: [ProductVariationAttribute] = []
 
         // When
-        let name = variationDisplayName(from: attributes)
+        let name = CardEntityPayloadFactory.payload(from: makeVariation(id: 5, parentID: 1).copy(attributes: attributes)).name
 
         // Then
         #expect(name == nil)
@@ -177,7 +177,7 @@ struct VariationCardProviderTests {
         ]
 
         // When
-        let name = variationDisplayName(from: attributes)
+        let name = CardEntityPayloadFactory.payload(from: makeVariation(id: 5, parentID: 1).copy(attributes: attributes)).name
 
         // Then
         #expect(name == "Black")
@@ -187,14 +187,14 @@ struct VariationCardProviderTests {
     func test_fetch_when_variation_has_no_parent_id_then_injected_from_request() async {
         // Given
         let storageManager = MockStorageManager()
-        storageManager.insertSampleProductVariation(readOnlyProductVariation: makeVariation(id: 5, parentID: 99))
-        let provider = VariationCardProvider(siteID: variationTestSiteID,
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: makeVariation(id: 5, parentID: 42))
+        let dataSource = AssistantProductVariationsDataSource(siteID: variationTestSiteID,
                                              storageManager: storageManager,
                                              dispatchAction: { _ in })
         let ref = makeVariationRef(5, parent: 42)
 
         // When
-        let outcomes = await provider.fetch(refs: [ref])
+        let outcomes = await dataSource.fetch(refs: [ref])
 
         // Then
         guard case .found(.variation(let payload)) = outcomes[ref] else {
@@ -202,6 +202,64 @@ struct VariationCardProviderTests {
             return
         }
         #expect(payload.parentID == 42)
+    }
+
+    @Test
+    func test_fetch_when_cached_variation_parent_mismatches_request_then_refetches() async {
+        // Given
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: makeVariation(id: 5, parentID: 99))
+        let dataSource = AssistantProductVariationsDataSource(siteID: variationTestSiteID,
+                                                              storageManager: storageManager,
+                                                              dispatchAction: { action in
+            guard let variationAction = action as? ProductVariationAction,
+                  case .retrieveProductVariation(_, let productID, let variationID, let onCompletion) = variationAction else { return }
+            onCompletion(.success(makeVariation(id: variationID, parentID: productID)))
+        })
+        let ref = makeVariationRef(5, parent: 42)
+
+        // When
+        let outcomes = await dataSource.fetch(refs: [ref])
+
+        // Then
+        #expect(isResolvedVariation(outcomes[ref], id: 5, parentID: 42))
+    }
+
+    @Test
+    func test_updateVariation_when_called_then_updates_selected_fields() async throws {
+        // Given
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: makeVariation(id: 5, parentID: 1).copy(sku: "CACHED-SKU"))
+        var updatedFields: ProductVariationUpdateFields?
+        let dataSource = AssistantProductVariationsDataSource(siteID: variationTestSiteID,
+                                                              storageManager: storageManager,
+                                                              dispatchAction: { action in
+            guard let variationAction = action as? ProductVariationAction else { return }
+            switch variationAction {
+            case .updateProductVariationFields(_, let productID, let variationID, let fields, let onCompletion):
+                updatedFields = fields
+                onCompletion(.success(makeVariation(id: variationID, parentID: productID).copy(stockQuantity: Decimal(fields.stockQuantity ?? 0))))
+            default:
+                break
+            }
+        })
+
+        // When
+        let result = await dataSource.updateVariation(productID: 1,
+                                                      variationID: 5,
+                                                      patch: ProductVariationUpdatePatch(regularPrice: nil,
+                                                                                         salePrice: nil,
+                                                                                         stockQuantity: 4,
+                                                                                         stockStatus: nil,
+                                                                                         sku: nil,
+                                                                                         status: nil))
+
+        // Then
+        guard case .success = result else {
+            Issue.record("expected success, got \(result)")
+            return
+        }
+        #expect(updatedFields?.stockQuantity == 4)
     }
 }
 
@@ -229,8 +287,9 @@ private func isRejected(_ outcome: CardEntityOutcome?, reason: CardRefRejectionR
     return actual == reason
 }
 
-private final class DispatchedVariationActions: @unchecked Sendable {
-    nonisolated(unsafe) private(set) var actions: [Action] = []
+@MainActor
+private final class DispatchedVariationActions {
+    private(set) var actions: [Action] = []
 
     var count: Int { actions.count }
 

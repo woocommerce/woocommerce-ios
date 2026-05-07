@@ -446,21 +446,23 @@ struct DefaultConfirmationPreviewBuilderTests {
     // MARK: - Product variations bulk update
 
     @Test
-    func test_build_when_product_variations_bulk_update_then_no_fields_and_isBulk_true() throws {
+    func test_build_when_product_variations_bulk_update_then_fields_describe_changes_and_isBulk_true() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()
 
         // When
         let preview = builder.build(
             toolName: ProductVariationsBulkUpdateTool.name,
-            arguments: #"{"product_id":7,"variations":[{"id":15},{"id":16}]}"#,
+            arguments: #"{"product_id":7,"variations":[{"id":15,"regular_price":"12.00","stock_quantity":4},{"id":16,"regular_price":"14.00","stock_quantity":4}]}"#,
             snapshot: nil
         )
 
         // Then
         let unwrapped = try #require(preview)
         #expect(unwrapped.isBulk == true)
-        #expect(unwrapped.fields.isEmpty)
+        #expect(unwrapped.fields.map(\.name) == ["regular_price", "stock_quantity"])
+        #expect(unwrapped.fields[0].value.flattened() == "2 values")
+        #expect(unwrapped.fields[1].value.flattened() == "4")
     }
 
     // MARK: - Summary headline shape

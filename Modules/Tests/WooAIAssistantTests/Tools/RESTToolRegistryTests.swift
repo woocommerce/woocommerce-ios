@@ -152,15 +152,6 @@ struct RESTToolRegistryTests {
 
 // MARK: - Test doubles
 
-private struct NoopWCRESTClient: WCRESTClient {
-    func request(method: String,
-                 path: String,
-                 query: [String: String]?,
-                 body: Data?) async -> WCRESTResponse {
-        WCRESTResponse(data: Data(), statusCode: 200)
-    }
-}
-
 private actor ExecutorRecorder {
     private(set) var recordedArguments: String?
 

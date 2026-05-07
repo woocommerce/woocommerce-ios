@@ -350,6 +350,10 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         // no-op
     }
 
+    func updateProduct(siteID: Int64, productID: Int64, fields: ProductUpdateFields, completion: @escaping (Result<Product, Error>) -> Void) {
+        // no-op
+    }
+
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }

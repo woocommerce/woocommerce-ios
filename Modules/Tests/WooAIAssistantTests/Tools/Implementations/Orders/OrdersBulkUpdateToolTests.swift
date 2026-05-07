@@ -2,130 +2,111 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@MainActor
 struct OrdersBulkUpdateToolTests {
     @Test
-    func test_ordersBulkUpdate_when_status_set_then_each_entry_carries_id_and_status() async throws {
-        // Given
-        let body = """
-        {"update": [{"id": 1, "status": "completed"}, {"id": 2, "status": "completed"}]}
-        """
-        let client = MockWCRESTClient(response: StubResponses.ok(body))
-        let tool = OrdersBulkUpdateTool.make()
+    func test_ordersBulkUpdate_when_status_set_then_calls_dataSource_with_ids_and_patch() async throws {
+        let dataSource = MockOrdersDataSource()
+        dataSource.bulkResult = .success(BulkWriteResult(updatedIDs: [1, 2], failedItems: []))
+        let tool = OrdersBulkUpdateTool.make(dataSource: dataSource)
 
-        // When
         let arguments = #"""
         {"ids": [1, 2], "patch": {"status": "completed"}}
         """#
-        let result = await tool.executor(arguments, client)
+        let result = await tool.executor(arguments, NoopWCRESTClient())
 
-        // Then
-        guard case .success = result else {
+        guard case .success(let success) = result else {
             Issue.record("expected success, got \(result)")
             return
         }
-        let call = try #require(await client.calls.first)
-        #expect(call.method == "POST")
-        #expect(call.path == "wc/v3/orders/batch")
-        let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
-        let updates = try #require(parsed["update"] as? [[String: Any]])
-        #expect(updates.count == 2)
-        let ids = updates.compactMap { $0["id"] as? Int }.sorted()
-        #expect(ids == [1, 2])
-        for entry in updates {
-            #expect(entry["status"] as? String == "completed")
+        #expect(dataSource.bulkIDs == [1, 2])
+        #expect(dataSource.bulkPatch?.status == "completed")
+        guard case .object(let summary) = success.structured else {
+            Issue.record("expected summary object")
+            return
         }
+        #expect(summary["updated"] == .array([.int(1), .int(2)]))
+        #expect(summary["failed"] == .array([]))
     }
 
     @Test
-    func test_ordersBulkUpdate_when_ids_empty_then_returns_invalidToolCall_without_calling_client() async {
-        // Given
-        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
-        let tool = OrdersBulkUpdateTool.make()
+    func test_ordersBulkUpdate_when_ids_empty_then_returns_invalidToolCall_without_calling_dataSource() async {
+        let dataSource = MockOrdersDataSource()
+        let tool = OrdersBulkUpdateTool.make(dataSource: dataSource)
 
-        // When
-        let result = await tool.executor(#"{"ids": [], "patch": {"status": "completed"}}"#, client)
+        let result = await tool.executor(#"{"ids": [], "patch": {"status": "completed"}}"#, NoopWCRESTClient())
 
-        // Then
         guard case .failed(let failed) = result else {
             Issue.record("expected failed, got \(result)")
             return
         }
         #expect(failed.kind == .invalidToolCall)
-        #expect(await client.calls.isEmpty)
+        #expect(dataSource.bulkIDs == nil)
     }
 
     @Test
     func test_ordersBulkUpdate_when_ids_count_exceeds_100_then_returns_invalidToolCall() async {
-        // Given
-        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
-        let tool = OrdersBulkUpdateTool.make()
+        let dataSource = MockOrdersDataSource()
+        let tool = OrdersBulkUpdateTool.make(dataSource: dataSource)
         let ids = (1...101).map { String($0) }.joined(separator: ", ")
 
-        // When
-        let result = await tool.executor(#"{"ids": [\#(ids)], "patch": {"status": "processing"}}"#, client)
+        let result = await tool.executor(#"{"ids": [\#(ids)], "patch": {"status": "processing"}}"#, NoopWCRESTClient())
 
-        // Then
         guard case .failed(let failed) = result else {
             Issue.record("expected failed, got \(result)")
             return
         }
         #expect(failed.kind == .invalidToolCall)
-        #expect(await client.calls.isEmpty)
+        #expect(dataSource.bulkIDs == nil)
     }
 
     @Test
     func test_ordersBulkUpdate_when_patch_has_no_field_then_returns_invalidToolCall() async {
-        // Given
-        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
-        let tool = OrdersBulkUpdateTool.make()
+        let dataSource = MockOrdersDataSource()
+        let tool = OrdersBulkUpdateTool.make(dataSource: dataSource)
 
-        // When
-        let result = await tool.executor(#"{"ids": [1], "patch": {}}"#, client)
+        let result = await tool.executor(#"{"ids": [1], "patch": {}}"#, NoopWCRESTClient())
 
-        // Then
         guard case .failed(let failed) = result else {
             Issue.record("expected failed, got \(result)")
             return
         }
         #expect(failed.kind == .invalidToolCall)
-        #expect(await client.calls.isEmpty)
+        #expect(dataSource.bulkIDs == nil)
     }
 
     @Test
     func test_ordersBulkUpdate_when_any_status_is_refunded_then_returns_invalidToolCall() async {
-        // Given
-        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
-        let tool = OrdersBulkUpdateTool.make()
+        let dataSource = MockOrdersDataSource()
+        let tool = OrdersBulkUpdateTool.make(dataSource: dataSource)
 
-        // When
-        let result = await tool.executor(#"{"ids": [1, 2], "patch": {"status": "refunded"}}"#, client)
+        let result = await tool.executor(#"{"ids": [1, 2], "patch": {"status": "refunded"}}"#, NoopWCRESTClient())
 
-        // Then
         guard case .failed(let failed) = result else {
             Issue.record("expected failed, got \(result)")
             return
         }
         #expect(failed.kind == .invalidToolCall)
         #expect(failed.reason.contains("Refunds cannot be issued"))
-        #expect(failed.reason.contains("Tap an order"))
-        #expect(!failed.reason.contains("WP-admin"))
-        #expect(await client.calls.isEmpty)
+        #expect(dataSource.bulkIDs == nil)
     }
 
     @Test
-    func test_ordersBulkUpdate_when_408_after_upload_then_returns_outcomeUnknown() async throws {
-        // Given
-        let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 408))
-        let tool = OrdersBulkUpdateTool.make()
+    func test_ordersBulkUpdate_when_dataSource_fails_then_returns_toolFailed() async throws {
+        let dataSource = MockOrdersDataSource()
+        dataSource.bulkResult = .failure(TestBulkOrderError.boom)
+        let tool = OrdersBulkUpdateTool.make(dataSource: dataSource)
 
-        // When
-        let result = await tool.executor(#"{"ids": [1, 2], "patch": {"status": "completed"}}"#, client)
+        let result = await tool.executor(#"{"ids": [1, 2], "patch": {"status": "completed"}}"#, NoopWCRESTClient())
 
-        // Then
         guard case .failed(let failed) = result else {
             Issue.record("expected failed, got \(result)")
             return
         }
-        #expect(failed.kind == .outcomeUnknown)
+        #expect(failed.kind == .toolFailed)
     }
+}
+
+private enum TestBulkOrderError: Error {
+    case boom
 }

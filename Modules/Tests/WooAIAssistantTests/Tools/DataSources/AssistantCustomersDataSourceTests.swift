@@ -2,7 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
-struct CustomerCardProviderTests {
+struct AssistantCustomersDataSourceTests {
 
     @Test
     func test_fetch_when_customer_in_REST_then_resolved() async {
@@ -12,11 +12,11 @@ struct CustomerCardProviderTests {
           "email": "jane@example.com", "username": "jdoe", "orders_count": 12}]
         """
         let client = SyncStubWCRESTClient(response: WCRESTResponse(data: Data(body.utf8), statusCode: 200))
-        let provider = CustomerCardProvider(client: client)
+        let dataSource = AssistantCustomersDataSource(client: client)
         let ref = CardRef(family: .customer, id: 7, parentID: 0)
 
         // When
-        let outcomes = await provider.fetch(refs: [ref])
+        let outcomes = await dataSource.fetch(refs: [ref])
 
         // Then
         guard case .found(.customer(let payload)) = outcomes[ref] else {
@@ -33,11 +33,11 @@ struct CustomerCardProviderTests {
     func test_fetch_when_customer_REST_404_then_rejected_as_notFound() async {
         // Given
         let client = SyncStubWCRESTClient(response: WCRESTResponse(data: Data(), statusCode: 404))
-        let provider = CustomerCardProvider(client: client)
+        let dataSource = AssistantCustomersDataSource(client: client)
         let ref = CardRef(family: .customer, id: 7, parentID: 0)
 
         // When
-        let outcomes = await provider.fetch(refs: [ref])
+        let outcomes = await dataSource.fetch(refs: [ref])
 
         // Then
         guard case .rejected(let reason) = outcomes[ref] else {
@@ -52,11 +52,11 @@ struct CustomerCardProviderTests {
         // Given
         let body = "[]"
         let client = SyncStubWCRESTClient(response: WCRESTResponse(data: Data(body.utf8), statusCode: 200))
-        let provider = CustomerCardProvider(client: client)
+        let dataSource = AssistantCustomersDataSource(client: client)
         let ref = CardRef(family: .customer, id: 7, parentID: 0)
 
         // When
-        let outcomes = await provider.fetch(refs: [ref])
+        let outcomes = await dataSource.fetch(refs: [ref])
 
         // Then
         guard case .rejected(let reason) = outcomes[ref] else {
@@ -70,11 +70,11 @@ struct CustomerCardProviderTests {
     func test_fetch_when_REST_500_then_rejected_as_fetchFailed() async {
         // Given
         let client = SyncStubWCRESTClient(response: WCRESTResponse(data: Data(), statusCode: 500))
-        let provider = CustomerCardProvider(client: client)
+        let dataSource = AssistantCustomersDataSource(client: client)
         let ref = CardRef(family: .customer, id: 7, parentID: 0)
 
         // When
-        let outcomes = await provider.fetch(refs: [ref])
+        let outcomes = await dataSource.fetch(refs: [ref])
 
         // Then
         guard case .rejected(let reason) = outcomes[ref] else {

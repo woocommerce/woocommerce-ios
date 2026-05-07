@@ -1,9 +1,9 @@
 import Foundation
 @testable import WooAIAssistant
 
-final class SyncStubWCRESTClient: WCRESTClient, @unchecked Sendable {
+actor SyncStubWCRESTClient: WCRESTClient {
 
-    nonisolated(unsafe) var responses: [WCRESTResponse]
+    private var responses: [WCRESTResponse]
 
     init(response: WCRESTResponse) {
         self.responses = [response]

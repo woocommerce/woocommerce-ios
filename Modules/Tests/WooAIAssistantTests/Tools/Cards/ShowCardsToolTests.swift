@@ -7,7 +7,7 @@ struct ShowCardsToolTests {
     @Test
     func test_definition_advertises_show_cards_with_references_array_schema() {
         // Given
-        let tool = ShowCardsTool.make(providers: [:])
+        let tool = ShowCardsTool.make(dataSources: [:])
 
         // When
         let definition = tool.definition
@@ -56,7 +56,7 @@ struct ShowCardsToolTests {
     @Test
     func test_executor_when_product_reference_uses_numeric_id_then_returns_invalid_tool_call() async {
         // Given
-        let tool = ShowCardsTool.make(providers: [:])
+        let tool = ShowCardsTool.make(dataSources: [:])
         let arguments = """
         {"references": [
             {"family": "product", "id": 3723}
@@ -83,7 +83,7 @@ struct ShowCardsToolTests {
                        "subtotals":{"net_revenue":"50.00"}}]}
         """
         let analyticsID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
-        let tool = ShowCardsTool.make(providers: [:])
+        let tool = ShowCardsTool.make(dataSources: [:])
         let arguments = """
         {"references": [
             {"family": "analytics_stats", "id": "\(analyticsID)"}
@@ -112,7 +112,7 @@ struct ShowCardsToolTests {
     @Test
     func test_executor_when_analytics_id_is_malformed_then_rejected_as_malformed() async {
         // Given
-        let tool = ShowCardsTool.make(providers: [:])
+        let tool = ShowCardsTool.make(dataSources: [:])
         let arguments = """
         {"references": [
             {"family": "analytics_stats", "id": "analytics_revenue:after:not-a-date:before:2026-04-30:interval:day:currency:none"}
@@ -136,7 +136,7 @@ struct ShowCardsToolTests {
     }
 
     @Test
-    func test_executor_when_provider_resolves_then_summary_carries_only_summary_keys() async {
+    func test_executor_when_data_source_resolves_then_summary_carries_only_summary_keys() async {
         // Given
         let payload = OrderCardPayload(id: 3551,
                                        number: "3551",
@@ -146,10 +146,10 @@ struct ShowCardsToolTests {
                                        dateCreated: "2024-01-02T03:04:05",
                                        customerName: "Jane Doe",
                                        customerEmail: "jane@example.com")
-        let providers: [CardFamily: any CardEntityProvider] = [
-            .order: StubProvider(found: [3551: .order(payload)])
+        let dataSources: [CardFamily: any CardEntityDataSource] = [
+            .order: StubDataSource(found: [3551: .order(payload)])
         ]
-        let tool = ShowCardsTool.make(providers: providers)
+        let tool = ShowCardsTool.make(dataSources: dataSources)
         let arguments = #"{"references": [{"family": "order", "id": "3551"}]}"#
 
         // When
@@ -172,17 +172,17 @@ struct ShowCardsToolTests {
     }
 
     @Test
-    func test_executor_when_provider_resolves_then_uiStructured_card_element_carries_full_entity() async {
+    func test_executor_when_data_source_resolves_then_uiStructured_card_element_carries_full_entity() async {
         // Given
         let payload = OrderCardPayload(id: 3551,
                                        number: "3551",
                                        status: "processing",
                                        total: "120.00",
                                        customerEmail: "jane@example.com")
-        let providers: [CardFamily: any CardEntityProvider] = [
-            .order: StubProvider(found: [3551: .order(payload)])
+        let dataSources: [CardFamily: any CardEntityDataSource] = [
+            .order: StubDataSource(found: [3551: .order(payload)])
         ]
-        let tool = ShowCardsTool.make(providers: providers)
+        let tool = ShowCardsTool.make(dataSources: dataSources)
         let arguments = #"{"references": [{"family": "order", "id": "3551"}]}"#
 
         // When
@@ -204,7 +204,7 @@ struct ShowCardsToolTests {
     }
 }
 
-private final class StubProvider: CardEntityProvider, @unchecked Sendable {
+private struct StubDataSource: CardEntityDataSource {
     private let found: [Int64: CardEntity]
 
     init(found: [Int64: CardEntity]) {
@@ -221,15 +221,6 @@ private final class StubProvider: CardEntityProvider, @unchecked Sendable {
             }
         }
         return outcomes
-    }
-}
-
-private struct NoopWCRESTClient: WCRESTClient {
-    func request(method: String,
-                 path: String,
-                 query: [String: String]?,
-                 body: Data?) async -> WCRESTResponse {
-        WCRESTResponse(data: Data(), statusCode: 200)
     }
 }
 

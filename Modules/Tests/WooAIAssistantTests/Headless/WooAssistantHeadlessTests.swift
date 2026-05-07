@@ -137,12 +137,12 @@ struct WooAssistantHeadlessTests {
             [.textDelta("here are two orders"), .completed(.stop)]
         ])
         let restClient = MockWCRESTClient(response: StubResponses.ok("[]"))
-        let provider = HarnessStubProvider(found: [
+        let dataSource = HarnessStubDataSource(found: [
             1: .order(OrderCardPayload(id: 1, number: "1", status: "processing", total: "10.00", currency: "USD")),
             2: .order(OrderCardPayload(id: 2, number: "2", status: "completed", total: "20.00", currency: "USD"))
         ])
         let tools: [RESTTool] = [
-            ShowCardsTool.make(providers: [.order: provider])
+            ShowCardsTool.make(dataSources: [.order: dataSource])
         ]
         let harness = WooAssistantHeadless(
             credentials: makeTestCredentials(),
@@ -182,12 +182,12 @@ struct WooAssistantHeadlessTests {
         ])
         let cannedOrder = #"{"id":4001,"number":"4001","status":"completed","total":"99.00","currency":"USD"}"#
         let restClient = MockWCRESTClient(response: StubResponses.ok(cannedOrder))
-        let provider = HarnessStubProvider(found: [
+        let dataSource = HarnessStubDataSource(found: [
             4001: .order(OrderCardPayload(id: 4001, number: "4001", status: "completed", total: "99.00", currency: "USD"))
         ])
         let tools: [RESTTool] = [
             OrdersGetTool.make(),
-            ShowCardsTool.make(providers: [.order: provider])
+            ShowCardsTool.make(dataSources: [.order: dataSource])
         ]
         let harness = WooAssistantHeadless(
             credentials: makeTestCredentials(),
@@ -252,7 +252,7 @@ struct WooAssistantHeadlessTests {
     }
 }
 
-private final class HarnessStubProvider: CardEntityProvider, @unchecked Sendable {
+private struct HarnessStubDataSource: CardEntityDataSource {
     private let found: [Int64: CardEntity]
 
     init(found: [Int64: CardEntity]) {

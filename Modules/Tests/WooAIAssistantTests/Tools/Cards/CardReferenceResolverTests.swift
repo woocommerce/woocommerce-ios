@@ -5,17 +5,17 @@ import Testing
 struct CardReferenceResolverTests {
 
     @Test
-    func test_resolve_when_three_mixed_family_references_then_each_provider_handles_its_family() async {
+    func test_resolve_when_three_mixed_family_references_then_each_data_source_handles_its_family() async {
         // Given
         let order = OrderCardPayload(id: 3551, number: "3551", status: "processing", total: "120.00")
         let product = ProductCardPayload(id: 42, name: "Beanie", sku: nil, price: "19.99")
         let customer = CustomerCardPayload(id: 7, firstName: "Jane")
-        let providers: [CardFamily: any CardEntityProvider] = [
-            .order: MockCardEntityProvider(found: [3551: .order(order)]),
-            .product: MockCardEntityProvider(found: [42: .product(product)]),
-            .customer: MockCardEntityProvider(found: [7: .customer(customer)])
+        let dataSources: [CardFamily: any CardEntityDataSource] = [
+            .order: MockCardEntityDataSource(found: [3551: .order(order)]),
+            .product: MockCardEntityDataSource(found: [42: .product(product)]),
+            .customer: MockCardEntityDataSource(found: [7: .customer(customer)])
         ]
-        let resolver = CardReferenceResolver(providers: providers)
+        let resolver = CardReferenceResolver(dataSources: dataSources)
         let references = [
             CardReference(family: .order, id: "3551"),
             CardReference(family: .product, id: "42"),
@@ -33,14 +33,14 @@ struct CardReferenceResolverTests {
     }
 
     @Test
-    func test_resolve_when_multiple_orders_then_provider_called_once_with_all_ids() async {
+    func test_resolve_when_multiple_orders_then_data_source_called_once_with_all_ids() async {
         // Given
-        let mockProvider = MockCardEntityProvider(found: [
+        let mockDataSource = MockCardEntityDataSource(found: [
             1: .order(OrderCardPayload(id: 1)),
             2: .order(OrderCardPayload(id: 2)),
             3: .order(OrderCardPayload(id: 3))
         ])
-        let resolver = CardReferenceResolver(providers: [.order: mockProvider])
+        let resolver = CardReferenceResolver(dataSources: [.order: mockDataSource])
         let references = [1, 2, 3].map { CardReference(family: .order, id: String($0)) }
 
         // When
@@ -48,7 +48,7 @@ struct CardReferenceResolverTests {
 
         // Then
         #expect(resolutions.count == 3)
-        let observedCalls = mockProvider.calls
+        let observedCalls = await mockDataSource.recordedCalls()
         #expect(observedCalls.count == 1)
         #expect(observedCalls.first?.map { $0.id }.sorted() == [1, 2, 3])
     }
@@ -59,7 +59,7 @@ struct CardReferenceResolverTests {
         let entities = (1...10).reduce(into: [Int64: CardEntity]()) { acc, id in
             acc[Int64(id)] = .order(OrderCardPayload(id: Int64(id)))
         }
-        let resolver = CardReferenceResolver(providers: [.order: MockCardEntityProvider(found: entities)])
+        let resolver = CardReferenceResolver(dataSources: [.order: MockCardEntityDataSource(found: entities)])
         let references = (1...11).map { CardReference(family: .order, id: String($0)) }
 
         // When
@@ -76,10 +76,10 @@ struct CardReferenceResolverTests {
     @Test
     func test_resolve_when_duplicate_id_within_family_then_second_rejected_as_duplicate() async {
         // Given
-        let providers: [CardFamily: any CardEntityProvider] = [
-            .order: MockCardEntityProvider(found: [1: .order(OrderCardPayload(id: 1))])
+        let dataSources: [CardFamily: any CardEntityDataSource] = [
+            .order: MockCardEntityDataSource(found: [1: .order(OrderCardPayload(id: 1))])
         ]
-        let resolver = CardReferenceResolver(providers: providers)
+        let resolver = CardReferenceResolver(dataSources: dataSources)
         let references = [
             CardReference(family: .order, id: "1"),
             CardReference(family: .order, id: "1")
@@ -96,7 +96,7 @@ struct CardReferenceResolverTests {
     @Test
     func test_resolve_when_id_is_zero_or_negative_then_rejected_as_malformed() async {
         // Given
-        let resolver = CardReferenceResolver(providers: [.order: MockCardEntityProvider(found: [:])])
+        let resolver = CardReferenceResolver(dataSources: [.order: MockCardEntityDataSource(found: [:])])
         let references = [
             CardReference(family: .order, id: "0"),
             CardReference(family: .order, id: "-5"),
@@ -115,7 +115,7 @@ struct CardReferenceResolverTests {
     @Test
     func test_resolve_when_variation_missing_parent_id_then_rejected_as_malformed() async {
         // Given
-        let resolver = CardReferenceResolver(providers: [.productVariation: MockCardEntityProvider(found: [:])])
+        let resolver = CardReferenceResolver(dataSources: [.productVariation: MockCardEntityDataSource(found: [:])])
         let references = [CardReference(family: .productVariation, id: "5")]
 
         // When
@@ -126,10 +126,10 @@ struct CardReferenceResolverTests {
     }
 
     @Test
-    func test_resolve_when_provider_returns_notFound_then_rejection_propagates() async {
+    func test_resolve_when_data_source_returns_notFound_then_rejection_propagates() async {
         // Given
-        let provider = MockCardEntityProvider(found: [:])
-        let resolver = CardReferenceResolver(providers: [.order: provider])
+        let dataSource = MockCardEntityDataSource(found: [:])
+        let resolver = CardReferenceResolver(dataSources: [.order: dataSource])
         let references = [CardReference(family: .order, id: "999")]
 
         // When
@@ -140,9 +140,9 @@ struct CardReferenceResolverTests {
     }
 
     @Test
-    func test_resolve_when_no_provider_for_family_then_rejected_as_internalError() async {
+    func test_resolve_when_no_data_source_for_family_then_rejected_as_internalError() async {
         // Given
-        let resolver = CardReferenceResolver(providers: [:])
+        let resolver = CardReferenceResolver(dataSources: [:])
         let references = [CardReference(family: .order, id: "1")]
 
         // When
@@ -153,12 +153,16 @@ struct CardReferenceResolverTests {
     }
 }
 
-private final class MockCardEntityProvider: CardEntityProvider, @unchecked Sendable {
-    nonisolated(unsafe) private(set) var calls: [[CardRef]] = []
+private actor MockCardEntityDataSource: CardEntityDataSource {
+    private var calls: [[CardRef]] = []
     private let found: [Int64: CardEntity]
 
     init(found: [Int64: CardEntity]) {
         self.found = found
+    }
+
+    func recordedCalls() -> [[CardRef]] {
+        calls
     }
 
     func fetch(refs: [CardRef]) async -> [CardRef: CardEntityOutcome] {

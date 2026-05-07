@@ -8,7 +8,7 @@ import YosemiteTestHelpers
 private let productTestSiteID: Int64 = 123
 
 @MainActor
-struct ProductCardProviderTests {
+struct AssistantProductsDataSourceTests {
 
     @Test
     func test_fetch_when_all_in_storage_then_no_remote_call() async {
@@ -17,13 +17,13 @@ struct ProductCardProviderTests {
         storageManager.insertSampleProduct(readOnlyProduct: makeProduct(id: 1))
         storageManager.insertSampleProduct(readOnlyProduct: makeProduct(id: 2))
         let dispatched = DispatchedProductActions()
-        let provider = ProductCardProvider(siteID: productTestSiteID,
+        let dataSource = AssistantProductsDataSource(siteID: productTestSiteID,
                                            storageManager: storageManager,
                                            dispatchAction: { dispatched.append($0) })
         let refs = [makeProductRef(1), makeProductRef(2)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(outcomes.count == 2)
@@ -37,7 +37,7 @@ struct ProductCardProviderTests {
         // Given
         let storageManager = MockStorageManager()
         let dispatched = DispatchedProductActions()
-        let provider = ProductCardProvider(siteID: productTestSiteID,
+        let dataSource = AssistantProductsDataSource(siteID: productTestSiteID,
                                            storageManager: storageManager,
                                            dispatchAction: { action in
             dispatched.append(action)
@@ -48,7 +48,7 @@ struct ProductCardProviderTests {
         let refs = [makeProductRef(10), makeProductRef(11)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(dispatched.count == 1)
@@ -62,7 +62,7 @@ struct ProductCardProviderTests {
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: makeProduct(id: 1))
         let dispatched = DispatchedProductActions()
-        let provider = ProductCardProvider(siteID: productTestSiteID,
+        let dataSource = AssistantProductsDataSource(siteID: productTestSiteID,
                                            storageManager: storageManager,
                                            dispatchAction: { action in
             dispatched.append(action)
@@ -73,7 +73,7 @@ struct ProductCardProviderTests {
         let refs = [makeProductRef(1), makeProductRef(2)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(dispatched.count == 1)
@@ -87,7 +87,7 @@ struct ProductCardProviderTests {
         // Given
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: makeProduct(id: 1))
-        let provider = ProductCardProvider(siteID: productTestSiteID,
+        let dataSource = AssistantProductsDataSource(siteID: productTestSiteID,
                                            storageManager: storageManager,
                                            dispatchAction: { action in
             guard let productAction = action as? ProductAction,
@@ -97,7 +97,7 @@ struct ProductCardProviderTests {
         let refs = [makeProductRef(1), makeProductRef(99)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(isResolvedProduct(outcomes[refs[0]], id: 1))
@@ -108,7 +108,7 @@ struct ProductCardProviderTests {
     func test_fetch_when_action_returns_subset_then_missing_ids_rejected_as_notFound() async {
         // Given
         let storageManager = MockStorageManager()
-        let provider = ProductCardProvider(siteID: productTestSiteID,
+        let dataSource = AssistantProductsDataSource(siteID: productTestSiteID,
                                            storageManager: storageManager,
                                            dispatchAction: { action in
             guard let productAction = action as? ProductAction,
@@ -119,7 +119,7 @@ struct ProductCardProviderTests {
         let refs = [makeProductRef(10), makeProductRef(11)]
 
         // When
-        let outcomes = await provider.fetch(refs: refs)
+        let outcomes = await dataSource.fetch(refs: refs)
 
         // Then
         #expect(isResolvedProduct(outcomes[refs[0]], id: 10))
@@ -131,15 +131,90 @@ struct ProductCardProviderTests {
         // Given
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: makeProduct(id: 1).copy(statusKey: "trash"))
-        let provider = ProductCardProvider(siteID: productTestSiteID,
+        let dataSource = AssistantProductsDataSource(siteID: productTestSiteID,
                                            storageManager: storageManager,
                                            dispatchAction: { _ in })
 
         // When
-        let outcomes = await provider.fetch(refs: [makeProductRef(1)])
+        let outcomes = await dataSource.fetch(refs: [makeProductRef(1)])
 
         // Then
         #expect(isRejected(outcomes[makeProductRef(1)], reason: .staleReference))
+    }
+
+    @Test
+    func test_updateProduct_when_cached_product_exists_then_refreshes_remote_before_update() async throws {
+        // Given
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: makeProduct(id: 12).copy(name: "Cached name"))
+        var updatedFields: ProductUpdateFields?
+        let dataSource = AssistantProductsDataSource(siteID: productTestSiteID,
+                                                     storageManager: storageManager,
+                                                     dispatchAction: { action in
+            guard let productAction = action as? ProductAction else { return }
+            switch productAction {
+            case .retrieveProduct(_, let productID, let onCompletion):
+                onCompletion(.success(makeProduct(id: productID).copy(name: "Remote name")))
+            case .updateProductFields(_, let productID, let fields, let onCompletion):
+                updatedFields = fields
+                onCompletion(.success(makeProduct(id: productID).copy(name: "Remote name", regularPrice: fields.regularPrice)))
+            default:
+                break
+            }
+        })
+
+        // When
+        let result = await dataSource.updateProduct(id: 12,
+                                                    patch: ProductUpdatePatch(name: nil,
+                                                                              regularPrice: "19.99",
+                                                                              salePrice: nil,
+                                                                              stockQuantity: nil,
+                                                                              status: nil))
+
+        // Then
+        guard case .success = result else {
+            Issue.record("expected success, got \(result)")
+            return
+        }
+        #expect(updatedFields?.regularPrice == "19.99")
+    }
+
+    @Test
+    func test_bulkUpdateProducts_when_many_ids_then_fetches_all_ids_before_price_update() async throws {
+        // Given
+        let ids = Array(Int64(1)...Int64(30))
+        let storageManager = MockStorageManager()
+        let dispatched = DispatchedProductActions()
+        let dataSource = AssistantProductsDataSource(siteID: productTestSiteID,
+                                                     storageManager: storageManager,
+                                                     dispatchAction: { action in
+            dispatched.append(action)
+            guard let productAction = action as? ProductAction else { return }
+            switch productAction {
+            case .retrieveProducts(_, let ids, _, _, let onCompletion):
+                onCompletion(.success((products: ids.map { makeProduct(id: $0) }, hasNextPage: false)))
+            case .updateProductFields(_, let productID, _, let onCompletion):
+                onCompletion(.success(makeProduct(id: productID)))
+            default:
+                break
+            }
+        })
+
+        // When
+        let result = await dataSource.bulkUpdateProducts(ids: ids,
+                                                         patch: ProductUpdatePatch(name: nil,
+                                                                                   regularPrice: "19.99",
+                                                                                   salePrice: nil,
+                                                                                   stockQuantity: nil,
+                                                                                   status: nil))
+
+        // Then
+        guard case .success(let writeResult) = result else {
+            Issue.record("expected success, got \(result)")
+            return
+        }
+        #expect(writeResult.updatedIDs == ids)
+        #expect(dispatched.firstRetrieveProductsPageSize == ids.count)
     }
 }
 
@@ -167,8 +242,9 @@ private func isRejected(_ outcome: CardEntityOutcome?, reason: CardRefRejectionR
     return actual == reason
 }
 
-private final class DispatchedProductActions: @unchecked Sendable {
-    nonisolated(unsafe) private(set) var actions: [Action] = []
+@MainActor
+private final class DispatchedProductActions {
+    private(set) var actions: [Action] = []
 
     var count: Int { actions.count }
 
@@ -176,6 +252,15 @@ private final class DispatchedProductActions: @unchecked Sendable {
         guard let productAction = actions.last as? ProductAction,
               case .retrieveProducts(_, let ids, _, _, _) = productAction else { return [] }
         return ids
+    }
+
+    var firstRetrieveProductsPageSize: Int? {
+        for action in actions {
+            guard let productAction = action as? ProductAction,
+                  case .retrieveProducts(_, _, _, let pageSize, _) = productAction else { continue }
+            return pageSize
+        }
+        return nil
     }
 
     func append(_ action: Action) { actions.append(action) }

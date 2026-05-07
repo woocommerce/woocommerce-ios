@@ -311,9 +311,11 @@ private extension WooAnalytics {
             ),
                let infos = try? configurationResult.get() {
                 let snapshot = WidgetSnapshot(from: infos)
-                let properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
+                var properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
+                if let diff = self.widgetSetupChangeTracker.evaluate(currentSnapshot: snapshot) {
+                    properties.merge(diff.analyticsProperties) { _, new in new }
+                }
                 self.track(.applicationOpened, withProperties: properties)
-                self.widgetSetupChangeTracker.track(currentSnapshot: snapshot, analytics: self)
             } else {
                 self.track(
                     .applicationOpened,

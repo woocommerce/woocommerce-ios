@@ -617,6 +617,299 @@ struct SupportChatViewModelTests {
         #expect(receivedSupportAreaInfo?.systemStatusReport == prefetchedReport)
     }
 
+    // MARK: - Feedback Tests
+
+    @Test func test_submitFeedback_when_valid_messageID_then_dispatches_action() async {
+        // Given
+        let chatID: Int64 = 123
+        let sessionID = "session-1"
+        let messageID: Int64 = 456
+        var receivedFeedback: (messageID: Int64, sessionID: String, upvoted: Bool)?
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, _, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: chatID,
+                    sessionID: sessionID,
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil),
+                        SupportChatMessage(messageID: messageID, role: .bot, content: "How can I help?", context: nil)
+                    ]
+                )
+                completion(.success(response))
+            case let .submitFeedback(messageID, sessionID, upvoted, onCompletion):
+                receivedFeedback = (messageID, sessionID, upvoted)
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .connectivityTool,
+            stores: stores,
+            analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+            onContactHumanSupport: { _, _, _ in }
+        )
+        sut.inputText = "Help"
+        sut.sendMessage()
+
+        // When
+        sut.submitFeedback(messageID: messageID, upvoted: true)
+
+        // Then
+        #expect(receivedFeedback?.sessionID == sessionID)
+        #expect(receivedFeedback?.messageID == messageID)
+        #expect(receivedFeedback?.upvoted == true)
+    }
+
+    @Test func test_submitFeedback_when_already_rated_then_does_not_dispatch_again() async {
+        // Given
+        let chatID: Int64 = 123
+        let messageID: Int64 = 456
+        var feedbackCallCount = 0
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, _, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: chatID,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: messageID, role: .bot, content: "Hello", context: nil)
+                    ]
+                )
+                completion(.success(response))
+            case let .submitFeedback(_, _, _, onCompletion):
+                feedbackCallCount += 1
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .connectivityTool,
+            stores: stores,
+            analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+            onContactHumanSupport: { _, _, _ in }
+        )
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // When - rate twice
+        sut.submitFeedback(messageID: messageID, upvoted: true)
+        sut.submitFeedback(messageID: messageID, upvoted: false)
+
+        // Then - only one call
+        #expect(feedbackCallCount == 1)
+    }
+
+    @Test func test_submitFeedback_adds_messageID_to_ratedMessageIDs() async {
+        // Given
+        let chatID: Int64 = 123
+        let messageID: Int64 = 456
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, _, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: chatID,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: messageID, role: .bot, content: "Hello", context: nil)
+                    ]
+                )
+                completion(.success(response))
+            case let .submitFeedback(_, _, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .connectivityTool,
+            stores: stores,
+            analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+            onContactHumanSupport: { _, _, _ in }
+        )
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // When
+        sut.submitFeedback(messageID: messageID, upvoted: true)
+
+        // Then
+        #expect(sut.ratedMessageIDs.contains(messageID))
+    }
+
+    @Test func test_submitFeedback_tracks_analytics_event() async {
+        // Given
+        let chatID: Int64 = 123
+        let messageID: Int64 = 456
+        let analyticsProvider = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, _, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: chatID,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: messageID, role: .bot, content: "Hello", context: nil)
+                    ]
+                )
+                completion(.success(response))
+            case let .submitFeedback(_, _, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .connectivityTool,
+            stores: stores,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider),
+            onContactHumanSupport: { _, _, _ in }
+        )
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // When
+        sut.submitFeedback(messageID: messageID, upvoted: false)
+
+        // Then
+        #expect(analyticsProvider.receivedEvents.contains("support_chat_feedback_submitted"))
+        #expect(analyticsProvider.received(event: "support_chat_feedback_submitted", with: ["rating": "down"]))
+    }
+
+    @Test func test_sendMessage_when_success_then_bot_message_has_messageID() async {
+        // Given
+        let messageID: Int64 = 789
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
+                let response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: "Hello", context: nil),
+                        SupportChatMessage(messageID: messageID, role: .bot, content: "Hi there!", context: nil)
+                    ]
+                )
+                completion(.success(response))
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .connectivityTool,
+            stores: stores,
+            onContactHumanSupport: { _, _, _ in }
+        )
+        sut.inputText = "Hello"
+
+        // When
+        sut.sendMessage()
+
+        // Then
+        let botMessage = sut.messages.first { $0.role == .bot }
+        #expect(botMessage?.messageID == messageID)
+    }
+
+    @Test func test_sendMessage_when_success_then_bot_message_isNewInSession_is_true() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
+                let response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: "Hello", context: nil),
+                        SupportChatMessage(messageID: 2, role: .bot, content: "Hi there!", context: nil)
+                    ]
+                )
+                completion(.success(response))
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .connectivityTool,
+            stores: stores,
+            onContactHumanSupport: { _, _, _ in }
+        )
+        sut.inputText = "Hello"
+
+        // When
+        sut.sendMessage()
+
+        // Then
+        let botMessage = sut.messages.first { $0.role == .bot }
+        #expect(botMessage?.isNewInSession == true)
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func test_resumeIfNeeded_when_success_then_rehydrated_messages_have_isNewInSession_false() async {
+        // Given
+        let chatID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = SupportChatViewModel(
+            entryPoint: .chatHistory,
+            stores: stores,
+            chatID: chatID,
+            onContactHumanSupport: { _, _, _ in }
+        )
+
+        await confirmation { fetchCompleted in
+            stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+                switch action {
+                case let .fetchChat(_, _, completion):
+                    let response = SupportChatResponse(
+                        chatID: chatID,
+                        sessionID: "session-1",
+                        botSlug: "test-bot",
+                        botVersion: "1.0",
+                        messages: [
+                            SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil),
+                            SupportChatMessage(messageID: 2, role: .bot, content: "How can I help?", context: nil)
+                        ]
+                    )
+                    completion(.success(response))
+                    fetchCompleted()
+                default:
+                    break
+                }
+            }
+
+            // When
+            sut.resumeIfNeeded()
+        }
+
+        // Then
+        #expect(sut.messages.allSatisfy { $0.isNewInSession == false })
+    }
+
     // MARK: - Test Helpers
 
     private func makeSUT(

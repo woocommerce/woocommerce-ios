@@ -1398,6 +1398,9 @@ public enum WooAnalyticsStat: String {
     case wooShippingPaymentStep = "wcs_payment_step"
     case wooShippingPurchaseStep = "wcs_purchase_step"
     case wooShippingRefundRequested = "wcs_refund_requested"
+
+    // MARK: Support Chat events
+    case supportChatFeedbackSubmitted = "support_chat_feedback_submitted"
 }
 
 extension WooAnalyticsStat {

@@ -72,6 +72,16 @@ final class POSPaymentModel {
     private var startPaymentGeneration: Int = 0
     private var cardPaymentCancelTask: Task<Void, Never>?
     private var connectCardReaderTask: Task<Void, Never>?
+
+    /// On the TTP path, payment state should only advance when the merchant has
+    /// explicitly tapped a method (hero CTA or Other payment methods sheet row).
+    /// Otherwise stale Stripe Terminal events that arrive during Apple's modal
+    /// teardown / cancel sequence flip `paymentState.card` back to states like
+    /// `.acceptingCard` for a frame and yank the hero away. This gate, set true
+    /// at init and after a TTP cancel, blocks event-driven updates until the
+    /// next `startPaymentWithMethod`. Always false on the Bluetooth path so
+    /// auto-collect-on-connect keeps working as today.
+    private var isAwaitingExplicitPaymentStart: Bool = true
     private var onOnboardingCancellation: (() -> Void)?
     private var cancellables: Set<AnyCancellable> = []
     private var paymentSessionCancellables: Set<AnyCancellable> = []
@@ -138,10 +148,16 @@ extension POSPaymentModel {
         subscribeToPaymentSessionEvents()
 
         if preferredConnectionMethod == .tapToPay {
+            // Awaiting an explicit method tap from the hero / sheet — leave the
+            // gate true so transient Stripe events during pre-connect can't
+            // advance the state machine.
             connectTapToPayReader()
             return
         }
 
+        // BT auto-collect path — events from the connected reader are the
+        // intended source of state transitions.
+        isAwaitingExplicitPaymentStart = false
         await startPaymentFlow(using: preferredConnectionMethod)
     }
 
@@ -157,6 +173,9 @@ extension POSPaymentModel {
         DDLogInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus)")
 
         subscribeToPaymentSessionEvents()
+        // Merchant explicitly chose a method — open the gate so subsequent
+        // Stripe Terminal events drive the state machine.
+        isAwaitingExplicitPaymentStart = false
 
         if method == .bluetooth, case .connected = cardReaderConnectionStatus {
             await cardPresentPaymentService.disconnectReader()
@@ -688,6 +707,9 @@ extension POSPaymentModel {
         formattedOrderTotalPrice = nil
         scanToPayURL = nil
         isPreparingScanToPay = false
+        // Re-arm the TTP gate so re-entering checkout starts clean — `startPayment`
+        // will keep it true on the TTP path until the merchant taps a method again.
+        isAwaitingExplicitPaymentStart = true
         cancelReaderPreparation()
     }
 
@@ -805,18 +827,20 @@ private extension POSPaymentModel {
         // Payment events -> inline message (payment status in the totals view)
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentMessageType? in
-                self?.mapCardPresentPaymentEventToMessageType(event)
+                guard let self else { return nil }
+                guard self.shouldPropagatePaymentEvent else { return nil }
+                return self.mapCardPresentPaymentEventToMessageType(event)
             }
             .sink(receiveValue: { [weak self] message in
                 self?.cardPresentPaymentInlineMessage = message
             })
             .store(in: &paymentSessionCancellables)
 
-        // TTP cancel-on-reader → drop back to the idle hero. Without this the
-        // card state machine stays stuck on `.acceptingCard` / `.preparingReader`
-        // (the standard `PointOfSaleCardPaymentState(from:)` mapper returns nil
-        // for cancelledOnReader, leaving the previous state in place) and neither
-        // the hero nor the inline view renders.
+        // TTP cancel-on-reader → drop back to the idle hero. Re-arms the gate so
+        // any stray Stripe Terminal events arriving during the cancel teardown
+        // (transient `.tapSwipeOrInsertCard` etc.) can't flicker the card state
+        // back out of `.idle`. The gate stays true until the next
+        // `startPaymentWithMethod`.
         cardPresentPaymentService.paymentEventPublisher
             .filter { event in
                 if case .show(.cancelledOnReader) = event { return true }
@@ -824,6 +848,7 @@ private extension POSPaymentModel {
             }
             .sink { [weak self] _ in
                 guard let self, self.preferredConnectionMethod == .tapToPay else { return }
+                self.isAwaitingExplicitPaymentStart = true
                 Task { @MainActor [weak self] in
                     try? await self?.cardPresentPaymentService.cancelPayment()
                     self?.paymentState.card = .idle
@@ -836,6 +861,7 @@ private extension POSPaymentModel {
         cardPresentPaymentService.paymentEventPublisher
             .compactMap { [weak self] paymentEvent -> PointOfSaleCardPaymentState? in
                 guard let self else { return nil }
+                guard self.shouldPropagatePaymentEvent else { return nil }
 
                 let newCardPaymentState = PointOfSaleCardPaymentState(from: paymentEvent,
                                                                       using: presentationStyleDeterminerDependencies)
@@ -894,6 +920,16 @@ private extension POSPaymentModel {
                 paymentState.card = cardPaymentState
             })
             .store(in: &paymentSessionCancellables)
+    }
+
+    /// True when payment events are allowed to drive `cardPresentPaymentInlineMessage`
+    /// and `paymentState.card`. On the BT path it's always true. On the TTP path it's
+    /// false until the merchant explicitly taps a method, and re-armed back to false
+    /// after a cancel-on-reader so transient events during the cancel teardown can't
+    /// flicker the card state.
+    var shouldPropagatePaymentEvent: Bool {
+        guard preferredConnectionMethod == .tapToPay else { return true }
+        return !isAwaitingExplicitPaymentStart
     }
 
     func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {

@@ -221,7 +221,17 @@ extension POSPaymentModel {
     /// so the reader is warm by the time the merchant taps the hero CTA.
     private func connectTapToPayReader() {
         Task { @MainActor [weak self] in
-            _ = try? await self?.cardPresentPaymentService.connectReader(using: .tapToPay)
+            guard let self else { return }
+            // Stripe Terminal can only hold one active reader. If an old reader
+            // is still attached when we enter POS (a stale TTP / BT session
+            // carried across app launches, or a BT reader from a previous
+            // mode), connecting on top would fail with "another reader is
+            // already connected" and surface a disruptive failure modal —
+            // for a connect the merchant didn't even ask for. Drop it first.
+            if case .connected = cardReaderConnectionStatus {
+                await cardPresentPaymentService.disconnectReader()
+            }
+            _ = try? await cardPresentPaymentService.connectReader(using: .tapToPay)
         }
     }
 
@@ -819,6 +829,30 @@ private extension POSPaymentModel {
                 if case .connectionSuccess = eventDetails,
                    startPaymentOnCardReaderConnection != nil {
                     return nil
+                }
+
+                // On the TTP path the merchant never explicitly initiates a reader
+                // connection — pre-connect on checkout entry and the connect inside
+                // `startPaymentWithMethod` are both transparent. Suppress the entire
+                // discovery / connection lifecycle (scanning, found reader, connecting,
+                // connected, plus the generic "couldn't connect" failure variants
+                // that fire for transient races like "another reader is already
+                // connected"). Failures the merchant must actually act on — TTP
+                // entitlement / Apple ToS / location-services / postal-code /
+                // address — still surface so the merchant can resolve them.
+                // iPad / non-TTP phones see all of these as today.
+                if preferredConnectionMethod == .tapToPay {
+                    switch eventDetails {
+                    case .scanningForReaders,
+                            .foundReader,
+                            .connectingToReader,
+                            .connectionSuccess,
+                            .connectingFailed,
+                            .connectingFailedNonRetryable:
+                        return nil
+                    default:
+                        break
+                    }
                 }
 
                 return alertType

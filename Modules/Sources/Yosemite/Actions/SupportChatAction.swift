@@ -83,4 +83,16 @@ public enum SupportChatAction: Action {
     ///   - onCompletion: Delivered on the main thread once the update is persisted.
     case markTicketCreated(chatID: Int64,
                            onCompletion: () -> Void)
+
+    /// Submits feedback for a specific bot message.
+    ///
+    /// - Parameters:
+    ///   - messageID: Identifier of the message to rate.
+    ///   - sessionID: Session identifier of the chat.
+    ///   - upvoted: `true` for positive feedback (thumbs up), `false` for negative (thumbs down).
+    ///   - onCompletion: Called when the feedback submission completes.
+    case submitFeedback(messageID: Int64,
+                        sessionID: String,
+                        upvoted: Bool,
+                        onCompletion: (Result<Void, Error>) -> Void)
 }

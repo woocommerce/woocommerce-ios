@@ -355,6 +355,75 @@ struct SupportChatStoreTests {
             #expect(error is NetworkError)
         }
     }
+
+    // MARK: - submitFeedback
+
+    @Test func submitFeedback_forwards_to_remote_with_correct_parameters() async throws {
+        // Given
+        let store = makeStore()
+        remote.whenSubmittingFeedback(thenReturn: .success(()))
+
+        // When
+        _ = await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.submitFeedback(messageID: 123,
+                                                            sessionID: "session-abc",
+                                                            upvoted: true,
+                                                            onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(remote.submitFeedbackInvocations.count == 1)
+        let invocation = try #require(remote.submitFeedbackInvocations.first)
+        #expect(invocation.messageID == 123)
+        #expect(invocation.sessionID == "session-abc")
+        #expect(invocation.upvoted == true)
+    }
+
+    @Test func submitFeedback_when_downvoted_then_forwards_false() async throws {
+        // Given
+        let store = makeStore()
+        remote.whenSubmittingFeedback(thenReturn: .success(()))
+
+        // When
+        _ = await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.submitFeedback(messageID: 456,
+                                                            sessionID: "session-xyz",
+                                                            upvoted: false,
+                                                            onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let invocation = try #require(remote.submitFeedbackInvocations.first)
+        #expect(invocation.upvoted == false)
+    }
+
+    @Test func submitFeedback_propagates_remote_errors() async {
+        // Given
+        let store = makeStore()
+        remote.whenSubmittingFeedback(thenReturn: .failure(NetworkError.timeout()))
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.submitFeedback(messageID: 123,
+                                                            sessionID: "session-abc",
+                                                            upvoted: true,
+                                                            onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        switch result {
+        case .success:
+            Issue.record("Expected submitFeedback to propagate a failure")
+        case .failure(let error):
+            #expect(error is NetworkError)
+        }
+    }
 }
 
 // MARK: - Test helper

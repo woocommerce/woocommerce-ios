@@ -572,7 +572,6 @@ final class SupportChatViewModel {
 
         onContactHumanSupport(chatID, transcript, supportAreaInfo)
     }
-    }
 
     private func generateTranscript() -> String {
         let dateFormatter = DateFormatter()

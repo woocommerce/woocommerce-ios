@@ -209,6 +209,12 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSalePhonePrototype
 
+    /// Enables Tap to Pay as a payment method in Point of Sale on phone.
+    /// When enabled and the device + site support TTP, the totals view promotes "Tap to Pay"
+    /// as the primary payment method. Mirrors the Android `WOO_POS_TAP_TO_PAY` flag.
+    ///
+    case pointOfSaleTapToPay
+
     /// Enables self driven push token registration
     ///
     case selfDrivenPushToken

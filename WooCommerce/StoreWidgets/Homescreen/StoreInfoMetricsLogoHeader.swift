@@ -45,9 +45,28 @@ struct StoreInfoMetricsLogoHeader: View {
     }
 
     private enum Layout {
-        static let logoSpacing = 4.0
+        static let logoSpacing = 12.0
         static let logoSize = 30.0
         static let rangeSpacing = 4.0
         static let textSpacing = 0.0
     }
 }
+
+// MARK: - Previews
+#if DEBUG
+import WidgetKit
+
+struct StoreInfoMetricsLogoHeader_Previews: PreviewProvider {
+    static var previews: some View {
+        StoreInfoMetricsLogoHeader(data: StoreInfoMetricsView_Previews.exampleData)
+            .widgetBackground(backgroundView: Color(.brand))
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewDisplayName("With range")
+
+        StoreInfoMetricsLogoHeader(data: StoreInfoMetricsView_Previews.exampleData, showsRange: false)
+            .widgetBackground(backgroundView: Color(.brand))
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .previewDisplayName("Without range")
+    }
+}
+#endif

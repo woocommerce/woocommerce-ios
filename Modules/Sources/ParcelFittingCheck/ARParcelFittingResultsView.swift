@@ -2,12 +2,24 @@ import SwiftUI
 
 struct ARParcelFittingResultsView: View {
     let viewModel: ARParcelFittingResultsViewModel
-    let starredPackageIDs: Set<String>
     let onToggleStar: ((String, String) -> Void)?
     let onConfirm: (ParcelFittingResult) -> Void
     let onBack: () -> Void
 
+    @State private var starredPackageIDs: Set<String>
     @State private var selection: Selection?
+
+    init(viewModel: ARParcelFittingResultsViewModel,
+         starredPackageIDs: Set<String>,
+         onToggleStar: ((String, String) -> Void)?,
+         onConfirm: @escaping (ParcelFittingResult) -> Void,
+         onBack: @escaping () -> Void) {
+        self.viewModel = viewModel
+        self.onToggleStar = onToggleStar
+        self.onConfirm = onConfirm
+        self.onBack = onBack
+        self._starredPackageIDs = State(initialValue: starredPackageIDs)
+    }
 
     enum Selection: Hashable {
         case carrier(String)
@@ -79,7 +91,15 @@ struct ARParcelFittingResultsView: View {
                         isStarred: starredPackageIDs.contains(result.package.id),
                         onSelect: { selection = .carrier(result.package.id) },
                         onToggleStar: onToggleStar.map { callback in
-                            { callback(result.package.id, result.carrier.id) }
+                            {
+                                let id = result.package.id
+                                if starredPackageIDs.contains(id) {
+                                    starredPackageIDs.remove(id)
+                                } else {
+                                    starredPackageIDs.insert(id)
+                                }
+                                callback(id, result.carrier.id)
+                            }
                         }
                     )
 

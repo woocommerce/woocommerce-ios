@@ -102,8 +102,8 @@ final class SupportEscalationCoordinator {
         )
         presentingVC.present(loadingViewController, animated: true)
 
-        var attachments = buildTranscriptAttachment(transcript: areaInfo.transcript)
-        attachments.append(contentsOf: additionalAttachmentsProvider())
+        let description = "Following is the transcript of an in-app AI support chat session:\n\(areaInfo.transcript)"
+        let attachments = additionalAttachmentsProvider()
 
         let siteAddress = stores.sessionManager.defaultSite?.url ?? ""
         let tags = areaInfo.area.datasource.tags + Tags.additionalTags + [Tags.sourceTag]
@@ -112,7 +112,7 @@ final class SupportEscalationCoordinator {
             customFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress),
             tags: tags,
             subject: SupportFormViewModel.subject(for: areaInfo.areaType),
-            description: areaInfo.firstUserMessage,
+            description: description,
             attachments: attachments
         )
 

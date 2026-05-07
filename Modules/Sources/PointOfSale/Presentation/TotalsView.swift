@@ -620,14 +620,16 @@ private extension TotalsView {
     var useTapToPayHeroLayout: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
         guard displayPaymentState.card == .idle && displayPaymentState.cash == .idle else { return false }
-        // Reuse the syncing / reconnecting / zero-total guards from the iPad
-        // pay row so an empty cart can't let the merchant tap "Pay with Tap to
-        // pay" and trip an order-validation error.
-        return totalsViewHelper.shouldShowCollectCashPaymentButton(
-            orderState: posModel.orderState,
-            paymentState: displayPaymentState,
-            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus
-        )
+        // Empty-cart / syncing / reconnecting guards computed directly. We
+        // can't reuse `shouldShowCollectCashPaymentButton` here — that helper
+        // also requires the reader to be disconnected when card state is idle
+        // (an iPad pay-row assumption). On TTP the device is silently
+        // pre-connected, so reusing it would collapse the hero whenever the
+        // pre-connect succeeds.
+        guard case .loaded(let totals) = posModel.orderState else { return false }
+        guard !totals.orderTotalDecimal.isZero else { return false }
+        if case .reconnecting = paymentModel.cardReaderConnectionStatus { return false }
+        return true
     }
 
     /// Cash + Other payment methods stacked outlined buttons rendered below the

@@ -4,7 +4,7 @@ struct ARUnifiedParcelFlowView: View {
     let unit: UnitLength
     let carriers: [ParcelPresetCarrier]
     let starredPackageIDs: Set<String>
-    let onToggleStar: ((String, String) -> Void)?
+    weak var delegate: ParcelFittingDelegate?
     let onCancel: () -> Void
     let onConfirm: (ParcelFittingResult) -> Void
 
@@ -20,7 +20,7 @@ struct ARUnifiedParcelFlowView: View {
                         carriers: carriers
                     ),
                     starredPackageIDs: starredPackageIDs,
-                    onToggleStar: onToggleStar,
+                    delegate: delegate,
                     onConfirm: onConfirm,
                     onBack: { measuredDimensions = nil }
                 )

@@ -133,9 +133,7 @@ struct WooShippingAddPackageView: View {
             unit: packagesViewModel.arDimensionUnit,
             carriers: packagesViewModel.parcelPresetCarriers,
             starredPackageIDs: packagesViewModel.starredCarriersPackages,
-            onToggleStar: { [weak packagesViewModel] packageID, carrierID in
-                packagesViewModel?.starUnstarPackage(packageID, carrierID: carrierID)
-            }
+            delegate: packagesViewModel
         ) { [weak packagesViewModel, weak customPackageViewModel] result in
             guard let packagesViewModel, let customPackageViewModel else { return }
             switch result {

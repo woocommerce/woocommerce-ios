@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ARParcelFittingResultsView: View {
     let viewModel: ARParcelFittingResultsViewModel
-    let onToggleStar: ((String, String) -> Void)?
+    weak var delegate: ParcelFittingDelegate?
     let onConfirm: (ParcelFittingResult) -> Void
     let onBack: () -> Void
 
@@ -11,11 +11,11 @@ struct ARParcelFittingResultsView: View {
 
     init(viewModel: ARParcelFittingResultsViewModel,
          starredPackageIDs: Set<String>,
-         onToggleStar: ((String, String) -> Void)?,
+         delegate: ParcelFittingDelegate?,
          onConfirm: @escaping (ParcelFittingResult) -> Void,
          onBack: @escaping () -> Void) {
         self.viewModel = viewModel
-        self.onToggleStar = onToggleStar
+        self.delegate = delegate
         self.onConfirm = onConfirm
         self.onBack = onBack
         self._starredPackageIDs = State(initialValue: starredPackageIDs)
@@ -90,7 +90,7 @@ struct ARParcelFittingResultsView: View {
                         isSelected: selection == .carrier(result.package.id),
                         isStarred: starredPackageIDs.contains(result.package.id),
                         onSelect: { selection = .carrier(result.package.id) },
-                        onToggleStar: onToggleStar.map { callback in
+                        onToggleStar: delegate.map { delegate in
                             {
                                 let id = result.package.id
                                 if starredPackageIDs.contains(id) {
@@ -98,7 +98,7 @@ struct ARParcelFittingResultsView: View {
                                 } else {
                                     starredPackageIDs.insert(id)
                                 }
-                                callback(id, result.carrier.id)
+                                delegate.parcelFittingDidToggleStar(packageID: id, carrierID: result.carrier.id)
                             }
                         }
                     )
@@ -174,7 +174,7 @@ struct ARParcelFittingResultsView: View {
                 ]
             ),
             starredPackageIDs: ["usps_medium"],
-            onToggleStar: { _, _ in },
+            delegate: nil,
             onConfirm: { _ in },
             onBack: {}
         )
@@ -190,7 +190,7 @@ struct ARParcelFittingResultsView: View {
                 carriers: []
             ),
             starredPackageIDs: [],
-            onToggleStar: nil,
+            delegate: nil,
             onConfirm: { _ in },
             onBack: {}
         )

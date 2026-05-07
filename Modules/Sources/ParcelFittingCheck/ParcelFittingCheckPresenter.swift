@@ -36,7 +36,7 @@ public final class ParcelFittingCheckPresenter {
         unit: UnitLength,
         carriers: [ParcelPresetCarrier],
         starredPackageIDs: Set<String> = [],
-        onToggleStar: ((String, String) -> Void)? = nil,
+        delegate: ParcelFittingDelegate? = nil,
         onConfirm: @escaping (ParcelFittingResult) -> Void
     ) {
         present(from: presenter) { dismiss in
@@ -44,7 +44,7 @@ public final class ParcelFittingCheckPresenter {
                 unit: unit,
                 carriers: carriers,
                 starredPackageIDs: starredPackageIDs,
-                onToggleStar: onToggleStar,
+                delegate: delegate,
                 onCancel: dismiss,
                 onConfirm: { result in dismiss(); onConfirm(result) }
             )

@@ -409,6 +409,12 @@ extension WooShippingAddPackageViewModel {
     }
 }
 
+extension WooShippingAddPackageViewModel: ParcelFittingDelegate {
+    func parcelFittingDidToggleStar(packageID: String, carrierID: String) {
+        starUnstarPackage(packageID, carrierID: carrierID)
+    }
+}
+
 extension WooShippingCustomPackage {
     func toPackageData() -> WooShippingPackageData {
         return WooShippingPackageData(id: id,

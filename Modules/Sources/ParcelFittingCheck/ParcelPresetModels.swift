@@ -42,3 +42,7 @@ public enum ParcelFittingResult {
     case carrierPackage(ParcelPresetPackage)
     case customDimensions(ParcelDimensions)
 }
+
+public protocol ParcelFittingDelegate: AnyObject {
+    func parcelFittingDidToggleStar(packageID: String, carrierID: String)
+}

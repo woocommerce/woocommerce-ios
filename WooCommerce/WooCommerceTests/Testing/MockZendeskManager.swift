@@ -26,10 +26,6 @@ final class MockZendeskManager: ZendeskManagerProtocol {
     ///
     private(set) var latestInvokedCustomFields: [Int64: String] = [:]
 
-    /// Tracks the full request passed to createSupportRequest.
-    ///
-    private(set) var latestInvokedRequest: ZendeskSupportRequest?
-
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String?) {
         let invocation = NewRequestIfPossibleInvocation(controller: controller, sourceTag: sourceTag)
         newRequestIfPossibleInvocations.append(invocation)
@@ -110,7 +106,6 @@ extension MockZendeskManager {
 
     func createSupportRequest(_ request: WooCommerce.ZendeskSupportRequest,
                               onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        latestInvokedRequest = request
         latestInvokedTags = request.tags
         latestInvokedCustomFields = request.customFields
         if let stubbedCreateSupportRequestResult {

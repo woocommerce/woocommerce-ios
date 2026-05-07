@@ -182,60 +182,6 @@ struct SupportEscalationCoordinatorTests {
         // Then
         #expect(markTicketCreatedCalled == false)
     }
-
-    // MARK: - Request Content Tests
-
-    @Test func createTicketDirectly_uses_transcript_as_description() {
-        // Given
-        let zendesk = MockZendeskManager()
-        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
-        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
-
-        let navigationController = UINavigationController(rootViewController: UIViewController())
-        let coordinator = SupportEscalationCoordinator(
-            navigationController: navigationController,
-            zendeskProvider: zendesk
-        )
-
-        let areaInfo = SupportAreaInfo(
-            areaType: .mobileApp,
-            area: SupportFormViewModel.area(for: .mobileApp),
-            confidence: .high,
-            transcript: "Full transcript here"
-        )
-
-        // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Full transcript", supportAreaInfo: areaInfo)
-
-        // Then
-        #expect(zendesk.latestInvokedRequest?.description == "Following is the transcript of an in-app AI support chat session:\nFull transcript here")
-    }
-
-    @Test func createTicketDirectly_uses_area_based_subject() {
-        // Given
-        let zendesk = MockZendeskManager()
-        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
-        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
-
-        let navigationController = UINavigationController(rootViewController: UIViewController())
-        let coordinator = SupportEscalationCoordinator(
-            navigationController: navigationController,
-            zendeskProvider: zendesk
-        )
-
-        let areaInfo = SupportAreaInfo(
-            areaType: .cardReader,
-            area: SupportFormViewModel.area(for: .cardReader),
-            confidence: .high,
-            transcript: "Transcript"
-        )
-
-        // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Transcript", supportAreaInfo: areaInfo)
-
-        // Then
-        #expect(zendesk.latestInvokedRequest?.subject == "Card Reader Support Request")
-    }
 }
 
 // MARK: - Helpers

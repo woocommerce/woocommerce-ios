@@ -155,7 +155,8 @@ final class SupportChatViewModel {
     private let stores: StoresManager
     private var diagnosticsContext: [String: Any]?
     private let initialContext: [String: Any]?
-    private let onContactHumanSupport: (_ transcript: String) -> Void
+    private let onContactHumanSupport: (_ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
+    private var latestSupportArea: SupportChatSupportArea?
     var onStartJetpackSetup: () -> Void
     private let diagnosticsService: SupportDiagnosticsService
 
@@ -167,7 +168,7 @@ final class SupportChatViewModel {
          initialContext: [String: Any]? = nil,
          diagnosticsService: SupportDiagnosticsService? = nil,
          chatID: Int64? = nil,
-         onContactHumanSupport: @escaping (_ transcript: String) -> Void,
+         onContactHumanSupport: @escaping (_ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void,
          onStartJetpackSetup: @escaping () -> Void = {}) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
@@ -548,7 +549,33 @@ final class SupportChatViewModel {
     }
 
     func contactHumanSupport() {
-        onContactHumanSupport(generateTranscript())
+        let transcript = generateTranscript()
+        let supportAreaInfo: SupportAreaInfo?
+
+        if let supportArea = latestSupportArea {
+            let mappedArea = SupportFormViewModel.area(for: supportArea.area)
+            let firstUserMessage = extractFirstUserMessage()
+            supportAreaInfo = SupportAreaInfo(
+                areaType: supportArea.area,
+                area: mappedArea,
+                confidence: supportArea.confidence,
+                transcript: transcript,
+                firstUserMessage: firstUserMessage
+            )
+        } else {
+            supportAreaInfo = nil
+        }
+
+        onContactHumanSupport(transcript, supportAreaInfo)
+    }
+
+    private func extractFirstUserMessage() -> String {
+        for message in messages {
+            if message.role == .user, case .text(let text) = message.content {
+                return text
+            }
+        }
+        return ""
     }
 
     private func generateTranscript() -> String {
@@ -605,6 +632,7 @@ final class SupportChatViewModel {
                 /// Skips displaying last bot message when human support is required. User is suggested to contact support manually.
                 if let flags = lastBotMessage.context?.flags, flags.forwardToHumanSupport {
                     shouldPromptHumanSupport = true
+                    latestSupportArea = lastBotMessage.context?.supportArea
                 } else {
                     let assistantMessage = ChatMessage(
                         role: .bot,
@@ -644,12 +672,13 @@ final class SupportChatViewModel {
         switch result {
         case .success(let response):
             sessionID = response.sessionID
-            let rehydrated: [ChatMessage] = response.messages.compactMap { message in
+            let rehydrated: [ChatMessage] = response.messages.compactMap { [weak self] message in
                 // Filter out bot messages flagged for human support
                 if message.role == .bot,
                    let flags = message.context?.flags,
                    flags.forwardToHumanSupport {
-                    shouldPromptHumanSupport = true
+                    self?.shouldPromptHumanSupport = true
+                    self?.latestSupportArea = message.context?.supportArea
                     return nil
                 }
 

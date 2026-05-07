@@ -17,6 +17,9 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     ///
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
+    /// Retains the support escalation coordinator while the flow is active.
+    ///
+    private var supportEscalationCoordinator: SupportEscalationCoordinator?
 
     init() {
         viewModel = ConnectivityToolViewModel()
@@ -100,8 +103,9 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     }
 
     private func showContactSupportForm(sourceTag: String? = nil,
-                                         additionalTags: [String] = [],
-                                         chatTranscript: String? = nil) {
+                                        additionalTags: [String] = [],
+                                        chatTranscript: String? = nil,
+                                        preselectedArea: SupportFormViewModel.Area? = nil) {
         var attachments: [ZendeskAttachment] = []
 
         if let troubleshootingDescription = viewModel.troubleshootingDescription(),
@@ -123,31 +127,47 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
             ))
         }
 
-        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(sourceTag: sourceTag,
-                                                                                              additionalTags: additionalTags,
-                                                                                              attachments: attachments))
+        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(
+            sourceTag: sourceTag,
+            additionalTags: additionalTags,
+            attachments: attachments,
+            preselectedArea: preselectedArea
+        ))
         supportController.show(from: self)
 
         ServiceLocator.analytics.track(event: .ConnectivityTool.contactSupportTapped())
     }
 
     private func showSupportChat() {
-        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] transcript in
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] transcript, supportAreaInfo in
             self?.navigationController?.popViewController(animated: true)
-            self?.showContactSupportForm(sourceTag: Constants.aiChatEscalationSourceTag,
-                                         additionalTags: Constants.aiChatEscalationAdditionalTags,
-                                         chatTranscript: transcript)
+            self?.handleContactHumanSupport(transcript: transcript, supportAreaInfo: supportAreaInfo)
         }
 
         let chatController = SupportChatHostingController(viewModel: chatViewModel)
         chatController.show(from: self)
     }
-}
 
-private extension ConnectivityToolViewController {
-    enum Constants {
-        static let aiChatEscalationSourceTag = "in_app_support_escalate"
-        static let aiChatEscalationAdditionalTags = ["ai_skip"]
+    private func handleContactHumanSupport(transcript: String, supportAreaInfo: SupportAreaInfo?) {
+        supportEscalationCoordinator = SupportEscalationCoordinator(
+            navigationController: navigationController,
+            additionalAttachmentsProvider: { [weak self] in
+                self?.buildTroubleshootingAttachment() ?? []
+            }
+        )
+        supportEscalationCoordinator?.handleEscalation(transcript: transcript, supportAreaInfo: supportAreaInfo)
+    }
+
+    private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {
+        guard let troubleshootingDescription = viewModel.troubleshootingDescription(),
+              let data = troubleshootingDescription.data(using: .utf8) else {
+            return []
+        }
+        return [ZendeskAttachment(
+            data: data,
+            filename: "connectivitytest_log.txt",
+            contentType: "text/plain"
+        )]
     }
 }
 

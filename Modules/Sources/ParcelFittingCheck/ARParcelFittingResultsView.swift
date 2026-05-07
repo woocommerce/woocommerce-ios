@@ -16,23 +16,32 @@ struct ARParcelFittingResultsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            List {
-                ForEach(viewModel.carrierResults) { result in
-                    carrierRow(result)
-                        .listRowInsets(EdgeInsets())
-                        .listRowSeparator(.hidden)
-                }
-                customRow
-                    .listRowInsets(EdgeInsets())
-                    .listRowSeparator(.hidden)
-            }
-            .listStyle(.plain)
+            ScrollView {
+                VStack(alignment: .leading, spacing: Constants.sectionSpacing) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        sectionHeader(Localization.measuredHeader)
+                        MeasuredDimensionsCard(
+                            dimensions: viewModel.measuredDimensions,
+                            unit: viewModel.unit
+                        )
+                    }
 
-            Divider()
+                    if viewModel.carrierResults.isEmpty {
+                        noMatchSection
+                    } else {
+                        bestFitSection
+                    }
+
+                    exactSizeSection
+                }
+                .padding(.horizontal)
+                .padding(.top, Constants.topPadding)
+            }
+
             Button {
                 confirmSelection()
             } label: {
-                Text("Use selected package")
+                Text(Localization.useSelectedPackage)
                     .font(.headline)
                     .frame(maxWidth: .infinity)
             }
@@ -41,7 +50,8 @@ struct ARParcelFittingResultsView: View {
             .controlSize(.large)
             .padding()
         }
-        .navigationTitle("Select a package")
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle(Localization.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -53,75 +63,64 @@ struct ARParcelFittingResultsView: View {
         }
     }
 
-    private func carrierRow(_ result: ARParcelFittingResultsViewModel.CarrierResult) -> some View {
-        let isSelected = selection == .carrier(result.package.id)
-        let isStarred = starredPackageIDs.contains(result.package.id)
-        return HStack(spacing: 0) {
-            Button { selection = .carrier(result.package.id) } label: {
-                HStack(spacing: 0) {
-                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .foregroundColor(isSelected ? .accentColor : .gray)
-                        .font(.title)
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack(spacing: 6) {
-                            if let logo = result.carrier.logo {
-                                Image(uiImage: logo)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(height: 16)
-                            }
-                            Text(result.carrier.name)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+    // MARK: - Sections
+
+    private var bestFitSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            sectionHeader(String(format: Localization.bestFitHeader, viewModel.carrierResults.count))
+
+            VStack(spacing: 0) {
+                ForEach(viewModel.carrierResults) { result in
+                    CarrierPackageRow(
+                        carrier: result.carrier,
+                        package: result.package,
+                        unit: viewModel.unit,
+                        isSelected: selection == .carrier(result.package.id),
+                        isStarred: starredPackageIDs.contains(result.package.id),
+                        onSelect: { selection = .carrier(result.package.id) },
+                        onToggleStar: onToggleStar.map { callback in
+                            { callback(result.package.id, result.carrier.id) }
                         }
-                        Text(result.package.name)
-                            .font(.body)
-                        Text(Self.formatDimensions(result.package, unit: viewModel.unit))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                    )
+
+                    if result.id != viewModel.carrierResults.last?.id {
+                        Divider().padding(.leading, Constants.dividerLeadingPadding)
                     }
-                    .padding(.leading, 4)
-                    Spacer()
                 }
-                .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
-
-            if onToggleStar != nil {
-                Button {
-                    onToggleStar?(result.package.id, result.carrier.id)
-                } label: {
-                    Image(systemName: isStarred ? "star.fill" : "star")
-                        .foregroundStyle(.secondary)
-                        .padding(16)
-                }
-                .buttonStyle(.plain)
-            }
+            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: Constants.cornerRadius))
         }
-        .padding(.leading, 16)
     }
 
-    private var customRow: some View {
-        let isSelected = selection == .custom
-        return Button { selection = .custom } label: {
-            HStack(spacing: 0) {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(isSelected ? .accentColor : .gray)
-                    .font(.title)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Custom dimensions")
-                        .font(.body)
-                    Text(viewModel.dimensionsLabel)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.leading, 4)
-                Spacer()
-            }
-            .padding(16)
+    private var noMatchSection: some View {
+        VStack(alignment: .leading, spacing: Constants.sectionHeaderBottomPadding) {
+            sectionHeader(Localization.noCarrierMatchHeader)
+            NoCarrierMatchView()
         }
-        .buttonStyle(.plain)
     }
+
+    private var exactSizeSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            sectionHeader(Localization.useExactSizeHeader)
+
+            CustomDimensionsRow(
+                dimensions: viewModel.measuredDimensions,
+                unit: viewModel.unit,
+                isSelected: selection == .custom,
+                onSelect: { selection = .custom }
+            )
+            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: Constants.cornerRadius))
+        }
+    }
+
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.caption.bold())
+            .foregroundStyle(.secondary)
+            .padding(.bottom, Constants.sectionHeaderBottomPadding)
+    }
+
+    // MARK: - Actions
 
     private func confirmSelection() {
         switch selection {
@@ -135,8 +134,23 @@ struct ARParcelFittingResultsView: View {
             break
         }
     }
+}
 
-    private static func formatDimensions(_ package: ParcelPresetPackage, unit: UnitLength) -> String {
-        String(format: "%.2f × %.2f × %.2f %@", package.length, package.width, package.height, unit.symbol)
+private extension ARParcelFittingResultsView {
+    enum Constants {
+        static let sectionSpacing: CGFloat = 24
+        static let topPadding: CGFloat = 16
+        static let dividerLeadingPadding: CGFloat = 60
+        static let cornerRadius: CGFloat = 12
+        static let sectionHeaderBottomPadding: CGFloat = 8
+    }
+
+    enum Localization {
+        static let navigationTitle = "Pick a package"
+        static let measuredHeader = "MEASURED"
+        static let useSelectedPackage = "Select Package"
+        static let bestFitHeader = "BEST FIT · %d OPTIONS"
+        static let noCarrierMatchHeader = "NO CARRIER MATCH"
+        static let useExactSizeHeader = "USE EXACT SIZE"
     }
 }

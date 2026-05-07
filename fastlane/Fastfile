@@ -1709,7 +1709,7 @@ def generate_ai_release_notes(version:, raw_items:)
     generated_notes = openai_ask(
       prompt: :release_notes,
       question: question,
-      api_token: get_required_env('OPENAI_API_TOKEN')
+      api_token: get_required_env('OPENAI_API_KEY')
     ).to_s.strip
 
     if (error = ReleaseNotesPRHelper.validate_generated_release_notes_not_empty(generated_notes))

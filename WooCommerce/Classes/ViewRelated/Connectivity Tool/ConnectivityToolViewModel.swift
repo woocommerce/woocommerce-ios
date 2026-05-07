@@ -394,7 +394,7 @@ final class ConnectivityToolViewModel {
                     }
                 case .failure(let error):
                     DDLogError("Connectivity Tool: ❌ Analytics setting check failed\n\(error)")
-                    let technicalDetails = String(describing: error)
+                    let technicalDetails = error.formattedTechnicalDetails
                     let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
                         title: Localization.Action.viewDetails,
                         systemImage: SystemImages.viewDetails.rawValue,
@@ -502,7 +502,7 @@ final class ConnectivityToolViewModel {
 
         case (let error, _):
             message = Localization.ErrorMessage.generic
-            let technicalDetails = String(describing: error)
+            let technicalDetails = error.formattedTechnicalDetails
             let viewDetailsTitle = Localization.Action.viewDetails
             let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
                 title: viewDetailsTitle,

@@ -243,37 +243,10 @@ private extension Analytics {
         guard let error else {
             return nil
         }
-
-        let nsError = error as NSError
-        let errorCode: String = {
-            if let networkError = error as? NetworkError, let code = networkError.responseCode {
-                return code.description
-            } else if let afError = error as? AFError {
-                if let responseCode = afError.responseCode {
-                    return responseCode.description
-                } else if let underlyingError = afError.underlyingError as? NSError {
-                    return underlyingError.code.description
-                }
-            } else if let loginError = error as? SiteCredentialLoginError {
-                return loginError.underlyingError.code.description
-            }
-            return nsError.code.description
-        }()
-
-        let errorDomain: String = {
-            if let networkError = error as? AFError,
-               let underlyingError = networkError.underlyingError as? NSError {
-                return underlyingError.domain
-            }
-            return nsError.domain
-        }()
-
-        let errorDescription = nsError.description
-
         return [
-            Constants.errorKeyCode: errorCode,
-            Constants.errorKeyDomain: errorDomain,
-            Constants.errorKeyDescription: errorDescription
+            Constants.errorKeyCode: error.errorCode.description,
+            Constants.errorKeyDomain: error.errorDomain,
+            Constants.errorKeyDescription: (error as NSError).description
         ]
     }
 }

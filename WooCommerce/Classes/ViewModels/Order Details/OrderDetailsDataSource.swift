@@ -1140,7 +1140,7 @@ private extension OrderDetailsDataSource {
 // MARK: - Lookup orders and statuses
 extension OrderDetailsDataSource {
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        return currentSiteStatuses.first(where: {$0.status == order.status})
+        return currentSiteStatuses.first(where: { $0.status == order.status })
     }
 
     func lookUpProduct(by productID: Int64) -> OrderDetailsProduct? {

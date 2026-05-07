@@ -155,9 +155,32 @@ final class MockCardReaderService: CardReaderService {
             .eraseToAnyPublisher()
     }
 
+    func capturePayment(_ parameters: PaymentIntentParameters,
+                        beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>) -> AnyPublisher<PaymentIntent, Error> {
+        capturePayment(parameters)
+            .flatMap { intent in
+                beforePaymentConfirmation(intent)
+                    .map { intent }
+                    .eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
+    }
+
     func retryActivePaymentIntent() -> AnyPublisher<Hardware.PaymentIntent, Error> {
         Just(.fake())
             .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
+    func retryActivePaymentIntent(
+        beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
+    ) -> AnyPublisher<Hardware.PaymentIntent, Error> {
+        retryActivePaymentIntent()
+            .flatMap { intent in
+                beforePaymentConfirmation(intent)
+                    .map { intent }
+                    .eraseToAnyPublisher()
+            }
             .eraseToAnyPublisher()
     }
 

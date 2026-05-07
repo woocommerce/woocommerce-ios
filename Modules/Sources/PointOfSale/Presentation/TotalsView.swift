@@ -105,9 +105,13 @@ struct TotalsView: View {
             hideTotalsFieldsWithDelay(shouldShowTotalsFields)
         }
         .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
-            POSOtherPaymentMethodsSheet(onCardReader: { paymentModel.connectCardReader() })
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
+            POSOtherPaymentMethodsSheet(onCardReader: {
+                Task { @MainActor in
+                    await paymentModel.startPaymentWithMethod(.bluetooth)
+                }
+            })
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
         }
     }
 
@@ -597,9 +601,9 @@ private extension TotalsView {
     }
 
     func handleTapToPayTapped() {
-        // Intentionally a no-op for now — action wiring lands in a later focused
-        // commit so this layout change can be verified in isolation first.
-        DDLogInfo("📱 [TapToPay] hero tapped (action wiring pending)")
+        Task { @MainActor in
+            await paymentModel.startPaymentWithMethod(.tapToPay)
+        }
     }
 
     func handleOtherPaymentMethodsTapped() {

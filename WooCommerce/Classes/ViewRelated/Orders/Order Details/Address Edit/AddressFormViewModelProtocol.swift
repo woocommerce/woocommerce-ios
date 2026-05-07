@@ -203,7 +203,6 @@ struct AddressFormFields {
         }
     }
 
-
     /// Set initial values from Address using the stored countries to compute the current selected country & state.
     ///
     mutating func refreshCountryAndStateObjects(with allCountries: [Country]) {

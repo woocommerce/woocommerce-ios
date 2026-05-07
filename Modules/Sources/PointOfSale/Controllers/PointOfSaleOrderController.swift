@@ -139,12 +139,10 @@ protocol PointOfSaleOrderControllerProtocol {
             throw PointOfSaleOrderControllerError.noOrder
         }
 
-        do {
-            try await orderService.markOrderAsCompletedManually(order: order)
-        } catch {
-            analytics.track(.pointOfSaleMarkAsPaidFailed)
-            throw error
-        }
+        // Failure analytics is fired from `POSPaymentModel.confirmMarkAsPaidPayment()` so all
+        // mark-as-paid failure paths (this call, plus `orderProvider.provideOrder()`) funnel
+        // through a single event. Re-throw so the model can roll back state.
+        try await orderService.markOrderAsCompletedManually(order: order)
     }
 }
 

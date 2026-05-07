@@ -15,7 +15,8 @@ struct StoreInfoMetricsLogoHeader: View {
             Image("woo-mini-logo", bundle: nil)
                 .resizable()
                 .scaledToFit()
-                .frame(width: Layout.logoSize, height: Layout.logoSize)
+                .frame(width: Layout.logoWidth, height: Layout.logoHeight)
+                .padding(.top, Layout.logoTopInset)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: Layout.textSpacing) {
@@ -46,7 +47,9 @@ struct StoreInfoMetricsLogoHeader: View {
 
     private enum Layout {
         static let logoSpacing = 12.0
-        static let logoSize = 30.0
+        static let logoWidth = 30.0
+        static let logoHeight = 17.0
+        static let logoTopInset = 3.0
         static let rangeSpacing = 4.0
         static let textSpacing = 0.0
     }

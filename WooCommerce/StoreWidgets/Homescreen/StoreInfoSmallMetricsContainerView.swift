@@ -23,6 +23,7 @@ struct StoreInfoSmallMetricsContainerView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private enum Layout {

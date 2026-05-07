@@ -16,7 +16,7 @@ struct StoreInfoMediumMetricsContainerView: View {
                 StoreInfoMetricsGrid(metrics: data.metrics)
             }
         }
-        .padding(.horizontal)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private enum Layout {

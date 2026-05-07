@@ -15,15 +15,13 @@ struct StoreInfoLargeMetricsContainerView: View {
         VStack(alignment: .leading, spacing: Layout.headerSpacing) {
             StoreInfoMetricsLogoHeader(data: data)
 
-            Spacer(minLength: Layout.metricSpacing)
-
             StoreInfoMetricsGrid(metrics: visibleMetrics, leadingMetricStyle: .large)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private enum Layout {
         static let headerSpacing = 12.0
-        static let metricSpacing = 12.0
         static let defaultMetricLimit = 7
         static let accessibilityMetricLimit = 4
     }

@@ -155,6 +155,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             return ParcelPresetCarrier(
                 id: carrier.carrier.rawValue,
                 name: carrier.carrier.name,
+                logo: carrier.carrier.logo,
                 packages: packages
             )
         }

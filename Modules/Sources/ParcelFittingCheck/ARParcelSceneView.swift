@@ -9,7 +9,6 @@ struct ARParcelSceneView: UIViewRepresentable {
     let resetTrigger: Int
     var isResizeEnabled: Bool = true
     var onDimensionsChanged: ((SIMD3<Float>) -> Void)?
-    var onCoordinatorReady: ((@escaping (SIMD3<Float>) -> Void) -> Void)?
 
     func makeCoordinator() -> ARParcelSceneCoordinator {
         let coordinator = ARParcelSceneCoordinator()
@@ -30,10 +29,6 @@ struct ARParcelSceneView: UIViewRepresentable {
         context.coordinator.arView = arView
         context.coordinator.dimensions = dimensions
         context.coordinator.onDimensionsChanged = onDimensionsChanged
-        let coordinator = context.coordinator
-        onCoordinatorReady?({ [weak coordinator] dims in
-            coordinator?.updateDimensions(dims)
-        })
         return arView
     }
 

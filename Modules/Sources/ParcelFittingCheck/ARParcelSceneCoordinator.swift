@@ -67,25 +67,11 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         }
     }
 
-    private var animationTarget: SIMD3<Float>?
-
     func updateDimensions(_ dims: SIMD3<Float>) {
         guard dims != dimensions else { return }
         dimensions = dims
         if !resizeInteraction.isActive {
-            animationTarget = dims
-        }
-    }
-
-    func tickAnimation() {
-        guard let target = animationTarget, let cuboid else { return }
-        let current = cuboid.root.transform.scale
-        let diff = target - current
-        if simd_length(diff) < 0.001 {
-            cuboid.root.transform.scale = target
-            animationTarget = nil
-        } else {
-            cuboid.root.transform.scale = current + diff * 0.25
+            cuboid?.root.transform.scale = dims
         }
     }
 
@@ -180,7 +166,6 @@ private extension ARParcelSceneCoordinator {
         cuboid = entity
 
         sceneSubscription = arView.scene.subscribe(to: SceneEvents.Update.self) { [weak self] _ in
-            self?.tickAnimation()
             self?.updateMaterials()
         }
     }

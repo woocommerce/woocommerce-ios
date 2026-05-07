@@ -1,13 +1,15 @@
-import Foundation
+import UIKit
 
 public struct ParcelPresetCarrier: Identifiable {
     public let id: String
     public let name: String
+    public let logo: UIImage?
     public let packages: [ParcelPresetPackage]
 
-    public init(id: String, name: String, packages: [ParcelPresetPackage]) {
+    public init(id: String, name: String, logo: UIImage? = nil, packages: [ParcelPresetPackage]) {
         self.id = id
         self.name = name
+        self.logo = logo
         self.packages = packages
     }
 }
@@ -30,4 +32,13 @@ public struct ParcelPresetPackage: Identifiable {
     var dimensions: ParcelDimensions {
         ParcelDimensions(length: length, width: width, height: height)
     }
+
+    var volume: Float {
+        length * width * height
+    }
+}
+
+public enum ParcelFittingResult {
+    case carrierPackage(ParcelPresetPackage)
+    case customDimensions(ParcelDimensions)
 }

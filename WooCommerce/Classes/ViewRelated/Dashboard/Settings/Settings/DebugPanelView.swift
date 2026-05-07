@@ -35,11 +35,11 @@ struct DebugPanelView: View {
             }
 
             Section("Parcel Fitting Check") {
-                Button("Open AR Parcel Sizing (Custom flow)") {
+                Button("Open AR Parcel Sizing") {
                     presentDebugSizing()
                 }
-                Button("Open AR Fit Check (Carrier flow)") {
-                    presentDebugFitCheck()
+                Button("Open AR Unified Flow") {
+                    presentDebugUnifiedFlow()
                 }
             }
 
@@ -106,7 +106,7 @@ struct DebugPanelView: View {
         ParcelFittingCheckPresenter.presentSizing(from: presenter, unit: unit, onConfirm: { _ in })
     }
 
-    private func presentDebugFitCheck() {
+    private func presentDebugUnifiedFlow() {
         guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
         let unit: UnitLength = .fromStoreUnit(ServiceLocator.shippingSettingsService.dimensionUnit ?? "in")
         let carriers: [ParcelPresetCarrier] = [
@@ -125,7 +125,7 @@ struct DebugPanelView: View {
                                     length: 16.0, width: 11.0, height: 3.0),
             ]),
         ]
-        ParcelFittingCheckPresenter.presentFitCheck(from: presenter, unit: unit, carriers: carriers, onConfirm: { _ in })
+        ParcelFittingCheckPresenter.presentUnifiedFlow(from: presenter, unit: unit, carriers: carriers, onConfirm: { _ in })
     }
 
     private func fetchTestAnnouncement() {

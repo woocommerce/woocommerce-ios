@@ -122,49 +122,34 @@ struct WooShippingAddPackageView: View {
     }
 
     private var isARButtonVisible: Bool {
-        switch packagesViewModel.selectedPackageType {
-        case .custom:
-            return packagesViewModel.isARParcelFittingAvailable && customPackageViewModel.packageType == .box
-        case .carrier:
-            return packagesViewModel.isARParcelFittingAvailable && packagesViewModel.carrierTabs.isNotEmpty
-        case .saved:
-            return false
-        }
+        packagesViewModel.isARParcelFittingAvailable
     }
 
     private func presentARFlow() {
         guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
-        let unit = packagesViewModel.arDimensionUnit
 
-        switch packagesViewModel.selectedPackageType {
-        case .custom:
-            let initial: ParcelDimensions? = {
-                guard let l = Float(customPackageViewModel.fieldValues[.length] ?? ""),
-                      let w = Float(customPackageViewModel.fieldValues[.width] ?? ""),
-                      let h = Float(customPackageViewModel.fieldValues[.height] ?? ""),
-                      l > 0, w > 0, h > 0 else {
-                    return nil
+        ParcelFittingCheckPresenter.presentUnifiedFlow(
+            from: presenter,
+            unit: packagesViewModel.arDimensionUnit,
+            carriers: packagesViewModel.parcelPresetCarriers
+        ) { [weak packagesViewModel, weak customPackageViewModel] result in
+            guard let packagesViewModel, let customPackageViewModel else { return }
+            switch result {
+            case .carrierPackage(let package):
+                packagesViewModel.selectCarrierPackage(withID: package.id)
+                packagesViewModel.selectedPackageType = .carrier
+                if let selected = packagesViewModel.selectedCarriersPackage {
+                    addPackageAction(selected)
                 }
-                return ParcelDimensions(length: l, width: w, height: h)
-            }()
-            ParcelFittingCheckPresenter.presentSizing(from: presenter, unit: unit, initial: initial) { [weak customPackageViewModel] dimensions in
-                customPackageViewModel?.fieldValues[.length] = String(format: "%.1f", dimensions.length)
-                customPackageViewModel?.fieldValues[.width] = String(format: "%.1f", dimensions.width)
-                customPackageViewModel?.fieldValues[.height] = String(format: "%.1f", dimensions.height)
+            case .customDimensions(let dims):
+                customPackageViewModel.fieldValues[.length] = String(format: "%.1f", dims.length)
+                customPackageViewModel.fieldValues[.width] = String(format: "%.1f", dims.width)
+                customPackageViewModel.fieldValues[.height] = String(format: "%.1f", dims.height)
+                packagesViewModel.selectedPackageType = .custom
+                if let packageData = customPackageViewModel.packageData {
+                    addPackageAction(packageData)
+                }
             }
-        case .carrier:
-            let carriers = packagesViewModel.parcelPresetCarriers
-            guard carriers.isNotEmpty else { return }
-            ParcelFittingCheckPresenter.presentFitCheck(
-                from: presenter,
-                unit: unit,
-                carriers: carriers,
-                initialPackageID: packagesViewModel.selectedCarriersPackageId
-            ) { [weak packagesViewModel] selectedPackage in
-                packagesViewModel?.selectCarrierPackage(withID: selectedPackage.id)
-            }
-        case .saved:
-            break
         }
     }
 

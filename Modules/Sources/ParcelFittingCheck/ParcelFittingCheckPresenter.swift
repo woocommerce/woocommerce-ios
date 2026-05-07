@@ -31,20 +31,18 @@ public final class ParcelFittingCheckPresenter {
         }
     }
 
-    public static func presentFitCheck(
+    public static func presentUnifiedFlow(
         from presenter: UIViewController,
         unit: UnitLength,
         carriers: [ParcelPresetCarrier],
-        initialPackageID: String? = nil,
-        onConfirm: @escaping (ParcelPresetPackage) -> Void
+        onConfirm: @escaping (ParcelFittingResult) -> Void
     ) {
         present(from: presenter) { dismiss in
-            ARParcelFitCheckView(
+            ARUnifiedParcelFlowView(
                 unit: unit,
-                availableCarriers: carriers,
-                initialPackageID: initialPackageID,
+                carriers: carriers,
                 onCancel: dismiss,
-                onConfirm: { package in dismiss(); onConfirm(package) }
+                onConfirm: { result in dismiss(); onConfirm(result) }
             )
         }
     }

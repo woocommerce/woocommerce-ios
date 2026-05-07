@@ -11,6 +11,7 @@ import SwiftUI
 /// they're folded into a richer hero in a follow-up commit.
 struct POSTapToPayHeroView: View {
     let onPayTapped: () -> Void
+    var isPayDisabled: Bool = false
 
     var body: some View {
         VStack(spacing: POSSpacing.large) {
@@ -41,6 +42,7 @@ struct POSTapToPayHeroView: View {
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .padding(.horizontal, POSPadding.medium)
+            .disabled(isPayDisabled)
             .accessibilityIdentifier("pos-tap-to-pay-hero-pay-button")
         }
     }

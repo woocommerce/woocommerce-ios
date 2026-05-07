@@ -23,6 +23,11 @@ struct TotalsView: View {
     // Default true so totals fields would be included in the view hiearchy on first render and animate with TotalsView
     @State private var isShowingTotalsFields: Bool = true
     @State private var isShowingOtherPaymentMethodsSheet: Bool = false
+    /// True between the merchant tapping a hero / bottom-strip button and the
+    /// payment state machine actually leaving idle. Disables the hero CTA and
+    /// the bottom-strip buttons during that brief async window so a quick
+    /// double-tap can't kick off two payment flows.
+    @State private var isStartingPayment: Bool = false
 
     /// Payment state with in-progress secondary methods neutralized.
     /// `.collectingCash` (cash), `.showingQRCode` (scan-to-pay), and `.confirming`/`.processing`
@@ -54,7 +59,8 @@ struct TotalsView: View {
                     Spacer()
 
                     if useTapToPayHeroLayout {
-                        POSTapToPayHeroView(onPayTapped: handleTapToPayTapped)
+                        POSTapToPayHeroView(onPayTapped: handleTapToPayTapped,
+                                            isPayDisabled: isStartingPayment)
                     } else if isShowingPaymentView {
                         PaymentViewContent(
                             paymentState: displayPaymentState,
@@ -117,8 +123,20 @@ struct TotalsView: View {
         .onChange(of: shouldShowTotalsFields) {
             hideTotalsFieldsWithDelay(shouldShowTotalsFields)
         }
+        .onChange(of: paymentModel.paymentState.card) {
+            // Any card state change means the payment state machine has reacted
+            // to the merchant's tap (preparingReader, error, idle after cancel,
+            // etc.). Release the double-tap gate so the buttons become
+            // tappable again whenever the layout decides to show them.
+            isStartingPayment = false
+        }
+        .onChange(of: paymentModel.paymentState.cash) {
+            isStartingPayment = false
+        }
         .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
             POSOtherPaymentMethodsSheet(onCardReader: {
+                guard !isStartingPayment else { return }
+                isStartingPayment = true
                 Task { @MainActor in
                     await paymentModel.startPaymentWithMethod(.bluetooth)
                 }
@@ -315,7 +333,8 @@ private extension TotalsView {
         static let otherPaymentMethodsButtonTitle = NSLocalizedString(
             "pos.totalsView.otherPaymentMethods.button.title",
             value: "Other payment methods",
-            comment: "Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout.")
+            comment: "Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. "
+                + "Tapping it opens a sheet with non-TTP options (currently Card reader).")
     }
 }
 
@@ -592,14 +611,23 @@ private extension TotalsView {
     }
 
     /// True when the merchant should see the Android-style Tap to Pay hero +
-    /// bottom-strip layout: TTP availability has resolved `.available` and no
-    /// payment is currently in progress (idle card + idle cash). When a TTP
-    /// payment kicks off, `paymentState.card` transitions out of `.idle` and the
-    /// existing `PaymentViewContent` flow takes over (preparing / accepting /
+    /// bottom-strip layout: TTP availability has resolved `.available`, no
+    /// payment is currently in progress (idle card + idle cash), and the order
+    /// has a real non-zero total to charge. When a TTP payment kicks off,
+    /// `paymentState.card` transitions out of `.idle` and the existing
+    /// `PaymentViewContent` flow takes over (preparing / accepting /
     /// processing / success / error).
     var useTapToPayHeroLayout: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
-        return displayPaymentState.card == .idle && displayPaymentState.cash == .idle
+        guard displayPaymentState.card == .idle && displayPaymentState.cash == .idle else { return false }
+        // Reuse the syncing / reconnecting / zero-total guards from the iPad
+        // pay row so an empty cart can't let the merchant tap "Pay with Tap to
+        // pay" and trip an order-validation error.
+        return totalsViewHelper.shouldShowCollectCashPaymentButton(
+            orderState: posModel.orderState,
+            paymentState: displayPaymentState,
+            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus
+        )
     }
 
     /// Cash + Other payment methods stacked outlined buttons rendered below the
@@ -608,11 +636,12 @@ private extension TotalsView {
     @ViewBuilder
     var tapToPayBottomStrip: some View {
         VStack(spacing: POSSpacing.medium) {
-            Button(action: { paymentModel.startCashPayment() }) {
+            Button(action: handleCashPaymentTapped) {
                 Text(Localization.cashPaymentButtonTitle)
                     .font(POSFontStyle.posBodyLargeBold)
             }
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .disabled(isStartingPayment)
             .accessibilityIdentifier("pos-cash-payment-button")
 
             Button(action: handleOtherPaymentMethodsTapped) {
@@ -620,6 +649,7 @@ private extension TotalsView {
                     .font(POSFontStyle.posBodyLargeBold)
             }
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .disabled(isStartingPayment)
             .accessibilityIdentifier("pos-other-payment-methods-button")
         }
         .padding(.horizontal, POSPadding.medium)
@@ -627,9 +657,17 @@ private extension TotalsView {
     }
 
     func handleTapToPayTapped() {
+        guard !isStartingPayment else { return }
+        isStartingPayment = true
         Task { @MainActor in
             await paymentModel.startPaymentWithMethod(.tapToPay)
         }
+    }
+
+    func handleCashPaymentTapped() {
+        guard !isStartingPayment else { return }
+        isStartingPayment = true
+        paymentModel.startCashPayment()
     }
 
     func handleOtherPaymentMethodsTapped() {

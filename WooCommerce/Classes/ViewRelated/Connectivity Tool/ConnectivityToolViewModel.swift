@@ -103,6 +103,10 @@ final class ConnectivityToolViewModel {
     ///
     private var activeSystemPlugins: [SystemPlugin] = []
 
+    /// Formatted system status report, cached after the site connectivity test.
+    ///
+    private(set) var formattedSystemStatusReport: String?
+
     /// Whether Jetpack is among the active plugins from the system status report.
     /// Populated after the site connectivity test. Internal for testability.
     ///
@@ -227,6 +231,7 @@ final class ConnectivityToolViewModel {
         return SupportChatViewModel(
             entryPoint: .connectivityTool,
             initialContext: context,
+            systemStatusReport: formattedSystemStatusReport,
             onContactHumanSupport: onContactHumanSupport
         )
     }
@@ -326,6 +331,7 @@ final class ConnectivityToolViewModel {
                 case .success(let report):
                     DDLogInfo("Connectivity Tool: ✅ Site connection")
                     self.activeSystemPlugins = report.activePlugins
+                    self.formattedSystemStatusReport = SystemStatusReportViewModel.formatReport(with: report)
                 case .failure(let error):
                     DDLogError("Connectivity Tool: ❌ Site connection\n\(error)")
                 }

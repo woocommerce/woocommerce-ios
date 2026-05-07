@@ -4,8 +4,11 @@ import Foundation
 extension SupportFormViewModel {
     /// Maps API support area type to the corresponding form area.
     ///
-    static func area(for supportAreaType: SupportAreaType) -> Area {
-        let metadataProvider = SupportFormMetadataProvider()
+    /// - Parameters:
+    ///   - supportAreaType: The type of support area.
+    ///   - systemStatusReport: Optional pre-fetched system status report string.
+    static func area(for supportAreaType: SupportAreaType, systemStatusReport: String? = nil) -> Area {
+        let metadataProvider = SupportFormMetadataProvider(systemStatusReport: systemStatusReport)
         switch supportAreaType {
         case .mobileApp:
             return .init(title: Localization.mobileApp, datasource: MobileAppSupportDataSource(metadataProvider: metadataProvider))

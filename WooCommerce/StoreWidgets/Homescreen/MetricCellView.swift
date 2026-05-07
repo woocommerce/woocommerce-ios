@@ -16,7 +16,7 @@ struct MetricCellView: View {
             ZStack(alignment: .bottomTrailing) {
                 MetricCellTextStack(
                     metric: metric,
-                    trendPlacement: .alongsideTitle,
+                    trendPlacement: trendPlacement,
                     size: .regular
                 )
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -31,11 +31,18 @@ struct MetricCellView: View {
 }
 
 private extension MetricCellView {
+    /// Small widget cells stack vertically and have no chart, so the trend reads more naturally
+    /// next to the value. Grid cells (medium / large / extra large) keep the trend next to the
+    /// title so the value row stays clean alongside the trailing sparkline.
+    var trendPlacement: MetricCellTrendPlacement {
+        widgetFamily == .systemSmall ? .alongsideValue : .alongsideTitle
+    }
+
     var chartTone: MetricChartView.Tone {
         switch metric.trend?.direction {
         case .up: return .up
         case .down: return .down
-        case nil: return .neutral
+        case .flat, nil: return .neutral
         }
     }
 

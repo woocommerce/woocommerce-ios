@@ -33,6 +33,10 @@ struct MetricTrendPresentation: Equatable {
     enum Direction: Equatable {
         case up
         case down
+        /// No change between current and previous period. Rendered as a bare gray
+        /// dash (no percentage text) so the cell still reads as "we have data" rather
+        /// than blank.
+        case flat
     }
 
     let direction: Direction
@@ -90,7 +94,10 @@ extension StoreInfoMetric: MetricPresentable {
 
 private extension StoreInfoMetricValue {
     /// Returns a presentation-ready trend, or `nil` when comparison is not meaningful
-    /// (missing previous value, non-numeric value, negative baseline, zero delta, or delta that formats as zero).
+    /// (missing previous value, non-numeric value, or negative baseline).
+    ///
+    /// Zero deltas and sub-1% deltas that round to 0% surface as `.flat` with a "0%"
+    /// label so the badge still indicates that we have data — just unchanged.
     ///
     func trend(comparedTo previousValue: StoreInfoMetricValue?) -> MetricTrendPresentation? {
         guard let current = trendComparableValue,
@@ -104,21 +111,23 @@ private extension StoreInfoMetricValue {
         }
 
         let delta = current - previous
-        guard delta != 0 else {
-            return nil
-        }
-
-        let direction: MetricTrendPresentation.Direction = delta > 0 ? .up : .down
         // Previous = 0 → any non-zero current is a 100% change relative to baseline.
-        let ratio = previous == 0 ? 1 : abs(delta / previous)
+        let ratio = previous == 0 ? (delta == 0 ? 0 : 1) : abs(delta / previous)
         guard let formattedPercentage = formattedTrendPercentage(for: ratio),
-              let zeroFormattedPercentage = formattedTrendPercentage(for: 0),
-              formattedPercentage != zeroFormattedPercentage else {
+              let zeroFormattedPercentage = formattedTrendPercentage(for: 0) else {
             return nil
         }
 
-        return MetricTrendPresentation(direction: direction,
-                                       formattedPercentage: formattedPercentage)
+        let direction: MetricTrendPresentation.Direction
+        if delta == 0 || formattedPercentage == zeroFormattedPercentage {
+            direction = .flat
+            return MetricTrendPresentation(direction: direction,
+                                           formattedPercentage: zeroFormattedPercentage)
+        } else {
+            direction = delta > 0 ? .up : .down
+            return MetricTrendPresentation(direction: direction,
+                                           formattedPercentage: formattedPercentage)
+        }
     }
 
     /// Numeric projection used by the trend comparison. `.unavailable` returns `nil`

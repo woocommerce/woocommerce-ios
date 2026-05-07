@@ -36,7 +36,7 @@ private extension MetricLargeCellView {
         switch metric.trend?.direction {
         case .up: return .up
         case .down: return .down
-        case nil: return .neutral
+        case .flat, nil: return .neutral
         }
     }
 

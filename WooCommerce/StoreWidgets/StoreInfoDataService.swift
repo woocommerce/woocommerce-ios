@@ -211,10 +211,15 @@ private extension StoreInfoDataService.Stats {
         formatter.timeZone = timezone
         formatter.dateFormat = intervalDateFormat
 
-        let parsed: [(date: Date, subtotals: OrderStatsV4Totals)] = stats.intervals.compactMap { interval in
-            guard let date = formatter.date(from: interval.dateStart) else { return nil }
-            return (date, interval.subtotals)
-        }
+        // `MetricChartView` plots points by array index, so the response must be in chronological
+        // order. The remote currently returns intervals in order, but sort defensively so a future
+        // ordering change in the response does not produce reversed or scrambled sparklines.
+        let parsed: [(date: Date, subtotals: OrderStatsV4Totals)] = stats.intervals
+            .compactMap { interval in
+                guard let date = formatter.date(from: interval.dateStart) else { return nil }
+                return (date, interval.subtotals)
+            }
+            .sorted { $0.date < $1.date }
         guard !parsed.isEmpty else {
             return (revenue: [], netRevenue: [], averageOrderValue: [], orders: [], itemsSold: [])
         }

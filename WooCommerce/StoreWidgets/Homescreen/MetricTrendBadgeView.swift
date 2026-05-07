@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// Compact trailing badge that pairs a chevron with the formatted percentage delta.
-/// Color encodes direction (green up / red down). Hidden whenever the parent
+/// Color encodes direction (green up / red down / gray flat). On `.flat` the percentage
+/// text is suppressed and only the dash indicator renders. Hidden whenever the parent
 /// `MetricPresentable` returns `nil` for `trend`.
 ///
 /// `size` mirrors the parent text stack's `MetricCellTextSize` so the badge scales
@@ -14,7 +15,9 @@ struct MetricTrendBadgeView: View {
     var body: some View {
         HStack(spacing: Layout.spacing) {
             indicator
-            text
+            if trend.direction != .flat {
+                text
+            }
         }
         .foregroundStyle(color)
         .accessibilityLabel(accessibilityLabel)
@@ -60,6 +63,8 @@ private extension MetricTrendBadgeView {
             return "arrowtriangle.up.fill"
         case .down:
             return "arrowtriangle.down.fill"
+        case .flat:
+            return "minus"
         }
     }
 
@@ -69,6 +74,8 @@ private extension MetricTrendBadgeView {
             return Color(.systemGreen)
         case .down:
             return Color(.systemRed)
+        case .flat:
+            return Color(.systemGray)
         }
     }
 
@@ -78,6 +85,8 @@ private extension MetricTrendBadgeView {
             return Text(Localization.increased(trend.formattedPercentage))
         case .down:
             return Text(Localization.decreased(trend.formattedPercentage))
+        case .flat:
+            return Text(Localization.unchanged)
         }
     }
 }
@@ -105,5 +114,11 @@ private extension MetricTrendBadgeView {
             )
             return LocalizedString.localizedStringWithFormat(format, value)
         }
+
+        static let unchanged = AppLocalizedString(
+            "storeWidgets.metricTrend.unchanged",
+            value: "Unchanged",
+            comment: "Accessibility label for a metric trend that did not change between the current and previous period."
+        )
     }
 }

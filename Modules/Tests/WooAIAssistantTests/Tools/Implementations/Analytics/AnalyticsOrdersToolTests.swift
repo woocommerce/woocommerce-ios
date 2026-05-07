@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct AnalyticsOrdersToolTests {
     @Test
     func test_analytics_orders_when_response_ok_then_summary_keeps_totals_and_interval_count() async throws {

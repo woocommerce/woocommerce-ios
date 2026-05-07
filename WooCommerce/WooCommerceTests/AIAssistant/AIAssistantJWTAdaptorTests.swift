@@ -7,6 +7,7 @@ import WooAIAssistant
 @testable import NetworkingCore
 @testable import WooCommerce
 
+@Suite(.timeLimit(.minutes(1)))
 @MainActor
 struct AIAssistantJWTAdaptorTests {
 

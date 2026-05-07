@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct CardReferenceResolverTests {
     @Test
     func test_resolve_when_three_mixed_family_references_then_all_resolved_in_input_order() async {

@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ProductSummaryTests {
     @Test
     func test_make_when_entity_has_multiple_images_then_summary_keeps_only_first_image() {

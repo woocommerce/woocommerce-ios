@@ -181,7 +181,7 @@ struct DefaultConfirmationPreviewBuilderTests {
     }
 
     @Test
-    func test_build_when_orders_update_customer_note_then_value_is_capitalized_placeholder() throws {
+    func test_build_when_orders_update_has_customer_note_under_160_chars_then_field_value_is_raw_note_without_priorValue() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()
 
@@ -195,11 +195,88 @@ struct DefaultConfirmationPreviewBuilderTests {
         // Then
         let unwrapped = try #require(preview)
         let field = try #require(unwrapped.fields.first(where: { $0.name == "customer_note" }))
-        guard case .localized(let resource, _) = field.value else {
-            Issue.record("expected customer_note value to be a localized placeholder, got \(field.value)")
-            return
-        }
-        #expect(String(localized: resource) == "Updated")
+        #expect(field.value == .raw("Thanks for the order"))
+        #expect(field.priorValue == nil)
+    }
+
+    @Test
+    func test_build_when_orders_update_has_customer_note_over_160_chars_then_field_value_is_first_160_chars_plus_ellipsis() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let long = String(repeating: "a", count: 200)
+
+        // When
+        let preview = builder.build(
+            toolName: OrdersUpdateTool.name,
+            arguments: #"{"id":42,"customer_note":"\#(long)"}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "customer_note" }))
+        let expected = String(repeating: "a", count: 160) + "..."
+        #expect(field.value == .raw(expected))
+    }
+
+    @Test
+    func test_build_when_orders_update_has_customer_note_with_snapshot_present_then_priorValue_is_still_omitted() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(currentValues: ["customer_note": .raw("previous note")])
+
+        // When
+        let preview = builder.build(
+            toolName: OrdersUpdateTool.name,
+            arguments: #"{"id":42,"customer_note":"Thanks"}"#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "customer_note" }))
+        #expect(field.priorValue == nil)
+    }
+
+    @Test
+    func test_build_when_orders_bulk_update_has_customer_note_then_field_renders_as_truncated_note_with_no_priorValue() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let long = String(repeating: "b", count: 200)
+
+        // When
+        let preview = builder.build(
+            toolName: OrdersBulkUpdateTool.name,
+            arguments: #"{"ids":[1,2],"patch":{"customer_note":"\#(long)"}}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "customer_note" }))
+        let expected = String(repeating: "b", count: 160) + "..."
+        #expect(field.value == .raw(expected))
+        #expect(field.priorValue == nil)
+    }
+
+    @Test
+    func test_build_when_orders_update_has_billing_email_and_snapshot_then_field_carries_value_and_priorValue() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(currentValues: ["billing_email": .raw("old@example.com")])
+
+        // When
+        let preview = builder.build(
+            toolName: OrdersUpdateTool.name,
+            arguments: #"{"id":42,"billing_email":"new@example.com"}"#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "billing_email" }))
+        #expect(field.value == .raw("new@example.com"))
+        #expect(field.priorValue == .raw("old@example.com"))
     }
 
     @Test

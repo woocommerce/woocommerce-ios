@@ -100,10 +100,10 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
                                 priorValue: isBulk ? nil : priorOrderStatus(in: snapshot,
                                                                             currentValueRaw: status)))
         }
-        if customerNote != nil {
+        if let note = customerNote {
             fields.append(.init(name: "customer_note",
                                 label: .localized(Strings.fieldCustomerNote),
-                                value: .localized(Strings.fieldValueUpdated)))
+                                value: customerNoteValue(note)))
         }
         if let email = billingEmail {
             fields.append(.init(name: "billing_email",
@@ -115,6 +115,16 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         }
         return fields
     }
+
+    private func customerNoteValue(_ note: String) -> ConfirmationPreviewText {
+        if note.isEmpty { return .localized(Strings.fieldValueUpdated) }
+        if note.count > Self.customerNotePreviewLimit {
+            return .raw(String(note.prefix(Self.customerNotePreviewLimit)) + "...")
+        }
+        return .raw(note)
+    }
+
+    private static let customerNotePreviewLimit = 160
 
     // MARK: - Products
 

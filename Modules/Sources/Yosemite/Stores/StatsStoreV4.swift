@@ -589,7 +589,7 @@ extension StatsStoreV4 {
 
         // Now, remove any objects that exist in storageStats.intervals but not in readOnlyStats.intervals
         storageStats.intervals?.forEach({ storageInterval in
-            if readOnlyIntervals.first(where: { $0.interval == storageInterval.interval } ) == nil {
+            if !readOnlyIntervals.contains(where: { $0.interval == storageInterval.interval }) {
                 storageStats.removeFromIntervals(storageInterval)
                 storage.deleteObject(storageInterval)
             }

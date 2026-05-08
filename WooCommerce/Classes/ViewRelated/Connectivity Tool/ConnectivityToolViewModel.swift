@@ -103,6 +103,10 @@ final class ConnectivityToolViewModel {
     ///
     private var activeSystemPlugins: [SystemPlugin] = []
 
+    /// Formatted system status report, cached after the site connectivity test.
+    ///
+    private(set) var formattedSystemStatusReport: String?
+
     /// Whether Jetpack is among the active plugins from the system status report.
     /// Populated after the site connectivity test. Internal for testability.
     ///
@@ -210,24 +214,24 @@ final class ConnectivityToolViewModel {
     /// Creates a SupportChatViewModel with the current troubleshooting context.
     ///
     @MainActor
-    func makeSupportChatViewModel(onContactHumanSupport: @escaping (_ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void) -> SupportChatViewModel {
+    func makeSupportChatViewModel(
+        onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
+    ) -> SupportChatViewModel {
         var context: [String: Any] = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {
-            context["troubleshooting_results"] = troubleshootingDescription
+            context["troubleshootingResults"] = troubleshootingDescription
         }
 
         if let site = stores.sessionManager.defaultSite {
-            context["site_id"] = site.siteID
+            context["selectedSiteID"] = site.siteID
             context["site_url"] = site.url
         }
-
-        context["app_version"] = Bundle.main.marketingVersion
-        context["ios_version"] = UIDevice.current.systemVersion
 
         return SupportChatViewModel(
             entryPoint: .connectivityTool,
             initialContext: context,
+            systemStatusReport: formattedSystemStatusReport,
             onContactHumanSupport: onContactHumanSupport
         )
     }
@@ -327,6 +331,7 @@ final class ConnectivityToolViewModel {
                 case .success(let report):
                     DDLogInfo("Connectivity Tool: ✅ Site connection")
                     self.activeSystemPlugins = report.activePlugins
+                    self.formattedSystemStatusReport = SystemStatusReportViewModel.formatReport(with: report)
                 case .failure(let error):
                     DDLogError("Connectivity Tool: ❌ Site connection\n\(error)")
                 }
@@ -389,7 +394,7 @@ final class ConnectivityToolViewModel {
                     }
                 case .failure(let error):
                     DDLogError("Connectivity Tool: ❌ Analytics setting check failed\n\(error)")
-                    let technicalDetails = String(describing: error)
+                    let technicalDetails = error.formattedTechnicalDetails
                     let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
                         title: Localization.Action.viewDetails,
                         systemImage: SystemImages.viewDetails.rawValue,
@@ -497,7 +502,7 @@ final class ConnectivityToolViewModel {
 
         case (let error, _):
             message = Localization.ErrorMessage.generic
-            let technicalDetails = String(describing: error)
+            let technicalDetails = error.formattedTechnicalDetails
             let viewDetailsTitle = Localization.Action.viewDetails
             let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
                 title: viewDetailsTitle,

@@ -5,6 +5,20 @@ import Testing
 @Suite(.timeLimit(.minutes(1)))
 struct AnalyticsRevenueToolTests {
     @Test
+    func test_analytics_revenue_definition_documents_grain_separate_from_window() {
+        // Given
+        let tool = AnalyticsRevenueTool.make()
+
+        // Then
+        #expect(tool.definition.description.contains("grouping grain with a date window"))
+        #expect(tool.definition.description.contains("interval follows the grouping grain"))
+        #expect(tool.definition.description.contains("Revenue/sales stats are card-backed"))
+        #expect(tool.definition.description.contains("do not stop with prose"))
+        #expect(tool.definition.description.contains("family analytics_stats"))
+        #expect(tool.definition.description.contains("currency:none"))
+    }
+
+    @Test
     func test_analytics_revenue_when_response_ok_then_summary_keeps_totals_and_interval_count() async throws {
         // Given
         let body = """

@@ -88,17 +88,26 @@ final class SupportChatViewModel {
         let timestamp: Date
         /// `true` when sending this message failed. Drives the failed-bubble visual indicator.
         let failed: Bool
+        /// Server-assigned message ID for bot messages (used for feedback submission).
+        let messageID: Int64?
+        /// `true` for messages received during the current session (not rehydrated from history).
+        /// Feedback buttons are only shown for new messages.
+        let isNewInSession: Bool
 
         init(id: UUID = UUID(),
              role: SupportChatRole,
              content: MessageContent,
              timestamp: Date = Date(),
-             failed: Bool = false) {
+             failed: Bool = false,
+             messageID: Int64? = nil,
+             isNewInSession: Bool = true) {
             self.id = id
             self.role = role
             self.content = content
             self.timestamp = timestamp
             self.failed = failed
+            self.messageID = messageID
+            self.isNewInSession = isNewInSession
         }
 
         /// Convenience initializer for text messages.
@@ -106,12 +115,16 @@ final class SupportChatViewModel {
              role: SupportChatRole,
              text: String,
              timestamp: Date = Date(),
-             failed: Bool = false) {
+             failed: Bool = false,
+             messageID: Int64? = nil,
+             isNewInSession: Bool = true) {
             self.id = id
             self.role = role
             self.content = .text(text)
             self.timestamp = timestamp
             self.failed = failed
+            self.messageID = messageID
+            self.isNewInSession = isNewInSession
         }
     }
 
@@ -144,6 +157,13 @@ final class SupportChatViewModel {
     /// header in the chat surface.
     let isResumedChat: Bool
 
+    /// `true` when a support ticket has already been created for this chat.
+    /// When true, the escalation button should be hidden.
+    private(set) var hasCreatedTicket: Bool = false
+
+    /// Maps message IDs to their feedback rating (true = upvoted, false = downvoted).
+    private(set) var messageRatings: [Int64: Bool] = [:]
+
     var inputText: String = ""
 
     // MARK: - Private Properties
@@ -153,30 +173,41 @@ final class SupportChatViewModel {
     private let entryPoint: EntryPoint
     private let botSlug: String
     private let stores: StoresManager
+    private let analytics: Analytics
     private var diagnosticsContext: [String: Any]?
     private let initialContext: [String: Any]?
-    private let onContactHumanSupport: (_ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
+    private let onContactHumanSupport: (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
     private var latestSupportArea: SupportChatSupportArea?
     var onStartJetpackSetup: () -> Void
     private let diagnosticsService: SupportDiagnosticsService
+
+    /// Pre-fetched system status report, if available (e.g., from connectivity tool).
+    ///
+    private let prefetchedSystemStatusReport: String?
 
     // MARK: - Initialization
 
     init(botSlug: String = "woo-workflow-support_mobile_inapp_all_users",
          entryPoint: EntryPoint,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          initialContext: [String: Any]? = nil,
          diagnosticsService: SupportDiagnosticsService? = nil,
          chatID: Int64? = nil,
-         onContactHumanSupport: @escaping (_ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void,
+         hasCreatedTicket: Bool = false,
+         systemStatusReport: String? = nil,
+         onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void,
          onStartJetpackSetup: @escaping () -> Void = {}) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
         self.stores = stores
+        self.analytics = analytics
         self.initialContext = initialContext
         self.diagnosticsService = diagnosticsService ?? SupportDiagnosticsService()
         self.chatID = chatID
         self.isResumedChat = chatID != nil
+        self.hasCreatedTicket = hasCreatedTicket
+        self.prefetchedSystemStatusReport = systemStatusReport
         self.onContactHumanSupport = onContactHumanSupport
         self.onStartJetpackSetup = onStartJetpackSetup
     }
@@ -551,31 +582,22 @@ final class SupportChatViewModel {
     func contactHumanSupport() {
         let transcript = generateTranscript()
         let supportAreaInfo: SupportAreaInfo?
+        let systemStatusReport = prefetchedSystemStatusReport ?? diagnosticsService.formattedSystemStatusReport
 
         if let supportArea = latestSupportArea {
-            let mappedArea = SupportFormViewModel.area(for: supportArea.area)
-            let firstUserMessage = extractFirstUserMessage()
+            let mappedArea = SupportFormViewModel.area(for: supportArea.area, systemStatusReport: systemStatusReport)
             supportAreaInfo = SupportAreaInfo(
                 areaType: supportArea.area,
                 area: mappedArea,
                 confidence: supportArea.confidence,
                 transcript: transcript,
-                firstUserMessage: firstUserMessage
+                systemStatusReport: systemStatusReport
             )
         } else {
             supportAreaInfo = nil
         }
 
-        onContactHumanSupport(transcript, supportAreaInfo)
-    }
-
-    private func extractFirstUserMessage() -> String {
-        for message in messages {
-            if message.role == .user, case .text(let text) = message.content {
-                return text
-            }
-        }
-        return ""
+        onContactHumanSupport(chatID, transcript, supportAreaInfo)
     }
 
     private func generateTranscript() -> String {
@@ -636,7 +658,8 @@ final class SupportChatViewModel {
                 } else {
                     let assistantMessage = ChatMessage(
                         role: .bot,
-                        text: lastBotMessage.content
+                        text: lastBotMessage.content,
+                        messageID: lastBotMessage.messageID
                     )
                     messages.append(assistantMessage)
                 }
@@ -684,9 +707,9 @@ final class SupportChatViewModel {
 
                 switch message.role {
                 case .user:
-                    return ChatMessage(role: .user, text: message.content)
+                    return ChatMessage(role: .user, text: message.content, isNewInSession: false)
                 case .bot:
-                    return ChatMessage(role: .bot, text: message.content)
+                    return ChatMessage(role: .bot, text: message.content, messageID: message.messageID, isNewInSession: false)
                 case .unknown:
                     return nil
                 }
@@ -735,6 +758,33 @@ final class SupportChatViewModel {
                                                     onCompletion: {})
             stores.dispatch(action)
         }
+    }
+
+    // MARK: - Feedback
+
+    /// Submits feedback for a bot message.
+    /// Marks the message as rated immediately (optimistic UI).
+    /// API failures are logged but do not affect the UI since feedback is low-stakes.
+    func submitFeedback(messageID: Int64, upvoted: Bool) {
+        guard let chatID, let sessionID else { return }
+        guard messageRatings[messageID] == nil else { return }
+
+        messageRatings[messageID] = upvoted
+
+        analytics.track(event: WooAnalyticsEvent.SupportChat.feedbackSubmitted(upvoted: upvoted))
+
+        let action = SupportChatAction.submitFeedback(
+            botSlug: botSlug,
+            chatID: chatID,
+            messageID: messageID,
+            sessionID: sessionID,
+            upvoted: upvoted
+        ) { result in
+            if case .failure(let error) = result {
+                DDLogError("⛔️ Support chat feedback error: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

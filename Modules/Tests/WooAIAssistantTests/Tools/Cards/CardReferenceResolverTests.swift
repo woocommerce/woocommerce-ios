@@ -427,6 +427,121 @@ struct CardReferenceResolverTests {
         #expect(calls.contains("wc/v3/products/821/variations/823"))
     }
 
+    @Test
+    func test_resolve_when_analytics_revenue_reference_then_dispatches_to_revenue_stats_path() async {
+        // Given
+        let body = """
+        {"totals":{"net_revenue":"123.45"},
+         "intervals":[{"interval":"2026-04-01","date_start":"2026-04-01 00:00:00",
+                       "subtotals":{"net_revenue":"50.00"}}]}
+        """
+        let client = StubbedWCRESTClient()
+        await client.stub(path: "wc-analytics/reports/revenue/stats", response: StubResponses.ok(body))
+        let resolver = CardReferenceResolver(client: client)
+        let analyticsID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let references = [CardReference(family: .analyticsStats, id: analyticsID)]
+
+        // When
+        let resolutions = await resolver.resolve(references)
+
+        // Then
+        guard case .resolved(let family, let id, let summary, let rendered) = resolutions[0] else {
+            Issue.record("expected resolved, got \(resolutions[0])")
+            return
+        }
+        #expect(family == .analyticsStats)
+        #expect(id == analyticsID)
+        guard case .object(let fields) = summary else {
+            Issue.record("expected object summary")
+            return
+        }
+        // Per-bucket data is rendered-only; the model-visible summary keeps
+        // just the projection keys so a year-by-day query doesn't blow the
+        // model context.
+        #expect(Set(fields.keys) == Set(["after", "before", "totals"]))
+        #expect(fields["interval_subtotals"] == nil)
+        #expect(fields["interval_count"] == nil)
+        #expect(rendered.family == .analyticsStats)
+        #expect(rendered.id == analyticsID)
+        // Rendered card payload still carries the per-bucket data the chart needs.
+        guard case .object(let renderedFields) = rendered.element else {
+            Issue.record("expected object rendered.element")
+            return
+        }
+        #expect(renderedFields["interval_count"] == .int(1))
+        #expect(renderedFields["interval_subtotals"] != nil)
+    }
+
+    @Test
+    func test_resolve_when_analytics_id_is_malformed_then_rejects_without_calling_client() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        let resolver = CardReferenceResolver(client: client)
+        let references = [
+            CardReference(family: .analyticsStats,
+                          id: "analytics_revenue:after:not-a-date:before:2026-04-30:interval:day:currency:none")
+        ]
+
+        // When
+        let resolutions = await resolver.resolve(references)
+
+        // Then
+        if case .rejected(let family, _, let reason) = resolutions[0] {
+            #expect(family == .analyticsStats)
+            #expect(reason == .malformed)
+        } else {
+            Issue.record("expected rejected.malformed")
+        }
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_resolve_when_mixed_entity_and_analytics_references_then_runs_both_in_parallel_preserving_order() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        await client.stub(path: "wc/v3/orders",
+                          response: StubResponses.ok("[{\"id\": 3551, \"status\": \"processing\", \"total\": \"120.00\"}]"))
+        await client.stub(path: "wc-analytics/reports/orders/stats",
+                          response: StubResponses.ok(#"{"totals":{"orders_count":7},"intervals":[]}"#))
+        let resolver = CardReferenceResolver(client: client)
+        let analyticsID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let references = [
+            CardReference(family: .order, id: "3551"),
+            CardReference(family: .analyticsStats, id: analyticsID)
+        ]
+
+        // When
+        let resolutions = await resolver.resolve(references)
+
+        // Then
+        #expect(resolutions.count == 2)
+        #expect(isResolved(resolutions[0], family: .order, id: "3551"))
+        #expect(isResolved(resolutions[1], family: .analyticsStats, id: analyticsID))
+    }
+
+    @Test
+    func test_resolve_when_analytics_endpoint_returns_500_then_rejects_as_fetchFailed() async {
+        // Given
+        let client = StubbedWCRESTClient()
+        await client.stub(path: "wc-analytics/reports/revenue/stats",
+                          response: StubResponses.failure(statusCode: 500))
+        let resolver = CardReferenceResolver(client: client)
+        let analyticsID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let references = [CardReference(family: .analyticsStats, id: analyticsID)]
+
+        // When
+        let resolutions = await resolver.resolve(references)
+
+        // Then
+        if case .rejected(let family, let id, let reason) = resolutions[0] {
+            #expect(family == .analyticsStats)
+            #expect(id == analyticsID)
+            #expect(reason == .fetchFailed)
+        } else {
+            Issue.record("expected rejected.fetchFailed")
+        }
+    }
+
     private func isResolved(_ resolution: Resolution, family: CardFamilyID, id: String) -> Bool {
         if case .resolved(let resolvedFamily, let resolvedID, _, _) = resolution {
             return resolvedFamily == family && resolvedID == id

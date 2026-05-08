@@ -42,23 +42,23 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
     }
 
     private func showSupportChat() {
-        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] transcript, supportAreaInfo in
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo in
             self?.navigationController?.popViewController(animated: true)
-            self?.handleContactHumanSupport(transcript: transcript, supportAreaInfo: supportAreaInfo)
+            self?.handleContactHumanSupport(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo)
         }
 
         let chatController = SupportChatHostingController(viewModel: chatViewModel)
         chatController.show(from: self)
     }
 
-    private func handleContactHumanSupport(transcript: String, supportAreaInfo: SupportAreaInfo?) {
+    private func handleContactHumanSupport(chatID: Int64?, transcript: String, supportAreaInfo: SupportAreaInfo?) {
         supportEscalationCoordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
             additionalAttachmentsProvider: { [weak self] in
                 self?.buildTroubleshootingAttachment() ?? []
             }
         )
-        supportEscalationCoordinator?.handleEscalation(transcript: transcript, supportAreaInfo: supportAreaInfo)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo)
     }
 
     private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {

@@ -5,22 +5,6 @@ public let entityCardDefaultRowCount = 5
 
 public enum EntityCardPayload {
 
-    public static func decodeOrderRows(_ payload: AnyCodableJSON) -> [OrderCardPayload] {
-        decodeRows(payload, listKeys: ["rows"])
-    }
-
-    public static func decodeProductRows(_ payload: AnyCodableJSON) -> [ProductCardPayload] {
-        decodeRows(payload, listKeys: ["rows"])
-    }
-
-    public static func decodeCustomerRows(_ payload: AnyCodableJSON) -> [CustomerCardPayload] {
-        decodeRows(payload, listKeys: ["matches", "rows"])
-    }
-
-    public static func decodeProductVariationRows(_ payload: AnyCodableJSON) -> [ProductVariationCardPayload] {
-        decodeRows(payload, listKeys: ["rows"])
-    }
-
     public static func decodeOrder(_ payload: AnyCodableJSON) -> OrderCardPayload? {
         decode(payload)
     }
@@ -35,27 +19,6 @@ public enum EntityCardPayload {
 
     public static func decodeProductVariation(_ payload: AnyCodableJSON) -> ProductVariationCardPayload? {
         decode(payload)
-    }
-
-    public static func visible<T>(_ rows: [T]) -> [T] {
-        Array(rows.prefix(entityCardVisibleRowLimit))
-    }
-
-    private static func decodeRows<T: Decodable>(_ payload: AnyCodableJSON,
-                                                 listKeys: [String]) -> [T] {
-        let array = arrayFor(payload, keys: listKeys)
-        return array.compactMap { decode($0) }
-    }
-
-    private static func arrayFor(_ payload: AnyCodableJSON, keys: [String]) -> [AnyCodableJSON] {
-        if case .array(let items) = payload { return items }
-        guard case .object(let dict) = payload else { return [] }
-        for key in keys {
-            if let value = dict[key], case .array(let items) = value {
-                return items
-            }
-        }
-        return []
     }
 
     private static func decode<T: Decodable>(_ value: AnyCodableJSON) -> T? {

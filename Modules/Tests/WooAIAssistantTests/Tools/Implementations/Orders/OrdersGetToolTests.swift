@@ -5,7 +5,7 @@ import Testing
 @Suite(.timeLimit(.minutes(1)))
 struct OrdersGetToolTests {
     @Test
-    func test_orders_get_when_response_ok_then_uiStructured_carries_full_entity_card() async throws {
+    func test_orders_get_when_response_ok_then_structured_carries_pruned_order_summary() async throws {
         // Given
         let body = """
         {
@@ -32,18 +32,7 @@ struct OrdersGetToolTests {
             Issue.record("expected success, got \(result)")
             return
         }
-        let cards = try #require(success.uiStructured?.cards)
-        #expect(cards.count == 1)
-        #expect(cards[0].family == .order)
-        #expect(cards[0].id == "3551")
-        if case .object(let element) = cards[0].element {
-            #expect(element["_links"] == nil)
-            #expect(element["meta_data"] == nil)
-            #expect(element["billing"] != nil)
-            #expect(element["status"] == .string("processing"))
-        } else {
-            Issue.record("expected object element")
-        }
+        #expect(success.uiStructured == nil)
         if case .object(let summary) = success.structured {
             #expect(summary["status"] == .string("processing"))
             #expect(summary["total"] == .string("120.00"))

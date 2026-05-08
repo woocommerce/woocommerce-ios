@@ -455,21 +455,3 @@ extension JetpackSetupViewModel {
         static let accountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
     }
 }
-
-fileprivate extension Error {
-    var errorCode: Int? {
-        if let error = self as? NetworkError, let code = error.responseCode {
-            return code
-        } else if let error = self as? AFError, let code = error.responseCode {
-            return code
-        } else if case let .unknown(_, _, data) = self as? DotcomError {
-            if let status = data?["status"]?.description {
-                return Int(status)
-            } else {
-                return (self as NSError).code
-            }
-        } else {
-            return (self as NSError).code
-        }
-    }
-}

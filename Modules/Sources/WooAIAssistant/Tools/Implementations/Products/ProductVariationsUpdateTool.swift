@@ -15,7 +15,10 @@ public enum ProductVariationsUpdateTool {
         sale_price, stock_quantity, stock_status, sku, status. Provide only \
         the fields you want to change. Requires product_id (parent) and id \
         (variation). Only call when the merchant has explicitly requested a \
-        change; never call to answer an information question.
+        change; never call to answer an information question. After a \
+        successful update, call `show_cards` with family `product_variation`, \
+        the updated variation id, and the parent product id so the merchant \
+        sees the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),

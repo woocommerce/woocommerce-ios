@@ -28,6 +28,9 @@ only_rules:
   # Prefer `contains` over using `filter(where:).isEmpty`.
   - contains_over_filter_is_empty
 
+  # Prefer `contains` over `first(where:) != nil`.
+  - contains_over_first_not_nil
+
   # Prefer `contains` over `range(of:) != nil` and `range(of:) == nil`.
   - contains_over_range_nil_comparison
 
@@ -50,6 +53,9 @@ only_rules:
 
   # Prefer checking `isEmpty` over comparing `string` to `""`.
   - empty_string
+
+  # Prefer `first(where:)` over `filter { }.first`.
+  - first_where
 
   # Prefer `flatMap { ... }` over `map { ... }.reduce([], +)`.
   - flatmap_over_map_reduce

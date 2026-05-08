@@ -22,6 +22,9 @@ final class SupportEscalationCoordinator {
     private let analytics: Analytics
     private let stores: StoresManager
 
+    /// The chat ID to update when a ticket is created. Set via `handleEscalation`.
+    private var chatID: Int64?
+
     /// Creates a new coordinator.
     ///
     /// - Parameters:
@@ -49,11 +52,14 @@ final class SupportEscalationCoordinator {
     /// - Otherwise: Shows support form with optional pre-selection
     ///
     /// - Parameters:
+    ///   - chatID: The chat ID to associate with the created ticket (nil if chat not yet persisted).
     ///   - transcript: The chat transcript.
     ///   - supportAreaInfo: Optional support area information from AI chat.
-    func handleEscalation(transcript: String, supportAreaInfo: SupportAreaInfo?) {
+    func handleEscalation(chatID: Int64?, transcript: String, supportAreaInfo: SupportAreaInfo?) {
+        self.chatID = chatID
+
         guard let supportAreaInfo else {
-            showSupportForm(transcript: transcript, preselectedArea: nil)
+            showSupportForm(transcript: transcript, supportAreaInfo: nil)
             return
         }
 
@@ -62,21 +68,36 @@ final class SupportEscalationCoordinator {
         if supportAreaInfo.isHighConfidence && zendeskProvider.haveUserIdentity {
             createTicketDirectly(with: supportAreaInfo)
         } else {
-            showSupportForm(transcript: transcript, preselectedArea: supportAreaInfo.area)
+            showSupportForm(transcript: transcript, supportAreaInfo: supportAreaInfo)
         }
     }
 
     // MARK: - Private Methods
 
-    private func showSupportForm(transcript: String, preselectedArea: SupportFormViewModel.Area?) {
-        var attachments = buildTranscriptAttachment(transcript: transcript)
-        attachments.append(contentsOf: additionalAttachmentsProvider())
+    private func showSupportForm(transcript: String, supportAreaInfo: SupportAreaInfo?) {
+        let attachments = additionalAttachmentsProvider()
+
+        let prefilledSubject: String?
+        let prefilledDescription: String?
+
+        if let supportAreaInfo {
+            prefilledSubject = SupportFormViewModel.subject(for: supportAreaInfo.areaType)
+            prefilledDescription = [Localization.transcriptHeader, transcript].joined(separator: "\n\n")
+        } else {
+            prefilledSubject = nil
+            prefilledDescription = nil
+        }
 
         let viewModel = SupportFormViewModel(
             sourceTag: Tags.sourceTag,
             additionalTags: Tags.additionalTags,
             attachments: attachments,
-            preselectedArea: preselectedArea
+            preselectedArea: supportAreaInfo?.area,
+            prefilledSubject: prefilledSubject,
+            prefilledDescription: prefilledDescription,
+            onTicketCreated: { [weak self] in
+                self?.persistTicketCreated()
+            }
         )
         let viewController = SupportFormHostingController(viewModel: viewModel)
 
@@ -93,8 +114,8 @@ final class SupportEscalationCoordinator {
         )
         presentingVC.present(loadingViewController, animated: true)
 
-        var attachments = buildTranscriptAttachment(transcript: areaInfo.transcript)
-        attachments.append(contentsOf: additionalAttachmentsProvider())
+        let description = [Localization.transcriptHeader, areaInfo.transcript].joined(separator: "\n\n")
+        let attachments = additionalAttachmentsProvider()
 
         let siteAddress = stores.sessionManager.defaultSite?.url ?? ""
         let tags = areaInfo.area.datasource.tags + Tags.additionalTags + [Tags.sourceTag]
@@ -103,7 +124,7 @@ final class SupportEscalationCoordinator {
             customFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress),
             tags: tags,
             subject: SupportFormViewModel.subject(for: areaInfo.areaType),
-            description: areaInfo.firstUserMessage,
+            description: description,
             attachments: attachments
         )
 
@@ -112,30 +133,37 @@ final class SupportEscalationCoordinator {
                 switch result {
                 case .success:
                     self?.analytics.track(.supportNewRequestCreated)
+                    self?.persistTicketCreated()
                     self?.showSuccessAndPop()
                 case .failure:
                     self?.analytics.track(.supportNewRequestFailed)
-                    self?.showSupportForm(transcript: areaInfo.transcript, preselectedArea: areaInfo.area)
+                    self?.showSupportForm(transcript: areaInfo.transcript, supportAreaInfo: areaInfo)
                 }
             }
         }
     }
 
     private func showSuccessAndPop() {
-        let notice = Notice(title: Localization.ticketCreatedSuccess, feedbackType: .success)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-        navigationController?.popViewController(animated: true)
+        guard let topViewController = navigationController?.topViewController else {
+            return
+        }
+
+        let alert = UIAlertController(
+            title: Localization.ticketCreatedTitle,
+            message: Localization.ticketCreatedMessage,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: Localization.gotIt, style: .default) { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        })
+        topViewController.present(alert, animated: true)
     }
 
-    private func buildTranscriptAttachment(transcript: String) -> [ZendeskAttachment] {
-        guard !transcript.isEmpty, let data = transcript.data(using: .utf8) else {
-            return []
-        }
-        return [ZendeskAttachment(
-            data: data,
-            filename: "support_chat_transcript.txt",
-            contentType: "text/plain"
-        )]
+    /// Persists that a ticket was created for this chat.
+    private func persistTicketCreated() {
+        guard let chatID else { return }
+        let action = SupportChatAction.markTicketCreated(chatID: chatID) { }
+        stores.dispatch(action)
     }
 }
 
@@ -148,10 +176,25 @@ private extension SupportEscalationCoordinator {
             value: "Creating support request...",
             comment: "Loading message shown while creating a support ticket"
         )
-        static let ticketCreatedSuccess = NSLocalizedString(
-            "supportEscalationCoordinator.ticketCreatedSuccess",
-            value: "Support request created successfully",
-            comment: "Success notice message after support ticket is created"
+        static let ticketCreatedTitle = NSLocalizedString(
+            "supportEscalationCoordinator.ticketCreatedTitle",
+            value: "Request Sent!",
+            comment: "Alert title shown after support ticket is created successfully"
+        )
+        static let ticketCreatedMessage = NSLocalizedString(
+            "supportEscalationCoordinator.ticketCreatedMessage",
+            value: "Your support request has landed safely in our inbox. We will reply via email as quickly as we can.",
+            comment: "Alert message shown after support ticket is created successfully"
+        )
+        static let gotIt = NSLocalizedString(
+            "supportEscalationCoordinator.gotIt",
+            value: "Got it",
+            comment: "Button on the ticket created alert"
+        )
+        static let transcriptHeader = NSLocalizedString(
+            "supportEscalationCoordinator.transcriptHeader",
+            value: "Following is the transcript of an in-app AI support chat session:",
+            comment: "Header text before the chat transcript in support ticket description"
         )
     }
 }

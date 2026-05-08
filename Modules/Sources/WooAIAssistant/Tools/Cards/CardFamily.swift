@@ -144,6 +144,8 @@ struct CardFamily: Sendable {
         case .product: return .product
         case .productVariation: return .productVariation
         case .customer: return .customer
+        case .analyticsStats:
+            preconditionFailure("CardFamily.forID(.analyticsStats) - resolver must dispatch analytics through AnalyticsCardFetch")
         }
     }
 

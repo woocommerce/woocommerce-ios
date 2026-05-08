@@ -69,8 +69,7 @@ enum MessageSegmentGrouping {
             return .productVariation
         case .customer:
             return .customer
-        case .ordersList, .productsList, .productVariationsList, .customersList,
-             .analyticsStats, .unknown:
+        case .analyticsStats, .unknown:
             return nil
         }
     }

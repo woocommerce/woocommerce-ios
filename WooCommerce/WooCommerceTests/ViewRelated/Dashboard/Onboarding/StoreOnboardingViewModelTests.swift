@@ -182,7 +182,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        let launchStoreTask = try XCTUnwrap(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).first)
+        let launchStoreTask = try XCTUnwrap(sut.tasksForDisplay.first(where: { $0.task.type == .launchStore}))
         XCTAssertTrue(launchStoreTask.isComplete)
     }
 
@@ -203,7 +203,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        let launchStoreTask = try XCTUnwrap(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).first)
+        let launchStoreTask = try XCTUnwrap(sut.tasksForDisplay.first(where: { $0.task.type == .launchStore}))
         XCTAssertFalse(launchStoreTask.isComplete)
     }
 

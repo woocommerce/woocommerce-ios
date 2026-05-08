@@ -14,10 +14,14 @@ public enum ShowCardsTool {
         Render rich cards for specific entities the user should see. Call \
         this whenever you would otherwise mention an order/product/customer \
         ID in prose. Supported families: order, product, product_variation, \
-        customer. `product_variation` references require both `id` and \
-        `parent_id` (the parent product's id). Order/product/customer \
-        references need only `id`. Up to 10 references per call. Prefer 1-5 \
-        for list-style answers; summarize the rest in prose. Cards render \
+        customer, analytics_stats. `product_variation` references require both \
+        `id` and `parent_id` (the parent product's id), and should be used only \
+        for explicit variation-level questions about sizes, colors, options, or \
+        known variation IDs. For broad product inventory lists, render product \
+        references. Order/product/customer references need only `id`. Up to 10 \
+        references per call. Prefer 1-5 for list-style answers; summarize the \
+        rest in prose. A single call may mix families when the user asks for \
+        different entity types. Cards render \
         the entity's full detail to the user, but the model-visible result \
         is a compact summary only. Model-visible fields per family: order \
         has id, number, status, total, currency, date_created, customer_name; \
@@ -27,7 +31,12 @@ public enum ShowCardsTool {
         billing/shipping address, phone, recent-order details, etc.) use \
         the appropriate get or list tool from the catalog. Cards rendered \
         in this turn remain referenced; reuse their ids in follow-up tool \
-        calls.
+        calls. After a successful `analytics_revenue` or `analytics_orders` \
+        call, call this tool with family `analytics_stats` and an id using \
+        the same after, before, and interval values to render the analytics \
+        card. Use the same currency value when the analytics call had one; \
+        otherwise use `currency:none`. The synthetic analytics id format is \
+        described on the `id` property.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -49,12 +58,15 @@ public enum ShowCardsTool {
                                     .string("order"),
                                     .string("product"),
                                     .string("product_variation"),
-                                    .string("customer")
+                                    .string("customer"),
+                                    .string("analytics_stats")
                                 ])
                             ]),
                             "id": .object([
                                 "type": .string("string"),
-                                "pattern": .string("^[1-9][0-9]*$")
+                                "description": .string("Entity id, or " +
+                                    "analytics_<revenue|orders>:after:<YYYY-MM-DD>:before:<YYYY-MM-DD>:" +
+                                    "interval:<hour|day|week|month|year>:currency:<ISO|none> for analytics_stats.")
                             ]),
                             "parent_id": .object([
                                 "type": .string("string"),

@@ -334,6 +334,9 @@ final class TimelineHostingCell: UITableViewCell {
                         // Fresh @State per message so cell reuse does not bleed reveal flags.
                         .id(message.id)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        // Pin vertical to intrinsic content so the cell never inherits a
+                        // taller frame from UIHostingConfiguration's available-space pass.
+                        .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal, AssistantSpacing.large)
                         .padding(.vertical, AssistantSpacing.small)
                         .environment(\.assistantConfirmationHandler, confirmationHandler)

@@ -623,8 +623,18 @@ private extension POSPaymentModel {
                 // must actually act on — TTP entitlement / Apple ToS /
                 // location-services / postal-code / address — still surface so
                 // the merchant can resolve them.
-                let isInTransparentTapToPayFlow = currentPaymentMethod == .tapToPay
-                    || (currentPaymentMethod == nil && preferredConnectionMethod == .tapToPay)
+                // The merchant can also kick off a BT scan explicitly via
+                // Settings → Hardware → Card readers → Connect card reader,
+                // which goes through `connectCardReader()` and sets
+                // `connectCardReaderTask`. While that task is in flight the
+                // merchant *wants* to see the scan / foundReader / connect
+                // / failure modals, so neither suppression block below
+                // applies — Settings drives its UI off them.
+                let isExplicitConnectInProgress = connectCardReaderTask != nil
+
+                let isInTransparentTapToPayFlow = !isExplicitConnectInProgress
+                    && (currentPaymentMethod == .tapToPay
+                        || (currentPaymentMethod == nil && preferredConnectionMethod == .tapToPay))
                 if isInTransparentTapToPayFlow {
                     switch eventDetails {
                     case .scanningForReaders,
@@ -639,14 +649,12 @@ private extension POSPaymentModel {
 
                 // Generic "couldn't connect" / "scan failed" / "couldn't connect
                 // (non-retryable)" failures aren't actionable for the merchant
-                // on a TTP-default device — they fire for transient races
-                // (another reader still connected, scan racing a reconnect) and
-                // as the residual event after the merchant cancels a BT scan,
-                // redundant with the cancel they just performed. The merchant
-                // can always retry from the sheet or hero, so suppress these
-                // globally on TTP-default devices regardless of which session
-                // is active. BT-default devices keep them.
-                if preferredConnectionMethod == .tapToPay {
+                // on a TTP-default device when the connect was implicit (TTP
+                // pre-connect, BT-via-sheet cancel residual, etc.). When the
+                // merchant explicitly tapped Connect in Settings, they need to
+                // see the failure to know to retry or fix something — keep
+                // those alerts visible. BT-default devices keep them too.
+                if preferredConnectionMethod == .tapToPay && !isExplicitConnectInProgress {
                     switch eventDetails {
                     case .connectingFailed,
                             .connectingFailedNonRetryable,

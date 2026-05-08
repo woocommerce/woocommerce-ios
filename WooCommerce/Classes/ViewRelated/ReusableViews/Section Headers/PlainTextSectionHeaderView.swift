@@ -3,7 +3,7 @@ import UIKit
 /// `UITableView` section header view that displays a text label.
 /// The `label: UILabel` property can be configured by the consumer where it is used.
 final class PlainTextSectionHeaderView: UITableViewHeaderFooterView {
-    private(set) lazy var label: UILabel = UILabel()
+    private(set) lazy var label = UILabel()
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)

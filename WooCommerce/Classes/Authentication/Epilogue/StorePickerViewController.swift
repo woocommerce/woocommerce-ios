@@ -150,7 +150,7 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    private lazy var closeAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
         guard let self else { throw CloseAccountError.presenterDeallocated }
         return try await self.closeAccount()

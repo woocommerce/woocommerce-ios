@@ -143,7 +143,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Shipments in an order
     private(set) var shipments: [WooShippingShipment] = []
 
-    private var shippingLabelOrderItemsAggregator: AggregatedShippingLabelOrderItems = AggregatedShippingLabelOrderItems.empty
+    private var shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems.empty
 
     /// Shipping Lines from an Order
     ///

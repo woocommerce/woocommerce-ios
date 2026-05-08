@@ -58,7 +58,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     /// Not applicable to product variation form
     private(set) var productName: AnyPublisher<String, Never>? = nil
 
-    private let productVariationSubject: PassthroughSubject<EditableProductVariationModel, Never> = PassthroughSubject<EditableProductVariationModel, Never>()
+    private let productVariationSubject = PassthroughSubject<EditableProductVariationModel, Never>()
     private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never>
 
     /// The product variation before any potential edits; reset after a remote update.

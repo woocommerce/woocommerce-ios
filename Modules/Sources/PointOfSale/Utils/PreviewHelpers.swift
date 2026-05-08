@@ -110,7 +110,7 @@ struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableIte
 }
 
 final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerProtocol {
-    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
+    @Published var itemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
     var currentDebounceStrategy: SearchDebounceStrategy { .immediate }
@@ -124,7 +124,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
 }
 
 final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
-    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
+    @Published var itemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
 

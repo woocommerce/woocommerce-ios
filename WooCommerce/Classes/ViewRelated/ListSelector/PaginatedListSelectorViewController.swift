@@ -66,7 +66,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
                                                                                                 cellClass: Cell.self,
                                                                                                 separatorStyle: viewProperties.separatorStyle))
 
-    private lazy var tableView: UITableView = UITableView(frame: .zero, style: viewProperties.tableViewStyle)
+    private lazy var tableView = UITableView(frame: .zero, style: viewProperties.tableViewStyle)
 
     /// Pull To Refresh Support.
     ///
@@ -409,7 +409,7 @@ private extension PaginatedListSelectorViewController {
     /// Displays the overlay when there are no results.
     ///
     func displayNoResultsOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        let overlayView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = viewProperties.noResultsPlaceholderImage
         overlayView.messageImageTintColor = viewProperties.noResultsPlaceholderImageTintColor
         overlayView.messageText = viewProperties.noResultsPlaceholderText

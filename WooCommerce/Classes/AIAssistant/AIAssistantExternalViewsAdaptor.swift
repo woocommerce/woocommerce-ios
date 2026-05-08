@@ -199,6 +199,14 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
         if let name = payload.customerName, !name.isEmpty {
             return name
         }
+        // No billing name on file. customer_id > 0 means a registered customer;
+        // surface their email or id rather than the misleading "Guest" label.
+        if let id = payload.customerID, id > 0 {
+            if let email = payload.customerEmail, !email.isEmpty {
+                return email
+            }
+            return String(format: Localization.registeredCustomerWithID, "\(id)")
+        }
         return Localization.guestCustomer
     }
 
@@ -480,7 +488,12 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
         static let guestCustomer = NSLocalizedString(
             "assistant.externalViews.order.guestCustomer",
             value: "Guest",
-            comment: "Customer name shown on the assistant order card when the order has no billing name."
+            comment: "Customer name shown on the assistant order card when the order has no registered customer."
+        )
+        static let registeredCustomerWithID = NSLocalizedString(
+            "assistant.externalViews.order.registeredCustomerWithID",
+            value: "Customer #%@",
+            comment: "Fallback shown on the assistant order card when a registered customer has no billing name and no email on file. %@ is the customer id."
         )
         static let inStock = NSLocalizedString(
             "assistant.externalViews.product.stock.inStock",

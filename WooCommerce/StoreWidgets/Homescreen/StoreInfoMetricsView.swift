@@ -58,23 +58,44 @@ extension StoreInfoMetricsView {
 import class WooFoundation.CurrencySettings
 
 struct StoreInfoMetricsView_Previews: PreviewProvider {
+    private static func chartSeries(values: [Double]) -> [MetricChartPoint] {
+        values.enumerated().map { index, value in
+            MetricChartPoint(date: Date(timeIntervalSinceReferenceDate: Double(index * 86_400)), value: value)
+        }
+    }
+
     static var allMetrics: [StoreInfoMetric] {
         let currencySettings = CurrencySettings()
         let revenue = StoreInfoMetric(type: .revenue,
                                       value: .currency(Decimal(123_456_789), currencySettings),
-                                      previousValue: .currency(Decimal(118_000_000), currencySettings))
+                                      previousValue: .currency(Decimal(118_000_000), currencySettings),
+                                      chartSeries: chartSeries(values: [
+                                        82_000_000, 91_000_000, 86_000_000, 104_000_000, 98_000_000, 123_000_000
+                                      ]))
         let orders = StoreInfoMetric(type: .orders,
                                      value: .count(23),
-                                     previousValue: .count(31))
+                                     previousValue: .count(31),
+                                     chartSeries: chartSeries(values: [
+                                        16, 24, 18, 29, 21, 23
+                                     ]))
         let itemsSold = StoreInfoMetric(type: .itemsSold,
                                         value: .count(41),
-                                        previousValue: .count(34))
+                                        previousValue: .count(34),
+                                        chartSeries: chartSeries(values: [
+                                            28, 36, 31, 45, 39, 41
+                                        ]))
         let averageOrderValue = StoreInfoMetric(type: .averageOrderValue,
                                                 value: .currency(Decimal(5_367), currencySettings),
-                                                previousValue: .currency(Decimal(4_800), currencySettings))
+                                                previousValue: .currency(Decimal(4_800), currencySettings),
+                                                chartSeries: chartSeries(values: [
+                                                    4_200, 4_850, 4_600, 5_100, 4_940, 5_367
+                                                ]))
         let netSales = StoreInfoMetric(type: .netSales,
                                        value: .currency(Decimal(98_765_432), currencySettings),
-                                       previousValue: .currency(Decimal(102_000_000), currencySettings))
+                                       previousValue: .currency(Decimal(102_000_000), currencySettings),
+                                       chartSeries: chartSeries(values: [
+                                        72_000_000, 88_000_000, 81_000_000, 96_000_000, 90_000_000, 98_000_000
+                                       ]))
         let visitors = StoreInfoMetric(type: .visitors,
                                        value: .count(67),
                                        previousValue: .count(71))

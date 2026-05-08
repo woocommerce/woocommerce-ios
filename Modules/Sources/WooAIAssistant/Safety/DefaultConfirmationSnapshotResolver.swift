@@ -172,11 +172,23 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
         struct VariationResponse: Decodable {
             let id: Int?
             let sku: String?
+            let attributes: [Attribute]?
+            struct Attribute: Decodable {
+                let option: String?
+            }
         }
         let entries = await fetchBulkEntries(ids: ids,
                                              path: "wc/v3/products/\(productID)/variations",
                                              type: [VariationResponse].self) { response in
-            ConfirmationBulkEntry(id: response.id ?? 0, displayName: response.sku?.nonEmptyOrNil)
+            // Compose attribute options ("Red, Small") for a meaningful row label.
+            // Variations rarely have SKUs and never have a top-level name, so the
+            // attribute combo is the most useful identifier we can show.
+            let attributeLabel = response.attributes?
+                .compactMap { $0.option?.trimmingCharacters(in: .whitespaces).nonEmptyOrNil }
+                .joined(separator: ", ")
+                .nonEmptyOrNil
+            return ConfirmationBulkEntry(id: response.id ?? 0,
+                                         displayName: attributeLabel ?? response.sku?.nonEmptyOrNil)
         }
         return ConfirmationSnapshot(currentValues: [:], bulkEntries: entries)
     }

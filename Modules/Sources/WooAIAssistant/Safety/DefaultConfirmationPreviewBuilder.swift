@@ -51,10 +51,14 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
                                  snapshot: snapshot,
                                  isBulk: false)
 
-        return ConfirmationPreview(
-            summary: .localized(Strings.ordersUpdateSummary, args: [.raw(String(id))]),
-            fields: fields
-        )
+        let summary: ConfirmationPreviewText
+        if let name = snapshot?.displayName {
+            summary = .localized(Strings.ordersUpdateSummaryNamed,
+                                 args: [.raw(name), .raw(String(id))])
+        } else {
+            summary = .localized(Strings.ordersUpdateSummary, args: [.raw(String(id))])
+        }
+        return ConfirmationPreview(summary: summary, fields: fields)
     }
 
     private func ordersBulkUpdate(arguments: String) -> ConfirmationPreview {
@@ -151,10 +155,14 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
                                    includeStockStatus: false,
                                    includeSku: false,
                                    snapshot: snapshot)
-        return ConfirmationPreview(
-            summary: .localized(Strings.productsUpdateSummary, args: [.raw(String(id))]),
-            fields: fields
-        )
+        let summary: ConfirmationPreviewText
+        if let name = snapshot?.displayName {
+            summary = .localized(Strings.productsUpdateSummaryNamed,
+                                 args: [.raw(name), .raw(String(id))])
+        } else {
+            summary = .localized(Strings.productsUpdateSummary, args: [.raw(String(id))])
+        }
+        return ConfirmationPreview(summary: summary, fields: fields)
     }
 
     private func productsBulkUpdate(arguments: String) -> ConfirmationPreview {
@@ -411,6 +419,10 @@ private enum Strings {
         "ai.assistant.preview.orders_update.summary.headline",
         defaultValue: "Update order #%@"
     )
+    static let ordersUpdateSummaryNamed = LocalizedStringResource(
+        "ai.assistant.preview.orders_update.summary.headline.named",
+        defaultValue: "Update order from %@ (#%@)"
+    )
     static let ordersBulkUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.orders_bulk_update.fallback",
         defaultValue: "Update many orders"
@@ -430,6 +442,10 @@ private enum Strings {
     static let productsUpdateSummary = LocalizedStringResource(
         "ai.assistant.preview.products_update.summary.headline",
         defaultValue: "Update product #%@"
+    )
+    static let productsUpdateSummaryNamed = LocalizedStringResource(
+        "ai.assistant.preview.products_update.summary.headline.named",
+        defaultValue: "Update %@ (#%@)"
     )
     static let productsBulkUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.products_bulk_update.fallback",

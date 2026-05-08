@@ -30,7 +30,11 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
         struct OrderResponse: Decodable {
             let status: String?
             let billing: Billing?
-            struct Billing: Decodable { let email: String? }
+            struct Billing: Decodable {
+                let email: String?
+                let first_name: String?
+                let last_name: String?
+            }
         }
         guard let order = await fetch(OrderResponse.self, path: "wc/v3/orders/\(id)") else {
             return nil
@@ -42,7 +46,10 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
         if let email = order.billing?.email, !email.isEmpty {
             values["billing_email"] = .raw(email)
         }
-        return values.isEmpty ? nil : ConfirmationSnapshot(currentValues: values)
+        let displayName = Self.composedCustomerName(first: order.billing?.first_name,
+                                                    last: order.billing?.last_name)
+        guard !values.isEmpty || displayName != nil else { return nil }
+        return ConfirmationSnapshot(currentValues: values, displayName: displayName)
     }
 
     private func resolveProduct(arguments: String) async -> ConfirmationSnapshot? {
@@ -68,7 +75,10 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
             values["stock_quantity"] = .raw(Self.formatStockQuantity(quantity))
         }
         if let status = product.status { values["status"] = .raw(status) }
-        return values.isEmpty ? nil : ConfirmationSnapshot(currentValues: values)
+        let displayName = product.name?.trimmingCharacters(in: .whitespacesAndNewlines)
+            .nonEmptyOrNil
+        guard !values.isEmpty || displayName != nil else { return nil }
+        return ConfirmationSnapshot(currentValues: values, displayName: displayName)
     }
 
     private func resolveVariation(arguments: String) async -> ConfirmationSnapshot? {
@@ -138,4 +148,15 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
         }
         return String(value)
     }
+
+    static func composedCustomerName(first: String?, last: String?) -> String? {
+        let parts = [first, last]
+            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        return parts.isEmpty ? nil : parts.joined(separator: " ")
+    }
+}
+
+private extension String {
+    var nonEmptyOrNil: String? { isEmpty ? nil : self }
 }

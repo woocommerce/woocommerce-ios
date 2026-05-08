@@ -15,20 +15,14 @@ public final class ParcelFittingCheckPresenter {
         initial: ParcelDimensions? = nil,
         onConfirm: @escaping (ParcelDimensions) -> Void
     ) {
-        weak var weakHosting: UIHostingController<ARParcelSizingView>?
-        let view = ARParcelSizingView(
-            unit: unit,
-            initial: initial,
-            onCancel: { weakHosting?.dismiss(animated: true) },
-            onConfirm: { dims in
-                weakHosting?.dismiss(animated: true)
-                onConfirm(dims)
-            }
-        )
-        let hosting = UIHostingController(rootView: view)
-        weakHosting = hosting
-        hosting.modalPresentationStyle = .fullScreen
-        presenter.present(hosting, animated: true)
+        present(from: presenter) { dismiss in
+            ARParcelSizingView(
+                unit: unit,
+                initial: initial,
+                onCancel: dismiss,
+                onConfirm: { dims in dismiss(); onConfirm(dims) }
+            )
+        }
     }
 
     public static func presentFitCheck(
@@ -38,18 +32,24 @@ public final class ParcelFittingCheckPresenter {
         initialPackageID: String? = nil,
         onConfirm: @escaping (ParcelPresetPackage) -> Void
     ) {
-        weak var weakHosting: UIHostingController<ARParcelFitCheckView>?
-        let view = ARParcelFitCheckView(
-            unit: unit,
-            availableCarriers: carriers,
-            initialPackageID: initialPackageID,
-            onCancel: { weakHosting?.dismiss(animated: true) },
-            onConfirm: { package in
-                weakHosting?.dismiss(animated: true)
-                onConfirm(package)
-            }
-        )
-        let hosting = UIHostingController(rootView: view)
+        present(from: presenter) { dismiss in
+            ARParcelFitCheckView(
+                unit: unit,
+                availableCarriers: carriers,
+                initialPackageID: initialPackageID,
+                onCancel: dismiss,
+                onConfirm: { package in dismiss(); onConfirm(package) }
+            )
+        }
+    }
+
+    private static func present<V: View>(
+        from presenter: UIViewController,
+        @ViewBuilder content: @escaping (@escaping () -> Void) -> V
+    ) {
+        weak var weakHosting: UIHostingController<V>?
+        let dismiss: () -> Void = { weakHosting?.dismiss(animated: true) }
+        let hosting = UIHostingController(rootView: content(dismiss))
         weakHosting = hosting
         hosting.modalPresentationStyle = .fullScreen
         presenter.present(hosting, animated: true)

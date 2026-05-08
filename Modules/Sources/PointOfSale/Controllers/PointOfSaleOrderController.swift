@@ -40,6 +40,16 @@ protocol PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment(changeDueAmount: String?) async throws
+    func markOrderAsPaidManually() async throws
+    /// Adds the "Customer paid via Scan to Pay" note to the cached order so the merchant has
+    /// an audit trail in WP-Admin even if the gateway webhook hasn't flipped the status yet.
+    func confirmScanToPayPayment() async throws
+    /// Reloads the cached order from the server. Used by the Scan to Pay verifier to detect
+    /// when the gateway webhook has flipped the order to `.processing`/`.completed`.
+    func reloadCurrentOrder() async throws -> Order
+    /// Promotes the cached `autoDraft` order to `.pending`. The returned order has
+    /// `paymentURL` populated by the WC backend. Idempotent.
+    func promoteCurrentOrderToPending() async throws -> Order
 }
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -130,6 +140,62 @@ protocol PointOfSaleOrderControllerProtocol {
             analytics.track(.pointOfSaleCashPaymentFailed)
             throw error
         }
+    }
+
+    @MainActor
+    func markOrderAsPaidManually() async throws {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+
+        // Failure analytics is fired from `POSPaymentModel.confirmMarkAsPaidPayment()` so all
+        // mark-as-paid failure paths (this call, plus `orderProvider.provideOrder()`) funnel
+        // through a single event. Re-throw so the model can roll back state.
+        try await orderService.markOrderAsCompletedManually(order: order)
+    }
+
+    @MainActor
+    func confirmScanToPayPayment() async throws {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+        try await orderService.addOrderNote(orderID: order.orderID,
+                                            isCustomerNote: false,
+                                            note: Localization.scanToPayNote)
+    }
+
+    @MainActor
+    func reloadCurrentOrder() async throws -> Order {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+        let refreshed = try await orderService.loadOrder(orderID: order.orderID)
+        self.order = refreshed
+        return refreshed
+    }
+
+    @MainActor
+    func promoteCurrentOrderToPending() async throws -> Order {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+        let promoted = try await orderService.promoteOrderToPending(order: order)
+        self.order = promoted
+        // Keep the loaded totals in sync; the order is the same, only its status changed.
+        if case let .loaded(totals, _) = orderState {
+            orderState = .loaded(totals, promoted)
+        }
+        return promoted
+    }
+}
+
+private extension PointOfSaleOrderController {
+    enum Localization {
+        static let scanToPayNote = NSLocalizedString(
+            "pointOfSale.scanToPay.orderNote",
+            value: "Customer paid via Scan to Pay",
+            comment: "Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale."
+        )
     }
 }
 

@@ -58,7 +58,12 @@ struct POSTapToPayHeroView: View {
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .padding(.horizontal, POSPadding.medium)
-            .disabled(isPayDisabled)
+            // Disabled while preparing only once the indicator becomes visible
+            // (after the 700ms grace). Fast pre-connects therefore never flicker
+            // the button into a disabled state, and slow pre-connects show the
+            // disabled button alongside the "Preparing…" indicator that
+            // explains why it's not tappable.
+            .disabled(isPayDisabled || isIndicatorVisible)
             .accessibilityIdentifier("pos-tap-to-pay-hero-pay-button")
 
             preparingIndicator

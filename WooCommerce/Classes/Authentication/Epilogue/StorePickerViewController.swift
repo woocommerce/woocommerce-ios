@@ -447,7 +447,7 @@ private extension StorePickerViewController {
 
         // If a site address was passed in credentials, select it
         if case let .wpcom(_, _, siteAddress) = ServiceLocator.stores.sessionManager.defaultCredentials,
-           let site = sites.filter({ $0.url == siteAddress }).first,
+           let site = sites.first(where: { $0.url == siteAddress }),
            site.isWooCommerceActive {
             currentlySelectedSite = site
             return

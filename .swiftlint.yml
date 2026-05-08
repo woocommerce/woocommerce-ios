@@ -54,6 +54,9 @@ only_rules:
   # Prefer checking `isEmpty` over comparing `string` to `""`.
   - empty_string
 
+  # Prefer `first(where:)` over `filter { }.first`.
+  - first_where
+
   # Prefer `flatMap { ... }` over `map { ... }.reduce([], +)`.
   - flatmap_over_map_reduce
 

@@ -454,6 +454,7 @@ private struct ShimmeringLineView: View {
             .fixedSize(horizontal: true, vertical: true)
             .shimmering(active: true)
             .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
+            .geometryGroup()
     }
 }
 

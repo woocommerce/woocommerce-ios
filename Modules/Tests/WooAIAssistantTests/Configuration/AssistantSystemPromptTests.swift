@@ -83,6 +83,28 @@ struct AssistantSystemPromptTests {
     }
 
     @Test
+    func test_build_directs_writes_resolving_from_prior_context_for_superlatives_and_ordinals() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let reuseSection = section(in: prompt, from: "# Cross-turn context reuse", to: "Asking for clarification is a last resort")
+
+        #expect(reuseSection.contains("Same applies to write requests on prior context."))
+        #expect(reuseSection.contains("\"Mark the biggest one as completed\""))
+        #expect(reuseSection.contains("Don't refuse a write or punt to the native UI"))
+        #expect(reuseSection.contains("the antecedent is already in your context"))
+    }
+
+    @Test
+    func test_build_directs_list_plus_cards_for_summary_invisible_fields() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let hiddenFieldsSection = section(in: prompt, from: "# Don't invent hidden fields", to: "# Distinct quantities")
+
+        #expect(hiddenFieldsSection.contains("the answer is still a list tool call + `show_cards` + a one-line pointer"))
+        #expect(hiddenFieldsSection.contains("tap any row for billing details"))
+        #expect(hiddenFieldsSection.contains("Refusing the list call, or telling the merchant to open the Orders/Customers tab"))
+        #expect(hiddenFieldsSection.contains("the rendered cards are already tappable"))
+    }
+
+    @Test
     func test_build_keeps_remote_tool_names_out_of_prompt() {
         let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
         let remoteToolNames = [

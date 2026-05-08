@@ -45,15 +45,24 @@ final class POSPaymentModel {
         return false
     }
 
+    /// The connection method of the currently active payment session, or nil
+    /// between sessions. Distinct from `preferredConnectionMethod` (the POS
+    /// session's default): the merchant can pick BT via the "Other payment
+    /// methods" sheet on a TTP-default device, in which case the active
+    /// session is `.bluetooth` even though preferred remains `.tapToPay`.
+    /// This is the field that gates the intermediate-state filter and the
+    /// model-side re-entry guard.
+    private(set) var currentPaymentMethod: CardReaderConnectionMethod?
+
     /// True while a TTP collection session is active — between the merchant
-    /// tapping "Pay with Tap to pay" (which opens the gate) and a terminal
-    /// event resetting it. We suppress the intermediate card states on the
-    /// TTP path so `paymentState.card` stays at `.idle` while Apple's modal
-    /// is up; this flag is therefore the canonical "payment in flight"
-    /// signal for TotalsView's `isStartingPayment` and the model-side
-    /// re-entry guard.
+    /// tapping "Pay with Tap to pay" and a terminal event clearing
+    /// `currentPaymentMethod`. We suppress the intermediate card states on
+    /// the TTP path so `paymentState.card` stays at `.idle` while Apple's
+    /// modal is up; this flag is therefore the canonical "TTP payment in
+    /// flight" signal for TotalsView's `isStartingPayment` reset and the
+    /// model-side re-entry guard.
     var isTapToPaySessionActive: Bool {
-        preferredConnectionMethod == .tapToPay && !isAwaitingExplicitPaymentStart
+        currentPaymentMethod == .tapToPay
     }
 
     // MARK: - Dependencies
@@ -150,13 +159,15 @@ extension POSPaymentModel {
         if preferredConnectionMethod == .tapToPay {
             // Awaiting an explicit method tap from the hero / sheet — leave the
             // gate true so transient Stripe events during pre-connect can't
-            // advance the state machine.
+            // advance the state machine. No `currentPaymentMethod` yet — the
+            // session hasn't actually started.
             connectTapToPayReader()
             return
         }
 
         // BT auto-collect path — events from the connected reader are the
         // intended source of state transitions.
+        currentPaymentMethod = preferredConnectionMethod
         isAwaitingExplicitPaymentStart = false
         await startPaymentFlow(using: preferredConnectionMethod)
     }
@@ -197,8 +208,10 @@ extension POSPaymentModel {
         }
 
         subscribeToPaymentSessionEvents()
-        // Merchant explicitly chose a method — open the gate so subsequent
-        // Stripe Terminal events drive the state machine.
+        // Merchant explicitly chose a method — track it as the active session
+        // method (drives the intermediate-state filter) and open the gate so
+        // subsequent Stripe Terminal events drive the state machine.
+        currentPaymentMethod = method
         isAwaitingExplicitPaymentStart = false
 
         // If a reader is connected via the *other* method, drop it before
@@ -490,6 +503,7 @@ extension POSPaymentModel {
         // Re-arm the TTP gate so re-entering checkout starts clean — `startPayment`
         // will keep it true on the TTP path until the merchant taps a method again.
         isAwaitingExplicitPaymentStart = true
+        currentPaymentMethod = nil
         cancelReaderPreparation()
     }
 
@@ -655,6 +669,7 @@ private extension POSPaymentModel {
             .sink { [weak self] _ in
                 guard let self, self.preferredConnectionMethod == .tapToPay else { return }
                 self.isAwaitingExplicitPaymentStart = true
+                self.currentPaymentMethod = nil
                 self.paymentState.card = .idle
                 self.cardPresentPaymentInlineMessage = nil
                 Task { @MainActor [weak self] in
@@ -691,8 +706,10 @@ private extension POSPaymentModel {
                 // for a frame. Suppress intermediates here — terminal states
                 // (cardPaymentSuccessful / paymentError) still come through.
                 // The cancel-on-reader path is handled by its dedicated
-                // synchronous reset above.
-                if self.preferredConnectionMethod == .tapToPay,
+                // synchronous reset above. Gated on the *current session's*
+                // method — when the merchant picks BT via the sheet on a
+                // TTP-default device, BT events should drive the UI normally.
+                if self.currentPaymentMethod == .tapToPay,
                    let state = newCardPaymentState {
                     switch state {
                     case .validatingOrder,

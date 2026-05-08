@@ -51,9 +51,9 @@ struct InputBar: View {
                 .accessibilityLabel(showsStop ? Localization.stop : Localization.send)
             }
             .background(pillBackground)
-            .clipShape(Capsule())
+            .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.composer, style: .continuous))
             .overlay(
-                Capsule()
+                RoundedRectangle(cornerRadius: AssistantRadius.composer, style: .continuous)
                     .stroke(Color.assistantSurfaceBorder, lineWidth: 0.5)
             )
             .shadow(color: Color.black.opacity(0.06), radius: 4, x: 0, y: 1)

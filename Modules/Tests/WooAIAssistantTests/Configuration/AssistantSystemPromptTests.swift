@@ -69,6 +69,19 @@ struct AssistantSystemPromptTests {
     }
 
     @Test
+    func test_build_directs_show_cards_after_every_successful_write() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let writePattern = section(in: prompt, from: "Pattern 4 - Write tool", to: "Writes are schema-bound")
+
+        // Pattern 4 must explicitly tell the model to render the updated entity after writes.
+        #expect(writePattern.contains("After the write succeeds, call `show_cards` with that entity's id"))
+        // The information-vs-writes section reinforces the same directive.
+        #expect(prompt.contains("After every successful write, call `show_cards` with the updated"))
+        // The Rules summary keeps the directive top-of-prompt-summary.
+        #expect(prompt.contains("After a successful write, always call `show_cards`"))
+    }
+
+    @Test
     func test_build_keeps_remote_tool_names_out_of_prompt() {
         let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
         let remoteToolNames = [

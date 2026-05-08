@@ -10,9 +10,10 @@ struct StoreInfoProviderMetricSelectionTests {
             requested: [.none, .orders],
             family: .systemSmall
         )
+        let expected: [StoreInfoMetricType] = [.none, .orders]
 
         // Then
-        #expect(resolved == [.none, .orders])
+        #expect(resolved == expected)
     }
 
     @Test func resolveMetricSelection_preserves_none_for_medium_family() {
@@ -52,9 +53,10 @@ struct StoreInfoProviderMetricSelectionTests {
             requested: [.revenue, .none],
             family: .systemMedium
         )
+        let expected: [StoreInfoMetricType] = [.revenue, .none, .orders, .itemsSold]
 
         // Then
-        #expect(resolved == [.revenue, .none, .orders, .itemsSold])
+        #expect(resolved == expected)
     }
 
     @Test func resolveMetricSelection_keeps_none_when_resizing_down() {
@@ -63,9 +65,10 @@ struct StoreInfoProviderMetricSelectionTests {
             requested: [.revenue, .none, .orders, .visitors],
             family: .systemSmall
         )
+        let expected: [StoreInfoMetricType] = [.revenue, .none]
 
         // Then
-        #expect(resolved == [.revenue, .none])
+        #expect(resolved == expected)
     }
 
     @Test func resolveMetricSelection_returns_requested_metrics_for_non_home_screen_families() {

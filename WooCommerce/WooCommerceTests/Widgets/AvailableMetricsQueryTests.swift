@@ -6,25 +6,28 @@ struct AvailableMetricsQueryTests {
     @Test func allEntities_returns_none_before_metric_catalog() async throws {
         // When
         let entities = try await AvailableMetricsQuery().allEntities()
+        let expected: [StoreInfoMetricType] = [.none] + StoreStatsConfigurationIntent.defaultMetrics
 
         // Then
-        #expect(entities == [.none] + StoreStatsConfigurationIntent.defaultMetrics)
+        #expect(entities == expected)
     }
 
     @Test func suggestedEntities_returns_none_before_metric_catalog() async throws {
         // When
         let entities = try await AvailableMetricsQuery().suggestedEntities()
+        let expected: [StoreInfoMetricType] = [.none] + StoreStatsConfigurationIntent.defaultMetrics
 
         // Then
-        #expect(entities == [.none] + StoreStatsConfigurationIntent.defaultMetrics)
+        #expect(entities == expected)
     }
 
     @Test func entities_for_none_identifier_resolves_none() async throws {
         // When
         let entities = try await AvailableMetricsQuery().entities(for: [StoreInfoMetricType.none.id])
+        let expected: [StoreInfoMetricType] = [.none]
 
         // Then
-        #expect(entities == [.none])
+        #expect(entities == expected)
     }
 
     @Test func entities_for_reordered_identifiers_preserves_identifier_order() async throws {
@@ -34,8 +37,9 @@ struct AvailableMetricsQueryTests {
             StoreInfoMetricType.none.id,
             StoreInfoMetricType.revenue.id
         ])
+        let expected: [StoreInfoMetricType] = [.orders, .none, .revenue]
 
         // Then
-        #expect(entities == [.orders, .none, .revenue])
+        #expect(entities == expected)
     }
 }

@@ -16,7 +16,7 @@ struct CustomDimensionsRow: View {
                 VStack(alignment: .leading, spacing: Constants.textSpacing) {
                     Text(Localization.customDimensions)
                         .font(.body)
-                    Text(formattedDimensions)
+                    Text(dimensions.formatted(unit: unit))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -30,11 +30,6 @@ struct CustomDimensionsRow: View {
         .padding(.vertical, Constants.verticalPadding)
     }
 
-    private var formattedDimensions: String {
-        String(format: Constants.dimensionsFormat,
-               dimensions.length, dimensions.width, dimensions.height,
-               unit.symbol)
-    }
 }
 
 private extension CustomDimensionsRow {
@@ -43,7 +38,6 @@ private extension CustomDimensionsRow {
         static let textSpacing: CGFloat = 2
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 12
-        static let dimensionsFormat = "%.2f × %.2f × %.2f %@"
     }
 
     enum Localization {

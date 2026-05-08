@@ -25,7 +25,7 @@ struct CarrierPackageRow: View {
                         Text(carrier.name)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
-                        Text(formattedDimensions)
+                        Text(package.dimensions.formatted(unit: unit))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -58,11 +58,6 @@ struct CarrierPackageRow: View {
         }
     }
 
-    private var formattedDimensions: String {
-        String(format: Constants.dimensionsFormat,
-               package.length, package.width, package.height,
-               unit.symbol)
-    }
 }
 
 private extension CarrierPackageRow {
@@ -72,9 +67,5 @@ private extension CarrierPackageRow {
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 14
         static let logoSize: CGFloat = 36
-        static let dimensionsFormat = "%.2f × %.2f × %.2f %@"
-    }
-
-    enum Localization {
     }
 }

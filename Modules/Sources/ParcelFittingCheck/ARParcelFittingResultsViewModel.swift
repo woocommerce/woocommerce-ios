@@ -23,9 +23,7 @@ final class ARParcelFittingResultsViewModel {
     }
 
     var dimensionsLabel: String {
-        String(format: "%.2f × %.2f × %.2f %@",
-               measuredDimensions.length, measuredDimensions.width, measuredDimensions.height,
-               unit.symbol)
+        measuredDimensions.formatted(unit: unit)
     }
 
     static func fits(measured: ParcelDimensions, into package: ParcelPresetPackage) -> Bool {

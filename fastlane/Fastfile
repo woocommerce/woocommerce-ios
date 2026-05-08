@@ -370,7 +370,12 @@ platform :ios do
 
     # Make sure the release branch exists, then check it out.
     sh('git', 'fetch', 'origin', release_branch) do |status|
-      UI.user_error!("Release branch #{release_branch} does not exist on origin") unless status.success?
+      next if status.success?
+
+      fail_lane!(
+        context: 'release-notes-pr-error',
+        message: "Release branch #{release_branch} does not exist on origin"
+      )
     end
     Fastlane::Helper::GitHelper.checkout_and_pull(release_branch)
 
@@ -380,7 +385,12 @@ platform :ios do
       version: version,
       release_notes_file_path: RELEASE_NOTES_SOURCE_PATH
     )
-    UI.user_error!("No release-note items found for #{version}") if raw_items.nil? || raw_items.strip.empty?
+    if raw_items.nil? || raw_items.strip.empty?
+      fail_lane!(
+        context: 'release-notes-pr-error',
+        message: "No release-note items found for #{version}"
+      )
+    end
 
     generated_notes = generate_ai_release_notes(version: version, raw_items: raw_items)
 
@@ -1706,6 +1716,14 @@ end
 # Release Management Utils
 # -----------------------------------------------------------------------------------
 
+# Surfaces a fatal lane error as a Buildkite annotation (when on CI) before
+# raising via `UI.user_error!`. Annotations make the failure scannable from
+# the build summary instead of buried in the log output.
+def fail_lane!(context:, message:)
+  buildkite_annotate(style: 'error', context: context, message: message) if is_ci
+  UI.user_error!(message)
+end
+
 # Calls OpenAI via release-toolkit's `openai_ask` action, retrying once with a
 # stricter prompt if the first response exceeds the 350-character limit.
 def generate_ai_release_notes(version:, raw_items:)
@@ -1725,7 +1743,7 @@ def generate_ai_release_notes(version:, raw_items:)
     ).to_s.strip
 
     if (error = ReleaseNotesPRHelper.validate_generated_release_notes_not_empty(generated_notes))
-      UI.user_error!(error)
+      fail_lane!(context: 'release-notes-pr-error', message: error)
     end
 
     if generated_notes.length <= ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH
@@ -1741,9 +1759,10 @@ def generate_ai_release_notes(version:, raw_items:)
     previous_response = generated_notes
   end
 
-  UI.user_error!(
-    "Generated release notes still exceed #{ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters " \
-    "after #{ReleaseNotesPRHelper::AI_RELEASE_NOTES_MAX_ATTEMPTS} attempts. Please create the release notes manually."
+  fail_lane!(
+    context: 'release-notes-pr-error',
+    message: "Generated release notes still exceed #{ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters " \
+             "after #{ReleaseNotesPRHelper::AI_RELEASE_NOTES_MAX_ATTEMPTS} attempts. Please create the release notes manually."
   )
 end
 

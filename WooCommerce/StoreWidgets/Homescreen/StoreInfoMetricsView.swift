@@ -1,6 +1,15 @@
 import SwiftUI
 import WidgetKit
 
+enum StoreInfoDynamicType {
+    static let maximumSize: DynamicTypeSize = .accessibility2
+    static let accessibilityLayoutThreshold: DynamicTypeSize = .accessibility1
+
+    static func usesAccessibilityLayout(_ dynamicTypeSize: DynamicTypeSize) -> Bool {
+        dynamicTypeSize >= accessibilityLayoutThreshold
+    }
+}
+
 /// Home-screen widget dispatcher driven by the metric catalog.
 ///
 /// Companion to the legacy `StoreInfoView`; both render the same widget families but consume
@@ -27,6 +36,7 @@ struct StoreInfoMetricsView: View {
             }
         }
         .widgetBackground(backgroundView: Color(.brand))
+        .dynamicTypeSize(.xSmall...StoreInfoDynamicType.maximumSize)
     }
 }
 
@@ -34,11 +44,6 @@ struct StoreInfoMetricsView: View {
 
 extension StoreInfoMetricsView {
     enum Localization {
-        static let viewMore = AppLocalizedString(
-            "storeWidgets.infoView.viewMore",
-            value: "View More",
-            comment: "Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts."
-        )
         static func updatedAt(_ updatedTime: String) -> LocalizedString {
             let format = AppLocalizedString("storeWidgets.infoView.updatedAt",
                                             value: "As of %1$@",
@@ -109,8 +114,8 @@ struct StoreInfoMetricsView_Previews: PreviewProvider {
 
         StoreInfoMetricsView(entryData: exampleData)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
-            .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Medium - XXL font")
+            .environment(\.dynamicTypeSize, .accessibility1)
+            .previewDisplayName("Medium - Accessibility font")
 
         StoreInfoMetricsView(entryData: fullCatalogData)
             .previewContext(WidgetPreviewContext(family: .systemLarge))
@@ -118,8 +123,8 @@ struct StoreInfoMetricsView_Previews: PreviewProvider {
 
         StoreInfoMetricsView(entryData: fullCatalogData)
             .previewContext(WidgetPreviewContext(family: .systemLarge))
-            .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Large - XXL font")
+            .environment(\.dynamicTypeSize, .accessibility1)
+            .previewDisplayName("Large - Accessibility font")
 
         StoreInfoMetricsView(entryData: fullCatalogData)
             .previewContext(WidgetPreviewContext(family: .systemExtraLarge))
@@ -131,8 +136,8 @@ struct StoreInfoMetricsView_Previews: PreviewProvider {
 
         StoreInfoMetricsView(entryData: fullCatalogData)
             .previewContext(WidgetPreviewContext(family: .systemSmall))
-            .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Small - XXL font")
+            .environment(\.dynamicTypeSize, .accessibility1)
+            .previewDisplayName("Small - Accessibility font")
     }
 }
 #endif

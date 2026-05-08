@@ -7,7 +7,7 @@ struct StoreInfoSmallMetricsContainerView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var visibleMetrics: [any MetricPresentable] {
-        let limit = dynamicTypeSize > .xLarge ? Layout.accessibilityMetricLimit : Layout.defaultMetricLimit
+        let limit = StoreInfoDynamicType.usesAccessibilityLayout(dynamicTypeSize) ? Layout.accessibilityMetricLimit : Layout.defaultMetricLimit
         return Array(data.metrics.prefix(limit))
     }
 
@@ -49,8 +49,8 @@ struct StoreInfoSmallMetricsContainerView_Previews: PreviewProvider {
         StoreInfoSmallMetricsContainerView(data: StoreInfoMetricsView_Previews.exampleData)
             .widgetBackground(backgroundView: Color(.brand))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
-            .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Small - XXL font")
+            .environment(\.dynamicTypeSize, .accessibility1)
+            .previewDisplayName("Small - Accessibility font")
     }
 }
 #endif

@@ -60,6 +60,20 @@ class WCPayCardBrand_IconsTests: XCTestCase {
         XCTAssertEqual(sut.iconAspectHorizontal, 1.58)
     }
 
+    func test_cartes_bancaires_has_icon_and_logo_aspect_ratio() {
+        let sut = WCPayCardBrand.cartesBancaires
+        XCTAssertNotNil(sut.icon)
+        XCTAssertEqual(sut.iconName, "card-brand-cartes-bancaires")
+        XCTAssertEqual(sut.iconAspectHorizontal, 1.404)
+    }
+
+    func test_eftpos_au_has_icon_and_logo_aspect_ratio() {
+        let sut = WCPayCardBrand.eftposAu
+        XCTAssertNotNil(sut.icon)
+        XCTAssertEqual(sut.iconName, "card-brand-eftpos-au")
+        XCTAssertEqual(sut.iconAspectHorizontal, 2.235)
+    }
+
     func test_unknown_has_icon_and_card_shaped_aspect_ratio() {
         let sut = WCPayCardBrand.unknown
         XCTAssertNotNil(sut.icon)

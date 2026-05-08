@@ -41,8 +41,12 @@ extension WCPayCardBrand {
         switch self {
         case .interac:
             return 1
+        case .cartesBancaires:
+            return 1.404
         case .diners:
             return 1.3684
+        case .eftposAu:
+            return 2.235
         default:
             return 1.58
         }

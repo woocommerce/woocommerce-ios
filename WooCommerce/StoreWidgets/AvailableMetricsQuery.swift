@@ -24,7 +24,8 @@ struct AvailableMetricsQuery: EnumerableEntityQuery {
     }
 
     func entities(for identifiers: [StoreInfoMetricType.ID]) async throws -> [StoreInfoMetricType] {
-        StoreInfoMetricType.pickerCases.filter { identifiers.contains($0.id) }
+        let metricsByID = Dictionary(uniqueKeysWithValues: StoreInfoMetricType.pickerCases.map { ($0.id, $0) })
+        return identifiers.compactMap { metricsByID[$0] }
     }
 
     func suggestedEntities() async throws -> [StoreInfoMetricType] {

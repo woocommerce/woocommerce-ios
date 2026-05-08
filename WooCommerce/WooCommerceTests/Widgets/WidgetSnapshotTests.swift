@@ -151,6 +151,18 @@ struct AvailableMetricsQueryTests {
         // Then
         #expect(entities == [.none])
     }
+
+    @Test func entities_for_reordered_identifiers_preserves_identifier_order() async throws {
+        // When
+        let entities = try await AvailableMetricsQuery().entities(for: [
+            StoreInfoMetricType.orders.id,
+            StoreInfoMetricType.none.id,
+            StoreInfoMetricType.revenue.id
+        ])
+
+        // Then
+        #expect(entities == [.orders, .none, .revenue])
+    }
 }
 
 struct StoreInfoProviderMetricSelectionTests {

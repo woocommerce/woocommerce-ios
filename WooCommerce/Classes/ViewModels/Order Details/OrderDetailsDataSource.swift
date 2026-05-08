@@ -1469,7 +1469,7 @@ extension OrderDetailsDataSource {
             /// Shipping Address
             /// Almost always visible to allow editing.
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
-                return items.first(where: { $0.productID == product.productID}) != nil
+                return items.contains(where: { $0.productID == product.productID})
             }.allSatisfy { $0.virtual == true }
 
 

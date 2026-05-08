@@ -8,7 +8,6 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     var dimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
     private let initialDimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
     var lastResetTrigger: Int = 0
-    private var hasPlacedOnce = false
 
     var onPlaced: (() -> Void)?
     var onRemoved: (() -> Void)?
@@ -44,7 +43,6 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         placeCuboid(at: world)
         installGestures()
         placed = true
-        hasPlacedOnce = true
         onPlaced?()
     }
 
@@ -206,20 +204,9 @@ private extension ARParcelSceneCoordinator {
     }
 
     func raycastWorldPosition(from location: CGPoint, in arView: ARView) -> SIMD3<Float>? {
-        if let strict = arView.makeRaycastQuery(from: location, allowing: .existingPlaneGeometry, alignment: .horizontal),
-           let hit = arView.session.raycast(strict).first {
-            return SIMD3(hit.worldTransform.columns.3.x, hit.worldTransform.columns.3.y, hit.worldTransform.columns.3.z)
-        }
-        // Estimated planes are only used for the very first placement (before
-        // ARKit has detected real geometry). After trash, real planes should
-        // still be available — falling back to estimates here would place the
-        // cuboid at an unreliable height.
-        if !hasPlacedOnce,
-           let estimated = arView.makeRaycastQuery(from: location, allowing: .estimatedPlane, alignment: .horizontal),
-           let hit = arView.session.raycast(estimated).first {
-            return SIMD3(hit.worldTransform.columns.3.x, hit.worldTransform.columns.3.y, hit.worldTransform.columns.3.z)
-        }
-        return nil
+        guard let query = arView.makeRaycastQuery(from: location, allowing: .existingPlaneGeometry, alignment: .horizontal),
+              let hit = arView.session.raycast(query).first else { return nil }
+        return SIMD3(hit.worldTransform.columns.3.x, hit.worldTransform.columns.3.y, hit.worldTransform.columns.3.z)
     }
 
     func applyResize(gesture: TwoFingerCuboidGestureRecognizer, cuboid: ARCuboidEntity) {

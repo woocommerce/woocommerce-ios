@@ -83,6 +83,18 @@ struct AssistantSystemPromptTests {
     }
 
     @Test
+    func test_build_documents_per_row_hidden_field_pattern_as_list_plus_show_cards() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let pattern1bSection = section(in: prompt, from: "Pattern 1b - Per-row fields the summary doesn't carry.", to: "Pattern 2 - Drill into a single entity")
+
+        #expect(pattern1bSection.contains("show me orders with customer emails"))
+        #expect(pattern1bSection.contains("list customers with phone numbers"))
+        #expect(pattern1bSection.contains("One list tool call, render via `show_cards`"))
+        #expect(pattern1bSection.contains("Tap any row to see emails"))
+        #expect(pattern1bSection.contains("without ever calling the list tool"))
+    }
+
+    @Test
     func test_build_directs_writes_resolving_from_prior_context_for_superlatives_and_ordinals() {
         let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
         let reuseSection = section(in: prompt, from: "# Cross-turn context reuse", to: "Asking for clarification is a last resort")

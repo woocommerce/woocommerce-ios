@@ -21,6 +21,7 @@ RESOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce', 'Resources')
 PUBLIC_CONFIG_FILE = File.join(PROJECT_ROOT_FOLDER, 'config', 'Version.Public.xcconfig')
 RELEASE_NOTES_PATH = File.join(RESOURCES_FOLDER, 'release_notes.txt')
 RELEASE_NOTES_SOURCE_PATH = File.join(PROJECT_ROOT_FOLDER, 'RELEASE-NOTES.txt')
+CHANGELOG_PATH = File.join(PROJECT_ROOT_FOLDER, 'CHANGELOG.md')
 FASTLANE_DIR = File.join(PROJECT_ROOT_FOLDER, 'fastlane')
 DERIVED_DATA_DIR = File.join(PROJECT_ROOT_FOLDER, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
@@ -412,16 +413,20 @@ platform :ios do
     # (no attribution metadata leaks into the shipped file).
     File.write(RELEASE_NOTES_PATH, "#{generated_notes}\n")
 
-    # Mirror the housekeeping done at code-freeze time so RELEASE-NOTES.txt
-    # stays in sync with the version we just generated copy for.
-    ios_update_release_notes(
-      new_version: version,
-      release_notes_file_path: RELEASE_NOTES_SOURCE_PATH
+    # Prepend (or replace) the editorialized `## <version>` entry in
+    # CHANGELOG.md to mirror what the RM does manually today.
+    File.write(
+      CHANGELOG_PATH,
+      ReleaseNotesPRHelper.prepend_or_replace_changelog_entry(
+        existing: File.read(CHANGELOG_PATH),
+        version: version,
+        copy: generated_notes
+      )
     )
 
     files_to_commit = [
-      RELEASE_NOTES_PATH,
-      RELEASE_NOTES_SOURCE_PATH
+      CHANGELOG_PATH,
+      RELEASE_NOTES_PATH
     ].select { |path| File.exist?(path) }
 
     git_add(path: files_to_commit, shell_escape: false)

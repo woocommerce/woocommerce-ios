@@ -77,6 +77,36 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
     QUESTION
   end
 
+  # Prepends (or replaces) the editorialized `## <version>` block in
+  # `CHANGELOG.md`.
+  #
+  # If `## <version>` already exists in the changelog, replaces that block
+  # (the heading line, its paragraph, and the trailing blank-line separator)
+  # — making the lane idempotent on re-runs and tolerating manual edits.
+  #
+  # Otherwise, inserts a new block right after the `-->` line that closes
+  # the file's header comment. If no header comment is found, the block is
+  # prepended at the top.
+  #
+  # @param existing [String] current contents of CHANGELOG.md
+  # @param version [String] e.g. "24.6"
+  # @param copy [String] merchant-facing paragraph (no trailing newline)
+  # @return [String] new changelog contents
+  def prepend_or_replace_changelog_entry(existing:, version:, copy:)
+    new_block = "## #{version}\n#{copy}\n\n"
+
+    # Replace an existing block matching this exact version, if present.
+    version_block_regex = /^## #{Regexp.escape(version)}\n.*?(?=^## |\z)/m
+    return existing.sub(version_block_regex, new_block) if existing.match?(version_block_regex)
+
+    # Insert after the `-->` line that closes the file's header comment.
+    comment_close_regex = /^-->\n/
+    return existing.sub(comment_close_regex, "-->\n#{new_block}") if existing.match?(comment_close_regex)
+
+    # Fallback: no header comment — prepend at the very top.
+    "#{new_block}#{existing}"
+  end
+
   # Validates non-empty AI output.
   #
   # @param generated_notes [String]

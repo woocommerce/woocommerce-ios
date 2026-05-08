@@ -84,6 +84,131 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
     assert_includes prompt, previous.length.to_s
   end
 
+  # --- CHANGELOG editorial entry --------------------------------------------
+
+  def changelog_with_header
+    <<~MD
+      <!--
+      Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
+      -->
+      ## 24.5
+      Previous version copy.
+
+      ## 24.4
+      Older version copy.
+    MD
+  end
+
+  def test_prepend_changelog_entry_inserts_after_header_comment
+    result = Helper.prepend_or_replace_changelog_entry(
+      existing: changelog_with_header,
+      version: '24.6',
+      copy: 'Latest merchant copy.'
+    )
+
+    expected = <<~MD
+      <!--
+      Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
+      -->
+      ## 24.6
+      Latest merchant copy.
+
+      ## 24.5
+      Previous version copy.
+
+      ## 24.4
+      Older version copy.
+    MD
+    assert_equal expected, result
+  end
+
+  def test_prepend_changelog_entry_replaces_existing_version_block
+    existing = <<~MD
+      <!--
+      Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
+      -->
+      ## 24.6
+      Stale draft copy.
+
+      ## 24.5
+      Previous version copy.
+    MD
+
+    result = Helper.prepend_or_replace_changelog_entry(
+      existing: existing,
+      version: '24.6',
+      copy: 'Updated final copy.'
+    )
+
+    expected = <<~MD
+      <!--
+      Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
+      -->
+      ## 24.6
+      Updated final copy.
+
+      ## 24.5
+      Previous version copy.
+    MD
+    assert_equal expected, result
+  end
+
+  def test_prepend_changelog_entry_replaces_when_target_is_last_block
+    existing = <<~MD
+      <!--
+      Header.
+      -->
+      ## 24.6
+      Stale.
+    MD
+
+    result = Helper.prepend_or_replace_changelog_entry(
+      existing: existing,
+      version: '24.6',
+      copy: 'Fresh.'
+    )
+
+    assert_includes result, "## 24.6\nFresh.\n\n"
+    refute_includes result, 'Stale.'
+  end
+
+  def test_prepend_changelog_entry_distinguishes_24_6_from_24_6_1
+    existing = <<~MD
+      <!--
+      Header.
+      -->
+      ## 24.6.1
+      Hotfix copy.
+
+      ## 24.6
+      Original copy.
+    MD
+
+    result = Helper.prepend_or_replace_changelog_entry(
+      existing: existing,
+      version: '24.6',
+      copy: 'New original copy.'
+    )
+
+    # 24.6 entry replaced; 24.6.1 entry untouched.
+    assert_includes result, "## 24.6.1\nHotfix copy.\n\n"
+    assert_includes result, "## 24.6\nNew original copy.\n\n"
+    refute_includes result, 'Original copy.'
+  end
+
+  def test_prepend_changelog_entry_falls_back_to_top_when_no_header_comment
+    existing = "## 24.5\nOlder.\n"
+
+    result = Helper.prepend_or_replace_changelog_entry(
+      existing: existing,
+      version: '24.6',
+      copy: 'Newer.'
+    )
+
+    assert result.start_with?("## 24.6\nNewer.\n\n")
+    assert_includes result, "## 24.5\nOlder.\n"
+  end
+
   # --- Length validation -----------------------------------------------------
 
   def test_empty_response_fails_validation

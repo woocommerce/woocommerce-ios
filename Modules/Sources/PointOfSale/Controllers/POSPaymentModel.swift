@@ -637,18 +637,20 @@ private extension POSPaymentModel {
                     }
                 }
 
-                // Generic "couldn't connect" / "couldn't connect (non-retryable)"
-                // failures aren't actionable for the merchant on a TTP-default
-                // device — they fire for transient races (another reader still
-                // connected) and as the residual event after the merchant cancels
-                // a BT scan, redundant with the cancel they just performed. The
-                // merchant can always retry from the sheet or hero, so suppress
-                // these globally on TTP-default devices regardless of which
-                // session is active. BT-default devices keep them.
+                // Generic "couldn't connect" / "scan failed" / "couldn't connect
+                // (non-retryable)" failures aren't actionable for the merchant
+                // on a TTP-default device — they fire for transient races
+                // (another reader still connected, scan racing a reconnect) and
+                // as the residual event after the merchant cancels a BT scan,
+                // redundant with the cancel they just performed. The merchant
+                // can always retry from the sheet or hero, so suppress these
+                // globally on TTP-default devices regardless of which session
+                // is active. BT-default devices keep them.
                 if preferredConnectionMethod == .tapToPay {
                     switch eventDetails {
                     case .connectingFailed,
-                            .connectingFailedNonRetryable:
+                            .connectingFailedNonRetryable,
+                            .scanningFailed:
                         return nil
                     default:
                         break
@@ -786,16 +788,17 @@ private extension POSPaymentModel {
                 DDLogInfo("🃏 [CardPayment] subscription setting card state: \(cardPaymentState), " +
                           "current cash state: \(paymentState.cash)")
                 paymentState.card = cardPaymentState
-                // Card transitioning back to .idle after a non-TTP session
-                // (cancel / disconnect mid-flow) means the session ended —
-                // clear the active-session marker so the next start is
-                // treated as a fresh session and the reader-reconnection
-                // observer is allowed to auto-reconnect TTP if needed.
-                // The TTP cancel path clears this in its dedicated handler;
-                // success / error keep the marker until `reset()` runs.
-                if cardPaymentState == .idle {
-                    self.currentPaymentMethod = nil
-                }
+                // Don't auto-clear `currentPaymentMethod` on `.idle` — Stripe
+                // emits `.idle` mid-cancel of a BT scan (before the merchant
+                // is back at the hero), and clearing here woke up the
+                // reader-reconnection observer, which then tried to TTP-
+                // reconnect while the BT scan was still tearing down. That
+                // race produced a `.scanningFailed` ("internal service error")
+                // alert. Terminal-only clears: TTP cancel handles itself in
+                // its dedicated handler, BT success / error fall through to
+                // `reset()` when the merchant moves on, and a BT scan dismiss
+                // leaves `currentPaymentMethod = .bluetooth` until the next
+                // `startPayment(WithMethod)` overwrites it or `reset()` runs.
             })
             .store(in: &paymentSessionCancellables)
     }

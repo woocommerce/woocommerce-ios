@@ -45,6 +45,17 @@ final class POSPaymentModel {
         return false
     }
 
+    /// True while a TTP collection session is active — between the merchant
+    /// tapping "Pay with Tap to pay" (which opens the gate) and a terminal
+    /// event resetting it. We suppress the intermediate card states on the
+    /// TTP path so `paymentState.card` stays at `.idle` while Apple's modal
+    /// is up; this flag is therefore the canonical "payment in flight"
+    /// signal for TotalsView's `isStartingPayment` and the model-side
+    /// re-entry guard.
+    var isTapToPaySessionActive: Bool {
+        preferredConnectionMethod == .tapToPay && !isAwaitingExplicitPaymentStart
+    }
+
     // MARK: - Dependencies
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderProvider: POSPaymentOrderProviding
@@ -170,6 +181,14 @@ extension POSPaymentModel {
         // `isStartingPayment` gate; this is the model-side belt to that.
         guard paymentState.card == .idle else {
             DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — card state is \(paymentState.card)")
+            return
+        }
+        // On TTP we suppress the intermediate card states so `paymentState.card`
+        // stays `.idle` for the entire collection session — the guard above
+        // therefore can't catch re-entry there. `isTapToPaySessionActive`
+        // (gate flag based) is the canonical "in flight" check for TTP.
+        if isTapToPaySessionActive {
+            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — TTP session already active")
             return
         }
 
@@ -659,6 +678,36 @@ private extension POSPaymentModel {
 
                 if case .processingPayment = newCardPaymentState {
                     collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
+                }
+
+                // On the TTP path Apple's modal owns the merchant's UX between
+                // "Pay with Tap to pay" and a terminal event. Letting the
+                // intermediate card states (validatingOrder / preparingReader /
+                // acceptingCard / cardInserted / processingPayment) drive our
+                // own card state is invisible while the modal is on screen,
+                // but on cancel the modal dismisses faster than the
+                // `cancelledOnReader` event arrives, and the merchant sees
+                // our underlying "Tap card" / "Ready for payment" UI flash
+                // for a frame. Suppress intermediates here — terminal states
+                // (cardPaymentSuccessful / paymentError) still come through.
+                // The cancel-on-reader path is handled by its dedicated
+                // synchronous reset above.
+                if self.preferredConnectionMethod == .tapToPay,
+                   let state = newCardPaymentState {
+                    switch state {
+                    case .validatingOrder,
+                            .preparingReader,
+                            .acceptingCard,
+                            .cardInserted,
+                            .processingPayment:
+                        return nil
+                    case .idle,
+                            .cardPaymentSuccessful,
+                            .paymentError,
+                            .validatingOrderError,
+                            .paymentIntentCreationError:
+                        break
+                    }
                 }
 
                 return newCardPaymentState

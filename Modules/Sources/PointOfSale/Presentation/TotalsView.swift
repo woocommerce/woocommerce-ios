@@ -134,6 +134,16 @@ struct TotalsView: View {
         .onChange(of: paymentModel.paymentState.cash) {
             isStartingPayment = false
         }
+        .onChange(of: paymentModel.isTapToPaySessionActive) { _, isActive in
+            // TTP path filters intermediate card states, so the card-state
+            // onChange above never fires on cancel (idle → idle). When the
+            // gate closes after a cancel-on-reader, this signals "session
+            // ended" — release the double-tap lock so the merchant can tap
+            // the hero CTA again.
+            if !isActive {
+                isStartingPayment = false
+            }
+        }
         .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
             POSOtherPaymentMethodsSheet(onCardReader: {
                 guard !isStartingPayment else { return }

@@ -20,10 +20,13 @@ public enum OrdersBulkUpdateTool {
         every order id in the list. Per-order differences require separate \
         orders_update calls. Refunds are NOT supported - status cannot be \
         set to "refunded"; the merchant taps each order to issue a refund. \
-        Only call when the merchant has explicitly requested a bulk change \
-        with a concrete list of ids. After the bulk update succeeds, call \
-        `show_cards` with family `order` and the updated ids so the merchant \
-        sees the new state.
+        Only call when the merchant has explicitly requested a bulk change. \
+        Gather the ids from the merchant's message or, when they describe a \
+        selection ("the orders from yesterday", "all on-hold orders"), from \
+        a prior tool result - resolve the ids from orders_list rather than \
+        asking the merchant to type them. After the bulk update succeeds, \
+        call `show_cards` with family `order` and the updated ids so the \
+        merchant sees the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),

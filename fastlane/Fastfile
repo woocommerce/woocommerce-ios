@@ -400,7 +400,6 @@ platform :ios do
       UI.message("Intended PR base: #{release_branch}")
       UI.message("Intended PR head: #{automation_branch}")
       UI.message("Intended PR body:\n\n#{pr_body}")
-      emit_release_notes_pr_url('dry-run')
       next
     end
 
@@ -1798,9 +1797,12 @@ def fetch_pr_or_issue(client, item)
   end
 end
 
-# Emits the `RV2_OUTPUT` line that ReleasesV2 parses out of the Buildkite log.
+# Publishes the release-notes PR URL as Buildkite job meta-data
+# so ReleasesV2 can read it back. No-op outside CI.
 def emit_release_notes_pr_url(url)
-  UI.message("RV2_OUTPUT release_notes_pr_url=#{url}")
+  return unless is_ci
+
+  sh('buildkite-agent', 'meta-data', 'set', 'rv2_output_release_notes_pr_url', url)
 end
 
 def create_backmerge_pr

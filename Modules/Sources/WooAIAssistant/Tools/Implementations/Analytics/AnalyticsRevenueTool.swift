@@ -20,10 +20,14 @@ public enum AnalyticsRevenueTool {
         combines a grouping grain with a date window, interval follows the \
         grouping grain. For "this period vs last", "vs last week", "compare to \
         last month", and similar comparison phrasing, set `compare_to=previous_period` \
-        on the SAME call - the response then includes both `totals` for the \
-        requested window AND `previous_period_totals` for the prior window. \
-        Use those two blocks directly. Do NOT issue a second analytics_revenue \
-        call for the prior window; the data is already in the first response. \
+        on the SAME call. The response then carries two top-level objects: `totals` \
+        (current window) and `previous_period_totals` (prior window). To answer the \
+        comparison, read each metric you need (`net_revenue`, `total_sales`, \
+        `gross_sales`, `total_tax`, etc.) once from `totals` and once from \
+        `previous_period_totals`. The prior window's numbers live ONLY inside \
+        `previous_period_totals` - do not look anywhere else for them. Do NOT issue \
+        a second analytics_revenue call for the prior window; both windows are \
+        already in this response. \
         Revenue/sales stats are card-backed: after any successful call for a \
         revenue or sales stats question, do not stop with prose; call show_cards \
         with family analytics_stats and an id built from the same after/before/ \

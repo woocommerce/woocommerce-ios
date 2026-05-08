@@ -46,12 +46,7 @@ struct ConfirmationCard: View {
     }
 
     private var backgroundColor: Color {
-        let tintOpacity: CGFloat = colorScheme == .dark ? 0.08 : 0.16
-        switch status {
-        case .pending: return Color.assistantWarning.opacity(tintOpacity)
-        case .confirmed: return Color.assistantInfo.opacity(tintOpacity)
-        case .cancelled: return Color.assistantSurfaceElevated
-        }
+        Color(.listForeground(modal: false))
     }
 
     private var eyebrowLabel: some View {
@@ -59,13 +54,16 @@ struct ConfirmationCard: View {
             Image(systemName: eyebrowSymbol)
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(eyebrowColor)
+                .contentTransition(.symbolEffect(.replace))
                 .accessibilityHidden(true)
             Text(eyebrowText)
                 .font(.caption2.weight(.semibold))
                 .textCase(.uppercase)
                 .tracking(0.6)
                 .foregroundStyle(eyebrowColor)
+                .contentTransition(.opacity)
         }
+        .animation(.easeInOut(duration: 0.3), value: status)
     }
 
     @ViewBuilder
@@ -135,7 +133,7 @@ struct ConfirmationCard: View {
     private var eyebrowColor: Color {
         switch status {
         case .pending: return Color.assistantWarning
-        case .confirmed: return Color.assistantInfo
+        case .confirmed: return Color.assistantSuccess
         case .cancelled: return Color.assistantMuted
         }
     }

@@ -90,55 +90,79 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
     }
 
     @MainActor func statsCardView(toolName: String, payload: AnyCodableJSON) -> AnyView? {
-        guard let mapping = StatsCardMapping(toolName: toolName) else {
-            return nil
-        }
+        guard let mapping = StatsCardMapping(toolName: toolName) else { return nil }
         let totals = payload.assistantObject("totals")
         let intervals = payload.assistantArray("interval_subtotals") ?? []
         let currency = totals?.assistantString("currency") ?? payload.assistantString("currency")
 
-        let leadingValue = formatMetric(mapping.leading, totals: totals, currency: currency)
-        let trailingValue = formatMetric(mapping.trailing, totals: totals, currency: currency)
-        let bothMissing = leadingValue == Localization.metricUnavailable
-            && trailingValue == Localization.metricUnavailable
-        guard !bothMissing else {
-            return nil
-        }
+        let topRow = makeAnalyticsRow(mapping: mapping.topRow,
+                                      totals: totals,
+                                      intervals: intervals,
+                                      currency: currency)
+        let bottomRow = makeAnalyticsRow(mapping: mapping.bottomRow,
+                                         totals: totals,
+                                         intervals: intervals,
+                                         currency: currency)
+        guard topRow != nil || bottomRow != nil else { return nil }
 
-        let leadingChartData = chartData(for: mapping.leading, intervals: intervals)
-        let trailingChartData = chartData(for: mapping.trailing, intervals: intervals)
         let subtitle = formatDateRange(after: payload.assistantString("after"),
                                        before: payload.assistantString("before"))
-
         return AnyView(
             AssistantDashboardCardShell(title: Localization.analyticsTitle,
                                         iconSystemName: "chart.bar",
                                         subtitle: subtitle,
                                         padBody: false) {
-                AnalyticsReportCard(
-                    title: "",
-                    leadingTitle: mapping.leadingTitle,
-                    leadingValue: leadingValue,
-                    leadingDelta: nil,
-                    leadingDeltaColor: nil,
-                    leadingDeltaTextColor: nil,
-                    leadingChartData: leadingChartData,
-                    leadingChartColor: leadingChartData.isEmpty ? nil : .accent,
-                    trailingTitle: mapping.trailingTitle,
-                    trailingValue: trailingValue,
-                    trailingDelta: nil,
-                    trailingDeltaColor: nil,
-                    trailingDeltaTextColor: nil,
-                    trailingChartData: trailingChartData,
-                    trailingChartColor: trailingChartData.isEmpty ? nil : .accent,
-                    reportViewModel: nil,
-                    isRedacted: false,
-                    showSyncError: false,
-                    syncErrorMessage: ""
-                )
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
+                VStack(spacing: 0) {
+                    if let topRow {
+                        topRow
+                    }
+                    if topRow != nil && bottomRow != nil {
+                        Divider().padding(.horizontal, 16)
+                    }
+                    if let bottomRow {
+                        bottomRow
+                    }
+                }
             }
+        )
+    }
+
+    @MainActor private func makeAnalyticsRow(mapping: StatsRowMapping,
+                                             totals: AnyCodableJSON?,
+                                             intervals: [AnyCodableJSON],
+                                             currency: String?) -> AnyView? {
+        let leadingValue = formatMetric(mapping.leading, totals: totals, currency: currency)
+        let trailingValue = formatMetric(mapping.trailing, totals: totals, currency: currency)
+        let bothMissing = leadingValue == Localization.metricUnavailable
+            && trailingValue == Localization.metricUnavailable
+        guard !bothMissing else { return nil }
+
+        let leadingChartData = chartData(for: mapping.leading, intervals: intervals)
+        let trailingChartData = chartData(for: mapping.trailing, intervals: intervals)
+        return AnyView(
+            AnalyticsReportCard(
+                title: "",
+                leadingTitle: mapping.leadingTitle,
+                leadingValue: leadingValue,
+                leadingDelta: nil,
+                leadingDeltaColor: nil,
+                leadingDeltaTextColor: nil,
+                leadingChartData: leadingChartData,
+                leadingChartColor: leadingChartData.isEmpty ? nil : .accent,
+                trailingTitle: mapping.trailingTitle,
+                trailingValue: trailingValue,
+                trailingDelta: nil,
+                trailingDeltaColor: nil,
+                trailingDeltaTextColor: nil,
+                trailingChartData: trailingChartData,
+                trailingChartColor: trailingChartData.isEmpty ? nil : .accent,
+                reportViewModel: nil,
+                isRedacted: false,
+                showSyncError: false,
+                syncErrorMessage: ""
+            )
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
         )
     }
 
@@ -348,27 +372,31 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
     }
 
     private struct StatsCardMapping {
+        let topRow: StatsRowMapping
+        let bottomRow: StatsRowMapping
+
+        init?(toolName: String) {
+            guard toolName == AnalyticsOrdersTool.name else { return nil }
+            topRow = StatsRowMapping(
+                leadingTitle: Localization.totalSales,
+                trailingTitle: Localization.netSales,
+                leading: StatsMetric(kind: .currency, keys: ["total_sales", "gross_sales"]),
+                trailing: StatsMetric(kind: .currency, keys: ["net_revenue"])
+            )
+            bottomRow = StatsRowMapping(
+                leadingTitle: Localization.totalOrders,
+                trailingTitle: Localization.avgOrderValue,
+                leading: StatsMetric(kind: .integer, keys: ["orders_count", "num_orders"]),
+                trailing: StatsMetric(kind: .currency, keys: ["avg_order_value", "average_order_value"])
+            )
+        }
+    }
+
+    private struct StatsRowMapping {
         let leadingTitle: String
         let trailingTitle: String
         let leading: StatsMetric
         let trailing: StatsMetric
-
-        init?(toolName: String) {
-            switch toolName {
-            case AnalyticsRevenueTool.name:
-                leadingTitle = Localization.totalSales
-                trailingTitle = Localization.netSales
-                leading = StatsMetric(kind: .currency, keys: ["total_sales", "gross_sales"])
-                trailing = StatsMetric(kind: .currency, keys: ["net_revenue"])
-            case AnalyticsOrdersTool.name:
-                leadingTitle = Localization.totalOrders
-                trailingTitle = Localization.avgOrderValue
-                leading = StatsMetric(kind: .integer, keys: ["orders_count", "num_orders"])
-                trailing = StatsMetric(kind: .currency, keys: ["avg_order_value", "average_order_value"])
-            default:
-                return nil
-            }
-        }
     }
 
     private struct StatsMetric {

@@ -118,8 +118,8 @@ public enum AssistantSystemPrompt {
         BAD: Render \(entityCardVisibleRowLimit) cards and say only "Here are the \(entityCardVisibleRowLimit) most recent customers" without pointing to the tab.
 
         Pattern 1b - Per-row fields the summary doesn't carry.
-        Merchant: "show me orders with customer emails" / "list customers with phone numbers" / "show products with full descriptions" / "orders by payment \
-        method".
+        Merchant: "show me orders with customer emails" / "list customers with phone numbers" / "show products with full descriptions" / "list orders, what \
+        was each total".
         GOOD: One list tool call, render via `show_cards`, then a short pointer like "Tap any row to see emails." The cards already deep-link into the detail \
         screen where the field lives.
         BAD: Refuse with "I can't show that in chat" or "use the Orders tab" without ever calling the list tool. That defeats the cards entirely and is wrong \

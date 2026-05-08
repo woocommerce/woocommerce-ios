@@ -244,12 +244,15 @@ final class TimelineTableViewController: UIViewController {
         if stickToBottom {
             scrollToLatest(animated: false)
         }
-        // contentSize changes from cell reflow do not fire scrollViewDidScroll,
-        // so re-evaluate near-bottom explicitly after every apply.
-        let nearBottom = isAtOrNearBottom(tableView)
-        if nearBottom != lastIsNearBottom {
-            lastIsNearBottom = nearBottom
-            onIsNearBottomChange?(nearBottom)
+        // Defer one runloop tick so UIHostingConfiguration has re-measured
+        // and contentSize reflects the settled cell heights.
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let nearBottom = self.isAtOrNearBottom(self.tableView)
+            if nearBottom != self.lastIsNearBottom {
+                self.lastIsNearBottom = nearBottom
+                self.onIsNearBottomChange?(nearBottom)
+            }
         }
     }
 

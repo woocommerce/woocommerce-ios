@@ -19,7 +19,7 @@ struct SupportChatFeedbackRow: View {
     }
 
     private var unratedState: some View {
-        HStack(spacing: 12) {
+        HStack {
             Button {
                 onRate(true)
             } label: {
@@ -40,12 +40,13 @@ struct SupportChatFeedbackRow: View {
     }
 
     private func ratedState(upvoted: Bool) -> some View {
-        HStack(spacing: 6) {
-            Image(systemName: upvoted ? "hand.thumbsup.fill" : "hand.thumbsdown.fill")
-                .foregroundColor(Color(.accent))
+        Label {
             Text(upvoted ? Localization.helpful : Localization.notHelpful)
                 .font(.caption)
                 .foregroundColor(Color(.secondaryLabel))
+        } icon: {
+            Image(systemName: upvoted ? "hand.thumbsup.fill" : "hand.thumbsdown.fill")
+                .foregroundColor(Color(.accent))
         }
     }
 }

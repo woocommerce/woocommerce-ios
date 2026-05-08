@@ -59,11 +59,38 @@ struct StoreInfoData {
     ///
     var updatedTime: String
 
-    /// Resolved metric entries for the new metric-catalog driven path. Ordering here is
-    /// the source of truth; metric-driven views render entries in this order. Currency-typed
-    /// metrics carry their own `CurrencySettings`, so this struct doesn't need a global one.
+    /// Slot-preserving metric entries for the metric-driven widget path. Explicit "None"
+    /// selections become `.empty` so the UI can keep the configured position blank.
     ///
-    var metrics: [StoreInfoMetric] = []
+    var metricSlots: [StoreInfoMetricSlot]
+
+    /// Concrete metric entries, derived from `metricSlots` for legacy readers and analytics
+    /// that should ignore explicit empty slots.
+    ///
+    var metrics: [StoreInfoMetric] {
+        metricSlots.compactMap(\.concreteMetric)
+    }
+
+    init(range: String,
+         name: String,
+         revenue: String,
+         revenueCompact: String,
+         visitors: String,
+         orders: String,
+         conversion: String,
+         updatedTime: String,
+         metrics: [StoreInfoMetric] = [],
+         metricSlots: [StoreInfoMetricSlot]? = nil) {
+        self.range = range
+        self.name = name
+        self.revenue = revenue
+        self.revenueCompact = revenueCompact
+        self.visitors = visitors
+        self.orders = orders
+        self.conversion = conversion
+        self.updatedTime = updatedTime
+        self.metricSlots = metricSlots ?? metrics.map { .metric($0) }
+    }
 }
 
 extension StoreInfoData {
@@ -169,10 +196,7 @@ extension StoreInfoProvider {
     /// so the render-time top-up draws from the same list iOS hands out at first install — a
     /// resize-up tile renders identically to a fresh install at the new family.
     ///
-    private static let catalogPriorityOrder: [StoreInfoMetricType] = [
-        .revenue, .orders, .itemsSold, .averageOrderValue,
-        .netSales, .visitors, .conversion
-    ]
+    private static let catalogPriorityOrder = StoreInfoMetricType.catalogCases
 
     /// Family slot counts that the home-screen view caps at when rendering. Mirrors the `size:`
     /// map on the intent's `metrics` parameter. Lock-screen families return `nil` — they ignore
@@ -196,9 +220,10 @@ extension StoreInfoProvider {
     /// in that. To keep the widget body looking complete after a resize-up, this resolver:
     ///
     /// 1. Slices oversized arrays (resize-down) to the family's slot count.
-    /// 2. Tops up undersized arrays from `catalogPriorityOrder` until full, deduping. The
-    ///    auto-fill order matches the parameter `default:` so resize-up content is predictable
-    ///    and identical to a fresh install at the new family.
+    /// 2. Tops up undersized arrays from `catalogPriorityOrder` until full, deduping concrete
+    ///    metrics. Explicit `.none` selections count as occupied slots and are not replaced.
+    ///    The auto-fill order matches the parameter `default:` so resize-up content is
+    ///    predictable and identical to a fresh install at the new family.
     ///
     /// Trade-off: the Edit Widget UI is iOS-controlled and shows "Choose" placeholders for
     /// slots that don't have an explicit user pick — even though the widget body has rendered
@@ -233,6 +258,8 @@ private extension StoreInfoDataService.Stats {
     ///
     func value(for metric: StoreInfoMetricType, currencySettings: CurrencySettings) -> StoreInfoMetricValue {
         switch metric {
+        case .none:
+            return .unavailable
         case .revenue:
             return .currency(revenue, currencySettings)
         case .netSales:
@@ -254,6 +281,7 @@ private extension StoreInfoDataService.Stats {
     func chartSeries(for metric: StoreInfoMetricType) -> [MetricChartPoint]? {
         let points: [IntervalPoint]
         switch metric {
+        case .none: return nil
         case .revenue: points = revenueSeries
         case .netSales: points = netRevenueSeries
         case .averageOrderValue: points = averageOrderValueSeries
@@ -345,7 +373,8 @@ private extension StoreInfoProvider {
 
     /// Real data entry. `metrics` is the resolved selection — already family-sliced and topped
     /// up by `resolveMetricSelection` for the AppIntent path, or the legacy hardcoded preset for
-    /// the `StaticConfiguration` path. Ordering here is what the home-screen view renders.
+    /// the `StaticConfiguration` path. Ordering here is what the home-screen view renders,
+    /// including explicit `.none` entries that preserve empty slots.
     ///
     /// Each `StoreInfoMetric` carries both the current and the previous-period value so the
     /// metric-driven home-screen view can render trend badges. The legacy String fields below
@@ -358,15 +387,18 @@ private extension StoreInfoProvider {
         let currencySettings = dependencies.storeCurrencySettings
         let stats = statsPeriod.current
         let previousStats = statsPeriod.previous
-        let resolvedMetrics: [StoreInfoMetric] = metrics.map { type in
-            StoreInfoMetric(
+        let metricSlots: [StoreInfoMetricSlot] = metrics.map { type in
+            guard type != .none else {
+                return .empty
+            }
+
+            return .metric(StoreInfoMetric(
                 type: type,
                 value: stats.value(for: type, currencySettings: currencySettings),
                 previousValue: previousStats?.value(for: type, currencySettings: currencySettings),
                 chartSeries: stats.chartSeries(for: type)
-            )
+            ))
         }
-
         let visitorsString: String = {
             if let visitors = stats.totalVisitors {
                 return "\(visitors)"
@@ -389,7 +421,7 @@ private extension StoreInfoProvider {
             orders: "\(stats.totalOrders)",
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
-            metrics: resolvedMetrics
+            metricSlots: metricSlots
         ))
     }
 

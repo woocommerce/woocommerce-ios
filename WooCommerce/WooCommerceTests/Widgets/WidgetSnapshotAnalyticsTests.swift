@@ -209,6 +209,22 @@ struct WidgetSnapshotAnalyticsTests {
         #expect(props["info_widget_metrics_in_use"] == "orders,orders,revenue,visitors")
     }
 
+    @Test func none_metric_is_excluded_from_metrics_in_use() {
+        // Given
+        let tile = WidgetSnapshot.Tile(
+            kind: WooConstants.storeInfoWidgetKind,
+            family: .systemMedium,
+            configuration: .storeStats(dateRange: .today, metrics: [.revenue, .none, .orders])
+        )
+        let snapshot = WidgetSnapshot(tiles: [tile])
+
+        // When
+        let props = snapshot.analyticsProperties
+
+        // Then
+        #expect(props["info_widget_metrics_in_use"] == "orders,revenue")
+    }
+
     @Test func unconfigured_tile_excluded_from_metrics_combined() {
         // Given
         let tile = WidgetSnapshot.Tile(

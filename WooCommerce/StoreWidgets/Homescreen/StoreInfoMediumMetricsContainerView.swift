@@ -6,14 +6,22 @@ struct StoreInfoMediumMetricsContainerView: View {
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
+    private var visibleMetricSlots: [StoreInfoMetricSlot] {
+        StoreInfoMetricSlotLayout.visibleSlots(
+            from: data.metricSlots,
+            family: .medium,
+            dynamicTypeSize: dynamicTypeSize
+        )
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
             StoreInfoMetricsLogoHeader(data: data)
 
-            if dynamicTypeSize > Layout.accessibilityDynamicTypeSize {
-                StoreInfoMetricsAccessibilitySummaryView(entryData: data)
+            if StoreInfoMetricSlotLayout.usesAccessibilityLayout(dynamicTypeSize: dynamicTypeSize) {
+                StoreInfoMetricsAccessibilitySummaryView(metricSlots: visibleMetricSlots)
             } else {
-                StoreInfoMetricsGrid(metrics: data.metrics)
+                StoreInfoMetricsGrid(metricSlots: visibleMetricSlots)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -21,24 +29,26 @@ struct StoreInfoMediumMetricsContainerView: View {
 
     private enum Layout {
         static let sectionSpacing = 8.0
-        static let accessibilityDynamicTypeSize: DynamicTypeSize = .xLarge
     }
 }
 
-/// Accessibility summary for metric widget layouts. Shows only revenue and a `View More` indicator.
+/// Accessibility summary for metric widget layouts. Shows the first configured slot and a `View More` indicator.
 ///
 private struct StoreInfoMetricsAccessibilitySummaryView: View {
-    let entryData: StoreInfoData
+    let metricSlots: [StoreInfoMetricSlot]
 
     var body: some View {
-        let revenue = entryData.metric(of: .revenue)
         Group {
-            VStack(alignment: .leading, spacing: Layout.cardSpacing) {
-                Text(revenue.title)
-                    .statTitleStyle()
+            if let firstSlot = metricSlots.first {
+                MetricSlotView(slot: firstSlot, placeholderMinHeight: Layout.emptyMetricMinHeight) { metric in
+                    VStack(alignment: .leading, spacing: Layout.cardSpacing) {
+                        Text(metric.title)
+                            .statTitleStyle()
 
-                Text(revenue.formattedValue)
-                    .statValueStyle()
+                        Text(metric.formattedValue)
+                            .statValueStyle()
+                    }
+                }
             }
 
             Text(StoreInfoMetricsView.Localization.viewMore)
@@ -48,6 +58,7 @@ private struct StoreInfoMetricsAccessibilitySummaryView: View {
 
     private enum Layout {
         static let cardSpacing = 2.0
+        static let emptyMetricMinHeight = 36.0
     }
 }
 

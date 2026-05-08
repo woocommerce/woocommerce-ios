@@ -80,7 +80,7 @@ extension StoreInfoMetric: MetricPresentable {
         switch type {
         case .orders:
             return WooConstants.URLs.ordersScreen.asURL()
-        case .revenue, .netSales, .itemsSold, .visitors, .conversion, .averageOrderValue:
+        case .none, .revenue, .netSales, .itemsSold, .visitors, .conversion, .averageOrderValue:
             return nil
         }
     }

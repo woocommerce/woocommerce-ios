@@ -12,22 +12,22 @@ import AppIntents
 /// section can render empty (or be hidden entirely) on first widget configuration while iOS
 /// lazily resolves the defaults through `entities(for:)`.
 ///
-/// The picker shows the full catalog regardless of auth mode. Metrics whose data sources
-/// require WPCom/Jetpack (`visitors`, `conversion`) come back as `.unavailable` for self-hosted
-/// users and render as the standard "-" placeholder in the cell — see
+/// The picker shows "None" first, then the full catalog regardless of auth mode. Metrics whose
+/// data sources require WPCom/Jetpack (`visitors`, `conversion`) come back as `.unavailable`
+/// for self-hosted users and render as the standard "-" placeholder in the cell — see
 /// `StoreInfoFormatter.Constants.valuePlaceholderText`. Filtering the picker by auth mode is
 /// tracked as a follow-up.
 ///
 struct AvailableMetricsQuery: EnumerableEntityQuery {
     func allEntities() async throws -> [StoreInfoMetricType] {
-        StoreInfoMetricType.allCases
+        StoreInfoMetricType.pickerCases
     }
 
     func entities(for identifiers: [StoreInfoMetricType.ID]) async throws -> [StoreInfoMetricType] {
-        StoreInfoMetricType.allCases.filter { identifiers.contains($0.id) }
+        StoreInfoMetricType.pickerCases.filter { identifiers.contains($0.id) }
     }
 
     func suggestedEntities() async throws -> [StoreInfoMetricType] {
-        StoreInfoMetricType.allCases
+        StoreInfoMetricType.pickerCases
     }
 }

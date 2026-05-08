@@ -6,24 +6,25 @@ struct StoreInfoLargeMetricsContainerView: View {
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    private var visibleMetrics: [any MetricPresentable] {
-        let limit = dynamicTypeSize > .xLarge ? Layout.accessibilityMetricLimit : Layout.defaultMetricLimit
-        return Array(data.metrics.prefix(limit))
+    private var visibleMetricSlots: [StoreInfoMetricSlot] {
+        StoreInfoMetricSlotLayout.visibleSlots(
+            from: data.metricSlots,
+            family: .large,
+            dynamicTypeSize: dynamicTypeSize
+        )
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.headerSpacing) {
             StoreInfoMetricsLogoHeader(data: data)
 
-            StoreInfoMetricsGrid(metrics: visibleMetrics, leadingMetricStyle: .large)
+            StoreInfoMetricsGrid(metricSlots: visibleMetricSlots, leadingMetricStyle: .large)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private enum Layout {
         static let headerSpacing = 12.0
-        static let defaultMetricLimit = 7
-        static let accessibilityMetricLimit = 4
     }
 }
 

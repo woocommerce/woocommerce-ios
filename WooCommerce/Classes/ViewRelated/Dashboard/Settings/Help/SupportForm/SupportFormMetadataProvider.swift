@@ -22,7 +22,7 @@ class SupportFormMetadataProvider {
 
     /// ViewModel to fetch and access the SSR report.
     ///
-    private let systemStatusReportViewModel: SystemStatusReportViewModel?
+    private let systemStatusReportViewModel: SystemStatusReportViewModel
 
     /// Pre-fetched system status report string, if available.
     ///
@@ -41,10 +41,9 @@ class SupportFormMetadataProvider {
         self.connectivityObserver = connectivityObserver
         self.pluginResultsController = Self.createPluginResultsController(sessionManager: sessionManager, storageManager: storageManager)
         self.prefetchedSystemStatusReport = systemStatusReport
-        if systemStatusReport != nil {
-            self.systemStatusReportViewModel = nil
-        } else {
-            self.systemStatusReportViewModel = Self.createSSRViewModel(sessionManager: sessionManager)
+        self.systemStatusReportViewModel = Self.createSSRViewModel(sessionManager: sessionManager)
+        if systemStatusReport == nil {
+            systemStatusReportViewModel.fetchReport()
         }
     }
 
@@ -79,7 +78,7 @@ class SupportFormMetadataProvider {
             ZendeskFieldsIDs.appVersion: Bundle.main.version,
             ZendeskFieldsIDs.deviceFreeSpace: getDeviceFreeSpace(),
             ZendeskFieldsIDs.logs: getLogFile(),
-            ZendeskFieldsIDs.legacyLogs: prefetchedSystemStatusReport ?? systemStatusReportViewModel?.statusReport ?? "",
+            ZendeskFieldsIDs.legacyLogs: prefetchedSystemStatusReport ?? systemStatusReportViewModel.statusReport,
             ZendeskFieldsIDs.currentSite: getCurrentSiteDescription(),
             ZendeskFieldsIDs.sourcePlatform: Constants.sourcePlatform,
             ZendeskFieldsIDs.appLanguage: Locale.preferredLanguage,
@@ -120,7 +119,6 @@ private extension SupportFormMetadataProvider {
     ///
     private static func createSSRViewModel(sessionManager: SessionManagerProtocol) -> SystemStatusReportViewModel {
         let viewModel = SystemStatusReportViewModel(siteID: sessionManager.defaultSite?.siteID ?? 0)
-        viewModel.fetchReport()
         return viewModel
     }
 

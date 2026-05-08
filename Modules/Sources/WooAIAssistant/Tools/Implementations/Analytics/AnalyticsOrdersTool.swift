@@ -18,6 +18,12 @@ public enum AnalyticsOrdersTool {
         parameter directly to the implied dimension rather than asking the \
         merchant which window or grain they meant. When a request combines a \
         grouping grain with a date window, interval follows the grouping grain. \
+        For "this period vs last", "vs last week", "compare to last month", \
+        and similar comparison phrasing, set `compare_to=previous_period` on \
+        the SAME call - the response then includes both `totals` for the \
+        requested window AND `previous_period_totals` for the prior window. \
+        Use those two blocks directly. Do NOT issue a second analytics_orders \
+        call for the prior window; the data is already in the first response. \
         Order stats are card-backed: after any successful call for an aggregate \
         order stats question, do not stop with prose; call show_cards with \
         family analytics_stats and an id built from the same after/before/interval \
@@ -44,7 +50,9 @@ public enum AnalyticsOrdersTool {
                 "compare_to": .object([
                     "type": .string("string"),
                     "enum": .array([.string("previous_period")]),
-                    "description": .string("Optional comparison window. Currently only 'previous_period'.")
+                    "description": .string("Set to 'previous_period' for any comparison phrasing (vs last week, " +
+                        "compared to last month, etc.). The response then carries both windows; do NOT issue a " +
+                        "second analytics call for the prior window.")
                 ])
             ]),
             "required": .array([.string("after"), .string("before")])

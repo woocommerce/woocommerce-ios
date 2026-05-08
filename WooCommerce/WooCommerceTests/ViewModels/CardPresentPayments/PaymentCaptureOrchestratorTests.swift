@@ -202,6 +202,41 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         XCTAssertEqual(paymentParameters.cardPresentCaptureMethod, .manualPreferred)
     }
 
+    func test_collect_payment_for_CA_sets_manual_preferred_card_present_capture_method() {
+        // Given
+        let order = Order.fake()
+        let orderTotal: NSDecimalNumber = 150
+
+        // When
+        let paymentParameters = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                if case let .collectPayment(_, _, parameters, _, _, _, _, _) = action {
+                    promise(parameters)
+                }
+            }
+
+            self.sut.collectPayment(
+                for: order,
+                orderTotal: orderTotal,
+                paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                paymentMethodTypes: [.cardPresent, .interacPresent],
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .CA,
+                terminalPaymentPreparationEnabled: false,
+                channel: .storeManagement,
+                onPreparingReader: {},
+                onWaitingForInput: { _ in },
+                onCardInserted: {},
+                onProcessingMessage: {},
+                onDisplayMessage: { _ in },
+                onProcessingCompletion: { _ in },
+                onCompletion: { _ in })
+        }
+
+        // Then
+        XCTAssertEqual(paymentParameters.cardPresentCaptureMethod, .manualPreferred)
+    }
+
     func test_collect_payment_starts_payment_with_valid_parameters() {
         // Given
         let order = Order.fake().copy(siteID: sampleSiteID,

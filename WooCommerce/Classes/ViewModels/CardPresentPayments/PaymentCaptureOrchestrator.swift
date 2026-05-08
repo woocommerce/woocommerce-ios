@@ -321,8 +321,17 @@ private extension PaymentCaptureOrchestrator {
                                  statementDescription: statementDescriptor,
                                  receiptEmail: paymentReceiptEmailParameterDeterminer.receiptEmail(from: order),
                                  paymentMethodTypes: paymentMethodTypes,
-                                 cardPresentCaptureMethod: configurationCountryCode == .AU ? .manualPreferred : nil,
+                                 cardPresentCaptureMethod: cardPresentCaptureMethod(for: configurationCountryCode),
                                  metadata: metadata)
+    }
+
+    private func cardPresentCaptureMethod(for countryCode: CountryCode) -> CardPresentCaptureMethod? {
+        switch countryCode {
+        case .AU, .CA:
+            return .manualPreferred
+        default:
+            return nil
+        }
     }
 
     private func applicationFee(for orderTotal: NSDecimalNumber, country: String) -> Decimal? {

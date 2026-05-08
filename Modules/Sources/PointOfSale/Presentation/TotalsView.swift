@@ -121,12 +121,13 @@ struct TotalsView: View {
         .onChange(of: paymentModel.paymentState.cash) {
             isStartingPayment = false
         }
-        .onChange(of: paymentModel.isTapToPaySessionActive) { _, isActive in
-            // TTP path filters intermediate card states, so the card-state
-            // onChange above never fires on cancel (idle → idle). When the
-            // gate closes after a cancel-on-reader, this signals "session
-            // ended" — release the double-tap lock so the merchant can tap
-            // the hero CTA again.
+        .onChange(of: paymentModel.isPaymentSessionActive) { _, isActive in
+            // The card-state onChange above doesn't always fire when a flow
+            // wraps up — TTP filters intermediate states (idle → idle on
+            // cancel is a no-op), and BT scan dismissal never produces a
+            // card-state change at all. This signal goes false on every
+            // session end, so the hero CTA + bottom strip become tappable
+            // again across the board.
             if !isActive {
                 isStartingPayment = false
             }

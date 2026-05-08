@@ -63,10 +63,19 @@ final class POSPaymentModel {
     /// `currentPaymentMethod`. We suppress the intermediate card states on
     /// the TTP path so `paymentState.card` stays at `.idle` while Apple's
     /// modal is up; this flag is therefore the canonical "TTP payment in
-    /// flight" signal for TotalsView's `isStartingPayment` reset and the
-    /// model-side re-entry guard.
+    /// flight" signal for the model-side re-entry guard.
     var isTapToPaySessionActive: Bool {
         currentPaymentMethod == .tapToPay
+    }
+
+    /// True while *any* collection session is active (TTP or BT). Drives
+    /// TotalsView's `isStartingPayment` reset — when this transitions back
+    /// to false the merchant's flow has wrapped up (success, error, cancel,
+    /// BT scan dismissed, etc.) and the hero CTA + bottom strip can become
+    /// tappable again. `isTapToPaySessionActive` only covered the TTP cancel
+    /// case, so cancelling a BT scan left the buttons disabled.
+    var isPaymentSessionActive: Bool {
+        currentPaymentMethod != nil
     }
 
     // MARK: - Dependencies
@@ -604,19 +613,16 @@ private extension POSPaymentModel {
 
                 // On the TTP path the merchant never explicitly initiates a reader
                 // connection — pre-connect on checkout entry and the connect inside
-                // `startPaymentWithMethod` are both transparent. Suppress the entire
-                // discovery / connection lifecycle (scanning, found reader, connecting,
-                // connected, plus the generic "couldn't connect" failure variants
-                // that fire for transient races like "another reader is already
-                // connected"). Failures the merchant must actually act on — TTP
-                // entitlement / Apple ToS / location-services / postal-code /
-                // address — still surface so the merchant can resolve them.
-                //
-                // Gated on the *current session's* method (or the silent
-                // pre-connect window where no session has been started yet):
-                // when the merchant picks BT via the sheet on a TTP-default
-                // device, the BT discovery alerts have to come through so they
-                // can pick a reader.
+                // `startPaymentWithMethod` are both transparent. Suppress the
+                // discovery / connection lifecycle (scanning, found reader,
+                // connecting, connected) when there's no active BT session, so
+                // those modals don't pop up for connections the merchant didn't
+                // request. When a BT-via-sheet session is active we leave the
+                // discovery / connection alerts visible so the merchant can pick
+                // a reader and see connection progress. Failures the merchant
+                // must actually act on — TTP entitlement / Apple ToS /
+                // location-services / postal-code / address — still surface so
+                // the merchant can resolve them.
                 let isInTransparentTapToPayFlow = currentPaymentMethod == .tapToPay
                     || (currentPaymentMethod == nil && preferredConnectionMethod == .tapToPay)
                 if isInTransparentTapToPayFlow {
@@ -624,8 +630,24 @@ private extension POSPaymentModel {
                     case .scanningForReaders,
                             .foundReader,
                             .connectingToReader,
-                            .connectionSuccess,
-                            .connectingFailed,
+                            .connectionSuccess:
+                        return nil
+                    default:
+                        break
+                    }
+                }
+
+                // Generic "couldn't connect" / "couldn't connect (non-retryable)"
+                // failures aren't actionable for the merchant on a TTP-default
+                // device — they fire for transient races (another reader still
+                // connected) and as the residual event after the merchant cancels
+                // a BT scan, redundant with the cancel they just performed. The
+                // merchant can always retry from the sheet or hero, so suppress
+                // these globally on TTP-default devices regardless of which
+                // session is active. BT-default devices keep them.
+                if preferredConnectionMethod == .tapToPay {
+                    switch eventDetails {
+                    case .connectingFailed,
                             .connectingFailedNonRetryable:
                         return nil
                     default:

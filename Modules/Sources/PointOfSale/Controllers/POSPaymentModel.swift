@@ -34,6 +34,17 @@ final class POSPaymentModel {
         return false
     }
 
+    /// True while the silent Tap to Pay pre-connect is still in flight: the
+    /// merchant is on the TTP path and the reader hasn't moved out of
+    /// `.disconnected` yet. Drives the hero's "Preparing Tap to Pay…"
+    /// affordance so the merchant gets feedback during the (usually short)
+    /// pre-connect window.
+    var isPreparingTapToPay: Bool {
+        guard preferredConnectionMethod == .tapToPay else { return false }
+        if case .disconnected = cardReaderConnectionStatus { return true }
+        return false
+    }
+
     // MARK: - Dependencies
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderProvider: POSPaymentOrderProviding

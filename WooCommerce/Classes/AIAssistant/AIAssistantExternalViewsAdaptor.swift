@@ -78,6 +78,8 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
                     )
                     .padding(.horizontal, Layout.rowHorizontalPadding)
                     .padding(.vertical, Layout.rowVerticalPadding)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(AssistantPressableButtonStyle())
                 if showDivider {

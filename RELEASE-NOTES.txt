@@ -4,6 +4,10 @@
 -----
 
 
+24.7
+-----
+
+
 24.6
 -----
 - [*] POS: Show reconnecting status when Bluetooth card reader temporarily disconnects [https://github.com/woocommerce/woocommerce-ios/pull/16586]

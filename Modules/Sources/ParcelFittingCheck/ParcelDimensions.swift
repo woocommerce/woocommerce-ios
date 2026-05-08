@@ -28,15 +28,15 @@ public struct ParcelDimensions {
     static func defaultDimensions(for unit: UnitLength) -> ParcelDimensions {
         switch unit {
         case .inches:
-            return ParcelDimensions(length: 8.0, width: 6.0, height: 4.0)
+            return ParcelDimensions(length: 4.0, width: 3.0, height: 2.0)
         case .meters:
-            return ParcelDimensions(length: 0.20, width: 0.15, height: 0.10)
+            return ParcelDimensions(length: 0.10, width: 0.08, height: 0.05)
         case .millimeters:
-            return ParcelDimensions(length: 200.0, width: 150.0, height: 100.0)
+            return ParcelDimensions(length: 100.0, width: 80.0, height: 50.0)
         case .yards:
-            return ParcelDimensions(length: 0.66, width: 0.49, height: 0.33)
+            return ParcelDimensions(length: 0.33, width: 0.25, height: 0.16)
         default:
-            return ParcelDimensions(length: 20.0, width: 15.0, height: 10.0)
+            return ParcelDimensions(length: 10.0, width: 8.0, height: 5.0)
         }
     }
 

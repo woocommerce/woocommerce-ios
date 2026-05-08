@@ -11,9 +11,15 @@ struct StoreInfoSmallMetricsContainerView: View {
         return Array(data.metrics.prefix(limit))
     }
 
+    private var showsUpdatePrefix: Bool {
+        !StoreInfoDynamicType.usesAccessibilityLayout(dynamicTypeSize)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.headerSpacing) {
-            StoreInfoMetricsLogoHeader(data: data, showsRange: false)
+            StoreInfoMetricsLogoHeader(data: data,
+                                       showsRange: false,
+                                       showsUpdatePrefix: showsUpdatePrefix)
 
             Spacer(minLength: Layout.metricSpacing)
 

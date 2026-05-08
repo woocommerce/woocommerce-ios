@@ -96,7 +96,19 @@ struct SupportChatView: View {
     private func messageRow(for message: SupportChatViewModel.ChatMessage) -> some View {
         switch message.content {
         case .text(let text):
-            SupportChatMessageRow(role: message.role, text: text, failed: message.failed)
+            VStack(alignment: .leading, spacing: 4) {
+                SupportChatMessageRow(role: message.role, text: text, failed: message.failed)
+
+                if message.role == .bot, message.isNewInSession, let messageID = message.messageID {
+                    SupportChatFeedbackRow(
+                        messageID: messageID,
+                        rating: viewModel.messageRatings[messageID],
+                        onRate: { upvoted in
+                            viewModel.submitFeedback(messageID: messageID, upvoted: upvoted)
+                        }
+                    )
+                }
+            }
 
         case .issuePicker(let issues):
             issuePickerBubble(issues: issues)

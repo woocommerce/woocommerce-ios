@@ -362,4 +362,78 @@ struct SupportChatRemoteTests {
             try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
         }
     }
+
+    // MARK: - submitFeedback
+
+    @Test func submitFeedback_posts_to_correct_path() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let botSlug = "woo-chat"
+        let chatID: Int64 = 999
+        let messageID: Int64 = 123
+        let sessionID = "session-abc-123"
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)/\(messageID)/feedback",
+                                 filename: "generic_success")
+
+        // When
+        try await remote.submitFeedback(botSlug: botSlug, chatID: chatID, messageID: messageID, sessionID: sessionID, upvoted: true)
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? DotcomRequest)
+        #expect(request.path == "odie/chat/\(botSlug)/\(chatID)/\(messageID)/feedback")
+        #expect(request.method == .post)
+    }
+
+    @Test func submitFeedback_sends_sessionID_and_positive_ratingValue_in_parameters() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let botSlug = "woo-chat"
+        let chatID: Int64 = 999
+        let messageID: Int64 = 123
+        let sessionID = "session-abc-123"
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)/\(messageID)/feedback",
+                                 filename: "generic_success")
+
+        // When
+        try await remote.submitFeedback(botSlug: botSlug, chatID: chatID, messageID: messageID, sessionID: sessionID, upvoted: true)
+
+        // Then
+        let parameters = try #require(network.queryParametersDictionary)
+        #expect(parameters["session_id"] as? String == sessionID)
+        #expect(parameters["rating_value"] as? Int == 1)
+    }
+
+    @Test func submitFeedback_sends_negative_ratingValue_in_parameters_when_downvoted() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let botSlug = "woo-chat"
+        let chatID: Int64 = 888
+        let messageID: Int64 = 456
+        let sessionID = "session-xyz"
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)/\(messageID)/feedback",
+                                 filename: "generic_success")
+
+        // When
+        try await remote.submitFeedback(botSlug: botSlug, chatID: chatID, messageID: messageID, sessionID: sessionID, upvoted: false)
+
+        // Then
+        let parameters = try #require(network.queryParametersDictionary)
+        #expect(parameters["rating_value"] as? Int == -1)
+    }
+
+    @Test func submitFeedback_when_network_errors_then_propagates_error() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let botSlug = "woo-chat"
+        let chatID: Int64 = 999
+        let messageID: Int64 = 123
+        let sessionID = "session-abc"
+        network.simulateError(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)/\(messageID)/feedback",
+                              error: NetworkError.timeout())
+
+        // When / Then
+        await #expect(throws: NetworkError.timeout()) {
+            try await remote.submitFeedback(botSlug: botSlug, chatID: chatID, messageID: messageID, sessionID: sessionID, upvoted: true)
+        }
+    }
 }

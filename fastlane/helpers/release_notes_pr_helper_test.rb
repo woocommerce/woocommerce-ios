@@ -172,7 +172,7 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
     refute_includes result, 'Stale.'
   end
 
-  def test_prepend_changelog_entry_distinguishes_24_6_from_24_6_1
+  def test_prepend_changelog_entry_does_not_match_partial_version_prefix
     existing = <<~MD
       <!--
       Header.

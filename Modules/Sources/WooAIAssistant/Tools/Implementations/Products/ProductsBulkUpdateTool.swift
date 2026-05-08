@@ -138,11 +138,24 @@ public enum ProductsBulkUpdateTool {
                                  kind: .toolFailed,
                                  reason: "could not serialize batch body"))
         }
+        let patchKeys = patchKeysInOrder(args.patch)
         return await RESTToolDispatch.dispatchBatchWrite(method: "POST",
                                                          path: "wc/v3/products/batch",
                                                          body: payload,
                                                          client: client,
-                                                         toolName: name)
+                                                         toolName: name,
+                                                         requestedCount: args.ids.count,
+                                                         patchKeys: patchKeys)
+    }
+
+    private static func patchKeysInOrder(_ patch: Patch) -> [String] {
+        var keys: [String] = []
+        if patch.name != nil { keys.append("name") }
+        if patch.regularPrice != nil { keys.append("regular_price") }
+        if patch.salePrice != nil { keys.append("sale_price") }
+        if patch.stockQuantity != nil { keys.append("stock_quantity") }
+        if patch.status != nil { keys.append("status") }
+        return keys
     }
 
     private static func patchKeyRejection(arguments: String) -> ToolResult.Failed? {

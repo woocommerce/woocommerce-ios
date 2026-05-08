@@ -175,11 +175,32 @@ public enum ProductVariationsBulkUpdateTool {
                                  kind: .toolFailed,
                                  reason: "could not serialize batch body"))
         }
+        let patchKeys = patchKeysInOrder(args.variations)
         return await RESTToolDispatch.dispatchBatchWrite(method: "POST",
                                                          path: "wc/v3/products/\(args.productID)/variations/batch",
                                                          body: payload,
                                                          client: client,
-                                                         toolName: name)
+                                                         toolName: name,
+                                                         requestedCount: args.variations.count,
+                                                         patchKeys: patchKeys)
+    }
+
+    private static func patchKeysInOrder(_ variations: [Variation]) -> [String] {
+        var seen: Set<String> = []
+        var keys: [String] = []
+        let canonical = ["regular_price", "sale_price", "stock_quantity", "stock_status", "sku", "status"]
+        for variation in variations {
+            if variation.regularPrice != nil { seen.insert("regular_price") }
+            if variation.salePrice != nil { seen.insert("sale_price") }
+            if variation.stockQuantity != nil { seen.insert("stock_quantity") }
+            if variation.stockStatus != nil { seen.insert("stock_status") }
+            if variation.sku != nil { seen.insert("sku") }
+            if variation.status != nil { seen.insert("status") }
+        }
+        for key in canonical where seen.contains(key) {
+            keys.append(key)
+        }
+        return keys
     }
 
     private static func variationKeyRejection(arguments: String) -> ToolResult.Failed? {

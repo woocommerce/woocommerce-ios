@@ -111,4 +111,52 @@ struct ProductsBulkUpdateToolTests {
         }
         #expect(failed.kind == .outcomeUnknown)
     }
+
+    @Test
+    func test_execute_when_products_bulk_succeeds_then_patch_keys_uses_name_regular_price_sale_price_stock_quantity_status_order() async {
+        // Given
+        let body = #"{"update": [{"id": 10}]}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = ProductsBulkUpdateTool.make()
+
+        // When
+        let arguments = #"""
+        {"ids": [10], "patch": {"status": "draft", "stock_quantity": 5, "sale_price": "9", "regular_price": "10", "name": "X"}}
+        """#
+        let result = await tool.executor(arguments, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let summary) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(summary["patch_keys"] == .array([
+            .string("name"),
+            .string("regular_price"),
+            .string("sale_price"),
+            .string("stock_quantity"),
+            .string("status")
+        ]))
+    }
+
+    @Test
+    func test_execute_when_products_bulk_succeeds_then_receipt_includes_requested_count_and_updated_ids() async {
+        // Given
+        let body = #"{"update": [{"id": 10, "name": "X"}, {"id": 11, "name": "X"}]}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = ProductsBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [10, 11], "patch": {"name": "X"}}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let summary) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(summary["requested_count"] == .int(2))
+        #expect(summary["updated_ids"] == .array([.int(10), .int(11)]))
+        #expect(summary["partial_success"] == .bool(false))
+        #expect(summary["failed"] == .array([]))
+    }
 }

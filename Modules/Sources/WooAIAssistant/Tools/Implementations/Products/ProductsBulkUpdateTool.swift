@@ -20,7 +20,9 @@ public enum ProductsBulkUpdateTool {
         separate products_update calls. Variable products in the batch will \
         silently no-op price changes; use product_variations_update for those. \
         Only call when the merchant has explicitly requested a bulk change \
-        with a concrete list of ids.
+        with a concrete list of ids. After the bulk update succeeds, call \
+        `show_cards` with family `product` and the updated ids so the merchant \
+        sees the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),

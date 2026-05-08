@@ -155,7 +155,8 @@ public enum OrdersBulkUpdateTool {
                                                          client: client,
                                                          toolName: name,
                                                          requestedCount: args.ids.count,
-                                                         patchKeys: patchKeys)
+                                                         patchKeys: patchKeys,
+                                                         listFamily: .order)
     }
 
     private static func patchKeysInOrder(_ patch: Patch) -> [String] {

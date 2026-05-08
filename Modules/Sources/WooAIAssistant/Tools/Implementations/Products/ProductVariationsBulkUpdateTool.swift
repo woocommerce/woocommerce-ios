@@ -182,7 +182,8 @@ public enum ProductVariationsBulkUpdateTool {
                                                          client: client,
                                                          toolName: name,
                                                          requestedCount: args.variations.count,
-                                                         patchKeys: patchKeys)
+                                                         patchKeys: patchKeys,
+                                                         listFamily: .productVariation)
     }
 
     private static func patchKeysInOrder(_ variations: [Variation]) -> [String] {

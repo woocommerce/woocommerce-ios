@@ -47,11 +47,36 @@ struct TypedCardDispatcherTests {
     func test_route_when_tool_is_show_cards_product_then_routes_to_product() {
         // When
         let product = TypedCardDispatcher.route(for: "show_cards.product")
-        let bulk = TypedCardDispatcher.route(for: "products_bulk_update.product")
 
         // Then
         #expect(product == .product)
-        #expect(bulk == .product)
+    }
+
+    @Test
+    func test_route_when_tool_is_orders_bulk_update_synthetic_then_routes_to_order() {
+        // When
+        let route = TypedCardDispatcher.route(for: "orders_bulk_update.order")
+
+        // Then
+        #expect(route == .order)
+    }
+
+    @Test
+    func test_route_when_tool_is_products_bulk_update_synthetic_then_routes_to_product() {
+        // When
+        let route = TypedCardDispatcher.route(for: "products_bulk_update.product")
+
+        // Then
+        #expect(route == .product)
+    }
+
+    @Test
+    func test_route_when_tool_is_product_variations_bulk_update_synthetic_then_routes_to_product_variation() {
+        // When
+        let route = TypedCardDispatcher.route(for: "product_variations_bulk_update.product_variation")
+
+        // Then
+        #expect(route == .productVariation)
     }
 
     @Test

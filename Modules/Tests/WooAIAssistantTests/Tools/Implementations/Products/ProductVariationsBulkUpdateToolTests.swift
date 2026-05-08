@@ -39,7 +39,9 @@ struct ProductVariationsBulkUpdateToolTests {
         for entry in updates {
             #expect(entry["regular_price"] as? String == "29.99")
         }
-        #expect(success.uiStructured == nil)
+        let cards = success.uiStructured?.cards ?? []
+        #expect(cards.count == 2)
+        #expect(cards.allSatisfy { $0.family == .productVariation })
     }
 
     @Test

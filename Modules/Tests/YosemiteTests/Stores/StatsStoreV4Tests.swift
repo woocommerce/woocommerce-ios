@@ -249,7 +249,7 @@ final class StatsStoreV4Tests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         let readOnlySiteVisitStats = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.SiteVisitStats.self)?.toReadOnly())
         XCTAssertEqual(readOnlySiteVisitStats.siteID, localSiteID)
-        XCTAssertEqual(readOnlySiteVisitStats.items?.sorted().last?.visitors, 2)
+        XCTAssertEqual(readOnlySiteVisitStats.items?.max()?.visitors, 2)
     }
 
     /// Verifies that `upsertStoredSiteVisitStats` effectively inserts a new SiteVisitStats, with the specified payload.

@@ -482,17 +482,17 @@ private extension HelpAndSupportViewController {
             : .preLogin
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
-            onContactHumanSupport: { [weak self] transcript, supportAreaInfo in
-                self?.handleContactHumanSupport(transcript: transcript, supportAreaInfo: supportAreaInfo)
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo in
+                self?.handleContactHumanSupport(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo)
             }
         )
         let controller = SupportChatHostingController(viewModel: viewModel)
         navigationController?.pushViewController(controller, animated: true)
     }
 
-    private func handleContactHumanSupport(transcript: String, supportAreaInfo: SupportAreaInfo?) {
+    private func handleContactHumanSupport(chatID: Int64?, transcript: String, supportAreaInfo: SupportAreaInfo?) {
         supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController)
-        supportEscalationCoordinator?.handleEscalation(transcript: transcript, supportAreaInfo: supportAreaInfo)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo)
     }
 
     /// Chat History action
@@ -516,8 +516,9 @@ private extension HelpAndSupportViewController {
             botSlug: summary.botSlug,
             entryPoint: .chatHistory,
             chatID: summary.chatID,
-            onContactHumanSupport: { [weak self] transcript, supportAreaInfo in
-                self?.handleContactHumanSupport(transcript: transcript, supportAreaInfo: supportAreaInfo)
+            hasCreatedTicket: summary.hasCreatedTicket,
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo in
+                self?.handleContactHumanSupport(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo)
             }
         )
         let controller = SupportChatHostingController(viewModel: chatViewModel)

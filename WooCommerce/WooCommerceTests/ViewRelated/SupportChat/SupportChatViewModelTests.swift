@@ -397,7 +397,7 @@ struct SupportChatViewModelTests {
                 entryPoint: .chatHistory,
                 stores: stores,
                 chatID: chatID,
-                onContactHumanSupport: { _, _ in }
+                onContactHumanSupport: { _, _, _ in }
             )
 
             // When
@@ -414,7 +414,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _ in }
+            onContactHumanSupport: { _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -470,7 +470,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _ in }
+            onContactHumanSupport: { _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -503,6 +503,62 @@ struct SupportChatViewModelTests {
         #expect(sut.messages.count == 2)
     }
 
+    @Test func test_contactHumanSupport_passes_chatID_in_callback() async {
+        // Given
+        let chatID: Int64 = 456
+        var receivedChatID: Int64?
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, _, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: chatID,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: "Hello", context: nil),
+                        SupportChatMessage(
+                            messageID: 2,
+                            role: .bot,
+                            content: "Please contact support.",
+                            context: SupportChatMessageContext(
+                                sources: [],
+                                flags: SupportChatFlags(
+                                    forwardToHumanSupport: true,
+                                    cannedResponse: false,
+                                    loggedIn: true,
+                                    branch: nil
+                                )
+                            )
+                        )
+                    ]
+                )
+                completion(.success(response))
+            default:
+                break
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .preLogin,
+            stores: stores,
+            onContactHumanSupport: { chatID, _, _ in
+                receivedChatID = chatID
+            }
+        )
+
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // When
+        sut.contactHumanSupport()
+
+        // Then
+        #expect(receivedChatID == chatID)
+    }
+
     // MARK: - Test Helpers
 
     private func makeSUT(
@@ -516,7 +572,7 @@ struct SupportChatViewModelTests {
             entryPoint: entryPoint,
             stores: stores,
             diagnosticsService: diagnosticsService,
-            onContactHumanSupport: { _, _ in }
+            onContactHumanSupport: { _, _, _ in }
         )
         viewModel.onStartJetpackSetup = onStartJetpackSetup
         return viewModel

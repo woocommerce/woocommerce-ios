@@ -210,20 +210,19 @@ final class ConnectivityToolViewModel {
     /// Creates a SupportChatViewModel with the current troubleshooting context.
     ///
     @MainActor
-    func makeSupportChatViewModel(onContactHumanSupport: @escaping (_ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void) -> SupportChatViewModel {
+    func makeSupportChatViewModel(
+        onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
+    ) -> SupportChatViewModel {
         var context: [String: Any] = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {
-            context["troubleshooting_results"] = troubleshootingDescription
+            context["troubleshootingResults"] = troubleshootingDescription
         }
 
         if let site = stores.sessionManager.defaultSite {
-            context["site_id"] = site.siteID
+            context["selectedSiteID"] = site.siteID
             context["site_url"] = site.url
         }
-
-        context["app_version"] = Bundle.main.marketingVersion
-        context["ios_version"] = UIDevice.current.systemVersion
 
         return SupportChatViewModel(
             entryPoint: .connectivityTool,

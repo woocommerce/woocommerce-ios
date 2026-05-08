@@ -40,7 +40,9 @@ struct SupportChatView: View {
         VStack(spacing: 0) {
             messageList
 
-            if viewModel.shouldPromptHumanSupport {
+            if viewModel.hasCreatedTicket {
+                ticketCreatedBanner
+            } else if viewModel.shouldPromptHumanSupport {
                 humanSupportBanner
             } else if viewModel.shouldShowInputArea {
                 Divider()
@@ -260,6 +262,19 @@ struct SupportChatView: View {
         .background(Color(.listBackground))
     }
 
+    // MARK: - Ticket Created Banner
+
+    private var ticketCreatedBanner: some View {
+        VStack(spacing: SupportChatLayout.bannerSpacing) {
+            Text(Localization.ticketCreatedMessage)
+                .font(.subheadline)
+                .foregroundColor(Color(.secondaryLabel))
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+        .background(Color(.listBackground))
+    }
+
     // MARK: - Input Area
 
     private var inputArea: some View {
@@ -342,6 +357,11 @@ private extension SupportChatView {
             value: "It looks like you might need additional help. Would you like to contact our support team?",
             comment: "Message shown when the bot suggests contacting human support"
         )
+        static let ticketCreatedMessage = NSLocalizedString(
+            "supportChatView.ticketCreatedMessage",
+            value: "A support ticket has been created for this chat. We'll respond via email.",
+            comment: "Message shown when a support ticket has already been created for this chat"
+        )
         static let contactSupport = NSLocalizedString(
             "supportChatView.contactSupport",
             value: "Contact Support",
@@ -385,7 +405,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .helpAndSupport,
-                onContactHumanSupport: { _, _ in }
+                onContactHumanSupport: { _, _, _ in }
             )
         )
     }
@@ -396,7 +416,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .connectivityTool,
-                onContactHumanSupport: { _, _ in }
+                onContactHumanSupport: { _, _, _ in }
             )
         )
     }

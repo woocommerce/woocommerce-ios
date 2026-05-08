@@ -144,6 +144,10 @@ final class SupportChatViewModel {
     /// header in the chat surface.
     let isResumedChat: Bool
 
+    /// `true` when a support ticket has already been created for this chat.
+    /// When true, the escalation button should be hidden.
+    private(set) var hasCreatedTicket: Bool = false
+
     var inputText: String = ""
 
     // MARK: - Private Properties
@@ -155,7 +159,7 @@ final class SupportChatViewModel {
     private let stores: StoresManager
     private var diagnosticsContext: [String: Any]?
     private let initialContext: [String: Any]?
-    private let onContactHumanSupport: (_ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
+    private let onContactHumanSupport: (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
     private var latestSupportArea: SupportChatSupportArea?
     var onStartJetpackSetup: () -> Void
     private let diagnosticsService: SupportDiagnosticsService
@@ -168,7 +172,8 @@ final class SupportChatViewModel {
          initialContext: [String: Any]? = nil,
          diagnosticsService: SupportDiagnosticsService? = nil,
          chatID: Int64? = nil,
-         onContactHumanSupport: @escaping (_ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void,
+         hasCreatedTicket: Bool = false,
+         onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void,
          onStartJetpackSetup: @escaping () -> Void = {}) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
@@ -177,6 +182,7 @@ final class SupportChatViewModel {
         self.diagnosticsService = diagnosticsService ?? SupportDiagnosticsService()
         self.chatID = chatID
         self.isResumedChat = chatID != nil
+        self.hasCreatedTicket = hasCreatedTicket
         self.onContactHumanSupport = onContactHumanSupport
         self.onStartJetpackSetup = onStartJetpackSetup
     }
@@ -554,28 +560,17 @@ final class SupportChatViewModel {
 
         if let supportArea = latestSupportArea {
             let mappedArea = SupportFormViewModel.area(for: supportArea.area)
-            let firstUserMessage = extractFirstUserMessage()
             supportAreaInfo = SupportAreaInfo(
                 areaType: supportArea.area,
                 area: mappedArea,
                 confidence: supportArea.confidence,
-                transcript: transcript,
-                firstUserMessage: firstUserMessage
+                transcript: transcript
             )
         } else {
             supportAreaInfo = nil
         }
 
-        onContactHumanSupport(transcript, supportAreaInfo)
-    }
-
-    private func extractFirstUserMessage() -> String {
-        for message in messages {
-            if message.role == .user, case .text(let text) = message.content {
-                return text
-            }
-        }
-        return ""
+        onContactHumanSupport(chatID, transcript, supportAreaInfo)
     }
 
     private func generateTranscript() -> String {

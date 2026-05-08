@@ -72,6 +72,9 @@ public final class SupportFormViewModel: ObservableObject {
 
     private let attachments: [ZendeskAttachment]
 
+    /// Called when a ticket is successfully created.
+    private let onTicketCreated: (() -> Void)?
+
     /// Defines when the submit button should be enabled or not.
     ///
     var submitButtonDisabled: Bool {
@@ -107,7 +110,10 @@ public final class SupportFormViewModel: ObservableObject {
          applicationLogsProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
          defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite,
          attachments: [ZendeskAttachment] = [],
-         preselectedArea: Area? = nil) {
+         preselectedArea: Area? = nil,
+         prefilledSubject: String? = nil,
+         prefilledDescription: String? = nil,
+         onTicketCreated: (() -> Void)? = nil) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.additionalTags = additionalTags
@@ -117,6 +123,14 @@ public final class SupportFormViewModel: ObservableObject {
         self.defaultSite = defaultSite
         self.attachments = attachments
         self.area = preselectedArea
+        self.onTicketCreated = onTicketCreated
+
+        if let prefilledSubject {
+            self.subject = prefilledSubject
+        }
+        if let prefilledDescription {
+            self.description = prefilledDescription
+        }
     }
 
     /// Tracks when the support form is viewed.
@@ -162,6 +176,7 @@ public final class SupportFormViewModel: ObservableObject {
             switch result {
             case .success:
                 self.analyticsProvider.track(.supportNewRequestCreated)
+                self.onTicketCreated?()
                 self.shouldShowSuccessAlert = true
             case .failure(let error):
                 self.analyticsProvider.track(.supportNewRequestFailed)

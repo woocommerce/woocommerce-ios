@@ -12,11 +12,8 @@ struct SupportAreaInfo {
     /// The confidence level of the area classification.
     let confidence: SupportAreaConfidence
 
-    /// Full chat transcript (attached as file to ticket).
+    /// Full chat transcript.
     let transcript: String
-
-    /// First user message (used as description for auto-created tickets).
-    let firstUserMessage: String
 
     var isHighConfidence: Bool {
         confidence == .high

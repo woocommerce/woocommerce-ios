@@ -216,7 +216,7 @@ private enum Constants {
     static let fallbackInPersonPaymentsUrl = URL(string: "https://woocommerce.com/in-person-payments/")!
     static let purchaseReaderForCountryUrlBase = "https://woocommerce.com/products/hardware/"
     static let sharedMinimumIosVersion = OperatingSystemVersion(majorVersion: 18, minorVersion: 0, patchVersion: 1)
-    static let minimumWCPayVersionForTerminalPaymentPreparation = "10.8.0"
+    static let minimumWCPayVersionForTerminalPaymentPreparation = "10.8.0-test-1"
 }
 
 /// The `@retroactive` attribute is used to apply `Equatable` conformance to `OperatingSystemVersion` from the Foundation module.

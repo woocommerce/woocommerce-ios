@@ -130,6 +130,6 @@ class CardPresentConfigurationTests: XCTestCase {
             static let gb = "https://woocommerce.com/products/hardware/GB?utm_medium=woo_ios"
         }
 
-        static let minimumWCPayVersionForTerminalPaymentPreparation = "10.8.0"
+        static let minimumWCPayVersionForTerminalPaymentPreparation = "10.8.0-test-1"
     }
 }

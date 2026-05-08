@@ -58,22 +58,11 @@ final class POSPaymentModel {
     /// model-side re-entry guard.
     private(set) var currentPaymentMethod: CardReaderConnectionMethod?
 
-    /// True while a TTP collection session is active — between the merchant
-    /// tapping "Pay with Tap to pay" and a terminal event clearing
-    /// `currentPaymentMethod`. We suppress the intermediate card states on
-    /// the TTP path so `paymentState.card` stays at `.idle` while Apple's
-    /// modal is up; this flag is therefore the canonical "TTP payment in
-    /// flight" signal for the model-side re-entry guard.
-    var isTapToPaySessionActive: Bool {
-        currentPaymentMethod == .tapToPay
-    }
-
     /// True while *any* collection session is active (TTP or BT). Drives
     /// TotalsView's `isStartingPayment` reset — when this transitions back
     /// to false the merchant's flow has wrapped up (success, error, cancel,
     /// BT scan dismissed, etc.) and the hero CTA + bottom strip can become
-    /// tappable again. `isTapToPaySessionActive` only covered the TTP cancel
-    /// case, so cancelling a BT scan left the buttons disabled.
+    /// tappable again.
     var isPaymentSessionActive: Bool {
         currentPaymentMethod != nil
     }
@@ -209,9 +198,9 @@ extension POSPaymentModel {
         }
         // On TTP we suppress the intermediate card states so `paymentState.card`
         // stays `.idle` for the entire collection session — the guard above
-        // therefore can't catch re-entry there. `isTapToPaySessionActive`
-        // (gate flag based) is the canonical "in flight" check for TTP.
-        if isTapToPaySessionActive {
+        // therefore can't catch re-entry there. `currentPaymentMethod` is the
+        // canonical "in flight" check for TTP.
+        if currentPaymentMethod == .tapToPay {
             DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — TTP session already active")
             return
         }

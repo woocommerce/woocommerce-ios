@@ -568,6 +568,8 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
     func trackCheckoutTapped() {}
 
     func trackSuccessfulCashPayment() {}
+
+    func trackSuccessfulMarkAsPaidPayment() {}
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {
@@ -582,6 +584,8 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
     func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
+
+    func markOrderAsCompletedManually(order: Yosemite.Order) async throws {}
 }
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {

@@ -40,6 +40,7 @@ protocol PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment(changeDueAmount: String?) async throws
+    func markOrderAsPaidManually() async throws
 }
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -130,6 +131,18 @@ protocol PointOfSaleOrderControllerProtocol {
             analytics.track(.pointOfSaleCashPaymentFailed)
             throw error
         }
+    }
+
+    @MainActor
+    func markOrderAsPaidManually() async throws {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+
+        // Failure analytics is fired from `POSPaymentModel.confirmMarkAsPaidPayment()` so all
+        // mark-as-paid failure paths (this call, plus `orderProvider.provideOrder()`) funnel
+        // through a single event. Re-throw so the model can roll back state.
+        try await orderService.markOrderAsCompletedManually(order: order)
     }
 }
 

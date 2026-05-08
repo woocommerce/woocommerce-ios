@@ -12,6 +12,7 @@ import struct Yosemite.POSRefundsResult
 import struct Yosemite.POSRefundableItem
 import struct Yosemite.POSRefundAmounts
 import struct Yosemite.POSOrderItem
+import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderRefund
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
@@ -30,6 +31,7 @@ protocol POSOrderListControllerProtocol {
     var selectedOrder: POSOrder? { get }
     var isLoadingOrderRefunds: Bool { get }
     var displayedLineItems: [POSOrderItem] { get }
+    var displayedCustomAmounts: [POSOrderCustomAmount] { get }
     var refundActionAvailability: RefundActionAvailability { get }
     var refundSelectableItems: [POSRefundSelectableItem] { get }
     func loadOrders() async
@@ -124,6 +126,25 @@ enum RefundActionAvailability {
             let refunded = refundedQuantities[item.itemID] ?? 0
             return refunded < NSDecimalNumber(decimal: item.quantity).intValue
         }
+    }
+
+    /// Custom amounts to render in the order details items section, with already-refunded
+    /// fees filtered out.
+    ///
+    /// The exclusion relies on the refund response carrying `fee_lines` whose `_refunded_item_id`
+    /// meta points back to the original order's fee id. Stores on WooCommerce versions that
+    /// omit `fee_lines` (or the meta) will fall through and the refunded fee will keep showing
+    /// in this list — there is no other server-provided link from a refund back to the fee it
+    /// refunded.
+    @MainActor
+    var displayedCustomAmounts: [POSOrderCustomAmount] {
+        guard let order = selectedOrder else { return [] }
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1),
+              !isLoadingOrderRefunds else {
+            return order.customAmounts
+        }
+        let refundedItemIDs: Set<Int64> = Set(order.refunds.flatMap(\.items).compactMap(\.refundedItemID))
+        return order.customAmounts.filter { !refundedItemIDs.contains($0.id) }
     }
 
     @MainActor
@@ -303,7 +324,7 @@ enum RefundActionAvailability {
         let refundedQuantitiesByItemID = refundsResult.refunds.flatMap(\.items).refundedQuantitiesByItemID()
 
         // Build selectable items excluding already refunded quantities
-        refundSelectableItems = order.lineItems.flatMap { item -> [POSRefundSelectableItem] in
+        let productSelectables = order.lineItems.flatMap { item -> [POSRefundSelectableItem] in
             let originalQuantity = NSDecimalNumber(decimal: item.quantity).intValue
             let refundedQuantity = refundedQuantitiesByItemID[item.itemID] ?? 0
             let availableQuantity = originalQuantity - refundedQuantity
@@ -313,6 +334,17 @@ enum RefundActionAvailability {
                 POSRefundSelectableItem(from: item, isSelected: true, index: index)
             }
         }
+
+        let alreadyRefundedItemIDs: Set<Int64> = Set(
+            refundsResult.refunds
+                .flatMap(\.items)
+                .compactMap(\.refundedItemID)
+        )
+        let feeSelectables = order.customAmounts
+            .filter { !alreadyRefundedItemIDs.contains($0.id) }
+            .map { POSRefundSelectableItem(from: $0, isSelected: true) }
+
+        refundSelectableItems = productSelectables + feeSelectables
 
         return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
     }
@@ -352,7 +384,8 @@ enum RefundActionAvailability {
                 itemID: item.itemID,
                 lineItemTotal: item.lineItemTotal,
                 totalTax: item.totalTax,
-                originalQuantity: item.originalQuantity
+                originalQuantity: item.originalQuantity,
+                isLumpSum: item.isLumpSum
             )
         }
 
@@ -407,7 +440,8 @@ enum RefundActionAvailability {
                 itemID: item.itemID,
                 lineItemTotal: item.lineItemTotal,
                 totalTax: item.totalTax,
-                originalQuantity: item.originalQuantity
+                originalQuantity: item.originalQuantity,
+                isLumpSum: item.isLumpSum
             )
         }
 

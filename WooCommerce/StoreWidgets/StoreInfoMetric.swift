@@ -16,9 +16,28 @@ enum StoreInfoMetricValue: Equatable {
     case unavailable
 }
 
-/// A metric entry — the catalog type paired with its resolved value.
+/// A metric entry — the catalog type paired with its resolved value, and (optionally)
+/// the matching value from the preceding comparison period.
+///
+/// `previousValue` is what powers the trend badge in `MetricCellView`. It is optional
+/// because some surfaces (placeholders, legacy paths) don't carry comparison data — those
+/// cells render without a trend.
 ///
 struct StoreInfoMetric: Equatable {
     let type: StoreInfoMetricType
     let value: StoreInfoMetricValue
+    let previousValue: StoreInfoMetricValue?
+    /// Time-series for the trailing per-cell chart. `nil` for metrics not sourced from
+    /// `OrderStatsV4.intervals` (`visitors`, `conversion`) and for legacy/placeholder paths.
+    let chartSeries: [MetricChartPoint]?
+
+    init(type: StoreInfoMetricType,
+         value: StoreInfoMetricValue,
+         previousValue: StoreInfoMetricValue? = nil,
+         chartSeries: [MetricChartPoint]? = nil) {
+        self.type = type
+        self.value = value
+        self.previousValue = previousValue
+        self.chartSeries = chartSeries
+    }
 }

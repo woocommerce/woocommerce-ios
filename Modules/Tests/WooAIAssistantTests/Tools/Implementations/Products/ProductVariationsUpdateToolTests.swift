@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ProductVariationsUpdateToolTests {
     @Test
     func test_productVariationsUpdate_when_regular_price_set_then_path_includes_both_ids() async throws {

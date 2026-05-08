@@ -9,10 +9,8 @@ enum OrdersListSummary {
         var currency: String?
 
         for row in rows {
-            var rowFields: [String: AnyCodableJSON] = [:]
             if let id = RESTResponseParsing.intField(row, "id") {
                 ids.append(.int(id))
-                rowFields["id"] = .int(id)
             }
             if let status = RESTResponseParsing.stringField(row, "status") {
                 statusCounts[status, default: 0] += 1
@@ -23,12 +21,13 @@ enum OrdersListSummary {
             if currency == nil, let value = RESTResponseParsing.stringField(row, "currency") {
                 currency = value
             }
-            if let customerID = RESTResponseParsing.intField(row, "customer_id") {
-                rowFields["customer_id"] = .int(customerID)
+            var summary = OrderSummary.make(from: row)
+            if case .object(var fields) = summary,
+               let customerID = RESTResponseParsing.intField(row, "customer_id") {
+                fields["customer_id"] = .int(customerID)
+                summary = .object(fields)
             }
-            if !rowFields.isEmpty {
-                perRow.append(.object(rowFields))
-            }
+            perRow.append(summary)
         }
 
         var fields: [String: AnyCodableJSON] = [

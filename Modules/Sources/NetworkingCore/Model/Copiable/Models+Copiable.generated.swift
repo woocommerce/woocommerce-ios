@@ -396,7 +396,8 @@ extension NetworkingCore.OrderFeeLine {
         total: CopiableProp<String> = .copy,
         totalTax: CopiableProp<String> = .copy,
         taxes: CopiableProp<[OrderItemTax]> = .copy,
-        attributes: CopiableProp<[OrderItemAttribute]> = .copy
+        attributes: CopiableProp<[OrderItemAttribute]> = .copy,
+        refundedItemID: NullableCopiableProp<Int64> = .copy
     ) -> NetworkingCore.OrderFeeLine {
         let feeID = feeID ?? self.feeID
         let name = name ?? self.name
@@ -406,6 +407,7 @@ extension NetworkingCore.OrderFeeLine {
         let totalTax = totalTax ?? self.totalTax
         let taxes = taxes ?? self.taxes
         let attributes = attributes ?? self.attributes
+        let refundedItemID = refundedItemID ?? self.refundedItemID
 
         return NetworkingCore.OrderFeeLine(
             feeID: feeID,
@@ -415,7 +417,8 @@ extension NetworkingCore.OrderFeeLine {
             total: total,
             totalTax: totalTax,
             taxes: taxes,
-            attributes: attributes
+            attributes: attributes,
+            refundedItemID: refundedItemID
         )
     }
 }
@@ -813,7 +816,8 @@ extension NetworkingCore.Refund {
         isAutomated: NullableCopiableProp<Bool> = .copy,
         createAutomated: NullableCopiableProp<Bool> = .copy,
         items: CopiableProp<[OrderItemRefund]> = .copy,
-        shippingLines: NullableCopiableProp<[ShippingLine]> = .copy
+        shippingLines: NullableCopiableProp<[ShippingLine]> = .copy,
+        feeLines: CopiableProp<[OrderFeeLine]> = .copy
     ) -> NetworkingCore.Refund {
         let refundID = refundID ?? self.refundID
         let orderID = orderID ?? self.orderID
@@ -826,6 +830,7 @@ extension NetworkingCore.Refund {
         let createAutomated = createAutomated ?? self.createAutomated
         let items = items ?? self.items
         let shippingLines = shippingLines ?? self.shippingLines
+        let feeLines = feeLines ?? self.feeLines
 
         return NetworkingCore.Refund(
             refundID: refundID,
@@ -838,7 +843,8 @@ extension NetworkingCore.Refund {
             isAutomated: isAutomated,
             createAutomated: createAutomated,
             items: items,
-            shippingLines: shippingLines
+            shippingLines: shippingLines,
+            feeLines: feeLines
         )
     }
 }

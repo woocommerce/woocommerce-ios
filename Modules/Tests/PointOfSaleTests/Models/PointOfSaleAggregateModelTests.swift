@@ -256,46 +256,43 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.customAmounts.first?.id == second.id)
         }
 
-        @Test func presentAddCustomAmount_sets_sheet_presented_and_clears_editing_target() async throws {
-            // Given
+        @Test func editingCustomAmount_starts_nil() async throws {
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
-            sut.presentEditCustomAmount(POSCustomAmount(name: "Existing", amount: "5.00", isTaxable: true))
-            try #require(sut.editingCustomAmount != nil)
 
-            // When
-            sut.presentAddCustomAmount()
-
-            // Then
-            #expect(sut.isCustomAmountSheetPresented == true)
             #expect(sut.editingCustomAmount == nil)
         }
 
-        @Test func presentEditCustomAmount_sets_sheet_presented_and_records_editing_target() async throws {
+        @Test func editingCustomAmount_set_to_value_then_nil_drives_modal_lifecycle() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
-            let target = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+            let customAmount = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: false)
 
-            // When
-            sut.presentEditCustomAmount(target)
+            // When set to a value
+            sut.editingCustomAmount = customAmount
 
             // Then
-            #expect(sut.isCustomAmountSheetPresented == true)
-            #expect(sut.editingCustomAmount == target)
+            #expect(sut.editingCustomAmount == customAmount)
+
+            // When cleared
+            sut.editingCustomAmount = nil
+
+            // Then
+            #expect(sut.editingCustomAmount == nil)
         }
 
-        @Test func dismissCustomAmountSheet_after_edit_clears_both_sheet_and_editing_target() async throws {
-            // Given
+        @Test func upsertCustomAmount_does_not_mutate_editingCustomAmount() async throws {
+            // Given - the cart-edit modal is open on one entry
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
-            sut.presentEditCustomAmount(POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true))
-            try #require(sut.isCustomAmountSheetPresented == true)
-            try #require(sut.editingCustomAmount != nil)
+            let original = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: false)
+            sut.upsertCustomAmount(original, mode: .add)
+            sut.editingCustomAmount = original
 
-            // When
-            sut.dismissCustomAmountSheet()
+            // When the merchant submits an updated value
+            let updated = POSCustomAmount(id: original.id, name: "Service fee", amount: "12.00", isTaxable: false)
+            sut.upsertCustomAmount(updated, mode: .edit)
 
-            // Then
-            #expect(sut.isCustomAmountSheetPresented == false)
-            #expect(sut.editingCustomAmount == nil)
+            // Then upsert leaves editingCustomAmount alone — dismissal is the caller's responsibility
+            #expect(sut.editingCustomAmount == original)
         }
 
         @Test func removeAllItemsFromCart_clears_custom_amounts_too() async throws {

@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ProductsGetToolTests {
     @Test
     func test_products_get_when_response_ok_then_uiStructured_carries_product_card_with_pruned_entity() async throws {

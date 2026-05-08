@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import UIKit
 import Yosemite
+import enum Networking.NetworkError
 import protocol WooFoundation.Analytics
 
 /// View model for the AI support chat interface.
@@ -85,20 +86,32 @@ final class SupportChatViewModel {
         let role: SupportChatRole
         let content: MessageContent
         let timestamp: Date
+        /// `true` when sending this message failed. Drives the failed-bubble visual indicator.
+        let failed: Bool
 
-        init(id: UUID = UUID(), role: SupportChatRole, content: MessageContent, timestamp: Date = Date()) {
+        init(id: UUID = UUID(),
+             role: SupportChatRole,
+             content: MessageContent,
+             timestamp: Date = Date(),
+             failed: Bool = false) {
             self.id = id
             self.role = role
             self.content = content
             self.timestamp = timestamp
+            self.failed = failed
         }
 
         /// Convenience initializer for text messages.
-        init(id: UUID = UUID(), role: SupportChatRole, text: String, timestamp: Date = Date()) {
+        init(id: UUID = UUID(),
+             role: SupportChatRole,
+             text: String,
+             timestamp: Date = Date(),
+             failed: Bool = false) {
             self.id = id
             self.role = role
             self.content = .text(text)
             self.timestamp = timestamp
+            self.failed = failed
         }
     }
 
@@ -136,12 +149,14 @@ final class SupportChatViewModel {
     // MARK: - Private Properties
 
     private var chatID: Int64?
+    private var sessionID: String?
     private let entryPoint: EntryPoint
     private let botSlug: String
     private let stores: StoresManager
     private var diagnosticsContext: [String: Any]?
     private let initialContext: [String: Any]?
-    private let onContactHumanSupport: (_ transcript: String) -> Void
+    private let onContactHumanSupport: (_ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
+    private var latestSupportArea: SupportChatSupportArea?
     var onStartJetpackSetup: () -> Void
     private let diagnosticsService: SupportDiagnosticsService
 
@@ -153,7 +168,7 @@ final class SupportChatViewModel {
          initialContext: [String: Any]? = nil,
          diagnosticsService: SupportDiagnosticsService? = nil,
          chatID: Int64? = nil,
-         onContactHumanSupport: @escaping (_ transcript: String) -> Void,
+         onContactHumanSupport: @escaping (_ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void,
          onStartJetpackSetup: @escaping () -> Void = {}) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
@@ -282,6 +297,7 @@ final class SupportChatViewModel {
             }
         } catch {
             DDLogError("⛔️ Failed to execute action \(action): \(error)")
+            state = .error(errorMessage(for: error))
         }
     }
 
@@ -439,21 +455,14 @@ final class SupportChatViewModel {
         // Build context from diagnostic results
         var context: [String: Any] = initialContext ?? [:]
 
-        if let issue = selectedIssue {
-            context["issue_type"] = String(describing: issue)
-        }
-
         if let troubleshootingDescription = SupportDiagnosticsService.troubleshootingDescription(from: diagnosticResults) {
-            context["troubleshooting_results"] = troubleshootingDescription
+            context["troubleshootingResults"] = troubleshootingDescription
         }
 
         if let site = stores.sessionManager.defaultSite {
-            context["site_id"] = site.siteID
+            context["selectedSiteId"] = site.siteID
             context["site_url"] = site.url
         }
-
-        context["app_version"] = Bundle.main.marketingVersion
-        context["ios_version"] = UIDevice.current.systemVersion
 
         diagnosticsContext = context
 
@@ -528,6 +537,7 @@ final class SupportChatViewModel {
             botSlug: botSlug,
             message: trimmedText,
             chatID: chatID,
+            sessionID: sessionID,
             context: context
         ) { [weak self] result in
             self?.handleSendMessageResult(result,
@@ -539,7 +549,33 @@ final class SupportChatViewModel {
     }
 
     func contactHumanSupport() {
-        onContactHumanSupport(generateTranscript())
+        let transcript = generateTranscript()
+        let supportAreaInfo: SupportAreaInfo?
+
+        if let supportArea = latestSupportArea {
+            let mappedArea = SupportFormViewModel.area(for: supportArea.area)
+            let firstUserMessage = extractFirstUserMessage()
+            supportAreaInfo = SupportAreaInfo(
+                areaType: supportArea.area,
+                area: mappedArea,
+                confidence: supportArea.confidence,
+                transcript: transcript,
+                firstUserMessage: firstUserMessage
+            )
+        } else {
+            supportAreaInfo = nil
+        }
+
+        onContactHumanSupport(transcript, supportAreaInfo)
+    }
+
+    private func extractFirstUserMessage() -> String {
+        for message in messages {
+            if message.role == .user, case .text(let text) = message.content {
+                return text
+            }
+        }
+        return ""
     }
 
     private func generateTranscript() -> String {
@@ -587,19 +623,22 @@ final class SupportChatViewModel {
         switch result {
         case .success(let response):
             chatID = response.chatID
+            sessionID = response.sessionID
             persistChatBookmark(wasNewChat: wasNewChat,
                                 response: response,
                                 firstUserMessage: firstUserMessage)
 
             if let lastBotMessage = response.messages.last(where: { $0.role == .bot }) {
-                let assistantMessage = ChatMessage(
-                    role: .bot,
-                    text: lastBotMessage.content
-                )
-                messages.append(assistantMessage)
-
+                /// Skips displaying last bot message when human support is required. User is suggested to contact support manually.
                 if let flags = lastBotMessage.context?.flags, flags.forwardToHumanSupport {
                     shouldPromptHumanSupport = true
+                    latestSupportArea = lastBotMessage.context?.supportArea
+                } else {
+                    let assistantMessage = ChatMessage(
+                        role: .bot,
+                        text: lastBotMessage.content
+                    )
+                    messages.append(assistantMessage)
                 }
             }
 
@@ -607,16 +646,42 @@ final class SupportChatViewModel {
 
         case .failure(let error):
             DDLogError("⛔️ Support chat error: \(error)")
-            state = .error(Localization.errorMessage)
+            markLastUserMessageAsFailed()
+            state = .error(errorMessage(for: error))
         }
+    }
+
+    /// Replaces the most recent `.user` message with a copy that has `failed = true`,
+    /// so the UI can render the failed-bubble indicator.
+    private func markLastUserMessageAsFailed() {
+        guard let index = messages.lastIndex(where: { $0.role == .user }) else { return }
+        let prev = messages[index]
+        messages[index] = ChatMessage(
+            id: prev.id,
+            role: prev.role,
+            content: prev.content,
+            timestamp: prev.timestamp,
+            failed: true
+        )
     }
 
     /// Maps a fetched transcript into local `ChatMessage` values. Unknown roles are dropped
     /// rather than rendered as garbage; ordering from the server (ts-ascending) is preserved.
+    /// Bot messages flagged for human support are also filtered out.
     private func handleFetchChatResult(_ result: Result<SupportChatResponse, Error>) {
         switch result {
         case .success(let response):
-            let rehydrated: [ChatMessage] = response.messages.compactMap { message in
+            sessionID = response.sessionID
+            let rehydrated: [ChatMessage] = response.messages.compactMap { [weak self] message in
+                // Filter out bot messages flagged for human support
+                if message.role == .bot,
+                   let flags = message.context?.flags,
+                   flags.forwardToHumanSupport {
+                    self?.shouldPromptHumanSupport = true
+                    self?.latestSupportArea = message.context?.supportArea
+                    return nil
+                }
+
                 switch message.role {
                 case .user:
                     return ChatMessage(role: .user, text: message.content)
@@ -632,9 +697,19 @@ final class SupportChatViewModel {
         case .failure(let error):
             DDLogError("⛔️ Support chat resume error: \(error)")
             // Fail soft: the merchant can still send a new message into the existing chatID;
-            // they just won't see the prior transcript. Surface as a retry-able error.
-            state = .error(Localization.resumeErrorMessage)
+            // they just won't see the prior transcript.
+            state = .error(errorMessage(for: error))
         }
+    }
+
+    /// Maps a thrown error to user-facing copy. Rate-limit responses (HTTP 429) get an
+    /// explicit "you've reached the limit" message; everything else gets a generic one.
+    /// The actual error is logged separately via `DDLogError`.
+    private func errorMessage(for error: Error) -> String {
+        if let networkError = error as? NetworkError, networkError.responseCode == 429 {
+            return Localization.rateLimitErrorMessage
+        }
+        return Localization.errorMessage
     }
 
     /// Persists a local bookmark for the chat so it appears in the chat history UI.
@@ -679,13 +754,13 @@ private extension SupportChatViewModel {
         )
         static let errorMessage = NSLocalizedString(
             "supportChatViewModel.errorMessage",
-            value: "Something went wrong. Please try again.",
-            comment: "Error message shown when sending a support chat message fails"
+            value: "We couldn't connect to AI chat right now.",
+            comment: "Generic error message shown when an AI support chat request fails"
         )
-        static let resumeErrorMessage = NSLocalizedString(
-            "supportChatViewModel.resumeErrorMessage",
-            value: "We couldn't load the previous conversation. You can still send a new message.",
-            comment: "Error message shown when loading a prior support chat transcript fails on resume"
+        static let rateLimitErrorMessage = NSLocalizedString(
+            "supportChatViewModel.rateLimitErrorMessage",
+            value: "You've reached the chat limit. Please try again later.",
+            comment: "Error message shown when the AI support chat rate limit (HTTP 429) is hit"
         )
     }
 }

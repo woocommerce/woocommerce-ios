@@ -10,16 +10,19 @@ struct MessageBubble: View {
         HStack(alignment: .top, spacing: 0) {
             if message.role == .user { Spacer(minLength: AssistantSpacing.xxLarge) }
             VStack(alignment: alignment, spacing: AssistantSpacing.large) {
-                ForEach(orderedSegments) { segment in
-                    segmentView(for: segment)
+                ForEach(renderableGroups, id: \.identifier) { group in
+                    groupView(for: group)
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
             }
-            .animation(.snappy(duration: 0.2), value: orderedSegments.map(\.id))
             if message.role == .assistant { Spacer(minLength: AssistantSpacing.xxLarge) }
         }
         .frame(maxWidth: .infinity,
                alignment: message.role == .user ? .trailing : .leading)
+    }
+
+    var renderableGroups: [MessageSegmentGrouping.Group] {
+        MessageSegmentGrouping.group(orderedSegments)
     }
 
     private var alignment: HorizontalAlignment {
@@ -124,6 +127,20 @@ struct MessageBubble: View {
     }
 
     @ViewBuilder
+    private func groupView(for group: MessageSegmentGrouping.Group) -> some View {
+        switch group {
+        case .solo(let segment):
+            segmentView(for: segment)
+        case .cardRun(let family, let segments):
+            let payloads = segments.compactMap { segment -> AnyCodableJSON? in
+                if case .cardRender(_, _, _, let payload) = segment { return payload }
+                return nil
+            }
+            MessageCardListHost(family: family, payloads: payloads)
+        }
+    }
+
+    @ViewBuilder
     private func segmentView(for segment: MessageSegment) -> some View {
         switch segment {
         case .text(_, let content):
@@ -149,6 +166,7 @@ struct MessageBubble: View {
         Text(renderedText(content))
             .font(.assistantBody)
             .foregroundStyle(bubbleTextColor)
+            .tint(bubbleTextColor)
             .padding(.horizontal, AssistantSpacing.medium)
             .padding(.vertical, AssistantSpacing.bubbleVerticalInset)
             .background(bubbleBackground)

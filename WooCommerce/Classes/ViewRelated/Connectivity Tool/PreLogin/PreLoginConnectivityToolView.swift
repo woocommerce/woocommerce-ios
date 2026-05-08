@@ -8,6 +8,9 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
 
     private let viewModel: PreLoginConnectivityToolViewModel
 
+    /// Retains the support escalation coordinator while the flow is active.
+    private var supportEscalationCoordinator: SupportEscalationCoordinator?
+
     init(siteURL: URL) {
         viewModel = PreLoginConnectivityToolViewModel(siteURL: siteURL)
         let view = PreLoginConnectivityToolView(viewModel: viewModel)
@@ -21,6 +24,10 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
         rootView.onContactSupportTapped = { [weak self] in
             self?.showContactSupportForm()
         }
+
+        rootView.onChatWithSupportTapped = { [weak self] in
+            self?.showSupportChat()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -28,19 +35,42 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
     }
 
     private func showContactSupportForm() {
-        let attachments: [ZendeskAttachment] = {
-            guard let description = viewModel.troubleshootingDescription(),
-                  let data = description.data(using: .utf8) else { return [] }
-            return [
-                ZendeskAttachment(
-                    data: data,
-                    filename: "prelogin_connectivitytest_log.md",
-                    contentType: "text/markdown"
-                )
-            ]
-        }()
-        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(attachments: attachments))
+        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(
+            attachments: buildTroubleshootingAttachment()
+        ))
         supportController.show(from: self)
+    }
+
+    private func showSupportChat() {
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] transcript, supportAreaInfo in
+            self?.navigationController?.popViewController(animated: true)
+            self?.handleContactHumanSupport(transcript: transcript, supportAreaInfo: supportAreaInfo)
+        }
+
+        let chatController = SupportChatHostingController(viewModel: chatViewModel)
+        chatController.show(from: self)
+    }
+
+    private func handleContactHumanSupport(transcript: String, supportAreaInfo: SupportAreaInfo?) {
+        supportEscalationCoordinator = SupportEscalationCoordinator(
+            navigationController: navigationController,
+            additionalAttachmentsProvider: { [weak self] in
+                self?.buildTroubleshootingAttachment() ?? []
+            }
+        )
+        supportEscalationCoordinator?.handleEscalation(transcript: transcript, supportAreaInfo: supportAreaInfo)
+    }
+
+    private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {
+        guard let description = viewModel.troubleshootingDescription(),
+              let data = description.data(using: .utf8) else {
+            return []
+        }
+        return [ZendeskAttachment(
+            data: data,
+            filename: "prelogin_connectivitytest_log.md",
+            contentType: "text/markdown"
+        )]
     }
 }
 
@@ -52,6 +82,9 @@ struct PreLoginConnectivityToolView: View {
 
     /// Closure invoked when the "Contact Support" button is tapped.
     var onContactSupportTapped: (() -> Void)?
+
+    /// Closure invoked when the "Chat with AI Support" button is tapped.
+    var onChatWithSupportTapped: (() -> Void)?
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -71,11 +104,19 @@ struct PreLoginConnectivityToolView: View {
                 }
             }
 
-            Button(Localization.contactSupport) {
-                onContactSupportTapped?()
+            if viewModel.showChatButton {
+                Button(Localization.chatWithSupport) {
+                    onChatWithSupportTapped?()
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .padding()
+            } else if viewModel.showContactSupportButton {
+                Button(Localization.contactSupport) {
+                    onContactSupportTapped?()
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .padding()
             }
-            .buttonStyle(SecondaryButtonStyle())
-            .padding()
         }
         .background(Color(uiColor: .listForeground(modal: false)))
         .navigationTitle(Localization.title)
@@ -188,6 +229,11 @@ private extension PreLoginConnectivityToolView {
             "preLoginConnectivityToolView.contactSupport",
             value: "Contact Support",
             comment: "Contact support button in the pre-login connectivity tool"
+        )
+        static let chatWithSupport = NSLocalizedString(
+            "preLoginConnectivityToolView.chatWithSupport",
+            value: "Chat with Support",
+            comment: "Chat with AI support button in the pre-login connectivity tool"
         )
     }
 }

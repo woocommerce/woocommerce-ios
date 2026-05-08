@@ -13,6 +13,7 @@ extension Storage.StoredSupportChat: ReadOnlyConvertible {
         siteID = summary.siteID
         wpcomUserID = summary.wpcomUserID
         botSlug = summary.botSlug
+        hasCreatedTicket = summary.hasCreatedTicket
         title = summary.title
         createdAt = summary.createdAt
         updatedAt = summary.updatedAt
@@ -25,6 +26,7 @@ extension Storage.StoredSupportChat: ReadOnlyConvertible {
                            siteID: siteID,
                            wpcomUserID: wpcomUserID,
                            botSlug: botSlug ?? "",
+                           hasCreatedTicket: hasCreatedTicket,
                            title: title,
                            createdAt: createdAt ?? Date(),
                            updatedAt: updatedAt ?? Date())

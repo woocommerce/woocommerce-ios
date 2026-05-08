@@ -686,6 +686,23 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == false)
     }
 
+    @Test func test_markChatTicketCreated_flips_hasCreatedTicket_and_hides_toolbar() {
+        // Given — a live chat with at least one user message so the toolbar would otherwise be visible
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { _ in }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "Hello"
+        sut.sendMessage()
+        #expect(sut.canEscalateToHumanSupport == true)
+
+        // When
+        sut.markChatTicketCreated()
+
+        // Then
+        #expect(sut.hasCreatedTicket == true)
+        #expect(sut.canEscalateToHumanSupport == false)
+    }
+
     @Test func test_canEscalateToHumanSupport_is_false_when_hasCreatedTicket_is_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))

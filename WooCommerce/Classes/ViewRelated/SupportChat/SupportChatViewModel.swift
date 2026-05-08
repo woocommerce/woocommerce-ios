@@ -148,6 +148,13 @@ final class SupportChatViewModel {
     /// When true, the escalation button should be hidden.
     private(set) var hasCreatedTicket: Bool = false
 
+    /// Flips `hasCreatedTicket` so the chat surface (toolbar icon, inline banner) updates in real time
+    /// after the escalation coordinator successfully creates a Zendesk ticket. Storage is updated separately
+    /// by the coordinator via `SupportChatAction.markTicketCreated`.
+    func markChatTicketCreated() {
+        hasCreatedTicket = true
+    }
+
     /// Whether the trailing toolbar entry point to human support should be visible.
     /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics)
     /// AND has sent at least one message, and only while no ticket has been created yet.

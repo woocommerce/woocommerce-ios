@@ -196,7 +196,8 @@ struct CardFamily: Sendable {
         pathStrategy: .batchedList(path: "wc/v3/products"),
         summaryKeys: [
             "id", "name", "sku", "price", "stock_status",
-            "type", "manage_stock", "on_sale", "stock_quantity"
+            "type", "manage_stock", "on_sale", "stock_quantity",
+            "variations_count"
         ],
         checkTrash: true
     )

@@ -271,7 +271,7 @@ final class SupportDiagnosticsService {
                 case .failure(let error):
                     DDLogError("SupportDiagnostics: ❌ WPCom connection\n\(error)")
                     continuation.resume(returning: Failure(errorMessage: Localization.Error.wpcomConnection,
-                                                           technicalDetails: String(describing: error)))
+                                                           technicalDetails: error.formattedTechnicalDetails))
                 }
             }
         }
@@ -290,7 +290,7 @@ final class SupportDiagnosticsService {
                 case .failure(let error):
                     DDLogError("SupportDiagnostics: ❌ Site connection\n\(error)")
                     continuation.resume(returning: Failure(errorMessage: self.errorMessage(for: error),
-                                                           technicalDetails: String(describing: error)))
+                                                           technicalDetails: error.formattedTechnicalDetails))
                 }
             }
         }
@@ -303,7 +303,7 @@ final class SupportDiagnosticsService {
             return nil
         } catch {
             DDLogError("SupportDiagnostics: ❌ Site Orders\n\(error)")
-            return Failure(errorMessage: errorMessage(for: error), technicalDetails: String(describing: error))
+            return Failure(errorMessage: errorMessage(for: error), technicalDetails: error.formattedTechnicalDetails)
         }
     }
 
@@ -314,7 +314,7 @@ final class SupportDiagnosticsService {
             return nil
         } catch {
             DDLogError("SupportDiagnostics: ❌ Loading products\n\(error)")
-            return Failure(errorMessage: errorMessage(for: error), technicalDetails: String(describing: error))
+            return Failure(errorMessage: errorMessage(for: error), technicalDetails: error.formattedTechnicalDetails)
         }
     }
 
@@ -334,7 +334,7 @@ final class SupportDiagnosticsService {
                 case .failure(let error):
                     DDLogError("SupportDiagnostics: ❌ Analytics check failed\n\(error)")
                     continuation.resume(returning: Failure(errorMessage: Localization.Error.analyticsCheckFailed,
-                                                           technicalDetails: String(describing: error)))
+                                                           technicalDetails: error.formattedTechnicalDetails))
                 }
             }
             stores.dispatch(action)
@@ -379,7 +379,7 @@ final class SupportDiagnosticsService {
                                suggestedAction: .enableOrderNotifications(settings: settings))
             case .requestFailed(let error):
                 return Failure(errorMessage: Localization.Error.notificationConfigCheckFailed,
-                               technicalDetails: String(describing: error))
+                               technicalDetails: error.formattedTechnicalDetails)
             }
         }
     }

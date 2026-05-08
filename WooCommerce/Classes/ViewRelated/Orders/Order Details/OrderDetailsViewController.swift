@@ -501,8 +501,7 @@ private extension OrderDetailsViewController {
         let isRevampedFlow = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
 
         var cancellables = Set<AnyCancellable>()
-        // swiftlint:disable:next redundant_type_annotation
-        var cancellable: AnyCancellable = AnyCancellable { }
+        var cancellable = AnyCancellable { }
         cancellable = fulfillmentProcess.result.sink { completion in
             if case .failure = completion {
                 ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed,

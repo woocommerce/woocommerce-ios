@@ -42,8 +42,15 @@ public enum OrdersBulkUpdateTool {
                             "type": .string("string"),
                             "enum": .array(allowedStatuses.sorted().map { .string($0) })
                         ]),
-                        "customer_note": .object(["type": .string("string")]),
-                        "billing_email": .object(["type": .string("string")])
+                        "customer_note": .object([
+                            "type": .string("string"),
+                            "maxLength": .int(Int64(OrderWriteArgumentValidation.customerNoteMaxLength))
+                        ]),
+                        "billing_email": .object([
+                            "type": .string("string"),
+                            "maxLength": .int(Int64(OrderWriteArgumentValidation.billingEmailMaxLength)),
+                            "format": .string("email")
+                        ])
                     ]),
                     "description": .string("Patch applied to every id. At least one field required.")
                 ])
@@ -111,6 +118,10 @@ public enum OrdersBulkUpdateTool {
             return .failed(.init(toolName: name,
                                  kind: .invalidToolCall,
                                  reason: "status must be one of: \(allowedStatuses.sorted().joined(separator: ", "))"))
+        }
+        if let reason = OrderWriteArgumentValidation.validate(customerNote: args.patch.customerNote,
+                                                              billingEmail: args.patch.billingEmail) {
+            return .failed(.init(toolName: name, kind: .invalidToolCall, reason: reason))
         }
         guard args.patch.hasAnyField else {
             return .failed(.init(toolName: name,

@@ -36,10 +36,13 @@ public enum OrdersUpdateTool {
                 ]),
                 "customer_note": .object([
                     "type": .string("string"),
+                    "maxLength": .int(Int64(OrderWriteArgumentValidation.customerNoteMaxLength)),
                     "description": .string("Internal note shown to the customer in their account.")
                 ]),
                 "billing_email": .object([
                     "type": .string("string"),
+                    "maxLength": .int(Int64(OrderWriteArgumentValidation.billingEmailMaxLength)),
+                    "format": .string("email"),
                     "description": .string("Replacement billing email (mapped to billing.email).")
                 ])
             ]),
@@ -85,6 +88,10 @@ public enum OrdersUpdateTool {
             return .failed(.init(toolName: name,
                                  kind: .invalidToolCall,
                                  reason: "status must be one of: \(allowedStatuses.sorted().joined(separator: ", "))"))
+        }
+        if let reason = OrderWriteArgumentValidation.validate(customerNote: args.customerNote,
+                                                              billingEmail: args.billingEmail) {
+            return .failed(.init(toolName: name, kind: .invalidToolCall, reason: reason))
         }
         var body: [String: Any] = [:]
         if let status = args.status { body["status"] = status }

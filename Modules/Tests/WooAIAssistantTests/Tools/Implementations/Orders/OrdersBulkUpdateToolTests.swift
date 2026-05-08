@@ -281,4 +281,63 @@ struct OrdersBulkUpdateToolTests {
         }
         #expect(summary["failed"] == .array([]))
     }
+
+    @Test
+    func test_execute_when_patch_customer_note_exceeds_1000_chars_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersBulkUpdateTool.make()
+        let oversize = String(repeating: "a", count: 1001)
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"customer_note": "\#(oversize)"}}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason == "customer_note must be at most 1000 characters.")
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_execute_when_patch_billing_email_exceeds_254_chars_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersBulkUpdateTool.make()
+        let oversize = String(repeating: "a", count: 245) + "@example.com"
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"billing_email": "\#(oversize)"}}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason == "billing_email must be at most 254 characters.")
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_execute_when_patch_billing_email_is_malformed_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"billing_email": "not-an-email"}}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason == "billing_email must be a valid email address.")
+        #expect(await client.calls.isEmpty)
+    }
 }

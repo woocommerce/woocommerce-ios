@@ -57,7 +57,7 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
       end
 
     <<~QUESTION
-      Act like a mobile app marketer preparing release notes for the Google Play Store and App Store.
+      Act like a mobile app marketer preparing release notes for the App Store.
       Write effective release notes for WooCommerce iOS #{version} that help merchants understand what changed in this update.
 
       Rules:
@@ -67,6 +67,7 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
       - Remove GitHub links, PR numbers, issue numbers, branch names, and engineering jargon.
       - Write for WooCommerce merchants, not developers.
       - Do not write it point by point — write a single, unique paragraph.
+      - Do not mention the release version or version number in the output.
       - The final text must be #{PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer, including spaces.
       - Return only the final release notes text.
 

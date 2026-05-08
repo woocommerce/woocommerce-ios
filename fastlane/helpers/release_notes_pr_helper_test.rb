@@ -53,7 +53,7 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
     prompt = Helper.build_ai_release_notes_prompt(version: '24.8', raw_items: '- [*] Foo')
     [
       'Act like a mobile app marketer',
-      'Google Play Store and App Store',
+      'App Store',
       'help merchants understand what changed',
       'Only use the provided items.',
       'Do not invent features, fixes, or benefits.',
@@ -62,6 +62,7 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
       'Write for WooCommerce merchants',
       'Do not write it point by point',
       'single, unique paragraph',
+      'Do not mention the release version or version number',
       "The final text must be #{Helper::PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer",
       'Return only the final release notes text'
     ].each do |fragment|

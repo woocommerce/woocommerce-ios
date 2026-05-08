@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct ARParcelFittingResultsView: View {
     let viewModel: ARParcelFittingResultsViewModel
-    weak var delegate: ParcelFittingDelegate?
+    var delegate: ParcelFittingDelegate?
     let onConfirm: (ParcelFittingResult) -> Void
     let onBack: () -> Void
     let onBrowseAllPackages: (() -> Void)?

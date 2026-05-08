@@ -22,10 +22,6 @@ public final class ARParcelFittingResultsViewModel {
         .sorted { $0.package.volume < $1.package.volume }
     }
 
-    var dimensionsLabel: String {
-        measuredDimensions.formatted(unit: unit)
-    }
-
     static func fits(measured: ParcelDimensions, into package: ParcelPresetPackage) -> Bool {
         let m = [measured.length, measured.width, measured.height].sorted(by: >)
         let p = [package.length, package.width, package.height].sorted(by: >)

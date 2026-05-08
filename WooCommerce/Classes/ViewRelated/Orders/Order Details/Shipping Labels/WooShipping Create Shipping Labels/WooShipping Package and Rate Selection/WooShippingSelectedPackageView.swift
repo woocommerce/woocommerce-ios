@@ -10,9 +10,9 @@ struct WooShippingSelectedPackageView: View {
     @State private var showPackageSelection = false
     @State private var showARResults = false
 
-    let arContext: WooShippingAddPackageView.ARPackageContext?
+    let arContext: ARPackageContext?
     weak var parcelFittingDelegate: ParcelFittingDelegate?
-    let updateSelectedPackage: (WooShippingPackageDataRepresentable, WooShippingAddPackageView.ARPackageContext?) -> Void
+    let updateSelectedPackage: (WooShippingPackageDataRepresentable, ARPackageContext?) -> Void
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -129,7 +129,7 @@ struct WooShippingSelectedPackageView: View {
                 packageType: "box"
             )
             let newContext = context.map {
-                WooShippingAddPackageView.ARPackageContext(
+                ARPackageContext(
                     measurement: measurement,
                     carriers: $0.carriers,
                     starredPackageIDs: $0.starredPackageIDs,
@@ -150,7 +150,7 @@ struct WooShippingSelectedPackageView: View {
                 packageType: "box"
             )
             let newContext = context.map {
-                WooShippingAddPackageView.ARPackageContext(
+                ARPackageContext(
                     measurement: dims,
                     carriers: $0.carriers,
                     starredPackageIDs: $0.starredPackageIDs,

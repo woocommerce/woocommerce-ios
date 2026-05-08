@@ -2,7 +2,7 @@ import SwiftUI
 
 struct WooShippingPackageAndRatePlaceholder: View {
     /// Action to perform when a package is selected.
-    let onSelectPackage: (WooShippingPackageDataRepresentable, WooShippingAddPackageView.ARPackageContext?) -> Void
+    let onSelectPackage: (WooShippingPackageDataRepresentable, ARPackageContext?) -> Void
 
     @State private var showAddPackage: Bool = false
 

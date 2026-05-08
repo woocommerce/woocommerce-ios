@@ -24,13 +24,6 @@ struct WooShippingAddPackageView: View {
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
     var onARPackageSelected: ((WooShippingPackageDataRepresentable, ARPackageContext) -> Void)?
 
-    struct ARPackageContext {
-        let measurement: ParcelDimensions
-        let carriers: [ParcelPresetCarrier]
-        let starredPackageIDs: Set<String>
-        let dimensionUnit: UnitLength
-    }
-
     @State private var cancellable: AnyCancellable?
 
     @Environment(\.shippingWeightUnit) private var weightUnit
@@ -162,6 +155,8 @@ struct WooShippingAddPackageView: View {
                     } else {
                         addPackageAction(selected)
                     }
+                } else {
+                    DDLogError("⛔️ AR flow: carrier package \(package.id) not found in loaded packages")
                 }
             case .customDimensions(let dims):
                 customPackageViewModel.fieldValues[.length] = String(format: "%.1f", dims.length)

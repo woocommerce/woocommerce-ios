@@ -67,7 +67,6 @@ struct ItemListView: View {
         ItemListViewHelper().shouldShowCustomAmountEntryRow(
             itemListType: itemListType,
             isCustomAmountsFeatureEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleCustomAmounts),
-            orderStage: posModel.orderStage,
             isSearching: isSearching
         )
     }

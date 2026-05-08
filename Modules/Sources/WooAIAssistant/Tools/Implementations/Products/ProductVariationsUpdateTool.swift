@@ -130,6 +130,6 @@ public enum ProductVariationsUpdateTool {
                                                           client: client,
                                                           toolName: name,
                                                           family: .productVariation,
-                                                          summarize: ProductSummary.make)
+                                                          summarize: ProductVariationDetailSummary.make)
     }
 }

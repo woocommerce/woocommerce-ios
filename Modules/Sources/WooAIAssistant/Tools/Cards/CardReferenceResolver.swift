@@ -91,11 +91,15 @@ struct CardReferenceResolver: Sendable {
                                                              summarize: family.summarize)
                     }
                 case .analytics(let slot, let outcome):
-                    // AnalyticsStatsSummary.make already projects to model-visible shape.
+                    // Project the full summary down to model-visible keys; the rendered
+                    // card payload keeps the per-bucket data the chart needs.
                     resolutions[slot.slot] = resolution(family: .analyticsStats,
                                                         id: slot.id,
                                                         outcome: outcome,
-                                                        summarize: { $0 })
+                                                        summarize: { entity in
+                                                            RESTResponseParsing.project(entity,
+                                                                                        keys: AnalyticsStatsSummary.modelVisibleKeys)
+                                                        })
                 }
             }
         }

@@ -117,6 +117,45 @@ struct ShowCardsToolTests {
     }
 
     @Test
+    func test_executor_when_analytics_stats_reference_then_model_visible_summary_omits_interval_buckets() async {
+        // Given
+        let body = """
+        {"totals":{"net_revenue":"123.45","gross_sales":"150.00"},
+         "intervals":[
+            {"interval":"2026-04-01","date_start":"2026-04-01 00:00:00","subtotals":{"net_revenue":"50.00"}},
+            {"interval":"2026-04-02","date_start":"2026-04-02 00:00:00","subtotals":{"net_revenue":"73.45"}}
+         ]}
+        """
+        let client = StubbedWCRESTClient()
+        await client.stub(path: "wc-analytics/reports/revenue/stats", response: StubResponses.ok(body))
+        let analyticsID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let tool = ShowCardsTool.make()
+        let arguments = """
+        {"references": [
+            {"family": "analytics_stats", "id": "\(analyticsID)"}
+        ]}
+        """
+
+        // When
+        let result = await tool.executor(arguments, client)
+
+        // Then
+        guard case .success(let success) = result,
+              case .object(let structured) = success.structured,
+              case .array(let resolvedRefs) = structured["resolved_refs"],
+              case .object(let entry) = resolvedRefs.first,
+              case .object(let summary) = entry["summary"] else {
+            Issue.record("expected resolved_refs with one entry containing object summary")
+            return
+        }
+        // Per-bucket data must not reach the model through show_cards summaries;
+        // it lives in the rendered card payload only. Mirrors Android #15837.
+        #expect(summary["interval_subtotals"] == nil)
+        #expect(summary["interval_count"] == nil)
+        #expect(Set(summary.keys) == Set(["after", "before", "totals"]))
+    }
+
+    @Test
     func test_executor_when_analytics_id_is_malformed_then_rejected_as_malformed() async {
         // Given
         let client = StubbedWCRESTClient()

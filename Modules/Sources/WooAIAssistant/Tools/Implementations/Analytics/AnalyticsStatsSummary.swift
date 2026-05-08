@@ -1,10 +1,15 @@
 import Foundation
 
 enum AnalyticsStatsSummary {
-    /// Analytics is text-only: the model needs the numeric totals to answer in
-    /// prose. We keep `totals` verbatim and replace `intervals` with a
-    /// per-bucket subtotals projection plus the bucket count, so a
-    /// year-by-day call doesn't ship 365 row JSON blobs.
+    /// Keys allowed in the model-visible projection. Mirrors Android's
+    /// `ANALYTICS_STATS_SUMMARY_KEYS`; per-bucket data stays in the rendered
+    /// card payload only so a year-by-day query doesn't ship 365 buckets to
+    /// the model.
+    static let modelVisibleKeys: [String] = ["after", "before", "totals"]
+
+    /// Builds the full summary used by the analytics tools' tool result and
+    /// by the card renderer. The `show_cards` resolver projects this down
+    /// to `modelVisibleKeys` before the model sees it via `resolved_refs`.
     static func make(from payload: AnyCodableJSON, range: (after: String, before: String)) -> AnyCodableJSON {
         var fields: [String: AnyCodableJSON] = [
             "after": .string(range.after),

@@ -450,13 +450,25 @@ struct CardReferenceResolverTests {
         }
         #expect(family == .analyticsStats)
         #expect(id == analyticsID)
-        if case .object(let fields) = summary {
-            #expect(fields["interval_count"] == .int(1))
-        } else {
+        guard case .object(let fields) = summary else {
             Issue.record("expected object summary")
+            return
         }
+        // Per-bucket data is rendered-only; the model-visible summary keeps
+        // just the projection keys so a year-by-day query doesn't blow the
+        // model context.
+        #expect(Set(fields.keys) == Set(["after", "before", "totals"]))
+        #expect(fields["interval_subtotals"] == nil)
+        #expect(fields["interval_count"] == nil)
         #expect(rendered.family == .analyticsStats)
         #expect(rendered.id == analyticsID)
+        // Rendered card payload still carries the per-bucket data the chart needs.
+        guard case .object(let renderedFields) = rendered.element else {
+            Issue.record("expected object rendered.element")
+            return
+        }
+        #expect(renderedFields["interval_count"] == .int(1))
+        #expect(renderedFields["interval_subtotals"] != nil)
     }
 
     @Test

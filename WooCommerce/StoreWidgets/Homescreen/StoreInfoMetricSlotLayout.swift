@@ -8,13 +8,17 @@ enum StoreInfoMetricSlotLayout {
         case large
 
         var defaultLimit: Int {
+            StoreStatsConfigurationIntent.metricsSlotCounts[widgetFamily]!
+        }
+
+        private var widgetFamily: WidgetFamily {
             switch self {
             case .small:
-                return StoreStatsConfigurationIntent.metricsSlotCounts[.systemSmall] ?? 2
+                return .systemSmall
             case .medium:
-                return StoreStatsConfigurationIntent.metricsSlotCounts[.systemMedium] ?? 4
+                return .systemMedium
             case .large:
-                return StoreStatsConfigurationIntent.metricsSlotCounts[.systemLarge] ?? 7
+                return .systemLarge
             }
         }
 

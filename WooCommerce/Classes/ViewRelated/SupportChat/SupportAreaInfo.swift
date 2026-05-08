@@ -15,7 +15,22 @@ struct SupportAreaInfo {
     /// Full chat transcript.
     let transcript: String
 
+    /// Pre-fetched system status report, if available.
+    let systemStatusReport: String?
+
     var isHighConfidence: Bool {
         confidence == .high
+    }
+
+    init(areaType: SupportAreaType,
+         area: SupportFormViewModel.Area,
+         confidence: SupportAreaConfidence,
+         transcript: String,
+         systemStatusReport: String? = nil) {
+        self.areaType = areaType
+        self.area = area
+        self.confidence = confidence
+        self.transcript = transcript
+        self.systemStatusReport = systemStatusReport
     }
 }

@@ -559,6 +559,64 @@ struct SupportChatViewModelTests {
         #expect(receivedChatID == chatID)
     }
 
+    @Test func test_contactHumanSupport_when_prefetched_systemStatusReport_then_passes_it_in_supportAreaInfo() async {
+        // Given
+        let prefetchedReport = "### Pre-fetched System Status Report ###"
+        var receivedSupportAreaInfo: SupportAreaInfo?
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, _, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: "Hello", context: nil),
+                        SupportChatMessage(
+                            messageID: 2,
+                            role: .bot,
+                            content: "Please contact support.",
+                            context: SupportChatMessageContext(
+                                sources: [],
+                                flags: SupportChatFlags(
+                                    forwardToHumanSupport: true,
+                                    cannedResponse: false,
+                                    loggedIn: true,
+                                    branch: nil
+                                ),
+                                supportArea: SupportChatSupportArea(area: .mobileApp, confidence: .high)
+                            )
+                        )
+                    ]
+                )
+                completion(.success(response))
+            default:
+                break
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .connectivityTool,
+            stores: stores,
+            systemStatusReport: prefetchedReport,
+            onContactHumanSupport: { _, _, supportAreaInfo in
+                receivedSupportAreaInfo = supportAreaInfo
+            }
+        )
+
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // When
+        sut.contactHumanSupport()
+
+        // Then
+        #expect(receivedSupportAreaInfo?.systemStatusReport == prefetchedReport)
+    }
+
     // MARK: - Test Helpers
 
     private func makeSUT(

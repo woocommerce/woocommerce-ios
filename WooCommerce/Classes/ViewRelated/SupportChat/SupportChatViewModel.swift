@@ -164,6 +164,10 @@ final class SupportChatViewModel {
     var onStartJetpackSetup: () -> Void
     private let diagnosticsService: SupportDiagnosticsService
 
+    /// Pre-fetched system status report, if available (e.g., from connectivity tool).
+    ///
+    private let prefetchedSystemStatusReport: String?
+
     // MARK: - Initialization
 
     init(botSlug: String = "woo-workflow-support_mobile_inapp_all_users",
@@ -173,6 +177,7 @@ final class SupportChatViewModel {
          diagnosticsService: SupportDiagnosticsService? = nil,
          chatID: Int64? = nil,
          hasCreatedTicket: Bool = false,
+         systemStatusReport: String? = nil,
          onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void,
          onStartJetpackSetup: @escaping () -> Void = {}) {
         self.botSlug = botSlug
@@ -183,6 +188,7 @@ final class SupportChatViewModel {
         self.chatID = chatID
         self.isResumedChat = chatID != nil
         self.hasCreatedTicket = hasCreatedTicket
+        self.prefetchedSystemStatusReport = systemStatusReport
         self.onContactHumanSupport = onContactHumanSupport
         self.onStartJetpackSetup = onStartJetpackSetup
     }
@@ -557,14 +563,16 @@ final class SupportChatViewModel {
     func contactHumanSupport() {
         let transcript = generateTranscript()
         let supportAreaInfo: SupportAreaInfo?
+        let systemStatusReport = prefetchedSystemStatusReport ?? diagnosticsService.formattedSystemStatusReport
 
         if let supportArea = latestSupportArea {
-            let mappedArea = SupportFormViewModel.area(for: supportArea.area)
+            let mappedArea = SupportFormViewModel.area(for: supportArea.area, systemStatusReport: systemStatusReport)
             supportAreaInfo = SupportAreaInfo(
                 areaType: supportArea.area,
                 area: mappedArea,
                 confidence: supportArea.confidence,
-                transcript: transcript
+                transcript: transcript,
+                systemStatusReport: systemStatusReport
             )
         } else {
             supportAreaInfo = nil

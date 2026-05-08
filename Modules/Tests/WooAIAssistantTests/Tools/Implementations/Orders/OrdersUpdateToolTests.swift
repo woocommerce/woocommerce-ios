@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct OrdersUpdateToolTests {
     @Test
     func test_ordersUpdate_when_status_completed_then_sends_status_body() async throws {

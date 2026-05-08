@@ -77,7 +77,8 @@ public struct AssistantChatView: View {
     private var messageList: some View {
         MessageListView(messages: controller.conversation.messages,
                         streamingState: controller.conversation.streamingState,
-                        onPickPrompt: { draft = $0; inputFocused = true })
+                        onPickPrompt: { draft = $0; inputFocused = true },
+                        onSendSuggestion: sendSuggestion)
             .background(
                 Color.clear
                     .contentShape(Rectangle())
@@ -104,6 +105,14 @@ public struct AssistantChatView: View {
         guard !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         controller.send(prompt)
         draft = ""
+    }
+
+    private func sendSuggestion(_ suggestion: String) {
+        let trimmed = suggestion.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        controller.send(trimmed)
+        draft = ""
+        inputFocused = false
     }
 
     private func newConversation() {

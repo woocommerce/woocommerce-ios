@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ProductsBulkUpdateToolTests {
     @Test
     func test_productsBulkUpdate_when_status_set_then_each_entry_carries_id_and_status() async throws {

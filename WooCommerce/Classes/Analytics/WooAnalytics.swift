@@ -23,6 +23,8 @@ final class WooAnalytics: Analytics {
     ///
     private var applicationOpenedTime: Date?
 
+    private lazy var widgetSetupChangeTracker = WidgetSetupChangeTracker()
+
     /// Check user opt-in for analytics
     ///
     var userHasOptedIn: Bool {
@@ -301,7 +303,25 @@ private extension WooAnalytics {
     @objc func trackApplicationOpened() {
         WidgetCenter.shared.getCurrentConfigurations { [weak self] configurationResult in
             guard let self else { return }
-            self.track(.applicationOpened, withProperties: self.applicationOpenedProperties(configurationResult))
+
+            let applicationProperties = self.applicationOpenedProperties(configurationResult)
+
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(
+                .configurableStoreStatsWidgets
+            ),
+               let infos = try? configurationResult.get() {
+                let snapshot = WidgetSnapshot(from: infos)
+                var properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
+                if let diff = self.widgetSetupChangeTracker.evaluate(currentSnapshot: snapshot) {
+                    properties.merge(diff.analyticsProperties) { _, new in new }
+                }
+                self.track(.applicationOpened, withProperties: properties)
+            } else {
+                self.track(
+                    .applicationOpened,
+                    withProperties: applicationProperties
+                )
+            }
         }
         applicationOpenedTime = Date()
     }

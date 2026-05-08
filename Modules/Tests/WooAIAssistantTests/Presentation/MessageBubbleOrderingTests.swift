@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct MessageBubbleOrderingTests {
 
     @Test
@@ -16,7 +17,7 @@ struct MessageBubbleOrderingTests {
             .confirmation(id: confirmationID,
                           proposalID: proposalID,
                           toolName: "orders_update",
-                          preview: "Set order #1 to completed",
+                          preview: ConfirmationPreview(summary: .raw("Set order #1 to completed")),
                           status: .confirmed),
             .cardRender(id: cardID,
                         toolCallID: "call_1",
@@ -45,7 +46,7 @@ struct MessageBubbleOrderingTests {
             .confirmation(id: confirmationID,
                           proposalID: UUID(),
                           toolName: "orders_update",
-                          preview: "Set order #2 to processing",
+                          preview: ConfirmationPreview(summary: .raw("Set order #2 to processing")),
                           status: .pending)
         ], isStreaming: false)
 

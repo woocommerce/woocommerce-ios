@@ -107,10 +107,14 @@ struct POSOrderMapper {
         // doesn't render as a row with no left-side text.
         let trimmedName = (fee.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         let resolvedName = trimmedName.isEmpty ? Localization.defaultFeeName : trimmedName
+        let total = Decimal(string: fee.total) ?? .zero
+        let totalTax = fee.taxes.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }
         return POSOrderCustomAmount(
             id: fee.feeID,
             name: resolvedName,
-            formattedTotal: currencyFormatter.formatAmount(fee.total, with: currency) ?? ""
+            formattedTotal: currencyFormatter.formatAmount(fee.total, with: currency) ?? "",
+            total: total,
+            totalTax: totalTax
         )
     }
 

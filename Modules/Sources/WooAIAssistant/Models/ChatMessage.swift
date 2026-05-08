@@ -77,6 +77,18 @@ public struct ChatMessage: Identifiable, Equatable, Sendable {
 
     public mutating func markCompleted() {
         isStreaming = false
+        trimTrailingWhitespaceFromTextSegments()
+    }
+
+    private mutating func trimTrailingWhitespaceFromTextSegments() {
+        for index in segments.indices {
+            if case .text(let id, let content) = segments[index] {
+                let trimmed = content.trimmedTrailingWhitespace()
+                if trimmed != content {
+                    segments[index] = .text(id: id, content: trimmed)
+                }
+            }
+        }
     }
 
     public mutating func cancelPendingConfirmations() {
@@ -107,5 +119,15 @@ public extension Array where Element == ChatMessage {
     /// chat surface should not show "assistant is thinking" affordances.
     var hasPendingConfirmation: Bool {
         contains { $0.hasPendingConfirmation }
+    }
+}
+
+private extension String {
+    func trimmedTrailingWhitespace() -> String {
+        var result = self
+        while let last = result.last, last.isWhitespace || last.isNewline {
+            result.removeLast()
+        }
+        return result
     }
 }

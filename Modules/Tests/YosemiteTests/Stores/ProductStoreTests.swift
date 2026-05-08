@@ -2589,7 +2589,7 @@ final class ProductStoreTests: XCTestCase {
              store.onAction(action)
          }
 
-         let storedProduct = viewStorage.allObjects(ofType: StorageProduct.self, matching: nil, sortedBy: nil).map { $0 }.first
+         let storedProduct = viewStorage.allObjects(ofType: StorageProduct.self, matching: nil, sortedBy: nil).first
 
          // Then
          XCTAssertTrue(onSuccess)
@@ -2616,7 +2616,7 @@ final class ProductStoreTests: XCTestCase {
              store.onAction(action)
          }
 
-         let storedProduct = viewStorage.allObjects(ofType: StorageProduct.self, matching: nil, sortedBy: nil).map { $0 }.first
+         let storedProduct = viewStorage.allObjects(ofType: StorageProduct.self, matching: nil, sortedBy: nil).first
 
          // Then
          XCTAssertTrue(onSuccess)
@@ -2643,7 +2643,7 @@ final class ProductStoreTests: XCTestCase {
              store.onAction(action)
          }
 
-         let storedProduct = viewStorage.allObjects(ofType: StorageProductVariation.self, matching: nil, sortedBy: nil).map { $0 }.first
+         let storedProduct = viewStorage.allObjects(ofType: StorageProductVariation.self, matching: nil, sortedBy: nil).first
 
          // Then
          XCTAssertTrue(onSuccess)

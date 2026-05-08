@@ -2710,6 +2710,43 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertEqual(migratedTotals.value(forKey: "grossSales") as? NSDecimalNumber, NSDecimalNumber(value: 750))
     }
+
+    func test_migrating_from_137_to_138_adds_hasCreatedTicket_attribute_to_StoredSupportChat() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 137")
+        let sourceContext = sourceContainer.viewContext
+
+        let now = Date()
+        let chat = NSEntityDescription.insertNewObject(forEntityName: "StoredSupportChat", into: sourceContext)
+        chat.setValue(Int64(4504215), forKey: "chatID")
+        chat.setValue(Int64(114679597), forKey: "siteID")
+        chat.setValue(Int64(36517705), forKey: "wpcomUserID")
+        chat.setValue("woo-chat-allusers", forKey: "botSlug")
+        chat.setValue("How do I set up shipping zones?", forKey: "title")
+        chat.setValue(now, forKey: "createdAt")
+        chat.setValue(now, forKey: "updatedAt")
+        try sourceContext.save()
+
+        XCTAssertNil(chat.entity.attributesByName["hasCreatedTicket"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 138")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedChat = try XCTUnwrap(targetContext.first(entityName: "StoredSupportChat"))
+
+        XCTAssertNotNil(migratedChat.entity.attributesByName["hasCreatedTicket"])
+
+        // Default value should be false.
+        XCTAssertEqual(migratedChat.value(forKey: "hasCreatedTicket") as? Bool, false)
+
+        // Verify a value can be set and saved.
+        migratedChat.setValue(true, forKey: "hasCreatedTicket")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedChat.value(forKey: "hasCreatedTicket") as? Bool, true)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

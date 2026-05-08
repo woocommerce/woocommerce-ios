@@ -518,7 +518,7 @@ extension IssueRefundViewModel {
         }
 
         // Return true if there is any non-empty shipping refund
-        return state.refunds.first { $0.shippingLines?.isNotEmpty ?? false } != nil
+        return state.refunds.contains { $0.shippingLines?.isNotEmpty ?? false }
     }
 
     private func isAnyCustomAmountAvailableForRefund() -> Bool {

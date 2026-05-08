@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ProductVariationsListToolTests {
     @Test
     func test_product_variations_list_when_response_is_array_then_summary_carries_parent_id_and_ids() async throws {

@@ -35,12 +35,17 @@ final class AIAssistantSessionStore {
     struct Session {
         let controller: AssistantController
         let navigationHost: AIAssistantNavigationHost
+        let externalNavigation: AssistantExternalNavigationProviding
+        let externalViews: AssistantExternalViewProviding
     }
 
     func session(for siteID: Int64,
                  makeDependencies: (AIAssistantNavigationHost) -> AIAssistantDependencyAdaptor) -> Session {
         if let cached = entries[siteID] {
-            return Session(controller: cached.controller, navigationHost: cached.navigationHost)
+            return Session(controller: cached.controller,
+                           navigationHost: cached.navigationHost,
+                           externalNavigation: cached.dependencies.externalNavigation,
+                           externalViews: cached.dependencies.externalViews)
         }
         let host = AIAssistantNavigationHost()
         let dependencies = makeDependencies(host)
@@ -53,7 +58,10 @@ final class AIAssistantSessionStore {
         entries[siteID] = Entry(controller: controller,
                                 dependencies: dependencies,
                                 navigationHost: host)
-        return Session(controller: controller, navigationHost: host)
+        return Session(controller: controller,
+                       navigationHost: host,
+                       externalNavigation: dependencies.externalNavigation,
+                       externalViews: dependencies.externalViews)
     }
 
     func dependencies(for siteID: Int64) -> AIAssistantDependencyAdaptor? {

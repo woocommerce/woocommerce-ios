@@ -51,6 +51,11 @@ public enum ProductsListTool {
                     "items": .object(["type": .string("integer")]),
                     "description": .string("Specific product IDs to include.")
                 ]),
+                "stock_status": .object([
+                    "type": .string("string"),
+                    "enum": .array([.string("instock"), .string("outofstock"), .string("onbackorder")]),
+                    "description": .string("Filter by stock status. Use 'outofstock' or 'onbackorder' for low-stock-style queries.")
+                ]),
                 "orderby": .object([
                     "type": .string("string"),
                     "enum": .array([.string("date"), .string("id"), .string("title"),
@@ -82,6 +87,7 @@ public enum ProductsListTool {
         let tag: Int?
         let sku: String?
         let include: [Int]?
+        let stockStatus: String?
         let orderby: String?
         let order: String?
         let page: Int?
@@ -89,6 +95,7 @@ public enum ProductsListTool {
 
         enum CodingKeys: String, CodingKey {
             case search, status, category, tag, sku, include, orderby, order, page
+            case stockStatus = "stock_status"
             case perPage = "per_page"
         }
     }
@@ -110,6 +117,10 @@ public enum ProductsListTool {
         }
         if let include = args.include, !include.isEmpty {
             query["include"] = include.map(String.init).joined(separator: ",")
+        }
+        if let stockStatus = args.stockStatus?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !stockStatus.isEmpty {
+            query["stock_status"] = stockStatus
         }
         if let page = args.page, page > 1 { query["page"] = String(page) }
         return query

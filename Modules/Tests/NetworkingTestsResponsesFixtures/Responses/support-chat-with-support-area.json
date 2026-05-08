@@ -1,0 +1,26 @@
+{
+    "chat_id": 1001,
+    "session_id": "8c1e24b8-7d67-4f1f-92b2-f45d53136fd4",
+    "bot_slug": "woo-chat-allusers",
+    "bot_version": "1.4.3",
+    "messages": [
+        {
+            "message_id": 3005,
+            "content": "I can help with your card reader issue. Let me connect you with support.",
+            "role": "bot",
+            "context": {
+                "sources": [],
+                "flags": {
+                    "forward_to_human_support": true,
+                    "canned_response": false,
+                    "logged_in": true,
+                    "branch": "escalation"
+                },
+                "support_area": {
+                    "area": "card-reader",
+                    "confidence": "high"
+                }
+            }
+        }
+    ]
+}

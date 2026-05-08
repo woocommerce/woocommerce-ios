@@ -165,6 +165,10 @@ final class SupportDiagnosticsService {
     ///
     private(set) var activeSystemPlugins: [SystemPlugin] = []
 
+    /// Formatted system status report, cached after site test.
+    ///
+    private(set) var formattedSystemStatusReport: String?
+
     private var isJetpackPluginActive: Bool {
         activeSystemPlugins.contains { $0.plugin.hasPrefix("jetpack/") }
     }
@@ -281,6 +285,7 @@ final class SupportDiagnosticsService {
                 case .success(let report):
                     DDLogInfo("SupportDiagnostics: ✅ Site connection")
                     self.activeSystemPlugins = report.activePlugins
+                    self.formattedSystemStatusReport = SystemStatusReportViewModel.formatReport(with: report)
                     continuation.resume(returning: nil)
                 case .failure(let error):
                     DDLogError("SupportDiagnostics: ❌ Site connection\n\(error)")

@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct OrderFamilyTests {
     @Test
     func test_summarize_when_billing_present_then_projects_summary_fields() {

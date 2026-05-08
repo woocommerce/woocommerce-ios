@@ -97,6 +97,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleCustomAmounts:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleScanToPay:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleMarkOrderAsPaid:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .selfDrivenPushToken:
             return false
         case .clientSideDashboardBanner:

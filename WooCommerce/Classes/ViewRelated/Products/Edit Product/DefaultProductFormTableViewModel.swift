@@ -54,7 +54,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func primaryFieldRows(product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
-        actions.map { action -> [ProductFormSection.PrimaryFieldRow] in
+        actions.flatMap { action -> [ProductFormSection.PrimaryFieldRow] in
             switch action {
             case .images(let editable, let isStorePublic):
                 return [.images(isEditable: editable,
@@ -83,7 +83,7 @@ private extension DefaultProductFormTableViewModel {
             default:
                 fatalError("Unexpected action in the primary section: \(action)")
             }
-        }.reduce([], +)
+        }
     }
 
     func settingsRows(productModel product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {

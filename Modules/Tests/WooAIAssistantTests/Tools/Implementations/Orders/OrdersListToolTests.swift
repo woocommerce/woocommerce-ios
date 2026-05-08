@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct OrdersListToolTests {
     @Test
     func test_orders_list_when_response_is_array_then_structured_summary_lists_ids_and_total_range() async throws {
@@ -32,9 +33,24 @@ struct OrdersListToolTests {
         #expect(fields["count"] == .int(3))
         #expect(fields["ids"] == .array([.int(3551), .int(3548), .int(3540)]))
         #expect(fields["rows"] == .array([
-            .object(["id": .int(3551), "customer_id": .int(11)]),
-            .object(["id": .int(3548), "customer_id": .int(22)]),
-            .object(["id": .int(3540), "customer_id": .int(0)])
+            .object(["id": .int(3551),
+                     "number": .string("3551"),
+                     "status": .string("processing"),
+                     "total": .string("120.00"),
+                     "currency": .string("USD"),
+                     "customer_id": .int(11)]),
+            .object(["id": .int(3548),
+                     "number": .string("3548"),
+                     "status": .string("on-hold"),
+                     "total": .string("12.00"),
+                     "currency": .string("USD"),
+                     "customer_id": .int(22)]),
+            .object(["id": .int(3540),
+                     "number": .string("3540"),
+                     "status": .string("completed"),
+                     "total": .string("480.00"),
+                     "currency": .string("USD"),
+                     "customer_id": .int(0)])
         ]))
         #expect(fields["status_counts"] == .object([
             "completed": .int(1),

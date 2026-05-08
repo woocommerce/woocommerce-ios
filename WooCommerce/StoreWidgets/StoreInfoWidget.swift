@@ -90,7 +90,8 @@ private struct StoreInfoWidgetEntryView: View {
         case .systemMedium, .systemSmall, .systemLarge:
             // `.systemSmall` and `.systemLarge` only enter `supportedFamilies` when the
             // configurable-widgets FF is on, so reaching them implies the metric-driven path.
-            // Layouts dedicated to these sizes will land in Tickets #7 / #8.
+            // Family-specific layouts are still pending; for now all three render via
+            // `StoreInfoHomescreenWidget`'s shared body.
             StoreInfoHomescreenWidget(entry: entry)
         default:
             EmptyView()

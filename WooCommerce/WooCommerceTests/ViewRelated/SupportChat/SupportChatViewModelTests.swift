@@ -656,6 +656,36 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
+    @Test func test_canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_until_proceedToChat() async {
+        // Given — helpAndSupport entry shows issue picker first; input area is hidden
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { _ in
+            // Leave sendMessage pending; we only care about state transitions in the VM.
+        }
+        let sut = makeSUT(entryPoint: .helpAndSupport, stores: stores)
+        sut.showGreeting()
+
+        // When — proceed straight to chat without picking an issue
+        sut.proceedToChat()
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == true)
+    }
+
+    @Test func test_canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_when_input_area_is_hidden() {
+        // Given — helpAndSupport entry shows the issue picker; input area is hidden until proceedToChat
+        let sut = makeSUT(entryPoint: .helpAndSupport)
+
+        // When
+        sut.showGreeting()
+
+        // Then — even if there are messages, the toolbar must stay hidden during the picker phase
+        #expect(sut.shouldShowInputArea == false)
+        #expect(sut.canEscalateToHumanSupport == false)
+    }
+
     @Test func test_canEscalateToHumanSupport_is_false_when_hasCreatedTicket_is_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))

@@ -149,9 +149,13 @@ final class SupportChatViewModel {
     private(set) var hasCreatedTicket: Bool = false
 
     /// Whether the trailing toolbar entry point to human support should be visible.
-    /// Shown after the merchant has sent at least one message and no ticket has been created yet.
+    /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics)
+    /// AND has sent at least one message, and only while no ticket has been created yet.
     var canEscalateToHumanSupport: Bool {
-        messages.contains(where: { $0.role == .user }) && !hasCreatedTicket
+        guard shouldShowInputArea, !hasCreatedTicket else {
+            return false
+        }
+        return messages.contains(where: { $0.role == .user })
     }
 
     var inputText: String = ""

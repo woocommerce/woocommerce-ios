@@ -14,7 +14,7 @@ public enum AssistantSpacing: Sendable {
 public enum AssistantRadius: Sendable {
     public static let medium: CGFloat = 12
     public static let large: CGFloat = 20
-    public static let bubble: CGFloat = 22
+    public static let bubble: CGFloat = 18
     public static let card: CGFloat = 18
 }
 

@@ -18,8 +18,6 @@ enum RESTPayloadPruning {
         "short_description"
     ]
 
-    private static let maxFreeTextLength = 280
-
     static func prune(_ value: AnyCodableJSON) -> AnyCodableJSON {
         switch value {
         case .object(let dict):
@@ -45,13 +43,9 @@ enum RESTPayloadPruning {
         while let range = stripped.range(of: "<[^>]+>", options: .regularExpression) {
             stripped.removeSubrange(range)
         }
-        let normalized = stripped
+        return stripped
             .replacingOccurrences(of: "&nbsp;", with: " ")
             .replacingOccurrences(of: "&amp;", with: "&")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        if normalized.count > maxFreeTextLength {
-            return String(normalized.prefix(maxFreeTextLength)) + "..."
-        }
-        return normalized
     }
 }

@@ -54,7 +54,7 @@ struct ProductsGetToolTests {
             #expect(summary["stock_quantity"] == .int(12))
             #expect(summary["regular_price"] == .string("99.00"))
             #expect(summary["sale_price"] == .string("89.00"))
-            #expect(summary["description"] == nil)
+            #expect(summary["description"] == .string("Soft & warm cashmere scarf."))
         } else {
             Issue.record("expected object structured")
         }

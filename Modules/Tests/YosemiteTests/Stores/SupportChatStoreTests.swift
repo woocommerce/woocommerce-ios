@@ -365,7 +365,9 @@ struct SupportChatStoreTests {
 
         // When
         _ = await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.submitFeedback(messageID: 123,
+            store.onAction(SupportChatAction.submitFeedback(botSlug: "woo-chat",
+                                                            chatID: 999,
+                                                            messageID: 123,
                                                             sessionID: "session-abc",
                                                             upvoted: true,
                                                             onCompletion: { result in
@@ -376,6 +378,8 @@ struct SupportChatStoreTests {
         // Then
         #expect(remote.submitFeedbackInvocations.count == 1)
         let invocation = try #require(remote.submitFeedbackInvocations.first)
+        #expect(invocation.botSlug == "woo-chat")
+        #expect(invocation.chatID == 999)
         #expect(invocation.messageID == 123)
         #expect(invocation.sessionID == "session-abc")
         #expect(invocation.upvoted == true)
@@ -388,7 +392,9 @@ struct SupportChatStoreTests {
 
         // When
         _ = await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.submitFeedback(messageID: 456,
+            store.onAction(SupportChatAction.submitFeedback(botSlug: "woo-chat",
+                                                            chatID: 888,
+                                                            messageID: 456,
                                                             sessionID: "session-xyz",
                                                             upvoted: false,
                                                             onCompletion: { result in
@@ -408,7 +414,9 @@ struct SupportChatStoreTests {
 
         // When
         let result = await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.submitFeedback(messageID: 123,
+            store.onAction(SupportChatAction.submitFeedback(botSlug: "woo-chat",
+                                                            chatID: 999,
+                                                            messageID: 123,
                                                             sessionID: "session-abc",
                                                             upvoted: true,
                                                             onCompletion: { result in

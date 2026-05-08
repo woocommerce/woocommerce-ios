@@ -24,7 +24,7 @@ struct MockSupportChatActionHandler: MockActionHandler {
             onCompletion()
         case let .markTicketCreated(_, onCompletion):
             onCompletion()
-        case let .submitFeedback(_, _, _, onCompletion):
+        case let .submitFeedback(_, _, _, _, _, onCompletion):
             onCompletion(.success(()))
         }
     }

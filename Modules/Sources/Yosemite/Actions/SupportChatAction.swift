@@ -87,11 +87,15 @@ public enum SupportChatAction: Action {
     /// Submits feedback for a specific bot message.
     ///
     /// - Parameters:
+    ///   - botSlug: Assistant slug (e.g. `woo-chat-allusers`).
+    ///   - chatID: Identifier of the chat.
     ///   - messageID: Identifier of the message to rate.
     ///   - sessionID: Session identifier of the chat.
     ///   - upvoted: `true` for positive feedback (thumbs up), `false` for negative (thumbs down).
     ///   - onCompletion: Called when the feedback submission completes.
-    case submitFeedback(messageID: Int64,
+    case submitFeedback(botSlug: String,
+                        chatID: Int64,
+                        messageID: Int64,
                         sessionID: String,
                         upvoted: Bool,
                         onCompletion: (Result<Void, Error>) -> Void)

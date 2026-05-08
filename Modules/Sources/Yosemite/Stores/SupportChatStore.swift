@@ -52,8 +52,8 @@ public final class SupportChatStore: Store {
             deleteChat(chatID: chatID, onCompletion: onCompletion)
         case let .markTicketCreated(chatID, onCompletion):
             markTicketCreated(chatID: chatID, onCompletion: onCompletion)
-        case let .submitFeedback(messageID, sessionID, upvoted, onCompletion):
-            submitFeedback(messageID: messageID, sessionID: sessionID, upvoted: upvoted, onCompletion: onCompletion)
+        case let .submitFeedback(botSlug, chatID, messageID, sessionID, upvoted, onCompletion):
+            submitFeedback(botSlug: botSlug, chatID: chatID, messageID: messageID, sessionID: sessionID, upvoted: upvoted, onCompletion: onCompletion)
         }
     }
 }
@@ -96,14 +96,18 @@ private extension SupportChatStore {
         }
     }
 
-    func submitFeedback(messageID: Int64,
+    func submitFeedback(botSlug: String,
+                        chatID: Int64,
+                        messageID: Int64,
                         sessionID: String,
                         upvoted: Bool,
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
         Task {
             let result: Result<Void, Error> = await {
                 do {
-                    try await remote.submitFeedback(messageID: messageID,
+                    try await remote.submitFeedback(botSlug: botSlug,
+                                                    chatID: chatID,
+                                                    messageID: messageID,
                                                     sessionID: sessionID,
                                                     upvoted: upvoted)
                     return .success(())

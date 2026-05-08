@@ -766,7 +766,7 @@ final class SupportChatViewModel {
     /// Marks the message as rated immediately (optimistic UI).
     /// API failures are logged but do not affect the UI since feedback is low-stakes.
     func submitFeedback(messageID: Int64, upvoted: Bool) {
-        guard let sessionID else { return }
+        guard let chatID, let sessionID else { return }
         guard !ratedMessageIDs.contains(messageID) else { return }
 
         ratedMessageIDs.insert(messageID)
@@ -774,6 +774,8 @@ final class SupportChatViewModel {
         analytics.track(event: WooAnalyticsEvent.SupportChat.feedbackSubmitted(upvoted: upvoted))
 
         let action = SupportChatAction.submitFeedback(
+            botSlug: botSlug,
+            chatID: chatID,
             messageID: messageID,
             sessionID: sessionID,
             upvoted: upvoted

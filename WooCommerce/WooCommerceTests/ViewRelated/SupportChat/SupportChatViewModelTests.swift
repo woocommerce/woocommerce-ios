@@ -624,7 +624,8 @@ struct SupportChatViewModelTests {
         let chatID: Int64 = 123
         let sessionID = "session-1"
         let messageID: Int64 = 456
-        var receivedFeedback: (messageID: Int64, sessionID: String, upvoted: Bool)?
+        let botSlug = "test-bot"
+        var receivedFeedback: (botSlug: String, chatID: Int64, messageID: Int64, sessionID: String, upvoted: Bool)?
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
 
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -633,7 +634,7 @@ struct SupportChatViewModelTests {
                 let response = SupportChatResponse(
                     chatID: chatID,
                     sessionID: sessionID,
-                    botSlug: "test-bot",
+                    botSlug: botSlug,
                     botVersion: "1.0",
                     messages: [
                         SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil),
@@ -641,8 +642,8 @@ struct SupportChatViewModelTests {
                     ]
                 )
                 completion(.success(response))
-            case let .submitFeedback(messageID, sessionID, upvoted, onCompletion):
-                receivedFeedback = (messageID, sessionID, upvoted)
+            case let .submitFeedback(botSlug, chatID, messageID, sessionID, upvoted, onCompletion):
+                receivedFeedback = (botSlug, chatID, messageID, sessionID, upvoted)
                 onCompletion(.success(()))
             default:
                 break
@@ -662,8 +663,10 @@ struct SupportChatViewModelTests {
         sut.submitFeedback(messageID: messageID, upvoted: true)
 
         // Then
-        #expect(receivedFeedback?.sessionID == sessionID)
+        #expect(receivedFeedback?.botSlug == botSlug)
+        #expect(receivedFeedback?.chatID == chatID)
         #expect(receivedFeedback?.messageID == messageID)
+        #expect(receivedFeedback?.sessionID == sessionID)
         #expect(receivedFeedback?.upvoted == true)
     }
 
@@ -687,7 +690,7 @@ struct SupportChatViewModelTests {
                     ]
                 )
                 completion(.success(response))
-            case let .submitFeedback(_, _, _, onCompletion):
+            case let .submitFeedback(_, _, _, _, _, onCompletion):
                 feedbackCallCount += 1
                 onCompletion(.success(()))
             default:
@@ -731,7 +734,7 @@ struct SupportChatViewModelTests {
                     ]
                 )
                 completion(.success(response))
-            case let .submitFeedback(_, _, _, onCompletion):
+            case let .submitFeedback(_, _, _, _, _, onCompletion):
                 onCompletion(.success(()))
             default:
                 break
@@ -774,7 +777,7 @@ struct SupportChatViewModelTests {
                     ]
                 )
                 completion(.success(response))
-            case let .submitFeedback(_, _, _, onCompletion):
+            case let .submitFeedback(_, _, _, _, _, onCompletion):
                 onCompletion(.success(()))
             default:
                 break

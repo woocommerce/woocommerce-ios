@@ -10,7 +10,7 @@ final class MockSupportChatRemote: SupportChatRemoteProtocol {
 
     private(set) var sendMessageInvocations: [(botSlug: String, message: String, chatID: Int64?)] = []
     private(set) var fetchChatInvocations: [(botSlug: String, chatID: Int64)] = []
-    private(set) var submitFeedbackInvocations: [(messageID: Int64, sessionID: String, upvoted: Bool)] = []
+    private(set) var submitFeedbackInvocations: [(botSlug: String, chatID: Int64, messageID: Int64, sessionID: String, upvoted: Bool)] = []
 
     func whenSendingMessage(thenReturn result: Result<SupportChatResponse, Error>) {
         sendMessageResult = result
@@ -44,8 +44,8 @@ final class MockSupportChatRemote: SupportChatRemoteProtocol {
         return try result.get()
     }
 
-    func submitFeedback(messageID: Int64, sessionID: String, upvoted: Bool) async throws {
-        submitFeedbackInvocations.append((messageID, sessionID, upvoted))
+    func submitFeedback(botSlug: String, chatID: Int64, messageID: Int64, sessionID: String, upvoted: Bool) async throws {
+        submitFeedbackInvocations.append((botSlug, chatID, messageID, sessionID, upvoted))
         try submitFeedbackResult.get()
     }
 }

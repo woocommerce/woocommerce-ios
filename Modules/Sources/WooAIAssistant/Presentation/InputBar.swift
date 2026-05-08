@@ -9,10 +9,10 @@ struct InputBar: View {
     let onSend: () -> Void
     let onStop: () -> Void
 
-    private static let sendButtonDiameter: CGFloat = 36
+    // 30pt visible circle inside a 44pt hit target leaves a 7pt inset on every side.
+    private static let sendButtonDiameter: CGFloat = 30
     private static let sendButtonHitTarget: CGFloat = 44
-    // 4pt centers the 36pt circle inside the 44pt hit target; trailing matches for symmetry.
-    private static let sendButtonTrailingPadding: CGFloat = 4
+    private static let sendButtonInternalInset: CGFloat = (sendButtonHitTarget - sendButtonDiameter) / 2
 
     var body: some View {
         VStack(alignment: .leading, spacing: AssistantSpacing.small) {
@@ -23,16 +23,19 @@ struct InputBar: View {
                     .padding(.horizontal, AssistantSpacing.medium)
             }
 
-            HStack(alignment: .center, spacing: AssistantSpacing.medium) {
+            // Bottom-align so the send button stays anchored as the text grows upward.
+            HStack(alignment: .bottom, spacing: 0) {
                 TextField(Localization.placeholder, text: $draft, axis: .vertical)
                     .font(.assistantBody)
-                    .lineLimit(1...6)
+                    .lineLimit(1...4)
                     .padding(.leading, AssistantSpacing.large)
-                    .padding(.vertical, AssistantSpacing.medium)
+                    .padding(.trailing, AssistantSpacing.xSmall)
+                    .padding(.vertical, Self.sendButtonInternalInset)
+                    .frame(minHeight: Self.sendButtonHitTarget)
 
                 Button(action: actionTapped) {
                     Image(systemName: glyph)
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(buttonForeground)
                         .frame(width: Self.sendButtonDiameter,
                                height: Self.sendButtonDiameter)
@@ -44,7 +47,6 @@ struct InputBar: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .padding(.trailing, Self.sendButtonTrailingPadding)
                 .disabled(buttonDisabled)
                 .accessibilityLabel(showsStop ? Localization.stop : Localization.send)
             }
@@ -109,8 +111,8 @@ struct InputBar: View {
 
     private enum Localization {
         static let placeholder = NSLocalizedString(
-            "assistantChat.input.placeholder",
-            value: "Ask about your store",
+            "assistantChat.input.placeholderHelp",
+            value: "What can I help with?",
             comment: "Placeholder shown in the AI Assistant chat input field"
         )
         static let send = NSLocalizedString(

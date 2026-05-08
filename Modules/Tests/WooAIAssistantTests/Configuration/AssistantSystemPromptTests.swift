@@ -102,6 +102,15 @@ struct AssistantSystemPromptTests {
         #expect(remoteToolNames.allSatisfy { !prompt.contains($0) })
     }
 
+    @Test
+    func test_build_when_called_then_prompt_does_not_mention_extra_fields() {
+        // Given
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+
+        // Then
+        #expect(!prompt.contains("extra_fields"))
+    }
+
     private func section(in text: String, from startMarker: String, to endMarker: String) -> Substring {
         guard let start = text.range(of: startMarker)?.lowerBound,
               let end = text.range(of: endMarker, range: start..<text.endIndex)?.lowerBound else {

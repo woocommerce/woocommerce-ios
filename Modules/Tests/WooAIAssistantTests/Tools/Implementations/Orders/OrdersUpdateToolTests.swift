@@ -145,4 +145,131 @@ struct OrdersUpdateToolTests {
         #expect(failed.kind == .outcomeUnknown)
     }
 
+    @Test
+    func test_descriptor_when_inspected_then_id_is_required_and_status_is_optional() {
+        // Given
+        let tool = OrdersUpdateTool.make()
+
+        // Then
+        guard case .object(let schema) = tool.definition.parametersSchema,
+              case .array(let required) = schema["required"] else {
+            Issue.record("expected schema required array")
+            return
+        }
+        #expect(required == [.string("id")])
+    }
+
+    @Test
+    func test_descriptor_when_inspected_then_status_enum_excludes_refunded() {
+        // Given
+        let tool = OrdersUpdateTool.make()
+
+        // Then
+        guard case .object(let schema) = tool.definition.parametersSchema,
+              case .object(let properties) = schema["properties"],
+              case .object(let status) = properties["status"],
+              case .array(let values) = status["enum"] else {
+            Issue.record("expected status enum")
+            return
+        }
+        let strings = values.compactMap { value -> String? in
+            if case .string(let s) = value { return s }
+            return nil
+        }
+        #expect(!strings.contains("refunded"))
+    }
+
+    @Test
+    func test_execute_when_no_editable_field_provided_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
+        let tool = OrdersUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"id": 1}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+    }
+
+    @Test
+    func test_execute_when_only_customer_note_provided_then_request_body_contains_customer_note_only() async throws {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok(#"{"id":7}"#))
+        let tool = OrdersUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"id": 7, "customer_note": "Thanks"}"#, client)
+
+        // Then
+        guard case .success = result else {
+            Issue.record("expected success")
+            return
+        }
+        let call = try #require(await client.calls.first)
+        let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
+        #expect(parsed["customer_note"] as? String == "Thanks")
+        #expect(parsed["status"] == nil)
+        #expect(parsed["billing"] == nil)
+    }
+
+    @Test
+    func test_execute_when_only_billing_email_provided_then_request_body_contains_billing_object_with_email() async throws {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok(#"{"id":7}"#))
+        let tool = OrdersUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"id": 7, "billing_email": "x@y.z"}"#, client)
+
+        // Then
+        guard case .success = result else {
+            Issue.record("expected success")
+            return
+        }
+        let call = try #require(await client.calls.first)
+        let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
+        #expect(parsed["status"] == nil)
+        #expect(parsed["customer_note"] == nil)
+        let billing = try #require(parsed["billing"] as? [String: Any])
+        #expect(billing["email"] as? String == "x@y.z")
+    }
+
+    @Test
+    func test_execute_when_status_and_customer_note_provided_then_post_write_summary_includes_widened_fields() async throws {
+        // Given
+        let body = """
+        {
+            "id": 7, "status": "processing", "total": "100.00", "currency": "USD",
+            "customer_note": "Thanks!",
+            "billing": {"first_name": "Jane", "last_name": "Doe", "email": "j@e.com"},
+            "line_items": [{"id": 1, "name": "Item", "quantity": 1}]
+        }
+        """
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = OrdersUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"id": 7, "status": "processing", "customer_note": "Hi"}"#,
+            client
+        )
+
+        // Then
+        guard case .success(let success) = result, case .object(let summary) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(summary["customer_note"] == .string("Thanks!"))
+        guard case .array(let items) = summary["line_items"] else {
+            Issue.record("expected line_items")
+            return
+        }
+        #expect(items.count == 1)
+    }
+
 }

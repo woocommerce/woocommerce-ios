@@ -54,5 +54,4 @@ public extension DashboardCard {
     static var newCardsNoticeCard = DashboardCard(type: .newCardsNotice, availability: .dashboardOnly, enabled: true)
     static var shareStoreCard = DashboardCard(type: .shareStore, availability: .dashboardOnly, enabled: true)
     static let connectWPCom = DashboardCard(type: .connectWPCom, availability: .dashboardOnly, enabled: true)
-    static let aiAssistantCard = DashboardCard(type: .aiAssistant, availability: .dashboardOnly, enabled: true)
 }

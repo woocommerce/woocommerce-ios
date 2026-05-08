@@ -9,9 +9,7 @@ enum AnalyticsDateBounds {
         return ("\(start)T00:00:00", "\(end)T23:59:59")
     }
 
-    /// Anchors `previousBefore` at the day before `after` and walks back the
-    /// same inclusive number of days to mirror how the Woo dashboard's
-    /// "previous period" comparison shifts a date window.
+    /// Mirrors the Woo dashboard "previous period" anchoring: immediately preceding window of the same inclusive day count.
     static func previousPeriodBounds(after: String,
                                      before: String) -> (after: String, before: String)? {
         guard let afterDate = yyyyMMDDFormatter.date(from: after),

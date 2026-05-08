@@ -10,8 +10,7 @@ enum ProductVariationDetailSummary {
         ])
         guard case .object(var fields) = projected else { return projected }
 
-        // WC variation REST stores parent under parent_id; CardFamily injects
-        // it for the show_cards path so consumers can rely on parent_id.
+        // WC exposes the parent only as parent_id; mirror it into product_id so callers reading either field land on the same value.
         if fields["parent_id"] != nil {
             fields["product_id"] = fields["parent_id"]
         }

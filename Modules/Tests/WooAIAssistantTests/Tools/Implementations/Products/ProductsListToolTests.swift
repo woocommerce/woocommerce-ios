@@ -220,4 +220,177 @@ struct ProductsListToolTests {
         }
         #expect(failed.kind == .auth)
     }
+
+    @Test
+    func test_descriptor_when_inspected_then_supported_query_args_match_android_parity() {
+        // Given
+        let tool = ProductsListTool.make()
+
+        // Then
+        guard case .object(let schema) = tool.definition.parametersSchema,
+              case .object(let properties) = schema["properties"] else {
+            Issue.record("expected schema properties")
+            return
+        }
+        let keys = Set(properties.keys)
+        #expect(keys == [
+            "search", "status", "category", "sku", "include", "stock_status",
+            "orderby", "order", "page", "per_page"
+        ])
+    }
+
+    @Test
+    func test_descriptor_when_inspected_then_tag_is_not_exposed() {
+        // Given
+        let tool = ProductsListTool.make()
+
+        // Then
+        guard case .object(let schema) = tool.definition.parametersSchema,
+              case .object(let properties) = schema["properties"] else {
+            Issue.record("expected schema")
+            return
+        }
+        #expect(properties["tag"] == nil)
+    }
+
+    @Test
+    func test_descriptor_when_inspected_then_orderby_enum_excludes_id_price_rating() {
+        // Given
+        let tool = ProductsListTool.make()
+
+        // Then
+        guard case .object(let schema) = tool.definition.parametersSchema,
+              case .object(let properties) = schema["properties"],
+              case .object(let orderby) = properties["orderby"],
+              case .array(let values) = orderby["enum"] else {
+            Issue.record("expected orderby enum")
+            return
+        }
+        let strings = values.compactMap { value -> String? in
+            if case .string(let s) = value { return s }
+            return nil
+        }
+        #expect(Set(strings) == ["date", "title", "popularity"])
+    }
+
+    @Test
+    func test_execute_when_tag_arg_provided_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"tag": 5}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("tag"))
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_execute_when_include_is_empty_array_then_invalidToolCall_with_at_least_one_id_message_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"include": []}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("at least one"))
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_execute_when_include_has_more_than_100_ids_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+        let ids = (1...101).map(String.init).joined(separator: ", ")
+
+        // When
+        let result = await tool.executor(#"{"include": [\#(ids)]}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_execute_when_include_combined_with_search_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"include": [1, 2], "search": "scarf"}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("include cannot be combined"))
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_execute_when_search_combined_with_orderby_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"search": "tee", "orderby": "popularity"}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("orderby and order cannot be combined"))
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_execute_when_stock_status_is_outofstock_then_query_string_carries_stock_status_outofstock() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        _ = await tool.executor(#"{"stock_status": "outofstock"}"#, client)
+
+        // Then
+        #expect(await client.calls.first?.query["stock_status"] == "outofstock")
+    }
+
+    @Test
+    func test_execute_when_orderby_is_popularity_then_query_string_carries_orderby_popularity() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        _ = await tool.executor(#"{"orderby": "popularity"}"#, client)
+
+        // Then
+        #expect(await client.calls.first?.query["orderby"] == "popularity")
+    }
 }

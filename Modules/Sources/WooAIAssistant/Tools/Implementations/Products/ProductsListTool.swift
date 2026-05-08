@@ -3,6 +3,7 @@ import Foundation
 public enum ProductsListTool {
 
     public static let name = "products_list"
+    public static let maxIncludeIDs = 100
 
     public static func make() -> RESTTool {
         RESTTool(definition: definition, executor: execute)
@@ -11,7 +12,7 @@ public enum ProductsListTool {
     private static let definition = AITool(
         name: name,
         description: """
-        List products, optionally filtered by status, category, tag, sku, \
+        List products, optionally filtered by status, category, sku, \
         or keyword search. Terse merchant phrases such as "get scarf", \
         "show scarf", "find scarf", or "product scarf" are product searches: \
         use search with the product noun or phrase. For top / best-selling \
@@ -47,10 +48,6 @@ public enum ProductsListTool {
                     "type": .string("integer"),
                     "description": .string("Category ID filter.")
                 ]),
-                "tag": .object([
-                    "type": .string("integer"),
-                    "description": .string("Tag ID filter.")
-                ]),
                 "sku": .object([
                     "type": .string("string"),
                     "description": .string("Exact SKU lookup.")
@@ -58,7 +55,7 @@ public enum ProductsListTool {
                 "include": .object([
                     "type": .string("array"),
                     "items": .object(["type": .string("integer")]),
-                    "description": .string("Specific product IDs to include.")
+                    "description": .string("Specific product IDs to include. Max \(maxIncludeIDs).")
                 ]),
                 "stock_status": .object([
                     "type": .string("string"),
@@ -67,8 +64,7 @@ public enum ProductsListTool {
                 ]),
                 "orderby": .object([
                     "type": .string("string"),
-                    "enum": .array([.string("date"), .string("id"), .string("title"),
-                                    .string("price"), .string("popularity"), .string("rating")]),
+                    "enum": .array([.string("date"), .string("title"), .string("popularity")]),
                     "description": .string("Sort key; default 'date'. Use 'popularity' for top / best-selling products.")
                 ]),
                 "order": .object([
@@ -93,7 +89,6 @@ public enum ProductsListTool {
         let search: String?
         let status: String?
         let category: Int?
-        let tag: Int?
         let sku: String?
         let include: [Int]?
         let stockStatus: String?
@@ -103,24 +98,30 @@ public enum ProductsListTool {
         let perPage: Int?
 
         enum CodingKeys: String, CodingKey {
-            case search, status, category, tag, sku, include, orderby, order, page
+            case search, status, category, sku, include, orderby, order, page
             case stockStatus = "stock_status"
             case perPage = "per_page"
         }
     }
 
+    private static let allowedOrderby: Set<String> = ["date", "title", "popularity"]
+    private static let allowedOrder: Set<String> = ["asc", "desc"]
+
     private static func query(from args: Args) -> [String: String] {
         var query: [String: String] = [
-            "orderby": args.orderby ?? "date",
-            "order": args.order ?? "desc",
             "per_page": String(RESTToolDispatch.clampedPerPage(args.perPage))
         ]
+        if args.include?.isEmpty == false {
+            query["orderby"] = "include"
+        } else {
+            query["orderby"] = args.orderby ?? "date"
+            query["order"] = args.order ?? "desc"
+        }
         if let status = args.status, status != "any" { query["status"] = status }
         if let search = args.search?.trimmingCharacters(in: .whitespacesAndNewlines), !search.isEmpty {
             query["search"] = search
         }
         if let category = args.category { query["category"] = String(category) }
-        if let tag = args.tag { query["tag"] = String(tag) }
         if let sku = args.sku?.trimmingCharacters(in: .whitespacesAndNewlines), !sku.isEmpty {
             query["sku"] = sku
         }
@@ -136,7 +137,7 @@ public enum ProductsListTool {
     }
 
     static let allowedArguments: Set<String> = [
-        "search", "status", "category", "tag", "sku", "include", "stock_status",
+        "search", "status", "category", "sku", "include", "stock_status",
         "orderby", "order", "page", "per_page"
     ]
 
@@ -150,6 +151,9 @@ public enum ProductsListTool {
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
+        }
+        if let failed = validateCombinations(args) {
+            return .failed(failed)
         }
         let perPage = RESTToolDispatch.clampedPerPage(args.perPage)
         let response = await client.request(method: "GET",
@@ -170,6 +174,35 @@ public enum ProductsListTool {
         return .success(.init(toolName: name,
                               structured: LLMPayloadCap.capped(summary, toolName: name),
                               uiStructured: nil))
+    }
+
+    private static func validateCombinations(_ args: Args) -> ToolResult.Failed? {
+        if let include = args.include {
+            if include.isEmpty {
+                return failure("include must contain at least one product ID.")
+            }
+            if include.count > maxIncludeIDs {
+                return failure("include can contain at most \(maxIncludeIDs) product IDs.")
+            }
+            let conflicts = (args.search != nil) || (args.sku != nil) || (args.orderby != nil) || (args.order != nil)
+            if conflicts {
+                return failure("include cannot be combined with search, sku, orderby, or order.")
+            }
+        }
+        if (args.orderby != nil || args.order != nil) && (args.search != nil || args.sku != nil) {
+            return failure("orderby and order cannot be combined with search or sku.")
+        }
+        if let orderby = args.orderby, !allowedOrderby.contains(orderby) {
+            return failure("'\(orderby)' is not an allowed orderby.")
+        }
+        if let order = args.order, !allowedOrder.contains(order) {
+            return failure("'\(order)' is not an allowed order.")
+        }
+        return nil
+    }
+
+    private static func failure(_ reason: String) -> ToolResult.Failed {
+        .init(toolName: name, kind: .invalidToolCall, reason: reason)
     }
 
     private static func canLoadMore(rowsCount: Int, perPage: Int, args: Args) -> Bool {

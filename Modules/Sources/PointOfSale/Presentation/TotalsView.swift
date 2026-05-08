@@ -137,11 +137,23 @@ struct TotalsView: View {
         .onChange(of: paymentModel.isPaymentSessionActive) { _, isActive in
             // The card-state onChange above doesn't always fire when a flow
             // wraps up — TTP filters intermediate states (idle → idle on
-            // cancel is a no-op), and BT scan dismissal never produces a
-            // card-state change at all. This signal goes false on every
-            // session end, so the hero CTA + bottom strip become tappable
-            // again across the board.
+            // cancel is a no-op). When the gate closes after a TTP
+            // cancel-on-reader, this signals "session ended" — release the
+            // double-tap lock so the merchant can tap the hero CTA again.
             if !isActive {
+                isStartingPayment = false
+            }
+        }
+        .onChange(of: paymentModel.cardPresentPaymentAlertViewModel == nil) { _, becameNil in
+            // BT scan cancel doesn't trigger any of the signals above:
+            // `currentPaymentMethod` stays `.bluetooth` (we deliberately stopped
+            // auto-clearing on `.idle` to avoid racing the reader-reconnection
+            // observer), and `paymentState.card` was never non-idle to begin
+            // with. The reliable signal there is the scan alert dismissing —
+            // when the alert goes from non-nil to nil while card is idle the
+            // merchant has stepped out of a connect flow that never reached
+            // collect.
+            if becameNil && paymentModel.paymentState.card == .idle {
                 isStartingPayment = false
             }
         }

@@ -458,7 +458,7 @@ struct CardReferenceResolverTests {
         // Per-bucket data is rendered-only; the model-visible summary keeps
         // just the projection keys so a year-by-day query doesn't blow the
         // model context.
-        #expect(Set(fields.keys) == Set(["after", "before", "totals"]))
+        #expect(Set(fields.keys) == Set(["after", "before", "interval", "totals"]))
         #expect(fields["interval_subtotals"] == nil)
         #expect(fields["interval_count"] == nil)
         #expect(rendered.family == .analyticsStats)

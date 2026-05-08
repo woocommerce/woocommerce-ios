@@ -153,7 +153,7 @@ struct ShowCardsToolTests {
         // it lives in the rendered card payload only. Mirrors Android #15837.
         #expect(summary["interval_subtotals"] == nil)
         #expect(summary["interval_count"] == nil)
-        #expect(Set(summary.keys) == Set(["after", "before", "totals"]))
+        #expect(Set(summary.keys) == Set(["after", "before", "interval", "totals"]))
     }
 
     @Test

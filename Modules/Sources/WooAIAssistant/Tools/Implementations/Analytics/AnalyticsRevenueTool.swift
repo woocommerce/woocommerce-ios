@@ -45,6 +45,11 @@ public enum AnalyticsRevenueTool {
                 "currency": .object([
                     "type": .string("string"),
                     "description": .string("Optional ISO currency override.")
+                ]),
+                "compare_to": .object([
+                    "type": .string("string"),
+                    "enum": .array([.string("previous_period")]),
+                    "description": .string("Optional comparison window. Currently only 'previous_period'.")
                 ])
             ]),
             "required": .array([.string("after"), .string("before")])
@@ -57,9 +62,17 @@ public enum AnalyticsRevenueTool {
         let before: String
         let interval: String?
         let currency: String?
+        let compareTo: String?
+
+        enum CodingKeys: String, CodingKey {
+            case after, before, interval, currency
+            case compareTo = "compare_to"
+        }
     }
 
-    static let allowedArguments: Set<String> = ["after", "before", "interval", "currency"]
+    static let allowedArguments: Set<String> = [
+        "after", "before", "interval", "currency", "compare_to"
+    ]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
         if let failed = ToolArgumentValidation.validate(arguments: arguments,
@@ -72,36 +85,109 @@ public enum AnalyticsRevenueTool {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
         }
+        if let compareTo = args.compareTo, compareTo != "previous_period" {
+            return .failed(.init(toolName: name,
+                                 kind: .invalidToolCall,
+                                 reason: "compare_to must be previous_period"))
+        }
         guard let bounds = AnalyticsDateBounds.bounds(start: args.after, end: args.before) else {
             return .failed(.init(toolName: name,
                                  kind: .invalidToolCall,
                                  reason: "after and before must be YYYY-MM-DD"))
         }
-        var query: [String: String] = [
-            "after": bounds.after,
-            "before": bounds.before,
-            "interval": args.interval ?? "day",
-            "_fields": "totals,intervals"
-        ]
-        if let currency = args.currency?.trimmingCharacters(in: .whitespacesAndNewlines), !currency.isEmpty {
-            query["currency"] = currency
+        let interval = args.interval ?? "day"
+        let trimmedCurrency = args.currency?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let currencyForQuery = (trimmedCurrency?.isEmpty == false) ? trimmedCurrency : nil
+
+        let primary = await fetchPayload(client: client,
+                                         after: bounds.after,
+                                         before: bounds.before,
+                                         interval: interval,
+                                         currency: currencyForQuery)
+        guard case .success(let payload) = primary else {
+            if case .failure(let failed) = primary { return .failed(failed) }
+            return .failed(.init(toolName: name, kind: .toolFailed, reason: "unexpected analytics outcome"))
         }
 
+        var comparison = AnalyticsStatsSummary.ComparisonInputs(interval: interval, currency: currencyForQuery)
+        if args.compareTo == "previous_period" {
+            comparison = await comparisonInputs(args: args,
+                                                interval: interval,
+                                                currency: currencyForQuery,
+                                                client: client)
+        }
+
+        let summary = AnalyticsStatsSummary.make(from: payload,
+                                                 range: (args.after, args.before),
+                                                 comparison: comparison)
+        return .success(.init(toolName: name,
+                              structured: LLMPayloadCap.capped(summary, toolName: name),
+                              uiStructured: nil))
+    }
+
+    private enum FetchOutcome {
+        case success(AnyCodableJSON)
+        case failure(ToolResult.Failed)
+    }
+
+    private static func fetchPayload(client: WCRESTClient,
+                                     after: String,
+                                     before: String,
+                                     interval: String,
+                                     currency: String?) async -> FetchOutcome {
+        var query: [String: String] = [
+            "after": after,
+            "before": before,
+            "interval": interval,
+            "_fields": "totals,intervals"
+        ]
+        if let currency { query["currency"] = currency }
         let response = await client.request(method: "GET",
                                             path: "wc-analytics/reports/revenue/stats",
                                             query: query,
                                             body: nil)
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
-            return .failed(RESTToolDispatch.failed(from: response, toolName: name))
+            return .failure(RESTToolDispatch.failed(from: response, toolName: name))
         }
         guard let payload = RESTResponseParsing.decodeJSON(response.data) else {
-            return .failed(.init(toolName: name,
-                                 kind: .toolFailed,
-                                 reason: "expected JSON object"))
+            return .failure(.init(toolName: name, kind: .toolFailed, reason: "expected JSON object"))
         }
-        let summary = AnalyticsStatsSummary.make(from: payload, range: (args.after, args.before))
-        return .success(.init(toolName: name,
-                              structured: LLMPayloadCap.capped(summary, toolName: name),
-                              uiStructured: nil))
+        return .success(payload)
+    }
+
+    private static func comparisonInputs(args: Args,
+                                         interval: String,
+                                         currency: String?,
+                                         client: WCRESTClient) async -> AnalyticsStatsSummary.ComparisonInputs {
+        guard let previousRange = AnalyticsDateBounds.previousPeriodBounds(after: args.after,
+                                                                           before: args.before),
+              let previousBounds = AnalyticsDateBounds.bounds(start: previousRange.after,
+                                                              end: previousRange.before) else {
+            return AnalyticsStatsSummary.ComparisonInputs(
+                interval: interval,
+                currency: currency,
+                previousPeriodPartial: true,
+                previousPeriodWarning: "Previous period totals could not be fetched."
+            )
+        }
+        let outcome = await fetchPayload(client: client,
+                                         after: previousBounds.after,
+                                         before: previousBounds.before,
+                                         interval: interval,
+                                         currency: currency)
+        switch outcome {
+        case .success(let payload):
+            let totals = RESTResponseParsing.objectField(payload, "totals")
+            return AnalyticsStatsSummary.ComparisonInputs(interval: interval,
+                                                          currency: currency,
+                                                          previousPeriodTotals: totals)
+        case .failure:
+            return AnalyticsStatsSummary.ComparisonInputs(
+                interval: interval,
+                currency: currency,
+                previousPeriodPartial: true,
+                previousPeriodWarning: "Previous period totals could not be fetched."
+            )
+        }
     }
 }

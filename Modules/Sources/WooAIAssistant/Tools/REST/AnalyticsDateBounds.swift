@@ -9,6 +9,28 @@ enum AnalyticsDateBounds {
         return ("\(start)T00:00:00", "\(end)T23:59:59")
     }
 
+    /// Anchors `previousBefore` at the day before `after` and walks back the
+    /// same inclusive number of days to mirror how the Woo dashboard's
+    /// "previous period" comparison shifts a date window.
+    static func previousPeriodBounds(after: String,
+                                     before: String) -> (after: String, before: String)? {
+        guard let afterDate = yyyyMMDDFormatter.date(from: after),
+              let beforeDate = yyyyMMDDFormatter.date(from: before) else { return nil }
+        let calendar = Calendar(identifier: .gregorian)
+        var utc = calendar
+        utc.timeZone = TimeZone(identifier: "UTC") ?? .current
+        guard let inclusiveDays = utc.dateComponents([.day], from: afterDate, to: beforeDate).day else {
+            return nil
+        }
+        let totalDays = inclusiveDays + 1
+        guard let previousBefore = utc.date(byAdding: .day, value: -1, to: afterDate),
+              let previousAfter = utc.date(byAdding: .day, value: -(totalDays - 1), to: previousBefore) else {
+            return nil
+        }
+        return (yyyyMMDDFormatter.string(from: previousAfter),
+                yyyyMMDDFormatter.string(from: previousBefore))
+    }
+
     private static let yyyyMMDDFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .gregorian)

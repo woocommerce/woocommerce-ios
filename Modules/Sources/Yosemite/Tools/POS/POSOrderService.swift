@@ -20,6 +20,14 @@ public protocol POSOrderServiceProtocol {
     /// paid" flow. The order's `paymentMethodID` is set to `"other"` so reporting can
     /// distinguish it from cash and card-present payments.
     func markOrderAsCompletedManually(order: Order) async throws
+    /// Promotes an `autoDraft` order to `.pending` so the WC backend will populate `paymentURL`
+    /// (the order becomes payable via the gateway's customer-facing checkout page). Used by the
+    /// Scan to Pay flow to obtain a QR-encodeable URL for the order. Idempotent: if the order
+    /// is already past `autoDraft` it returns the existing order without a network call.
+    func promoteOrderToPending(order: Order) async throws -> Order
+    /// Adds a note to the order. Used to record an audit trail when the merchant confirms a
+    /// scan-to-pay payment was received.
+    func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
@@ -101,6 +109,36 @@ public final class POSOrderService: POSOrderServiceProtocol {
     public func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {
         do {
             try await ordersRemote.updatePOSOrderEmail(siteID: siteID, orderID: orderID, emailAddress: recipientEmail)
+        } catch {
+            throw POSOrderServiceError.updateOrderFailed
+        }
+    }
+
+    public func promoteOrderToPending(order: Order) async throws -> Order {
+        // No-op when the order is already past auto-draft: the backend has already populated
+        // `paymentURL`, no need for another round-trip.
+        guard order.status == .autoDraft else {
+            return order
+        }
+        let updatedOrder = order.copy(status: .pending)
+        do {
+            return try await ordersRemote.updatePOSOrder(
+                siteID: siteID,
+                order: updatedOrder,
+                cashPaymentChangeDueAmount: nil,
+                fields: [.status]
+            )
+        } catch {
+            throw POSOrderServiceError.updateOrderFailed
+        }
+    }
+
+    public func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {
+        do {
+            _ = try await ordersRemote.addPOSOrderNote(siteID: siteID,
+                                                       orderID: orderID,
+                                                       isCustomerNote: isCustomerNote,
+                                                       note: note)
         } catch {
             throw POSOrderServiceError.updateOrderFailed
         }

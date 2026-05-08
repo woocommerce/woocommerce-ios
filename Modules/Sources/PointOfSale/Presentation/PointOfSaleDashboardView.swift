@@ -207,6 +207,7 @@ struct PointOfSaleDashboardView: View {
                     HStack(spacing: POSSpacing.none) {
                         if !posModel.paymentState.card.shownFullScreen
                             && posModel.paymentState.cash != .paymentSuccess
+                            && posModel.paymentState.scanToPay != .paymentSuccess
                             && posModel.paymentState.markAsPaid != .paymentSuccess {
                             CartView()
                                 .frame(width: cartWidth)
@@ -215,6 +216,7 @@ struct PointOfSaleDashboardView: View {
 
                         let totalsWidth = posModel.paymentState.card.shownFullScreen
                             || posModel.paymentState.cash == .paymentSuccess
+                            || posModel.paymentState.scanToPay == .paymentSuccess
                             || posModel.paymentState.markAsPaid == .paymentSuccess
                             ? cartWidth + checkoutWidth
                             : checkoutWidth
@@ -229,6 +231,8 @@ struct PointOfSaleDashboardView: View {
                         switch destination {
                         case .cashPayment(let orderTotal):
                             POSNavigationDestinationCashPaymentView(orderTotal: orderTotal)
+                        case .scanToPay(let orderTotal):
+                            POSNavigationDestinationScanToPayView(orderTotal: orderTotal)
                         case .emailReceipt:
                             POSNavigationDestinationEmailReceiptView()
                         }
@@ -240,6 +244,12 @@ struct PointOfSaleDashboardView: View {
             }
             .frame(width: dashboardWidth, alignment: .leading)
             .offset(x: dashboardOffset)
+            .onChange(of: posModel.paymentState.scanToPay) { oldValue, newValue in
+                if newValue.isShowingQRCode, !oldValue.isShowingQRCode,
+                   case .loaded(let totals) = posModel.orderState {
+                    navigationRouter.pushScanToPay(orderTotal: totals.orderTotal)
+                }
+            }
             .onChange(of: posModel.paymentState.cash) { _, newValue in
                 if newValue == .collectingCash,
                    case .loaded(let totals) = posModel.orderState {

@@ -102,7 +102,7 @@ struct SupportChatView: View {
                 if message.role == .bot, message.isNewInSession, let messageID = message.messageID {
                     SupportChatFeedbackRow(
                         messageID: messageID,
-                        hasRated: viewModel.ratedMessageIDs.contains(messageID),
+                        rating: viewModel.messageRatings[messageID],
                         onRate: { upvoted in
                             viewModel.submitFeedback(messageID: messageID, upvoted: upvoted)
                         }

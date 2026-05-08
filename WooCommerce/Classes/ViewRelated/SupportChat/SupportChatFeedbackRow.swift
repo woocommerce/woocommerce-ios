@@ -2,15 +2,14 @@ import SwiftUI
 
 struct SupportChatFeedbackRow: View {
     let messageID: Int64
-    let hasRated: Bool
+    /// The rating direction if the message has been rated (true = upvoted, false = downvoted), or nil if unrated.
+    let rating: Bool?
     let onRate: (Bool) -> Void
-
-    @State private var selectedUpvoted: Bool?
 
     var body: some View {
         HStack(spacing: SupportChatLayout.bubblePadding) {
-            if hasRated || selectedUpvoted != nil {
-                ratedState
+            if let rating {
+                ratedState(upvoted: rating)
             } else {
                 unratedState
             }
@@ -22,7 +21,7 @@ struct SupportChatFeedbackRow: View {
     private var unratedState: some View {
         HStack(spacing: 12) {
             Button {
-                submitRating(upvoted: true)
+                onRate(true)
             } label: {
                 Image(systemName: "hand.thumbsup")
                     .foregroundColor(Color(.secondaryLabel))
@@ -30,7 +29,7 @@ struct SupportChatFeedbackRow: View {
             .accessibilityLabel(Localization.rateHelpful)
 
             Button {
-                submitRating(upvoted: false)
+                onRate(false)
             } label: {
                 Image(systemName: "hand.thumbsdown")
                     .foregroundColor(Color(.secondaryLabel))
@@ -40,9 +39,7 @@ struct SupportChatFeedbackRow: View {
         .font(.subheadline)
     }
 
-    @ViewBuilder
-    private var ratedState: some View {
-        let upvoted = selectedUpvoted ?? true
+    private func ratedState(upvoted: Bool) -> some View {
         HStack(spacing: 6) {
             Image(systemName: upvoted ? "hand.thumbsup.fill" : "hand.thumbsdown.fill")
                 .foregroundColor(Color(.accent))
@@ -50,11 +47,6 @@ struct SupportChatFeedbackRow: View {
                 .font(.caption)
                 .foregroundColor(Color(.secondaryLabel))
         }
-    }
-
-    private func submitRating(upvoted: Bool) {
-        selectedUpvoted = upvoted
-        onRate(upvoted)
     }
 }
 
@@ -86,16 +78,25 @@ private extension SupportChatFeedbackRow {
 #Preview("Unrated") {
     SupportChatFeedbackRow(
         messageID: 123,
-        hasRated: false,
+        rating: nil,
         onRate: { _ in }
     )
     .padding()
 }
 
-#Preview("Rated") {
+#Preview("Rated Helpful") {
     SupportChatFeedbackRow(
         messageID: 123,
-        hasRated: true,
+        rating: true,
+        onRate: { _ in }
+    )
+    .padding()
+}
+
+#Preview("Rated Not Helpful") {
+    SupportChatFeedbackRow(
+        messageID: 123,
+        rating: false,
         onRate: { _ in }
     )
     .padding()

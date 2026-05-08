@@ -161,8 +161,8 @@ final class SupportChatViewModel {
     /// When true, the escalation button should be hidden.
     private(set) var hasCreatedTicket: Bool = false
 
-    /// Set of message IDs that have already received feedback from the user.
-    private(set) var ratedMessageIDs: Set<Int64> = []
+    /// Maps message IDs to their feedback rating (true = upvoted, false = downvoted).
+    private(set) var messageRatings: [Int64: Bool] = [:]
 
     var inputText: String = ""
 
@@ -767,9 +767,9 @@ final class SupportChatViewModel {
     /// API failures are logged but do not affect the UI since feedback is low-stakes.
     func submitFeedback(messageID: Int64, upvoted: Bool) {
         guard let chatID, let sessionID else { return }
-        guard !ratedMessageIDs.contains(messageID) else { return }
+        guard messageRatings[messageID] == nil else { return }
 
-        ratedMessageIDs.insert(messageID)
+        messageRatings[messageID] = upvoted
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.feedbackSubmitted(upvoted: upvoted))
 

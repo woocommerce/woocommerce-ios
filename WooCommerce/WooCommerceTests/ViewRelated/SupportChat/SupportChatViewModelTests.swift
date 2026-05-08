@@ -651,6 +651,7 @@ struct SupportChatViewModelTests {
         }
 
         let sut = SupportChatViewModel(
+            botSlug: botSlug,
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -715,7 +716,7 @@ struct SupportChatViewModelTests {
         #expect(feedbackCallCount == 1)
     }
 
-    @Test func submitFeedback_adds_messageID_to_ratedMessageIDs() async {
+    @Test func submitFeedback_when_upvoted_stores_rating_direction() async {
         // Given
         let chatID: Int64 = 123
         let messageID: Int64 = 456
@@ -754,7 +755,49 @@ struct SupportChatViewModelTests {
         sut.submitFeedback(messageID: messageID, upvoted: true)
 
         // Then
-        #expect(sut.ratedMessageIDs.contains(messageID))
+        #expect(sut.messageRatings[messageID] == true)
+    }
+
+    @Test func submitFeedback_when_downvoted_stores_rating_direction() async {
+        // Given
+        let chatID: Int64 = 123
+        let messageID: Int64 = 456
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, _, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: chatID,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: messageID, role: .bot, content: "Hello", context: nil)
+                    ]
+                )
+                completion(.success(response))
+            case let .submitFeedback(_, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .connectivityTool,
+            stores: stores,
+            analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+            onContactHumanSupport: { _, _, _ in }
+        )
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // When
+        sut.submitFeedback(messageID: messageID, upvoted: false)
+
+        // Then
+        #expect(sut.messageRatings[messageID] == false)
     }
 
     @Test func submitFeedback_tracks_analytics_event() async {

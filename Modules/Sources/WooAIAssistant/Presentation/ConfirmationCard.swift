@@ -74,9 +74,7 @@ struct ConfirmationCard: View {
         let overflow = preview.bulkEntries.count - visible.count
         return VStack(alignment: .leading, spacing: AssistantSpacing.xSmall) {
             ForEach(Array(visible.enumerated()), id: \.offset) { _, entry in
-                // Text(verbatim:) bypasses LocalizedStringKey interpolation so the
-                // raw entity id renders as #1234, not #1 234 in locales that group
-                // thousands with a thin space.
+                // verbatim avoids locale-grouping the entity id (#1 234 vs #1234).
                 Text(verbatim: entry.displayName.map { "#\(entry.id)  \($0)" } ?? "#\(entry.id)")
                     .font(.assistantBody)
                     .foregroundStyle(Color.primary)

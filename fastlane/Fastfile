@@ -357,6 +357,14 @@ platform :ios do
     if existing_pr_url
       UI.success("Found existing release notes PR: #{existing_pr_url}")
       emit_release_notes_pr_url(existing_pr_url)
+
+      if is_ci
+        buildkite_annotate(
+          style: 'success',
+          context: 'release-notes-pr',
+          message: "Reusing existing release notes PR: #{existing_pr_url}"
+        )
+      end
       next
     end
 

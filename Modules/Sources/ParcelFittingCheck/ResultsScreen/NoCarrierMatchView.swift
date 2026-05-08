@@ -22,6 +22,9 @@ private extension NoCarrierMatchView {
     }
 
     enum Localization {
-        static let message = "We couldn't find a carrier package that fits your item. Use your exact size below to get rate quotes."
+        static let message = NSLocalizedString(
+            "parcelFitting.results.noCarrierMatch.message",
+            value: "We couldn't find a carrier package that fits your item. Use your exact size below to get rate quotes.",
+            comment: "Message shown when no carrier packages fit the measured dimensions on the AR results screen")
     }
 }

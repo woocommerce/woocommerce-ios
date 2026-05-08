@@ -41,6 +41,9 @@ private extension CustomDimensionsRow {
     }
 
     enum Localization {
-        static let customDimensions = "Custom dimensions"
+        static let customDimensions = NSLocalizedString(
+            "parcelFitting.results.customDimensions",
+            value: "Custom dimensions",
+            comment: "Label for the custom dimensions option on the AR results screen")
     }
 }

@@ -220,12 +220,33 @@ private extension ARParcelFittingResultsView {
     }
 
     enum Localization {
-        static let navigationTitle = "Pick a package"
-        static let measuredHeader = "MEASURED"
-        static let useSelectedPackage = "Select Package"
-        static let bestFitHeader = "BEST FIT · %d OPTIONS"
-        static let noCarrierMatchHeader = "NO CARRIER MATCH"
-        static let useExactSizeHeader = "USE EXACT SIZE"
-        static let browseAllPackages = "Browse all packages"
+        static let navigationTitle = NSLocalizedString(
+            "parcelFitting.results.navigationTitle",
+            value: "Pick a package",
+            comment: "Navigation title for the AR parcel fitting results screen")
+        static let measuredHeader = NSLocalizedString(
+            "parcelFitting.results.measuredHeader",
+            value: "MEASURED",
+            comment: "Section header for the measured dimensions on the AR results screen")
+        static let useSelectedPackage = NSLocalizedString(
+            "parcelFitting.results.selectPackage",
+            value: "Select Package",
+            comment: "Button to confirm the selected package on the AR results screen")
+        static let bestFitHeader = NSLocalizedString(
+            "parcelFitting.results.bestFitHeader",
+            value: "BEST FIT · %1$d OPTIONS",
+            comment: "Section header for best-fit carrier packages. %1$d is the number of options")
+        static let noCarrierMatchHeader = NSLocalizedString(
+            "parcelFitting.results.noCarrierMatchHeader",
+            value: "NO CARRIER MATCH",
+            comment: "Section header when no carrier packages fit the measured dimensions")
+        static let useExactSizeHeader = NSLocalizedString(
+            "parcelFitting.results.useExactSizeHeader",
+            value: "USE EXACT SIZE",
+            comment: "Section header for the custom dimensions option on the AR results screen")
+        static let browseAllPackages = NSLocalizedString(
+            "parcelFitting.results.browseAllPackages",
+            value: "Browse all packages",
+            comment: "Link to open the full package selection screen from the AR results screen")
     }
 }

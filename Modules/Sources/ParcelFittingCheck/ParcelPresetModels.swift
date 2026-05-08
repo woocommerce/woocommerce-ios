@@ -39,8 +39,15 @@ public struct ParcelPresetPackage: Identifiable {
 }
 
 public enum ParcelFittingResult {
-    case carrierPackage(ParcelPresetPackage)
+    case carrierPackage(ParcelPresetPackage, measurement: ParcelDimensions)
     case customDimensions(ParcelDimensions)
+
+    public var measurement: ParcelDimensions {
+        switch self {
+        case .carrierPackage(_, let measurement): return measurement
+        case .customDimensions(let dims): return dims
+        }
+    }
 }
 
 public protocol ParcelFittingDelegate: AnyObject {

@@ -22,6 +22,15 @@ struct WooShippingAddPackageView: View {
     @ObservedObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+    var onARPackageSelected: ((WooShippingPackageDataRepresentable, ARPackageContext) -> Void)?
+
+    struct ARPackageContext {
+        let measurement: ParcelDimensions
+        let carriers: [ParcelPresetCarrier]
+        let starredPackageIDs: Set<String>
+        let dimensionUnit: UnitLength
+        weak var delegate: ParcelFittingDelegate?
+    }
 
     @State private var cancellable: AnyCancellable?
 
@@ -30,8 +39,10 @@ struct WooShippingAddPackageView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
-         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void,
+         onARPackageSelected: ((WooShippingPackageDataRepresentable, ARPackageContext) -> Void)? = nil) {
         self.addPackageAction = addPackageAction
+        self.onARPackageSelected = onARPackageSelected
         packagesViewModel = WooShippingAddPackageViewModel(selectedPackage: selectedPackage)
         switch selectedPackage?.source {
         case .custom:
@@ -136,12 +147,23 @@ struct WooShippingAddPackageView: View {
             delegate: packagesViewModel
         ) { [weak packagesViewModel, weak customPackageViewModel] result in
             guard let packagesViewModel, let customPackageViewModel else { return }
+            let arContext = ARPackageContext(
+                measurement: result.measurement,
+                carriers: packagesViewModel.parcelPresetCarriers,
+                starredPackageIDs: packagesViewModel.starredCarriersPackages,
+                dimensionUnit: packagesViewModel.arDimensionUnit,
+                delegate: packagesViewModel
+            )
             switch result {
-            case .carrierPackage(let package):
+            case .carrierPackage(let package, _):
                 packagesViewModel.selectCarrierPackage(withID: package.id)
                 packagesViewModel.selectedPackageType = .carrier
                 if let selected = packagesViewModel.selectedCarriersPackage {
-                    addPackageAction(selected)
+                    if let onARPackageSelected {
+                        onARPackageSelected(selected, arContext)
+                    } else {
+                        addPackageAction(selected)
+                    }
                 }
             case .customDimensions(let dims):
                 customPackageViewModel.fieldValues[.length] = String(format: "%.1f", dims.length)
@@ -149,7 +171,11 @@ struct WooShippingAddPackageView: View {
                 customPackageViewModel.fieldValues[.height] = String(format: "%.1f", dims.height)
                 packagesViewModel.selectedPackageType = .custom
                 if let packageData = customPackageViewModel.packageData {
-                    addPackageAction(packageData)
+                    if let onARPackageSelected {
+                        onARPackageSelected(packageData, arContext)
+                    } else {
+                        addPackageAction(packageData)
+                    }
                 }
             }
         }

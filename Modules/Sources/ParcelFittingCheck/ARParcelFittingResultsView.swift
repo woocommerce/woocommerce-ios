@@ -1,23 +1,26 @@
 import SwiftUI
 
-struct ARParcelFittingResultsView: View {
+public struct ARParcelFittingResultsView: View {
     let viewModel: ARParcelFittingResultsViewModel
     weak var delegate: ParcelFittingDelegate?
     let onConfirm: (ParcelFittingResult) -> Void
     let onBack: () -> Void
+    let onBrowseAllPackages: (() -> Void)?
 
     @State private var starredPackageIDs: Set<String>
     @State private var selection: Selection?
 
-    init(viewModel: ARParcelFittingResultsViewModel,
+    public init(viewModel: ARParcelFittingResultsViewModel,
          starredPackageIDs: Set<String>,
          delegate: ParcelFittingDelegate?,
          onConfirm: @escaping (ParcelFittingResult) -> Void,
-         onBack: @escaping () -> Void) {
+         onBack: @escaping () -> Void,
+         onBrowseAllPackages: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.delegate = delegate
         self.onConfirm = onConfirm
         self.onBack = onBack
+        self.onBrowseAllPackages = onBrowseAllPackages
         self._starredPackageIDs = State(initialValue: starredPackageIDs)
     }
 
@@ -26,7 +29,7 @@ struct ARParcelFittingResultsView: View {
         case custom
     }
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: Constants.sectionSpacing) {
@@ -45,6 +48,16 @@ struct ARParcelFittingResultsView: View {
                     }
 
                     exactSizeSection
+
+                    if let onBrowseAllPackages {
+                        Button {
+                            onBrowseAllPackages()
+                        } label: {
+                            Text(Localization.browseAllPackages)
+                                .font(.subheadline)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    }
                 }
                 .padding(.horizontal)
                 .padding(.top, Constants.topPadding)
@@ -146,7 +159,7 @@ struct ARParcelFittingResultsView: View {
         switch selection {
         case .carrier(let packageID):
             if let result = viewModel.carrierResults.first(where: { $0.package.id == packageID }) {
-                onConfirm(.carrierPackage(result.package))
+                onConfirm(.carrierPackage(result.package, measurement: viewModel.measuredDimensions))
             }
         case .custom:
             onConfirm(.customDimensions(viewModel.measuredDimensions))
@@ -213,5 +226,6 @@ private extension ARParcelFittingResultsView {
         static let bestFitHeader = "BEST FIT · %d OPTIONS"
         static let noCarrierMatchHeader = "NO CARRIER MATCH"
         static let useExactSizeHeader = "USE EXACT SIZE"
+        static let browseAllPackages = "Browse all packages"
     }
 }

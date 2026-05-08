@@ -1,4 +1,5 @@
 import Foundation
+import ParcelFittingCheck
 import Yosemite
 import WooFoundation
 import Combine
@@ -53,6 +54,9 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
 
     /// Selected package data for the shipping label.
     @Published private(set) var selectedPackage: WooShippingPackageDataRepresentable?
+
+    /// Cached AR context from the last unified AR flow, if used.
+    private(set) var lastARContext: WooShippingAddPackageView.ARPackageContext?
 
     /// String representing the total weight for the shipment.
     @Published var shipmentWeight: String = ""
@@ -173,8 +177,10 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
 
     /// Handles package selection for the shipping label.
     /// Selecting a package also refreshes the available rates for the shipping service.
-    func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
+    func selectPackage(_ packageData: WooShippingPackageDataRepresentable,
+                        arContext: WooShippingAddPackageView.ARPackageContext? = nil) {
         selectedPackage = packageData
+        lastARContext = arContext
         analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
 

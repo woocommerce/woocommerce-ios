@@ -2,7 +2,7 @@ import SwiftUI
 
 struct WooShippingPackageAndRatePlaceholder: View {
     /// Action to perform when a package is selected.
-    let onSelectPackage: (WooShippingPackageDataRepresentable) -> Void
+    let onSelectPackage: (WooShippingPackageDataRepresentable, WooShippingAddPackageView.ARPackageContext?) -> Void
 
     @State private var showAddPackage: Bool = false
 
@@ -28,10 +28,16 @@ struct WooShippingPackageAndRatePlaceholder: View {
         .padding(Layout.padding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.border), lineWidth: Layout.borderLineWidth, dashed: true)
         .sheet(isPresented: $showAddPackage) {
-            WooShippingAddPackageView() { packageData in
-                onSelectPackage(packageData)
-                showAddPackage = false
-            }
+            WooShippingAddPackageView(
+                addPackageAction: { packageData in
+                    onSelectPackage(packageData, nil)
+                    showAddPackage = false
+                },
+                onARPackageSelected: { packageData, context in
+                    onSelectPackage(packageData, context)
+                    showAddPackage = false
+                }
+            )
         }
     }
 }
@@ -66,7 +72,7 @@ private extension WooShippingPackageAndRatePlaceholder {
 import struct Yosemite.Order
 
 #Preview {
-    WooShippingPackageAndRatePlaceholder(onSelectPackage: { _ in })
+    WooShippingPackageAndRatePlaceholder(onSelectPackage: { _, _ in })
         .padding()
 }
 

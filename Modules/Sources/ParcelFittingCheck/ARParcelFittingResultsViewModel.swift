@@ -1,18 +1,18 @@
 import Foundation
 
 @Observable
-final class ARParcelFittingResultsViewModel {
-    let measuredDimensions: ParcelDimensions
-    let unit: UnitLength
-    let carrierResults: [CarrierResult]
+public final class ARParcelFittingResultsViewModel {
+    public let measuredDimensions: ParcelDimensions
+    public let unit: UnitLength
+    public let carrierResults: [CarrierResult]
 
-    struct CarrierResult: Identifiable {
-        let carrier: ParcelPresetCarrier
-        let package: ParcelPresetPackage
-        var id: String { package.id }
+    public struct CarrierResult: Identifiable {
+        public let carrier: ParcelPresetCarrier
+        public let package: ParcelPresetPackage
+        public var id: String { package.id }
     }
 
-    init(measuredDimensions: ParcelDimensions, unit: UnitLength, carriers: [ParcelPresetCarrier]) {
+    public init(measuredDimensions: ParcelDimensions, unit: UnitLength, carriers: [ParcelPresetCarrier]) {
         self.measuredDimensions = measuredDimensions
         self.unit = unit
         self.carrierResults = carriers.compactMap { carrier in

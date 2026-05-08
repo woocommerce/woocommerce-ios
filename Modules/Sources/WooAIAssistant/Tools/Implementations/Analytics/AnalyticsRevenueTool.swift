@@ -59,7 +59,14 @@ public enum AnalyticsRevenueTool {
         let currency: String?
     }
 
+    static let allowedArguments: Set<String> = ["after", "before", "interval", "currency"]
+
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value

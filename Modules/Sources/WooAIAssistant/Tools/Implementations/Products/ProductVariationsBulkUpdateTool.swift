@@ -105,8 +105,21 @@ public enum ProductVariationsBulkUpdateTool {
 
     private static let allowedStatuses = AllowedProductUpdateStatuses.values
     private static let allowedStockStatuses: Set<String> = ["instock", "outofstock", "onbackorder"]
+    static let allowedArguments: Set<String> = ["product_id", "variations"]
+    static let allowedVariationKeys: Set<String> = [
+        "id", "regular_price", "sale_price", "stock_quantity",
+        "stock_status", "sku", "status"
+    ]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
+        if let failed = variationKeyRejection(arguments: arguments) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -167,5 +180,24 @@ public enum ProductVariationsBulkUpdateTool {
                                                          body: payload,
                                                          client: client,
                                                          toolName: name)
+    }
+
+    private static func variationKeyRejection(arguments: String) -> ToolResult.Failed? {
+        guard let data = arguments.data(using: .utf8),
+              let parsed = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let entries = parsed["variations"] as? [[String: Any]] else {
+            return nil
+        }
+        var unknown: Set<String> = []
+        for entry in entries {
+            for key in entry.keys where !allowedVariationKeys.contains(key) {
+                unknown.insert(key)
+            }
+        }
+        guard !unknown.isEmpty else { return nil }
+        let list = unknown.sorted().joined(separator: ", ")
+        return .init(toolName: name,
+                     kind: .invalidToolCall,
+                     reason: "Unsupported \(name) argument(s): \(list)")
     }
 }

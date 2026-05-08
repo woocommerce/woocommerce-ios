@@ -47,12 +47,9 @@ struct OrdersUpdateToolTests {
     }
 
     @Test
-    func test_ordersUpdate_when_field_outside_allowlist_then_dropped_silently_and_request_excludes_it() async throws {
+    func test_ordersUpdate_when_field_outside_allowlist_then_returns_invalidToolCall() async {
         // Given
-        let body = """
-        {"id": 8, "status": "processing"}
-        """
-        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
         let tool = OrdersUpdateTool.make()
 
         // When
@@ -62,15 +59,14 @@ struct OrdersUpdateToolTests {
         let result = await tool.executor(arguments, client)
 
         // Then
-        guard case .success = result else {
-            Issue.record("expected success, got \(result)")
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed, got \(result)")
             return
         }
-        let call = try #require(await client.calls.first)
-        let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
-        #expect(parsed["discount_total"] == nil)
-        #expect(parsed["_method"] == nil)
-        #expect(parsed["status"] as? String == "processing")
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("_method"))
+        #expect(failed.reason.contains("discount_total"))
+        #expect(await client.calls.isEmpty)
     }
 
     @Test

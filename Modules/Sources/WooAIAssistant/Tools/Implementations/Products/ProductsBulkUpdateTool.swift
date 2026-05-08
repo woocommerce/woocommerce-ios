@@ -80,8 +80,18 @@ public enum ProductsBulkUpdateTool {
     }
 
     private static let allowedStatuses = AllowedProductUpdateStatuses.values
+    static let allowedArguments: Set<String> = ["ids", "patch"]
+    static let allowedPatchKeys: Set<String> = ["name", "regular_price", "sale_price", "stock_quantity", "status"]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
+        if let failed = patchKeyRejection(arguments: arguments) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -133,5 +143,18 @@ public enum ProductsBulkUpdateTool {
                                                          body: payload,
                                                          client: client,
                                                          toolName: name)
+    }
+
+    private static func patchKeyRejection(arguments: String) -> ToolResult.Failed? {
+        guard let data = arguments.data(using: .utf8),
+              let parsed = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let patch = parsed["patch"] as? [String: Any] else {
+            return nil
+        }
+        let unknown = patch.keys.filter { !allowedPatchKeys.contains($0) }.sorted()
+        guard !unknown.isEmpty else { return nil }
+        return .init(toolName: name,
+                     kind: .invalidToolCall,
+                     reason: "Unsupported \(name) argument(s): \(unknown.joined(separator: ", "))")
     }
 }

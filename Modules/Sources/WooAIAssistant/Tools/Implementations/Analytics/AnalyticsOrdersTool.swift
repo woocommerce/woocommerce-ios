@@ -53,7 +53,14 @@ public enum AnalyticsOrdersTool {
         let interval: String?
     }
 
+    static let allowedArguments: Set<String> = ["after", "before", "interval"]
+
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value

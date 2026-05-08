@@ -63,8 +63,14 @@ public enum OrdersUpdateTool {
     }
 
     private static let allowedStatuses = AllowedOrderUpdateStatuses.values
+    private static let allowedArguments: Set<String> = ["id", "status", "customer_note", "billing_email"]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value

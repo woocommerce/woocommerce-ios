@@ -151,6 +151,7 @@ public enum ProductsListTool {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
         }
+        let perPage = RESTToolDispatch.clampedPerPage(args.perPage)
         let response = await client.request(method: "GET",
                                             path: "wc/v3/products",
                                             query: query(from: args),
@@ -164,9 +165,18 @@ public enum ProductsListTool {
                                  kind: .toolFailed,
                                  reason: "expected JSON array"))
         }
-        let summary = ProductsListSummary.make(from: rows)
+        let canLoadMore = canLoadMore(rowsCount: rows.count, perPage: perPage, args: args)
+        let summary = ProductsListSummary.make(from: rows, canLoadMore: canLoadMore)
         return .success(.init(toolName: name,
                               structured: LLMPayloadCap.capped(summary, toolName: name),
                               uiStructured: nil))
+    }
+
+    private static func canLoadMore(rowsCount: Int, perPage: Int, args: Args) -> Bool {
+        if let include = args.include, !include.isEmpty {
+            let page = max(1, args.page ?? 1)
+            return include.count > page * perPage
+        }
+        return rowsCount >= perPage
     }
 }

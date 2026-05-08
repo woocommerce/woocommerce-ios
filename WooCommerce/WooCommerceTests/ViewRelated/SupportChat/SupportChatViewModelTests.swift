@@ -617,6 +617,63 @@ struct SupportChatViewModelTests {
         #expect(receivedSupportAreaInfo?.systemStatusReport == prefetchedReport)
     }
 
+    // MARK: - canEscalateToHumanSupport Tests
+
+    @Test func test_canEscalateToHumanSupport_is_false_initially() {
+        // Given
+        let sut = makeSUT(entryPoint: .connectivityTool)
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == false)
+    }
+
+    @Test func test_canEscalateToHumanSupport_is_false_when_only_bot_greeting_exists() {
+        // Given
+        let sut = makeSUT(entryPoint: .connectivityTool)
+
+        // When
+        sut.showGreeting()
+
+        // Then
+        #expect(sut.messages.contains(where: { $0.role == .bot }))
+        #expect(sut.canEscalateToHumanSupport == false)
+    }
+
+    @Test func test_canEscalateToHumanSupport_becomes_true_after_first_user_message_is_sent() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            // Leave sendMessage pending — the user bubble is appended synchronously before the network call completes.
+            _ = action
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+
+        // When
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == true)
+    }
+
+    @Test func test_canEscalateToHumanSupport_is_false_when_hasCreatedTicket_is_true() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = SupportChatViewModel(
+            entryPoint: .preLogin,
+            stores: stores,
+            hasCreatedTicket: true,
+            onContactHumanSupport: { _, _, _ in }
+        )
+
+        // When — append a user message so the only failing condition is hasCreatedTicket
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == false)
+    }
+
     // MARK: - Test Helpers
 
     private func makeSUT(

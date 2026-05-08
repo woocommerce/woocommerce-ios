@@ -148,6 +148,12 @@ final class SupportChatViewModel {
     /// When true, the escalation button should be hidden.
     private(set) var hasCreatedTicket: Bool = false
 
+    /// Whether the trailing toolbar entry point to human support should be visible.
+    /// Shown after the merchant has sent at least one message and no ticket has been created yet.
+    var canEscalateToHumanSupport: Bool {
+        messages.contains(where: { $0.role == .user }) && !hasCreatedTicket
+    }
+
     var inputText: String = ""
 
     // MARK: - Private Properties

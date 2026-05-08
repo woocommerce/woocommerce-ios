@@ -96,7 +96,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
 
         let parameters = paymentParameters(order: order,
                                            orderTotal: orderTotal,
-                                           country: paymentGatewayAccount.country,
+                                           accountCountry: paymentGatewayAccount.country,
+                                           configurationCountryCode: countryCode,
                                            statementDescriptor: paymentGatewayAccount.statementDescriptor,
                                            paymentMethodTypes: paymentMethodTypes,
                                            stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
@@ -296,7 +297,8 @@ private extension PaymentCaptureOrchestrator {
 
     func paymentParameters(order: Order,
                            orderTotal: NSDecimalNumber,
-                           country: String,
+                           accountCountry: String,
+                           configurationCountryCode: CountryCode,
                            statementDescriptor: String?,
                            paymentMethodTypes: [PaymentMethodType],
                            stripeSmallestCurrencyUnitMultiplier: Decimal,
@@ -314,11 +316,12 @@ private extension PaymentCaptureOrchestrator {
         return PaymentParameters(amount: orderTotal as Decimal,
                                  currency: order.currency,
                                  stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
-                                 applicationFee: applicationFee(for: orderTotal, country: country),
+                                 applicationFee: applicationFee(for: orderTotal, country: accountCountry),
                                  receiptDescription: receiptDescription(orderNumber: order.number),
                                  statementDescription: statementDescriptor,
                                  receiptEmail: paymentReceiptEmailParameterDeterminer.receiptEmail(from: order),
                                  paymentMethodTypes: paymentMethodTypes,
+                                 cardPresentCaptureMethod: configurationCountryCode == .AU ? .manualPreferred : nil,
                                  metadata: metadata)
     }
 

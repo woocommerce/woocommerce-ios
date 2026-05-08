@@ -159,9 +159,9 @@ struct WooShippingAddPackageView: View {
                     DDLogError("⛔️ AR flow: carrier package \(package.id) not found in loaded packages")
                 }
             case .customDimensions(let dims):
-                customPackageViewModel.fieldValues[.length] = String(format: "%.1f", dims.length)
-                customPackageViewModel.fieldValues[.width] = String(format: "%.1f", dims.width)
-                customPackageViewModel.fieldValues[.height] = String(format: "%.1f", dims.height)
+                customPackageViewModel.fieldValues[.length] = ParcelDimensions.formatValue(dims.length)
+                customPackageViewModel.fieldValues[.width] = ParcelDimensions.formatValue(dims.width)
+                customPackageViewModel.fieldValues[.height] = ParcelDimensions.formatValue(dims.height)
                 packagesViewModel.selectedPackageType = .custom
                 if let packageData = customPackageViewModel.packageData {
                     if let onARPackageSelected {

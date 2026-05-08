@@ -121,9 +121,9 @@ struct WooShippingSelectedPackageView: View {
             let packageData = WooShippingPackageData(
                 id: pkg.id,
                 name: pkg.name,
-                length: String(format: "%.1f", pkg.length),
-                width: String(format: "%.1f", pkg.width),
-                height: String(format: "%.1f", pkg.height),
+                length: ParcelDimensions.formatValue(pkg.length),
+                width: ParcelDimensions.formatValue(pkg.width),
+                height: ParcelDimensions.formatValue(pkg.height),
                 weight: "",
                 source: source,
                 packageType: "box"
@@ -142,9 +142,9 @@ struct WooShippingSelectedPackageView: View {
             let packageData = WooShippingPackageData(
                 id: "custom_box",
                 name: "",
-                length: String(format: "%.1f", dims.length),
-                width: String(format: "%.1f", dims.width),
-                height: String(format: "%.1f", dims.height),
+                length: ParcelDimensions.formatValue(dims.length),
+                width: ParcelDimensions.formatValue(dims.width),
+                height: ParcelDimensions.formatValue(dims.height),
                 weight: "",
                 source: .custom,
                 packageType: "box"

@@ -40,12 +40,24 @@ public struct ParcelDimensions {
         }
     }
 
+    private static let valueFormat = "%.2f"
+
+    public static func formatValue(_ value: Float) -> String {
+        String(format: valueFormat, value)
+    }
+
     func formatted(unit: UnitLength) -> String {
-        String(format: "%.2f × %.2f × %.2f %@", length, width, height, unit.symbol)
+        let l = Self.formatValue(length)
+        let w = Self.formatValue(width)
+        let h = Self.formatValue(height)
+        return "\(l) × \(w) × \(h) \(unit.symbol)"
     }
 
     func formattedWithLabels(unit: UnitLength) -> String {
-        String(format: "L: %.2f  W: %.2f  H: %.2f %@", length, width, height, unit.symbol)
+        let l = Self.formatValue(length)
+        let w = Self.formatValue(width)
+        let h = Self.formatValue(height)
+        return "L: \(l)  W: \(w)  H: \(h) \(unit.symbol)"
     }
 
     private static func metersPerUnit(_ unit: UnitLength) -> Float {

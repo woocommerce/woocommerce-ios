@@ -145,6 +145,36 @@ struct AnalyticsRevenueToolTests {
     }
 
     @Test
+    func test_execute_when_compare_to_is_previous_period_and_secondary_fetch_fails_then_primary_succeeds_with_previous_period_partial_true_and_warning() async {
+        // Given
+        let primary = #"{"totals": {"net_revenue": "200.00"}}"#
+        let client = MockWCRESTClient(responses: [
+            StubResponses.ok(primary),
+            StubResponses.failure(statusCode: 500)
+        ])
+        let tool = AnalyticsRevenueTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"after":"2026-05-01","before":"2026-05-07","compare_to":"previous_period"}"#,
+            client
+        )
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["previous_period_partial"] == .bool(true))
+        if case .string(let warning) = fields["previous_period_warning"] {
+            #expect(warning.contains("could not be fetched"))
+        } else {
+            Issue.record("expected previous_period_warning string")
+        }
+        #expect(fields["previous_period_totals"] == nil)
+    }
+
+    @Test
     func test_execute_when_compare_to_is_invalid_value_then_invalidToolCall_is_returned() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok("{}"))

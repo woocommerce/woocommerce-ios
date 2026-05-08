@@ -140,6 +140,24 @@ struct ProductsBulkUpdateToolTests {
     }
 
     @Test
+    func test_execute_when_patch_has_unknown_key_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"description": "ignored"}}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("description"))
+    }
+
+    @Test
     func test_execute_when_products_bulk_succeeds_then_receipt_includes_requested_count_and_updated_ids() async {
         // Given
         let body = #"{"update": [{"id": 10, "name": "X"}, {"id": 11, "name": "X"}]}"#

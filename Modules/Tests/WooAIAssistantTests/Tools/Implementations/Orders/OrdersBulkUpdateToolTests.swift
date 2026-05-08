@@ -247,6 +247,24 @@ struct OrdersBulkUpdateToolTests {
     }
 
     @Test
+    func test_execute_when_patch_has_unknown_key_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"discount_total": "9.00"}}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("discount_total"))
+    }
+
+    @Test
     func test_execute_when_response_succeeds_then_failed_is_emitted_as_array_even_when_empty() async {
         // Given
         let body = #"{"update": [{"id": 1, "status": "completed"}]}"#

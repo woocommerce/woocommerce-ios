@@ -200,6 +200,25 @@ struct DefaultConfirmationPreviewBuilderTests {
     }
 
     @Test
+    func test_build_when_orders_update_has_customer_note_at_exactly_160_chars_then_value_is_unchanged_without_ellipsis() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let exact = String(repeating: "a", count: 160)
+
+        // When
+        let preview = builder.build(
+            toolName: OrdersUpdateTool.name,
+            arguments: #"{"id":42,"customer_note":"\#(exact)"}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "customer_note" }))
+        #expect(field.value == .raw(exact))
+    }
+
+    @Test
     func test_build_when_orders_update_has_customer_note_over_160_chars_then_field_value_is_first_160_chars_plus_ellipsis() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()

@@ -91,6 +91,40 @@ struct ProductVariationDetailSummaryTests {
     }
 
     @Test
+    func test_make_when_variation_has_parent_id_then_product_id_mirrors_parent_id() {
+        // Given
+        let entity = AnyCodableJSON.object(["id": .int(202), "parent_id": .int(99)])
+
+        // When
+        let summary = ProductVariationDetailSummary.make(from: entity)
+
+        // Then
+        guard case .object(let fields) = summary else {
+            Issue.record("expected object")
+            return
+        }
+        #expect(fields["parent_id"] == .int(99))
+        #expect(fields["product_id"] == .int(99))
+    }
+
+    @Test
+    func test_make_when_variation_has_no_parent_id_then_product_id_is_absent() {
+        // Given
+        let entity = AnyCodableJSON.object(["id": .int(202)])
+
+        // When
+        let summary = ProductVariationDetailSummary.make(from: entity)
+
+        // Then
+        guard case .object(let fields) = summary else {
+            Issue.record("expected object")
+            return
+        }
+        #expect(fields["parent_id"] == nil)
+        #expect(fields["product_id"] == nil)
+    }
+
+    @Test
     func test_make_when_variation_has_no_attributes_then_attributes_is_empty_array() {
         // Given
         let entity = AnyCodableJSON.object(["id": .int(1)])

@@ -41,6 +41,10 @@ final class POSPaymentModel {
     /// pre-connect window.
     var isPreparingTapToPay: Bool {
         guard preferredConnectionMethod == .tapToPay else { return false }
+        // If a non-TTP session is in flight (BT picked via the sheet),
+        // we deliberately disconnected TTP — showing "Preparing Tap to Pay…"
+        // would mislead. The BT path drives its own UI from here.
+        if let currentPaymentMethod, currentPaymentMethod != .tapToPay { return false }
         if case .disconnected = cardReaderConnectionStatus { return true }
         return false
     }
@@ -818,7 +822,16 @@ extension POSPaymentModel {
             .filter({ $0 == .disconnected })
             .sink { [weak self] _ in
                 Task { @MainActor [weak self] in
-                    await self?.startPayment()
+                    guard let self else { return }
+                    // The auto-reconnect is for "reader fell off the device"
+                    // scenarios when no payment is in flight. If a session is
+                    // active (e.g. a BT-via-sheet pick on a TTP-default
+                    // device deliberately disconnected TTP first), the
+                    // session manages its own reconnect and we should stay
+                    // out of the way — otherwise we race the session's
+                    // chosen method and confuse the SDK.
+                    guard self.currentPaymentMethod == nil else { return }
+                    await self.startPayment()
                 }
             }
     }
@@ -884,8 +897,15 @@ private extension POSPaymentModel {
                 // connected"). Failures the merchant must actually act on — TTP
                 // entitlement / Apple ToS / location-services / postal-code /
                 // address — still surface so the merchant can resolve them.
-                // iPad / non-TTP phones see all of these as today.
-                if preferredConnectionMethod == .tapToPay {
+                //
+                // Gated on the *current session's* method (or the silent
+                // pre-connect window where no session has been started yet):
+                // when the merchant picks BT via the sheet on a TTP-default
+                // device, the BT discovery alerts have to come through so they
+                // can pick a reader.
+                let isInTransparentTapToPayFlow = currentPaymentMethod == .tapToPay
+                    || (currentPaymentMethod == nil && preferredConnectionMethod == .tapToPay)
+                if isInTransparentTapToPayFlow {
                     switch eventDetails {
                     case .scanningForReaders,
                             .foundReader,
@@ -1067,6 +1087,16 @@ private extension POSPaymentModel {
                           "current scanToPay state: \(paymentState.scanToPay), " +
                           "current markAsPaid state: \(paymentState.markAsPaid)")
                 paymentState.card = cardPaymentState
+                // Card transitioning back to .idle after a non-TTP session
+                // (cancel / disconnect mid-flow) means the session ended —
+                // clear the active-session marker so the next start is
+                // treated as a fresh session and the reader-reconnection
+                // observer is allowed to auto-reconnect TTP if needed.
+                // The TTP cancel path clears this in its dedicated handler;
+                // success / error keep the marker until `reset()` runs.
+                if cardPaymentState == .idle {
+                    self.currentPaymentMethod = nil
+                }
             })
             .store(in: &paymentSessionCancellables)
     }

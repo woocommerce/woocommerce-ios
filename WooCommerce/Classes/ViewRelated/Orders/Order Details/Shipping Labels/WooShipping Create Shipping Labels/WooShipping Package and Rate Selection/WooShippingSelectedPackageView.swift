@@ -11,6 +11,7 @@ struct WooShippingSelectedPackageView: View {
     @State private var showARResults = false
 
     let arContext: WooShippingAddPackageView.ARPackageContext?
+    weak var parcelFittingDelegate: ParcelFittingDelegate?
     let updateSelectedPackage: (WooShippingPackageDataRepresentable, WooShippingAddPackageView.ARPackageContext?) -> Void
 
     var body: some View {
@@ -59,7 +60,7 @@ struct WooShippingSelectedPackageView: View {
                             carriers: arContext.carriers
                         ),
                         starredPackageIDs: arContext.starredPackageIDs,
-                        delegate: arContext.delegate,
+                        delegate: parcelFittingDelegate,
                         onConfirm: { result in
                             showARResults = false
                             handleARResult(result)
@@ -113,6 +114,10 @@ struct WooShippingSelectedPackageView: View {
         let context = arContext
         switch result {
         case .carrierPackage(let pkg, let measurement):
+            let carrier = context?.carriers.first { $0.packages.contains { $0.id == pkg.id } }
+            let source: WooShippingPackageSource = carrier.map {
+                .predefined(sourceTitle: $0.name, sourceID: $0.id)
+            } ?? .custom
             let packageData = WooShippingPackageData(
                 id: pkg.id,
                 name: pkg.name,
@@ -120,7 +125,7 @@ struct WooShippingSelectedPackageView: View {
                 width: String(format: "%.1f", pkg.width),
                 height: String(format: "%.1f", pkg.height),
                 weight: "",
-                source: .custom,
+                source: source,
                 packageType: "box"
             )
             let newContext = context.map {

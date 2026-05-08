@@ -5,7 +5,7 @@ import WooFoundation
 import Combine
 import protocol Storage.StorageManagerType
 
-final class WooShippingShipmentDetailsViewModel: ObservableObject {
+final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFittingDelegate {
 
     private let order: Order
     private let stores: StoresManager
@@ -182,6 +182,16 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         selectedPackage = packageData
         lastARContext = arContext
         analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
+    }
+
+    func parcelFittingDidToggleStar(packageID: String, carrierID: String) {
+        let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])
+        let action = WooShippingAction.createPackage(siteID: order.siteID, customPackage: nil, predefinedOption: predefined) { result in
+            if case .failure(let error) = result {
+                DDLogError("⛔️ Error starring package from AR results: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 
     /// After accepting UPS TOS, the selected UPS package/rate need to be reloaded with user data.

@@ -29,7 +29,6 @@ struct WooShippingAddPackageView: View {
         let carriers: [ParcelPresetCarrier]
         let starredPackageIDs: Set<String>
         let dimensionUnit: UnitLength
-        weak var delegate: ParcelFittingDelegate?
     }
 
     @State private var cancellable: AnyCancellable?
@@ -151,8 +150,7 @@ struct WooShippingAddPackageView: View {
                 measurement: result.measurement,
                 carriers: packagesViewModel.parcelPresetCarriers,
                 starredPackageIDs: packagesViewModel.starredCarriersPackages,
-                dimensionUnit: packagesViewModel.arDimensionUnit,
-                delegate: packagesViewModel
+                dimensionUnit: packagesViewModel.arDimensionUnit
             )
             switch result {
             case .carrierPackage(let package, _):

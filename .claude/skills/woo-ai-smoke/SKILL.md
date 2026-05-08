@@ -52,7 +52,13 @@ trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /t
    a message instructing the engineer to fill it in and re-run.
 2. Load the scenario set from .claude/skills/woo-ai-smoke/baseline.json
    (or build ad-hoc from the SUITE arg).
-3. Write Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift
+3. Run the Scenario fixture preflight from SKILL.md for exactly the scenarios
+   being executed. Inspect each scenario's `fixtures` block first, then infer
+   obvious missing fixtures from the prompts/rubric. Use the WooCommerce REST
+   API with the smoke credentials to verify fixtures exist and create/update
+   only smoke-owned records when needed. If a required fixture cannot be
+   created, stop before xcodebuild with a short fixture error report.
+4. Write Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift
    from the template in SKILL.md, replacing SAMPLES_PLACEHOLDER with N and
    wiring each scenario's turns and derived autoDeclineWrites (default
    true when scenario.category == "write" or the scenario has any write
@@ -62,23 +68,23 @@ trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /t
    specific API references (resolver typealias, Card.kind shape) may drift
    between trunk states — if the build fails on them, fix inline in the
    generated test file rather than the template.
-4. Run xcodebuild with the command in SKILL.md's Running section. Tee full
+5. Run xcodebuild with the command in SKILL.md's Running section. Tee full
    output to /tmp/woo-ai-smoke.log. You may run it in the background and
    poll the log, but you must wait for completion before parsing.
-5. Parse every [smoke|...] line per SKILL.md Parse protocol.
-6. Apply hard invariants deterministically. A hard-invariant failure is
+6. Parse every [smoke|...] line per SKILL.md Parse protocol.
+7. Apply hard invariants deterministically. A hard-invariant failure is
    an automatic FAIL; do not rubric-score further.
-7. For every remaining turn, judge yourself against the rubric in SKILL.md
+8. For every remaining turn, judge yourself against the rubric in SKILL.md
    plus the scenario's rubric_notes from baseline.json. Score 0/1/2 per
    dim, write a one-sentence rationale.
-8. Compute per-scenario means (over samples × turns) per dim.
-9. Write the run to
+9. Compute per-scenario means (over samples × turns) per dim.
+10. Write the run to
    .claude/skills/woo-ai-smoke/runs/<ISO-timestamp>_SHA_LABEL.jsonl
    (one JSON record per turn per sample per mode, exactly as defined in
    SKILL.md Storage format).
-10. Compare against BASELINE: classify each scenario PASS / REGRESSION /
+11. Compare against BASELINE: classify each scenario PASS / REGRESSION /
     FAIL / NEW / FLAKY per the Outcome classification table.
-11. Cleanup is automatic via the `trap` armed at step 0; verify the three
+12. Cleanup is automatic via the `trap` armed at step 0; verify the three
     artifacts are gone before returning.
 
 Return ONLY this markdown (no tool logs, no chain-of-thought, no raw
@@ -104,15 +110,16 @@ inside the subagent's context.
 
 1. **Load scenarios** — default suite (24 scenarios) from `baseline.json`, or ad-hoc via `scenario "turn1; turn2"`.
 2. **Verify credentials** in `~/.woo-ai-smoke/store.env` (see "Credentials" below). Swift reads the dotenv directly each run.
-3. **Write `Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift`** using the template below. Scenarios get expanded into the `@Test(arguments:)` parametrised suite.
-4. **Run the smoke via `xcodebuild`**, capture stdout.
-5. **Parse each `[smoke|...]` line** into a turn record — prompt, tool names, tool arg snippets, tool results, assistant text, card kinds.
-6. **Claude judges each turn** against the scenario's `rubric_notes` and the global rubric (details below). Fill in scores per dim.
-7. **Apply hard invariants** (deterministic pass/fail).
-8. **Write run** to `.claude/skills/woo-ai-smoke/runs/<ISO-timestamp>_<sha>.jsonl`.
-9. **Compare to baseline** — flag REGRESSION when hard invariants fail or rubric mean drops below `rubric_pass_threshold`.
-10. **Report** a markdown table + summary counts.
-11. **Delete** the temp Swift file, `/tmp/woo-ai-smoke.log`, and the `/tmp/woo-ai-smoke-store.env` mirror (via the `trap` armed at the start of the run).
+3. **Preflight fixtures** for the selected scenarios. Verify/create smoke-owned products, orders, and customers through the WooCommerce REST API before running the model.
+4. **Write `Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift`** using the template below. Scenarios get expanded into the `@Test(arguments:)` parametrised suite.
+5. **Run the smoke via `xcodebuild`**, capture stdout.
+6. **Parse each `[smoke|...]` line** into a turn record — prompt, tool names, tool arg snippets, tool results, assistant text, card kinds.
+7. **Claude judges each turn** against the scenario's `rubric_notes` and the global rubric (details below). Fill in scores per dim.
+8. **Apply hard invariants** (deterministic pass/fail).
+9. **Write run** to `.claude/skills/woo-ai-smoke/runs/<ISO-timestamp>_<sha>.jsonl`.
+10. **Compare to baseline** — flag REGRESSION when hard invariants fail or rubric mean drops below `rubric_pass_threshold`.
+11. **Report** a markdown table + summary counts.
+12. **Delete** the temp Swift file, `/tmp/woo-ai-smoke.log`, and the `/tmp/woo-ai-smoke-store.env` mirror (via the `trap` armed at the start of the run).
 
 ## Prerequisites
 
@@ -155,6 +162,64 @@ fi
 cp "$ENV_FILE" "$STAGED_ENV"
 chmod 600 "$STAGED_ENV"
 ```
+
+## Scenario fixture preflight
+
+Before writing the temporary Swift test file, verify that the selected scenarios are valid against the live store. The smoke suite should fail when the assistant regresses, not when a demo-store fixture silently disappeared.
+
+Use this order:
+
+1. Load only the scenarios being run.
+2. Inspect each scenario's optional `fixtures` block first.
+3. Infer obvious fixtures from the prompts and `rubric_notes` only when the block is absent. Example: `product called "winter" something; the jacket one` needs at least two searchable products containing `winter`, one of which is clearly a jacket.
+4. Verify fixtures through the WooCommerce REST API using `WOO_SITE_URL`, `WOO_USERNAME`, and `WOO_APP_PASSWORD`.
+5. Create or update only smoke-owned records. Use stable keys such as SKU, email, or metadata, and prefix them with `woo-ai-smoke-`.
+6. Never delete merchant data. Do not mutate non-smoke-owned records just to satisfy a scenario.
+7. If a fixed ID in a scenario cannot be guaranteed by the API, report a fixture error instead of treating the run as a model regression.
+
+Fixture blocks are intentionally simple JSON embedded in `baseline.json`:
+
+```json
+"fixtures": {
+  "products": [
+    {
+      "sku": "woo-ai-smoke-winter-jacket",
+      "name": "Woo AI Smoke Winter Jacket",
+      "type": "simple",
+      "status": "publish",
+      "regular_price": "89.00",
+      "manage_stock": true,
+      "stock_quantity": 7,
+      "stock_status": "instock"
+    }
+  ]
+}
+```
+
+Parse the dotenv file safely. `WOO_APP_PASSWORD` may contain spaces, so do not `source` it in shell unless it is quoted. Use a parser that treats each line as `KEY=value` and preserves the value verbatim:
+
+```python
+from pathlib import Path
+
+def read_store_env(path=Path.home() / ".woo-ai-smoke/store.env"):
+    values = {}
+    for raw in path.read_text().splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        values[key.strip()] = value.strip().strip('"').strip("'")
+    return values
+```
+
+For products, lookup by SKU first:
+
+```bash
+curl -fsS -u "$WOO_USERNAME:$WOO_APP_PASSWORD" \
+  "$WOO_SITE_URL/wp-json/wc/v3/products?sku=woo-ai-smoke-winter-jacket"
+```
+
+If the product is missing, create it with `POST /wp-json/wc/v3/products`. If it exists and is smoke-owned by SKU, patch it with the fixture values. Leave fixture products published so future smoke runs reuse them.
 
 ## Swift smoke template
 
@@ -435,21 +500,22 @@ Three artifacts are removed at the end of every run:
 
 ## Full execution checklist (inside the subagent)
 
-Main Claude: do steps 1-2, then dispatch the subagent. The subagent does 3-15.
+Main Claude: do steps 1-2, then dispatch the subagent. The subagent does 3-17.
 
 1. (Main) Parse `$ARGUMENTS` → `suite=default` (N=3) or `scenario "..."` (N=1), `mode=rest|mcp|both` (default `rest`), and pick the baseline JSONL to compare against.
 2. (Main) Dispatch the subagent via Task tool with the prompt template from the Delegation model section. Wait for its markdown report, then relay verbatim.
 3. (Subagent) Arm the trap-based cleanup hook (see Cleanup section).
 4. (Subagent) Verify `~/.woo-ai-smoke/store.env` exists with the four required keys (`WOO_SITE_URL`, `WOO_SITE_ID`, `WOO_USERNAME`, `WOO_APP_PASSWORD`); on first run scaffold + open + exit per the Credentials section. Swift reads the dotenv directly via `WooAssistantHeadless.credentialsFromStoreEnv()` — no JSON file gets written.
 5. (Subagent) Load scenarios from `baseline.json` (or build ad-hoc from args).
-6. (Subagent) Write `Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift` with `SAMPLES_PLACEHOLDER` replaced by actual N and the mode-specific `toolSource` wired in.
-7. (Subagent) Build + run via xcodebuild, tee to `/tmp/woo-ai-smoke.log`.
-8. (Subagent) Parse all `[smoke|...]` lines.
-9. (Subagent) Apply hard invariants.
-10. (Subagent) Judge each turn using the rubric + scenario's `rubric_notes`.
-11. (Subagent) Compute per-scenario means (over samples × turns) per dim.
-12. (Subagent) Write run JSONL to `.claude/skills/woo-ai-smoke/runs/<ISO>_<sha>_<label>.jsonl`.
-13. (Subagent) Compare to baseline, classify each scenario PASS/REGRESSION/FAIL/NEW/FLAKY.
-14. (Subagent) Return ONLY the markdown reporting table + summary + regression notes + JSONL path.
-15. (Subagent) Offer baseline refresh only as a line in the report if evidence supports tightening — main Claude will surface the question to the user.
-16. (Subagent) Verify both temp artifacts (test file, smoke log) are gone before returning. The `trap` armed at step 3 handles this on normal exit; do an explicit `rm -f` if anything lingers.
+6. (Subagent) Run Scenario fixture preflight for the selected scenarios. Verify/create/update only smoke-owned fixtures; stop with a fixture error before xcodebuild if a required setup cannot be made valid.
+7. (Subagent) Write `Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift` with `SAMPLES_PLACEHOLDER` replaced by actual N and the mode-specific `toolSource` wired in.
+8. (Subagent) Build + run via xcodebuild, tee to `/tmp/woo-ai-smoke.log`.
+9. (Subagent) Parse all `[smoke|...]` lines.
+10. (Subagent) Apply hard invariants.
+11. (Subagent) Judge each turn using the rubric + scenario's `rubric_notes`.
+12. (Subagent) Compute per-scenario means (over samples × turns) per dim.
+13. (Subagent) Write run JSONL to `.claude/skills/woo-ai-smoke/runs/<ISO>_<sha>_<label>.jsonl`.
+14. (Subagent) Compare to baseline, classify each scenario PASS/REGRESSION/FAIL/NEW/FLAKY.
+15. (Subagent) Return ONLY the markdown reporting table + summary + regression notes + JSONL path.
+16. (Subagent) Offer baseline refresh only as a line in the report if evidence supports tightening — main Claude will surface the question to the user.
+17. (Subagent) Verify temp artifacts (test file, smoke log, staged env mirror) are gone before returning. The `trap` armed at step 3 handles this on normal exit; do an explicit `rm -f` if anything lingers.

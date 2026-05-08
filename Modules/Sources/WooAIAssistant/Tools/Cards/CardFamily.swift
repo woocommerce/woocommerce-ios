@@ -90,7 +90,8 @@ struct CardFamily: Sendable {
                                                         query: nil,
                                                         body: nil)
                     return (ref.id, Self.outcome(for: response,
-                                                 checkTrash: self.checkTrash))
+                                                 checkTrash: self.checkTrash,
+                                                 injectParentID: ref.parentID))
                 }
             }
             var outcomes: [Int64: CardFetchOutcome] = [:]
@@ -101,7 +102,12 @@ struct CardFamily: Sendable {
         }
     }
 
-    private static func outcome(for response: WCRESTResponse, checkTrash: Bool) -> CardFetchOutcome {
+    /// WC variation responses omit `parent_id`, but the renderer needs it for
+    /// tap-through and the summary keys project it to the model. Inject the
+    /// parent we already used to build the request URL so both consumers see it.
+    private static func outcome(for response: WCRESTResponse,
+                                checkTrash: Bool,
+                                injectParentID: Int64? = nil) -> CardFetchOutcome {
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
             return .rejected(CardRefRejectionReason.forStatusCode(response.statusCode))
         }
@@ -113,7 +119,13 @@ struct CardFamily: Sendable {
         if checkTrash, RESTResponseParsing.stringField(pruned, "status") == "trash" {
             return .rejected(.staleReference)
         }
-        return .found(pruned)
+        guard let parentID = injectParentID, case .object(var dict) = pruned else {
+            return .found(pruned)
+        }
+        if dict["parent_id"] == nil {
+            dict["parent_id"] = .int(parentID)
+        }
+        return .found(.object(dict))
     }
 
     func summarize(_ entity: AnyCodableJSON) -> AnyCodableJSON {
@@ -132,6 +144,8 @@ struct CardFamily: Sendable {
         case .product: return .product
         case .productVariation: return .productVariation
         case .customer: return .customer
+        case .analyticsStats:
+            preconditionFailure("CardFamily.forID(.analyticsStats) - resolver must dispatch analytics through AnalyticsCardFetch")
         }
     }
 

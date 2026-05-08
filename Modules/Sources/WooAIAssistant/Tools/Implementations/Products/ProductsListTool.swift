@@ -12,13 +12,22 @@ public enum ProductsListTool {
         name: name,
         description: """
         List products, optionally filtered by status, category, tag, sku, \
-        or keyword search. For aggregate sales / top sellers prefer the \
-        analytics tools. For prose questions about a specific product's \
-        stock quantity, prices, etc., call products_get with the ID. After \
-        calling, pass results to `show_cards` to render rather than \
-        re-fetching each product with products_get. If a search returns no \
-        matches, do not retry with synonyms or broader terms - say no match \
-        was found.
+        or keyword search. Terse merchant phrases such as "get scarf", \
+        "show scarf", "find scarf", or "product scarf" are product searches: \
+        use search with the product noun or phrase. For top / best-selling \
+        product questions, use orderby=popularity, order=desc, then pass results to `show_cards`. \
+        For latest/last single-product questions, use per_page=1, orderby=date, \
+        order=desc, then pass the result to `show_cards`. \
+        For aggregate sales totals prefer analytics tools. For prose \
+        questions about a specific product's stock quantity, prices, etc., \
+        call products_get with the ID. After calling, pass returned ids to \
+        `show_cards` to render rather than re-fetching each product with \
+        products_get; never say no match was found unless the returned count \
+        is zero. \
+        Do not use this tool to resolve a pronoun, ordinal, or qualifier when \
+        prior product rows/cards are already in context; use the prior id with \
+        `show_cards`. If a search returns no matches, do not retry with \
+        synonyms or broader terms - say no match was found.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -51,11 +60,16 @@ public enum ProductsListTool {
                     "items": .object(["type": .string("integer")]),
                     "description": .string("Specific product IDs to include.")
                 ]),
+                "stock_status": .object([
+                    "type": .string("string"),
+                    "enum": .array([.string("instock"), .string("outofstock"), .string("onbackorder")]),
+                    "description": .string("Filter by stock status. Use 'outofstock' or 'onbackorder' for low-stock-style queries.")
+                ]),
                 "orderby": .object([
                     "type": .string("string"),
                     "enum": .array([.string("date"), .string("id"), .string("title"),
                                     .string("price"), .string("popularity"), .string("rating")]),
-                    "description": .string("Sort key; default 'date'.")
+                    "description": .string("Sort key; default 'date'. Use 'popularity' for top / best-selling products.")
                 ]),
                 "order": .object([
                     "type": .string("string"),
@@ -82,6 +96,7 @@ public enum ProductsListTool {
         let tag: Int?
         let sku: String?
         let include: [Int]?
+        let stockStatus: String?
         let orderby: String?
         let order: String?
         let page: Int?
@@ -89,6 +104,7 @@ public enum ProductsListTool {
 
         enum CodingKeys: String, CodingKey {
             case search, status, category, tag, sku, include, orderby, order, page
+            case stockStatus = "stock_status"
             case perPage = "per_page"
         }
     }
@@ -110,6 +126,10 @@ public enum ProductsListTool {
         }
         if let include = args.include, !include.isEmpty {
             query["include"] = include.map(String.init).joined(separator: ",")
+        }
+        if let stockStatus = args.stockStatus?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !stockStatus.isEmpty {
+            query["stock_status"] = stockStatus
         }
         if let page = args.page, page > 1 { query["page"] = String(page) }
         return query

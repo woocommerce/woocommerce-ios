@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 import Yosemite
+import enum Networking.NetworkError
 @testable import WooCommerce
 
 @MainActor
@@ -173,6 +174,93 @@ struct SupportChatViewModelTests {
         #expect(sut.hasProceededToChat == true)
     }
 
+    // MARK: - Send Message Error Handling Tests
+
+    @Test func test_sendMessage_when_failure_with_429_then_state_is_rate_limit_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 429, response: nil)))
+            }
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "hello"
+
+        // When
+        sut.sendMessage()
+
+        // Then
+        guard case let .error(message) = sut.state else {
+            Issue.record("Expected state to be .error after 429, got \(String(describing: sut.state))")
+            return
+        }
+        #expect(message.contains("limit"), "Expected rate-limit copy, got: \(message)")
+    }
+
+    @Test func test_sendMessage_when_failure_with_500_then_state_is_generic_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
+            }
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "hello"
+
+        // When
+        sut.sendMessage()
+
+        // Then
+        guard case let .error(message) = sut.state else {
+            Issue.record("Expected state to be .error after 500, got \(String(describing: sut.state))")
+            return
+        }
+        #expect(message.contains("couldn't connect"), "Expected generic copy, got: \(message)")
+    }
+
+    @Test func test_sendMessage_when_failure_then_marks_last_user_message_as_failed() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
+            }
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "hello"
+
+        // When
+        sut.sendMessage()
+
+        // Then
+        let lastUserMessage = sut.messages.last { $0.role == .user }
+        #expect(lastUserMessage?.failed == true, "Expected the failed user bubble to be marked")
+    }
+
+    @Test func test_sendMessage_when_failure_with_timeout_then_state_is_generic_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
+                completion(.failure(NetworkError.timeout(response: nil)))
+            }
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "hello"
+
+        // When
+        sut.sendMessage()
+
+        // Then
+        guard case let .error(message) = sut.state else {
+            Issue.record("Expected state to be .error after timeout, got \(String(describing: sut.state))")
+            return
+        }
+        #expect(message.contains("couldn't connect"), "Expected generic copy, got: \(message)")
+    }
+
     // MARK: - Execute Action Tests
 
     @Test func test_executeAction_enableAnalytics_calls_service_and_reruns_test() async {
@@ -228,6 +316,28 @@ struct SupportChatViewModelTests {
         #expect(sut.isExecutingAction == false)
     }
 
+    @Test func test_executeAction_when_service_throws_then_state_is_error() async {
+        // Given — enableAnalytics fails
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .enableAnalyticsSetting(_, onCompletion) = action {
+                onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
+            }
+        }
+        let diagnosticsService = SupportDiagnosticsService(stores: stores)
+        let sut = makeSUT(stores: stores, diagnosticsService: diagnosticsService)
+
+        // When
+        await sut.executeAction(.enableAnalytics)
+
+        // Then
+        guard case .error = sut.state else {
+            Issue.record("Expected state to be .error after action failure, got \(String(describing: sut.state))")
+            return
+        }
+        #expect(sut.isExecutingAction == false)
+    }
+
     @Test func test_executeAction_setupJetpack_calls_onStartJetpackSetup() async {
         // Given
         var callbackCalled = false
@@ -239,6 +349,272 @@ struct SupportChatViewModelTests {
         // Then
         #expect(callbackCalled == true)
         #expect(sut.isExecutingAction == false)
+    }
+
+    // MARK: - Resume Chat Tests
+
+    @Test(.timeLimit(.minutes(1)))
+    func test_resumeIfNeeded_when_chat_flagged_for_human_support_then_sets_shouldPromptHumanSupport() async {
+        // Given
+        let chatID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        await confirmation { fetchCompleted in
+            stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+                switch action {
+                case let .fetchChat(_, _, completion):
+                    let flaggedMessage = SupportChatMessage(
+                        messageID: 2,
+                        role: .bot,
+                        content: "Please contact support.",
+                        context: SupportChatMessageContext(
+                            sources: [],
+                            flags: SupportChatFlags(
+                                forwardToHumanSupport: true,
+                                cannedResponse: false,
+                                loggedIn: true,
+                                branch: nil
+                            )
+                        )
+                    )
+                    let response = SupportChatResponse(
+                        chatID: chatID,
+                        sessionID: "session-1",
+                        botSlug: "test-bot",
+                        botVersion: "1.0",
+                        messages: [
+                            SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil),
+                            flaggedMessage
+                        ]
+                    )
+                    completion(.success(response))
+                    fetchCompleted()
+                default:
+                    break
+                }
+            }
+            let sut = SupportChatViewModel(
+                entryPoint: .chatHistory,
+                stores: stores,
+                chatID: chatID,
+                onContactHumanSupport: { _, _, _ in }
+            )
+
+            // When
+            sut.resumeIfNeeded()
+        }
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func test_resumeIfNeeded_when_chat_flagged_for_human_support_then_filters_flagged_message() async {
+        // Given
+        let chatID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = SupportChatViewModel(
+            entryPoint: .chatHistory,
+            stores: stores,
+            chatID: chatID,
+            onContactHumanSupport: { _, _, _ in }
+        )
+
+        await confirmation { fetchCompleted in
+            stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+                switch action {
+                case let .fetchChat(_, _, completion):
+                    let flaggedMessage = SupportChatMessage(
+                        messageID: 2,
+                        role: .bot,
+                        content: "Please contact support.",
+                        context: SupportChatMessageContext(
+                            sources: [],
+                            flags: SupportChatFlags(
+                                forwardToHumanSupport: true,
+                                cannedResponse: false,
+                                loggedIn: true,
+                                branch: nil
+                            )
+                        )
+                    )
+                    let response = SupportChatResponse(
+                        chatID: chatID,
+                        sessionID: "session-1",
+                        botSlug: "test-bot",
+                        botVersion: "1.0",
+                        messages: [
+                            SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil),
+                            flaggedMessage
+                        ]
+                    )
+                    completion(.success(response))
+                    fetchCompleted()
+                default:
+                    break
+                }
+            }
+
+            // When
+            sut.resumeIfNeeded()
+        }
+
+        // Then
+        #expect(sut.shouldPromptHumanSupport == true)
+        #expect(sut.messages.count == 1)
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func test_resumeIfNeeded_when_chat_not_flagged_then_shouldPromptHumanSupport_is_false() async {
+        // Given
+        let chatID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = SupportChatViewModel(
+            entryPoint: .chatHistory,
+            stores: stores,
+            chatID: chatID,
+            onContactHumanSupport: { _, _, _ in }
+        )
+
+        await confirmation { fetchCompleted in
+            stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+                switch action {
+                case let .fetchChat(_, _, completion):
+                    let response = SupportChatResponse(
+                        chatID: chatID,
+                        sessionID: "session-1",
+                        botSlug: "test-bot",
+                        botVersion: "1.0",
+                        messages: [
+                            SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil),
+                            SupportChatMessage(messageID: 2, role: .bot, content: "How can I help?", context: nil)
+                        ]
+                    )
+                    completion(.success(response))
+                    fetchCompleted()
+                default:
+                    break
+                }
+            }
+
+            // When
+            sut.resumeIfNeeded()
+        }
+
+        // Then
+        #expect(sut.shouldPromptHumanSupport == false)
+        #expect(sut.messages.count == 2)
+    }
+
+    @Test func test_contactHumanSupport_passes_chatID_in_callback() async {
+        // Given
+        let chatID: Int64 = 456
+        var receivedChatID: Int64?
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, _, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: chatID,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: "Hello", context: nil),
+                        SupportChatMessage(
+                            messageID: 2,
+                            role: .bot,
+                            content: "Please contact support.",
+                            context: SupportChatMessageContext(
+                                sources: [],
+                                flags: SupportChatFlags(
+                                    forwardToHumanSupport: true,
+                                    cannedResponse: false,
+                                    loggedIn: true,
+                                    branch: nil
+                                )
+                            )
+                        )
+                    ]
+                )
+                completion(.success(response))
+            default:
+                break
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .preLogin,
+            stores: stores,
+            onContactHumanSupport: { chatID, _, _ in
+                receivedChatID = chatID
+            }
+        )
+
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // When
+        sut.contactHumanSupport()
+
+        // Then
+        #expect(receivedChatID == chatID)
+    }
+
+    @Test func test_contactHumanSupport_when_prefetched_systemStatusReport_then_passes_it_in_supportAreaInfo() async {
+        // Given
+        let prefetchedReport = "### Pre-fetched System Status Report ###"
+        var receivedSupportAreaInfo: SupportAreaInfo?
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, _, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: "Hello", context: nil),
+                        SupportChatMessage(
+                            messageID: 2,
+                            role: .bot,
+                            content: "Please contact support.",
+                            context: SupportChatMessageContext(
+                                sources: [],
+                                flags: SupportChatFlags(
+                                    forwardToHumanSupport: true,
+                                    cannedResponse: false,
+                                    loggedIn: true,
+                                    branch: nil
+                                ),
+                                supportArea: SupportChatSupportArea(area: .mobileApp, confidence: .high)
+                            )
+                        )
+                    ]
+                )
+                completion(.success(response))
+            default:
+                break
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .connectivityTool,
+            stores: stores,
+            systemStatusReport: prefetchedReport,
+            onContactHumanSupport: { _, _, supportAreaInfo in
+                receivedSupportAreaInfo = supportAreaInfo
+            }
+        )
+
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // When
+        sut.contactHumanSupport()
+
+        // Then
+        #expect(receivedSupportAreaInfo?.systemStatusReport == prefetchedReport)
     }
 
     // MARK: - Test Helpers
@@ -254,7 +630,7 @@ struct SupportChatViewModelTests {
             entryPoint: entryPoint,
             stores: stores,
             diagnosticsService: diagnosticsService,
-            onContactHumanSupport: { _ in }
+            onContactHumanSupport: { _, _, _ in }
         )
         viewModel.onStartJetpackSetup = onStartJetpackSetup
         return viewModel

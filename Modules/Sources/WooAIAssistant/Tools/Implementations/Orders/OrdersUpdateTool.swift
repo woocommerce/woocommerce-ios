@@ -18,7 +18,8 @@ public enum OrdersUpdateTool {
         cannot set status to "refunded"; the merchant taps an order to issue a refund. \
         Only call when the merchant has explicitly requested a change. Do NOT call to \
         trigger side effects (e.g. flipping a status to send a customer email) or to \
-        answer information questions.
+        answer information questions. After a successful update, call `show_cards` \
+        with family `order` and the updated id so the merchant sees the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),

@@ -139,7 +139,7 @@ private extension LastOrdersDashboardCard {
     var orderList: some View {
         VStack(alignment: .leading, spacing: Layout.padding) {
             ForEach(viewModel.rows) { element in
-                LastOrderDashboardRow(viewModel: element, tapHandler: {
+                LastOrderDashboardRow(data: element.rowData, tapHandler: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .lastOrders))
 
                     onViewOrderDetail(element.order)

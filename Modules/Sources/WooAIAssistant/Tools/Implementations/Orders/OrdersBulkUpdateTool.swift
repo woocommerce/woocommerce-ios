@@ -21,7 +21,9 @@ public enum OrdersBulkUpdateTool {
         orders_update calls. Refunds are NOT supported - status cannot be \
         set to "refunded"; the merchant taps each order to issue a refund. \
         Only call when the merchant has explicitly requested a bulk change \
-        with a concrete list of ids.
+        with a concrete list of ids. After the bulk update succeeds, call \
+        `show_cards` with family `order` and the updated ids so the merchant \
+        sees the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -129,7 +131,6 @@ public enum OrdersBulkUpdateTool {
                                                          path: "wc/v3/orders/batch",
                                                          body: payload,
                                                          client: client,
-                                                         toolName: name,
-                                                         family: .order)
+                                                         toolName: name)
     }
 }

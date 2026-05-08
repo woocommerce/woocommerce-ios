@@ -11,6 +11,8 @@ struct InputBar: View {
 
     private static let sendButtonDiameter: CGFloat = 36
     private static let sendButtonHitTarget: CGFloat = 44
+    // 4pt centers the 36pt circle inside the 44pt hit target; trailing matches for symmetry.
+    private static let sendButtonTrailingPadding: CGFloat = 4
 
     var body: some View {
         VStack(alignment: .leading, spacing: AssistantSpacing.small) {
@@ -42,7 +44,7 @@ struct InputBar: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .padding(.trailing, AssistantSpacing.small)
+                .padding(.trailing, Self.sendButtonTrailingPadding)
                 .disabled(buttonDisabled)
                 .accessibilityLabel(showsStop ? Localization.stop : Localization.send)
             }
@@ -91,7 +93,10 @@ struct InputBar: View {
     }
 
     private var pillBackground: Color {
-        Color(.systemBackground)
+        // Dark mode steps up from the chat's true-black background so the pill stays visible.
+        Color(UIColor { traits in
+            traits.userInterfaceStyle == .dark ? .secondarySystemBackground : .systemBackground
+        })
     }
 
     private func actionTapped() {

@@ -732,6 +732,7 @@ private extension ProductSelectorViewModel {
                 // We don't use `contains` here because of performance reasons,
                 // as we don't need to check all the Product properties as the Equatable synthesized function would do.
                 // Furthermore, with the latter can get different properties (e.g arrays from set that have different order) from the same product.
+                // swiftlint:disable:next contains_over_first_not_nil
                 products.first(where: { $0.productID == product.productID }) == nil
         }
     }

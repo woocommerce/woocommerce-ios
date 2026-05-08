@@ -18,7 +18,11 @@ struct SupportChatView: View {
                     set: { if !$0 { viewModel.dismissError() } }
                 ),
                 actions: {
-                    Button(Localization.ok) {
+                    Button(Localization.contactSupport) {
+                        viewModel.dismissError()
+                        viewModel.contactHumanSupport()
+                    }
+                    Button(Localization.dismiss, role: .cancel) {
                         viewModel.dismissError()
                     }
                 },
@@ -36,7 +40,9 @@ struct SupportChatView: View {
         VStack(spacing: 0) {
             messageList
 
-            if viewModel.shouldPromptHumanSupport {
+            if viewModel.hasCreatedTicket {
+                ticketCreatedBanner
+            } else if viewModel.shouldPromptHumanSupport {
                 humanSupportBanner
             } else if viewModel.shouldShowInputArea {
                 Divider()
@@ -80,6 +86,9 @@ struct SupportChatView: View {
                     scrollToBottom(proxy: proxy)
                 }
             }
+            .onChange(of: viewModel.shouldPromptHumanSupport) {
+                scrollToBottom(proxy: proxy)
+            }
         }
     }
 
@@ -87,7 +96,7 @@ struct SupportChatView: View {
     private func messageRow(for message: SupportChatViewModel.ChatMessage) -> some View {
         switch message.content {
         case .text(let text):
-            SupportChatMessageRow(role: message.role, text: text)
+            SupportChatMessageRow(role: message.role, text: text, failed: message.failed)
 
         case .issuePicker(let issues):
             issuePickerBubble(issues: issues)
@@ -250,7 +259,20 @@ struct SupportChatView: View {
             .buttonStyle(SecondaryButtonStyle())
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.listBackground))
+    }
+
+    // MARK: - Ticket Created Banner
+
+    private var ticketCreatedBanner: some View {
+        VStack(spacing: SupportChatLayout.bannerSpacing) {
+            Text(Localization.ticketCreatedMessage)
+                .font(.subheadline)
+                .foregroundColor(Color(.secondaryLabel))
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+        .background(Color(.listBackground))
     }
 
     // MARK: - Input Area
@@ -325,15 +347,20 @@ private extension SupportChatView {
             value: "Error",
             comment: "Title for the error alert in support chat"
         )
-        static let ok = NSLocalizedString(
-            "supportChatView.ok",
-            value: "OK",
-            comment: "OK button in support chat error alert"
+        static let dismiss = NSLocalizedString(
+            "supportChatView.errorDismiss",
+            value: "Dismiss",
+            comment: "Cancel button in the support chat error alert"
         )
         static let humanSupportMessage = NSLocalizedString(
             "supportChatView.humanSupportMessage",
             value: "It looks like you might need additional help. Would you like to contact our support team?",
             comment: "Message shown when the bot suggests contacting human support"
+        )
+        static let ticketCreatedMessage = NSLocalizedString(
+            "supportChatView.ticketCreatedMessage",
+            value: "A support ticket has been created for this chat. We'll respond via email.",
+            comment: "Message shown when a support ticket has already been created for this chat"
         )
         static let contactSupport = NSLocalizedString(
             "supportChatView.contactSupport",
@@ -378,7 +405,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .helpAndSupport,
-                onContactHumanSupport: { _ in }
+                onContactHumanSupport: { _, _, _ in }
             )
         )
     }
@@ -389,7 +416,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .connectivityTool,
-                onContactHumanSupport: { _ in }
+                onContactHumanSupport: { _, _, _ in }
             )
         )
     }

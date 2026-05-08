@@ -1,104 +1,32 @@
 import SwiftUI
 import WidgetKit
 
-/// Medium home-screen widget view driven by the metric catalog.
+/// Home-screen widget dispatcher driven by the metric catalog.
 ///
-/// Companion to the legacy `StoreInfoView`; both render the same widget family but consume
+/// Companion to the legacy `StoreInfoView`; both render the same widget families but consume
 /// different shapes off `StoreInfoData`. Selection happens in `StoreInfoHomescreenWidget`
 /// based on `useMetricsHomescreenWidget`.
 ///
 struct StoreInfoMetricsView: View {
     let entryData: StoreInfoData
 
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
-
-    var accessibilityDynamicTypeSize: DynamicTypeSize {
-        return .xLarge
-    }
+    @Environment(\.widgetFamily) private var family
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
-            VStack(alignment: .leading, spacing: Layout.cardSpacing) {
-                HStack {
-                    Text(entryData.name)
-                        .storeNameStyle()
-                    Spacer()
-                    Text(entryData.range)
-                        .statRangeStyle()
-                }
-                Text(Localization.updatedAt(entryData.updatedTime))
-                    .statRangeStyle()
-            }
-
-            if dynamicTypeSize > accessibilityDynamicTypeSize {
-                MetricsAccessibilityCard(entryData: entryData)
-            } else {
-                StoreInfoMetricsCard(metrics: entryData.metrics)
-            }
-        }
-        .padding(.horizontal)
-        .widgetBackground(backgroundView: Color(.brand))
-    }
-}
-
-/// Renders an ordered list of metrics in a 2-column grid for the medium widget.
-/// Operates on the presentation protocol so the layout is decoupled from
-/// the concrete `StoreInfoMetric` type.
-///
-struct StoreInfoMetricsCard: View {
-    let metrics: [any MetricPresentable]
-
-    /// Chunks metrics into rows of two for the medium widget layout.
-    ///
-    private var rows: [[any MetricPresentable]] {
-        stride(from: 0, to: metrics.count, by: Layout.metricsPerRow).map { start in
-            Array(metrics[start..<min(start + Layout.metricsPerRow, metrics.count)])
-        }
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: StoreInfoMetricsView.Layout.sectionSpacing) {
-            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                HStack {
-                    ForEach(Array(row.enumerated()), id: \.offset) { _, metric in
-                        MetricCellView(metric: metric)
-                    }
-                    // Pad the last row so a trailing cell keeps the grid alignment
-                    // when the row has fewer metrics than the slot count.
-                    if row.count < Layout.metricsPerRow {
-                        ForEach(0..<(Layout.metricsPerRow - row.count), id: \.self) { _ in
-                            Color.clear.frame(maxWidth: .infinity)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private enum Layout {
-        static let metricsPerRow = 2
-    }
-}
-
-/// Accessibility card for `StoreInfoMetricsView`. Shows only revenue and a `View More` button.
-///
-private struct MetricsAccessibilityCard: View {
-    let entryData: StoreInfoData
-
-    var body: some View {
-        let revenue = entryData.metric(of: .revenue)
         Group {
-            VStack(alignment: .leading, spacing: StoreInfoMetricsView.Layout.cardSpacing) {
-                Text(revenue.title)
-                    .statTitleStyle()
-
-                Text(revenue.formattedValue)
-                    .statValueStyle()
+            switch family {
+            case .systemSmall:
+                StoreInfoSmallMetricsContainerView(data: entryData)
+            case .systemMedium:
+                StoreInfoMediumMetricsContainerView(data: entryData)
+            case .systemLarge, .systemExtraLarge:
+                StoreInfoLargeMetricsContainerView(data: entryData)
+            default:
+                let _ = assertionFailure("This view only supports system families")
+                EmptyView()
             }
-
-            Text(StoreInfoMetricsView.Localization.viewMore)
-                .statButtonStyle()
         }
+        .widgetBackground(backgroundView: Color(.brand))
     }
 }
 
@@ -118,11 +46,6 @@ extension StoreInfoMetricsView {
             return LocalizedString.localizedStringWithFormat(format, updatedTime)
         }
     }
-
-    enum Layout {
-        static let sectionSpacing = 8.0
-        static let cardSpacing = 2.0
-    }
 }
 
 // MARK: - Previews
@@ -130,31 +53,86 @@ extension StoreInfoMetricsView {
 import class WooFoundation.CurrencySettings
 
 struct StoreInfoMetricsView_Previews: PreviewProvider {
-    static var exampleData = StoreInfoData(
-        range: "Today",
-        name: "Ernest Shop",
-        revenue: "$123,456,789",
-        revenueCompact: "$123M",
-        visitors: "67",
-        orders: "23",
-        conversion: "34%",
-        updatedTime: "10:24 PM",
-        metrics: [
-            .init(type: .revenue, value: .currency(123_456_789, CurrencySettings())),
-            .init(type: .visitors, value: .count(67)),
-            .init(type: .orders, value: .count(23)),
-            .init(type: .conversion, value: .percentage(23.0 / 67.0))
-        ]
-    )
+    static var allMetrics: [StoreInfoMetric] {
+        let currencySettings = CurrencySettings()
+        let revenue = StoreInfoMetric(type: .revenue,
+                                      value: .currency(Decimal(123_456_789), currencySettings),
+                                      previousValue: .currency(Decimal(118_000_000), currencySettings))
+        let orders = StoreInfoMetric(type: .orders,
+                                     value: .count(23),
+                                     previousValue: .count(31))
+        let itemsSold = StoreInfoMetric(type: .itemsSold,
+                                        value: .count(41),
+                                        previousValue: .count(34))
+        let averageOrderValue = StoreInfoMetric(type: .averageOrderValue,
+                                                value: .currency(Decimal(5_367), currencySettings),
+                                                previousValue: .currency(Decimal(4_800), currencySettings))
+        let netSales = StoreInfoMetric(type: .netSales,
+                                       value: .currency(Decimal(98_765_432), currencySettings),
+                                       previousValue: .currency(Decimal(102_000_000), currencySettings))
+        let visitors = StoreInfoMetric(type: .visitors,
+                                       value: .count(67),
+                                       previousValue: .count(71))
+        let conversion = StoreInfoMetric(type: .conversion,
+                                         value: .percentage(23.0 / 67.0),
+                                         previousValue: .percentage(0.29))
+
+        return [revenue, orders, itemsSold, averageOrderValue, netSales, visitors, conversion]
+    }
+
+    static var exampleData: StoreInfoData {
+        exampleData(metrics: Array(allMetrics.prefix(4)))
+    }
+
+    static var fullCatalogData: StoreInfoData {
+        exampleData(metrics: allMetrics)
+    }
+
+    static func exampleData(metrics: [StoreInfoMetric]) -> StoreInfoData {
+        StoreInfoData(
+            range: "Today",
+            name: "Ernest Shop",
+            revenue: "$123,456,789",
+            revenueCompact: "$123M",
+            visitors: "67",
+            orders: "23",
+            conversion: "34%",
+            updatedTime: "10:24 PM",
+            metrics: metrics
+        )
+    }
 
     static var previews: some View {
         StoreInfoMetricsView(entryData: exampleData)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewDisplayName("Medium")
 
         StoreInfoMetricsView(entryData: exampleData)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
             .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("XXL font")
+            .previewDisplayName("Medium - XXL font")
+
+        StoreInfoMetricsView(entryData: fullCatalogData)
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .previewDisplayName("Large")
+
+        StoreInfoMetricsView(entryData: fullCatalogData)
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .environment(\.dynamicTypeSize, .xxLarge)
+            .previewDisplayName("Large - XXL font")
+
+        StoreInfoMetricsView(entryData: fullCatalogData)
+            .previewContext(WidgetPreviewContext(family: .systemExtraLarge))
+            .previewDisplayName("Extra Large")
+
+        StoreInfoMetricsView(entryData: fullCatalogData)
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .previewDisplayName("Small")
+
+        StoreInfoMetricsView(entryData: fullCatalogData)
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .environment(\.dynamicTypeSize, .xxLarge)
+            .previewDisplayName("Small - XXL font")
     }
 }
 #endif

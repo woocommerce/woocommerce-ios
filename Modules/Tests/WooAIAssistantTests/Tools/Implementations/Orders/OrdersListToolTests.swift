@@ -2,7 +2,19 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct OrdersListToolTests {
+    @Test
+    func test_orders_list_definition_documents_latest_order_card_flow() {
+        // Given
+        let tool = OrdersListTool.make()
+
+        // Then
+        #expect(tool.definition.description.contains("latest/last single-order"))
+        #expect(tool.definition.description.contains("per_page=1"))
+        #expect(tool.definition.description.contains("then pass the result to `show_cards`"))
+    }
+
     @Test
     func test_orders_list_when_response_is_array_then_structured_summary_lists_ids_and_total_range() async throws {
         // Given
@@ -31,11 +43,7 @@ struct OrdersListToolTests {
         }
         #expect(fields["count"] == .int(3))
         #expect(fields["ids"] == .array([.int(3551), .int(3548), .int(3540)]))
-        #expect(fields["rows"] == .array([
-            .object(["id": .int(3551), "customer_id": .int(11)]),
-            .object(["id": .int(3548), "customer_id": .int(22)]),
-            .object(["id": .int(3540), "customer_id": .int(0)])
-        ]))
+        #expect(fields["rows"] == nil)
         #expect(fields["status_counts"] == .object([
             "completed": .int(1),
             "on-hold": .int(1),

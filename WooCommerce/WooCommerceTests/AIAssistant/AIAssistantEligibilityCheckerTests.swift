@@ -4,6 +4,7 @@ import Yosemite
 import enum NetworkingCore.Credentials
 @testable import WooCommerce
 
+@Suite(.timeLimit(.minutes(1)))
 struct AIAssistantEligibilityCheckerTests {
 
     @Test

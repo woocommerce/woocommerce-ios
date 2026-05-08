@@ -76,7 +76,7 @@ struct POSOrderDetailsLoadingView: View {
     @ViewBuilder
     private var shimmeringProductsSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            Text(Localization.productsTitle)
+            Text(Localization.itemsTitle)
                 .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
 
@@ -186,10 +186,10 @@ private enum Constants {
 }
 
 private enum Localization {
-    static let productsTitle = NSLocalizedString(
-        "pos.orderDetailsLoadingView.productsTitle",
-        value: "Products",
-        comment: "Section title for the products list"
+    static let itemsTitle = NSLocalizedString(
+        "pos.orderDetailsLoadingView.itemsTitle",
+        value: "Items",
+        comment: "Section title for the items list (products and custom amounts) shown in the loading skeleton"
     )
 
     static let totalsTitle = NSLocalizedString(

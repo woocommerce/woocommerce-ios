@@ -22,14 +22,11 @@ extension RESTToolDispatch {
                                    path: String,
                                    body: Data?,
                                    client: WCRESTClient,
-                                   toolName: String,
-                                   family: CardFamilyID) async -> ToolResult {
+                                   toolName: String) async -> ToolResult {
         let response = await client.request(method: method,
                                             path: path,
                                             query: nil,
                                             body: body)
-        return WriteResultMapper.mapBatch(response,
-                                         toolName: toolName,
-                                         family: family)
+        return WriteResultMapper.mapBatch(response, toolName: toolName)
     }
 }

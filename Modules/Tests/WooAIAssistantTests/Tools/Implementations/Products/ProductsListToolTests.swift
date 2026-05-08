@@ -2,7 +2,22 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ProductsListToolTests {
+    @Test
+    func test_products_list_definition_documents_top_products_card_flow() {
+        // Given
+        let tool = ProductsListTool.make()
+
+        // Then
+        #expect(tool.definition.description.contains("orderby=popularity"))
+        #expect(tool.definition.description.contains("latest/last single-product"))
+        #expect(tool.definition.description.contains("per_page=1"))
+        #expect(tool.definition.description.contains("pass returned ids to"))
+        #expect(tool.definition.description.contains("Terse merchant phrases"))
+        #expect(tool.definition.description.contains("never say no match was found unless the returned count is zero"))
+    }
+
     @Test
     func test_products_list_when_response_is_array_then_structured_summary_lists_ids_and_price_range() async throws {
         // Given
@@ -31,6 +46,7 @@ struct ProductsListToolTests {
         }
         #expect(fields["count"] == .int(3))
         #expect(fields["ids"] == .array([.int(101), .int(102), .int(103)]))
+        #expect(fields["rows"] == nil)
         #expect(fields["stock_status_counts"] == .object([
             "instock": .int(2),
             "outofstock": .int(1)

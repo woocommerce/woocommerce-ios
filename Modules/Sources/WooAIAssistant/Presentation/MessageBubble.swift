@@ -10,16 +10,19 @@ struct MessageBubble: View {
         HStack(alignment: .top, spacing: 0) {
             if message.role == .user { Spacer(minLength: AssistantSpacing.xxLarge) }
             VStack(alignment: alignment, spacing: AssistantSpacing.large) {
-                ForEach(orderedSegments) { segment in
-                    segmentView(for: segment)
+                ForEach(renderableGroups, id: \.identifier) { group in
+                    groupView(for: group)
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
             }
-            .animation(.snappy(duration: 0.2), value: orderedSegments.map(\.id))
             if message.role == .assistant { Spacer(minLength: AssistantSpacing.xxLarge) }
         }
         .frame(maxWidth: .infinity,
                alignment: message.role == .user ? .trailing : .leading)
+    }
+
+    var renderableGroups: [MessageSegmentGrouping.Group] {
+        MessageSegmentGrouping.group(orderedSegments)
     }
 
     private var alignment: HorizontalAlignment {
@@ -30,49 +33,16 @@ struct MessageBubble: View {
         guard message.role == .assistant else { return message.segments }
 
         var lastToolCallID: UUID?
-        var hasCardRender = false
         var hasText = false
-        var firstSearchNonEmpty: UUID?
-        var lastListNonEmpty: UUID?
-        var lastStrictAny: UUID?
-        var lastSingle: UUID?
-        var analyticsIDs: [UUID] = []
 
         for segment in message.segments {
             switch segment {
             case .text:
                 hasText = true
-            case .cardRender:
-                hasCardRender = true
             case .toolCall(let id, _, _, _, _):
                 lastToolCallID = id
-            case .toolResult(let id, _, let name, let payload):
-                if name.hasPrefix("analytics_") {
-                    analyticsIDs.append(id)
-                    continue
-                }
-                let isSearch = name.hasSuffix("_search")
-                let isList = name.hasSuffix("_list")
-                let isStrict = isSearch || isList
-                let rowCount = arrayCount(payload)
-                if isStrict { lastStrictAny = id }
-                if isSearch, rowCount > 0, firstSearchNonEmpty == nil {
-                    firstSearchNonEmpty = id
-                } else if isList, rowCount > 0 {
-                    lastListNonEmpty = id
-                } else if !isStrict {
-                    lastSingle = id
-                }
-            case .confirmation:
+            case .cardRender, .toolResult, .confirmation:
                 break
-            }
-        }
-
-        var renderableToolResultIDs: Set<UUID> = []
-        if !hasCardRender, !message.isStreaming {
-            renderableToolResultIDs = Set(analyticsIDs)
-            if let pick = firstSearchNonEmpty ?? lastListNonEmpty ?? lastStrictAny ?? lastSingle {
-                renderableToolResultIDs.insert(pick)
             }
         }
 
@@ -84,12 +54,53 @@ struct MessageBubble: View {
                 return !message.isStreaming
             case .toolCall(let id, _, _, _, _):
                 return id == lastToolCallID
-            case .toolResult(let id, _, _, _):
-                return renderableToolResultIDs.contains(id)
+            case .toolResult:
+                return false
             }
         }
 
-        return hasText ? deferCardsAfterText(filtered) : filtered
+        let deduped = MessageBubble.dedupedCardRenders(filtered)
+        return hasText ? deferCardsAfterText(deduped) : deduped
+    }
+
+    /// Drops later `.cardRender` segments that target the same `(family, entityID)`.
+    /// `orders_get` and `show_cards` can both emit a card for the same entity in
+    /// one turn; without this, the renderer paints two rows for one id.
+    static func dedupedCardRenders(_ segments: [MessageSegment]) -> [MessageSegment] {
+        var keysSeen: Set<CardKey> = []
+        var dropIDs: Set<UUID> = []
+        for segment in segments {
+            guard case .cardRender(let id, let toolCallID, _, _) = segment,
+                  let key = cardKey(fromSyntheticToolCallID: toolCallID) else { continue }
+            if keysSeen.contains(key) {
+                dropIDs.insert(id)
+            } else {
+                keysSeen.insert(key)
+            }
+        }
+        guard dropIDs.isEmpty == false else { return segments }
+        return segments.filter { dropIDs.contains($0.id) == false }
+    }
+
+    private struct CardKey: Hashable {
+        let family: String
+        let entityID: String
+    }
+
+    /// Synthetic `.cardRender` toolCallID format from `AgenticLoopOrchestrator`:
+    /// `"<callID>:card:<index>:<family>:<id>"`. Returns `nil` for any other shape
+    /// so unknown IDs survive dedupe untouched.
+    private static func cardKey(fromSyntheticToolCallID toolCallID: String) -> CardKey? {
+        let parts = toolCallID.split(separator: ":", omittingEmptySubsequences: false)
+        guard let markerIndex = parts.indices.first(where: { parts[$0] == "card" }),
+              let entityIDStartIndex = parts.index(markerIndex, offsetBy: 3, limitedBy: parts.endIndex),
+              entityIDStartIndex < parts.endIndex else {
+            return nil
+        }
+        let familyIndex = parts.index(markerIndex, offsetBy: 2)
+        let entityID = parts[entityIDStartIndex...].joined(separator: ":")
+        guard !parts[familyIndex].isEmpty, !entityID.isEmpty else { return nil }
+        return CardKey(family: String(parts[familyIndex]), entityID: entityID)
     }
 
     private func deferCardsAfterText(_ segments: [MessageSegment]) -> [MessageSegment] {
@@ -108,19 +119,25 @@ struct MessageBubble: View {
 
     private func isCardSegment(_ segment: MessageSegment) -> Bool {
         switch segment {
-        case .cardRender, .toolResult:
+        case .cardRender:
             return true
-        case .text, .toolCall, .confirmation:
+        case .text, .toolCall, .toolResult, .confirmation:
             return false
         }
     }
 
-    private func arrayCount(_ value: AnyCodableJSON) -> Int {
-        if case .array(let elements) = value { return elements.count }
-        if case .object(let fields) = value, case .int(let count) = fields["count"] {
-            return Int(count)
+    @ViewBuilder
+    private func groupView(for group: MessageSegmentGrouping.Group) -> some View {
+        switch group {
+        case .solo(let segment):
+            segmentView(for: segment)
+        case .cardRun(let family, let segments):
+            let payloads = segments.compactMap { segment -> AnyCodableJSON? in
+                if case .cardRender(_, _, _, let payload) = segment { return payload }
+                return nil
+            }
+            MessageCardListHost(family: family, payloads: payloads)
         }
-        return 0
     }
 
     @ViewBuilder
@@ -132,8 +149,9 @@ struct MessageBubble: View {
             }
         case .toolCall(_, _, let name, _, let status):
             ToolActivityPill(toolName: name, status: status)
-        case .toolResult(_, _, let name, let payload):
-            MessageCardHost(toolName: name, payload: payload)
+        case .toolResult:
+            // .toolResult is filtered in orderedSegments; arm kept so future leaks compile-error here.
+            EmptyView()
         case .cardRender(_, _, let name, let payload):
             MessageCardHost(toolName: name, payload: payload)
         case .confirmation(_, let proposalID, _, let preview, let status):
@@ -149,6 +167,7 @@ struct MessageBubble: View {
         Text(renderedText(content))
             .font(.assistantBody)
             .foregroundStyle(bubbleTextColor)
+            .tint(bubbleTextColor)
             .padding(.horizontal, AssistantSpacing.medium)
             .padding(.vertical, AssistantSpacing.bubbleVerticalInset)
             .background(bubbleBackground)

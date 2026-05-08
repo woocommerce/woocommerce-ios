@@ -3,8 +3,25 @@ import WooFoundation
 import struct Yosemite.POSCustomAmount
 
 struct AddCustomAmountView: View {
-    @Binding var isPresented: Bool
+    /// Glyph for the form's leading back button. The actual dismissal mechanism is
+    /// always provided by `onDismiss`; this only chooses how the back button looks.
+    /// - `.close` shows an `xmark` (typical for modal/sheet/full-screen-cover presentations).
+    /// - `.back` shows a chevron-back (typical for navigation-stack pushes).
+    enum BackButtonStyle {
+        case close
+        case back
+
+        var iconName: String {
+            switch self {
+            case .close: return "xmark"
+            case .back: return "chevron.backward"
+            }
+        }
+    }
+
+    let onDismiss: () -> Void
     let onSubmit: (POSCustomAmount) -> Void
+    private let backButtonStyle: BackButtonStyle
 
     @State private var viewModel: AddCustomAmountFormViewModel
     @FocusState private var isAmountFocused: Bool
@@ -17,11 +34,13 @@ struct AddCustomAmountView: View {
         )
     }
 
-    init(isPresented: Binding<Bool>,
-         currencySettings: CurrencySettings,
+    init(currencySettings: CurrencySettings,
          editing: POSCustomAmount? = nil,
+         backButtonStyle: BackButtonStyle = .close,
+         onDismiss: @escaping () -> Void,
          onSubmit: @escaping (POSCustomAmount) -> Void) {
-        self._isPresented = isPresented
+        self.backButtonStyle = backButtonStyle
+        self.onDismiss = onDismiss
         self.onSubmit = onSubmit
         self._viewModel = State(wrappedValue: AddCustomAmountFormViewModel(
             currencySettings: currencySettings,
@@ -35,8 +54,8 @@ struct AddCustomAmountView: View {
                 title: viewModel.isEditing ? Localization.editTitle : Localization.title,
                 backButtonConfiguration: .init(
                     state: .enabled,
-                    action: { isPresented = false },
-                    buttonIcon: "xmark"
+                    action: { onDismiss() },
+                    buttonIcon: backButtonStyle.iconName
                 )
             )
 
@@ -151,7 +170,7 @@ struct AddCustomAmountView: View {
     private func submit() {
         guard let customAmount = viewModel.resolvedCustomAmount() else { return }
         onSubmit(customAmount)
-        isPresented = false
+        onDismiss()
     }
 }
 
@@ -193,20 +212,33 @@ private extension AddCustomAmountView {
 }
 
 #if DEBUG
-#Preview {
+#Preview("Modal") {
     AddCustomAmountView(
-        isPresented: .constant(true),
         currencySettings: CurrencySettings(),
+        backButtonStyle: .close,
+        onDismiss: {},
         onSubmit: { _ in }
     )
 }
 
-#Preview("Editing") {
+#Preview("Editing — Modal") {
     AddCustomAmountView(
-        isPresented: .constant(true),
         currencySettings: CurrencySettings(),
         editing: POSCustomAmount(name: "Service fee", amount: "12.50", isTaxable: false),
+        backButtonStyle: .close,
+        onDismiss: {},
         onSubmit: { _ in }
     )
+}
+
+#Preview("Push") {
+    NavigationStack {
+        AddCustomAmountView(
+            currencySettings: CurrencySettings(),
+            backButtonStyle: .back,
+            onDismiss: {},
+            onSubmit: { _ in }
+        )
+    }
 }
 #endif

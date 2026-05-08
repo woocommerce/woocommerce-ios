@@ -9,11 +9,13 @@ public enum SupportChatAction: Action {
     ///   - botSlug: The bot/assistant slug (e.g., "woo-chat-allusers").
     ///   - message: The user's message text.
     ///   - chatID: If provided, continues an existing chat; otherwise starts a new one.
+    ///   - sessionID: Current session if continuing an existing chat
     ///   - context: Optional context forwarded to the assistant (site info, troubleshooting data).
     ///   - completion: Called with the full chat thread including the bot's response.
     case sendMessage(botSlug: String,
                      message: String,
                      chatID: Int64?,
+                     sessionID: String?,
                      context: [String: Any]?,
                      completion: (Result<SupportChatResponse, Error>) -> Void)
 
@@ -71,4 +73,14 @@ public enum SupportChatAction: Action {
     ///   - onCompletion: Delivered on the main thread once the row is removed.
     case deleteChat(chatID: Int64,
                     onCompletion: () -> Void)
+
+    /// Marks an existing chat as having created a support ticket.
+    ///
+    /// Called after a Zendesk support ticket is created for a chat session.
+    ///
+    /// - Parameters:
+    ///   - chatID: Identifier of the chat to update.
+    ///   - onCompletion: Delivered on the main thread once the update is persisted.
+    case markTicketCreated(chatID: Int64,
+                           onCompletion: () -> Void)
 }

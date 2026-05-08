@@ -16,7 +16,8 @@ public enum ProductsUpdateTool {
         variable products, prices live on each variation - use \
         product_variations_update on the parent's variations instead. Only call \
         when the merchant has explicitly requested a change; never call to answer \
-        an information question.
+        an information question. After a successful update, call `show_cards` \
+        with family `product` and the updated id so the merchant sees the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),

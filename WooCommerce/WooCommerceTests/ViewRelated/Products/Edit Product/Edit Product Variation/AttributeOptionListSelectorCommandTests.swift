@@ -93,8 +93,7 @@ final class AttributeOptionListSelectorCommandTests: XCTestCase {
                                          variation: true,
                                          options: ["Blue", "Red"])
         let command = AttributeOptionListSelectorCommand(attribute: attribute, selectedOption: nil)
-        // swiftlint:disable:next redundant_type_annotation
-        let cell: BasicTableViewCell = BasicTableViewCell.instantiateFromNib()
+        let cell = BasicTableViewCell.instantiateFromNib()
 
         // When
         command.configureCell(cell: cell, model: .option("Red"))

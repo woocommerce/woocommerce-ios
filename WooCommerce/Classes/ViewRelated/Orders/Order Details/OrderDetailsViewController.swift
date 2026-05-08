@@ -25,8 +25,7 @@ final class OrderDetailsViewController: UIViewController {
     /// content for the first time.
     ///
     private var topLoaderView: TopLoaderView = {
-        // swiftlint:disable:next redundant_type_annotation
-        let loaderView: TopLoaderView = TopLoaderView.instantiateFromNib()
+        let loaderView = TopLoaderView.instantiateFromNib()
         loaderView.setBody(Localization.Generic.topLoaderBannerDescription)
         return loaderView
     }()

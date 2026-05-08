@@ -81,4 +81,39 @@ struct ErrorErrorCodeTests {
         #expect(details.contains("Error Code: 404"))
         #expect(details.contains("Domain: TestDomain"))
     }
+
+    // MARK: - SiteCredentialLoginError Tests
+
+    @Test func errorCode_when_SiteCredentialLoginError_invalidCredentials_then_returns_401() {
+        // Given
+        let error: Error = SiteCredentialLoginError.invalidCredentials
+
+        // Then
+        #expect(error.errorCode == 401)
+    }
+
+    @Test func errorCode_when_SiteCredentialLoginError_inaccessibleLoginPage_then_returns_404() {
+        // Given
+        let error: Error = SiteCredentialLoginError.inaccessibleLoginPage
+
+        // Then
+        #expect(error.errorCode == 404)
+    }
+
+    @Test func errorCode_when_SiteCredentialLoginError_unacceptableStatusCode_then_returns_code() {
+        // Given
+        let error: Error = SiteCredentialLoginError.unacceptableStatusCode(code: 500)
+
+        // Then
+        #expect(error.errorCode == 500)
+    }
+
+    @Test func errorCode_when_SiteCredentialLoginError_genericFailure_then_returns_underlyingErrorCode() {
+        // Given
+        let underlyingError = NSError(domain: "TestDomain", code: 503)
+        let error: Error = SiteCredentialLoginError.genericFailure(underlyingError: underlyingError)
+
+        // Then
+        #expect(error.errorCode == 503)
+    }
 }

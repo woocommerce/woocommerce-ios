@@ -373,6 +373,12 @@ let package = Package(
                 .target(name: "WooAIAssistant"),
             ]
         ),
+        .testTarget(
+            name: "ParcelFittingCheckTests",
+            dependencies: [
+                .target(name: "ParcelFittingCheck"),
+            ]
+        ),
         .binaryTarget(
             name: "EventHorizonSDK",
             url: "https://a8c-libs.s3.amazonaws.com/ios/EventHorizon/woocommerce-2026-04-09-13-24-36/EventHorizon-woocommerce-2026-04-09-13-24-36.xcframework.zip",

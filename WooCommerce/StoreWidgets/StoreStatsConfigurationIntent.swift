@@ -115,6 +115,10 @@ struct StoreStatsStoreEntity: AppEntity, Hashable {
 struct StoreStatsStoreQuery: EntityQuery {
     private let siteListStore: WidgetSiteListStore
 
+    init() {
+        self.init(siteListStore: WidgetSiteListStore())
+    }
+
     init(siteListStore: WidgetSiteListStore = WidgetSiteListStore()) {
         self.siteListStore = siteListStore
     }

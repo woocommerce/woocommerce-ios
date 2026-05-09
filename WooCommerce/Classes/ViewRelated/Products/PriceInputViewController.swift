@@ -4,7 +4,7 @@ import Combine
 
 final class PriceInputViewController: UIViewController {
 
-    let tableView: UITableView = UITableView(frame: .zero, style: .grouped)
+    let tableView = UITableView(frame: .zero, style: .grouped)
 
     private var viewModel: PriceInputViewModel
     private var subscriptions = Set<AnyCancellable>()

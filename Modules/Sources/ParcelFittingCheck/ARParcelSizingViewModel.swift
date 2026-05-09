@@ -7,11 +7,7 @@ final class ARParcelSizingViewModel {
 
     init(unit: UnitLength, initial: ParcelDimensions? = nil) {
         self.unit = unit
-        self.dimensions = initial ?? Self.defaultDimensions(for: unit)
-    }
-
-    var sliderRange: ClosedRange<Float> {
-        unit == .inches ? 0.5...30.0 : 1.0...75.0
+        self.dimensions = initial ?? .defaultDimensions(for: unit)
     }
 
     var dimensionsInMeters: SIMD3<Float> {
@@ -20,9 +16,20 @@ final class ARParcelSizingViewModel {
 
     var confirmedDimensions: ParcelDimensions { dimensions }
 
-    private static func defaultDimensions(for unit: UnitLength) -> ParcelDimensions {
-        unit == .inches
-            ? ParcelDimensions(length: 8.0, width: 6.0, height: 4.0)
-            : ParcelDimensions(length: 20.0, width: 15.0, height: 10.0)
+    var dimensionsLabel: String {
+        let format = "L: %.1f  W: %.1f  H: %.1f %@"
+        return String(format: format,
+                      dimensions.length,
+                      dimensions.width,
+                      dimensions.height,
+                      unit.symbol)
+    }
+
+    func update(fromMeters meters: SIMD3<Float>) {
+        dimensions = ParcelDimensions.fromMeters(meters, unit: unit)
+    }
+
+    func resetToDefaults() {
+        dimensions = .defaultDimensions(for: unit)
     }
 }

@@ -65,6 +65,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ServiceLocator.authenticationManager.initialize()
         stores.initializeAfterDependenciesAreInitialized()
 
+        setupWidgetSiteListSyncIfNeeded()
+
         setupAnalytics(analytics)
         setupCocoaLumberjack()
         setupLibraryLogger()
@@ -281,6 +283,17 @@ extension AppDelegate {
 
     func setupUserNotificationCenter() {
         UNUserNotificationCenter.current().delegate = self
+    }
+
+    /// Starts the widget site list sync manager when the configurable Store Stats widgets
+    /// feature flag is enabled. The manager mirrors the user's selectable WooCommerce sites
+    /// into shared app-group `UserDefaults` for the widget site picker.
+    ///
+    func setupWidgetSiteListSyncIfNeeded() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.configurableStoreStatsWidgets) else {
+            return
+        }
+        ServiceLocator.widgetSiteListSyncManager.start()
     }
 
     /// Set up app review prompt

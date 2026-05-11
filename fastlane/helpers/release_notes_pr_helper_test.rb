@@ -268,6 +268,16 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
     assert_equal 'pull', items.first[:type]
   end
 
+  def test_parse_source_items_tolerates_trailing_punctuation_after_url
+    raw = "- [*] Order Creation: Resolved exit confirmation issue [https://github.com/woocommerce/woocommerce-ios/pull/15394].\n"
+    items = Helper.parse_source_items(raw)
+    assert_equal 1, items.size
+    assert_equal 'Order Creation: Resolved exit confirmation issue', items.first[:text]
+    assert_equal 'https://github.com/woocommerce/woocommerce-ios/pull/15394', items.first[:url]
+    assert_equal 15_394, items.first[:number]
+    assert_equal 'pull', items.first[:type]
+  end
+
   def test_parse_source_items_handles_missing_url
     raw = "- [*] A small fix\n"
     items = Helper.parse_source_items(raw)

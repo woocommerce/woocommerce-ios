@@ -3,6 +3,11 @@
 default_platform(:ios)
 fastlane_require 'dotenv'
 fastlane_require 'git'
+# `create_release_notes_pr` uses `Octokit::Client` directly to look up the
+# existing release notes PR and enrich source-item authors. Octokit is
+# normally pulled in transitively by Fastlane actions, but requiring it
+# explicitly here avoids load-order surprises.
+fastlane_require 'octokit'
 
 require_relative 'helpers/release_notes_pr_helper'
 

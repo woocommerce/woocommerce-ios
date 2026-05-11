@@ -149,10 +149,11 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
 
   # Splits the trailing `[https://github.com/.../pull/123]` or
   # `(https://github.com/.../pull/123)` token off the line. Real-world
-  # RELEASE-NOTES entries use both forms.
+  # RELEASE-NOTES entries use both forms, sometimes followed by trailing
+  # sentence punctuation (e.g. `[…].`).
   # Returns `[text, { url:, number:, type: }]` (number/type may be nil).
   def split_text_and_url(content)
-    match = content.match(%r{\s*[\[(](?<url>https?://github\.com/[^\s\])]+)[\])]\s*\z})
+    match = content.match(%r{\s*[\[(](?<url>https?://github\.com/[^\s\])]+)[\])][.,;!?]*\s*\z})
     return [content, { url: nil, number: nil, type: nil }] unless match
 
     text = content.sub(match[0], '').rstrip

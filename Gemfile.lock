@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/wordpress-mobile/release-toolkit
-  revision: f2ae4072c9ba6cd23b6e031d87263e77912cd629
+  revision: 35bc38a8453784d7c80d1be6d72e5628ad6a6371
   branch: add/openai-ask-tool-support
   specs:
     fastlane-plugin-wpmreleasetoolkit (14.4.1)

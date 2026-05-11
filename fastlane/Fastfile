@@ -345,6 +345,11 @@ platform :ios do
     dry_run = dry_run.to_s == 'true'
     skip_confirm = skip_confirm.to_s == 'true'
 
+    # The lane checks out the release branch and writes to CHANGELOG.md /
+    # release_notes.txt, so a dirty working tree would either be committed
+    # accidentally or cause confusing checkout failures.
+    ensure_git_status_clean
+
     if (error = ReleaseNotesPRHelper.validate_version(version))
       UI.user_error!(error)
     end
@@ -1792,7 +1797,7 @@ def find_existing_release_notes_pr_url(base:, head:)
     head: "#{GITHUB_REPO.split('/').first}:#{head}",
     base: base
   )
-  prs&.first&.dig(:html_url)
+  prs.first&.html_url
 rescue StandardError => e
   UI.important("Could not check for existing release notes PR: #{e.message}")
   nil

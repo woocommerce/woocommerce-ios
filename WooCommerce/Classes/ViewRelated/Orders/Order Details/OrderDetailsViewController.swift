@@ -25,7 +25,7 @@ final class OrderDetailsViewController: UIViewController {
     /// content for the first time.
     ///
     private var topLoaderView: TopLoaderView = {
-        let loaderView: TopLoaderView = TopLoaderView.instantiateFromNib()
+        let loaderView = TopLoaderView.instantiateFromNib()
         loaderView.setBody(Localization.Generic.topLoaderBannerDescription)
         return loaderView
     }()
@@ -501,7 +501,7 @@ private extension OrderDetailsViewController {
         let isRevampedFlow = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
 
         var cancellables = Set<AnyCancellable>()
-        var cancellable: AnyCancellable = AnyCancellable { }
+        var cancellable = AnyCancellable { }
         cancellable = fulfillmentProcess.result.sink { completion in
             if case .failure = completion {
                 ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed,

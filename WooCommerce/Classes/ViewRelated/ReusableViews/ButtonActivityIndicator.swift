@@ -4,7 +4,7 @@ import UIKit
 ///
 final class ButtonActivityIndicator: UIButton {
 
-    let indicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .medium)
+    let indicator = UIActivityIndicatorView(style: .medium)
 
     override func layoutSubviews() {
         super.layoutSubviews()

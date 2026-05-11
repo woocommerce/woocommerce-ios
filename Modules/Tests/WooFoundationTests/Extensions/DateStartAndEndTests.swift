@@ -2,7 +2,7 @@ import XCTest
 @testable import WooFoundation
 
 final class DateStartAndEndTests: XCTestCase {
-    private let gmtPlus8TimeZone: TimeZone = TimeZone(secondsFromGMT: 8 * 3600)!
+    private let gmtPlus8TimeZone = TimeZone(secondsFromGMT: 8 * 3600)!
 
     // MARK: Day
 

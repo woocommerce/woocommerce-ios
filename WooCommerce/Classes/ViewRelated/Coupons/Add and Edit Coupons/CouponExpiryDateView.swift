@@ -5,7 +5,7 @@ import SwiftUI
 struct CouponExpiryDateView: View {
     @Environment(\.presentationMode) var presentationMode
 
-    @State var date: Date = Date()
+    @State var date = Date()
     @State var isRemovalEnabled: Bool = false
     var timezone: TimeZone
     let onCompletion: (Date?) -> Void

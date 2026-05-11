@@ -5,7 +5,7 @@ import Yosemite
 ///
 final class ProductsSplitViewWrapperController: UIViewController {
     private let siteID: Int64
-    private lazy var coordinator: ProductsSplitViewCoordinator = ProductsSplitViewCoordinator(siteID: siteID,
+    private lazy var coordinator = ProductsSplitViewCoordinator(siteID: siteID,
                                                                                               splitViewController: productsSplitViewController)
     private lazy var productsSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView,
                                                                           didExpandHandler: handleDidExpand)

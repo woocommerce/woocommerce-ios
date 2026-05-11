@@ -18,47 +18,13 @@ struct StoreInfoMediumMetricsContainerView: View {
         VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
             StoreInfoMetricsLogoHeader(data: data)
 
-            if StoreInfoMetricSlotLayout.usesAccessibilityLayout(dynamicTypeSize: dynamicTypeSize) {
-                StoreInfoMetricsAccessibilitySummaryView(metricSlots: visibleMetricSlots)
-            } else {
-                StoreInfoMetricsGrid(metricSlots: visibleMetricSlots)
-            }
+            StoreInfoMetricsGrid(metricSlots: visibleMetricSlots)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private enum Layout {
         static let sectionSpacing = 8.0
-    }
-}
-
-/// Accessibility summary for metric widget layouts. Shows the first configured slot and a `View More` indicator.
-///
-private struct StoreInfoMetricsAccessibilitySummaryView: View {
-    let metricSlots: [StoreInfoMetricSlot]
-
-    var body: some View {
-        Group {
-            if let firstSlot = metricSlots.first {
-                MetricSlotView(slot: firstSlot, placeholderMinHeight: Layout.emptyMetricMinHeight) { metric in
-                    VStack(alignment: .leading, spacing: Layout.cardSpacing) {
-                        Text(metric.title)
-                            .statTitleStyle()
-
-                        Text(metric.formattedValue)
-                            .statValueStyle()
-                    }
-                }
-            }
-
-            Text(StoreInfoMetricsView.Localization.viewMore)
-                .statButtonStyle()
-        }
-    }
-
-    private enum Layout {
-        static let cardSpacing = 2.0
-        static let emptyMetricMinHeight = 36.0
     }
 }
 

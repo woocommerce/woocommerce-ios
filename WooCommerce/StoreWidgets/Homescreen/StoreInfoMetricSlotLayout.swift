@@ -24,8 +24,10 @@ enum StoreInfoMetricSlotLayout {
 
         var accessibilityLimit: Int {
             switch self {
-            case .small, .medium:
+            case .small:
                 return 1
+            case .medium:
+                return defaultLimit
             case .large:
                 return 4
             }

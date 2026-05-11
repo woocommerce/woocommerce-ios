@@ -58,7 +58,19 @@ struct TotalsView: View {
                 VStack(alignment: .center) {
                     Spacer()
 
-                    if useTapToPayHeroLayout {
+                    if shouldPrioritizePaymentViewOverHero {
+                        PaymentViewContent(
+                            paymentState: displayPaymentState,
+                            cardReaderViewLayout: cardReaderViewLayout,
+                            isShowingTotalsFields: isShowingTotalsFields,
+                            backgroundColor: backgroundColor,
+                            orderState: posModel.orderState,
+                            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
+                            connectCardReaderAction: paymentModel.connectCardReader,
+                            cancelReconnectionAction: posModel.cancelReconnection
+                        )
+                    } else if useTapToPayHeroLayout {
                         POSTapToPayHeroView(onPayTapped: handleTapToPayTapped,
                                             isPayDisabled: isStartingPayment,
                                             isPreparing: paymentModel.isPreparingTapToPay)
@@ -635,6 +647,30 @@ private extension TotalsView {
     }
 
     /// True when the merchant should see the Android-style Tap to Pay hero +
+    /// True when the card payment has reached a terminal state (success or
+    /// error) after a TTP collection — we want `PaymentViewContent` to take
+    /// over **immediately** so the merchant doesn't briefly see the hero
+    /// fade out + Checkout chrome ghosting through before the success card
+    /// fades in. The default hero → PaymentViewContent priority order is
+    /// fine for every other transition; this short-circuits just the
+    /// terminal-state case.
+    private var shouldPrioritizePaymentViewOverHero: Bool {
+        switch displayPaymentState.card {
+        case .cardPaymentSuccessful,
+                .paymentError,
+                .validatingOrderError,
+                .paymentIntentCreationError:
+            return true
+        case .idle,
+                .acceptingCard,
+                .cardInserted,
+                .validatingOrder,
+                .preparingReader,
+                .processingPayment:
+            return false
+        }
+    }
+
     /// bottom-strip layout: TTP availability has resolved `.available`, no
     /// payment is currently in progress (idle card + idle cash), and the order
     /// has a real non-zero total to charge. When a TTP payment kicks off,

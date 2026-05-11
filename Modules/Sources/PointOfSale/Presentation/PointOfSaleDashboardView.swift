@@ -298,6 +298,7 @@ struct PointOfSaleDashboardView: View {
                     Image(systemName: "ellipsis")
                         .font(.posButtonSymbolSmall)
                         .foregroundColor(.posOnSurface)
+                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 }
                 .frame(width: POSHeaderLayoutConstants.minHeight, height: POSHeaderLayoutConstants.minHeight)
                 .fixedSize()

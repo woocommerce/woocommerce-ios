@@ -21,19 +21,17 @@ final class WooPushNotificationEligibilityCheck: WooPushNotificationEligibilityC
 
     @MainActor
     func checkEligibility() async -> Bool {
-        let localFlagEnabled = featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)
+        let defaultM1Value = featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)
 
-        let remoteFlagEnabled = await withCheckedContinuation { continuation in
+        return await withCheckedContinuation { continuation in
             stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
                 .selfDrivenPushNotificationsM1,
-                defaultValue: false,
+                defaultValue: defaultM1Value,
                 useCache: true,
                 completion: { value in
                     continuation.resume(returning: value)
                 })
             )
         }
-
-        return localFlagEnabled && remoteFlagEnabled
     }
 }

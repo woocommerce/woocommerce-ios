@@ -142,7 +142,17 @@ private extension POSOtherPaymentMethodsSheet {
 }
 
 #if DEBUG
-#Preview {
+#Preview("Card reader only") {
     POSOtherPaymentMethodsSheet(onCardReader: {})
+}
+
+#Preview("All methods enabled") {
+    POSOtherPaymentMethodsSheet(
+        onCardReader: {},
+        isScanToPayAvailable: true,
+        onScanToPay: {},
+        isMarkOrderAsPaidAvailable: true,
+        onMarkOrderAsPaid: {}
+    )
 }
 #endif

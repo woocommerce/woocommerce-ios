@@ -49,6 +49,6 @@ struct POSNavigationDestinationEmailReceiptView: View {
         }) { email in
             try await paymentModel.sendReceipt(to: email)
         }
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
     }
 }

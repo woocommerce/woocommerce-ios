@@ -51,12 +51,10 @@ struct TimelineTableView: UIViewControllerRepresentable {
 
         func update(isNearBottom value: Bool) {
             guard isNearBottomBinding.wrappedValue != value else { return }
-            // Defer one tick so the binding write does not collide with an in-flight render pass.
-            DispatchQueue.main.async {
-                if self.isNearBottomBinding.wrappedValue != value {
-                    self.isNearBottomBinding.wrappedValue = value
-                }
-            }
+            // Write synchronously. Deferring this used to drop the binding out of sync
+            // with `lastIsNearBottom` on the controller, leaving the jump-to-latest chip
+            // visible after a scroll that should have hidden it.
+            isNearBottomBinding.wrappedValue = value
         }
     }
 }
@@ -243,17 +241,26 @@ final class TimelineTableViewController: UIViewController {
     private func afterApply(stickToBottom: Bool) {
         if stickToBottom {
             scrollToLatest(animated: false)
+            // We just programmatically scrolled to the bottom; trust that over a
+            // re-eval that can read stale contentSize while cells are still settling.
+            setIsNearBottom(true)
+            return
         }
         // Defer one runloop tick so UIHostingConfiguration has re-measured
         // and contentSize reflects the settled cell heights.
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            let nearBottom = self.isAtOrNearBottom(self.tableView)
-            if nearBottom != self.lastIsNearBottom {
-                self.lastIsNearBottom = nearBottom
-                self.onIsNearBottomChange?(nearBottom)
-            }
+            self.setIsNearBottom(self.isAtOrNearBottom(self.tableView))
         }
+    }
+
+    /// Single write path so the cached flag and the SwiftUI binding can never drift
+    /// out of sync. Mid-stream content changes used to leave the flag at one value
+    /// and the binding at another, which made the jump-to-latest chip stick.
+    private func setIsNearBottom(_ value: Bool) {
+        guard value != lastIsNearBottom else { return }
+        lastIsNearBottom = value
+        onIsNearBottomChange?(value)
     }
 
     func scrollToLatest(animated: Bool) {
@@ -269,11 +276,14 @@ final class TimelineTableViewController: UIViewController {
 extension TimelineTableViewController: UITableViewDelegate {
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let near = isAtOrNearBottom(scrollView)
-        if near != lastIsNearBottom {
-            lastIsNearBottom = near
-            onIsNearBottomChange?(near)
-        }
+        setIsNearBottom(isAtOrNearBottom(scrollView))
+    }
+
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        // UIKit's animated setContentOffset can land short of the new bottom when
+        // contentSize grows mid-animation (cells settling). Re-evaluate on landing
+        // so the chip does not stick after a chip-tap or auto-stick scroll.
+        setIsNearBottom(isAtOrNearBottom(scrollView))
     }
 
     /// True when content fits in the viewport, or the merchant is within 80pt of the bottom.

@@ -87,6 +87,9 @@ extension UserDefaults {
 
         /// Whether configurable store stats widgets are enabled
         case configurableStoreStatsWidgetsEnabled
+
+        /// Sites available for selection in the configurable store stats widget picker
+        case widgetSelectableSites
     }
 }
 

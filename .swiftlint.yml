@@ -75,17 +75,20 @@ only_rules:
 
   - overridden_super_call
 
-  # Prefer the shorthand `if let foo` form over `if let foo = foo`.
-  - shorthand_optional_binding
-
   # Prefer `0` over explicit type initializers like `CGFloat(0)`.
   - prefer_zero_over_explicit_init
 
-  # Prefer `someBool.toggle()` over `someBool = !someBool`.
-  - toggle_bool
+  # Type annotations are redundant when the type can be inferred.
+  - redundant_type_annotation
 
+  # Prefer the shorthand `if let foo` form over `if let foo = foo`.
+  - shorthand_optional_binding
+  
   # Prefer `min(by:)` / `max(by:)` over `sorted { ... }.first` / `.last`.
   - sorted_first_last
+
+  # Prefer `someBool.toggle()` over `someBool = !someBool`.
+  - toggle_bool
 
   # Files should have a single trailing newline.
   - trailing_newline

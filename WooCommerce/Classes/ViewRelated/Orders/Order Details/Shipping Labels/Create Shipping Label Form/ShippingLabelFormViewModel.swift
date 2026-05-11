@@ -167,7 +167,7 @@ final class ShippingLabelFormViewModel {
 
     /// Current `ViewModel` state.
     ///
-    private(set) var state: State = State() {
+    private(set) var state = State() {
         didSet {
             onChange?()
         }

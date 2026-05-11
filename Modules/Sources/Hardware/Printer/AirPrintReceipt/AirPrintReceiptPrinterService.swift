@@ -55,9 +55,9 @@ extension AirPrintReceiptPrinterService {
 
     /// Default margin for roll cutter.
     ///
-    static let defaultRollCutterMargin: CGFloat = CGFloat(1 * pointsPerInch)
+    static let defaultRollCutterMargin = CGFloat(1 * pointsPerInch)
 
     /// Default size of a page for a receipt in points.
     ///
-    static let defaultReceiptPageSize: CGSize = CGSize(width: 4 * pointsPerInch, height: 11 * pointsPerInch)
+    static let defaultReceiptPageSize = CGSize(width: 4 * pointsPerInch, height: 11 * pointsPerInch)
 }

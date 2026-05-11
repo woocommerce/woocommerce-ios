@@ -18,7 +18,7 @@ final class SettingsViewController: UIViewController {
 
     private let viewModel: ViewModel
 
-    private lazy var woocommercePluginViewModel: PluginDetailsViewModel = PluginDetailsViewModel(
+    private lazy var woocommercePluginViewModel = PluginDetailsViewModel(
         siteID: stores.sessionManager.defaultStoreID ?? 0,
         pluginName: "WooCommerce")
 
@@ -30,7 +30,7 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    private lazy var closeAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
         guard let self else { throw CloseAccountError.presenterDeallocated }
         try await self.closeAccount()
@@ -108,7 +108,7 @@ private extension SettingsViewController {
         // Hence the container view with a defined frame.
         //
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
-        let footerView = TableFooterView.instantiateFromNib() as TableFooterView
+        let footerView = TableFooterView.instantiateFromNib()
         footerView.iconImage = .heartOutlineImage
         footerView.footnote.attributedText = hiringAttributedText
         footerView.iconColor = .primary

@@ -73,11 +73,16 @@ final class ServiceLocator {
 
     /// Selected Site Settings
     ///
-    private static var _selectedSiteSettings: SelectedSiteSettings = SelectedSiteSettings()
+    private static var _selectedSiteSettings = SelectedSiteSettings()
+
+    /// Mirrors selectable WooCommerce sites into shared app-group `UserDefaults` for the
+    /// `StoreWidgetsExtension` site picker. Idle until `start()` is called.
+    ///
+    private static var _widgetSiteListSyncManager: WidgetSiteListSyncManager = WidgetSiteListSyncManager()
 
     /// Currency Settings
     ///
-    private static var _currencySettings: CurrencySettings = CurrencySettings()
+    private static var _currencySettings = CurrencySettings()
 
     /// CoreData Stack
     ///
@@ -125,9 +130,9 @@ final class ServiceLocator {
 
     /// Storage for general app settings
     ///
-    private static var _generalAppSettings: GeneralAppSettingsStorage = GeneralAppSettingsStorage()
+    private static var _generalAppSettings = GeneralAppSettingsStorage()
 
-    private static var _cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher =
+    private static var _cardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
 
     private static var _tapToPayReconnectionController = TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
@@ -136,7 +141,7 @@ final class ServiceLocator {
 
     /// Tracker for app startup waiting time
     ///
-    private static var _startupWaitingTimeTracker: AppStartupWaitingTimeTracker = AppStartupWaitingTimeTracker()
+    private static var _startupWaitingTimeTracker = AppStartupWaitingTimeTracker()
 
     /// Age range verification (Declared Age Range API wrapper)
     ///
@@ -144,7 +149,7 @@ final class ServiceLocator {
 
     /// Age rating change detector
     ///
-    private static var _ageRatingChangeDetector: AgeRatingChangeDetector = AgeRatingChangeDetector(
+    private static var _ageRatingChangeDetector = AgeRatingChangeDetector(
         defaults: .standard,
         provider: StoreKitAgeRatingProvider()
     )
@@ -232,6 +237,13 @@ final class ServiceLocator {
     /// - Returns: An instance of SelectedSiteSettings.
     static var selectedSiteSettings: SelectedSiteSettings {
         return _selectedSiteSettings
+    }
+
+    /// Provides the access point to the WidgetSiteListSyncManager.
+    /// - Returns: A shared `WidgetSiteListSyncManager` instance. The instance is idle until
+    ///   `start()` is called.
+    static var widgetSiteListSyncManager: WidgetSiteListSyncManager {
+        return _widgetSiteListSyncManager
     }
 
     /// Provides the access point to the Currency Settings for the current Site.

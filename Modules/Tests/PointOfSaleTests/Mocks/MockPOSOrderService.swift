@@ -80,6 +80,50 @@ class MockPOSOrderService: POSOrderServiceProtocol {
             throw error
         }
     }
+
+    var markOrderAsCompletedManuallyWasCalled = false
+    var spyMarkOrderAsCompletedManuallyOrder: Order?
+    func markOrderAsCompletedManually(order: Order) async throws {
+        markOrderAsCompletedManuallyWasCalled = true
+        spyMarkOrderAsCompletedManuallyOrder = order
+        switch resultToReturn {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    var promoteOrderToPendingWasCalled = false
+    var spyPromoteOrderToPendingOrder: Order?
+    var promoteOrderToPendingOverride: Order?
+    func promoteOrderToPending(order: Order) async throws -> Order {
+        promoteOrderToPendingWasCalled = true
+        spyPromoteOrderToPendingOrder = order
+        switch resultToReturn {
+        case .success:
+            return promoteOrderToPendingOverride ?? order
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    var addOrderNoteWasCalled = false
+    var spyAddOrderNoteOrderID: Int64?
+    var spyAddOrderNoteIsCustomerNote: Bool?
+    var spyAddOrderNoteText: String?
+    func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {
+        addOrderNoteWasCalled = true
+        spyAddOrderNoteOrderID = orderID
+        spyAddOrderNoteIsCustomerNote = isCustomerNote
+        spyAddOrderNoteText = note
+        switch resultToReturn {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
 }
 
 enum MockPOSOrderServiceError: Error {

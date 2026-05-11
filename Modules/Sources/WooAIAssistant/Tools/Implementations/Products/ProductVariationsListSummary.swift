@@ -3,7 +3,7 @@ import Foundation
 enum ProductVariationsListSummary {
     static func make(productID: Int64, from rows: [AnyCodableJSON]) -> AnyCodableJSON {
         var ids: [AnyCodableJSON] = []
-        var perRow: [AnyCodableJSON] = []
+        var variations: [AnyCodableJSON] = []
         var stockStatusCounts: [String: Int] = [:]
         var prices: [Decimal] = []
 
@@ -17,14 +17,14 @@ enum ProductVariationsListSummary {
             if let price = RESTResponseParsing.decimalField(row, "price") {
                 prices.append(price)
             }
-            perRow.append(ProductSummary.make(from: row))
+            variations.append(ProductVariationDetailSummary.make(from: row))
         }
 
         var fields: [String: AnyCodableJSON] = [
             "product_id": .int(productID),
             "count": .int(Int64(rows.count)),
             "ids": .array(ids),
-            "rows": .array(perRow),
+            "variations": .array(variations),
             "stock_status_counts": .object(stockStatusCounts.mapValues { .int(Int64($0)) })
         ]
         if let priceRange = RESTResponseParsing.decimalRange(prices) {

@@ -80,8 +80,18 @@ public enum ProductsBulkUpdateTool {
     }
 
     private static let allowedStatuses = AllowedProductUpdateStatuses.values
+    static let allowedArguments: Set<String> = ["ids", "patch"]
+    static let allowedPatchKeys: Set<String> = ["name", "regular_price", "sale_price", "stock_quantity", "status"]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
+        if let failed = patchKeyRejection(arguments: arguments) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -128,10 +138,36 @@ public enum ProductsBulkUpdateTool {
                                  kind: .toolFailed,
                                  reason: "could not serialize batch body"))
         }
+        let patchKeys = patchKeysInOrder(args.patch)
         return await RESTToolDispatch.dispatchBatchWrite(method: "POST",
                                                          path: "wc/v3/products/batch",
                                                          body: payload,
                                                          client: client,
-                                                         toolName: name)
+                                                         toolName: name,
+                                                         requestedCount: args.ids.count,
+                                                         patchKeys: patchKeys)
+    }
+
+    private static func patchKeysInOrder(_ patch: Patch) -> [String] {
+        var keys: [String] = []
+        if patch.name != nil { keys.append("name") }
+        if patch.regularPrice != nil { keys.append("regular_price") }
+        if patch.salePrice != nil { keys.append("sale_price") }
+        if patch.stockQuantity != nil { keys.append("stock_quantity") }
+        if patch.status != nil { keys.append("status") }
+        return keys
+    }
+
+    private static func patchKeyRejection(arguments: String) -> ToolResult.Failed? {
+        guard let data = arguments.data(using: .utf8),
+              let parsed = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let patch = parsed["patch"] as? [String: Any] else {
+            return nil
+        }
+        let unknown = patch.keys.filter { !allowedPatchKeys.contains($0) }.sorted()
+        guard !unknown.isEmpty else { return nil }
+        return .init(toolName: name,
+                     kind: .invalidToolCall,
+                     reason: "Unsupported \(name) argument(s): \(unknown.joined(separator: ", "))")
     }
 }

@@ -127,12 +127,26 @@ struct CardReferenceResolver: Sendable {
                             summarize: (AnyCodableJSON) -> AnyCodableJSON) -> Resolution {
         switch outcome {
         case .found(let entity):
-            let summary = summarize(entity)
-            let rendered = RenderedCardPayload(family: family, id: id, element: entity)
+            let enriched = Self.enrich(entity, family: family)
+            let summary = summarize(enriched)
+            let rendered = RenderedCardPayload(family: family, id: id, element: enriched)
             return .resolved(family: family, id: id, summary: summary, rendered: rendered)
         case .rejected(let reason):
             return .rejected(family: family, id: id, reason: reason)
         }
+    }
+
+    // WC's product entity exposes the variation list as `variations: [Long]` but never a count.
+    // Callers (model summary + UI card row) read `variations_count`; synthesize it once here so
+    // both downstream paths see the same field without re-deriving it.
+    static func enrich(_ entity: AnyCodableJSON, family: CardFamilyID) -> AnyCodableJSON {
+        guard family == .product, case .object(var dict) = entity, dict["variations_count"] == nil else {
+            return entity
+        }
+        if case .array(let variations) = dict["variations"] ?? .null {
+            dict["variations_count"] = .int(Int64(variations.count))
+        }
+        return .object(dict)
     }
 
     private struct SeenKey: Hashable {

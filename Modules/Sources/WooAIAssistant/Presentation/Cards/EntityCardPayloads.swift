@@ -95,6 +95,7 @@ public struct ProductCardPayload: Codable, Equatable, Sendable {
     public let type: String?
     public let status: String?
     public let images: [Image]?
+    public let variationsCount: Int?
 
     public struct Image: Codable, Equatable, Sendable {
         public let src: String?
@@ -110,7 +111,8 @@ public struct ProductCardPayload: Codable, Equatable, Sendable {
                 stockQuantity: Double? = nil,
                 type: String? = nil,
                 status: String? = nil,
-                images: [Image]? = nil) {
+                images: [Image]? = nil,
+                variationsCount: Int? = nil) {
         self.id = id
         self.name = name
         self.sku = sku
@@ -122,6 +124,7 @@ public struct ProductCardPayload: Codable, Equatable, Sendable {
         self.type = type
         self.status = status
         self.images = images
+        self.variationsCount = variationsCount
     }
 
     enum CodingKeys: String, CodingKey {
@@ -130,6 +133,7 @@ public struct ProductCardPayload: Codable, Equatable, Sendable {
         case salePrice = "sale_price"
         case stockStatus = "stock_status"
         case stockQuantity = "stock_quantity"
+        case variationsCount = "variations_count"
     }
 
     public var isEmpty: Bool {

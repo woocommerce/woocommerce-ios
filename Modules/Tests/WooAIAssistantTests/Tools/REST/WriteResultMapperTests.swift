@@ -133,7 +133,10 @@ struct WriteResultMapperTests {
         let response = WCRESTResponse(data: Data(body.utf8), statusCode: 200)
 
         // When
-        let result = WriteResultMapper.mapBatch(response, toolName: "products_bulk_update")
+        let result = WriteResultMapper.mapBatch(response,
+                                                toolName: "products_bulk_update",
+                                                requestedCount: 2,
+                                                patchKeys: ["status"])
 
         // Then
         guard case .success(let success) = result else {
@@ -143,11 +146,15 @@ struct WriteResultMapperTests {
         if case .object(let summary) = success.structured {
             #expect(summary["updated_count"] == .int(2))
             #expect(summary["failed_count"] == .int(0))
+            #expect(summary["requested_count"] == .int(2))
+            #expect(summary["partial_success"] == .bool(false))
+            #expect(summary["patch_keys"] == .array([.string("status")]))
             if case .array(let ids) = summary["updated_ids"] {
                 #expect(ids == [.int(1), .int(2)])
             } else {
                 Issue.record("expected updated_ids array")
             }
+            #expect(summary["failed"] == .array([]))
         }
         #expect(success.uiStructured == nil)
     }
@@ -164,7 +171,10 @@ struct WriteResultMapperTests {
         let response = WCRESTResponse(data: Data(body.utf8), statusCode: 200)
 
         // When
-        let result = WriteResultMapper.mapBatch(response, toolName: "products_bulk_update")
+        let result = WriteResultMapper.mapBatch(response,
+                                                toolName: "products_bulk_update",
+                                                requestedCount: 2,
+                                                patchKeys: ["status"])
 
         // Then
         guard case .success(let success) = result else {
@@ -174,6 +184,7 @@ struct WriteResultMapperTests {
         if case .object(let summary) = success.structured {
             #expect(summary["updated_count"] == .int(1))
             #expect(summary["failed_count"] == .int(1))
+            #expect(summary["partial_success"] == .bool(true))
         }
     }
 
@@ -183,7 +194,10 @@ struct WriteResultMapperTests {
         let response = WCRESTResponse(data: Data(), statusCode: 408)
 
         // When
-        let result = WriteResultMapper.mapBatch(response, toolName: "orders_bulk_update")
+        let result = WriteResultMapper.mapBatch(response,
+                                                toolName: "orders_bulk_update",
+                                                requestedCount: 1,
+                                                patchKeys: ["status"])
 
         // Then
         guard case .failed(let failed) = result else {

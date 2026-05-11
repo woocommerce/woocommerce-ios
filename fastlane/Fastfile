@@ -359,13 +359,15 @@ platform :ios do
     release_branch = ReleaseNotesPRHelper.release_branch_name(version)
     automation_branch = ReleaseNotesPRHelper.automation_branch_name(version)
 
-    # Idempotency: if an open PR already exists, reuse it and exit successfully.
+    # Idempotency: if an open PR already exists, reuse it and exit. Dry-run
+    # falls through so the operator can still preview regenerated copy.
     existing_pr_url = find_existing_release_notes_pr_url(base: release_branch, head: automation_branch)
-    if existing_pr_url
+    if existing_pr_url && !dry_run
       UI.success("Found existing release notes PR: #{existing_pr_url}")
-      publish_release_notes_pr_url(existing_pr_url, reused: true) unless dry_run
+      publish_release_notes_pr_url(existing_pr_url, reused: true)
       next
     end
+    UI.important("Dry run — existing release notes PR at #{existing_pr_url}; continuing to generate a preview.") if existing_pr_url
 
     sh('git', 'fetch', 'origin', release_branch) do |status|
       fail_lane!(context: 'release-notes-pr-error', message: "Release branch #{release_branch} does not exist on origin") unless status.success?

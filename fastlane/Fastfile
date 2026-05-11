@@ -1761,7 +1761,9 @@ end
 # - reject empty drafts as a length-style failure so the model stays in the loop
 #   instead of terminating early and being caught later as "empty release notes"
 # - on success, capture the validated text and tell the model `ok: true, length:`
-# - on overshoot, tell the model how many characters to cut
+# - on overshoot, tell the model how many characters to cut via `cut_at_least`
+# - on empty, tell the model via `reason` (no `cut_at_least` since the action is to add
+#   content, not trim) — both rejection shapes share the `ok: false, length:, max:` keys
 def build_release_notes_length_validator(max_length:)
   captured = { text: nil }
   handler = lambda do |args|
@@ -1787,8 +1789,9 @@ def release_notes_length_validation_tool
     function: {
       name: 'validate_release_notes_length',
       description: 'Checks the length of the proposed release notes paragraph against the character limit. ' \
-                   'Returns `{ ok: true, length: }` if the text fits, or `{ ok: false, length:, max:, cut_at_least: }` ' \
-                   'if it is too long. Call this repeatedly with shorter drafts until it returns `ok: true`. ' \
+                   'Returns `{ ok: true, length: }` if the text fits, or `{ ok: false, length:, max:, cut_at_least?, reason? }` ' \
+                   'otherwise — `cut_at_least` is included when the draft is too long; `reason` is included for other rejections ' \
+                   '(e.g. an empty draft). Call this repeatedly with revised drafts until it returns `ok: true`. ' \
                    'When shortening, restructure or remove phrases or items — do not drop letters from words, ' \
                    'omit articles, or invent abbreviations to hit the limit. Grammar and spelling must remain correct.',
       parameters: {

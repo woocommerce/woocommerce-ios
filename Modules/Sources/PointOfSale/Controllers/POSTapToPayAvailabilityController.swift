@@ -15,7 +15,7 @@ import Observation
     public init(availabilityChecker: POSTapToPayAvailabilityChecking) {
         self.availabilityChecker = availabilityChecker
 
-        Task { @MainActor in
+        Task {
             self.state = await availabilityChecker.checkAvailability()
         }
     }

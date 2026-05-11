@@ -92,7 +92,7 @@ protocol PointOfSaleAggregateModelProtocol {
     /// Resolves whether Tap to Pay is available for the current device + site. Optional
     /// so existing callers (previews, tests) keep working — when nil the rest of POS
     /// behaves as if TTP is not available.
-    let tapToPayAvailabilityController: POSTapToPayAvailabilityController?
+    private(set) var tapToPayAvailabilityController: POSTapToPayAvailabilityController?
 
     private var cancellables: Set<AnyCancellable> = []
 

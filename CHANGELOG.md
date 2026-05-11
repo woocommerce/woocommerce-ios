@@ -2,7 +2,7 @@
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
 ## 24.6
-This update enhances Point of Sale reliability with clearer card reader status during reconnections, automatic price updates at checkout, and visual refinements for iOS 26. We've also added a login troubleshooting tool to help diagnose connection issues faster, plus a handy clear button in search fields for quicker navigation.
+Experience seamless selling with improved Bluetooth connectivity and dynamic price updates at checkout. A new troubleshooting tool simplifies login issues, while Tap to Pay now requires iOS 18.0.1. Enjoy visual enhancements on POS, a clearer search interface, and accurate language display in the watch app. Your transactions just got smoother!
 
 ## 24.5
 The troubleshooting tool now checks your analytics and notification settings, making it easier to diagnose issues with your store.

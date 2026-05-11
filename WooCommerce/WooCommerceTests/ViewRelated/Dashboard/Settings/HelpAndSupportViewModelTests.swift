@@ -125,4 +125,36 @@ final class HelpAndSupportViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(rows.isEmpty)
     }
+
+    func test_given_ai_chat_enabled_when_getting_rows_then_contact_support_is_hidden() {
+        // Given
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: true,
+                                                isZendeskEnabled: true,
+                                                isMacCatalyst: false,
+                                                isAIChatEnabled: true)
+
+        // When
+        let rows = viewModel.getRows()
+
+        // Then
+        XCTAssertFalse(rows.contains(.contactSupport))
+        XCTAssertTrue(rows.contains(.aiSupportChat))
+        XCTAssertTrue(rows.contains(.chatHistory))
+    }
+
+    func test_given_ai_chat_disabled_when_getting_rows_then_contact_support_is_shown() {
+        // Given
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: true,
+                                                isZendeskEnabled: true,
+                                                isMacCatalyst: false,
+                                                isAIChatEnabled: false)
+
+        // When
+        let rows = viewModel.getRows()
+
+        // Then
+        XCTAssertTrue(rows.contains(.contactSupport))
+        XCTAssertFalse(rows.contains(.aiSupportChat))
+        XCTAssertFalse(rows.contains(.chatHistory))
+    }
 }

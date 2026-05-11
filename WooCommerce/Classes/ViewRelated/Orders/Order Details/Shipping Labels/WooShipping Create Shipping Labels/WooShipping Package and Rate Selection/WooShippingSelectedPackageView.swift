@@ -133,8 +133,7 @@ struct WooShippingSelectedPackageView: View {
                     measurement: measurement,
                     carriers: $0.carriers,
                     starredPackageIDs: $0.starredPackageIDs,
-                    dimensionUnit: $0.dimensionUnit,
-                    delegate: $0.delegate
+                    dimensionUnit: $0.dimensionUnit
                 )
             }
             updateSelectedPackage(packageData, newContext)
@@ -154,8 +153,7 @@ struct WooShippingSelectedPackageView: View {
                     measurement: dims,
                     carriers: $0.carriers,
                     starredPackageIDs: $0.starredPackageIDs,
-                    dimensionUnit: $0.dimensionUnit,
-                    delegate: $0.delegate
+                    dimensionUnit: $0.dimensionUnit
                 )
             }
             updateSelectedPackage(packageData, newContext)

@@ -278,6 +278,16 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
     assert_equal 'pull', items.first[:type]
   end
 
+  def test_parse_source_items_captures_first_url_of_multi_link_entry
+    raw = "- [**] Shipping Labels: Support UPS extra services [https://github.com/woocommerce/woocommerce-ios/pull/15819, https://github.com/woocommerce/woocommerce-ios/pull/15821]\n"
+    items = Helper.parse_source_items(raw)
+    assert_equal 1, items.size
+    assert_equal 'Shipping Labels: Support UPS extra services', items.first[:text]
+    assert_equal 'https://github.com/woocommerce/woocommerce-ios/pull/15819', items.first[:url]
+    assert_equal 15_819, items.first[:number]
+    assert_equal 'pull', items.first[:type]
+  end
+
   def test_parse_source_items_handles_missing_url
     raw = "- [*] A small fix\n"
     items = Helper.parse_source_items(raw)

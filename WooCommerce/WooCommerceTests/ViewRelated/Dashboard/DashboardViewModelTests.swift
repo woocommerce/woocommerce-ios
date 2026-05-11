@@ -90,8 +90,11 @@ final class DashboardViewModelTests: XCTestCase {
         // FeatureFlagAction - dispatched by child view models checking feature availability
         storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
-                onCompletion(false)
+            case let .isRemoteFeatureFlagEnabled(flag, _, _, onCompletion):
+                // The AI Assistant kill switch defaults to `true` (feature on) in production; mirror that
+                // here so MockAIAssistantEligibilityChecker(isEligible: true) is not silently killed by the
+                // generic false default.
+                onCompletion(flag == .wooAIAssistant)
             }
         }
 

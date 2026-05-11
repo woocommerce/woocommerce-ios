@@ -236,20 +236,37 @@ final class DashboardViewModel: ObservableObject {
     }
 
     private func observeAIAssistantEligibility() {
-        // Seed the eligibility flag from the current site so the dashboard reflects it on first load,
-        // even if the underlying site publisher does not replay its current value on subscription.
+        // Seed with the sync local check so the dashboard reflects an answer on first frame;
+        // the async refresh below applies the remote kill switch once the cached value resolves.
         isAIAssistantEligible = aiAssistantEligibilityChecker.isEligible(for: stores.sessionManager.defaultSite)
+        refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite)
 
         stores.sessionManager.defaultSitePublisher
-            .map { [aiAssistantEligibilityChecker] site in
-                aiAssistantEligibilityChecker.isEligible(for: site)
-            }
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] eligible in
-                self?.isAIAssistantEligible = eligible
+            .sink { [weak self] site in
+                self?.refreshAIAssistantEligibility(for: site)
             }
             .store(in: &subscriptions)
+    }
+
+    private func refreshAIAssistantEligibility(for site: Site?) {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            guard aiAssistantEligibilityChecker.isEligible(for: site) else {
+                if isAIAssistantEligible { isAIAssistantEligible = false }
+                return
+            }
+            // defaultValue: true keeps the feature on when the remote flag is unconfigured or
+            // unreachable; only an explicit `false` from WPCom acts as a kill switch.
+            let remoteEnabled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+                let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.wooAIAssistant, defaultValue: true) { isEnabled in
+                    continuation.resume(returning: isEnabled)
+                }
+                stores.dispatch(action)
+            }
+            if isAIAssistantEligible != remoteEnabled {
+                isAIAssistantEligible = remoteEnabled
+            }
+        }
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will

@@ -37,6 +37,7 @@ public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
     case inPersonPaymentsCountryExpansionEUExtended
     case pointOfSaleScanToPay
     case pointOfSaleMarkOrderAsPaid
+    case wooAIAssistant
 
     init?(rawValue: String) {
         switch rawValue {
@@ -60,6 +61,8 @@ public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
             self = .pointOfSaleScanToPay
         case "woo_pos_mark_order_as_paid":
             self = .pointOfSaleMarkOrderAsPaid
+        case "woo_mobile_ai_assistant":
+            self = .wooAIAssistant
         default:
             return nil
         }

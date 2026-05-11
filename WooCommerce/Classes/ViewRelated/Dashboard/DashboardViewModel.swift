@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
 import protocol WooFoundation.Analytics
 import struct WooFoundation.WooCommerceComUTMProvider
+import class UIKit.UIApplication
 import class UIKit.UIDevice
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
@@ -246,9 +247,18 @@ final class DashboardViewModel: ObservableObject {
                 self?.refreshAIAssistantEligibility(for: site)
             }
             .store(in: &subscriptions)
+
+        // Bypass the FeatureFlagStore cache on app-foreground so a kill switch flipped at WPCom
+        // takes effect on the next return-to-app rather than waiting up to 24h for the cache TTL.
+        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite, useCache: false)
+            }
+            .store(in: &subscriptions)
     }
 
-    private func refreshAIAssistantEligibility(for site: Site?) {
+    private func refreshAIAssistantEligibility(for site: Site?, useCache: Bool = true) {
         Task { @MainActor [weak self] in
             guard let self else { return }
             guard aiAssistantEligibilityChecker.isEligible(for: site) else {
@@ -258,7 +268,9 @@ final class DashboardViewModel: ObservableObject {
             // defaultValue: true keeps the feature on when the remote flag is unconfigured or
             // unreachable; only an explicit `false` from WPCom acts as a kill switch.
             let remoteEnabled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
-                let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.wooAIAssistant, defaultValue: true) { isEnabled in
+                let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.wooAIAssistant,
+                                                                          defaultValue: true,
+                                                                          useCache: useCache) { isEnabled in
                     continuation.resume(returning: isEnabled)
                 }
                 stores.dispatch(action)
@@ -315,6 +327,9 @@ final class DashboardViewModel: ObservableObject {
     func reloadAllData(forceCardsRefresh: Bool = false) async {
         isReloadingAllData = true
         checkInboxEligibility()
+        // Pull-to-refresh is an explicit signal that the merchant wants fresh state, so honor it
+        // for the AI Assistant kill switch too rather than waiting on the cached remote value.
+        refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite, useCache: false)
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 await self?.syncDashboardEssentialData()

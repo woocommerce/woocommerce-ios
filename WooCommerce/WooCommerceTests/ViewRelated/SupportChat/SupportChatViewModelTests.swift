@@ -619,7 +619,7 @@ struct SupportChatViewModelTests {
 
     // MARK: - canEscalateToHumanSupport Tests
 
-    @Test func test_canEscalateToHumanSupport_is_false_initially() {
+    @Test func canEscalateToHumanSupport_is_false_initially() {
         // Given
         let sut = makeSUT(entryPoint: .connectivityTool)
 
@@ -627,7 +627,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == false)
     }
 
-    @Test func test_canEscalateToHumanSupport_is_false_when_only_bot_greeting_exists() {
+    @Test func canEscalateToHumanSupport_is_false_when_only_bot_greeting_exists() {
         // Given
         let sut = makeSUT(entryPoint: .connectivityTool)
 
@@ -639,7 +639,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == false)
     }
 
-    @Test func test_canEscalateToHumanSupport_becomes_true_after_first_user_message_is_sent() async {
+    @Test func canEscalateToHumanSupport_becomes_true_after_first_user_message_is_sent() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -656,7 +656,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
-    @Test func test_canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_until_proceedToChat() async {
+    @Test func canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_until_proceedToChat() async {
         // Given — helpAndSupport entry shows issue picker first; input area is hidden
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { _ in
@@ -674,7 +674,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
-    @Test func test_canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_when_input_area_is_hidden() {
+    @Test func canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_when_input_area_is_hidden() {
         // Given — helpAndSupport entry shows the issue picker; input area is hidden until proceedToChat
         let sut = makeSUT(entryPoint: .helpAndSupport)
 
@@ -686,7 +686,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == false)
     }
 
-    @Test func test_markChatTicketCreated_flips_hasCreatedTicket_and_hides_toolbar() {
+    @Test func markChatTicketCreated_flips_hasCreatedTicket_and_hides_toolbar() {
         // Given — a live chat with at least one user message so the toolbar would otherwise be visible
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { _ in }
@@ -703,7 +703,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == false)
     }
 
-    @Test func test_canEscalateToHumanSupport_is_false_when_hasCreatedTicket_is_true() {
+    @Test func canEscalateToHumanSupport_is_false_when_hasCreatedTicket_is_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let sut = SupportChatViewModel(

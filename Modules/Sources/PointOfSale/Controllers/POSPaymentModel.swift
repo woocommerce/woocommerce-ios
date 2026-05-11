@@ -61,7 +61,7 @@ final class POSPaymentModel {
     /// reader on checkout — collection is gated behind an explicit method tap
     /// from the buttons row / hero via `startPaymentWithMethod(_:)`, so the
     /// merchant's selection drives which method actually runs.
-    let preferredConnectionMethod: CardReaderConnectionMethod
+    private let preferredConnectionMethod: CardReaderConnectionMethod
 
     // MARK: - Internal
     private var startPaymentOnCardReaderConnection: AnyCancellable?
@@ -193,7 +193,7 @@ extension POSPaymentModel {
     /// Pre-connects the built-in Tap to Pay reader without starting collection.
     /// Called from `startPayment()` when `preferredConnectionMethod == .tapToPay`,
     /// so the reader is warm by the time the merchant taps the hero CTA.
-    func connectTapToPayReader() {
+    private func connectTapToPayReader() {
         Task { @MainActor [weak self] in
             _ = try? await self?.cardPresentPaymentService.connectReader(using: .tapToPay)
         }
@@ -938,7 +938,7 @@ private extension POSPaymentModel {
         // On the TTP path a merchant-cancelled-on-reader event drops the merchant
         // back to the idle hero rather than the legacy iPad "Payment canceled /
         // Try payment again" screen — Android does the same. Suppress the inline
-        // message here; `handleCancelledOnReaderForTapToPay` resets card state.
+        // message here; the cancelledOnReader sink in subscribeToPaymentSessionEvents resets card state.
         if preferredConnectionMethod == .tapToPay,
            case .show(.cancelledOnReader) = event {
             return nil

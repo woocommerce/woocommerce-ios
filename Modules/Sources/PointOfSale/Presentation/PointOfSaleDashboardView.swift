@@ -301,13 +301,20 @@ struct PointOfSaleDashboardView: View {
     /// system nav bar back button.
     private var phoneTotalsContainer: some View {
         VStack(spacing: 0) {
-            POSPageHeaderView(
-                title: Localization.phoneCheckoutTitle,
-                backButtonConfiguration: .init(
-                    state: canExitFinalizingOnPhone ? .enabled : .disabled,
-                    action: { posModel.addMoreToCart() }
+            if !posModel.paymentState.isSuccess {
+                // On the success state the Checkout header isn't useful — back-to-cart
+                // is already blocked (`shouldPreventCartEditing` returns true on
+                // any payment success) and the success card has its own "New order"
+                // / "Email receipt" CTAs. Hide it so the success screen reads
+                // as a clean confirmation rather than a checkout subscreen.
+                POSPageHeaderView(
+                    title: Localization.phoneCheckoutTitle,
+                    backButtonConfiguration: .init(
+                        state: canExitFinalizingOnPhone ? .enabled : .disabled,
+                        action: { posModel.addMoreToCart() }
+                    )
                 )
-            )
+            }
             TotalsView()
         }
         .background(Color.posSurface)

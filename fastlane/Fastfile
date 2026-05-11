@@ -365,8 +365,15 @@ platform :ios do
     automation_branch = ReleaseNotesPRHelper.automation_branch_name(version)
 
     # Idempotency: if an open PR already exists, reuse it and exit. Dry-run
-    # falls through so the operator can still preview regenerated copy.
-    existing_pr_url = find_existing_release_notes_pr_url(base: release_branch, head: automation_branch)
+    # falls through so the operator can still preview regenerated copy. On the
+    # path that creates a PR, fail the lane if the lookup itself errors — a
+    # transient GitHub API failure misread as "no PR exists" would lead to a
+    # duplicate PR.
+    existing_pr_url = find_existing_release_notes_pr_url(
+      base: release_branch,
+      head: automation_branch,
+      fail_on_error: !dry_run
+    )
     if existing_pr_url && !dry_run
       UI.success("Found existing release notes PR: #{existing_pr_url}")
       publish_release_notes_pr_url(existing_pr_url, reused: true)
@@ -1751,8 +1758,16 @@ def generate_ai_release_notes(version:, items_text:)
 end
 
 # Returns the `html_url` of an open PR for `head -> base` in the WCiOS
-# repository, or `nil` if no PR is found or the lookup fails.
-def find_existing_release_notes_pr_url(base:, head:)
+# repository, or `nil` if no PR is found.
+#
+# When the GitHub API lookup itself fails (network error, rate-limited, etc.),
+# behavior depends on `fail_on_error`:
+# - `fail_on_error: true` — fail the lane via `fail_lane!`. The caller should
+#   pass this on the path that actually creates a PR, so a transient API
+#   failure can't be misread as "no PR exists" and lead to a duplicate.
+# - `fail_on_error: false` — log a warning and return `nil`. Safe default for
+#   dry-run where the lane has no side effects anyway.
+def find_existing_release_notes_pr_url(base:, head:, fail_on_error: false)
   token = ENV.fetch('GITHUB_TOKEN', nil)
   return nil if token.nil? || token.empty?
 
@@ -1765,7 +1780,9 @@ def find_existing_release_notes_pr_url(base:, head:)
   )
   prs.first&.html_url
 rescue StandardError => e
-  UI.important("Could not check for existing release notes PR: #{e.message}")
+  message = "Could not check for existing release notes PR (#{e.class}): #{e.message}"
+  fail_lane!(context: 'release-notes-pr-error', message: message) if fail_on_error
+  UI.important(message)
   nil
 end
 

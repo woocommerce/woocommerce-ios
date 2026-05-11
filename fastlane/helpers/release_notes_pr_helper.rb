@@ -126,7 +126,11 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
   #   - [**] Improved barcode scanner reading accuracy [https://github.com/woocommerce/woocommerce-ios/pull/12345]
   #
   # @param raw_items [String]
-  # @return [Array<Hash>] each item has keys :text, :url, :number, :type
+  # @return [Array<Hash>] each item has keys `:priority, :text, :url, :number,
+  #   :type`. `:priority` carries the raw marker string (`[*]`, `[**]`, `[***]`)
+  #   or `nil` if absent; `:url, :number, :type` are `nil` when the line has no
+  #   GitHub link. Downstream enrichment in the Fastfile may add `:author_login`
+  #   and `:author_url` keys; this method itself does not populate them.
   def parse_source_items(raw_items)
     return [] if raw_items.nil?
 
@@ -157,10 +161,11 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
     { priority: priority, text: text, url: url_info[:url], number: url_info[:number], type: url_info[:type] }
   end
 
-  # Renders parsed source items as a bullet list suitable for the AI prompt.
-  # Strips internal-only entries, GitHub URLs, and PR/issue numbers — leaving
-  # only the priority marker (if any) and the human-readable summary — so the
-  # model never sees those tokens at all.
+  # Formats already-parsed source items as a bullet list suitable for the AI
+  # prompt: each line is `- [priority] text` (or just `- text` when no priority
+  # marker is present). Internal-only entries and GitHub URL/PR-number tokens
+  # are stripped *upstream* during parsing (see `parse_source_item_line` and
+  # `split_text_and_url`); this method does not filter anything.
   def items_for_ai_prompt(source_items)
     source_items.map do |item|
       item[:priority] ? "- #{item[:priority]} #{item[:text]}" : "- #{item[:text]}"

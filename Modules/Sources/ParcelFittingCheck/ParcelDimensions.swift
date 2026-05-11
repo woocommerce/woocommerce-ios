@@ -57,7 +57,22 @@ public struct ParcelDimensions {
         let l = Self.formatValue(length)
         let w = Self.formatValue(width)
         let h = Self.formatValue(height)
-        return "L: \(l)  W: \(w)  H: \(h) \(unit.symbol)"
+        return "\(Localization.lengthLabel): \(l)  \(Localization.widthLabel): \(w)  \(Localization.heightLabel): \(h) \(unit.symbol)"
+    }
+
+    private enum Localization {
+        static let lengthLabel = NSLocalizedString(
+            "parcelFitting.dimensions.lengthLabel",
+            value: "L",
+            comment: "Abbreviation for Length in dimension display")
+        static let widthLabel = NSLocalizedString(
+            "parcelFitting.dimensions.widthLabel",
+            value: "W",
+            comment: "Abbreviation for Width in dimension display")
+        static let heightLabel = NSLocalizedString(
+            "parcelFitting.dimensions.heightLabel",
+            value: "H",
+            comment: "Abbreviation for Height in dimension display")
     }
 
     private static func metersPerUnit(_ unit: UnitLength) -> Float {

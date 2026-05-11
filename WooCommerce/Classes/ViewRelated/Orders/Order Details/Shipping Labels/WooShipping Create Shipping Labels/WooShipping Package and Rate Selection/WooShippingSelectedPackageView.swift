@@ -195,3 +195,18 @@ private extension WooShippingSelectedPackageView {
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")
 }
+
+#Preview("Unsaved custom package") {
+    WooShippingSelectedPackageView(package: WooShippingPackageData(name: "",
+                                                                   length: "12",
+                                                                   width: "6",
+                                                                   height: "6",
+                                                                   weight: "",
+                                                                   source: .custom,
+                                                                   packageType: "box"),
+                                   totalWeight: .constant("6"),
+                                   arContext: nil,
+                                   updateSelectedPackage: { _, _ in })
+    .shippingDimensionsUnit("in")
+    .shippingWeightUnit("lb")
+}

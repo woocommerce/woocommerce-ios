@@ -50,6 +50,7 @@ public enum ParcelFittingResult {
     }
 }
 
+@MainActor
 public protocol ParcelFittingDelegate: AnyObject {
     func parcelFittingDidToggleStar(packageID: String, carrierID: String)
 }

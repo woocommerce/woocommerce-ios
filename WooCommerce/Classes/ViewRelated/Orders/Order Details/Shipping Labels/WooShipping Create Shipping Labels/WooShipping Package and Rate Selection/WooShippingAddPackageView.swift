@@ -169,6 +169,8 @@ struct WooShippingAddPackageView: View {
                     } else {
                         addPackageAction(packageData)
                     }
+                } else {
+                    DDLogError("⛔️ AR flow: custom package data validation failed")
                 }
             }
         }

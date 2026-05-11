@@ -1704,46 +1704,62 @@ def fail_lane!(context:, message:)
   UI.user_error!(message)
 end
 
-# Calls OpenAI via release-toolkit's `openai_ask` action, retrying once with a
-# stricter prompt if the first response exceeds the 350-character limit.
+# Calls OpenAI via release-toolkit's `openai_ask` action using a tool-use loop:
+# the model submits drafts through the `validate_release_notes_length` tool and the
+# handler validates length externally, replying with `ok:`/`length:`/`cut_at_least:`
+# until an accepted draft is captured.
+#
+# The accepted text is captured directly from the validated tool argument
+# rather than read off the assistant's final plain-text turn. That avoids
+# subtle drift if the model adds a leading "Here it is:" or similar — the
+# returned value is exactly what passed length validation.
 def generate_ai_release_notes(version:, raw_items:)
-  previous_response = nil
+  question = ReleaseNotesPRHelper.build_ai_release_notes_prompt(version: version, raw_items: raw_items)
+  max_length = ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH
 
-  ReleaseNotesPRHelper::AI_RELEASE_NOTES_MAX_ATTEMPTS.times do
-    question = ReleaseNotesPRHelper.build_ai_release_notes_prompt(
-      version: version,
-      raw_items: raw_items,
-      previous_response: previous_response
-    )
-
-    generated_notes = openai_ask(
-      prompt: :release_notes,
-      question: question,
-      api_token: get_required_env('OPENAI_API_KEY')
-    ).to_s.strip
-
-    if (error = ReleaseNotesPRHelper.validate_generated_release_notes_not_empty(generated_notes))
-      fail_lane!(context: 'release-notes-pr-error', message: error)
+  captured_text = nil
+  tool_handler = lambda do |args|
+    text = args['text'].to_s
+    length = text.length
+    if length <= max_length
+      captured_text = text
+      { ok: true, length: length }
+    else
+      { ok: false, length: length, max: max_length, cut_at_least: length - max_length }
     end
-
-    if generated_notes.length <= ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH
-      UI.success("Generated release notes are #{generated_notes.length} characters.")
-      return generated_notes
-    end
-
-    UI.important(
-      "Generated release notes are #{generated_notes.length} characters, " \
-      "which exceeds the preferred #{ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH}-character limit."
-    )
-
-    previous_response = generated_notes
   end
 
-  fail_lane!(
-    context: 'release-notes-pr-error',
-    message: "Generated release notes still exceed #{ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters " \
-             "after #{ReleaseNotesPRHelper::AI_RELEASE_NOTES_MAX_ATTEMPTS} attempts. Please create the release notes manually."
+  openai_ask(
+    prompt: :release_notes,
+    question: question,
+    api_token: get_required_env('OPENAI_API_KEY'),
+    tools: [{
+      type: 'function',
+      function: {
+        name: 'validate_release_notes_length',
+        description: 'Checks the length of the proposed release notes paragraph against the character limit. ' \
+                     "Returns `{ ok: true, length: }` if the text fits, or `{ ok: false, length:, max:, cut_at_least: }` " \
+                     'if it is too long. Call this repeatedly with shorter drafts until it returns `ok: true`. ' \
+                     'When shortening, restructure or remove phrases or items — do not drop letters from words, ' \
+                     'omit articles, or invent abbreviations to hit the limit. Grammar and spelling must remain correct.',
+        parameters: {
+          type: 'object',
+          properties: {
+            text: { type: 'string', description: 'The proposed release notes paragraph.' }
+          },
+          required: ['text']
+        }
+      }
+    }],
+    tool_handlers: { 'validate_release_notes_length' => tool_handler }
   )
+
+  if (error = ReleaseNotesPRHelper.validate_generated_release_notes_not_empty(captured_text))
+    fail_lane!(context: 'release-notes-pr-error', message: error)
+  end
+
+  UI.success("Generated release notes are #{captured_text.length} characters.")
+  captured_text
 end
 
 # Reads `RELEASE-NOTES.txt` from `origin/<release_branch>` via `git show`

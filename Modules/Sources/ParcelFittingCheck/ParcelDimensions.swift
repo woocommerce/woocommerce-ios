@@ -43,7 +43,7 @@ public struct ParcelDimensions {
     private static let valueFormat = "%.2f"
 
     public static func formatValue(_ value: Float) -> String {
-        String(format: valueFormat, value)
+        String.localizedStringWithFormat(valueFormat, value)
     }
 
     func formatted(unit: UnitLength) -> String {

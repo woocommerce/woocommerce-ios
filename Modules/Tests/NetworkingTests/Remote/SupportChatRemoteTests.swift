@@ -222,6 +222,7 @@ struct SupportChatRemoteTests {
         // Then
         let supportArea = try #require(response.messages.first?.context?.supportArea)
         #expect(supportArea.area == .cardReader)
+        #expect(supportArea.topic == "woo_mobile_issue_card_reader")
         #expect(supportArea.confidence == .high)
         #expect(supportArea.isHighConfidence == true)
     }

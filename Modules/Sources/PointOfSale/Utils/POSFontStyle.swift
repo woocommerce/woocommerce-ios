@@ -109,7 +109,7 @@ private extension POSFontStyle {
 // MARK: - Scale-aware sizing
 
 extension POSFontStyle {
-    func baseSize(for scale: POSLayoutScale) -> CGFloat {
+    fileprivate func baseSize(for scale: POSLayoutScale) -> CGFloat {
         switch scale {
         case .tablet:
             return tabletBaseSize
@@ -118,7 +118,7 @@ extension POSFontStyle {
         }
     }
 
-    func font(baseSize: CGFloat, maximumContentSizeCategory: UIContentSizeCategory?) -> Font {
+    fileprivate func font(baseSize: CGFloat, maximumContentSizeCategory: UIContentSizeCategory?) -> Font {
         let scaledSize = scaledValue(baseSize, maximumContentSizeCategory: maximumContentSizeCategory)
         let flooredSize = max(scaledSize, minimumFloor)
         return Font.system(size: flooredSize, weight: fontWeight)
@@ -167,7 +167,7 @@ extension POSFontStyle {
         }
     }
 
-    var fontWeight: Font.Weight {
+    fileprivate var fontWeight: Font.Weight {
         switch self {
         case .posHeadingBold, .posBodyXLargeBold, .posBodyLargeBold,
              .posBodyMediumBold, .posBodySmallBold, .posCaptionBold:

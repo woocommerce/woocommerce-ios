@@ -170,7 +170,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     }
 
     private var shouldHaveLeadingPaddingForItems: Bool {
-        items.isNotEmpty  || showsBackButton
+        items.isNotEmpty || showsBackButton
     }
 
     @ViewBuilder
@@ -185,7 +185,6 @@ private enum Constants {
     static let horizontalSpacing: CGFloat = POSSpacing.medium
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
 }
-
 
 struct POSHeaderBackButtonConfigurationKey: EnvironmentKey {
     static let defaultValue: POSPageHeaderBackButtonConfiguration? = nil

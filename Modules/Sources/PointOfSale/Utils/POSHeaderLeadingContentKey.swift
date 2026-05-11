@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct POSHeaderLeadingContentKey: EnvironmentKey {
+private struct POSHeaderLeadingContentKey: EnvironmentKey {
     static let defaultValue: AnyView? = nil
 }
 

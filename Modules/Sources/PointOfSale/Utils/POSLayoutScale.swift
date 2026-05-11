@@ -5,7 +5,7 @@ enum POSLayoutScale {
     case phone
 }
 
-struct POSLayoutScaleKey: EnvironmentKey {
+private struct POSLayoutScaleKey: EnvironmentKey {
     static let defaultValue: POSLayoutScale = .tablet
 }
 

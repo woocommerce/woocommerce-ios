@@ -16,11 +16,20 @@ struct POSSuccessIcon: View {
     }
 
     private var iconSize: CGFloat {
-        layoutScale == .phone ? 72 : 165
+        layoutScale == .phone ? Constants.phoneIconSize : Constants.tabletIconSize
     }
 
     private var checkmarkSize: CGFloat {
-        layoutScale == .phone ? 28 : 64
+        layoutScale == .phone ? Constants.phoneCheckmarkSize : Constants.tabletCheckmarkSize
+    }
+}
+
+private extension POSSuccessIcon {
+    enum Constants {
+        static let tabletIconSize: CGFloat = 165
+        static let tabletCheckmarkSize: CGFloat = 64
+        static let phoneIconSize: CGFloat = 72
+        static let phoneCheckmarkSize: CGFloat = 28
     }
 }
 

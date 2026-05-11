@@ -358,7 +358,11 @@ platform :ios do
       UI.user_error!(error)
     end
 
-    if ENV.fetch('GITHUB_TOKEN', '').strip.empty?
+    # `GITHUB_TOKEN` is only strictly required for the non-dry-run path
+    # (creating the PR). The existing-PR lookup and author-enrichment
+    # helpers already fall back gracefully when the token is missing, so
+    # a dry-run preview can run without it.
+    if !dry_run && ENV.fetch('GITHUB_TOKEN', '').strip.empty?
       fail_lane!(
         context: 'release-notes-pr-error',
         message: 'GITHUB_TOKEN is not set. Required to look up the existing release notes PR, ' \

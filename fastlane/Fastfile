@@ -474,10 +474,15 @@ platform :ios do
     ].select { |path| File.exist?(path) }
 
     git_add(path: files_to_commit, shell_escape: false)
+    # Require a non-empty commit. If the generated notes / changelog already
+    # match the release branch (e.g., the lane is re-run after a prior PR
+    # was merged), we'd otherwise push an empty diff and `create_pull_request`
+    # would fail with "No commits between …". Fail loudly here instead so
+    # the operator can investigate before any PR-creation side effects.
     git_commit(
       path: files_to_commit,
       message: "Update release notes for #{version}",
-      allow_nothing_to_commit: true
+      allow_nothing_to_commit: false
     )
 
     sh('git', 'push', '--force-with-lease', 'origin', "#{automation_branch}:#{automation_branch}")

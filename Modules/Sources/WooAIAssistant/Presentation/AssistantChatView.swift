@@ -7,11 +7,14 @@ public struct AssistantChatView: View {
     @FocusState private var inputFocused: Bool
 
     private let onClose: () -> Void
+    private let onFeedbackTap: (() -> Void)?
 
     public init(controller: AssistantController,
-                onClose: @escaping () -> Void = {}) {
+                onClose: @escaping () -> Void = {},
+                onFeedbackTap: (() -> Void)? = nil) {
         self.controller = controller
         self.onClose = onClose
+        self.onFeedbackTap = onFeedbackTap
     }
 
     public var body: some View {
@@ -78,7 +81,8 @@ public struct AssistantChatView: View {
         MessageListView(messages: controller.conversation.messages,
                         streamingState: controller.conversation.streamingState,
                         onPickPrompt: { draft = $0; inputFocused = true },
-                        onSendSuggestion: sendSuggestion)
+                        onSendSuggestion: sendSuggestion,
+                        onFeedbackTap: onFeedbackTap)
             .background(
                 Color.clear
                     .contentShape(Rectangle())

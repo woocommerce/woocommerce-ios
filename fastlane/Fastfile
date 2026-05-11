@@ -327,47 +327,33 @@ platform :ios do
     create_backmerge_pr
   end
 
-  #####################################################################################
-  # create_release_notes_pr
-  # -----------------------------------------------------------------------------------
-  # Generates AI-drafted, merchant-facing release notes for the given version and
-  # opens (or reuses) a PR against `release/<version>` with the generated copy.
+  # Generates AI-drafted, merchant-facing release notes for the given version
+  # and opens (or reuses) a PR against `release/<version>`. Triggered by
+  # ReleasesV2 → Buildkite during Code Freeze; the release manager reviews
+  # and merges the resulting PR manually.
   #
-  # Triggered by ReleasesV2 → Buildkite during Code Freeze.
-  # The release manager reviews and merges the resulting PR manually.
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane create_release_notes_pr version:<x.y[.z]> [skip_confirm:true] [dry_run:true]
-  #####################################################################################
+  # Usage: bundle exec fastlane create_release_notes_pr version:<x.y[.z]> [skip_confirm:true] [dry_run:true]
   desc 'Generates AI release notes and opens a PR against the release branch.'
   lane :create_release_notes_pr do |version:, skip_confirm: false, dry_run: false|
     # Buildkite passes booleans as strings — normalize them.
     dry_run = dry_run.to_s == 'true'
     skip_confirm = skip_confirm.to_s == 'true'
 
-    # The non-dry-run path checks out the release branch and writes to
-    # CHANGELOG.md / release_notes.txt, so a dirty working tree would either
-    # be committed accidentally or cause confusing checkout failures.
-    # Dry-run still calls `checkout_and_pull(release_branch)` below, which
-    # will fail loudly on conflicting local changes — we just don't preempt
-    # it here so callers can sanity-check the prompt / generated copy without
-    # having to stash unrelated work.
-    ensure_git_status_clean unless dry_run
-
     if (error = ReleaseNotesPRHelper.validate_version(version))
       UI.user_error!(error)
     end
 
-    # `GITHUB_TOKEN` is only strictly required for the non-dry-run path
-    # (creating the PR). The existing-PR lookup and author-enrichment
-    # helpers already fall back gracefully when the token is missing, so
-    # a dry-run preview can run without it.
-    if !dry_run && ENV.fetch('GITHUB_TOKEN', '').strip.empty?
-      fail_lane!(
-        context: 'release-notes-pr-error',
-        message: 'GITHUB_TOKEN is not set. Required to look up the existing release notes PR, ' \
-                 'enrich source-item authors, and create the new PR.'
-      )
+    # Side-effects (clean tree, GITHUB_TOKEN) only matter for the real run.
+    # Dry-run is meant for local preview of the prompt / generated copy.
+    unless dry_run
+      ensure_git_status_clean
+      if ENV.fetch('GITHUB_TOKEN', '').strip.empty?
+        fail_lane!(
+          context: 'release-notes-pr-error',
+          message: 'GITHUB_TOKEN is not set. Required to look up the existing release notes PR, ' \
+                   'enrich source-item authors, and create the new PR.'
+        )
+      end
     end
 
     release_branch = ReleaseNotesPRHelper.release_branch_name(version)
@@ -377,46 +363,17 @@ platform :ios do
     existing_pr_url = find_existing_release_notes_pr_url(base: release_branch, head: automation_branch)
     if existing_pr_url
       UI.success("Found existing release notes PR: #{existing_pr_url}")
-
-      if dry_run
-        UI.important('Dry run — skipping meta-data publication and Buildkite annotation.')
-      else
-        emit_release_notes_pr_url(existing_pr_url)
-
-        if is_ci
-          buildkite_annotate(
-            style: 'success',
-            context: 'release-notes-pr',
-            message: "Reusing existing release notes PR: #{existing_pr_url}"
-          )
-        end
-      end
+      publish_release_notes_pr_url(existing_pr_url, reused: true) unless dry_run
       next
     end
 
-    # Make sure the release branch exists, then check it out.
     sh('git', 'fetch', 'origin', release_branch) do |status|
-      next if status.success?
-
-      fail_lane!(
-        context: 'release-notes-pr-error',
-        message: "Release branch #{release_branch} does not exist on origin"
-      )
+      fail_lane!(context: 'release-notes-pr-error', message: "Release branch #{release_branch} does not exist on origin") unless status.success?
     end
     Fastlane::Helper::GitHelper.checkout_and_pull(release_branch)
 
-    # Extract the raw release-note items for this version. The helper returns the
-    # extracted text as a string, so no temporary file is needed.
-    raw_items = extract_release_notes_for_version(
-      version: version,
-      release_notes_file_path: RELEASE_NOTES_SOURCE_PATH
-    )
-    if raw_items.nil? || raw_items.strip.empty?
-      fail_lane!(
-        context: 'release-notes-pr-error',
-        message: "No release-note items found for #{version}"
-      )
-    end
+    raw_items = extract_release_notes_for_version(version: version, release_notes_file_path: RELEASE_NOTES_SOURCE_PATH)
+    fail_lane!(context: 'release-notes-pr-error', message: "No release-note items found for #{version}") if raw_items.nil? || raw_items.strip.empty?
 
     generated_notes = generate_ai_release_notes(version: version, raw_items: raw_items)
 
@@ -430,9 +387,7 @@ platform :ios do
       )
     end
 
-    source_items = ReleaseNotesPRHelper.parse_source_items(raw_items)
-    enriched_source_items = enrich_source_items_with_authors(source_items)
-
+    enriched_source_items = enrich_source_items_with_authors(ReleaseNotesPRHelper.parse_source_items(raw_items))
     pr_body = ReleaseNotesPRHelper.build_release_notes_pr_body(
       version: version,
       generated_notes: generated_notes,
@@ -440,25 +395,20 @@ platform :ios do
     )
 
     if dry_run
-      UI.important('Dry run — skipping branch push and PR creation.')
-      UI.message("Intended PR title: #{ReleaseNotesPRHelper.pr_title(version)}")
-      UI.message("Intended PR base: #{release_branch}")
-      UI.message("Intended PR head: #{automation_branch}")
-      UI.message("Intended PR body:\n\n#{pr_body}")
+      UI.important("Dry run — skipping branch push and PR creation.\n" \
+                   "Intended PR title: #{ReleaseNotesPRHelper.pr_title(version)}\n" \
+                   "Intended PR base: #{release_branch}\n" \
+                   "Intended PR head: #{automation_branch}\n" \
+                   "Intended PR body:\n\n#{pr_body}")
       next
     end
 
     UI.user_error!('Terminating as requested.') unless skip_confirm || UI.confirm('Do you want to create a PR with these release notes?')
 
-    # Create the deterministic automation branch from the current release branch HEAD.
     sh('git', 'checkout', '-B', automation_branch)
 
-    # Write the AI-generated copy as the only content of release_notes.txt
-    # (no attribution metadata leaks into the shipped file).
+    # `release_notes.txt` ships the AI copy as-is — no metadata leaks into the app.
     File.write(RELEASE_NOTES_PATH, "#{generated_notes}\n")
-
-    # Prepend (or replace) the editorialized `## <version>` entry in
-    # CHANGELOG.md to mirror what the RM does manually today.
     File.write(
       CHANGELOG_PATH,
       ReleaseNotesPRHelper.prepend_or_replace_changelog_entry(
@@ -468,22 +418,12 @@ platform :ios do
       )
     )
 
-    files_to_commit = [
-      CHANGELOG_PATH,
-      RELEASE_NOTES_PATH
-    ].select { |path| File.exist?(path) }
-
+    files_to_commit = [CHANGELOG_PATH, RELEASE_NOTES_PATH]
     git_add(path: files_to_commit, shell_escape: false)
-    # Require a non-empty commit. If the generated notes / changelog already
-    # match the release branch (e.g., the lane is re-run after a prior PR
-    # was merged), we'd otherwise push an empty diff and `create_pull_request`
-    # would fail with "No commits between …". Fail loudly here instead so
-    # the operator can investigate before any PR-creation side effects.
-    git_commit(
-      path: files_to_commit,
-      message: "Update release notes for #{version}",
-      allow_nothing_to_commit: false
-    )
+    # `allow_nothing_to_commit: false` makes a re-run on already-merged content
+    # fail here rather than getting a confusing "No commits between …" from
+    # `create_pull_request` later.
+    git_commit(path: files_to_commit, message: "Update release notes for #{version}", allow_nothing_to_commit: false)
 
     sh('git', 'push', '--force-with-lease', 'origin', "#{automation_branch}:#{automation_branch}")
 
@@ -498,15 +438,7 @@ platform :ios do
     ).to_s
 
     UI.success("Created release notes PR: #{pr_url}")
-    emit_release_notes_pr_url(pr_url)
-
-    if is_ci
-      buildkite_annotate(
-        style: 'success',
-        context: 'release-notes-pr',
-        message: "Release notes PR: #{pr_url}"
-      )
-    end
+    publish_release_notes_pr_url(pr_url, reused: false)
   end
 
   # Updates the `AppStoreStrings.pot` file with the latest content from the `release_notes.txt` files and the other text sources.
@@ -1828,44 +1760,39 @@ def enrich_source_items_with_authors(source_items)
 end
 
 def enrich_one_source_item_with_author(client, item)
-  return item unless lookupable_source_item?(item)
+  return item unless item[:number] && item[:type]
 
   data = fetch_pr_or_issue(client, item)
   author = extract_author(data)
-  return item if author.nil?
-
-  item.merge(author)
+  author ? item.merge(author) : item
 rescue StandardError => e
   UI.important("Could not look up author for ##{item[:number]}: #{e.message}")
   item
 end
 
-def lookupable_source_item?(item)
-  item[:number] && item[:type]
+def fetch_pr_or_issue(client, item)
+  item[:type] == 'issue' ? client.issue(GITHUB_REPO, item[:number]) : client.pull_request(GITHUB_REPO, item[:number])
 end
 
 def extract_author(data)
   user = data&.user
-  return nil if user.nil?
-  return nil if user.login.nil? || user.html_url.nil?
+  return nil if user.nil? || user.login.nil? || user.html_url.nil?
 
   { author_login: user.login, author_url: user.html_url }
 end
 
-def fetch_pr_or_issue(client, item)
-  if item[:type] == 'issue'
-    client.issue(GITHUB_REPO, item[:number])
-  else
-    client.pull_request(GITHUB_REPO, item[:number])
-  end
-end
-
-# Publishes the release-notes PR URL as Buildkite job meta-data
-# so ReleasesV2 can read it back. No-op outside CI.
-def emit_release_notes_pr_url(url)
+# Publishes the release-notes PR URL as Buildkite job meta-data (so ReleasesV2
+# can read it back) and a success annotation (so the URL is scannable from the
+# build summary). No-op outside CI.
+def publish_release_notes_pr_url(pr_url, reused:)
   return unless is_ci
 
-  sh('buildkite-agent', 'meta-data', 'set', 'rv2_output_release_notes_pr_url', url)
+  sh('buildkite-agent', 'meta-data', 'set', 'rv2_output_release_notes_pr_url', pr_url)
+  buildkite_annotate(
+    style: 'success',
+    context: 'release-notes-pr',
+    message: reused ? "Reusing existing release notes PR: #{pr_url}" : "Release notes PR: #{pr_url}"
+  )
 end
 
 def create_backmerge_pr

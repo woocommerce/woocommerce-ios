@@ -27,9 +27,9 @@ enum StoreInfoMetricSlotLayout {
             case .small:
                 return 1
             case .medium:
-                return defaultLimit
-            case .large:
                 return 4
+            case .large:
+                return 7
             }
         }
     }

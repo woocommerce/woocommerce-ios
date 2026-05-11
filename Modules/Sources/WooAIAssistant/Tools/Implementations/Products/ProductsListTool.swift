@@ -106,6 +106,8 @@ public enum ProductsListTool {
 
     private static let allowedOrderby: Set<String> = ["date", "title", "popularity"]
     private static let allowedOrder: Set<String> = ["asc", "desc"]
+    private static let allowedStatus: Set<String> = ["any", "draft", "pending", "private", "publish"]
+    private static let allowedStockStatus: Set<String> = ["instock", "outofstock", "onbackorder"]
 
     private static func query(from args: Args) -> [String: String] {
         var query: [String: String] = [
@@ -191,6 +193,12 @@ public enum ProductsListTool {
         }
         if (args.orderby != nil || args.order != nil) && (args.search != nil || args.sku != nil) {
             return failure("orderby and order cannot be combined with search or sku.")
+        }
+        if let status = args.status, !allowedStatus.contains(status) {
+            return failure("'\(status)' is not an allowed status.")
+        }
+        if let stockStatus = args.stockStatus, !allowedStockStatus.contains(stockStatus) {
+            return failure("'\(stockStatus)' is not an allowed stock_status.")
         }
         if let orderby = args.orderby, !allowedOrderby.contains(orderby) {
             return failure("'\(orderby)' is not an allowed orderby.")

@@ -393,4 +393,78 @@ struct ProductsListToolTests {
         // Then
         #expect(await client.calls.first?.query["orderby"] == "popularity")
     }
+
+    @Test
+    func test_validateCombinations_when_invalid_status_then_fails() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"status": "trashed"}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("trashed"))
+        #expect(failed.reason.contains("not an allowed status"))
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_validateCombinations_when_invalid_stock_status_then_fails() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"stock_status": "lowstock"}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("lowstock"))
+        #expect(failed.reason.contains("not an allowed stock_status"))
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_validateCombinations_when_valid_status_then_passes() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"status": "draft"}"#, client)
+
+        // Then
+        guard case .success = result else {
+            Issue.record("expected success")
+            return
+        }
+        #expect(await client.calls.first?.query["status"] == "draft")
+    }
+
+    @Test
+    func test_validateCombinations_when_valid_stock_status_then_passes() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"stock_status": "onbackorder"}"#, client)
+
+        // Then
+        guard case .success = result else {
+            Issue.record("expected success")
+            return
+        }
+        #expect(await client.calls.first?.query["stock_status"] == "onbackorder")
+    }
 }

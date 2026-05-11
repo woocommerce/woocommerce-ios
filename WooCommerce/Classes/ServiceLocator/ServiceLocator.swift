@@ -78,7 +78,7 @@ final class ServiceLocator {
     /// Mirrors selectable WooCommerce sites into shared app-group `UserDefaults` for the
     /// `StoreWidgetsExtension` site picker. Idle until `start()` is called.
     ///
-    private static var _widgetSiteListSyncManager: WidgetSiteListSyncManager = WidgetSiteListSyncManager()
+    private static var _widgetSiteListSyncManager = WidgetSiteListSyncManager()
 
     /// Currency Settings
     ///

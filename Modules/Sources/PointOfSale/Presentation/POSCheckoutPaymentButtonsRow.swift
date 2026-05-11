@@ -39,7 +39,7 @@ struct POSCheckoutPaymentButtonsRow: View {
             onSelect(method)
         } label: {
             Text(title(for: method))
-                .font(POSFontStyle.posBodyLargeBold)
+                .font(.posBodyLargeBold)
         }
         .layoutPriority(1)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)

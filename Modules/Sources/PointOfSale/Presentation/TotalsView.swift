@@ -540,7 +540,6 @@ private extension TotalsView {
         ) else {
             return []
         }
-        let viewHelper = POSPaymentViewHelper()
         let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
             readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
             paymentState: displayPaymentState

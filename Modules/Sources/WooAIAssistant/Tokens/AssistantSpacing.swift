@@ -12,6 +12,8 @@ public enum AssistantSpacing: Sendable {
 }
 
 public enum AssistantRadius: Sendable {
+    /// Matches the order list status badge corner radius.
+    public static let badge: CGFloat = 4
     public static let medium: CGFloat = 12
     public static let large: CGFloat = 20
     public static let bubble: CGFloat = 22

@@ -34,7 +34,7 @@ struct AssistantEarlyAccessNoticeCard: View {
                 .padding(.horizontal, AssistantSpacing.medium)
                 .padding(.vertical, AssistantSpacing.small)
                 .background(
-                    RoundedRectangle(cornerRadius: AssistantRadius.medium)
+                    RoundedRectangle(cornerRadius: AssistantRadius.button)
                         .fill(Color(.secondaryButtonBackground))
                 )
             }

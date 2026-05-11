@@ -11,6 +11,18 @@ struct SupportChatView: View {
             .background(Color(.listBackground))
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if viewModel.canEscalateToHumanSupport {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            viewModel.contactHumanSupport()
+                        } label: {
+                            Image(systemName: "person.fill.questionmark")
+                                .accessibilityLabel(Localization.toolbarContactSupport)
+                        }
+                    }
+                }
+            }
             .alert(
                 Localization.errorTitle,
                 isPresented: .init(
@@ -378,6 +390,11 @@ private extension SupportChatView {
             "supportChatView.contactSupport",
             value: "Contact Support",
             comment: "Button to contact human support from the chat"
+        )
+        static let toolbarContactSupport = NSLocalizedString(
+            "supportChatView.toolbar.contactSupport",
+            value: "Contact Support",
+            comment: "Trailing toolbar button on the AI support chat that lets the merchant escalate to human support"
         )
         static let issuePickerHeader = NSLocalizedString(
             "supportChatView.issuePickerHeader",

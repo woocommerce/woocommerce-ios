@@ -10,6 +10,7 @@ struct MetricCellView: View {
     let metric: any MetricPresentable
 
     @Environment(\.widgetFamily) private var widgetFamily
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         MetricCellLink(destination: metric.tapURL) {
@@ -21,7 +22,7 @@ struct MetricCellView: View {
                 )
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                if widgetFamily != .systemSmall, let chart = metric.chartData, chart.count > 1 {
+                if showsChart, let chart = metric.chartData, chart.count > 1 {
                     MetricChartView(data: chart, tone: chartTone)
                         .frame(width: Layout.chartWidth, height: Layout.chartHeight)
                 }
@@ -32,10 +33,14 @@ struct MetricCellView: View {
 
 private extension MetricCellView {
     /// Small widget cells stack vertically and have no chart, so the trend reads more naturally
-    /// next to the value. Grid cells (medium / large / extra large) keep the trend next to the
-    /// title so the value row stays clean alongside the trailing sparkline.
+    /// next to the value. Grid cells keep the trend next to the title while the trailing
+    /// sparkline is visible, then move it beside the value when Dynamic Type hides the chart.
     var trendPlacement: MetricCellTrendPlacement {
-        widgetFamily == .systemSmall ? .alongsideValue : .alongsideTitle
+        showsChart ? .alongsideTitle : .alongsideValue
+    }
+
+    var showsChart: Bool {
+        widgetFamily != .systemSmall && !StoreInfoDynamicType.usesAccessibilityLayout(dynamicTypeSize)
     }
 
     var chartTone: MetricChartView.Tone {

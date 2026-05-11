@@ -1288,8 +1288,8 @@ private extension DashboardViewModelTests {
 
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
-                onCompletion(false)
+            case let .isRemoteFeatureFlagEnabled(flag, _, _, onCompletion):
+                onCompletion(flag == .wooAIAssistant)
             }
         }
 

@@ -2,7 +2,7 @@
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
 ## 24.6
-This update enhances Point of Sale reliability with clearer card reader status during reconnections, automatic price updates at checkout, and visual refinements for iOS 26. We've also added a login troubleshooting tool to help diagnose connection issues faster, plus a handy clear button in search fields for quicker navigation.
+Enhance your WooCommerce experience with improved Bluetooth card reader connection alerts and updated pricing at checkout for a smoother POS flow. Enjoy easier troubleshooting with new login tools and a clearer search interface. Plus, we’ve fixed localization in the watch app and adjusted requirements for Tap to Pay to iOS 18.0.1.
 
 ## 24.5
 The troubleshooting tool now checks your analytics and notification settings, making it easier to diagnose issues with your store.

@@ -248,8 +248,6 @@ final class DashboardViewModel: ObservableObject {
             }
             .store(in: &subscriptions)
 
-        // Bypass the FeatureFlagStore cache on app-foreground so a kill switch flipped at WPCom
-        // takes effect on the next return-to-app rather than waiting up to 24h for the cache TTL.
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
                 guard let self else { return }
@@ -265,8 +263,6 @@ final class DashboardViewModel: ObservableObject {
                 if isAIAssistantEligible { isAIAssistantEligible = false }
                 return
             }
-            // defaultValue: true keeps the feature on when the remote flag is unconfigured or
-            // unreachable; only an explicit `false` from WPCom acts as a kill switch.
             let remoteEnabled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
                 let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.wooAIAssistant,
                                                                           defaultValue: true,
@@ -327,8 +323,6 @@ final class DashboardViewModel: ObservableObject {
     func reloadAllData(forceCardsRefresh: Bool = false) async {
         isReloadingAllData = true
         checkInboxEligibility()
-        // Pull-to-refresh is an explicit signal that the merchant wants fresh state, so honor it
-        // for the AI Assistant kill switch too rather than waiting on the cached remote value.
         refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite, useCache: false)
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in

@@ -44,19 +44,21 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
   # other rejections (e.g. an empty draft). The model iterates until accepted.
   #
   # @param version [String]
-  # @param raw_items [String] the raw release notes block (one bullet per line)
+  # @param items_text [String] pre-filtered release-note items (one bullet per
+  #   line). Internal-only entries and GitHub URL/PR-number tokens are expected
+  #   to be stripped by the caller via `items_for_ai_prompt`.
   # @return [String]
-  def build_ai_release_notes_prompt(version:, raw_items:)
+  def build_ai_release_notes_prompt(version:, items_text:)
     <<~QUESTION
       Act like a mobile app marketer preparing release notes for the App Store.
       Write effective release notes for WooCommerce iOS #{version} that help merchants understand what changed in this update.
 
+      Each item is prefixed by an optional priority marker — `[***]` highest, `[**]` medium, `[*]` standard — that you can use to emphasize the most important changes.
+
       Rules:
       - Only use the provided items.
       - Do not invent features, fixes, or benefits.
-      - Ignore items marked [Internal].
-      - Remove GitHub links, PR numbers, issue numbers, branch names, and engineering jargon.
-      - Write for WooCommerce merchants, not developers.
+      - Write for WooCommerce merchants, not developers — avoid engineering jargon.
       - Do not write it point by point — write a single, unique paragraph.
       - Do not mention the release version or version number in the output.
       - The final text must be #{PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer, including spaces.
@@ -68,7 +70,7 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
       Keep iterating until the tool replies `ok: true`. Submit every draft — including the final accepted one — through the `validate_release_notes_length` tool. Do not include the release-notes text in your plain-text reply; the calling code reads the accepted draft from the tool argument, not from your final message.
 
       Items:
-      #{raw_items}
+      #{items_text}
     QUESTION
   end
 
@@ -119,7 +121,11 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
   #   - [**] Improved barcode scanner reading accuracy [https://github.com/woocommerce/woocommerce-ios/pull/12345]
   #
   # @param raw_items [String]
-  # @return [Array<Hash>] each item has keys :text, :url, :number, :type
+  # @return [Array<Hash>] each item has keys `:priority, :text, :url, :number,
+  #   :type`. `:priority` carries the raw marker string (`[*]`, `[**]`, `[***]`)
+  #   or `nil` if absent; `:url, :number, :type` are `nil` when the line has no
+  #   GitHub link. Downstream enrichment in the Fastfile may add `:author_login`
+  #   and `:author_url` keys; this method itself does not populate them.
   def parse_source_items(raw_items)
     return [] if raw_items.nil?
 
@@ -130,16 +136,35 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
   # if the line should be skipped (blank, `[Internal]`, or empty after parsing).
   #
   # `[Internal]` is filtered after stripping the optional `[*]`/`[**]` priority
-  # marker, so entries like `- [*] [Internal] …` are also skipped.
+  # marker, so entries like `- [*] [Internal] …` are also skipped. The marker
+  # (e.g. `[*]`, `[**]`, `[***]`) is captured on the result as `:priority` so
+  # callers can reproduce it (the AI prompt uses it as a relative-importance
+  # hint).
   def parse_source_item_line(line)
-    content = line.strip.sub(/\A-\s*/, '').sub(/\A\[\*+\]\s*/, '')
+    content = line.strip.sub(/\A-\s*/, '')
+
+    priority_match = content.match(/\A(?<marker>\[\*+\])\s*/)
+    priority = priority_match&.[](:marker)
+    content = content.sub(/\A\[\*+\]\s*/, '')
+
     return nil if content.empty?
     return nil if content.match?(/\A\[Internal\]/i)
 
     text, url_info = split_text_and_url(content)
     return nil if text.empty?
 
-    { text: text, url: url_info[:url], number: url_info[:number], type: url_info[:type] }
+    { priority: priority, text: text, url: url_info[:url], number: url_info[:number], type: url_info[:type] }
+  end
+
+  # Formats already-parsed source items as a bullet list suitable for the AI
+  # prompt: each line is `- [priority] text` (or just `- text` when no priority
+  # marker is present). Internal-only entries and GitHub URL/PR-number tokens
+  # are stripped *upstream* during parsing (see `parse_source_item_line` and
+  # `split_text_and_url`); this method does not filter anything.
+  def items_for_ai_prompt(source_items)
+    source_items.map do |item|
+      item[:priority] ? "- #{item[:priority]} #{item[:text]}" : "- #{item[:text]}"
+    end.join("\n")
   end
 
   # Splits the trailing `[https://github.com/.../pull/123]` or
@@ -202,8 +227,10 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
   # @param version [String]
   # @param generated_notes [String]
   # @param source_items [Array<Hash>] enriched with optional :author_login, :author_url
+  # @param ai_prompt [String] the user-question portion sent to `openai_ask`
+  #   on the first attempt (rendered in a collapsible block for transparency)
   # @return [String]
-  def build_release_notes_pr_body(version:, generated_notes:, source_items:)
+  def build_release_notes_pr_body(version:, generated_notes:, source_items:, ai_prompt:)
     <<~BODY
       Created by ReleasesV2 automation.
 
@@ -216,6 +243,15 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
       > #{generated_notes}
 
       Character count: #{generated_notes.length} / #{PREFERRED_RELEASE_NOTES_MAX_LENGTH}
+
+      <details>
+      <summary>Prompt sent to OpenAI (first attempt)</summary>
+
+      ```
+      #{ai_prompt.strip}
+      ```
+
+      </details>
 
       ## Source items used
 

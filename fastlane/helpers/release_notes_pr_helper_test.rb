@@ -50,15 +50,14 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
   # --- Prompt builder --------------------------------------------------------
 
   def test_prompt_includes_required_rules
-    prompt = Helper.build_ai_release_notes_prompt(version: '24.8', raw_items: '- [*] Foo')
+    prompt = Helper.build_ai_release_notes_prompt(version: '24.8', items_text: '- [*] Foo')
     [
       'Act like a mobile app marketer',
       'App Store',
       'help merchants understand what changed',
+      'priority marker',
       'Only use the provided items.',
       'Do not invent features, fixes, or benefits.',
-      'Ignore items marked [Internal].',
-      'Remove GitHub links, PR numbers, issue numbers',
       'Write for WooCommerce merchants',
       'Do not write it point by point',
       'single, unique paragraph',
@@ -290,6 +289,50 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
     assert_nil items.first[:number]
   end
 
+  def test_parse_source_items_captures_priority_marker
+    raw = <<~RAW
+      - [*] Standard item
+      - [**] Higher priority
+      - [***] Highest priority
+      - No marker item
+    RAW
+    items = Helper.parse_source_items(raw)
+    assert_equal 4, items.size
+    assert_equal '[*]', items[0][:priority]
+    assert_equal '[**]', items[1][:priority]
+    assert_equal '[***]', items[2][:priority]
+    assert_nil items[3][:priority]
+  end
+
+  # --- AI prompt input formatting -------------------------------------------
+
+  def test_items_for_ai_prompt_strips_urls_and_includes_priority
+    items = [
+      { priority: '[*]', text: 'Standard fix' },
+      { priority: '[**]', text: 'Important change' },
+      { priority: nil, text: 'Plain item' }
+    ]
+    text = Helper.items_for_ai_prompt(items)
+    expected = [
+      '- [*] Standard fix',
+      '- [**] Important change',
+      '- Plain item'
+    ].join("\n")
+    assert_equal expected, text
+  end
+
+  def test_items_for_ai_prompt_excludes_internal_via_upstream_filter
+    raw = <<~RAW
+      - [*] User-facing fix [https://github.com/woocommerce/woocommerce-ios/pull/1]
+      - [*] [Internal] Refactor [https://github.com/woocommerce/woocommerce-ios/pull/2]
+    RAW
+    text = Helper.items_for_ai_prompt(Helper.parse_source_items(raw))
+    assert_equal '- [*] User-facing fix', text
+    refute_includes text, '[Internal]'
+    refute_includes text, 'github.com'
+    refute_includes text, 'Refactor'
+  end
+
   # --- PR body / table -------------------------------------------------------
 
   def test_table_includes_clickable_author_link
@@ -334,7 +377,8 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
         type: 'pull',
         author_login: 'some-user',
         author_url: 'https://github.com/some-user'
-      }]
+      }],
+      ai_prompt: "Act like a mobile app marketer…\n\nItems:\n- [*] Improved barcode scanner reading accuracy"
     )
 
     assert_includes body, 'AI-generated release notes'
@@ -345,6 +389,20 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
     assert_includes body, '[@some-user](https://github.com/some-user)'
     assert_includes body, 'Review checklist'
     refute_includes body, 'Team'
+  end
+
+  def test_pr_body_includes_collapsible_ai_prompt
+    body = Helper.build_release_notes_pr_body(
+      version: '24.8',
+      generated_notes: 'Short merchant copy.',
+      source_items: [],
+      ai_prompt: "Act like a mobile app marketer preparing release notes for the App Store.\n\nRules:\n- Only use the provided items.\n\nItems:\n- [*] Foo"
+    )
+
+    assert_includes body, '<details>'
+    assert_includes body, 'Prompt sent to OpenAI'
+    assert_includes body, 'Act like a mobile app marketer preparing release notes'
+    assert_includes body, '- [*] Foo'
   end
 
   def test_pr_title

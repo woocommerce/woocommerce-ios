@@ -365,8 +365,15 @@ platform :ios do
     automation_branch = ReleaseNotesPRHelper.automation_branch_name(version)
 
     # Idempotency: if an open PR already exists, reuse it and exit. Dry-run
-    # falls through so the operator can still preview regenerated copy.
-    existing_pr_url = find_existing_release_notes_pr_url(base: release_branch, head: automation_branch)
+    # falls through so the operator can still preview regenerated copy. On the
+    # path that creates a PR, fail the lane if the lookup itself errors — a
+    # transient GitHub API failure misread as "no PR exists" would lead to a
+    # duplicate PR.
+    existing_pr_url = find_existing_release_notes_pr_url(
+      base: release_branch,
+      head: automation_branch,
+      fail_on_error: !dry_run
+    )
     if existing_pr_url && !dry_run
       UI.success("Found existing release notes PR: #{existing_pr_url}")
       publish_release_notes_pr_url(existing_pr_url, reused: true)
@@ -374,25 +381,28 @@ platform :ios do
     end
     UI.important("Dry run — existing release notes PR at #{existing_pr_url}; continuing to generate a preview.") if existing_pr_url
 
-    sh('git', 'fetch', 'origin', release_branch) do |status|
-      fail_lane!(context: 'release-notes-pr-error', message: "Release branch #{release_branch} does not exist on origin") unless status.success?
+    # Dry-run keeps the current working tree so it can be invoked with a
+    # dirty tree from any branch. RELEASE-NOTES.txt has typically the same
+    # contents on trunk and the release branch around code-freeze time.
+    unless dry_run
+      sh('git', 'fetch', 'origin', release_branch) do |status|
+        fail_lane!(context: 'release-notes-pr-error', message: "Release branch #{release_branch} does not exist on origin") unless status.success?
+      end
+      Fastlane::Helper::GitHelper.checkout_and_pull(release_branch)
     end
 
-    # Dry-run skips the checkout so it can be invoked with a dirty tree.
-    # Read the release-branch contents via `git show` into a temp file
-    # instead, since the release-toolkit action wants a file path.
-    release_notes_source_path =
-      if dry_run
-        release_notes_source_path_from_origin(release_branch)
-      else
-        Fastlane::Helper::GitHelper.checkout_and_pull(release_branch)
-        RELEASE_NOTES_SOURCE_PATH
-      end
-
-    raw_items = extract_release_notes_for_version(version: version, release_notes_file_path: release_notes_source_path)
+    raw_items = extract_release_notes_for_version(version: version, release_notes_file_path: RELEASE_NOTES_SOURCE_PATH)
     fail_lane!(context: 'release-notes-pr-error', message: "No release-note items found for #{version}") if raw_items.nil? || raw_items.strip.empty?
 
-    generated_notes = generate_ai_release_notes(version: version, raw_items: raw_items)
+    # Pre-filter so internal-only items and GitHub URL/PR-number tokens
+    # never reach the model — defense in depth against the prompt rules
+    # failing to be followed.
+    parsed_source_items = ReleaseNotesPRHelper.parse_source_items(raw_items)
+    fail_lane!(context: 'release-notes-pr-error', message: "No user-facing release-note items found for #{version}") if parsed_source_items.empty?
+
+    items_for_ai = ReleaseNotesPRHelper.items_for_ai_prompt(parsed_source_items)
+    first_attempt_prompt = ReleaseNotesPRHelper.build_ai_release_notes_prompt(version: version, items_text: items_for_ai)
+    generated_notes = generate_ai_release_notes(version: version, items_text: items_for_ai)
 
     UI.important("Generated release notes — #{generated_notes.length} characters:")
     UI.message(generated_notes)
@@ -404,11 +414,12 @@ platform :ios do
       )
     end
 
-    enriched_source_items = enrich_source_items_with_authors(ReleaseNotesPRHelper.parse_source_items(raw_items))
+    enriched_source_items = enrich_source_items_with_authors(parsed_source_items)
     pr_body = ReleaseNotesPRHelper.build_release_notes_pr_body(
       version: version,
       generated_notes: generated_notes,
-      source_items: enriched_source_items
+      source_items: enriched_source_items,
+      ai_prompt: first_attempt_prompt
     )
 
     if dry_run
@@ -1713,8 +1724,8 @@ end
 # rather than read off the assistant's final plain-text turn. That avoids
 # subtle drift if the model adds a leading "Here it is:" or similar — the
 # returned value is exactly what passed length validation.
-def generate_ai_release_notes(version:, raw_items:)
-  question = ReleaseNotesPRHelper.build_ai_release_notes_prompt(version: version, raw_items: raw_items)
+def generate_ai_release_notes(version:, items_text:)
+  question = ReleaseNotesPRHelper.build_ai_release_notes_prompt(version: version, items_text: items_text)
   max_length = ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH
   handler, captured = build_release_notes_length_validator(max_length: max_length)
 
@@ -1733,20 +1744,6 @@ def generate_ai_release_notes(version:, raw_items:)
 
   UI.success("Generated release notes are #{captured_text.length} characters.")
   captured_text
-end
-
-# Reads `RELEASE-NOTES.txt` from `origin/<release_branch>` via `git show`
-# and writes it to a temp file. Used by the `create_release_notes_pr`
-# dry-run path so it can preview release-branch content without switching
-# branches (and thus tolerate a dirty working tree).
-def release_notes_source_path_from_origin(release_branch)
-  require 'tempfile'
-
-  content = sh('git', 'show', "origin/#{release_branch}:RELEASE-NOTES.txt", log: false)
-  file = Tempfile.new(['RELEASE-NOTES', '.txt'])
-  file.write(content)
-  file.close
-  file.path
 end
 
 # Builds the `validate_release_notes_length` tool handler. Returns `[handler, captured]`:
@@ -1806,8 +1803,16 @@ def release_notes_length_validation_tool
 end
 
 # Returns the `html_url` of an open PR for `head -> base` in the WCiOS
-# repository, or `nil` if no PR is found or the lookup fails.
-def find_existing_release_notes_pr_url(base:, head:)
+# repository, or `nil` if no PR is found.
+#
+# When the GitHub API lookup itself fails (network error, rate-limited, etc.),
+# behavior depends on `fail_on_error`:
+# - `fail_on_error: true` — fail the lane via `fail_lane!`. The caller should
+#   pass this on the path that actually creates a PR, so a transient API
+#   failure can't be misread as "no PR exists" and lead to a duplicate.
+# - `fail_on_error: false` — log a warning and return `nil`. Safe default for
+#   dry-run where the lane has no side effects anyway.
+def find_existing_release_notes_pr_url(base:, head:, fail_on_error: false)
   token = ENV.fetch('GITHUB_TOKEN', nil)
   return nil if token.nil? || token.empty?
 
@@ -1820,7 +1825,9 @@ def find_existing_release_notes_pr_url(base:, head:)
   )
   prs.first&.html_url
 rescue StandardError => e
-  UI.important("Could not check for existing release notes PR: #{e.message}")
+  message = "Could not check for existing release notes PR (#{e.class}): #{e.message}"
+  fail_lane!(context: 'release-notes-pr-error', message: message) if fail_on_error
+  UI.important(message)
   nil
 end
 

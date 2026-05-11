@@ -75,6 +75,11 @@ final class ServiceLocator {
     ///
     private static var _selectedSiteSettings = SelectedSiteSettings()
 
+    /// Mirrors selectable WooCommerce sites into shared app-group `UserDefaults` for the
+    /// `StoreWidgetsExtension` site picker. Idle until `start()` is called.
+    ///
+    private static var _widgetSiteListSyncManager = WidgetSiteListSyncManager()
+
     /// Currency Settings
     ///
     private static var _currencySettings = CurrencySettings()
@@ -232,6 +237,13 @@ final class ServiceLocator {
     /// - Returns: An instance of SelectedSiteSettings.
     static var selectedSiteSettings: SelectedSiteSettings {
         return _selectedSiteSettings
+    }
+
+    /// Provides the access point to the WidgetSiteListSyncManager.
+    /// - Returns: A shared `WidgetSiteListSyncManager` instance. The instance is idle until
+    ///   `start()` is called.
+    static var widgetSiteListSyncManager: WidgetSiteListSyncManager {
+        return _widgetSiteListSyncManager
     }
 
     /// Provides the access point to the Currency Settings for the current Site.

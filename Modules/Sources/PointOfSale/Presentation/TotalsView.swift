@@ -311,7 +311,7 @@ private extension TotalsView {
         static let otherPaymentMethodsButtonTitle = NSLocalizedString(
             "pos.totalsView.otherPaymentMethods.button.title",
             value: "Other payment methods",
-            comment: "Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader).")
+            comment: "Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout.")
     }
 }
 

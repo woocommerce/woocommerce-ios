@@ -46,7 +46,7 @@ struct POSOtherPaymentMethodsSheet: View {
                 Image(systemName: systemImage)
                     .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posPrimary)
-                    .frame(width: 28)
+                    .frame(width: Constants.iconFrameWidth)
 
                 VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                     Text(title)
@@ -72,6 +72,12 @@ struct POSOtherPaymentMethodsSheet: View {
 }
 
 private extension POSOtherPaymentMethodsSheet {
+    enum Constants {
+        /// Fixed width for the leading icon in each payment method row. Not a
+        /// POSSpacing token — it sizes the icon column, not a semantic gap.
+        static let iconFrameWidth: CGFloat = 28
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "pos.otherPaymentMethods.sheet.title",

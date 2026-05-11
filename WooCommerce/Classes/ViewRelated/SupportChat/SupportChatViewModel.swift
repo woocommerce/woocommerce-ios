@@ -161,6 +161,12 @@ final class SupportChatViewModel {
     /// When true, the escalation button should be hidden.
     private(set) var hasCreatedTicket: Bool = false
 
+    /// `true` once the merchant has typed and sent at least one message via the input field.
+    /// Distinct from `messages.contains(where: { $0.role == .user })`, which is also flipped
+    /// by issue-picker selections — we want the human-support entry to surface only after the
+    /// merchant has actually described their problem.
+    private(set) var hasSentChatMessage: Bool = false
+
     /// Flips `hasCreatedTicket` so the chat surface (toolbar icon, inline banner) updates in real time
     /// after the escalation coordinator successfully creates a Zendesk ticket. Storage is updated separately
     /// by the coordinator via `SupportChatAction.markTicketCreated`.
@@ -170,12 +176,12 @@ final class SupportChatViewModel {
 
     /// Whether the trailing toolbar entry point to human support should be visible.
     /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics)
-    /// AND has sent at least one message, and only while no ticket has been created yet.
+    /// AND has typed and sent at least one message, and only while no ticket has been created yet.
     var canEscalateToHumanSupport: Bool {
         guard shouldShowInputArea, !hasCreatedTicket else {
             return false
         }
-        return messages.contains(where: { $0.role == .user })
+        return hasSentChatMessage
     }
 
     /// Maps message IDs to their feedback rating (true = upvoted, false = downvoted).
@@ -567,6 +573,7 @@ final class SupportChatViewModel {
 
         let userMessage = ChatMessage(role: .user, text: trimmedText)
         messages.append(userMessage)
+        hasSentChatMessage = true
         inputText = ""
         state = .sending
 

@@ -665,9 +665,43 @@ struct SupportChatViewModelTests {
         let sut = makeSUT(entryPoint: .helpAndSupport, stores: stores)
         sut.showGreeting()
 
-        // When — proceed straight to chat without picking an issue
+        // When — proceed to chat
         sut.proceedToChat()
+
+        // Then — input area is visible, but the merchant has not typed anything yet
+        #expect(sut.shouldShowInputArea == true)
+        #expect(sut.canEscalateToHumanSupport == false)
+
+        // When — merchant actually types and sends a message
         sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == true)
+    }
+
+    @Test func canEscalateToHumanSupport_is_false_after_helpAndSupport_picker_selection_until_user_types() async {
+        // Reviewer scenario (PR #17102 / WOOMOB-3033): tapping an issue picker option appends a
+        // user-role message ("Loading orders" etc.). The toolbar entry must wait until the merchant
+        // actually describes the problem via the input field — picker taps don't count.
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { _ in
+            // Leave sendMessage pending; only state transitions matter here.
+        }
+        let sut = makeSUT(entryPoint: .helpAndSupport, stores: stores)
+        sut.showGreeting()
+
+        // When — pick the no-diagnostics path so we land in chat without manual `proceedToChat`
+        await sut.selectIssue(.other)
+
+        // Then — chat surface is in free-chat phase, picker tap added a user message,
+        // but the merchant has NOT typed via the input field yet
+        #expect(sut.hasProceededToChat == true)
+        #expect(sut.messages.contains(where: { $0.role == .user }))
+        #expect(sut.canEscalateToHumanSupport == false)
+
+        // When — merchant types and sends
+        sut.inputText = "Help, my orders aren't loading"
         sut.sendMessage()
 
         // Then

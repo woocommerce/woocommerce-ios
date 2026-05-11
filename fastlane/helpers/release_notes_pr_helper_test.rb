@@ -50,15 +50,14 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
   # --- Prompt builder --------------------------------------------------------
 
   def test_prompt_includes_required_rules
-    prompt = Helper.build_ai_release_notes_prompt(version: '24.8', raw_items: '- [*] Foo')
+    prompt = Helper.build_ai_release_notes_prompt(version: '24.8', items_text: '- [*] Foo')
     [
       'Act like a mobile app marketer',
       'App Store',
       'help merchants understand what changed',
+      'priority marker',
       'Only use the provided items.',
       'Do not invent features, fixes, or benefits.',
-      'Ignore items marked [Internal].',
-      'Remove GitHub links, PR numbers, issue numbers',
       'Write for WooCommerce merchants',
       'Do not write it point by point',
       'single, unique paragraph',
@@ -76,7 +75,7 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
     previous = 'A' * (Helper::PREFERRED_RELEASE_NOTES_MAX_LENGTH + 50)
     prompt = Helper.build_ai_release_notes_prompt(
       version: '24.8',
-      raw_items: '- [*] Foo',
+      items_text: '- [*] Foo',
       previous_response: previous
     )
     assert_includes prompt, 'The previous response was too long'
@@ -294,6 +293,50 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
     assert_equal 1, items.size
     assert_nil items.first[:url]
     assert_nil items.first[:number]
+  end
+
+  def test_parse_source_items_captures_priority_marker
+    raw = <<~RAW
+      - [*] Standard item
+      - [**] Higher priority
+      - [***] Highest priority
+      - No marker item
+    RAW
+    items = Helper.parse_source_items(raw)
+    assert_equal 4, items.size
+    assert_equal '[*]', items[0][:priority]
+    assert_equal '[**]', items[1][:priority]
+    assert_equal '[***]', items[2][:priority]
+    assert_nil items[3][:priority]
+  end
+
+  # --- AI prompt input formatting -------------------------------------------
+
+  def test_items_for_ai_prompt_strips_urls_and_includes_priority
+    items = [
+      { priority: '[*]', text: 'Standard fix' },
+      { priority: '[**]', text: 'Important change' },
+      { priority: nil, text: 'Plain item' }
+    ]
+    text = Helper.items_for_ai_prompt(items)
+    expected = [
+      '- [*] Standard fix',
+      '- [**] Important change',
+      '- Plain item'
+    ].join("\n")
+    assert_equal expected, text
+  end
+
+  def test_items_for_ai_prompt_excludes_internal_via_upstream_filter
+    raw = <<~RAW
+      - [*] User-facing fix [https://github.com/woocommerce/woocommerce-ios/pull/1]
+      - [*] [Internal] Refactor [https://github.com/woocommerce/woocommerce-ios/pull/2]
+    RAW
+    text = Helper.items_for_ai_prompt(Helper.parse_source_items(raw))
+    assert_equal '- [*] User-facing fix', text
+    refute_includes text, '[Internal]'
+    refute_includes text, 'github.com'
+    refute_includes text, 'Refactor'
   end
 
   # --- PR body / table -------------------------------------------------------

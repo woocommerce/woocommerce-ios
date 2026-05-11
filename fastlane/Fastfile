@@ -345,10 +345,14 @@ platform :ios do
     dry_run = dry_run.to_s == 'true'
     skip_confirm = skip_confirm.to_s == 'true'
 
-    # The lane checks out the release branch and writes to CHANGELOG.md /
-    # release_notes.txt, so a dirty working tree would either be committed
-    # accidentally or cause confusing checkout failures.
-    ensure_git_status_clean
+    # The non-dry-run path checks out the release branch and writes to
+    # CHANGELOG.md / release_notes.txt, so a dirty working tree would either
+    # be committed accidentally or cause confusing checkout failures.
+    # Dry-run still calls `checkout_and_pull(release_branch)` below, which
+    # will fail loudly on conflicting local changes — we just don't preempt
+    # it here so callers can sanity-check the prompt / generated copy without
+    # having to stash unrelated work.
+    ensure_git_status_clean unless dry_run
 
     if (error = ReleaseNotesPRHelper.validate_version(version))
       UI.user_error!(error)

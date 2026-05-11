@@ -1744,7 +1744,7 @@ def generate_ai_release_notes(version:, raw_items:)
       function: {
         name: 'validate_release_notes_length',
         description: 'Checks the length of the proposed release notes paragraph against the character limit. ' \
-                     "Returns `{ ok: true, length: }` if the text fits, or `{ ok: false, length:, max:, cut_at_least: }` " \
+                     'Returns `{ ok: true, length: }` if the text fits, or `{ ok: false, length:, max:, cut_at_least: }` ' \
                      'if it is too long. Call this repeatedly with shorter drafts until it returns `ok: true`. ' \
                      'When shortening, restructure or remove phrases or items — do not drop letters from words, ' \
                      'omit articles, or invent abbreviations to hit the limit. Grammar and spelling must remain correct.',

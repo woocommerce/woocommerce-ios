@@ -248,8 +248,30 @@ extension StoreInfoDataService.Stats {
         totalOrders: 23,
         totalItemsSold: 41,
         totalVisitors: 67,
-        conversion: 23.0 / 67.0
+        conversion: 23.0 / 67.0,
+        revenueSeries: placeholderSeries(values: [82, 91, 86, 104, 98, 132]),
+        netRevenueSeries: placeholderSeries(values: [72, 88, 81, 96, 90, 120]),
+        averageOrderValueSeries: placeholderSeries(values: [4.2, 4.85, 4.6, 5.1, 4.94, 5.75]),
+        ordersSeries: placeholderSeries(values: [16, 24, 18, 29, 21, 23]),
+        itemsSoldSeries: placeholderSeries(values: [28, 36, 31, 45, 39, 41])
     )
+
+    /// Previous-period sample used by the widget gallery placeholder to render trend badges.
+    static let placeholderPreviousSample = Self(
+        revenue: 118.000,
+        netRevenue: 125.000,
+        averageOrderValue: 5.20,
+        totalOrders: 31,
+        totalItemsSold: 34,
+        totalVisitors: 71,
+        conversion: 0.29
+    )
+
+    private static func placeholderSeries(values: [Double]) -> [IntervalPoint] {
+        values.enumerated().map { index, value in
+            IntervalPoint(date: Date(timeIntervalSinceReferenceDate: Double(index * 86_400)), value: value)
+        }
+    }
 }
 
 // MARK: - DateRange factories

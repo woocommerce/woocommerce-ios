@@ -127,8 +127,24 @@ final class StoreInfoProvider: TimelineProvider {
     /// Redacted entry with sample data.
     ///
     func placeholder(in context: Context) -> StoreInfoEntry {
-        let dependencies = Self.fetchDependencies()
-        return Self.placeholderEntry(for: dependencies)
+        Self.placeholderEntry(
+            for: Self.fetchDependencies(),
+            metrics: Self.resolveMetricSelection(
+                requested: StoreStatsConfigurationIntent.defaultMetrics,
+                family: context.family
+            )
+        )
+    }
+
+    func placeholder(for configuration: StoreStatsConfigurationIntent, in context: Context) -> StoreInfoEntry {
+        Self.placeholderEntry(
+            for: Self.fetchDependencies(),
+            dateRange: configuration.dateRange,
+            metrics: Self.resolveMetricSelection(
+                requested: configuration.metrics,
+                family: context.family
+            )
+        )
     }
 
     func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
@@ -181,10 +197,10 @@ final class StoreInfoProvider: TimelineProvider {
 // MARK: - Metric presets & resolution
 
 extension StoreInfoProvider {
-    /// Hardcoded preset used by the legacy `StaticConfiguration` path (`getTimeline`) and by
-    /// `placeholderEntry`. Matches the original 4-cell shape — non-WPCom users see `visitors` /
-    /// `conversion` as `.unavailable`. Not consumed by the AppIntent path; the configurable
-    /// branch derives its own selection from the user's stored configuration.
+    /// Hardcoded preset used by the legacy `StaticConfiguration` path (`getTimeline`) and as the
+    /// fallback placeholder selection. Matches the original 4-cell shape — non-WPCom users see
+    /// `visitors` / `conversion` as `.unavailable`. Real AppIntent timelines and snapshots
+    /// derive their selection from the user's stored configuration.
     ///
     static let legacyMetricsPreset: [StoreInfoMetricType] = [
         .revenue, .visitors, .orders, .conversion
@@ -346,20 +362,35 @@ private extension StoreInfoProvider {
 private extension StoreInfoProvider {
 
     /// Redacted entry with sample data. If dependencies are available — store name and currency
-    /// settings will be used. Both the legacy String fields and the metric-driven `metrics`
-    /// array derive from `Stats.placeholderSample` + `legacyMetricsPreset` so the two views of
-    /// the same data stay in sync.
+    /// settings will be used. Both the legacy String fields and the metric-driven slots derive
+    /// from `Stats.placeholderSample`, while the metric selection mirrors the family-specific
+    /// AppIntent defaults so the widget gallery renders a complete preview with trends and
+    /// charts.
     ///
-    static func placeholderEntry(for dependencies: Dependencies?) -> StoreInfoEntry {
+    static func placeholderEntry(
+        for dependencies: Dependencies?,
+        dateRange: StoreStatsWidgetDateRange = .today,
+        metrics: [StoreInfoMetricType] = legacyMetricsPreset
+    ) -> StoreInfoEntry {
         let currencySettings = dependencies?.storeCurrencySettings ?? CurrencySettings()
         let sample = StoreInfoDataService.Stats.placeholderSample
-        let metrics: [StoreInfoMetric] = legacyMetricsPreset.map { type in
-            StoreInfoMetric(type: type, value: sample.value(for: type, currencySettings: currencySettings))
+        let previousSample = StoreInfoDataService.Stats.placeholderPreviousSample
+        let metricSlots: [StoreInfoMetricSlot] = metrics.map { type in
+            guard type != .none else {
+                return .empty
+            }
+
+            return .metric(StoreInfoMetric(
+                type: type,
+                value: sample.value(for: type, currencySettings: currencySettings),
+                previousValue: previousSample.value(for: type, currencySettings: currencySettings),
+                chartSeries: sample.chartSeries(for: type)
+            ))
         }
         let visitorsString = sample.totalVisitors.map(String.init) ?? StoreInfoFormatter.Constants.valuePlaceholderText
         let conversionString = sample.conversion.map(StoreInfoFormatter.formattedConversionString) ?? StoreInfoFormatter.Constants.valuePlaceholderText
         return .data(.init(
-            range: StoreStatsWidgetDateRange.today.localizedRangeLabel,
+            range: dateRange.localizedRangeLabel,
             name: dependencies?.storeName ?? Localization.myShop,
             revenue: StoreInfoFormatter.formattedAmountString(for: sample.revenue, with: currencySettings),
             revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: sample.revenue, with: currencySettings),
@@ -367,7 +398,7 @@ private extension StoreInfoProvider {
             orders: "\(sample.totalOrders)",
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
-            metrics: metrics
+            metricSlots: metricSlots
         ))
     }
 

@@ -42,8 +42,8 @@ struct StoreInfoLargeMetricsContainerView_Previews: PreviewProvider {
         StoreInfoLargeMetricsContainerView(data: StoreInfoMetricsView_Previews.fullCatalogData)
             .widgetBackground(backgroundView: Color(.brand))
             .previewContext(WidgetPreviewContext(family: .systemLarge))
-            .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Large - XXL font")
+            .environment(\.dynamicTypeSize, .accessibility1)
+            .previewDisplayName("Large - Accessibility font")
 
         StoreInfoLargeMetricsContainerView(data: StoreInfoMetricsView_Previews.fullCatalogData)
             .widgetBackground(backgroundView: Color(.brand))

@@ -42,6 +42,6 @@ enum StoreInfoMetricSlotLayout {
     }
 
     static func usesAccessibilityLayout(dynamicTypeSize: DynamicTypeSize) -> Bool {
-        dynamicTypeSize > .xLarge
+        StoreInfoDynamicType.usesAccessibilityLayout(dynamicTypeSize)
     }
 }

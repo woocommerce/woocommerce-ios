@@ -8,6 +8,8 @@ import SwiftUI
 struct MetricLargeCellView: View {
     let metric: any MetricPresentable
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         MetricCellLink(destination: metric.tapURL) {
             HStack(spacing: Layout.contentSpacing) {
@@ -17,7 +19,7 @@ struct MetricLargeCellView: View {
                     size: .large
                 )
 
-                if let chart = metric.chartData, chart.count > 1 {
+                if showsChart, let chart = metric.chartData, chart.count > 1 {
                     MetricChartView(
                         data: chart,
                         style: .bar,
@@ -32,6 +34,10 @@ struct MetricLargeCellView: View {
 }
 
 private extension MetricLargeCellView {
+    var showsChart: Bool {
+        !StoreInfoDynamicType.usesAccessibilityLayout(dynamicTypeSize)
+    }
+
     var chartTone: MetricChartView.Tone {
         switch metric.trend?.direction {
         case .up: return .up

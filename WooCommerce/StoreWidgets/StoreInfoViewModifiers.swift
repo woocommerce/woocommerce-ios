@@ -52,30 +52,38 @@ public struct StatValueLargeStyle: ViewModifier {
 }
 
 public struct StatTrendIndicatorStyle: ViewModifier {
+    @ScaledMetric(relativeTo: .caption2) private var fontSize = 7.0
+
     public func body(content: Content) -> some View {
         content
-            .font(.system(size: 7, weight: .bold))
+            .font(.system(size: fontSize, weight: .bold))
     }
 }
 
 public struct StatTrendIndicatorLargeStyle: ViewModifier {
+    @ScaledMetric(relativeTo: .footnote) private var fontSize = 11.0
+
     public func body(content: Content) -> some View {
         content
-            .font(.system(size: 11, weight: .bold))
+            .font(.system(size: fontSize, weight: .bold))
     }
 }
 
 public struct StatTrendTextStyle: ViewModifier {
+    @ScaledMetric(relativeTo: .caption2) private var fontSize = 9.0
+
     public func body(content: Content) -> some View {
         content
-            .font(.system(size: 9, weight: .bold))
+            .font(.system(size: fontSize, weight: .bold))
     }
 }
 
 public struct StatTrendTextLargeStyle: ViewModifier {
+    @ScaledMetric(relativeTo: .footnote) private var fontSize = 13.0
+
     public func body(content: Content) -> some View {
         content
-            .font(.system(size: 13, weight: .bold))
+            .font(.system(size: fontSize, weight: .bold))
     }
 }
 

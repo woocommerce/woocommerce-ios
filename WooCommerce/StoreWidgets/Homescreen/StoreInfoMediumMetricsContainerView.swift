@@ -77,8 +77,8 @@ struct StoreInfoMediumMetricsContainerView_Previews: PreviewProvider {
         StoreInfoMediumMetricsContainerView(data: StoreInfoMetricsView_Previews.exampleData)
             .widgetBackground(backgroundView: Color(.brand))
             .previewContext(WidgetPreviewContext(family: .systemMedium))
-            .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Medium - XXL font")
+            .environment(\.dynamicTypeSize, .accessibility1)
+            .previewDisplayName("Medium - Accessibility font")
     }
 }
 #endif

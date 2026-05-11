@@ -14,9 +14,15 @@ struct StoreInfoSmallMetricsContainerView: View {
         )
     }
 
+    private var showsUpdatePrefix: Bool {
+        !StoreInfoDynamicType.usesAccessibilityLayout(dynamicTypeSize)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.headerSpacing) {
-            StoreInfoMetricsLogoHeader(data: data, showsRange: false)
+            StoreInfoMetricsLogoHeader(data: data,
+                                       showsRange: false,
+                                       showsUpdatePrefix: showsUpdatePrefix)
 
             Spacer(minLength: Layout.metricSpacing)
 
@@ -53,8 +59,8 @@ struct StoreInfoSmallMetricsContainerView_Previews: PreviewProvider {
         StoreInfoSmallMetricsContainerView(data: StoreInfoMetricsView_Previews.exampleData)
             .widgetBackground(backgroundView: Color(.brand))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
-            .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Small - XXL font")
+            .environment(\.dynamicTypeSize, .accessibility1)
+            .previewDisplayName("Small - Accessibility font")
     }
 }
 #endif

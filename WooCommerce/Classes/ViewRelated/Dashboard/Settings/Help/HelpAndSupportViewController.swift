@@ -480,18 +480,29 @@ private extension HelpAndSupportViewController {
         let entryPoint: SupportChatViewModel.EntryPoint = ServiceLocator.stores.isAuthenticated
             ? .helpAndSupport
             : .preLogin
+        var viewModelHolder: SupportChatViewModel?
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
             onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo in
-                self?.handleContactHumanSupport(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo)
+                self?.handleContactHumanSupport(chatID: chatID,
+                                                transcript: transcript,
+                                                supportAreaInfo: supportAreaInfo,
+                                                onTicketCreated: { [weak viewModelHolder] in
+                                                    viewModelHolder?.markChatTicketCreated()
+                                                })
             }
         )
+        viewModelHolder = viewModel
         let controller = SupportChatHostingController(viewModel: viewModel)
         navigationController?.pushViewController(controller, animated: true)
     }
 
-    private func handleContactHumanSupport(chatID: Int64?, transcript: String, supportAreaInfo: SupportAreaInfo?) {
-        supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController)
+    private func handleContactHumanSupport(chatID: Int64?,
+                                           transcript: String,
+                                           supportAreaInfo: SupportAreaInfo?,
+                                           onTicketCreated: @escaping () -> Void) {
+        supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
+                                                                    onTicketCreated: onTicketCreated)
         supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo)
     }
 
@@ -512,15 +523,22 @@ private extension HelpAndSupportViewController {
     /// Pushes the support chat UI seeded with a prior `chatID` so the conversation
     /// continues on the assistant's side when the merchant sends the next message.
     private func resumeChat(for summary: SupportChatSummary) {
+        var viewModelHolder: SupportChatViewModel?
         let chatViewModel = SupportChatViewModel(
             botSlug: summary.botSlug,
             entryPoint: .chatHistory,
             chatID: summary.chatID,
             hasCreatedTicket: summary.hasCreatedTicket,
             onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo in
-                self?.handleContactHumanSupport(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo)
+                self?.handleContactHumanSupport(chatID: chatID,
+                                                transcript: transcript,
+                                                supportAreaInfo: supportAreaInfo,
+                                                onTicketCreated: { [weak viewModelHolder] in
+                                                    viewModelHolder?.markChatTicketCreated()
+                                                })
             }
         )
+        viewModelHolder = chatViewModel
         let controller = SupportChatHostingController(viewModel: chatViewModel)
         navigationController?.pushViewController(controller, animated: true)
     }

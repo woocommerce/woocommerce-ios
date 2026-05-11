@@ -3,6 +3,7 @@ import SwiftUI
 struct EmptyStateView: View {
 
     let onPick: (String) -> Void
+    var onFeedbackTap: (() -> Void)? = nil
 
     private let suggestions: [SuggestionItem] = EmptyStateView.defaultSuggestions
 
@@ -16,35 +17,43 @@ struct EmptyStateView: View {
     private static let dividerLeadingInset: CGFloat = AssistantSpacing.large + symbolWidth + AssistantSpacing.medium
 
     var body: some View {
-        VStack(alignment: .leading, spacing: AssistantSpacing.medium) {
-            Text(Localization.title)
-                .font(.assistantTitle)
-                .foregroundStyle(Color.primary)
-                .padding(.horizontal, AssistantSpacing.large)
-                .padding(.top, AssistantSpacing.xxLarge)
+        ScrollView {
+            VStack(alignment: .leading, spacing: AssistantSpacing.medium) {
+                if let onFeedbackTap {
+                    AssistantEarlyAccessNoticeCard(onFeedbackTap: onFeedbackTap)
+                        .padding(.horizontal, AssistantSpacing.large)
+                        .padding(.top, AssistantSpacing.large)
+                }
 
-            AssistantDashboardCardShell(
-                title: nil,
-                padBody: false
-            ) {
-                VStack(spacing: 0) {
-                    ForEach(Array(suggestions.enumerated()), id: \.element.id) { index, item in
-                        SuggestionRow(item: item,
-                                      symbolWidth: Self.symbolWidth,
-                                      onTap: { onPick(item.title) })
-                        if index < suggestions.count - 1 {
-                            Rectangle()
-                                .fill(Color.assistantSeparator.opacity(0.4))
-                                .frame(height: 0.5)
-                                .padding(.leading, Self.dividerLeadingInset)
+                Text(Localization.title)
+                    .font(.assistantTitle)
+                    .foregroundStyle(Color.primary)
+                    .padding(.horizontal, AssistantSpacing.large)
+                    .padding(.top, AssistantSpacing.xxLarge)
+
+                AssistantDashboardCardShell(
+                    title: nil,
+                    padBody: false
+                ) {
+                    VStack(spacing: 0) {
+                        ForEach(Array(suggestions.enumerated()), id: \.element.id) { index, item in
+                            SuggestionRow(item: item,
+                                          symbolWidth: Self.symbolWidth,
+                                          onTap: { onPick(item.title) })
+                            if index < suggestions.count - 1 {
+                                Rectangle()
+                                    .fill(Color.assistantSeparator.opacity(0.4))
+                                    .frame(height: 0.5)
+                                    .padding(.leading, Self.dividerLeadingInset)
+                            }
                         }
                     }
                 }
+                .padding(.horizontal, AssistantSpacing.large)
             }
-            .padding(.horizontal, AssistantSpacing.large)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.bottom, AssistantSpacing.large)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.bottom, AssistantSpacing.large)
     }
 
     private static let defaultSuggestions: [SuggestionItem] = [

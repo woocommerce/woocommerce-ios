@@ -52,7 +52,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
     }
 
-    /// Checks the initial visibility without the `POSTabVisibilityChecker` instsance
+    /// Checks the initial visibility without the `POSTabVisibilityChecker` instance
     /// Used for the initial state check when a site instance hasn't been loaded but a `siteID` is available
     static func checkInitialVisibility(
         for siteID: Int64,

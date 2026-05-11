@@ -8,7 +8,6 @@ enum RESTPayloadPruning {
         "meta_data",
         "yoast_head",
         "yoast_head_json",
-        "permalink",
         "product_permalink",
         "reviewer_avatar_urls"
     ]

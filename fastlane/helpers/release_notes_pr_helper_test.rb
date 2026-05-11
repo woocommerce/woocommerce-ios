@@ -383,7 +383,8 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
         type: 'pull',
         author_login: 'some-user',
         author_url: 'https://github.com/some-user'
-      }]
+      }],
+      ai_prompt: "Act like a mobile app marketer…\n\nItems:\n- [*] Improved barcode scanner reading accuracy"
     )
 
     assert_includes body, 'AI-generated release notes'
@@ -394,6 +395,20 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
     assert_includes body, '[@some-user](https://github.com/some-user)'
     assert_includes body, 'Review checklist'
     refute_includes body, 'Team'
+  end
+
+  def test_pr_body_includes_collapsible_ai_prompt
+    body = Helper.build_release_notes_pr_body(
+      version: '24.8',
+      generated_notes: 'Short merchant copy.',
+      source_items: [],
+      ai_prompt: "Act like a mobile app marketer preparing release notes for the App Store.\n\nRules:\n- Only use the provided items.\n\nItems:\n- [*] Foo"
+    )
+
+    assert_includes body, '<details>'
+    assert_includes body, 'Prompt sent to OpenAI'
+    assert_includes body, 'Act like a mobile app marketer preparing release notes'
+    assert_includes body, '- [*] Foo'
   end
 
   def test_pr_title

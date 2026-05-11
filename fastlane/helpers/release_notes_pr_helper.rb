@@ -227,8 +227,10 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
   # @param version [String]
   # @param generated_notes [String]
   # @param source_items [Array<Hash>] enriched with optional :author_login, :author_url
+  # @param ai_prompt [String] the user-question portion sent to `openai_ask`
+  #   on the first attempt (rendered in a collapsible block for transparency)
   # @return [String]
-  def build_release_notes_pr_body(version:, generated_notes:, source_items:)
+  def build_release_notes_pr_body(version:, generated_notes:, source_items:, ai_prompt:)
     <<~BODY
       Created by ReleasesV2 automation.
 
@@ -241,6 +243,15 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
       > #{generated_notes}
 
       Character count: #{generated_notes.length} / #{PREFERRED_RELEASE_NOTES_MAX_LENGTH}
+
+      <details>
+      <summary>Prompt sent to OpenAI (first attempt)</summary>
+
+      ```
+      #{ai_prompt.strip}
+      ```
+
+      </details>
 
       ## Source items used
 

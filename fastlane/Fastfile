@@ -394,6 +394,7 @@ platform :ios do
     fail_lane!(context: 'release-notes-pr-error', message: "No user-facing release-note items found for #{version}") if parsed_source_items.empty?
 
     items_for_ai = ReleaseNotesPRHelper.items_for_ai_prompt(parsed_source_items)
+    first_attempt_prompt = ReleaseNotesPRHelper.build_ai_release_notes_prompt(version: version, items_text: items_for_ai)
     generated_notes = generate_ai_release_notes(version: version, items_text: items_for_ai)
 
     UI.important("Generated release notes — #{generated_notes.length} characters:")
@@ -410,7 +411,8 @@ platform :ios do
     pr_body = ReleaseNotesPRHelper.build_release_notes_pr_body(
       version: version,
       generated_notes: generated_notes,
-      source_items: enriched_source_items
+      source_items: enriched_source_items,
+      ai_prompt: first_attempt_prompt
     )
 
     if dry_run

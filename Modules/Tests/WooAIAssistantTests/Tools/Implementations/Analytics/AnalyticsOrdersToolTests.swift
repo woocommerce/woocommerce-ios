@@ -2,7 +2,22 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct AnalyticsOrdersToolTests {
+    @Test
+    func test_analytics_orders_definition_documents_grain_separate_from_window() {
+        // Given
+        let tool = AnalyticsOrdersTool.make()
+
+        // Then
+        #expect(tool.definition.description.contains("grouping grain with a date window"))
+        #expect(tool.definition.description.contains("interval follows the grouping grain"))
+        #expect(tool.definition.description.contains("Order stats are card-backed"))
+        #expect(tool.definition.description.contains("do not stop with prose"))
+        #expect(tool.definition.description.contains("family analytics_stats"))
+        #expect(tool.definition.description.contains("currency:none"))
+    }
+
     @Test
     func test_analytics_orders_when_response_ok_then_summary_keeps_totals_and_interval_count() async throws {
         // Given

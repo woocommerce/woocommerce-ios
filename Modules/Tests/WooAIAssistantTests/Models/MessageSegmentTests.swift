@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct MessageSegmentTests {
     @Test
     func test_messageSegment_id_returns_segment_id_for_each_case() {

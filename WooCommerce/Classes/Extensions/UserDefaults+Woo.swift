@@ -30,6 +30,7 @@ extension UserDefaults {
         case siteIDsWithSnapshotTracked
         case hasSavedPrivacyBannerSettings
         case usedProductDescriptionAI
+        case lastWidgetSnapshot
 
         // Tooltip
         case hasDismissedWriteWithAITooltip
@@ -86,6 +87,9 @@ extension UserDefaults {
 
         /// Whether configurable store stats widgets are enabled
         case configurableStoreStatsWidgetsEnabled
+
+        /// Sites available for selection in the configurable store stats widget picker
+        case widgetSelectableSites
     }
 }
 

@@ -1,42 +1,17 @@
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct TypedCardDispatcherTests {
 
     @Test
-    func test_route_when_tool_is_orders_list_then_routes_to_orders_list() {
+    func test_route_when_tool_is_bare_list_name_then_routes_to_unknown() {
         // When
-        let route = TypedCardDispatcher.route(for: "orders_list")
+        let routes = ["orders_list", "products_list", "product_variations_list", "customers_list"]
+            .map { TypedCardDispatcher.route(for: $0) }
 
         // Then
-        #expect(route == .ordersList)
-    }
-
-    @Test
-    func test_route_when_tool_is_products_list_then_routes_to_products_list() {
-        // When
-        let route = TypedCardDispatcher.route(for: "products_list")
-
-        // Then
-        #expect(route == .productsList)
-    }
-
-    @Test
-    func test_route_when_tool_is_product_variations_list_then_routes_to_product_variations_list() {
-        // When
-        let route = TypedCardDispatcher.route(for: "product_variations_list")
-
-        // Then
-        #expect(route == .productVariationsList)
-    }
-
-    @Test
-    func test_route_when_tool_is_customers_list_then_routes_to_customers_list() {
-        // When
-        let route = TypedCardDispatcher.route(for: "customers_list")
-
-        // Then
-        #expect(route == .customersList)
+        #expect(routes.allSatisfy { $0 == .unknown })
     }
 
     @Test

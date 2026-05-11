@@ -2,9 +2,21 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ProductsGetToolTests {
     @Test
-    func test_products_get_when_response_ok_then_uiStructured_carries_product_card_with_pruned_entity() async throws {
+    func test_definition_limits_variation_lookup_to_explicit_variation_questions() {
+        // Given
+        let tool = ProductsGetTool.make()
+
+        // Then
+        #expect(tool.definition.description.contains("explicitly asks about variations"))
+        #expect(tool.definition.description.contains("variation-level stock"))
+        #expect(tool.definition.description.contains("Do NOT call this tool to render a card after products_list"))
+    }
+
+    @Test
+    func test_products_get_when_response_ok_then_structured_carries_pruned_product_summary() async throws {
         // Given
         let body = """
         {
@@ -35,17 +47,7 @@ struct ProductsGetToolTests {
             Issue.record("expected success")
             return
         }
-        let cards = try #require(success.uiStructured?.cards)
-        #expect(cards.count == 1)
-        #expect(cards[0].family == .product)
-        #expect(cards[0].id == "555")
-        if case .object(let element) = cards[0].element {
-            #expect(element["_links"] == nil)
-            #expect(element["meta_data"] == nil)
-            #expect(element["description"] == .string("Soft & warm cashmere scarf."))
-        } else {
-            Issue.record("expected object element")
-        }
+        #expect(success.uiStructured == nil)
         if case .object(let summary) = success.structured {
             #expect(summary["sku"] == .string("SCARF-CSH"))
             #expect(summary["stock_status"] == .string("instock"))

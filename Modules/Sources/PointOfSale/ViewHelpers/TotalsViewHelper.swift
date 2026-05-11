@@ -11,7 +11,7 @@ struct TotalsViewHelper {
         }
 
         switch paymentState.activePaymentMethod {
-        case .cash:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             switch paymentState.card {

@@ -1,6 +1,7 @@
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct EntityCardPayloadTests {
 
     // MARK: - OrderCardPayload
@@ -79,40 +80,6 @@ struct EntityCardPayloadTests {
 
         // Then
         #expect(order.isEmpty == false)
-    }
-
-    @Test
-    func test_decodeOrderRows_when_rows_is_empty_then_returns_empty() {
-        // Given
-        let payload = AnyCodableJSON.object([
-            "count": .int(0),
-            "rows": .array([])
-        ])
-
-        // When
-        let rows = EntityCardPayload.decodeOrderRows(payload)
-
-        // Then
-        #expect(rows.isEmpty)
-    }
-
-    @Test
-    func test_decodeOrderRows_when_rows_has_entries_then_returns_typed_rows() {
-        // Given
-        let payload = AnyCodableJSON.object([
-            "rows": .array([
-                .object(["id": .int(1), "number": .string("1")]),
-                .object(["id": .int(2), "number": .string("2")])
-            ])
-        ])
-
-        // When
-        let rows = EntityCardPayload.decodeOrderRows(payload)
-
-        // Then
-        #expect(rows.count == 2)
-        #expect(rows[0].id == 1)
-        #expect(rows[1].number == "2")
     }
 
     // MARK: - ProductCardPayload
@@ -199,24 +166,6 @@ struct EntityCardPayloadTests {
         #expect(customer?.displayName == "only@example.com")
     }
 
-    @Test
-    func test_decodeCustomerRows_when_payload_uses_matches_key_then_decodes() {
-        // Given
-        let payload = AnyCodableJSON.object([
-            "matches": .array([
-                .object(["id": .int(1), "first_name": .string("Alex")]),
-                .object(["id": .int(2), "first_name": .string("Sam")])
-            ])
-        ])
-
-        // When
-        let rows = EntityCardPayload.decodeCustomerRows(payload)
-
-        // Then
-        #expect(rows.count == 2)
-        #expect(rows[0].firstName == "Alex")
-    }
-
     // MARK: - ProductVariationCardPayload
 
     @Test
@@ -237,29 +186,4 @@ struct EntityCardPayloadTests {
         #expect(variation?.parentID == 99)
     }
 
-    // MARK: - visible
-
-    @Test
-    func test_visible_when_rows_exceed_limit_then_caps_at_limit() {
-        // Given
-        let rows = (0..<10).map { OrderCardPayload(id: Int64($0)) }
-
-        // When
-        let visible = EntityCardPayload.visible(rows)
-
-        // Then
-        #expect(visible.count == entityCardVisibleRowLimit)
-    }
-
-    @Test
-    func test_visible_when_rows_below_limit_then_returns_all() {
-        // Given
-        let rows = (0..<2).map { OrderCardPayload(id: Int64($0)) }
-
-        // When
-        let visible = EntityCardPayload.visible(rows)
-
-        // Then
-        #expect(visible.count == 2)
-    }
 }

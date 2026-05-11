@@ -19,7 +19,11 @@ public enum ProductVariationsBulkUpdateTool {
         100). Each entry sets allowlisted fields per variation: regular_price, \
         sale_price, stock_quantity, stock_status, sku, status. Use this \
         instead of multiple product_variations_update calls when more than \
-        one variation of the same parent is being updated together.
+        one variation of the same parent is being updated together. After \
+        the bulk update succeeds, call `show_cards` with family \
+        `product_variation` and one entry per updated variation (each with \
+        the variation id and the parent product id) so the merchant sees \
+        the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),

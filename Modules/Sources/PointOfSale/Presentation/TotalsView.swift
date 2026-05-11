@@ -23,12 +23,22 @@ struct TotalsView: View {
     // Default true so totals fields would be included in the view hiearchy on first render and animate with TotalsView
     @State private var isShowingTotalsFields: Bool = true
 
-    /// Payment state with cash collection neutralized. Only `.collectingCash` is handled
-    /// by NavigationStack push. Success and idle are visible to TotalsView.
-    /// TODO: Consider removing cash state entirely - it no longer drives the cash view.
+    /// Payment state with in-progress secondary methods neutralized.
+    /// `.collectingCash` (cash), `.showingQRCode` (scan-to-pay), and `.confirming`/`.processing`
+    /// (mark-as-paid) all live in their own modal/navigation push, so we hide them from TotalsView.
+    /// Only success and idle remain visible.
     private var displayPaymentState: PointOfSalePaymentState {
-        let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash ? .idle : paymentModel.paymentState.cash
-        return PointOfSalePaymentState(card: paymentModel.paymentState.card, cash: cash)
+        let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash
+            ? .idle : paymentModel.paymentState.cash
+        let scanToPay: PointOfSaleScanToPayState = paymentModel.paymentState.scanToPay.isShowingQRCode
+            ? .idle : paymentModel.paymentState.scanToPay
+        let markAsPaid: PointOfSaleMarkAsPaidState = paymentModel.paymentState.markAsPaid == .confirming
+            || paymentModel.paymentState.markAsPaid == .processing
+            ? .idle : paymentModel.paymentState.markAsPaid
+        return PointOfSalePaymentState(card: paymentModel.paymentState.card,
+                                       cash: cash,
+                                       scanToPay: scanToPay,
+                                       markAsPaid: markAsPaid)
     }
 
     private var shouldShowTotalsFields: Bool {
@@ -112,10 +122,12 @@ struct TotalsView: View {
                 isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
                 isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
                 onScanToPay: {
-                    // TODO: Wired in the Scan to Pay feature PR (rsm/pos-scan-to-pay-feature).
+                    Task { @MainActor in
+                        await paymentModel.startScanToPayPayment()
+                    }
                 },
                 onMarkOrderAsPaid: {
-                    // TODO: Wired in the Mark order as paid feature PR (rsm/pos-mark-order-as-paid-feature).
+                    paymentModel.startMarkAsPaidPayment()
                 }
             )
         }
@@ -173,7 +185,7 @@ private extension TotalsView {
             return true
         case .connected, .disconnecting, .cancellingConnection, .reconnecting:
             switch displayPaymentState.activePaymentMethod {
-            case .cash:
+            case .cash, .scanToPay, .markAsPaid:
                 return true
             case .card:
                 return paymentModel.cardPresentPaymentInlineMessage != nil ||
@@ -189,7 +201,7 @@ private extension TotalsView {
         }
 
         switch displayPaymentState.activePaymentMethod {
-        case .cash:
+        case .cash, .scanToPay, .markAsPaid:
             return PaymentViewLayout(topPadding: POSPadding.none,
                                      bottomPadding: POSPadding.none,
                                      sidePadding: POSPadding.none)
@@ -268,7 +280,7 @@ private extension TotalsView {
         static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular()
         static let totalTitleFont: POSFontStyle = .posHeadingBold
         static let totalAmountFont: POSFontStyle = .posHeadingBold
-        static let separatorColor: Color = Color.posOutlineVariant
+        static let separatorColor = Color.posOutlineVariant
 
         static let shimmeringCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let shimmeringWidth: CGFloat = 342
@@ -491,6 +503,19 @@ private struct PaymentViewContent: View {
                 messageType: .paymentSuccess(
                     viewModel: .init(formattedOrderTotal: total.orderTotal,
                                      paymentMethod: .cash)),
+                animation: .init(namespace: paymentMessageNamespace))
+        } else if case .paymentSuccess = paymentState.scanToPay,
+                  case .loaded(let total) = orderState {
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                     paymentMethod: .scanToPay)),
+                animation: .init(namespace: paymentMessageNamespace))
+        } else if paymentState.markAsPaid == .paymentSuccess, case .loaded(let total) = orderState {
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                     paymentMethod: .markAsPaid)),
                 animation: .init(namespace: paymentMessageNamespace))
         } else {
             POSCardPaymentContentView(

@@ -1,6 +1,7 @@
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct AssistantConfigurationTests {
     @Test
     func test_pinned_constants_match_documented_values() {

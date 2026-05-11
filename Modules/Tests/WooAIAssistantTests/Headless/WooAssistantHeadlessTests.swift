@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct WooAssistantHeadlessTests {
 
     @Test
@@ -64,7 +65,7 @@ struct WooAssistantHeadlessTests {
     }
 
     @Test
-    func test_send_when_orders_list_emitted_then_cards_array_includes_kind_and_payload() async throws {
+    func test_send_when_orders_list_emitted_then_no_cards_recorded_because_list_does_not_render() async throws {
         // Given
         let chat = MockAIChatService()
         let toolCall = OpenAIChat.ToolCall(
@@ -88,11 +89,112 @@ struct WooAssistantHeadlessTests {
         let result = try await harness.send("show me one order")
 
         // Then
+        #expect(result.cards.isEmpty)
+        #expect(result.toolCalls.count == 1)
+        #expect(result.toolCalls.first?.name == "orders_list")
+    }
+
+    @Test
+    func test_send_when_orders_get_emitted_then_no_card_recorded_without_show_cards() async throws {
+        // Given
+        let chat = MockAIChatService()
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_orders_get",
+            function: .init(name: "orders_get", arguments: #"{"id":4001}"#)
+        )
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)],
+            [.textDelta("here it is"), .completed(.stop)]
+        ])
+        let cannedOrder = #"{"id":4001,"number":"4001","status":"completed","total":"99.00","currency":"USD"}"#
+        let restClient = MockWCRESTClient(response: StubResponses.ok(cannedOrder))
+        let harness = WooAssistantHeadless(
+            credentials: makeTestCredentials(),
+            configuration: .init(),
+            chatService: chat,
+            restClient: restClient
+        )
+
+        // When
+        let result = try await harness.send("show order 4001")
+
+        // Then
+        #expect(result.cards.isEmpty)
+        #expect(result.toolCalls.count == 1)
+        #expect(result.toolCalls.first?.name == "orders_get")
+    }
+
+    @Test
+    func test_send_when_show_cards_renders_two_refs_then_two_cards_recorded_in_order() async throws {
+        // Given
+        let chat = MockAIChatService()
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_show_cards",
+            function: .init(name: "show_cards",
+                            arguments: #"{"references":[{"family":"order","id":"1"},{"family":"order","id":"2"}]}"#)
+        )
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)],
+            [.textDelta("here are two orders"), .completed(.stop)]
+        ])
+        let cannedOrders = #"[{"id":1,"number":"1","status":"processing","total":"10.00","currency":"USD"},"# +
+            #"{"id":2,"number":"2","status":"completed","total":"20.00","currency":"USD"}]"#
+        let restClient = MockWCRESTClient(response: StubResponses.ok(cannedOrders))
+        let harness = WooAssistantHeadless(
+            credentials: makeTestCredentials(),
+            configuration: .init(),
+            chatService: chat,
+            restClient: restClient
+        )
+
+        // When
+        let result = try await harness.send("show me orders 1 and 2")
+
+        // Then
+        #expect(result.cards.count == 2)
+        #expect(result.cards.allSatisfy { $0.toolName == "show_cards.order" })
+        #expect(result.cards[0].payloadJSON.contains("\"id\":1"))
+        #expect(result.cards[1].payloadJSON.contains("\"id\":2"))
+    }
+
+    @Test
+    func test_send_when_orders_get_then_show_cards_only_records_show_cards_card() async throws {
+        // Given
+        let chat = MockAIChatService()
+        let getCall = OpenAIChat.ToolCall(
+            id: "call_get",
+            function: .init(name: "orders_get", arguments: #"{"id":4001}"#)
+        )
+        let showCall = OpenAIChat.ToolCall(
+            id: "call_show",
+            function: .init(name: "show_cards",
+                            arguments: #"{"references":[{"family":"order","id":"4001"}]}"#)
+        )
+        await chat.setScriptedTurns([
+            [.toolCall(getCall), .completed(.toolCalls)],
+            [.toolCall(showCall), .completed(.toolCalls)],
+            [.textDelta("done"), .completed(.stop)]
+        ])
+        let cannedOrder = #"{"id":4001,"number":"4001","status":"completed","total":"99.00","currency":"USD"}"#
+        let cannedOrdersList = #"[\#(cannedOrder)]"#
+        let restClient = MockWCRESTClient(responses: [
+            StubResponses.ok(cannedOrder),
+            StubResponses.ok(cannedOrdersList)
+        ])
+        let harness = WooAssistantHeadless(
+            credentials: makeTestCredentials(),
+            configuration: .init(),
+            chatService: chat,
+            restClient: restClient
+        )
+
+        // When
+        let result = try await harness.send("tell me about 4001 and show it")
+
+        // Then
         #expect(result.cards.count == 1)
         let card = try #require(result.cards.first)
-        #expect(card.kind == "orders_list")
-        #expect(card.toolName == "orders_list")
-        #expect(card.payloadJSON.isEmpty == false)
+        #expect(card.toolName == "show_cards.order")
         #expect(card.payloadJSON.contains("4001"))
     }
 

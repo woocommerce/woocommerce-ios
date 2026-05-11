@@ -521,10 +521,9 @@ private extension DashboardViewModel {
         }
 
         clientSideBannerObservationCancellable = publisher
-            .filter { site in
+            .first(where: { site in
                 SiteConnectionType(site: site) == .nonJetpack
-            }
-            .first()
+            })
             .sink { [weak self] site in
                 guard let self else { return }
                 Task { @MainActor in

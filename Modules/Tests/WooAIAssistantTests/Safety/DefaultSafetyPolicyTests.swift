@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct DefaultSafetyPolicyTests {
     @Test
     func test_decision_when_tool_safe_then_execute() async {

@@ -73,4 +73,30 @@ public enum SupportChatAction: Action {
     ///   - onCompletion: Delivered on the main thread once the row is removed.
     case deleteChat(chatID: Int64,
                     onCompletion: () -> Void)
+
+    /// Marks an existing chat as having created a support ticket.
+    ///
+    /// Called after a Zendesk support ticket is created for a chat session.
+    ///
+    /// - Parameters:
+    ///   - chatID: Identifier of the chat to update.
+    ///   - onCompletion: Delivered on the main thread once the update is persisted.
+    case markTicketCreated(chatID: Int64,
+                           onCompletion: () -> Void)
+
+    /// Submits feedback for a specific bot message.
+    ///
+    /// - Parameters:
+    ///   - botSlug: Assistant slug (e.g. `woo-chat-allusers`).
+    ///   - chatID: Identifier of the chat.
+    ///   - messageID: Identifier of the message to rate.
+    ///   - sessionID: Session identifier of the chat.
+    ///   - upvoted: `true` for positive feedback (thumbs up), `false` for negative (thumbs down).
+    ///   - onCompletion: Called when the feedback submission completes.
+    case submitFeedback(botSlug: String,
+                        chatID: Int64,
+                        messageID: Int64,
+                        sessionID: String,
+                        upvoted: Bool,
+                        onCompletion: (Result<Void, Error>) -> Void)
 }

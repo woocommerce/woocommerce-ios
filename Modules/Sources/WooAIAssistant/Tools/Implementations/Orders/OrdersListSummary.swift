@@ -3,7 +3,6 @@ import Foundation
 enum OrdersListSummary {
     static func make(from rows: [AnyCodableJSON]) -> AnyCodableJSON {
         var ids: [AnyCodableJSON] = []
-        var perRow: [AnyCodableJSON] = []
         var statusCounts: [String: Int] = [:]
         var totals: [Decimal] = []
         var currency: String?
@@ -21,19 +20,11 @@ enum OrdersListSummary {
             if currency == nil, let value = RESTResponseParsing.stringField(row, "currency") {
                 currency = value
             }
-            var summary = OrderSummary.make(from: row)
-            if case .object(var fields) = summary,
-               let customerID = RESTResponseParsing.intField(row, "customer_id") {
-                fields["customer_id"] = .int(customerID)
-                summary = .object(fields)
-            }
-            perRow.append(summary)
         }
 
         var fields: [String: AnyCodableJSON] = [
             "count": .int(Int64(rows.count)),
             "ids": .array(ids),
-            "rows": .array(perRow),
             "status_counts": .object(statusCounts.mapValues { .int(Int64($0)) })
         ]
         if let totalRange = RESTResponseParsing.decimalRange(totals, currency: currency) {

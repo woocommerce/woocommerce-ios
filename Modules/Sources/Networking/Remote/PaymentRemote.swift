@@ -44,7 +44,7 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
         let path = "sites/\(siteID)/\(Path.products)"
         let request = DotcomRequest(wordpressApiVersion: .mark1_3, method: .get, path: path)
         let plansByID: [String: SiteCurrentPlanResponse] = try await enqueue(request, mapper: SiteCurrentPlanResponseMapper())
-        guard let currentPlan = plansByID.filter({ $0.value.isCurrentPlan == true }).first else {
+        guard let currentPlan = plansByID.first(where: { $0.value.isCurrentPlan == true }) else {
             throw LoadSiteCurrentPlanError.noCurrentPlan
         }
 

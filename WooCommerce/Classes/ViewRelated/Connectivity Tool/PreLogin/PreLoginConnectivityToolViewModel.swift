@@ -184,16 +184,16 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
 
     /// Creates a SupportChatViewModel with the current troubleshooting context.
     ///
-    func makeSupportChatViewModel(onContactHumanSupport: @escaping (_ transcript: String) -> Void) -> SupportChatViewModel {
+    func makeSupportChatViewModel(
+        onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
+    ) -> SupportChatViewModel {
         var context: [String: Any] = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {
-            context["troubleshooting_results"] = troubleshootingDescription
+            context["troubleshootingResults"] = troubleshootingDescription
         }
 
         context["site_url"] = siteURL.absoluteString
-        context["app_version"] = Bundle.main.marketingVersion
-        context["ios_version"] = UIDevice.current.systemVersion
 
         return SupportChatViewModel(
             entryPoint: .connectivityTool,

@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct AssistantEventTests {
     @Test
     func test_assistantEvent_failed_carries_error_kind() {

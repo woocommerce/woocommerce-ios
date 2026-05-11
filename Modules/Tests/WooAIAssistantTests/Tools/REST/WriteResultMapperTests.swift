@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct WriteResultMapperTests {
     @Test
     func test_mapEntity_when_response_ok_then_returns_success_with_pruned_card_and_summary() {

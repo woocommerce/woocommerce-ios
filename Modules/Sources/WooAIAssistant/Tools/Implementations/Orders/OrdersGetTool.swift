@@ -58,12 +58,7 @@ public enum OrdersGetTool {
         }
         let pruned = RESTPayloadPruning.prune(entity)
         let summary = OrderSummary.make(from: pruned)
-        let resolvedID = RESTResponseParsing.intField(pruned, "id").map(String.init) ?? String(args.id)
-        let card = RenderedCardPayload(family: .order,
-                                       id: resolvedID,
-                                       element: pruned)
         return .success(.init(toolName: name,
-                              structured: LLMPayloadCap.capped(summary, toolName: name),
-                              uiStructured: UIStructured(cards: [card])))
+                              structured: LLMPayloadCap.capped(summary, toolName: name)))
     }
 }

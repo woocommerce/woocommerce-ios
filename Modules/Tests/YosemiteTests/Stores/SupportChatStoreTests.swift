@@ -269,6 +269,47 @@ struct SupportChatStoreTests {
         #expect(storedChatCount == 0)
     }
 
+    // MARK: - markTicketCreated
+
+    @Test func markTicketCreated_sets_hasCreatedTicket_on_existing_row() async throws {
+        // Given — register a chat first.
+        let store = makeStore()
+        let chatID: Int64 = 4242
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.registerChat(chatID: chatID,
+                                                          siteID: sampleSiteID,
+                                                          wpcomUserID: sampleWPComUserID,
+                                                          botSlug: sampleBotSlug,
+                                                          firstUserMessage: "hi",
+                                                          onCompletion: { continuation.resume() }))
+        }
+        #expect(viewStorage.loadSupportChat(chatID: chatID)?.hasCreatedTicket == false)
+
+        // When
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.markTicketCreated(chatID: chatID,
+                                                               onCompletion: { continuation.resume() }))
+        }
+
+        // Then
+        let stored = try #require(viewStorage.loadSupportChat(chatID: chatID))
+        #expect(stored.hasCreatedTicket == true)
+    }
+
+    @Test func markTicketCreated_when_row_does_not_exist_then_completes_without_error() async {
+        // Given
+        let store = makeStore()
+
+        // When — mark a chatID that was never registered.
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.markTicketCreated(chatID: 9999,
+                                                               onCompletion: { continuation.resume() }))
+        }
+
+        // Then — idempotent: no row created.
+        #expect(storedChatCount == 0)
+    }
+
     // MARK: - fetchChat
 
     @Test func fetchChat_forwards_to_remote_with_botSlug_and_chatID() async throws {
@@ -310,6 +351,83 @@ struct SupportChatStoreTests {
         switch result {
         case .success:
             Issue.record("Expected fetchChat to propagate a failure")
+        case .failure(let error):
+            #expect(error is NetworkError)
+        }
+    }
+
+    // MARK: - submitFeedback
+
+    @Test func submitFeedback_forwards_to_remote_with_correct_parameters() async throws {
+        // Given
+        let store = makeStore()
+        remote.whenSubmittingFeedback(thenReturn: .success(()))
+
+        // When
+        _ = await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.submitFeedback(botSlug: "woo-chat",
+                                                            chatID: 999,
+                                                            messageID: 123,
+                                                            sessionID: "session-abc",
+                                                            upvoted: true,
+                                                            onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(remote.submitFeedbackInvocations.count == 1)
+        let invocation = try #require(remote.submitFeedbackInvocations.first)
+        #expect(invocation.botSlug == "woo-chat")
+        #expect(invocation.chatID == 999)
+        #expect(invocation.messageID == 123)
+        #expect(invocation.sessionID == "session-abc")
+        #expect(invocation.upvoted == true)
+    }
+
+    @Test func submitFeedback_when_downvoted_then_forwards_false() async throws {
+        // Given
+        let store = makeStore()
+        remote.whenSubmittingFeedback(thenReturn: .success(()))
+
+        // When
+        _ = await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.submitFeedback(botSlug: "woo-chat",
+                                                            chatID: 888,
+                                                            messageID: 456,
+                                                            sessionID: "session-xyz",
+                                                            upvoted: false,
+                                                            onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let invocation = try #require(remote.submitFeedbackInvocations.first)
+        #expect(invocation.upvoted == false)
+    }
+
+    @Test func submitFeedback_propagates_remote_errors() async {
+        // Given
+        let store = makeStore()
+        remote.whenSubmittingFeedback(thenReturn: .failure(NetworkError.timeout()))
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.submitFeedback(botSlug: "woo-chat",
+                                                            chatID: 999,
+                                                            messageID: 123,
+                                                            sessionID: "session-abc",
+                                                            upvoted: true,
+                                                            onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        switch result {
+        case .success:
+            Issue.record("Expected submitFeedback to propagate a failure")
         case .failure(let error):
             #expect(error is NetworkError)
         }

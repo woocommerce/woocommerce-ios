@@ -24,18 +24,27 @@ class SupportFormMetadataProvider {
     ///
     private let systemStatusReportViewModel: SystemStatusReportViewModel
 
+    /// Pre-fetched system status report string, if available.
+    ///
+    private let prefetchedSystemStatusReport: String?
+
     internal init(applicationLogProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
                   stores: StoresManager = ServiceLocator.stores,
                   sessionManager: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
                   storageManager: StorageManagerType = ServiceLocator.storageManager,
-                  connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
+                  connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
+                  systemStatusReport: String? = nil) {
         self.applicationLogProvider = applicationLogProvider
         self.stores = stores
         self.sessionManager = sessionManager
         self.storageManager = storageManager
         self.connectivityObserver = connectivityObserver
         self.pluginResultsController = Self.createPluginResultsController(sessionManager: sessionManager, storageManager: storageManager)
+        self.prefetchedSystemStatusReport = systemStatusReport
         self.systemStatusReportViewModel = Self.createSSRViewModel(sessionManager: sessionManager)
+        if systemStatusReport == nil {
+            systemStatusReportViewModel.fetchReport()
+        }
     }
 
     /// Common system & site  tags. Used in Zendesk Forms.
@@ -69,7 +78,7 @@ class SupportFormMetadataProvider {
             ZendeskFieldsIDs.appVersion: Bundle.main.version,
             ZendeskFieldsIDs.deviceFreeSpace: getDeviceFreeSpace(),
             ZendeskFieldsIDs.logs: getLogFile(),
-            ZendeskFieldsIDs.legacyLogs: systemStatusReportViewModel.statusReport,
+            ZendeskFieldsIDs.legacyLogs: prefetchedSystemStatusReport ?? systemStatusReportViewModel.statusReport,
             ZendeskFieldsIDs.currentSite: getCurrentSiteDescription(),
             ZendeskFieldsIDs.sourcePlatform: Constants.sourcePlatform,
             ZendeskFieldsIDs.appLanguage: Locale.preferredLanguage,
@@ -110,7 +119,6 @@ private extension SupportFormMetadataProvider {
     ///
     private static func createSSRViewModel(sessionManager: SessionManagerProtocol) -> SystemStatusReportViewModel {
         let viewModel = SystemStatusReportViewModel(siteID: sessionManager.defaultSite?.siteID ?? 0)
-        viewModel.fetchReport()
         return viewModel
     }
 

@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct CustomersListToolTests {
     @Test
     func test_customers_list_when_response_is_array_then_summary_carries_id_resolution_matches() async throws {

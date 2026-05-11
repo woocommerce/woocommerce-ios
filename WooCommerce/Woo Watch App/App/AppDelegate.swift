@@ -15,7 +15,7 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
     /// Stores and modifies app bindings.
     /// This type should be replaced from the main WooApp file.
     ///
-    var appBindings: AppBindings = AppBindings()
+    var appBindings = AppBindings()
 
     /// Handles and configures the crash logging system.
     /// This type should be assigned from the main WooApp file.

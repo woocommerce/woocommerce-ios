@@ -608,7 +608,7 @@ extension HubMenuViewModel {
         let title: String = Localization.coupon
         let description: String = Localization.couponDescription
         let icon: UIImage = .couponImage
-        let iconColor: UIColor = UIColor(light: .withColorStudio(.green, shade: .shade30),
+        let iconColor = UIColor(light: .withColorStudio(.green, shade: .shade30),
                                          dark: .withColorStudio(.green, shade: .shade50))
         let accessibilityIdentifier: String = "menu-coupons"
         let trackingOption: String = "coupons"

@@ -463,15 +463,13 @@ public actor AgenticLoopOrchestrator {
             continuation.yield(.toolResult(toolCallID: call.id,
                                            toolName: call.function.name,
                                            payload: success.structured))
-            // Bridge `uiStructured.cards` into UI-visible `.cardRender` events so
-            // tools that pre-render (orders_get, products_get, show_cards, write
-            // mappers) actually surface in the transcript. The synthetic
-            // toolResult events are UI-only - the model transcript is the
-            // separate `messages` array in `run`.
-            if let cards = success.uiStructured?.cards, !cards.isEmpty {
+            // Keep visible cards behind show_cards, matching Android's single rendering path.
+            if call.function.name == ShowCardsTool.name,
+               let cards = success.uiStructured?.cards,
+               !cards.isEmpty {
                 for (index, card) in cards.enumerated() {
                     let syntheticID = "\(call.id):card:\(index):\(card.family.rawValue):\(card.id)"
-                    let syntheticTool = "\(call.function.name).\(card.family.rawValue)"
+                    let syntheticTool = card.syntheticToolName(callName: call.function.name)
                     continuation.yield(.toolResult(toolCallID: syntheticID,
                                                    toolName: syntheticTool,
                                                    payload: card.element))

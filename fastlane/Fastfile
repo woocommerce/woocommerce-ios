@@ -1719,9 +1719,15 @@ def generate_ai_release_notes(version:, raw_items:)
 
   captured_text = nil
   tool_handler = lambda do |args|
-    text = args['text'].to_s
+    # Strip before measuring/capturing so trailing whitespace doesn't get written to
+    # release_notes.txt / CHANGELOG.md or counted toward the 350-char limit. Reject
+    # empty drafts as a length-style failure so the model stays in the tool loop and
+    # retries rather than terminating with us-side "empty release notes" later.
+    text = args['text'].to_s.strip
     length = text.length
-    if length <= max_length
+    if length.zero?
+      { ok: false, length: 0, max: max_length, reason: 'empty draft — submit a non-empty paragraph' }
+    elsif length <= max_length
       captured_text = text
       { ok: true, length: length }
     else

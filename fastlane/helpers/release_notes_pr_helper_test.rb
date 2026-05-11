@@ -67,7 +67,7 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
       'Preserve correct grammar and spelling',
       'Do not drop letters from words',
       '`validate_release_notes_length` tool',
-      '`{ ok: true }`',
+      '`{ ok: true, length: }`',
       '`{ ok: false, length:, max:, cut_at_least: }`',
       'shorten the draft by at least `cut_at_least` characters',
       'Do not include the release-notes text in your plain-text reply'

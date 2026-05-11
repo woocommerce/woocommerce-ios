@@ -38,8 +38,9 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
   # Builds the user-facing question for `openai_ask`. Used in conjunction with
   # release-toolkit's predefined `:release_notes` system prompt and the
   # `validate_release_notes_length` tool: the model checks drafts via the tool
-  # and the handler validates length externally, replying with `{ ok: true }` or
-  # `{ ok: false, length:, max:, cut_at_least: }` until a draft is accepted.
+  # and the handler validates length externally, replying with
+  # `{ ok: true, length: }` or `{ ok: false, length:, max:, cut_at_least: }`
+  # until a draft is accepted.
   #
   # @param version [String]
   # @param raw_items [String] the raw release notes block (one bullet per line)
@@ -61,7 +62,7 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
       - Preserve correct grammar and spelling. Do not drop letters from words, omit articles, or invent abbreviations to fit the character limit. If a draft is too long, restructure or remove a phrase or item rather than mutilating individual words.
 
       Check your draft by calling the `validate_release_notes_length` tool with the proposed text.
-      The tool will reply with `{ ok: true }` if the draft fits within the character limit, or `{ ok: false, length:, max:, cut_at_least: }` if it is too long.
+      The tool will reply with `{ ok: true, length: }` if the draft fits within the character limit, or `{ ok: false, length:, max:, cut_at_least: }` if it is too long.
       When the tool replies `ok: false`, shorten the draft by at least `cut_at_least` characters and call the tool again.
       Keep iterating until the tool replies `ok: true`. Submit every draft — including the final accepted one — through the `validate_release_notes_length` tool. Do not include the release-notes text in your plain-text reply; the calling code reads the accepted draft from the tool argument, not from your final message.
 

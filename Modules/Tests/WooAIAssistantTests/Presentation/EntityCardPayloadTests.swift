@@ -128,6 +128,38 @@ struct EntityCardPayloadTests {
         #expect(product.isEmpty == false)
     }
 
+    @Test
+    func test_decodeProduct_when_payload_has_variations_count_then_field_is_decoded() {
+        // Given
+        let payload = AnyCodableJSON.object([
+            "id": .int(101),
+            "name": .string("Hoodie"),
+            "type": .string("variable"),
+            "variations_count": .int(15)
+        ])
+
+        // When
+        let product = EntityCardPayload.decodeProduct(payload)
+
+        // Then
+        #expect(product?.variationsCount == 15)
+    }
+
+    @Test
+    func test_decodeProduct_when_payload_has_no_variations_count_then_field_is_nil() {
+        // Given
+        let payload = AnyCodableJSON.object([
+            "id": .int(101),
+            "name": .string("Hoodie")
+        ])
+
+        // When
+        let product = EntityCardPayload.decodeProduct(payload)
+
+        // Then
+        #expect(product?.variationsCount == nil)
+    }
+
     // MARK: - CustomerCardPayload
 
     @Test

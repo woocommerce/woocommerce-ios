@@ -6,6 +6,7 @@ enum OrdersListSummary {
         var statusCounts: [String: Int] = [:]
         var totals: [Decimal] = []
         var currency: String?
+        var orders: [AnyCodableJSON] = []
 
         for row in rows {
             if let id = RESTResponseParsing.intField(row, "id") {
@@ -20,11 +21,13 @@ enum OrdersListSummary {
             if currency == nil, let value = RESTResponseParsing.stringField(row, "currency") {
                 currency = value
             }
+            orders.append(OrderSummary.orderRow(from: row, lineItemLimit: OrderSummary.listLineItemLimit))
         }
 
         var fields: [String: AnyCodableJSON] = [
             "count": .int(Int64(rows.count)),
             "ids": .array(ids),
+            "orders": .array(orders),
             "status_counts": .object(statusCounts.mapValues { .int(Int64($0)) })
         ]
         if let totalRange = RESTResponseParsing.decimalRange(totals, currency: currency) {

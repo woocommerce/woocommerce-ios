@@ -193,10 +193,23 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
     // MARK: - Product rows
 
     // Mirrors the Products tab: subtitle = stock detail, accessory = formatted price.
-    private func productDetails(for payload: ProductCardPayload) -> String {
-        productStockDetail(stockStatus: payload.stockStatus, stockQuantity: payload.stockQuantity)
+    // Variable products append a "· N variations" segment so the merchant sees variation count
+    // without having to drill in.
+    func productDetails(for payload: ProductCardPayload) -> String {
+        let stockOrSKU = productStockDetail(stockStatus: payload.stockStatus, stockQuantity: payload.stockQuantity)
             ?? payload.sku.flatMap { $0.isEmpty ? nil : "SKU: \($0)" }
-            ?? ""
+        return joinWithMiddleDot(stockOrSKU, variationsLabel(count: payload.variationsCount))
+    }
+
+    private func variationsLabel(count: Int?) -> String? {
+        guard let count, count > 0 else { return nil }
+        if count == 1 { return Localization.singleVariation }
+        let formatted = NumberFormatter.localizedString(from: NSNumber(value: count), number: .none)
+        return String(format: Localization.variationsCount, formatted)
+    }
+
+    private func joinWithMiddleDot(_ first: String?, _ second: String?) -> String {
+        [first, second].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " \u{00B7} ")
     }
 
     private func variationDetails(for payload: ProductVariationCardPayload) -> String {
@@ -463,6 +476,16 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
             "assistant.externalViews.product.stock.countFormat",
             value: "%1$@ in stock",
             comment: "Subtitle on the assistant product row inlining the stock count. %1$@ is the count."
+        )
+        static let singleVariation = NSLocalizedString(
+            "assistant.externalViews.product.variations.singular",
+            value: "1 variation",
+            comment: "Variations badge on the assistant product row when the product has exactly one variation."
+        )
+        static let variationsCount = NSLocalizedString(
+            "assistant.externalViews.product.variations.plural",
+            value: "%1$@ variations",
+            comment: "Variations badge on the assistant product row for variable products. %1$@ is the count."
         )
     }
 }

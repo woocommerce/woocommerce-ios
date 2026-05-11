@@ -30,6 +30,7 @@ struct ProductsGetToolTests {
             "stock_quantity": 12,
             "type": "simple",
             "status": "publish",
+            "permalink": "https://example.com/product/scarf",
             "description": "<p>Soft &amp; warm cashmere scarf.</p>",
             "_links": {"self": []},
             "meta_data": [{"id": 1, "key": "_x", "value": "y"}],
@@ -54,7 +55,8 @@ struct ProductsGetToolTests {
             #expect(summary["stock_quantity"] == .int(12))
             #expect(summary["regular_price"] == .string("99.00"))
             #expect(summary["sale_price"] == .string("89.00"))
-            #expect(summary["description"] == nil)
+            #expect(summary["permalink"] == .string("https://example.com/product/scarf"))
+            #expect(summary["description"] == .string("Soft & warm cashmere scarf."))
         } else {
             Issue.record("expected object structured")
         }

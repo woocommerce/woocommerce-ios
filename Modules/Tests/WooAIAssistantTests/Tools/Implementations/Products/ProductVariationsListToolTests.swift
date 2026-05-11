@@ -80,4 +80,69 @@ struct ProductVariationsListToolTests {
         // Then
         #expect(await client.calls.first?.query["per_page"] == "50")
     }
+
+    @Test
+    func test_variations_list_summary_when_rows_present_then_wrapper_uses_variations_key_with_widened_per_row_shape() async throws {
+        // Given
+        let body = """
+        [
+            {
+                "id": 1001, "stock_status": "instock", "price": "20.00",
+                "attributes": [{"id": 7, "name": "Color", "option": "Red"}],
+                "image": {"id": 9, "src": "v.jpg"}
+            }
+        ]
+        """
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = ProductVariationsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"product_id": 555}"#, client)
+
+        // Then
+        guard case .success(let success) = result,
+              case .object(let fields) = success.structured,
+              case .array(let variations) = fields["variations"],
+              case .object(let first) = variations.first else {
+            Issue.record("expected variations array")
+            return
+        }
+        #expect(fields["rows"] == nil)
+        guard case .array(let attrs) = first["attributes"], case .object(let firstAttr) = attrs.first else {
+            Issue.record("expected attributes on first variation")
+            return
+        }
+        #expect(firstAttr["option"] == .string("Red"))
+        guard case .object(let image) = first["image"] else {
+            Issue.record("expected image")
+            return
+        }
+        #expect(image["src"] == .string("v.jpg"))
+    }
+
+    @Test
+    func test_variations_list_summary_when_per_row_price_present_then_price_range_uses_widened_rows() async throws {
+        // Given
+        let body = """
+        [
+            {"id": 1, "price": "10.00", "stock_status": "instock"},
+            {"id": 2, "price": "30.00", "stock_status": "instock"}
+        ]
+        """
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = ProductVariationsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"product_id": 555}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success")
+            return
+        }
+        #expect(fields["price_range"] == .object([
+            "min": .string("10"),
+            "max": .string("30")
+        ]))
+    }
 }

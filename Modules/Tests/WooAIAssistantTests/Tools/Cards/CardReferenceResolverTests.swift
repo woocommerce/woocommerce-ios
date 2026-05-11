@@ -458,7 +458,7 @@ struct CardReferenceResolverTests {
         // Per-bucket data is rendered-only; the model-visible summary keeps
         // just the projection keys so a year-by-day query doesn't blow the
         // model context.
-        #expect(Set(fields.keys) == Set(["after", "before", "totals"]))
+        #expect(Set(fields.keys) == Set(["after", "before", "interval", "totals"]))
         #expect(fields["interval_subtotals"] == nil)
         #expect(fields["interval_count"] == nil)
         #expect(rendered.family == .analyticsStats)
@@ -540,6 +540,65 @@ struct CardReferenceResolverTests {
         } else {
             Issue.record("expected rejected.fetchFailed")
         }
+    }
+
+    @Test
+    func test_enrich_when_product_entity_has_variations_array_then_variations_count_is_synthesized() {
+        // Given
+        let entity = AnyCodableJSON.object([
+            "id": .int(99),
+            "name": .string("Hoodie"),
+            "variations": .array([.int(1), .int(2), .int(3)])
+        ])
+
+        // When
+        let enriched = CardReferenceResolver.enrich(entity, family: .product)
+
+        // Then
+        guard case .object(let fields) = enriched else {
+            Issue.record("expected object")
+            return
+        }
+        #expect(fields["variations_count"] == .int(3))
+    }
+
+    @Test
+    func test_enrich_when_product_entity_already_has_variations_count_then_value_is_preserved() {
+        // Given
+        let entity = AnyCodableJSON.object([
+            "id": .int(99),
+            "variations_count": .int(7),
+            "variations": .array([.int(1), .int(2)])
+        ])
+
+        // When
+        let enriched = CardReferenceResolver.enrich(entity, family: .product)
+
+        // Then
+        guard case .object(let fields) = enriched else {
+            Issue.record("expected object")
+            return
+        }
+        #expect(fields["variations_count"] == .int(7))
+    }
+
+    @Test
+    func test_enrich_when_non_product_family_then_entity_unchanged() {
+        // Given
+        let entity = AnyCodableJSON.object([
+            "id": .int(99),
+            "variations": .array([.int(1), .int(2)])
+        ])
+
+        // When
+        let enriched = CardReferenceResolver.enrich(entity, family: .order)
+
+        // Then
+        guard case .object(let fields) = enriched else {
+            Issue.record("expected object")
+            return
+        }
+        #expect(fields["variations_count"] == nil)
     }
 
     private func isResolved(_ resolution: Resolution, family: CardFamilyID, id: String) -> Bool {

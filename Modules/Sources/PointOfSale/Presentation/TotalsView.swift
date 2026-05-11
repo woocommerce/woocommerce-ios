@@ -647,16 +647,18 @@ private extension TotalsView {
     }
 
     /// True when the merchant should see the Android-style Tap to Pay hero +
-    /// True when the card payment has reached a terminal state (success or
-    /// error) after a TTP collection — we want `PaymentViewContent` to take
-    /// over **immediately** so the merchant doesn't briefly see the hero
-    /// fade out + Checkout chrome ghosting through before the success card
-    /// fades in. The default hero → PaymentViewContent priority order is
-    /// fine for every other transition; this short-circuits just the
-    /// terminal-state case.
+    /// True when the card payment has reached a state that should take over
+    /// the hero immediately: a terminal state (success / error), or the
+    /// `.processingPayment` window between Apple's TTP modal closing and the
+    /// success card rendering. The default hero → PaymentViewContent priority
+    /// order is fine for every other transition; this short-circuits those
+    /// specific cases so the merchant sees the inline "Processing payment" /
+    /// success / error UI immediately rather than the hero fading out + the
+    /// Checkout chrome ghosting through.
     private var shouldPrioritizePaymentViewOverHero: Bool {
         switch displayPaymentState.card {
-        case .cardPaymentSuccessful,
+        case .processingPayment,
+                .cardPaymentSuccessful,
                 .paymentError,
                 .validatingOrderError,
                 .paymentIntentCreationError:
@@ -665,8 +667,7 @@ private extension TotalsView {
                 .acceptingCard,
                 .cardInserted,
                 .validatingOrder,
-                .preparingReader,
-                .processingPayment:
+                .preparingReader:
             return false
         }
     }

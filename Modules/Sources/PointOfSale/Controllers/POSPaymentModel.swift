@@ -1117,14 +1117,21 @@ private extension POSPaymentModel {
                     case .validatingOrder,
                             .preparingReader,
                             .acceptingCard,
-                            .cardInserted,
-                            .processingPayment:
+                            .cardInserted:
                         return nil
-                    case .idle,
+                    case .processingPayment,
+                            .idle,
                             .cardPaymentSuccessful,
                             .paymentError,
                             .validatingOrderError,
                             .paymentIntentCreationError:
+                        // `.processingPayment` is intentionally let through on
+                        // TTP so the brief window between Apple's modal closing
+                        // and the success card rendering shows the inline
+                        // "Processing payment" message via `PaymentViewContent`
+                        // — matches what the BT reader path does, and avoids
+                        // the merchant seeing the hero with its spinner-in-
+                        // button as the "back to checkout" intermediate.
                         break
                     }
                 }

@@ -226,11 +226,12 @@ private extension TotalsView {
                 }
                 if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                                           paymentState: displayPaymentState) {
-                    // On phone, drop the 8pt sidePadding so the connect-reader button can
-                    // anchor to the same 16pt screen-edge insets as the cash button below
-                    // (which uses .padding(.horizontal, 16) directly off the screen).
+                    // On phone, drop the sidePadding (POSPadding.small) so the connect-reader
+                    // button can anchor to the same POSPadding.medium screen-edge insets as
+                    // the cash button below (which uses .padding(.horizontal, POSPadding.medium)
+                    // directly off the screen).
                     return horizontalSizeClass == .compact
-                        ? PaymentViewLayout(topPadding: nil, bottomPadding: POSPadding.small, sidePadding: 0)
+                        ? PaymentViewLayout(topPadding: nil, bottomPadding: POSPadding.small, sidePadding: POSPadding.none)
                         : .primary
                 }
             }

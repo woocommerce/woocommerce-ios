@@ -681,6 +681,15 @@ private extension TotalsView {
     var useTapToPayHeroLayout: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
         guard displayPaymentState.card == .idle && displayPaymentState.cash == .idle else { return false }
+        // Also gate on scanToPay / markAsPaid being idle. After a successful
+        // payment via either of those the totals view renders their success
+        // UI via `PaymentViewContent` — we don't want the hero showing on
+        // top of (or instead of) that. Critically, without this the merchant
+        // could tap "Pay with Tap to pay" while `paymentState.markAsPaid`
+        // is still `.paymentSuccess`, and the card-state subscription's
+        // `markAsPaid != .idle` guard would silently swallow every Stripe
+        // event — the button disables but nothing happens.
+        guard displayPaymentState.scanToPay == .idle && displayPaymentState.markAsPaid == .idle else { return false }
         // Empty-cart / syncing / reconnecting guards computed directly. We
         // can't reuse `shouldShowCollectCashPaymentButton` here — that helper
         // also requires the reader to be disconnected when card state is idle

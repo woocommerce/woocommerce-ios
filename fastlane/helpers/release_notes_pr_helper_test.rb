@@ -247,6 +247,27 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
     assert_equal 'Polished order creation', items.first[:text]
   end
 
+  def test_parse_source_items_filters_internal_after_priority_marker
+    raw = <<~RAW
+      - [*] Polished order creation [https://github.com/woocommerce/woocommerce-ios/pull/12346]
+      - [*] [Internal] Refactor login flow [https://github.com/woocommerce/woocommerce-ios/pull/15444]
+      - [***] [Internal] Start AB test [https://github.com/woocommerce/woocommerce-ios/pull/8744]
+    RAW
+    items = Helper.parse_source_items(raw)
+    assert_equal 1, items.size
+    assert_equal 'Polished order creation', items.first[:text]
+  end
+
+  def test_parse_source_items_accepts_parenthesised_url
+    raw = "- [*] Fixed possible sync issue in POS (https://github.com/woocommerce/woocommerce-ios/pull/16423)\n"
+    items = Helper.parse_source_items(raw)
+    assert_equal 1, items.size
+    assert_equal 'Fixed possible sync issue in POS', items.first[:text]
+    assert_equal 'https://github.com/woocommerce/woocommerce-ios/pull/16423', items.first[:url]
+    assert_equal 16_423, items.first[:number]
+    assert_equal 'pull', items.first[:type]
+  end
+
   def test_parse_source_items_handles_missing_url
     raw = "- [*] A small fix\n"
     items = Helper.parse_source_items(raw)

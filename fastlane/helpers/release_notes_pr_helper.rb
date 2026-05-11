@@ -133,24 +133,26 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
 
   # Parses a single release-notes line into a source-item hash, or returns nil
   # if the line should be skipped (blank, `[Internal]`, or empty after parsing).
+  #
+  # `[Internal]` is filtered after stripping the optional `[*]`/`[**]` priority
+  # marker, so entries like `- [*] [Internal] …` are also skipped.
   def parse_source_item_line(line)
-    content = line.strip
+    content = line.strip.sub(/\A-\s*/, '').sub(/\A\[\*+\]\s*/, '')
     return nil if content.empty?
-
-    content = content.sub(/\A-\s*/, '')
     return nil if content.match?(/\A\[Internal\]/i)
 
-    content = content.sub(/\A\[\*+\]\s*/, '')
     text, url_info = split_text_and_url(content)
     return nil if text.empty?
 
     { text: text, url: url_info[:url], number: url_info[:number], type: url_info[:type] }
   end
 
-  # Splits the trailing `[https://github.com/.../pull/123]` token off the line.
+  # Splits the trailing `[https://github.com/.../pull/123]` or
+  # `(https://github.com/.../pull/123)` token off the line. Real-world
+  # RELEASE-NOTES entries use both forms.
   # Returns `[text, { url:, number:, type: }]` (number/type may be nil).
   def split_text_and_url(content)
-    match = content.match(%r{\s*\[(?<url>https?://github\.com/[^\s\]]+)\]\s*\z})
+    match = content.match(%r{\s*[\[(](?<url>https?://github\.com/[^\s\])]+)[\])]\s*\z})
     return [content, { url: nil, number: nil, type: nil }] unless match
 
     text = content.sub(match[0], '').rstrip

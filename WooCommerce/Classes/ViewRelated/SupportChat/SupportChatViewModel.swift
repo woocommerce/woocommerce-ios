@@ -573,7 +573,6 @@ final class SupportChatViewModel {
 
         let userMessage = ChatMessage(role: .user, text: trimmedText)
         messages.append(userMessage)
-        hasSentChatMessage = true
         inputText = ""
         state = .sending
 
@@ -595,6 +594,7 @@ final class SupportChatViewModel {
             sessionID: sessionID,
             context: context
         ) { [weak self] result in
+            self?.hasSentChatMessage = true
             self?.handleSendMessageResult(result,
                                           wasNewChat: wasNewChat,
                                           firstUserMessage: firstUserMessage)
@@ -675,10 +675,12 @@ final class SupportChatViewModel {
                                 firstUserMessage: firstUserMessage)
 
             if let lastBotMessage = response.messages.last(where: { $0.role == .bot }) {
+                /// Retrieves the last detected support area
+                latestSupportArea = lastBotMessage.context?.supportArea
+
                 /// Skips displaying last bot message when human support is required. User is suggested to contact support manually.
                 if let flags = lastBotMessage.context?.flags, flags.forwardToHumanSupport {
                     shouldPromptHumanSupport = true
-                    latestSupportArea = lastBotMessage.context?.supportArea
                 } else {
                     let assistantMessage = ChatMessage(
                         role: .bot,

@@ -643,8 +643,25 @@ struct SupportChatViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
-            // Leave sendMessage pending — the user bubble is appended synchronously before the network call completes.
-            _ = action
+            completeSendMessageSuccessfully(action)
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+
+        // When
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == true)
+    }
+
+    @Test func canEscalateToHumanSupport_becomes_true_when_sending_message_fails() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
+            }
         }
         let sut = makeSUT(entryPoint: .preLogin, stores: stores)
 
@@ -659,8 +676,8 @@ struct SupportChatViewModelTests {
     @Test func canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_until_proceedToChat() async {
         // Given — helpAndSupport entry shows issue picker first; input area is hidden
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        stores.whenReceivingAction(ofType: SupportChatAction.self) { _ in
-            // Leave sendMessage pending; we only care about state transitions in the VM.
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
         }
         let sut = makeSUT(entryPoint: .helpAndSupport, stores: stores)
         sut.showGreeting()
@@ -685,8 +702,8 @@ struct SupportChatViewModelTests {
         // user-role message ("Loading orders" etc.). The toolbar entry must wait until the merchant
         // actually describes the problem via the input field — picker taps don't count.
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        stores.whenReceivingAction(ofType: SupportChatAction.self) { _ in
-            // Leave sendMessage pending; only state transitions matter here.
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
         }
         let sut = makeSUT(entryPoint: .helpAndSupport, stores: stores)
         sut.showGreeting()
@@ -723,7 +740,9 @@ struct SupportChatViewModelTests {
     @Test func markChatTicketCreated_flips_hasCreatedTicket_and_hides_toolbar() {
         // Given — a live chat with at least one user message so the toolbar would otherwise be visible
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        stores.whenReceivingAction(ofType: SupportChatAction.self) { _ in }
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
+        }
         let sut = makeSUT(entryPoint: .preLogin, stores: stores)
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -740,6 +759,9 @@ struct SupportChatViewModelTests {
     @Test func canEscalateToHumanSupport_is_false_when_hasCreatedTicket_is_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
+        }
         let sut = SupportChatViewModel(
             entryPoint: .preLogin,
             stores: stores,
@@ -1111,5 +1133,23 @@ struct SupportChatViewModelTests {
         )
         viewModel.onStartJetpackSetup = onStartJetpackSetup
         return viewModel
+    }
+
+    private func completeSendMessageSuccessfully(_ action: SupportChatAction) {
+        guard case let .sendMessage(botSlug, message, _, _, _, completion) = action else {
+            return
+        }
+
+        let response = SupportChatResponse(
+            chatID: 123,
+            sessionID: "session-1",
+            botSlug: botSlug,
+            botVersion: "1.0",
+            messages: [
+                SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                SupportChatMessage(messageID: 2, role: .bot, content: "How can I help?", context: nil)
+            ]
+        )
+        completion(.success(response))
     }
 }

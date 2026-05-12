@@ -51,5 +51,10 @@ public enum ParcelFittingResult {
 }
 
 public protocol ParcelFittingDelegate: AnyObject {
+    func parcelFittingDidConfirm(_ result: ParcelFittingResult,
+                                  carriers: [ParcelPresetCarrier],
+                                  starredPackageIDs: Set<String>,
+                                  dimensionUnit: UnitLength)
+    func parcelFittingDidCancel()
     func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool)
 }

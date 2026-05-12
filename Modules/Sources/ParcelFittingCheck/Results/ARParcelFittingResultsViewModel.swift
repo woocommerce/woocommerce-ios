@@ -22,6 +22,10 @@ public final class ARParcelFittingResultsViewModel {
         .sorted { $0.package.volume < $1.package.volume }
     }
 
+    /// Orientation-independent fit check. Both the measured and package dimensions
+    /// are sorted descending and compared component-wise (largest-to-largest,
+    /// middle-to-middle, smallest-to-smallest). This allows the item to fit in any
+    /// rotation — e.g. a 12×8×6 item fits a 8×12×6 package.
     static func fits(measured: ParcelDimensions, into package: ParcelPresetPackage) -> Bool {
         let sortedMeasured = [measured.length, measured.width, measured.height].sorted(by: >)
         let sortedPackage = [package.length, package.width, package.height].sorted(by: >)

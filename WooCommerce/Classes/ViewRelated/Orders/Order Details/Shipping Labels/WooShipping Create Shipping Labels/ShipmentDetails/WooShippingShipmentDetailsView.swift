@@ -41,11 +41,12 @@ struct WooShippingShipmentDetailsView: View {
                                                lastARStarredPackageIDs: viewModel.lastARStarredPackageIDs,
                                                lastARDimensionUnit: viewModel.lastARDimensionUnit,
                                                parcelFittingDelegate: viewModel,
-                                               updateSelectedPackage: viewModel.selectPackage)
+                                               updateSelectedPackage: { viewModel.selectPackage($0) })
                 WooShippingServiceView(viewModel: shippingService)
             } else {
-                WooShippingPackageAndRatePlaceholder(onSelectPackage: { packageData, measurement, carriers, starred, unit in
-                    viewModel.selectPackage(packageData, arMeasurement: measurement, arCarriers: carriers, arStarredPackageIDs: starred, arDimensionUnit: unit)
+                WooShippingPackageAndRatePlaceholder(
+                    onSelectPackage: { viewModel.selectPackage($0) },
+                    arDelegate: viewModel
                 })
             }
         }

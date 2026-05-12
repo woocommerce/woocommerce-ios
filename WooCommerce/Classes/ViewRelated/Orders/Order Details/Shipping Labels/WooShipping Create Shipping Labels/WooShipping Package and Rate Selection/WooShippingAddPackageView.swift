@@ -21,11 +21,8 @@ struct WooShippingAddPackageView: View {
     @ObservedObject var packagesViewModel: WooShippingAddPackageViewModel
     @ObservedObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
 
-    let addPackageAction: (WooShippingPackageDataRepresentable,
-                           ParcelDimensions?,
-                           [ParcelPresetCarrier],
-                           Set<String>,
-                           UnitLength) -> Void
+    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+    weak var arDelegate: ParcelFittingDelegate?
 
     @State private var cancellable: AnyCancellable?
 
@@ -34,12 +31,10 @@ struct WooShippingAddPackageView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
-         addPackageAction: @escaping (WooShippingPackageDataRepresentable,
-                                      ParcelDimensions?,
-                                      [ParcelPresetCarrier],
-                                      Set<String>,
-                                      UnitLength) -> Void) {
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void,
+         arDelegate: ParcelFittingDelegate? = nil) {
         self.addPackageAction = addPackageAction
+        self.arDelegate = arDelegate
         packagesViewModel = WooShippingAddPackageViewModel(selectedPackage: selectedPackage)
         switch selectedPackage?.source {
         case .custom:
@@ -113,16 +108,16 @@ struct WooShippingAddPackageView: View {
         switch packagesViewModel.selectedPackageType {
         case .custom:
             WooAddCustomPackageView(viewModel: customPackageViewModel,
-                                    addPackageAction: { addPackageAction($0, nil, [], [], .centimeters) })
+                                    addPackageAction: addPackageAction)
         case .carrier:
             WooCarrierPackagesSelectionView(viewModel: packagesViewModel,
-                                            addPackageAction: { addPackageAction($0, nil, [], [], .centimeters) },
+                                            addPackageAction: addPackageAction,
                                             addingCustomPackageHandler: {
                 packagesViewModel.selectedPackageType = .custom
             })
         case .saved:
             WooSavedPackagesSelectionView(viewModel: packagesViewModel,
-                                          addPackageAction: { addPackageAction($0, nil, [], [], .centimeters) },
+                                          addPackageAction: addPackageAction,
                                           addingCustomPackageHandler: {
                 packagesViewModel.selectedPackageType = .custom
             })
@@ -130,24 +125,16 @@ struct WooShippingAddPackageView: View {
     }
 
     private func presentARFlow() {
-        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
+        guard let arDelegate,
+              let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
 
         ParcelFittingCheckPresenter.presentUnifiedFlow(
             from: presenter,
             unit: packagesViewModel.arDimensionUnit,
             carriers: packagesViewModel.parcelPresetCarriers,
             starredPackageIDs: packagesViewModel.starredCarriersPackages,
-            delegate: packagesViewModel
-        ) { [weak packagesViewModel] result in
-            guard let packagesViewModel else { return }
-            if let packageData = packagesViewModel.resolveARResult(result) {
-                addPackageAction(packageData,
-                                result.measurement,
-                                packagesViewModel.parcelPresetCarriers,
-                                packagesViewModel.starredCarriersPackages,
-                                packagesViewModel.arDimensionUnit)
-            }
-        }
+            delegate: arDelegate
+        )
     }
 
     private var packageTypeSelectorView: some View {

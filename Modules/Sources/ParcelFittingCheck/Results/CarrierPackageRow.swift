@@ -10,37 +10,27 @@ struct CarrierPackageRow: View {
     let onToggleStar: (() -> Void)?
 
     var body: some View {
-        HStack(spacing: Constants.outerSpacing) {
-            Button(action: onSelect) {
-                HStack(spacing: Constants.outerSpacing) {
-                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .foregroundColor(isSelected ? .accentColor : .gray)
-                        .font(.title2)
+        PackageSelectionRow(isSelected: isSelected, onSelect: onSelect) {
+            HStack(spacing: Constants.contentSpacing) {
+                carrierLogo
 
-                    carrierLogo
-
-                    VStack(alignment: .leading, spacing: Constants.textSpacing) {
-                        Text(package.name)
-                            .font(.body)
-                        Text(carrier.name)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        Text(package.dimensions.formatted(unit: unit))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Spacer()
+                VStack(alignment: .leading, spacing: Constants.textSpacing) {
+                    Text(package.name)
+                        .font(.body)
+                    Text(carrier.name)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Text(package.dimensions.formatted(unit: unit))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
-                .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
-
+        } trailing: {
             if let onToggleStar {
                 VStack {
                     Image(systemName: isStarred ? "star.fill" : "star")
                         .foregroundStyle(.secondary)
-                        .padding(Constants.horizontalPadding)
+                        .padding(Constants.starPadding)
                     Spacer()
                 }
                 .contentShape(Rectangle())
@@ -49,8 +39,6 @@ struct CarrierPackageRow: View {
                 }
             }
         }
-        .padding(.horizontal, Constants.horizontalPadding)
-        .padding(.vertical, Constants.verticalPadding)
     }
 
     @ViewBuilder
@@ -62,15 +50,13 @@ struct CarrierPackageRow: View {
                 .frame(width: Constants.logoSize, height: Constants.logoSize)
         }
     }
-
 }
 
 private extension CarrierPackageRow {
     enum Constants {
-        static let outerSpacing: CGFloat = 12
+        static let contentSpacing: CGFloat = 12
         static let textSpacing: CGFloat = 2
-        static let horizontalPadding: CGFloat = 16
-        static let verticalPadding: CGFloat = 12
         static let logoSize: CGFloat = 36
+        static let starPadding: CGFloat = 16
     }
 }

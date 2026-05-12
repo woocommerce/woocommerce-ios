@@ -4,9 +4,8 @@ struct ARUnifiedParcelFlowView: View {
     let unit: UnitLength
     let carriers: [ParcelPresetCarrier]
     let starredPackageIDs: Set<String>
-    let delegate: ParcelFittingDelegate?
-    let onCancel: () -> Void
-    let onConfirm: (ParcelFittingResult) -> Void
+    let delegate: ParcelFittingDelegate
+    let dismiss: () -> Void
 
     @State private var measuredDimensions: ParcelDimensions?
 
@@ -21,7 +20,13 @@ struct ARUnifiedParcelFlowView: View {
                     ),
                     starredPackageIDs: starredPackageIDs,
                     delegate: delegate,
-                    onConfirm: onConfirm,
+                    onConfirm: { result in
+                        dismiss()
+                        delegate.parcelFittingDidConfirm(result,
+                                                         carriers: carriers,
+                                                         starredPackageIDs: starredPackageIDs,
+                                                         dimensionUnit: unit)
+                    },
                     onBack: { measuredDimensions = nil }
                 )
             }
@@ -29,7 +34,10 @@ struct ARUnifiedParcelFlowView: View {
         } else {
             ARParcelSizingView(
                 unit: unit,
-                onCancel: onCancel,
+                onCancel: {
+                    dismiss()
+                    delegate.parcelFittingDidCancel()
+                },
                 onConfirm: { dims in
                     withAnimation { measuredDimensions = dims }
                 }

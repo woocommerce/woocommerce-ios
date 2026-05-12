@@ -161,31 +161,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }
     }
 
-    func resolveARResult(_ result: ParcelFittingResult) -> WooShippingPackageDataRepresentable? {
-        switch result {
-        case .carrierPackage(let package, _):
-            selectCarrierPackage(withID: package.id)
-            selectedPackageType = .carrier
-            guard let selected = selectedCarriersPackage else {
-                DDLogError("⛔️ AR flow: carrier package \(package.id) not found in loaded packages")
-                return nil
-            }
-            return selected
-        case .customDimensions(let dims):
-            selectedPackageType = .custom
-            return WooShippingPackageData(
-                id: "custom_box",
-                name: "",
-                length: ParcelDimensions.formatValue(dims.length),
-                width: ParcelDimensions.formatValue(dims.width),
-                height: ParcelDimensions.formatValue(dims.height),
-                weight: "",
-                source: .custom,
-                packageType: "box"
-            )
-        }
-    }
-
     func selectCarrierPackage(withID packageID: String) {
         for (index, carrier) in carrierPackages.enumerated() {
             for group in carrier.packageGroups {
@@ -436,8 +411,6 @@ extension WooShippingAddPackageViewModel {
 
 extension WooShippingAddPackageViewModel: ParcelFittingDelegate {
     func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool) {
-        // The AR view has already updated its local set; only act if the VM is out of sync,
-        // so repeated taps don't double-dispatch create/delete requests.
         let alreadyStarred = starredCarriersPackages.contains(packageID)
         guard alreadyStarred != isStarred else { return }
         starUnstarPackage(packageID, carrierID: carrierID)

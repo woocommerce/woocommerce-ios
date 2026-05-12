@@ -36,8 +36,7 @@ public final class ParcelFittingCheckPresenter {
         unit: UnitLength,
         carriers: [ParcelPresetCarrier],
         starredPackageIDs: Set<String> = [],
-        delegate: ParcelFittingDelegate? = nil,
-        onConfirm: @escaping (ParcelFittingResult) -> Void
+        delegate: ParcelFittingDelegate
     ) {
         present(from: presenter) { dismiss in
             ARUnifiedParcelFlowView(
@@ -45,8 +44,7 @@ public final class ParcelFittingCheckPresenter {
                 carriers: carriers,
                 starredPackageIDs: starredPackageIDs,
                 delegate: delegate,
-                onCancel: dismiss,
-                onConfirm: { result in dismiss(); onConfirm(result) }
+                dismiss: dismiss
             )
         }
     }

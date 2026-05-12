@@ -12,7 +12,7 @@ public struct ParcelDimensions {
     }
 
     public static func formatValue(_ value: Float) -> String {
-        String.localizedStringWithFormat(valueFormat, value)
+        String.localizedStringWithFormat(Constants.valueFormat, value)
     }
 
     // MARK: - Internal
@@ -32,7 +32,7 @@ public struct ParcelDimensions {
     }
 
     static func defaultDimensions(for unit: UnitLength) -> ParcelDimensions {
-        let base = defaultInCentimeters
+        let base = Constants.defaultInCentimeters
         let factor = Float(Measurement(value: 1.0, unit: UnitLength.centimeters).converted(to: unit).value)
         return ParcelDimensions(
             length: (base.length * factor * 100).rounded() / 100,
@@ -53,8 +53,10 @@ public struct ParcelDimensions {
 
     // MARK: - Private
 
-    private static let defaultInCentimeters = ParcelDimensions(length: 10.0, width: 8.0, height: 5.0)
-    private static let valueFormat = "%.2f"
+    private enum Constants {
+        static let defaultInCentimeters = ParcelDimensions(length: 10.0, width: 8.0, height: 5.0)
+        static let valueFormat = "%.2f"
+    }
 
     private static func metersPerUnit(_ unit: UnitLength) -> Float {
         Float(Measurement(value: 1.0, unit: unit).converted(to: .meters).value)

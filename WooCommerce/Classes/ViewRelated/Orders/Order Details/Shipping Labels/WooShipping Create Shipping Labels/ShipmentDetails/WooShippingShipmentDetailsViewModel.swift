@@ -180,18 +180,26 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
 
     /// Handles package selection for the shipping label.
     /// Selecting a package also refreshes the available rates for the shipping service.
-    func selectPackage(_ packageData: WooShippingPackageDataRepresentable,
-                        arMeasurement: ParcelDimensions? = nil,
-                        arCarriers: [ParcelPresetCarrier] = [],
-                        arStarredPackageIDs: Set<String> = [],
-                        arDimensionUnit: UnitLength = .centimeters) {
+    func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
         selectedPackage = packageData
-        lastARMeasurement = arMeasurement
-        lastARCarriers = arCarriers
-        lastARStarredPackageIDs = arStarredPackageIDs
-        lastARDimensionUnit = arDimensionUnit
+        lastARMeasurement = nil
         analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
+
+    func parcelFittingDidConfirm(_ result: ParcelFittingResult,
+                                  carriers: [ParcelPresetCarrier],
+                                  starredPackageIDs: Set<String>,
+                                  dimensionUnit: UnitLength) {
+        let packageData = WooShippingPackageData.from(result, carriers: carriers)
+        selectedPackage = packageData
+        lastARMeasurement = result.measurement
+        lastARCarriers = carriers
+        lastARStarredPackageIDs = starredPackageIDs
+        lastARDimensionUnit = dimensionUnit
+        analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
+    }
+
+    func parcelFittingDidCancel() {}
 
     func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool) {
         let action: WooShippingAction

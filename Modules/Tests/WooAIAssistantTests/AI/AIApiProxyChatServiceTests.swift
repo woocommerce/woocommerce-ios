@@ -129,6 +129,23 @@ struct AIApiProxyChatServiceTests {
     }
 
     @Test
+    func test_sendChat_body_sets_stream_to_true() async throws {
+        // Given
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        let body = try #require(request.httpBody)
+        let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        #expect(json["stream"] as? Bool == true)
+    }
+
+    @Test
     func test_sendChat_body_defaults_model_to_gpt_5_4_mini() async throws {
         // Given
         let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
@@ -327,7 +344,6 @@ struct AIApiProxyChatServiceTests {
     func test_sendChat_streaming_when_utf8_multibyte_char_straddles_chunk_boundary_then_text_decoded_correctly()
     async throws {
         // Given
-        // "café" — é is U+00E9, encoded as 0xC3 0xA9. Split after the first byte (0xC3).
         let prefix = "data: {\"choices\":[{\"index\":0,\"delta\":{\"content\":\"caf"
         let suffix = "\"},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n"
         let eBytes: [UInt8] = [0xC3, 0xA9]
@@ -583,7 +599,10 @@ struct AIApiProxyChatServiceTests {
         do {
             _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
             Issue.record("Expected 429 to surface after retries.")
-        } catch is AssistantError {}
+        } catch let error as AssistantError {
+            #expect(error.kind == .rateLimit)
+            #expect(error.code == "429")
+        }
         #expect(await transport.callCount == 3)
         let delays = recorder.delays
         #expect(delays.count == 2)
@@ -613,6 +632,35 @@ struct AIApiProxyChatServiceTests {
     }
 
     @Test
+    func test_sendChat_streaming_when_429_arrives_after_partial_events_then_does_not_retry() async throws {
+        // Given
+        let partialFrame = sseFrame("{\"choices\":[{\"index\":0,\"delta\":{\"content\":\"partial\"}}]}")
+        let midStreamError = AssistantError(kind: .rateLimit, code: "429", message: "Rate limited mid-stream")
+        let transport = ScriptedProxyTransport(scenarios: [
+            .partialChunksThenError(chunks: [Data(partialFrame.utf8)], error: midStreamError)
+        ])
+        let service = makeService(transport: transport)
+
+        // When
+        var observed: [ChatStreamEvent] = []
+        var caught: AssistantError?
+        do {
+            for try await event in service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil) {
+                observed.append(event)
+            }
+            Issue.record("Expected mid-stream 429 to surface after partial events.")
+        } catch let error as AssistantError {
+            caught = error
+        }
+
+        // Then
+        #expect(textDeltas(in: observed) == ["partial"])
+        #expect(caught?.kind == .rateLimit)
+        #expect(caught?.code == "429")
+        #expect(await transport.callCount == 1)
+    }
+
+    @Test
     func test_sendChat_when_non_429_error_then_does_not_retry() async throws {
         // Given
         let body = Data("server error".utf8)
@@ -627,7 +675,10 @@ struct AIApiProxyChatServiceTests {
         do {
             _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
             Issue.record("Expected 500 to surface.")
-        } catch is AssistantError {}
+        } catch let error as AssistantError {
+            #expect(error.kind == .upstreamFailure)
+            #expect(error.code == "500")
+        }
         #expect(await transport.callCount == 1)
         #expect(recorder.delays.isEmpty)
     }
@@ -651,6 +702,22 @@ struct AIApiProxyChatServiceTests {
         } catch let error as AssistantError {
             #expect(error.kind == .auth)
             #expect(error.code == "401")
+        }
+    }
+
+    @Test
+    func test_sendChat_streaming_when_chunk_payload_is_unparseable_then_throws_invalid_stream_error() async throws {
+        // Given
+        let frame = "data: {\"completely\":\"invalid\"}\n\n"
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data(frame.utf8)])])
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected malformed SSE chunk to surface as invalid stream error.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .invalidStream)
         }
     }
 
@@ -733,6 +800,7 @@ struct AIApiProxyChatServiceTests {
 private enum ProxyTransportScenario {
     case successChunks([Data])
     case errorBody(status: Int, body: Data)
+    case partialChunksThenError(chunks: [Data], error: Error)
 }
 
 private actor ScriptedProxyTransport {
@@ -772,6 +840,13 @@ private actor ScriptedProxyTransport {
                 continuation.finish()
             }
             let http = HTTPURLResponse(url: url, statusCode: status, httpVersion: nil, headerFields: nil)!
+            return (stream, http)
+        case .partialChunksThenError(let chunks, let error):
+            let stream = AsyncThrowingStream<Data, Error> { continuation in
+                for chunk in chunks { continuation.yield(chunk) }
+                continuation.finish(throwing: error)
+            }
+            let http = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!
             return (stream, http)
         }
     }

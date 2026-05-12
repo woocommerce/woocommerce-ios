@@ -146,6 +146,24 @@ struct AIApiProxyChatServiceTests {
     }
 
     @Test
+    func test_sendChat_body_requests_usage_via_stream_options() async throws {
+        // Given
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        let body = try #require(request.httpBody)
+        let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        let streamOptions = try #require(json["stream_options"] as? [String: Any])
+        #expect(streamOptions["include_usage"] as? Bool == true)
+    }
+
+    @Test
     func test_sendChat_body_defaults_model_to_gpt_5_4_mini() async throws {
         // Given
         let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])

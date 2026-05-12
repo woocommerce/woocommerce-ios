@@ -143,12 +143,21 @@ public enum OpenAIChat {
         }
     }
 
+    struct StreamOptions: Encodable, Sendable {
+        let includeUsage: Bool
+
+        enum CodingKeys: String, CodingKey {
+            case includeUsage = "include_usage"
+        }
+    }
+
     struct Request: Encodable, Sendable {
         let messages: [Message]
         let tools: [ToolDefinition]?
         let toolChoice: ToolChoice?
         let model: String?
         let stream: Bool
+        let streamOptions: StreamOptions?
         let feature: String?
         let temperature: Double?
         let maxTokens: Int?
@@ -158,6 +167,7 @@ public enum OpenAIChat {
              toolChoice: ToolChoice? = nil,
              model: String? = nil,
              stream: Bool = false,
+             streamOptions: StreamOptions? = nil,
              feature: String? = nil,
              temperature: Double? = nil,
              maxTokens: Int? = nil) {
@@ -166,6 +176,7 @@ public enum OpenAIChat {
             self.toolChoice = toolChoice
             self.model = model
             self.stream = stream
+            self.streamOptions = streamOptions
             self.feature = feature
             self.temperature = temperature
             self.maxTokens = maxTokens
@@ -174,6 +185,7 @@ public enum OpenAIChat {
         enum CodingKeys: String, CodingKey {
             case messages, tools, model, stream, feature, temperature
             case toolChoice = "tool_choice"
+            case streamOptions = "stream_options"
             case maxTokens = "max_tokens"
         }
 
@@ -184,6 +196,7 @@ public enum OpenAIChat {
             try container.encodeIfPresent(toolChoice, forKey: .toolChoice)
             try container.encodeIfPresent(model, forKey: .model)
             try container.encode(stream, forKey: .stream)
+            try container.encodeIfPresent(streamOptions, forKey: .streamOptions)
             try container.encodeIfPresent(feature, forKey: .feature)
             try container.encodeIfPresent(temperature, forKey: .temperature)
             try container.encodeIfPresent(maxTokens, forKey: .maxTokens)

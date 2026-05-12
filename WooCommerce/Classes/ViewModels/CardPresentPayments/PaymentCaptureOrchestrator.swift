@@ -17,6 +17,8 @@ protocol PaymentCaptureOrchestrating {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        countryCode: CountryCode,
+                        terminalPaymentPreparationEnabled: Bool,
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
@@ -72,6 +74,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        countryCode: CountryCode,
+                        terminalPaymentPreparationEnabled: Bool,
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
@@ -85,7 +89,9 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                                                    onCardInserted: onCardInserted,
                                                    onProcessingMessage: onProcessingMessage,
                                                    onDisplayMessage: onDisplayMessage,
-                                                   onProcessingCompletion: onProcessingCompletion)
+                                                   onProcessingCompletion: onProcessingCompletion,
+                                                   countryCode: countryCode,
+                                                   terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled)
         onPreparingReader()
 
         let parameters = paymentParameters(order: order,
@@ -105,6 +111,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             siteID: order.siteID,
             orderID: order.orderID,
             parameters: parameters,
+            countryCode: countryCode,
+            terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled,
             onCardReaderMessage: { event in
                 switch event {
                 case .waitingForInput(let inputMethods):
@@ -146,6 +154,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         let retryPaymentAction = CardPresentPaymentAction.retryPayment(
             siteID: order.siteID,
             orderID: order.orderID,
+            countryCode: handlers.countryCode,
+            terminalPaymentPreparationEnabled: handlers.terminalPaymentPreparationEnabled,
             onCardReaderMessage: { event in
                 switch event {
                 case .waitingForInput(let inputMethods):
@@ -391,5 +401,7 @@ private extension PaymentCaptureOrchestrator {
         let onProcessingMessage: () -> Void
         let onDisplayMessage: (String) -> Void
         let onProcessingCompletion: (PaymentIntent) -> Void
+        let countryCode: CountryCode
+        let terminalPaymentPreparationEnabled: Bool
     }
 }

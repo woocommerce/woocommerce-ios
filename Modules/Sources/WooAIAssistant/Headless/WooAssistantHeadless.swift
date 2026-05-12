@@ -10,10 +10,7 @@ import NetworkingCore
 ///
 /// Each harness instance owns one long-lived `AgenticChatBackend`, so successive
 /// `send(_:)` calls share its `TranscriptStore` and accumulate multi-turn memory
-/// just like the in-app chat surface. Each harness instance also owns its own
-/// `WpComJetpackAIJWTProvider`, so two concurrent instances against the same
-/// merchant will each mint a JWT (one extra mint per instance). Smoke runs
-/// typically have one instance.
+/// just like the in-app chat surface.
 public actor WooAssistantHeadless {
 
     // MARK: - Public types
@@ -23,15 +20,26 @@ public actor WooAssistantHeadless {
         public let siteID: Int64
         public let username: String
         public let appPassword: String
+        /// WPCOM OAuth bearer for ai-api-proxy LLM calls. Captured from an
+        /// authenticated iOS app session.
+        public let dotcomAccessToken: String
+        /// Optional host override that routes `public-api.wordpress.com`
+        /// traffic through a wpcom sandbox while the proxy allowlist PR
+        /// is in review. Nil routes against production.
+        public let aiAPIProxyHostOverride: String?
 
         public init(siteURL: String,
                     siteID: Int64,
                     username: String,
-                    appPassword: String) {
+                    appPassword: String,
+                    dotcomAccessToken: String,
+                    aiAPIProxyHostOverride: String? = nil) {
             self.siteURL = siteURL
             self.siteID = siteID
             self.username = username
             self.appPassword = appPassword
+            self.dotcomAccessToken = dotcomAccessToken
+            self.aiAPIProxyHostOverride = aiAPIProxyHostOverride
         }
     }
 
@@ -48,11 +56,16 @@ public actor WooAssistantHeadless {
         guard let siteURL = env["WOO_SITE_URL"],
               let siteIDString = env["WOO_SITE_ID"], let siteID = Int64(siteIDString),
               let username = env["WOO_USERNAME"],
-              let appPassword = env["WOO_APP_PASSWORD"] else { return nil }
+              let appPassword = env["WOO_APP_PASSWORD"],
+              let dotcomAccessToken = env["WOO_DOTCOM_ACCESS_TOKEN"],
+              !dotcomAccessToken.isEmpty else { return nil }
+        let sandboxHost = env["WOO_AI_SANDBOX_HOST"].flatMap { $0.isEmpty ? nil : $0 }
         return Credentials(siteURL: siteURL,
                            siteID: siteID,
                            username: username,
-                           appPassword: appPassword)
+                           appPassword: appPassword,
+                           dotcomAccessToken: dotcomAccessToken,
+                           aiAPIProxyHostOverride: sandboxHost)
     }
 
     private static func parseDotenv(at url: URL) throws -> [String: String] {
@@ -230,19 +243,19 @@ public actor WooAssistantHeadless {
 
     // MARK: - Init
 
-    /// Production wiring: real URLSession-backed transports talking to
-    /// `jetpack-ai-query` and the merchant's store.
+    /// Production wiring: real URLSession-backed transports talking to the
+    /// ai-api-proxy LLM endpoint and the merchant's store.
     public init(credentials: Credentials,
                 configuration: Configuration = .init()) {
         let normalizedSiteURL = Self.normalizeSiteURL(credentials.siteURL)
         let basicAuthHeader = Self.basicAuthHeader(username: credentials.username, appPassword: credentials.appPassword)
         let session = URLSession.shared
-        let jwtProvider = WpComJetpackAIJWTProvider(blogID: credentials.siteID) { _ in
-            try await Self.mintJetpackAIJWT(siteURL: normalizedSiteURL,
-                                            basicAuthHeader: basicAuthHeader,
-                                            session: session)
-        }
-        let chatService = JetpackAIQueryClient(jwtProvider: jwtProvider)
+        let tokenProvider = ConstantWPCOMTokenProvider(value: credentials.dotcomAccessToken)
+        let chatService = AIApiProxyChatService(
+            tokenProvider: tokenProvider,
+            endpointOverride: Self.aiAPIProxyEndpoint(hostOverride: credentials.aiAPIProxyHostOverride),
+            sleep: { nanoseconds in try await Task.sleep(nanoseconds: nanoseconds) }
+        )
         let restClient = HeadlessURLSessionWCRESTClient(siteURL: normalizedSiteURL,
                                                         basicAuthHeader: basicAuthHeader,
                                                         session: session)
@@ -250,6 +263,13 @@ public actor WooAssistantHeadless {
                   configuration: configuration,
                   chatService: chatService,
                   restClient: restClient)
+    }
+
+    /// Returns a sandbox-rewritten endpoint when `hostOverride` is set; nil
+    /// preserves the production default the chat service picks itself.
+    private static func aiAPIProxyEndpoint(hostOverride: String?) -> URL? {
+        guard let host = hostOverride, !host.isEmpty else { return nil }
+        return URL(string: "https://\(host)/wpcom/v2/ai-api-proxy/v1/chat/completions")
     }
 
     // Internal seam used by the test target to inject a mock chat service and a stub REST client.
@@ -462,45 +482,6 @@ public actor WooAssistantHeadless {
         let raw = "\(username):\(stripped)"
         let encoded = Data(raw.utf8).base64EncodedString()
         return "Basic \(encoded)"
-    }
-
-    /// POSTs to `<siteURL>/wp-json/jetpack/v4/jetpack-ai-jwt` over Basic auth and
-    /// extracts the minted token. The harness lives outside the Jetpack tunnel,
-    /// so the merchant's app password is the only viable credential.
-    private static func mintJetpackAIJWT(siteURL: URL,
-                                         basicAuthHeader: String,
-                                         session: URLSession) async throws -> String {
-        let endpoint = siteURL.appendingPathComponent("wp-json/jetpack/v4/jetpack-ai-jwt")
-        var request = URLRequest(url: endpoint)
-        request.httpMethod = "POST"
-        request.setValue(basicAuthHeader, forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
-
-        let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse else {
-            throw AssistantError(kind: .network, message: "Headless JWT mint received a non-HTTP response.")
-        }
-        if !(200..<300).contains(http.statusCode) {
-            let snippet = String(data: data.prefix(500), encoding: .utf8) ?? ""
-            throw AssistantError(kind: .auth,
-                                 code: String(http.statusCode),
-                                 message: "Headless JWT mint failed (HTTP \(http.statusCode)): \(snippet)")
-        }
-        struct Envelope: Decodable {
-            let token: String?
-            let jwt: String?
-        }
-        do {
-            let decoded = try JSONDecoder().decode(Envelope.self, from: data)
-            if let token = decoded.token, !token.isEmpty { return token }
-            if let jwt = decoded.jwt, !jwt.isEmpty { return jwt }
-        } catch {
-            DDLogError("WooAssistantHeadless mint envelope decode failed: \(error)")
-        }
-        let snippet = String(data: data.prefix(500), encoding: .utf8) ?? ""
-        throw AssistantError(kind: .auth,
-                             message: "Headless JWT mint expected `token` in response body, got: \(snippet)")
     }
 
     /// Production REST tool catalog. Mirrors what the app target wires into its

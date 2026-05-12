@@ -74,12 +74,19 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
     // the Jetpack AI JWT path until the proxy gains a non-WPCOM auth story.
     private static func makeChatService(credentials: Credentials?,
                                         jwtProvider: AssistantJWTProviding) -> AIChatService {
+        // Localized deprecation envelope so only this fallback carries the WOOMOB-3064 warning;
+        // remove the helper and inline `makeJetpackAIChatService` once the non-WPCOM path is decided.
+        @available(*, deprecated, message: "WPCOM-only auth pending non-WPCOM proxy story; tracked in WOOMOB-3064.")
+        func legacyFallback() -> AIChatService {
+            makeJetpackAIChatService(jwtProvider: jwtProvider)
+        }
+
         switch credentials {
         case .wpcom:
             return AIApiProxyChatService(tokenProvider: AIApiProxyTokenAdaptor(credentials: credentials),
                                          sleep: { nanoseconds in try await Task.sleep(nanoseconds: nanoseconds) })
         case .applicationPassword, .wporg, nil:
-            return makeJetpackAIChatService(jwtProvider: jwtProvider)
+            return legacyFallback()
         }
     }
 

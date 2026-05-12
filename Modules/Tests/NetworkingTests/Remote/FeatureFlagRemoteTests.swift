@@ -59,4 +59,28 @@ final class FeatureFlagRemoteTests: XCTestCase {
             ($0 as? NetworkError) == .notFound()
         })
     }
+
+    // MARK: - RemoteFeatureFlag rawValue mapping
+
+    func test_rawValue_when_woo_mobile_ai_assistant_then_maps_to_wooAIAssistant_case() {
+        // Given
+        let key = "woo_mobile_ai_assistant"
+
+        // When
+        let flag = RemoteFeatureFlag(rawValue: key)
+
+        // Then
+        XCTAssertEqual(flag, .wooAIAssistant)
+    }
+
+    func test_rawValue_when_unknown_key_then_returns_nil() {
+        // Given
+        let key = "definitely_not_a_known_flag"
+
+        // When
+        let flag = RemoteFeatureFlag(rawValue: key)
+
+        // Then
+        XCTAssertNil(flag)
+    }
 }

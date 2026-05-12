@@ -614,6 +614,7 @@ final class SupportChatViewModel {
                 areaType: supportArea.area,
                 area: mappedArea,
                 confidence: supportArea.confidence,
+                topic: supportArea.topic,
                 transcript: transcript,
                 systemStatusReport: systemStatusReport
             )

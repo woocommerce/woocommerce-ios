@@ -33,7 +33,7 @@ struct StoreInfoData {
 
     /// Compact range label for constrained lock-screen widgets.
     ///
-    var rangeCompact: String = "1d"
+    var rangeCompact: String
 
     /// Store name
     ///
@@ -345,6 +345,7 @@ private extension StoreInfoProvider {
         let conversionString = sample.conversion.map(StoreInfoFormatter.formattedConversionString) ?? StoreInfoFormatter.Constants.valuePlaceholderText
         return .data(.init(
             range: StoreStatsWidgetDateRange.today.localizedRangeLabel,
+            rangeCompact: StoreStatsWidgetDateRange.today.localizedCompactRangeLabel,
             name: dependencies?.store.storeName ?? Localization.myShop,
             revenue: StoreInfoFormatter.formattedAmountString(for: sample.revenue, with: currencySettings),
             revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: sample.revenue, with: currencySettings),

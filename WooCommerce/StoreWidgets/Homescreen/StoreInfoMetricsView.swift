@@ -117,6 +117,7 @@ struct StoreInfoMetricsView_Previews: PreviewProvider {
     static func exampleData(metrics: [StoreInfoMetric]) -> StoreInfoData {
         StoreInfoData(
             range: "Today",
+            rangeCompact: StoreStatsWidgetDateRange.today.localizedCompactRangeLabel,
             name: "Ernest Shop",
             revenue: "$123,456,789",
             revenueCompact: "$123M",

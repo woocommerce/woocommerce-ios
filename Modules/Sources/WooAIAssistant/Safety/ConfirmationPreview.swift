@@ -4,13 +4,19 @@ public struct ConfirmationPreview: Equatable, Sendable {
     public let summary: ConfirmationPreviewText
     public let fields: [ConfirmationPreviewField]
     public let isBulk: Bool
+    /// Per-entity rows surfaced under the summary on bulk previews so the
+    /// merchant can see which ids - and where possible which names - the
+    /// pending change applies to before approving.
+    public let bulkEntries: [ConfirmationBulkEntry]
 
     public init(summary: ConfirmationPreviewText,
                 fields: [ConfirmationPreviewField] = [],
-                isBulk: Bool = false) {
+                isBulk: Bool = false,
+                bulkEntries: [ConfirmationBulkEntry] = []) {
         self.summary = summary
         self.fields = fields
         self.isBulk = isBulk
+        self.bulkEntries = bulkEntries
     }
 }
 

@@ -435,6 +435,7 @@ final class DashboardViewModelTests: XCTestCase {
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                             DashboardCard(type: .aiAssistant, availability: .hide, enabled: false),
                              DashboardCard(type: .performance, availability: .unavailable, enabled: false),
                              DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
                              DashboardCard(type: .blaze, availability: .hide, enabled: false),
@@ -475,6 +476,7 @@ final class DashboardViewModelTests: XCTestCase {
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                             DashboardCard(type: .aiAssistant, availability: .hide, enabled: false),
                              DashboardCard(type: .performance, availability: .unavailable, enabled: false),
                              DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
                              DashboardCard(type: .blaze, availability: .hide, enabled: false),
@@ -1180,7 +1182,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_dashboard_when_aiAssistant_eligible_then_card_appears() async {
+    func test_dashboard_when_aiAssistant_eligible_and_no_saved_cards_then_card_is_show_and_enabled() async throws {
         // Given
         mockReloadingData()
         let checker = MockAIAssistantEligibilityChecker(isEligible: true)
@@ -1194,14 +1196,17 @@ final class DashboardViewModelTests: XCTestCase {
 
         // When
         await viewModel.reloadAllData()
-        await until { viewModel.showOnDashboardCards.contains(DashboardCard.aiAssistantCard) }
+        await until { viewModel.dashboardCards.contains(where: { $0.type == .aiAssistant }) }
 
         // Then
-        XCTAssertTrue(viewModel.showOnDashboardCards.contains(DashboardCard.aiAssistantCard))
+        let card = try XCTUnwrap(viewModel.dashboardCards.first(where: { $0.type == .aiAssistant }))
+        XCTAssertEqual(card.availability, .show)
+        XCTAssertTrue(card.enabled)
+        XCTAssertTrue(viewModel.showOnDashboardCards.contains(where: { $0.type == .aiAssistant }))
     }
 
     @MainActor
-    func test_dashboard_when_aiAssistant_not_eligible_then_card_absent() async {
+    func test_dashboard_when_aiAssistant_not_eligible_then_card_is_hidden() async throws {
         // Given
         mockReloadingData()
         let checker = MockAIAssistantEligibilityChecker(isEligible: false)
@@ -1217,7 +1222,146 @@ final class DashboardViewModelTests: XCTestCase {
         await viewModel.reloadAllData()
 
         // Then
-        XCTAssertFalse(viewModel.showOnDashboardCards.contains(DashboardCard.aiAssistantCard))
+        let card = try XCTUnwrap(viewModel.dashboardCards.first(where: { $0.type == .aiAssistant }))
+        XCTAssertEqual(card.availability, .hide)
+        XCTAssertFalse(viewModel.showOnDashboardCards.contains(where: { $0.type == .aiAssistant }))
+    }
+
+    @MainActor
+    func test_dashboard_when_aiAssistant_disabled_in_customize_then_not_in_showOnDashboardCards() async {
+        // Given
+        let savedCards: [DashboardCard] = [
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .aiAssistant, availability: .show, enabled: false)
+        ]
+        mockReloadingData(storedDashboardCards: savedCards)
+        let checker = MockAIAssistantEligibilityChecker(isEligible: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: checker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.showOnDashboardCards.contains(where: { $0.type == .aiAssistant }))
+    }
+
+    @MainActor
+    func test_aiAssistant_when_eligible_user_has_saved_cards_without_it_then_card_is_auto_inserted() async throws {
+        // Given
+        let savedCards: [DashboardCard] = [
+            DashboardCard(type: .onboarding, availability: .show, enabled: true),
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .blaze, availability: .show, enabled: true)
+        ]
+        mockReloadingData(storedDashboardCards: savedCards)
+        var capturedSaves: [[DashboardCard]] = []
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .setDashboardCards(_, cards):
+                capturedSaves.append(cards)
+            case let .loadDashboardCards(_, onCompletion):
+                onCompletion(savedCards)
+            case let .loadJetpackBenefitsBannerVisibility(_, _, completion):
+                completion(false)
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(false))
+            case let .loadLastSelectedPerformanceTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedTopPerformersTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedMostActiveCouponsTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedStockType(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedOrderStatus(_, onCompletion):
+                onCompletion(nil)
+            case let .getPOSSurveyPotentialMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
+            case let .getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
+            default:
+                break
+            }
+        }
+        let checker = MockAIAssistantEligibilityChecker(isEligible: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: checker)
+
+        // When
+        await viewModel.onViewAppear()
+
+        // Then
+        let updatedCards = try XCTUnwrap(capturedSaves.first)
+        let aiIndex = try XCTUnwrap(updatedCards.firstIndex(where: { $0.type == .aiAssistant }))
+        let onboardingIndex = try XCTUnwrap(updatedCards.firstIndex(where: { $0.type == .onboarding }))
+        XCTAssertEqual(aiIndex, onboardingIndex + 1)
+        XCTAssertTrue(updatedCards[aiIndex].enabled)
+        XCTAssertEqual(updatedCards[aiIndex].availability, .show)
+    }
+
+    @MainActor
+    func test_aiAssistant_when_already_in_saved_cards_disabled_then_no_re_insert() async {
+        // Given
+        let savedCards: [DashboardCard] = [
+            DashboardCard(type: .onboarding, availability: .show, enabled: true),
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .aiAssistant, availability: .show, enabled: false)
+        ]
+        mockReloadingData(storedDashboardCards: savedCards)
+        var setCardsCallCount = 0
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .setDashboardCards:
+                setCardsCallCount += 1
+            case let .loadDashboardCards(_, onCompletion):
+                onCompletion(savedCards)
+            case let .loadJetpackBenefitsBannerVisibility(_, _, completion):
+                completion(false)
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(false))
+            case let .loadLastSelectedPerformanceTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedTopPerformersTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedMostActiveCouponsTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedStockType(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedOrderStatus(_, onCompletion):
+                onCompletion(nil)
+            case let .getPOSSurveyPotentialMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
+            case let .getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
+            default:
+                break
+            }
+        }
+        let checker = MockAIAssistantEligibilityChecker(isEligible: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: checker)
+
+        // When
+        await viewModel.onViewAppear()
+
+        // Then
+        XCTAssertEqual(setCardsCallCount, 0)
     }
 
 }

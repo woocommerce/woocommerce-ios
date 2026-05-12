@@ -116,7 +116,6 @@ public enum OrdersUpdateTool {
                                                           body: payload,
                                                           client: client,
                                                           toolName: name,
-                                                          family: .order,
                                                           summarize: OrderSummary.make)
     }
 }

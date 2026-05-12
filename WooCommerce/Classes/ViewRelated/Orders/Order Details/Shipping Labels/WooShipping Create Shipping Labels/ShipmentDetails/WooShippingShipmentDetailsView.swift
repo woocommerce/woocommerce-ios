@@ -47,7 +47,7 @@ struct WooShippingShipmentDetailsView: View {
                 WooShippingPackageAndRatePlaceholder(
                     onSelectPackage: { viewModel.selectPackage($0) },
                     arDelegate: viewModel
-                })
+                )
             }
         }
         .sheet(isPresented: $showingRefundRequest) {

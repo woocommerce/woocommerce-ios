@@ -76,7 +76,7 @@ enum TimelineRowID: Hashable {
 final class TimelineTableViewController: UIViewController {
 
     var onIsNearBottomChange: ((Bool) -> Void)?
-    var confirmationHandler: AssistantConfirmationHandler = AssistantConfirmationHandler()
+    var confirmationHandler = AssistantConfirmationHandler()
     var externalNavigation: AssistantExternalNavigationProviding = NoOpExternalNavigation()
     var externalViews: AssistantExternalViewProviding = EmptyExternalViews()
 

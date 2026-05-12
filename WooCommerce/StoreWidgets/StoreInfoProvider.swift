@@ -31,6 +31,10 @@ struct StoreInfoData {
     ///
     var range: String
 
+    /// Compact range label for constrained lock-screen widgets.
+    ///
+    var rangeCompact: String = "1d"
+
     /// Store name
     ///
     var name: String
@@ -169,40 +173,14 @@ extension StoreInfoProvider {
 }
 
 extension StoreInfoProvider {
-    /// Catalog priority order. Mirrors the parameter `default:` in `StoreStatsConfigurationIntent`
-    /// so the render-time top-up draws from the same list iOS hands out at first install — a
-    /// resize-up tile renders identically to a fresh install at the new family.
-    ///
-    private static let catalogPriorityOrder: [StoreInfoMetricType] = [
-        .revenue, .orders, .itemsSold, .averageOrderValue,
-        .netSales, .visitors, .conversion
-    ]
-
-    /// Family slot counts that the home-screen view caps at when rendering. Mirrors the `size:`
-    /// map on the intent's `metrics` parameter. Lock-screen families return `nil` — they ignore
-    /// `StoreInfoData.metrics` and read fixed fields off `StoreInfoData` directly.
-    ///
-    private static func homescreenSlotCount(_ family: WidgetFamily) -> Int? {
-        switch family {
-        case .systemSmall: return 2
-        case .systemMedium: return 4
-        case .systemLarge: return 7
-        default: return nil
-        }
-    }
-
     /// Maps the user's requested metric set onto what the configurable widget can render.
     /// **AppIntent path only** — the legacy `StaticConfiguration` path bypasses this entirely
     /// and uses `legacyMetricsPreset`.
     ///
     /// iOS persists the user's selection per tile and does not auto-extend the array when a
     /// tile resizes to a larger family — `EntityQuery` has no default-fill hook to participate
-    /// in that. To keep the widget body looking complete after a resize-up, this resolver:
-    ///
-    /// 1. Slices oversized arrays (resize-down) to the family's slot count.
-    /// 2. Tops up undersized arrays from `catalogPriorityOrder` until full, deduping. The
-    ///    auto-fill order matches the parameter `default:` so resize-up content is predictable
-    ///    and identical to a fresh install at the new family.
+    /// in that. The shared intent resolver keeps home-screen resize behavior complete and
+    /// applies the rectangular lock-screen chart-backed metric rule.
     ///
     /// Trade-off: the Edit Widget UI is iOS-controlled and shows "Choose" placeholders for
     /// slots that don't have an explicit user pick — even though the widget body has rendered
@@ -212,20 +190,7 @@ extension StoreInfoProvider {
         requested: [StoreInfoMetricType],
         family: WidgetFamily
     ) -> [StoreInfoMetricType] {
-        guard let target = homescreenSlotCount(family) else {
-            return requested
-        }
-
-        if requested.count > target {
-            return Array(requested.prefix(target))
-        }
-
-        var resolved = requested
-        for fallback in catalogPriorityOrder where resolved.count < target {
-            guard !resolved.contains(fallback) else { continue }
-            resolved.append(fallback)
-        }
-        return resolved
+        StoreStatsConfigurationIntent.resolveMetricSelection(requested: requested, family: family)
     }
 }
 
@@ -430,6 +395,7 @@ private extension StoreInfoProvider {
 
         return .data(.init(
             range: dateRange.localizedRangeLabel,
+            rangeCompact: dateRange.localizedCompactRangeLabel,
             name: dependencies.store.storeName,
             revenue: StoreInfoFormatter.formattedAmountString(for: stats.revenue, with: currencySettings),
             revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: stats.revenue, with: currencySettings),

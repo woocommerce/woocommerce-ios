@@ -8,12 +8,14 @@ struct WidgetSnapshot: Equatable, Hashable {
 extension WidgetSnapshot {
     init(from infos: [WidgetInfo]) {
         self.init(tiles: infos.compactMap { info -> Tile? in
-            guard info.kind == WooConstants.storeInfoWidgetKind,
+            guard Self.isStoreStatsWidgetKind(info.kind),
                   let intent = info.widgetConfigurationIntent(of: StoreStatsConfigurationIntent.self) else {
                 return nil
             }
-            let slotCount = StoreStatsConfigurationIntent.metricsSlotCounts[info.family] ?? intent.metrics.count
-            let visibleMetrics = Array(intent.metrics.prefix(slotCount))
+            let visibleMetrics = StoreStatsConfigurationIntent.resolveMetricSelection(
+                requested: intent.metrics,
+                family: info.family
+            )
             return Tile(
                 kind: info.kind,
                 family: info.family,
@@ -31,6 +33,12 @@ extension WidgetSnapshot {
     enum Configuration: Equatable, Hashable {
         case storeStats(dateRange: StoreStatsWidgetDateRange, metrics: [StoreInfoMetricType])
         case unconfigured
+    }
+}
+
+private extension WidgetSnapshot {
+    static func isStoreStatsWidgetKind(_ kind: String) -> Bool {
+        kind == WooConstants.storeInfoWidgetKind || kind == WooConstants.storeTrendsWidgetKind
     }
 }
 

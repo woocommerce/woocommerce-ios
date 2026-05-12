@@ -188,6 +188,26 @@ struct WidgetSnapshotAnalyticsTests {
         #expect(props["info_widget_metrics_in_use"] == "orders,revenue")
     }
 
+    @Test func accessoryRectangular_reports_resolved_chart_backed_metric() {
+        // Given - snapshot construction stores the family-resolved visible metric before analytics.
+        let metrics = StoreStatsConfigurationIntent.resolveMetricSelection(
+            requested: [.visitors],
+            family: .accessoryRectangular
+        )
+        let tile = WidgetSnapshot.Tile(
+            kind: WooConstants.storeTrendsWidgetKind,
+            family: .accessoryRectangular,
+            configuration: .storeStats(dateRange: .today, metrics: metrics)
+        )
+        let snapshot = WidgetSnapshot(tiles: [tile])
+
+        // When
+        let props = snapshot.analyticsProperties
+
+        // Then
+        #expect(props["info_widget_metrics_in_use"] == "revenue")
+    }
+
     @Test func multiple_tiles_combine_metrics_with_repetitions() {
         // Given - tiles with overlapping metrics
         let tileA = WidgetSnapshot.Tile(

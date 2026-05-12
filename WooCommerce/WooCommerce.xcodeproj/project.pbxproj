@@ -386,6 +386,7 @@
 				StoreStatsConfigurationIntent.swift,
 				StoreStatsWidgetDateRange.swift,
 				StoreWidgets.intentdefinition,
+				WidgetReportsURL.swift,
 			);
 			target = B56DB3C52049BFAA00D4AA8E /* WooCommerce */;
 		};

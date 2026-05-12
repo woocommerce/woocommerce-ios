@@ -228,8 +228,7 @@ public struct AIApiProxyChatService: AIChatService {
                                       toolChoice: toolChoice,
                                       model: AssistantConfiguration.chatModel,
                                       stream: true,
-                                      streamOptions: .init(includeUsage: true),
-                                      feature: nil)
+                                      streamOptions: .init(includeUsage: true))
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.withoutEscapingSlashes]
         urlRequest.httpBody = try encoder.encode(body)

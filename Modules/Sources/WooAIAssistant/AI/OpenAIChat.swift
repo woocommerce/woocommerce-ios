@@ -1,11 +1,6 @@
 import Foundation
 
-/// OpenAI-compatible chat-completion wire types.
-///
-/// Both `jetpack-ai-query` and `ai-api-proxy/v1/chat/completions` accept this
-/// shape verbatim, so a single set of types covers today's backend and the
-/// expected future swap. Tool calling follows the OpenAI spec
-/// (`finish_reason: "tool_calls"`, `tool_calls[i].function.{name,arguments}`).
+/// OpenAI-compatible chat-completion wire types accepted by the wpcom AI proxy.
 public enum OpenAIChat {
 
     public enum Role: String, Codable, Sendable {
@@ -45,13 +40,8 @@ public enum OpenAIChat {
             case toolCallID = "tool_call_id"
         }
 
-        /// Custom encoder so an assistant turn carrying `tool_calls` still
-        /// emits a present, non-null `content` field. jetpack-ai-query's
-        /// pre-filter rejects `"content": null` AND an omitted `content`
-        /// key with `jetpack_ai_error: Invalid message format`; it accepts
-        /// an empty string. OpenAI's downstream model ignores `content`
-        /// when `tool_calls` is set, so the empty string is cosmetic but
-        /// required to satisfy the proxy's validator.
+        /// Some upstream validators reject `"content": null` or an omitted `content` key
+        /// on assistant turns that carry `tool_calls`; emit an empty string instead.
         public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(role, forKey: .role)
@@ -115,7 +105,7 @@ public enum OpenAIChat {
         }
     }
 
-    /// Encoded-only; `jetpack-ai-query` never returns `tool_choice`.
+    /// Encoded-only; the wpcom AI proxy never returns `tool_choice`.
     public enum ToolChoice: Encodable, Sendable, Equatable {
         case auto
         case required
@@ -158,7 +148,6 @@ public enum OpenAIChat {
         let model: String?
         let stream: Bool
         let streamOptions: StreamOptions?
-        let feature: String?
         let temperature: Double?
         let maxTokens: Int?
 
@@ -168,7 +157,6 @@ public enum OpenAIChat {
              model: String? = nil,
              stream: Bool = false,
              streamOptions: StreamOptions? = nil,
-             feature: String? = nil,
              temperature: Double? = nil,
              maxTokens: Int? = nil) {
             self.messages = messages
@@ -177,13 +165,12 @@ public enum OpenAIChat {
             self.model = model
             self.stream = stream
             self.streamOptions = streamOptions
-            self.feature = feature
             self.temperature = temperature
             self.maxTokens = maxTokens
         }
 
         enum CodingKeys: String, CodingKey {
-            case messages, tools, model, stream, feature, temperature
+            case messages, tools, model, stream, temperature
             case toolChoice = "tool_choice"
             case streamOptions = "stream_options"
             case maxTokens = "max_tokens"
@@ -197,7 +184,6 @@ public enum OpenAIChat {
             try container.encodeIfPresent(model, forKey: .model)
             try container.encode(stream, forKey: .stream)
             try container.encodeIfPresent(streamOptions, forKey: .streamOptions)
-            try container.encodeIfPresent(feature, forKey: .feature)
             try container.encodeIfPresent(temperature, forKey: .temperature)
             try container.encodeIfPresent(maxTokens, forKey: .maxTokens)
         }

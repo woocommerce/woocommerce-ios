@@ -145,7 +145,6 @@ struct OpenAIChatTests {
             toolChoice: .auto,
             model: "gpt-4o-mini",
             stream: true,
-            feature: "woo-ai-assistant",
             maxTokens: 256
         )
 
@@ -158,7 +157,7 @@ struct OpenAIChatTests {
         #expect(json["max_tokens"] as? Int == 256)
         #expect(json["model"] as? String == "gpt-4o-mini")
         #expect(json["stream"] as? Bool == true)
-        #expect(json["feature"] as? String == "woo-ai-assistant")
+        #expect(json["feature"] == nil)
         #expect(json["temperature"] == nil)
         let messages = try #require(json["messages"] as? [[String: Any]])
         #expect(messages.first?["role"] as? String == "user")

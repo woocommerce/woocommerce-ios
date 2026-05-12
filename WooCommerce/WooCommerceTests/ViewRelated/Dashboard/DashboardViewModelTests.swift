@@ -87,14 +87,6 @@ final class DashboardViewModelTests: XCTestCase {
             }
         }
 
-        // FeatureFlagAction - dispatched by child view models checking feature availability
-        storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
-            switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
-                onCompletion(false)
-            }
-        }
-
         // StatsActionV4 - dispatched by stats view models during data sync
         storesManager.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -1384,6 +1376,10 @@ private final class MockAIAssistantEligibilityChecker: AIAssistantEligibilityChe
     func isEligible(for site: Site?) -> Bool {
         isEligibleResult
     }
+
+    func isEligible(for site: Site?, useCache: Bool) async -> Bool {
+        isEligibleResult
+    }
 }
 
 private extension DashboardViewModelTests {
@@ -1427,13 +1423,6 @@ private extension DashboardViewModelTests {
                 onCompletion(false)
             default:
                 break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
-            switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
-                onCompletion(false)
             }
         }
 

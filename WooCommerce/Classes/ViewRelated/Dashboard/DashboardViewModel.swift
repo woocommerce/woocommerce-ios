@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
 import protocol WooFoundation.Analytics
 import struct WooFoundation.WooCommerceComUTMProvider
+import class UIKit.UIApplication
 import class UIKit.UIDevice
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
@@ -239,20 +240,31 @@ final class DashboardViewModel: ObservableObject {
     }
 
     private func observeAIAssistantEligibility() {
-        // Seed the eligibility flag from the current site so the dashboard reflects it on first load,
-        // even if the underlying site publisher does not replay its current value on subscription.
         isAIAssistantEligible = aiAssistantEligibilityChecker.isEligible(for: stores.sessionManager.defaultSite)
+        refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite)
 
         stores.sessionManager.defaultSitePublisher
-            .map { [aiAssistantEligibilityChecker] site in
-                aiAssistantEligibilityChecker.isEligible(for: site)
-            }
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] eligible in
-                self?.isAIAssistantEligible = eligible
+            .sink { [weak self] site in
+                self?.refreshAIAssistantEligibility(for: site)
             }
             .store(in: &subscriptions)
+
+        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite, useCache: false)
+            }
+            .store(in: &subscriptions)
+    }
+
+    private func refreshAIAssistantEligibility(for site: Site?, useCache: Bool = true) {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let eligible = await aiAssistantEligibilityChecker.isEligible(for: site, useCache: useCache)
+            if isAIAssistantEligible != eligible {
+                isAIAssistantEligible = eligible
+            }
+        }
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -303,6 +315,7 @@ final class DashboardViewModel: ObservableObject {
     func reloadAllData(forceCardsRefresh: Bool = false) async {
         isReloadingAllData = true
         checkInboxEligibility()
+        refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite, useCache: false)
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 await self?.syncDashboardEssentialData()

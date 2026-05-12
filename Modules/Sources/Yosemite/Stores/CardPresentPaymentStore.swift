@@ -278,7 +278,11 @@ private extension CardPresentPaymentStore {
             onCardReaderMessage(event)
         }
 
-        paymentCancellable = handlePaymentEvents(from: cardReaderService.capturePayment(parameters),
+        paymentCancellable = handlePaymentEvents(from: cardReaderService.capturePayment(parameters) { _ in
+            Just(())
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
+        },
                                                  readerEventsSubscription: readerEventsSubscription,
                                                  siteID: siteID,
                                                  orderID: orderID,
@@ -334,7 +338,11 @@ private extension CardPresentPaymentStore {
             onCardReaderMessage(event)
         }
 
-        paymentCancellable = handlePaymentEvents(from: cardReaderService.retryActivePaymentIntent(),
+        paymentCancellable = handlePaymentEvents(from: cardReaderService.retryActivePaymentIntent { _ in
+            Just(())
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
+        },
                                                  readerEventsSubscription: readerEventsSubscription,
                                                  siteID: siteID,
                                                  orderID: orderID,

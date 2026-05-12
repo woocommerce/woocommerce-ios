@@ -53,23 +53,15 @@ public protocol CardReaderService {
     /// We need to call this method when switching accounts or stores
     func clear()
 
-    /// Captures a payment after collecting a payment method succeeds.
-    /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
-    func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error>
-
-    /// Captures a payment, running a hook after payment method collection succeeds and before payment confirmation.
+    /// Captures a payment after collecting a payment method, running any required work before payment confirmation.
     /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
     func capturePayment(_ parameters: PaymentIntentParameters,
                         beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>) -> AnyPublisher<PaymentIntent, Error>
 
-    /// Retries the most recent payment intent attempted.
+    /// Retries the most recent payment intent attempted, running any required work before payment confirmation.
     /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
     /// This action continues at the appropriate place in the `capturePayment` flow, but parameters cannot be changed.
     /// If the payment cannot be retried, an appropriate error will immediately return.
-    func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error>
-
-    /// Retries the most recent payment intent attempted, running a hook before payment confirmation.
-    /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
     func retryActivePaymentIntent(beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>) -> AnyPublisher<PaymentIntent, Error>
 
     /// Cancels a PaymentIntent
@@ -90,15 +82,4 @@ public protocol CardReaderService {
     /// Use this when the user wants to manually connect a different reader
     /// or cancel the automatic reconnection process.
     func cancelReconnection() -> Future<Void, Error>
-}
-
-public extension CardReaderService {
-    func capturePayment(_ parameters: PaymentIntentParameters,
-                        beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>) -> AnyPublisher<PaymentIntent, Error> {
-        capturePayment(parameters)
-    }
-
-    func retryActivePaymentIntent(beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>) -> AnyPublisher<PaymentIntent, Error> {
-        retryActivePaymentIntent()
-    }
 }

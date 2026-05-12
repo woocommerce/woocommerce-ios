@@ -342,14 +342,6 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
-        capturePayment(parameters) { _ in
-            Just(())
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
-        }
-    }
-
     public func capturePayment(_ parameters: PaymentIntentParameters,
                                beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>) -> AnyPublisher<PaymentIntent, Error> {
         // The documentation for this protocol method promises that this will produce either
@@ -369,15 +361,7 @@ extension StripeCardReaderService: CardReaderService {
                 self.processPayment(intent: intent)
             }
             .map(PaymentIntent.init(intent:))
-                .eraseToAnyPublisher()
-    }
-
-    public func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error> {
-        retryActivePaymentIntent { _ in
-            Just(())
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
-        }
+            .eraseToAnyPublisher()
     }
 
     public func retryActivePaymentIntent(beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>) -> AnyPublisher<PaymentIntent, Error> {

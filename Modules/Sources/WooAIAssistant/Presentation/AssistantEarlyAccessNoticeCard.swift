@@ -4,6 +4,7 @@ import WooFoundation
 struct AssistantEarlyAccessNoticeCard: View {
 
     let onFeedbackTap: () -> Void
+    var onDismiss: (() -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: AssistantSpacing.large) {
@@ -46,10 +47,23 @@ struct AssistantEarlyAccessNoticeCard: View {
             RoundedRectangle(cornerRadius: AssistantRadius.card)
                 .fill(Color(Layout.cardBackground))
         )
+        .overlay(alignment: .topTrailing) {
+            if let onDismiss {
+                Button(action: onDismiss) {
+                    Image(systemName: "xmark.circle.fill")
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundStyle(Color.assistantTextFaint)
+                        .padding(Layout.dismissHitPadding)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Localization.dismissAccessibilityLabel)
+            }
+        }
     }
 
     private enum Layout {
         static let iconSize: CGFloat = 13
+        static let dismissHitPadding: CGFloat = 14
 
         // Light mode uses the lightest WooCommerce purple from the design system;
         // dark mode matches the suggestion card surface for visual consistency.
@@ -79,11 +93,22 @@ struct AssistantEarlyAccessNoticeCard: View {
             value: "Feedback & requests",
             comment: "Button label opening the AI Assistant feedback survey"
         )
+        static let dismissAccessibilityLabel = NSLocalizedString(
+            "assistantChat.empty.earlyAccess.dismiss",
+            value: "Dismiss early access notice",
+            comment: "Accessibility label for the close button on the AI Assistant early access notice card"
+        )
     }
 }
 
 #if DEBUG
 #Preview {
+    AssistantEarlyAccessNoticeCard(onFeedbackTap: {}, onDismiss: {})
+        .padding()
+        .background(Color.assistantSurface)
+}
+
+#Preview("Without dismiss") {
     AssistantEarlyAccessNoticeCard(onFeedbackTap: {})
         .padding()
         .background(Color.assistantSurface)

@@ -273,7 +273,7 @@ struct PointOfSaleDashboardView: View {
         Button {
             phoneShowingCart = true
         } label: {
-            Text(String(format: Localization.phoneCart, posModel.cart.purchasableItems.count))
+            Text(String(format: Localization.phoneCart, posModel.cart.totalItemCount))
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .padding(.horizontal, POSPadding.medium)

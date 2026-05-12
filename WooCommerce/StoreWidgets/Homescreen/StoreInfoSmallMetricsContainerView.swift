@@ -8,7 +8,9 @@ struct StoreInfoSmallMetricsContainerView: View {
 
     private var visibleMetrics: [any MetricPresentable] {
         let limit = StoreInfoDynamicType.usesAccessibilityLayout(dynamicTypeSize) ? Layout.accessibilityMetricLimit : Layout.defaultMetricLimit
-        return Array(data.metrics.prefix(limit))
+        return data.metrics.prefix(limit).map { metric in
+            WidgetMetricPresenter(metric: metric, dateRange: data.dateRange)
+        }
     }
 
     private var showsUpdatePrefix: Bool {

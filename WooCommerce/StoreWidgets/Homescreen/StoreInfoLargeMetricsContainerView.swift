@@ -4,11 +4,17 @@ import SwiftUI
 struct StoreInfoLargeMetricsContainerView: View {
     let data: StoreInfoData
 
+    private var presentableMetrics: [any MetricPresentable] {
+        data.metrics.map { metric in
+            WidgetMetricPresenter(metric: metric, dateRange: data.dateRange)
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.headerSpacing) {
             StoreInfoMetricsLogoHeader(data: data)
 
-            StoreInfoMetricsGrid(metrics: data.metrics, leadingMetricStyle: .large)
+            StoreInfoMetricsGrid(metrics: presentableMetrics, leadingMetricStyle: .large)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }

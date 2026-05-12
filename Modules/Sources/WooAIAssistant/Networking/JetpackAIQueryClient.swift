@@ -2,8 +2,6 @@ import Foundation
 import CocoaLumberjackSwift
 import NetworkingCore
 
-typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
-
 struct JetpackAIQueryClient: AIChatService {
 
     typealias Sleep = @Sendable (UInt64) async throws -> Void
@@ -19,7 +17,7 @@ struct JetpackAIQueryClient: AIChatService {
          sleep: Sleep? = nil) {
         self.jwtProvider = jwtProvider
         self.endpoint = endpoint ?? Self.defaultEndpoint()
-        self.streamingTransport = streamingTransport ?? Self.urlSessionStreamingTransport(Self.sharedLLMSession)
+        self.streamingTransport = streamingTransport ?? AIChatTransport.urlSessionStreamingTransport(AIChatTransport.sharedLLMSession)
         self.sleep = sleep ?? { nanoseconds in try await Task.sleep(nanoseconds: nanoseconds) }
     }
 
@@ -37,75 +35,8 @@ struct JetpackAIQueryClient: AIChatService {
         return URL(string: "https://public-api.wordpress.com/\(endpointPath)") ?? URL(fileURLWithPath: "/")
     }
 
-    // httpMaximumConnectionsPerHost overrides URLSession.shared's 6-conn cap.
-    private static let sharedLLMSession: URLSession = {
-        let config = URLSessionConfiguration.default
-        config.httpMaximumConnectionsPerHost = 64
-        config.timeoutIntervalForRequest = 120
-        config.timeoutIntervalForResource = 180
-        return URLSession(configuration: config)
-    }()
-
-    private static func urlSessionStreamingTransport(_ session: URLSession) -> StreamingHTTPTransport {
-        return { request in
-            let bytes: URLSession.AsyncBytes
-            let response: URLResponse
-            do {
-                (bytes, response) = try await session.bytes(for: request)
-            } catch let urlError as URLError {
-                throw Self.mapURLError(urlError)
-            }
-            guard let http = response as? HTTPURLResponse else {
-                throw AssistantError(kind: .network, message: Localization.nonHTTPResponse)
-            }
-            // Cancelling only the Swift Task leaves the URL loader holding the socket;
-            // an idle SSE connection never throws via the byte iterator.
-            let urlSessionTask = bytes.task
-            let stream = AsyncThrowingStream<Data, Error> { continuation in
-                let task = Task {
-                    var buffer = Data()
-                    do {
-                        for try await byte in bytes {
-                            buffer.append(byte)
-                            if buffer.count >= 4096 {
-                                continuation.yield(buffer)
-                                buffer.removeAll(keepingCapacity: true)
-                            }
-                        }
-                        if !buffer.isEmpty {
-                            continuation.yield(buffer)
-                        }
-                        continuation.finish()
-                    } catch let urlError as URLError {
-                        continuation.finish(throwing: Self.mapURLError(urlError))
-                    } catch {
-                        continuation.finish(throwing: error)
-                    }
-                }
-                continuation.onTermination = { _ in
-                    task.cancel()
-                    urlSessionTask.cancel()
-                }
-            }
-            return (stream, http)
-        }
-    }
-
     static func mapURLError(_ error: URLError) -> AssistantError {
-        let kind: AssistantErrorKind
-        switch error.code {
-        case .timedOut:
-            kind = .timeout
-        case .cancelled:
-            kind = .cancelled
-        default:
-            // Catch-all to .network mirrors Android's IOException -> NETWORK mapping; the orchestrator
-            // would otherwise collapse these to .unknown via the AssistantError-typed catch only.
-            kind = .network
-        }
-        return AssistantError(kind: kind,
-                              code: String(error.code.rawValue),
-                              message: error.localizedDescription)
+        AIChatTransport.mapURLError(error)
     }
 
     func streamTurn(messages: [OpenAIChat.Message],
@@ -224,13 +155,11 @@ struct JetpackAIQueryClient: AIChatService {
         var toolCallBuffers: [Int: ToolCallAssembly] = [:]
         var toolCallOrder: [Int] = []
         var finishReason: OpenAIChat.FinishReason?
-        // Carry up to 3 trailing bytes when a multi-byte UTF-8 char straddles a chunk;
-        // otherwise `String(data:encoding:)` drops the whole chunk.
         var pendingBytes = Data()
 
         for try await rawChunk in byteStream {
             pendingBytes.append(rawChunk)
-            let (decoded, remainder) = Self.decodeUTF8WithBoundaryCarry(pendingBytes)
+            let (decoded, remainder) = decodeUTF8WithBoundaryCarry(pendingBytes)
             pendingBytes = remainder
             guard let text = decoded, !text.isEmpty else { continue }
             for event in parser.feed(text) {
@@ -309,7 +238,7 @@ struct JetpackAIQueryClient: AIChatService {
         }
         if let deltaCalls = choice.delta.toolCalls {
             for delta in deltaCalls {
-                apply(delta: delta, to: &buffers, order: &order)
+                applyToolCallDelta(delta, to: &buffers, order: &order)
             }
         }
         if let reason = choice.finishReason {
@@ -340,12 +269,6 @@ struct JetpackAIQueryClient: AIChatService {
         return urlRequest
     }
 
-    private struct ToolCallAssembly {
-        var id: String?
-        var name: String?
-        var arguments: String = ""
-    }
-
     private actor StreamBridge {
         private(set) var didEmitAnyEvent = false
         func markEmitted() { didEmitAnyEvent = true }
@@ -354,31 +277,6 @@ struct JetpackAIQueryClient: AIChatService {
     // Wraps envelope errors so they bypass the HTTP retry guards keyed on `error.code`.
     private struct WrappedEnvelopeError: Error {
         let assistantError: AssistantError
-    }
-
-    static func decodeUTF8WithBoundaryCarry(_ buffer: Data) -> (decoded: String?, remainder: Data) {
-        if let full = String(data: buffer, encoding: .utf8) {
-            return (full, Data())
-        }
-        for backoff in 1...min(3, buffer.count) {
-            let split = buffer.count - backoff
-            let prefix = buffer.prefix(split)
-            if let decoded = String(data: prefix, encoding: .utf8) {
-                return (decoded, buffer.suffix(from: split))
-            }
-        }
-        return (nil, buffer)
-    }
-
-    private func apply(delta: OpenAIChat.ToolCallDelta,
-                       to buffers: inout [Int: ToolCallAssembly],
-                       order: inout [Int]) {
-        var asm = buffers[delta.index] ?? ToolCallAssembly()
-        if asm.id == nil, let id = delta.id { asm.id = id }
-        if asm.name == nil, let name = delta.function?.name { asm.name = name }
-        if let args = delta.function?.arguments { asm.arguments.append(args) }
-        buffers[delta.index] = asm
-        if !order.contains(delta.index) { order.append(delta.index) }
     }
 
     private struct WrappedError: Decodable {

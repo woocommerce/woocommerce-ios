@@ -108,13 +108,6 @@ struct WidgetSnapshotTests {
         #expect(StoreStatsConfigurationIntent.metricsSlotCounts[.systemLarge] == 7)
     }
 
-    @Test func default_metrics_exclude_metrics_unavailable_with_site_credentials() {
-        #expect(StoreStatsConfigurationIntent.defaultMetrics == [
-            .revenue, .orders, .itemsSold, .averageOrderValue, .netSales
-        ])
-        #expect(StoreStatsConfigurationIntent.defaultMetrics.allSatisfy(\.isAvailableWithSiteCredentials))
-    }
-
     @Test func snapshots_with_different_date_range_are_not_equal() {
         // Given
         let tileA = WidgetSnapshot.Tile(

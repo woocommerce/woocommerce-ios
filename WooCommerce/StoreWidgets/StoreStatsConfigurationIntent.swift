@@ -113,19 +113,9 @@ struct StoreStatsStoreEntity: AppEntity, Hashable {
 }
 
 struct StoreStatsStoreQuery: EntityQuery {
-    private let siteListStore: WidgetSiteListStore
-
-    init() {
-        self.init(siteListStore: WidgetSiteListStore())
-    }
-
-    init(siteListStore: WidgetSiteListStore = WidgetSiteListStore()) {
-        self.siteListStore = siteListStore
-    }
-
     func entities(for identifiers: [StoreStatsStoreEntity.ID]) async throws -> [StoreStatsStoreEntity] {
         let identifiers = Set(identifiers)
-        let entities = siteListStore.sites()
+        let entities = WidgetSiteListStore().sites()
             .filter { identifiers.contains(StoreStatsStoreSelection.entityID(for: $0.siteID)) }
             .map(StoreStatsStoreEntity.init(site:))
 
@@ -136,7 +126,7 @@ struct StoreStatsStoreQuery: EntityQuery {
     }
 
     func suggestedEntities() async throws -> [StoreStatsStoreEntity] {
-        siteListStore.sites().map(StoreStatsStoreEntity.init(site:))
+        WidgetSiteListStore().sites().map(StoreStatsStoreEntity.init(site:))
     }
 
     func defaultResult() async -> StoreStatsStoreEntity? {

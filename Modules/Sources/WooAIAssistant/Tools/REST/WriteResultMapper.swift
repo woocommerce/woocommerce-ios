@@ -36,8 +36,7 @@ enum WriteResultMapper {
     static func mapBatch(_ response: WCRESTResponse,
                          toolName: String,
                          requestedCount: Int,
-                         patchKeys: [String],
-                         listFamily: CardFamilyID) -> ToolResult {
+                         patchKeys: [String]) -> ToolResult {
         if let unknown = unknownOutcomeFailure(response: response, toolName: toolName) {
             return .failed(unknown)
         }
@@ -51,15 +50,12 @@ enum WriteResultMapper {
                                  reason: "expected {\"update\":[...]} batch payload"))
         }
         var updatedIDs: [Int64] = []
-        var updatedEntities: [AnyCodableJSON] = []
         var failedEntries: [AnyCodableJSON] = []
-        // Each successful entry is the full updated entity, not just {id}.
         for item in updates {
             if RESTResponseParsing.objectField(item, "error") != nil {
                 failedEntries.append(item)
             } else if let identifier = RESTResponseParsing.intField(item, "id") {
                 updatedIDs.append(identifier)
-                updatedEntities.append(RESTPayloadPruning.prune(item))
             }
         }
         let partialSuccess = !updatedIDs.isEmpty && !failedEntries.isEmpty
@@ -73,15 +69,9 @@ enum WriteResultMapper {
             "updated_ids": .array(updatedIDs.map { .int($0) }),
             "failed": .array(failedEntries)
         ]
-        // One card per updated entity, so bulk writes share the same list-rendering path as show_cards.
-        let cards: [RenderedCardPayload] = updatedEntities.compactMap { entity in
-            guard let identifier = RESTResponseParsing.intField(entity, "id") else { return nil }
-            return RenderedCardPayload(family: listFamily, id: String(identifier), element: entity)
-        }
-        let uiStructured: UIStructured? = cards.isEmpty ? nil : UIStructured(cards: cards)
         return .success(.init(toolName: toolName,
                               structured: LLMPayloadCap.capped(.object(summary), toolName: toolName),
-                              uiStructured: uiStructured))
+                              uiStructured: nil))
     }
 
     private static func unknownOutcomeFailure(response: WCRESTResponse,

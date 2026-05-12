@@ -125,7 +125,7 @@ struct WriteResultMapperTests {
     }
 
     @Test
-    func test_mapBatch_when_all_entries_succeed_then_summary_and_list_card_carry_full_entities() {
+    func test_mapBatch_when_all_entries_succeed_then_summary_carries_counts_and_no_cards_are_built() {
         // Given
         let body = """
         {"update": [
@@ -139,8 +139,7 @@ struct WriteResultMapperTests {
         let result = WriteResultMapper.mapBatch(response,
                                                 toolName: "products_bulk_update",
                                                 requestedCount: 2,
-                                                patchKeys: ["status"],
-                                                listFamily: .product)
+                                                patchKeys: ["status"])
 
         // Then
         guard case .success(let success) = result else {
@@ -160,24 +159,11 @@ struct WriteResultMapperTests {
             }
             #expect(summary["failed"] == .array([]))
         }
-        let cards = success.uiStructured?.cards ?? []
-        #expect(cards.count == 2)
-        #expect(cards.allSatisfy { $0.family == .product })
-        #expect(cards.map(\.id) == ["1", "2"])
-        if case .object(let firstElement) = cards.first?.element {
-            #expect(firstElement["id"] == .int(1))
-            #expect(firstElement["status"] == .string("publish"))
-            #expect(firstElement["_links"] == nil)
-        } else {
-            Issue.record("expected first card element to be an object")
-        }
-        if case .object(let secondElement) = cards.last?.element {
-            #expect(secondElement["meta_data"] == nil)
-        }
+        #expect(success.uiStructured == nil)
     }
 
     @Test
-    func test_mapBatch_when_partial_failure_then_card_only_lists_successful_entities() {
+    func test_mapBatch_when_partial_failure_then_summary_separates_successes_and_failures_and_no_cards_are_built() {
         // Given
         let body = """
         {"update": [
@@ -191,8 +177,7 @@ struct WriteResultMapperTests {
         let result = WriteResultMapper.mapBatch(response,
                                                 toolName: "products_bulk_update",
                                                 requestedCount: 2,
-                                                patchKeys: ["status"],
-                                                listFamily: .product)
+                                                patchKeys: ["status"])
 
         // Then
         guard case .success(let success) = result else {
@@ -203,15 +188,13 @@ struct WriteResultMapperTests {
             #expect(summary["updated_count"] == .int(1))
             #expect(summary["failed_count"] == .int(1))
             #expect(summary["partial_success"] == .bool(true))
+            if case .array(let ids) = summary["updated_ids"] {
+                #expect(ids == [.int(1)])
+            } else {
+                Issue.record("expected updated_ids array")
+            }
         }
-        let cards = success.uiStructured?.cards ?? []
-        #expect(cards.count == 1)
-        #expect(cards.first?.id == "1")
-        if case .object(let element) = cards.first?.element {
-            #expect(element["id"] == .int(1))
-        } else {
-            Issue.record("expected single successful card element")
-        }
+        #expect(success.uiStructured == nil)
     }
 
     @Test
@@ -228,8 +211,7 @@ struct WriteResultMapperTests {
         let result = WriteResultMapper.mapBatch(response,
                                                 toolName: "orders_bulk_update",
                                                 requestedCount: 1,
-                                                patchKeys: ["status"],
-                                                listFamily: .order)
+                                                patchKeys: ["status"])
 
         // Then
         guard case .success(let success) = result else {
@@ -252,8 +234,7 @@ struct WriteResultMapperTests {
         let result = WriteResultMapper.mapBatch(response,
                                                 toolName: "orders_bulk_update",
                                                 requestedCount: 1,
-                                                patchKeys: ["status"],
-                                                listFamily: .order)
+                                                patchKeys: ["status"])
 
         // Then
         guard case .failed(let failed) = result else {

@@ -24,8 +24,7 @@ extension RESTToolDispatch {
                                    client: WCRESTClient,
                                    toolName: String,
                                    requestedCount: Int,
-                                   patchKeys: [String],
-                                   listFamily: CardFamilyID) async -> ToolResult {
+                                   patchKeys: [String]) async -> ToolResult {
         let response = await client.request(method: method,
                                             path: path,
                                             query: nil,
@@ -33,7 +32,6 @@ extension RESTToolDispatch {
         return WriteResultMapper.mapBatch(response,
                                           toolName: toolName,
                                           requestedCount: requestedCount,
-                                          patchKeys: patchKeys,
-                                          listFamily: listFamily)
+                                          patchKeys: patchKeys)
     }
 }

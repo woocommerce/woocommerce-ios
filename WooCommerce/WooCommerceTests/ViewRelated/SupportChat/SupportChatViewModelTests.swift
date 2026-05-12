@@ -869,6 +869,82 @@ struct SupportChatViewModelTests {
         #expect(sut.shouldShowResolvedButton == true)
     }
 
+    @Test func sendMessage_when_last_bot_message_is_resolved_then_appends_resolved_prompt() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            guard case let .sendMessage(_, message, _, _, _, completion) = action else {
+                return
+            }
+
+            let response = SupportChatResponse(
+                chatID: 123,
+                sessionID: "session-1",
+                botSlug: "test-bot",
+                botVersion: "1.0",
+                messages: [
+                    SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                    SupportChatMessage(
+                        messageID: 2,
+                        role: .bot,
+                        content: "Glad that helped.",
+                        context: SupportChatMessageContext(sources: [], flags: nil, isResolved: true)
+                    )
+                ]
+            )
+            completion(.success(response))
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+
+        // When
+        sut.inputText = "That fixed it"
+        sut.sendMessage()
+
+        // Then
+        let prompt = try? #require(sut.messages.last)
+        #expect(prompt?.role == .bot)
+        #expect(prompt?.messageID == nil)
+        #expect(prompt?.textContent?.contains("mark the chat as resolved") == true)
+    }
+
+    @Test func submitFeedback_when_upvoting_last_bot_message_then_appends_resolved_prompt() async {
+        // Given
+        let messageID: Int64 = 2
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, message, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                        SupportChatMessage(messageID: messageID, role: .bot, content: "Try this.", context: nil)
+                    ]
+                )
+                completion(.success(response))
+            case let .submitFeedback(_, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+        sut.inputText = "Help"
+        sut.sendMessage()
+
+        // When
+        sut.submitFeedback(messageID: messageID, upvoted: true)
+
+        // Then
+        let prompt = try? #require(sut.messages.last)
+        #expect(prompt?.role == .bot)
+        #expect(prompt?.messageID == nil)
+        #expect(prompt?.textContent?.contains("mark the chat as resolved") == true)
+    }
+
     @Test func shouldShowResolvedButton_when_last_bot_message_is_downvoted_then_returns_false() async {
         // Given
         let messageID: Int64 = 2
@@ -1041,6 +1117,19 @@ struct SupportChatViewModelTests {
     }
 
     // MARK: - Feedback Tests
+
+    @Test func chatMessage_shouldShowFeedbackButtons_when_bot_message_is_resolved_then_returns_false() {
+        // Given
+        let message = SupportChatViewModel.ChatMessage(
+            role: .bot,
+            text: "This should solve the issue.",
+            messageID: 123,
+            isResolved: true
+        )
+
+        // Then
+        #expect(message.shouldShowFeedbackButtons == false)
+    }
 
     @Test func submitFeedback_when_valid_messageID_then_dispatches_action() async {
         // Given
@@ -1414,5 +1503,14 @@ struct SupportChatViewModelTests {
             ]
         )
         completion(.success(response))
+    }
+}
+
+private extension SupportChatViewModel.ChatMessage {
+    var textContent: String? {
+        guard case let .text(text) = content else {
+            return nil
+        }
+        return text
     }
 }

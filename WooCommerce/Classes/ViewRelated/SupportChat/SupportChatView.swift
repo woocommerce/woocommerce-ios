@@ -136,7 +136,7 @@ struct SupportChatView: View {
             VStack(alignment: .leading, spacing: 4) {
                 SupportChatMessageRow(role: message.role, text: text, failed: message.failed)
 
-                if message.role == .bot, message.isNewInSession, let messageID = message.messageID {
+                if message.shouldShowFeedbackButtons, let messageID = message.messageID {
                     SupportChatFeedbackRow(
                         messageID: messageID,
                         rating: viewModel.messageRatings[messageID],

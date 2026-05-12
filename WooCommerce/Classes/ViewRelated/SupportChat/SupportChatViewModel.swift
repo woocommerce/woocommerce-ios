@@ -95,6 +95,9 @@ final class SupportChatViewModel {
         /// `true` for messages received during the current session (not rehydrated from history).
         /// Feedback buttons are only shown for new messages.
         let isNewInSession: Bool
+        var shouldShowFeedbackButtons: Bool {
+            role == .bot && isNewInSession && isResolved == false && messageID != nil
+        }
 
         init(id: UUID = UUID(),
              role: SupportChatRole,
@@ -723,6 +726,10 @@ final class SupportChatViewModel {
                         isResolved: lastBotMessage.context?.isResolved ?? false
                     )
                     messages.append(assistantMessage)
+
+                    if assistantMessage.isResolved {
+                        appendResolvedPromptIfNeeded()
+                    }
                 }
             }
 
@@ -780,6 +787,11 @@ final class SupportChatViewModel {
                 }
             }
             messages = rehydrated
+
+            if latestBotResponse?.isResolved == true {
+                appendResolvedPromptIfNeeded()
+            }
+
             state = .idle
 
         case .failure(let error):
@@ -825,6 +837,19 @@ final class SupportChatViewModel {
         }
     }
 
+    private func appendResolvedPromptIfNeeded() {
+        guard isChatResolved == false else {
+            return
+        }
+
+        if case let .text(text) = messages.last?.content,
+           text == Localization.resolvedPromptMessage {
+            return
+        }
+
+        messages.append(ChatMessage(role: .bot, text: Localization.resolvedPromptMessage))
+    }
+
     // MARK: - Feedback
 
     /// Submits feedback for a bot message.
@@ -835,6 +860,10 @@ final class SupportChatViewModel {
         guard messageRatings[messageID] == nil else { return }
 
         messageRatings[messageID] = upvoted
+
+        if upvoted, latestBotResponse?.messageID == messageID {
+            appendResolvedPromptIfNeeded()
+        }
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.feedbackSubmitted(upvoted: upvoted))
 
@@ -851,6 +880,10 @@ final class SupportChatViewModel {
         }
         stores.dispatch(action)
     }
+
+    private var latestBotResponse: ChatMessage? {
+        messages.last { $0.role == .bot && $0.messageID != nil }
+    }
 }
 
 // MARK: - Localization
@@ -866,6 +899,11 @@ private extension SupportChatViewModel {
             "supportChatViewModel.postDiagnosticsGreeting",
             value: "Please describe your issue in more detail so I can help.",
             comment: "Message prompting user to describe their issue after diagnostics"
+        )
+        static let resolvedPromptMessage = NSLocalizedString(
+            "supportChatViewModel.resolvedPromptMessage",
+            value: "Please mark the chat as resolved if your problem is resolved, or leave a message if you have other questions.",
+            comment: "Message shown by the bot when a support chat answer appears to have solved the merchant's issue"
         )
         static let errorMessage = NSLocalizedString(
             "supportChatViewModel.errorMessage",

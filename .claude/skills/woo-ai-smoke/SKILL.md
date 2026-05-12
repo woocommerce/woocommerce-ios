@@ -1,6 +1,6 @@
 ---
 name: woo-ai-smoke
-description: Evaluate WooAIAssistant against a structured scenario suite with hard invariants + LLM-as-judge rubric scoring. Runs live against the demo store + gpt-4o-mini, writes a JSONL run record, compares against stored baselines, and surfaces regressions. Always delegated to a subagent so the main context only sees the markdown report.
+description: Evaluate WooAIAssistant against a structured scenario suite with hard invariants + LLM-as-judge rubric scoring. Runs live against the demo store + gpt-5.4-mini via the ai-api-proxy backend, writes a JSONL run record, compares against stored baselines, and surfaces regressions. Always delegated to a subagent so the main context only sees the markdown report.
 user-invocable: true
 allowed-tools: "Task, Bash, Read, Write, Edit, Grep, Glob"
 argument-hint: "[suite=default|scenario \"turn1; turn2\"] [samples=N]"
@@ -45,8 +45,9 @@ Pipeline (execute in this order, no skipping). Arm a `trap` cleanup at the start
 trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /tmp/woo-ai-smoke.log /tmp/woo-ai-smoke-store.env' EXIT
 ```
 
-1. Verify ~/.woo-ai-smoke/store.env exists with all four required keys
-   (WOO_SITE_URL, WOO_SITE_ID, WOO_USERNAME, WOO_APP_PASSWORD). On first
+1. Verify ~/.woo-ai-smoke/store.env exists with all five required keys
+   (WOO_SITE_URL, WOO_SITE_ID, WOO_USERNAME, WOO_APP_PASSWORD,
+   WOO_DOTCOM_ACCESS_TOKEN). WOO_AI_SANDBOX_HOST is optional. On first
    run the file doesn't exist: scaffold it with placeholders per the
    Credentials section of SKILL.md, `open` it for editing, and stop with
    a message instructing the engineer to fill it in and re-run.
@@ -124,15 +125,17 @@ inside the subagent's context.
 ## Prerequisites
 
 - Xcode + iOS simulator (the project's `bootstrap` skill covers this).
-- A WooCommerce demo store with an admin **application password** and the **Jetpack AI** plugin enabled.
+- A WooCommerce demo store with an admin **application password** (for the REST tool calls) and an authenticated iOS app session whose WPCOM OAuth bearer can be captured (for the ai-api-proxy LLM calls).
 - Required CLI tools (all macOS-default): `xcodebuild`, `xcrun simctl`, `open`.
-- Store credentials in **`~/.woo-ai-smoke/store.env`** with `WOO_SITE_URL`, `WOO_SITE_ID`, `WOO_USERNAME`, `WOO_APP_PASSWORD`. On first run the skill scaffolds the file with placeholders and opens it for editing — see Credentials below.
+- Store credentials in **`~/.woo-ai-smoke/store.env`** with `WOO_SITE_URL`, `WOO_SITE_ID`, `WOO_USERNAME`, `WOO_APP_PASSWORD`, `WOO_DOTCOM_ACCESS_TOKEN`, and optionally `WOO_AI_SANDBOX_HOST`. On first run the skill scaffolds the file with placeholders and opens it for editing — see Credentials below.
 
 The skill never commits credentials. Swift reads `~/.woo-ai-smoke/store.env` directly so nothing leaks to `/tmp`.
 
 ## Credentials
 
 The engineer maintains `~/.woo-ai-smoke/store.env` (the source of truth, dotenv format). The skill stages a `/tmp/woo-ai-smoke-store.env` mirror at run-start because the iOS simulator process sandboxes `~` to its own container and can't read the host's home directly; the `trap` cleanup deletes the `/tmp` mirror at run-end. Swift reads from `/tmp/woo-ai-smoke-store.env`.
+
+The harness sends LLM traffic through the wpcom `ai-api-proxy` backend using a captured iOS-app WPCOM OAuth bearer (`WOO_DOTCOM_ACCESS_TOKEN`). Until the proxy allowlist PR merges to production, point `WOO_AI_SANDBOX_HOST` at a wpcom sandbox where the proxy is deployed (e.g. `your-handle.dev.dfw.wordpress.com`); leave it blank to use production once the server change is live. REST tool calls still hit the merchant store directly with the application password.
 
 **First-run flow**: if `~/.woo-ai-smoke/store.env` doesn't exist, scaffold it with placeholders, open it for the engineer to fill in, then stop. The engineer saves the file and re-runs the skill.
 
@@ -151,6 +154,13 @@ WOO_SITE_URL=https://your-demo-store.example.com
 WOO_SITE_ID=123456
 WOO_USERNAME=your-admin-username
 WOO_APP_PASSWORD=xxxx xxxx xxxx xxxx xxxx xxxx
+# WPCOM OAuth bearer captured from an authenticated iOS app session. Required
+# for the ai-api-proxy LLM path. Grab it by inspecting any /me request the
+# app issues.
+WOO_DOTCOM_ACCESS_TOKEN=
+# Optional: wpcom sandbox host to route public-api.wordpress.com traffic
+# through while the proxy allowlist PR is in review. Leave blank for prod.
+WOO_AI_SANDBOX_HOST=
 TEMPLATE
   chmod 600 "$ENV_FILE"
   open "$ENV_FILE"
@@ -505,7 +515,7 @@ Main Claude: do steps 1-2, then dispatch the subagent. The subagent does 3-17.
 1. (Main) Parse `$ARGUMENTS` → `suite=default` (N=3) or `scenario "..."` (N=1), `mode=rest|mcp|both` (default `rest`), and pick the baseline JSONL to compare against.
 2. (Main) Dispatch the subagent via Task tool with the prompt template from the Delegation model section. Wait for its markdown report, then relay verbatim.
 3. (Subagent) Arm the trap-based cleanup hook (see Cleanup section).
-4. (Subagent) Verify `~/.woo-ai-smoke/store.env` exists with the four required keys (`WOO_SITE_URL`, `WOO_SITE_ID`, `WOO_USERNAME`, `WOO_APP_PASSWORD`); on first run scaffold + open + exit per the Credentials section. Swift reads the dotenv directly via `WooAssistantHeadless.credentialsFromStoreEnv()` — no JSON file gets written.
+4. (Subagent) Verify `~/.woo-ai-smoke/store.env` exists with the five required keys (`WOO_SITE_URL`, `WOO_SITE_ID`, `WOO_USERNAME`, `WOO_APP_PASSWORD`, `WOO_DOTCOM_ACCESS_TOKEN`); `WOO_AI_SANDBOX_HOST` is optional. On first run scaffold + open + exit per the Credentials section. Swift reads the dotenv directly via `WooAssistantHeadless.credentialsFromStoreEnv()` — no JSON file gets written.
 5. (Subagent) Load scenarios from `baseline.json` (or build ad-hoc from args).
 6. (Subagent) Run Scenario fixture preflight for the selected scenarios. Verify/create/update only smoke-owned fixtures; stop with a fixture error before xcodebuild if a required setup cannot be made valid.
 7. (Subagent) Write `Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift` with `SAMPLES_PLACEHOLDER` replaced by actual N and the mode-specific `toolSource` wired in.

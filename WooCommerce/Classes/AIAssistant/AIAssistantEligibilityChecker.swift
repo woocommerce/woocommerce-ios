@@ -18,15 +18,11 @@ struct AIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {
     }
 
     func isEligible(for site: Site?) -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.wooAIAssistant) else {
-            return false
-        }
-        guard let site else { return false }
-        return site.isWordPressComStore || site.isAIAssistantFeatureActive
+        localEligibility(for: site)
     }
 
     func isEligible(for site: Site?, useCache: Bool = true) async -> Bool {
-        guard isEligible(for: site) else {
+        guard localEligibility(for: site) else {
             return false
         }
         return await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
@@ -37,5 +33,13 @@ struct AIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {
             }
             stores.dispatch(action)
         }
+    }
+
+    private func localEligibility(for site: Site?) -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.wooAIAssistant) else {
+            return false
+        }
+        guard let site else { return false }
+        return site.isWordPressComStore || site.isAIAssistantFeatureActive
     }
 }

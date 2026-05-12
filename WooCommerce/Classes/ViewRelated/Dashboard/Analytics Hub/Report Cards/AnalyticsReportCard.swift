@@ -37,6 +37,7 @@ struct AnalyticsReportCard: View {
             Text(title)
                 .foregroundColor(Color(.text))
                 .footnoteStyle()
+                .renderedIf(title.isNotEmpty)
 
             HStack(alignment: .top, spacing: Layout.columnOutterSpacing) {
 
@@ -60,12 +61,13 @@ struct AnalyticsReportCard: View {
                                 .shimmering(active: isRedacted)
                         }
 
-                        if leadingChartData.isNotEmpty, let leadingChartColor {
+                        if leadingChartData.count > 1, let leadingChartColor {
                             AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingChartColor)
                                 .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
                                 .frame(maxWidth: scaledChartWidth)
                         }
                     }
+                    .renderedIf(leadingDelta != nil || leadingChartData.count > 1)
 
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -89,12 +91,13 @@ struct AnalyticsReportCard: View {
                                 .shimmering(active: isRedacted)
                         }
 
-                        if trailingChartData.isNotEmpty, let trailingChartColor {
+                        if trailingChartData.count > 1, let trailingChartColor {
                             AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingChartColor)
                                 .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
                                 .frame(maxWidth: scaledChartWidth)
                         }
                     }
+                    .renderedIf(trailingDelta != nil || trailingChartData.count > 1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }

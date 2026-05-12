@@ -1,0 +1,328 @@
+import SwiftUI
+import WidgetKit
+
+/// Routing flag for the medium home-screen widget.
+///
+/// `false`: render the legacy `StoreInfoView` / `StatsCard` (consumes pre-formatted String fields).
+/// `true`: render the metric-catalog driven `StoreInfoMetricsView`.
+///
+/// Mirrored into the App Group by `StoreWidgetsFeatureFlagSynchronizer` from the local
+/// `FeatureFlag.configurableStoreStatsWidgets` (enabled by default on local/alpha builds, off on
+/// App Store). View-level gating: the widget kind / supported families never change, so flipping
+/// the flag does not orphan installed tiles — only the rendered body switches.
+///
+private var useMetricsHomescreenWidget: Bool {
+    UserDefaults.group?.configurableStoreStatsWidgetsEnabled ?? false
+}
+
+/// Entry point for StoreInfo Home Screen Widget
+///
+struct StoreInfoHomescreenWidget: View {
+    // Entry to render
+    let entry: StoreInfoEntry
+
+    var body: some View {
+        switch entry {
+        case .notConnected:
+            NotLoggedInView()
+        case .error:
+            UnableToFetchView()
+        case .data(let data):
+            if useMetricsHomescreenWidget {
+                StoreInfoMetricsView(entryData: data)
+            } else {
+                StoreInfoView(entryData: data)
+            }
+        }
+    }
+}
+
+/// StoreInfo Widget View (legacy path).
+///
+/// Reads the pre-formatted String fields off `StoreInfoData`. Kept side-by-side with
+/// `StoreInfoMetricsView` while the metric catalog is being validated end-to-end.
+///
+private struct StoreInfoView: View {
+    // Stats data to render
+    let entryData: StoreInfoData
+
+    // Current size category
+    @Environment(\.sizeCategory) var category
+
+    var accessibilityCategory: ContentSizeCategory {
+        return .extraLarge
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
+            VStack(alignment: .leading, spacing: Layout.cardSpacing) {
+                // Store Name
+                HStack {
+                    Text(entryData.name)
+                        .storeNameStyle()
+                    Spacer()
+                    Text(entryData.range)
+                        .statRangeStyle()
+                }
+                // Updated at
+                Text(Localization.updatedAt(entryData.updatedTime))
+                    .statRangeStyle()
+            }
+
+            if category > accessibilityCategory {
+                AccessibilityStatsCard(entryData: entryData)
+            } else {
+                StatsCard(entryData: entryData)
+            }
+        }
+        .padding(.horizontal)
+        .widgetBackground(backgroundView: Color(.brand))
+    }
+}
+
+/// Stats card sub view (legacy path).
+/// To be used inside `StoreInfoView`.
+///
+private struct StatsCard: View {
+    // Stats data to render
+    let entryData: StoreInfoData
+
+    var body: some View {
+        Group {
+            // Revenue & Visitors
+            HStack() {
+                VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                    Text(StoreInfoView.Localization.revenue)
+                        .statTitleStyle()
+
+                    Text(entryData.revenueCompact)
+                        .statValueStyle()
+
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                    Text(StoreInfoView.Localization.visitors)
+                        .statTitleStyle()
+
+                    Text(entryData.visitors)
+                        .statValueStyle()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            // Orders & Conversion
+            HStack {
+                Link(destination: WooConstants.URLs.ordersScreen.asURL()) {
+                    VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                        Text(StoreInfoView.Localization.orders)
+                            .statTitleStyle()
+                        Text(entryData.orders)
+                            .statValueStyle()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                    Text(StoreInfoView.Localization.conversion)
+                        .statTitleStyle()
+
+                    Text(entryData.conversion)
+                        .statValueStyle()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+    }
+}
+
+/// Accessibility card sub view. Shows only revenue and a `View More` button.
+/// To be used inside `StoreInfoView`.
+///
+private struct AccessibilityStatsCard: View {
+    // Stats data to render
+    let entryData: StoreInfoData
+
+    var body: some View {
+        Group {
+            VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                Text(StoreInfoView.Localization.revenue)
+                    .statTitleStyle()
+
+                Text(entryData.revenueCompact)
+                    .statValueStyle()
+            }
+
+            Text(StoreInfoView.Localization.viewMore)
+                .statButtonStyle()
+        }
+    }
+}
+
+private struct NotLoggedInView: View {
+    var body: some View {
+        VStack {
+            Image(uiImage: .wooLogo)
+                .resizable()
+                .scaledToFit()
+                .frame(width: Layout.logoWidth)
+
+            Spacer()
+
+            Text(Localization.notLoggedIn)
+                .statTextStyle()
+
+            Spacer()
+
+            Text(Localization.login)
+                .statButtonStyle()
+        }
+        .padding(.vertical, Layout.cardVerticalPadding)
+        .widgetBackground(backgroundView: Color(.brand))
+    }
+}
+
+private struct UnableToFetchView: View {
+    var body: some View {
+        VStack {
+            Image(uiImage: .wooLogo)
+                .resizable()
+                .scaledToFit()
+                .frame(width: Layout.logoWidth)
+
+            Spacer()
+
+            Text(Localization.unableToFetch)
+                .statTextStyle()
+
+            Spacer()
+        }
+        .padding(.vertical, Layout.cardVerticalPadding)
+        .widgetBackground(backgroundView: Color(.brand))
+    }
+}
+
+// MARK: - Constants
+
+/// Constants definition
+///
+private extension StoreInfoView {
+    enum Localization {
+        static let revenue = AppLocalizedString(
+            "storeWidgets.infoView.totalSales",
+            value: "Total sales",
+            comment: "Total sales title label for the store info widget — shows revenue including taxes and shipping."
+        )
+        static let visitors = AppLocalizedString(
+            "storeWidgets.infoView.visitors",
+            value: "Visitors",
+            comment: "Visitors title label for the store info widget"
+        )
+        static let orders = AppLocalizedString(
+            "storeWidgets.infoView.orders",
+            value: "Orders",
+            comment: "Orders title label for the store info widget"
+        )
+        static let conversion = AppLocalizedString(
+            "storeWidgets.infoView.conversion",
+            value: "Conversion",
+            comment: "Conversion title label for the store info widget"
+        )
+        static let viewMore = AppLocalizedString(
+            "storeWidgets.infoView.viewMore",
+            value: "View More",
+            comment: "Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts."
+        )
+        static func updatedAt(_ updatedTime: String) -> LocalizedString {
+            let format = AppLocalizedString("storeWidgets.infoView.updatedAt",
+                                            value: "As of %1$@",
+                                            comment: "Displays the time when the widget was last updated. %1$@ is the time to render.")
+            return LocalizedString.localizedStringWithFormat(format, updatedTime)
+        }
+    }
+
+    enum Layout {
+        static let sectionSpacing = 8.0
+        static let cardSpacing = 2.0
+    }
+}
+
+/// Constants definition
+///
+private extension NotLoggedInView {
+    enum Localization {
+        static let notLoggedIn = AppLocalizedString(
+            "storeWidgets.notLoggedInView.notLoggedIn",
+            value: "Log in to see today’s stats.",
+            comment: "Title label when the widget does not have a logged-in store."
+        )
+        static let login = AppLocalizedString(
+            "storeWidgets.notLoggedInView.login",
+            value: "Log in",
+            comment: "Title label for the login button on the store info widget."
+        )
+    }
+
+    enum Layout {
+        static let cardVerticalPadding = 22.0
+        static let logoWidth = 32.0
+    }
+}
+
+/// Constants definition
+///
+private extension UnableToFetchView {
+    enum Localization {
+        static let unableToFetch = AppLocalizedString(
+            "storeWidgets.unableToFetchView.unableToFetch",
+            value: "Unable to fetch today's stats",
+            comment: "Title label when the widget can't fetch data."
+        )
+    }
+
+    enum Layout {
+        static let cardVerticalPadding = 22.0
+        static let logoWidth = 32.0
+    }
+}
+
+// MARK: - Previews
+#if DEBUG
+import class WooFoundation.CurrencySettings
+
+struct StoreWidgets_Previews: PreviewProvider {
+    static var exampleData = StoreInfoData(
+        range: "Today",
+        name: "Ernest Shop",
+        revenue: "$123,456,789",
+        revenueCompact: "$123M",
+        visitors: "67",
+        orders: "23",
+        conversion: "34%",
+        updatedTime: "10:24 PM",
+        metrics: [
+            .init(type: .revenue, value: .currency(123_456_789, CurrencySettings())),
+            .init(type: .visitors, value: .count(67)),
+            .init(type: .orders, value: .count(23)),
+            .init(type: .conversion, value: .percentage(23.0 / 67.0))
+        ]
+    )
+
+    static var previews: some View {
+        StoreInfoView(entryData: exampleData)
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+
+        StoreInfoView(entryData: exampleData)
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .environment(\.sizeCategory, .extraExtraLarge)
+            .previewDisplayName("XXL font")
+
+        NotLoggedInView()
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewDisplayName("Not logged in")
+
+        UnableToFetchView()
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewDisplayName("Unable to fetch data")
+    }
+}
+#endif

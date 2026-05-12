@@ -2,14 +2,9 @@ import SwiftUI
 
 struct EmptyStateView: View {
 
-    let suggestions: [SuggestionItem]
     let onPick: (String) -> Void
 
-    init(suggestions: [SuggestionItem] = EmptyStateView.defaultSuggestions,
-         onPick: @escaping (String) -> Void) {
-        self.suggestions = suggestions
-        self.onPick = onPick
-    }
+    private let suggestions: [SuggestionItem] = EmptyStateView.defaultSuggestions
 
     struct SuggestionItem: Identifiable {
         let id = UUID()
@@ -26,38 +21,37 @@ struct EmptyStateView: View {
                 .font(.assistantTitle)
                 .foregroundStyle(Color.primary)
                 .padding(.horizontal, AssistantSpacing.large)
-                .padding(.top, AssistantSpacing.large)
+                .padding(.top, AssistantSpacing.xxLarge)
 
-            VStack(spacing: 0) {
-                ForEach(Array(suggestions.enumerated()), id: \.element.id) { index, item in
-                    SuggestionRow(item: item,
-                                  symbolWidth: Self.symbolWidth,
-                                  onTap: { onPick(item.title) })
-                    if index < suggestions.count - 1 {
-                        Rectangle()
-                            .fill(Color.assistantSeparator.opacity(0.4))
-                            .frame(height: 0.5)
-                            .padding(.leading, Self.dividerLeadingInset)
+            AssistantDashboardCardShell(
+                title: nil,
+                padBody: false
+            ) {
+                VStack(spacing: 0) {
+                    ForEach(Array(suggestions.enumerated()), id: \.element.id) { index, item in
+                        SuggestionRow(item: item,
+                                      symbolWidth: Self.symbolWidth,
+                                      onTap: { onPick(item.title) })
+                        if index < suggestions.count - 1 {
+                            Rectangle()
+                                .fill(Color.assistantSeparator.opacity(0.4))
+                                .frame(height: 0.5)
+                                .padding(.leading, Self.dividerLeadingInset)
+                        }
                     }
                 }
             }
-            .background(Color.assistantSurfaceElevated)
-            .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.medium))
-            .overlay(
-                RoundedRectangle(cornerRadius: AssistantRadius.medium)
-                    .stroke(Color.assistantSurfaceBorder, lineWidth: 1)
-            )
             .padding(.horizontal, AssistantSpacing.large)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.bottom, AssistantSpacing.large)
     }
 
-    static let defaultSuggestions: [SuggestionItem] = [
-        SuggestionItem(symbol: "chart.bar.fill", title: Localization.suggestionTodaysSales),
-        SuggestionItem(symbol: "shippingbox.fill", title: Localization.suggestionLowStock),
-        SuggestionItem(symbol: "bag.fill", title: Localization.suggestionRecentOrders),
-        SuggestionItem(symbol: "star.fill", title: Localization.suggestionTopProducts)
+    private static let defaultSuggestions: [SuggestionItem] = [
+        SuggestionItem(symbol: "chart.bar", title: Localization.suggestionRevenueWeek),
+        SuggestionItem(symbol: "tag", title: Localization.suggestionOutOfStock),
+        SuggestionItem(symbol: "list.bullet.rectangle.portrait", title: Localization.suggestionRecentOrders),
+        SuggestionItem(symbol: "person.2", title: Localization.suggestionNewCustomers)
     ]
 
     private enum Localization {
@@ -66,25 +60,25 @@ struct EmptyStateView: View {
             value: "Ask about your store",
             comment: "Empty state title for the AI Assistant chat"
         )
-        static let suggestionTodaysSales = NSLocalizedString(
-            "assistantChat.empty.suggestion.todaysSales",
-            value: "Today's sales",
-            comment: "Suggested prompt asking the assistant to summarise today's sales"
+        static let suggestionRevenueWeek = NSLocalizedString(
+            "assistantChat.empty.suggestion.revenueWeek",
+            value: "Revenue this week",
+            comment: "Suggested prompt asking the assistant for this week's revenue"
         )
-        static let suggestionLowStock = NSLocalizedString(
-            "assistantChat.empty.suggestion.lowStock",
-            value: "Low-stock items",
-            comment: "Suggested prompt asking the assistant for low-stock products"
+        static let suggestionOutOfStock = NSLocalizedString(
+            "assistantChat.empty.suggestion.outOfStock",
+            value: "Out-of-stock items",
+            comment: "Suggested prompt asking the assistant for products that are out of stock"
         )
         static let suggestionRecentOrders = NSLocalizedString(
             "assistantChat.empty.suggestion.recentOrders",
             value: "Recent orders",
             comment: "Suggested prompt asking the assistant to list recent orders"
         )
-        static let suggestionTopProducts = NSLocalizedString(
-            "assistantChat.empty.suggestion.topProducts",
-            value: "Top products this week",
-            comment: "Suggested prompt asking the assistant for the top-selling products this week"
+        static let suggestionNewCustomers = NSLocalizedString(
+            "assistantChat.empty.suggestion.newCustomers",
+            value: "New customers",
+            comment: "Suggested prompt asking the assistant to list the most recently registered customers"
         )
     }
 }
@@ -107,17 +101,13 @@ private struct SuggestionRow: View {
                     .font(.assistantBody)
                     .foregroundStyle(Color.primary)
                 Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(Color.assistantTextFaint)
-                    .accessibilityHidden(true)
             }
             .padding(.horizontal, AssistantSpacing.large)
-            .padding(.vertical, AssistantSpacing.small + 2)
-            .frame(minHeight: 44)
+            .padding(.vertical, AssistantSpacing.medium)
+            .frame(minHeight: 56)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(AssistantPressableButtonStyle())
     }
 }
 

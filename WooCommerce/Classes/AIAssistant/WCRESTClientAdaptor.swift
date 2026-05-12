@@ -11,7 +11,6 @@ import struct WooAIAssistant.WCRESTResponse
 import protocol WooAIAssistant.WCRESTClient
 import CocoaLumberjackSwift
 
-/// `Network` isn't declared `Sendable`, but the production instance is constructed once at launch.
 struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
     private let network: Network
     private let siteID: Int64

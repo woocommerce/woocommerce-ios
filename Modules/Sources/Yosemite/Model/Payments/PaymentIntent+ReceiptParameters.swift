@@ -27,7 +27,7 @@ public extension PaymentIntent {
         let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let decimalPosition = 2 // TODO - support non cent currencies like JPY - see #3948
 
-        var amount: Decimal = Decimal(amount)
+        var amount = Decimal(amount)
         amount = amount / pow(10, decimalPosition)
 
         return formatter.formatAmount(amount, with: currency) ?? ""

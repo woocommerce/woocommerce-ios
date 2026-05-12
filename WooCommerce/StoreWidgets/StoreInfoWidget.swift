@@ -15,10 +15,6 @@ struct StoreInfoWidget: Widget {
     /// relaunch).
     ///
     private var supportedFamilies: [WidgetFamily] {
-        guard #available(iOSApplicationExtension 16.0, *) else {
-            return .wooFallbackFamilies
-        }
-
         /// Temporary developer flag
         /// Will be removed before feature rollout
         let isConfigurableEnabled = UserDefaults.group?.configurableStoreStatsWidgetsEnabled ?? false
@@ -31,18 +27,40 @@ struct StoreInfoWidget: Widget {
     }
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: WooConstants.storeInfoWidgetKind, provider: StoreInfoProvider()) { entry in
+        // Compile-time gate on the configuration type — matches the runtime
+        // `configurableStoreStatsWidgets` FF policy (localDeveloper || alpha) at the build
+        // level. A runtime gate is not expressible: `Widget.body` is `some WidgetConfiguration`
+        // (opaque return — branches must agree on a single concrete type) and
+        // `WidgetBundleBuilder` explicitly disables `buildOptional` for runtime `if`. The
+        // configuration `kind` is identical across both branches, so existing tiles survive
+        // the compile-time switch when alpha builds upgrade to App Store builds and back.
+#if DEBUG || ALPHA
+        AppIntentConfiguration(
+            kind: WooConstants.storeInfoWidgetKind,
+            intent: StoreStatsConfigurationIntent.self,
+            provider: StoreInfoProvider()
+        ) { entry in
             StoreInfoWidgetEntryView(entry: entry)
         }
         .configurationDisplayName(Localization.title)
         .description(Localization.description)
         .supportedFamilies(supportedFamilies)
+#else
+        StaticConfiguration(
+            kind: WooConstants.storeInfoWidgetKind,
+            provider: StoreInfoProvider()
+        ) { entry in
+            StoreInfoWidgetEntryView(entry: entry)
+        }
+        .configurationDisplayName(Localization.title)
+        .description(Localization.description)
+        .supportedFamilies(supportedFamilies)
+#endif
     }
 }
 
 /// Widget family constants
 private extension Array where Element == WidgetFamily {
-    static let wooFallbackFamilies: [WidgetFamily] = [.systemMedium]
     static let wooConfigurableFamilies: [WidgetFamily] = [
         .systemSmall,
         .systemLarge
@@ -62,24 +80,21 @@ private struct StoreInfoWidgetEntryView: View {
     let entry: StoreInfoEntry
 
     var body: some View {
-        if #available(iOSApplicationExtension 16.0, *) {
-            switch widgetFamily {
-            case .accessoryInline:
-                StoreInfoInlineWidget(entry: entry)
-            case .accessoryRectangular:
-                StoreInfoRectangularWidget(entry: entry)
-            case .accessoryCircular:
-                StoreInfoCircularWidget(entry: entry)
-            case .systemMedium, .systemSmall, .systemLarge:
-                // `.systemSmall` and `.systemLarge` only enter `supportedFamilies` when the
-                // configurable-widgets FF is on, so reaching them implies the metric-driven path.
-                // Layouts dedicated to these sizes will land in Tickets #7 / #8.
-                StoreInfoHomescreenWidget(entry: entry)
-            default:
-                EmptyView()
-            }
-        } else {
+        switch widgetFamily {
+        case .accessoryInline:
+            StoreInfoInlineWidget(entry: entry)
+        case .accessoryRectangular:
+            StoreInfoRectangularWidget(entry: entry)
+        case .accessoryCircular:
+            StoreInfoCircularWidget(entry: entry)
+        case .systemMedium, .systemSmall, .systemLarge:
+            // `.systemSmall` and `.systemLarge` only enter `supportedFamilies` when the
+            // configurable-widgets FF is on, so reaching them implies the metric-driven path.
+            // Family-specific layouts are still pending; for now all three render via
+            // `StoreInfoHomescreenWidget`'s shared body.
             StoreInfoHomescreenWidget(entry: entry)
+        default:
+            EmptyView()
         }
     }
 }

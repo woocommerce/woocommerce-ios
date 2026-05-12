@@ -2,7 +2,22 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct AnalyticsRevenueToolTests {
+    @Test
+    func test_analytics_revenue_definition_documents_grain_separate_from_window() {
+        // Given
+        let tool = AnalyticsRevenueTool.make()
+
+        // Then
+        #expect(tool.definition.description.contains("grouping grain with a date window"))
+        #expect(tool.definition.description.contains("interval follows the grouping grain"))
+        #expect(tool.definition.description.contains("Revenue/sales stats are card-backed"))
+        #expect(tool.definition.description.contains("do not stop with prose"))
+        #expect(tool.definition.description.contains("family analytics_stats"))
+        #expect(tool.definition.description.contains("currency:none"))
+    }
+
     @Test
     func test_analytics_revenue_when_response_ok_then_summary_keeps_totals_and_interval_count() async throws {
         // Given
@@ -77,5 +92,105 @@ struct AnalyticsRevenueToolTests {
             return
         }
         #expect(failed.kind == .rateLimit)
+    }
+
+    @Test
+    func test_summary_when_currency_provided_then_currency_is_emitted() async {
+        // Given
+        let body = #"{"totals": {"net_revenue": "10.00"}}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = AnalyticsRevenueTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"after":"2026-04-01","before":"2026-04-30","currency":"USD"}"#,
+            client
+        )
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["currency"] == .string("USD"))
+    }
+
+    @Test
+    func test_execute_when_compare_to_is_previous_period_and_secondary_fetch_succeeds_then_previous_period_totals_is_emitted() async {
+        // Given
+        let primary = #"{"totals": {"net_revenue": "200.00"}}"#
+        let secondary = #"{"totals": {"net_revenue": "100.00"}}"#
+        let client = MockWCRESTClient(responses: [
+            StubResponses.ok(primary),
+            StubResponses.ok(secondary)
+        ])
+        let tool = AnalyticsRevenueTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"after":"2026-05-01","before":"2026-05-07","compare_to":"previous_period"}"#,
+            client
+        )
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        guard case .object(let previous) = fields["previous_period_totals"] else {
+            Issue.record("expected previous_period_totals object")
+            return
+        }
+        #expect(previous["net_revenue"] == .string("100.00"))
+    }
+
+    @Test
+    func test_execute_when_compare_to_is_previous_period_and_secondary_fetch_fails_then_primary_succeeds_with_previous_period_partial_true_and_warning() async {
+        // Given
+        let primary = #"{"totals": {"net_revenue": "200.00"}}"#
+        let client = MockWCRESTClient(responses: [
+            StubResponses.ok(primary),
+            StubResponses.failure(statusCode: 500)
+        ])
+        let tool = AnalyticsRevenueTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"after":"2026-05-01","before":"2026-05-07","compare_to":"previous_period"}"#,
+            client
+        )
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["previous_period_partial"] == .bool(true))
+        if case .string(let warning) = fields["previous_period_warning"] {
+            #expect(warning.contains("could not be fetched"))
+        } else {
+            Issue.record("expected previous_period_warning string")
+        }
+        #expect(fields["previous_period_totals"] == nil)
+    }
+
+    @Test
+    func test_execute_when_compare_to_is_invalid_value_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
+        let tool = AnalyticsRevenueTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"after":"2026-04-01","before":"2026-04-30","compare_to":"last_year"}"#,
+            client
+        )
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
     }
 }

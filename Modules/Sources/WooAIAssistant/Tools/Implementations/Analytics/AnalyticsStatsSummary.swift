@@ -1,17 +1,57 @@
 import Foundation
 
 enum AnalyticsStatsSummary {
-    /// Analytics is text-only: the model needs the numeric totals to answer in
-    /// prose. We keep `totals` verbatim and replace `intervals` with a
-    /// per-bucket subtotals projection plus the bucket count, so a
-    /// year-by-day call doesn't ship 365 row JSON blobs.
-    static func make(from payload: AnyCodableJSON, range: (after: String, before: String)) -> AnyCodableJSON {
+    /// Keys allowed in the model-visible projection. Mirrors Android's
+    /// `ANALYTICS_STATS_SUMMARY_KEYS`; per-bucket data stays in the rendered
+    /// card payload only so a year-by-day query doesn't ship 365 buckets to
+    /// the model.
+    static let modelVisibleKeys: [String] = [
+        "after", "before", "interval", "currency", "totals",
+        "previous_period_totals", "previous_period_partial", "previous_period_warning"
+    ]
+
+    struct ComparisonInputs {
+        let interval: String
+        let currency: String?
+        let previousPeriodTotals: AnyCodableJSON?
+        let previousPeriodPartial: Bool
+        let previousPeriodWarning: String?
+
+        init(interval: String,
+             currency: String? = nil,
+             previousPeriodTotals: AnyCodableJSON? = nil,
+             previousPeriodPartial: Bool = false,
+             previousPeriodWarning: String? = nil) {
+            self.interval = interval
+            self.currency = currency
+            self.previousPeriodTotals = previousPeriodTotals
+            self.previousPeriodPartial = previousPeriodPartial
+            self.previousPeriodWarning = previousPeriodWarning
+        }
+    }
+
+    static func make(from payload: AnyCodableJSON,
+                     range: (after: String, before: String),
+                     comparison: ComparisonInputs) -> AnyCodableJSON {
         var fields: [String: AnyCodableJSON] = [
             "after": .string(range.after),
-            "before": .string(range.before)
+            "before": .string(range.before),
+            "interval": .string(comparison.interval)
         ]
+        if let currency = comparison.currency {
+            fields["currency"] = .string(currency)
+        }
         if let totals = RESTResponseParsing.objectField(payload, "totals") {
             fields["totals"] = totals
+        }
+        if let previous = comparison.previousPeriodTotals {
+            fields["previous_period_totals"] = previous
+        }
+        if comparison.previousPeriodPartial {
+            fields["previous_period_partial"] = .bool(true)
+            if let warning = comparison.previousPeriodWarning {
+                fields["previous_period_warning"] = .string(warning)
+            }
         }
         if let intervals = RESTResponseParsing.arrayItems(RESTResponseParsing.objectField(payload, "intervals") ?? .null) {
             fields["interval_count"] = .int(Int64(intervals.count))

@@ -176,6 +176,30 @@
         {"prompt": "the jacket one"},
         {"prompt": "hows stock"}
       ],
+      "fixtures": {
+        "products": [
+          {
+            "sku": "woo-ai-smoke-winter-jacket",
+            "name": "Woo AI Smoke Winter Jacket",
+            "type": "simple",
+            "status": "publish",
+            "regular_price": "89.00",
+            "manage_stock": true,
+            "stock_quantity": 7,
+            "stock_status": "instock"
+          },
+          {
+            "sku": "woo-ai-smoke-winter-scarf",
+            "name": "Woo AI Smoke Winter Scarf",
+            "type": "simple",
+            "status": "publish",
+            "regular_price": "29.00",
+            "manage_stock": true,
+            "stock_quantity": 3,
+            "stock_status": "instock"
+          }
+        ]
+      },
       "hard": {
         "t1": {"required_tools": ["products_list"]}
       },

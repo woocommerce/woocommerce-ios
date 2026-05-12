@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 138 (Release 24.8.0.0)
+- @itsmeichigo 2026-05-06
+  - Added `hasCreatedTicket` attribute to `StoredSupportChat` entity.
+
 ## Model 137 (Release 24.7.0.0)
 - @iamgabrielma 2026-04-24
   - Added `StoredSupportChat` entity with attributes: `chatID`, `siteID`, `wpcomUserID`, `botSlug`, `title`, `createdAt`, `updatedAt`.

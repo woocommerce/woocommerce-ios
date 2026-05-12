@@ -102,6 +102,110 @@ struct POSOrderServiceTests {
     }
 
     @Test
+    func syncOrder_adds_cart_custom_amounts_to_new_order() async throws {
+        // Given
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            customAmounts: [
+                POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true),
+                POSCustomAmount(name: "Delivery", amount: "5.50", isTaxable: false)
+            ]
+        )
+
+        // When
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+
+        // Then
+        let createdOrderFees = try #require(mockOrdersRemote.spyCreatePOSOrder?.fees)
+        #expect(createdOrderFees.count == 2)
+
+        let serviceFee = try #require(createdOrderFees.first(where: { $0.name == "Service fee" }))
+        #expect(serviceFee.total == "10.00")
+        #expect(serviceFee.taxStatus == .taxable)
+
+        let delivery = try #require(createdOrderFees.first(where: { $0.name == "Delivery" }))
+        #expect(delivery.total == "5.50")
+        #expect(delivery.taxStatus == .none)
+    }
+
+    /// Locks in the documented behaviour for cart↔server fee mismatches: unlike a
+    /// missing line item (which throws), a custom amount discrepancy is recorded as
+    /// `customAmountsMatch == false` and only logged. The merchant-facing UX would
+    /// otherwise force a redundant resync each time the server's tax decision diverges
+    /// from the cart's intent (covered by `cart_matches_order_regardless_of_tax_status`).
+    @Test
+    func syncOrder_when_returned_order_fees_dont_match_cart_then_does_not_throw() async throws {
+        // Given - cart has one fee, server returns the same order shape but with no fees
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            customAmounts: [POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)]
+        )
+        let orderWithMatchingItemsButNoFees = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [OrderItem.fake().copy(productID: 100, quantity: 1)],
+                fees: []
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithMatchingItemsButNoFees)
+
+        // When / Then - returns the order without throwing despite the fee discrepancy
+        let result = try await sut.syncOrder(cart: cart, currency: .USD)
+        #expect(result.fees.isEmpty)
+    }
+
+    @Test
+    func syncOrder_when_returned_order_has_more_fees_than_cart_then_does_not_throw() async throws {
+        // Given - cart has one fee, server echoes back two
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            customAmounts: [POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)]
+        )
+        let orderWithExtraFee = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [OrderItem.fake().copy(productID: 100, quantity: 1)],
+                fees: [
+                    OrderFeeLine.fake().copy(name: "Service fee", total: "10.00"),
+                    OrderFeeLine.fake().copy(name: "Surprise fee", total: "2.00")
+                ]
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithExtraFee)
+
+        // When / Then - returns the order without throwing despite the count mismatch
+        let result = try await sut.syncOrder(cart: cart, currency: .USD)
+        #expect(result.fees.count == 2)
+    }
+
+    @Test
+    func syncOrder_includes_feeLines_in_request_fields_when_cart_has_custom_amounts() async throws {
+        // Given
+        let cart = POSCart(
+            customAmounts: [POSCustomAmount(name: "Tip", amount: "3.00", isTaxable: false)]
+        )
+
+        // When
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+
+        // Then
+        let fields = try #require(mockOrdersRemote.spyCreatePOSOrderFields)
+        #expect(fields.contains(.feeLines))
+    }
+
+    @Test
+    func syncOrder_always_includes_feeLines_in_request_fields_even_for_empty_cart() async throws {
+        // Given
+
+        // When
+        _ = try await sut.syncOrder(cart: .init(), currency: .USD)
+
+        // Then
+        let fields = try #require(mockOrdersRemote.spyCreatePOSOrderFields)
+        #expect(fields.contains(.feeLines))
+    }
+
+    @Test
     func syncOrder_sanitizes_items_before_sending_to_remote() async throws {
         // Given
         let cart = POSCart(items: [

@@ -18,6 +18,7 @@ public struct POSOrder: Equatable, Hashable, Identifiable, GeneratedCopiable {
     public let paymentMethodID: String
     public let paymentMethodTitle: String
     public let lineItems: [POSOrderItem]
+    public let customAmounts: [POSOrderCustomAmount]
     public let refunds: [POSOrderRefund]
     public let formattedDiscountTotal: String?
     public let formattedTotalTax: String
@@ -41,6 +42,7 @@ public struct POSOrder: Equatable, Hashable, Identifiable, GeneratedCopiable {
                 paymentMethodID: String,
                 paymentMethodTitle: String,
                 lineItems: [POSOrderItem] = [],
+                customAmounts: [POSOrderCustomAmount] = [],
                 refunds: [POSOrderRefund] = [],
                 formattedDiscountTotal: String?,
                 formattedTotalTax: String,
@@ -59,6 +61,7 @@ public struct POSOrder: Equatable, Hashable, Identifiable, GeneratedCopiable {
         self.paymentMethodID = paymentMethodID
         self.paymentMethodTitle = paymentMethodTitle
         self.lineItems = lineItems
+        self.customAmounts = customAmounts
         self.refunds = refunds
         self.formattedDiscountTotal = formattedDiscountTotal
         self.formattedTotalTax = formattedTotalTax

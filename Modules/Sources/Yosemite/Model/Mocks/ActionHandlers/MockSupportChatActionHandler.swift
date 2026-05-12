@@ -10,7 +10,7 @@ struct MockSupportChatActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case let .sendMessage(_, _, _, _, completion):
+        case let .sendMessage(_, _, _, _, _, completion):
             completion(.success(Self.emptyResponse))
         case let .fetchChat(_, _, completion):
             completion(.success(Self.emptyResponse))
@@ -22,6 +22,10 @@ struct MockSupportChatActionHandler: MockActionHandler {
             onCompletion([])
         case let .deleteChat(_, onCompletion):
             onCompletion()
+        case let .markTicketCreated(_, onCompletion):
+            onCompletion()
+        case let .submitFeedback(_, _, _, _, _, onCompletion):
+            onCompletion(.success(()))
         }
     }
 

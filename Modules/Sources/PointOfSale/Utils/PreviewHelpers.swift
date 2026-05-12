@@ -24,6 +24,7 @@ import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
 import struct Yosemite.PaymentIntent
 import struct Yosemite.POSOrder
+import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefund
@@ -109,7 +110,7 @@ struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableIte
 }
 
 final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerProtocol {
-    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
+    @Published var itemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
     var currentDebounceStrategy: SearchDebounceStrategy { .immediate }
@@ -123,7 +124,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
 }
 
 final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
-    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
+    @Published var itemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
 
@@ -314,6 +315,9 @@ struct POSPreviewHelpers {
                         OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
                     ]
                 )
+            ],
+            customAmounts: [
+                POSOrderCustomAmount(id: 1, name: "Service fee", formattedTotal: "$5.00")
             ],
             refunds: [],
             formattedDiscountTotal: "$0.00",
@@ -517,6 +521,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
 
     var isLoadingOrderRefunds = false
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
+    var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
     var refundActionAvailability: RefundActionAvailability { .available }
 
     func loadOrders() async {}
@@ -563,6 +568,10 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
     func trackCheckoutTapped() {}
 
     func trackSuccessfulCashPayment() {}
+
+    func trackSuccessfulScanToPayPayment() {}
+
+    func trackSuccessfulMarkAsPaidPayment() {}
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {
@@ -577,6 +586,12 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
     func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
+
+    func markOrderAsCompletedManually(order: Yosemite.Order) async throws {}
+
+    func promoteOrderToPending(order: Yosemite.Order) async throws -> Yosemite.Order { order }
+
+    func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {}
 }
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {

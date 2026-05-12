@@ -333,7 +333,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
 
 private extension [CardReader] {
     func includesTapToPayReader() -> Bool {
-        return self.first(where: { $0.readerType == .tapToPay }) != nil
+        return self.contains(where: { $0.readerType == .tapToPay })
     }
 }
 

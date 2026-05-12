@@ -8,10 +8,10 @@ import Foundation
 ///
 final class Throttler {
 
-    private let queue: DispatchQueue = DispatchQueue.global(qos: .background)
+    private let queue = DispatchQueue.global(qos: .background)
 
-    private var job: DispatchWorkItem = DispatchWorkItem(block: {})
-    private var previousRun: Date = Date.distantPast
+    private var job = DispatchWorkItem(block: {})
+    private var previousRun = Date.distantPast
     private var maxInterval: Double
 
     init(seconds: Double) {

@@ -90,7 +90,6 @@ struct StoreWidgetHomeScreenBackground: View {
                     RoundedRectangle(cornerRadius: Layout.cornerRadius, style: .continuous)
                         .strokeBorder(Color.white.opacity(Layout.borderOpacity), lineWidth: Layout.borderWidth)
                 }
-                .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius, style: .continuous))
             case .accented, .vibrant:
                 Color.clear
             default:

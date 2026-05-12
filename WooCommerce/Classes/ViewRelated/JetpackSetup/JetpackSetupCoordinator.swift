@@ -23,6 +23,7 @@ final class JetpackSetupCoordinator {
     private let jetpackConnectionService: JetpackConnectionServiceProtocol
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
+    private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
 
     private let onCompletion: (() -> Void)?
     private var loginNavigationController: LoginNavigationController?
@@ -52,6 +53,7 @@ final class JetpackSetupCoordinator {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck(),
          onCompletion: (() -> Void)? = nil) {
         self.site = site
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
@@ -60,20 +62,22 @@ final class JetpackSetupCoordinator {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
         self.onCompletion = onCompletion
         self.jetpackConnectionService = JetpackConnectionService(siteID: site.siteID, stores: stores)
     }
 
     /// Single entry point for starting Jetpack setup.
-    /// Skips the benefits modal when the self-driven push notifications feature flag is enabled.
+    /// Skips the benefits modal when the self-driven push notifications feature is enabled.
     ///
     func startSetup() {
-        if featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken) {
-            Task { @MainActor in
+        Task { @MainActor in
+            let isEligible = await pushNotificationEligibilityChecker.checkEligibility()
+            if isEligible {
                 await startSetupDirectly()
+            } else {
+                showBenefitModal()
             }
-        } else {
-            showBenefitModal()
         }
     }
 

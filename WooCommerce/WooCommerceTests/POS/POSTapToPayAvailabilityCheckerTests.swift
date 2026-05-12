@@ -4,6 +4,7 @@ import Experiments
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct POSTapToPayAvailabilityCheckerTests {
 

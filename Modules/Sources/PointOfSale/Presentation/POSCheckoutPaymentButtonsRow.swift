@@ -85,7 +85,8 @@ private extension POSCheckoutPaymentButtonsRow {
         static let cardReader = NSLocalizedString(
             "pos.checkout.paymentMethod.cardReader",
             value: "Card reader",
-            comment: "Title for the card-reader button in the POS checkout payment-method row. Tapping it starts the connect-reader flow when no reader is connected."
+            comment: "Title for the card-reader button in the POS checkout payment-method row. " +
+                "Tapping it starts the connect-reader flow when no reader is connected."
         )
         static let cashPayment = NSLocalizedString(
             "pos.checkout.paymentMethod.cashPayment",

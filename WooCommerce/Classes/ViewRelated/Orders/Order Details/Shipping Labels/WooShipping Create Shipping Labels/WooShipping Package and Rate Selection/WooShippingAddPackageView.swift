@@ -130,28 +130,10 @@ struct WooShippingAddPackageView: View {
             carriers: packagesViewModel.parcelPresetCarriers,
             starredPackageIDs: packagesViewModel.starredCarriersPackages,
             delegate: packagesViewModel
-        ) { [weak packagesViewModel, weak customPackageViewModel] result in
-            guard let packagesViewModel, let customPackageViewModel else { return }
-            let measurement = result.measurement
-            switch result {
-            case .carrierPackage(let package, _):
-                packagesViewModel.selectCarrierPackage(withID: package.id)
-                packagesViewModel.selectedPackageType = .carrier
-                if let selected = packagesViewModel.selectedCarriersPackage {
-                    addPackageAction(selected, measurement)
-                } else {
-                    DDLogError("⛔️ AR flow: carrier package \(package.id) not found in loaded packages")
-                }
-            case .customDimensions(let dims):
-                customPackageViewModel.fieldValues[.length] = ParcelDimensions.formatValue(dims.length)
-                customPackageViewModel.fieldValues[.width] = ParcelDimensions.formatValue(dims.width)
-                customPackageViewModel.fieldValues[.height] = ParcelDimensions.formatValue(dims.height)
-                packagesViewModel.selectedPackageType = .custom
-                if let packageData = customPackageViewModel.packageData {
-                    addPackageAction(packageData, measurement)
-                } else {
-                    DDLogError("⛔️ AR flow: custom package data validation failed")
-                }
+        ) { [weak packagesViewModel] result in
+            guard let packagesViewModel else { return }
+            if let packageData = packagesViewModel.resolveARResult(result) {
+                addPackageAction(packageData, result.measurement)
             }
         }
     }

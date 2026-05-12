@@ -161,6 +161,31 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }
     }
 
+    func resolveARResult(_ result: ParcelFittingResult) -> WooShippingPackageDataRepresentable? {
+        switch result {
+        case .carrierPackage(let package, _):
+            selectCarrierPackage(withID: package.id)
+            selectedPackageType = .carrier
+            guard let selected = selectedCarriersPackage else {
+                DDLogError("⛔️ AR flow: carrier package \(package.id) not found in loaded packages")
+                return nil
+            }
+            return selected
+        case .customDimensions(let dims):
+            selectedPackageType = .custom
+            return WooShippingPackageData(
+                id: "custom_box",
+                name: "",
+                length: ParcelDimensions.formatValue(dims.length),
+                width: ParcelDimensions.formatValue(dims.width),
+                height: ParcelDimensions.formatValue(dims.height),
+                weight: "",
+                source: .custom,
+                packageType: "box"
+            )
+        }
+    }
+
     func selectCarrierPackage(withID packageID: String) {
         for (index, carrier) in carrierPackages.enumerated() {
             for group in carrier.packageGroups {

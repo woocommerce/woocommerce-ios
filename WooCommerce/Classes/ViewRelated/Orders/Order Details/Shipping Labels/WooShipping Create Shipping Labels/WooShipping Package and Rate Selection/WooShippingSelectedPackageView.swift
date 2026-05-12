@@ -44,35 +44,22 @@ struct WooShippingSelectedPackageView: View {
             }
         }
         .fullScreenCover(isPresented: $showARResults) {
-            if let measurement = lastARMeasurement {
-                let packagesVM = WooShippingAddPackageViewModel(selectedPackage: package)
-                NavigationView {
-                    ARParcelFittingResultsView(
-                        viewModel: ARParcelFittingResultsViewModel(
-                            measuredDimensions: measurement,
-                            unit: packagesVM.arDimensionUnit,
-                            carriers: packagesVM.parcelPresetCarriers
-                        ),
-                        starredPackageIDs: packagesVM.starredCarriersPackages,
-                        delegate: parcelFittingDelegate,
-                        onConfirm: { result in
-                            showARResults = false
-                            handleARResult(result, using: packagesVM)
-                        },
-                        onBack: {
-                            showARResults = false
-                        },
-                        onBrowseAllPackages: {
-                            showARResults = false
-                            showPackageSelection = true
-                        }
-                    )
+            ARResultsReEntryView(
+                measurement: lastARMeasurement,
+                selectedPackage: package,
+                delegate: parcelFittingDelegate,
+                onConfirm: { packageData, measurement in
+                    showARResults = false
+                    updateSelectedPackage(packageData, measurement)
+                },
+                onDismiss: {
+                    showARResults = false
+                },
+                onBrowseAllPackages: {
+                    showARResults = false
+                    showPackageSelection = true
                 }
-                .navigationViewStyle(.stack)
-                .task {
-                    await packagesVM.loadPackages()
-                }
-            }
+            )
         }
     }
 
@@ -106,29 +93,48 @@ struct WooShippingSelectedPackageView: View {
             .roundedBorder(cornerRadius: Constants.cornerRadius, lineColor: Constants.lineColor, lineWidth: Constants.lineWidth)
         }
     }
+}
 
-    private func handleARResult(_ result: ParcelFittingResult, using packagesVM: WooShippingAddPackageViewModel) {
-        let measurement = result.measurement
-        switch result {
-        case .carrierPackage(let pkg, _):
-            packagesVM.selectCarrierPackage(withID: pkg.id)
-            if let selected = packagesVM.selectedCarriersPackage {
-                updateSelectedPackage(selected, measurement)
-            } else {
-                DDLogError("⛔️ AR flow: carrier package \(pkg.id) not found in loaded packages")
+private struct ARResultsReEntryView: View {
+    let measurement: ParcelDimensions?
+    let selectedPackage: WooShippingPackageDataRepresentable
+    weak var delegate: ParcelFittingDelegate?
+    let onConfirm: (WooShippingPackageDataRepresentable, ParcelDimensions) -> Void
+    let onDismiss: () -> Void
+    let onBrowseAllPackages: () -> Void
+
+    @State private var packagesVM: WooShippingAddPackageViewModel?
+
+    var body: some View {
+        NavigationView {
+            Group {
+                if let measurement, let packagesVM {
+                    ARParcelFittingResultsView(
+                        viewModel: ARParcelFittingResultsViewModel(
+                            measuredDimensions: measurement,
+                            unit: packagesVM.arDimensionUnit,
+                            carriers: packagesVM.parcelPresetCarriers
+                        ),
+                        starredPackageIDs: packagesVM.starredCarriersPackages,
+                        delegate: delegate,
+                        onConfirm: { result in
+                            if let packageData = packagesVM.resolveARResult(result) {
+                                onConfirm(packageData, result.measurement)
+                            }
+                        },
+                        onBack: onDismiss,
+                        onBrowseAllPackages: onBrowseAllPackages
+                    )
+                } else {
+                    ProgressView()
+                }
             }
-        case .customDimensions(let dims):
-            let packageData = WooShippingPackageData(
-                id: Constants.defaultCustomBoxID,
-                name: "",
-                length: ParcelDimensions.formatValue(dims.length),
-                width: ParcelDimensions.formatValue(dims.width),
-                height: ParcelDimensions.formatValue(dims.height),
-                weight: "",
-                source: .custom,
-                packageType: "box"
-            )
-            updateSelectedPackage(packageData, measurement)
+        }
+        .navigationViewStyle(.stack)
+        .task {
+            let viewModel = WooShippingAddPackageViewModel(selectedPackage: selectedPackage)
+            await viewModel.loadPackages()
+            packagesVM = viewModel
         }
     }
 }
@@ -138,7 +144,6 @@ private extension WooShippingSelectedPackageView {
         static let cornerRadius: CGFloat = 8
         static let lineColor = Color(.separator)
         static let lineWidth: CGFloat = 0.5
-        static let defaultCustomBoxID = "custom_box"
     }
 
     enum Localization {

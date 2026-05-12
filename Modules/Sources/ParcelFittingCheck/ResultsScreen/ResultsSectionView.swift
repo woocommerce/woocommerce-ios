@@ -10,13 +10,9 @@ struct ResultsSectionView<Content: View>: View {
                 .font(.caption.bold())
                 .textCase(.uppercase)
                 .foregroundStyle(.secondary)
-                .padding(.bottom, ResultsSectionConstants.headerBottomPadding)
+                .padding(.bottom, 8)
 
             content()
         }
     }
-}
-
-private enum ResultsSectionConstants {
-    static let headerBottomPadding: CGFloat = 8
 }

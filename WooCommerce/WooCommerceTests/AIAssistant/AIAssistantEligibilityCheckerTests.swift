@@ -3,6 +3,7 @@ import Testing
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 @Suite(.timeLimit(.minutes(1)))
 struct AIAssistantEligibilityCheckerTests {
 

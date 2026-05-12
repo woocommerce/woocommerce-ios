@@ -64,6 +64,10 @@ struct StoreInfoData {
     /// metrics carry their own `CurrencySettings`, so this struct doesn't need a global one.
     ///
     var metrics: [StoreInfoMetric] = []
+
+    /// Used to build per-cell deep-link URLs. `nil` for surfaces without a configured range
+    /// (placeholder previews) — those render without deep-link affordance.
+    var dateRange: StoreStatsWidgetDateRange? = nil
 }
 
 extension StoreInfoData {
@@ -389,7 +393,8 @@ private extension StoreInfoProvider {
             orders: "\(stats.totalOrders)",
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
-            metrics: resolvedMetrics
+            metrics: resolvedMetrics,
+            dateRange: dateRange
         ))
     }
 

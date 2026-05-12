@@ -40,6 +40,7 @@ struct SupportEscalationCoordinatorTests {
         // Then
         #expect(zendesk.latestInvokedTags.contains("in_app_support_escalate"))
         #expect(zendesk.latestInvokedTags.contains("ai_skip"))
+        #expect(zendesk.latestInvokedTags.contains("woo_mobile_issue_orders"))
     }
 
     @Test func handleEscalation_when_high_confidence_but_no_identity_then_shows_support_form() {
@@ -200,6 +201,7 @@ private extension SupportEscalationCoordinatorTests {
             areaType: .mobileApp,
             area: SupportFormViewModel.area(for: .mobileApp),
             confidence: .high,
+            topic: "woo_mobile_issue_orders",
             transcript: "Test transcript"
         )
     }

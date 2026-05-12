@@ -18,15 +18,15 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         case OrdersUpdateTool.name:
             return ordersUpdate(arguments: arguments, snapshot: snapshot)
         case OrdersBulkUpdateTool.name:
-            return ordersBulkUpdate(arguments: arguments)
+            return ordersBulkUpdate(arguments: arguments, snapshot: snapshot)
         case ProductsUpdateTool.name:
             return productsUpdate(arguments: arguments, snapshot: snapshot)
         case ProductsBulkUpdateTool.name:
-            return productsBulkUpdate(arguments: arguments)
+            return productsBulkUpdate(arguments: arguments, snapshot: snapshot)
         case ProductVariationsUpdateTool.name:
             return productVariationsUpdate(arguments: arguments, snapshot: snapshot)
         case ProductVariationsBulkUpdateTool.name:
-            return productVariationsBulkUpdate(arguments: arguments)
+            return productVariationsBulkUpdate(arguments: arguments, snapshot: snapshot)
         default:
             return nil
         }
@@ -51,13 +51,17 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
                                  snapshot: snapshot,
                                  isBulk: false)
 
-        return ConfirmationPreview(
-            summary: .localized(Strings.ordersUpdateSummary, args: [.raw(String(id))]),
-            fields: fields
-        )
+        let summary: ConfirmationPreviewText
+        if let name = snapshot?.displayName {
+            summary = .localized(Strings.ordersUpdateSummaryNamed,
+                                 args: [.raw(name), .raw(String(id))])
+        } else {
+            summary = .localized(Strings.ordersUpdateSummary, args: [.raw(String(id))])
+        }
+        return ConfirmationPreview(summary: summary, fields: fields)
     }
 
-    private func ordersBulkUpdate(arguments: String) -> ConfirmationPreview {
+    private func ordersBulkUpdate(arguments: String, snapshot: ConfirmationSnapshot?) -> ConfirmationPreview {
         struct Args: Decodable {
             let ids: [Int]?
             let patch: Patch?
@@ -84,7 +88,11 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             plural: Strings.ordersBulkUpdateSummaryPlural,
             args: [.raw(String(ids.count))]
         )
-        return ConfirmationPreview(summary: summary, fields: fields, isBulk: true)
+        let bulkEntries = snapshot?.bulkEntries ?? ids.map { ConfirmationBulkEntry(id: $0) }
+        return ConfirmationPreview(summary: summary,
+                                   fields: fields,
+                                   isBulk: true,
+                                   bulkEntries: bulkEntries)
     }
 
     private func orderFields(status: String?,
@@ -151,13 +159,17 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
                                    includeStockStatus: false,
                                    includeSku: false,
                                    snapshot: snapshot)
-        return ConfirmationPreview(
-            summary: .localized(Strings.productsUpdateSummary, args: [.raw(String(id))]),
-            fields: fields
-        )
+        let summary: ConfirmationPreviewText
+        if let name = snapshot?.displayName {
+            summary = .localized(Strings.productsUpdateSummaryNamed,
+                                 args: [.raw(name), .raw(String(id))])
+        } else {
+            summary = .localized(Strings.productsUpdateSummary, args: [.raw(String(id))])
+        }
+        return ConfirmationPreview(summary: summary, fields: fields)
     }
 
-    private func productsBulkUpdate(arguments: String) -> ConfirmationPreview {
+    private func productsBulkUpdate(arguments: String, snapshot: ConfirmationSnapshot?) -> ConfirmationPreview {
         struct Args: Decodable {
             let ids: [Int]?
             let patch: Patch?
@@ -190,7 +202,11 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             plural: Strings.productsBulkUpdateSummaryPlural,
             args: [.raw(String(ids.count))]
         )
-        return ConfirmationPreview(summary: summary, fields: fields, isBulk: true)
+        let bulkEntries = snapshot?.bulkEntries ?? ids.map { ConfirmationBulkEntry(id: $0) }
+        return ConfirmationPreview(summary: summary,
+                                   fields: fields,
+                                   isBulk: true,
+                                   bulkEntries: bulkEntries)
     }
 
     private func productVariationsUpdate(arguments: String, snapshot: ConfirmationSnapshot?) -> ConfirmationPreview {
@@ -226,7 +242,7 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         )
     }
 
-    private func productVariationsBulkUpdate(arguments: String) -> ConfirmationPreview {
+    private func productVariationsBulkUpdate(arguments: String, snapshot: ConfirmationSnapshot?) -> ConfirmationPreview {
         struct Args: Decodable {
             let product_id: Int?
             let variations: [V]?
@@ -243,7 +259,12 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             plural: Strings.productVariationsBulkUpdateSummaryPlural,
             args: [.raw(String(count)), .raw(String(pid))]
         )
-        return ConfirmationPreview(summary: summary, fields: [], isBulk: true)
+        let bulkEntries = snapshot?.bulkEntries
+            ?? variations.compactMap(\.id).map { ConfirmationBulkEntry(id: $0) }
+        return ConfirmationPreview(summary: summary,
+                                   fields: [],
+                                   isBulk: true,
+                                   bulkEntries: bulkEntries)
     }
 
     // MARK: - Product field helpers
@@ -411,6 +432,10 @@ private enum Strings {
         "ai.assistant.preview.orders_update.summary.headline",
         defaultValue: "Update order #%@"
     )
+    static let ordersUpdateSummaryNamed = LocalizedStringResource(
+        "ai.assistant.preview.orders_update.summary.headline.named",
+        defaultValue: "Update order from %@ (#%@)"
+    )
     static let ordersBulkUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.orders_bulk_update.fallback",
         defaultValue: "Update many orders"
@@ -430,6 +455,10 @@ private enum Strings {
     static let productsUpdateSummary = LocalizedStringResource(
         "ai.assistant.preview.products_update.summary.headline",
         defaultValue: "Update product #%@"
+    )
+    static let productsUpdateSummaryNamed = LocalizedStringResource(
+        "ai.assistant.preview.products_update.summary.headline.named",
+        defaultValue: "Update %@ (#%@)"
     )
     static let productsBulkUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.products_bulk_update.fallback",

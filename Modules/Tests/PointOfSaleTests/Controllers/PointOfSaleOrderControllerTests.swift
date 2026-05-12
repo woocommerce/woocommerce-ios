@@ -279,7 +279,7 @@ struct PointOfSaleOrderControllerTests {
 
         // When / Then
         await #expect(performing: {
-            try await sut.markOrderAsPaidManually()
+            try await sut.markOrderAsPaidManually(note: nil)
         }, throws: { error in
             (error as? PointOfSaleOrderController.PointOfSaleOrderControllerError) == .noOrder
         })
@@ -303,7 +303,7 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.resultToReturn = .success(())
 
         // When
-        try await sut.markOrderAsPaidManually()
+        try await sut.markOrderAsPaidManually(note: nil)
 
         // Then
         #expect(mockOrderService.markOrderAsCompletedManuallyWasCalled == true)
@@ -329,7 +329,7 @@ struct PointOfSaleOrderControllerTests {
         // Failure analytics is fired by `POSPaymentModel.confirmMarkAsPaidPayment()`, not here,
         // so the controller has no analytics responsibility on this path.
         await #expect(performing: {
-            try await sut.markOrderAsPaidManually()
+            try await sut.markOrderAsPaidManually(note: nil)
         }, throws: { error in
             error is OrderServiceError
         })

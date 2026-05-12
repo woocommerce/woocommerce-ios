@@ -19,18 +19,20 @@ public struct AssistantChatView: View {
 
     public var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                messageList
-
-                InputBar(draft: $draft,
-                         canSend: controller.canSend,
-                         isStreaming: isAssistantResponding,
-                         pendingConfirmation: hasPendingConfirmation,
-                         onSend: send,
-                         onStop: { controller.cancel() })
-                    .focused($inputFocused)
-            }
-            .background(Color.assistantSurface)
+            // Pin via safeAreaInset so the scroll content reserves matching
+            // bottom space instead of being obscured by the input bar.
+            messageList
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    InputBar(draft: $draft,
+                             canSend: controller.canSend,
+                             isStreaming: isAssistantResponding,
+                             pendingConfirmation: hasPendingConfirmation,
+                             onSend: send,
+                             onStop: { controller.cancel() })
+                        .focused($inputFocused)
+                        .background(Color.assistantSurface)
+                }
+                .background(Color.assistantSurface)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -46,13 +48,14 @@ public struct AssistantChatView: View {
                     titleToolbarItem
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: newConversation) {
-                        Image(systemName: "square.and.pencil")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(Color(.accent))
+                    if !controller.conversation.messages.isEmpty {
+                        Button(action: newConversation) {
+                            Image(systemName: "square.and.pencil")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(Color(.accent))
+                        }
+                        .accessibilityLabel(Localization.newConversation)
                     }
-                    .accessibilityLabel(Localization.newConversation)
-                    .disabled(!controller.canSend)
                 }
             }
             .environment(\.assistantConfirmationHandler,
@@ -109,10 +112,11 @@ public struct AssistantChatView: View {
         guard !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         controller.send(prompt)
         draft = ""
+        inputFocused = false
     }
 
-    private func sendSuggestion(_ suggestion: String) {
-        let trimmed = suggestion.trimmingCharacters(in: .whitespacesAndNewlines)
+    private func sendSuggestion(_ prompt: String) {
+        let trimmed = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         controller.send(trimmed)
         draft = ""

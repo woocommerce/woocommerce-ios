@@ -11,27 +11,27 @@ public enum AnalyticsOrdersTool {
     private static let definition = AITool(
         name: name,
         description: """
-        Order analytics for a date range. Returns totals (order count, items \
-        sold, gross/net sales, average order value) and per-interval \
-        subtotals. Prefer this over orders_list for any aggregate question. \
-        For breakdown requests (by week, by day), set the `interval` \
-        parameter directly to the implied dimension rather than asking the \
-        merchant which window or grain they meant. When a request combines a \
+        Aggregate analytics for a date range, covering both revenue and orders. \
+        Returns totals (orders count, items sold, gross/net/total sales, average \
+        order value, taxes, shipping) and per-interval subtotals. Prefer this \
+        over orders_list for any aggregate question about revenue, sales, orders, \
+        or average order value. For breakdown requests (by week, by day), set the \
+        `interval` parameter directly to the implied dimension rather than asking \
+        the merchant which window or grain they meant. When a request combines a \
         grouping grain with a date window, interval follows the grouping grain. \
-        For "this period vs last", "vs last week", "compare to last month", \
-        and similar comparison phrasing, set `compare_to=previous_period` on \
-        the SAME call. The response then carries two top-level objects: `totals` \
-        (current window) and `previous_period_totals` (prior window). To answer \
-        the comparison, read each metric you need (`orders_count`, `num_items_sold`, \
-        `total_sales`, `gross_sales`, `avg_order_value`, etc.) once from `totals` \
-        and once from `previous_period_totals`. The prior window's numbers live \
-        ONLY inside `previous_period_totals` - do not look anywhere else for them. \
-        Do NOT issue a second analytics_orders call for the prior window; both \
-        windows are already in this response. \
-        Order stats are card-backed: after any successful call for an aggregate \
-        order stats question, do not stop with prose; call show_cards with \
-        family analytics_stats and an id built from the same after/before/interval \
-        values and currency:none.
+        For "this period vs last", "vs last week", "compare to last month", and \
+        similar comparison phrasing, set `compare_to=previous_period` on the SAME \
+        call. The response then carries two top-level objects: `totals` (current \
+        window) and `previous_period_totals` (prior window). To answer the \
+        comparison, read each metric you need (`orders_count`, `num_items_sold`, \
+        `total_sales`, `gross_sales`, `avg_order_value`, `net_revenue`, etc.) once \
+        from `totals` and once from `previous_period_totals`. The prior window's \
+        numbers live ONLY inside `previous_period_totals` - do not look anywhere \
+        else for them. Do NOT issue a second analytics call for the prior window; \
+        both windows are already in this response. Analytics stats are card-backed: \
+        after any successful call for an aggregate analytics question, do not stop \
+        with prose; call show_cards with family analytics_stats and an id built \
+        from the same after/before/interval values and currency:none.
         """,
         parametersSchema: .object([
             "type": .string("object"),

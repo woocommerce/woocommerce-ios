@@ -18,8 +18,11 @@ public enum AssistantRadius: Sendable {
     public static let button: CGFloat = 8
     public static let medium: CGFloat = 12
     public static let large: CGFloat = 20
-    public static let bubble: CGFloat = 22
+    public static let bubble: CGFloat = 18
     public static let card: CGFloat = 18
+    /// Fixed radius (half the single-line height) so the field stays a clean rounded
+    /// rectangle when it grows, instead of an elongated capsule.
+    public static let composer: CGFloat = 22
 }
 
 public enum AssistantMotion: Sendable {

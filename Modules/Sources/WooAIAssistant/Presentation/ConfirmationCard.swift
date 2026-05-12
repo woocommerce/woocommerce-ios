@@ -23,6 +23,9 @@ struct ConfirmationCard: View {
             .padding(.horizontal, Layout.padding)
 
             VStack(alignment: .leading, spacing: AssistantSpacing.small) {
+                if !preview.bulkEntries.isEmpty {
+                    bulkEntriesList
+                }
                 diffBody
                 if status == .pending {
                     actionButtons
@@ -46,12 +49,7 @@ struct ConfirmationCard: View {
     }
 
     private var backgroundColor: Color {
-        let tintOpacity: CGFloat = colorScheme == .dark ? 0.08 : 0.16
-        switch status {
-        case .pending: return Color.assistantWarning.opacity(tintOpacity)
-        case .confirmed: return Color.assistantInfo.opacity(tintOpacity)
-        case .cancelled: return Color.assistantSurfaceElevated
-        }
+        Color(.listForeground(modal: false))
     }
 
     private var eyebrowLabel: some View {
@@ -59,12 +57,38 @@ struct ConfirmationCard: View {
             Image(systemName: eyebrowSymbol)
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(eyebrowColor)
+                .contentTransition(.symbolEffect(.replace))
                 .accessibilityHidden(true)
             Text(eyebrowText)
                 .font(.caption2.weight(.semibold))
                 .textCase(.uppercase)
                 .tracking(0.6)
                 .foregroundStyle(eyebrowColor)
+                .contentTransition(.opacity)
+        }
+        .animation(.easeInOut(duration: 0.3), value: status)
+    }
+
+    private var bulkEntriesList: some View {
+        let visible = preview.bulkEntries.prefix(Layout.bulkVisibleLimit)
+        let overflow = preview.bulkEntries.count - visible.count
+        return VStack(alignment: .leading, spacing: AssistantSpacing.xSmall) {
+            ForEach(Array(visible.enumerated()), id: \.offset) { _, entry in
+                // verbatim avoids locale-grouping the entity id (#1 234 vs #1234).
+                Text(verbatim: entry.displayName.map { "#\(entry.id)  \($0)" } ?? "#\(entry.id)")
+                    .font(.assistantBody)
+                    .foregroundStyle(Color.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            if overflow > 0 {
+                Text(String(format: NSLocalizedString(
+                    "assistantChat.confirmation.bulkEntries.more",
+                    value: "+%d more",
+                    comment: "Overflow row in the bulk confirmation entity list. %d is the count of additional entities not shown."
+                ), overflow))
+                    .font(.assistantBody)
+                    .foregroundStyle(Color.assistantMuted)
+            }
         }
     }
 
@@ -135,7 +159,7 @@ struct ConfirmationCard: View {
     private var eyebrowColor: Color {
         switch status {
         case .pending: return Color.assistantWarning
-        case .confirmed: return Color.assistantInfo
+        case .confirmed: return Color.assistantSuccess
         case .cancelled: return Color.assistantMuted
         }
     }
@@ -146,6 +170,7 @@ struct ConfirmationCard: View {
         static let shadowOpacity: Double = 0.06
         static let shadowRadius: CGFloat = 4
         static let shadowYOffset: CGFloat = 1
+        static let bulkVisibleLimit: Int = 5
     }
 
     private enum Localization {

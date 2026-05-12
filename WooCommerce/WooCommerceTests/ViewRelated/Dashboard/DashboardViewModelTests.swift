@@ -87,17 +87,6 @@ final class DashboardViewModelTests: XCTestCase {
             }
         }
 
-        // FeatureFlagAction - dispatched by child view models checking feature availability
-        storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
-            switch action {
-            case let .isRemoteFeatureFlagEnabled(flag, _, _, onCompletion):
-                // The AI Assistant kill switch defaults to `true` (feature on) in production; mirror that
-                // here so MockAIAssistantEligibilityChecker(isEligible: true) is not silently killed by the
-                // generic false default.
-                onCompletion(flag == .wooAIAssistant)
-            }
-        }
-
         // StatsActionV4 - dispatched by stats view models during data sync
         storesManager.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -1240,6 +1229,10 @@ private final class MockAIAssistantEligibilityChecker: AIAssistantEligibilityChe
     func isEligible(for site: Site?) -> Bool {
         isEligibleResult
     }
+
+    func isEligible(for site: Site?, useCache: Bool) async -> Bool {
+        isEligibleResult
+    }
 }
 
 private extension DashboardViewModelTests {
@@ -1283,13 +1276,6 @@ private extension DashboardViewModelTests {
                 onCompletion(false)
             default:
                 break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
-            switch action {
-            case let .isRemoteFeatureFlagEnabled(flag, _, _, onCompletion):
-                onCompletion(flag == .wooAIAssistant)
             }
         }
 

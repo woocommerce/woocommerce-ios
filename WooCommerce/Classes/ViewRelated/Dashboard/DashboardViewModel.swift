@@ -237,8 +237,6 @@ final class DashboardViewModel: ObservableObject {
     }
 
     private func observeAIAssistantEligibility() {
-        // Seed with the sync local check so the dashboard reflects an answer on first frame;
-        // the async refresh below applies the remote kill switch once the cached value resolves.
         isAIAssistantEligible = aiAssistantEligibilityChecker.isEligible(for: stores.sessionManager.defaultSite)
         refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite)
 
@@ -259,20 +257,9 @@ final class DashboardViewModel: ObservableObject {
     private func refreshAIAssistantEligibility(for site: Site?, useCache: Bool = true) {
         Task { @MainActor [weak self] in
             guard let self else { return }
-            guard aiAssistantEligibilityChecker.isEligible(for: site) else {
-                if isAIAssistantEligible { isAIAssistantEligible = false }
-                return
-            }
-            let remoteEnabled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
-                let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.wooAIAssistant,
-                                                                          defaultValue: true,
-                                                                          useCache: useCache) { isEnabled in
-                    continuation.resume(returning: isEnabled)
-                }
-                stores.dispatch(action)
-            }
-            if isAIAssistantEligible != remoteEnabled {
-                isAIAssistantEligible = remoteEnabled
+            let eligible = await aiAssistantEligibilityChecker.isEligible(for: site, useCache: useCache)
+            if isAIAssistantEligible != eligible {
+                isAIAssistantEligible = eligible
             }
         }
     }

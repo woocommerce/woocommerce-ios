@@ -37,14 +37,15 @@ struct WooShippingShipmentDetailsView: View {
                 WooShippingSelectedPackageView(package: package,
                                                totalWeight: $viewModel.shipmentWeight,
                                                lastARMeasurement: viewModel.lastARMeasurement,
+                                               lastARCarriers: viewModel.lastARCarriers,
+                                               lastARStarredPackageIDs: viewModel.lastARStarredPackageIDs,
+                                               lastARDimensionUnit: viewModel.lastARDimensionUnit,
                                                parcelFittingDelegate: viewModel,
-                                               updateSelectedPackage: { newPackage, measurement in
-                    viewModel.selectPackage(newPackage, arMeasurement: measurement)
-                })
+                                               updateSelectedPackage: viewModel.selectPackage)
                 WooShippingServiceView(viewModel: shippingService)
             } else {
-                WooShippingPackageAndRatePlaceholder(onSelectPackage: { packageData, measurement in
-                    viewModel.selectPackage(packageData, arMeasurement: measurement)
+                WooShippingPackageAndRatePlaceholder(onSelectPackage: { packageData, measurement, carriers, starred, unit in
+                    viewModel.selectPackage(packageData, arMeasurement: measurement, arCarriers: carriers, arStarredPackageIDs: starred, arDimensionUnit: unit)
                 })
             }
         }

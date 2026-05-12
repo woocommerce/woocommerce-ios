@@ -4,7 +4,7 @@ struct ARUnifiedParcelFlowView: View {
     let unit: UnitLength
     let carriers: [ParcelPresetCarrier]
     let starredPackageIDs: Set<String>
-    var delegate: ParcelFittingDelegate?
+    let delegate: ParcelFittingDelegate?
     let onCancel: () -> Void
     let onConfirm: (ParcelFittingResult) -> Void
 

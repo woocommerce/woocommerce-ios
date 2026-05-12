@@ -3,7 +3,11 @@ import ParcelFittingCheck
 
 struct WooShippingPackageAndRatePlaceholder: View {
     /// Action to perform when a package is selected.
-    let onSelectPackage: (WooShippingPackageDataRepresentable, ParcelDimensions?) -> Void
+    let onSelectPackage: (WooShippingPackageDataRepresentable,
+                          ParcelDimensions?,
+                          [ParcelPresetCarrier],
+                          Set<String>,
+                          UnitLength) -> Void
 
     @State private var showAddPackage: Bool = false
 
@@ -29,8 +33,8 @@ struct WooShippingPackageAndRatePlaceholder: View {
         .padding(Layout.padding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.border), lineWidth: Layout.borderLineWidth, dashed: true)
         .sheet(isPresented: $showAddPackage) {
-            WooShippingAddPackageView { packageData, measurement in
-                onSelectPackage(packageData, measurement)
+            WooShippingAddPackageView { packageData, measurement, carriers, starred, unit in
+                onSelectPackage(packageData, measurement, carriers, starred, unit)
                 showAddPackage = false
             }
         }
@@ -67,7 +71,7 @@ private extension WooShippingPackageAndRatePlaceholder {
 import struct Yosemite.Order
 
 #Preview {
-    WooShippingPackageAndRatePlaceholder(onSelectPackage: { _, _ in })
+    WooShippingPackageAndRatePlaceholder(onSelectPackage: { _, _, _, _, _ in })
         .padding()
 }
 

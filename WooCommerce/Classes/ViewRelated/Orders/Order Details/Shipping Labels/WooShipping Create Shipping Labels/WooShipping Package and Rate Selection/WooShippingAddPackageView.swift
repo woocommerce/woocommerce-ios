@@ -21,7 +21,11 @@ struct WooShippingAddPackageView: View {
     @ObservedObject var packagesViewModel: WooShippingAddPackageViewModel
     @ObservedObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
 
-    let addPackageAction: (WooShippingPackageDataRepresentable, ParcelDimensions?) -> Void
+    let addPackageAction: (WooShippingPackageDataRepresentable,
+                           ParcelDimensions?,
+                           [ParcelPresetCarrier],
+                           Set<String>,
+                           UnitLength) -> Void
 
     @State private var cancellable: AnyCancellable?
 
@@ -30,7 +34,11 @@ struct WooShippingAddPackageView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
-         addPackageAction: @escaping (WooShippingPackageDataRepresentable, ParcelDimensions?) -> Void) {
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable,
+                                      ParcelDimensions?,
+                                      [ParcelPresetCarrier],
+                                      Set<String>,
+                                      UnitLength) -> Void) {
         self.addPackageAction = addPackageAction
         packagesViewModel = WooShippingAddPackageViewModel(selectedPackage: selectedPackage)
         switch selectedPackage?.source {
@@ -105,16 +113,16 @@ struct WooShippingAddPackageView: View {
         switch packagesViewModel.selectedPackageType {
         case .custom:
             WooAddCustomPackageView(viewModel: customPackageViewModel,
-                                    addPackageAction: { addPackageAction($0, nil) })
+                                    addPackageAction: { addPackageAction($0, nil, [], [], .centimeters) })
         case .carrier:
             WooCarrierPackagesSelectionView(viewModel: packagesViewModel,
-                                            addPackageAction: { addPackageAction($0, nil) },
+                                            addPackageAction: { addPackageAction($0, nil, [], [], .centimeters) },
                                             addingCustomPackageHandler: {
                 packagesViewModel.selectedPackageType = .custom
             })
         case .saved:
             WooSavedPackagesSelectionView(viewModel: packagesViewModel,
-                                          addPackageAction: { addPackageAction($0, nil) },
+                                          addPackageAction: { addPackageAction($0, nil, [], [], .centimeters) },
                                           addingCustomPackageHandler: {
                 packagesViewModel.selectedPackageType = .custom
             })
@@ -133,7 +141,11 @@ struct WooShippingAddPackageView: View {
         ) { [weak packagesViewModel] result in
             guard let packagesViewModel else { return }
             if let packageData = packagesViewModel.resolveARResult(result) {
-                addPackageAction(packageData, result.measurement)
+                addPackageAction(packageData,
+                                result.measurement,
+                                packagesViewModel.parcelPresetCarriers,
+                                packagesViewModel.starredCarriersPackages,
+                                packagesViewModel.arDimensionUnit)
             }
         }
     }

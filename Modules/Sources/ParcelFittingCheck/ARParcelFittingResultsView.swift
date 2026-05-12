@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct ARParcelFittingResultsView: View {
     let viewModel: ARParcelFittingResultsViewModel
-    var delegate: ParcelFittingDelegate?
+    let delegate: ParcelFittingDelegate?
     let onConfirm: (ParcelFittingResult) -> Void
     let onBrowseAllPackages: (() -> Void)?
 

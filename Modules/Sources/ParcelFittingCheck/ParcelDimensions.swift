@@ -43,18 +43,18 @@ public struct ParcelDimensions {
         String.localizedStringWithFormat(valueFormat, value)
     }
 
+    private var formattedValues: (length: String, width: String, height: String) {
+        (Self.formatValue(length), Self.formatValue(width), Self.formatValue(height))
+    }
+
     func formatted(unit: UnitLength) -> String {
-        let formattedLength = Self.formatValue(length)
-        let formattedWidth = Self.formatValue(width)
-        let formattedHeight = Self.formatValue(height)
-        return "\(formattedLength) × \(formattedWidth) × \(formattedHeight) \(unit.symbol)"
+        let values = formattedValues
+        return "\(values.length) × \(values.width) × \(values.height) \(unit.symbol)"
     }
 
     func formattedWithLabels(unit: UnitLength) -> String {
-        let formattedLength = Self.formatValue(length)
-        let formattedWidth = Self.formatValue(width)
-        let formattedHeight = Self.formatValue(height)
-        return "\(Localization.lengthLabel): \(formattedLength)  \(Localization.widthLabel): \(formattedWidth)  \(Localization.heightLabel): \(formattedHeight) \(unit.symbol)"
+        let values = formattedValues
+        return "\(Localization.lengthLabel): \(values.length)  \(Localization.widthLabel): \(values.width)  \(Localization.heightLabel): \(values.height) \(unit.symbol)"
     }
 
     private enum Localization {

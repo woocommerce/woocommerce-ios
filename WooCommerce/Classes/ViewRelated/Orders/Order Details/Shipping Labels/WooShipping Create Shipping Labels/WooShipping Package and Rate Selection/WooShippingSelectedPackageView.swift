@@ -10,9 +10,9 @@ struct WooShippingSelectedPackageView: View {
     @State private var showPackageSelection = false
     @State private var showARResults = false
 
-    let arContext: ARPackageContext?
+    let lastARMeasurement: ParcelDimensions?
     weak var parcelFittingDelegate: ParcelFittingDelegate?
-    let updateSelectedPackage: (WooShippingPackageDataRepresentable, ARPackageContext?) -> Void
+    let updateSelectedPackage: (WooShippingPackageDataRepresentable, ParcelDimensions?) -> Void
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -21,7 +21,7 @@ struct WooShippingSelectedPackageView: View {
                     .headlineStyle()
                 Spacer()
                 PencilEditButton {
-                    if arContext != nil {
+                    if lastARMeasurement != nil {
                         showARResults = true
                     } else {
                         showPackageSelection = true
@@ -38,32 +38,26 @@ struct WooShippingSelectedPackageView: View {
             shipmentWeight
         }
         .sheet(isPresented: $showPackageSelection) {
-            WooShippingAddPackageView(
-                selectedPackage: package,
-                addPackageAction: { newPackage in
-                    updateSelectedPackage(newPackage, nil)
-                    showPackageSelection = false
-                },
-                onARPackageSelected: { newPackage, context in
-                    updateSelectedPackage(newPackage, context)
-                    showPackageSelection = false
-                }
-            )
+            WooShippingAddPackageView(selectedPackage: package) { newPackage, measurement in
+                updateSelectedPackage(newPackage, measurement)
+                showPackageSelection = false
+            }
         }
         .fullScreenCover(isPresented: $showARResults) {
-            if let arContext {
+            if let measurement = lastARMeasurement {
+                let packagesVM = WooShippingAddPackageViewModel(selectedPackage: package)
                 NavigationView {
                     ARParcelFittingResultsView(
                         viewModel: ARParcelFittingResultsViewModel(
-                            measuredDimensions: arContext.measurement,
-                            unit: arContext.dimensionUnit,
-                            carriers: arContext.carriers
+                            measuredDimensions: measurement,
+                            unit: packagesVM.arDimensionUnit,
+                            carriers: packagesVM.parcelPresetCarriers
                         ),
-                        starredPackageIDs: arContext.starredPackageIDs,
+                        starredPackageIDs: packagesVM.starredCarriersPackages,
                         delegate: parcelFittingDelegate,
                         onConfirm: { result in
                             showARResults = false
-                            handleARResult(result)
+                            handleARResult(result, using: packagesVM)
                         },
                         onBack: {
                             showARResults = false
@@ -75,6 +69,9 @@ struct WooShippingSelectedPackageView: View {
                     )
                 }
                 .navigationViewStyle(.stack)
+                .task {
+                    await packagesVM.loadPackages()
+                }
             }
         }
     }
@@ -110,59 +107,28 @@ struct WooShippingSelectedPackageView: View {
         }
     }
 
-    private func handleARResult(_ result: ParcelFittingResult) {
-        let context = arContext
+    private func handleARResult(_ result: ParcelFittingResult, using packagesVM: WooShippingAddPackageViewModel) {
+        let measurement = result.measurement
         switch result {
-        case .carrierPackage(let pkg, let measurement):
-            let carrier = context?.carriers.first { $0.packages.contains { $0.id == pkg.id } }
-            let source: WooShippingPackageSource = carrier.map {
-                .predefined(sourceTitle: $0.name, sourceID: $0.id)
-            } ?? .custom
-            let packageData = WooShippingPackageData(
-                id: pkg.id,
-                name: pkg.name,
-                length: ParcelDimensions.formatValue(pkg.length),
-                width: ParcelDimensions.formatValue(pkg.width),
-                height: ParcelDimensions.formatValue(pkg.height),
-                weight: "",
-                source: source,
-                packageType: "box"
-            )
-            let newContext = context.map {
-                ARPackageContext(
-                    measurement: measurement,
-                    carriers: $0.carriers,
-                    starredPackageIDs: $0.starredPackageIDs,
-                    dimensionUnit: $0.dimensionUnit
-                )
-            }
-            updateSelectedPackage(packageData, newContext)
-        case .customDimensions(let dims):
-            let isExistingCustom: Bool
-            if case .custom = package.source {
-                isExistingCustom = true
+        case .carrierPackage(let pkg, _):
+            packagesVM.selectCarrierPackage(withID: pkg.id)
+            if let selected = packagesVM.selectedCarriersPackage {
+                updateSelectedPackage(selected, measurement)
             } else {
-                isExistingCustom = false
+                DDLogError("⛔️ AR flow: carrier package \(pkg.id) not found in loaded packages")
             }
+        case .customDimensions(let dims):
             let packageData = WooShippingPackageData(
-                id: isExistingCustom ? package.id : Constants.defaultCustomBoxID,
-                name: isExistingCustom ? package.name : "",
+                id: Constants.defaultCustomBoxID,
+                name: "",
                 length: ParcelDimensions.formatValue(dims.length),
                 width: ParcelDimensions.formatValue(dims.width),
                 height: ParcelDimensions.formatValue(dims.height),
-                weight: isExistingCustom ? package.weight : "",
+                weight: "",
                 source: .custom,
-                packageType: isExistingCustom ? package.packageType : "box"
+                packageType: "box"
             )
-            let newContext = context.map {
-                ARPackageContext(
-                    measurement: dims,
-                    carriers: $0.carriers,
-                    starredPackageIDs: $0.starredPackageIDs,
-                    dimensionUnit: $0.dimensionUnit
-                )
-            }
-            updateSelectedPackage(packageData, newContext)
+            updateSelectedPackage(packageData, measurement)
         }
     }
 }
@@ -197,7 +163,7 @@ private extension WooShippingSelectedPackageView {
                                                                    source: .predefined(sourceTitle: "USPS Priority Mail Flat Rate Boxes", sourceID: "usps"),
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
-                                   arContext: nil,
+                                   lastARMeasurement: nil,
                                    updateSelectedPackage: { _, _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")
@@ -212,7 +178,7 @@ private extension WooShippingSelectedPackageView {
                                                                    source: .custom,
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
-                                   arContext: nil,
+                                   lastARMeasurement: nil,
                                    updateSelectedPackage: { _, _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")

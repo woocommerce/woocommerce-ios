@@ -21,8 +21,7 @@ struct WooShippingAddPackageView: View {
     @ObservedObject var packagesViewModel: WooShippingAddPackageViewModel
     @ObservedObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
 
-    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
-    var onARPackageSelected: ((WooShippingPackageDataRepresentable, ARPackageContext) -> Void)?
+    let addPackageAction: (WooShippingPackageDataRepresentable, ParcelDimensions?) -> Void
 
     @State private var cancellable: AnyCancellable?
 
@@ -31,10 +30,8 @@ struct WooShippingAddPackageView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
-         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void,
-         onARPackageSelected: ((WooShippingPackageDataRepresentable, ARPackageContext) -> Void)? = nil) {
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable, ParcelDimensions?) -> Void) {
         self.addPackageAction = addPackageAction
-        self.onARPackageSelected = onARPackageSelected
         packagesViewModel = WooShippingAddPackageViewModel(selectedPackage: selectedPackage)
         switch selectedPackage?.source {
         case .custom:
@@ -60,7 +57,7 @@ struct WooShippingAddPackageView: View {
                         Text(Localization.cancel)
                     })
                 }
-                if isARButtonVisible {
+                if packagesViewModel.isARParcelFittingAvailable {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
                             presentARFlow()
@@ -108,24 +105,20 @@ struct WooShippingAddPackageView: View {
         switch packagesViewModel.selectedPackageType {
         case .custom:
             WooAddCustomPackageView(viewModel: customPackageViewModel,
-                                    addPackageAction: addPackageAction)
+                                    addPackageAction: { addPackageAction($0, nil) })
         case .carrier:
             WooCarrierPackagesSelectionView(viewModel: packagesViewModel,
-                                            addPackageAction: addPackageAction,
+                                            addPackageAction: { addPackageAction($0, nil) },
                                             addingCustomPackageHandler: {
                 packagesViewModel.selectedPackageType = .custom
             })
         case .saved:
             WooSavedPackagesSelectionView(viewModel: packagesViewModel,
-                                          addPackageAction: addPackageAction,
+                                          addPackageAction: { addPackageAction($0, nil) },
                                           addingCustomPackageHandler: {
                 packagesViewModel.selectedPackageType = .custom
             })
         }
-    }
-
-    private var isARButtonVisible: Bool {
-        packagesViewModel.isARParcelFittingAvailable
     }
 
     private func presentARFlow() {
@@ -139,22 +132,13 @@ struct WooShippingAddPackageView: View {
             delegate: packagesViewModel
         ) { [weak packagesViewModel, weak customPackageViewModel] result in
             guard let packagesViewModel, let customPackageViewModel else { return }
-            let arContext = ARPackageContext(
-                measurement: result.measurement,
-                carriers: packagesViewModel.parcelPresetCarriers,
-                starredPackageIDs: packagesViewModel.starredCarriersPackages,
-                dimensionUnit: packagesViewModel.arDimensionUnit
-            )
+            let measurement = result.measurement
             switch result {
             case .carrierPackage(let package, _):
                 packagesViewModel.selectCarrierPackage(withID: package.id)
                 packagesViewModel.selectedPackageType = .carrier
                 if let selected = packagesViewModel.selectedCarriersPackage {
-                    if let onARPackageSelected {
-                        onARPackageSelected(selected, arContext)
-                    } else {
-                        addPackageAction(selected)
-                    }
+                    addPackageAction(selected, measurement)
                 } else {
                     DDLogError("⛔️ AR flow: carrier package \(package.id) not found in loaded packages")
                 }
@@ -164,11 +148,7 @@ struct WooShippingAddPackageView: View {
                 customPackageViewModel.fieldValues[.height] = ParcelDimensions.formatValue(dims.height)
                 packagesViewModel.selectedPackageType = .custom
                 if let packageData = customPackageViewModel.packageData {
-                    if let onARPackageSelected {
-                        onARPackageSelected(packageData, arContext)
-                    } else {
-                        addPackageAction(packageData)
-                    }
+                    addPackageAction(packageData, measurement)
                 } else {
                     DDLogError("⛔️ AR flow: custom package data validation failed")
                 }

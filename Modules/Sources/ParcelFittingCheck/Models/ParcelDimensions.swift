@@ -11,6 +11,12 @@ public struct ParcelDimensions {
         self.height = height
     }
 
+    public static func formatValue(_ value: Float) -> String {
+        String.localizedStringWithFormat(valueFormat, value)
+    }
+
+    // MARK: - Internal
+
     func toMeters(unit: UnitLength) -> SIMD3<Float> {
         let factor = Self.metersPerUnit(unit)
         return SIMD3(length * factor, height * factor, width * factor)
@@ -25,8 +31,6 @@ public struct ParcelDimensions {
         )
     }
 
-    private static let defaultInCentimeters = ParcelDimensions(length: 10.0, width: 8.0, height: 5.0)
-
     static func defaultDimensions(for unit: UnitLength) -> ParcelDimensions {
         let base = defaultInCentimeters
         let factor = Float(Measurement(value: 1.0, unit: UnitLength.centimeters).converted(to: unit).value)
@@ -37,12 +41,6 @@ public struct ParcelDimensions {
         )
     }
 
-    private static let valueFormat = "%.2f"
-
-    public static func formatValue(_ value: Float) -> String {
-        String.localizedStringWithFormat(valueFormat, value)
-    }
-
     func formatted(unit: UnitLength) -> String {
         "\(Self.formatValue(length)) × \(Self.formatValue(width)) × \(Self.formatValue(height)) \(unit.symbol)"
     }
@@ -51,6 +49,15 @@ public struct ParcelDimensions {
         "\(Localization.lengthLabel): \(Self.formatValue(length))  " +
         "\(Localization.widthLabel): \(Self.formatValue(width))  " +
         "\(Localization.heightLabel): \(Self.formatValue(height)) \(unit.symbol)"
+    }
+
+    // MARK: - Private
+
+    private static let defaultInCentimeters = ParcelDimensions(length: 10.0, width: 8.0, height: 5.0)
+    private static let valueFormat = "%.2f"
+
+    private static func metersPerUnit(_ unit: UnitLength) -> Float {
+        Float(Measurement(value: 1.0, unit: unit).converted(to: .meters).value)
     }
 
     private enum Localization {
@@ -66,9 +73,5 @@ public struct ParcelDimensions {
             "parcelFitting.dimensions.heightLabel",
             value: "H",
             comment: "Abbreviation for Height in dimension display")
-    }
-
-    private static func metersPerUnit(_ unit: UnitLength) -> Float {
-        Float(Measurement(value: 1.0, unit: unit).converted(to: .meters).value)
     }
 }

@@ -12,7 +12,6 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
     let analytics: AssistantAnalyticsProviding
     let externalNavigation: AssistantExternalNavigationProviding
     let externalViews: AssistantExternalViewProviding
-    let jwtProvider: AssistantJWTProviding
 
     let chatService: AIChatService
     let toolRegistry: ToolRegistry
@@ -34,16 +33,12 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
             .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
 
-        // LLM endpoint goes plain WPCOM, WC REST goes through the Jetpack tunnel.
-        let wpcomNetwork = AlamofireNetwork(credentials: credentials,
-                                            selectedSite: nil,
-                                            appPasswordSupportState: nil)
         let restNetwork = AlamofireNetwork(credentials: credentials,
                                            selectedSite: defaultSitePublisher,
                                            appPasswordSupportState: appPasswordSupport)
 
-        let jwtAdaptor = AIAssistantJWTAdaptor(blogID: siteID, network: wpcomNetwork)
-        let chatService = Self.makeChatService(credentials: credentials, jwtProvider: jwtAdaptor)
+        let chatService = AIApiProxyChatService(tokenProvider: AIApiProxyTokenAdaptor(credentials: credentials),
+                                                sleep: AIChatTransport.defaultRetrySleep)
 
         let restClient = WCRESTClientAdaptor(network: restNetwork, siteID: siteID)
         let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.defaultTools())
@@ -60,7 +55,6 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
                                                                        navigationHost: navigationHost,
                                                                        stores: stores),
             externalViews: AIAssistantExternalViewsAdaptor(),
-            jwtProvider: jwtAdaptor,
             chatService: chatService,
             toolRegistry: toolRegistry,
             safetyPolicy: DefaultSafetyPolicy(snapshotResolver: snapshotResolver),
@@ -68,25 +62,6 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
             maxIterations: AgenticLoopOrchestrator.defaultMaxIterations,
             context: context
         )
-    }
-
-    // wpcom sites get the ai-api-proxy bearer path; application-password and wp-org sites fall back to
-    // the Jetpack AI JWT path until the proxy gains a non-WPCOM auth story.
-    private static func makeChatService(credentials: Credentials?,
-                                        jwtProvider: AssistantJWTProviding) -> AIChatService {
-        // Localized deprecation envelope so the warning fires only at this call site.
-        @available(*, deprecated, message: "WPCOM-only auth pending non-WPCOM proxy story; tracked in WOOMOB-3064.")
-        func legacyFallback() -> AIChatService {
-            makeJetpackAIChatService(jwtProvider: jwtProvider)
-        }
-
-        switch credentials {
-        case .wpcom:
-            return AIApiProxyChatService(tokenProvider: AIApiProxyTokenAdaptor(credentials: credentials),
-                                         sleep: AIChatTransport.defaultRetrySleep)
-        case .applicationPassword, .wporg, nil:
-            return legacyFallback()
-        }
     }
 
     private static func defaultTools() -> [RESTTool] {

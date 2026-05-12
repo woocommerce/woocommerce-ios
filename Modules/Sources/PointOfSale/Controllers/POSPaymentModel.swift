@@ -843,6 +843,16 @@ private extension POSPaymentModel {
         // one's cached state) can't keep the "Tap card" message visible. The
         // actual Stripe cancel runs in a fire-and-forget Task — it's async, but
         // we don't need to wait for it before flipping back to the hero.
+        //
+        // ⚠️ SUBSCRIPTION ORDER IS LOAD-BEARING — DO NOT REORDER ⚠️
+        // This sink MUST be subscribed before the "Payment events -> card payment state"
+        // sink below. Combine delivers to subscribers in subscription order. When a
+        // `cancelledOnReader` event arrives, both sinks receive it synchronously in the
+        // same run loop. The gate (`isAwaitingExplicitPaymentStart`) must flip to `true`
+        // HERE, before the card-state sink evaluates `shouldPropagatePaymentEvent` — so
+        // that sink short-circuits and does NOT overwrite `paymentState.card`. Reversing
+        // the order would let the card-state sink run first, advancing state to e.g.
+        // `.acceptingCard` for a frame before this sink resets it to `.idle`.
         cardPresentPaymentService.paymentEventPublisher
             .filter { event in
                 if case .show(.cancelledOnReader) = event { return true }

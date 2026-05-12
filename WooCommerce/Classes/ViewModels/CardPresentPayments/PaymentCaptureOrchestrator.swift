@@ -333,11 +333,20 @@ private extension PaymentCaptureOrchestrator {
     }
 
     private func applicationFee(for orderTotal: NSDecimalNumber, countryCode: CountryCode) -> Decimal? {
-        guard countryCode == .CA else {
+        let flatFee: NSDecimalNumber
+        let percentageFee: NSDecimalNumber
+        switch countryCode {
+        case .CA:
+            flatFee = Constants.canadaFlatFee
+            percentageFee = Constants.canadaPercentageFee
+        case .AU:
+            flatFee = Constants.australiaFlatFee
+            percentageFee = Constants.australiaPercentageFee
+        default:
             return nil
         }
 
-        let fee = orderTotal.multiplying(by: Constants.canadaPercentageFee).adding(Constants.canadaFlatFee)
+        let fee = orderTotal.multiplying(by: percentageFee).adding(flatFee)
 
         let numberHandler = NSDecimalNumberHandler(roundingMode: .plain,
                                                    scale: 2,
@@ -376,6 +385,8 @@ private extension PaymentCaptureOrchestrator {
     enum Constants {
         static let canadaFlatFee = NSDecimalNumber(string: "0.15")
         static let canadaPercentageFee = NSDecimalNumber(0)
+        static let australiaFlatFee = NSDecimalNumber(string: "0.10")
+        static let australiaPercentageFee = NSDecimalNumber(string: "0.017")
     }
 }
 

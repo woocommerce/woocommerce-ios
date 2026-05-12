@@ -35,9 +35,9 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
         }
     }
 
-    @Test("flag(for:) returns nil for AU (intentionally excluded — RSM-642/643)")
-    func test_flag_for_excluded_australia() {
-        #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: .AU) == nil)
+    @Test("flag(for:) returns inPersonPaymentsAustraliaWooPayments for AU")
+    func test_flag_for_australia() {
+        #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: .AU) == .inPersonPaymentsAustraliaWooPayments)
     }
 
     // MARK: - Refresh behaviour
@@ -46,11 +46,11 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
     func test_refresh_short_circuits_for_existing_country() async {
         // Given
         let service = SpyEligibilityService()
-        var providerInvocations: [RemoteFeatureFlag] = []
+        let providerInvocations = FlagRecorder()
         let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
             eligibilityService: service,
             remoteFeatureFlagProvider: { flag in
-                providerInvocations.append(flag)
+                await providerInvocations.append(flag)
                 return false
             }
         )
@@ -59,7 +59,7 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
         await refresher.refresh(siteID: siteID, countryCode: .US)
 
         // Then
-        #expect(providerInvocations.isEmpty, "Existing supported country must not dispatch a flag check")
+        #expect(await providerInvocations.values.isEmpty, "Existing supported country must not dispatch a flag check")
         #expect(service.cachedValues == [siteID: true])
     }
 
@@ -102,11 +102,11 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
     func test_refresh_dispatches_eu_extended_flag() async {
         // Given
         let service = SpyEligibilityService()
-        var dispatchedFlag: RemoteFeatureFlag?
+        let dispatchedFlags = FlagRecorder()
         let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
             eligibilityService: service,
             remoteFeatureFlagProvider: { flag in
-                dispatchedFlag = flag
+                await dispatchedFlags.append(flag)
                 return true
             }
         )
@@ -115,7 +115,28 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
         await refresher.refresh(siteID: siteID, countryCode: .ES)
 
         // Then
-        #expect(dispatchedFlag == .inPersonPaymentsCountryExpansionEUExtended)
+        #expect(await dispatchedFlags.values == [.inPersonPaymentsCountryExpansionEUExtended])
+        #expect(service.cachedValues == [siteID: true])
+    }
+
+    @Test("refresh dispatches inPersonPaymentsAustraliaWooPayments for AU")
+    func test_refresh_dispatches_australia_flag() async {
+        // Given
+        let service = SpyEligibilityService()
+        let dispatchedFlags = FlagRecorder()
+        let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            eligibilityService: service,
+            remoteFeatureFlagProvider: { flag in
+                await dispatchedFlags.append(flag)
+                return true
+            }
+        )
+
+        // When
+        await refresher.refresh(siteID: siteID, countryCode: .AU)
+
+        // Then
+        #expect(await dispatchedFlags.values == [.inPersonPaymentsAustraliaWooPayments])
         #expect(service.cachedValues == [siteID: true])
     }
 
@@ -149,5 +170,17 @@ private final class SpyEligibilityService: CardPresentPaymentsCountryExpansionEl
 
     func cacheEligibility(siteID: Int64, isEligible: Bool) {
         cachedValues[siteID] = isEligible
+    }
+}
+
+private actor FlagRecorder {
+    private var flags: [RemoteFeatureFlag] = []
+
+    var values: [RemoteFeatureFlag] {
+        flags
+    }
+
+    func append(_ flag: RemoteFeatureFlag) {
+        flags.append(flag)
     }
 }

@@ -52,7 +52,8 @@ struct POSTabVisibilityCheckerTests {
 
     @Test(arguments: [
         (country: Country.ca, currency: CurrencyCode.CAD),
-        (country: Country.es, currency: CurrencyCode.EUR)
+        (country: Country.es, currency: CurrencyCode.EUR),
+        (country: Country.au, currency: CurrencyCode.AUD)
     ])
     fileprivate func is_invisible_when_country_is_not_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
@@ -137,6 +138,45 @@ struct POSTabVisibilityCheckerTests {
         // so ES is reported as visible without requiring a prior pre-warm.
         #expect(result == true)
         #expect(expansionEligibilityService.isEligible(siteID: siteID) == true)
+    }
+
+    @Test func is_visible_for_australia_when_au_feature_flag_enabled_even_with_empty_cache() async throws {
+        // Given - AU with an empty country-eligibility cache and the AU remote feature flag enabled.
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: .au, currency: .AUD)
+        accountWhitelistedInBackend(true, australiaWooPaymentsFlagEnabled: true)
+        let expansionEligibilityService = MockCardPresentPaymentsCountryExpansionEligibilityService()
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              expansionEligibilityService: expansionEligibilityService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+        #expect(expansionEligibilityService.isEligible(siteID: siteID) == true)
+    }
+
+    @Test func is_invisible_for_australia_when_au_feature_flag_disabled_even_if_expansion_flags_are_enabled() async throws {
+        // Given - AU must be controlled by its own remote feature flag, not the broader expansion flags.
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: .au, currency: .AUD)
+        accountWhitelistedInBackend(true, expansionFlagsEnabled: true, australiaWooPaymentsFlagEnabled: false)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
     }
 
     @Test func is_invisible_for_expansion_country_when_expansion_flag_disabled() async throws {
@@ -313,9 +353,11 @@ private extension POSTabVisibilityCheckerTests {
 
     /// Configures the mock stores to respond to `FeatureFlagAction.isRemoteFeatureFlagEnabled`.
     /// `isAllowed` controls the `.pointOfSale` flag (whitelisting).
-    /// `expansionFlagsEnabled` controls the IPP country-expansion flags consulted by the
-    /// `CardPresentPaymentsCountryExpansionEligibilityRefresher` injected into the checker.
-    func accountWhitelistedInBackend(_ isAllowed: Bool = false, expansionFlagsEnabled: Bool = false) {
+    /// `expansionFlagsEnabled` controls the existing IPP country-expansion flags.
+    /// `australiaWooPaymentsFlagEnabled` separately controls the AU WooPayments flag.
+    func accountWhitelistedInBackend(_ isAllowed: Bool = false,
+                                     expansionFlagsEnabled: Bool = false,
+                                     australiaWooPaymentsFlagEnabled: Bool = false) {
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
             case let .isRemoteFeatureFlagEnabled(flag, _, _, completion):
@@ -324,6 +366,8 @@ private extension POSTabVisibilityCheckerTests {
                     completion(isAllowed)
                 case .inPersonPaymentsCountryExpansion, .inPersonPaymentsCountryExpansionEUExtended:
                     completion(expansionFlagsEnabled)
+                case .inPersonPaymentsAustraliaWooPayments:
+                    completion(australiaWooPaymentsFlagEnabled)
                 default:
                     completion(false)
                 }
@@ -341,6 +385,7 @@ private extension POSTabVisibilityCheckerTests {
         case ca = "CA:NS"
         case gb = "GB"
         case es = "ES"
+        case au = "AU"
 
         var countryCode: CountryCode {
             switch self {
@@ -354,6 +399,8 @@ private extension POSTabVisibilityCheckerTests {
                 return .GB
             case .es:
                 return .ES
+            case .au:
+                return .AU
             }
         }
     }

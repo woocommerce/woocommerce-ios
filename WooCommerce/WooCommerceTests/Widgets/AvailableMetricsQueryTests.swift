@@ -15,7 +15,7 @@ struct AvailableMetricsQueryTests {
         #expect(entities.count == 7)
     }
 
-    @Test func suggested_entities_when_authentication_mode_is_unknown_then_returns_full_catalog() async throws {
+    @Test func suggested_entities_when_authentication_mode_is_unknown_then_returns_site_credential_compatible_metrics() async throws {
         // Given
         let query = AvailableMetricsQuery(authenticationMode: { .unknown })
 
@@ -23,8 +23,8 @@ struct AvailableMetricsQueryTests {
         let entities = try await query.suggestedEntities()
 
         // Then
-        #expect(entities == StoreInfoMetricType.allCases)
-        #expect(entities.count == 7)
+        #expect(entities == StoreInfoMetricType.allCases.filter(\.isAvailableWithSiteCredentials))
+        #expect(entities.count == 5)
     }
 
     @Test func suggested_entities_when_authentication_mode_is_site_credentials_then_returns_site_credential_compatible_metrics() async throws {

@@ -46,9 +46,9 @@ struct AvailableMetricsQuery: EnumerableEntityQuery {
 
     func suggestedEntities() async throws -> [StoreInfoMetricType] {
         switch authenticationMode() {
-        case .siteCredentials:
+        case .siteCredentials, .unknown:
             return StoreInfoMetricType.allCases.filter(\.isAvailableWithSiteCredentials)
-        case .wpcom, .unknown:
+        case .wpcom:
             return StoreInfoMetricType.allCases
         }
     }

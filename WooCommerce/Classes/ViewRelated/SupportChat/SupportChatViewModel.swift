@@ -172,6 +172,7 @@ final class SupportChatViewModel {
     /// by issue-picker selections — we want the human-support entry to surface only after the
     /// merchant has actually described their problem.
     private(set) var hasSentChatMessage: Bool = false
+    private(set) var isChatResolved: Bool = false
 
     /// Flips `hasCreatedTicket` so the chat surface (toolbar icon, inline banner) updates in real time
     /// after the escalation coordinator successfully creates a Zendesk ticket. Storage is updated separately
@@ -180,18 +181,22 @@ final class SupportChatViewModel {
         hasCreatedTicket = true
     }
 
+    func markChatResolved() {
+        isChatResolved = true
+    }
+
     /// Whether the trailing toolbar entry point to human support should be visible.
     /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics)
     /// AND has typed and sent at least one message, and only while no ticket has been created yet.
     var canEscalateToHumanSupport: Bool {
-        guard shouldShowInputArea, !hasCreatedTicket else {
+        guard shouldShowInputArea, !hasCreatedTicket, !isChatResolved else {
             return false
         }
         return hasSentChatMessage
     }
 
     var shouldShowResolvedButton: Bool {
-        guard shouldPromptHumanSupport == false else {
+        guard shouldPromptHumanSupport == false, isChatResolved == false else {
             return false
         }
 

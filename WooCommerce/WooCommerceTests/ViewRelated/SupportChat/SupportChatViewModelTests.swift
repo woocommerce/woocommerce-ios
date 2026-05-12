@@ -778,6 +778,24 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == false)
     }
 
+    @Test func canEscalateToHumanSupport_is_false_when_chat_is_resolved() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "Hello"
+        sut.sendMessage()
+        #expect(sut.canEscalateToHumanSupport == true)
+
+        // When
+        sut.markChatResolved()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == false)
+    }
+
     // MARK: - Resolved Button Tests
 
     @Test func shouldShowResolvedButton_when_last_bot_message_is_resolved_then_returns_true() async {
@@ -981,6 +999,44 @@ struct SupportChatViewModelTests {
 
         // Then
         #expect(sut.shouldPromptHumanSupport == true)
+        #expect(sut.shouldShowResolvedButton == false)
+    }
+
+    @Test func markChatResolved_when_shouldShowResolvedButton_then_hides_resolved_button() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            guard case let .sendMessage(_, message, _, _, _, completion) = action else {
+                return
+            }
+
+            let response = SupportChatResponse(
+                chatID: 123,
+                sessionID: "session-1",
+                botSlug: "test-bot",
+                botVersion: "1.0",
+                messages: [
+                    SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                    SupportChatMessage(
+                        messageID: 2,
+                        role: .bot,
+                        content: "Glad that helped.",
+                        context: SupportChatMessageContext(sources: [], flags: nil, isResolved: true)
+                    )
+                ]
+            )
+            completion(.success(response))
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+        sut.inputText = "That fixed it"
+        sut.sendMessage()
+        #expect(sut.shouldShowResolvedButton == true)
+
+        // When
+        sut.markChatResolved()
+
+        // Then
+        #expect(sut.isChatResolved == true)
         #expect(sut.shouldShowResolvedButton == false)
     }
 

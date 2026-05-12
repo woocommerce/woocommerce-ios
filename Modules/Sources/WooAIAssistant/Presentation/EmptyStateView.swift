@@ -5,6 +5,9 @@ struct EmptyStateView: View {
     let onPick: (String) -> Void
     var onFeedbackTap: (() -> Void)? = nil
 
+    @AppStorage("hasDismissedWooAIAssistantEarlyAccessTooltip")
+    private var hasDismissedEarlyAccessNotice = false
+
     private let suggestions: [SuggestionItem] = EmptyStateView.defaultSuggestions
 
     struct SuggestionItem: Identifiable {
@@ -19,10 +22,13 @@ struct EmptyStateView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: AssistantSpacing.medium) {
-                if let onFeedbackTap {
-                    AssistantEarlyAccessNoticeCard(onFeedbackTap: onFeedbackTap)
-                        .padding(.horizontal, AssistantSpacing.large)
-                        .padding(.top, AssistantSpacing.large)
+                if let onFeedbackTap, !hasDismissedEarlyAccessNotice {
+                    AssistantEarlyAccessNoticeCard(
+                        onFeedbackTap: onFeedbackTap,
+                        onDismiss: { hasDismissedEarlyAccessNotice = true }
+                    )
+                    .padding(.horizontal, AssistantSpacing.large)
+                    .padding(.top, AssistantSpacing.large)
                 }
 
                 Text(Localization.title)

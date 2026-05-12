@@ -30,6 +30,12 @@ struct AnalyticsCardFetch: Sendable {
         guard let payload = RESTResponseParsing.decodeJSON(response.data) else {
             return .rejected(.internalError)
         }
-        return .found(AnalyticsStatsSummary.make(from: payload, range: (spec.after, spec.before)))
+        let interval = spec.interval ?? "day"
+        let trimmedCurrency = spec.currency?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let currency = (trimmedCurrency?.isEmpty == false) ? trimmedCurrency : nil
+        let comparison = AnalyticsStatsSummary.ComparisonInputs(interval: interval, currency: currency)
+        return .found(AnalyticsStatsSummary.make(from: payload,
+                                                 range: (spec.after, spec.before),
+                                                 comparison: comparison))
     }
 }

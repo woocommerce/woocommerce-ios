@@ -96,7 +96,7 @@ final class SupportEscalationCoordinator {
 
         let viewModel = SupportFormViewModel(
             sourceTag: Tags.sourceTag,
-            additionalTags: Tags.additionalTags,
+            additionalTags: additionalTags(for: supportAreaInfo),
             attachments: attachments,
             preselectedArea: supportAreaInfo?.area,
             prefilledSubject: prefilledSubject,
@@ -125,7 +125,7 @@ final class SupportEscalationCoordinator {
         let attachments = additionalAttachmentsProvider()
 
         let siteAddress = stores.sessionManager.defaultSite?.url ?? ""
-        let tags = areaInfo.area.datasource.tags + Tags.additionalTags + [Tags.sourceTag]
+        let tags = areaInfo.area.datasource.tags + additionalTags(for: areaInfo) + [Tags.sourceTag]
         let request = ZendeskSupportRequest(
             formID: areaInfo.area.datasource.formID,
             customFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress),
@@ -172,6 +172,14 @@ final class SupportEscalationCoordinator {
         guard let chatID else { return }
         let action = SupportChatAction.markTicketCreated(chatID: chatID) { }
         stores.dispatch(action)
+    }
+
+    private func additionalTags(for supportAreaInfo: SupportAreaInfo?) -> [String] {
+        var tags = Tags.additionalTags
+        if let topic = supportAreaInfo?.topic, topic.isNotEmpty {
+            tags.append(topic)
+        }
+        return tags
     }
 }
 

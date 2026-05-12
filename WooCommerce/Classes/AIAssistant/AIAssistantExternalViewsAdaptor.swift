@@ -78,6 +78,8 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
                     )
                     .padding(.horizontal, Layout.rowHorizontalPadding)
                     .padding(.vertical, Layout.rowVerticalPadding)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(AssistantPressableButtonStyle())
                 if showDivider {
@@ -88,55 +90,79 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
     }
 
     @MainActor func statsCardView(toolName: String, payload: AnyCodableJSON) -> AnyView? {
-        guard let mapping = StatsCardMapping(toolName: toolName) else {
-            return nil
-        }
+        guard let mapping = StatsCardMapping(toolName: toolName) else { return nil }
         let totals = payload.assistantObject("totals")
         let intervals = payload.assistantArray("interval_subtotals") ?? []
         let currency = totals?.assistantString("currency") ?? payload.assistantString("currency")
 
-        let leadingValue = formatMetric(mapping.leading, totals: totals, currency: currency)
-        let trailingValue = formatMetric(mapping.trailing, totals: totals, currency: currency)
-        let bothMissing = leadingValue == Localization.metricUnavailable
-            && trailingValue == Localization.metricUnavailable
-        guard !bothMissing else {
-            return nil
-        }
+        let topRow = makeAnalyticsRow(mapping: mapping.topRow,
+                                      totals: totals,
+                                      intervals: intervals,
+                                      currency: currency)
+        let bottomRow = makeAnalyticsRow(mapping: mapping.bottomRow,
+                                         totals: totals,
+                                         intervals: intervals,
+                                         currency: currency)
+        guard topRow != nil || bottomRow != nil else { return nil }
 
-        let leadingChartData = chartData(for: mapping.leading, intervals: intervals)
-        let trailingChartData = chartData(for: mapping.trailing, intervals: intervals)
         let subtitle = formatDateRange(after: payload.assistantString("after"),
                                        before: payload.assistantString("before"))
-
         return AnyView(
             AssistantDashboardCardShell(title: Localization.analyticsTitle,
                                         iconSystemName: "chart.bar",
                                         subtitle: subtitle,
                                         padBody: false) {
-                AnalyticsReportCard(
-                    title: "",
-                    leadingTitle: mapping.leadingTitle,
-                    leadingValue: leadingValue,
-                    leadingDelta: nil,
-                    leadingDeltaColor: nil,
-                    leadingDeltaTextColor: nil,
-                    leadingChartData: leadingChartData,
-                    leadingChartColor: leadingChartData.isEmpty ? nil : .accent,
-                    trailingTitle: mapping.trailingTitle,
-                    trailingValue: trailingValue,
-                    trailingDelta: nil,
-                    trailingDeltaColor: nil,
-                    trailingDeltaTextColor: nil,
-                    trailingChartData: trailingChartData,
-                    trailingChartColor: trailingChartData.isEmpty ? nil : .accent,
-                    reportViewModel: nil,
-                    isRedacted: false,
-                    showSyncError: false,
-                    syncErrorMessage: ""
-                )
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
+                VStack(spacing: 0) {
+                    if let topRow {
+                        topRow
+                    }
+                    if topRow != nil && bottomRow != nil {
+                        Divider().padding(.horizontal, 16)
+                    }
+                    if let bottomRow {
+                        bottomRow
+                    }
+                }
             }
+        )
+    }
+
+    @MainActor private func makeAnalyticsRow(mapping: StatsRowMapping,
+                                             totals: AnyCodableJSON?,
+                                             intervals: [AnyCodableJSON],
+                                             currency: String?) -> AnyView? {
+        let leadingValue = formatMetric(mapping.leading, totals: totals, currency: currency)
+        let trailingValue = formatMetric(mapping.trailing, totals: totals, currency: currency)
+        let bothMissing = leadingValue == Localization.metricUnavailable
+            && trailingValue == Localization.metricUnavailable
+        guard !bothMissing else { return nil }
+
+        let leadingChartData = chartData(for: mapping.leading, intervals: intervals)
+        let trailingChartData = chartData(for: mapping.trailing, intervals: intervals)
+        return AnyView(
+            AnalyticsReportCard(
+                title: "",
+                leadingTitle: mapping.leadingTitle,
+                leadingValue: leadingValue,
+                leadingDelta: nil,
+                leadingDeltaColor: nil,
+                leadingDeltaTextColor: nil,
+                leadingChartData: leadingChartData,
+                leadingChartColor: leadingChartData.isEmpty ? nil : .accent,
+                trailingTitle: mapping.trailingTitle,
+                trailingValue: trailingValue,
+                trailingDelta: nil,
+                trailingDeltaColor: nil,
+                trailingDeltaTextColor: nil,
+                trailingChartData: trailingChartData,
+                trailingChartColor: trailingChartData.isEmpty ? nil : .accent,
+                reportViewModel: nil,
+                isRedacted: false,
+                showSyncError: false,
+                syncErrorMessage: ""
+            )
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
         )
     }
 
@@ -173,6 +199,14 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
         if let name = payload.customerName, !name.isEmpty {
             return name
         }
+        // No billing name on file. customer_id > 0 means a registered customer;
+        // surface their email or id rather than the misleading "Guest" label.
+        if let id = payload.customerID, id > 0 {
+            if let email = payload.customerEmail, !email.isEmpty {
+                return email
+            }
+            return String(format: Localization.registeredCustomerWithID, "\(id)")
+        }
         return Localization.guestCustomer
     }
 
@@ -193,10 +227,23 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
     // MARK: - Product rows
 
     // Mirrors the Products tab: subtitle = stock detail, accessory = formatted price.
-    private func productDetails(for payload: ProductCardPayload) -> String {
-        productStockDetail(stockStatus: payload.stockStatus, stockQuantity: payload.stockQuantity)
+    // Variable products append a "· N variations" segment so the merchant sees variation count
+    // without having to drill in.
+    func productDetails(for payload: ProductCardPayload) -> String {
+        let stockOrSKU = productStockDetail(stockStatus: payload.stockStatus, stockQuantity: payload.stockQuantity)
             ?? payload.sku.flatMap { $0.isEmpty ? nil : "SKU: \($0)" }
-            ?? ""
+        return joinWithMiddleDot(stockOrSKU, variationsLabel(count: payload.variationsCount))
+    }
+
+    private func variationsLabel(count: Int?) -> String? {
+        guard let count, count > 0 else { return nil }
+        if count == 1 { return Localization.singleVariation }
+        let formatted = NumberFormatter.localizedString(from: NSNumber(value: count), number: .none)
+        return String(format: Localization.variationsCount, formatted)
+    }
+
+    private func joinWithMiddleDot(_ first: String?, _ second: String?) -> String {
+        [first, second].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " \u{00B7} ")
     }
 
     private func variationDetails(for payload: ProductVariationCardPayload) -> String {
@@ -333,27 +380,37 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
     }
 
     private struct StatsCardMapping {
+        let topRow: StatsRowMapping
+        let bottomRow: StatsRowMapping
+
+        init?(toolName: String) {
+            // Accept both analytics tool names: the orchestrator's synthetic toolName
+            // for an analytics_stats card depends on the kind the model put in the
+            // card id ("revenue" vs "orders"). Both render the same 4-metric layout
+            // since the orders endpoint already returns all four numbers.
+            guard toolName == AnalyticsOrdersTool.name || toolName == AnalyticsRevenueTool.name else {
+                return nil
+            }
+            topRow = StatsRowMapping(
+                leadingTitle: Localization.totalSales,
+                trailingTitle: Localization.netSales,
+                leading: StatsMetric(kind: .currency, keys: ["total_sales", "gross_sales"]),
+                trailing: StatsMetric(kind: .currency, keys: ["net_revenue"])
+            )
+            bottomRow = StatsRowMapping(
+                leadingTitle: Localization.totalOrders,
+                trailingTitle: Localization.avgOrderValue,
+                leading: StatsMetric(kind: .integer, keys: ["orders_count", "num_orders"]),
+                trailing: StatsMetric(kind: .currency, keys: ["avg_order_value", "average_order_value"])
+            )
+        }
+    }
+
+    private struct StatsRowMapping {
         let leadingTitle: String
         let trailingTitle: String
         let leading: StatsMetric
         let trailing: StatsMetric
-
-        init?(toolName: String) {
-            switch toolName {
-            case AnalyticsRevenueTool.name:
-                leadingTitle = Localization.totalSales
-                trailingTitle = Localization.netSales
-                leading = StatsMetric(kind: .currency, keys: ["total_sales", "gross_sales"])
-                trailing = StatsMetric(kind: .currency, keys: ["net_revenue"])
-            case AnalyticsOrdersTool.name:
-                leadingTitle = Localization.totalOrders
-                trailingTitle = Localization.avgOrderValue
-                leading = StatsMetric(kind: .integer, keys: ["orders_count", "num_orders"])
-                trailing = StatsMetric(kind: .currency, keys: ["avg_order_value", "average_order_value"])
-            default:
-                return nil
-            }
-        }
     }
 
     private struct StatsMetric {
@@ -437,7 +494,12 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
         static let guestCustomer = NSLocalizedString(
             "assistant.externalViews.order.guestCustomer",
             value: "Guest",
-            comment: "Customer name shown on the assistant order card when the order has no billing name."
+            comment: "Customer name shown on the assistant order card when the order has no registered customer."
+        )
+        static let registeredCustomerWithID = NSLocalizedString(
+            "assistant.externalViews.order.registeredCustomerWithID",
+            value: "Customer #%@",
+            comment: "Fallback shown on the assistant order card when a registered customer has no billing name and no email on file. %@ is the customer id."
         )
         static let inStock = NSLocalizedString(
             "assistant.externalViews.product.stock.inStock",
@@ -463,6 +525,16 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
             "assistant.externalViews.product.stock.countFormat",
             value: "%1$@ in stock",
             comment: "Subtitle on the assistant product row inlining the stock count. %1$@ is the count."
+        )
+        static let singleVariation = NSLocalizedString(
+            "assistant.externalViews.product.variations.singular",
+            value: "1 variation",
+            comment: "Variations badge on the assistant product row when the product has exactly one variation."
+        )
+        static let variationsCount = NSLocalizedString(
+            "assistant.externalViews.product.variations.plural",
+            value: "%1$@ variations",
+            comment: "Variations badge on the assistant product row for variable products. %1$@ is the count."
         )
     }
 }

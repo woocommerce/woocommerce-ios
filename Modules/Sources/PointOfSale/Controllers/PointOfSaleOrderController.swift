@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 import Observation
 import class WooFoundation.VersionHelpers
@@ -40,7 +41,13 @@ protocol PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment(changeDueAmount: String?) async throws
-    func markOrderAsPaidManually() async throws
+    /// Marks the order as paid manually.
+    ///
+    /// - Parameter note: Optional merchant-supplied free-form note (e.g. "Bank transfer from
+    ///   Maria"). When non-nil/non-empty it is appended to the order as a private note via
+    ///   `addOrderNote`, separately from the order completion call. The order's payment-method
+    ///   title stays "Other" regardless of the note's content.
+    func markOrderAsPaidManually(note: String?) async throws
     /// Adds the "Customer paid via Scan to Pay" note to the cached order so the merchant has
     /// an audit trail in WP-Admin even if the gateway webhook hasn't flipped the status yet.
     func confirmScanToPayPayment() async throws
@@ -143,7 +150,7 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     @MainActor
-    func markOrderAsPaidManually() async throws {
+    func markOrderAsPaidManually(note: String?) async throws {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
@@ -152,6 +159,20 @@ protocol PointOfSaleOrderControllerProtocol {
         // mark-as-paid failure paths (this call, plus `orderProvider.provideOrder()`) funnel
         // through a single event. Re-throw so the model can roll back state.
         try await orderService.markOrderAsCompletedManually(order: order)
+
+        // Order note attaches separately from completion. We only attempt it if the merchant
+        // supplied content; the order completion is the critical path, and a stale note can
+        // be added manually in admin if this network call drops, so we log-and-move-on rather
+        // than throwing the merchant back to a "retry" prompt.
+        let trimmed = note?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        guard trimmed.isEmpty == false else { return }
+        do {
+            try await orderService.addOrderNote(orderID: order.orderID,
+                                                isCustomerNote: false,
+                                                note: trimmed)
+        } catch {
+            DDLogWarn("⚠️ [MarkAsPaid] Order completed but failed to attach merchant note: \(error)")
+        }
     }
 
     @MainActor

@@ -151,14 +151,16 @@ public enum SupportAreaType: String, Decodable, Equatable {
 ///
 public struct SupportChatSupportArea: Decodable, Equatable {
     public let area: SupportAreaType
+    public let topic: String?
     public let confidence: SupportAreaConfidence
 
     public var isHighConfidence: Bool {
         confidence == .high
     }
 
-    public init(area: SupportAreaType, confidence: SupportAreaConfidence) {
+    public init(area: SupportAreaType, topic: String? = nil, confidence: SupportAreaConfidence) {
         self.area = area
+        self.topic = topic
         self.confidence = confidence
     }
 }

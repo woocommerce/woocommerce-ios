@@ -13,11 +13,13 @@ public enum ProductsUpdateTool {
         description: """
         Update a product's allowlisted fields: name, regular_price, sale_price, \
         stock_quantity, status. Provide only the fields you want to change. For \
-        variable products, prices live on each variation - use \
-        product_variations_update on the parent's variations instead. Only call \
-        when the merchant has explicitly requested a change; never call to answer \
-        an information question. After a successful update, call `show_cards` \
-        with family `product` and the updated id so the merchant sees the new state.
+        variable products, prices live on each variation, not the parent - use \
+        product_variations_bulk_update to apply the same price across many \
+        variations in one call, or product_variations_update for a single \
+        variation. Only call when the merchant has explicitly requested a \
+        change; never call to answer an information question. After a successful \
+        update, call `show_cards` with family `product` and the updated id so \
+        the merchant sees the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -69,8 +71,16 @@ public enum ProductsUpdateTool {
     }
 
     private static let allowedStatuses = AllowedProductUpdateStatuses.values
+    private static let allowedArguments: Set<String> = [
+        "id", "name", "regular_price", "sale_price", "stock_quantity", "status"
+    ]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -116,7 +126,6 @@ public enum ProductsUpdateTool {
                                                           body: payload,
                                                           client: client,
                                                           toolName: name,
-                                                          family: .product,
                                                           summarize: ProductSummary.make)
     }
 
@@ -131,7 +140,10 @@ public enum ProductsUpdateTool {
             return nil
         }
         let reason = "Product #\(productID) is a variable product; price lives on each variation, not the parent. " +
-                     "Call product_variations_list(product_id: \(productID)) to enumerate variations, then update each via product_variations_update."
+                     "Call product_variations_list(product_id: \(productID)) to enumerate variations, then " +
+                     "call product_variations_bulk_update(product_id: \(productID), variations: [{id, regular_price}, ...]) " +
+                     "to apply the same price across all of them in one call. Use product_variations_update only when " +
+                     "the merchant wants different prices per variation."
         return .init(toolName: name,
                      kind: .invalidToolCall,
                      reason: reason)

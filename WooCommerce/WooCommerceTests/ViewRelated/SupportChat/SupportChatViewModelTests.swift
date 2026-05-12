@@ -587,7 +587,7 @@ struct SupportChatViewModelTests {
                                     loggedIn: true,
                                     branch: nil
                                 ),
-                                supportArea: SupportChatSupportArea(area: .mobileApp, confidence: .high)
+                                supportArea: SupportChatSupportArea(area: .mobileApp, topic: "woo_mobile_issue_orders", confidence: .high)
                             )
                         )
                     ]
@@ -614,6 +614,7 @@ struct SupportChatViewModelTests {
         sut.contactHumanSupport()
 
         // Then
+        #expect(receivedSupportAreaInfo?.topic == "woo_mobile_issue_orders")
         #expect(receivedSupportAreaInfo?.systemStatusReport == prefetchedReport)
     }
 

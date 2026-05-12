@@ -127,11 +127,45 @@ struct CardReferenceResolver: Sendable {
                             summarize: (AnyCodableJSON) -> AnyCodableJSON) -> Resolution {
         switch outcome {
         case .found(let entity):
-            let summary = summarize(entity)
-            let rendered = RenderedCardPayload(family: family, id: id, element: entity)
+            let enriched = Self.enrich(entity, family: family)
+            let summary = summarize(enriched)
+            let rendered = RenderedCardPayload(family: family, id: id, element: enriched)
             return .resolved(family: family, id: id, summary: summary, rendered: rendered)
         case .rejected(let reason):
             return .rejected(family: family, id: id, reason: reason)
+        }
+    }
+
+    // Synthesizes flat fields the UI card row decodes by name, so the renderer
+    // doesn't have to re-derive them from nested objects per family.
+    static func enrich(_ entity: AnyCodableJSON, family: CardFamilyID) -> AnyCodableJSON {
+        switch family {
+        case .product:
+            guard case .object(var dict) = entity, dict["variations_count"] == nil else { return entity }
+            if case .array(let variations) = dict["variations"] ?? .null {
+                dict["variations_count"] = .int(Int64(variations.count))
+            }
+            return .object(dict)
+        case .order:
+            guard case .object(var dict) = entity else { return entity }
+            if let billing = RESTResponseParsing.objectField(entity, "billing") {
+                if dict["customer_name"] == nil {
+                    let first = RESTResponseParsing.stringField(billing, "first_name") ?? ""
+                    let last = RESTResponseParsing.stringField(billing, "last_name") ?? ""
+                    let combined = "\(first) \(last)".trimmingCharacters(in: .whitespaces)
+                    if !combined.isEmpty {
+                        dict["customer_name"] = .string(combined)
+                    }
+                }
+                if dict["customer_email"] == nil,
+                   let email = RESTResponseParsing.stringField(billing, "email"),
+                   !email.isEmpty {
+                    dict["customer_email"] = .string(email)
+                }
+            }
+            return .object(dict)
+        case .productVariation, .customer, .analyticsStats:
+            return entity
         }
     }
 

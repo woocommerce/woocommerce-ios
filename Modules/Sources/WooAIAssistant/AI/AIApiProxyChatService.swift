@@ -11,9 +11,11 @@ public struct AIApiProxyChatService: AIChatService {
     private let streamingTransport: StreamingHTTPTransport
     private let sleep: Sleep
 
-    public init(tokenProvider: WPCOMTokenProviding, sleep: @escaping Sleep) {
+    public init(tokenProvider: WPCOMTokenProviding,
+                endpointOverride: URL? = nil,
+                sleep: @escaping Sleep) {
         self.init(tokenProvider: tokenProvider,
-                  endpoint: nil,
+                  endpoint: endpointOverride,
                   streamingTransport: nil,
                   sleep: sleep)
     }
@@ -298,8 +300,11 @@ public struct AIApiProxyChatService: AIChatService {
 }
 
 public func makeAIApiProxyChatService(tokenProvider: WPCOMTokenProviding,
+                                       endpointOverride: URL? = nil,
                                        sleep: @escaping AIApiProxyChatService.Sleep) -> some AIChatService {
-    AIApiProxyChatService(tokenProvider: tokenProvider, sleep: sleep)
+    AIApiProxyChatService(tokenProvider: tokenProvider,
+                          endpointOverride: endpointOverride,
+                          sleep: sleep)
 }
 
 extension AIApiProxyChatService {

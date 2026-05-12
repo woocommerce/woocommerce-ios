@@ -1738,6 +1738,20 @@ def generate_ai_release_notes(version:, items_text:)
   )
 
   captured_text = captured[:text]
+  # Distinct from the empty-string case below: nil means the model finished
+  # without ever invoking `validate_release_notes_length`. The handler rejects
+  # empty drafts and keeps the loop going, so a nil capture indicates the model
+  # bypassed the tool entirely (tool calling not supported/enabled, or the
+  # toolkit pin lacks tool-use support) — not that it produced empty text.
+  if captured_text.nil?
+    fail_lane!(
+      context: 'release-notes-pr-error',
+      message: 'openai_ask returned without invoking validate_release_notes_length — ' \
+               'check that the model supports tool calling and that the release-toolkit pin ' \
+               'includes tool-use support.'
+    )
+  end
+
   if (error = ReleaseNotesPRHelper.validate_generated_release_notes_not_empty(captured_text))
     fail_lane!(context: 'release-notes-pr-error', message: error)
   end

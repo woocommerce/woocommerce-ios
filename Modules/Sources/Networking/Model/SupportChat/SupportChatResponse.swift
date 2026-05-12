@@ -80,11 +80,16 @@ public struct SupportChatMessageContext: Decodable, Equatable {
     public let sources: [SupportChatSource]
     public let flags: SupportChatFlags?
     public let supportArea: SupportChatSupportArea?
+    public let isResolved: Bool
 
-    public init(sources: [SupportChatSource], flags: SupportChatFlags?, supportArea: SupportChatSupportArea? = nil) {
+    public init(sources: [SupportChatSource],
+                flags: SupportChatFlags?,
+                supportArea: SupportChatSupportArea? = nil,
+                isResolved: Bool = false) {
         self.sources = sources
         self.flags = flags
         self.supportArea = supportArea
+        self.isResolved = isResolved
     }
 
     public init(from decoder: Decoder) throws {
@@ -92,12 +97,14 @@ public struct SupportChatMessageContext: Decodable, Equatable {
         self.sources = (try? container.decode([SupportChatSource].self, forKey: .sources)) ?? []
         self.flags = try? container.decode(SupportChatFlags.self, forKey: .flags)
         self.supportArea = try? container.decode(SupportChatSupportArea.self, forKey: .supportArea)
+        self.isResolved = (try? container.decode(Bool.self, forKey: .isResolved)) ?? false
     }
 
     enum CodingKeys: String, CodingKey {
         case sources
         case flags
         case supportArea = "support_area"
+        case isResolved = "is_resolved"
     }
 }
 

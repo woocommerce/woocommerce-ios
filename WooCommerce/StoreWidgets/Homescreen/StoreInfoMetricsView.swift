@@ -35,7 +35,7 @@ struct StoreInfoMetricsView: View {
                 EmptyView()
             }
         }
-        .widgetBackground(backgroundView: Color(.brand))
+        .widgetBackground(backgroundView: StoreWidgetHomeScreenBackground())
         .dynamicTypeSize(.xSmall...StoreInfoDynamicType.maximumSize)
     }
 }

@@ -31,7 +31,10 @@ struct AIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {
                                                                       useCache: useCache) { isEnabled in
                 continuation.resume(returning: isEnabled)
             }
-            stores.dispatch(action)
+
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
         }
     }
 

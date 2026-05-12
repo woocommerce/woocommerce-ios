@@ -43,7 +43,7 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
                                            appPasswordSupportState: appPasswordSupport)
 
         let jwtAdaptor = AIAssistantJWTAdaptor(blogID: siteID, network: wpcomNetwork)
-        let chatService = makeJetpackAIChatService(jwtProvider: jwtAdaptor)
+        let chatService = Self.makeChatService(credentials: credentials, jwtProvider: jwtAdaptor)
 
         let restClient = WCRESTClientAdaptor(network: restNetwork, siteID: siteID)
         let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.defaultTools())
@@ -68,6 +68,18 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
             maxIterations: AgenticLoopOrchestrator.defaultMaxIterations,
             context: context
         )
+    }
+
+    // wpcom sites get the ai-api-proxy bearer path; application-password and wp-org sites fall back to
+    // the Jetpack AI JWT path until the proxy gains a non-WPCOM auth story.
+    private static func makeChatService(credentials: Credentials?,
+                                        jwtProvider: AssistantJWTProviding) -> AIChatService {
+        switch credentials {
+        case .wpcom:
+            return AIApiProxyChatService(tokenProvider: AIApiProxyTokenAdaptor(credentials: credentials))
+        case .applicationPassword, .wporg, nil:
+            return makeJetpackAIChatService(jwtProvider: jwtProvider)
+        }
     }
 
     private static func defaultTools() -> [RESTTool] {

@@ -2,6 +2,7 @@ import Foundation
 import CocoaLumberjackSwift
 import NetworkingCore
 
+@available(*, deprecated, message: "Use AIApiProxyChatService; jetpack-ai-query is being sunset. See WOOMOB-3064.")
 struct JetpackAIQueryClient: AIChatService {
 
     typealias Sleep = @Sendable (UInt64) async throws -> Void
@@ -316,6 +317,7 @@ struct JetpackAIQueryClient: AIChatService {
     }
 }
 
+@available(*, deprecated, message: "Use AIApiProxyChatService; jetpack-ai-query is being sunset. See WOOMOB-3064.")
 public func makeJetpackAIChatService(jwtProvider: AssistantJWTProviding) -> some AIChatService {
     JetpackAIQueryClient(jwtProvider: jwtProvider)
 }

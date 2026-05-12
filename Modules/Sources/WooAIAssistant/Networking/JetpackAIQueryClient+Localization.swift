@@ -1,5 +1,6 @@
 import Foundation
 
+@available(*, deprecated)
 extension JetpackAIQueryClient {
     enum Localization {
         static let httpFailureFallback = NSLocalizedString(

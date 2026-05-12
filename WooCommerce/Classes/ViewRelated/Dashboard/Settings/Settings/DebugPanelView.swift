@@ -106,6 +106,8 @@ struct DebugPanelView: View {
         ParcelFittingCheckPresenter.presentSizing(from: presenter, unit: unit, onConfirm: { _ in })
     }
 
+    @State private var debugDelegate = DebugParcelFittingDelegate()
+
     private func presentDebugUnifiedFlow() {
         guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
         let unit: UnitLength = .fromStoreUnit(ServiceLocator.shippingSettingsService.dimensionUnit ?? "in")
@@ -125,7 +127,7 @@ struct DebugPanelView: View {
                                     length: 16.0, width: 11.0, height: 3.0),
             ]),
         ]
-        ParcelFittingCheckPresenter.presentUnifiedFlow(from: presenter, unit: unit, carriers: carriers, onConfirm: { _ in })
+        ParcelFittingCheckPresenter.presentUnifiedFlow(from: presenter, unit: unit, carriers: carriers, delegate: debugDelegate)
     }
 
     private func fetchTestAnnouncement() {
@@ -170,4 +172,13 @@ fileprivate struct DebugSheetPresenter<Content: View>: View {
             content { isPresented = false }
         }
     }
+}
+
+private final class DebugParcelFittingDelegate: ParcelFittingDelegate {
+    func parcelFittingDidConfirm(_ result: ParcelFittingResult,
+                                  carriers: [ParcelPresetCarrier],
+                                  starredPackageIDs: Set<String>,
+                                  dimensionUnit: UnitLength) {}
+    func parcelFittingDidCancel() {}
+    func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool) {}
 }

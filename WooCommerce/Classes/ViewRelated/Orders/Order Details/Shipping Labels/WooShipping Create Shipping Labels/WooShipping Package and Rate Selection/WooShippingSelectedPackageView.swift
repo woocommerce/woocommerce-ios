@@ -45,9 +45,9 @@ struct WooShippingSelectedPackageView: View {
             shipmentWeight
         }
         .sheet(isPresented: $showPackageSelection) {
-            WooShippingAddPackageView(selectedPackage: package) { newPackage, measurement in
+            WooShippingAddPackageView(selectedPackage: package) { newPackage, measurement, carriers, starred, unit in
                 showPackageSelection = false
-                updateSelectedPackage(newPackage, measurement, lastARCarriers, lastARStarredPackageIDs, lastARDimensionUnit)
+                updateSelectedPackage(newPackage, measurement, carriers, starred, unit)
             }
         }
         .fullScreenCover(isPresented: $showARResults) {

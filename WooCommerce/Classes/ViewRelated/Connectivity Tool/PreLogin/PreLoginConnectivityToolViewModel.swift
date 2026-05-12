@@ -196,7 +196,7 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
         context["site_url"] = siteURL.absoluteString
 
         return SupportChatViewModel(
-            entryPoint: .connectivityTool,
+            entryPoint: .preLogin,
             initialContext: context,
             onContactHumanSupport: onContactHumanSupport
         )

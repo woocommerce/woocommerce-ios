@@ -102,8 +102,21 @@ final class SupportEscalationCoordinator {
             prefilledSubject: prefilledSubject,
             prefilledDescription: prefilledDescription,
             onTicketCreated: { [weak self] in
+                self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
+                    route: "support_form",
+                    supportAreaInfo: supportAreaInfo,
+                    entryPoint: supportAreaInfo?.entryPoint
+                ))
                 self?.persistTicketCreated()
                 self?.onTicketCreated?()
+            },
+            onTicketCreationFailed: { [weak self] error in
+                self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
+                    route: "support_form",
+                    supportAreaInfo: supportAreaInfo,
+                    entryPoint: supportAreaInfo?.entryPoint,
+                    errorType: Self.errorType(for: error)
+                ))
             }
         )
         let viewController = SupportFormHostingController(viewModel: viewModel)
@@ -139,12 +152,21 @@ final class SupportEscalationCoordinator {
             loadingViewController.dismiss(animated: true) {
                 switch result {
                 case .success:
-                    self?.analytics.track(.supportNewRequestCreated)
+                    self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
+                        route: "direct_ticket_creation",
+                        supportAreaInfo: areaInfo,
+                        entryPoint: areaInfo.entryPoint
+                    ))
                     self?.persistTicketCreated()
                     self?.onTicketCreated?()
                     self?.showSuccessAndPop()
-                case .failure:
-                    self?.analytics.track(.supportNewRequestFailed)
+                case .failure(let error):
+                    self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
+                        route: "direct_ticket_creation",
+                        supportAreaInfo: areaInfo,
+                        entryPoint: areaInfo.entryPoint,
+                        errorType: Self.errorType(for: error)
+                    ))
                     self?.showSupportForm(transcript: areaInfo.transcript, supportAreaInfo: areaInfo)
                 }
             }
@@ -180,6 +202,15 @@ final class SupportEscalationCoordinator {
             tags.append(topic)
         }
         return tags
+    }
+
+    private static func errorType(for error: Error) -> String {
+        switch error {
+        case ZendeskError.failedToCreateIdentity:
+            return "identity_creation_failed"
+        default:
+            return "zendesk_request_failed"
+        }
     }
 }
 

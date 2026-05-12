@@ -16,10 +16,13 @@ struct SupportChatView: View {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     if viewModel.canEscalateToHumanSupport {
                         Button {
-                            viewModel.contactHumanSupport()
+                            viewModel.contactHumanSupport(source: "toolbar")
                         } label: {
                             Image(systemName: "person.fill.questionmark")
                                 .accessibilityLabel(Localization.toolbarContactSupport)
+                        }
+                        .onAppear {
+                            viewModel.trackManualEscalationPromptShownIfNeeded()
                         }
                     }
 
@@ -29,6 +32,9 @@ struct SupportChatView: View {
                         } label: {
                             Image(systemName: "checkmark")
                                 .accessibilityLabel(Localization.toolbarMarkResolved)
+                        }
+                        .onAppear {
+                            viewModel.trackResolutionButtonShownIfNeeded()
                         }
                     }
                 }
@@ -55,7 +61,7 @@ struct SupportChatView: View {
                 actions: {
                     Button(Localization.contactSupport) {
                         viewModel.dismissError()
-                        viewModel.contactHumanSupport()
+                        viewModel.contactHumanSupport(source: "error_dialog")
                     }
                     Button(Localization.dismiss, role: .cancel) {
                         viewModel.dismissError()
@@ -303,12 +309,15 @@ struct SupportChatView: View {
                 .multilineTextAlignment(.center)
 
             Button(Localization.contactSupport) {
-                viewModel.contactHumanSupport()
+                viewModel.contactHumanSupport(source: "banner")
             }
             .buttonStyle(SecondaryButtonStyle())
         }
         .padding()
         .background(Color(.listBackground))
+        .onAppear {
+            viewModel.trackBotEscalationPromptShownIfNeeded()
+        }
     }
 
     // MARK: - Ticket Created Banner

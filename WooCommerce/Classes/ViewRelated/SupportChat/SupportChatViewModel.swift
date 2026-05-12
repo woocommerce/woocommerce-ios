@@ -185,6 +185,7 @@ final class SupportChatViewModel {
     }
 
     func markChatResolved() {
+        analytics.track(event: WooAnalyticsEvent.SupportChat.markResolvedTapped())
         isChatResolved = true
 
         guard let chatID else {
@@ -243,6 +244,11 @@ final class SupportChatViewModel {
     private let initialContext: [String: Any]?
     private let onContactHumanSupport: (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
     private var latestSupportArea: SupportChatSupportArea?
+    private var userMessageCount = 0
+    private var didTrackResolutionPromptShown = false
+    private var didTrackManualEscalationPromptShown = false
+    private var didTrackBotEscalationPromptShown = false
+    private var didTrackErrorEscalationPromptShown = false
     var onStartJetpackSetup: () -> Void
     private let diagnosticsService: SupportDiagnosticsService
 
@@ -279,6 +285,12 @@ final class SupportChatViewModel {
         self.prefetchedSystemStatusReport = systemStatusReport
         self.onContactHumanSupport = onContactHumanSupport
         self.onStartJetpackSetup = onStartJetpackSetup
+
+        analytics.track(event: WooAnalyticsEvent.SupportChat.entryPointTapped(
+            entryPoint: entryPoint.analyticsValue,
+            isAuthenticated: stores.isAuthenticated,
+            isResumedChat: chatID != nil
+        ))
     }
 
     // MARK: - Issue Selection & Diagnostics
@@ -287,6 +299,10 @@ final class SupportChatViewModel {
     ///
     func selectIssue(_ issue: SupportIssueType) async {
         selectedIssue = issue
+        analytics.track(event: WooAnalyticsEvent.SupportChat.issueSelected(
+            issueType: issue.analyticsValue,
+            entryPoint: entryPoint.analyticsValue
+        ))
 
         // Add user's selection as a message
         let userMessage = ChatMessage(role: .user, text: issue.displayName)
@@ -297,6 +313,7 @@ final class SupportChatViewModel {
             let greetingMessage = ChatMessage(role: .bot, text: Localization.greetingMessage)
             messages.append(greetingMessage)
             hasProceededToChat = true
+            trackTroubleshootingCompleted(issueType: issue.analyticsValue, result: "skipped")
             return
         }
 
@@ -353,12 +370,16 @@ final class SupportChatViewModel {
                 role: .bot,
                 content: .diagnosticsFailure(failure)
             )
+            trackTroubleshootingCompleted(issueType: issue.analyticsValue,
+                                          result: "failed",
+                                          failedTest: failure.test.analyticsValue)
         } else {
             messages[progressIndex] = ChatMessage(
                 id: messages[progressIndex].id,
                 role: .bot,
                 content: .diagnosticsSuccess
             )
+            trackTroubleshootingCompleted(issueType: issue.analyticsValue, result: "passed")
         }
     }
 
@@ -632,6 +653,14 @@ final class SupportChatViewModel {
 
         let wasNewChat = chatID == nil
         let firstUserMessage = trimmedText
+        let isFirstMessage = userMessageCount == 0
+        userMessageCount += 1
+
+        analytics.track(event: WooAnalyticsEvent.SupportChat.messageSent(
+            entryPoint: entryPoint.analyticsValue,
+            isFirstMessage: isFirstMessage,
+            hasDiagnosticsContext: context != nil
+        ))
 
         let action = SupportChatAction.sendMessage(
             botSlug: botSlug,
@@ -649,7 +678,14 @@ final class SupportChatViewModel {
         stores.dispatch(action)
     }
 
-    func contactHumanSupport() {
+    func contactHumanSupport(source: String = "toolbar") {
+        analytics.track(event: WooAnalyticsEvent.SupportChat.escalationTapped(
+            source: source,
+            entryPoint: entryPoint.analyticsValue,
+            supportArea: latestSupportArea,
+            userMessageCount: userMessageCount
+        ))
+
         let transcript = generateTranscript()
         let supportAreaInfo: SupportAreaInfo?
         let systemStatusReport = prefetchedSystemStatusReport ?? diagnosticsService.formattedSystemStatusReport
@@ -662,7 +698,8 @@ final class SupportChatViewModel {
                 confidence: supportArea.confidence,
                 topic: supportArea.topic,
                 transcript: transcript,
-                systemStatusReport: systemStatusReport
+                systemStatusReport: systemStatusReport,
+                entryPoint: entryPoint.analyticsValue
             )
         } else {
             supportAreaInfo = nil
@@ -724,9 +761,16 @@ final class SupportChatViewModel {
             if let lastBotMessage = response.messages.last(where: { $0.role == .bot }) {
                 /// Retrieves the last detected support area
                 latestSupportArea = lastBotMessage.context?.supportArea
+                let forwardToHumanSupport = lastBotMessage.context?.flags?.forwardToHumanSupport == true
+
+                analytics.track(event: WooAnalyticsEvent.SupportChat.responseReceived(
+                    entryPoint: entryPoint.analyticsValue,
+                    supportArea: latestSupportArea,
+                    forwardToHumanSupport: forwardToHumanSupport
+                ))
 
                 /// Skips displaying last bot message when human support is required. User is suggested to contact support manually.
-                if let flags = lastBotMessage.context?.flags, flags.forwardToHumanSupport {
+                if forwardToHumanSupport {
                     shouldPromptHumanSupport = true
                 } else {
                     let assistantMessage = ChatMessage(
@@ -748,6 +792,7 @@ final class SupportChatViewModel {
         case .failure(let error):
             DDLogError("⛔️ Support chat error: \(error)")
             markLastUserMessageAsFailed()
+            trackEscalationButtonShown(trigger: "error_dialog")
             state = .error(errorMessage(for: error))
         }
     }
@@ -774,12 +819,15 @@ final class SupportChatViewModel {
         case .success(let response):
             sessionID = response.sessionID
             let rehydrated: [ChatMessage] = response.messages.compactMap { [weak self] message in
+                if message.role == .bot, let supportArea = message.context?.supportArea {
+                    self?.latestSupportArea = supportArea
+                }
+
                 // Filter out bot messages flagged for human support
                 if message.role == .bot,
                    let flags = message.context?.flags,
                    flags.forwardToHumanSupport {
                     self?.shouldPromptHumanSupport = true
-                    self?.latestSupportArea = message.context?.supportArea
                     return nil
                 }
 
@@ -877,7 +925,12 @@ final class SupportChatViewModel {
             appendResolvedPromptIfNeeded()
         }
 
-        analytics.track(event: WooAnalyticsEvent.SupportChat.feedbackSubmitted(upvoted: upvoted))
+        analytics.track(event: WooAnalyticsEvent.SupportChat.feedbackSubmitted(
+            rating: upvoted ? "up" : "down",
+            entryPoint: entryPoint.analyticsValue,
+            supportArea: latestSupportArea,
+            userMessageCount: userMessageCount
+        ))
 
         let action = SupportChatAction.submitFeedback(
             botSlug: botSlug,
@@ -895,6 +948,114 @@ final class SupportChatViewModel {
 
     private var latestBotResponse: ChatMessage? {
         messages.last { $0.role == .bot && $0.messageID != nil }
+    }
+
+    private func trackTroubleshootingCompleted(issueType: String, result: String, failedTest: String? = nil) {
+        analytics.track(event: WooAnalyticsEvent.SupportChat.troubleshootingCompleted(
+            issueType: issueType,
+            result: result,
+            failedTest: failedTest
+        ))
+    }
+
+    func trackResolutionButtonShownIfNeeded() {
+        guard didTrackResolutionPromptShown == false else {
+            return
+        }
+
+        didTrackResolutionPromptShown = true
+        analytics.track(event: WooAnalyticsEvent.SupportChat.resolutionButtonShown(
+            entryPoint: entryPoint.analyticsValue,
+            supportArea: latestSupportArea,
+            userMessageCount: userMessageCount
+        ))
+    }
+
+    func trackManualEscalationPromptShownIfNeeded() {
+        guard didTrackManualEscalationPromptShown == false else {
+            return
+        }
+
+        didTrackManualEscalationPromptShown = true
+        trackEscalationButtonShown(trigger: "manual_toolbar")
+    }
+
+    func trackBotEscalationPromptShownIfNeeded() {
+        guard didTrackBotEscalationPromptShown == false else {
+            return
+        }
+
+        didTrackBotEscalationPromptShown = true
+        trackEscalationButtonShown(trigger: "bot_forwarded_to_human_support")
+    }
+
+    private func trackEscalationButtonShown(trigger: String) {
+        if trigger == "error_dialog" {
+            guard didTrackErrorEscalationPromptShown == false else {
+                return
+            }
+            didTrackErrorEscalationPromptShown = true
+        }
+
+        analytics.track(event: WooAnalyticsEvent.SupportChat.escalationButtonShown(
+            trigger: trigger,
+            entryPoint: entryPoint.analyticsValue,
+            supportArea: latestSupportArea,
+            userMessageCount: userMessageCount
+        ))
+    }
+}
+
+private extension SupportChatViewModel.EntryPoint {
+    var analyticsValue: String {
+        switch self {
+        case .helpAndSupport:
+            return "help_and_support"
+        case .connectivityTool:
+            return "connectivity_tool"
+        case .chatHistory:
+            return "chat_history"
+        case .preLogin:
+            return "pre_login"
+        }
+    }
+}
+
+private extension SupportIssueType {
+    var analyticsValue: String {
+        switch self {
+        case .loadingOrders:
+            return "loading_orders"
+        case .loadingProducts:
+            return "loading_products"
+        case .loadingAnalytics:
+            return "loading_analytics"
+        case .receivingNotifications:
+            return "receiving_notifications"
+        case .other:
+            return "other"
+        }
+    }
+}
+
+private extension SupportDiagnosticsService.Test {
+    var analyticsValue: String {
+        switch self {
+        case .internetConnection:
+            return "internet_connection"
+        case .wpComServers:
+            return "wpcom_servers"
+        case .site:
+            return "site"
+        case .siteOrders:
+            return "site_orders"
+        case .loadingProducts:
+            return "loading_products"
+        case .analyticsSetting:
+            return "analytics_setting"
+        case .notifications:
+            return "notifications"
+        }
     }
 }
 

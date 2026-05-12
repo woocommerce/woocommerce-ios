@@ -1,0 +1,788 @@
+import Foundation
+import Testing
+import NetworkingCore
+@testable import WooAIAssistant
+
+@Suite(.timeLimit(.minutes(1)))
+struct AIApiProxyChatServiceTests {
+
+    // MARK: - Request shape
+
+    @Test
+    func test_sendChat_when_streaming_enabled_then_sets_text_event_stream_accept_header() async throws {
+        // Given
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        #expect(request.value(forHTTPHeaderField: "Accept") == "text/event-stream")
+    }
+
+    @Test
+    func test_sendChat_sets_authorization_bearer_header_from_token_provider() async throws {
+        // Given
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport, token: "test-bearer-token")
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        #expect(request.value(forHTTPHeaderField: "Authorization") == "Bearer test-bearer-token")
+    }
+
+    @Test
+    func test_sendChat_sets_X_WPCOM_AI_Feature_header_to_woo_mobile_ai_assistant() async throws {
+        // Given
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        #expect(request.value(forHTTPHeaderField: "X-WPCOM-AI-Feature") == AIApiProxyChatService.featureHeaderValue)
+    }
+
+    @Test
+    func test_sendChat_sets_content_type_application_json() async throws {
+        // Given
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        #expect(request.value(forHTTPHeaderField: "Content-Type") == "application/json")
+    }
+
+    @Test
+    func test_sendChat_uses_endpoint_override_when_provided() async throws {
+        // Given
+        let override = URL(string: "https://test.example/wpcom/v2/ai-api-proxy/v1/chat/completions")!
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = AIApiProxyChatService(tokenProvider: ConstantWPCOMTokenProvider(value: "tok"),
+                                            endpoint: override,
+                                            streamingTransport: transport.handler,
+                                            sleep: noOpSleep)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        #expect(request.url == override)
+    }
+
+    @Test
+    func test_sendChat_uses_production_endpoint_when_override_nil() async throws {
+        // Given
+        let expectedBase = try #require(URL(string: Settings.wordpressApiBaseURL))
+        let expected = try #require(
+            URL(string: "wpcom/v2/ai-api-proxy/v1/chat/completions", relativeTo: expectedBase)?.absoluteURL
+        )
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = AIApiProxyChatService(tokenProvider: ConstantWPCOMTokenProvider(value: "tok"),
+                                            endpoint: nil,
+                                            streamingTransport: transport.handler,
+                                            sleep: noOpSleep)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        #expect(request.url == expected)
+    }
+
+    // MARK: - Body shape
+
+    @Test
+    func test_sendChat_body_omits_feature_field() async throws {
+        // Given
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        let body = try #require(request.httpBody)
+        let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        #expect(json["feature"] == nil)
+    }
+
+    @Test
+    func test_sendChat_body_defaults_model_to_gpt_5_4_mini() async throws {
+        // Given
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        let body = try #require(request.httpBody)
+        let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        #expect(json["model"] as? String == AssistantConfiguration.chatModel)
+    }
+
+    @Test
+    func test_sendChat_body_includes_messages_in_order() async throws {
+        // Given
+        let messages: [OpenAIChat.Message] = [
+            .init(role: .system, content: "You are helpful."),
+            .init(role: .user, content: "Hello"),
+            .init(role: .assistant, content: "Hi there")
+        ]
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: messages, tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        let body = try #require(request.httpBody)
+        let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        let wireMessages = try #require(json["messages"] as? [[String: Any]])
+        #expect(wireMessages.count == 3)
+        #expect(wireMessages[0]["role"] as? String == "system")
+        #expect(wireMessages[1]["role"] as? String == "user")
+        #expect(wireMessages[2]["role"] as? String == "assistant")
+    }
+
+    @Test
+    func test_sendChat_body_includes_tools_when_provided() async throws {
+        // Given
+        let tool = OpenAIChat.ToolDefinition(function: .init(
+            name: "orders_list",
+            description: "List orders",
+            parameters: .object(["type": .string("object"), "properties": .object([:])])
+        ))
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: [tool], toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        let body = try #require(request.httpBody)
+        let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        let tools = try #require(json["tools"] as? [[String: Any]])
+        #expect(tools.count == 1)
+        let fn = try #require(tools.first?["function"] as? [String: Any])
+        #expect(fn["name"] as? String == "orders_list")
+    }
+
+    @Test
+    func test_sendChat_body_omits_tools_when_nil() async throws {
+        // Given
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport)
+
+        // When
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        let body = try #require(request.httpBody)
+        let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        #expect(json["tools"] == nil)
+    }
+
+    @Test
+    func test_sendChat_body_includes_tool_choice_when_provided() async throws {
+        // Given
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
+        let service = makeService(transport: transport)
+
+        // When
+        _ = try await collect(
+            service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: .auto)
+        )
+
+        // Then
+        let captured = await transport.lastRequest
+        let request = try #require(captured)
+        let body = try #require(request.httpBody)
+        let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        #expect(json["tool_choice"] as? String == "auto")
+    }
+
+    // MARK: - Token provider failures
+
+    @Test
+    func test_sendChat_when_token_provider_throws_then_finishes_stream_with_assistant_error() async throws {
+        // Given
+        struct ThrowingTokenProvider: WPCOMTokenProviding {
+            func token() async throws -> String {
+                throw AssistantError(kind: .auth, message: "credentials unavailable")
+            }
+        }
+        let transport = ScriptedProxyTransport(scenarios: [])
+        let service = AIApiProxyChatService(tokenProvider: ThrowingTokenProvider(),
+                                            endpoint: testEndpoint,
+                                            streamingTransport: transport.handler,
+                                            sleep: noOpSleep)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected token provider error to surface.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .auth)
+        }
+    }
+
+    // MARK: - Streaming success
+
+    @Test
+    func test_sendChat_streaming_when_chunks_arrive_then_yields_textDelta_events_in_order() async throws {
+        // Given
+        let frames = [
+            sseFrame("{\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"}}]}"),
+            sseFrame("{\"choices\":[{\"index\":0,\"delta\":{\"content\":\", world\"},\"finish_reason\":\"stop\"}]}"),
+            "data: [DONE]\n\n"
+        ]
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data(frames.joined().utf8)])])
+        let service = makeService(transport: transport)
+
+        // When
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        #expect(textDeltas(in: events).joined() == "Hello, world")
+    }
+
+    @Test
+    func test_sendChat_streaming_when_DONE_sentinel_arrives_then_terminates_cleanly() async throws {
+        // Given
+        let frames = [
+            sseFrame("{\"choices\":[{\"index\":0,\"delta\":{\"content\":\"done\"},\"finish_reason\":\"stop\"}]}"),
+            "data: [DONE]\n\n"
+        ]
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data(frames.joined().utf8)])])
+        let service = makeService(transport: transport)
+
+        // When
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        if case .completed(let reason) = events.last {
+            #expect(reason == .stop)
+        } else {
+            Issue.record("Expected last event to be .completed.")
+        }
+    }
+
+    @Test
+    func test_sendChat_streaming_when_tool_call_deltas_arrive_in_pieces_then_yields_complete_toolCall_after_all_deltas()
+    async throws {
+        // Given
+        let frames = [
+            toolCallSkeletonFrame(index: 0, id: "call_99", name: "products_list"),
+            toolCallArgsFrame(index: 0, args: "{\"page\":"),
+            toolCallArgsFrame(index: 0, args: "1}"),
+            finishFrame(reason: "tool_calls"),
+            "data: [DONE]\n\n"
+        ]
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data(frames.joined().utf8)])])
+        let service = makeService(transport: transport)
+
+        // When
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let calls = toolCalls(in: events)
+        #expect(calls.count == 1)
+        #expect(calls.first?.id == "call_99")
+        #expect(calls.first?.function.name == "products_list")
+        #expect(calls.first?.function.arguments == "{\"page\":1}")
+    }
+
+    @Test
+    func test_sendChat_streaming_when_utf8_multibyte_char_straddles_chunk_boundary_then_text_decoded_correctly()
+    async throws {
+        // Given
+        // "café" — é is U+00E9, encoded as 0xC3 0xA9. Split after the first byte (0xC3).
+        let prefix = "data: {\"choices\":[{\"index\":0,\"delta\":{\"content\":\"caf"
+        let suffix = "\"},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n"
+        let eBytes: [UInt8] = [0xC3, 0xA9]
+        var firstChunk = Data(prefix.utf8)
+        firstChunk.append(eBytes[0])
+        var secondChunk = Data()
+        secondChunk.append(eBytes[1])
+        secondChunk.append(Data(suffix.utf8))
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([firstChunk, secondChunk])])
+        let service = makeService(transport: transport)
+
+        // When
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        #expect(textDeltas(in: events).joined() == "café")
+    }
+
+    // MARK: - Single-chunk success paths
+
+    @Test
+    func test_sendChat_single_chunk_when_200_with_assistant_text_then_yields_textDelta_then_completed() async throws {
+        // Given
+        let frames = [
+            sseFrame("{\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"finish_reason\":\"stop\"}]}"),
+            "data: [DONE]\n\n"
+        ]
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data(frames.joined().utf8)])])
+        let service = makeService(transport: transport)
+
+        // When
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let deltas = textDeltas(in: events)
+        #expect(deltas == ["Hello"])
+        if case .completed(let reason) = events.last {
+            #expect(reason == .stop)
+        } else {
+            Issue.record("Expected last event to be .completed.")
+        }
+    }
+
+    @Test
+    func test_sendChat_single_chunk_when_200_with_tool_calls_then_yields_toolCall_then_completed() async throws {
+        // Given
+        let frames = [
+            toolCallSkeletonFrame(index: 0, id: "call_1", name: "orders_get"),
+            toolCallArgsFrame(index: 0, args: "{\"id\":7}"),
+            finishFrame(reason: "tool_calls"),
+            "data: [DONE]\n\n"
+        ]
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data(frames.joined().utf8)])])
+        let service = makeService(transport: transport)
+
+        // When
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let calls = toolCalls(in: events)
+        #expect(calls.count == 1)
+        #expect(calls.first?.function.name == "orders_get")
+        if case .completed(let reason) = events.last {
+            #expect(reason == .toolCalls)
+        } else {
+            Issue.record("Expected last event to be .completed.")
+        }
+    }
+
+    @Test
+    func test_sendChat_single_chunk_when_choice_has_finish_reason_then_completed_event_carries_it() async throws {
+        // Given
+        let frame = sseFrame("{\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ok\"},\"finish_reason\":\"length\"}]}")
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data((frame + "data: [DONE]\n\n").utf8)])])
+        let service = makeService(transport: transport)
+
+        // When
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        if case .completed(let reason) = events.last {
+            #expect(reason == .length)
+        } else {
+            Issue.record("Expected last event to be .completed with .length.")
+        }
+    }
+
+    // MARK: - Error envelope decoder
+
+    @Test
+    func test_sendChat_when_response_is_401_with_ai_api_unauthorized_error_then_throws_typed_auth_error()
+    async throws {
+        // Given
+        let body = proxyEnvelopeBody(code: "ai_api_unauthorized_error", message: "Unauthorized", status: 401)
+        let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 401, body: body)])
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected typed auth error to surface.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .auth)
+            #expect(error.code == "401")
+        }
+    }
+
+    @Test
+    func test_sendChat_when_response_is_402_with_ai_api_plan_required_error_then_throws_typed_plan_error()
+    async throws {
+        // Given
+        let body = proxyEnvelopeBody(code: "ai_api_plan_required_error", message: "Plan required", status: 402)
+        let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 402, body: body)])
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected typed plan error to surface.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .auth)
+            #expect(error.code == "402")
+        }
+    }
+
+    @Test
+    func test_sendChat_when_response_is_403_with_ai_api_blog_access_denied_error_then_throws_typed_access_error()
+    async throws {
+        // Given
+        let body = proxyEnvelopeBody(code: "ai_api_blog_access_denied_error", message: "Access denied", status: 403)
+        let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 403, body: body)])
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected typed access error to surface.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .auth)
+            #expect(error.code == "403")
+        }
+    }
+
+    @Test
+    func test_sendChat_when_response_is_429_with_ai_api_user_rate_limit_error_then_throws_typed_user_rate_limit_error_after_retries()
+    async throws {
+        // Given
+        let body = proxyEnvelopeBody(code: "ai_api_user_rate_limit_error", message: "User rate limit", status: 429)
+        let scenarios: [ProxyTransportScenario] = (0..<3).map { _ in .errorBody(status: 429, body: body) }
+        let transport = ScriptedProxyTransport(scenarios: scenarios)
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected typed rate limit error to surface.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .rateLimit)
+            #expect(error.code == "429")
+        }
+        #expect(await transport.callCount == 3)
+    }
+
+    @Test
+    func test_sendChat_when_response_is_429_with_ai_api_blog_rate_limit_error_then_throws_typed_blog_rate_limit_error_after_retries()
+    async throws {
+        // Given
+        let body = proxyEnvelopeBody(code: "ai_api_blog_rate_limit_error", message: "Blog rate limit", status: 429)
+        let scenarios: [ProxyTransportScenario] = (0..<3).map { _ in .errorBody(status: 429, body: body) }
+        let transport = ScriptedProxyTransport(scenarios: scenarios)
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected typed blog rate limit error to surface.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .rateLimit)
+            #expect(error.code == "429")
+        }
+        #expect(await transport.callCount == 3)
+    }
+
+    @Test
+    func test_sendChat_when_response_is_429_with_unknown_ai_api_code_then_falls_through_to_generic_error_after_retries()
+    async throws {
+        // Given
+        let body = proxyEnvelopeBody(code: "ai_api_some_unknown_error", message: "Unknown limit", status: 429)
+        let scenarios: [ProxyTransportScenario] = (0..<3).map { _ in .errorBody(status: 429, body: body) }
+        let transport = ScriptedProxyTransport(scenarios: scenarios)
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected error to surface.")
+        } catch let error as AssistantError {
+            #expect(error.code == "429")
+            #expect(error.message.contains("ai_api_some_unknown_error"))
+        }
+        #expect(await transport.callCount == 3)
+    }
+
+    @Test
+    func test_sendChat_when_response_is_400_with_non_ai_api_envelope_then_surfaces_envelope_message() async throws {
+        // Given
+        let body = proxyEnvelopeBody(code: "validation_error", message: "Invalid input provided", status: 400)
+        let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 400, body: body)])
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected 400 error to surface.")
+        } catch let error as AssistantError {
+            #expect(error.code == "400")
+            #expect(error.message.contains("validation_error"))
+        }
+    }
+
+    @Test
+    func test_sendChat_when_response_is_500_with_no_envelope_then_throws_generic_http_error() async throws {
+        // Given
+        let body = Data("Internal server error".utf8)
+        let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 500, body: body)])
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected 500 to surface.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .upstreamFailure)
+            #expect(error.code == "500")
+        }
+    }
+
+    // MARK: - Retry behavior
+
+    @Test
+    func test_sendChat_when_429_then_retries_up_to_3_times_with_backoff_then_throws() async throws {
+        // Given
+        let body = proxyEnvelopeBody(code: "ai_api_user_rate_limit_error", message: "Rate limited", status: 429)
+        let scenarios: [ProxyTransportScenario] = (0..<3).map { _ in .errorBody(status: 429, body: body) }
+        let transport = ScriptedProxyTransport(scenarios: scenarios)
+        let recorder = SleepDelayRecorder()
+        let service = AIApiProxyChatService(tokenProvider: ConstantWPCOMTokenProvider(value: "tok"),
+                                            endpoint: testEndpoint,
+                                            streamingTransport: transport.handler,
+                                            sleep: recorder.handler)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected 429 to surface after retries.")
+        } catch is AssistantError {}
+        #expect(await transport.callCount == 3)
+        let delays = recorder.delays
+        #expect(delays.count == 2)
+        #expect(delays[0] == 2_000_000_000)
+        #expect(delays[1] == 4_000_000_000)
+        #expect(delays[1] > delays[0])
+    }
+
+    @Test
+    func test_sendChat_when_429_then_200_on_retry_then_yields_success_events() async throws {
+        // Given
+        let rateLimitBody = proxyEnvelopeBody(code: "ai_api_user_rate_limit_error", message: "Rate limited", status: 429)
+        let successChunk = singleTextChunk(text: "retry worked")
+        let scenarios: [ProxyTransportScenario] = [
+            .errorBody(status: 429, body: rateLimitBody),
+            .successChunks([successChunk])
+        ]
+        let transport = ScriptedProxyTransport(scenarios: scenarios)
+        let service = makeService(transport: transport)
+
+        // When
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        #expect(await transport.callCount == 2)
+        #expect(textDeltas(in: events).joined() == "retry worked")
+    }
+
+    @Test
+    func test_sendChat_when_non_429_error_then_does_not_retry() async throws {
+        // Given
+        let body = Data("server error".utf8)
+        let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 500, body: body)])
+        let recorder = SleepDelayRecorder()
+        let service = AIApiProxyChatService(tokenProvider: ConstantWPCOMTokenProvider(value: "tok"),
+                                            endpoint: testEndpoint,
+                                            streamingTransport: transport.handler,
+                                            sleep: recorder.handler)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected 500 to surface.")
+        } catch is AssistantError {}
+        #expect(await transport.callCount == 1)
+        #expect(recorder.delays.isEmpty)
+    }
+
+    // MARK: - Stream-level wrapped errors
+
+    @Test
+    func test_sendChat_streaming_when_first_chunk_is_wrapped_error_envelope_then_throws_typed_error() async throws {
+        // Given
+        let envelope = """
+        {"code":"ai_api_unauthorized_error","message":"Unauthorized","data":{"status":401}}
+        """
+        let frame = "data: \(envelope)\n\n"
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data(frame.utf8)])])
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected wrapped envelope inside SSE stream to surface as typed error.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .auth)
+            #expect(error.code == "401")
+        }
+    }
+
+    // MARK: - Helpers
+
+    private var testEndpoint: URL {
+        URL(string: "https://test.example/wpcom/v2/ai-api-proxy/v1/chat/completions")!
+    }
+
+    private var noOpSleep: AIApiProxyChatService.Sleep {
+        { _ in }
+    }
+
+    private func makeService(transport: ScriptedProxyTransport,
+                             token: String = "stub-token") -> AIApiProxyChatService {
+        AIApiProxyChatService(tokenProvider: ConstantWPCOMTokenProvider(value: token),
+                              endpoint: testEndpoint,
+                              streamingTransport: transport.handler,
+                              sleep: noOpSleep)
+    }
+
+    private func userMessage() -> OpenAIChat.Message {
+        .init(role: .user, content: "ping")
+    }
+
+    private func collect(_ stream: AsyncThrowingStream<ChatStreamEvent, Error>) async throws -> [ChatStreamEvent] {
+        var events: [ChatStreamEvent] = []
+        for try await event in stream {
+            events.append(event)
+        }
+        return events
+    }
+
+    private func textDeltas(in events: [ChatStreamEvent]) -> [String] {
+        events.compactMap {
+            if case .textDelta(let text) = $0 { return text }
+            return nil
+        }
+    }
+
+    private func toolCalls(in events: [ChatStreamEvent]) -> [OpenAIChat.ToolCall] {
+        events.compactMap {
+            if case .toolCall(let call) = $0 { return call }
+            return nil
+        }
+    }
+
+    private func sseFrame(_ payload: String) -> String {
+        "data: \(payload)\n\n"
+    }
+
+    private func singleTextChunk(text: String = "ok") -> Data {
+        let payload = "{\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\(text)\"},\"finish_reason\":\"stop\"}]}"
+        return Data(("data: \(payload)\n\ndata: [DONE]\n\n").utf8)
+    }
+
+    private func toolCallSkeletonFrame(index: Int, id: String, name: String) -> String {
+        let payload = "{\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[" +
+            "{\"index\":\(index),\"id\":\"\(id)\",\"type\":\"function\"," +
+            "\"function\":{\"name\":\"\(name)\",\"arguments\":\"\"}}]}}]}"
+        return "data: \(payload)\n\n"
+    }
+
+    private func toolCallArgsFrame(index: Int, args: String) -> String {
+        let escaped = args.replacingOccurrences(of: "\"", with: "\\\"")
+        let payload = "{\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[" +
+            "{\"index\":\(index),\"function\":{\"arguments\":\"\(escaped)\"}}]}}]}"
+        return "data: \(payload)\n\n"
+    }
+
+    private func finishFrame(reason: String) -> String {
+        "data: {\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"\(reason)\"}]}\n\n"
+    }
+
+    private func proxyEnvelopeBody(code: String, message: String, status: Int) -> Data {
+        Data("{\"code\":\"\(code)\",\"message\":\"\(message)\",\"data\":{\"status\":\(status)}}".utf8)
+    }
+}
+
+private enum ProxyTransportScenario {
+    case successChunks([Data])
+    case errorBody(status: Int, body: Data)
+}
+
+private actor ScriptedProxyTransport {
+    private var scenarios: [ProxyTransportScenario]
+    private(set) var callCount = 0
+    private(set) var lastRequest: URLRequest?
+
+    init(scenarios: [ProxyTransportScenario]) {
+        self.scenarios = scenarios
+    }
+
+    nonisolated var handler: StreamingHTTPTransport {
+        { @Sendable [self] request in
+            try await self.handle(request: request)
+        }
+    }
+
+    private func handle(request: URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse) {
+        callCount += 1
+        lastRequest = request
+        guard !scenarios.isEmpty else {
+            throw AssistantError(kind: .network, message: "scripted transport exhausted")
+        }
+        let url = request.url ?? URL(string: "https://test.invalid")!
+        let scenario = scenarios.removeFirst()
+        switch scenario {
+        case .successChunks(let chunks):
+            let stream = AsyncThrowingStream<Data, Error> { continuation in
+                for chunk in chunks { continuation.yield(chunk) }
+                continuation.finish()
+            }
+            let http = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (stream, http)
+        case .errorBody(let status, let body):
+            let stream = AsyncThrowingStream<Data, Error> { continuation in
+                continuation.yield(body)
+                continuation.finish()
+            }
+            let http = HTTPURLResponse(url: url, statusCode: status, httpVersion: nil, headerFields: nil)!
+            return (stream, http)
+        }
+    }
+}
+
+private final class SleepDelayRecorder {
+    nonisolated(unsafe) private(set) var delays: [UInt64] = []
+
+    nonisolated var handler: AIApiProxyChatService.Sleep {
+        { [self] nanoseconds in
+            self.delays.append(nanoseconds)
+        }
+    }
+}

@@ -6,13 +6,11 @@ struct PointOfSaleDashboardViewHelper {
         eligibilityState: POSEligibilityState?,
         itemsContainerState: ItemsContainerState,
         horizontalSizeClass: UserInterfaceSizeClass?,
-        isPhonePrototypeEnabled: Bool = false
+        isPhonePrototypeEnabled: Bool
     ) -> PointOfSaleDashboardView.ViewState {
 
-        if !isPhonePrototypeEnabled {
-            guard case .regular = horizontalSizeClass else {
-                return .unsupportedWidth
-            }
+        guard isPhonePrototypeEnabled || horizontalSizeClass == .regular else {
+            return .unsupportedWidth
         }
 
         guard let eligibilityState else {

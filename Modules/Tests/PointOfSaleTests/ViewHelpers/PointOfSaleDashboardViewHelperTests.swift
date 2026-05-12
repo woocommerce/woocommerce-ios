@@ -18,7 +18,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -35,7 +36,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -54,7 +56,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -79,7 +82,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -98,7 +102,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -115,7 +120,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -145,7 +151,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -164,7 +171,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -181,7 +189,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -198,7 +207,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then

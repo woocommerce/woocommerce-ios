@@ -121,14 +121,14 @@ extension WooAnalyticsEvent {
 
         static func ticketCreated(route: String,
                                   supportAreaInfo: SupportAreaInfo?,
-                                  entryPoint: String?) -> WooAnalyticsEvent {
+                                  entryPoint: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .supportChatTicketCreated,
                               properties: ticketProperties(route: route, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint))
         }
 
         static func ticketCreationFailed(route: String,
                                          supportAreaInfo: SupportAreaInfo?,
-                                         entryPoint: String?,
+                                         entryPoint: String,
                                          errorType: String) -> WooAnalyticsEvent {
             var properties = ticketProperties(route: route, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
             properties[Key.errorType.rawValue] = errorType
@@ -161,16 +161,13 @@ private extension WooAnalyticsEvent.SupportChat {
 
     static func ticketProperties(route: String,
                                  supportAreaInfo: SupportAreaInfo?,
-                                 entryPoint: String?) -> [String: WooAnalyticsEventPropertyType] {
+                                 entryPoint: String) -> [String: WooAnalyticsEventPropertyType] {
         var properties: [String: WooAnalyticsEventPropertyType] = [
             Key.route.rawValue: route,
+            Key.entryPoint.rawValue: entryPoint,
             Key.supportArea.rawValue: supportAreaInfo?.areaType.rawValue ?? Constants.unknown,
             Key.supportAreaConfidence.rawValue: supportAreaInfo?.confidence.rawValue ?? Constants.unknown
         ]
-
-        if let entryPoint {
-            properties[Key.entryPoint.rawValue] = entryPoint
-        }
 
         if let topic = supportAreaInfo?.topic, topic.isNotEmpty {
             properties[Key.chatTopic.rawValue] = topic

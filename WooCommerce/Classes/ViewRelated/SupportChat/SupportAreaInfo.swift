@@ -21,9 +21,6 @@ struct SupportAreaInfo {
     /// Pre-fetched system status report, if available.
     let systemStatusReport: String?
 
-    /// Chat entry point used for analytics.
-    let entryPoint: String?
-
     var isHighConfidence: Bool {
         confidence == .high
     }
@@ -33,14 +30,12 @@ struct SupportAreaInfo {
          confidence: SupportAreaConfidence,
          topic: String? = nil,
          transcript: String,
-         systemStatusReport: String? = nil,
-         entryPoint: String? = nil) {
+         systemStatusReport: String? = nil) {
         self.areaType = areaType
         self.area = area
         self.confidence = confidence
         self.topic = topic
         self.transcript = transcript
         self.systemStatusReport = systemStatusReport
-        self.entryPoint = entryPoint
     }
 }

@@ -483,10 +483,11 @@ private extension HelpAndSupportViewController {
         var viewModelHolder: SupportChatViewModel?
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo in
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
                 self?.handleContactHumanSupport(chatID: chatID,
                                                 transcript: transcript,
                                                 supportAreaInfo: supportAreaInfo,
+                                                entryPoint: entryPoint,
                                                 onTicketCreated: { [weak viewModelHolder] in
                                                     viewModelHolder?.markChatTicketCreated()
                                                 })
@@ -500,10 +501,11 @@ private extension HelpAndSupportViewController {
     private func handleContactHumanSupport(chatID: Int64?,
                                            transcript: String,
                                            supportAreaInfo: SupportAreaInfo?,
+                                           entryPoint: String,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
                                                                     onTicketCreated: onTicketCreated)
-        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
     }
 
     /// Chat History action
@@ -531,10 +533,11 @@ private extension HelpAndSupportViewController {
             sessionID: summary.sessionID,
             hasCreatedTicket: summary.hasCreatedTicket,
             isChatResolved: summary.isResolved,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo in
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
                 self?.handleContactHumanSupport(chatID: chatID,
                                                 transcript: transcript,
                                                 supportAreaInfo: supportAreaInfo,
+                                                entryPoint: entryPoint,
                                                 onTicketCreated: { [weak viewModelHolder] in
                                                     viewModelHolder?.markChatTicketCreated()
                                                 })

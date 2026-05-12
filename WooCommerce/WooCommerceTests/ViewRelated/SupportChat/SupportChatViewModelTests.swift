@@ -397,7 +397,7 @@ struct SupportChatViewModelTests {
                 entryPoint: .chatHistory,
                 stores: stores,
                 chatID: chatID,
-                onContactHumanSupport: { _, _, _ in }
+                onContactHumanSupport: { _, _, _, _ in }
             )
 
             // When
@@ -414,7 +414,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -470,7 +470,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -544,7 +544,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .preLogin,
             stores: stores,
-            onContactHumanSupport: { chatID, _, _ in
+            onContactHumanSupport: { chatID, _, _, _ in
                 receivedChatID = chatID
             }
         )
@@ -602,7 +602,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             systemStatusReport: prefetchedReport,
-            onContactHumanSupport: { _, _, supportAreaInfo in
+            onContactHumanSupport: { _, _, supportAreaInfo, _ in
                 receivedSupportAreaInfo = supportAreaInfo
             }
         )
@@ -767,7 +767,7 @@ struct SupportChatViewModelTests {
             entryPoint: .preLogin,
             stores: stores,
             hasCreatedTicket: true,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
 
         // When — append a user message so the only failing condition is hasCreatedTicket
@@ -1167,7 +1167,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Help"
         sut.sendMessage()
@@ -1215,7 +1215,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1258,7 +1258,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1300,7 +1300,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1343,7 +1343,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1380,7 +1380,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .connectivityTool,
             stores: stores,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
 
@@ -1415,7 +1415,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .connectivityTool,
             stores: stores,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
 
@@ -1436,7 +1436,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -1479,7 +1479,7 @@ struct SupportChatViewModelTests {
             stores: stores,
             chatID: chatID,
             sessionID: sessionID,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         var receivedSessionID: String?
 
@@ -1517,7 +1517,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         var receivedChatID: Int64?
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -1549,7 +1549,7 @@ struct SupportChatViewModelTests {
             entryPoint: entryPoint,
             stores: stores,
             diagnosticsService: diagnosticsService,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         viewModel.onStartJetpackSetup = onStartJetpackSetup
         return viewModel

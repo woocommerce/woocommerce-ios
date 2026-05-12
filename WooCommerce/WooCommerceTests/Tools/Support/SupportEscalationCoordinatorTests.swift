@@ -17,7 +17,7 @@ struct SupportEscalationCoordinatorTests {
         let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk)
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: nil)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: nil, entryPoint: "help_and_support")
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -35,7 +35,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
 
         // Then
         #expect(zendesk.latestInvokedTags.contains("in_app_support_escalate"))
@@ -53,7 +53,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -70,7 +70,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeMediumConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -87,7 +87,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeLowConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -120,7 +120,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
 
         // Then
         #expect(dispatchedChatID == 123)
@@ -149,7 +149,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
 
         // Then
         #expect(markTicketCreatedCalled == false)
@@ -178,7 +178,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo)
+        coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
 
         // Then
         #expect(markTicketCreatedCalled == false)

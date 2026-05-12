@@ -242,7 +242,7 @@ final class SupportChatViewModel {
     private let analytics: Analytics
     private var diagnosticsContext: [String: Any]?
     private let initialContext: [String: Any]?
-    private let onContactHumanSupport: (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
+    private let onContactHumanSupport: (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: String) -> Void
     private var latestSupportArea: SupportChatSupportArea?
     private var userMessageCount = 0
     private var didTrackResolutionPromptShown = false
@@ -269,7 +269,7 @@ final class SupportChatViewModel {
          hasCreatedTicket: Bool = false,
          isChatResolved: Bool = false,
          systemStatusReport: String? = nil,
-         onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void,
+         onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: String) -> Void,
          onStartJetpackSetup: @escaping () -> Void = {}) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
@@ -698,14 +698,13 @@ final class SupportChatViewModel {
                 confidence: supportArea.confidence,
                 topic: supportArea.topic,
                 transcript: transcript,
-                systemStatusReport: systemStatusReport,
-                entryPoint: entryPoint.analyticsValue
+                systemStatusReport: systemStatusReport
             )
         } else {
             supportAreaInfo = nil
         }
 
-        onContactHumanSupport(chatID, transcript, supportAreaInfo)
+        onContactHumanSupport(chatID, transcript, supportAreaInfo, entryPoint.analyticsValue)
     }
 
     private func generateTranscript() -> String {

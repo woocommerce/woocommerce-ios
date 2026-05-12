@@ -35,7 +35,6 @@ public struct AIApiProxyChatService: AIChatService {
 
     // Compose against `Settings.wordpressApiBaseURL` so launch-arg overrides
     // (`mocked-wpcom-api`, `wpcom-api-base-url=...`) reroute the chat traffic too.
-    // Falls back to the production URL if the dynamic base is somehow malformed.
     private static func defaultEndpoint() -> URL {
         if let base = URL(string: Settings.wordpressApiBaseURL),
            let composed = URL(string: endpointPath, relativeTo: base)?.absoluteURL {

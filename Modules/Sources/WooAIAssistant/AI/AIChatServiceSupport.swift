@@ -5,7 +5,12 @@ import NetworkingCore
 
 typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
 
-enum AIChatTransport {
+public enum AIChatTransport {
+
+    /// Shared retry-backoff sleep used by both `AIApiProxyChatService` and the app-target adaptor.
+    public static let defaultRetrySleep: @Sendable (UInt64) async throws -> Void = { nanoseconds in
+        try await Task.sleep(nanoseconds: nanoseconds)
+    }
 
     static let sharedLLMSession: URLSession = {
         let config = URLSessionConfiguration.default

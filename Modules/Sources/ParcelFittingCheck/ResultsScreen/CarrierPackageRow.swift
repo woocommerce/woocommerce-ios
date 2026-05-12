@@ -37,11 +37,16 @@ struct CarrierPackageRow: View {
             .buttonStyle(.plain)
 
             if let onToggleStar {
-                Button(action: onToggleStar) {
+                VStack {
                     Image(systemName: isStarred ? "star.fill" : "star")
                         .foregroundStyle(.secondary)
+                        .padding(Constants.horizontalPadding)
+                    Spacer()
                 }
-                .buttonStyle(.plain)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    onToggleStar()
+                }
             }
         }
         .padding(.horizontal, Constants.horizontalPadding)
@@ -65,7 +70,7 @@ private extension CarrierPackageRow {
         static let outerSpacing: CGFloat = 12
         static let textSpacing: CGFloat = 2
         static let horizontalPadding: CGFloat = 16
-        static let verticalPadding: CGFloat = 14
+        static let verticalPadding: CGFloat = 12
         static let logoSize: CGFloat = 36
     }
 }

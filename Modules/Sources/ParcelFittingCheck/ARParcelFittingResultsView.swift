@@ -92,7 +92,9 @@ public struct ARParcelFittingResultsView: View {
 
     private var bestFitSection: some View {
         VStack(alignment: .leading, spacing: 0) {
-            sectionHeader(String(format: Localization.bestFitHeader, viewModel.carrierResults.count))
+            let count = viewModel.carrierResults.count
+            let headerFormat = count == 1 ? Localization.bestFitHeaderSingular : Localization.bestFitHeaderPlural
+            sectionHeader(String.localizedStringWithFormat(headerFormat, count))
 
             VStack(spacing: 0) {
                 ForEach(viewModel.carrierResults) { result in
@@ -106,12 +108,13 @@ public struct ARParcelFittingResultsView: View {
                         onToggleStar: delegate.map { delegate in
                             {
                                 let id = result.package.id
-                                if starredPackageIDs.contains(id) {
-                                    starredPackageIDs.remove(id)
-                                } else {
+                                let willBeStarred = !starredPackageIDs.contains(id)
+                                if willBeStarred {
                                     starredPackageIDs.insert(id)
+                                } else {
+                                    starredPackageIDs.remove(id)
                                 }
-                                delegate.parcelFittingDidToggleStar(packageID: id, carrierID: result.carrier.id)
+                                delegate.parcelFittingDidToggleStar(packageID: id, carrierID: result.carrier.id, isStarred: willBeStarred)
                             }
                         }
                     )
@@ -149,6 +152,7 @@ public struct ARParcelFittingResultsView: View {
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
             .font(.caption.bold())
+            .textCase(.uppercase)
             .foregroundStyle(.secondary)
             .padding(.bottom, Constants.sectionHeaderBottomPadding)
     }
@@ -226,23 +230,27 @@ private extension ARParcelFittingResultsView {
             comment: "Navigation title for the AR parcel fitting results screen")
         static let measuredHeader = NSLocalizedString(
             "parcelFitting.results.measuredHeader",
-            value: "MEASURED",
+            value: "Measured",
             comment: "Section header for the measured dimensions on the AR results screen")
         static let useSelectedPackage = NSLocalizedString(
             "parcelFitting.results.selectPackage",
             value: "Select Package",
             comment: "Button to confirm the selected package on the AR results screen")
-        static let bestFitHeader = NSLocalizedString(
-            "parcelFitting.results.bestFitHeader",
-            value: "BEST FIT · %1$d OPTIONS",
-            comment: "Section header for best-fit carrier packages. %1$d is the number of options")
+        static let bestFitHeaderSingular = NSLocalizedString(
+            "parcelFitting.results.bestFitHeader.singular",
+            value: "Best fit · %1$d option",
+            comment: "Section header for best-fit carrier packages when exactly one option is shown. %1$d is the number of options")
+        static let bestFitHeaderPlural = NSLocalizedString(
+            "parcelFitting.results.bestFitHeader.plural",
+            value: "Best fit · %1$d options",
+            comment: "Section header for best-fit carrier packages when more than one option is shown. %1$d is the number of options")
         static let noCarrierMatchHeader = NSLocalizedString(
             "parcelFitting.results.noCarrierMatchHeader",
-            value: "NO CARRIER MATCH",
+            value: "No carrier match",
             comment: "Section header when no carrier packages fit the measured dimensions")
         static let useExactSizeHeader = NSLocalizedString(
             "parcelFitting.results.useExactSizeHeader",
-            value: "USE EXACT SIZE",
+            value: "Use exact size",
             comment: "Section header for the custom dimensions option on the AR results screen")
         static let browseAllPackages = NSLocalizedString(
             "parcelFitting.results.browseAllPackages",

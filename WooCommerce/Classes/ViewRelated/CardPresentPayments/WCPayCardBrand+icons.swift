@@ -28,6 +28,10 @@ extension WCPayCardBrand {
             return iconName(suffix: "diners")
         case .unionpay:
             return iconName(suffix: "unionpay")
+        case .cartesBancaires:
+            return iconName(suffix: "cartes-bancaires")
+        case .eftposAu:
+            return iconName(suffix: "eftpos-au")
         default:
             return iconName(suffix: "unknown")
         }
@@ -37,8 +41,12 @@ extension WCPayCardBrand {
         switch self {
         case .interac:
             return 1
+        case .cartesBancaires:
+            return 1.404
         case .diners:
             return 1.3684
+        case .eftposAu:
+            return 2.235
         default:
             return 1.58
         }

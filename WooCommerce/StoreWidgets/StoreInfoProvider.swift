@@ -85,6 +85,11 @@ extension StoreInfoData {
         assertionFailure("StoreInfoData missing expected metric: \(type.rawValue)")
         return StoreInfoMetric(type: type, value: .unavailable)
     }
+
+    /// Wraps each metric in a `WidgetMetricPresenter` paired with the configured date range.
+    var presentableMetrics: [any MetricPresentable] {
+        metrics.map { WidgetMetricPresenter(metric: $0, dateRange: dateRange) }
+    }
 }
 
 /// Type that provides data entries to the widget system.

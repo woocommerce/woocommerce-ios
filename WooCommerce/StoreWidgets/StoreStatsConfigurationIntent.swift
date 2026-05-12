@@ -104,11 +104,33 @@ struct StoreStatsStoreEntity: AppEntity, Hashable {
     }
 
     private var displayName: String {
-        if Self.isDefaultStoreID(id),
-           let defaultStoreName = UserDefaults.group?[.defaultStoreName] as? String {
-            return defaultStoreName
+        let sites = WidgetSiteListStore().sites()
+
+        if Self.isDefaultStoreID(id) {
+            if let defaultSiteID: Int64 = UserDefaults.group?.object(forKey: .defaultStoreID),
+               let defaultSite = sites.first(where: { $0.siteID == defaultSiteID }) {
+                return defaultSite.name
+            }
+
+            if let defaultStoreName = UserDefaults.group?[.defaultStoreName] as? String {
+                return defaultStoreName
+            }
         }
-        return name ?? "Store"
+
+        if let siteID = Int64(id),
+           let site = sites.first(where: { $0.siteID == siteID }) {
+            return site.name
+        }
+
+        return name ?? Localization.fallbackStoreName
+    }
+
+    private enum Localization {
+        static let fallbackStoreName = NSLocalizedString(
+            "storeStatsWidget.storeEntity.fallbackName",
+            value: "Store",
+            comment: "Fallback label for a store stats widget site entity when its name is unknown."
+        )
     }
 }
 

@@ -37,7 +37,7 @@ private struct StoreTrendsRectangularView: View {
             VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                 HStack(alignment: .firstTextBaseline, spacing: Layout.horizontalSpacing) {
                     Text(metric.title)
-                        .font(.headline.weight(.semibold))
+                        .storeNameStyle()
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
                         .layoutPriority(1)
@@ -45,7 +45,7 @@ private struct StoreTrendsRectangularView: View {
                     Spacer(minLength: Layout.horizontalSpacing)
 
                     Text(compactRange)
-                        .font(.headline.weight(.semibold))
+                        .statRangeStyle()
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
                 }
@@ -54,10 +54,10 @@ private struct StoreTrendsRectangularView: View {
 
                 HStack(alignment: .firstTextBaseline, spacing: Layout.horizontalSpacing) {
                     Text(metric.formattedValue)
-                        .font(.title3.weight(.medium))
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.75)
                         .layoutPriority(1)
+                        .statTrendTextStyle()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
 
                     Spacer(minLength: Layout.horizontalSpacing)
 
@@ -180,7 +180,7 @@ private extension RectangularMetricChartView {
     enum Constants {
         static let barWidthRatio = 0.65
         static let barMinHeightRatio = 0.04
-        static let barOpacity = 0.78
+        static let barOpacity = 0.9
         static let zeroBarOpacity = 0.32
         static let minYDomainCeiling = 1.0
     }
@@ -196,11 +196,11 @@ private struct RectangularMetricChartPlaceholderView: View {
 private struct RectangularMetricChartReferenceLines: View {
     var body: some View {
         VStack(spacing: 0) {
-            line(opacity: 0.18)
+            line(opacity: 0.2)
             Spacer(minLength: 0)
-            line(opacity: 0.16)
+            line(opacity: 0.2)
             Spacer(minLength: 0)
-            line(opacity: 0.28)
+            line(opacity: 0.6)
         }
     }
 
@@ -217,14 +217,15 @@ private struct RectangularMetricTrendView: View {
     var body: some View {
         HStack(spacing: Layout.spacing) {
             Image(systemName: symbolName)
-                .font(.caption.weight(.bold))
                 .accessibilityHidden(true)
+                .statTrendIndicatorStyle()
+                .minimumScaleFactor(0.7)
 
             if trend.direction != .flat {
                 Text(trend.formattedPercentage)
-                    .font(.title3.weight(.medium))
+                    .statTrendTextStyle()
                     .lineLimit(1)
-                    .minimumScaleFactor(0.75)
+                    .minimumScaleFactor(0.7)
             }
         }
         .foregroundStyle(.primary.opacity(0.82))
@@ -270,23 +271,26 @@ struct StoreTrendsRectangularWidget_Previews: PreviewProvider {
     }
 
     static var previews: some View {
-        Group {
-            StoreTrendsRectangularView(
-                metric: sampleData.metrics[0],
-                compactRange: StoreStatsWidgetDateRange.last7Days.localizedCompactRangeLabel
-            )
-            .previewDisplayName("Revenue")
-
-            StoreTrendsRectangularView(
-                metric: sampleData.metrics[1],
-                compactRange: StoreStatsWidgetDateRange.last7Days.localizedCompactRangeLabel
-            )
-            .previewDisplayName("Orders")
-
-            StoreTrendsRectangularUnavailableView()
-                .previewDisplayName("Unavailable")
-        }
+        StoreTrendsRectangularView(
+            metric: sampleData.metrics[0],
+            compactRange: StoreStatsWidgetDateRange.last30Days.localizedCompactRangeLabel
+        )
+        .widgetBackground(backgroundView: Color.clear)
         .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
+        .previewDisplayName("Revenue")
+
+        StoreTrendsRectangularView(
+            metric: sampleData.metrics[1],
+            compactRange: StoreStatsWidgetDateRange.last7Days.localizedCompactRangeLabel
+        )
+        .widgetBackground(backgroundView: AccessoryWidgetBackground())
+        .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
+        .previewDisplayName("Orders")
+
+        StoreTrendsRectangularUnavailableView()
+            .widgetBackground(backgroundView: AccessoryWidgetBackground())
+            .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
+            .previewDisplayName("Unavailable")
     }
 }
 #endif

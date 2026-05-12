@@ -22,7 +22,7 @@ struct SupportChatView: View {
                                 .accessibilityLabel(Localization.toolbarContactSupport)
                         }
                         .onAppear {
-                            viewModel.trackManualEscalationPromptShownIfNeeded()
+                            viewModel.trackManualEscalationButtonShownIfNeeded()
                         }
                     }
 
@@ -316,7 +316,7 @@ struct SupportChatView: View {
         .padding()
         .background(Color(.listBackground))
         .onAppear {
-            viewModel.trackBotEscalationPromptShownIfNeeded()
+            viewModel.trackBotEscalationButtonShownIfNeeded()
         }
     }
 

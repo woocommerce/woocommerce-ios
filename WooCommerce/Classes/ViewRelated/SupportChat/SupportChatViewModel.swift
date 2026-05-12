@@ -245,10 +245,10 @@ final class SupportChatViewModel {
     private let onContactHumanSupport: (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: String) -> Void
     private var latestSupportArea: SupportChatSupportArea?
     private var userMessageCount = 0
-    private var didTrackResolutionPromptShown = false
-    private var didTrackManualEscalationPromptShown = false
-    private var didTrackBotEscalationPromptShown = false
-    private var didTrackErrorEscalationPromptShown = false
+    private var didTrackResolutionButtonShown = false
+    private var didTrackManualEscalationButtonShown = false
+    private var didTrackBotEscalationButtonShown = false
+    private var didTrackErrorEscalationButtonShown = false
     var onStartJetpackSetup: () -> Void
     private let diagnosticsService: SupportDiagnosticsService
 
@@ -958,11 +958,11 @@ final class SupportChatViewModel {
     }
 
     func trackResolutionButtonShownIfNeeded() {
-        guard didTrackResolutionPromptShown == false else {
+        guard didTrackResolutionButtonShown == false else {
             return
         }
 
-        didTrackResolutionPromptShown = true
+        didTrackResolutionButtonShown = true
         analytics.track(event: WooAnalyticsEvent.SupportChat.resolutionButtonShown(
             entryPoint: entryPoint.analyticsValue,
             supportArea: latestSupportArea,
@@ -970,30 +970,30 @@ final class SupportChatViewModel {
         ))
     }
 
-    func trackManualEscalationPromptShownIfNeeded() {
-        guard didTrackManualEscalationPromptShown == false else {
+    func trackManualEscalationButtonShownIfNeeded() {
+        guard didTrackManualEscalationButtonShown == false else {
             return
         }
 
-        didTrackManualEscalationPromptShown = true
+        didTrackManualEscalationButtonShown = true
         trackEscalationButtonShown(trigger: "manual_toolbar")
     }
 
-    func trackBotEscalationPromptShownIfNeeded() {
-        guard didTrackBotEscalationPromptShown == false else {
+    func trackBotEscalationButtonShownIfNeeded() {
+        guard didTrackBotEscalationButtonShown == false else {
             return
         }
 
-        didTrackBotEscalationPromptShown = true
+        didTrackBotEscalationButtonShown = true
         trackEscalationButtonShown(trigger: "bot_forwarded_to_human_support")
     }
 
     private func trackEscalationButtonShown(trigger: String) {
         if trigger == "error_dialog" {
-            guard didTrackErrorEscalationPromptShown == false else {
+            guard didTrackErrorEscalationButtonShown == false else {
                 return
             }
-            didTrackErrorEscalationPromptShown = true
+            didTrackErrorEscalationButtonShown = true
         }
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.escalationButtonShown(

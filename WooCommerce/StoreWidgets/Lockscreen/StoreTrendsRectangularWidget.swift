@@ -5,11 +5,11 @@ import WidgetKit
 /// Trends Lock Screen widget for the rectangular family.
 ///
 struct StoreTrendsRectangularWidget: View {
-    let entry: StoreInfoEntry
+    let entry: StoreTrendsEntry
 
     var body: some View {
         Group {
-            switch entry {
+            switch entry.storeInfoEntry {
             case .data(let data):
                 if let metric = data.metrics.first {
                     StoreTrendsRectangularView(
@@ -17,10 +17,16 @@ struct StoreTrendsRectangularWidget: View {
                         compactRange: data.rangeCompact
                     )
                 } else {
-                    StoreTrendsRectangularUnavailableView()
+                    StoreTrendsRectangularUnavailableView(
+                        metricTitle: entry.unavailableMetricTitle,
+                        compactRange: entry.compactRange
+                    )
                 }
             case .notConnected, .error:
-                StoreTrendsRectangularUnavailableView()
+                StoreTrendsRectangularUnavailableView(
+                    metricTitle: entry.unavailableMetricTitle,
+                    compactRange: entry.compactRange
+                )
             }
         }
         .widgetBackground(backgroundView: AccessoryWidgetBackground())
@@ -91,17 +97,20 @@ private struct StoreTrendsRectangularView: View {
 }
 
 private struct StoreTrendsRectangularUnavailableView: View {
+    let metricTitle: String
+    let compactRange: String
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             HStack(alignment: .firstTextBaseline, spacing: Layout.horizontalSpacing) {
-                Text(Localization.revenue)
+                Text(metricTitle)
                     .font(.headline.weight(.semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
 
                 Spacer(minLength: Layout.horizontalSpacing)
 
-                Text(StoreStatsWidgetDateRange.today.localizedCompactRangeLabel)
+                Text(compactRange)
                     .font(.headline.weight(.semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
@@ -251,11 +260,6 @@ private extension RectangularMetricTrendView {
 
 private extension StoreTrendsRectangularUnavailableView {
     enum Localization {
-        static let revenue = AppLocalizedString(
-            "storeWidgets.trendsRectangularWidget.totalSales",
-            value: "Total sales",
-            comment: "Default metric title for the Trends rectangular lock-screen widget."
-        )
         static let noData = AppLocalizedString(
             "storeWidgets.trendsRectangularWidget.noData",
             value: "No data",
@@ -287,7 +291,10 @@ struct StoreTrendsRectangularWidget_Previews: PreviewProvider {
         .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
         .previewDisplayName("Orders")
 
-        StoreTrendsRectangularUnavailableView()
+        StoreTrendsRectangularUnavailableView(
+            metricTitle: StoreInfoMetricType.orders.displayName,
+            compactRange: StoreStatsWidgetDateRange.last30Days.localizedCompactRangeLabel
+        )
             .widgetBackground(backgroundView: AccessoryWidgetBackground())
             .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
             .previewDisplayName("Unavailable")

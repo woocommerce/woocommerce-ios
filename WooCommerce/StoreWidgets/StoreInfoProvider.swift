@@ -104,8 +104,7 @@ final class StoreInfoProvider: TimelineProvider {
     /// Redacted entry with sample data.
     ///
     func placeholder(in context: Context) -> StoreInfoEntry {
-        let dependencies = Self.fetchDependencies()
-        return Self.placeholderEntry(for: dependencies)
+        Self.placeholderEntry()
     }
 
     func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
@@ -170,6 +169,13 @@ extension StoreInfoProvider {
     static let legacyMetricsPreset: [StoreInfoMetricType] = [
         .revenue, .visitors, .orders, .conversion
     ]
+
+    static func placeholderEntry(
+        dateRange: StoreStatsWidgetDateRange = .today,
+        metrics: [StoreInfoMetricType] = legacyMetricsPreset
+    ) -> StoreInfoEntry {
+        placeholderEntry(for: fetchDependencies(), dateRange: dateRange, metrics: metrics)
+    }
 }
 
 extension StoreInfoProvider {
@@ -335,17 +341,19 @@ private extension StoreInfoProvider {
     /// array derive from `Stats.placeholderSample` + `legacyMetricsPreset` so the two views of
     /// the same data stay in sync.
     ///
-    static func placeholderEntry(for dependencies: Dependencies?) -> StoreInfoEntry {
+    static func placeholderEntry(for dependencies: Dependencies?,
+                                 dateRange: StoreStatsWidgetDateRange,
+                                 metrics metricTypes: [StoreInfoMetricType]) -> StoreInfoEntry {
         let currencySettings = dependencies?.store.storeCurrencySettings ?? CurrencySettings()
         let sample = StoreInfoDataService.Stats.placeholderSample
-        let metrics: [StoreInfoMetric] = legacyMetricsPreset.map { type in
+        let metrics: [StoreInfoMetric] = metricTypes.map { type in
             StoreInfoMetric(type: type, value: sample.value(for: type, currencySettings: currencySettings))
         }
         let visitorsString = sample.totalVisitors.map(String.init) ?? StoreInfoFormatter.Constants.valuePlaceholderText
         let conversionString = sample.conversion.map(StoreInfoFormatter.formattedConversionString) ?? StoreInfoFormatter.Constants.valuePlaceholderText
         return .data(.init(
-            range: StoreStatsWidgetDateRange.today.localizedRangeLabel,
-            rangeCompact: StoreStatsWidgetDateRange.today.localizedCompactRangeLabel,
+            range: dateRange.localizedRangeLabel,
+            rangeCompact: dateRange.localizedCompactRangeLabel,
             name: dependencies?.store.storeName ?? Localization.myShop,
             revenue: StoreInfoFormatter.formattedAmountString(for: sample.revenue, with: currencySettings),
             revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: sample.revenue, with: currencySettings),

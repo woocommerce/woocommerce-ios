@@ -158,6 +158,32 @@ struct WidgetSnapshotTests {
         #expect(metrics == [.itemsSold])
     }
 
+    @Test func storeTrendsEntry_preserves_unavailable_metric_and_range() {
+        // When
+        let entry = StoreTrendsEntry(
+            storeInfoEntry: .error,
+            dateRange: .last30Days,
+            metrics: [.orders]
+        )
+
+        // Then
+        #expect(entry.unavailableMetricTitle == StoreInfoMetricType.orders.displayName)
+        #expect(entry.compactRange == StoreStatsWidgetDateRange.last30Days.localizedCompactRangeLabel)
+    }
+
+    @Test func storeTrendsEntry_uses_resolved_chart_backed_metric_for_unavailable_state() {
+        // When
+        let entry = StoreTrendsEntry(
+            storeInfoEntry: .error,
+            dateRange: .last7Days,
+            metrics: [.conversion, .itemsSold]
+        )
+
+        // Then
+        #expect(entry.unavailableMetricTitle == StoreInfoMetricType.itemsSold.displayName)
+        #expect(entry.compactRange == StoreStatsWidgetDateRange.last7Days.localizedCompactRangeLabel)
+    }
+
     @Test func snapshots_with_different_date_range_are_not_equal() {
         // Given
         let tileA = WidgetSnapshot.Tile(

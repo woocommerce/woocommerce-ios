@@ -1,3 +1,4 @@
+import AppIntents
 import SwiftUI
 import WidgetKit
 
@@ -15,13 +16,84 @@ struct StoreTrendsWidget: Widget {
         AppIntentConfiguration(
             kind: WooConstants.storeTrendsWidgetKind,
             intent: StoreStatsConfigurationIntent.self,
-            provider: StoreInfoProvider()
+            provider: StoreTrendsProvider()
         ) { entry in
             StoreTrendsRectangularWidget(entry: entry)
         }
         .configurationDisplayName(Localization.title)
         .description(Localization.description)
         .supportedFamilies(supportedFamilies)
+    }
+}
+
+struct StoreTrendsEntry: TimelineEntry {
+    let date: Date
+    let storeInfoEntry: StoreInfoEntry
+    let unavailableMetricTitle: String
+    let compactRange: String
+
+    init(date: Date = Date(),
+         storeInfoEntry: StoreInfoEntry,
+         dateRange: StoreStatsWidgetDateRange,
+         metrics: [StoreInfoMetricType]) {
+        let resolvedMetrics = StoreStatsConfigurationIntent.resolveMetricSelection(
+            requested: metrics,
+            family: .accessoryRectangular
+        )
+        self.date = date
+        self.storeInfoEntry = storeInfoEntry
+        self.unavailableMetricTitle = resolvedMetrics.first?.displayName ?? StoreInfoMetricType.revenue.displayName
+        self.compactRange = dateRange.localizedCompactRangeLabel
+    }
+}
+
+private struct StoreTrendsProvider: AppIntentTimelineProvider {
+    typealias Intent = StoreStatsConfigurationIntent
+
+    private let storeInfoProvider = StoreInfoProvider()
+
+    func placeholder(in context: Context) -> StoreTrendsEntry {
+        let metrics = StoreStatsConfigurationIntent.resolveMetricSelection(
+            requested: StoreStatsConfigurationIntent.defaultMetrics,
+            family: .accessoryRectangular
+        )
+        return StoreTrendsEntry(
+            storeInfoEntry: StoreInfoProvider.placeholderEntry(metrics: metrics),
+            dateRange: StoreStatsConfigurationIntent.defaultDateRange,
+            metrics: metrics
+        )
+    }
+
+    func snapshot(for configuration: StoreStatsConfigurationIntent, in context: Context) async -> StoreTrendsEntry {
+        let metrics = resolvedMetrics(for: configuration)
+        return StoreTrendsEntry(
+            storeInfoEntry: StoreInfoProvider.placeholderEntry(dateRange: configuration.dateRange, metrics: metrics),
+            dateRange: configuration.dateRange,
+            metrics: metrics
+        )
+    }
+
+    func timeline(for configuration: StoreStatsConfigurationIntent, in context: Context) async -> Timeline<StoreTrendsEntry> {
+        let metrics = resolvedMetrics(for: configuration)
+        let timeline = await storeInfoProvider.loadTimeline(dateRange: configuration.dateRange, metrics: metrics)
+        return Timeline(
+            entries: timeline.entries.map { entry in
+                StoreTrendsEntry(
+                    date: entry.date,
+                    storeInfoEntry: entry,
+                    dateRange: configuration.dateRange,
+                    metrics: metrics
+                )
+            },
+            policy: timeline.policy
+        )
+    }
+
+    private func resolvedMetrics(for configuration: StoreStatsConfigurationIntent) -> [StoreInfoMetricType] {
+        StoreStatsConfigurationIntent.resolveMetricSelection(
+            requested: configuration.metrics,
+            family: .accessoryRectangular
+        )
     }
 }
 

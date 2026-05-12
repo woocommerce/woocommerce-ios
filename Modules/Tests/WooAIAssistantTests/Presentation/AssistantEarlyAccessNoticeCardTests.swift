@@ -18,4 +18,17 @@ struct AssistantEarlyAccessNoticeCardTests {
         // Then
         #expect(fired == true)
     }
+
+    @Test
+    func test_AssistantEarlyAccessNoticeCard_when_dismiss_tapped_then_invokes_handler() {
+        // Given
+        var fired = false
+        let card = AssistantEarlyAccessNoticeCard(onFeedbackTap: {}, onDismiss: { fired = true })
+
+        // When
+        card.onDismiss?()
+
+        // Then
+        #expect(fired == true)
+    }
 }

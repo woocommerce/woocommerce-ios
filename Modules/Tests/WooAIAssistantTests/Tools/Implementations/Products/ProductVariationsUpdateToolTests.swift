@@ -29,7 +29,7 @@ struct ProductVariationsUpdateToolTests {
     }
 
     @Test
-    func test_productVariationsUpdate_when_success_then_card_family_is_productVariation() async throws {
+    func test_productVariationsUpdate_when_success_then_uiStructured_is_nil() async {
         // Given
         let body = """
         {"id": 33, "regular_price": "29.99"}
@@ -45,8 +45,7 @@ struct ProductVariationsUpdateToolTests {
             Issue.record("expected success, got \(result)")
             return
         }
-        let cards = try #require(success.uiStructured?.cards)
-        #expect(cards.allSatisfy { $0.family == .productVariation })
+        #expect(success.uiStructured == nil)
     }
 
     @Test

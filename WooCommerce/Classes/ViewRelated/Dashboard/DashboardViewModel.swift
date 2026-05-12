@@ -269,11 +269,13 @@ final class DashboardViewModel: ObservableObject {
         /// we add the Blaze card back in `BlazeCampaignCreationCoordinator`.
         /// Here we need to get the updated cards from storage and update the dashboard accordingly.
         await loadDashboardCardsFromStorage()
+        ensureAIAssistantCardInSavedCards()
         updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard && isEligibleForStoreSetup,
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
                              canShowGoogle: googleAdsDashboardCardViewModel.canShowOnDashboard,
                              canShowInbox: isEligibleForInbox,
                              canShowStock: isEligibleForStock,
+                             canShowAIAssistant: isAIAssistantEligible,
                              hasOrders: hasOrders)
 
         await reloadCardsWithBackgroundUpdateSupportIfNeeded()
@@ -418,6 +420,25 @@ private extension DashboardViewModel {
     func saveDashboardCards(cards: [DashboardCard]) {
         stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
         savedCards = cards
+    }
+
+    /// Adds the AI Assistant card to saved layout when missing and the site is eligible.
+    /// Skips once the card is already present (enabled or not), so an explicit disable is respected.
+    func ensureAIAssistantCardInSavedCards() {
+        guard isAIAssistantEligible else { return }
+        guard savedCards.isNotEmpty else { return }
+        guard !savedCards.contains(where: { $0.type == .aiAssistant }) else { return }
+
+        let aiAssistantCard = DashboardCard(type: .aiAssistant, availability: .show, enabled: true)
+        let insertionIndex: Int = {
+            if let onboardingIndex = savedCards.firstIndex(where: { $0.type == .onboarding }) {
+                return savedCards.index(after: onboardingIndex)
+            }
+            return savedCards.startIndex
+        }()
+        var updatedSaved = savedCards
+        updatedSaved.insert(aiAssistantCard, at: insertionIndex)
+        saveDashboardCards(cards: updatedSaved)
     }
 }
 
@@ -569,14 +590,12 @@ private extension DashboardViewModel {
 
         $dashboardCards.combineLatest($isInAppFeedbackCardVisible, $shouldSuggestWPComConnection)
             .combineLatest($showNewCardsNotice, $hasOrders, $isReloadingAllData)
-            .combineLatest($isAIAssistantEligible)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let (((cards, showFeedbackCard, suggestWPComConnection),
-                      showNewCardsNotice,
-                      hasOrders,
-                      isReloading),
-                     isAIAssistantEligible) = combinedResult
+                let ((cards, showFeedbackCard, suggestWPComConnection),
+                     showNewCardsNotice,
+                     hasOrders,
+                     isReloading) = combinedResult
                 let cardsToShow: [DashboardCard] = {
                     var allCards = cards.filter { $0.availability == .show && $0.enabled }
 
@@ -601,9 +620,6 @@ private extension DashboardViewModel {
                         allCards.insert(DashboardCard.connectWPCom, at: 0)
                     }
 
-                    if isAIAssistantEligible {
-                        allCards.insert(DashboardCard.aiAssistantCard, at: 0)
-                    }
                     return allCards
                 }()
                 showOnDashboardCards = cardsToShow
@@ -701,15 +717,21 @@ private extension DashboardViewModel {
             .combineLatest(googleAdsDashboardCardViewModel.$canShowOnDashboard,
                            $hasOrders,
                            $isEligibleForInbox)
+            .combineLatest($isAIAssistantEligible)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let ((canShowOnboarding, canShowBlaze, canShowStock), canShowGoogle, hasOrders, isEligibleForInbox) = combinedResult
+                let (((canShowOnboarding, canShowBlaze, canShowStock),
+                      canShowGoogle,
+                      hasOrders,
+                      isEligibleForInbox),
+                     isAIAssistantEligible) = combinedResult
                 updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                      canShowBlaze: canShowBlaze,
                                      canShowGoogle: canShowGoogle,
                                      canShowInbox: isEligibleForInbox,
                                      canShowStock: canShowStock,
+                                     canShowAIAssistant: isAIAssistantEligible,
                                      hasOrders: hasOrders)
             }
             .store(in: &subscriptions)
@@ -851,7 +873,8 @@ private extension DashboardViewModel {
                               canShowAnalytics: Bool,
                               canShowLastOrders: Bool,
                               canShowStock: Bool,
-                              canShowInbox: Bool) -> [DashboardCard] {
+                              canShowInbox: Bool,
+                              canShowAIAssistant: Bool) -> [DashboardCard] {
         var cards = [DashboardCard]()
 
         // Onboarding card.
@@ -859,6 +882,11 @@ private extension DashboardViewModel {
         cards.append(DashboardCard(type: .onboarding,
                                    availability: canShowOnboarding ? .show : .hide,
                                    enabled: canShowOnboarding))
+
+        // AI Assistant lands right after onboarding, at the top of the editable list.
+        cards.append(DashboardCard(type: .aiAssistant,
+                                   availability: canShowAIAssistant ? .show : .hide,
+                                   enabled: canShowAIAssistant))
 
         // Performance and Top Performance cards (also known as Analytics cards).
         // When not available, Analytics cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
@@ -907,6 +935,7 @@ private extension DashboardViewModel {
                               canShowGoogle: Bool,
                               canShowInbox: Bool,
                               canShowStock: Bool,
+                              canShowAIAssistant: Bool,
                               hasOrders: Bool) {
 
         let canShowAnalytics = hasOrders
@@ -919,7 +948,8 @@ private extension DashboardViewModel {
                                                 canShowAnalytics: canShowAnalytics,
                                                 canShowLastOrders: canShowLastOrders,
                                                 canShowStock: canShowStock,
-                                                canShowInbox: canShowInbox)
+                                                canShowInbox: canShowInbox,
+                                                canShowAIAssistant: canShowAIAssistant)
 
         // Next, get saved cards and preserve existing enabled state for all available cards.
         // This is needed because even if a user already disabled an available card and saved it, in `initialCards`

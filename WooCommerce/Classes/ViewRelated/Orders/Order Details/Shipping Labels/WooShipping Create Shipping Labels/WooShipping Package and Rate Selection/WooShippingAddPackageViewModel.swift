@@ -409,13 +409,6 @@ extension WooShippingAddPackageViewModel {
     }
 }
 
-extension WooShippingAddPackageViewModel: ParcelFittingDelegate {
-    func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool) {
-        let alreadyStarred = starredCarriersPackages.contains(packageID)
-        guard alreadyStarred != isStarred else { return }
-        starUnstarPackage(packageID, carrierID: carrierID)
-    }
-}
 
 extension WooShippingCustomPackage {
     func toPackageData() -> WooShippingPackageData {

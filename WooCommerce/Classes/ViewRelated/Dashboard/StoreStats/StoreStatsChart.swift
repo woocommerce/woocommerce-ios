@@ -1,4 +1,5 @@
 import Charts
+import Combine
 import SwiftUI
 
 /// Chart for store performance built with Swift Charts.
@@ -12,9 +13,15 @@ struct StoreStatsChart: View {
     @State private var selectedRevenue: Double?
     @State private var selectedIndex: Int?
 
+    /// Fires from the parent when the highlighted point should drop (revenue switch, PTR,
+    /// order type save). Lets the chart's local state stay in sync without lifting it up.
+    private let resetSignal: AnyPublisher<Void, Never>
+
     init(viewModel: StoreStatsChartViewModel,
+         resetSignal: AnyPublisher<Void, Never>,
          onIntervalSelected: @escaping (Int?) -> Void) {
         self.viewModel = viewModel
+        self.resetSignal = resetSignal
         self.onIntervalSelected = onIntervalSelected
     }
 
@@ -94,6 +101,11 @@ struct StoreStatsChart: View {
             }
         }
         .padding(Constants.chartPadding)
+        .onReceive(resetSignal) {
+            selectedIndex = nil
+            selectedDate = nil
+            selectedRevenue = nil
+        }
     }
 
     private func updateSelectedDate(at location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) {
@@ -193,7 +205,8 @@ private extension StoreStatsChartViewModel {
 
 #Preview {
     StoreStatsChart(viewModel: .init(intervals: StoreStatsChartViewModel.sampleDataForThisWeek,
-                                     timeRange: .thisWeek)) { _ in }
+                                     timeRange: .thisWeek),
+                    resetSignal: Empty<Void, Never>().eraseToAnyPublisher()) { _ in }
 }
 
 #endif

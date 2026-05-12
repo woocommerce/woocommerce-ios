@@ -90,6 +90,8 @@ final class SupportChatViewModel {
         let failed: Bool
         /// Server-assigned message ID for bot messages (used for feedback submission).
         let messageID: Int64?
+        /// Whether the bot marked the issue as resolved for this message.
+        let isResolved: Bool
         /// `true` for messages received during the current session (not rehydrated from history).
         /// Feedback buttons are only shown for new messages.
         let isNewInSession: Bool
@@ -100,6 +102,7 @@ final class SupportChatViewModel {
              timestamp: Date = Date(),
              failed: Bool = false,
              messageID: Int64? = nil,
+             isResolved: Bool = false,
              isNewInSession: Bool = true) {
             self.id = id
             self.role = role
@@ -107,6 +110,7 @@ final class SupportChatViewModel {
             self.timestamp = timestamp
             self.failed = failed
             self.messageID = messageID
+            self.isResolved = isResolved
             self.isNewInSession = isNewInSession
         }
 
@@ -117,6 +121,7 @@ final class SupportChatViewModel {
              timestamp: Date = Date(),
              failed: Bool = false,
              messageID: Int64? = nil,
+             isResolved: Bool = false,
              isNewInSession: Bool = true) {
             self.id = id
             self.role = role
@@ -124,6 +129,7 @@ final class SupportChatViewModel {
             self.timestamp = timestamp
             self.failed = failed
             self.messageID = messageID
+            self.isResolved = isResolved
             self.isNewInSession = isNewInSession
         }
     }
@@ -182,6 +188,28 @@ final class SupportChatViewModel {
             return false
         }
         return hasSentChatMessage
+    }
+
+    var shouldShowResolvedButton: Bool {
+        guard shouldPromptHumanSupport == false else {
+            return false
+        }
+
+        let botResponses = messages.filter { $0.role == .bot && $0.messageID != nil }
+
+        guard let lastBotResponse = botResponses.last else {
+            return false
+        }
+
+        if lastBotResponse.isResolved {
+            return true
+        }
+
+        if let messageID = lastBotResponse.messageID, messageRatings[messageID] == true {
+            return true
+        }
+
+        return botResponses.count >= 2
     }
 
     /// Maps message IDs to their feedback rating (true = upvoted, false = downvoted).
@@ -686,7 +714,8 @@ final class SupportChatViewModel {
                     let assistantMessage = ChatMessage(
                         role: .bot,
                         text: lastBotMessage.content,
-                        messageID: lastBotMessage.messageID
+                        messageID: lastBotMessage.messageID,
+                        isResolved: lastBotMessage.context?.isResolved ?? false
                     )
                     messages.append(assistantMessage)
                 }
@@ -736,7 +765,11 @@ final class SupportChatViewModel {
                 case .user:
                     return ChatMessage(role: .user, text: message.content, isNewInSession: false)
                 case .bot:
-                    return ChatMessage(role: .bot, text: message.content, messageID: message.messageID, isNewInSession: false)
+                    return ChatMessage(role: .bot,
+                                       text: message.content,
+                                       messageID: message.messageID,
+                                       isResolved: message.context?.isResolved ?? false,
+                                       isNewInSession: false)
                 case .unknown:
                     return nil
                 }

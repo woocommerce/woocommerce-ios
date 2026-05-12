@@ -165,20 +165,11 @@ extension StoreInfoProvider {
 }
 
 extension StoreInfoProvider {
-    /// Catalog priority order. Mirrors the parameter `default:` in `StoreStatsConfigurationIntent`
-    /// so the render-time top-up draws from the same list iOS hands out at first install — a
-    /// resize-up tile renders identically to a fresh install at the new family.
-    ///
-    private static let catalogPriorityOrder: [StoreInfoMetricType] = [
-        .revenue, .orders, .itemsSold, .averageOrderValue,
-        .netSales, .visitors, .conversion
-    ]
-
-    /// Family slot counts that the home-screen view caps at when rendering. Mirrors the `size:`
-    /// map on the intent's `metrics` parameter. Lock-screen families return `nil` — they ignore
+    /// Family metric limits that the home-screen view caps at when rendering. Mirrors the upper
+    /// bounds in the intent's `metrics` parameter. Lock-screen families return `nil` — they ignore
     /// `StoreInfoData.metrics` and read fixed fields off `StoreInfoData` directly.
     ///
-    private static func homescreenSlotCount(_ family: WidgetFamily) -> Int? {
+    private static func homescreenMetricLimit(_ family: WidgetFamily) -> Int? {
         switch family {
         case .systemSmall: return 2
         case .systemMedium: return 4
@@ -191,37 +182,21 @@ extension StoreInfoProvider {
     /// **AppIntent path only** — the legacy `StaticConfiguration` path bypasses this entirely
     /// and uses `legacyMetricsPreset`.
     ///
-    /// iOS persists the user's selection per tile and does not auto-extend the array when a
-    /// tile resizes to a larger family — `EntityQuery` has no default-fill hook to participate
-    /// in that. To keep the widget body looking complete after a resize-up, this resolver:
-    ///
-    /// 1. Slices oversized arrays (resize-down) to the family's slot count.
-    /// 2. Tops up undersized arrays from `catalogPriorityOrder` until full, deduping. The
-    ///    auto-fill order matches the parameter `default:` so resize-up content is predictable
-    ///    and identical to a fresh install at the new family.
-    ///
-    /// Trade-off: the Edit Widget UI is iOS-controlled and shows "Choose" placeholders for
-    /// slots that don't have an explicit user pick — even though the widget body has rendered
-    /// content there. Apple owns the Edit Widget UI; we can't surface our top-up there.
+    /// iOS persists the user's selection per tile and does not auto-extend the array when a tile
+    /// resizes to a larger family. The resolver therefore preserves undersized selections so the
+    /// widget body stays in sync with the Edit Widget UI, and only slices oversized arrays to the
+    /// family's upper bound.
     ///
     static func resolveMetricSelection(
         requested: [StoreInfoMetricType],
         family: WidgetFamily
     ) -> [StoreInfoMetricType] {
-        guard let target = homescreenSlotCount(family) else {
+        guard let limit = homescreenMetricLimit(family),
+              requested.count > limit else {
             return requested
         }
 
-        if requested.count > target {
-            return Array(requested.prefix(target))
-        }
-
-        var resolved = requested
-        for fallback in catalogPriorityOrder where resolved.count < target {
-            guard !resolved.contains(fallback) else { continue }
-            resolved.append(fallback)
-        }
-        return resolved
+        return Array(requested.prefix(limit))
     }
 }
 
@@ -343,9 +318,9 @@ private extension StoreInfoProvider {
         ))
     }
 
-    /// Real data entry. `metrics` is the resolved selection — already family-sliced and topped
-    /// up by `resolveMetricSelection` for the AppIntent path, or the legacy hardcoded preset for
-    /// the `StaticConfiguration` path. Ordering here is what the home-screen view renders.
+    /// Real data entry. `metrics` is the resolved selection — already capped by
+    /// `resolveMetricSelection` for the AppIntent path, or the legacy hardcoded preset for the
+    /// `StaticConfiguration` path. Ordering here is what the home-screen view renders.
     ///
     /// Each `StoreInfoMetric` carries both the current and the previous-period value so the
     /// metric-driven home-screen view can render trend badges. The legacy String fields below

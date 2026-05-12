@@ -14,7 +14,7 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
 
     static let defaultMetrics: [StoreInfoMetricType] = [
         .revenue, .orders, .itemsSold, .averageOrderValue,
-        .netSales, .visitors, .conversion
+        .netSales
     ]
 
     static let metricsSlotCounts: [WidgetFamily: Int] = [
@@ -28,27 +28,26 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
 
     /// User-selected metric set, in display order.
     ///
-    /// The `size:` map drives iOS's family-aware fixed-slot rendering — small shows 2 metrics,
-    /// medium 4, and large 7. The picker shows the full catalog; metrics whose data isn't
-    /// available for the user's auth mode (`visitors`, `conversion` on self-hosted) render
-    /// with the standard "-" placeholder in the cell.
+    /// The `size:` map drives iOS's family-aware rendering — small shows exactly 2 metrics,
+    /// medium exactly 4, and large allows 5-7. The picker hides metrics whose data isn't
+    /// available with site credentials (`visitors`, `conversion` today) for self-hosted users,
+    /// while persisted configurations with those metrics still render the standard "-"
+    /// placeholder in the cell.
     ///
-    /// The default lists the full catalog in priority order so iOS persists enough state
-    /// to cover the largest family and available choices on first install. After a resize-up,
-    /// `StoreInfoProvider.resolveMetricSelection` tops up undersized arrays from the same
-    /// priority order so the widget body renders identically to a fresh install at the new
-    /// family.
+    /// The default lists only metrics available with site credentials so first-install
+    /// self-hosted large widgets start with intentional content instead of unreachable
+    /// placeholder rows.
     ///
     @Parameter(
         title: "Metrics",
         default: [
             .revenue, .orders, .itemsSold, .averageOrderValue,
-            .netSales, .visitors, .conversion
+            .netSales
         ],
         size: [
             .systemSmall: .init(exactly: 2),
             .systemMedium: .init(exactly: 4),
-            .systemLarge: .init(exactly: 7),
+            .systemLarge: .init(min: 5, max: 7),
         ],
         query: AvailableMetricsQuery()
     )

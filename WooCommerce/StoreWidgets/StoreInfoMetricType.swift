@@ -47,6 +47,18 @@ enum StoreInfoMetricType: String, CaseIterable, Hashable {
         case .conversion: return .percentage
         }
     }
+
+    /// Whether this metric can fetch its data when the widget is authenticated with site
+    /// credentials only (`wporg` or application password).
+    ///
+    var isAvailableWithSiteCredentials: Bool {
+        switch self {
+        case .visitors, .conversion:
+            return false
+        case .revenue, .netSales, .orders, .itemsSold, .averageOrderValue:
+            return true
+        }
+    }
 }
 
 // MARK: - AppEntity

@@ -108,6 +108,52 @@ struct WidgetSnapshotTests {
         #expect(StoreStatsConfigurationIntent.metricsSlotCounts[.systemLarge] == 7)
     }
 
+    @Test func default_metrics_exclude_metrics_unavailable_with_site_credentials() {
+        #expect(StoreStatsConfigurationIntent.defaultMetrics == [
+            .revenue, .orders, .itemsSold, .averageOrderValue, .netSales
+        ])
+        #expect(StoreStatsConfigurationIntent.defaultMetrics.allSatisfy(\.isAvailableWithSiteCredentials))
+    }
+
+    @Test func systemLarge_selection_with_five_metrics_remains_under_filled() {
+        // Given
+        let requested = StoreStatsConfigurationIntent.defaultMetrics
+
+        // When
+        let resolved = StoreInfoProvider.resolveMetricSelection(requested: requested, family: .systemLarge)
+
+        // Then
+        #expect(resolved == requested)
+    }
+
+    @Test func systemLarge_selection_with_existing_seven_metrics_is_preserved() {
+        // Given
+        let requested: [StoreInfoMetricType] = [
+            .revenue, .orders, .itemsSold, .averageOrderValue,
+            .netSales, .visitors, .conversion
+        ]
+
+        // When
+        let resolved = StoreInfoProvider.resolveMetricSelection(requested: requested, family: .systemLarge)
+
+        // Then
+        #expect(resolved == requested)
+    }
+
+    @Test func systemLarge_selection_with_more_than_seven_metrics_is_capped() {
+        // Given
+        let requested: [StoreInfoMetricType] = [
+            .revenue, .orders, .itemsSold, .averageOrderValue,
+            .netSales, .visitors, .conversion, .revenue
+        ]
+
+        // When
+        let resolved = StoreInfoProvider.resolveMetricSelection(requested: requested, family: .systemLarge)
+
+        // Then
+        #expect(resolved == Array(requested.prefix(7)))
+    }
+
     @Test func snapshots_with_different_date_range_are_not_equal() {
         // Given
         let tileA = WidgetSnapshot.Tile(

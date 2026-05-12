@@ -274,7 +274,7 @@ extension StoreInfoProvider {
 
     /// Dependencies needed by the `StoreInfoProvider`
     ///
-    struct StoreInfoProviderDependencies {
+    struct Dependencies {
         let credentials: Credentials
         let store: StoreMetadata
     }
@@ -288,7 +288,7 @@ extension StoreInfoProvider {
 
     /// Fetches the required dependencies from the keychain and the shared users default.
     ///
-    static func fetchDependencies(selectedStoreID: StoreStatsStoreEntity.ID? = nil) -> StoreInfoProviderDependencies? {
+    static func fetchDependencies(selectedStoreID: StoreStatsStoreEntity.ID? = nil) -> Dependencies? {
         let keychain = Keychain(service: WooConstants.keychainServiceName)
         let credentials: Credentials? = {
             if let authToken = keychain[WooConstants.authToken] {
@@ -317,8 +317,8 @@ extension StoreInfoProvider {
         let selectedStore = selectedStoreMetadata(defaultStore: defaultStore,
                                                   selectedStoreID: selectedStoreID,
                                                   sites: WidgetSiteListStore().sites())
-        return StoreInfoProviderDependencies(credentials: credentials,
-                                             store: selectedStore)
+        return Dependencies(credentials: credentials,
+                            store: selectedStore)
     }
 
     static func selectedStoreMetadata(defaultStore: StoreMetadata,
@@ -368,7 +368,7 @@ private extension StoreInfoProvider {
     /// array derive from `Stats.placeholderSample` + `legacyMetricsPreset` so the two views of
     /// the same data stay in sync.
     ///
-    static func placeholderEntry(for dependencies: StoreInfoProviderDependencies?) -> StoreInfoEntry {
+    static func placeholderEntry(for dependencies: Dependencies?) -> StoreInfoEntry {
         let currencySettings = dependencies?.store.storeCurrencySettings ?? CurrencySettings()
         let sample = StoreInfoDataService.Stats.placeholderSample
         let metrics: [StoreInfoMetric] = legacyMetricsPreset.map { type in
@@ -399,7 +399,7 @@ private extension StoreInfoProvider {
     ///
     static func dataEntry(for statsPeriod: StoreInfoDataService.StatsPeriod,
                           dateRange: StoreStatsWidgetDateRange,
-                          with dependencies: StoreInfoProviderDependencies,
+                          with dependencies: Dependencies,
                           metrics: [StoreInfoMetricType]) -> StoreInfoEntry {
         let currencySettings = dependencies.store.storeCurrencySettings
         let stats = statsPeriod.current

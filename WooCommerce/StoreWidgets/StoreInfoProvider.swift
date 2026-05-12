@@ -157,7 +157,7 @@ final class StoreInfoProvider: TimelineProvider {
 
 // MARK: - Metric presets & resolution
 
-extension StoreInfoProvider {
+private extension StoreInfoProvider {
     /// Hardcoded preset used by the legacy `StaticConfiguration` path (`getTimeline`) and by
     /// `placeholderEntry`. Matches the original 4-cell shape — non-WPCom users see `visitors` /
     /// `conversion` as `.unavailable`. Not consumed by the AppIntent path; the configurable

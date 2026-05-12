@@ -149,7 +149,7 @@ public enum OpenAIChat {
         let toolChoice: ToolChoice?
         let model: String?
         let stream: Bool
-        let feature: String
+        let feature: String?
         let temperature: Double?
         let maxTokens: Int?
 
@@ -158,7 +158,7 @@ public enum OpenAIChat {
              toolChoice: ToolChoice? = nil,
              model: String? = nil,
              stream: Bool = false,
-             feature: String,
+             feature: String? = nil,
              temperature: Double? = nil,
              maxTokens: Int? = nil) {
             self.messages = messages
@@ -175,6 +175,18 @@ public enum OpenAIChat {
             case messages, tools, model, stream, feature, temperature
             case toolChoice = "tool_choice"
             case maxTokens = "max_tokens"
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(messages, forKey: .messages)
+            try container.encodeIfPresent(tools, forKey: .tools)
+            try container.encodeIfPresent(toolChoice, forKey: .toolChoice)
+            try container.encodeIfPresent(model, forKey: .model)
+            try container.encode(stream, forKey: .stream)
+            try container.encodeIfPresent(feature, forKey: .feature)
+            try container.encodeIfPresent(temperature, forKey: .temperature)
+            try container.encodeIfPresent(maxTokens, forKey: .maxTokens)
         }
     }
 

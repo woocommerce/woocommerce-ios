@@ -109,7 +109,9 @@ private extension POSFontStyle {
 // MARK: - Scale-aware sizing
 
 extension POSFontStyle {
-    fileprivate func baseSize(for scale: POSLayoutScale) -> CGFloat {
+    // Internal (not fileprivate) so that unit tests in PointOfSaleTests can call
+    // these helpers directly without going through the SwiftUI View modifier path.
+    func baseSize(for scale: POSLayoutScale) -> CGFloat {
         switch scale {
         case .tablet:
             return tabletBaseSize
@@ -118,10 +120,19 @@ extension POSFontStyle {
         }
     }
 
-    fileprivate func font(baseSize: CGFloat, maximumContentSizeCategory: UIContentSizeCategory?) -> Font {
+    func font(baseSize: CGFloat, maximumContentSizeCategory: UIContentSizeCategory?) -> Font {
         let scaledSize = scaledValue(baseSize, maximumContentSizeCategory: maximumContentSizeCategory)
         let flooredSize = max(scaledSize, minimumFloor)
         return Font.system(size: flooredSize, weight: fontWeight)
+    }
+
+    /// Returns the effective font size (post-scaling, post-floor) for a given layout scale and
+    /// Dynamic Type content size category.  Exposed as `internal` so PointOfSaleTests can assert
+    /// on the numeric result without having to inspect a `Font` value.
+    func effectiveFontSize(for scale: POSLayoutScale, contentSizeCategory: UIContentSizeCategory) -> CGFloat {
+        let base = baseSize(for: scale)
+        let scaledSize = scaledValue(base, maximumContentSizeCategory: contentSizeCategory)
+        return max(scaledSize, minimumFloor)
     }
 
     private var tabletBaseSize: CGFloat {

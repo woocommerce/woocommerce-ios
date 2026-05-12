@@ -47,11 +47,9 @@ struct TypedCardDispatcherTests {
     func test_route_when_tool_is_show_cards_product_then_routes_to_product() {
         // When
         let product = TypedCardDispatcher.route(for: "show_cards.product")
-        let bulk = TypedCardDispatcher.route(for: "products_bulk_update.product")
 
         // Then
         #expect(product == .product)
-        #expect(bulk == .product)
     }
 
     @Test

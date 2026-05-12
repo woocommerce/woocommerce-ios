@@ -19,10 +19,14 @@ public enum ProductsBulkUpdateTool {
         or stock resets after a restock. Per-product differences require \
         separate products_update calls. Variable products in the batch will \
         silently no-op price changes; use product_variations_update for those. \
-        Only call when the merchant has explicitly requested a bulk change \
-        with a concrete list of ids. After the bulk update succeeds, call \
-        `show_cards` with family `product` and the updated ids so the merchant \
-        sees the new state.
+        Only call when the merchant has explicitly requested a bulk change. \
+        Gather the ids from the merchant's message or, when they describe a \
+        selection ("all products from the last 5 orders", "every product in \
+        the recent orders"), from a prior tool result - resolve unique \
+        product_ids from orders_list line_items rather than asking the \
+        merchant to type them. After the bulk update succeeds, call \
+        `show_cards` with family `product` and the updated ids so the \
+        merchant sees the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),

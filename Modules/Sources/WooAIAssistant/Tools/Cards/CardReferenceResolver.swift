@@ -136,17 +136,37 @@ struct CardReferenceResolver: Sendable {
         }
     }
 
-    // WC's product entity exposes the variation list as `variations: [Long]` but never a count.
-    // Callers (model summary + UI card row) read `variations_count`; synthesize it once here so
-    // both downstream paths see the same field without re-deriving it.
+    // Synthesizes flat fields the UI card row decodes by name, so the renderer
+    // doesn't have to re-derive them from nested objects per family.
     static func enrich(_ entity: AnyCodableJSON, family: CardFamilyID) -> AnyCodableJSON {
-        guard family == .product, case .object(var dict) = entity, dict["variations_count"] == nil else {
+        switch family {
+        case .product:
+            guard case .object(var dict) = entity, dict["variations_count"] == nil else { return entity }
+            if case .array(let variations) = dict["variations"] ?? .null {
+                dict["variations_count"] = .int(Int64(variations.count))
+            }
+            return .object(dict)
+        case .order:
+            guard case .object(var dict) = entity else { return entity }
+            if let billing = RESTResponseParsing.objectField(entity, "billing") {
+                if dict["customer_name"] == nil {
+                    let first = RESTResponseParsing.stringField(billing, "first_name") ?? ""
+                    let last = RESTResponseParsing.stringField(billing, "last_name") ?? ""
+                    let combined = "\(first) \(last)".trimmingCharacters(in: .whitespaces)
+                    if !combined.isEmpty {
+                        dict["customer_name"] = .string(combined)
+                    }
+                }
+                if dict["customer_email"] == nil,
+                   let email = RESTResponseParsing.stringField(billing, "email"),
+                   !email.isEmpty {
+                    dict["customer_email"] = .string(email)
+                }
+            }
+            return .object(dict)
+        case .productVariation, .customer, .analyticsStats:
             return entity
         }
-        if case .array(let variations) = dict["variations"] ?? .null {
-            dict["variations_count"] = .int(Int64(variations.count))
-        }
-        return .object(dict)
     }
 
     private struct SeenKey: Hashable {

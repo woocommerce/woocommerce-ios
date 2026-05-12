@@ -50,23 +50,15 @@ extension View {
 }
 
 enum StoreWidgetAppearance {
-    private enum Keys {
-        static let configurableStoreStatsWidgetsEnabled = "configurableStoreStatsWidgetsEnabled"
-    }
-
     static var isModernAppearanceEnabled: Bool {
-#if DEBUG
-        return true
-#endif
-        UserDefaults(suiteName: WooConstants.sharedUserDefaultsSuiteName)?
-            .bool(forKey: Keys.configurableStoreStatsWidgetsEnabled) ?? false
+        return UserDefaults.group?.configurableStoreStatsWidgetsEnabled ?? false
     }
 
     static var brandColor: Color {
 #if os(watchOS)
         return Layout.watchBrandColor
 #else
-        return Color(UIColor.brand)
+        return Color(.brand)
 #endif
     }
 }

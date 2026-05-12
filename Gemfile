@@ -11,8 +11,8 @@ gem 'dotenv'
 gem 'fastlane', '~> 2.228'
 gem 'fastlane-plugin-firebase_app_distribution', '~> 0.10'
 gem 'fastlane-plugin-sentry', '~> 1.0'
-gem 'fastlane-plugin-wpmreleasetoolkit', git: 'https://github.com/wordpress-mobile/release-toolkit', branch: 'add/openai-ask-tool-support'
-# gem 'fastlane-plugin-wpmreleasetoolkit', '~> 14.0'
+# gem 'fastlane-plugin-wpmreleasetoolkit', git: 'git@github.com:wordpress-mobile/release-toolkit', branch: ''
+gem 'fastlane-plugin-wpmreleasetoolkit', '~> 14.5'
 # To avoid errors like:
 #
 # SSL_connect returned=1 errno=0 peeraddr=3.5.132.155:443 state=error: certificate verify failed (unable to get certificate CRL)

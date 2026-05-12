@@ -138,8 +138,6 @@ struct JetpackAIQueryClient: AIChatService {
                                        jwt: jwt)
         let (byteStream, http) = try await streamingTransport(request)
 
-        // jetpack-ai-query validates before opening the stream, so a non-2xx body is a
-        // single JSON error payload, not SSE frames.
         if !(200..<300).contains(http.statusCode) {
             var buffer = Data()
             for try await chunk in byteStream {
@@ -221,9 +219,6 @@ struct JetpackAIQueryClient: AIChatService {
             throw WrappedEnvelopeError(assistantError: envelope)
         }
 
-        // Past the [DONE]/empty/envelope filters this should decode as a chat chunk; surface a
-        // decode failure as `invalidStream` instead of swallowing so a corrupted frame can't let
-        // the turn finish silently with whatever partial content already streamed.
         let chunk: OpenAIChat.Chunk
         do {
             chunk = try JSONDecoder().decode(OpenAIChat.Chunk.self, from: data)
@@ -275,7 +270,6 @@ struct JetpackAIQueryClient: AIChatService {
         func markEmitted() { didEmitAnyEvent = true }
     }
 
-    // Wraps envelope errors so they bypass the HTTP retry guards keyed on `error.code`.
     private struct WrappedEnvelopeError: Error {
         let assistantError: AssistantError
     }

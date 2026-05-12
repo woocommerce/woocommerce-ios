@@ -11,21 +11,21 @@ public struct AIApiProxyChatService: AIChatService {
     private let streamingTransport: StreamingHTTPTransport
     private let sleep: Sleep
 
-    public init(tokenProvider: WPCOMTokenProviding) {
+    public init(tokenProvider: WPCOMTokenProviding, sleep: @escaping Sleep) {
         self.init(tokenProvider: tokenProvider,
                   endpoint: nil,
                   streamingTransport: nil,
-                  sleep: nil)
+                  sleep: sleep)
     }
 
     init(tokenProvider: WPCOMTokenProviding,
          endpoint: URL? = nil,
          streamingTransport: StreamingHTTPTransport? = nil,
-         sleep: Sleep? = nil) {
+         sleep: @escaping Sleep) {
         self.tokenProvider = tokenProvider
         self.endpoint = endpoint ?? Self.defaultEndpoint()
         self.streamingTransport = streamingTransport ?? AIChatTransport.urlSessionStreamingTransport(AIChatTransport.sharedLLMSession)
-        self.sleep = sleep ?? { nanoseconds in try await Task.sleep(nanoseconds: nanoseconds) }
+        self.sleep = sleep
     }
 
     private static let endpointPath = "wpcom/v2/ai-api-proxy/v1/chat/completions"
@@ -108,8 +108,6 @@ public struct AIApiProxyChatService: AIChatService {
                                        token: token)
         let (byteStream, http) = try await streamingTransport(request)
 
-        // ai-api-proxy validates before opening the stream, so a non-2xx body is a single JSON
-        // error envelope, not SSE frames.
         if !(200..<300).contains(http.statusCode) {
             var buffer = Data()
             for try await chunk in byteStream {
@@ -239,7 +237,6 @@ public struct AIApiProxyChatService: AIChatService {
         func markEmitted() { didEmitAnyEvent = true }
     }
 
-    // Wraps envelope errors so they bypass the HTTP retry guards keyed on `error.code`.
     private struct WrappedEnvelopeError: Error {
         let assistantError: AssistantError
     }
@@ -300,8 +297,9 @@ public struct AIApiProxyChatService: AIChatService {
     }
 }
 
-public func makeAIApiProxyChatService(tokenProvider: WPCOMTokenProviding) -> some AIChatService {
-    AIApiProxyChatService(tokenProvider: tokenProvider)
+public func makeAIApiProxyChatService(tokenProvider: WPCOMTokenProviding,
+                                       sleep: @escaping AIApiProxyChatService.Sleep) -> some AIChatService {
+    AIApiProxyChatService(tokenProvider: tokenProvider, sleep: sleep)
 }
 
 extension AIApiProxyChatService {

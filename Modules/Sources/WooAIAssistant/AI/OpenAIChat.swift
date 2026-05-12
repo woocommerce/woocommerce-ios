@@ -234,8 +234,7 @@ public enum OpenAIChat {
         }
     }
 
-    /// Multiple chunks build up a single response; tool-call arguments arrive
-    /// as fragments and must be concatenated by index across chunks.
+    // Tool-call arguments arrive as fragments; concatenate by index across chunks.
     struct Chunk: Decodable, Sendable, Equatable {
         let id: String?
         let model: String?

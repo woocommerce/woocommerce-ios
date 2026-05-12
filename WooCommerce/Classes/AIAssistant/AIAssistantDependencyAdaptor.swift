@@ -76,7 +76,8 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
                                         jwtProvider: AssistantJWTProviding) -> AIChatService {
         switch credentials {
         case .wpcom:
-            return AIApiProxyChatService(tokenProvider: AIApiProxyTokenAdaptor(credentials: credentials))
+            return AIApiProxyChatService(tokenProvider: AIApiProxyTokenAdaptor(credentials: credentials),
+                                         sleep: { nanoseconds in try await Task.sleep(nanoseconds: nanoseconds) })
         case .applicationPassword, .wporg, nil:
             return makeJetpackAIChatService(jwtProvider: jwtProvider)
         }

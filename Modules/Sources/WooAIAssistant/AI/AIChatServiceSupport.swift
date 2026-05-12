@@ -1,17 +1,12 @@
 import Foundation
 import NetworkingCore
 
-// Shared scaffolding for chat-completion clients. The full SSE-to-event loop
-// is not extracted here: each client's envelope decoding and bridge bookkeeping
-// differs enough that pulling the loop into a single seam would route every
-// behavioural variation through a closure-laden adapter. The transports,
-// UTF-8 boundary carry, tool-call assembly, and URLError mapping are shared.
+/// Shared transport, UTF-8 boundary carry, and tool-call assembly for both chat clients.
 
 typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
 
 enum AIChatTransport {
 
-    // httpMaximumConnectionsPerHost overrides URLSession.shared's 6-conn cap.
     static let sharedLLMSession: URLSession = {
         let config = URLSessionConfiguration.default
         config.httpMaximumConnectionsPerHost = 64

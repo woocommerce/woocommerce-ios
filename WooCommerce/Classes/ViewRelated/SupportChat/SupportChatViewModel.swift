@@ -186,6 +186,12 @@ final class SupportChatViewModel {
 
     func markChatResolved() {
         isChatResolved = true
+
+        guard let chatID else {
+            return
+        }
+        let action = SupportChatAction.markResolved(chatID: chatID, onCompletion: {})
+        stores.dispatch(action)
     }
 
     /// Whether the trailing toolbar entry point to human support should be visible.
@@ -253,7 +259,9 @@ final class SupportChatViewModel {
          initialContext: [String: Any]? = nil,
          diagnosticsService: SupportDiagnosticsService? = nil,
          chatID: Int64? = nil,
+         sessionID: String? = nil,
          hasCreatedTicket: Bool = false,
+         isChatResolved: Bool = false,
          systemStatusReport: String? = nil,
          onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void,
          onStartJetpackSetup: @escaping () -> Void = {}) {
@@ -264,8 +272,10 @@ final class SupportChatViewModel {
         self.initialContext = initialContext
         self.diagnosticsService = diagnosticsService ?? SupportDiagnosticsService()
         self.chatID = chatID
+        self.sessionID = sessionID
         self.isResumedChat = chatID != nil
         self.hasCreatedTicket = hasCreatedTicket
+        self.isChatResolved = isChatResolved
         self.prefetchedSystemStatusReport = systemStatusReport
         self.onContactHumanSupport = onContactHumanSupport
         self.onStartJetpackSetup = onStartJetpackSetup
@@ -596,7 +606,7 @@ final class SupportChatViewModel {
         guard messages.isEmpty else { return }
         state = .sending
 
-        let action = SupportChatAction.fetchChat(botSlug: botSlug, chatID: chatID) { [weak self] result in
+        let action = SupportChatAction.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: sessionID) { [weak self] result in
             self?.handleFetchChatResult(result)
         }
         stores.dispatch(action)
@@ -827,11 +837,13 @@ final class SupportChatViewModel {
                                                        siteID: siteID,
                                                        wpcomUserID: wpcomUserID,
                                                        botSlug: botSlug,
+                                                       sessionID: response.sessionID,
                                                        firstUserMessage: firstUserMessage,
                                                        onCompletion: {})
             stores.dispatch(action)
         } else {
             let action = SupportChatAction.touchChat(chatID: response.chatID,
+                                                    sessionID: response.sessionID,
                                                     onCompletion: {})
             stores.dispatch(action)
         }

@@ -528,7 +528,9 @@ private extension HelpAndSupportViewController {
             botSlug: summary.botSlug,
             entryPoint: .chatHistory,
             chatID: summary.chatID,
+            sessionID: summary.sessionID,
             hasCreatedTicket: summary.hasCreatedTicket,
+            isChatResolved: summary.isResolved,
             onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo in
                 self?.handleContactHumanSupport(chatID: chatID,
                                                 transcript: transcript,

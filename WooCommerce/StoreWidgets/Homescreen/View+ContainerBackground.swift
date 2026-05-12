@@ -51,7 +51,11 @@ extension View {
 
 enum StoreWidgetAppearance {
     static var isModernAppearanceEnabled: Bool {
+#if os(watchOS)
+        return false
+#else
         return UserDefaults.group?.configurableStoreStatsWidgetsEnabled ?? false
+#endif
     }
 
     static var brandColor: Color {

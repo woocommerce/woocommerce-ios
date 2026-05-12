@@ -60,8 +60,10 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     }
 
     var spyDidCallCancelPayment = false
+    var mockCancelPaymentResult: Result<Void, Error> = .success(())
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         spyDidCallCancelPayment = true
+        onCompletion(mockCancelPaymentResult)
     }
 
     var spyDidCallEmailReceipt = false

@@ -219,8 +219,7 @@ public struct AIApiProxyChatService: AIChatService {
         urlRequest.setValue(Self.featureHeaderValue, forHTTPHeaderField: "X-WPCOM-AI-Feature")
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("text/event-stream", forHTTPHeaderField: "Accept")
-        // No User-Agent: when CFBundleShortVersionString is missing the WooCommerce UA ends
-        // with `wc-ios/`, which the wpcom edge rejects as a 4xx with an empty body.
+        urlRequest.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
         // include_usage adds a trailing SSE chunk with prompt-cache + token counts so
         // the wpcom proxy can bump openai-tokens-feature/woo-mobile-ai-assistant-cached.

@@ -1029,22 +1029,23 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_disabled() async {
+    func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_not_wpcom_login_and_not_eligible() async {
         // Given
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: false)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = false
         let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
                                                             hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: eligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1054,22 +1055,23 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldSuggestWPComConnection_returns_true_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_enabled() async {
+    func test_shouldSuggestWPComConnection_returns_true_when_site_is_not_registered_and_not_wpcom_login_and_eligible() async {
         // Given
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
                                                             hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: eligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1125,24 +1127,25 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldSuggestWPComConnection_returns_true_when_site_is_JCP_and_not_registered_and_feature_flag_enabled() async {
+    func test_shouldSuggestWPComConnection_returns_true_when_site_is_JCP_and_not_registered_and_eligible() async {
         // Given
         let jcpSite = Site.fake().copy(siteID: sampleSiteID, isJetpackThePluginInstalled: false, isJetpackConnected: true)
         stores.updateDefaultStore(jcpSite)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
                                                             hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: eligibilityChecker)
 
         // When
         await viewModel.reloadAllData()

@@ -4,26 +4,17 @@ import SwiftUI
 struct StoreInfoLargeMetricsContainerView: View {
     let data: StoreInfoData
 
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    private var visibleMetrics: [any MetricPresentable] {
-        let limit = dynamicTypeSize > .xLarge ? Layout.accessibilityMetricLimit : Layout.defaultMetricLimit
-        return Array(data.metrics.prefix(limit))
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.headerSpacing) {
             StoreInfoMetricsLogoHeader(data: data)
 
-            StoreInfoMetricsGrid(metrics: visibleMetrics, leadingMetricStyle: .large)
+            StoreInfoMetricsGrid(metrics: data.metrics, leadingMetricStyle: .large)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private enum Layout {
         static let headerSpacing = 12.0
-        static let defaultMetricLimit = 7
-        static let accessibilityMetricLimit = 4
     }
 }
 
@@ -41,8 +32,8 @@ struct StoreInfoLargeMetricsContainerView_Previews: PreviewProvider {
         StoreInfoLargeMetricsContainerView(data: StoreInfoMetricsView_Previews.fullCatalogData)
             .widgetBackground(backgroundView: Color(.brand))
             .previewContext(WidgetPreviewContext(family: .systemLarge))
-            .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Large - XXL font")
+            .environment(\.dynamicTypeSize, .accessibility1)
+            .previewDisplayName("Large - Accessibility font")
 
         StoreInfoLargeMetricsContainerView(data: StoreInfoMetricsView_Previews.fullCatalogData)
             .widgetBackground(backgroundView: Color(.brand))

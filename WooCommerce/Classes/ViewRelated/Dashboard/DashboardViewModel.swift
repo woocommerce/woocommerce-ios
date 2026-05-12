@@ -109,6 +109,7 @@ final class DashboardViewModel: ObservableObject {
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
     private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
     private let clientSideBannerProvider: ClientSideBannerProvider
+    private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
 
     @Published private(set) var isAIAssistantEligible: Bool = false
 
@@ -165,7 +166,8 @@ final class DashboardViewModel: ObservableObject {
          aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol = AIAssistantEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
          tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
-         clientSideBannerProvider: ClientSideBannerProvider? = nil) {
+         clientSideBannerProvider: ClientSideBannerProvider? = nil,
+         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -216,6 +218,7 @@ final class DashboardViewModel: ObservableObject {
             featureFlagService: featureFlags,
             userInterfaceIdiom: UIDevice.current.userInterfaceIdiom
         )
+        self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
 
         configureTapToPayAwarnessMomentPresentation()
 
@@ -737,7 +740,9 @@ private extension DashboardViewModel {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _, _ in
                 guard let self else { return }
-                updateSelfDrivenPushRegistrationStatus()
+                Task {
+                    await self.updateSelfDrivenPushRegistrationStatus()
+                }
             }
             .store(in: &subscriptions)
     }
@@ -1022,15 +1027,17 @@ private extension DashboardViewModel {
         jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
     }
 
-    func updateSelfDrivenPushRegistrationStatus() {
+    func updateSelfDrivenPushRegistrationStatus() async {
         let registeredSiteIDs = pushNotesManager.siteIDsRegisteredForWooPNs
         isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom
         dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
+
+        let isEligibleForSelfDrivenPN = await pushNotificationEligibilityChecker.checkEligibility()
         shouldSuggestWPComConnection = pushNotesManager.hasStoredSiteIDsRegisteredForWooPNs &&
             registeredSiteIDs.contains(siteID) == false &&
             (stores.isAuthenticatedWithoutWPCom || stores.sessionManager.defaultSite?.isJetpackCPConnected == true) &&
             !dismissedWPComConnectionSuggestion &&
-            featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)
+            isEligibleForSelfDrivenPN
     }
 
 }

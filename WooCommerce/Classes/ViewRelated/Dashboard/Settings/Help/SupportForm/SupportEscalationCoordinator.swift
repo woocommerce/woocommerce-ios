@@ -21,6 +21,7 @@ final class SupportEscalationCoordinator {
     private let zendeskProvider: ZendeskManagerProtocol
     private let analytics: Analytics
     private let stores: StoresManager
+    private let onTicketCreated: (() -> Void)?
 
     /// The chat ID to update when a ticket is created. Set via `handleEscalation`.
     private var chatID: Int64?
@@ -33,16 +34,21 @@ final class SupportEscalationCoordinator {
     ///   - zendeskProvider: Zendesk service provider.
     ///   - analytics: Analytics tracker.
     ///   - stores: Stores manager for site info.
+    ///   - onTicketCreated: Optional callback invoked after a Zendesk ticket is successfully created
+    ///     (either via the form path or the high-confidence direct path), so the chat surface can
+    ///     update its in-session state.
     init(navigationController: UINavigationController?,
          additionalAttachmentsProvider: @escaping () -> [ZendeskAttachment] = { [] },
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analytics: Analytics = ServiceLocator.analytics,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         onTicketCreated: (() -> Void)? = nil) {
         self.navigationController = navigationController
         self.additionalAttachmentsProvider = additionalAttachmentsProvider
         self.zendeskProvider = zendeskProvider
         self.analytics = analytics
         self.stores = stores
+        self.onTicketCreated = onTicketCreated
     }
 
     /// Handles the escalation from AI chat to human support.
@@ -90,13 +96,14 @@ final class SupportEscalationCoordinator {
 
         let viewModel = SupportFormViewModel(
             sourceTag: Tags.sourceTag,
-            additionalTags: Tags.additionalTags,
+            additionalTags: additionalTags(for: supportAreaInfo),
             attachments: attachments,
             preselectedArea: supportAreaInfo?.area,
             prefilledSubject: prefilledSubject,
             prefilledDescription: prefilledDescription,
             onTicketCreated: { [weak self] in
                 self?.persistTicketCreated()
+                self?.onTicketCreated?()
             }
         )
         let viewController = SupportFormHostingController(viewModel: viewModel)
@@ -118,7 +125,7 @@ final class SupportEscalationCoordinator {
         let attachments = additionalAttachmentsProvider()
 
         let siteAddress = stores.sessionManager.defaultSite?.url ?? ""
-        let tags = areaInfo.area.datasource.tags + Tags.additionalTags + [Tags.sourceTag]
+        let tags = areaInfo.area.datasource.tags + additionalTags(for: areaInfo) + [Tags.sourceTag]
         let request = ZendeskSupportRequest(
             formID: areaInfo.area.datasource.formID,
             customFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress),
@@ -134,6 +141,7 @@ final class SupportEscalationCoordinator {
                 case .success:
                     self?.analytics.track(.supportNewRequestCreated)
                     self?.persistTicketCreated()
+                    self?.onTicketCreated?()
                     self?.showSuccessAndPop()
                 case .failure:
                     self?.analytics.track(.supportNewRequestFailed)
@@ -164,6 +172,14 @@ final class SupportEscalationCoordinator {
         guard let chatID else { return }
         let action = SupportChatAction.markTicketCreated(chatID: chatID) { }
         stores.dispatch(action)
+    }
+
+    private func additionalTags(for supportAreaInfo: SupportAreaInfo?) -> [String] {
+        var tags = Tags.additionalTags
+        if let topic = supportAreaInfo?.topic, topic.isNotEmpty {
+            tags.append(topic)
+        }
+        return tags
     }
 }
 

@@ -587,7 +587,7 @@ struct SupportChatViewModelTests {
                                     loggedIn: true,
                                     branch: nil
                                 ),
-                                supportArea: SupportChatSupportArea(area: .mobileApp, confidence: .high)
+                                supportArea: SupportChatSupportArea(area: .mobileApp, topic: "woo_mobile_issue_orders", confidence: .high)
                             )
                         )
                     ]
@@ -614,7 +614,168 @@ struct SupportChatViewModelTests {
         sut.contactHumanSupport()
 
         // Then
+        #expect(receivedSupportAreaInfo?.topic == "woo_mobile_issue_orders")
         #expect(receivedSupportAreaInfo?.systemStatusReport == prefetchedReport)
+    }
+
+    // MARK: - canEscalateToHumanSupport Tests
+
+    @Test func canEscalateToHumanSupport_is_false_initially() {
+        // Given
+        let sut = makeSUT(entryPoint: .connectivityTool)
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == false)
+    }
+
+    @Test func canEscalateToHumanSupport_is_false_when_only_bot_greeting_exists() {
+        // Given
+        let sut = makeSUT(entryPoint: .connectivityTool)
+
+        // When
+        sut.showGreeting()
+
+        // Then
+        #expect(sut.messages.contains(where: { $0.role == .bot }))
+        #expect(sut.canEscalateToHumanSupport == false)
+    }
+
+    @Test func canEscalateToHumanSupport_becomes_true_after_first_user_message_is_sent() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+
+        // When
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == true)
+    }
+
+    @Test func canEscalateToHumanSupport_becomes_true_when_sending_message_fails() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
+            }
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+
+        // When
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == true)
+    }
+
+    @Test func canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_until_proceedToChat() async {
+        // Given — helpAndSupport entry shows issue picker first; input area is hidden
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
+        }
+        let sut = makeSUT(entryPoint: .helpAndSupport, stores: stores)
+        sut.showGreeting()
+
+        // When — proceed to chat
+        sut.proceedToChat()
+
+        // Then — input area is visible, but the merchant has not typed anything yet
+        #expect(sut.shouldShowInputArea == true)
+        #expect(sut.canEscalateToHumanSupport == false)
+
+        // When — merchant actually types and sends a message
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == true)
+    }
+
+    @Test func canEscalateToHumanSupport_is_false_after_helpAndSupport_picker_selection_until_user_types() async {
+        // Reviewer scenario (PR #17102 / WOOMOB-3033): tapping an issue picker option appends a
+        // user-role message ("Loading orders" etc.). The toolbar entry must wait until the merchant
+        // actually describes the problem via the input field — picker taps don't count.
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
+        }
+        let sut = makeSUT(entryPoint: .helpAndSupport, stores: stores)
+        sut.showGreeting()
+
+        // When — pick the no-diagnostics path so we land in chat without manual `proceedToChat`
+        await sut.selectIssue(.other)
+
+        // Then — chat surface is in free-chat phase, picker tap added a user message,
+        // but the merchant has NOT typed via the input field yet
+        #expect(sut.hasProceededToChat == true)
+        #expect(sut.messages.contains(where: { $0.role == .user }))
+        #expect(sut.canEscalateToHumanSupport == false)
+
+        // When — merchant types and sends
+        sut.inputText = "Help, my orders aren't loading"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == true)
+    }
+
+    @Test func canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_when_input_area_is_hidden() {
+        // Given — helpAndSupport entry shows the issue picker; input area is hidden until proceedToChat
+        let sut = makeSUT(entryPoint: .helpAndSupport)
+
+        // When
+        sut.showGreeting()
+
+        // Then — even if there are messages, the toolbar must stay hidden during the picker phase
+        #expect(sut.shouldShowInputArea == false)
+        #expect(sut.canEscalateToHumanSupport == false)
+    }
+
+    @Test func markChatTicketCreated_flips_hasCreatedTicket_and_hides_toolbar() {
+        // Given — a live chat with at least one user message so the toolbar would otherwise be visible
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "Hello"
+        sut.sendMessage()
+        #expect(sut.canEscalateToHumanSupport == true)
+
+        // When
+        sut.markChatTicketCreated()
+
+        // Then
+        #expect(sut.hasCreatedTicket == true)
+        #expect(sut.canEscalateToHumanSupport == false)
+    }
+
+    @Test func canEscalateToHumanSupport_is_false_when_hasCreatedTicket_is_true() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
+        }
+        let sut = SupportChatViewModel(
+            entryPoint: .preLogin,
+            stores: stores,
+            hasCreatedTicket: true,
+            onContactHumanSupport: { _, _, _ in }
+        )
+
+        // When — append a user message so the only failing condition is hasCreatedTicket
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == false)
     }
 
     // MARK: - Feedback Tests
@@ -973,5 +1134,23 @@ struct SupportChatViewModelTests {
         )
         viewModel.onStartJetpackSetup = onStartJetpackSetup
         return viewModel
+    }
+
+    private func completeSendMessageSuccessfully(_ action: SupportChatAction) {
+        guard case let .sendMessage(botSlug, message, _, _, _, completion) = action else {
+            return
+        }
+
+        let response = SupportChatResponse(
+            chatID: 123,
+            sessionID: "session-1",
+            botSlug: botSlug,
+            botVersion: "1.0",
+            messages: [
+                SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                SupportChatMessage(messageID: 2, role: .bot, content: "How can I help?", context: nil)
+            ]
+        )
+        completion(.success(response))
     }
 }

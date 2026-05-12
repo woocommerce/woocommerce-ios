@@ -76,8 +76,17 @@ public enum ProductVariationsUpdateTool {
 
     private static let allowedStatuses = AllowedProductUpdateStatuses.values
     private static let allowedStockStatuses: Set<String> = ["instock", "outofstock", "onbackorder"]
+    private static let allowedArguments: Set<String> = [
+        "product_id", "id", "regular_price", "sale_price",
+        "stock_quantity", "stock_status", "sku", "status"
+    ]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -121,6 +130,6 @@ public enum ProductVariationsUpdateTool {
                                                           client: client,
                                                           toolName: name,
                                                           family: .productVariation,
-                                                          summarize: ProductSummary.make)
+                                                          summarize: ProductVariationDetailSummary.make)
     }
 }

@@ -1,7 +1,6 @@
 import Experiments
 import Foundation
 import Yosemite
-import enum NetworkingCore.Credentials
 
 protocol AIAssistantEligibilityCheckerProtocol {
     func isEligible(for site: Site?) -> Bool
@@ -10,24 +9,19 @@ protocol AIAssistantEligibilityCheckerProtocol {
 
 struct AIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {
     private let featureFlagService: FeatureFlagService
-    private let credentialsProvider: () -> Credentials?
     private let stores: StoresManager
 
     init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         credentialsProvider: @escaping () -> Credentials? = { ServiceLocator.stores.sessionManager.defaultCredentials },
          stores: StoresManager = ServiceLocator.stores) {
         self.featureFlagService = featureFlagService
-        self.credentialsProvider = credentialsProvider
         self.stores = stores
     }
 
     func isEligible(for site: Site?) -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.wooAIAssistant), let site else {
+        guard featureFlagService.isFeatureFlagEnabled(.wooAIAssistant) else {
             return false
         }
-        guard case .wpcom = credentialsProvider() else {
-            return false
-        }
+        guard let site else { return false }
         return site.isWordPressComStore || site.isAIAssistantFeatureActive
     }
 

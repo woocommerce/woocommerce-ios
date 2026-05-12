@@ -161,6 +161,29 @@ final class SupportChatViewModel {
     /// When true, the escalation button should be hidden.
     private(set) var hasCreatedTicket: Bool = false
 
+    /// `true` once the merchant has typed and sent at least one message via the input field.
+    /// Distinct from `messages.contains(where: { $0.role == .user })`, which is also flipped
+    /// by issue-picker selections — we want the human-support entry to surface only after the
+    /// merchant has actually described their problem.
+    private(set) var hasSentChatMessage: Bool = false
+
+    /// Flips `hasCreatedTicket` so the chat surface (toolbar icon, inline banner) updates in real time
+    /// after the escalation coordinator successfully creates a Zendesk ticket. Storage is updated separately
+    /// by the coordinator via `SupportChatAction.markTicketCreated`.
+    func markChatTicketCreated() {
+        hasCreatedTicket = true
+    }
+
+    /// Whether the trailing toolbar entry point to human support should be visible.
+    /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics)
+    /// AND has typed and sent at least one message, and only while no ticket has been created yet.
+    var canEscalateToHumanSupport: Bool {
+        guard shouldShowInputArea, !hasCreatedTicket else {
+            return false
+        }
+        return hasSentChatMessage
+    }
+
     /// Maps message IDs to their feedback rating (true = upvoted, false = downvoted).
     private(set) var messageRatings: [Int64: Bool] = [:]
 
@@ -571,6 +594,7 @@ final class SupportChatViewModel {
             sessionID: sessionID,
             context: context
         ) { [weak self] result in
+            self?.hasSentChatMessage = true
             self?.handleSendMessageResult(result,
                                           wasNewChat: wasNewChat,
                                           firstUserMessage: firstUserMessage)
@@ -590,6 +614,7 @@ final class SupportChatViewModel {
                 areaType: supportArea.area,
                 area: mappedArea,
                 confidence: supportArea.confidence,
+                topic: supportArea.topic,
                 transcript: transcript,
                 systemStatusReport: systemStatusReport
             )
@@ -651,10 +676,12 @@ final class SupportChatViewModel {
                                 firstUserMessage: firstUserMessage)
 
             if let lastBotMessage = response.messages.last(where: { $0.role == .bot }) {
+                /// Retrieves the last detected support area
+                latestSupportArea = lastBotMessage.context?.supportArea
+
                 /// Skips displaying last bot message when human support is required. User is suggested to contact support manually.
                 if let flags = lastBotMessage.context?.flags, flags.forwardToHumanSupport {
                     shouldPromptHumanSupport = true
-                    latestSupportArea = lastBotMessage.context?.supportArea
                 } else {
                     let assistantMessage = ChatMessage(
                         role: .bot,

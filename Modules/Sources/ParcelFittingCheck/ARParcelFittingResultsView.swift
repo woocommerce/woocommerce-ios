@@ -4,17 +4,18 @@ public struct ARParcelFittingResultsView: View {
     let viewModel: ARParcelFittingResultsViewModel
     var delegate: ParcelFittingDelegate?
     let onConfirm: (ParcelFittingResult) -> Void
-    let onBack: () -> Void
     let onBrowseAllPackages: (() -> Void)?
 
     @State private var starredPackageIDs: Set<String>
     @State private var selection: Selection?
 
+    let onBack: (() -> Void)?
+
     public init(viewModel: ARParcelFittingResultsViewModel,
          starredPackageIDs: Set<String>,
          delegate: ParcelFittingDelegate?,
          onConfirm: @escaping (ParcelFittingResult) -> Void,
-         onBack: @escaping () -> Void,
+         onBack: (() -> Void)? = nil,
          onBrowseAllPackages: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.delegate = delegate
@@ -31,71 +32,58 @@ public struct ARParcelFittingResultsView: View {
 
     public var body: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: Constants.sectionSpacing) {
-                    VStack(alignment: .leading, spacing: 0) {
-                        sectionHeader(Localization.measuredHeader)
-                        MeasuredDimensionsCard(
-                            dimensions: viewModel.measuredDimensions,
-                            unit: viewModel.unit
-                        )
-                    }
+            resultsScrollView
 
-                    if viewModel.carrierResults.isEmpty {
-                        noMatchSection
-                    } else {
-                        bestFitSection
-                    }
-
-                    exactSizeSection
-
-                    if let onBrowseAllPackages {
-                        Button {
-                            onBrowseAllPackages()
-                        } label: {
-                            Text(Localization.browseAllPackages)
-                                .font(.subheadline)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.top, Constants.topPadding)
-            }
-
-            Button {
-                confirmSelection()
-            } label: {
-                Text(Localization.useSelectedPackage)
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-            }
-            .disabled(selection == nil)
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .padding()
+            selectPackageButton
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle(Localization.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
+        .navigationBarBackButtonHidden(onBack != nil)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button { onBack() } label: {
-                    Image(systemName: "chevron.left")
+            if let onBack {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button { onBack() } label: {
+                        Image(systemName: "chevron.left")
+                    }
                 }
             }
         }
     }
 
-    // MARK: - Sections
+    // MARK: - Subviews
+
+    private var resultsScrollView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: Constants.sectionSpacing) {
+                measuredSection
+
+                if viewModel.carrierResults.isEmpty {
+                    noMatchSection
+                } else {
+                    bestFitSection
+                }
+
+                exactSizeSection
+
+                browseAllPackagesLink
+            }
+            .padding(.horizontal)
+            .padding(.top, Constants.topPadding)
+        }
+    }
+
+    private var measuredSection: some View {
+        ResultsSectionView(title: Localization.measuredHeader) {
+            MeasuredDimensionsCard(
+                dimensions: viewModel.measuredDimensions,
+                unit: viewModel.unit
+            )
+        }
+    }
 
     private var bestFitSection: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            let count = viewModel.carrierResults.count
-            let headerFormat = count == 1 ? Localization.bestFitHeaderSingular : Localization.bestFitHeaderPlural
-            sectionHeader(String.localizedStringWithFormat(headerFormat, count))
-
+        ResultsSectionView(title: bestFitHeaderText) {
             VStack(spacing: 0) {
                 ForEach(viewModel.carrierResults) { result in
                     CarrierPackageRow(
@@ -106,16 +94,7 @@ public struct ARParcelFittingResultsView: View {
                         isStarred: starredPackageIDs.contains(result.package.id),
                         onSelect: { selection = .carrier(result.package.id) },
                         onToggleStar: delegate.map { delegate in
-                            {
-                                let id = result.package.id
-                                let willBeStarred = !starredPackageIDs.contains(id)
-                                if willBeStarred {
-                                    starredPackageIDs.insert(id)
-                                } else {
-                                    starredPackageIDs.remove(id)
-                                }
-                                delegate.parcelFittingDidToggleStar(packageID: id, carrierID: result.carrier.id, isStarred: willBeStarred)
-                            }
+                            { toggleStar(packageID: result.package.id, carrierID: result.carrier.id, delegate: delegate) }
                         }
                     )
 
@@ -129,16 +108,13 @@ public struct ARParcelFittingResultsView: View {
     }
 
     private var noMatchSection: some View {
-        VStack(alignment: .leading, spacing: Constants.sectionHeaderBottomPadding) {
-            sectionHeader(Localization.noCarrierMatchHeader)
+        ResultsSectionView(title: Localization.noCarrierMatchHeader) {
             NoCarrierMatchView()
         }
     }
 
     private var exactSizeSection: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            sectionHeader(Localization.useExactSizeHeader)
-
+        ResultsSectionView(title: Localization.useExactSizeHeader) {
             CustomDimensionsRow(
                 dimensions: viewModel.measuredDimensions,
                 unit: viewModel.unit,
@@ -149,15 +125,52 @@ public struct ARParcelFittingResultsView: View {
         }
     }
 
-    private func sectionHeader(_ title: String) -> some View {
-        Text(title)
-            .font(.caption.bold())
-            .textCase(.uppercase)
-            .foregroundStyle(.secondary)
-            .padding(.bottom, Constants.sectionHeaderBottomPadding)
+    @ViewBuilder
+    private var browseAllPackagesLink: some View {
+        if let onBrowseAllPackages {
+            Button {
+                onBrowseAllPackages()
+            } label: {
+                Text(Localization.browseAllPackages)
+                    .font(.subheadline)
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+        }
+    }
+
+    private var selectPackageButton: some View {
+        Button {
+            confirmSelection()
+        } label: {
+            Text(Localization.useSelectedPackage)
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+        }
+        .disabled(selection == nil)
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+        .padding()
+    }
+
+    // MARK: - Helpers
+
+    private var bestFitHeaderText: String {
+        let count = viewModel.carrierResults.count
+        let format = count == 1 ? Localization.bestFitHeaderSingular : Localization.bestFitHeaderPlural
+        return String.localizedStringWithFormat(format, count)
     }
 
     // MARK: - Actions
+
+    private func toggleStar(packageID: String, carrierID: String, delegate: ParcelFittingDelegate) {
+        let willBeStarred = !starredPackageIDs.contains(packageID)
+        if willBeStarred {
+            starredPackageIDs.insert(packageID)
+        } else {
+            starredPackageIDs.remove(packageID)
+        }
+        delegate.parcelFittingDidToggleStar(packageID: packageID, carrierID: carrierID, isStarred: willBeStarred)
+    }
 
     private func confirmSelection() {
         switch selection {
@@ -220,7 +233,6 @@ private extension ARParcelFittingResultsView {
         static let topPadding: CGFloat = 16
         static let dividerLeadingPadding: CGFloat = 60
         static let cornerRadius: CGFloat = 12
-        static let sectionHeaderBottomPadding: CGFloat = 8
     }
 
     enum Localization {

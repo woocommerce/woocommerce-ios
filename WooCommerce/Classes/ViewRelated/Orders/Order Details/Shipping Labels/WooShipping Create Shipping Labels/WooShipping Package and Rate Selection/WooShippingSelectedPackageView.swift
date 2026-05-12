@@ -138,15 +138,21 @@ struct WooShippingSelectedPackageView: View {
             }
             updateSelectedPackage(packageData, newContext)
         case .customDimensions(let dims):
+            let isExistingCustom: Bool
+            if case .custom = package.source {
+                isExistingCustom = true
+            } else {
+                isExistingCustom = false
+            }
             let packageData = WooShippingPackageData(
-                id: "custom_box",
-                name: "",
+                id: isExistingCustom ? package.id : Constants.defaultCustomBoxID,
+                name: isExistingCustom ? package.name : "",
                 length: ParcelDimensions.formatValue(dims.length),
                 width: ParcelDimensions.formatValue(dims.width),
                 height: ParcelDimensions.formatValue(dims.height),
-                weight: "",
+                weight: isExistingCustom ? package.weight : "",
                 source: .custom,
-                packageType: "box"
+                packageType: isExistingCustom ? package.packageType : "box"
             )
             let newContext = context.map {
                 ARPackageContext(
@@ -166,6 +172,7 @@ private extension WooShippingSelectedPackageView {
         static let cornerRadius: CGFloat = 8
         static let lineColor = Color(.separator)
         static let lineWidth: CGFloat = 0.5
+        static let defaultCustomBoxID = "custom_box"
     }
 
     enum Localization {

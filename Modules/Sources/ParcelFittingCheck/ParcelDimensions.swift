@@ -25,19 +25,16 @@ public struct ParcelDimensions {
         )
     }
 
+    private static let defaultInCentimeters = ParcelDimensions(length: 10.0, width: 8.0, height: 5.0)
+
     static func defaultDimensions(for unit: UnitLength) -> ParcelDimensions {
-        switch unit {
-        case .inches:
-            return ParcelDimensions(length: 4.0, width: 3.0, height: 2.0)
-        case .meters:
-            return ParcelDimensions(length: 0.10, width: 0.08, height: 0.05)
-        case .millimeters:
-            return ParcelDimensions(length: 100.0, width: 80.0, height: 50.0)
-        case .yards:
-            return ParcelDimensions(length: 0.33, width: 0.25, height: 0.16)
-        default:
-            return ParcelDimensions(length: 10.0, width: 8.0, height: 5.0)
-        }
+        let base = defaultInCentimeters
+        let factor = Float(Measurement(value: 1.0, unit: UnitLength.centimeters).converted(to: unit).value)
+        return ParcelDimensions(
+            length: (base.length * factor * 100).rounded() / 100,
+            width: (base.width * factor * 100).rounded() / 100,
+            height: (base.height * factor * 100).rounded() / 100
+        )
     }
 
     private static let valueFormat = "%.2f"
@@ -47,17 +44,17 @@ public struct ParcelDimensions {
     }
 
     func formatted(unit: UnitLength) -> String {
-        let l = Self.formatValue(length)
-        let w = Self.formatValue(width)
-        let h = Self.formatValue(height)
-        return "\(l) × \(w) × \(h) \(unit.symbol)"
+        let formattedLength = Self.formatValue(length)
+        let formattedWidth = Self.formatValue(width)
+        let formattedHeight = Self.formatValue(height)
+        return "\(formattedLength) × \(formattedWidth) × \(formattedHeight) \(unit.symbol)"
     }
 
     func formattedWithLabels(unit: UnitLength) -> String {
-        let l = Self.formatValue(length)
-        let w = Self.formatValue(width)
-        let h = Self.formatValue(height)
-        return "\(Localization.lengthLabel): \(l)  \(Localization.widthLabel): \(w)  \(Localization.heightLabel): \(h) \(unit.symbol)"
+        let formattedLength = Self.formatValue(length)
+        let formattedWidth = Self.formatValue(width)
+        let formattedHeight = Self.formatValue(height)
+        return "\(Localization.lengthLabel): \(formattedLength)  \(Localization.widthLabel): \(formattedWidth)  \(Localization.heightLabel): \(formattedHeight) \(unit.symbol)"
     }
 
     private enum Localization {

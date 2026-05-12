@@ -184,12 +184,24 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
         analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
 
-    func parcelFittingDidToggleStar(packageID: String, carrierID: String) {
-        let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])
-        let action = WooShippingAction.createPackage(siteID: order.siteID, customPackage: nil, predefinedOption: predefined) { result in
-            if case .failure(let error) = result {
-                DDLogError("⛔️ Error starring package from AR results: \(error)")
+    func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool) {
+        let action: WooShippingAction
+        if isStarred {
+            let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])
+            action = .createPackage(siteID: order.siteID, customPackage: nil, predefinedOption: predefined) { result in
+                if case .failure(let error) = result {
+                    DDLogError("⛔️ Error starring package from AR results: \(error)")
+                }
             }
+        } else {
+            action = .deletePackage(siteID: order.siteID,
+                                    packageID: packageID,
+                                    packageType: .predefined,
+                                    completion: { result in
+                if case .failure(let error) = result {
+                    DDLogError("⛔️ Error unstarring package from AR results: \(error)")
+                }
+            })
         }
         stores.dispatch(action)
     }

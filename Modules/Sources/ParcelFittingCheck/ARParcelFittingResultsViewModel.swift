@@ -23,9 +23,11 @@ public final class ARParcelFittingResultsViewModel {
     }
 
     static func fits(measured: ParcelDimensions, into package: ParcelPresetPackage) -> Bool {
-        let m = [measured.length, measured.width, measured.height].sorted(by: >)
-        let p = [package.length, package.width, package.height].sorted(by: >)
-        return p[0] >= m[0] && p[1] >= m[1] && p[2] >= m[2]
+        let sortedMeasured = [measured.length, measured.width, measured.height].sorted(by: >)
+        let sortedPackage = [package.length, package.width, package.height].sorted(by: >)
+        return sortedPackage[0] >= sortedMeasured[0]
+            && sortedPackage[1] >= sortedMeasured[1]
+            && sortedPackage[2] >= sortedMeasured[2]
     }
 
     static func smallestFitting(in packages: [ParcelPresetPackage], for measured: ParcelDimensions) -> ParcelPresetPackage? {

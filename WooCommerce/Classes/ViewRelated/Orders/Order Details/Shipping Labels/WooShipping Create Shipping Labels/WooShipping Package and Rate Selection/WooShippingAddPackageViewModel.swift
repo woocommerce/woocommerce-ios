@@ -410,7 +410,11 @@ extension WooShippingAddPackageViewModel {
 }
 
 extension WooShippingAddPackageViewModel: ParcelFittingDelegate {
-    func parcelFittingDidToggleStar(packageID: String, carrierID: String) {
+    func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool) {
+        // The AR view has already updated its local set; only act if the VM is out of sync,
+        // so repeated taps don't double-dispatch create/delete requests.
+        let alreadyStarred = starredCarriersPackages.contains(packageID)
+        guard alreadyStarred != isStarred else { return }
         starUnstarPackage(packageID, carrierID: carrierID)
     }
 }

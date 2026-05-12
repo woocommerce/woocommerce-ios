@@ -6,7 +6,6 @@ extension RESTToolDispatch {
                                     body: Data?,
                                     client: WCRESTClient,
                                     toolName: String,
-                                    family: CardFamilyID,
                                     summarize: (AnyCodableJSON) -> AnyCodableJSON) async -> ToolResult {
         let response = await client.request(method: method,
                                             path: path,
@@ -14,7 +13,6 @@ extension RESTToolDispatch {
                                             body: body)
         return WriteResultMapper.mapEntity(response,
                                            toolName: toolName,
-                                           family: family,
                                            summarize: summarize)
     }
 

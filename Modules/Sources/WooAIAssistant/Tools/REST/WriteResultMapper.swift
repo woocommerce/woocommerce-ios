@@ -5,7 +5,6 @@ import Foundation
 enum WriteResultMapper {
     static func mapEntity(_ response: WCRESTResponse,
                           toolName: String,
-                          family: CardFamilyID,
                           summarize: (AnyCodableJSON) -> AnyCodableJSON) -> ToolResult {
         if let unknown = unknownOutcomeFailure(response: response, toolName: toolName) {
             return .failed(unknown)
@@ -20,15 +19,9 @@ enum WriteResultMapper {
         }
         let pruned = RESTPayloadPruning.prune(entity)
         let summary = summarize(pruned)
-        let uiStructured: UIStructured?
-        if let id = RESTResponseParsing.intField(pruned, "id").map(String.init) {
-            uiStructured = UIStructured(cards: [RenderedCardPayload(family: family, id: id, element: pruned)])
-        } else {
-            uiStructured = nil
-        }
         return .success(.init(toolName: toolName,
                               structured: LLMPayloadCap.capped(summary, toolName: toolName),
-                              uiStructured: uiStructured))
+                              uiStructured: nil))
     }
 
     /// WC's batch endpoint returns 200 even when individual entries fail, so the summary

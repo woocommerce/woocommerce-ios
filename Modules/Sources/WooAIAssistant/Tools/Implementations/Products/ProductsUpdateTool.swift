@@ -126,7 +126,6 @@ public enum ProductsUpdateTool {
                                                           body: payload,
                                                           client: client,
                                                           toolName: name,
-                                                          family: .product,
                                                           summarize: ProductSummary.make)
     }
 

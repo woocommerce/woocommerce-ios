@@ -94,6 +94,78 @@ class WCPayChargeMapperTests: XCTestCase {
         assertEqual(wcpayCharge, expectedWcpayCharge)
     }
 
+    /// Verifies that the fields are all parsed correctly for an eftpos card present payment.
+    ///
+    func test_WCPayCharge_map_parses_all_fields_in_result_for_eftpos_card_present() throws {
+        let response = Data("""
+        {
+            "data": {
+                "id": "ch_3TUljCR5cNsnNRn20NfCY3Ht",
+                "amount": 1800,
+                "amount_captured": 1800,
+                "amount_refunded": 0,
+                "authorization_code": "123456",
+                "captured": true,
+                "created": 1778598369,
+                "currency": "aud",
+                "paid": true,
+                "payment_intent": "pi_3TUljCR5cNsnNRn20NfCY3Ht",
+                "payment_method": "pm_1TUPSvR5cNsnNRn2dWCTE6oL",
+                "payment_method_details": {
+                    "card_present": {
+                        "brand": "eftpos_au",
+                        "funding": "debit",
+                        "last4": "0978",
+                        "network": "eftpos_au",
+                        "receipt": {
+                            "account_type": "checking",
+                            "application_preferred_name": "eftpos SAV",
+                            "dedicated_file_name": "A00000038410"
+                        }
+                    },
+                    "type": "card_present"
+                },
+                "refunded": false,
+                "status": "succeeded"
+            }
+        }
+        """.utf8)
+        let wcpayCharge = try WCPayChargeMapper(siteID: dummySiteID).map(response: response)
+
+        let expectedCreatedDate = Date.init(timeIntervalSince1970: 1778598369)
+
+        let expectedPaymentMethodDetails = WCPayPaymentMethodDetails.cardPresent(
+            details: .init(brand: .eftposAu,
+                           last4: "0978",
+                           funding: .debit,
+                           receipt: .init(accountType: .checking,
+                                          applicationPreferredName: "eftpos SAV",
+                                          dedicatedFileName: "A00000038410")))
+
+        let expectedWcpayCharge = WCPayCharge(siteID: dummySiteID,
+                                              id: "ch_3TUljCR5cNsnNRn20NfCY3Ht",
+                                              amount: 1800,
+                                              amountCaptured: 1800,
+                                              amountRefunded: 0,
+                                              authorizationCode: "123456",
+                                              captured: true,
+                                              created: expectedCreatedDate,
+                                              currency: "aud",
+                                              paid: true,
+                                              paymentIntentID: "pi_3TUljCR5cNsnNRn20NfCY3Ht",
+                                              paymentMethodID: "pm_1TUPSvR5cNsnNRn2dWCTE6oL",
+                                              paymentMethodDetails: expectedPaymentMethodDetails,
+                                              refunded: false,
+                                              status: .succeeded)
+        XCTAssertEqual(wcpayCharge, expectedWcpayCharge)
+    }
+
+    func test_WCPayCardBrand_decodes_unknown_raw_value_as_unknown() throws {
+        let brand = try JSONDecoder().decode(WCPayCardBrand.self, from: Data(#""future_stripe_brand""#.utf8))
+
+        XCTAssertEqual(brand, .unknown)
+    }
+
     /// Verifies that the fields are all parsed correctly for a card present payment
     ///
     func test_WCPayCharge_map_parses_all_fields_in_result_for_card_present_with_nulls() throws {

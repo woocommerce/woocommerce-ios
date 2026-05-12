@@ -347,6 +347,8 @@ private extension WCPayCardBrand {
             return "•••• %1$@ (Diners Club)"
         case .discover:
             return "•••• %1$@ (Discover)"
+        case .eftposAu:
+            return "•••• %1$@ (eftpos)"
         case .interac:
             return "•••• %1$@ (Interac)"
         case .jcb:
@@ -357,6 +359,8 @@ private extension WCPayCardBrand {
             return "•••• %1$@ (UnionPay)"
         case .visa:
             return "•••• %1$@ (Visa)"
+        case .cartesBancaires:
+            return "•••• %1$@ (Cartes Bancaires)"
         case .unknown:
             return "•••• %1$@"
         }
@@ -370,6 +374,8 @@ private extension WCPayCardBrand {
             return "Diners Club"
         case .discover:
             return "Discover"
+        case .eftposAu:
+            return "eftpos"
         case .interac:
             return "Interac"
         case .jcb:
@@ -380,6 +386,8 @@ private extension WCPayCardBrand {
             return "UnionPay"
         case .visa:
             return "Visa"
+        case .cartesBancaires:
+            return "Cartes Bancaires"
         case .unknown:
             return ""
         }

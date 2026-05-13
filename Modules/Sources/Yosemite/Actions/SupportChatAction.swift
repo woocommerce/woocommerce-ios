@@ -24,9 +24,11 @@ public enum SupportChatAction: Action {
     /// - Parameters:
     ///   - botSlug: Assistant slug the chat was created against.
     ///   - chatID: Identifier returned by a previous `sendMessage`.
+    ///   - sessionID: Optional session identifier required by unauthenticated chats.
     ///   - completion: Called on the main thread with every turn (user + bot) in ascending order.
     case fetchChat(botSlug: String,
                    chatID: Int64,
+                   sessionID: String?,
                    completion: (Result<SupportChatResponse, Error>) -> Void)
 
     /// Persists a new chat bookmark so the merchant can revisit it later.
@@ -39,12 +41,14 @@ public enum SupportChatAction: Action {
     ///   - siteID: Primary scoping key. Must be non-zero for post-login chats.
     ///   - wpcomUserID: Secondary identifier. Pass `0` for non-WPCom-authenticated users.
     ///   - botSlug: Assistant slug backing the chat.
+    ///   - sessionID: Session identifier returned by the assistant.
     ///   - firstUserMessage: Used to derive the chat's title. Trimmed and clamped to 50 chars.
     ///   - onCompletion: Delivered on the main thread once the row is persisted.
     case registerChat(chatID: Int64,
                       siteID: Int64,
                       wpcomUserID: Int64,
                       botSlug: String,
+                      sessionID: String?,
                       firstUserMessage: String,
                       onCompletion: () -> Void)
 
@@ -54,8 +58,10 @@ public enum SupportChatAction: Action {
     ///
     /// - Parameters:
     ///   - chatID: Identifier of the chat to bump.
+    ///   - sessionID: Optional latest session identifier to persist for resumed unauthenticated fetches.
     ///   - onCompletion: Delivered on the main thread once the bump is persisted.
     case touchChat(chatID: Int64,
+                   sessionID: String?,
                    onCompletion: () -> Void)
 
     /// Loads all locally-persisted chat bookmarks for a site, sorted newest first.
@@ -83,6 +89,16 @@ public enum SupportChatAction: Action {
     ///   - onCompletion: Delivered on the main thread once the update is persisted.
     case markTicketCreated(chatID: Int64,
                            onCompletion: () -> Void)
+
+    /// Marks an existing chat as resolved.
+    ///
+    /// Called after the merchant confirms the support chat resolved their issue.
+    ///
+    /// - Parameters:
+    ///   - chatID: Identifier of the chat to update.
+    ///   - onCompletion: Delivered on the main thread once the update is persisted.
+    case markResolved(chatID: Int64,
+                      onCompletion: () -> Void)
 
     /// Submits feedback for a specific bot message.
     ///

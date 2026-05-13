@@ -23,9 +23,11 @@ public protocol SupportChatRemoteProtocol {
     /// - Parameters:
     ///   - botSlug: Assistant slug the chat was created against.
     ///   - chatID: Identifier returned by a previous `sendMessage` call.
+    ///   - sessionID: Optional session identifier required by unauthenticated chats.
     /// - Returns: The full thread in `ts`-ascending order.
     func fetchChat(botSlug: String,
-                   chatID: Int64) async throws -> SupportChatResponse
+                   chatID: Int64,
+                   sessionID: String?) async throws -> SupportChatResponse
 
     /// Submits feedback for a specific bot message.
     ///
@@ -76,11 +78,17 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
     }
 
     public func fetchChat(botSlug: String,
-                          chatID: Int64) async throws -> SupportChatResponse {
+                          chatID: Int64,
+                          sessionID: String?) async throws -> SupportChatResponse {
         let path = "\(Path.chat)/\(botSlug)/\(chatID)"
+        var parameters: [String: Any] = [:]
+        if let sessionID {
+            parameters[ParameterKey.sessionID] = sessionID
+        }
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,
-                                    path: path)
+                                    path: path,
+                                    parameters: parameters)
         let mapper = SupportChatResponseMapper()
         return try await enqueue(request, mapper: mapper)
     }

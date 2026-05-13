@@ -362,7 +362,7 @@ struct SupportChatViewModelTests {
         await confirmation { fetchCompleted in
             stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
                 switch action {
-                case let .fetchChat(_, _, completion):
+                case let .fetchChat(_, _, _, completion):
                     let flaggedMessage = SupportChatMessage(
                         messageID: 2,
                         role: .bot,
@@ -420,7 +420,7 @@ struct SupportChatViewModelTests {
         await confirmation { fetchCompleted in
             stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
                 switch action {
-                case let .fetchChat(_, _, completion):
+                case let .fetchChat(_, _, _, completion):
                     let flaggedMessage = SupportChatMessage(
                         messageID: 2,
                         role: .bot,
@@ -476,7 +476,7 @@ struct SupportChatViewModelTests {
         await confirmation { fetchCompleted in
             stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
                 switch action {
-                case let .fetchChat(_, _, completion):
+                case let .fetchChat(_, _, _, completion):
                     let response = SupportChatResponse(
                         chatID: chatID,
                         sessionID: "session-1",
@@ -1484,7 +1484,7 @@ struct SupportChatViewModelTests {
         await confirmation { fetchCompleted in
             stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
                 switch action {
-                case let .fetchChat(_, _, completion):
+                case let .fetchChat(_, _, _, completion):
                     let response = SupportChatResponse(
                         chatID: chatID,
                         sessionID: "session-1",
@@ -1508,6 +1508,74 @@ struct SupportChatViewModelTests {
 
         // Then
         #expect(sut.messages.allSatisfy { $0.isNewInSession == false })
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func resumeIfNeeded_when_sessionID_is_available_then_passes_sessionID_to_fetchChat() async {
+        // Given
+        let chatID: Int64 = 123
+        let sessionID = "session-abc"
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = SupportChatViewModel(
+            entryPoint: .chatHistory,
+            stores: stores,
+            chatID: chatID,
+            sessionID: sessionID,
+            onContactHumanSupport: { _, _, _ in }
+        )
+        var receivedSessionID: String?
+
+        await confirmation { fetchCompleted in
+            stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+                switch action {
+                case let .fetchChat(_, _, sessionID, completion):
+                    receivedSessionID = sessionID
+                    completion(.success(SupportChatResponse(
+                        chatID: chatID,
+                        sessionID: "session-new",
+                        botSlug: "test-bot",
+                        botVersion: "1.0",
+                        messages: []
+                    )))
+                    fetchCompleted()
+                default:
+                    break
+                }
+            }
+
+            // When
+            sut.resumeIfNeeded()
+        }
+
+        // Then
+        #expect(receivedSessionID == sessionID)
+    }
+
+    @Test func markChatResolved_when_chatID_exists_then_dispatches_markResolved_action() {
+        // Given
+        let chatID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = SupportChatViewModel(
+            entryPoint: .chatHistory,
+            stores: stores,
+            chatID: chatID,
+            onContactHumanSupport: { _, _, _ in }
+        )
+        var receivedChatID: Int64?
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            guard case let .markResolved(chatID, onCompletion) = action else {
+                return
+            }
+            receivedChatID = chatID
+            onCompletion()
+        }
+
+        // When
+        sut.markChatResolved()
+
+        // Then
+        #expect(sut.isChatResolved == true)
+        #expect(receivedChatID == chatID)
     }
 
     // MARK: - Test Helpers

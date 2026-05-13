@@ -65,6 +65,12 @@ public struct AssistantChatView: View {
                           AssistantConfirmationHandler(
                             onConfirm: { id in controller.confirmProposal(id) },
                             onCancel: { id in controller.cancelProposal(id) }))
+            .environment(\.assistantCardTelemetry,
+                          AssistantCardTelemetryDispatcher(
+                            tracker: controller.telemetryTracker,
+                            contextLookup: { [conversation = controller.conversation] messageID in
+                                conversation.telemetryContext(for: messageID)
+                            }))
             .onDisappear {
                 if !controller.canSend {
                     controller.cancel()

@@ -16,12 +16,12 @@ struct StoreTrendsEntryTests {
         #expect(entry.compactRange == StoreStatsWidgetDateRange.last30Days.localizedCompactRangeLabel)
     }
 
-    @Test func uses_resolved_chart_backed_metric_for_unavailable_state() {
+    @Test func uses_first_visible_metric_for_unavailable_state() {
         // When
         let entry = StoreTrendsEntry(
             storeInfoEntry: .error,
             dateRange: .last7Days,
-            metrics: [.conversion, .itemsSold]
+            metrics: [.itemsSold]
         )
 
         // Then

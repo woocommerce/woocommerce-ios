@@ -35,14 +35,10 @@ struct StoreTrendsEntry: TimelineEntry {
     init(date: Date = Date(),
          storeInfoEntry: StoreInfoEntry,
          dateRange: StoreStatsWidgetDateRange,
-         metrics: [StoreInfoMetricType]) {
-        let resolvedMetrics = StoreStatsConfigurationIntent.resolveMetricSelection(
-            requested: metrics,
-            family: .accessoryRectangular
-        )
+         metrics visibleMetrics: [StoreInfoMetricType]) {
         self.date = date
         self.storeInfoEntry = storeInfoEntry
-        self.unavailableMetricTitle = resolvedMetrics.first?.displayName ?? StoreInfoMetricType.revenue.displayName
+        self.unavailableMetricTitle = visibleMetrics.first?.displayName ?? StoreInfoMetricType.revenue.displayName
         self.compactRange = dateRange.localizedCompactRangeLabel
     }
 }

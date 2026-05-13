@@ -811,23 +811,7 @@ private extension DashboardViewModel {
     }
 
     func observeStoreSetupEligibility() {
-        stores.site
-            .removeDuplicates()
-            .map { [weak self] in
-                guard
-                    let self,
-                    let site = $0
-                else {
-                    return false
-                }
-
-                return siteIsCIABEligibilityChecker
-                    .isFeatureSupported(
-                        .storeSetupDashboardCard,
-                        for: site
-                    )
-            }
-            .assign(to: &$isEligibleForStoreSetup)
+        isEligibleForStoreSetup = false
     }
 
     func configureOrdersResultController() {

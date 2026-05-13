@@ -1,12 +1,14 @@
 import Charts
 import SwiftUI
 
-/// Compact trailing chart for `MetricCellView`. Two render styles:
+/// Compact trailing chart for `MetricCellView`. Three render styles:
 /// - `.sparkline` — thin line with a fading area fill (iOS Stocks app style).
 /// - `.bar` — one bar per interval. Reserved for the wider main-metric row.
+/// - `.barOnPrimary` — monochrome bars on lock-screen/accessory backgrounds.
 ///
 /// Color is driven by `tone` — green for upward trends, red for downward, neutral mint /
-/// periwinkle when the trend is unknown. Edit `Palette` to retune all gradients in one place.
+/// periwinkle when the trend is unknown. `.barOnPrimary` ignores `tone` and uses primary
+/// foreground opacity. Edit `Palette` to retune all gradients in one place.
 ///
 /// Caller sizes via `.frame(...)` and gates on `count > 1`.
 ///
@@ -25,7 +27,7 @@ struct MetricChartView: View {
         GeometryReader { proxy in
             Chart(Array(data.enumerated()), id: \.offset) { index, point in
                 switch style {
-                case .bar:
+                case .bar, .barOnPrimary:
                     barMark(
                         index: index,
                         point: point,
@@ -39,7 +41,9 @@ struct MetricChartView: View {
             .chartYAxis(.hidden)
             .chartYScale(domain: 0...yDomainMax)
             .chartPlotStyle { plot in
-                plot.frame(maxWidth: .infinity, maxHeight: .infinity)
+                plot
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(chartBackground)
             }
             .accessibilityHidden(true)
         }
@@ -58,15 +62,14 @@ private extension MetricChartView {
     /// `cornerRadius` is half the rendered bar width so tops are fully rounded.
     ///
     func barMark(index: Int, point: MetricChartPoint, cornerRadius: Double) -> some ChartContent {
-        let isZero = point.value <= 0
-        return BarMark(
+        BarMark(
             // Categorical x — numeric x makes BarMark widths size off the data range and
             // overlap once the slot is narrow.
             x: .value("Index", String(index)),
             y: .value("Value", max(point.value, barMinHeight)),
-            width: .ratio(Constants.barWidthRatio)
+            width: .ratio(barWidthRatio)
         )
-        .foregroundStyle(isZero ? AnyShapeStyle(zeroBarColor) : AnyShapeStyle(lineGradient))
+        .foregroundStyle(barFillStyle(for: point))
         .cornerRadius(cornerRadius)
     }
 
@@ -109,7 +112,7 @@ private extension MetricChartView {
     /// Minimum bar height in data units, expressed as a fraction of the y-domain.
     /// Bars below this floor render as a small baseline pill instead of vanishing.
     var barMinHeight: Double {
-        yDomainMax * Constants.barMinHeightRatio
+        yDomainMax * barMinHeightRatio
     }
 
     /// Approximate rendered bar width derived from the chart's outer width. Used to
@@ -117,8 +120,44 @@ private extension MetricChartView {
     /// Axis-hidden charts have negligible plot insets, so this is close enough.
     func barCornerRadius(chartWidth: Double) -> Double {
         guard !data.isEmpty, chartWidth > 0 else { return 0 }
-        let barWidth = chartWidth / Double(data.count) * Constants.barWidthRatio
+        let barWidth = chartWidth / Double(data.count) * barWidthRatio
         return barWidth / 2
+    }
+
+    var barWidthRatio: Double {
+        switch style {
+        case .barOnPrimary:
+            return Constants.onPrimaryBarWidthRatio
+        case .bar, .sparkline:
+            return Constants.barWidthRatio
+        }
+    }
+
+    var barMinHeightRatio: Double {
+        switch style {
+        case .barOnPrimary:
+            return Constants.onPrimaryBarMinHeightRatio
+        case .bar, .sparkline:
+            return Constants.barMinHeightRatio
+        }
+    }
+
+    func barFillStyle(for point: MetricChartPoint) -> AnyShapeStyle {
+        let isZero = point.value <= 0
+        switch style {
+        case .barOnPrimary:
+            let opacity = isZero ? Constants.onPrimaryZeroBarOpacity : Constants.onPrimaryBarOpacity
+            return AnyShapeStyle(Color.primary.opacity(opacity))
+        case .bar, .sparkline:
+            return isZero ? AnyShapeStyle(zeroBarColor) : AnyShapeStyle(lineGradient)
+        }
+    }
+
+    @ViewBuilder
+    var chartBackground: some View {
+        if style == .barOnPrimary {
+            MetricChartReferenceLines()
+        }
     }
 
     /// Solid color for zero-value bars — uses the deepest shade of the tone palette
@@ -186,6 +225,7 @@ extension MetricChartView {
     enum Style {
         case sparkline
         case bar
+        case barOnPrimary
     }
 
     enum Tone {
@@ -219,9 +259,31 @@ private extension MetricChartView {
     enum Constants {
         static let barWidthRatio = 0.87
         static let barMinHeightRatio = 0.02
+        static let onPrimaryBarWidthRatio = 0.65
+        static let onPrimaryBarMinHeightRatio = 0.04
+        static let onPrimaryBarOpacity = 0.9
+        static let onPrimaryZeroBarOpacity = 0.32
         static let sparklineLineWidth = 1.5
         static let areaTopOpacity = 0.75
         static let minYDomainCeiling = 1.0
+    }
+}
+
+struct MetricChartReferenceLines: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            line(opacity: 0.2)
+            Spacer(minLength: 0)
+            line(opacity: 0.2)
+            Spacer(minLength: 0)
+            line(opacity: 0.6)
+        }
+    }
+
+    private func line(opacity: Double) -> some View {
+        Rectangle()
+            .fill(Color.primary.opacity(opacity))
+            .frame(height: 1)
     }
 }
 
@@ -259,6 +321,13 @@ private func sampleData() -> [MetricChartPoint] {
 
 #Preview("Bar down") {
     MetricChartView(data: sampleData(), style: .bar, tone: .down)
+        .frame(width: 200, height: 40)
+        .padding()
+        .background(Color(.brand))
+}
+
+#Preview("Bar on primary") {
+    MetricChartView(data: sampleData(), style: .barOnPrimary)
         .frame(width: 200, height: 40)
         .padding()
         .background(Color(.brand))

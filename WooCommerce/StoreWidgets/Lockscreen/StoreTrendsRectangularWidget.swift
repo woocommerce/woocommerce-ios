@@ -1,4 +1,3 @@
-import Charts
 import SwiftUI
 import WidgetKit
 
@@ -68,7 +67,7 @@ private struct StoreTrendsRectangularView: View {
                     Spacer(minLength: Layout.horizontalSpacing)
 
                     if let trend = metric.trend {
-                        RectangularMetricTrendView(trend: trend)
+                        MetricTrendBadgeView(trend: trend, size: .regular, style: .onPrimary)
                     }
                 }
             }
@@ -81,7 +80,7 @@ private struct StoreTrendsRectangularView: View {
     @ViewBuilder
     private var chart: some View {
         if let chartData = metric.chartData, chartData.count > 1 {
-            RectangularMetricChartView(data: chartData)
+            MetricChartView(data: chartData, style: .barOnPrimary)
                 .frame(height: Layout.chartHeight)
         } else {
             RectangularMetricChartPlaceholderView()
@@ -136,125 +135,10 @@ private struct StoreTrendsRectangularUnavailableView: View {
     }
 }
 
-private struct RectangularMetricChartView: View {
-    let data: [MetricChartPoint]
-
-    var body: some View {
-        GeometryReader { proxy in
-            Chart(Array(data.enumerated()), id: \.offset) { index, point in
-                BarMark(
-                    x: .value("Interval", String(index)),
-                    y: .value("Value", max(point.value, barMinHeight)),
-                    width: .ratio(Constants.barWidthRatio)
-                )
-                .foregroundStyle(barColor(for: point))
-                .cornerRadius(barCornerRadius(chartWidth: proxy.size.width))
-            }
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartYScale(domain: 0...yDomainMax)
-            .chartPlotStyle { plot in
-                plot
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(RectangularMetricChartReferenceLines())
-            }
-            .accessibilityHidden(true)
-        }
-    }
-}
-
-private extension RectangularMetricChartView {
-    var maxValue: Double {
-        data.map(\.value).max() ?? 0
-    }
-
-    var yDomainMax: Double {
-        max(maxValue, Constants.minYDomainCeiling)
-    }
-
-    var barMinHeight: Double {
-        yDomainMax * Constants.barMinHeightRatio
-    }
-
-    func barColor(for point: MetricChartPoint) -> Color {
-        point.value <= 0 ? Color.primary.opacity(Constants.zeroBarOpacity) : Color.primary.opacity(Constants.barOpacity)
-    }
-
-    func barCornerRadius(chartWidth: Double) -> Double {
-        guard !data.isEmpty, chartWidth > 0 else { return 0 }
-        let barWidth = chartWidth / Double(data.count) * Constants.barWidthRatio
-        return barWidth / 2
-    }
-
-    enum Constants {
-        static let barWidthRatio = 0.65
-        static let barMinHeightRatio = 0.04
-        static let barOpacity = 0.9
-        static let zeroBarOpacity = 0.32
-        static let minYDomainCeiling = 1.0
-    }
-}
-
 private struct RectangularMetricChartPlaceholderView: View {
     var body: some View {
-        RectangularMetricChartReferenceLines()
+        MetricChartReferenceLines()
             .accessibilityHidden(true)
-    }
-}
-
-private struct RectangularMetricChartReferenceLines: View {
-    var body: some View {
-        VStack(spacing: 0) {
-            line(opacity: 0.2)
-            Spacer(minLength: 0)
-            line(opacity: 0.2)
-            Spacer(minLength: 0)
-            line(opacity: 0.6)
-        }
-    }
-
-    private func line(opacity: Double) -> some View {
-        Rectangle()
-            .fill(Color.primary.opacity(opacity))
-            .frame(height: 1)
-    }
-}
-
-private struct RectangularMetricTrendView: View {
-    let trend: MetricTrendPresentation
-
-    var body: some View {
-        HStack(spacing: Layout.spacing) {
-            Image(systemName: symbolName)
-                .accessibilityHidden(true)
-                .statTrendIndicatorStyle()
-                .minimumScaleFactor(0.7)
-
-            if trend.direction != .flat {
-                Text(trend.formattedPercentage)
-                    .statTrendTextStyle()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-            }
-        }
-        .foregroundStyle(.primary.opacity(0.82))
-    }
-}
-
-private extension RectangularMetricTrendView {
-    var symbolName: String {
-        switch trend.direction {
-        case .up:
-            return "chevron.up"
-        case .down:
-            return "chevron.down"
-        case .flat:
-            return "minus"
-        }
-    }
-
-    enum Layout {
-        static let spacing = 4.0
     }
 }
 

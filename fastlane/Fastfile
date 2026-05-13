@@ -1715,46 +1715,103 @@ def fail_lane!(context:, message:)
   UI.user_error!(message)
 end
 
-# Calls OpenAI via release-toolkit's `openai_ask` action, retrying once with a
-# stricter prompt if the first response exceeds the 350-character limit.
+# Calls OpenAI via release-toolkit's `openai_ask` action using a tool-use loop:
+# the model submits drafts through the `validate_release_notes_length` tool and the
+# handler validates length externally, replying with `ok:`/`length:`/`cut_at_least:`
+# until an accepted draft is captured.
+#
+# The accepted text is captured directly from the validated tool argument
+# rather than read off the assistant's final plain-text turn. That avoids
+# subtle drift if the model adds a leading "Here it is:" or similar — the
+# returned value is exactly what passed length validation.
 def generate_ai_release_notes(version:, items_text:)
-  previous_response = nil
+  question = ReleaseNotesPRHelper.build_ai_release_notes_prompt(version: version, items_text: items_text)
+  max_length = ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH
+  handler, captured = build_release_notes_length_validator(max_length: max_length)
 
-  ReleaseNotesPRHelper::AI_RELEASE_NOTES_MAX_ATTEMPTS.times do
-    question = ReleaseNotesPRHelper.build_ai_release_notes_prompt(
-      version: version,
-      items_text: items_text,
-      previous_response: previous_response
+  openai_ask(
+    prompt: :release_notes,
+    question: question,
+    api_token: get_required_env('OPENAI_API_KEY'),
+    tools: [release_notes_length_validation_tool],
+    tool_handlers: { 'validate_release_notes_length' => handler }
+  )
+
+  captured_text = captured[:text]
+  # Distinct from the empty-string case below: nil means the model finished
+  # without ever invoking `validate_release_notes_length`. The handler rejects
+  # empty drafts and keeps the loop going, so a nil capture indicates the model
+  # bypassed the tool entirely (tool calling not supported/enabled, or the
+  # toolkit pin lacks tool-use support) — not that it produced empty text.
+  if captured_text.nil?
+    fail_lane!(
+      context: 'release-notes-pr-error',
+      message: 'openai_ask returned without invoking validate_release_notes_length — ' \
+               'check that the model supports tool calling.'
     )
-
-    generated_notes = openai_ask(
-      prompt: :release_notes,
-      question: question,
-      api_token: get_required_env('OPENAI_API_KEY')
-    ).to_s.strip
-
-    if (error = ReleaseNotesPRHelper.validate_generated_release_notes_not_empty(generated_notes))
-      fail_lane!(context: 'release-notes-pr-error', message: error)
-    end
-
-    if generated_notes.length <= ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH
-      UI.success("Generated release notes are #{generated_notes.length} characters.")
-      return generated_notes
-    end
-
-    UI.important(
-      "Generated release notes are #{generated_notes.length} characters, " \
-      "which exceeds the preferred #{ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH}-character limit."
-    )
-
-    previous_response = generated_notes
   end
 
-  fail_lane!(
-    context: 'release-notes-pr-error',
-    message: "Generated release notes still exceed #{ReleaseNotesPRHelper::PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters " \
-             "after #{ReleaseNotesPRHelper::AI_RELEASE_NOTES_MAX_ATTEMPTS} attempts. Please create the release notes manually."
-  )
+  if (error = ReleaseNotesPRHelper.validate_generated_release_notes_not_empty(captured_text))
+    fail_lane!(context: 'release-notes-pr-error', message: error)
+  end
+
+  UI.success("Generated release notes are #{captured_text.length} characters.")
+  captured_text
+end
+
+# Builds the `validate_release_notes_length` tool handler. Returns `[handler, captured]`:
+# the lambda the toolkit invokes, and a 1-key Hash whose `:text` field is set to the
+# accepted draft when the model produces one. The Hash is used as a writable capture
+# slot — closing over a plain local would force the caller to share its scope with the
+# lambda, which is fine but forces the whole flow into one method.
+#
+# Validation rules:
+# - strip leading/trailing whitespace so it never lands in `release_notes.txt` or
+#   `CHANGELOG.md` and doesn't inflate the character count
+# - reject empty drafts as a length-style failure so the model stays in the loop
+#   instead of terminating early and being caught later as "empty release notes"
+# - on success, capture the validated text and tell the model `ok: true, length:`
+# - on overshoot, tell the model how many characters to cut via `cut_at_least`
+# - on empty, tell the model via `reason` (no `cut_at_least` since the action is to add
+#   content, not trim) — both rejection shapes share the `ok: false, length:, max:` keys
+def build_release_notes_length_validator(max_length:)
+  captured = { text: nil }
+  handler = lambda do |args|
+    text = args['text'].to_s.strip
+    length = text.length
+    if length.zero?
+      { ok: false, length: 0, max: max_length, reason: 'empty draft — submit a non-empty paragraph' }
+    elsif length <= max_length
+      captured[:text] = text
+      { ok: true, length: length }
+    else
+      { ok: false, length: length, max: max_length, cut_at_least: length - max_length }
+    end
+  end
+  [handler, captured]
+end
+
+# OpenAI tool definition for `validate_release_notes_length`.
+def release_notes_length_validation_tool
+  {
+    type: 'function',
+    function: {
+      name: 'validate_release_notes_length',
+      description: 'Checks the length of the proposed release notes paragraph against the character limit. ' \
+                   'Returns `{ ok: true, length: }` if the text fits, or `{ ok: false, length:, max:, cut_at_least?, reason? }` ' \
+                   'otherwise — `cut_at_least` is included when the draft is too long; `reason` is included for other rejections ' \
+                   '(e.g. an empty draft). Call this repeatedly with revised drafts until it returns `ok: true`. ' \
+                   'When shortening, restructure or remove phrases or items — do not drop letters from words, ' \
+                   'omit articles, or invent abbreviations to hit the limit. Grammar and spelling must remain correct.',
+      parameters: {
+        type: 'object',
+        properties: {
+          text: { type: 'string', description: 'The proposed release notes paragraph.' }
+        },
+        required: ['text']
+      }
+    }
+  }
 end
 
 # Returns the `html_url` of an open PR for `head -> base` in the WCiOS

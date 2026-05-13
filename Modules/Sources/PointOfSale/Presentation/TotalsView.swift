@@ -705,15 +705,24 @@ private extension TotalsView {
     /// processing / success / error).
     var useTapToPayHeroLayout: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
-        // If a BT reader is connected (the merchant committed to BT in a
-        // previous session and it's still attached), `startPayment` auto-
-        // resumes the BT collect flow on the next idle checkout. Showing the
-        // TTP hero in the brief window before the card state transitions
-        // would flash misleadingly. `lastConnectedMethod` is the canonical
-        // "merchant committed to BT" signal — distinct from
-        // `cardReaderConnectionStatus.connected` which is also true for the
-        // silent TTP pre-connect.
-        if paymentModel.lastConnectedMethod == .bluetooth { return false }
+        // Suppress only when BT is *currently* the active path — either we're
+        // in a BT session (`currentPaymentMethod == .bluetooth`) or a BT
+        // reader is still attached from a previous session
+        // (`lastConnectedMethod == .bluetooth` + reader status `.connected`).
+        // The second clause matters because `startPayment` auto-resumes BT
+        // collect when the reader is still there, and the TTP hero shouldn't
+        // flash in that brief window before the card state transitions.
+        //
+        // Critically we do NOT suppress on `lastConnectedMethod == .bluetooth`
+        // alone — that's a memory of the last successful connect, not a
+        // live signal. Once the BT reader drops, we should fall back to
+        // the TTP hero instead of leaving the merchant on a "Reader not
+        // connected" screen with no way back to TTP.
+        if paymentModel.currentPaymentMethod == .bluetooth { return false }
+        if paymentModel.lastConnectedMethod == .bluetooth,
+           case .connected = paymentModel.cardReaderConnectionStatus {
+            return false
+        }
         guard displayPaymentState.card == .idle && displayPaymentState.cash == .idle else { return false }
         // Also gate on scanToPay / markAsPaid being idle. After a successful
         // payment via either of those the totals view renders their success

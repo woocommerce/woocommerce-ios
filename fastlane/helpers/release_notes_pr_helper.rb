@@ -7,7 +7,6 @@
 # OpenAI, GitHub, or git.
 module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
   PREFERRED_RELEASE_NOTES_MAX_LENGTH = 350
-  AI_RELEASE_NOTES_MAX_ATTEMPTS = 2
 
   module_function
 
@@ -37,27 +36,19 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
   end
 
   # Builds the user-facing question for `openai_ask`. Used in conjunction with
-  # release-toolkit's predefined `:release_notes` system prompt.
-  #
-  # On retry, `previous_response` is included so the model is told why the
-  # previous attempt failed (too long).
+  # release-toolkit's predefined `:release_notes` system prompt and the
+  # `validate_release_notes_length` tool: the model checks drafts via the tool
+  # and the handler validates length externally, replying with
+  # `{ ok: true, length: }` on success, or `{ ok: false, length:, max:, cut_at_least?, reason? }`
+  # otherwise — `cut_at_least` is set when the draft is too long, `reason` is set for
+  # other rejections (e.g. an empty draft). The model iterates until accepted.
   #
   # @param version [String]
   # @param items_text [String] pre-filtered release-note items (one bullet per
   #   line). Internal-only entries and GitHub URL/PR-number tokens are expected
   #   to be stripped by the caller via `items_for_ai_prompt`.
-  # @param previous_response [String, nil] previous AI response if retrying
   # @return [String]
-  def build_ai_release_notes_prompt(version:, items_text:, previous_response: nil)
-    retry_note =
-      if previous_response
-        <<~RETRY_NOTE
-          The previous response was too long at #{previous_response.length} characters.
-          Rewrite it to be #{PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer, including spaces.
-          Return only the rewritten release notes text.
-        RETRY_NOTE
-      end
-
+  def build_ai_release_notes_prompt(version:, items_text:)
     <<~QUESTION
       Act like a mobile app marketer preparing release notes for the App Store.
       Write effective release notes for WooCommerce iOS #{version} that help merchants understand what changed in this update.
@@ -71,9 +62,13 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
       - Do not write it point by point — write a single, unique paragraph.
       - Do not mention the release version or version number in the output.
       - The final text must be #{PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer, including spaces.
-      - Return only the final release notes text.
+      - Preserve correct grammar and spelling. Do not drop letters from words, omit articles, or invent abbreviations to fit the character limit. If a draft is too long, restructure or remove a phrase or item rather than mutilating individual words.
 
-      #{retry_note}
+      Check your draft by calling the `validate_release_notes_length` tool with the proposed text.
+      The tool will reply with `{ ok: true, length: }` if the draft fits within the character limit, or with `{ ok: false, length:, max:, cut_at_least?, reason? }` otherwise — `cut_at_least` is included when the draft is too long, `reason` is included for other rejections (e.g. an empty draft).
+      When the tool replies `ok: false`, shorten the draft by at least `cut_at_least` characters when present, or address the `reason` otherwise, then call the tool again.
+      Keep iterating until the tool replies `ok: true`. Submit every draft — including the final accepted one — through the `validate_release_notes_length` tool. Do not include the release-notes text in your plain-text reply; the calling code reads the accepted draft from the tool argument, not from your final message.
+
       Items:
       #{items_text}
     QUESTION

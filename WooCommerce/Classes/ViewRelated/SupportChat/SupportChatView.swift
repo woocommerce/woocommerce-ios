@@ -5,6 +5,7 @@ import SwiftUI
 struct SupportChatView: View {
     @Bindable var viewModel: SupportChatViewModel
     @FocusState private var isInputFocused: Bool
+    @State private var isResolutionConfirmationPresented = false
 
     var body: some View {
         chatView
@@ -12,17 +13,45 @@ struct SupportChatView: View {
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if viewModel.canEscalateToHumanSupport {
-                    ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    if viewModel.canEscalateToHumanSupport {
                         Button {
-                            viewModel.contactHumanSupport()
+                            viewModel.contactHumanSupport(source: .toolbar)
                         } label: {
                             Image(systemName: "person.fill.questionmark")
                                 .accessibilityLabel(Localization.toolbarContactSupport)
                         }
+                        .onAppear {
+                            viewModel.trackManualEscalationButtonShownIfNeeded()
+                        }
+                    }
+
+                    if viewModel.shouldShowResolvedButton {
+                        Button {
+                            isResolutionConfirmationPresented = true
+                        } label: {
+                            Image(systemName: "checkmark")
+                                .accessibilityLabel(Localization.toolbarMarkResolved)
+                        }
+                        .onAppear {
+                            viewModel.trackResolutionButtonShownIfNeeded()
+                        }
                     }
                 }
             }
+            .alert(
+                Localization.markResolvedConfirmationTitle,
+                isPresented: $isResolutionConfirmationPresented,
+                actions: {
+                    Button(Localization.markResolvedConfirmationConfirm) {
+                        viewModel.markChatResolved()
+                    }
+                    Button(Localization.dismiss, role: .cancel) {}
+                },
+                message: {
+                    Text(Localization.markResolvedConfirmationMessage)
+                }
+            )
             .alert(
                 Localization.errorTitle,
                 isPresented: .init(
@@ -32,7 +61,7 @@ struct SupportChatView: View {
                 actions: {
                     Button(Localization.contactSupport) {
                         viewModel.dismissError()
-                        viewModel.contactHumanSupport()
+                        viewModel.contactHumanSupport(source: .errorDialog)
                     }
                     Button(Localization.dismiss, role: .cancel) {
                         viewModel.dismissError()
@@ -54,6 +83,8 @@ struct SupportChatView: View {
 
             if viewModel.hasCreatedTicket {
                 ticketCreatedBanner
+            } else if viewModel.isChatResolved {
+                chatResolvedBanner
             } else if viewModel.shouldPromptHumanSupport {
                 humanSupportBanner
             } else if viewModel.shouldShowInputArea {
@@ -111,7 +142,7 @@ struct SupportChatView: View {
             VStack(alignment: .leading, spacing: 4) {
                 SupportChatMessageRow(role: message.role, text: text, failed: message.failed)
 
-                if message.role == .bot, message.isNewInSession, let messageID = message.messageID {
+                if message.shouldShowFeedbackButtons, let messageID = message.messageID {
                     SupportChatFeedbackRow(
                         messageID: messageID,
                         rating: viewModel.messageRatings[messageID],
@@ -121,6 +152,9 @@ struct SupportChatView: View {
                     )
                 }
             }
+
+        case .resolvedPrompt:
+            SupportChatMessageRow(role: message.role, text: message.content.text ?? "", failed: false)
 
         case .issuePicker(let issues):
             issuePickerBubble(issues: issues)
@@ -278,12 +312,15 @@ struct SupportChatView: View {
                 .multilineTextAlignment(.center)
 
             Button(Localization.contactSupport) {
-                viewModel.contactHumanSupport()
+                viewModel.contactHumanSupport(source: .banner)
             }
             .buttonStyle(SecondaryButtonStyle())
         }
         .padding()
         .background(Color(.listBackground))
+        .onAppear {
+            viewModel.trackBotEscalationButtonShownIfNeeded()
+        }
     }
 
     // MARK: - Ticket Created Banner
@@ -291,6 +328,19 @@ struct SupportChatView: View {
     private var ticketCreatedBanner: some View {
         VStack(spacing: SupportChatLayout.bannerSpacing) {
             Text(Localization.ticketCreatedMessage)
+                .font(.subheadline)
+                .foregroundColor(Color(.secondaryLabel))
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+        .background(Color(.listBackground))
+    }
+
+    // MARK: - Chat Resolved Banner
+
+    private var chatResolvedBanner: some View {
+        VStack(spacing: SupportChatLayout.bannerSpacing) {
+            Text(Localization.chatResolvedMessage)
                 .font(.subheadline)
                 .foregroundColor(Color(.secondaryLabel))
                 .multilineTextAlignment(.center)
@@ -386,6 +436,11 @@ private extension SupportChatView {
             value: "A support ticket has been created for this chat. We'll respond via email.",
             comment: "Message shown when a support ticket has already been created for this chat"
         )
+        static let chatResolvedMessage = NSLocalizedString(
+            "supportChatView.chatResolvedMessage",
+            value: "This chat has been marked as resolved.",
+            comment: "Message shown when the merchant has marked a support chat as resolved"
+        )
         static let contactSupport = NSLocalizedString(
             "supportChatView.contactSupport",
             value: "Contact Support",
@@ -395,6 +450,26 @@ private extension SupportChatView {
             "supportChatView.toolbar.contactSupport",
             value: "Contact Support",
             comment: "Trailing toolbar button on the AI support chat that lets the merchant escalate to human support"
+        )
+        static let toolbarMarkResolved = NSLocalizedString(
+            "supportChatView.toolbar.markResolved",
+            value: "Mark Resolved",
+            comment: "Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved"
+        )
+        static let markResolvedConfirmationTitle = NSLocalizedString(
+            "supportChatView.markResolvedConfirmation.title",
+            value: "Mark chat as resolved?",
+            comment: "Title for the confirmation alert before marking a support chat as resolved"
+        )
+        static let markResolvedConfirmationMessage = NSLocalizedString(
+            "supportChatView.markResolvedConfirmation.message",
+            value: "This will close the chat actions for this conversation.",
+            comment: "Message for the confirmation alert before marking a support chat as resolved"
+        )
+        static let markResolvedConfirmationConfirm = NSLocalizedString(
+            "supportChatView.markResolvedConfirmation.confirm",
+            value: "Mark Resolved",
+            comment: "Confirmation button for marking a support chat as resolved"
         )
         static let issuePickerHeader = NSLocalizedString(
             "supportChatView.issuePickerHeader",
@@ -434,7 +509,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .helpAndSupport,
-                onContactHumanSupport: { _, _, _ in }
+                onContactHumanSupport: { _, _, _, _ in }
             )
         )
     }
@@ -445,7 +520,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .connectivityTool,
-                onContactHumanSupport: { _, _, _ in }
+                onContactHumanSupport: { _, _, _, _ in }
             )
         )
     }

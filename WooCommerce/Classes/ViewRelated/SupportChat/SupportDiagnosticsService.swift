@@ -14,6 +14,17 @@ import protocol WooFoundation.Analytics
 import protocol WooFoundation.ConnectivityObserver
 import UserNotifications
 
+@MainActor
+protocol SupportDiagnosticsServicing {
+    var formattedSystemStatusReport: String? { get }
+
+    func runTests(_ tests: [SupportDiagnosticsService.Test]) async -> [SupportDiagnosticsService.Result]
+    func enableAnalytics() async throws
+    func registerDevice() async throws
+    func enableOrderNotifications(settings: NotificationSettings) async throws
+    func openNotificationSettings() -> URL?
+}
+
 /// Service for running diagnostics and executing fix actions in Support Chat.
 /// This service is standalone and does not share code with ConnectivityToolViewModel.
 ///
@@ -24,9 +35,9 @@ final class SupportDiagnosticsService {
 
     /// Diagnostic tests that can be run.
     ///
-    enum Test: CaseIterable {
+    enum Test: String, CaseIterable {
         case internetConnection
-        case wpComServers
+        case wpComServers = "wpcomServers"
         case site
         case siteOrders
         case loadingProducts
@@ -531,6 +542,8 @@ final class SupportDiagnosticsService {
         case requestFailed(Error)
     }
 }
+
+extension SupportDiagnosticsService: SupportDiagnosticsServicing {}
 
 // MARK: - Generating Context
 

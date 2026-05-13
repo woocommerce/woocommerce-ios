@@ -39,6 +39,7 @@ struct SupportChatStoreTests {
         // Given
         let store = makeStore()
         let chatID: Int64 = 4242
+        let sessionID = "session-abc"
 
         // When
         await withCheckedContinuation { continuation in
@@ -46,6 +47,7 @@ struct SupportChatStoreTests {
                                                           siteID: sampleSiteID,
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
+                                                          sessionID: sessionID,
                                                           firstUserMessage: "How do I configure shipping?",
                                                           onCompletion: { continuation.resume() }))
         }
@@ -57,6 +59,8 @@ struct SupportChatStoreTests {
         #expect(stored.siteID == sampleSiteID)
         #expect(stored.wpcomUserID == sampleWPComUserID)
         #expect(stored.botSlug == sampleBotSlug)
+        #expect(stored.sessionID == sessionID)
+        #expect(stored.isResolved == false)
         #expect(stored.title == "How do I configure shipping?")
         #expect(stored.createdAt != nil)
         #expect(stored.updatedAt != nil)
@@ -71,6 +75,7 @@ struct SupportChatStoreTests {
                                                           siteID: sampleSiteID,
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
+                                                          sessionID: nil,
                                                           firstUserMessage: "first",
                                                           onCompletion: { continuation.resume() }))
         }
@@ -82,6 +87,7 @@ struct SupportChatStoreTests {
                                                           siteID: sampleSiteID,
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
+                                                          sessionID: nil,
                                                           firstUserMessage: "second",
                                                           onCompletion: { continuation.resume() }))
         }
@@ -103,6 +109,7 @@ struct SupportChatStoreTests {
                                                           siteID: sampleSiteID,
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
+                                                          sessionID: nil,
                                                           firstUserMessage: longMessage,
                                                           onCompletion: { continuation.resume() }))
         }
@@ -125,6 +132,7 @@ struct SupportChatStoreTests {
                                                           siteID: sampleSiteID,
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
+                                                          sessionID: nil,
                                                           firstUserMessage: "hi",
                                                           onCompletion: { continuation.resume() }))
         }
@@ -135,7 +143,7 @@ struct SupportChatStoreTests {
 
         // When
         await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.touchChat(chatID: chatID, onCompletion: { continuation.resume() }))
+            store.onAction(SupportChatAction.touchChat(chatID: chatID, sessionID: nil, onCompletion: { continuation.resume() }))
         }
 
         // Then
@@ -149,11 +157,35 @@ struct SupportChatStoreTests {
 
         // When — touch a chatID that was never registered.
         await withCheckedContinuation { continuation in
-            store.onAction(SupportChatAction.touchChat(chatID: 9999, onCompletion: { continuation.resume() }))
+            store.onAction(SupportChatAction.touchChat(chatID: 9999, sessionID: nil, onCompletion: { continuation.resume() }))
         }
 
         // Then — idempotent: no row created.
         #expect(storedChatCount == 0)
+    }
+
+    @Test func touchChat_when_sessionID_provided_then_updates_sessionID() async throws {
+        // Given
+        let store = makeStore()
+        let chatID: Int64 = 4242
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.registerChat(chatID: chatID,
+                                                          siteID: sampleSiteID,
+                                                          wpcomUserID: sampleWPComUserID,
+                                                          botSlug: sampleBotSlug,
+                                                          sessionID: nil,
+                                                          firstUserMessage: "hi",
+                                                          onCompletion: { continuation.resume() }))
+        }
+
+        // When
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.touchChat(chatID: chatID, sessionID: "session-new", onCompletion: { continuation.resume() }))
+        }
+
+        // Then
+        let stored = try #require(viewStorage.loadSupportChat(chatID: chatID))
+        #expect(stored.sessionID == "session-new")
     }
 
     // MARK: - loadChatHistory
@@ -167,6 +199,7 @@ struct SupportChatStoreTests {
                                                               siteID: sampleSiteID,
                                                               wpcomUserID: sampleWPComUserID,
                                                               botSlug: sampleBotSlug,
+                                                              sessionID: nil,
                                                               firstUserMessage: "chat \(chatID)",
                                                               onCompletion: { continuation.resume() }))
             }
@@ -193,6 +226,7 @@ struct SupportChatStoreTests {
                                                           siteID: sampleSiteID,
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
+                                                          sessionID: nil,
                                                           firstUserMessage: "ours",
                                                           onCompletion: { continuation.resume() }))
         }
@@ -201,6 +235,7 @@ struct SupportChatStoreTests {
                                                           siteID: otherSiteID,
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
+                                                          sessionID: nil,
                                                           firstUserMessage: "theirs",
                                                           onCompletion: { continuation.resume() }))
         }
@@ -242,6 +277,7 @@ struct SupportChatStoreTests {
                                                           siteID: sampleSiteID,
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
+                                                          sessionID: nil,
                                                           firstUserMessage: "hi",
                                                           onCompletion: { continuation.resume() }))
         }
@@ -280,6 +316,7 @@ struct SupportChatStoreTests {
                                                           siteID: sampleSiteID,
                                                           wpcomUserID: sampleWPComUserID,
                                                           botSlug: sampleBotSlug,
+                                                          sessionID: nil,
                                                           firstUserMessage: "hi",
                                                           onCompletion: { continuation.resume() }))
         }
@@ -310,17 +347,61 @@ struct SupportChatStoreTests {
         #expect(storedChatCount == 0)
     }
 
-    // MARK: - fetchChat
+    // MARK: - markResolved
 
-    @Test func fetchChat_forwards_to_remote_with_botSlug_and_chatID() async throws {
+    @Test func markResolved_sets_isResolved_on_existing_row() async throws {
         // Given
         let store = makeStore()
+        let chatID: Int64 = 4242
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.registerChat(chatID: chatID,
+                                                          siteID: sampleSiteID,
+                                                          wpcomUserID: sampleWPComUserID,
+                                                          botSlug: sampleBotSlug,
+                                                          sessionID: nil,
+                                                          firstUserMessage: "hi",
+                                                          onCompletion: { continuation.resume() }))
+        }
+        #expect(viewStorage.loadSupportChat(chatID: chatID)?.isResolved == false)
+
+        // When
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.markResolved(chatID: chatID,
+                                                          onCompletion: { continuation.resume() }))
+        }
+
+        // Then
+        let stored = try #require(viewStorage.loadSupportChat(chatID: chatID))
+        #expect(stored.isResolved == true)
+    }
+
+    @Test func markResolved_when_row_does_not_exist_then_completes_without_error() async {
+        // Given
+        let store = makeStore()
+
+        // When
+        await withCheckedContinuation { continuation in
+            store.onAction(SupportChatAction.markResolved(chatID: 9999,
+                                                          onCompletion: { continuation.resume() }))
+        }
+
+        // Then
+        #expect(storedChatCount == 0)
+    }
+
+    // MARK: - fetchChat
+
+    @Test func fetchChat_forwards_to_remote_with_botSlug_chatID_and_sessionID() async throws {
+        // Given
+        let store = makeStore()
+        let sessionID = "session-abc"
         remote.whenFetchingChat(thenReturn: .success(.fake()))
 
         // When
         _ = await withCheckedContinuation { continuation in
             store.onAction(SupportChatAction.fetchChat(botSlug: sampleBotSlug,
                                                        chatID: 4242,
+                                                       sessionID: sessionID,
                                                        completion: { result in
                 continuation.resume(returning: result)
             }))
@@ -331,6 +412,7 @@ struct SupportChatStoreTests {
         let invocation = try #require(remote.fetchChatInvocations.first)
         #expect(invocation.botSlug == sampleBotSlug)
         #expect(invocation.chatID == 4242)
+        #expect(invocation.sessionID == sessionID)
     }
 
     @Test func fetchChat_propagates_remote_errors() async {
@@ -342,6 +424,7 @@ struct SupportChatStoreTests {
         let result = await withCheckedContinuation { continuation in
             store.onAction(SupportChatAction.fetchChat(botSlug: sampleBotSlug,
                                                        chatID: 4242,
+                                                       sessionID: nil,
                                                        completion: { result in
                 continuation.resume(returning: result)
             }))

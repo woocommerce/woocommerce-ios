@@ -66,7 +66,7 @@ struct WooAssistantTelemetryTrackerTests {
         #expect(analyticsProvider.receivedEvents == ["ai_assistant_tool_call_completed"])
         #expect(analyticsProvider.receivedProperties.last?["status"] as? String == "success")
         #expect(analyticsProvider.receivedProperties.last?["error_kind"] == nil)
-        #expect(analyticsProvider.receivedProperties.last?["duration_ms"] as? Int64 == 11)
+        #expect(analyticsProvider.receivedProperties.last?["duration_ms"] as? Int == 11)
     }
 
     @Test
@@ -148,7 +148,7 @@ struct WooAssistantTelemetryTrackerTests {
         // Then
         #expect(analyticsProvider.receivedEvents == ["ai_assistant_turn_completed"])
         #expect(analyticsProvider.receivedProperties.last?["outcome"] as? String == "failed")
-        #expect(analyticsProvider.receivedProperties.last?["duration_ms"] as? Int64 == 999)
+        #expect(analyticsProvider.receivedProperties.last?["duration_ms"] as? Int == 999)
         #expect(analyticsProvider.receivedProperties.last?["error_kind"] as? String == "network")
     }
 }

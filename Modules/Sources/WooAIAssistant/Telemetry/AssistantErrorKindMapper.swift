@@ -9,10 +9,6 @@ public enum AssistantErrorKindMapper {
         return mapByHTTPCode(error.code) ?? .unknown
     }
 
-    public static func mapCancellation() -> AssistantTelemetryErrorKind {
-        .cancelled
-    }
-
     private static func mapByKind(_ kind: AssistantErrorKind) -> AssistantTelemetryErrorKind? {
         switch kind {
         case .network:

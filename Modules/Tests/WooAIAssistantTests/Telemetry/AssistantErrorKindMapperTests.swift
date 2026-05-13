@@ -105,11 +105,11 @@ struct AssistantErrorKindMapperTests {
     }
 
     @Test
-    func test_mapCancellation_when_called_then_returns_cancelled() {
+    func test_map_when_outcomeUnknown_kind_then_returns_unknown() {
         // When
-        let result = AssistantErrorKindMapper.mapCancellation()
+        let result = AssistantErrorKindMapper.map(AssistantError(kind: .outcomeUnknown, message: "no outcome"))
 
         // Then
-        #expect(result == .cancelled)
+        #expect(result == .unknown)
     }
 }

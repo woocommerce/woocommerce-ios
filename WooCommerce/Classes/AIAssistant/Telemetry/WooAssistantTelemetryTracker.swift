@@ -38,7 +38,7 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
                 toolName: toolName,
                 status: toShim(status),
                 errorKind: errorKind.map(toShim),
-                durationMs: durationMs
+                durationMs: durationMs.map(Int.init)
             ))
 
         case .showCardsProcessed(let context, let requested, let rendered, let missing, let rejected):
@@ -74,7 +74,7 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
                 requestId: context.requestID,
                 messageId: context.messageID,
                 outcome: toShim(outcome),
-                durationMs: durationMs,
+                durationMs: Int(durationMs),
                 errorKind: errorKind.map(toShim),
                 isRetry: isRetry,
                 completionStack: stack,

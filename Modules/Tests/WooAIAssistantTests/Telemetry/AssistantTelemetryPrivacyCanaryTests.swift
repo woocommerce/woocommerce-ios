@@ -11,9 +11,6 @@ struct AssistantTelemetryPrivacyCanaryTests {
         messageID: "33333333-3333-4333-8333-333333333333"
     )
 
-    /// Substrings whose appearance inside a collected string value signals the payload is leaking
-    /// raw content. Matched case-insensitively, so partials like `error_description` trip on
-    /// `description` and `entity_identifiers` trips on `identifiers`.
     private static let denylist: [String] = [
         "summary", "prompts", "model_completions", "transcripts", "embeddings", "hashes",
         "entity_identifiers", "merchant_business_data",
@@ -35,8 +32,6 @@ struct AssistantTelemetryPrivacyCanaryTests {
         options: [.caseInsensitive]
     )
 
-    /// Tokens that an adversarial value would carry to indicate raw content slipped through the
-    /// typed enum boundaries. The walker fails whenever a collected string contains any of them.
     private static let contentLeakRegex = try! NSRegularExpression(
         pattern: "(@|https?:|\\.com\\b|\\.net\\b|\\.org\\b|sku-|coupon_)",
         options: [.caseInsensitive]
@@ -99,7 +94,7 @@ struct AssistantTelemetryPrivacyCanaryTests {
 
     @Test
     func test_canary_when_event_carries_adversarial_content_then_reports_leak() {
-        // Given an event whose tool_name is an attacker-controlled string that escaped canonicalization
+        // Given
         let adversarial: AssistantTelemetryEvent = .toolCallCompleted(
             context: context,
             toolName: "open_order_admin@example.com",
@@ -108,32 +103,32 @@ struct AssistantTelemetryPrivacyCanaryTests {
             durationMs: nil
         )
 
-        // When the canary inspects it
+        // When
         let result = Self.checkEvent(adversarial)
 
-        // Then the leak is reported, not silently allowed
+        // Then
         #expect(!result.isAllowed)
     }
 
     @Test
     func test_canary_when_event_carries_unbounded_string_then_reports_leak() {
-        // Given a context carrying a long opaque blob past the 64-char bound
+        // Given
         let unboundedContext = AssistantTelemetryContext(
             conversationID: String(repeating: "a", count: 200),
             requestID: "22222222-2222-4222-8222-222222222222",
             messageID: "33333333-3333-4333-8333-333333333333"
         )
 
-        // When the canary inspects it
+        // When
         let result = Self.checkEvent(.conversationStarted(context: unboundedContext))
 
-        // Then it surfaces the leak
+        // Then
         #expect(!result.isAllowed)
     }
 
     @Test
     func test_canary_when_value_carries_denylisted_token_then_reports_leak() {
-        // Given a tool name that smuggled through a denylisted token
+        // Given
         let leaky: AssistantTelemetryEvent = .toolCallCompleted(
             context: context,
             toolName: "orders_summary_text",
@@ -142,16 +137,87 @@ struct AssistantTelemetryPrivacyCanaryTests {
             durationMs: 0
         )
 
-        // When the canary inspects it
+        // When
         let result = Self.checkEvent(leaky)
 
-        // Then it surfaces the leak
+        // Then
         #expect(!result.isAllowed)
     }
 
-    /// Recursively walks an enum case (and the structs nested inside it) and returns every string
-    /// leaf, so adding a new String associated value to any case is automatically covered without
-    /// having to update a hand-maintained switch.
+    // Field-aware UUID check tightens the reflective canary. Context IDs must specifically be UUIDs,
+    // so an accidental future change putting a route name (e.g. `more_menu_assistant`) into
+    // `conversation_id` fails here even though it would slip past the shape walker.
+    @Test
+    func test_every_event_carries_uuid_shaped_context_ids() {
+        let events: [AssistantTelemetryEvent] = [
+            .conversationStarted(context: context),
+            .turnStarted(context: context,
+                         isRetry: false,
+                         completionStack: AssistantTelemetryConstants.completionStack,
+                         promptVersion: AssistantTelemetryConstants.promptVersion,
+                         toolCatalogVersion: AssistantTelemetryConstants.toolCatalogVersion),
+            .toolCallCompleted(context: context,
+                               toolName: "orders_list",
+                               status: .success,
+                               errorKind: nil,
+                               durationMs: 42),
+            .showCardsProcessed(context: context,
+                                requestedCount: 1,
+                                renderedCount: 1,
+                                missingCount: 0,
+                                rejectedCount: 0),
+            .cardTapped(context: context,
+                        cardFamily: .order,
+                        actionFamily: .openOrder),
+            .turnCompleted(context: context,
+                           outcome: .success,
+                           durationMs: 1,
+                           errorKind: nil,
+                           isRetry: false,
+                           completionStack: AssistantTelemetryConstants.completionStack,
+                           promptVersion: AssistantTelemetryConstants.promptVersion,
+                           toolCatalogVersion: AssistantTelemetryConstants.toolCatalogVersion)
+        ]
+
+        for event in events {
+            let ctx = Self.contextFor(event)
+            #expect(Self.matches(Self.uuidRegex, ctx.conversationID),
+                    "conversation_id not UUID-shaped for \(event): \(ctx.conversationID)")
+            #expect(Self.matches(Self.uuidRegex, ctx.requestID),
+                    "request_id not UUID-shaped for \(event): \(ctx.requestID)")
+            #expect(Self.matches(Self.uuidRegex, ctx.messageID),
+                    "message_id not UUID-shaped for \(event): \(ctx.messageID)")
+        }
+    }
+
+    @Test
+    func test_uuid_canary_when_conversation_id_is_snake_case_route_then_reports_leak() {
+        // Given
+        let leaky = AssistantTelemetryContext(
+            conversationID: "more_menu_assistant",
+            requestID: "22222222-2222-4222-8222-222222222222",
+            messageID: "33333333-3333-4333-8333-333333333333"
+        )
+
+        // When
+        let isUuid = Self.matches(Self.uuidRegex, leaky.conversationID)
+
+        // Then
+        #expect(!isUuid)
+    }
+
+    private static func contextFor(_ event: AssistantTelemetryEvent) -> AssistantTelemetryContext {
+        switch event {
+        case .conversationStarted(let context),
+             .turnStarted(let context, _, _, _, _),
+             .toolCallCompleted(let context, _, _, _, _),
+             .showCardsProcessed(let context, _, _, _, _),
+             .cardTapped(let context, _, _),
+             .turnCompleted(let context, _, _, _, _, _, _, _):
+            return context
+        }
+    }
+
     private static func collectStrings(from value: Any) -> [String] {
         let mirror = Mirror(reflecting: value)
         if mirror.children.isEmpty {
@@ -192,8 +258,6 @@ struct AssistantTelemetryPrivacyCanaryTests {
         return nil
     }
 
-    /// Plan requires every collected string to be a UUID, a known constant, a bounded-enum raw value,
-    /// a canonical snake_case identifier, or empty. Anything else fails the canary.
     private static func isAllowedShape(_ value: String) -> Bool {
         if value.isEmpty { return true }
         if knownConstants.contains(value) { return true }

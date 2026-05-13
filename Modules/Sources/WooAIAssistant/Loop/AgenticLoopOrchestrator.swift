@@ -31,7 +31,7 @@ public actor AgenticLoopOrchestrator {
                 maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
                 perToolPerTurnCap: Int = AgenticLoopOrchestrator.defaultPerToolPerTurnCap,
                 telemetryTracker: AssistantTelemetryTracker = NoopAssistantTelemetryTracker(),
-                clock: SystemClock = WallSystemClock()) {
+                clock: SystemClock = MonotonicSystemClock()) {
         self.chatService = chatService
         self.toolRegistry = toolRegistry
         self.safetyPolicy = safetyPolicy
@@ -76,13 +76,8 @@ public actor AgenticLoopOrchestrator {
                                                         rejectedCount: counts.rejectedCount))
             }
         case .failed(let failed):
-            let errorKind: AssistantTelemetryErrorKind
-            if failed.kind == .outcomeUnknown {
-                errorKind = .unknown
-            } else {
-                errorKind = AssistantErrorKindMapper.map(AssistantError(kind: failed.kind,
+            let errorKind = AssistantErrorKindMapper.map(AssistantError(kind: failed.kind,
                                                                         message: failed.reason))
-            }
             await emitTelemetry(.toolCallCompleted(context: telemetryContext,
                                                    toolName: canonicalName,
                                                    status: .failure,
@@ -95,8 +90,7 @@ public actor AgenticLoopOrchestrator {
                                                    errorKind: .validationError,
                                                    durationMs: durationMs))
         case .awaitingConfirmation:
-            // Reaching this branch means the tool short-circuited the safety gate, which is a
-            // pre-execution runtime rejection (not an upstream server failure).
+            // Tool short-circuited the safety gate: pre-execution rejection, not server failure.
             await emitTelemetry(.toolCallCompleted(context: telemetryContext,
                                                    toolName: canonicalName,
                                                    status: .failure,

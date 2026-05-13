@@ -1,9 +1,5 @@
 import Foundation
 
-/// Wraps an underlying tracker so the controller can mute late-arriving tool telemetry once a
-/// turn has been cancelled. Without this, tool tasks that finish after `cancel()` would emit
-/// `tool_call_completed` and `show_cards_processed` events that inflate success metrics for
-/// results the merchant never saw.
 @MainActor
 public final class SuppressibleAssistantTelemetryTracker: AssistantTelemetryTracker {
 

@@ -16,7 +16,7 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
                 historyBudgeter: HistoryBudgeter = SlidingWindowHistoryBudgeter(),
                 maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
                 telemetryTracker: AssistantTelemetryTracker = NoopAssistantTelemetryTracker(),
-                clock: SystemClock = WallSystemClock()) {
+                clock: SystemClock = MonotonicSystemClock()) {
         self.systemPromptProvider = systemPromptProvider
         self.historyBudgeter = historyBudgeter
         self.orchestrator = AgenticLoopOrchestrator(chatService: chatService,
@@ -35,7 +35,7 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
                             historyBudgeter: HistoryBudgeter = SlidingWindowHistoryBudgeter(),
                             maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
                             telemetryTracker: AssistantTelemetryTracker = NoopAssistantTelemetryTracker(),
-                            clock: SystemClock = WallSystemClock()) {
+                            clock: SystemClock = MonotonicSystemClock()) {
         let captured = systemPrompt
         self.init(chatService: chatService,
                   toolRegistry: toolRegistry,

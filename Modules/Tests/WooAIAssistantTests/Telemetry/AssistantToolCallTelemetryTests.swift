@@ -272,6 +272,44 @@ struct AssistantToolCallTelemetryTests {
     }
 
     @Test
+    func test_intra_batch_duplicate_tool_calls_when_dispatched_then_emits_telemetry_only_for_primary() async throws {
+        // Given
+        let safeTool = AITool(name: "orders_list",
+                              description: "List orders",
+                              parametersSchema: .object([:]),
+                              safetyLevel: .safe)
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [.toolCall(.init(id: "call-1", function: .init(name: "orders_list", arguments: #"{}"#))),
+             .toolCall(.init(id: "call-2", function: .init(name: "orders_list", arguments: #"{}"#))),
+             .completed(.toolCalls)],
+            [.completed(.stop)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([safeTool])
+        await registry.setResult(for: "orders_list",
+                                 result: .success(.init(toolName: "orders_list",
+                                                        structured: .object(["count": .int(0)]))))
+        let tracker = await RecordingAssistantTelemetryTracker()
+        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
+                                                         toolRegistry: registry,
+                                                         telemetryTracker: tracker)
+
+        // When
+        for try await _ in orchestrator.run(prompt: "go",
+                                            priorMessages: [],
+                                            telemetryContext: telemetryContext) {}
+
+        // Then
+        let events = await tracker.events
+        let toolCompletionsForOrdersList = events.filter { event in
+            if case .toolCallCompleted(_, "orders_list", _, _, _) = event { return true }
+            return false
+        }
+        #expect(toolCompletionsForOrdersList.count == 1)
+    }
+
+    @Test
     func test_cached_replay_when_duplicate_call_then_emits_no_tool_call_telemetry() async throws {
         // Given
         let safeTool = AITool(name: "orders_list",

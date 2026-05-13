@@ -26,7 +26,7 @@ public final class AssistantController {
                 conversation: AssistantConversation? = nil,
                 telemetryTracker: AssistantTelemetryTracker = NoopAssistantTelemetryTracker(),
                 idGenerator: AssistantIdGenerator = UUIDAssistantIdGenerator(),
-                clock: SystemClock = WallSystemClock()) {
+                clock: SystemClock = MonotonicSystemClock()) {
         self.backend = backend
         self.context = context
         self.conversation = conversation ?? AssistantConversation(idGenerator: idGenerator)

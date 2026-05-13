@@ -59,6 +59,8 @@ final class SupportChatViewModel {
         case diagnosticsSuccess
         /// A test failed - show failure with optional action
         case diagnosticsFailure(SupportDiagnosticsService.Result)
+        /// Prompts the merchant to mark the chat resolved after a helpful answer.
+        case resolvedPrompt
 
         static func == (lhs: MessageContent, rhs: MessageContent) -> Bool {
             switch (lhs, rhs) {
@@ -73,8 +75,21 @@ final class SupportChatViewModel {
                 return true
             case (.diagnosticsFailure(let l), .diagnosticsFailure(let r)):
                 return l == r
+            case (.resolvedPrompt, .resolvedPrompt):
+                return true
             default:
                 return false
+            }
+        }
+
+        var text: String? {
+            switch self {
+            case .text(let text):
+                return text
+            case .resolvedPrompt:
+                return Localization.resolvedPromptMessage
+            default:
+                return nil
             }
         }
     }
@@ -90,9 +105,14 @@ final class SupportChatViewModel {
         let failed: Bool
         /// Server-assigned message ID for bot messages (used for feedback submission).
         let messageID: Int64?
+        /// Whether the bot marked the issue as resolved for this message.
+        let isResolved: Bool
         /// `true` for messages received during the current session (not rehydrated from history).
         /// Feedback buttons are only shown for new messages.
         let isNewInSession: Bool
+        var shouldShowFeedbackButtons: Bool {
+            role == .bot && isNewInSession && isResolved == false && messageID != nil
+        }
 
         init(id: UUID = UUID(),
              role: SupportChatRole,
@@ -100,6 +120,7 @@ final class SupportChatViewModel {
              timestamp: Date = Date(),
              failed: Bool = false,
              messageID: Int64? = nil,
+             isResolved: Bool = false,
              isNewInSession: Bool = true) {
             self.id = id
             self.role = role
@@ -107,6 +128,7 @@ final class SupportChatViewModel {
             self.timestamp = timestamp
             self.failed = failed
             self.messageID = messageID
+            self.isResolved = isResolved
             self.isNewInSession = isNewInSession
         }
 
@@ -117,6 +139,7 @@ final class SupportChatViewModel {
              timestamp: Date = Date(),
              failed: Bool = false,
              messageID: Int64? = nil,
+             isResolved: Bool = false,
              isNewInSession: Bool = true) {
             self.id = id
             self.role = role
@@ -124,6 +147,7 @@ final class SupportChatViewModel {
             self.timestamp = timestamp
             self.failed = failed
             self.messageID = messageID
+            self.isResolved = isResolved
             self.isNewInSession = isNewInSession
         }
     }
@@ -166,6 +190,7 @@ final class SupportChatViewModel {
     /// by issue-picker selections — we want the human-support entry to surface only after the
     /// merchant has actually described their problem.
     private(set) var hasSentChatMessage: Bool = false
+    private(set) var isChatResolved: Bool = false
 
     /// Flips `hasCreatedTicket` so the chat surface (toolbar icon, inline banner) updates in real time
     /// after the escalation coordinator successfully creates a Zendesk ticket. Storage is updated separately
@@ -174,14 +199,40 @@ final class SupportChatViewModel {
         hasCreatedTicket = true
     }
 
+    func markChatResolved() {
+        isChatResolved = true
+    }
+
     /// Whether the trailing toolbar entry point to human support should be visible.
     /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics)
     /// AND has typed and sent at least one message, and only while no ticket has been created yet.
     var canEscalateToHumanSupport: Bool {
-        guard shouldShowInputArea, !hasCreatedTicket else {
+        guard shouldShowInputArea, !hasCreatedTicket, !isChatResolved else {
             return false
         }
         return hasSentChatMessage
+    }
+
+    var shouldShowResolvedButton: Bool {
+        guard shouldPromptHumanSupport == false, isChatResolved == false else {
+            return false
+        }
+
+        let botResponses = messages.filter { $0.role == .bot && $0.messageID != nil }
+
+        guard let lastBotResponse = botResponses.last else {
+            return false
+        }
+
+        if lastBotResponse.isResolved {
+            return true
+        }
+
+        if let messageID = lastBotResponse.messageID, messageRatings[messageID] == true {
+            return true
+        }
+
+        return botResponses.count >= 2
     }
 
     /// Maps message IDs to their feedback rating (true = upvoted, false = downvoted).
@@ -652,6 +703,8 @@ final class SupportChatViewModel {
                 contentText = "[All diagnostics passed]"
             case .diagnosticsFailure(let result):
                 contentText = "[Diagnostics failed: \(result.test.title) - \(result.errorMessage ?? "Unknown error")]"
+            case .resolvedPrompt:
+                contentText = Localization.resolvedPromptMessage
             }
 
             return "[\(timestamp)] \(roleName): \(contentText)"
@@ -686,9 +739,14 @@ final class SupportChatViewModel {
                     let assistantMessage = ChatMessage(
                         role: .bot,
                         text: lastBotMessage.content,
-                        messageID: lastBotMessage.messageID
+                        messageID: lastBotMessage.messageID,
+                        isResolved: lastBotMessage.context?.isResolved ?? false
                     )
                     messages.append(assistantMessage)
+
+                    if assistantMessage.isResolved {
+                        appendResolvedPromptIfNeeded()
+                    }
                 }
             }
 
@@ -736,12 +794,21 @@ final class SupportChatViewModel {
                 case .user:
                     return ChatMessage(role: .user, text: message.content, isNewInSession: false)
                 case .bot:
-                    return ChatMessage(role: .bot, text: message.content, messageID: message.messageID, isNewInSession: false)
+                    return ChatMessage(role: .bot,
+                                       text: message.content,
+                                       messageID: message.messageID,
+                                       isResolved: message.context?.isResolved ?? false,
+                                       isNewInSession: false)
                 case .unknown:
                     return nil
                 }
             }
             messages = rehydrated
+
+            if latestBotResponse?.isResolved == true {
+                appendResolvedPromptIfNeeded()
+            }
+
             state = .idle
 
         case .failure(let error):
@@ -787,6 +854,18 @@ final class SupportChatViewModel {
         }
     }
 
+    private func appendResolvedPromptIfNeeded() {
+        guard isChatResolved == false else {
+            return
+        }
+
+        if messages.contains(where: { $0.content == .resolvedPrompt }) {
+            return
+        }
+
+        messages.append(ChatMessage(role: .bot, content: .resolvedPrompt))
+    }
+
     // MARK: - Feedback
 
     /// Submits feedback for a bot message.
@@ -797,6 +876,10 @@ final class SupportChatViewModel {
         guard messageRatings[messageID] == nil else { return }
 
         messageRatings[messageID] = upvoted
+
+        if upvoted, latestBotResponse?.messageID == messageID {
+            appendResolvedPromptIfNeeded()
+        }
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.feedbackSubmitted(upvoted: upvoted))
 
@@ -813,6 +896,10 @@ final class SupportChatViewModel {
         }
         stores.dispatch(action)
     }
+
+    private var latestBotResponse: ChatMessage? {
+        messages.last { $0.role == .bot && $0.messageID != nil }
+    }
 }
 
 // MARK: - Localization
@@ -828,6 +915,11 @@ private extension SupportChatViewModel {
             "supportChatViewModel.postDiagnosticsGreeting",
             value: "Please describe your issue in more detail so I can help.",
             comment: "Message prompting user to describe their issue after diagnostics"
+        )
+        static let resolvedPromptMessage = NSLocalizedString(
+            "supportChatViewModel.resolvedPromptMessage",
+            value: "Please mark the chat as resolved if your problem is resolved, or leave a message if you have other questions.",
+            comment: "Message shown by the bot when a support chat answer appears to have solved the merchant's issue"
         )
         static let errorMessage = NSLocalizedString(
             "supportChatViewModel.errorMessage",

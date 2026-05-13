@@ -227,6 +227,23 @@ struct SupportChatRemoteTests {
         #expect(supportArea.isHighConfidence == true)
     }
 
+    @Test func sendMessage_when_response_has_is_resolved_then_value_is_decoded() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)",
+                                 filename: "support-chat-with-support-area")
+
+        // When
+        let response = try await remote.sendMessage(botSlug: botSlug,
+                                                    message: "My card reader won't connect",
+                                                    chatID: nil,
+                                                    sessionID: nil,
+                                                    context: nil)
+
+        // Then
+        #expect(response.messages.first?.context?.isResolved == true)
+    }
+
     @Test func sendMessage_when_response_lacks_support_area_then_support_area_is_nil() async throws {
         // Given
         let remote = SupportChatRemote(network: network)
@@ -243,6 +260,7 @@ struct SupportChatRemoteTests {
         // Then
         let context = try #require(response.messages.first?.context)
         #expect(context.supportArea == nil)
+        #expect(context.isResolved == false)
     }
 
     // MARK: - Error paths

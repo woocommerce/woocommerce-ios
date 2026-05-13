@@ -778,7 +778,400 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == false)
     }
 
+    @Test func canEscalateToHumanSupport_is_false_when_chat_is_resolved() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+        sut.inputText = "Hello"
+        sut.sendMessage()
+        #expect(sut.canEscalateToHumanSupport == true)
+
+        // When
+        sut.markChatResolved()
+
+        // Then
+        #expect(sut.canEscalateToHumanSupport == false)
+    }
+
+    // MARK: - Resolved Button Tests
+
+    @Test func shouldShowResolvedButton_when_last_bot_message_is_resolved_then_returns_true() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            guard case let .sendMessage(_, message, _, _, _, completion) = action else {
+                return
+            }
+
+            let response = SupportChatResponse(
+                chatID: 123,
+                sessionID: "session-1",
+                botSlug: "test-bot",
+                botVersion: "1.0",
+                messages: [
+                    SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                    SupportChatMessage(
+                        messageID: 2,
+                        role: .bot,
+                        content: "Glad that helped.",
+                        context: SupportChatMessageContext(sources: [], flags: nil, isResolved: true)
+                    )
+                ]
+            )
+            completion(.success(response))
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+
+        // When
+        sut.inputText = "That fixed it"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.shouldShowResolvedButton == true)
+    }
+
+    @Test func shouldShowResolvedButton_when_last_bot_message_is_upvoted_then_returns_true() async {
+        // Given
+        let messageID: Int64 = 2
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, message, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                        SupportChatMessage(messageID: messageID, role: .bot, content: "Try this.", context: nil)
+                    ]
+                )
+                completion(.success(response))
+            case let .submitFeedback(_, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+        sut.inputText = "Help"
+        sut.sendMessage()
+        #expect(sut.shouldShowResolvedButton == false)
+
+        // When
+        sut.submitFeedback(messageID: messageID, upvoted: true)
+
+        // Then
+        #expect(sut.shouldShowResolvedButton == true)
+    }
+
+    @Test func sendMessage_when_last_bot_message_is_resolved_then_appends_resolved_prompt() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            guard case let .sendMessage(_, message, _, _, _, completion) = action else {
+                return
+            }
+
+            let response = SupportChatResponse(
+                chatID: 123,
+                sessionID: "session-1",
+                botSlug: "test-bot",
+                botVersion: "1.0",
+                messages: [
+                    SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                    SupportChatMessage(
+                        messageID: 2,
+                        role: .bot,
+                        content: "Glad that helped.",
+                        context: SupportChatMessageContext(sources: [], flags: nil, isResolved: true)
+                    )
+                ]
+            )
+            completion(.success(response))
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+
+        // When
+        sut.inputText = "That fixed it"
+        sut.sendMessage()
+
+        // Then
+        let prompt = try #require(sut.messages.last)
+        #expect(prompt.role == .bot)
+        #expect(prompt.messageID == nil)
+        #expect(prompt.content == .resolvedPrompt)
+    }
+
+    @Test func submitFeedback_when_upvoting_last_bot_message_then_appends_resolved_prompt() async throws {
+        // Given
+        let messageID: Int64 = 2
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, message, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                        SupportChatMessage(messageID: messageID, role: .bot, content: "Try this.", context: nil)
+                    ]
+                )
+                completion(.success(response))
+            case let .submitFeedback(_, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+        sut.inputText = "Help"
+        sut.sendMessage()
+
+        // When
+        sut.submitFeedback(messageID: messageID, upvoted: true)
+
+        // Then
+        let prompt = try #require(sut.messages.last)
+        #expect(prompt.role == .bot)
+        #expect(prompt.messageID == nil)
+        #expect(prompt.content == .resolvedPrompt)
+    }
+
+    @Test func submitFeedback_when_resolved_prompt_already_exists_then_does_not_append_duplicate_prompt() async {
+        // Given
+        let messageID: Int64 = 2
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, message, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                        SupportChatMessage(
+                            messageID: messageID,
+                            role: .bot,
+                            content: "Glad that helped.",
+                            context: SupportChatMessageContext(sources: [], flags: nil, isResolved: true)
+                        )
+                    ]
+                )
+                completion(.success(response))
+            case let .submitFeedback(_, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+        sut.inputText = "That fixed it"
+        sut.sendMessage()
+        let promptCount = sut.messages.filter { $0.content == .resolvedPrompt }.count
+
+        // When
+        sut.submitFeedback(messageID: messageID, upvoted: true)
+
+        // Then
+        #expect(promptCount == 1)
+        #expect(sut.messages.filter { $0.content == .resolvedPrompt }.count == 1)
+    }
+
+    @Test func shouldShowResolvedButton_when_last_bot_message_is_downvoted_then_returns_false() async {
+        // Given
+        let messageID: Int64 = 2
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, message, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                        SupportChatMessage(messageID: messageID, role: .bot, content: "Try this.", context: nil)
+                    ]
+                )
+                completion(.success(response))
+            case let .submitFeedback(_, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+        sut.inputText = "Help"
+        sut.sendMessage()
+
+        // When
+        sut.submitFeedback(messageID: messageID, upvoted: false)
+
+        // Then
+        #expect(sut.shouldShowResolvedButton == false)
+    }
+
+    @Test func shouldShowResolvedButton_when_two_bot_responses_excluding_greeting_and_issue_picker_then_returns_true() async {
+        // Given
+        var botMessageID: Int64 = 1
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            guard case let .sendMessage(_, message, _, _, _, completion) = action else {
+                return
+            }
+
+            botMessageID += 1
+            let response = SupportChatResponse(
+                chatID: 123,
+                sessionID: "session-1",
+                botSlug: "test-bot",
+                botVersion: "1.0",
+                messages: [
+                    SupportChatMessage(messageID: botMessageID - 1, role: .user, content: message, context: nil),
+                    SupportChatMessage(messageID: botMessageID, role: .bot, content: "Bot response", context: nil)
+                ]
+            )
+            completion(.success(response))
+        }
+        let sut = makeSUT(entryPoint: .helpAndSupport, stores: stores)
+        sut.showGreeting()
+        await sut.selectIssue(.other)
+
+        // When
+        sut.inputText = "First question"
+        sut.sendMessage()
+        #expect(sut.shouldShowResolvedButton == false)
+
+        sut.inputText = "Follow up"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.shouldShowResolvedButton == true)
+    }
+
+    @Test func shouldShowResolvedButton_when_shouldPromptHumanSupport_then_returns_false() async {
+        // Given
+        var sendCount = 0
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            guard case let .sendMessage(_, message, _, _, _, completion) = action else {
+                return
+            }
+
+            sendCount += 1
+            let response: SupportChatResponse
+            if sendCount <= 2 {
+                response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: Int64(sendCount * 2 - 1), role: .user, content: message, context: nil),
+                        SupportChatMessage(messageID: Int64(sendCount * 2), role: .bot, content: "Bot response", context: nil)
+                    ]
+                )
+            } else {
+                response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 5, role: .user, content: message, context: nil),
+                        SupportChatMessage(
+                            messageID: 6,
+                            role: .bot,
+                            content: "Contact support.",
+                            context: SupportChatMessageContext(
+                                sources: [],
+                                flags: SupportChatFlags(forwardToHumanSupport: true, cannedResponse: false, loggedIn: true, branch: nil)
+                            )
+                        )
+                    ]
+                )
+            }
+            completion(.success(response))
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+        sut.inputText = "First question"
+        sut.sendMessage()
+        sut.inputText = "Follow up"
+        sut.sendMessage()
+        #expect(sut.shouldShowResolvedButton == true)
+
+        // When
+        sut.inputText = "Still need help"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.shouldPromptHumanSupport == true)
+        #expect(sut.shouldShowResolvedButton == false)
+    }
+
+    @Test func markChatResolved_when_shouldShowResolvedButton_then_hides_resolved_button() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            guard case let .sendMessage(_, message, _, _, _, completion) = action else {
+                return
+            }
+
+            let response = SupportChatResponse(
+                chatID: 123,
+                sessionID: "session-1",
+                botSlug: "test-bot",
+                botVersion: "1.0",
+                messages: [
+                    SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                    SupportChatMessage(
+                        messageID: 2,
+                        role: .bot,
+                        content: "Glad that helped.",
+                        context: SupportChatMessageContext(sources: [], flags: nil, isResolved: true)
+                    )
+                ]
+            )
+            completion(.success(response))
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+        sut.inputText = "That fixed it"
+        sut.sendMessage()
+        #expect(sut.shouldShowResolvedButton == true)
+
+        // When
+        sut.markChatResolved()
+
+        // Then
+        #expect(sut.isChatResolved == true)
+        #expect(sut.shouldShowResolvedButton == false)
+    }
+
     // MARK: - Feedback Tests
+
+    @Test func chatMessage_shouldShowFeedbackButtons_when_bot_message_is_resolved_then_returns_false() {
+        // Given
+        let message = SupportChatViewModel.ChatMessage(
+            role: .bot,
+            text: "This should solve the issue.",
+            messageID: 123,
+            isResolved: true
+        )
+
+        // Then
+        #expect(message.shouldShowFeedbackButtons == false)
+    }
 
     @Test func submitFeedback_when_valid_messageID_then_dispatches_action() async {
         // Given

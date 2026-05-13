@@ -27,7 +27,7 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
 
     func collectCashPayment(changeDueAmount: String?) async throws {}
 
-    func markOrderAsPaidManually() async throws {}
+    func markOrderAsPaidManually(note: String?) async throws {}
 
     func confirmScanToPayPayment() async throws {}
 

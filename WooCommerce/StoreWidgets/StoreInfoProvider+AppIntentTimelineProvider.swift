@@ -20,6 +20,8 @@ extension StoreInfoProvider: AppIntentTimelineProvider {
             requested: configuration.metrics,
             family: context.family
         )
-        return await loadTimeline(dateRange: configuration.dateRange, metrics: metrics)
+        return await loadTimeline(dateRange: configuration.dateRange,
+                                  metrics: metrics,
+                                  selectedStoreID: configuration.store?.id)
     }
 }

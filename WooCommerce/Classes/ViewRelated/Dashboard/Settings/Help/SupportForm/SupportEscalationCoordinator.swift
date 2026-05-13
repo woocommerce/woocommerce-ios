@@ -61,26 +61,27 @@ final class SupportEscalationCoordinator {
     ///   - chatID: The chat ID to associate with the created ticket (nil if chat not yet persisted).
     ///   - transcript: The chat transcript.
     ///   - supportAreaInfo: Optional support area information from AI chat.
-    func handleEscalation(chatID: Int64?, transcript: String, supportAreaInfo: SupportAreaInfo?) {
+    ///   - entryPoint: The chat entry point for analytics tracking.
+    func handleEscalation(chatID: Int64?, transcript: String, supportAreaInfo: SupportAreaInfo?, entryPoint: SupportChatViewModel.EntryPoint) {
         self.chatID = chatID
 
         guard let supportAreaInfo else {
-            showSupportForm(transcript: transcript, supportAreaInfo: nil)
+            showSupportForm(transcript: transcript, supportAreaInfo: nil, entryPoint: entryPoint)
             return
         }
 
         // Only create ticket directly if high confidence AND user identity exists.
         // Without identity, Zendesk can't send email responses to the user.
         if supportAreaInfo.isHighConfidence && zendeskProvider.haveUserIdentity {
-            createTicketDirectly(with: supportAreaInfo)
+            createTicketDirectly(with: supportAreaInfo, entryPoint: entryPoint)
         } else {
-            showSupportForm(transcript: transcript, supportAreaInfo: supportAreaInfo)
+            showSupportForm(transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
         }
     }
 
     // MARK: - Private Methods
 
-    private func showSupportForm(transcript: String, supportAreaInfo: SupportAreaInfo?) {
+    private func showSupportForm(transcript: String, supportAreaInfo: SupportAreaInfo?, entryPoint: SupportChatViewModel.EntryPoint) {
         let attachments = additionalAttachmentsProvider()
 
         let prefilledSubject: String?
@@ -96,14 +97,28 @@ final class SupportEscalationCoordinator {
 
         let viewModel = SupportFormViewModel(
             sourceTag: Tags.sourceTag,
-            additionalTags: Tags.additionalTags,
+            additionalTags: additionalTags(for: supportAreaInfo),
+            zendeskProvider: zendeskProvider,
             attachments: attachments,
             preselectedArea: supportAreaInfo?.area,
             prefilledSubject: prefilledSubject,
             prefilledDescription: prefilledDescription,
             onTicketCreated: { [weak self] in
+                self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
+                    route: .supportForm,
+                    supportAreaInfo: supportAreaInfo,
+                    entryPoint: entryPoint
+                ))
                 self?.persistTicketCreated()
                 self?.onTicketCreated?()
+            },
+            onTicketCreationFailed: { [weak self] error in
+                self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
+                    route: .supportForm,
+                    supportAreaInfo: supportAreaInfo,
+                    entryPoint: entryPoint,
+                    errorType: Self.errorType(for: error)
+                ))
             }
         )
         let viewController = SupportFormHostingController(viewModel: viewModel)
@@ -113,7 +128,7 @@ final class SupportEscalationCoordinator {
         }
     }
 
-    private func createTicketDirectly(with areaInfo: SupportAreaInfo) {
+    private func createTicketDirectly(with areaInfo: SupportAreaInfo, entryPoint: SupportChatViewModel.EntryPoint) {
         guard let presentingVC = navigationController?.topViewController else { return }
 
         let loadingViewController = InProgressViewController(
@@ -125,7 +140,7 @@ final class SupportEscalationCoordinator {
         let attachments = additionalAttachmentsProvider()
 
         let siteAddress = stores.sessionManager.defaultSite?.url ?? ""
-        let tags = areaInfo.area.datasource.tags + Tags.additionalTags + [Tags.sourceTag]
+        let tags = areaInfo.area.datasource.tags + additionalTags(for: areaInfo) + [Tags.sourceTag]
         let request = ZendeskSupportRequest(
             formID: areaInfo.area.datasource.formID,
             customFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress),
@@ -139,13 +154,22 @@ final class SupportEscalationCoordinator {
             loadingViewController.dismiss(animated: true) {
                 switch result {
                 case .success:
-                    self?.analytics.track(.supportNewRequestCreated)
+                    self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
+                        route: .directTicketCreation,
+                        supportAreaInfo: areaInfo,
+                        entryPoint: entryPoint
+                    ))
                     self?.persistTicketCreated()
                     self?.onTicketCreated?()
                     self?.showSuccessAndPop()
-                case .failure:
-                    self?.analytics.track(.supportNewRequestFailed)
-                    self?.showSupportForm(transcript: areaInfo.transcript, supportAreaInfo: areaInfo)
+                case .failure(let error):
+                    self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
+                        route: .directTicketCreation,
+                        supportAreaInfo: areaInfo,
+                        entryPoint: entryPoint,
+                        errorType: Self.errorType(for: error)
+                    ))
+                    self?.showSupportForm(transcript: areaInfo.transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
                 }
             }
         }
@@ -172,6 +196,23 @@ final class SupportEscalationCoordinator {
         guard let chatID else { return }
         let action = SupportChatAction.markTicketCreated(chatID: chatID) { }
         stores.dispatch(action)
+    }
+
+    private func additionalTags(for supportAreaInfo: SupportAreaInfo?) -> [String] {
+        var tags = Tags.additionalTags
+        if let topic = supportAreaInfo?.topic, topic.isNotEmpty {
+            tags.append(topic)
+        }
+        return tags
+    }
+
+    private static func errorType(for error: Error) -> String {
+        switch error {
+        case ZendeskError.failedToCreateIdentity:
+            return "identity_creation_failed"
+        default:
+            return "zendesk_request_failed"
+        }
     }
 }
 

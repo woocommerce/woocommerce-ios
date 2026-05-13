@@ -5,7 +5,7 @@ import struct Yosemite.Order
 struct POSCartMarkAsPaidHandler: POSMarkAsPaidHandling {
     let orderController: PointOfSaleOrderControllerProtocol
 
-    func markOrderAsPaid(for order: Order) async throws {
-        try await orderController.markOrderAsPaidManually()
+    func markOrderAsPaid(for order: Order, note: String?) async throws {
+        try await orderController.markOrderAsPaidManually(note: note)
     }
 }

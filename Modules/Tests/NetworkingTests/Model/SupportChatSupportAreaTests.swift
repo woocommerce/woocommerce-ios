@@ -95,6 +95,7 @@ struct SupportChatSupportAreaTests {
         let json = """
         {
             "area": "woopayments",
+            "topic": "woo_mobile_issue_orders",
             "confidence": "medium"
         }
         """
@@ -105,7 +106,25 @@ struct SupportChatSupportAreaTests {
 
         // Then
         #expect(result.area == .wooPayments)
+        #expect(result.topic == "woo_mobile_issue_orders")
         #expect(result.confidence == .medium)
         #expect(result.isHighConfidence == false)
+    }
+
+    @Test func supportArea_decodes_without_topic() throws {
+        // Given
+        let json = """
+        {
+            "area": "woopayments",
+            "confidence": "medium"
+        }
+        """
+        let data = try #require(json.data(using: .utf8))
+
+        // When
+        let result = try JSONDecoder().decode(SupportChatSupportArea.self, from: data)
+
+        // Then
+        #expect(result.topic == nil)
     }
 }

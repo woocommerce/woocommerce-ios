@@ -3,8 +3,24 @@ import SwiftUI
 struct EmptyStateView: View {
 
     let onPick: (String) -> Void
+    var onFeedbackTap: (() -> Void)? = nil
+    let siteID: Int64
+
+    @AppStorage private var hasDismissedEarlyAccessNotice: Bool
 
     private let suggestions: [SuggestionItem] = EmptyStateView.defaultSuggestions
+
+    init(onPick: @escaping (String) -> Void,
+         onFeedbackTap: (() -> Void)? = nil,
+         siteID: Int64) {
+        self.onPick = onPick
+        self.onFeedbackTap = onFeedbackTap
+        self.siteID = siteID
+        self._hasDismissedEarlyAccessNotice = AppStorage(
+            wrappedValue: false,
+            "hasDismissedWooAIAssistantEarlyAccessTooltip-\(siteID)"
+        )
+    }
 
     struct SuggestionItem: Identifiable {
         let id = UUID()
@@ -16,35 +32,46 @@ struct EmptyStateView: View {
     private static let dividerLeadingInset: CGFloat = AssistantSpacing.large + symbolWidth + AssistantSpacing.medium
 
     var body: some View {
-        VStack(alignment: .leading, spacing: AssistantSpacing.medium) {
-            Text(Localization.title)
-                .font(.assistantTitle)
-                .foregroundStyle(Color.primary)
-                .padding(.horizontal, AssistantSpacing.large)
-                .padding(.top, AssistantSpacing.xxLarge)
+        ScrollView {
+            VStack(alignment: .leading, spacing: AssistantSpacing.medium) {
+                if let onFeedbackTap, !hasDismissedEarlyAccessNotice {
+                    AssistantEarlyAccessNoticeCard(
+                        onFeedbackTap: onFeedbackTap,
+                        onDismiss: { hasDismissedEarlyAccessNotice = true }
+                    )
+                    .padding(.horizontal, AssistantSpacing.large)
+                    .padding(.top, AssistantSpacing.large)
+                }
 
-            AssistantDashboardCardShell(
-                title: nil,
-                padBody: false
-            ) {
-                VStack(spacing: 0) {
-                    ForEach(Array(suggestions.enumerated()), id: \.element.id) { index, item in
-                        SuggestionRow(item: item,
-                                      symbolWidth: Self.symbolWidth,
-                                      onTap: { onPick(item.title) })
-                        if index < suggestions.count - 1 {
-                            Rectangle()
-                                .fill(Color.assistantSeparator.opacity(0.4))
-                                .frame(height: 0.5)
-                                .padding(.leading, Self.dividerLeadingInset)
+                Text(Localization.title)
+                    .font(.assistantTitle)
+                    .foregroundStyle(Color.primary)
+                    .padding(.horizontal, AssistantSpacing.large)
+                    .padding(.top, AssistantSpacing.xxLarge)
+
+                AssistantDashboardCardShell(
+                    title: nil,
+                    padBody: false
+                ) {
+                    VStack(spacing: 0) {
+                        ForEach(Array(suggestions.enumerated()), id: \.element.id) { index, item in
+                            SuggestionRow(item: item,
+                                          symbolWidth: Self.symbolWidth,
+                                          onTap: { onPick(item.title) })
+                            if index < suggestions.count - 1 {
+                                Rectangle()
+                                    .fill(Color.assistantSeparator.opacity(0.4))
+                                    .frame(height: 0.5)
+                                    .padding(.leading, Self.dividerLeadingInset)
+                            }
                         }
                     }
                 }
+                .padding(.horizontal, AssistantSpacing.large)
             }
-            .padding(.horizontal, AssistantSpacing.large)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.bottom, AssistantSpacing.large)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.bottom, AssistantSpacing.large)
     }
 
     private static let defaultSuggestions: [SuggestionItem] = [
@@ -117,7 +144,7 @@ private struct SuggestionRow: View {
 }
 
 #Preview("Standalone") {
-    EmptyStateView { _ in }
+    EmptyStateView(onPick: { _ in }, siteID: 0)
         .background(Color.assistantSurface)
 }
 #endif

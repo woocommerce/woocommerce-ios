@@ -317,7 +317,7 @@ struct SupportChatViewModelTests {
             Issue.record("Expected state to be .error after 500, got \(String(describing: sut.state))")
             return
         }
-        #expect(message.contains("couldn't connect"), "Expected generic copy, got: \(message)")
+        #expect(message.contains("Something went wrong. Please try again."), "Expected generic copy, got: \(message)")
     }
 
     @Test func sendMessage_when_failure_then_marks_last_user_message_as_failed() async {
@@ -358,7 +358,7 @@ struct SupportChatViewModelTests {
             Issue.record("Expected state to be .error after timeout, got \(String(describing: sut.state))")
             return
         }
-        #expect(message.contains("couldn't connect"), "Expected generic copy, got: \(message)")
+        #expect(message.contains("Something went wrong. Please try again."), "Expected generic copy, got: \(message)")
     }
 
     @Test func sendMessage_tracks_messageSent_with_isFirstMessage_toggling_across_multiple_sends() {
@@ -1106,7 +1106,7 @@ struct SupportChatViewModelTests {
         #expect(sut.shouldShowResolvedButton == true)
     }
 
-    @Test func sendMessage_when_last_bot_message_is_resolved_then_appends_resolved_prompt() async {
+    @Test func sendMessage_when_last_bot_message_is_resolved_then_appends_resolved_prompt() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -1138,13 +1138,13 @@ struct SupportChatViewModelTests {
         sut.sendMessage()
 
         // Then
-        let prompt = try? #require(sut.messages.last)
-        #expect(prompt?.role == .bot)
-        #expect(prompt?.messageID == nil)
-        #expect(prompt?.textContent?.contains("mark the chat as resolved") == true)
+        let prompt = try #require(sut.messages.last)
+        #expect(prompt.role == .bot)
+        #expect(prompt.messageID == nil)
+        #expect(prompt.content == .resolvedPrompt)
     }
 
-    @Test func submitFeedback_when_upvoting_last_bot_message_then_appends_resolved_prompt() async {
+    @Test func submitFeedback_when_upvoting_last_bot_message_then_appends_resolved_prompt() async throws {
         // Given
         let messageID: Int64 = 2
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1176,10 +1176,52 @@ struct SupportChatViewModelTests {
         sut.submitFeedback(messageID: messageID, upvoted: true)
 
         // Then
-        let prompt = try? #require(sut.messages.last)
-        #expect(prompt?.role == .bot)
-        #expect(prompt?.messageID == nil)
-        #expect(prompt?.textContent?.contains("mark the chat as resolved") == true)
+        let prompt = try #require(sut.messages.last)
+        #expect(prompt.role == .bot)
+        #expect(prompt.messageID == nil)
+        #expect(prompt.content == .resolvedPrompt)
+    }
+
+    @Test func submitFeedback_when_resolved_prompt_already_exists_then_does_not_append_duplicate_prompt() async {
+        // Given
+        let messageID: Int64 = 2
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, message, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                        SupportChatMessage(
+                            messageID: messageID,
+                            role: .bot,
+                            content: "Glad that helped.",
+                            context: SupportChatMessageContext(sources: [], flags: nil, isResolved: true)
+                        )
+                    ]
+                )
+                completion(.success(response))
+            case let .submitFeedback(_, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
+        sut.inputText = "That fixed it"
+        sut.sendMessage()
+        let promptCount = sut.messages.filter { $0.content == .resolvedPrompt }.count
+
+        // When
+        sut.submitFeedback(messageID: messageID, upvoted: true)
+
+        // Then
+        #expect(promptCount == 1)
+        #expect(sut.messages.filter { $0.content == .resolvedPrompt }.count == 1)
     }
 
     @Test func shouldShowResolvedButton_when_last_bot_message_is_downvoted_then_returns_false() async {

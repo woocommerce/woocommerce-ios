@@ -153,6 +153,9 @@ struct SupportChatView: View {
                 }
             }
 
+        case .resolvedPrompt:
+            SupportChatMessageRow(role: message.role, text: message.content.text ?? "", failed: false)
+
         case .issuePicker(let issues):
             issuePickerBubble(issues: issues)
 

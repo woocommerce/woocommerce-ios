@@ -190,9 +190,8 @@ struct WidgetSnapshotAnalyticsTests {
 
     @Test func accessoryRectangular_reports_resolved_chart_backed_metric() {
         // Given - snapshot construction stores the family-resolved visible metric before analytics.
-        let metrics = StoreStatsConfigurationIntent.resolveMetricSelection(
-            requested: [.visitors],
-            family: .accessoryRectangular
+        let metrics = StoreTrendsConfigurationIntent.resolveMetricSelection(
+            requested: [.visitors]
         )
         let tile = WidgetSnapshot.Tile(
             kind: WooConstants.storeTrendsWidgetKind,

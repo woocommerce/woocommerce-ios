@@ -22,6 +22,15 @@ struct StoreStatsConfigurationIntentTests {
         #expect(StoreStatsConfigurationIntent.metricsSlotCounts[.systemLarge] == 7)
     }
 
+    @Test func metrics_query_keeps_non_chart_metrics_available() async throws {
+        // When
+        let metrics = try await AvailableMetricsQuery().suggestedEntities()
+
+        // Then
+        #expect(metrics.contains(.visitors))
+        #expect(metrics.contains(.conversion))
+    }
+
     // MARK: - Family-aware metric resolution
 
     @Test func accessoryRectangular_resolves_to_one_metric() {

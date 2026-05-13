@@ -31,3 +31,21 @@ struct AvailableMetricsQuery: EnumerableEntityQuery {
         StoreInfoMetricType.allCases
     }
 }
+
+/// Drives the Edit Widget UI for the Trends widget metric parameter.
+///
+/// Trends renders a small chart, so the picker only exposes metrics backed by interval data.
+///
+struct AvailableChartMetricsQuery: EnumerableEntityQuery {
+    func allEntities() async throws -> [StoreInfoMetricType] {
+        StoreInfoMetricType.allCases.filter(\.supportsChart)
+    }
+
+    func entities(for identifiers: [StoreInfoMetricType.ID]) async throws -> [StoreInfoMetricType] {
+        StoreInfoMetricType.allCases.filter { identifiers.contains($0.id) && $0.supportsChart }
+    }
+
+    func suggestedEntities() async throws -> [StoreInfoMetricType] {
+        StoreInfoMetricType.allCases.filter(\.supportsChart)
+    }
+}

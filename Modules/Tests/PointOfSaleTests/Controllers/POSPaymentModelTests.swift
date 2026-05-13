@@ -2070,6 +2070,114 @@ struct POSPaymentModelTests {
 
         // Then: verifier was called at least once after activate
         #expect(verifier.checkPaymentStatusCallCount >= 1)
+    // MARK: - Phone POS TTP optimizations
+
+    @Test("startPayment on the TTP path does not auto-collect when no BT reader was previously attached")
+    @MainActor
+    func test_startPayment_when_TTP_preferred_and_no_prior_BT_then_does_not_auto_collect() async {
+        // Given — phone POS path (preferred = .tapToPay), no reader attached.
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay)
+
+        // When — `startPayment` fires the silent TTP pre-connect inside a Task,
+        // so wait for the SDK-level `connectReader` to be called before
+        // asserting. Without this the Task hasn't been scheduled yet by the
+        // time the test continues.
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = { continuation.resume() }
+            Task { @MainActor in await sut.startPayment() }
+        }
+
+        // Then — silent TTP pre-connect kicked off, no collect started, no
+        // active session is set on the model. Collection is gated behind an
+        // explicit method tap from the hero / sheet.
+        #expect(sut.currentPaymentMethod == nil)
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(service.connectReaderCallCount == 1)
+    }
+
+    @Test("startPaymentWithMethod ignores re-entry of the same method during an active session")
+    @MainActor
+    func test_startPaymentWithMethod_when_called_again_with_same_method_then_ignored() async {
+        // Given — an active BT session (set up via the iPad-style auto-collect
+        // path so the mock doesn't have to simulate the SDK's disconnect /
+        // reconnect status propagation that the TTP-preferred path requires).
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        service.connectedReader = .init(name: "BT Reader", batteryLevel: 0.85)
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .bluetooth)
+        await withCheckedContinuation { continuation in
+            service.onCollectPaymentCalled = { continuation.resume() }
+            Task { @MainActor in await sut.startPayment() }
+        }
+        let connectCountAfterFirst = service.connectReaderCallCount
+        service.collectPaymentWasCalled = false
+
+        // When — re-entering with the same method (e.g. stray closure / SwiftUI
+        // re-render after the session is established).
+        await sut.startPaymentWithMethod(.bluetooth)
+
+        // Then — second call is a no-op: no new connect, no new collect, the
+        // active method is unchanged.
+        #expect(service.connectReaderCallCount == connectCountAfterFirst)
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.currentPaymentMethod == .bluetooth)
+    }
+
+    @Test("startPaymentWithMethod cancels the current payment when switching to a different method")
+    @MainActor
+    func test_startPaymentWithMethod_when_switching_methods_then_cancels_current_payment() async {
+        // Given — an active BT session.
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        service.connectedReader = .init(name: "BT Reader", batteryLevel: 0.85)
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .bluetooth)
+        await withCheckedContinuation { continuation in
+            service.onCollectPaymentCalled = { continuation.resume() }
+            Task { @MainActor in await sut.startPayment() }
+        }
+        service.cancelPaymentCalled = false
+
+        // When — merchant picks Tap to Pay from the Other payment methods sheet
+        // while BT is mid-collection. Wait until the SUT has finished the
+        // cancel + active-method-flip portion of `startPaymentWithMethod` by
+        // observing `currentPaymentMethod` flipping to `.tapToPay` (which
+        // happens *after* `cancelPayment` has been awaited). The TTP connect
+        // that follows isn't observable through the mock (it doesn't
+        // propagate connect results into the connection-status publisher),
+        // so we stop here and assert on the switch step alone.
+        await withCheckedContinuation { continuation in
+            withObservationTracking {
+                _ = sut.currentPaymentMethod
+            } onChange: {
+                Task { @MainActor in
+                    if sut.currentPaymentMethod == .tapToPay {
+                        continuation.resume()
+                    }
+                }
+            }
+            Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        }
+
+        // Then — the BT collect was cancelled and the active method flipped.
+        #expect(service.cancelPaymentCalled == true)
+        #expect(sut.currentPaymentMethod == .tapToPay)
     }
 }
 
@@ -2089,6 +2197,7 @@ private func makePaymentController(
     analytics: POSAnalyticsProviding = MockPOSAnalytics(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     celebration: PaymentCaptureCelebrationProtocol = MockPaymentCaptureCelebration(),
+    preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
     scanToPayPollInterval: TimeInterval = 3,
     preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
     paymentState: PointOfSalePaymentState = .idle
@@ -2106,6 +2215,7 @@ private func makePaymentController(
         analytics: analytics,
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         celebration: celebration,
+        preferredConnectionMethod: preferredConnectionMethod,
         scanToPayPollInterval: scanToPayPollInterval,
         preferredConnectionMethod: preferredConnectionMethod,
         paymentState: paymentState)

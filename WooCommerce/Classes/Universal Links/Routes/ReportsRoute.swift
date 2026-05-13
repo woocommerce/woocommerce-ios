@@ -17,15 +17,15 @@ struct ReportsRoute: Route {
     }
 
     func canHandle(subPath: String) -> Bool {
-        subPath == Constants.analyticsRoot
+        subPath == StoreMetricsReportRoute.subpath
     }
 
     func perform(for subPath: String, with parameters: [String: String]) -> Bool {
-        guard subPath == Constants.analyticsRoot else { return false }
+        guard subPath == StoreMetricsReportRoute.subpath else { return false }
 
-        let metricRaw = parameters[Constants.metricQueryKey]
-        let rangeRaw = parameters[Constants.rangeQueryKey]
-        let sourceRaw = parameters[Constants.sourceQueryKey]
+        let metricRaw = parameters[StoreMetricsReportRoute.QueryKey.metric]
+        let rangeRaw = parameters[StoreMetricsReportRoute.QueryKey.range]
+        let sourceRaw = parameters[StoreMetricsReportRoute.QueryKey.source]
 
         let destination: AnalyticsHubDestination = {
             guard let card = metricRaw.flatMap(WidgetMetricMapping.cardType(forMetricRawValue:)),
@@ -35,30 +35,12 @@ struct ReportsRoute: Route {
             return .focusedCard(card: card, range: range)
         }()
 
-        if sourceRaw == Constants.storeInfoWidgetSource {
+        if sourceRaw == StoreMetricsReportRoute.Source.storeInfoWidget {
             analytics.track(event: .Widgets.storeStatsWidgetMetricTapped(metric: metricRaw, range: rangeRaw))
         }
 
         deepLinkNavigator.navigate(to: destination)
         return true
-    }
-}
-
-/// Wire-format contract for the deep link consumed here. Duplicated from
-/// `WidgetReportsURL.Constants` (`WooCommerce/StoreWidgets/WidgetReportsURL.swift`) because
-/// the WooCommerce target and the StoreWidgetsExtension target sync separate source roots
-/// (`Classes/` and `StoreWidgets/` respectively) and share no compilable folder. Any change
-/// here MUST be mirrored in `WidgetReportsURL.Constants` and the corresponding tests on
-/// both sides.
-private extension ReportsRoute {
-    enum Constants {
-        static let analyticsRoot = "analytics"
-        static let metricQueryKey = "metric"
-        static let rangeQueryKey = "range"
-        static let sourceQueryKey = "source"
-        /// Mirrors `WidgetReportsURL.Constants.sourceValue` — the wire-format identifier the
-        /// Store Info widget stamps onto its deep links so the route can attribute the tap.
-        static let storeInfoWidgetSource = "store-info-widget"
     }
 }
 

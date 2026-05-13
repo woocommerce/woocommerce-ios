@@ -123,6 +123,8 @@ public final class AssistantConversation {
                     streamingState = .failed(error.message)
                 }
             }
+        case .terminated:
+            break
         }
     }
 

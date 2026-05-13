@@ -14,14 +14,18 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
                 safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
                 systemPromptProvider: @escaping @Sendable () -> String? = { nil },
                 historyBudgeter: HistoryBudgeter = SlidingWindowHistoryBudgeter(),
-                maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations) {
+                maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
+                telemetryTracker: AssistantTelemetryTracker = NoopAssistantTelemetryTracker(),
+                clock: SystemClock = WallSystemClock()) {
         self.systemPromptProvider = systemPromptProvider
         self.historyBudgeter = historyBudgeter
         self.orchestrator = AgenticLoopOrchestrator(chatService: chatService,
                                                     toolRegistry: toolRegistry,
                                                     safetyPolicy: safetyPolicy,
                                                     systemPrompt: nil,
-                                                    maxIterations: maxIterations)
+                                                    maxIterations: maxIterations,
+                                                    telemetryTracker: telemetryTracker,
+                                                    clock: clock)
     }
 
     public convenience init(chatService: AIChatService,
@@ -29,14 +33,18 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
                             safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
                             systemPrompt: String?,
                             historyBudgeter: HistoryBudgeter = SlidingWindowHistoryBudgeter(),
-                            maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations) {
+                            maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
+                            telemetryTracker: AssistantTelemetryTracker = NoopAssistantTelemetryTracker(),
+                            clock: SystemClock = WallSystemClock()) {
         let captured = systemPrompt
         self.init(chatService: chatService,
                   toolRegistry: toolRegistry,
                   safetyPolicy: safetyPolicy,
                   systemPromptProvider: { captured },
                   historyBudgeter: historyBudgeter,
-                  maxIterations: maxIterations)
+                  maxIterations: maxIterations,
+                  telemetryTracker: telemetryTracker,
+                  clock: clock)
     }
 
     public func send(turn: AssistantTurn,
@@ -59,7 +67,8 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
 
                 do {
                     for try await event in orchestrator.run(prompt: turn.prompt,
-                                                            priorMessages: prior) {
+                                                            priorMessages: prior,
+                                                            telemetryContext: turn.telemetryContext) {
                         Self.accumulate(event,
                                         text: &pendingText,
                                         toolCalls: &pendingToolCalls,
@@ -130,7 +139,7 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
         case .toolCallCompleted(let id, _, let resultJSON):
             toolResults.append((id, resultJSON ?? "{}"))
         case .toolResult, .cardRender, .confirmationRequired,
-             .confirmationResolved, .completed, .failed:
+             .confirmationResolved, .completed, .failed, .terminated:
             break
         }
     }

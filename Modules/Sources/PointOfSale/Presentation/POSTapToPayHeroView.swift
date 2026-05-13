@@ -53,19 +53,23 @@ struct POSTapToPayHeroView: View {
 private extension POSTapToPayHeroView {
     enum Localization {
         static let title = NSLocalizedString(
-            "pos.tapToPay.hero.title",
-            value: "Tap to pay",
-            comment: "Title shown in the Tap to Pay hero on the POS checkout."
+            "pos.tapToPay.hero.title.v2",
+            value: "Tap to Pay on iPhone",
+            comment: "Title shown in the Tap to Pay on iPhone hero on the POS checkout. " +
+                "\"Tap to Pay on iPhone\" is Apple's product name and must be capitalised exactly as shown."
         )
         static let subtitle = NSLocalizedString(
             "pos.tapToPay.hero.subtitle",
             value: "Use this device to accept contactless card payments.",
-            comment: "Subtitle shown in the Tap to Pay hero on the POS checkout."
+            comment: "Subtitle shown in the Tap to Pay on iPhone hero on the POS checkout."
         )
         static let payButton = NSLocalizedString(
-            "pos.tapToPay.hero.payButton",
-            value: "Pay with Tap to pay",
-            comment: "Primary CTA shown in the Tap to Pay hero on the POS checkout."
+            "pos.tapToPay.hero.payButton.v2",
+            value: "Pay with Tap to Pay",
+            comment: "Primary CTA shown in the Tap to Pay on iPhone hero on the POS checkout. " +
+                "The full product name \"Tap to Pay on iPhone\" appears in the hero title above, " +
+                "so the CTA uses the shortened form \"Tap to Pay\" — Apple's branding guidelines " +
+                "permit this once the full name has been shown on the same screen."
         )
     }
 }

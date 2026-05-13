@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ParcelDimensions {
+public struct ParcelDimensions: Hashable {
     public var length: Float
     public var width: Float
     public var height: Float

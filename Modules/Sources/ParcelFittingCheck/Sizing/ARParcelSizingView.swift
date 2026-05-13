@@ -84,7 +84,7 @@ struct ARParcelSizingView: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(.blue, in: Capsule())
+                .background(Color.accentColor, in: Capsule())
                 .foregroundStyle(.white)
         }
         .padding(.horizontal, 16)

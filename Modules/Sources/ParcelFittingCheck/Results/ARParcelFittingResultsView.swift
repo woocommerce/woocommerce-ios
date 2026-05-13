@@ -9,18 +9,14 @@ public struct ARParcelFittingResultsView: View {
     @State private var starredPackageIDs: Set<String>
     @State private var selection: Selection?
 
-    let onBack: (() -> Void)?
-
     public init(viewModel: ARParcelFittingResultsViewModel,
          starredPackageIDs: Set<String>,
          delegate: ParcelFittingDelegate?,
          onConfirm: @escaping (ParcelFittingResult) -> Void,
-         onBack: (() -> Void)? = nil,
          onBrowseAllPackages: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.delegate = delegate
         self.onConfirm = onConfirm
-        self.onBack = onBack
         self.onBrowseAllPackages = onBrowseAllPackages
         self._starredPackageIDs = State(initialValue: starredPackageIDs)
     }
@@ -39,16 +35,6 @@ public struct ARParcelFittingResultsView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle(Localization.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(onBack != nil)
-        .toolbar {
-            if let onBack {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button { onBack() } label: {
-                        Image(systemName: "chevron.left")
-                    }
-                }
-            }
-        }
     }
 
     // MARK: - Subviews
@@ -205,8 +191,7 @@ public struct ARParcelFittingResultsView: View {
             ),
             starredPackageIDs: ["usps_medium"],
             delegate: nil,
-            onConfirm: { _ in },
-            onBack: {}
+            onConfirm: { _ in }
         )
     }
 }
@@ -221,8 +206,7 @@ public struct ARParcelFittingResultsView: View {
             ),
             starredPackageIDs: [],
             delegate: nil,
-            onConfirm: { _ in },
-            onBack: {}
+            onConfirm: { _ in }
         )
     }
 }

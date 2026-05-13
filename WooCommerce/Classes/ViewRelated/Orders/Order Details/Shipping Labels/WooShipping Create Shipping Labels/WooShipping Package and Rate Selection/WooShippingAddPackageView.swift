@@ -133,6 +133,7 @@ struct WooShippingAddPackageView: View {
             unit: packagesViewModel.arDimensionUnit,
             carriers: packagesViewModel.parcelPresetCarriers,
             starredPackageIDs: packagesViewModel.starredCarriersPackages,
+            tintColor: .withColorStudio(.wooCommercePurple, shade: .shade60),
             delegate: arDelegate
         )
     }

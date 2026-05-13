@@ -70,16 +70,21 @@ struct WooShippingSelectedPackageView: View {
                                 dimensionUnit: lastARDimensionUnit
                             )
                         },
-                        onBack: {
-                            showARResults = false
-                        },
                         onBrowseAllPackages: {
                             showARResults = false
                             showPackageSelection = true
                         }
                     )
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button(Localization.done) {
+                                showARResults = false
+                            }
+                        }
+                    }
                 }
                 .navigationViewStyle(.stack)
+                .tint(Color(.withColorStudio(.wooCommercePurple, shade: .shade60)))
             }
         }
     }

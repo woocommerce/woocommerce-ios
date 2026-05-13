@@ -103,7 +103,8 @@ struct DebugPanelView: View {
     private func presentDebugSizing() {
         guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
         let unit: UnitLength = .fromStoreUnit(ServiceLocator.shippingSettingsService.dimensionUnit ?? "in")
-        ParcelFittingCheckPresenter.presentSizing(from: presenter, unit: unit, onConfirm: { _ in })
+        let tint: UIColor = .withColorStudio(.wooCommercePurple, shade: .shade60)
+        ParcelFittingCheckPresenter.presentSizing(from: presenter, unit: unit, tintColor: tint, onConfirm: { _ in })
     }
 
     @State private var debugDelegate = DebugParcelFittingDelegate()
@@ -127,7 +128,11 @@ struct DebugPanelView: View {
                                     length: 16.0, width: 11.0, height: 3.0),
             ]),
         ]
-        ParcelFittingCheckPresenter.presentUnifiedFlow(from: presenter, unit: unit, carriers: carriers, delegate: debugDelegate)
+        ParcelFittingCheckPresenter.presentUnifiedFlow(from: presenter,
+                                                       unit: unit,
+                                                       carriers: carriers,
+                                                       tintColor: .withColorStudio(.wooCommercePurple, shade: .shade60),
+                                                       delegate: debugDelegate)
     }
 
     private func fetchTestAnnouncement() {

@@ -796,27 +796,27 @@ private extension TotalsView {
     }
 
     /// True when the Card reader row should appear inside the Other Payment
-    /// Methods sheet. Shown only on the TTP-hero screen — that's the only
-    /// state where the merchant hasn't yet committed to a method and might
-    /// want to opt out to BT. On the BT-reader-connected screen Card reader
-    /// would be a no-op contradiction; on the (rare) catch-all row screen the
-    /// sheet doesn't surface anyway.
+    /// Methods sheet. Hidden only when the merchant is currently using BT —
+    /// re-listing it there would be a no-op contradiction. Visible everywhere
+    /// else, including during a TTP collection (lets the merchant switch back
+    /// to a BT reader mid-flow).
     ///
-    /// Critically: we can't gate this on `cardReaderConnectionStatus` alone
+    /// Uses `currentPaymentMethod` instead of `cardReaderConnectionStatus`
     /// because the silent TTP pre-connect also reports the reader as
-    /// `.connected`. The hero layout is the canonical signal for "no
-    /// merchant-chosen reader."
+    /// `.connected` — only `currentPaymentMethod` distinguishes
+    /// "merchant committed to BT" from "TTP reader is warm."
     var isCardReaderRowAvailableInOtherMethodsSheet: Bool {
-        useTapToPayHeroLayout
+        paymentModel.currentPaymentMethod != .bluetooth
     }
 
     /// True when the Tap to Pay on iPhone row should appear inside the Other
-    /// Payment Methods sheet. We surface it only when the merchant has already
-    /// picked BT (off the hero) — on the TTP-hero screen TTP is the primary
-    /// CTA already and listing it inside the sheet would duplicate it.
+    /// Payment Methods sheet. Hidden on the TTP hero (it's already the
+    /// primary CTA up top) and during an active TTP session (already on it).
+    /// Visible during BT flows so the merchant can switch over.
     var isTapToPayRowAvailableInOtherMethodsSheet: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
-        return !useTapToPayHeroLayout
+        if useTapToPayHeroLayout { return false }
+        return paymentModel.currentPaymentMethod != .tapToPay
     }
 
     func handleTapToPayTapped() {

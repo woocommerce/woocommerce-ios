@@ -226,26 +226,34 @@ extension POSPaymentModel {
     /// — but threaded through with the explicit method so the eventual collect
     /// targets the reader that's actually coming up.
     func startPaymentWithMethod(_ method: CardReaderConnectionMethod) async {
-        DDLogInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus)")
+        DDLogInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), currentPaymentMethod: \(String(describing: currentPaymentMethod))")
 
-        // Defensive re-entry guard: only kick a fresh flow off the idle state.
-        // If a payment is already mid-flight (preparing, accepting, processing,
-        // success, error), a second call from a stray closure / restored
-        // subscription / SwiftUI re-render could clobber generation tracking
-        // and confuse the Stripe Terminal state machine. The hero / sheet
-        // buttons in `TotalsView` already double-tap-protect via the
-        // `isStartingPayment` gate; this is the model-side belt to that.
-        guard paymentState.card == .idle else {
-            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — card state is \(paymentState.card)")
+        // Same-method re-entry guard. Two different shapes:
+        // - BT: card state moves out of `.idle` during collection, so the
+        //   currentPaymentMethod check catches re-entry too.
+        // - TTP: we suppress intermediate card states so `paymentState.card`
+        //   stays `.idle` for the whole session — `currentPaymentMethod` is
+        //   the canonical "in flight" check.
+        if currentPaymentMethod == method {
+            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — \(method) session already active")
             return
         }
-        // On TTP we suppress the intermediate card states so `paymentState.card`
-        // stays `.idle` for the entire collection session — the guard above
-        // therefore can't catch re-entry there. `currentPaymentMethod` is the
-        // canonical "in flight" check for TTP.
-        if currentPaymentMethod == .tapToPay {
-            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — TTP session already active")
+        // Block re-entry while non-idle if there's no active method to switch
+        // *from* (stray closure / SwiftUI re-render after a terminal state).
+        if paymentState.card != .idle, currentPaymentMethod == nil {
+            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — non-idle card state with no active method")
             return
+        }
+
+        // Method-switch path: the merchant is switching from one active
+        // method to another (e.g. picking Tap to Pay from the Other Payment
+        // Methods sheet while a BT reader is mid-collection). Cancel the
+        // in-flight collection on the SDK before we tear down the reader —
+        // otherwise the new collect would race with a still-pending one and
+        // Stripe Terminal would reject it.
+        if let active = currentPaymentMethod, active != method {
+            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod switching \(active) -> \(method) — cancelling current payment first")
+            try? await cardPresentPaymentService.cancelPayment()
         }
 
         if method == .tapToPay {
@@ -259,18 +267,16 @@ extension POSPaymentModel {
         currentPaymentMethod = method
         isAwaitingExplicitPaymentStart = false
 
-        // If a reader is connected via the *other* method, drop it before
-        // connecting via the chosen one. Stripe Terminal can only have one
-        // active reader; without the disconnect the new connect would be
-        // rejected. iPad never hits this branch (preferred is always
-        // bluetooth there), so the disconnect is scoped to the phone-with-TTP
-        // method-switch case.
-        if case .connected = cardReaderConnectionStatus {
-            if method == .bluetooth, preferredConnectionMethod == .tapToPay {
-                await cardPresentPaymentService.disconnectReader()
-            } else if method == .tapToPay, preferredConnectionMethod == .bluetooth {
-                await cardPresentPaymentService.disconnectReader()
-            }
+        // If a reader is connected via a *different* method than the one the
+        // merchant just picked, disconnect it first. Stripe Terminal can only
+        // hold one active reader, so the subsequent connect would be rejected
+        // otherwise. `lastConnectedMethod` is the canonical "what method is
+        // currently connected" signal — distinct from `preferredConnectionMethod`
+        // which is the POS-level default and doesn't track what's actually
+        // attached right now. (The previous check used `preferredConnectionMethod`
+        // and missed phone-POS-with-BT-currently-attached cases.)
+        if case .connected = cardReaderConnectionStatus, lastConnectedMethod != method {
+            await cardPresentPaymentService.disconnectReader()
         }
 
         if case .disconnected = cardReaderConnectionStatus {

@@ -28,7 +28,7 @@ struct AssistantEarlyAccessNoticeCard: View {
                 HStack(spacing: AssistantSpacing.small) {
                     Image(systemName: "bubble.left")
                         .font(.system(size: Layout.iconSize, weight: .semibold))
-                    Text(Localization.feedbackCTA)
+                    Text(Localization.giveFeedback)
                         .font(.assistantSubheadlineEmphasized)
                 }
                 .foregroundStyle(Color.primary)
@@ -88,9 +88,9 @@ struct AssistantEarlyAccessNoticeCard: View {
             value: "Hi! We're just getting started, with more on the way. Let us know what's missing and what you'd love help with!",
             comment: "Body copy for the AI Assistant early access notice card"
         )
-        static let feedbackCTA = NSLocalizedString(
-            "assistantChat.empty.earlyAccess.feedbackCTA",
-            value: "Feedback & requests",
+        static let giveFeedback = NSLocalizedString(
+            "assistantChat.empty.earlyAccess.giveFeedback",
+            value: "Give feedback",
             comment: "Button label opening the AI Assistant feedback survey"
         )
         static let dismissAccessibilityLabel = NSLocalizedString(

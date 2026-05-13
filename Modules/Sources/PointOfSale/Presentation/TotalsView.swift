@@ -787,23 +787,27 @@ private extension TotalsView {
     }
 
     /// True when the Card reader row should appear inside the Other Payment
-    /// Methods sheet. False once a reader is already connected — its
-    /// "Connect a Bluetooth reader…" subtitle would mislead in that state.
+    /// Methods sheet. Shown only on the TTP-hero screen — that's the only
+    /// state where the merchant hasn't yet committed to a method and might
+    /// want to opt out to BT. On the BT-reader-connected screen Card reader
+    /// would be a no-op contradiction; on the (rare) catch-all row screen the
+    /// sheet doesn't surface anyway.
+    ///
+    /// Critically: we can't gate this on `cardReaderConnectionStatus` alone
+    /// because the silent TTP pre-connect also reports the reader as
+    /// `.connected`. The hero layout is the canonical signal for "no
+    /// merchant-chosen reader."
     var isCardReaderRowAvailableInOtherMethodsSheet: Bool {
-        let viewHelper = POSPaymentViewHelper()
-        return viewHelper.shouldShowDisconnectedMessage(
-            readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
-            paymentState: displayPaymentState
-        )
+        useTapToPayHeroLayout
     }
 
     /// True when the Tap to Pay on iPhone row should appear inside the Other
     /// Payment Methods sheet. We surface it only when the merchant has already
-    /// picked BT (reader connected) — on the TTP-hero screen TTP is the
-    /// primary CTA already and listing it inside the sheet would duplicate it.
+    /// picked BT (off the hero) — on the TTP-hero screen TTP is the primary
+    /// CTA already and listing it inside the sheet would duplicate it.
     var isTapToPayRowAvailableInOtherMethodsSheet: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
-        return !isCardReaderRowAvailableInOtherMethodsSheet
+        return !useTapToPayHeroLayout
     }
 
     func handleTapToPayTapped() {

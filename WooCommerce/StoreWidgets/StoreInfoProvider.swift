@@ -126,16 +126,20 @@ final class StoreInfoProvider: TimelineProvider {
     ///
     func loadTimeline(
         dateRange: StoreStatsWidgetDateRange,
-        metrics: [StoreInfoMetricType]
+        metrics: [StoreInfoMetricType],
+        selectedStoreID: StoreStatsStoreEntity.ID? = nil
     ) async -> Timeline<StoreInfoEntry> {
-        guard let dependencies = Self.fetchDependencies() else {
+        guard let dependencies = Self.fetchDependencies(selectedStoreID: selectedStoreID) else {
             return Timeline<StoreInfoEntry>(entries: [.notConnected], policy: .never)
         }
 
         let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
         let service = StoreInfoDataService(credentials: dependencies.credentials)
         do {
-            let statsPeriod = try await service.fetchStats(for: dependencies.storeID, dateRange: dateRange.serviceDateRange)
+            let statsPeriod = try await service.fetchStats(
+                for: dependencies.store.storeID,
+                dateRange: dateRange.serviceDateRange(timezone: dependencies.store.storeTimeZone)
+            )
             let entry = Self.dataEntry(
                 for: statsPeriod,
                 dateRange: dateRange,
@@ -272,22 +276,20 @@ private extension StoreInfoProvider {
     ///
     struct Dependencies {
         let credentials: Credentials
+        let store: StoreMetadata
+    }
+
+    struct StoreMetadata {
         let storeID: Int64
         let storeName: String
         let storeCurrencySettings: CurrencySettings
+        let storeTimeZone: TimeZone
     }
 
     /// Fetches the required dependencies from the keychain and the shared users default.
     ///
-    static func fetchDependencies() -> Dependencies? {
+    static func fetchDependencies(selectedStoreID: StoreStatsStoreEntity.ID? = nil) -> Dependencies? {
         let keychain = Keychain(service: WooConstants.keychainServiceName)
-        guard let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
-              let storeName = UserDefaults.group?[.defaultStoreName] as? String,
-              let storeCurrencySettingsData = UserDefaults.group?[.defaultStoreCurrencySettings] as? Data,
-              let storeCurrencySettings = try? JSONDecoder().decode(CurrencySettings.self, from: storeCurrencySettingsData) else {
-            print("⛔️ missing store info")
-            return nil
-        }
         let credentials: Credentials? = {
             if let authToken = keychain[WooConstants.authToken] {
                 return Credentials(authToken: authToken)
@@ -306,10 +308,56 @@ private extension StoreInfoProvider {
             print("⛔️ missing credentials")
             return nil
         }
+
+        let sites = WidgetSiteListStore().sites()
+
+        guard let defaultStore = defaultStoreMetadata(sites: sites) else {
+            print("⛔️ missing store info")
+            return nil
+        }
+
+        let selectedStore = selectedStoreMetadata(defaultStore: defaultStore,
+                                                  selectedStoreID: selectedStoreID,
+                                                  sites: sites)
         return Dependencies(credentials: credentials,
-                            storeID: storeID,
-                            storeName: storeName,
-                            storeCurrencySettings: storeCurrencySettings)
+                            store: selectedStore)
+    }
+
+    static func selectedStoreMetadata(defaultStore: StoreMetadata,
+                                      selectedStoreID: StoreStatsStoreEntity.ID?,
+                                      sites: [WidgetSite]) -> StoreMetadata {
+        guard let selectedStoreID,
+              StoreStatsStoreSelection.isDefaultStoreEntityID(selectedStoreID) == false,
+              let selectedSiteID = Int64(selectedStoreID),
+              let selectedSite = sites.first(where: { $0.siteID == selectedSiteID }) else {
+            return defaultStore
+        }
+
+        let currencySettings: CurrencySettings = {
+            guard selectedSite.siteID != defaultStore.storeID else {
+                return defaultStore.storeCurrencySettings
+            }
+            return selectedSite.currencySettings ?? defaultStore.storeCurrencySettings
+        }()
+
+        return StoreMetadata(storeID: selectedSite.siteID,
+                             storeName: selectedSite.name,
+                             storeCurrencySettings: currencySettings,
+                             storeTimeZone: selectedSite.timezone)
+    }
+
+    static func defaultStoreMetadata(sites: [WidgetSite]) -> StoreMetadata? {
+        guard let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
+              let storeName = UserDefaults.group?[.defaultStoreName] as? String,
+              let storeCurrencySettingsData = UserDefaults.group?[.defaultStoreCurrencySettings] as? Data,
+              let storeCurrencySettings = try? JSONDecoder().decode(CurrencySettings.self, from: storeCurrencySettingsData) else {
+            return nil
+        }
+
+        return StoreMetadata(storeID: storeID,
+                             storeName: storeName,
+                             storeCurrencySettings: storeCurrencySettings,
+                             storeTimeZone: sites.first(where: { $0.siteID == storeID })?.timezone ?? .current)
     }
 }
 
@@ -323,7 +371,7 @@ private extension StoreInfoProvider {
     /// the same data stay in sync.
     ///
     static func placeholderEntry(for dependencies: Dependencies?) -> StoreInfoEntry {
-        let currencySettings = dependencies?.storeCurrencySettings ?? CurrencySettings()
+        let currencySettings = dependencies?.store.storeCurrencySettings ?? CurrencySettings()
         let sample = StoreInfoDataService.Stats.placeholderSample
         let metrics: [StoreInfoMetric] = legacyMetricsPreset.map { type in
             StoreInfoMetric(type: type, value: sample.value(for: type, currencySettings: currencySettings))
@@ -332,7 +380,7 @@ private extension StoreInfoProvider {
         let conversionString = sample.conversion.map(StoreInfoFormatter.formattedConversionString) ?? StoreInfoFormatter.Constants.valuePlaceholderText
         return .data(.init(
             range: StoreStatsWidgetDateRange.today.localizedRangeLabel,
-            name: dependencies?.storeName ?? Localization.myShop,
+            name: dependencies?.store.storeName ?? Localization.myShop,
             revenue: StoreInfoFormatter.formattedAmountString(for: sample.revenue, with: currencySettings),
             revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: sample.revenue, with: currencySettings),
             visitors: visitorsString,
@@ -355,7 +403,7 @@ private extension StoreInfoProvider {
                           dateRange: StoreStatsWidgetDateRange,
                           with dependencies: Dependencies,
                           metrics: [StoreInfoMetricType]) -> StoreInfoEntry {
-        let currencySettings = dependencies.storeCurrencySettings
+        let currencySettings = dependencies.store.storeCurrencySettings
         let stats = statsPeriod.current
         let previousStats = statsPeriod.previous
         let resolvedMetrics: [StoreInfoMetric] = metrics.map { type in
@@ -382,7 +430,7 @@ private extension StoreInfoProvider {
 
         return .data(.init(
             range: dateRange.localizedRangeLabel,
-            name: dependencies.storeName,
+            name: dependencies.store.storeName,
             revenue: StoreInfoFormatter.formattedAmountString(for: stats.revenue, with: currencySettings),
             revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: stats.revenue, with: currencySettings),
             visitors: visitorsString,

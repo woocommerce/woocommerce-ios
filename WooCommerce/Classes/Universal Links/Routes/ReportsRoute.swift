@@ -44,6 +44,12 @@ struct ReportsRoute: Route {
     }
 }
 
+/// Wire-format contract for the deep link consumed here. Duplicated from
+/// `WidgetReportsURL.Constants` (`WooCommerce/StoreWidgets/WidgetReportsURL.swift`) because
+/// the WooCommerce target and the StoreWidgetsExtension target sync separate source roots
+/// (`Classes/` and `StoreWidgets/` respectively) and share no compilable folder. Any change
+/// here MUST be mirrored in `WidgetReportsURL.Constants` and the corresponding tests on
+/// both sides.
 private extension ReportsRoute {
     enum Constants {
         static let analyticsRoot = "analytics"

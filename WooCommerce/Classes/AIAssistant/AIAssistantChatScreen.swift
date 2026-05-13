@@ -20,6 +20,7 @@ struct AIAssistantChatScreen: View {
             if let navigationHost, let controller, let externalNavigation, let externalViews {
                 AIAssistantChatNavHost(host: navigationHost) {
                     AssistantChatView(controller: controller,
+                                      siteID: site.siteID,
                                       onClose: onClose,
                                       onFeedbackTap: { isPresentingFeedbackSurvey = true })
                         .environment(\.assistantExternalNavigation, externalNavigation)

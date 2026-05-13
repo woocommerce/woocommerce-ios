@@ -4,11 +4,23 @@ struct EmptyStateView: View {
 
     let onPick: (String) -> Void
     var onFeedbackTap: (() -> Void)? = nil
+    let siteID: Int64
 
-    @AppStorage("hasDismissedWooAIAssistantEarlyAccessTooltip")
-    private var hasDismissedEarlyAccessNotice = false
+    @AppStorage private var hasDismissedEarlyAccessNotice: Bool
 
     private let suggestions: [SuggestionItem] = EmptyStateView.defaultSuggestions
+
+    init(onPick: @escaping (String) -> Void,
+         onFeedbackTap: (() -> Void)? = nil,
+         siteID: Int64) {
+        self.onPick = onPick
+        self.onFeedbackTap = onFeedbackTap
+        self.siteID = siteID
+        self._hasDismissedEarlyAccessNotice = AppStorage(
+            wrappedValue: false,
+            "hasDismissedWooAIAssistantEarlyAccessTooltip-\(siteID)"
+        )
+    }
 
     struct SuggestionItem: Identifiable {
         let id = UUID()
@@ -132,7 +144,7 @@ private struct SuggestionRow: View {
 }
 
 #Preview("Standalone") {
-    EmptyStateView { _ in }
+    EmptyStateView(onPick: { _ in }, siteID: 0)
         .background(Color.assistantSurface)
 }
 #endif

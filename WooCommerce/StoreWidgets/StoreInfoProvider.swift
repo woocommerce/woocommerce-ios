@@ -309,14 +309,16 @@ private extension StoreInfoProvider {
             return nil
         }
 
-        guard let defaultStore = defaultStoreMetadata() else {
+        let sites = WidgetSiteListStore().sites()
+
+        guard let defaultStore = defaultStoreMetadata(sites: sites) else {
             print("⛔️ missing store info")
             return nil
         }
 
         let selectedStore = selectedStoreMetadata(defaultStore: defaultStore,
                                                   selectedStoreID: selectedStoreID,
-                                                  sites: WidgetSiteListStore().sites())
+                                                  sites: sites)
         return Dependencies(credentials: credentials,
                             store: selectedStore)
     }
@@ -344,7 +346,7 @@ private extension StoreInfoProvider {
                              storeTimeZone: selectedSite.timezone)
     }
 
-    static func defaultStoreMetadata() -> StoreMetadata? {
+    static func defaultStoreMetadata(sites: [WidgetSite]) -> StoreMetadata? {
         guard let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
               let storeName = UserDefaults.group?[.defaultStoreName] as? String,
               let storeCurrencySettingsData = UserDefaults.group?[.defaultStoreCurrencySettings] as? Data,
@@ -355,7 +357,7 @@ private extension StoreInfoProvider {
         return StoreMetadata(storeID: storeID,
                              storeName: storeName,
                              storeCurrencySettings: storeCurrencySettings,
-                             storeTimeZone: .current)
+                             storeTimeZone: sites.first(where: { $0.siteID == storeID })?.timezone ?? .current)
     }
 }
 

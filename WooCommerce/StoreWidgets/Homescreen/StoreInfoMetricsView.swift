@@ -1,6 +1,15 @@
 import SwiftUI
 import WidgetKit
 
+enum StoreInfoDynamicType {
+    static let maximumSize: DynamicTypeSize = .accessibility2
+    static let accessibilityLayoutThreshold: DynamicTypeSize = .accessibility1
+
+    static func usesAccessibilityLayout(_ dynamicTypeSize: DynamicTypeSize) -> Bool {
+        dynamicTypeSize >= accessibilityLayoutThreshold
+    }
+}
+
 /// Home-screen widget dispatcher driven by the metric catalog.
 ///
 /// Companion to the legacy `StoreInfoView`; both render the same widget families but consume
@@ -16,15 +25,18 @@ struct StoreInfoMetricsView: View {
         Group {
             switch family {
             case .systemSmall:
-                StoreInfoSmallMetricsView(data: entryData)
-            case .systemMedium, .systemLarge, .systemExtraLarge:
-                StoreInfoMediumMetricsView(data: entryData)
+                StoreInfoSmallMetricsContainerView(data: entryData)
+            case .systemMedium:
+                StoreInfoMediumMetricsContainerView(data: entryData)
+            case .systemLarge, .systemExtraLarge:
+                StoreInfoLargeMetricsContainerView(data: entryData)
             default:
                 let _ = assertionFailure("This view only supports system families")
                 EmptyView()
             }
         }
-        .widgetBackground(backgroundView: Color(.brand))
+        .widgetBackground(backgroundView: StoreWidgetHomeScreenBackground())
+        .dynamicTypeSize(.xSmall...StoreInfoDynamicType.maximumSize)
     }
 }
 
@@ -32,11 +44,6 @@ struct StoreInfoMetricsView: View {
 
 extension StoreInfoMetricsView {
     enum Localization {
-        static let viewMore = AppLocalizedString(
-            "storeWidgets.infoView.viewMore",
-            value: "View More",
-            comment: "Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts."
-        )
         static func updatedAt(_ updatedTime: String) -> LocalizedString {
             let format = AppLocalizedString("storeWidgets.infoView.updatedAt",
                                             value: "As of %1$@",
@@ -51,22 +58,75 @@ extension StoreInfoMetricsView {
 import class WooFoundation.CurrencySettings
 
 struct StoreInfoMetricsView_Previews: PreviewProvider {
-    static var exampleData = StoreInfoData(
-        range: "Today",
-        name: "Ernest Shop",
-        revenue: "$123,456,789",
-        revenueCompact: "$123M",
-        visitors: "67",
-        orders: "23",
-        conversion: "34%",
-        updatedTime: "10:24 PM",
-        metrics: [
-            .init(type: .revenue, value: .currency(123_456_789, CurrencySettings())),
-            .init(type: .visitors, value: .count(67)),
-            .init(type: .orders, value: .count(23)),
-            .init(type: .conversion, value: .percentage(23.0 / 67.0))
-        ]
-    )
+    private static func chartSeries(values: [Double]) -> [MetricChartPoint] {
+        values.enumerated().map { index, value in
+            MetricChartPoint(date: Date(timeIntervalSinceReferenceDate: Double(index * 86_400)), value: value)
+        }
+    }
+
+    static var allMetrics: [StoreInfoMetric] {
+        let currencySettings = CurrencySettings()
+        let revenue = StoreInfoMetric(type: .revenue,
+                                      value: .currency(Decimal(123_456_789), currencySettings),
+                                      previousValue: .currency(Decimal(118_000_000), currencySettings),
+                                      chartSeries: chartSeries(values: [
+                                        82_000_000, 91_000_000, 86_000_000, 104_000_000, 98_000_000, 123_000_000
+                                      ]))
+        let orders = StoreInfoMetric(type: .orders,
+                                     value: .count(23),
+                                     previousValue: .count(31),
+                                     chartSeries: chartSeries(values: [
+                                        16, 24, 18, 29, 21, 23
+                                     ]))
+        let itemsSold = StoreInfoMetric(type: .itemsSold,
+                                        value: .count(41),
+                                        previousValue: .count(34),
+                                        chartSeries: chartSeries(values: [
+                                            28, 36, 31, 45, 39, 41
+                                        ]))
+        let averageOrderValue = StoreInfoMetric(type: .averageOrderValue,
+                                                value: .currency(Decimal(5_367), currencySettings),
+                                                previousValue: .currency(Decimal(4_800), currencySettings),
+                                                chartSeries: chartSeries(values: [
+                                                    4_200, 4_850, 4_600, 5_100, 4_940, 5_367
+                                                ]))
+        let netSales = StoreInfoMetric(type: .netSales,
+                                       value: .currency(Decimal(98_765_432), currencySettings),
+                                       previousValue: .currency(Decimal(102_000_000), currencySettings),
+                                       chartSeries: chartSeries(values: [
+                                        72_000_000, 88_000_000, 81_000_000, 96_000_000, 90_000_000, 98_000_000
+                                       ]))
+        let visitors = StoreInfoMetric(type: .visitors,
+                                       value: .count(67),
+                                       previousValue: .count(71))
+        let conversion = StoreInfoMetric(type: .conversion,
+                                         value: .percentage(23.0 / 67.0),
+                                         previousValue: .percentage(0.29))
+
+        return [revenue, orders, itemsSold, averageOrderValue, netSales, visitors, conversion]
+    }
+
+    static var exampleData: StoreInfoData {
+        exampleData(metrics: Array(allMetrics.prefix(4)))
+    }
+
+    static var fullCatalogData: StoreInfoData {
+        exampleData(metrics: allMetrics)
+    }
+
+    static func exampleData(metrics: [StoreInfoMetric]) -> StoreInfoData {
+        StoreInfoData(
+            range: "Today",
+            name: "Ernest Shop",
+            revenue: "$123,456,789",
+            revenueCompact: "$123M",
+            visitors: "67",
+            orders: "23",
+            conversion: "34%",
+            updatedTime: "10:24 PM",
+            metrics: metrics
+        )
+    }
 
     static var previews: some View {
         StoreInfoMetricsView(entryData: exampleData)
@@ -75,17 +135,30 @@ struct StoreInfoMetricsView_Previews: PreviewProvider {
 
         StoreInfoMetricsView(entryData: exampleData)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
-            .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Medium - XXL font")
+            .environment(\.dynamicTypeSize, .accessibility1)
+            .previewDisplayName("Medium - Accessibility font")
 
-        StoreInfoMetricsView(entryData: exampleData)
+        StoreInfoMetricsView(entryData: fullCatalogData)
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .previewDisplayName("Large")
+
+        StoreInfoMetricsView(entryData: fullCatalogData)
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .environment(\.dynamicTypeSize, .accessibility1)
+            .previewDisplayName("Large - Accessibility font")
+
+        StoreInfoMetricsView(entryData: fullCatalogData)
+            .previewContext(WidgetPreviewContext(family: .systemExtraLarge))
+            .previewDisplayName("Extra Large")
+
+        StoreInfoMetricsView(entryData: fullCatalogData)
             .previewContext(WidgetPreviewContext(family: .systemSmall))
             .previewDisplayName("Small")
 
-        StoreInfoMetricsView(entryData: exampleData)
+        StoreInfoMetricsView(entryData: fullCatalogData)
             .previewContext(WidgetPreviewContext(family: .systemSmall))
-            .environment(\.dynamicTypeSize, .xxLarge)
-            .previewDisplayName("Small - XXL font")
+            .environment(\.dynamicTypeSize, .accessibility1)
+            .previewDisplayName("Small - Accessibility font")
     }
 }
 #endif

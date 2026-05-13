@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ProductVariationsBulkUpdateToolTests {
 
     @Test
@@ -38,8 +39,7 @@ struct ProductVariationsBulkUpdateToolTests {
         for entry in updates {
             #expect(entry["regular_price"] as? String == "29.99")
         }
-        let cards = try #require(success.uiStructured?.cards)
-        #expect(cards.allSatisfy { $0.family == .productVariation })
+        #expect(success.uiStructured == nil)
     }
 
     @Test

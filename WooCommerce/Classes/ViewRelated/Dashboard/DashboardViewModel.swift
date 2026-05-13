@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
 import protocol WooFoundation.Analytics
 import struct WooFoundation.WooCommerceComUTMProvider
+import class UIKit.UIApplication
 import class UIKit.UIDevice
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
@@ -108,6 +109,7 @@ final class DashboardViewModel: ObservableObject {
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
     private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
     private let clientSideBannerProvider: ClientSideBannerProvider
+    private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
 
     @Published private(set) var isAIAssistantEligible: Bool = false
 
@@ -164,7 +166,8 @@ final class DashboardViewModel: ObservableObject {
          aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol = AIAssistantEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
          tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
-         clientSideBannerProvider: ClientSideBannerProvider? = nil) {
+         clientSideBannerProvider: ClientSideBannerProvider? = nil,
+         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -215,6 +218,7 @@ final class DashboardViewModel: ObservableObject {
             featureFlagService: featureFlags,
             userInterfaceIdiom: UIDevice.current.userInterfaceIdiom
         )
+        self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
 
         configureTapToPayAwarnessMomentPresentation()
 
@@ -236,20 +240,31 @@ final class DashboardViewModel: ObservableObject {
     }
 
     private func observeAIAssistantEligibility() {
-        // Seed the eligibility flag from the current site so the dashboard reflects it on first load,
-        // even if the underlying site publisher does not replay its current value on subscription.
         isAIAssistantEligible = aiAssistantEligibilityChecker.isEligible(for: stores.sessionManager.defaultSite)
+        refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite)
 
         stores.sessionManager.defaultSitePublisher
-            .map { [aiAssistantEligibilityChecker] site in
-                aiAssistantEligibilityChecker.isEligible(for: site)
-            }
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] eligible in
-                self?.isAIAssistantEligible = eligible
+            .sink { [weak self] site in
+                self?.refreshAIAssistantEligibility(for: site)
             }
             .store(in: &subscriptions)
+
+        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite, useCache: false)
+            }
+            .store(in: &subscriptions)
+    }
+
+    private func refreshAIAssistantEligibility(for site: Site?, useCache: Bool = true) {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let eligible = await aiAssistantEligibilityChecker.isEligible(for: site, useCache: useCache)
+            if isAIAssistantEligible != eligible {
+                isAIAssistantEligible = eligible
+            }
+        }
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -266,11 +281,13 @@ final class DashboardViewModel: ObservableObject {
         /// we add the Blaze card back in `BlazeCampaignCreationCoordinator`.
         /// Here we need to get the updated cards from storage and update the dashboard accordingly.
         await loadDashboardCardsFromStorage()
+        ensureAIAssistantCardInSavedCards()
         updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard && isEligibleForStoreSetup,
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
                              canShowGoogle: googleAdsDashboardCardViewModel.canShowOnDashboard,
                              canShowInbox: isEligibleForInbox,
                              canShowStock: isEligibleForStock,
+                             canShowAIAssistant: isAIAssistantEligible,
                              hasOrders: hasOrders)
 
         await reloadCardsWithBackgroundUpdateSupportIfNeeded()
@@ -298,6 +315,7 @@ final class DashboardViewModel: ObservableObject {
     func reloadAllData(forceCardsRefresh: Bool = false) async {
         isReloadingAllData = true
         checkInboxEligibility()
+        refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite, useCache: false)
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 await self?.syncDashboardEssentialData()
@@ -416,6 +434,25 @@ private extension DashboardViewModel {
         stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
         savedCards = cards
     }
+
+    /// Adds the AI Assistant card to saved layout when missing and the site is eligible.
+    /// Skips once the card is already present (enabled or not), so an explicit disable is respected.
+    func ensureAIAssistantCardInSavedCards() {
+        guard isAIAssistantEligible else { return }
+        guard savedCards.isNotEmpty else { return }
+        guard !savedCards.contains(where: { $0.type == .aiAssistant }) else { return }
+
+        let aiAssistantCard = DashboardCard(type: .aiAssistant, availability: .show, enabled: true)
+        let insertionIndex: Int = {
+            if let onboardingIndex = savedCards.firstIndex(where: { $0.type == .onboarding }) {
+                return savedCards.index(after: onboardingIndex)
+            }
+            return savedCards.startIndex
+        }()
+        var updatedSaved = savedCards
+        updatedSaved.insert(aiAssistantCard, at: insertionIndex)
+        saveDashboardCards(cards: updatedSaved)
+    }
 }
 
 // MARK: Reload cards
@@ -521,10 +558,9 @@ private extension DashboardViewModel {
         }
 
         clientSideBannerObservationCancellable = publisher
-            .filter { site in
+            .first(where: { site in
                 SiteConnectionType(site: site) == .nonJetpack
-            }
-            .first()
+            })
             .sink { [weak self] site in
                 guard let self else { return }
                 Task { @MainActor in
@@ -567,14 +603,12 @@ private extension DashboardViewModel {
 
         $dashboardCards.combineLatest($isInAppFeedbackCardVisible, $shouldSuggestWPComConnection)
             .combineLatest($showNewCardsNotice, $hasOrders, $isReloadingAllData)
-            .combineLatest($isAIAssistantEligible)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let (((cards, showFeedbackCard, suggestWPComConnection),
-                      showNewCardsNotice,
-                      hasOrders,
-                      isReloading),
-                     isAIAssistantEligible) = combinedResult
+                let ((cards, showFeedbackCard, suggestWPComConnection),
+                     showNewCardsNotice,
+                     hasOrders,
+                     isReloading) = combinedResult
                 let cardsToShow: [DashboardCard] = {
                     var allCards = cards.filter { $0.availability == .show && $0.enabled }
 
@@ -599,9 +633,6 @@ private extension DashboardViewModel {
                         allCards.insert(DashboardCard.connectWPCom, at: 0)
                     }
 
-                    if isAIAssistantEligible {
-                        allCards.insert(DashboardCard.aiAssistantCard, at: 0)
-                    }
                     return allCards
                 }()
                 showOnDashboardCards = cardsToShow
@@ -699,15 +730,21 @@ private extension DashboardViewModel {
             .combineLatest(googleAdsDashboardCardViewModel.$canShowOnDashboard,
                            $hasOrders,
                            $isEligibleForInbox)
+            .combineLatest($isAIAssistantEligible)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let ((canShowOnboarding, canShowBlaze, canShowStock), canShowGoogle, hasOrders, isEligibleForInbox) = combinedResult
+                let (((canShowOnboarding, canShowBlaze, canShowStock),
+                      canShowGoogle,
+                      hasOrders,
+                      isEligibleForInbox),
+                     isAIAssistantEligible) = combinedResult
                 updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                      canShowBlaze: canShowBlaze,
                                      canShowGoogle: canShowGoogle,
                                      canShowInbox: isEligibleForInbox,
                                      canShowStock: canShowStock,
+                                     canShowAIAssistant: isAIAssistantEligible,
                                      hasOrders: hasOrders)
             }
             .store(in: &subscriptions)
@@ -725,7 +762,9 @@ private extension DashboardViewModel {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _, _ in
                 guard let self else { return }
-                updateSelfDrivenPushRegistrationStatus()
+                Task {
+                    await self.updateSelfDrivenPushRegistrationStatus()
+                }
             }
             .store(in: &subscriptions)
     }
@@ -847,7 +886,8 @@ private extension DashboardViewModel {
                               canShowAnalytics: Bool,
                               canShowLastOrders: Bool,
                               canShowStock: Bool,
-                              canShowInbox: Bool) -> [DashboardCard] {
+                              canShowInbox: Bool,
+                              canShowAIAssistant: Bool) -> [DashboardCard] {
         var cards = [DashboardCard]()
 
         // Onboarding card.
@@ -855,6 +895,11 @@ private extension DashboardViewModel {
         cards.append(DashboardCard(type: .onboarding,
                                    availability: canShowOnboarding ? .show : .hide,
                                    enabled: canShowOnboarding))
+
+        // AI Assistant lands right after onboarding, at the top of the editable list.
+        cards.append(DashboardCard(type: .aiAssistant,
+                                   availability: canShowAIAssistant ? .show : .hide,
+                                   enabled: canShowAIAssistant))
 
         // Performance and Top Performance cards (also known as Analytics cards).
         // When not available, Analytics cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
@@ -903,6 +948,7 @@ private extension DashboardViewModel {
                               canShowGoogle: Bool,
                               canShowInbox: Bool,
                               canShowStock: Bool,
+                              canShowAIAssistant: Bool,
                               hasOrders: Bool) {
 
         let canShowAnalytics = hasOrders
@@ -915,7 +961,8 @@ private extension DashboardViewModel {
                                                 canShowAnalytics: canShowAnalytics,
                                                 canShowLastOrders: canShowLastOrders,
                                                 canShowStock: canShowStock,
-                                                canShowInbox: canShowInbox)
+                                                canShowInbox: canShowInbox,
+                                                canShowAIAssistant: canShowAIAssistant)
 
         // Next, get saved cards and preserve existing enabled state for all available cards.
         // This is needed because even if a user already disabled an available card and saved it, in `initialCards`
@@ -1010,15 +1057,17 @@ private extension DashboardViewModel {
         jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
     }
 
-    func updateSelfDrivenPushRegistrationStatus() {
+    func updateSelfDrivenPushRegistrationStatus() async {
         let registeredSiteIDs = pushNotesManager.siteIDsRegisteredForWooPNs
         isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom
         dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
+
+        let isEligibleForSelfDrivenPN = await pushNotificationEligibilityChecker.checkEligibility()
         shouldSuggestWPComConnection = pushNotesManager.hasStoredSiteIDsRegisteredForWooPNs &&
             registeredSiteIDs.contains(siteID) == false &&
             (stores.isAuthenticatedWithoutWPCom || stores.sessionManager.defaultSite?.isJetpackCPConnected == true) &&
             !dismissedWPComConnectionSuggestion &&
-            featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)
+            isEligibleForSelfDrivenPN
     }
 
 }

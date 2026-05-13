@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct MessageBubble: View {
 
@@ -6,90 +7,155 @@ struct MessageBubble: View {
 
     @Environment(\.assistantConfirmationHandler) private var confirmationHandler
 
+    @State private var revealedGroupIDs: Set<UUID> = []
+    @State private var hasMountedInitialGroups: Bool = false
+    @State private var carouselRevealed: Bool = false
+
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
-            if message.role == .user { Spacer(minLength: AssistantSpacing.xxLarge) }
-            VStack(alignment: alignment, spacing: AssistantSpacing.large) {
-                ForEach(orderedSegments) { segment in
-                    segmentView(for: segment)
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
-                }
+        VStack(alignment: .leading, spacing: AssistantSpacing.large) {
+            // Confirmation lands above the tool pill: approval has to happen before any tool runs.
+            ForEach(confirmationGroups, id: \.identifier) { group in
+                renderGroup(group)
             }
-            .animation(.snappy(duration: 0.2), value: orderedSegments.map(\.id))
-            if message.role == .assistant { Spacer(minLength: AssistantSpacing.xxLarge) }
+            if !toolCallSnapshots.isEmpty {
+                ToolActivityCarousel(snapshots: toolCallSnapshots)
+                    .opacity(carouselRevealed ? 1 : 0)
+                    .animation(.easeOut(duration: 0.12), value: carouselRevealed)
+                    .onAppear { handleCarouselAppearance() }
+            }
+            ForEach(responseGroups, id: \.identifier) { group in
+                renderGroup(group)
+            }
         }
-        .frame(maxWidth: .infinity,
-               alignment: message.role == .user ? .trailing : .leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .task {
+            // Snap pre-existing groups visible on initial mount so reopening
+            // a conversation does not replay reveals or fire haptics.
+            revealedGroupIDs = Set(renderableGroups.map(\.identifier))
+            carouselRevealed = !toolCallSnapshots.isEmpty
+            hasMountedInitialGroups = true
+        }
     }
 
-    private var alignment: HorizontalAlignment {
-        message.role == .user ? .trailing : .leading
+    @ViewBuilder
+    private func renderGroup(_ group: MessageSegmentGrouping.Group) -> some View {
+        let isRevealed = revealedGroupIDs.contains(group.identifier)
+        groupView(for: group)
+            .opacity(isRevealed ? 1 : 0)
+            // Scope the animation to the opacity flip so concurrent layout changes
+            // (streaming text, growing bubble) stay synchronous.
+            .animation(.easeOut(duration: 0.1), value: isRevealed)
+            .onAppear { handleGroupAppearance(group) }
+    }
+
+    private var confirmationGroups: [MessageSegmentGrouping.Group] {
+        renderableGroups.filter { Self.isConfirmation($0) }
+    }
+
+    private var responseGroups: [MessageSegmentGrouping.Group] {
+        renderableGroups.filter { !Self.isConfirmation($0) }
+    }
+
+    private static func isConfirmation(_ group: MessageSegmentGrouping.Group) -> Bool {
+        if case .solo(.confirmation) = group { return true }
+        return false
+    }
+
+    private func handleGroupAppearance(_ group: MessageSegmentGrouping.Group) {
+        guard hasMountedInitialGroups else { return }
+        guard !revealedGroupIDs.contains(group.identifier) else { return }
+        if message.role == .assistant {
+            AssistantHaptics.gentleTap()
+        }
+        revealedGroupIDs.insert(group.identifier)
+    }
+
+    private func handleCarouselAppearance() {
+        guard hasMountedInitialGroups else { return }
+        guard !carouselRevealed else { return }
+        if message.role == .assistant {
+            AssistantHaptics.gentleTap()
+        }
+        carouselRevealed = true
+    }
+
+    var toolCallSnapshots: [ToolCallSnapshot] {
+        guard message.role == .assistant else { return [] }
+        return message.segments.compactMap { segment in
+            if case .toolCall(let id, _, let name, _, let status) = segment {
+                return ToolCallSnapshot(id: id, toolName: name, status: status)
+            }
+            return nil
+        }
+    }
+
+    var renderableGroups: [MessageSegmentGrouping.Group] {
+        MessageSegmentGrouping.group(orderedSegments)
     }
 
     var orderedSegments: [MessageSegment] {
         guard message.role == .assistant else { return message.segments }
 
-        var lastToolCallID: UUID?
-        var hasCardRender = false
-        var hasText = false
-        var firstSearchNonEmpty: UUID?
-        var lastListNonEmpty: UUID?
-        var lastStrictAny: UUID?
-        var lastSingle: UUID?
-        var analyticsIDs: [UUID] = []
-
-        for segment in message.segments {
-            switch segment {
-            case .text:
-                hasText = true
-            case .cardRender:
-                hasCardRender = true
-            case .toolCall(let id, _, _, _, _):
-                lastToolCallID = id
-            case .toolResult(let id, _, let name, let payload):
-                if name.hasPrefix("analytics_") {
-                    analyticsIDs.append(id)
-                    continue
-                }
-                let isSearch = name.hasSuffix("_search")
-                let isList = name.hasSuffix("_list")
-                let isStrict = isSearch || isList
-                let rowCount = arrayCount(payload)
-                if isStrict { lastStrictAny = id }
-                if isSearch, rowCount > 0, firstSearchNonEmpty == nil {
-                    firstSearchNonEmpty = id
-                } else if isList, rowCount > 0 {
-                    lastListNonEmpty = id
-                } else if !isStrict {
-                    lastSingle = id
-                }
-            case .confirmation:
-                break
-            }
+        let hasText = message.segments.contains { segment in
+            if case .text = segment { return true }
+            return false
         }
 
-        var renderableToolResultIDs: Set<UUID> = []
-        if !hasCardRender, !message.isStreaming {
-            renderableToolResultIDs = Set(analyticsIDs)
-            if let pick = firstSearchNonEmpty ?? lastListNonEmpty ?? lastStrictAny ?? lastSingle {
-                renderableToolResultIDs.insert(pick)
-            }
-        }
-
+        // Tool calls render separately in the carousel; tool results are never shown
+        // as a fallback now that show_cards emits synthetic cardRenders.
         let filtered = message.segments.filter { segment in
             switch segment {
             case .text, .confirmation:
                 return true
             case .cardRender:
                 return !message.isStreaming
-            case .toolCall(let id, _, _, _, _):
-                return id == lastToolCallID
-            case .toolResult(let id, _, _, _):
-                return renderableToolResultIDs.contains(id)
+            case .toolCall, .toolResult:
+                return false
             }
         }
 
-        return hasText ? deferCardsAfterText(filtered) : filtered
+        let deduped = MessageBubble.dedupedCardRenders(filtered)
+        return hasText ? deferCardsAfterText(deduped) : deduped
+    }
+
+    /// Drops later `.cardRender` segments that target the same `(family, entityID)`.
+    /// `orders_get` and `show_cards` can both emit a card for the same entity in
+    /// one turn; without this, the renderer paints two rows for one id.
+    static func dedupedCardRenders(_ segments: [MessageSegment]) -> [MessageSegment] {
+        var keysSeen: Set<CardKey> = []
+        var dropIDs: Set<UUID> = []
+        for segment in segments {
+            guard case .cardRender(let id, let toolCallID, _, _) = segment,
+                  let key = cardKey(fromSyntheticToolCallID: toolCallID) else { continue }
+            if keysSeen.contains(key) {
+                dropIDs.insert(id)
+            } else {
+                keysSeen.insert(key)
+            }
+        }
+        guard dropIDs.isEmpty == false else { return segments }
+        return segments.filter { dropIDs.contains($0.id) == false }
+    }
+
+    private struct CardKey: Hashable {
+        let family: String
+        let entityID: String
+    }
+
+    /// Synthetic `.cardRender` toolCallID format from `AgenticLoopOrchestrator`:
+    /// `"<callID>:card:<index>:<family>:<id>"`. Returns `nil` for any other shape
+    /// so unknown IDs survive dedupe untouched.
+    private static func cardKey(fromSyntheticToolCallID toolCallID: String) -> CardKey? {
+        let parts = toolCallID.split(separator: ":", omittingEmptySubsequences: false)
+        guard let markerIndex = parts.indices.first(where: { parts[$0] == "card" }),
+              let entityIDStartIndex = parts.index(markerIndex, offsetBy: 3, limitedBy: parts.endIndex),
+              entityIDStartIndex < parts.endIndex else {
+            return nil
+        }
+        let familyIndex = parts.index(markerIndex, offsetBy: 2)
+        let entityID = parts[entityIDStartIndex...].joined(separator: ":")
+        guard !parts[familyIndex].isEmpty, !entityID.isEmpty else { return nil }
+        return CardKey(family: String(parts[familyIndex]), entityID: entityID)
     }
 
     private func deferCardsAfterText(_ segments: [MessageSegment]) -> [MessageSegment] {
@@ -108,32 +174,43 @@ struct MessageBubble: View {
 
     private func isCardSegment(_ segment: MessageSegment) -> Bool {
         switch segment {
-        case .cardRender, .toolResult:
+        case .cardRender:
             return true
-        case .text, .toolCall, .confirmation:
+        case .text, .toolCall, .toolResult, .confirmation:
             return false
         }
     }
 
-    private func arrayCount(_ value: AnyCodableJSON) -> Int {
-        if case .array(let elements) = value { return elements.count }
-        if case .object(let fields) = value, case .int(let count) = fields["count"] {
-            return Int(count)
+    @ViewBuilder
+    private func groupView(for group: MessageSegmentGrouping.Group) -> some View {
+        switch group {
+        case .solo(let segment):
+            soloView(for: segment)
+        case .cardRun(let family, let segments):
+            let payloads = segments.compactMap { segment -> AnyCodableJSON? in
+                if case .cardRender(_, _, _, let payload) = segment { return payload }
+                return nil
+            }
+            MessageCardListHost(family: family, payloads: payloads)
         }
-        return 0
     }
 
     @ViewBuilder
-    private func segmentView(for segment: MessageSegment) -> some View {
+    private func soloView(for segment: MessageSegment) -> some View {
         switch segment {
         case .text(_, let content):
             if !content.isEmpty {
-                textBubble(content)
+                if message.role == .user {
+                    userTextRow(content)
+                } else {
+                    assistantText(content)
+                }
             }
         case .toolCall(_, _, let name, _, let status):
             ToolActivityPill(toolName: name, status: status)
-        case .toolResult(_, _, let name, let payload):
-            MessageCardHost(toolName: name, payload: payload)
+        case .toolResult:
+            // .toolResult is filtered in orderedSegments; arm kept so future leaks compile-error here.
+            EmptyView()
         case .cardRender(_, _, let name, let payload):
             MessageCardHost(toolName: name, payload: payload)
         case .confirmation(_, let proposalID, _, let preview, let status):
@@ -145,24 +222,34 @@ struct MessageBubble: View {
         }
     }
 
-    private func textBubble(_ content: String) -> some View {
+    private func userTextRow(_ content: String) -> some View {
+        HStack(alignment: .top, spacing: 0) {
+            Spacer(minLength: AssistantSpacing.xxLarge)
+            userTextBubble(content)
+        }
+    }
+
+    private func userTextBubble(_ content: String) -> some View {
         Text(renderedText(content))
             .font(.assistantBody)
-            .foregroundStyle(bubbleTextColor)
+            .foregroundStyle(Color.assistantBubbleUserText)
+            .tint(Color.assistantBubbleUserText)
             .padding(.horizontal, AssistantSpacing.medium)
             .padding(.vertical, AssistantSpacing.bubbleVerticalInset)
-            .background(bubbleBackground)
+            .background(Color.assistantBubbleUser)
             .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.bubble))
             .textSelection(.enabled)
     }
 
-    private var bubbleBackground: Color {
-        message.role == .user ? Color.assistantBubbleUser : Color.assistantBubbleAssistant
+    private func assistantText(_ content: String) -> some View {
+        Text(renderedText(content))
+            .font(.assistantBody)
+            .foregroundStyle(Color.assistantBubbleAssistantText)
+            .tint(Color.assistantBubbleAssistantText)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .textSelection(.enabled)
     }
 
-    private var bubbleTextColor: Color {
-        message.role == .user ? Color.assistantBubbleUserText : Color.assistantBubbleAssistantText
-    }
 
     private func renderedText(_ content: String) -> AttributedString {
         var options = AttributedString.MarkdownParsingOptions()

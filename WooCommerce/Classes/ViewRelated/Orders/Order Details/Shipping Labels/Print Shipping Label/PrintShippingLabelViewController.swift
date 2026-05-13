@@ -254,7 +254,7 @@ private extension PrintShippingLabelViewController {
                 .printingInstructions
             ]
         }
-        return rows.map { $0 }
+        return rows
     }
 
     func configureHeaderText(cell: BasicTableViewCell) {

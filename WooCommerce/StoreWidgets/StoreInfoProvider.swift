@@ -249,6 +249,21 @@ private extension StoreInfoDataService.Stats {
             return conversion.map { .percentage($0) } ?? .unavailable
         }
     }
+
+    /// Projects the typed series properties into the cell's presentation type.
+    func chartSeries(for metric: StoreInfoMetricType) -> [MetricChartPoint]? {
+        let points: [IntervalPoint]
+        switch metric {
+        case .revenue: points = revenueSeries
+        case .netSales: points = netRevenueSeries
+        case .averageOrderValue: points = averageOrderValueSeries
+        case .orders: points = ordersSeries
+        case .itemsSold: points = itemsSoldSeries
+        case .visitors, .conversion: return nil
+        }
+        guard points.count > 1 else { return nil }
+        return points.map { MetricChartPoint(date: $0.date, value: $0.value) }
+    }
 }
 
 private extension StoreInfoProvider {
@@ -347,7 +362,8 @@ private extension StoreInfoProvider {
             StoreInfoMetric(
                 type: type,
                 value: stats.value(for: type, currencySettings: currencySettings),
-                previousValue: previousStats?.value(for: type, currencySettings: currencySettings)
+                previousValue: previousStats?.value(for: type, currencySettings: currencySettings),
+                chartSeries: stats.chartSeries(for: type)
             )
         }
 

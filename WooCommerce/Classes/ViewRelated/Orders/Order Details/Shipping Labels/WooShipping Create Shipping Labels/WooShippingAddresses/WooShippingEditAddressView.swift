@@ -388,7 +388,7 @@ private extension WooShippingEditAddressView {
         static let innerSpacing: CGFloat = 8
         static let extraPadding: CGFloat = 24
         static let cornerRadius: CGFloat = 8
-        static let defaultBorderColor: Color = Color(.separator)
+        static let defaultBorderColor = Color(.separator)
         static let defaultBorderWidth: CGFloat = 1
         static let green = Color(UIColor(light: .withColorStudio(.green, shade: .shade60),
                                          dark: .withColorStudio(.green, shade: .shade40)))

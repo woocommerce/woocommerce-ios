@@ -8,6 +8,9 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
 
     private let viewModel: PreLoginConnectivityToolViewModel
 
+    /// Retains the support escalation coordinator while the flow is active.
+    private var supportEscalationCoordinator: SupportEscalationCoordinator?
+
     init(siteURL: URL) {
         viewModel = PreLoginConnectivityToolViewModel(siteURL: siteURL)
         let view = PreLoginConnectivityToolView(viewModel: viewModel)
@@ -31,40 +34,56 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func showContactSupportForm(chatTranscript: String? = nil) {
-        var attachments: [ZendeskAttachment] = []
-
-        if let description = viewModel.troubleshootingDescription(),
-           let data = description.data(using: .utf8) {
-            attachments.append(ZendeskAttachment(
-                data: data,
-                filename: "prelogin_connectivitytest_log.md",
-                contentType: "text/markdown"
-            ))
-        }
-
-        if let transcript = chatTranscript,
-           !transcript.isEmpty,
-           let data = transcript.data(using: .utf8) {
-            attachments.append(ZendeskAttachment(
-                data: data,
-                filename: "support_chat_transcript.txt",
-                contentType: "text/plain"
-            ))
-        }
-
-        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(attachments: attachments))
+    private func showContactSupportForm() {
+        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(
+            attachments: buildTroubleshootingAttachment()
+        ))
         supportController.show(from: self)
     }
 
     private func showSupportChat() {
-        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] transcript in
+        var viewModelHolder: SupportChatViewModel?
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
             self?.navigationController?.popViewController(animated: true)
-            self?.showContactSupportForm(chatTranscript: transcript)
+            self?.handleContactHumanSupport(chatID: chatID,
+                                            transcript: transcript,
+                                            supportAreaInfo: supportAreaInfo,
+                                            entryPoint: entryPoint,
+                                            onTicketCreated: { [weak viewModelHolder] in
+                                                viewModelHolder?.markChatTicketCreated()
+                                            })
         }
+        viewModelHolder = chatViewModel
 
         let chatController = SupportChatHostingController(viewModel: chatViewModel)
         chatController.show(from: self)
+    }
+
+    private func handleContactHumanSupport(chatID: Int64?,
+                                           transcript: String,
+                                           supportAreaInfo: SupportAreaInfo?,
+                                           entryPoint: SupportChatViewModel.EntryPoint,
+                                           onTicketCreated: @escaping () -> Void) {
+        supportEscalationCoordinator = SupportEscalationCoordinator(
+            navigationController: navigationController,
+            additionalAttachmentsProvider: { [weak self] in
+                self?.buildTroubleshootingAttachment() ?? []
+            },
+            onTicketCreated: onTicketCreated
+        )
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
+    }
+
+    private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {
+        guard let description = viewModel.troubleshootingDescription(),
+              let data = description.data(using: .utf8) else {
+            return []
+        }
+        return [ZendeskAttachment(
+            data: data,
+            filename: "prelogin_connectivitytest_log.md",
+            contentType: "text/markdown"
+        )]
     }
 }
 

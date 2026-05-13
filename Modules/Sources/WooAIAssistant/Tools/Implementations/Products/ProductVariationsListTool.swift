@@ -11,10 +11,11 @@ public enum ProductVariationsListTool {
     private static let definition = AITool(
         name: name,
         description: """
-        List the variations of a variable product. Required: product_id (the \
-        parent). Use after products_list / products_get surfaces a variable \
-        product to answer "what sizes are available", "which variant is out \
-        of stock", etc.
+        List variations for one variable product when the merchant explicitly \
+        asks about variations, sizes, colors, options, or a known variation \
+        ID. Required: product_id (the parent). Do not use this for broad \
+        product-level inventory questions such as "out-of-stock products"; \
+        product stock and variation stock are separate WooCommerce concepts.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -50,7 +51,14 @@ public enum ProductVariationsListTool {
         }
     }
 
+    private static let allowedArguments: Set<String> = ["product_id", "page", "per_page"]
+
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value

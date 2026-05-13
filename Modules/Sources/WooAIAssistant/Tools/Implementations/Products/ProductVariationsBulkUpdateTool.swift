@@ -19,7 +19,11 @@ public enum ProductVariationsBulkUpdateTool {
         100). Each entry sets allowlisted fields per variation: regular_price, \
         sale_price, stock_quantity, stock_status, sku, status. Use this \
         instead of multiple product_variations_update calls when more than \
-        one variation of the same parent is being updated together.
+        one variation of the same parent is being updated together. After \
+        the bulk update succeeds, call `show_cards` with family \
+        `product_variation` and one entry per updated variation (each with \
+        the variation id and the parent product id) so the merchant sees \
+        the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -101,8 +105,21 @@ public enum ProductVariationsBulkUpdateTool {
 
     private static let allowedStatuses = AllowedProductUpdateStatuses.values
     private static let allowedStockStatuses: Set<String> = ["instock", "outofstock", "onbackorder"]
+    static let allowedArguments: Set<String> = ["product_id", "variations"]
+    static let allowedVariationKeys: Set<String> = [
+        "id", "regular_price", "sale_price", "stock_quantity",
+        "stock_status", "sku", "status"
+    ]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
+        if let failed = variationKeyRejection(arguments: arguments) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -158,11 +175,50 @@ public enum ProductVariationsBulkUpdateTool {
                                  kind: .toolFailed,
                                  reason: "could not serialize batch body"))
         }
+        let patchKeys = patchKeysInOrder(args.variations)
         return await RESTToolDispatch.dispatchBatchWrite(method: "POST",
                                                          path: "wc/v3/products/\(args.productID)/variations/batch",
                                                          body: payload,
                                                          client: client,
                                                          toolName: name,
-                                                         family: .productVariation)
+                                                         requestedCount: args.variations.count,
+                                                         patchKeys: patchKeys)
+    }
+
+    private static func patchKeysInOrder(_ variations: [Variation]) -> [String] {
+        var seen: Set<String> = []
+        var keys: [String] = []
+        let canonical = ["regular_price", "sale_price", "stock_quantity", "stock_status", "sku", "status"]
+        for variation in variations {
+            if variation.regularPrice != nil { seen.insert("regular_price") }
+            if variation.salePrice != nil { seen.insert("sale_price") }
+            if variation.stockQuantity != nil { seen.insert("stock_quantity") }
+            if variation.stockStatus != nil { seen.insert("stock_status") }
+            if variation.sku != nil { seen.insert("sku") }
+            if variation.status != nil { seen.insert("status") }
+        }
+        for key in canonical where seen.contains(key) {
+            keys.append(key)
+        }
+        return keys
+    }
+
+    private static func variationKeyRejection(arguments: String) -> ToolResult.Failed? {
+        guard let data = arguments.data(using: .utf8),
+              let parsed = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let entries = parsed["variations"] as? [[String: Any]] else {
+            return nil
+        }
+        var unknown: Set<String> = []
+        for entry in entries {
+            for key in entry.keys where !allowedVariationKeys.contains(key) {
+                unknown.insert(key)
+            }
+        }
+        guard !unknown.isEmpty else { return nil }
+        let list = unknown.sorted().joined(separator: ", ")
+        return .init(toolName: name,
+                     kind: .invalidToolCall,
+                     reason: "Unsupported \(name) argument(s): \(list)")
     }
 }

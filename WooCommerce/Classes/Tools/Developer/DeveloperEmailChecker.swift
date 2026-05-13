@@ -6,6 +6,6 @@ struct DeveloperEmailChecker {
     /// Checks if an email belongs to app developer (Automattic).
     ///
     func isDeveloperEmail(email: String) -> Bool {
-        return (developerEmails.first { email.contains($0) }) != nil
+        return developerEmails.contains { email.contains($0) }
     }
 }

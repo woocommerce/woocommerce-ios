@@ -249,7 +249,7 @@ private extension RefundStore {
 
         // Now, remove any objects that exist in storageRefund.items but not in readOnlyRefund.items
         storedRefundItems?.forEach { storageItem in
-            if readOnlyRefund.items.first(where: { $0.itemID == storageItem.itemID && $0.name == storageItem.name } ) == nil {
+            if !readOnlyRefund.items.contains(where: { $0.itemID == storageItem.itemID && $0.name == storageItem.name }) {
                 storageRefund.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
             }
@@ -305,7 +305,7 @@ private extension RefundStore {
 
         // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
         storageItem.taxes?.forEach { storageTax in
-            if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+            if !readOnlyItem.taxes.contains(where: { $0.taxID == storageTax.taxID }) {
                 storageItem.removeFromTaxes(storageTax)
                 storage.deleteObject(storageTax)
             }

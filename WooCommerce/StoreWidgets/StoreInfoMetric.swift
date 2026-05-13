@@ -27,12 +27,17 @@ struct StoreInfoMetric: Equatable {
     let type: StoreInfoMetricType
     let value: StoreInfoMetricValue
     let previousValue: StoreInfoMetricValue?
+    /// Time-series for the trailing per-cell chart. `nil` for metrics not sourced from
+    /// `OrderStatsV4.intervals` (`visitors`, `conversion`) and for legacy/placeholder paths.
+    let chartSeries: [MetricChartPoint]?
 
     init(type: StoreInfoMetricType,
          value: StoreInfoMetricValue,
-         previousValue: StoreInfoMetricValue? = nil) {
+         previousValue: StoreInfoMetricValue? = nil,
+         chartSeries: [MetricChartPoint]? = nil) {
         self.type = type
         self.value = value
         self.previousValue = previousValue
+        self.chartSeries = chartSeries
     }
 }

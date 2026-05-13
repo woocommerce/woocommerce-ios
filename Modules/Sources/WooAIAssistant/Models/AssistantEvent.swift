@@ -36,12 +36,12 @@ public struct ToolProposal: Equatable, Sendable {
     public let id: UUID
     public let toolName: String
     public let toolCallID: String
-    public let preview: String
+    public let preview: ConfirmationPreview
 
     public init(id: UUID = UUID(),
                 toolName: String,
                 toolCallID: String,
-                preview: String) {
+                preview: ConfirmationPreview) {
         self.id = id
         self.toolName = toolName
         self.toolCallID = toolCallID

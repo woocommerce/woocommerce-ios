@@ -80,6 +80,9 @@ final class HelpAndSupportViewController: UIViewController {
         isAIChatEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
     )
 
+    /// Retains the support escalation coordinator while the flow is active.
+    private var supportEscalationCoordinator: SupportEscalationCoordinator?
+
     private var isMacCatalyst: Bool {
         #if targetEnvironment(macCatalyst)
         return true
@@ -477,19 +480,32 @@ private extension HelpAndSupportViewController {
         let entryPoint: SupportChatViewModel.EntryPoint = ServiceLocator.stores.isAuthenticated
             ? .helpAndSupport
             : .preLogin
+        var viewModelHolder: SupportChatViewModel?
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
-            onContactHumanSupport: { [weak self] transcript in
-                self?.navigateToContactSupport(transcript: transcript)
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+                self?.handleContactHumanSupport(chatID: chatID,
+                                                transcript: transcript,
+                                                supportAreaInfo: supportAreaInfo,
+                                                entryPoint: entryPoint,
+                                                onTicketCreated: { [weak viewModelHolder] in
+                                                    viewModelHolder?.markChatTicketCreated()
+                                                })
             }
         )
+        viewModelHolder = viewModel
         let controller = SupportChatHostingController(viewModel: viewModel)
         navigationController?.pushViewController(controller, animated: true)
     }
 
-    private func navigateToContactSupport(transcript: String) {
-        let viewController = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag))
-        viewController.show(from: self)
+    private func handleContactHumanSupport(chatID: Int64?,
+                                           transcript: String,
+                                           supportAreaInfo: SupportAreaInfo?,
+                                           entryPoint: SupportChatViewModel.EntryPoint,
+                                           onTicketCreated: @escaping () -> Void) {
+        supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
+                                                                    onTicketCreated: onTicketCreated)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
     }
 
     /// Chat History action
@@ -509,14 +525,25 @@ private extension HelpAndSupportViewController {
     /// Pushes the support chat UI seeded with a prior `chatID` so the conversation
     /// continues on the assistant's side when the merchant sends the next message.
     private func resumeChat(for summary: SupportChatSummary) {
+        var viewModelHolder: SupportChatViewModel?
         let chatViewModel = SupportChatViewModel(
             botSlug: summary.botSlug,
             entryPoint: .chatHistory,
             chatID: summary.chatID,
-            onContactHumanSupport: { [weak self] transcript in
-                self?.navigateToContactSupport(transcript: transcript)
+            sessionID: summary.sessionID,
+            hasCreatedTicket: summary.hasCreatedTicket,
+            isChatResolved: summary.isResolved,
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+                self?.handleContactHumanSupport(chatID: chatID,
+                                                transcript: transcript,
+                                                supportAreaInfo: supportAreaInfo,
+                                                entryPoint: entryPoint,
+                                                onTicketCreated: { [weak viewModelHolder] in
+                                                    viewModelHolder?.markChatTicketCreated()
+                                                })
             }
         )
+        viewModelHolder = chatViewModel
         let controller = SupportChatHostingController(viewModel: chatViewModel)
         navigationController?.pushViewController(controller, animated: true)
     }

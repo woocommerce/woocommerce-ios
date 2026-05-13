@@ -23,9 +23,25 @@ public protocol SupportChatRemoteProtocol {
     /// - Parameters:
     ///   - botSlug: Assistant slug the chat was created against.
     ///   - chatID: Identifier returned by a previous `sendMessage` call.
+    ///   - sessionID: Optional session identifier required by unauthenticated chats.
     /// - Returns: The full thread in `ts`-ascending order.
     func fetchChat(botSlug: String,
-                   chatID: Int64) async throws -> SupportChatResponse
+                   chatID: Int64,
+                   sessionID: String?) async throws -> SupportChatResponse
+
+    /// Submits feedback for a specific bot message.
+    ///
+    /// - Parameters:
+    ///   - botSlug: Assistant slug (e.g. `woo-chat-allusers`).
+    ///   - chatID: Identifier of the chat.
+    ///   - messageID: Identifier of the message to rate.
+    ///   - sessionID: Session identifier of the chat.
+    ///   - upvoted: `true` for positive feedback (thumbs up), `false` for negative (thumbs down).
+    func submitFeedback(botSlug: String,
+                        chatID: Int64,
+                        messageID: Int64,
+                        sessionID: String,
+                        upvoted: Bool) async throws
 }
 
 /// Remote for the support chat endpoint (`/wpcom/v2/odie/chat/{bot_slug}`).
@@ -62,13 +78,37 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
     }
 
     public func fetchChat(botSlug: String,
-                          chatID: Int64) async throws -> SupportChatResponse {
+                          chatID: Int64,
+                          sessionID: String?) async throws -> SupportChatResponse {
         let path = "\(Path.chat)/\(botSlug)/\(chatID)"
+        var parameters: [String: Any] = [:]
+        if let sessionID {
+            parameters[ParameterKey.sessionID] = sessionID
+        }
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,
-                                    path: path)
+                                    path: path,
+                                    parameters: parameters)
         let mapper = SupportChatResponseMapper()
         return try await enqueue(request, mapper: mapper)
+    }
+
+    public func submitFeedback(botSlug: String,
+                               chatID: Int64,
+                               messageID: Int64,
+                               sessionID: String,
+                               upvoted: Bool) async throws {
+        let path = "\(Path.chat)/\(botSlug)/\(chatID)/\(messageID)/feedback"
+        let parameters: [String: Any] = [
+            ParameterKey.sessionID: sessionID,
+            ParameterKey.ratingValue: upvoted ? 1 : -1
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .post,
+                                    path: path,
+                                    parameters: parameters,
+                                    encoding: JSONEncoding.default)
+        _ = try await enqueue(request)
     }
 }
 
@@ -83,5 +123,6 @@ private extension SupportChatRemote {
         static let message = "message"
         static let context = "context"
         static let sessionID = "session_id"
+        static let ratingValue = "rating_value"
     }
 }

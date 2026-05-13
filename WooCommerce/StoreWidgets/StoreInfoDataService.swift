@@ -46,6 +46,19 @@ final class StoreInfoDataService {
         let totalItemsSold: Int
         let totalVisitors: Int?
         let conversion: Double?
+        /// Per-metric series derived from `OrderStatsV4.intervals`. Typed properties (not a
+        /// `[StoreInfoMetricType: ...]` dictionary) keep this file target-portable — it is also
+        /// compiled into `Woo Watch App`, which doesn't include the widget metric catalog.
+        var revenueSeries: [IntervalPoint] = []
+        var netRevenueSeries: [IntervalPoint] = []
+        var averageOrderValueSeries: [IntervalPoint] = []
+        var ordersSeries: [IntervalPoint] = []
+        var itemsSoldSeries: [IntervalPoint] = []
+
+        struct IntervalPoint: Equatable {
+            let date: Date
+            let value: Double
+        }
     }
 
     /// Current-period stats paired with the matching previous-period stats so widgets can
@@ -132,13 +145,19 @@ final class StoreInfoDataService {
 
             // Assemble stats data
             let conversion = siteStats.visitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(siteStats.visitors) : 0
+            let series = Stats.intervalSeries(from: revenueAndOrders, timezone: dateRange.timezone)
             return Stats(revenue: revenueAndOrders.totals.grossRevenue,
                          netRevenue: revenueAndOrders.totals.netRevenue,
                          averageOrderValue: revenueAndOrders.totals.averageOrderValue,
                          totalOrders: revenueAndOrders.totals.totalOrders,
                          totalItemsSold: revenueAndOrders.totals.totalItemsSold,
                          totalVisitors: siteStats.visitors,
-                         conversion: min(conversion, 1))
+                         conversion: min(conversion, 1),
+                         revenueSeries: series.revenue,
+                         netRevenueSeries: series.netRevenue,
+                         averageOrderValueSeries: series.averageOrderValue,
+                         ordersSeries: series.orders,
+                         itemsSoldSeries: series.itemsSold)
 
         } catch {
 
@@ -153,13 +172,65 @@ final class StoreInfoDataService {
     ///
     private func statsWithoutVisitors(for storeID: Int64, dateRange: DateRange) async throws -> Stats {
         let revenueAndOrders = try await fetchRevenueAndOrders(for: storeID, dateRange: dateRange)
+        let series = Stats.intervalSeries(from: revenueAndOrders, timezone: dateRange.timezone)
         return Stats(revenue: revenueAndOrders.totals.grossRevenue,
                      netRevenue: revenueAndOrders.totals.netRevenue,
                      averageOrderValue: revenueAndOrders.totals.averageOrderValue,
                      totalOrders: revenueAndOrders.totals.totalOrders,
                      totalItemsSold: revenueAndOrders.totals.totalItemsSold,
                      totalVisitors: nil,
-                     conversion: nil)
+                     conversion: nil,
+                     revenueSeries: series.revenue,
+                     netRevenueSeries: series.netRevenue,
+                     averageOrderValueSeries: series.averageOrderValue,
+                     ordersSeries: series.orders,
+                     itemsSoldSeries: series.itemsSold)
+    }
+}
+
+// MARK: - Interval-series extraction
+
+private extension StoreInfoDataService.Stats {
+    /// Matches `DateFormatter.Stats.dateTimeFormatter` from `NetworkingCore` — inlined here
+    /// because the widget extension can't import Yosemite (where the parsing helper lives).
+    static let intervalDateFormat = "yyyy-MM-dd HH:mm:ss"
+
+    /// Decomposes intervals into per-metric series. Visitors / conversion are intentionally
+    /// absent — they don't come from this endpoint.
+    static func intervalSeries(
+        from stats: OrderStatsV4,
+        timezone: TimeZone
+    ) -> (revenue: [IntervalPoint],
+          netRevenue: [IntervalPoint],
+          averageOrderValue: [IntervalPoint],
+          orders: [IntervalPoint],
+          itemsSold: [IntervalPoint]) {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.timeZone = timezone
+        formatter.dateFormat = intervalDateFormat
+
+        // `MetricChartView` plots points by array index, so the response must be in chronological
+        // order. The remote currently returns intervals in order, but sort defensively so a future
+        // ordering change in the response does not produce reversed or scrambled sparklines.
+        let parsed: [(date: Date, subtotals: OrderStatsV4Totals)] = stats.intervals
+            .compactMap { interval in
+                guard let date = formatter.date(from: interval.dateStart) else { return nil }
+                return (date, interval.subtotals)
+            }
+            .sorted { $0.date < $1.date }
+        guard !parsed.isEmpty else {
+            return (revenue: [], netRevenue: [], averageOrderValue: [], orders: [], itemsSold: [])
+        }
+
+        return (
+            revenue: parsed.map { IntervalPoint(date: $0.date, value: NSDecimalNumber(decimal: $0.subtotals.grossRevenue).doubleValue) },
+            netRevenue: parsed.map { IntervalPoint(date: $0.date, value: NSDecimalNumber(decimal: $0.subtotals.netRevenue).doubleValue) },
+            averageOrderValue: parsed.map { IntervalPoint(date: $0.date, value: NSDecimalNumber(decimal: $0.subtotals.averageOrderValue).doubleValue) },
+            orders: parsed.map { IntervalPoint(date: $0.date, value: Double($0.subtotals.totalOrders)) },
+            itemsSold: parsed.map { IntervalPoint(date: $0.date, value: Double($0.subtotals.totalItemsSold)) }
+        )
     }
 }
 

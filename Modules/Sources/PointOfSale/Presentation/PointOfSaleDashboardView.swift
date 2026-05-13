@@ -21,6 +21,11 @@ struct PointOfSaleDashboardView: View {
     @State private var floatingControlSuppressed: Bool = false
     @State private var phoneShowingCart: Bool = false
 
+    /// Tracks Dynamic Type scaling for the phone overflow menu chip so it grows in sync with
+    /// the adjacent `POSPageHeaderActionButton` (search) at large content sizes. Same 1.0…1.2x
+    /// clamp around `POSHeaderLayoutConstants.minHeight` as `POSPageHeaderActionButton`.
+    @ScaledMetric private var phoneOverflowMenuScaledSize: CGFloat = POSHeaderLayoutConstants.minHeight
+
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
         posModel.viewStateCoordinatorForView
     }
@@ -212,7 +217,7 @@ struct PointOfSaleDashboardView: View {
                 VStack(spacing: POSSpacing.none) {
                     ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
                                  searchTerm: $viewStateCoordinator.searchTerm,
-                                 trailingHeaderAccessory: AnyView(phoneOverflowMenu))
+                                 trailingHeaderAccessoryHiddenOnCoupons: AnyView(phoneOverflowMenu))
                     if posModel.cart.isNotEmpty {
                         phoneCartButton
                     }
@@ -300,11 +305,16 @@ struct PointOfSaleDashboardView: View {
                         .foregroundColor(.posOnSurface)
                         .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 }
-                .frame(width: POSHeaderLayoutConstants.minHeight, height: POSHeaderLayoutConstants.minHeight)
+                .frame(width: phoneOverflowMenuConstrainedSize, height: phoneOverflowMenuConstrainedSize)
                 .fixedSize()
         }
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
         .accessibilityIdentifier("pos-phone-overflow-menu")
+    }
+
+    private var phoneOverflowMenuConstrainedSize: CGFloat {
+        max(POSHeaderLayoutConstants.minHeight,
+            min(phoneOverflowMenuScaledSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
     private var phoneCartButton: some View {

@@ -16,10 +16,13 @@ struct SupportChatView: View {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     if viewModel.canEscalateToHumanSupport {
                         Button {
-                            viewModel.contactHumanSupport()
+                            viewModel.contactHumanSupport(source: .toolbar)
                         } label: {
                             Image(systemName: "person.fill.questionmark")
                                 .accessibilityLabel(Localization.toolbarContactSupport)
+                        }
+                        .onAppear {
+                            viewModel.trackManualEscalationButtonShownIfNeeded()
                         }
                     }
 
@@ -29,6 +32,9 @@ struct SupportChatView: View {
                         } label: {
                             Image(systemName: "checkmark")
                                 .accessibilityLabel(Localization.toolbarMarkResolved)
+                        }
+                        .onAppear {
+                            viewModel.trackResolutionButtonShownIfNeeded()
                         }
                     }
                 }
@@ -55,7 +61,7 @@ struct SupportChatView: View {
                 actions: {
                     Button(Localization.contactSupport) {
                         viewModel.dismissError()
-                        viewModel.contactHumanSupport()
+                        viewModel.contactHumanSupport(source: .errorDialog)
                     }
                     Button(Localization.dismiss, role: .cancel) {
                         viewModel.dismissError()
@@ -306,12 +312,15 @@ struct SupportChatView: View {
                 .multilineTextAlignment(.center)
 
             Button(Localization.contactSupport) {
-                viewModel.contactHumanSupport()
+                viewModel.contactHumanSupport(source: .banner)
             }
             .buttonStyle(SecondaryButtonStyle())
         }
         .padding()
         .background(Color(.listBackground))
+        .onAppear {
+            viewModel.trackBotEscalationButtonShownIfNeeded()
+        }
     }
 
     // MARK: - Ticket Created Banner
@@ -500,7 +509,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .helpAndSupport,
-                onContactHumanSupport: { _, _, _ in }
+                onContactHumanSupport: { _, _, _, _ in }
             )
         )
     }
@@ -511,7 +520,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .connectivityTool,
-                onContactHumanSupport: { _, _, _ in }
+                onContactHumanSupport: { _, _, _, _ in }
             )
         )
     }

@@ -139,6 +139,106 @@ struct SupportChatViewModelTests {
         #expect(sut.hasProceededToChat == true)
     }
 
+    // MARK: - Analytics Tests
+
+    @Test func init_tracks_entryPointTapped() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+
+        // When
+        _ = makeSUT(entryPoint: .preLogin, stores: stores, analyticsProvider: analyticsProvider)
+
+        // Then
+        assertProperties(
+            analyticsProvider,
+            event: "support_chat_entry_point_tapped",
+            include: [
+                "entry_point": "pre_login",
+                "is_authenticated": false,
+                "is_resumed_chat": false
+            ]
+        )
+    }
+
+    @Test func selectIssue_when_other_then_tracks_issueSelected_and_troubleshootingSkipped() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(entryPoint: .helpAndSupport, analyticsProvider: analyticsProvider)
+        analyticsProvider.clearEvents()
+
+        // When
+        await sut.selectIssue(.other)
+
+        // Then
+        assertProperties(
+            analyticsProvider,
+            event: "support_chat_issue_selected",
+            include: [
+                "issue_type": "other",
+                "entry_point": "help_and_support"
+            ]
+        )
+        assertProperties(
+            analyticsProvider,
+            event: "support_chat_troubleshooting_completed",
+            include: [
+                "issue_type": "other",
+                "result": "skipped"
+            ]
+        )
+    }
+
+    @Test func selectIssue_when_diagnostics_pass_then_tracks_troubleshootingPassed() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let diagnosticsService = MockSupportDiagnosticsService(resultProvider: { tests in
+            tests.map { .success(test: $0) }
+        })
+        let sut = makeSUT(diagnosticsService: diagnosticsService, analyticsProvider: analyticsProvider)
+        analyticsProvider.clearEvents()
+
+        // When
+        await sut.selectIssue(.loadingOrders)
+
+        // Then
+        assertProperties(
+            analyticsProvider,
+            event: "support_chat_troubleshooting_completed",
+            include: [
+                "issue_type": "loading_orders",
+                "result": "passed"
+            ]
+        )
+    }
+
+    @Test func selectIssue_when_diagnostics_fail_then_tracks_troubleshootingFailed_with_failedTest() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let diagnosticsService = MockSupportDiagnosticsService(resultProvider: { tests in
+            guard let test = tests.first else { return [] }
+            return [
+                .failure(test: test, failure: .init(errorMessage: "Failed"))
+            ]
+        })
+        let sut = makeSUT(diagnosticsService: diagnosticsService, analyticsProvider: analyticsProvider)
+        analyticsProvider.clearEvents()
+
+        // When
+        await sut.selectIssue(.loadingOrders)
+
+        // Then
+        assertProperties(
+            analyticsProvider,
+            event: "support_chat_troubleshooting_completed",
+            include: [
+                "issue_type": "loading_orders",
+                "result": "failed",
+                "failed_test": "internet_connection"
+            ]
+        )
+    }
+
     // MARK: - Proceed to Chat Tests
 
     @Test func proceedToChat_appends_greeting_message() async {
@@ -259,6 +359,104 @@ struct SupportChatViewModelTests {
             return
         }
         #expect(message.contains("Something went wrong. Please try again."), "Expected generic copy, got: \(message)")
+    }
+
+    @Test func sendMessage_tracks_messageSent_with_isFirstMessage_toggling_across_multiple_sends() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores, analyticsProvider: analyticsProvider)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.inputText = "First"
+        sut.sendMessage()
+        sut.inputText = "Second"
+        sut.sendMessage()
+
+        // Then
+        let messageSentProperties = propertiesList(analyticsProvider, for: "support_chat_message_sent")
+        #expect(messageSentProperties.count == 2)
+        #expect(messageSentProperties.first?["is_first_message"] as? Bool == true)
+        #expect(messageSentProperties.first?["entry_point"] as? String == "connectivity_tool")
+        #expect(messageSentProperties.last?["is_first_message"] as? Bool == false)
+    }
+
+    @Test func sendMessage_when_response_contains_forwardToHumanSupport_then_tracks_responseReceived_with_flag() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            guard case let .sendMessage(_, message, _, _, _, completion) = action else {
+                return
+            }
+            completion(.success(SupportChatResponse(
+                chatID: 123,
+                sessionID: "session-1",
+                botSlug: "test-bot",
+                botVersion: "1.0",
+                messages: [
+                    SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                    SupportChatMessage(
+                        messageID: 2,
+                        role: .bot,
+                        content: "Contact support.",
+                        context: SupportChatMessageContext(
+                            sources: [],
+                            flags: SupportChatFlags(forwardToHumanSupport: true, cannedResponse: false, loggedIn: true, branch: nil),
+                            supportArea: SupportChatSupportArea(area: .mobileApp, topic: "woo_mobile_issue_orders", confidence: .high)
+                        )
+                    )
+                ]
+            )))
+        }
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores, analyticsProvider: analyticsProvider)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.inputText = "Help"
+        sut.sendMessage()
+
+        // Then
+        assertProperties(
+            analyticsProvider,
+            event: "support_chat_response_received",
+            include: [
+                "entry_point": "connectivity_tool",
+                "support_area": "mobile-app",
+                "support_area_confidence": "high",
+                "has_chat_topic": true,
+                "forward_to_human_support": true
+            ]
+        )
+    }
+
+    @Test func sendMessage_when_failure_tracks_errorEscalationButtonShown_only_once() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, _, completion) = action {
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)))
+            }
+        }
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores, analyticsProvider: analyticsProvider)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.inputText = "First"
+        sut.sendMessage()
+        sut.dismissError()
+        sut.inputText = "Second"
+        sut.sendMessage()
+
+        // Then
+        let events = propertiesList(analyticsProvider, for: "support_chat_escalation_button_shown")
+        #expect(events.count == 1)
+        #expect(events.first?["trigger"] as? String == "error_dialog")
     }
 
     // MARK: - Execute Action Tests
@@ -397,7 +595,7 @@ struct SupportChatViewModelTests {
                 entryPoint: .chatHistory,
                 stores: stores,
                 chatID: chatID,
-                onContactHumanSupport: { _, _, _ in }
+                onContactHumanSupport: { _, _, _, _ in }
             )
 
             // When
@@ -414,7 +612,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -470,7 +668,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -544,7 +742,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .preLogin,
             stores: stores,
-            onContactHumanSupport: { chatID, _, _ in
+            onContactHumanSupport: { chatID, _, _, _ in
                 receivedChatID = chatID
             }
         )
@@ -602,7 +800,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             systemStatusReport: prefetchedReport,
-            onContactHumanSupport: { _, _, supportAreaInfo in
+            onContactHumanSupport: { _, _, supportAreaInfo, _ in
                 receivedSupportAreaInfo = supportAreaInfo
             }
         )
@@ -616,6 +814,29 @@ struct SupportChatViewModelTests {
         // Then
         #expect(receivedSupportAreaInfo?.topic == "woo_mobile_issue_orders")
         #expect(receivedSupportAreaInfo?.systemStatusReport == prefetchedReport)
+    }
+
+    @Test func contactHumanSupport_tracks_escalationTapped_with_source() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(entryPoint: .preLogin, analyticsProvider: analyticsProvider)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.contactHumanSupport(source: .banner)
+
+        // Then
+        assertProperties(
+            analyticsProvider,
+            event: "support_chat_escalation_tapped",
+            include: [
+                "source": "banner",
+                "entry_point": "pre_login",
+                "user_message_count": 0,
+                "support_area": "unknown",
+                "support_area_confidence": "unknown"
+            ]
+        )
     }
 
     // MARK: - canEscalateToHumanSupport Tests
@@ -757,6 +978,22 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == false)
     }
 
+    @Test func trackResolutionButtonShownIfNeeded_tracks_once() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(entryPoint: .connectivityTool, analyticsProvider: analyticsProvider)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.trackResolutionButtonShownIfNeeded()
+        sut.trackResolutionButtonShownIfNeeded()
+
+        // Then
+        let events = propertiesList(analyticsProvider, for: "support_chat_resolution_button_shown")
+        #expect(events.count == 1)
+        #expect(events.first?["entry_point"] as? String == "connectivity_tool")
+    }
+
     @Test func canEscalateToHumanSupport_is_false_when_hasCreatedTicket_is_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -767,7 +1004,7 @@ struct SupportChatViewModelTests {
             entryPoint: .preLogin,
             stores: stores,
             hasCreatedTicket: true,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
 
         // When — append a user message so the only failing condition is hasCreatedTicket
@@ -1158,6 +1395,19 @@ struct SupportChatViewModelTests {
         #expect(sut.shouldShowResolvedButton == false)
     }
 
+    @Test func markChatResolved_tracks_markResolvedTapped() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(entryPoint: .connectivityTool, analyticsProvider: analyticsProvider)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.markChatResolved()
+
+        // Then
+        #expect(analyticsProvider.receivedEvents == ["support_chat_mark_resolved_tapped"])
+    }
+
     // MARK: - Feedback Tests
 
     @Test func chatMessage_shouldShowFeedbackButtons_when_bot_message_is_resolved_then_returns_false() {
@@ -1209,7 +1459,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Help"
         sut.sendMessage()
@@ -1257,7 +1507,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1300,7 +1550,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1342,7 +1592,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1385,7 +1635,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1396,6 +1646,64 @@ struct SupportChatViewModelTests {
         // Then
         #expect(analyticsProvider.receivedEvents.contains("support_chat_feedback_submitted"))
         #expect(analyticsProvider.received(event: "support_chat_feedback_submitted", with: ["rating": "down"]))
+    }
+
+    @Test func submitFeedback_tracks_rating_entryPoint_supportArea_and_userMessageCount() {
+        // Given
+        let chatID: Int64 = 123
+        let messageID: Int64 = 456
+        let analyticsProvider = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, message, _, _, _, completion):
+                completion(.success(SupportChatResponse(
+                    chatID: chatID,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: message, context: nil),
+                        SupportChatMessage(
+                            messageID: messageID,
+                            role: .bot,
+                            content: "Hello",
+                            context: SupportChatMessageContext(
+                                sources: [],
+                                flags: nil,
+                                supportArea: SupportChatSupportArea(area: .mobileApp, topic: "woo_mobile_issue_orders", confidence: .high)
+                            )
+                        )
+                    ]
+                )))
+            case let .submitFeedback(_, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        let sut = makeSUT(entryPoint: .connectivityTool, stores: stores, analyticsProvider: analyticsProvider)
+        sut.inputText = "Help"
+        sut.sendMessage()
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.submitFeedback(messageID: messageID, upvoted: true)
+
+        // Then
+        assertProperties(
+            analyticsProvider,
+            event: "support_chat_feedback_submitted",
+            include: [
+                "rating": "up",
+                "entry_point": "connectivity_tool",
+                "support_area": "mobile-app",
+                "support_area_confidence": "high",
+                "user_message_count": 1
+            ]
+        )
     }
 
     @Test func sendMessage_when_success_then_bot_message_has_messageID() async {
@@ -1422,7 +1730,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .connectivityTool,
             stores: stores,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
 
@@ -1457,7 +1765,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .connectivityTool,
             stores: stores,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         sut.inputText = "Hello"
 
@@ -1478,7 +1786,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -1521,7 +1829,7 @@ struct SupportChatViewModelTests {
             stores: stores,
             chatID: chatID,
             sessionID: sessionID,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         var receivedSessionID: String?
 
@@ -1559,7 +1867,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         var receivedChatID: Int64?
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -1583,15 +1891,17 @@ struct SupportChatViewModelTests {
     private func makeSUT(
         entryPoint: SupportChatViewModel.EntryPoint = .helpAndSupport,
         stores: StoresManager? = nil,
-        diagnosticsService: SupportDiagnosticsService? = nil,
+        diagnosticsService: SupportDiagnosticsServicing? = nil,
+        analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider(),
         onStartJetpackSetup: @escaping () -> Void = {}
     ) -> SupportChatViewModel {
         let stores = stores ?? MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
             stores: stores,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider),
             diagnosticsService: diagnosticsService,
-            onContactHumanSupport: { _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in }
         )
         viewModel.onStartJetpackSetup = onStartJetpackSetup
         return viewModel
@@ -1613,5 +1923,74 @@ struct SupportChatViewModelTests {
             ]
         )
         completion(.success(response))
+    }
+
+    private func assertProperties(_ analyticsProvider: MockAnalyticsProvider,
+                                  event: String,
+                                  include expectedProperties: [String: Any]) {
+        let matchingProperties = propertiesList(analyticsProvider, for: event)
+        guard let properties = matchingProperties.first else {
+            Issue.record("Expected analytics event \(event)")
+            return
+        }
+
+        for (key, expectedValue) in expectedProperties {
+            #expect((properties[key] as? NSObject) == (expectedValue as? NSObject), "Mismatch for \(key)")
+        }
+    }
+
+    private func propertiesList(_ analyticsProvider: MockAnalyticsProvider,
+                                for event: String) -> [[AnyHashable: Any]] {
+        var propertyIndex = 0
+        var matches: [[AnyHashable: Any]] = []
+
+        for eventName in analyticsProvider.receivedEvents {
+            guard propertyIndex < analyticsProvider.receivedProperties.count else {
+                break
+            }
+
+            let properties = analyticsProvider.receivedProperties[propertyIndex]
+            propertyIndex += 1
+
+            if eventName == event {
+                matches.append(properties)
+            }
+        }
+
+        return matches
+    }
+}
+
+private extension SupportChatViewModel.ChatMessage {
+    var textContent: String? {
+        guard case let .text(text) = content else {
+            return nil
+        }
+        return text
+    }
+}
+
+@MainActor
+private final class MockSupportDiagnosticsService: SupportDiagnosticsServicing {
+    var formattedSystemStatusReport: String?
+
+    private let resultProvider: ([SupportDiagnosticsService.Test]) -> [SupportDiagnosticsService.Result]
+
+    init(resultProvider: @escaping ([SupportDiagnosticsService.Test]) -> [SupportDiagnosticsService.Result]) {
+        self.resultProvider = resultProvider
+    }
+
+    func runTests(_ tests: [SupportDiagnosticsService.Test]) async -> [SupportDiagnosticsService.Result] {
+        resultProvider(tests)
+    }
+
+    func enableAnalytics() async throws {}
+
+    func registerDevice() async throws {}
+
+    func enableOrderNotifications(settings: NotificationSettings) async throws {}
+
+    func openNotificationSettings() -> URL? {
+        nil
     }
 }

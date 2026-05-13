@@ -43,11 +43,12 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
 
     private func showSupportChat() {
         var viewModelHolder: SupportChatViewModel?
-        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo in
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
             self?.navigationController?.popViewController(animated: true)
             self?.handleContactHumanSupport(chatID: chatID,
                                             transcript: transcript,
                                             supportAreaInfo: supportAreaInfo,
+                                            entryPoint: entryPoint,
                                             onTicketCreated: { [weak viewModelHolder] in
                                                 viewModelHolder?.markChatTicketCreated()
                                             })
@@ -61,6 +62,7 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
     private func handleContactHumanSupport(chatID: Int64?,
                                            transcript: String,
                                            supportAreaInfo: SupportAreaInfo?,
+                                           entryPoint: SupportChatViewModel.EntryPoint,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
@@ -69,7 +71,7 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
             },
             onTicketCreated: onTicketCreated
         )
-        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
     }
 
     private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {

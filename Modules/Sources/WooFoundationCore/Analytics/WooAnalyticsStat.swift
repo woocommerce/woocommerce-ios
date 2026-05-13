@@ -1412,7 +1412,18 @@ public enum WooAnalyticsStat: String {
     case wooShippingRefundRequested = "wcs_refund_requested"
 
     // MARK: Support Chat events
+    case supportChatEntryPointTapped = "support_chat_entry_point_tapped"
+    case supportChatIssueSelected = "support_chat_issue_selected"
+    case supportChatTroubleshootingCompleted = "support_chat_troubleshooting_completed"
+    case supportChatMessageSent = "support_chat_message_sent"
+    case supportChatResponseReceived = "support_chat_response_received"
     case supportChatFeedbackSubmitted = "support_chat_feedback_submitted"
+    case supportChatEscalationButtonShown = "support_chat_escalation_button_shown"
+    case supportChatEscalationTapped = "support_chat_escalation_tapped"
+    case supportChatTicketCreated = "support_chat_ticket_created"
+    case supportChatTicketCreationFailed = "support_chat_ticket_creation_failed"
+    case supportChatResolutionButtonShown = "support_chat_resolution_button_shown"
+    case supportChatMarkResolvedTapped = "support_chat_mark_resolved_tapped"
 }
 
 extension WooAnalyticsStat {

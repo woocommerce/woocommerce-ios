@@ -75,6 +75,9 @@ public final class SupportFormViewModel: ObservableObject {
     /// Called when a ticket is successfully created.
     private let onTicketCreated: (() -> Void)?
 
+    /// Called when ticket creation fails.
+    private let onTicketCreationFailed: ((Error) -> Void)?
+
     /// Defines when the submit button should be enabled or not.
     ///
     var submitButtonDisabled: Bool {
@@ -113,7 +116,8 @@ public final class SupportFormViewModel: ObservableObject {
          preselectedArea: Area? = nil,
          prefilledSubject: String? = nil,
          prefilledDescription: String? = nil,
-         onTicketCreated: (() -> Void)? = nil) {
+         onTicketCreated: (() -> Void)? = nil,
+         onTicketCreationFailed: ((Error) -> Void)? = nil) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.additionalTags = additionalTags
@@ -124,6 +128,7 @@ public final class SupportFormViewModel: ObservableObject {
         self.attachments = attachments
         self.area = preselectedArea
         self.onTicketCreated = onTicketCreated
+        self.onTicketCreationFailed = onTicketCreationFailed
 
         if let prefilledSubject {
             self.subject = prefilledSubject
@@ -180,6 +185,7 @@ public final class SupportFormViewModel: ObservableObject {
                 self.shouldShowSuccessAlert = true
             case .failure(let error):
                 self.analyticsProvider.track(.supportNewRequestFailed)
+                self.onTicketCreationFailed?(error)
                 self.error = error
                 self.shouldShowErrorAlert = true
             }

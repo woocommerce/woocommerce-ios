@@ -1197,6 +1197,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Widgets
     case widgetTapped = "widget_tapped"
+    case widgetDeepLinkTapped = "widget_deep_link_tapped"
 
     // MARK: Application password Events
     case applicationPasswordsNewPasswordCreated = "application_passwords_new_password_created"

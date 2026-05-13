@@ -2688,6 +2688,28 @@ extension WooAnalyticsEvent {
             }
             return WooAnalyticsEvent(statName: .widgetTapped, properties: properties)
         }
+
+        /// Event fired when a Store Stats widget metric cell deep link reaches the host app.
+        ///
+        /// `metric` / `range` carry the raw query values straight from the URL — including
+        /// unknown values — so we can observe widget→app contract drift without losing the
+        /// tap event when one side ships a value the other hasn't learned yet.
+        ///
+        static func deepLinkTapped(metric: String?, range: String?) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [:]
+            if let metric {
+                properties[DeepLinkKey.metric.rawValue] = metric
+            }
+            if let range {
+                properties[DeepLinkKey.range.rawValue] = range
+            }
+            return WooAnalyticsEvent(statName: .widgetDeepLinkTapped, properties: properties)
+        }
+
+        enum DeepLinkKey: String {
+            case metric
+            case range
+        }
     }
 }
 

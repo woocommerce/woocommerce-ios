@@ -159,7 +159,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     private func handleContactHumanSupport(chatID: Int64?,
                                            transcript: String,
                                            supportAreaInfo: SupportAreaInfo?,
-                                           entryPoint: String,
+                                           entryPoint: SupportChatViewModel.EntryPoint,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(
             navigationController: navigationController,

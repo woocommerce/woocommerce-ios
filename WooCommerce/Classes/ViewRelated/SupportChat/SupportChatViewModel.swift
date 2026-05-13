@@ -13,7 +13,7 @@ final class SupportChatViewModel {
 
     /// Entry point for opening the support chat.
     ///
-    enum EntryPoint {
+    enum EntryPoint: String {
         case helpAndSupport   // Shows issue picker first
         case connectivityTool // Goes directly to chat (context already provided)
         case chatHistory      // Resuming a prior conversation from history
@@ -242,7 +242,7 @@ final class SupportChatViewModel {
     private let analytics: Analytics
     private var diagnosticsContext: [String: Any]?
     private let initialContext: [String: Any]?
-    private let onContactHumanSupport: (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: String) -> Void
+    private let onContactHumanSupport: (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: EntryPoint) -> Void
     private var latestSupportArea: SupportChatSupportArea?
     private var userMessageCount = 0
     private var didTrackResolutionButtonShown = false
@@ -250,7 +250,7 @@ final class SupportChatViewModel {
     private var didTrackBotEscalationButtonShown = false
     private var didTrackErrorEscalationButtonShown = false
     var onStartJetpackSetup: () -> Void
-    private let diagnosticsService: SupportDiagnosticsService
+    private let diagnosticsService: SupportDiagnosticsServicing
 
     /// Pre-fetched system status report, if available (e.g., from connectivity tool).
     ///
@@ -263,13 +263,13 @@ final class SupportChatViewModel {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          initialContext: [String: Any]? = nil,
-         diagnosticsService: SupportDiagnosticsService? = nil,
+         diagnosticsService: SupportDiagnosticsServicing? = nil,
          chatID: Int64? = nil,
          sessionID: String? = nil,
          hasCreatedTicket: Bool = false,
          isChatResolved: Bool = false,
          systemStatusReport: String? = nil,
-         onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: String) -> Void,
+         onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: EntryPoint) -> Void,
          onStartJetpackSetup: @escaping () -> Void = {}) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
@@ -287,7 +287,7 @@ final class SupportChatViewModel {
         self.onStartJetpackSetup = onStartJetpackSetup
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.entryPointTapped(
-            entryPoint: entryPoint.analyticsValue,
+            entryPoint: entryPoint,
             isAuthenticated: stores.isAuthenticated,
             isResumedChat: chatID != nil
         ))
@@ -300,8 +300,8 @@ final class SupportChatViewModel {
     func selectIssue(_ issue: SupportIssueType) async {
         selectedIssue = issue
         analytics.track(event: WooAnalyticsEvent.SupportChat.issueSelected(
-            issueType: issue.analyticsValue,
-            entryPoint: entryPoint.analyticsValue
+            issueType: issue,
+            entryPoint: entryPoint
         ))
 
         // Add user's selection as a message
@@ -313,7 +313,7 @@ final class SupportChatViewModel {
             let greetingMessage = ChatMessage(role: .bot, text: Localization.greetingMessage)
             messages.append(greetingMessage)
             hasProceededToChat = true
-            trackTroubleshootingCompleted(issueType: issue.analyticsValue, result: "skipped")
+            trackTroubleshootingCompleted(issueType: issue, result: .skipped)
             return
         }
 
@@ -370,16 +370,16 @@ final class SupportChatViewModel {
                 role: .bot,
                 content: .diagnosticsFailure(failure)
             )
-            trackTroubleshootingCompleted(issueType: issue.analyticsValue,
-                                          result: "failed",
-                                          failedTest: failure.test.analyticsValue)
+            trackTroubleshootingCompleted(issueType: issue,
+                                          result: .failed,
+                                          failedTest: failure.test)
         } else {
             messages[progressIndex] = ChatMessage(
                 id: messages[progressIndex].id,
                 role: .bot,
                 content: .diagnosticsSuccess
             )
-            trackTroubleshootingCompleted(issueType: issue.analyticsValue, result: "passed")
+            trackTroubleshootingCompleted(issueType: issue, result: .passed)
         }
     }
 
@@ -657,7 +657,7 @@ final class SupportChatViewModel {
         userMessageCount += 1
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.messageSent(
-            entryPoint: entryPoint.analyticsValue,
+            entryPoint: entryPoint,
             isFirstMessage: isFirstMessage,
             hasDiagnosticsContext: context != nil
         ))
@@ -678,10 +678,10 @@ final class SupportChatViewModel {
         stores.dispatch(action)
     }
 
-    func contactHumanSupport(source: String = "toolbar") {
+    func contactHumanSupport(source: WooAnalyticsEvent.SupportChat.EscalationSource = .toolbar) {
         analytics.track(event: WooAnalyticsEvent.SupportChat.escalationTapped(
             source: source,
-            entryPoint: entryPoint.analyticsValue,
+            entryPoint: entryPoint,
             supportArea: latestSupportArea,
             userMessageCount: userMessageCount
         ))
@@ -704,7 +704,7 @@ final class SupportChatViewModel {
             supportAreaInfo = nil
         }
 
-        onContactHumanSupport(chatID, transcript, supportAreaInfo, entryPoint.analyticsValue)
+        onContactHumanSupport(chatID, transcript, supportAreaInfo, entryPoint)
     }
 
     private func generateTranscript() -> String {
@@ -763,7 +763,7 @@ final class SupportChatViewModel {
                 let forwardToHumanSupport = lastBotMessage.context?.flags?.forwardToHumanSupport == true
 
                 analytics.track(event: WooAnalyticsEvent.SupportChat.responseReceived(
-                    entryPoint: entryPoint.analyticsValue,
+                    entryPoint: entryPoint,
                     supportArea: latestSupportArea,
                     forwardToHumanSupport: forwardToHumanSupport
                 ))
@@ -791,7 +791,7 @@ final class SupportChatViewModel {
         case .failure(let error):
             DDLogError("⛔️ Support chat error: \(error)")
             markLastUserMessageAsFailed()
-            trackEscalationButtonShown(trigger: "error_dialog")
+            trackEscalationButtonShown(trigger: .errorDialog)
             state = .error(errorMessage(for: error))
         }
     }
@@ -925,8 +925,8 @@ final class SupportChatViewModel {
         }
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.feedbackSubmitted(
-            rating: upvoted ? "up" : "down",
-            entryPoint: entryPoint.analyticsValue,
+            rating: upvoted ? .up : .down,
+            entryPoint: entryPoint,
             supportArea: latestSupportArea,
             userMessageCount: userMessageCount
         ))
@@ -949,7 +949,9 @@ final class SupportChatViewModel {
         messages.last { $0.role == .bot && $0.messageID != nil }
     }
 
-    private func trackTroubleshootingCompleted(issueType: String, result: String, failedTest: String? = nil) {
+    private func trackTroubleshootingCompleted(issueType: SupportIssueType,
+                                              result: WooAnalyticsEvent.SupportChat.TroubleshootingResult,
+                                              failedTest: SupportDiagnosticsService.Test? = nil) {
         analytics.track(event: WooAnalyticsEvent.SupportChat.troubleshootingCompleted(
             issueType: issueType,
             result: result,
@@ -964,7 +966,7 @@ final class SupportChatViewModel {
 
         didTrackResolutionButtonShown = true
         analytics.track(event: WooAnalyticsEvent.SupportChat.resolutionButtonShown(
-            entryPoint: entryPoint.analyticsValue,
+            entryPoint: entryPoint,
             supportArea: latestSupportArea,
             userMessageCount: userMessageCount
         ))
@@ -976,7 +978,7 @@ final class SupportChatViewModel {
         }
 
         didTrackManualEscalationButtonShown = true
-        trackEscalationButtonShown(trigger: "manual_toolbar")
+        trackEscalationButtonShown(trigger: .manualToolbar)
     }
 
     func trackBotEscalationButtonShownIfNeeded() {
@@ -985,11 +987,11 @@ final class SupportChatViewModel {
         }
 
         didTrackBotEscalationButtonShown = true
-        trackEscalationButtonShown(trigger: "bot_forwarded_to_human_support")
+        trackEscalationButtonShown(trigger: .botForwardedToHumanSupport)
     }
 
-    private func trackEscalationButtonShown(trigger: String) {
-        if trigger == "error_dialog" {
+    private func trackEscalationButtonShown(trigger: WooAnalyticsEvent.SupportChat.EscalationTrigger) {
+        if trigger == .errorDialog {
             guard didTrackErrorEscalationButtonShown == false else {
                 return
             }
@@ -998,63 +1000,10 @@ final class SupportChatViewModel {
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.escalationButtonShown(
             trigger: trigger,
-            entryPoint: entryPoint.analyticsValue,
+            entryPoint: entryPoint,
             supportArea: latestSupportArea,
             userMessageCount: userMessageCount
         ))
-    }
-}
-
-private extension SupportChatViewModel.EntryPoint {
-    var analyticsValue: String {
-        switch self {
-        case .helpAndSupport:
-            return "help_and_support"
-        case .connectivityTool:
-            return "connectivity_tool"
-        case .chatHistory:
-            return "chat_history"
-        case .preLogin:
-            return "pre_login"
-        }
-    }
-}
-
-private extension SupportIssueType {
-    var analyticsValue: String {
-        switch self {
-        case .loadingOrders:
-            return "loading_orders"
-        case .loadingProducts:
-            return "loading_products"
-        case .loadingAnalytics:
-            return "loading_analytics"
-        case .receivingNotifications:
-            return "receiving_notifications"
-        case .other:
-            return "other"
-        }
-    }
-}
-
-private extension SupportDiagnosticsService.Test {
-    var analyticsValue: String {
-        switch self {
-        case .internetConnection:
-            return "internet_connection"
-        case .wpComServers:
-            return "wpcom_servers"
-        case .site:
-            return "site"
-        case .siteOrders:
-            return "site_orders"
-        case .loadingProducts:
-            return "loading_products"
-        case .analyticsSetting:
-            return "analytics_setting"
-        case .notifications:
-            return "notifications"
-        }
     }
 }
 

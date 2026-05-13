@@ -16,7 +16,7 @@ struct SupportChatView: View {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     if viewModel.canEscalateToHumanSupport {
                         Button {
-                            viewModel.contactHumanSupport(source: "toolbar")
+                            viewModel.contactHumanSupport(source: .toolbar)
                         } label: {
                             Image(systemName: "person.fill.questionmark")
                                 .accessibilityLabel(Localization.toolbarContactSupport)
@@ -61,7 +61,7 @@ struct SupportChatView: View {
                 actions: {
                     Button(Localization.contactSupport) {
                         viewModel.dismissError()
-                        viewModel.contactHumanSupport(source: "error_dialog")
+                        viewModel.contactHumanSupport(source: .errorDialog)
                     }
                     Button(Localization.dismiss, role: .cancel) {
                         viewModel.dismissError()
@@ -309,7 +309,7 @@ struct SupportChatView: View {
                 .multilineTextAlignment(.center)
 
             Button(Localization.contactSupport) {
-                viewModel.contactHumanSupport(source: "banner")
+                viewModel.contactHumanSupport(source: .banner)
             }
             .buttonStyle(SecondaryButtonStyle())
         }

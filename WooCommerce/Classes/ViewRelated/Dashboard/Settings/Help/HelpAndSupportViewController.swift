@@ -501,7 +501,7 @@ private extension HelpAndSupportViewController {
     private func handleContactHumanSupport(chatID: Int64?,
                                            transcript: String,
                                            supportAreaInfo: SupportAreaInfo?,
-                                           entryPoint: String,
+                                           entryPoint: SupportChatViewModel.EntryPoint,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
                                                                     onTicketCreated: onTicketCreated)

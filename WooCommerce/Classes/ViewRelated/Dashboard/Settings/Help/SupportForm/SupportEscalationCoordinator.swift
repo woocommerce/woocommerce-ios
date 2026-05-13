@@ -62,7 +62,7 @@ final class SupportEscalationCoordinator {
     ///   - transcript: The chat transcript.
     ///   - supportAreaInfo: Optional support area information from AI chat.
     ///   - entryPoint: The chat entry point for analytics tracking.
-    func handleEscalation(chatID: Int64?, transcript: String, supportAreaInfo: SupportAreaInfo?, entryPoint: String) {
+    func handleEscalation(chatID: Int64?, transcript: String, supportAreaInfo: SupportAreaInfo?, entryPoint: SupportChatViewModel.EntryPoint) {
         self.chatID = chatID
 
         guard let supportAreaInfo else {
@@ -81,7 +81,7 @@ final class SupportEscalationCoordinator {
 
     // MARK: - Private Methods
 
-    private func showSupportForm(transcript: String, supportAreaInfo: SupportAreaInfo?, entryPoint: String) {
+    private func showSupportForm(transcript: String, supportAreaInfo: SupportAreaInfo?, entryPoint: SupportChatViewModel.EntryPoint) {
         let attachments = additionalAttachmentsProvider()
 
         let prefilledSubject: String?
@@ -98,13 +98,14 @@ final class SupportEscalationCoordinator {
         let viewModel = SupportFormViewModel(
             sourceTag: Tags.sourceTag,
             additionalTags: additionalTags(for: supportAreaInfo),
+            zendeskProvider: zendeskProvider,
             attachments: attachments,
             preselectedArea: supportAreaInfo?.area,
             prefilledSubject: prefilledSubject,
             prefilledDescription: prefilledDescription,
             onTicketCreated: { [weak self] in
                 self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
-                    route: "support_form",
+                    route: .supportForm,
                     supportAreaInfo: supportAreaInfo,
                     entryPoint: entryPoint
                 ))
@@ -113,7 +114,7 @@ final class SupportEscalationCoordinator {
             },
             onTicketCreationFailed: { [weak self] error in
                 self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
-                    route: "support_form",
+                    route: .supportForm,
                     supportAreaInfo: supportAreaInfo,
                     entryPoint: entryPoint,
                     errorType: Self.errorType(for: error)
@@ -127,7 +128,7 @@ final class SupportEscalationCoordinator {
         }
     }
 
-    private func createTicketDirectly(with areaInfo: SupportAreaInfo, entryPoint: String) {
+    private func createTicketDirectly(with areaInfo: SupportAreaInfo, entryPoint: SupportChatViewModel.EntryPoint) {
         guard let presentingVC = navigationController?.topViewController else { return }
 
         let loadingViewController = InProgressViewController(
@@ -154,7 +155,7 @@ final class SupportEscalationCoordinator {
                 switch result {
                 case .success:
                     self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
-                        route: "direct_ticket_creation",
+                        route: .directTicketCreation,
                         supportAreaInfo: areaInfo,
                         entryPoint: entryPoint
                     ))
@@ -163,7 +164,7 @@ final class SupportEscalationCoordinator {
                     self?.showSuccessAndPop()
                 case .failure(let error):
                     self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
-                        route: "direct_ticket_creation",
+                        route: .directTicketCreation,
                         supportAreaInfo: areaInfo,
                         entryPoint: entryPoint,
                         errorType: Self.errorType(for: error)

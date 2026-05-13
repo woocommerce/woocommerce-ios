@@ -215,7 +215,7 @@ final class ConnectivityToolViewModel {
     ///
     @MainActor
     func makeSupportChatViewModel(
-        onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: String) -> Void
+        onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: SupportChatViewModel.EntryPoint) -> Void
     ) -> SupportChatViewModel {
         var context: [String: Any] = [:]
 

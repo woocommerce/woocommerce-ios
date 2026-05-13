@@ -2,7 +2,7 @@ import Foundation
 
 /// Issue types that users can select when starting a support chat from Help & Support.
 ///
-enum SupportIssueType: Int, CaseIterable {
+enum SupportIssueType: String, CaseIterable {
     case loadingOrders
     case loadingProducts
     case loadingAnalytics

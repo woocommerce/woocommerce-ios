@@ -17,7 +17,7 @@ struct SupportEscalationCoordinatorTests {
         let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk)
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: nil, entryPoint: "help_and_support")
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: nil, entryPoint: .helpAndSupport)
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -35,7 +35,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
 
         // Then
         #expect(zendesk.latestInvokedTags.contains("in_app_support_escalate"))
@@ -53,7 +53,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -70,7 +70,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeMediumConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -87,7 +87,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeLowConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -120,7 +120,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
+        coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
 
         // Then
         #expect(dispatchedChatID == 123)
@@ -149,7 +149,7 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
+        coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
 
         // Then
         #expect(markTicketCreatedCalled == false)
@@ -178,10 +178,158 @@ struct SupportEscalationCoordinatorTests {
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
         // When
-        coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: "help_and_support")
+        coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
 
         // Then
         #expect(markTicketCreatedCalled == false)
+    }
+
+    // MARK: - Analytics Tests
+
+    @Test func createTicketDirectly_when_succeeds_then_tracks_ticketCreated_with_direct_route() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk, analyticsProvider: analyticsProvider)
+
+        // When
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
+                                     entryPoint: .helpAndSupport)
+
+        // Then
+        assertLastProperties(
+            analyticsProvider,
+            event: "support_chat_ticket_created",
+            include: [
+                "route": "direct_ticket_creation",
+                "entry_point": "help_and_support",
+                "support_area": "mobile-app",
+                "support_area_confidence": "high",
+                "chat_topic": "woo_mobile_issue_orders"
+            ]
+        )
+    }
+
+    @Test func supportFormCallback_when_succeeds_then_tracks_ticketCreated_with_supportForm_route() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk, analyticsProvider: analyticsProvider)
+
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeMediumConfidenceSupportAreaInfo(),
+                                     entryPoint: .helpAndSupport)
+
+        // When
+        let viewModel = supportFormViewModel(from: navigationController)
+        viewModel?.siteAddress = "https://example.com"
+        viewModel?.submitSupportRequest()
+
+        // Then
+        assertLastProperties(
+            analyticsProvider,
+            event: "support_chat_ticket_created",
+            include: [
+                "route": "support_form",
+                "entry_point": "help_and_support",
+                "support_area": "mobile-app",
+                "support_area_confidence": "medium"
+            ]
+        )
+    }
+
+    @Test func createTicketDirectly_when_fails_with_identity_error_then_tracks_ticketCreationFailed_with_identity_errorType() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .failure(ZendeskError.failedToCreateIdentity))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk, analyticsProvider: analyticsProvider)
+
+        // When
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
+                                     entryPoint: .helpAndSupport)
+
+        // Then
+        assertLastProperties(
+            analyticsProvider,
+            event: "support_chat_ticket_creation_failed",
+            include: [
+                "route": "direct_ticket_creation",
+                "entry_point": "help_and_support",
+                "error_type": "identity_creation_failed"
+            ]
+        )
+    }
+
+    @Test func createTicketDirectly_when_fails_with_generic_error_then_tracks_ticketCreationFailed_with_zendesk_errorType() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .failure(NSError(domain: "Test", code: 500)))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk, analyticsProvider: analyticsProvider)
+
+        // When
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
+                                     entryPoint: .helpAndSupport)
+
+        // Then
+        assertLastProperties(
+            analyticsProvider,
+            event: "support_chat_ticket_creation_failed",
+            include: [
+                "route": "direct_ticket_creation",
+                "entry_point": "help_and_support",
+                "error_type": "zendesk_request_failed"
+            ]
+        )
+    }
+
+    @Test func supportFormCallback_when_fails_then_tracks_ticketCreationFailed_with_supportForm_route() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .failure(NSError(domain: "Test", code: 500)))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk, analyticsProvider: analyticsProvider)
+
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeMediumConfidenceSupportAreaInfo(),
+                                     entryPoint: .helpAndSupport)
+
+        // When
+        let viewModel = supportFormViewModel(from: navigationController)
+        viewModel?.siteAddress = "https://example.com"
+        viewModel?.submitSupportRequest()
+
+        // Then
+        assertLastProperties(
+            analyticsProvider,
+            event: "support_chat_ticket_creation_failed",
+            include: [
+                "route": "support_form",
+                "entry_point": "help_and_support",
+                "error_type": "zendesk_request_failed"
+            ]
+        )
     }
 }
 
@@ -189,11 +337,34 @@ struct SupportEscalationCoordinatorTests {
 
 private extension SupportEscalationCoordinatorTests {
     func makeCoordinator(navigationController: UINavigationController? = nil,
-                         zendesk: MockZendeskManager) -> SupportEscalationCoordinator {
+                         zendesk: MockZendeskManager,
+                         analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider()) -> SupportEscalationCoordinator {
         SupportEscalationCoordinator(
             navigationController: navigationController,
-            zendeskProvider: zendesk
+            zendeskProvider: zendesk,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
         )
+    }
+
+    func supportFormViewModel(from navigationController: UINavigationController) -> SupportFormViewModel? {
+        navigationController.viewControllers
+            .compactMap { $0 as? SupportFormHostingController }
+            .first?
+            .rootView
+            .viewModel
+    }
+
+    func assertLastProperties(_ analyticsProvider: MockAnalyticsProvider,
+                              event: String,
+                              include expectedProperties: [String: Any]) {
+        #expect(analyticsProvider.receivedEvents.contains(event))
+        guard let properties = analyticsProvider.receivedProperties.last else {
+            Issue.record("Expected analytics properties for event \(event)")
+            return
+        }
+        for (key, expectedValue) in expectedProperties {
+            #expect((properties[key] as? NSObject) == (expectedValue as? NSObject), "Mismatch for \(key)")
+        }
     }
 
     func makeHighConfidenceSupportAreaInfo() -> SupportAreaInfo {

@@ -10,16 +10,20 @@ struct POSTapToPayHeroView: View {
     /// True between the merchant tapping the CTA and the payment state machine
     /// reacting. The button stays tappable on entry (silent pre-connect runs in
     /// the background — no visible indicator until the merchant taps), so this
-    /// is purely double-tap protection. While true the illustration swaps to a
-    /// spinner so the merchant gets immediate feedback that their tap landed,
-    /// even when the pre-connect or PaymentIntent creation is still in flight.
+    /// is purely double-tap protection. While true the button renders its
+    /// built-in `isLoading` spinner so the merchant gets immediate feedback
+    /// that their tap landed, even when the pre-connect or PaymentIntent
+    /// creation is still in flight.
     var isPayDisabled: Bool = false
 
     private static let illustrationSize: CGFloat = 96
 
     var body: some View {
         VStack(spacing: POSSpacing.large) {
-            illustration
+            Image(systemName: "wave.3.right.circle.fill")
+                .font(.system(size: Self.illustrationSize, weight: .regular))
+                .foregroundStyle(Color.posPrimary)
+                .accessibilityHidden(true)
 
             VStack(spacing: POSSpacing.small) {
                 Text(Localization.title)
@@ -38,30 +42,10 @@ struct POSTapToPayHeroView: View {
                 Text(Localization.payButton)
                     .font(POSFontStyle.posBodyLargeBold)
             }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isPayDisabled))
             .padding(.horizontal, POSPadding.medium)
             .disabled(isPayDisabled)
             .accessibilityIdentifier("pos-tap-to-pay-hero-pay-button")
-        }
-    }
-
-    /// Static SF Symbol normally, swapped to a `ProgressView` once the merchant
-    /// taps the CTA. The placeholder illustration will get replaced with a real
-    /// designer asset later; the spinner-on-tap behaviour stays the same once
-    /// that lands.
-    @ViewBuilder
-    private var illustration: some View {
-        if isPayDisabled {
-            ProgressView()
-                .controlSize(.extraLarge)
-                .tint(Color.posPrimary)
-                .frame(width: Self.illustrationSize, height: Self.illustrationSize)
-                .accessibilityHidden(true)
-        } else {
-            Image(systemName: "wave.3.right.circle.fill")
-                .font(.system(size: Self.illustrationSize, weight: .regular))
-                .foregroundStyle(Color.posPrimary)
-                .accessibilityHidden(true)
         }
     }
 }

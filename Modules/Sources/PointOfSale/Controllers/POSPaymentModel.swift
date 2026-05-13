@@ -258,12 +258,30 @@ extension POSPaymentModel {
         }
 
         if case .disconnected = cardReaderConnectionStatus {
-            Task { @MainActor [weak self] in
-                do {
-                    _ = try await self?.cardPresentPaymentService.connectReader(using: method)
-                    self?.lastConnectedMethod = method
-                } catch {
-                    DDLogWarn("🃏 [CardPayment] explicit connect via \(method) failed: \(error)")
+            // Skip the explicit connect if the silent TTP pre-connect is
+            // already running — status stays `.disconnected` for the entire
+            // duration of a Stripe Terminal `connectReader` call (there is no
+            // intermediate `.connecting` case), so the only way to know
+            // "connect already in flight" is the `tapToPayConnectTask` guard.
+            // Without this, tapping the hero CTA before pre-connect has
+            // finished fires a *second* concurrent `connectReader(.tapToPay)`,
+            // which the SDK can't reconcile — the connect errors out, status
+            // never reaches `.connected`, and the `startPaymentFlow`
+            // one-shot subscription that's about to be set up never fires.
+            // The merchant sees the CTA spin forever and the TTP modal never
+            // appears. We let the existing pre-connect Task drive the connect;
+            // `startPaymentFlow` will subscribe to `.connected` and collect as
+            // soon as the pre-connect Task completes.
+            if method == .tapToPay, tapToPayConnectTask != nil {
+                DDLogInfo("🃏 [CardPayment] tap during pre-connect — letting existing pre-connect drive the connect")
+            } else {
+                Task { @MainActor [weak self] in
+                    do {
+                        _ = try await self?.cardPresentPaymentService.connectReader(using: method)
+                        self?.lastConnectedMethod = method
+                    } catch {
+                        DDLogWarn("🃏 [CardPayment] explicit connect via \(method) failed: \(error)")
+                    }
                 }
             }
         }

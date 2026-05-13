@@ -705,6 +705,15 @@ private extension TotalsView {
     /// processing / success / error).
     var useTapToPayHeroLayout: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
+        // If a BT reader is connected (the merchant committed to BT in a
+        // previous session and it's still attached), `startPayment` auto-
+        // resumes the BT collect flow on the next idle checkout. Showing the
+        // TTP hero in the brief window before the card state transitions
+        // would flash misleadingly. `lastConnectedMethod` is the canonical
+        // "merchant committed to BT" signal — distinct from
+        // `cardReaderConnectionStatus.connected` which is also true for the
+        // silent TTP pre-connect.
+        if paymentModel.lastConnectedMethod == .bluetooth { return false }
         guard displayPaymentState.card == .idle && displayPaymentState.cash == .idle else { return false }
         // Also gate on scanToPay / markAsPaid being idle. After a successful
         // payment via either of those the totals view renders their success

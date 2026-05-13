@@ -167,4 +167,10 @@ extension Cart {
     var isNotEmpty: Bool {
         return !isEmpty
     }
+
+    /// Total number of entries in the cart across all entry types
+    /// (purchasable items, coupons, and custom amounts).
+    var totalItemCount: Int {
+        purchasableItems.count + coupons.count + customAmounts.count
+    }
 }

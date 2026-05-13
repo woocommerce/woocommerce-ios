@@ -1,14 +1,29 @@
 import SwiftUI
 
 /// Bottom sheet shown when the merchant taps "Other payment methods" on the phone
-/// POS checkout (TTP-available layout). Lists the non-TTP payment methods available
-/// to the merchant: Card reader, Scan to Pay (when enabled), and Mark order as paid
-/// (when enabled).
+/// POS checkout. Lists the non-primary payment methods available to the merchant
+/// for the current screen state:
+///
+/// - On the TTP-available + no-reader-connected screen (paired with the TTP hero),
+///   this lists Card reader, Scan to Pay, and Mark order as paid.
+/// - On the TTP-available + BT-reader-connected screen, this lists Tap to Pay on
+///   iPhone, Scan to Pay, and Mark order as paid — the Card reader row is hidden
+///   because a reader is already connected and offering to "connect a Bluetooth
+///   reader" would contradict that state.
 ///
 /// Mirrors the Android phone POS overflow dialog that pairs with the TTP hero
 /// (samiuelson #15842 / #15825).
 struct POSOtherPaymentMethodsSheet: View {
+    /// True when the Card reader row should appear. Pass false when a reader is
+    /// already connected — the "Connect a Bluetooth reader…" subtitle would
+    /// mislead the merchant in that case.
+    var isCardReaderAvailable: Bool = true
     let onCardReader: () -> Void
+    /// True when the Tap to Pay row should appear. Pass false when the sheet is
+    /// hosted by the TTP hero screen (TTP is already the primary CTA on that
+    /// screen so it shouldn't show up again here) or when TTP isn't available.
+    var isTapToPayAvailable: Bool = false
+    var onTapToPay: (() -> Void)?
     var isScanToPayAvailable: Bool = false
     var onScanToPay: (() -> Void)?
     var isMarkOrderAsPaidAvailable: Bool = false
@@ -25,12 +40,24 @@ struct POSOtherPaymentMethodsSheet: View {
                 .padding(.top, POSPadding.large)
                 .padding(.bottom, POSPadding.medium)
 
-            row(systemImage: "creditcard",
-                title: Localization.cardReaderTitle,
-                subtitle: Localization.cardReaderSubtitle,
-                accessibilityIdentifier: "pos-other-payments-card-reader") {
-                dismiss()
-                onCardReader()
+            if isTapToPayAvailable, let onTapToPay {
+                row(systemImage: "wave.3.right.circle",
+                    title: Localization.tapToPayTitle,
+                    subtitle: Localization.tapToPaySubtitle,
+                    accessibilityIdentifier: "pos-other-payments-tap-to-pay") {
+                    dismiss()
+                    onTapToPay()
+                }
+            }
+
+            if isCardReaderAvailable {
+                row(systemImage: "creditcard",
+                    title: Localization.cardReaderTitle,
+                    subtitle: Localization.cardReaderSubtitle,
+                    accessibilityIdentifier: "pos-other-payments-card-reader") {
+                    dismiss()
+                    onCardReader()
+                }
             }
 
             if isScanToPayAvailable, let onScanToPay {
@@ -107,6 +134,17 @@ private extension POSOtherPaymentMethodsSheet {
             "pos.otherPaymentMethods.sheet.title",
             value: "Other payment methods",
             comment: "Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout."
+        )
+        static let tapToPayTitle = NSLocalizedString(
+            "pos.otherPaymentMethods.tapToPay.title",
+            value: "Tap to Pay on iPhone",
+            comment: "Row title in the Other Payment Methods sheet for switching to Tap to Pay on iPhone. " +
+                "\"Tap to Pay on iPhone\" is Apple's product name and must be capitalised exactly as shown."
+        )
+        static let tapToPaySubtitle = NSLocalizedString(
+            "pos.otherPaymentMethods.tapToPay.subtitle",
+            value: "Use this device to accept contactless card payments.",
+            comment: "Row subtitle in the Other Payment Methods sheet for switching to Tap to Pay on iPhone."
         )
         static let cardReaderTitle = NSLocalizedString(
             "pos.otherPaymentMethods.cardReader.title",

@@ -895,7 +895,7 @@ extension POSPaymentModel {
     func observeReaderReconnection() {
         cardReaderDisconnection = cardPresentPaymentService.readerConnectionStatusPublisher
             // `removeDuplicates` BEFORE the filter — Stripe Terminal can emit
-            // multiple `.disconnected` values in succession (e.g., during
+            // multiple identical status values in succession (e.g., during
             // teardown / re-init), and without dedup the sink fires for each
             // one. The downstream `startPayment` call kicks off another
             // pre-connect Task each time, racing every previous one. (The
@@ -903,19 +903,39 @@ extension POSPaymentModel {
             // catches most of this, but de-duping here also avoids the
             // wasted `startPayment` work.)
             .removeDuplicates()
-            .filter({ $0 == .disconnected })
-            .sink { [weak self] _ in
+            .sink { [weak self] status in
                 Task { @MainActor [weak self] in
                     guard let self else { return }
-                    // The auto-reconnect is for "reader fell off the device"
-                    // scenarios when no payment is in flight. If a session is
-                    // active (e.g. a BT-via-sheet pick on a TTP-default
-                    // device deliberately disconnected TTP first), the
-                    // session manages its own reconnect and we should stay
-                    // out of the way — otherwise we race the session's
-                    // chosen method and confuse the SDK.
+                    // Both branches below are scoped to "no active session" —
+                    // if a session is in flight (e.g. a BT-via-sheet pick on
+                    // a TTP-default device deliberately disconnected TTP
+                    // first), the session manages its own reconnect and we
+                    // should stay out of the way — otherwise we race the
+                    // session's chosen method and confuse the SDK.
                     guard self.currentPaymentMethod == nil else { return }
-                    await self.startPayment()
+                    switch status {
+                    case .disconnected:
+                        // "Reader fell off the device" — re-enter the
+                        // checkout default (silent TTP pre-connect on phone
+                        // POS, BT auto-collect on iPad).
+                        await self.startPayment()
+                    case .connected:
+                        // The reader came back up after a transient drop
+                        // (`.reconnecting -> .connected` or
+                        // `.disconnected -> .connected` via Settings). When
+                        // the merchant had previously committed to BT, kick
+                        // `startPayment` so the auto-resume path can re-run
+                        // collect — otherwise the totals view lands in the
+                        // dead state where `useTapToPayHeroLayout` is
+                        // suppressed (BT connected) but no `PaymentViewContent`
+                        // / bottom strip surfaces either, leaving the
+                        // merchant with no actionable UI.
+                        if self.lastConnectedMethod == .bluetooth {
+                            await self.startPayment()
+                        }
+                    case .cancellingConnection, .disconnecting, .reconnecting:
+                        break
+                    }
                 }
             }
     }

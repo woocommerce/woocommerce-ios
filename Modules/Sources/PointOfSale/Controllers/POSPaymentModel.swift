@@ -34,22 +34,7 @@ final class POSPaymentModel {
         return false
     }
 
-    /// True while the silent Tap to Pay pre-connect is still in flight: the
-    /// merchant is on the TTP path and the reader hasn't moved out of
-    /// `.disconnected` yet. Drives the hero's "Preparing Tap to Pay…"
-    /// affordance so the merchant gets feedback during the (usually short)
-    /// pre-connect window.
-    var isPreparingTapToPay: Bool {
-        guard preferredConnectionMethod == .tapToPay else { return false }
-        // If a non-TTP session is in flight (BT picked via the sheet),
-        // we deliberately disconnected TTP — showing "Preparing Tap to Pay…"
-        // would mislead. The BT path drives its own UI from here.
-        if let currentPaymentMethod, currentPaymentMethod != .tapToPay { return false }
-        if case .disconnected = cardReaderConnectionStatus { return true }
-        return false
-    }
-
-    /// The connection method of the currently active payment session, or nil
+/// The connection method of the currently active payment session, or nil
     /// between sessions. Distinct from `preferredConnectionMethod` (the POS
     /// session's default): the merchant can pick BT via the "Other payment
     /// methods" sheet on a TTP-default device, in which case the active

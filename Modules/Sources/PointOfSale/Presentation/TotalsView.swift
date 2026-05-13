@@ -72,8 +72,7 @@ struct TotalsView: View {
                         )
                     } else if useTapToPayHeroLayout {
                         POSTapToPayHeroView(onPayTapped: handleTapToPayTapped,
-                                            isPayDisabled: isStartingPayment,
-                                            isPreparing: paymentModel.isPreparingTapToPay)
+                                            isPayDisabled: isStartingPayment)
                     } else if isShowingPaymentView {
                         PaymentViewContent(
                             paymentState: displayPaymentState,

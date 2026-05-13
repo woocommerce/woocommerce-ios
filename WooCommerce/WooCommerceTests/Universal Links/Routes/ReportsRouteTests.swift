@@ -146,7 +146,38 @@ struct ReportsRouteTests {
     }
 
     @Test
-    func test_performAction_tracks_widget_deep_link_tapped_with_raw_query_values() {
+    func test_performAction_when_source_is_store_info_widget_then_tracks_store_stats_widget_metric_tapped() {
+        // Given
+        let analytics = SpyAnalytics()
+        let sut = ReportsRoute(deepLinkNavigator: MockDeepLinkNavigator(), analytics: analytics)
+
+        // When
+        _ = sut.perform(for: "analytics", with: ["metric": "revenue", "range": "today", "source": "store-info-widget"])
+
+        // Then
+        let event = analytics.trackedEvents.first(where: { $0.name == "store_stats_widget_metric_tapped" })
+        #expect(event != nil)
+        #expect(event?.properties?["metric"] as? String == "revenue")
+        #expect(event?.properties?["range"] as? String == "today")
+    }
+
+    @Test
+    func test_performAction_when_source_is_store_info_widget_then_tracks_event_even_with_unknown_metric_and_range() {
+        // Given
+        let analytics = SpyAnalytics()
+        let sut = ReportsRoute(deepLinkNavigator: MockDeepLinkNavigator(), analytics: analytics)
+
+        // When
+        _ = sut.perform(for: "analytics", with: ["metric": "futureMetric", "range": "nextWeek", "source": "store-info-widget"])
+
+        // Then
+        let event = analytics.trackedEvents.first(where: { $0.name == "store_stats_widget_metric_tapped" })
+        #expect(event?.properties?["metric"] as? String == "futureMetric")
+        #expect(event?.properties?["range"] as? String == "nextWeek")
+    }
+
+    @Test
+    func test_performAction_when_source_is_missing_then_does_not_track_widget_event() {
         // Given
         let analytics = SpyAnalytics()
         let sut = ReportsRoute(deepLinkNavigator: MockDeepLinkNavigator(), analytics: analytics)
@@ -155,25 +186,20 @@ struct ReportsRouteTests {
         _ = sut.perform(for: "analytics", with: ["metric": "revenue", "range": "today"])
 
         // Then
-        #expect(analytics.trackedEvents.contains(where: { $0.name == "widget_deep_link_tapped" }))
-        let event = analytics.trackedEvents.first(where: { $0.name == "widget_deep_link_tapped" })
-        #expect(event?.properties?["metric"] as? String == "revenue")
-        #expect(event?.properties?["range"] as? String == "today")
+        #expect(!analytics.trackedEvents.contains(where: { $0.name == "store_stats_widget_metric_tapped" }))
     }
 
     @Test
-    func test_performAction_tracks_widget_deep_link_tapped_even_with_unknown_values() {
+    func test_performAction_when_source_is_unknown_then_does_not_track_widget_event() {
         // Given
         let analytics = SpyAnalytics()
         let sut = ReportsRoute(deepLinkNavigator: MockDeepLinkNavigator(), analytics: analytics)
 
         // When
-        _ = sut.perform(for: "analytics", with: ["metric": "futureMetric", "range": "nextWeek"])
+        _ = sut.perform(for: "analytics", with: ["metric": "revenue", "range": "today", "source": "marketing-email"])
 
         // Then
-        let event = analytics.trackedEvents.first(where: { $0.name == "widget_deep_link_tapped" })
-        #expect(event?.properties?["metric"] as? String == "futureMetric")
-        #expect(event?.properties?["range"] as? String == "nextWeek")
+        #expect(!analytics.trackedEvents.contains(where: { $0.name == "store_stats_widget_metric_tapped" }))
     }
 }
 

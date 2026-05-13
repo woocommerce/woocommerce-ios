@@ -288,6 +288,7 @@
 				Tools/AppLocalizedString.swift,
 				Tools/StoreWidgets/WidgetSite.swift,
 				Tools/StoreWidgets/WidgetSiteListStore.swift,
+				"Universal Links/Routes/StoreMetricsReportRoute.swift",
 			);
 			target = 3F1FA83F28B60125009E246C /* StoreWidgetsExtension */;
 		};

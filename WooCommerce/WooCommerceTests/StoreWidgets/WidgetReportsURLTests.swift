@@ -35,6 +35,16 @@ struct WidgetReportsURLTests {
         #expect(rangeItem?.value == "monthToDate")
     }
 
+    @Test func url_whenBuilt_thenStampsStoreInfoWidgetAsSource() throws {
+        // Given / When
+        let url = try #require(WidgetReportsURL.url(for: .revenue, range: .today))
+
+        // Then
+        let components = try #require(URLComponents(url: url, resolvingAgainstBaseURL: false))
+        let sourceItem = components.queryItems?.first(where: { $0.name == "source" })
+        #expect(sourceItem?.value == "store-info-widget")
+    }
+
     @Test func url_whenAllRangesBuilt_thenAllRoundTripCleanly() throws {
         // Given
         let allRanges: [StoreStatsWidgetDateRange] = [.today, .yesterday, .lastWeek, .lastMonth, .weekToDate, .monthToDate]

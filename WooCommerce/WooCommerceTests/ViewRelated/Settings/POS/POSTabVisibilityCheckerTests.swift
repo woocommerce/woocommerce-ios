@@ -228,6 +228,25 @@ struct POSTabVisibilityCheckerTests {
         #expect(result == false)
     }
 
+    @Test func is_visible_when_device_is_phone_and_phonePrototype_flag_enabled() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
     @Test func checkVisibility_returns_expected_result_after_site_settings_available() async throws {
         // Given - no site settings are immediately available (empty stream that will emit values later)
         let featureFlagService = MockFeatureFlagService()

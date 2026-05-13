@@ -382,10 +382,15 @@
 			membershipExceptions = (
 				AvailableMetricsQuery.swift,
 				Entitlements,
+				MetricPresentable.swift,
+				StoreInfoFormatter.swift,
+				StoreInfoMetric.swift,
 				StoreInfoMetricType.swift,
 				StoreStatsConfigurationIntent.swift,
 				StoreStatsWidgetDateRange.swift,
 				StoreWidgets.intentdefinition,
+				WidgetMetricPresenter.swift,
+				WidgetReportsURL.swift,
 			);
 			target = B56DB3C52049BFAA00D4AA8E /* WooCommerce */;
 		};

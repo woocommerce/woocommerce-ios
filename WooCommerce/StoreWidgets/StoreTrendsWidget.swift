@@ -75,7 +75,9 @@ private struct StoreTrendsProvider: AppIntentTimelineProvider {
 
     func timeline(for configuration: StoreStatsConfigurationIntent, in context: Context) async -> Timeline<StoreTrendsEntry> {
         let metrics = resolvedMetrics(for: configuration)
-        let timeline = await storeInfoProvider.loadTimeline(dateRange: configuration.dateRange, metrics: metrics)
+        let timeline = await storeInfoProvider.loadTimeline(dateRange: configuration.dateRange,
+                                                            metrics: metrics,
+                                                            selectedStoreID: configuration.store?.id)
         return Timeline(
             entries: timeline.entries.map { entry in
                 StoreTrendsEntry(

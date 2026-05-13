@@ -1,6 +1,5 @@
 import SwiftUI
 import Yosemite
-import ParcelFittingCheck
 
 struct DebugPanelView: View {
     @State private var announcementToPresent: Announcement?
@@ -32,15 +31,6 @@ struct DebugPanelView: View {
 
             NavigationLink(destination: OverrideFeatureFlagsView()) {
                 Text("Override Feature Flags")
-            }
-
-            Section("Parcel Fitting Check") {
-                Button("Open AR Parcel Sizing") {
-                    presentDebugSizing()
-                }
-                Button("Open AR Unified Flow") {
-                    presentDebugUnifiedFlow()
-                }
             }
 
             Section("Announcements") {
@@ -100,41 +90,6 @@ struct DebugPanelView: View {
         }
     }
 
-    private func presentDebugSizing() {
-        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
-        let unit: UnitLength = .fromStoreUnit(ServiceLocator.shippingSettingsService.dimensionUnit ?? "in")
-        let tint: UIColor = .withColorStudio(.wooCommercePurple, shade: .shade60)
-        ParcelFittingCheckPresenter.presentSizing(from: presenter, unit: unit, tintColor: tint, onConfirm: { _ in })
-    }
-
-    @State private var debugDelegate = DebugParcelFittingDelegate()
-
-    private func presentDebugUnifiedFlow() {
-        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
-        let unit: UnitLength = .fromStoreUnit(ServiceLocator.shippingSettingsService.dimensionUnit ?? "in")
-        let carriers: [ParcelPresetCarrier] = [
-            ParcelPresetCarrier(id: "usps", name: "USPS", packages: [
-                ParcelPresetPackage(id: "usps_small_flat_rate", name: "Small Flat Rate Box",
-                                    length: 8.6, width: 5.4, height: 1.6),
-                ParcelPresetPackage(id: "usps_medium_flat_rate", name: "Medium Flat Rate Box",
-                                    length: 11.0, width: 8.5, height: 5.5),
-                ParcelPresetPackage(id: "usps_large_flat_rate", name: "Large Flat Rate Box",
-                                    length: 12.0, width: 12.0, height: 6.0),
-            ]),
-            ParcelPresetCarrier(id: "upsdap", name: "UPS", packages: [
-                ParcelPresetPackage(id: "ups_small", name: "Small Box",
-                                    length: 13.0, width: 11.0, height: 2.0),
-                ParcelPresetPackage(id: "ups_medium", name: "Medium Box",
-                                    length: 16.0, width: 11.0, height: 3.0),
-            ]),
-        ]
-        ParcelFittingCheckPresenter.presentUnifiedFlow(from: presenter,
-                                                       unit: unit,
-                                                       carriers: carriers,
-                                                       tintColor: .withColorStudio(.wooCommercePurple, shade: .shade60),
-                                                       delegate: debugDelegate)
-    }
-
     private func fetchTestAnnouncement() {
         announcementError = nil
         let action = AnnouncementsAction.synchronizeAnnouncementsForDebug(appVersion: "999.0") { result in
@@ -177,13 +132,4 @@ fileprivate struct DebugSheetPresenter<Content: View>: View {
             content { isPresented = false }
         }
     }
-}
-
-private final class DebugParcelFittingDelegate: ParcelFittingDelegate {
-    func parcelFittingDidConfirm(_ result: ParcelFittingResult,
-                                  carriers: [ParcelPresetCarrier],
-                                  starredPackageIDs: Set<String>,
-                                  dimensionUnit: UnitLength) {}
-    func parcelFittingDidCancel() {}
-    func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool) {}
 }

@@ -59,6 +59,8 @@ final class SupportChatViewModel {
         case diagnosticsSuccess
         /// A test failed - show failure with optional action
         case diagnosticsFailure(SupportDiagnosticsService.Result)
+        /// Prompts the merchant to mark the chat resolved after a helpful answer.
+        case resolvedPrompt
 
         static func == (lhs: MessageContent, rhs: MessageContent) -> Bool {
             switch (lhs, rhs) {
@@ -73,8 +75,21 @@ final class SupportChatViewModel {
                 return true
             case (.diagnosticsFailure(let l), .diagnosticsFailure(let r)):
                 return l == r
+            case (.resolvedPrompt, .resolvedPrompt):
+                return true
             default:
                 return false
+            }
+        }
+
+        var text: String? {
+            switch self {
+            case .text(let text):
+                return text
+            case .resolvedPrompt:
+                return Localization.resolvedPromptMessage
+            default:
+                return nil
             }
         }
     }
@@ -688,6 +703,8 @@ final class SupportChatViewModel {
                 contentText = "[All diagnostics passed]"
             case .diagnosticsFailure(let result):
                 contentText = "[Diagnostics failed: \(result.test.title) - \(result.errorMessage ?? "Unknown error")]"
+            case .resolvedPrompt:
+                contentText = Localization.resolvedPromptMessage
             }
 
             return "[\(timestamp)] \(roleName): \(contentText)"
@@ -842,12 +859,11 @@ final class SupportChatViewModel {
             return
         }
 
-        if case let .text(text) = messages.last?.content,
-           text == Localization.resolvedPromptMessage {
+        if messages.contains(where: { $0.content == .resolvedPrompt }) {
             return
         }
 
-        messages.append(ChatMessage(role: .bot, text: Localization.resolvedPromptMessage))
+        messages.append(ChatMessage(role: .bot, content: .resolvedPrompt))
     }
 
     // MARK: - Feedback

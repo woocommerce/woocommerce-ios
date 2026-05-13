@@ -227,6 +227,23 @@ struct SupportChatRemoteTests {
         #expect(supportArea.isHighConfidence == true)
     }
 
+    @Test func sendMessage_when_response_has_is_resolved_then_value_is_decoded() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)",
+                                 filename: "support-chat-with-support-area")
+
+        // When
+        let response = try await remote.sendMessage(botSlug: botSlug,
+                                                    message: "My card reader won't connect",
+                                                    chatID: nil,
+                                                    sessionID: nil,
+                                                    context: nil)
+
+        // Then
+        #expect(response.messages.first?.context?.isResolved == true)
+    }
+
     @Test func sendMessage_when_response_lacks_support_area_then_support_area_is_nil() async throws {
         // Given
         let remote = SupportChatRemote(network: network)
@@ -243,6 +260,7 @@ struct SupportChatRemoteTests {
         // Then
         let context = try #require(response.messages.first?.context)
         #expect(context.supportArea == nil)
+        #expect(context.isResolved == false)
     }
 
     // MARK: - Error paths
@@ -285,12 +303,26 @@ struct SupportChatRemoteTests {
         let chatID: Int64 = 4522824
 
         // When
-        _ = try? await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+        _ = try? await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: nil)
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? DotcomRequest)
         #expect(request.path == "odie/chat/\(botSlug)/\(chatID)")
         #expect(request.method == .get)
+    }
+
+    @Test func fetchChat_when_sessionID_provided_then_sends_sessionID_in_request_parameters() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let chatID: Int64 = 4522824
+        let sessionID = "session-abc"
+
+        // When
+        _ = try? await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: sessionID)
+
+        // Then
+        let parameters = try #require(network.queryParametersDictionary)
+        #expect(parameters["session_id"] as? String == sessionID)
     }
 
     @Test func fetchChat_when_response_is_valid_then_returns_every_turn_in_order() async throws {
@@ -301,7 +333,7 @@ struct SupportChatRemoteTests {
                                  filename: "support-chat-fetch-chat")
 
         // When
-        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: nil)
 
         // Then
         #expect(response.chatID == chatID)
@@ -317,7 +349,7 @@ struct SupportChatRemoteTests {
                                  filename: "support-chat-fetch-chat")
 
         // When
-        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: nil)
 
         // Then
         let firstMessage = try #require(response.messages.first)
@@ -333,7 +365,7 @@ struct SupportChatRemoteTests {
                                  filename: "support-chat-fetch-chat")
 
         // When
-        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: nil)
 
         // Then — the failsafe decoder produces empty sources + nil flags rather than throwing.
         let userMessageContext = try #require(response.messages.first?.context)
@@ -347,7 +379,7 @@ struct SupportChatRemoteTests {
 
         // When / Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.fetchChat(botSlug: botSlug, chatID: 4522824)
+            try await remote.fetchChat(botSlug: botSlug, chatID: 4522824, sessionID: nil)
         }
     }
 
@@ -360,7 +392,7 @@ struct SupportChatRemoteTests {
 
         // When / Then
         await #expect(throws: NetworkError.timeout()) {
-            try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+            try await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: nil)
         }
     }
 

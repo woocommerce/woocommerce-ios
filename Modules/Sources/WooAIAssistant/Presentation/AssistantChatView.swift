@@ -7,11 +7,17 @@ public struct AssistantChatView: View {
     @FocusState private var inputFocused: Bool
 
     private let onClose: () -> Void
+    private let onFeedbackTap: (() -> Void)?
+    private let siteID: Int64
 
     public init(controller: AssistantController,
-                onClose: @escaping () -> Void = {}) {
+                siteID: Int64,
+                onClose: @escaping () -> Void = {},
+                onFeedbackTap: (() -> Void)? = nil) {
         self.controller = controller
+        self.siteID = siteID
         self.onClose = onClose
+        self.onFeedbackTap = onFeedbackTap
     }
 
     public var body: some View {
@@ -80,8 +86,10 @@ public struct AssistantChatView: View {
     private var messageList: some View {
         MessageListView(messages: controller.conversation.messages,
                         streamingState: controller.conversation.streamingState,
+                        siteID: siteID,
                         onPickPrompt: { draft = $0; inputFocused = true },
-                        onSendSuggestion: sendSuggestion)
+                        onSendSuggestion: sendSuggestion,
+                        onFeedbackTap: onFeedbackTap)
             .background(
                 Color.clear
                     .contentShape(Rectangle())
@@ -149,7 +157,7 @@ extension AssistantChatView {
     @MainActor
     static func preview(_ scenario: AssistantChatScenario) -> some View {
         let configuration = AssistantChatScenarioBuilder(scenario: scenario).build()
-        return AssistantChatView(controller: configuration.controller, onClose: {})
+        return AssistantChatView(controller: configuration.controller, siteID: 0, onClose: {})
     }
 }
 

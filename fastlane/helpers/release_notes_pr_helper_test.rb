@@ -63,24 +63,18 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
       'single, unique paragraph',
       'Do not mention the release version or version number',
       "The final text must be #{Helper::PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer",
-      'Return only the final release notes text'
+      'Preserve correct grammar and spelling',
+      'Do not drop letters from words',
+      '`validate_release_notes_length` tool',
+      '`{ ok: true, length: }`',
+      '`{ ok: false, length:, max:, cut_at_least?, reason? }`',
+      'shorten the draft by at least `cut_at_least` characters when present',
+      'Do not include the release-notes text in your plain-text reply'
     ].each do |fragment|
       assert_includes prompt, fragment, "Expected prompt to include `#{fragment}`"
     end
     assert_includes prompt, '24.8'
     assert_includes prompt, '- [*] Foo'
-  end
-
-  def test_retry_prompt_mentions_previous_response
-    previous = 'A' * (Helper::PREFERRED_RELEASE_NOTES_MAX_LENGTH + 50)
-    prompt = Helper.build_ai_release_notes_prompt(
-      version: '24.8',
-      items_text: '- [*] Foo',
-      previous_response: previous
-    )
-    assert_includes prompt, 'The previous response was too long'
-    assert_includes prompt, "Rewrite it to be #{Helper::PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer"
-    assert_includes prompt, previous.length.to_s
   end
 
   # --- CHANGELOG editorial entry --------------------------------------------

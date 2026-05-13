@@ -206,6 +206,10 @@ extension WooConstants {
         ///
         case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
 
+        /// URL for the AI Assistant beta feedback survey
+        ///
+        case aiAssistantFeedback = "https://automattic.survey.fm/woo-mobile-ai-assistant"
+
         /// URL for the order add-on i1 feedback survey
         ///
 #if DEBUG

@@ -129,6 +129,8 @@ extension WooAnalyticsEvent {
         case orderCreation = "order_creation"
         /// Shown in the order form after adding a shipping line
         case orderFormShippingLines = "order_form_shipping_lines"
+        /// Shown in the AI Assistant beta notice.
+        case aiAssistant = "ai_assistant"
     }
 
     /// The action performed on the survey screen.

@@ -35,6 +35,7 @@ extension UserDefaults {
         // Tooltip
         case hasDismissedWriteWithAITooltip
         case numberOfTimesWriteWithAITooltipIsShown
+        case hasDismissedWooAIAssistantEarlyAccessTooltip
 
         // Store profiler answers
         case storeProfilerAnswers

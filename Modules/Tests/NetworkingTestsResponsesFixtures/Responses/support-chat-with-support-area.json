@@ -20,7 +20,8 @@
                     "area": "card-reader",
                     "topic": "woo_mobile_issue_card_reader",
                     "confidence": "high"
-                }
+                },
+                "is_resolved": true
             }
         }
     ]

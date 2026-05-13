@@ -203,6 +203,12 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleCustomAmounts
 
+    /// Enables Point of Sale on iPhone (prototype).
+    /// When enabled, the iPad-only gate in `POSTabVisibilityChecker` is lifted and POS layouts
+    /// adapt to compact horizontal size class. Mirrors the Android `POS_ON_PHONES` flag.
+    ///
+    case pointOfSalePhonePrototype
+
     /// Enables Scan to Pay as a secondary payment method in Point of Sale.
     /// When enabled, the merchant can have the customer pay by scanning a QR code that
     /// opens the order's gateway-hosted payment page on their phone.

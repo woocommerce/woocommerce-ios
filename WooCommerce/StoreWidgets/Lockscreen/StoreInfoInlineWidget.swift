@@ -65,7 +65,6 @@ import class WooFoundation.CurrencySettings
 
 struct StoreInfoInlineWidget_Previews: PreviewProvider {
     static var exampleData = StoreInfoData(range: "Today",
-                                           rangeCompact: StoreStatsWidgetDateRange.today.localizedCompactRangeLabel,
                                            name: "Ernest Shop",
                                            revenue: StoreInfoFormatter.formattedAmountString(for: Decimal(123456789), with: CurrencySettings()),
                                            revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: Decimal(123456789), with: CurrencySettings()),

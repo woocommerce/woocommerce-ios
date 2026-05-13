@@ -65,7 +65,7 @@ private extension MetricTrendBadgeView {
 
 private extension MetricTrendBadgeView {
     var symbolName: String {
-        style.symbolName(for: trend.direction)
+        Self.symbolName(for: trend.direction)
     }
 
     var color: Color {
@@ -80,6 +80,17 @@ private extension MetricTrendBadgeView {
             return Text(Localization.decreased(trend.formattedPercentage))
         case .flat:
             return Text(Localization.unchanged)
+        }
+    }
+
+    static func symbolName(for direction: MetricTrendPresentation.Direction) -> String {
+        switch direction {
+        case .up:
+            return "arrowtriangle.up.fill"
+        case .down:
+            return "arrowtriangle.down.fill"
+        case .flat:
+            return "minus"
         }
     }
 }
@@ -98,27 +109,12 @@ extension MetricTrendBadgeView {
             }
         }
 
-        fileprivate func symbolName(for direction: MetricTrendPresentation.Direction) -> String {
-            directionalSymbolName(for: direction)
-        }
-
         fileprivate func color(for direction: MetricTrendPresentation.Direction) -> Color {
             switch self {
             case .directionalColor:
                 return directionalColor(for: direction)
             case .onPrimary:
                 return Color.primary.opacity(0.82)
-            }
-        }
-
-        private func directionalSymbolName(for direction: MetricTrendPresentation.Direction) -> String {
-            switch direction {
-            case .up:
-                return "arrowtriangle.up.fill"
-            case .down:
-                return "arrowtriangle.down.fill"
-            case .flat:
-                return "minus"
             }
         }
 

@@ -13,9 +13,11 @@ struct StoreTrendsRectangularWidget: View {
                 if let metric = data.metrics.first {
                     StoreTrendsRectangularView(
                         metric: metric,
-                        compactRange: data.rangeCompact
+                        compactRange: entry.compactRange
                     )
                 } else {
+                    // The Trends provider resolves exactly one metric for `.accessoryRectangular`.
+                    // Keep this fallback so malformed preview/provider data renders instead of crashing.
                     StoreTrendsRectangularUnavailableView(
                         metricTitle: entry.unavailableMetricTitle,
                         compactRange: entry.compactRange
@@ -39,32 +41,19 @@ private struct StoreTrendsRectangularView: View {
 
     var body: some View {
         MetricCellLink(destination: metric.tapURL) {
-            VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-                HStack(alignment: .firstTextBaseline, spacing: Layout.horizontalSpacing) {
-                    Text(metric.title)
-                        .storeNameStyle()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.75)
-                        .layoutPriority(1)
-
-                    Spacer(minLength: Layout.horizontalSpacing)
-
-                    Text(compactRange)
-                        .statRangeStyle()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.75)
-                }
+            VStack(alignment: .leading, spacing: StoreTrendsRectangularLayout.verticalSpacing) {
+                StoreTrendsRectangularHeader(title: metric.title, range: compactRange)
 
                 chart
 
-                HStack(alignment: .firstTextBaseline, spacing: Layout.horizontalSpacing) {
+                HStack(alignment: .firstTextBaseline, spacing: StoreTrendsRectangularLayout.horizontalSpacing) {
                     Text(metric.formattedValue)
                         .layoutPriority(1)
                         .statTrendTextStyle()
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
 
-                    Spacer(minLength: Layout.horizontalSpacing)
+                    Spacer(minLength: StoreTrendsRectangularLayout.horizontalSpacing)
 
                     if let trend = metric.trend {
                         MetricTrendBadgeView(trend: trend, size: .regular, style: .onPrimary)
@@ -81,17 +70,12 @@ private struct StoreTrendsRectangularView: View {
     private var chart: some View {
         if let chartData = metric.chartData, chartData.count > 1 {
             MetricChartView(data: chartData, style: .barOnPrimary)
-                .frame(height: Layout.chartHeight)
+                .frame(height: StoreTrendsRectangularLayout.chartHeight)
         } else {
-            RectangularMetricChartPlaceholderView()
-                .frame(height: Layout.chartHeight)
+            MetricChartReferenceLines()
+                .accessibilityHidden(true)
+                .frame(height: StoreTrendsRectangularLayout.chartHeight)
         }
-    }
-
-    private enum Layout {
-        static let verticalSpacing = 2.0
-        static let horizontalSpacing = 6.0
-        static let chartHeight = 15.0
     }
 }
 
@@ -100,23 +84,16 @@ private struct StoreTrendsRectangularUnavailableView: View {
     let compactRange: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-            HStack(alignment: .firstTextBaseline, spacing: Layout.horizontalSpacing) {
-                Text(metricTitle)
-                    .font(.headline.weight(.semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
+        VStack(alignment: .leading, spacing: StoreTrendsRectangularLayout.verticalSpacing) {
+            StoreTrendsRectangularHeader(
+                title: metricTitle,
+                range: compactRange,
+                style: .unavailable
+            )
 
-                Spacer(minLength: Layout.horizontalSpacing)
-
-                Text(compactRange)
-                    .font(.headline.weight(.semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-            }
-
-            RectangularMetricChartPlaceholderView()
-                .frame(height: Layout.chartHeight)
+            MetricChartReferenceLines()
+                .accessibilityHidden(true)
+                .frame(height: StoreTrendsRectangularLayout.chartHeight)
 
             Text(Localization.noData)
                 .font(.title3.weight(.medium))
@@ -127,18 +104,69 @@ private struct StoreTrendsRectangularUnavailableView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
     }
+}
 
-    private enum Layout {
-        static let verticalSpacing = 2.0
-        static let horizontalSpacing = 6.0
-        static let chartHeight = 15.0
+private enum StoreTrendsRectangularLayout {
+    static let verticalSpacing = 2.0
+    static let horizontalSpacing = 6.0
+    static let chartHeight = 15.0
+}
+
+private struct StoreTrendsRectangularHeader: View {
+    let title: String
+    let range: String
+    let style: Style
+
+    init(title: String, range: String, style: Style = .metric) {
+        self.title = title
+        self.range = range
+        self.style = style
+    }
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: StoreTrendsRectangularLayout.horizontalSpacing) {
+            titleText
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+                .layoutPriority(1)
+
+            Spacer(minLength: StoreTrendsRectangularLayout.horizontalSpacing)
+
+            rangeText
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+        }
     }
 }
 
-private struct RectangularMetricChartPlaceholderView: View {
-    var body: some View {
-        MetricChartReferenceLines()
-            .accessibilityHidden(true)
+private extension StoreTrendsRectangularHeader {
+    enum Style {
+        case metric
+        case unavailable
+    }
+
+    @ViewBuilder
+    var titleText: some View {
+        switch style {
+        case .metric:
+            Text(title)
+                .storeNameStyle()
+        case .unavailable:
+            Text(title)
+                .font(.headline.weight(.semibold))
+        }
+    }
+
+    @ViewBuilder
+    var rangeText: some View {
+        switch style {
+        case .metric:
+            Text(range)
+                .statRangeStyle()
+        case .unavailable:
+            Text(range)
+                .font(.headline.weight(.semibold))
+        }
     }
 }
 

@@ -31,10 +31,6 @@ struct StoreInfoData {
     ///
     var range: String
 
-    /// Compact range label for constrained lock-screen widgets.
-    ///
-    var rangeCompact: String
-
     /// Store name
     ///
     var name: String
@@ -158,7 +154,7 @@ final class StoreInfoProvider: TimelineProvider {
     }
 }
 
-// MARK: - Metric presets & resolution
+// MARK: - Metric presets
 
 extension StoreInfoProvider {
     /// Hardcoded preset used by the legacy `StaticConfiguration` path (`getTimeline`) and by
@@ -175,28 +171,6 @@ extension StoreInfoProvider {
         metrics: [StoreInfoMetricType] = legacyMetricsPreset
     ) -> StoreInfoEntry {
         placeholderEntry(for: fetchDependencies(), dateRange: dateRange, metrics: metrics)
-    }
-}
-
-extension StoreInfoProvider {
-    /// Maps the user's requested metric set onto what the configurable widget can render.
-    /// **AppIntent path only** — the legacy `StaticConfiguration` path bypasses this entirely
-    /// and uses `legacyMetricsPreset`.
-    ///
-    /// iOS persists the user's selection per tile and does not auto-extend the array when a
-    /// tile resizes to a larger family — `EntityQuery` has no default-fill hook to participate
-    /// in that. The shared intent resolver keeps home-screen resize behavior complete and
-    /// applies the rectangular lock-screen chart-backed metric rule.
-    ///
-    /// Trade-off: the Edit Widget UI is iOS-controlled and shows "Choose" placeholders for
-    /// slots that don't have an explicit user pick — even though the widget body has rendered
-    /// content there. Apple owns the Edit Widget UI; we can't surface our top-up there.
-    ///
-    static func resolveMetricSelection(
-        requested: [StoreInfoMetricType],
-        family: WidgetFamily
-    ) -> [StoreInfoMetricType] {
-        StoreStatsConfigurationIntent.resolveMetricSelection(requested: requested, family: family)
     }
 }
 
@@ -353,7 +327,6 @@ private extension StoreInfoProvider {
         let conversionString = sample.conversion.map(StoreInfoFormatter.formattedConversionString) ?? StoreInfoFormatter.Constants.valuePlaceholderText
         return .data(.init(
             range: dateRange.localizedRangeLabel,
-            rangeCompact: dateRange.localizedCompactRangeLabel,
             name: dependencies?.store.storeName ?? Localization.myShop,
             revenue: StoreInfoFormatter.formattedAmountString(for: sample.revenue, with: currencySettings),
             revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: sample.revenue, with: currencySettings),
@@ -404,7 +377,6 @@ private extension StoreInfoProvider {
 
         return .data(.init(
             range: dateRange.localizedRangeLabel,
-            rangeCompact: dateRange.localizedCompactRangeLabel,
             name: dependencies.store.storeName,
             revenue: StoreInfoFormatter.formattedAmountString(for: stats.revenue, with: currencySettings),
             revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: stats.revenue, with: currencySettings),

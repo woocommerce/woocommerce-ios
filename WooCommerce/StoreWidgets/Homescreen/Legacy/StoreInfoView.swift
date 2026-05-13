@@ -292,7 +292,6 @@ import class WooFoundation.CurrencySettings
 struct StoreWidgets_Previews: PreviewProvider {
     static var exampleData = StoreInfoData(
         range: "Today",
-        rangeCompact: StoreStatsWidgetDateRange.today.localizedCompactRangeLabel,
         name: "Ernest Shop",
         revenue: "$123,456,789",
         revenueCompact: "$123M",

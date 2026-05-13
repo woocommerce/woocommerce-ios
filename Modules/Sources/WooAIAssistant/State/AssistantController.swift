@@ -43,6 +43,31 @@ public final class AssistantController {
         send(prompt, isRetry: true)
     }
 
+    /// Convenience entry point for the error-banner "Retry" affordance: walks the transcript
+    /// backwards to find the most recent merchant prompt and re-fires it through `retry(_:)`.
+    /// No-ops when a turn is already in flight or no user prompt exists, so the UI can wire
+    /// this directly to a button without extra guards. Like `retry(_:)`, this re-appends a
+    /// user message bubble - duplicate-bubble UX is a known limitation tracked separately.
+    public func retryLastFailedTurn() {
+        guard canSend else { return }
+        guard let lastUserText = mostRecentUserPromptText() else { return }
+        retry(lastUserText)
+    }
+
+    private func mostRecentUserPromptText() -> String? {
+        for message in conversation.messages.reversed() where message.role == .user {
+            var combined = ""
+            for segment in message.segments {
+                if case .text(_, let content) = segment {
+                    combined += content
+                }
+            }
+            let trimmed = combined.trimmingCharacters(in: .whitespacesAndNewlines)
+            return trimmed.isEmpty ? nil : trimmed
+        }
+        return nil
+    }
+
     private func send(_ prompt: String, isRetry: Bool) {
         let trimmed = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, activeTask == nil else { return }

@@ -143,6 +143,7 @@ struct AssistantSystemPromptTests {
 
         #expect(scopeSection.contains("apologise briefly and decline"))
         #expect(scopeSection.contains("Call no tools, render no cards"))
+        #expect(scopeSection.contains("still in scope"))
         #expect(prompt.contains("Off-topic / non-WooCommerce questions: apologise briefly and decline; no tools, no cards."))
     }
 

@@ -377,6 +377,47 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         let expectedFee = NSDecimalNumber(string: "0.15").decimalValue
         assertEqual(expectedFee, parameters.applicationFee)
     }
+
+    func test_collectPayment_for_a_payment_to_an_AU_gateway_account_includes_applicationFee_in_the_payment_intent() throws {
+        // Given
+        let account = PaymentGatewayAccount.fake().copy(siteID: sampleSiteID,
+                                                        defaultCurrency: "AUD",
+                                                        supportedCurrencies: ["AUD"],
+                                                        country: "AU",
+                                                        isCardPresentEligible: true)
+        let order = Order.fake().copy(siteID: sampleSiteID, currency: "AUD")
+        let orderTotal: NSDecimalNumber = 150
+
+        // When
+        let parameters: PaymentParameters = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                if case let .collectPayment(_, _, parameters, _, _, _, _, _) = action {
+                    promise(parameters)
+                }
+            }
+
+            self.sut.collectPayment(
+                for: order,
+                orderTotal: orderTotal,
+                paymentGatewayAccount: account,
+                paymentMethodTypes: [.cardPresent],
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .AU,
+                terminalPaymentPreparationEnabled: true,
+                channel: .storeManagement,
+                onPreparingReader: {},
+                onWaitingForInput: { _ in },
+                onCardInserted: {},
+                onProcessingMessage: {},
+                onDisplayMessage: { _ in },
+                onProcessingCompletion: { _ in },
+                onCompletion: { _ in })
+        }
+
+        // Then
+        let expectedFee = NSDecimalNumber(string: "2.65").decimalValue
+        assertEqual(expectedFee, parameters.applicationFee)
+    }
 }
 
 struct MockReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer {

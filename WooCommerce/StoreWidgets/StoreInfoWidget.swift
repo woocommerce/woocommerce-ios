@@ -93,8 +93,18 @@ private struct StoreInfoWidgetEntryView: View {
             // Family-specific layouts are still pending; for now all three render via
             // `StoreInfoHomescreenWidget`'s shared body.
             StoreInfoHomescreenWidget(entry: entry)
+                .environment(\.storeWidgetTheme, theme(for: entry))
         default:
             EmptyView()
+        }
+    }
+
+    /// Theme to apply to the home-screen widget body. Carried on `StoreInfoData`; error and
+    /// not-connected entries fall back to `.default`.
+    private func theme(for entry: StoreInfoEntry) -> StoreWidgetTheme {
+        switch entry {
+        case .data(let data): return data.theme
+        case .notConnected, .error: return .default
         }
     }
 }

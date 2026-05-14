@@ -179,22 +179,28 @@ private extension MetricChartView {
     }
 
     /// Active tone palette stops `(high, low, deep)` — switches on the widget theme so the
-    /// chart matches its background. `brandPurple` uses the brand-purple-friendly pastels;
-    /// `sameAsSystem` uses semantic system colors that adapt to light/dark mode.
+    /// chart matches its background. The brand-purple theme uses the brand-friendly pastels
+    /// from `Palette`; the three system-themed cases (`.light`, `.dark`, `.sameAsSystem`)
+    /// share the same semantic system colors and rely on the forced `\.colorScheme` to
+    /// resolve as light or dark variants.
     var tonePalette: (high: Color, low: Color, deep: Color) {
-        switch (theme, tone) {
-        case (.brandPurple, .up):
+        if theme.usesSystemAppearance {
+            switch tone {
+            case .up:
+                return (Color(.systemGreen), Color(.systemGreen).opacity(0.65), Color(.systemGreen).opacity(0.45))
+            case .down:
+                return (Color(.systemRed), Color(.systemRed).opacity(0.65), Color(.systemRed).opacity(0.45))
+            case .neutral:
+                return (Color(.systemGray), Color(.systemGray).opacity(0.65), Color(.systemGray).opacity(0.45))
+            }
+        }
+        switch tone {
+        case .up:
             return (Palette.upHigh, Palette.upLow, Palette.upDeep)
-        case (.brandPurple, .down):
+        case .down:
             return (Palette.downHigh, Palette.downLow, Palette.downDeep)
-        case (.brandPurple, .neutral):
+        case .neutral:
             return (Palette.neutralHigh, Palette.neutralLow, Palette.neutralDeep)
-        case (.sameAsSystem, .up):
-            return (Color(.systemGreen), Color(.systemGreen).opacity(0.65), Color(.systemGreen).opacity(0.45))
-        case (.sameAsSystem, .down):
-            return (Color(.systemRed), Color(.systemRed).opacity(0.65), Color(.systemRed).opacity(0.45))
-        case (.sameAsSystem, .neutral):
-            return (Color(.systemGray), Color(.systemGray).opacity(0.65), Color(.systemGray).opacity(0.45))
         }
     }
 

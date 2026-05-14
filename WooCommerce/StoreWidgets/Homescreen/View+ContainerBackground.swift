@@ -74,11 +74,10 @@ struct StoreWidgetHomeScreenBackground: View {
     var body: some View {
         switch widgetRenderingMode {
         case .fullColor:
-            switch theme {
-            case .brandPurple:
-                brandBackground
-            case .sameAsSystem:
+            if theme.usesSystemAppearance {
                 systemBackground
+            } else {
+                brandBackground
             }
         case .accented, .vibrant:
             Color.clear

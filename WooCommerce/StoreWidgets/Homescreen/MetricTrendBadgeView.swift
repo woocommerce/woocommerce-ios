@@ -71,17 +71,17 @@ private extension MetricTrendBadgeView {
     }
 
     var color: Color {
-        switch (theme, trend.direction) {
-        case (.brandPurple, .up):
-            return Color(red: 0.55, green: 0.88, blue: 0.70)
-        case (.brandPurple, .down):
-            return Color(red: 0.95, green: 0.65, blue: 0.70)
-        case (.sameAsSystem, .up):
-            return Color(.systemGreen)
-        case (.sameAsSystem, .down):
-            return Color(.systemRed)
-        case (_, .flat):
+        switch trend.direction {
+        case .flat:
             return Color(.systemGray)
+        case .up:
+            return theme.usesSystemAppearance
+                ? Color(.systemGreen)
+                : Color(red: 0.55, green: 0.88, blue: 0.70)
+        case .down:
+            return theme.usesSystemAppearance
+                ? Color(.systemRed)
+                : Color(red: 0.95, green: 0.65, blue: 0.70)
         }
     }
 

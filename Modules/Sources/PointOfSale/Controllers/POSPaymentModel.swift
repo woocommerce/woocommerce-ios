@@ -463,6 +463,17 @@ extension POSPaymentModel {
     func cancelReconnection() {
         Task { @MainActor [weak self] in
             await self?.cardPresentPaymentService.cancelReconnection()
+            // Belt-and-suspenders: the SDK's `cancelReconnection` has an
+            // early-return path when its internal `reconnectionCancelable` is
+            // already nil or completed. In that path the Hardware layer sends
+            // `.idle` to the reconnection-state subject but does *not* clear
+            // the connected-readers subject, so `cardReaderConnectionStatus`
+            // can stay at `.reconnecting` and the "Reconnecting reader…"
+            // screen never transitions away. Explicit disconnect forces the
+            // status to `.disconnected` so the UI can fall back to the TTP
+            // hero (or the iPad disconnect message). Disconnect on an
+            // already-disconnected reader is a no-op at the SDK level.
+            await self?.cardPresentPaymentService.disconnectReader()
         }
     }
 

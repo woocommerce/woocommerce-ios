@@ -303,4 +303,3 @@ private extension WooAnalyticsTests {
         static let testErrorAndPropertyReceivedProperty: [String: String]  = ["error_code": "999", "error_domain": "domain", "prop-key1": "prop-value1"]
     }
 }
-

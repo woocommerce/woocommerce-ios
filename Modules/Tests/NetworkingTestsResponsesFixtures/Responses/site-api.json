@@ -12,6 +12,14 @@
             "wp\/v2"
         ],
         "authentication": [],
+        "routes": {
+            "\/wc\/v3\/payments\/orders\/(?P<order_id>\\w+)\/prepare_terminal_payment": {
+                "namespace": "wc\/v3",
+                "methods": [
+                    "POST"
+                ]
+            }
+        },
         "_links": {
             "help": [
                 {

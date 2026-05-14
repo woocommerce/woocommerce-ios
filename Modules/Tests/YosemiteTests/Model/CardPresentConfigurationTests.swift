@@ -100,12 +100,18 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.contactlessLimitAmount, 20000)
     }
 
-    // Australia is intentionally excluded pending EFTPOS support (RSM-642 / RSM-643).
-    func test_configuration_for_Australia_is_unsupported() {
+    func test_configuration_for_Australia() {
         let configuration = CardPresentPaymentsConfiguration(country: .AU)
-        XCTAssertFalse(configuration.isSupportedCountry)
-        XCTAssertEqual(configuration.paymentMethods, [])
-        XCTAssertEqual(configuration.currencies, [])
+        XCTAssertTrue(configuration.isSupportedCountry)
+        XCTAssertEqual(configuration.currencies, [.AUD])
+        XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
+        XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
+        XCTAssertEqual(configuration.supportedReaders, [.wisepad3])
+        XCTAssertEqual(configuration.supportedPluginVersions, [
+            .init(plugin: .wcPay, minimumVersion: Constants.minimumWCPayVersionForTerminalPaymentPreparation)
+        ])
+        XCTAssertEqual(configuration.minimumAllowedChargeAmount, NSDecimalNumber(string: "0.5"))
+        XCTAssertEqual(configuration.contactlessLimitAmount, 20000)
     }
 
     private enum Constants {
@@ -122,5 +128,7 @@ class CardPresentConfigurationTests: XCTestCase {
             static let ca = "https://woocommerce.com/products/hardware/CA?utm_medium=woo_ios"
             static let gb = "https://woocommerce.com/products/hardware/GB?utm_medium=woo_ios"
         }
+
+        static let minimumWCPayVersionForTerminalPaymentPreparation = "10.8.0-test-1"
     }
 }

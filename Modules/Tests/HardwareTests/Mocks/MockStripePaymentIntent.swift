@@ -11,6 +11,7 @@ struct MockStripePaymentIntent {
     let currency: String
     let metadata: [String: String]?
     let charges: [StripeTerminal.Charge]
+    let paymentMethod: StripeTerminal.PaymentMethod?
 }
 
 extension MockStripePaymentIntent: StripePaymentIntent {
@@ -29,6 +30,7 @@ extension MockStripePaymentIntent {
                                 amount: 100,
                                 currency: "USD",
                                 metadata: nil,
-                                charges: [])
+                                charges: [],
+                                paymentMethod: nil)
     }
 }

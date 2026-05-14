@@ -211,18 +211,20 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
         let action: WooShippingAction
         if isStarred {
             let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])
-            action = .createPackage(siteID: order.siteID, customPackage: nil, predefinedOption: predefined) { result in
+            action = .createPackage(siteID: order.siteID, customPackage: nil, predefinedOption: predefined) { [weak self] result in
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Error starring package from AR results: \(error)")
+                    self?.lastARStarredPackageIDs.remove(packageID)
                 }
             }
         } else {
             action = .deletePackage(siteID: order.siteID,
                                     packageID: packageID,
                                     packageType: .predefined,
-                                    completion: { result in
+                                    completion: { [weak self] result in
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Error unstarring package from AR results: \(error)")
+                    self?.lastARStarredPackageIDs.insert(packageID)
                 }
             })
         }

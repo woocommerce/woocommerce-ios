@@ -69,7 +69,7 @@ struct ARParcelSizingView: View {
             return viewModel.dimensionsLabel
         }
         if isARReady {
-            return "Tap on the surface to place the fitting box"
+            return Localization.placementHint
         }
         return nil
     }
@@ -80,14 +80,27 @@ struct ARParcelSizingView: View {
 
     private var confirmButton: some View {
         Button { onConfirm(viewModel.confirmedDimensions) } label: {
-            Text("Use these dimensions")
+            Text(Localization.useTheseDimensions)
                 .font(.headline)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(.blue, in: Capsule())
+                .background(Color.accentColor, in: Capsule())
                 .foregroundStyle(.white)
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 16)
+    }
+}
+
+private extension ARParcelSizingView {
+    enum Localization {
+        static let placementHint = NSLocalizedString(
+            "parcelFitting.sizing.placementHint",
+            value: "Tap on the surface to place the fitting box",
+            comment: "Hint text shown when the AR surface is ready for cuboid placement")
+        static let useTheseDimensions = NSLocalizedString(
+            "parcelFitting.sizing.useTheseDimensions",
+            value: "Use these dimensions",
+            comment: "Button to confirm the measured dimensions in the AR sizing view")
     }
 }

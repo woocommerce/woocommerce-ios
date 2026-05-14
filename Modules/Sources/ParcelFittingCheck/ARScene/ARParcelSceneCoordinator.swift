@@ -70,8 +70,6 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     func updateDimensions(_ dims: SIMD3<Float>) {
         guard dims != dimensions else { return }
         dimensions = dims
-        // While a gesture-driven resize is active the coordinator owns the cuboid
-        // scale; ignore external echoes coming back through the SwiftUI binding.
         if !resizeInteraction.isActive {
             cuboid?.root.transform.scale = dims
         }

@@ -30,8 +30,8 @@ public enum AnalyticsOrdersTool {
         else for them. Do NOT issue a second analytics call for the prior window; \
         both windows are already in this response. Analytics stats are card-backed: \
         after any successful call for an aggregate analytics question, do not stop \
-        with prose; call show_cards with family analytics_stats and an id built \
-        from the same after/before/interval values and currency:none.
+        with prose; call show_cards with family analytics_stats and the exact \
+        `card_id` string returned in this tool's result.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -119,9 +119,23 @@ public enum AnalyticsOrdersTool {
         let summary = AnalyticsStatsSummary.make(from: payload,
                                                  range: (args.after, args.before),
                                                  comparison: comparison)
+        // The model echoes this synthetic card_id straight into show_cards rather
+        // than rebuilding the id itself - keeps the id format owned by one place.
+        let cardID = AnalyticsCardSpec(kind: .orders,
+                                       after: args.after,
+                                       before: args.before,
+                                       interval: interval,
+                                       currency: nil).encoded
+        let withCardID = Self.inject(cardID: cardID, into: summary)
         return .success(.init(toolName: name,
-                              structured: LLMPayloadCap.capped(summary, toolName: name),
+                              structured: LLMPayloadCap.capped(withCardID, toolName: name),
                               uiStructured: nil))
+    }
+
+    private static func inject(cardID: String, into summary: AnyCodableJSON) -> AnyCodableJSON {
+        guard case .object(var fields) = summary else { return summary }
+        fields["card_id"] = .string(cardID)
+        return .object(fields)
     }
 
     private enum FetchOutcome {

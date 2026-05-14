@@ -35,6 +35,7 @@ struct AssistantSystemPromptTests {
         #expect(analyticsPattern.contains("call `show_cards` to render the matching analytics card"))
         #expect(analyticsPattern.contains("grouping grain with a date window"))
         #expect(analyticsPattern.contains("Do not turn a monthly window into interval=month"))
+        #expect(analyticsPattern.contains("pass that id straight to `show_cards` rather than building one yourself"))
         #expect(directProseLines.allSatisfy { !$0.localizedCaseInsensitiveContains("analytics") })
     }
 

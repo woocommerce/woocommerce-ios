@@ -37,11 +37,9 @@ public enum ShowCardsTool {
         catalog. Cards rendered \
         in this turn remain referenced; reuse their ids in follow-up tool \
         calls. After a successful `analytics_orders` call, call this tool \
-        with family `analytics_stats` and an id using the same after, before, \
-        and interval values to render the analytics card. Use the same \
-        currency value when the analytics call had one; otherwise use \
-        `currency:none`. The synthetic analytics id format is described on \
-        the `id` property.
+        with family `analytics_stats` and the exact `card_id` string returned \
+        in that tool's result as the `id` - do not construct the analytics id \
+        yourself.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -71,8 +69,8 @@ public enum ShowCardsTool {
                                 "type": .string("string"),
                                 "description": .string("Entity id. For variation, the combined " +
                                     "{parentProductId}/{variationId} (e.g. 821/822). For analytics_stats, " +
-                                    "analytics_<revenue|orders>:after:<YYYY-MM-DD>:before:<YYYY-MM-DD>:" +
-                                    "interval:<hour|day|week|month|year>:currency:<ISO|none>.")
+                                    "pass the exact `card_id` string returned by the analytics tool's result " +
+                                    "verbatim - do not construct it.")
                             ])
                         ])
                     ])

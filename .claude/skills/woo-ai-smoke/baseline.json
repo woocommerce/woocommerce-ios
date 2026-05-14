@@ -100,9 +100,9 @@
         {"prompt": "and last monday"}
       ],
       "hard": {
-        "t1": {"required_tools_any": ["analytics_revenue", "analytics_orders"]},
-        "t2": {"required_tools_any": ["analytics_revenue", "analytics_orders"]},
-        "t3": {"required_tools_any": ["analytics_revenue", "analytics_orders"]}
+        "t1": {"required_tools_any": ["analytics_orders"]},
+        "t2": {"required_tools_any": ["analytics_orders"]},
+        "t3": {"required_tools_any": ["analytics_orders"]}
       },
       "rubric_notes": "Aggregate number + correct comparison logic. Trunk has no `stats` card kind — analytics tools return structured payload but no rendered card. Text should orient with the analytics totals."
     },
@@ -265,7 +265,7 @@
         {"prompt": "show me my latest order and how much I made this week"}
       ],
       "hard": {
-        "t1": {"required_tools_any": ["orders_list", "analytics_orders", "analytics_revenue"]}
+        "t1": {"required_tools_any": ["orders_list", "analytics_orders"]}
       },
       "rubric_notes": "Two intents in one prompt — order + weekly revenue. Model should address BOTH (correctness). Skipping one scores 1. Asking which to do first scores 0 for recovery (just do both)."
     },

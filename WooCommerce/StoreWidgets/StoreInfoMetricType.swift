@@ -60,6 +60,19 @@ enum StoreInfoMetricType: String, CaseIterable, Hashable {
         case .none: return .count
         }
     }
+
+    /// Whether the metric can render an interval chart from `OrderStatsV4.intervals`.
+    ///
+    /// Visitors and conversion are sourced from site summary stats, which currently return
+    /// aggregate values only.
+    var supportsChart: Bool {
+        switch self {
+        case .revenue, .netSales, .averageOrderValue, .orders, .itemsSold:
+            return true
+        case .visitors, .conversion, .none:
+            return false
+        }
+    }
 }
 
 // MARK: - AppEntity

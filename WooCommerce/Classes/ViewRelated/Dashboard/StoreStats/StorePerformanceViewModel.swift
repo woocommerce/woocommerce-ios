@@ -243,6 +243,7 @@ final class StorePerformanceViewModel: ObservableObject {
             // Reload the Store Info Widget after syncing the today's stats.
             if case .today = timeRange {
                 WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeInfoWidgetKind)
+                WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeTrendsWidgetKind)
             }
 
             syncingDidFinishPublisher.send(nil)

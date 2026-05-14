@@ -28,8 +28,8 @@ extension WidgetSnapshot {
     var analyticsProperties: [String: String] {
         [
             "widget_count": "\(tiles.count)",
-            "widget_customized_count": "\(tiles.filter { $0.configuration.isDefault == false }.count)",
-            "widget_default_count": "\(tiles.filter { $0.configuration.isDefault == true }.count)",
+            "widget_customized_count": "\(tiles.filter { $0.isDefault == false }.count)",
+            "widget_default_count": "\(tiles.filter { $0.isDefault == true }.count)",
             "info_widget_date_ranges_in_use": storeInfoDateRangesInUse.sorted().joined(separator: ","),
             "info_widget_metrics_in_use": storeInfoMetricsInUse.sorted().joined(separator: ",")
         ]

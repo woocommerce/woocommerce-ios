@@ -144,16 +144,19 @@ final class StoreInfoProvider: TimelineProvider {
 
         let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
         let service = StoreInfoDataService(credentials: dependencies.credentials)
-        Self.refreshCurrencySettingsIfNeeded(for: dependencies.store, service: service)
         do {
-            let statsPeriod = try await service.fetchStats(
+            async let statsPeriodRequest = service.fetchStats(
                 for: dependencies.store.storeID,
                 dateRange: dateRange.serviceDateRange(timezone: dependencies.store.storeTimeZone)
             )
+            async let storeRequest = Self.storeMetadataByRefreshingCurrencySettingsIfNeeded(dependencies.store, service: service)
+            let statsPeriod = try await statsPeriodRequest
+            let store = await storeRequest
+            let updatedDependencies = Dependencies(credentials: dependencies.credentials, store: store)
             let entry = Self.dataEntry(
                 for: statsPeriod,
                 dateRange: dateRange,
-                with: dependencies,
+                with: updatedDependencies,
                 metrics: metrics
             )
             return Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
@@ -164,19 +167,20 @@ final class StoreInfoProvider: TimelineProvider {
         }
     }
 
-    private static func refreshCurrencySettingsIfNeeded(for store: StoreMetadata, service: StoreInfoDataService) {
+    static func storeMetadataByRefreshingCurrencySettingsIfNeeded(_ store: StoreMetadata,
+                                                                  service: StoreInfoDataService,
+                                                                  currencyCache: WidgetSiteCurrencyCache = WidgetSiteCurrencyCache()) async -> StoreMetadata {
         guard let siteID = store.siteIDNeedingCurrencySettingsRefresh else {
-            return
+            return store
         }
 
-        Task {
-            do {
-                let currencySettings = try await service.fetchGeneralSettings(siteID: siteID)
-                WidgetSiteCurrencyCache().save(currencySettings, forSiteID: siteID)
-                WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeInfoWidgetKind)
-            } catch {
-                print("⛔️ Error fetching widget currency settings: \(error)")
-            }
+        do {
+            let currencySettings = try await service.fetchGeneralSettings(siteID: siteID)
+            currencyCache.save(currencySettings, forSiteID: siteID)
+            return store.replacingCurrencySettings(currencySettings)
+        } catch {
+            print("⛔️ Error fetching widget currency settings: \(error)")
+            return store
         }
     }
 }
@@ -311,6 +315,14 @@ extension StoreInfoProvider {
         let storeCurrencySettings: CurrencySettings
         let storeTimeZone: TimeZone
         let siteIDNeedingCurrencySettingsRefresh: Int64?
+
+        func replacingCurrencySettings(_ currencySettings: CurrencySettings) -> StoreMetadata {
+            StoreMetadata(storeID: storeID,
+                          storeName: storeName,
+                          storeCurrencySettings: currencySettings,
+                          storeTimeZone: storeTimeZone,
+                          siteIDNeedingCurrencySettingsRefresh: nil)
+        }
     }
 
     /// Fetches the required dependencies from the keychain and the shared users default.

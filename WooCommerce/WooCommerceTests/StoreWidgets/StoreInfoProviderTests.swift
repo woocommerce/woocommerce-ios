@@ -1,4 +1,5 @@
 import Foundation
+@testable import Networking
 import Testing
 import WooFoundationCore
 @testable import WooCommerce
@@ -108,6 +109,50 @@ struct StoreInfoProviderTests {
         #expect(metadata.siteIDNeedingCurrencySettingsRefresh == nil)
     }
 
+    @Test func storeMetadataByRefreshingCurrencySettingsIfNeeded_when_refresh_succeeds_then_returns_fetched_currency_and_saves_cache() async {
+        // Given
+        let userDefaults = makeUserDefaults()
+        let cache = WidgetSiteCurrencyCache(userDefaults: userDefaults)
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
+        let service = StoreInfoDataService(network: network)
+        let store = makeStoreMetadata(siteID: 1234,
+                                      currencySettings: makeCurrencySettings(currencyCode: .EUR),
+                                      siteIDNeedingCurrencySettingsRefresh: 1234)
+
+        // When
+        let refreshedStore = await StoreInfoProvider.storeMetadataByRefreshingCurrencySettingsIfNeeded(store,
+                                                                                                       service: service,
+                                                                                                       currencyCache: cache)
+
+        // Then
+        #expect(refreshedStore.storeCurrencySettings.currencyCode == .USD)
+        #expect(refreshedStore.siteIDNeedingCurrencySettingsRefresh == nil)
+        #expect(cache.currencySettings(forSiteID: 1234)?.currencyCode == .USD)
+        #expect(network.requestsForResponseData.count == 1)
+    }
+
+    @Test func storeMetadataByRefreshingCurrencySettingsIfNeeded_when_refresh_fails_then_returns_original_store_and_does_not_cache() async {
+        // Given
+        let userDefaults = makeUserDefaults()
+        let cache = WidgetSiteCurrencyCache(userDefaults: userDefaults)
+        let service = StoreInfoDataService(network: MockNetwork())
+        let currencySettings = makeCurrencySettings(currencyCode: .EUR)
+        let store = makeStoreMetadata(siteID: 1234,
+                                      currencySettings: currencySettings,
+                                      siteIDNeedingCurrencySettingsRefresh: 1234)
+
+        // When
+        let refreshedStore = await StoreInfoProvider.storeMetadataByRefreshingCurrencySettingsIfNeeded(store,
+                                                                                                       service: service,
+                                                                                                       currencyCache: cache)
+
+        // Then
+        #expect(refreshedStore.storeCurrencySettings == currencySettings)
+        #expect(refreshedStore.siteIDNeedingCurrencySettingsRefresh == 1234)
+        #expect(cache.currencySettings(forSiteID: 1234) == nil)
+    }
+
     private func makeUserDefaults() -> UserDefaults {
         let suiteName = "StoreInfoProviderTests-\(UUID().uuidString)"
         let userDefaults = UserDefaults(suiteName: suiteName)!
@@ -115,12 +160,14 @@ struct StoreInfoProviderTests {
         return userDefaults
     }
 
-    private func makeStoreMetadata(siteID: Int64, currencySettings: CurrencySettings) -> StoreInfoProvider.StoreMetadata {
+    private func makeStoreMetadata(siteID: Int64,
+                                   currencySettings: CurrencySettings,
+                                   siteIDNeedingCurrencySettingsRefresh: Int64? = nil) -> StoreInfoProvider.StoreMetadata {
         StoreInfoProvider.StoreMetadata(storeID: siteID,
                                         storeName: "Default",
                                         storeCurrencySettings: currencySettings,
                                         storeTimeZone: .current,
-                                        siteIDNeedingCurrencySettingsRefresh: nil)
+                                        siteIDNeedingCurrencySettingsRefresh: siteIDNeedingCurrencySettingsRefresh)
     }
 
     private func makeWidgetSite(siteID: Int64, currencySettings: CurrencySettings?) -> WidgetSite {

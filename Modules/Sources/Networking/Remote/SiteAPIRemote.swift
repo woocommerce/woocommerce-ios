@@ -37,6 +37,6 @@ private extension SiteAPIRemote {
     }
 
     enum ParameterValues {
-        static let fieldValues: String = "authentication,namespaces"
+        static let fieldValues: String = "authentication,namespaces,routes"
     }
 }

@@ -40,6 +40,10 @@ class SiteAPIRemoteTests: XCTestCase {
         let siteAPI = try result.get()
         XCTAssertEqual(siteAPI.siteID, sampleSiteID)
         XCTAssertEqual(siteAPI.highestWooVersion, WooAPIVersion.mark3)
+        XCTAssertEqual(siteAPI.routes, ["/wc/v3/payments/orders/(?P<order_id>\\w+)/prepare_terminal_payment"])
+
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
+        XCTAssertEqual(request.parameters["_fields"] as? String, "authentication,namespaces,routes")
     }
 
     /// Verifies that loadAPIInformation properly relays Networking Layer errors.

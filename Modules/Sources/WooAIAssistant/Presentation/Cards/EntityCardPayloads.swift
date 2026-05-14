@@ -158,7 +158,7 @@ public struct ProductVariationCardPayload: Codable, Equatable, Sendable {
     public let salePrice: String?
     public let stockStatus: String?
     public let stockQuantity: Double?
-    public let images: [ProductCardPayload.Image]?
+    public let image: ProductCardPayload.Image?
 
     public init(id: Int64? = nil,
                 parentID: Int64? = nil,
@@ -169,7 +169,7 @@ public struct ProductVariationCardPayload: Codable, Equatable, Sendable {
                 salePrice: String? = nil,
                 stockStatus: String? = nil,
                 stockQuantity: Double? = nil,
-                images: [ProductCardPayload.Image]? = nil) {
+                image: ProductCardPayload.Image? = nil) {
         self.id = id
         self.parentID = parentID
         self.name = name
@@ -179,11 +179,11 @@ public struct ProductVariationCardPayload: Codable, Equatable, Sendable {
         self.salePrice = salePrice
         self.stockStatus = stockStatus
         self.stockQuantity = stockQuantity
-        self.images = images
+        self.image = image
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, name, sku, price, images
+        case id, name, sku, price, image
         case parentID = "parent_id"
         case regularPrice = "regular_price"
         case salePrice = "sale_price"
@@ -196,7 +196,7 @@ public struct ProductVariationCardPayload: Codable, Equatable, Sendable {
     }
 
     public var firstImageURL: URL? {
-        guard let raw = images?.compactMap(\.src).first(where: { !$0.isEmpty }) else { return nil }
+        guard let raw = image?.src, !raw.isEmpty else { return nil }
         return URL(string: raw)
     }
 }

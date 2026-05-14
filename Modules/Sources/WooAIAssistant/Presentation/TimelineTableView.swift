@@ -12,6 +12,7 @@ struct TimelineTableView: UIViewControllerRepresentable {
     let confirmationHandler: AssistantConfirmationHandler
     let externalNavigation: AssistantExternalNavigationProviding
     let externalViews: AssistantExternalViewProviding
+    var onRetry: (() -> Void)?
 
     func makeCoordinator() -> Coordinator {
         Coordinator(isNearBottom: $isNearBottom)
@@ -25,6 +26,7 @@ struct TimelineTableView: UIViewControllerRepresentable {
         controller.confirmationHandler = confirmationHandler
         controller.externalNavigation = externalNavigation
         controller.externalViews = externalViews
+        controller.onRetry = onRetry
         return controller
     }
 
@@ -33,6 +35,7 @@ struct TimelineTableView: UIViewControllerRepresentable {
         controller.confirmationHandler = confirmationHandler
         controller.externalNavigation = externalNavigation
         controller.externalViews = externalViews
+        controller.onRetry = onRetry
         controller.apply(messages: messages, streamingState: streamingState)
         if context.coordinator.lastTrigger != scrollToBottomTrigger {
             context.coordinator.lastTrigger = scrollToBottomTrigger
@@ -79,6 +82,7 @@ final class TimelineTableViewController: UIViewController {
     var confirmationHandler = AssistantConfirmationHandler()
     var externalNavigation: AssistantExternalNavigationProviding = NoOpExternalNavigation()
     var externalViews: AssistantExternalViewProviding = EmptyExternalViews()
+    var onRetry: (() -> Void)?
 
     private lazy var tableView: UITableView = {
         let table = UITableView(frame: .zero, style: .plain)
@@ -149,7 +153,8 @@ final class TimelineTableViewController: UIViewController {
                        messagesByID: messagesByID,
                        confirmationHandler: confirmationHandler,
                        externalNavigation: externalNavigation,
-                       externalViews: externalViews)
+                       externalViews: externalViews,
+                       onRetry: onRetry)
         return cell
     }
 
@@ -330,7 +335,8 @@ final class TimelineHostingCell: UITableViewCell {
                    messagesByID: [UUID: ChatMessage],
                    confirmationHandler: AssistantConfirmationHandler,
                    externalNavigation: AssistantExternalNavigationProviding,
-                   externalViews: AssistantExternalViewProviding) {
+                   externalViews: AssistantExternalViewProviding,
+                   onRetry: (() -> Void)?) {
         // The .margins(.all, 0) / .minSize(height: 1) / .background(.clear) trio
         // stops the host from being squeezed and prevents phantom min-size before
         // the cell self-sizes. The .frame on the SwiftUI root must live inside the
@@ -371,7 +377,7 @@ final class TimelineHostingCell: UITableViewCell {
             .background(Color.clear)
         case .errorBanner(let reason):
             contentConfiguration = UIHostingConfiguration {
-                ErrorBanner(reason: reason)
+                ErrorBanner(reason: reason, onRetry: onRetry)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, AssistantSpacing.large)
                     .padding(.vertical, AssistantSpacing.small)

@@ -87,6 +87,13 @@ final class StorePerformanceViewModel: ObservableObject {
     private var waitingTracker: WaitingTimeTracker?
     private let syncingDidFinishPublisher = PassthroughSubject<Error?, Never>()
 
+    /// Fires whenever the chart should drop any selected point (revenue switch, PTR, order type save).
+    /// Drives `StoreStatsChart.onReceive` so its local `@State` stays in sync with the header.
+    private let chartSelectionResetSubject = PassthroughSubject<Void, Never>()
+    var chartSelectionResetPublisher: AnyPublisher<Void, Never> {
+        chartSelectionResetSubject.eraseToAnyPublisher()
+    }
+
     // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
     // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
     // while Jetpack CP sites has its own redacted for Jetpack state, and non-Jetpack sites simply has them empty.
@@ -178,6 +185,9 @@ final class StorePerformanceViewModel: ObservableObject {
         chartValueSelectedEventsSubject.send(index)
         periodViewModel?.selectedIntervalIndex = index
         shouldHighlightStats = index != nil
+        if index == nil {
+            chartSelectionResetSubject.send()
+        }
 
         if unavailableVisitStatsDueToCustomRange {
             // If time range is less than 2 days, redact data when selected and show when deselected.
@@ -210,6 +220,11 @@ final class StorePerformanceViewModel: ObservableObject {
             updateSiteVisitStatMode()
 
             return
+        }
+
+        if forceRefresh {
+            // Forced refresh replaces the dataset; any selected point becomes meaningless.
+            didSelectStatsInterval(at: nil)
         }
 
         syncingData = true

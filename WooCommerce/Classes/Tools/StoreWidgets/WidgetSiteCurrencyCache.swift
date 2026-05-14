@@ -40,7 +40,6 @@ struct WidgetSiteCurrencyCache {
             .keys
             .filter { $0.hasPrefix(Constants.perSiteKeyPrefix) }
             .forEach { userDefaults.removeObject(forKey: $0) }
-        userDefaults.removeObject(forKey: .widgetSiteCurrencySettingsCache)
     }
 }
 

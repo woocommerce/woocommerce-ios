@@ -42,19 +42,17 @@ struct ShowCardsToolTests {
         #expect(familyEnum.contains(.string("customer")))
         #expect(familyEnum.contains(.string("analytics_stats")))
         #expect(id["type"] == .string("string"))
-        // No pattern on `id` - resolver-side AnalyticsCardSpec.decode validates synthetic format.
+        // No pattern on `id` - the resolver validates the variation combined id
+        // and the analytics synthetic format itself.
         #expect(id["pattern"] == nil)
         if case .string(let idDescription) = id["description"] {
             #expect(idDescription.contains("analytics_stats"))
+            #expect(idDescription.contains("{parentProductId}/{variationId}"))
         } else {
             Issue.record("expected id.description string documenting the synthetic format")
         }
-        guard case .object(let parentID) = itemProperties["parent_id"] else {
-            Issue.record("expected parent_id property in item schema")
-            return
-        }
-        #expect(parentID["type"] == .string("string"))
-        #expect(parentID["pattern"] == .string("^[1-9][0-9]*$"))
+        // The combined variation id replaced the separate parent_id property.
+        #expect(itemProperties["parent_id"] == nil)
     }
 
     @Test
@@ -184,7 +182,7 @@ struct ShowCardsToolTests {
     }
 
     @Test
-    func test_executor_when_product_variation_with_parent_id_then_resolves_via_nested_path() async {
+    func test_executor_when_variation_combined_id_then_resolves_via_nested_path() async {
         // Given
         let client = StubbedWCRESTClient()
         await client.stub(path: "wc/v3/products/821/variations/822",
@@ -195,7 +193,7 @@ struct ShowCardsToolTests {
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
-            {"family": "variation", "id": "822", "parent_id": "821"}
+            {"family": "variation", "id": "821/822"}
         ]}
         """
 
@@ -210,11 +208,11 @@ struct ShowCardsToolTests {
         let cards = success.uiStructured?.cards ?? []
         #expect(cards.count == 1)
         #expect(cards[0].family == .productVariation)
-        #expect(cards[0].id == "822")
+        #expect(cards[0].id == "821/822")
     }
 
     @Test
-    func test_executor_when_product_variation_missing_parent_id_then_rejected_as_malformed() async {
+    func test_executor_when_variation_id_is_not_combined_then_rejected_as_malformed() async {
         // Given
         let client = StubbedWCRESTClient()
         let tool = ShowCardsTool.make()

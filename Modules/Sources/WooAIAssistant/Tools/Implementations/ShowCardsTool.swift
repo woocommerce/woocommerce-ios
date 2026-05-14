@@ -14,11 +14,12 @@ public enum ShowCardsTool {
         Render rich cards for specific entities the user should see. Call \
         this whenever you would otherwise mention an order/product/customer \
         ID in prose. Supported families: order, product, variation, \
-        customer, analytics_stats. `variation` references require both \
-        `id` and `parent_id` (the parent product's id), and should be used only \
-        for explicit variation-level questions about sizes, colors, options, or \
-        known variation IDs. For broad product inventory lists, render product \
-        references. Order/product/customer references need only `id`. Up to 10 \
+        customer, analytics_stats. A `variation` reference's `id` is the \
+        combined `{parentProductId}/{variationId}` (e.g. `821/822`), and should \
+        be used only for explicit variation-level questions about sizes, \
+        colors, options, or known variation IDs. For broad product inventory \
+        lists, render product references. Order/product/customer references \
+        use a plain numeric `id`. Up to 10 \
         references per call. Prefer 1-5 for list-style answers; summarize the \
         rest in prose. A single call may mix families when the user asks for \
         different entity types. Cards render \
@@ -68,13 +69,10 @@ public enum ShowCardsTool {
                             ]),
                             "id": .object([
                                 "type": .string("string"),
-                                "description": .string("Entity id, or " +
+                                "description": .string("Entity id. For variation, the combined " +
+                                    "{parentProductId}/{variationId} (e.g. 821/822). For analytics_stats, " +
                                     "analytics_<revenue|orders>:after:<YYYY-MM-DD>:before:<YYYY-MM-DD>:" +
-                                    "interval:<hour|day|week|month|year>:currency:<ISO|none> for analytics_stats.")
-                            ]),
-                            "parent_id": .object([
-                                "type": .string("string"),
-                                "pattern": .string("^[1-9][0-9]*$")
+                                    "interval:<hour|day|week|month|year>:currency:<ISO|none>.")
                             ])
                         ])
                     ])

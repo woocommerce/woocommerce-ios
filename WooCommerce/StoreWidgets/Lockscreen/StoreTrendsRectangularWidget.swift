@@ -10,7 +10,7 @@ struct StoreTrendsRectangularWidget: View {
         Group {
             switch entry.storeInfoEntry {
             case .data(let data):
-                if let metric = data.metrics.first {
+                if let metric = data.presentableMetrics.first {
                     StoreTrendsRectangularView(
                         metric: metric,
                         compactRange: entry.compactRange
@@ -188,7 +188,7 @@ struct StoreTrendsRectangularWidget_Previews: PreviewProvider {
 
     static var previews: some View {
         StoreTrendsRectangularView(
-            metric: sampleData.metrics[0],
+            metric: WidgetMetricPresenter(metric: sampleData.metrics[0], dateRange: .lastWeek),
             compactRange: StoreStatsWidgetDateRange.lastWeek.localizedCompactRangeLabel
         )
         .widgetBackground(backgroundView: Color.clear)
@@ -196,7 +196,7 @@ struct StoreTrendsRectangularWidget_Previews: PreviewProvider {
         .previewDisplayName("Revenue")
 
         StoreTrendsRectangularView(
-            metric: sampleData.metrics[1],
+            metric: WidgetMetricPresenter(metric: sampleData.metrics[1], dateRange: .lastWeek),
             compactRange: StoreStatsWidgetDateRange.lastWeek.localizedCompactRangeLabel
         )
         .widgetBackground(backgroundView: AccessoryWidgetBackground())

@@ -1,3 +1,4 @@
+import EventHorizonSDK
 import Foundation
 import protocol WooFoundation.Analytics
 import WooAIAssistant
@@ -13,15 +14,14 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
     func track(_ event: AssistantTelemetryEvent) {
         switch event {
         case .conversationStarted(let context):
-            let event = AiAssistantConversationStartedEvent(
+            analytics.track(Event.aiAssistantConversationStarted(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID
-            )
-            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
+            ))
 
         case .turnStarted(let context, let isRetry, let stack, let prompt, let catalog):
-            let event = AiAssistantTurnStartedEvent(
+            analytics.track(Event.aiAssistantTurnStarted(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID,
@@ -29,23 +29,21 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
                 completionStack: stack,
                 promptVersion: prompt,
                 toolCatalogVersion: catalog
-            )
-            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
+            ))
 
         case .toolCallCompleted(let context, let toolName, let status, let errorKind, let durationMs):
-            let event = AiAssistantToolCallCompletedEvent(
+            analytics.track(Event.aiAssistantToolCallCompleted(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID,
                 toolName: toolName,
-                status: toShim(status),
-                errorKind: errorKind.map(toShim),
+                status: toSDK(status),
+                errorKind: errorKind.map(toSDK),
                 durationMs: durationMs.map(Int.init)
-            )
-            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
+            ))
 
         case .showCardsProcessed(let context, let requested, let rendered, let missing, let rejected):
-            let event = AiAssistantShowCardsProcessedEvent(
+            analytics.track(Event.aiAssistantShowCardsProcessed(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID,
@@ -53,18 +51,16 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
                 renderedCount: rendered,
                 missingCount: missing,
                 rejectedCount: rejected
-            )
-            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
+            ))
 
         case .cardTapped(let context, let cardFamily, let actionFamily):
-            let event = AiAssistantCardTappedEvent(
+            analytics.track(Event.aiAssistantCardTapped(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID,
-                cardFamily: toShim(cardFamily),
-                actionFamily: toShim(actionFamily)
-            )
-            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
+                cardFamily: toSDK(cardFamily),
+                actionFamily: toSDK(actionFamily)
+            ))
 
         case .turnCompleted(let context,
                             let outcome,
@@ -74,30 +70,29 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
                             let stack,
                             let prompt,
                             let catalog):
-            let event = AiAssistantTurnCompletedEvent(
+            analytics.track(Event.aiAssistantTurnCompleted(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID,
-                outcome: toShim(outcome),
+                outcome: toSDK(outcome),
                 durationMs: Int(durationMs),
-                errorKind: errorKind.map(toShim),
+                errorKind: errorKind.map(toSDK),
                 isRetry: isRetry,
                 completionStack: stack,
                 promptVersion: prompt,
                 toolCatalogVersion: catalog
-            )
-            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
+            ))
         }
     }
 
-    private func toShim(_ status: AssistantTelemetryToolStatus) -> AiAssistantToolStatusValue {
+    private func toSDK(_ status: AssistantTelemetryToolStatus) -> AiAssistantToolStatusValue {
         switch status {
         case .success: return .success
         case .failure: return .failure
         }
     }
 
-    private func toShim(_ outcome: AssistantTelemetryOutcome) -> AiAssistantTurnOutcomeValue {
+    private func toSDK(_ outcome: AssistantTelemetryOutcome) -> AiAssistantTurnOutcomeValue {
         switch outcome {
         case .success: return .success
         case .failed: return .failed
@@ -106,7 +101,7 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
         }
     }
 
-    private func toShim(_ errorKind: AssistantTelemetryErrorKind) -> AiAssistantErrorKindValue {
+    private func toSDK(_ errorKind: AssistantTelemetryErrorKind) -> AiAssistantErrorKindValue {
         switch errorKind {
         case .network: return .network
         case .auth: return .auth
@@ -119,7 +114,7 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
         }
     }
 
-    private func toShim(_ cardFamily: AssistantTelemetryCardFamily) -> AiAssistantCardFamilyValue {
+    private func toSDK(_ cardFamily: AssistantTelemetryCardFamily) -> AiAssistantCardFamilyValue {
         switch cardFamily {
         case .order: return .order
         case .product: return .product
@@ -130,7 +125,7 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
         }
     }
 
-    private func toShim(_ actionFamily: AssistantTelemetryActionFamily) -> AiAssistantActionFamilyValue {
+    private func toSDK(_ actionFamily: AssistantTelemetryActionFamily) -> AiAssistantActionFamilyValue {
         switch actionFamily {
         case .openOrder: return .openOrder
         case .openProduct: return .openProduct

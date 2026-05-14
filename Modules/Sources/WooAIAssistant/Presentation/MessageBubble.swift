@@ -191,7 +191,7 @@ struct MessageBubble: View {
                 if case .cardRender(_, _, _, let payload) = segment { return payload }
                 return nil
             }
-            MessageCardListHost(family: family, payloads: payloads)
+            MessageCardListHost(family: family, payloads: payloads, sourceMessageID: message.id)
         }
     }
 
@@ -212,7 +212,7 @@ struct MessageBubble: View {
             // .toolResult is filtered in orderedSegments; arm kept so future leaks compile-error here.
             EmptyView()
         case .cardRender(_, _, let name, let payload):
-            MessageCardHost(toolName: name, payload: payload)
+            MessageCardHost(toolName: name, payload: payload, sourceMessageID: message.id)
         case .confirmation(_, let proposalID, _, let preview, let status):
             ConfirmationCard(proposalID: proposalID,
                              preview: preview,

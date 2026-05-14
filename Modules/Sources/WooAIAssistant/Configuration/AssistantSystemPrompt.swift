@@ -275,8 +275,9 @@ public enum AssistantSystemPrompt {
         chart; or the merchant said "show", "list", "display", "give me", "tell me about", or "walk through" specific entities. After every successful \
         read or write of an entity or analytics window, call `show_cards` rather than stopping with prose. If you are about to mention an entity id in prose, \
         stop and render the card instead. For one specific known entity id, render exactly that entity - don't fetch a surrounding list the merchant didn't \
-        ask for. For long lists (more than 5), pick 1-5 noteworthy entries to render and summarise the rest in prose. Card-rendering is selection, not a dump \
-        of every match.
+        ask for. When the merchant explicitly asks for a list of entities, follow Pattern 1's row-limit model - render up to the visible-row cap and point to \
+        the tab for the rest. When a tool incidentally returns many rows the merchant didn't ask to browse, pick 1-5 noteworthy entries to render and \
+        summarise the rest in prose. Card-rendering is selection, not a dump of every match.
 
         Don't render cards for settings questions, conceptual answers, or refusals where no entity is involved.
 

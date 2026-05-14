@@ -8,6 +8,7 @@ struct MessageListView: View {
     var onPickPrompt: (String) -> Void = { _ in }
     var onSendSuggestion: (String) -> Void = { _ in }
     var onFeedbackTap: (() -> Void)? = nil
+    var onRetry: (() -> Void)? = nil
 
     @Environment(\.assistantConfirmationHandler) private var confirmationHandler
     @Environment(\.assistantExternalNavigation) private var externalNavigation
@@ -29,7 +30,8 @@ struct MessageListView: View {
                                       scrollToBottomTrigger: scrollTrigger,
                                       confirmationHandler: confirmationHandler,
                                       externalNavigation: externalNavigation,
-                                      externalViews: externalViews)
+                                      externalViews: externalViews,
+                                      onRetry: onRetry)
                     Group {
                         if !isNearBottom {
                             JumpToLatestChip {

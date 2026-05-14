@@ -16,6 +16,8 @@ public actor AgenticLoopOrchestrator {
     private let systemPrompt: String?
     private let maxIterations: Int
     private let perToolPerTurnCap: Int
+    private let telemetryTracker: AssistantTelemetryTracker
+    private let clock: SystemClock
 
     private var pendingDecisions: [UUID: CheckedContinuation<Bool, Never>] = [:]
     private var terminationContinuations: [CheckedContinuation<LoopOutcome, Never>] = []
@@ -27,21 +29,90 @@ public actor AgenticLoopOrchestrator {
                 safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
                 systemPrompt: String? = nil,
                 maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
-                perToolPerTurnCap: Int = AgenticLoopOrchestrator.defaultPerToolPerTurnCap) {
+                perToolPerTurnCap: Int = AgenticLoopOrchestrator.defaultPerToolPerTurnCap,
+                telemetryTracker: AssistantTelemetryTracker = NoopAssistantTelemetryTracker(),
+                clock: SystemClock = MonotonicSystemClock()) {
         self.chatService = chatService
         self.toolRegistry = toolRegistry
         self.safetyPolicy = safetyPolicy
         self.systemPrompt = systemPrompt
         self.maxIterations = maxIterations
         self.perToolPerTurnCap = perToolPerTurnCap
+        self.telemetryTracker = telemetryTracker
+        self.clock = clock
+    }
+
+    private nonisolated func emitTelemetry(_ event: AssistantTelemetryEvent) async {
+        let tracker = telemetryTracker
+        await MainActor.run { tracker.track(event) }
+    }
+
+    /// Substitutes `"unknown"` for tool names that aren't in the live registry catalog so a
+    /// hallucinated function name never lands in `tool_name`.
+    private static func canonicalToolName(_ raw: String,
+                                          toolsByName: [String: AITool]) -> String {
+        toolsByName[raw] != nil ? raw : "unknown"
+    }
+
+    private func emitToolDecisionTelemetry(result: ToolResult,
+                                           call: OpenAIChat.ToolCall,
+                                           durationMs: Int64,
+                                           telemetryContext: AssistantTelemetryContext,
+                                           toolsByName: [String: AITool]) async {
+        let canonicalName = Self.canonicalToolName(call.function.name, toolsByName: toolsByName)
+        switch result {
+        case .success(let success):
+            await emitTelemetry(.toolCallCompleted(context: telemetryContext,
+                                                   toolName: canonicalName,
+                                                   status: .success,
+                                                   errorKind: nil,
+                                                   durationMs: durationMs))
+            if call.function.name == ShowCardsTool.name,
+               let counts = ShowCardsTelemetryReducer.reduce(success.structured) {
+                await emitTelemetry(.showCardsProcessed(context: telemetryContext,
+                                                        requestedCount: counts.requestedCount,
+                                                        renderedCount: counts.renderedCount,
+                                                        missingCount: counts.missingCount,
+                                                        rejectedCount: counts.rejectedCount))
+            }
+        case .failed(let failed):
+            let errorKind = AssistantErrorKindMapper.map(AssistantError(kind: failed.kind,
+                                                                        message: failed.reason))
+            await emitTelemetry(.toolCallCompleted(context: telemetryContext,
+                                                   toolName: canonicalName,
+                                                   status: .failure,
+                                                   errorKind: errorKind,
+                                                   durationMs: durationMs))
+        case .rejectedBySafety:
+            await emitTelemetry(.toolCallCompleted(context: telemetryContext,
+                                                   toolName: canonicalName,
+                                                   status: .failure,
+                                                   errorKind: .validationError,
+                                                   durationMs: durationMs))
+        case .awaitingConfirmation:
+            // Tool short-circuited the safety gate: pre-execution rejection, not server failure.
+            await emitTelemetry(.toolCallCompleted(context: telemetryContext,
+                                                   toolName: canonicalName,
+                                                   status: .failure,
+                                                   errorKind: .validationError,
+                                                   durationMs: durationMs))
+        }
     }
 
     public nonisolated func run(prompt: String) -> AsyncThrowingStream<AssistantEvent, Error> {
-        run(prompt: prompt, priorMessages: [])
+        run(prompt: prompt, priorMessages: [], telemetryContext: nil)
     }
 
     nonisolated func run(prompt: String,
                          priorMessages: [OpenAIChat.Message]) -> AsyncThrowingStream<AssistantEvent, Error> {
+        run(prompt: prompt,
+            priorMessages: priorMessages,
+            telemetryContext: nil)
+    }
+
+    nonisolated func run(prompt: String,
+                         priorMessages: [OpenAIChat.Message],
+                         telemetryContext: AssistantTelemetryContext?) -> AsyncThrowingStream<AssistantEvent, Error> {
         AsyncThrowingStream { continuation in
             let task = Task { [weak self] in
                 guard let self else {
@@ -52,11 +123,16 @@ public actor AgenticLoopOrchestrator {
                 do {
                     try await self.runLoop(prompt: prompt,
                                            priorMessages: priorMessages,
+                                           telemetryContext: telemetryContext,
                                            continuation: continuation)
+                    if let outcome = await self.lastOutcome {
+                        continuation.yield(.terminated(outcome))
+                    }
                     continuation.finish()
                 } catch let error as AssistantError {
                     await self.setOutcome(.failed(error))
                     continuation.yield(.failed(error))
+                    continuation.yield(.terminated(.failed(error)))
                     continuation.finish()
                 } catch is CancellationError {
                     await self.setOutcomeIfUnset(.stopped)
@@ -66,6 +142,7 @@ public actor AgenticLoopOrchestrator {
                                                         message: error.localizedDescription)
                     await self.setOutcome(.failed(assistantError))
                     continuation.yield(.failed(assistantError))
+                    continuation.yield(.terminated(.failed(assistantError)))
                     continuation.finish()
                 }
             }
@@ -158,6 +235,7 @@ public actor AgenticLoopOrchestrator {
 
     private func runLoop(prompt: String,
                          priorMessages: [OpenAIChat.Message],
+                         telemetryContext: AssistantTelemetryContext?,
                          continuation: AsyncThrowingStream<AssistantEvent, Error>.Continuation) async throws {
         var messages = buildInitialMessages(prompt: prompt, priorMessages: priorMessages)
         let tools: [AITool]
@@ -204,6 +282,7 @@ public actor AgenticLoopOrchestrator {
                                                        priorCallSignatures: priorSignatures,
                                                        priorResultsBySignature: priorResults,
                                                        priorPerToolTallies: priorTurnTallies,
+                                                       telemetryContext: telemetryContext,
                                                        continuation: continuation)
                 for (call, payload) in zip(calls, payloads) {
                     messages.append(.init(role: .tool, content: payload, toolCallID: call.id))
@@ -271,6 +350,7 @@ public actor AgenticLoopOrchestrator {
                                priorCallSignatures: [String: Int],
                                priorResultsBySignature: [String: String],
                                priorPerToolTallies: [String: Int],
+                               telemetryContext: AssistantTelemetryContext?,
                                continuation: AsyncThrowingStream<AssistantEvent, Error>.Continuation)
     async throws -> [String] {
         guard let registry = toolRegistry else {
@@ -282,6 +362,14 @@ public actor AgenticLoopOrchestrator {
                 continuation.yield(.toolCallCompleted(id: call.id,
                                                       name: call.function.name,
                                                       resultJSON: payload))
+                if let telemetryContext {
+                    let canonical = Self.canonicalToolName(call.function.name, toolsByName: toolsByName)
+                    await emitTelemetry(.toolCallCompleted(context: telemetryContext,
+                                                           toolName: canonical,
+                                                           status: .failure,
+                                                           errorKind: .unknown,
+                                                           durationMs: nil))
+                }
             }
             return calls.map { _ in #"{"error":"No tool registry is configured for this client."}"# }
         }
@@ -313,6 +401,14 @@ public actor AgenticLoopOrchestrator {
                 continuation.yield(.toolCallCompleted(id: call.id,
                                                       name: call.function.name,
                                                       resultJSON: payload))
+                if let telemetryContext {
+                    let canonical = Self.canonicalToolName(call.function.name, toolsByName: toolsByName)
+                    await emitTelemetry(.toolCallCompleted(context: telemetryContext,
+                                                           toolName: canonical,
+                                                           status: .failure,
+                                                           errorKind: .validationError,
+                                                           durationMs: nil))
+                }
                 resolvedResults[index] = payload
                 continue
             }
@@ -349,6 +445,13 @@ public actor AgenticLoopOrchestrator {
                 continuation.yield(.toolCallCompleted(id: call.id,
                                                       name: call.function.name,
                                                       resultJSON: payload))
+                if let telemetryContext {
+                    await emitTelemetry(.toolCallCompleted(context: telemetryContext,
+                                                           toolName: "unknown",
+                                                           status: .failure,
+                                                           errorKind: .validationError,
+                                                           durationMs: nil))
+                }
                 resolvedResults[index] = payload
                 continue
             }
@@ -377,17 +480,27 @@ public actor AgenticLoopOrchestrator {
                     continuation.yield(.toolCallCompleted(id: call.id,
                                                           name: call.function.name,
                                                           resultJSON: payload))
+                    if let telemetryContext {
+                        let canonical = Self.canonicalToolName(call.function.name, toolsByName: toolsByName)
+                        await emitTelemetry(.toolCallCompleted(context: telemetryContext,
+                                                               toolName: canonical,
+                                                               status: .failure,
+                                                               errorKind: .cancelled,
+                                                               durationMs: nil))
+                    }
                     resolvedResults[index] = payload
                 }
             }
         }
 
         if !approvedIndices.isEmpty {
+            var startTimesByIndex: [Int: Int64] = [:]
             for index in approvedIndices {
                 let call = calls[index]
                 continuation.yield(.toolCallStarted(id: call.id,
                                                     name: call.function.name,
                                                     argumentsJSON: call.function.arguments))
+                startTimesByIndex[index] = clock.nowMs()
             }
             // withTaskGroup (not throwing) so a single tool failure no longer
             // tears down sibling tasks. Errors from the registry get folded
@@ -409,6 +522,14 @@ public actor AgenticLoopOrchestrator {
                                                         for: call,
                                                         continuation: continuation)
                     resolvedResults[index] = payload
+                    if let telemetryContext, let startMs = startTimesByIndex[index] {
+                        let duration = max(0, clock.nowMs() - startMs)
+                        await emitToolDecisionTelemetry(result: result,
+                                                        call: call,
+                                                        durationMs: duration,
+                                                        telemetryContext: telemetryContext,
+                                                        toolsByName: toolsByName)
+                    }
                 }
             }
         }

@@ -384,7 +384,7 @@ public actor WooAssistantHeadless {
             case .failed(let error):
                 result.failureMessage = error.message
 
-            case .completed:
+            case .completed, .terminated:
                 break
             }
         }

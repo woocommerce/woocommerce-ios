@@ -3,6 +3,7 @@
 24.8
 -----
 - [*] Customer details: fixed bugs in form when adding a customer on iPad [https://github.com/woocommerce/woocommerce-ios/pull/17074]
+- [*] Introducing the AI Assistant: a new way to run your store from your pocket. Rolling out to selected stores. [https://github.com/woocommerce/woocommerce-ios/pull/17163]
 
 24.7
 -----

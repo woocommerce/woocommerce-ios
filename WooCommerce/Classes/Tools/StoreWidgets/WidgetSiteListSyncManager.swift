@@ -207,16 +207,7 @@ private extension WidgetSiteListSyncManager {
 
     func currencySettingsBySiteID() -> [Int64: CurrencySettings] {
         let settingsBySiteID = Dictionary(grouping: siteSettingsResultsController.fetchedObjects, by: \.siteID)
-        return settingsBySiteID.compactMapValues { settings in
-            currencySettings(from: settings)
-        }
-    }
-
-    /// Returns `CurrencySettings` only when all keys required by the widget formatter are present
-    /// for this site; otherwise returns `nil` so the widget can fall back to the default site's
-    /// currency settings at render time.
-    func currencySettings(from siteSettings: [SiteSetting]) -> CurrencySettings? {
-        CurrencySettings.completeSettings(siteSettings: siteSettings)
+        return settingsBySiteID.compactMapValues(CurrencySettings.completeSettings(siteSettings:))
     }
 
     func removeCachedCurrencySettingsForAuthoritativeSites(_ sites: [WidgetSite]) {

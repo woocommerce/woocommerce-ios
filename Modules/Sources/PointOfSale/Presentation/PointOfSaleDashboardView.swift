@@ -271,7 +271,6 @@ struct PointOfSaleDashboardView: View {
         )
     }
 
-    @State private var phoneShowingCart: Bool = false
     @State private var phoneShowOrders: Bool = false
 
     private var phoneOverflowMenu: some View {

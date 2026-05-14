@@ -186,16 +186,21 @@ extension POSPaymentModel {
         subscribeToPaymentSessionEvents()
 
         if preferredConnectionMethod == .tapToPay {
-            // Phone POS with TTP available: TTP-only product scope (initial
-            // prototype release). BT is removed from the merchant-reachable
-            // UI on this path, so the BT auto-resume branch that used to live
-            // here is no longer needed — there's no way for the merchant to
-            // have committed to BT in the first place. The BT auto-resume code
-            // (and related state-machine paths) stays dormant in this file
-            // for a future re-introduction once the state-machine refactor
-            // lands; the gate at the UI level is the source of truth for
-            // "BT is not available on phone POS for now."
-            //
+            // One-shot Bluetooth cleanup. Each new order on phone POS
+            // returns to the TTP hero — we do **not** auto-resume Bluetooth
+            // across orders, even if the BT reader is still attached from
+            // the previous transaction. If a merchant wants BT for the next
+            // order, they re-pick "Card reader" from the Other payment
+            // methods sheet. This deliberately keeps the state machine
+            // simple: every checkout entry begins from a clean TTP-pre-
+            // connect baseline, eliminating the mid-flow auto-resume and
+            // method-switch surface that produced the foundReader race +
+            // state-drift issues in earlier iterations.
+            if lastConnectedMethod == .bluetooth,
+               case .connected = cardReaderConnectionStatus {
+                DDLogInfo("🃏 [CardPayment] Phone POS one-shot BT: dropping BT reader before TTP pre-connect")
+                await cardPresentPaymentService.disconnectReader()
+            }
             // Awaiting an explicit method tap from the hero / sheet — leave the
             // gate true so transient Stripe events during pre-connect can't
             // advance the state machine. No `currentPaymentMethod` yet — the
@@ -248,6 +253,20 @@ extension POSPaymentModel {
         if let active = currentPaymentMethod, active != method {
             DDLogInfo("🃏 [CardPayment] startPaymentWithMethod switching \(active) -> \(method) — cancelling current payment first")
             try? await cardPresentPaymentService.cancelPayment()
+        }
+
+        // When switching to Bluetooth from a TTP-pre-connect-in-flight state
+        // (merchant tapped Card reader before the silent pre-connect had
+        // settled), **wait** for the pre-connect Task to finish before
+        // starting the BT scan. Crucially this is a wait, not a cancel —
+        // letting the SDK complete its in-flight `connectReader(.tapToPay)`
+        // cleanly avoids the foundReader race where a still-tearing-down
+        // TTP reader briefly appears in the subsequent BT discovery results
+        // (the "Found [hex]" flash we kept hitting). Cost: ~1-2s of perceived
+        // latency if the merchant taps Card reader very early on entry.
+        if method == .bluetooth, let task = tapToPayConnectTask {
+            DDLogInfo("🃏 [CardPayment] BT pick waiting for in-flight TTP pre-connect to finish")
+            _ = await task.value
         }
 
         if method == .tapToPay {

@@ -653,11 +653,7 @@ private extension TotalsView {
         if isTapToPayAvailable {
             methods.append(.tapToPay)
         }
-        // On phone POS with TTP available we drop Bluetooth from the
-        // prototype's initial scope (see `isCardReaderRowAvailableInOtherMethodsSheet`
-        // for the rationale). Keep `.cardReader` only on iPad and on TTP-
-        // ineligible phones where BT is the lone card path.
-        if isReaderDisconnected && paymentModel.preferredConnectionMethod != .tapToPay {
+        if isReaderDisconnected {
             methods.append(.cardReader)
         }
         methods.append(.cashPayment)
@@ -716,24 +712,20 @@ private extension TotalsView {
         guard displayPaymentState.scanToPay == .idle && displayPaymentState.markAsPaid == .idle else { return false }
         guard case .loaded(let totals) = posModel.orderState else { return false }
         guard !totals.orderTotalDecimal.isZero else { return false }
-        // On phone POS with TTP available (`preferredConnectionMethod == .tapToPay`)
-        // we've dropped Bluetooth from the prototype's initial scope, so any
-        // residual BT state in `currentPaymentMethod` / `lastConnectedMethod`
-        // — e.g. from prior testing / dogfood builds before the drop —
-        // shouldn't suppress the hero. TTP is the only reachable card path
-        // and the hero should always surface on idle.
-        guard paymentModel.preferredConnectionMethod != .tapToPay else {
-            return true
-        }
-        // iPad / TTP-ineligible phones: suppress the TTP hero only when
-        // **BT is currently `.connected`**. That covers the BT-ready / BT-
-        // auto-resume scenarios where the merchant has committed to a reader
-        // that's actually attached. In every other reader state — `.disconnected`,
-        // `.reconnecting`, `.disconnecting`, `.cancellingConnection` — BT is
-        // unreachable and the merchant should see the TTP hero (where TTP is
-        // even available — note this whole method already returned false at
-        // the top when TTP isn't available, so on iPad we never reach this
-        // path anyway).
+        // Suppress the TTP hero only when **BT is currently `.connected`**.
+        // That covers the BT-ready / BT-collecting scenarios where the
+        // merchant has explicitly picked Card reader from the sheet and we
+        // want the BT screen (`PaymentViewContent`) on top, not the TTP
+        // hero. In every other reader state — `.disconnected`, `.reconnecting`,
+        // `.disconnecting`, `.cancellingConnection` — BT is unreachable and
+        // the merchant should see the TTP hero.
+        //
+        // The one-shot BT model relies on this: a BT drop mid-flow (status
+        // → `.reconnecting` or `.disconnected`) naturally exposes the TTP
+        // hero as the alternative path. When the merchant taps Done after a
+        // BT success, the next `startPayment()` invocation disconnects the
+        // BT reader and pre-connects TTP, returning the merchant to the TTP
+        // hero for the next order.
         if case .connected = paymentModel.cardReaderConnectionStatus,
            paymentModel.currentPaymentMethod == .bluetooth || paymentModel.lastConnectedMethod == .bluetooth {
             return false
@@ -811,24 +803,27 @@ private extension TotalsView {
     /// `.connected` — only `currentPaymentMethod` distinguishes
     /// "merchant committed to BT" from "TTP reader is warm."
     var isCardReaderRowAvailableInOtherMethodsSheet: Bool {
-        // On phone POS with Tap to Pay on iPhone available
-        // (`preferredConnectionMethod == .tapToPay`) we drop Bluetooth from
-        // the prototype's initial scope. TTP + Cash + Scan to Pay + Mark as
-        // Paid is the complete set; merchants who need BT use iPad. The BT
-        // code paths in `POSPaymentModel` stay in place (dormant) for a
-        // future re-introduction once the state-machine refactor lands.
-        if paymentModel.preferredConnectionMethod == .tapToPay { return false }
-        return paymentModel.currentPaymentMethod != .bluetooth
+        // One-shot Bluetooth re-introduction model:
+        //   - From the TTP hero (no active session): Card reader is offered as
+        //     an explicit opt-in.
+        //   - During a Bluetooth collection (`currentPaymentMethod == .bluetooth`):
+        //     Card reader is hidden (no re-pick mid-flow, no method-switch
+        //     state-machine complexity).
+        // After a Bluetooth session ends (success or abandonment), the next
+        // `startPayment()` invocation disconnects the BT reader and pre-
+        // connects TTP, returning the merchant to the TTP hero. The Card
+        // reader option reappears there for the next order if they want
+        // Bluetooth again.
+        paymentModel.currentPaymentMethod != .bluetooth
     }
 
-    /// True when the Tap to Pay on iPhone row should appear inside the Other
-    /// Payment Methods sheet. Hidden on the TTP hero (it's already the
-    /// primary CTA up top) and during an active TTP session (already on it).
-    /// Visible during BT flows so the merchant can switch over.
+    /// One-shot Bluetooth model: TTP is never offered from the Other Payment
+    /// Methods sheet. On the TTP hero, TTP is already the primary CTA at the
+    /// top. During a Bluetooth collection, switching to TTP mid-flow is
+    /// explicitly out of scope — the BT session must finish (or be
+    /// abandoned) before the merchant returns to the TTP hero. Always false.
     var isTapToPayRowAvailableInOtherMethodsSheet: Bool {
-        guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
-        if useTapToPayHeroLayout { return false }
-        return paymentModel.currentPaymentMethod != .tapToPay
+        false
     }
 
     func handleTapToPayTapped() {

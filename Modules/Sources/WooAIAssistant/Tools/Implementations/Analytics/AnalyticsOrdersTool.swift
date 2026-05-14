@@ -94,7 +94,7 @@ public enum AnalyticsOrdersTool {
                                  kind: .invalidToolCall,
                                  reason: "compare_to must be previous_period"))
         }
-        guard let bounds = AnalyticsDateBounds.bounds(start: args.after, end: args.before) else {
+        guard let bounds = RESTDateBounds.bounds(start: args.after, end: args.before) else {
             return .failed(.init(toolName: name,
                                  kind: .invalidToolCall,
                                  reason: "after and before must be YYYY-MM-DD"))
@@ -168,10 +168,10 @@ public enum AnalyticsOrdersTool {
     private static func comparisonInputs(args: Args,
                                          interval: String,
                                          client: WCRESTClient) async -> AnalyticsStatsSummary.ComparisonInputs {
-        guard let previousRange = AnalyticsDateBounds.previousPeriodBounds(after: args.after,
-                                                                           before: args.before),
-              let previousBounds = AnalyticsDateBounds.bounds(start: previousRange.after,
-                                                              end: previousRange.before) else {
+        guard let previousRange = RESTDateBounds.previousPeriodBounds(after: args.after,
+                                                                      before: args.before),
+              let previousBounds = RESTDateBounds.bounds(start: previousRange.after,
+                                                         end: previousRange.before) else {
             return AnalyticsStatsSummary.ComparisonInputs(
                 interval: interval,
                 previousPeriodPartial: true,

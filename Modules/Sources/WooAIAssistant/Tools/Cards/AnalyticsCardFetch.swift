@@ -8,7 +8,7 @@ struct AnalyticsCardFetch: Sendable {
     }
 
     func fetch(_ spec: AnalyticsCardSpec) async -> CardFetchOutcome {
-        guard let bounds = AnalyticsDateBounds.bounds(start: spec.after, end: spec.before) else {
+        guard let bounds = RESTDateBounds.bounds(start: spec.after, end: spec.before) else {
             return .rejected(.malformed)
         }
         var query: [String: String] = [

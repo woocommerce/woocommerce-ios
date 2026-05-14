@@ -1,6 +1,6 @@
 import Foundation
 
-enum AnalyticsDateBounds {
+enum RESTDateBounds {
     /// wc-analytics expects ISO-8601 with day boundaries; `after` is inclusive
     /// at midnight, `before` is inclusive at end-of-day, matching how the
     /// Woo dashboard scopes "today's revenue" against the same endpoint.

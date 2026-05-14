@@ -94,7 +94,7 @@ struct ToolActivityCarousel: View {
         ToolCallSnapshot(id: UUID(), toolName: "orders_list", status: .running),
         ToolCallSnapshot(id: UUID(), toolName: "products_list", status: .running),
         ToolCallSnapshot(id: UUID(), toolName: "customers_list", status: .running),
-        ToolCallSnapshot(id: UUID(), toolName: "analytics_revenue", status: .running)
+        ToolCallSnapshot(id: UUID(), toolName: "analytics_orders", status: .running)
     ])
     .padding()
 }
@@ -102,7 +102,7 @@ struct ToolActivityCarousel: View {
 #Preview("All completed") {
     ToolActivityCarousel(snapshots: [
         ToolCallSnapshot(id: UUID(), toolName: "orders_list", status: .completed(summary: nil)),
-        ToolCallSnapshot(id: UUID(), toolName: "analytics_revenue", status: .completed(summary: nil))
+        ToolCallSnapshot(id: UUID(), toolName: "analytics_orders", status: .completed(summary: nil))
     ])
     .padding()
 }

@@ -30,24 +30,28 @@ struct CardReferenceResolver: Sendable {
                 }
                 seen.insert(key)
                 analyticsSlots.append(AnalyticsFetchSlot(slot: index, id: reference.id, spec: spec))
-            case .order, .product, .productVariation, .customer:
+            case .productVariation:
+                // The variation id is the combined `{parentProductId}/{variationId}`
+                // form; split it so the nested fetch has both halves.
+                guard let combined = Self.parseCombinedVariationID(reference.id) else {
+                    resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .malformed)
+                    continue
+                }
+                seen.insert(key)
+                entitySlotsByFamily[reference.family, default: []].append(
+                    EntityFetchSlot(slot: index,
+                                    id: reference.id,
+                                    parsed: combined.variationID,
+                                    parentParsed: combined.parentID)
+                )
+            case .order, .product, .customer:
                 guard let parsed = Int64(reference.id), parsed > 0 else {
                     resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .malformed)
                     continue
                 }
-                var parentParsed: Int64?
-                if reference.family == .productVariation {
-                    guard let parentRaw = reference.parentID,
-                          let parsedParent = Int64(parentRaw),
-                          parsedParent > 0 else {
-                        resolutions[index] = .rejected(family: reference.family, id: reference.id, reason: .malformed)
-                        continue
-                    }
-                    parentParsed = parsedParent
-                }
                 seen.insert(key)
                 entitySlotsByFamily[reference.family, default: []].append(
-                    EntityFetchSlot(slot: index, id: reference.id, parsed: parsed, parentParsed: parentParsed)
+                    EntityFetchSlot(slot: index, id: reference.id, parsed: parsed, parentParsed: nil)
                 )
             }
         }
@@ -134,6 +138,19 @@ struct CardReferenceResolver: Sendable {
         case .rejected(let reason):
             return .rejected(family: family, id: id, reason: reason)
         }
+    }
+
+    /// Splits a `variation` reference id of the form `{parentProductId}/{variationId}`.
+    /// Returns nil for any shape that isn't exactly two positive integers separated
+    /// by a single slash, kept aligned with woocommerce-android's combined id format.
+    static func parseCombinedVariationID(_ id: String) -> (parentID: Int64, variationID: Int64)? {
+        let parts = id.split(separator: "/", omittingEmptySubsequences: false)
+        guard parts.count == 2,
+              let parentID = Int64(parts[0]), parentID > 0,
+              let variationID = Int64(parts[1]), variationID > 0 else {
+            return nil
+        }
+        return (parentID: parentID, variationID: variationID)
     }
 
     // Synthesizes flat fields the UI card row decodes by name, so the renderer

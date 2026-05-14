@@ -16,6 +16,71 @@ struct ProductVariationsListToolTests {
     }
 
     @Test
+    func test_definition_documents_optional_variation_id_for_single_fetch() {
+        // Given
+        let tool = ProductVariationsListTool.make()
+
+        // Then
+        #expect(tool.definition.description.contains("or fetch a single variation"))
+        guard case .object(let schema) = tool.definition.parametersSchema,
+              case .object(let properties) = schema["properties"],
+              case .object(let variationID) = properties["variation_id"] else {
+            Issue.record("expected variation_id property")
+            return
+        }
+        #expect(variationID["type"] == .string("integer"))
+    }
+
+    @Test
+    func test_product_variations_list_when_variation_id_set_then_fetches_single_variation_detail() async throws {
+        // Given
+        let body = """
+        {"id": 1002, "status": "publish", "sku": "BNY-BLK", "price": "25.00",
+         "regular_price": "25.00", "stock_status": "outofstock", "parent_id": 555,
+         "attributes": [{"id": 7, "name": "Color", "option": "Black"}]}
+        """
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = ProductVariationsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"product_id": 555, "variation_id": 1002}"#, client)
+
+        // Then
+        guard case .success(let success) = result else {
+            Issue.record("expected success")
+            return
+        }
+        #expect(success.uiStructured == nil)
+        #expect(await client.calls.first?.path == "wc/v3/products/555/variations/1002")
+        guard case .object(let fields) = success.structured else {
+            Issue.record("expected object structured")
+            return
+        }
+        #expect(fields["id"] == .int(1002))
+        #expect(fields["stock_status"] == .string("outofstock"))
+        // Detail summary mirrors parent_id into product_id and is not a list wrapper.
+        #expect(fields["product_id"] == .int(555))
+        #expect(fields["variations"] == nil)
+    }
+
+    @Test
+    func test_product_variations_list_when_variation_id_set_and_remote_404_then_returns_failed() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 404))
+        let tool = ProductVariationsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"product_id": 555, "variation_id": 9999}"#, client)
+
+        // Then
+        guard case .failed = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(await client.calls.first?.path == "wc/v3/products/555/variations/9999")
+    }
+
+    @Test
     func test_product_variations_list_when_response_is_array_then_summary_carries_parent_id_and_ids() async throws {
         // Given
         let body = """

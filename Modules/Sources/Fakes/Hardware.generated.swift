@@ -81,7 +81,8 @@ extension Hardware.PaymentIntent {
             amount: .fake(),
             currency: .fake(),
             metadata: .fake(),
-            charges: .fake()
+            charges: .fake(),
+            collectedPaymentMethod: nil
         )
     }
 }

@@ -19,6 +19,7 @@ extension PaymentIntent {
         self.currency = intent.currency
         self.metadata = intent.metadata
         self.charges = intent.charges.map { .init(charge: $0) }
+        self.collectedPaymentMethod = PaymentMethod(method: intent.paymentMethod)
     }
 }
 
@@ -35,6 +36,7 @@ protocol StripePaymentIntent {
     var currency: String { get }
     var metadata: [String: String]? { get }
     var charges: [StripeTerminal.Charge] { get }
+    var paymentMethod: StripeTerminal.PaymentMethod? { get }
 }
 
 /// StripePaymentIntent Conformance

@@ -80,7 +80,7 @@ struct ToolActivityCarouselTests {
     func test_displayed_when_all_completed_then_returns_last_snapshot_with_real_status() {
         // Given
         let first = ToolCallSnapshot(id: UUID(), toolName: "orders_list", status: .completed(summary: nil))
-        let last = ToolCallSnapshot(id: UUID(), toolName: "analytics_revenue", status: .completed(summary: "ok"))
+        let last = ToolCallSnapshot(id: UUID(), toolName: "analytics_orders", status: .completed(summary: "ok"))
         let snapshots = [first, last]
 
         // When

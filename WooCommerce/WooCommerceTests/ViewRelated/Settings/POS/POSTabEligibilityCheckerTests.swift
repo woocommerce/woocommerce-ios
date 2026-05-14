@@ -128,7 +128,9 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: country, currency: currency)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               stores: stores)
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService,
+                                               expansionEligibilityService: ineligibleExpansionService)
 
         // When
         let result = await checker.checkEligibility()
@@ -466,7 +468,8 @@ struct POSTabEligibilityCheckerTests {
         (country: Country.es, currency: CurrencyCode.EUR),
         (country: Country.fr, currency: CurrencyCode.EUR),
         (country: Country.sg, currency: CurrencyCode.SGD),
-        (country: Country.nz, currency: CurrencyCode.NZD)
+        (country: Country.nz, currency: CurrencyCode.NZD),
+        (country: Country.au, currency: CurrencyCode.AUD)
     ])
     fileprivate func is_eligible_when_expansion_eligibility_is_enabled(country: Country, currency: CurrencyCode) async throws {
         // Given
@@ -488,11 +491,12 @@ struct POSTabEligibilityCheckerTests {
         Country.de,
         Country.es,
         Country.sg,
-        Country.nz
+        Country.nz,
+        Country.au
     ])
     fileprivate func is_ineligible_when_expansion_eligibility_is_disabled(country: Country) async throws {
         // Given - currencies that would be valid if eligibility were enabled
-        let currency: CurrencyCode = country == .sg ? .SGD : (country == .nz ? .NZD : .EUR)
+        let currency: CurrencyCode = country == .sg ? .SGD : (country == .nz ? .NZD : (country == .au ? .AUD : .EUR))
         setupCountry(country: country, currency: currency)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
@@ -523,21 +527,6 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: .DE, supportedCurrencies: [.EUR])))
     }
 
-    @Test func australia_is_ineligible_even_when_expansion_eligibility_is_enabled() async throws {
-        // Given - Australia is intentionally excluded pending EFTPOS support (RSM-642 / RSM-643)
-        setupCountry(country: .au, currency: .AUD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               expansionEligibilityService: eligibleExpansionService)
-
-        // When
-        let result = await checker.checkEligibility()
-
-        // Then
-        #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
-    }
 }
 
 // MARK: - Test Helper

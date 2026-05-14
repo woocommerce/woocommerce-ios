@@ -74,7 +74,8 @@ extension Hardware.PaymentIntent {
         amount: CopiableProp<UInt> = .copy,
         currency: CopiableProp<String> = .copy,
         metadata: NullableCopiableProp<[String: String]> = .copy,
-        charges: CopiableProp<[Charge]> = .copy
+        charges: CopiableProp<[Charge]> = .copy,
+        collectedPaymentMethod: NullableCopiableProp<PaymentMethod> = .copy
     ) -> Hardware.PaymentIntent {
         let id = id ?? self.id
         let status = status ?? self.status
@@ -83,6 +84,7 @@ extension Hardware.PaymentIntent {
         let currency = currency ?? self.currency
         let metadata = metadata ?? self.metadata
         let charges = charges ?? self.charges
+        let collectedPaymentMethod = collectedPaymentMethod ?? self.collectedPaymentMethod
 
         return Hardware.PaymentIntent(
             id: id,
@@ -91,7 +93,8 @@ extension Hardware.PaymentIntent {
             amount: amount,
             currency: currency,
             metadata: metadata,
-            charges: charges
+            charges: charges,
+            collectedPaymentMethod: collectedPaymentMethod
         )
     }
 }

@@ -9,6 +9,8 @@ import SwiftUI
 /// alongside the title and value.
 ///
 struct MetricTrendBadgeView: View {
+    @Environment(\.storeWidgetTheme) private var theme
+
     let trend: MetricTrendPresentation
     let size: MetricCellTextSize
 
@@ -70,12 +72,16 @@ private extension MetricTrendBadgeView {
 
     var color: Color {
         switch trend.direction {
-        case .up:
-            return Color(red: 0.55, green: 0.88, blue: 0.70)
-        case .down:
-            return Color(red: 0.95, green: 0.65, blue: 0.70)
         case .flat:
             return Color(.systemGray)
+        case .up:
+            return theme.usesSystemAppearance
+                ? Color(.systemGreen)
+                : Color(red: 0.55, green: 0.88, blue: 0.70)
+        case .down:
+            return theme.usesSystemAppearance
+                ? Color(.systemRed)
+                : Color(red: 0.95, green: 0.65, blue: 0.70)
         }
     }
 

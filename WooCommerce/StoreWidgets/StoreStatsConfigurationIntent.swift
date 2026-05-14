@@ -25,6 +25,9 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
     @Parameter(title: "Date Range", default: .today)
     var dateRange: StoreStatsWidgetDateRange
 
+    @Parameter(title: "Theme", default: .brandPurple)
+    var theme: StoreWidgetTheme
+
     /// User-selected metric set, in display order.
     ///
     /// The `size:` map drives iOS's family-aware fixed-slot rendering — small shows 2 metrics,

@@ -705,6 +705,22 @@ private extension TotalsView {
     /// processing / success / error).
     var useTapToPayHeroLayout: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
+        // BT reconnecting + idle card state: on phone POS the merchant has
+        // TTP as an immediate alternative, so we skip the iPad-style
+        // "Reconnecting reader…" wait and surface the TTP hero so they can
+        // take payment right now. If BT later reconnects on its own, the
+        // auto-resume path kicks back in and the BT-ready screen returns.
+        // We gate on idle card state to avoid swapping the screen away from
+        // a payment that's actually mid-collection.
+        if case .reconnecting = paymentModel.cardReaderConnectionStatus,
+           displayPaymentState.card == .idle,
+           displayPaymentState.cash == .idle,
+           displayPaymentState.scanToPay == .idle,
+           displayPaymentState.markAsPaid == .idle,
+           case .loaded(let totals) = posModel.orderState,
+           !totals.orderTotalDecimal.isZero {
+            return true
+        }
         // Suppress only when BT is *currently* the active path — either we're
         // in a BT session (`currentPaymentMethod == .bluetooth`) or a BT
         // reader is still attached from a previous session

@@ -117,16 +117,20 @@ extension StoreWidgetTheme {
 // MARK: - View helpers
 
 extension View {
-    /// Pins the widget body to a fixed `ColorScheme` when the theme demands it (`.light`
-    /// or `.dark`). For themes that follow the system (`.sameAsSystem`, `.brandPurple`)
-    /// this returns the view unchanged so SwiftUI keeps resolving `\.colorScheme` from
-    /// the system trait.
+    /// Applies a `StoreWidgetTheme` to the widget body. Sets the `\.storeWidgetTheme`
+    /// environment value (consumed by our text modifiers, chart, badge, etc.) and pins
+    /// `\.colorScheme` when the theme demands it (consumed by SwiftUI's semantic colors
+    /// — `Color.primary`, `Color(.systemBackground)`, `Color(.systemGreen)`, etc.).
+    ///
+    /// Both side effects are bundled here so call sites don't have to know that the
+    /// theme touches two separate environment keys.
     @ViewBuilder
-    func storeWidgetForcedColorScheme(_ scheme: ColorScheme?) -> some View {
-        if let scheme {
-            environment(\.colorScheme, scheme)
+    func applyingStoreWidgetTheme(_ theme: StoreWidgetTheme) -> some View {
+        if let scheme = theme.forcedColorScheme {
+            environment(\.storeWidgetTheme, theme)
+                .environment(\.colorScheme, scheme)
         } else {
-            self
+            environment(\.storeWidgetTheme, theme)
         }
     }
 }

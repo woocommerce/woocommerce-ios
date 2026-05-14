@@ -36,11 +36,11 @@ struct StoreInfoMetricsView: View {
             }
         }
         // `containerBackground(for: .widget)` (iOS 17+) renders the background view in a
-        // separate environment context, so the theme and color-scheme overrides set on the
-        // foreground hierarchy do not reach it. Push both in explicitly here.
+        // separate environment context, so the theme set on the foreground hierarchy does
+        // not reach it. Re-apply the theme here so the background picks up both the
+        // `\.storeWidgetTheme` value and any forced `\.colorScheme` it implies.
         .widgetBackground(backgroundView: StoreWidgetHomeScreenBackground()
-            .environment(\.storeWidgetTheme, entryData.theme)
-            .storeWidgetForcedColorScheme(entryData.theme.forcedColorScheme))
+            .applyingStoreWidgetTheme(entryData.theme))
         .dynamicTypeSize(.xSmall...StoreInfoDynamicType.maximumSize)
     }
 }

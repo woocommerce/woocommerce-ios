@@ -92,10 +92,8 @@ private struct StoreInfoWidgetEntryView: View {
             // configurable-widgets FF is on, so reaching them implies the metric-driven path.
             // Family-specific layouts are still pending; for now all three render via
             // `StoreInfoHomescreenWidget`'s shared body.
-            let resolvedTheme = theme(for: entry)
             StoreInfoHomescreenWidget(entry: entry)
-                .environment(\.storeWidgetTheme, resolvedTheme)
-                .storeWidgetForcedColorScheme(resolvedTheme.forcedColorScheme)
+                .applyingStoreWidgetTheme(theme(for: entry))
         default:
             EmptyView()
         }

@@ -71,6 +71,11 @@ struct StoreInfoData {
         metricSlots.compactMap(\.concreteMetric)
     }
 
+    /// User-selected color scheme. Drives the background, text colors, logo tint, and
+    /// chart palette via `StoreWidgetTheme`.
+    ///
+    var theme: StoreWidgetTheme
+
     init(range: String,
          name: String,
          revenue: String,
@@ -81,7 +86,8 @@ struct StoreInfoData {
          updatedTime: String,
          metrics: [StoreInfoMetric] = [],
          metricSlots: [StoreInfoMetricSlot]? = nil,
-         dateRange: StoreStatsWidgetDateRange? = nil) {
+         dateRange: StoreStatsWidgetDateRange? = nil,
+         theme: StoreWidgetTheme = .default) {
         self.range = range
         self.name = name
         self.revenue = revenue
@@ -92,6 +98,7 @@ struct StoreInfoData {
         self.updatedTime = updatedTime
         self.metricSlots = metricSlots ?? metrics.map { .metric($0) }
         self.dateRange = dateRange
+        self.theme = theme
     }
 
     /// Used to build per-cell deep-link URLs. `nil` for surfaces without a configured range
@@ -154,7 +161,8 @@ final class StoreInfoProvider: TimelineProvider {
             metrics: Self.resolveMetricSelection(
                 requested: configuration.metrics,
                 family: context.family
-            )
+            ),
+            theme: configuration.theme
         )
     }
 
@@ -181,7 +189,8 @@ final class StoreInfoProvider: TimelineProvider {
     func loadTimeline(
         dateRange: StoreStatsWidgetDateRange,
         metrics: [StoreInfoMetricType],
-        selectedStoreID: StoreStatsStoreEntity.ID? = nil
+        selectedStoreID: StoreStatsStoreEntity.ID? = nil,
+        theme: StoreWidgetTheme = .default
     ) async -> Timeline<StoreInfoEntry> {
         guard let dependencies = Self.fetchDependencies(selectedStoreID: selectedStoreID) else {
             return Timeline<StoreInfoEntry>(entries: [.notConnected], policy: .never)
@@ -198,7 +207,8 @@ final class StoreInfoProvider: TimelineProvider {
                 for: statsPeriod,
                 dateRange: dateRange,
                 with: dependencies,
-                metrics: metrics
+                metrics: metrics,
+                theme: theme
             )
             return Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
         } catch {
@@ -429,7 +439,8 @@ private extension StoreInfoProvider {
     static func placeholderEntry(
         for dependencies: Dependencies?,
         dateRange: StoreStatsWidgetDateRange = .today,
-        metrics: [StoreInfoMetricType] = legacyMetricsPreset
+        metrics: [StoreInfoMetricType] = legacyMetricsPreset,
+        theme: StoreWidgetTheme = .default
     ) -> StoreInfoEntry {
         let currencySettings = dependencies?.store.storeCurrencySettings ?? CurrencySettings()
         let sample = StoreInfoDataService.Stats.placeholderSample
@@ -457,7 +468,8 @@ private extension StoreInfoProvider {
             orders: "\(sample.totalOrders)",
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
-            metricSlots: metricSlots
+            metricSlots: metricSlots,
+            theme: theme
         ))
     }
 
@@ -473,7 +485,8 @@ private extension StoreInfoProvider {
     static func dataEntry(for statsPeriod: StoreInfoDataService.StatsPeriod,
                           dateRange: StoreStatsWidgetDateRange,
                           with dependencies: Dependencies,
-                          metrics: [StoreInfoMetricType]) -> StoreInfoEntry {
+                          metrics: [StoreInfoMetricType],
+                          theme: StoreWidgetTheme = .default) -> StoreInfoEntry {
         let currencySettings = dependencies.store.storeCurrencySettings
         let stats = statsPeriod.current
         let previousStats = statsPeriod.previous
@@ -512,7 +525,8 @@ private extension StoreInfoProvider {
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
             metricSlots: metricSlots,
-            dateRange: dateRange
+            dateRange: dateRange,
+            theme: theme
         ))
     }
 

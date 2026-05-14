@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-05-05 16:56:42+0000 */
+/* Translation-Revision-Date: 2026-05-13 16:58:06+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -9831,6 +9831,24 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
 "cardReaderSettingsConnectedViewController.reconnectingText" = "جارٍ إعادة الاتصال بقارئ البطاقات...";
 
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "الإلغاء";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "التأكيد والاستمرار";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "حدث خطأ غير متوقع عند تأكيد موافقتك. يُرجى المحاولة مجددًا.";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "حدث خطأ أثناء تأكيد الموافقة";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "إعادة المحاولة";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "الشحن من";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "تسجيل تفاصيل المعاملات في مذكرة الطلب";
 
@@ -9980,6 +9998,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "لا تفوّت أي طلب جديد";
+
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "الدردشة مع فريق الدعم";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "حل مشكلات الاتصال";
@@ -10585,6 +10606,15 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "إخفاء هذا المحتوى";
 
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "لشراء ملصقات شحن FedEx، يجب الموافقة على الشروط التالية:";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "شروط خدمة FedEx";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "شروط خدمة FedEx";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "تطبيق";
 
@@ -10818,6 +10848,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "لا يحتوي القارئ الذي تم إرجاعه من الاكتشاف على عنوان IP ولا يمكن ربطه به.";
+
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "احصل على المساعدة من مساعد الذكاء الاصطناعي لدينا";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "الدردشة مع فريق الدعم";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "راجع المحادثات السابقة مع فريق الدعم";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "سجل الدردشة";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "اختبر توافق موقعك مع التطبيق";
@@ -11643,6 +11685,36 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "تحرير";
 
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "احتساب الطلبات بناءً على التاريخ الذي تم فيه تحديدها كمكتملة.";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "طلبات مكتملة";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "اختر الطلبات التي تريد تضمينها في مقاييس الأداء ضمن النطاق الزمني المحدد.";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "هذا إعداد على مستوى المتجر، الذي يتحكم أيضًا في خيار \"نوع التاريخ\" في إعدادات تحليلات مسؤول WooCommerce.";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "احتساب الطلبات بناءً على تاريخ دفع الطلب.";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "الطلبات المدفوعة";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "احتساب الطلبات بناءً على تاريخ تقديمها أو إنشائها.";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "الطلبات المُقدَّمة";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "نوع تاريخ الطلب";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "يتعذر علينا تحديد الطلب. يُرجى المحاولة مجددًا.";
+
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "تحديث %1$@";
 
@@ -12342,6 +12414,33 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "المتجر";
 
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "إضافة مبلغ مخصص";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "المبلغ";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "فرض الضرائب";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "مبلغ مخصص";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "الاسم";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "مبلغ مخصص";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "مبلغ مخصص";
+
+/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.message" = "انقر هنا لإضافة رسوم خدمة، أو إكرامية، أو أي بند مخصص إلى الطلب.";
+
+/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.title" = "أضف مبلغًا مخصصًا";
+
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "مسح الرمز الشريطي";
 
@@ -12512,6 +12611,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "إعدادات WooCommerce";
+
+/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
+"pos.cartView.addCustomAmount.header.accessibilityLabel" = "إضافة مبلغ مخصص";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "النقر على منتج من أجل \n إضافته إلى عربة التسوق، أو ";
@@ -12762,11 +12864,17 @@ which should be translated separately and considered part of this sentence. */
 /* Description for refund via a specific payment method. %@ is the payment method name */
 "pos.orderListController.refund.viaPaymentMethodFormat" = "بواسطة %@";
 
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "تحديث";
+
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "لم نتمكن من العثور على أي طلبات تحمل هذا الاسم. حاول ضبط مصطلح البحث.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "لم يتم العثور على طلبات";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle.3" = "ستظهر الطلبات هنا بمجرد أن تبدأ بمعالجة المبيعات عبر نظام نقاط البيع (POS).";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "لا توجد طلبات حتى الآن";
@@ -13898,8 +14006,23 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "لا توجد إيرادات للتواريخ المحددة";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "يفتح نافذة سفلية لتغيير الطلبات المضمنة في إجماليات الأداء الخاصة بك.";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "الطلبات";
+
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "نوع الإيرادات";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "الإجمالي";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "الصافي";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "الإجمالي";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "يتعذر عرض أداء متجرك";
@@ -13974,6 +14097,15 @@ which should be translated separately and considered part of this sentence. */
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "الزائرون";
 
+/* Average order value (AOV) metric title for the store info widget. */
+"storeWidgets.metric.averageOrderValue" = "متوسط قيمة الطلب";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "العناصر المباعة";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "صافي المبيعات";
+
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "تسجيل الدخول";
 
@@ -14032,6 +14164,144 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "تجربة مجانية";
 
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "دردشة من دون عنوان";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "لم تبدأ أي دردشة مع فريق الدعم حتى الآن.";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "سجل الدردشة";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "الدردشة مع فريق الدعم";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "اكتملت جميع عمليات الفحص دون اكتشاف أي مشاكل.";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "التواصل مع فريق الدعم";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "متابعة إلى الدردشة";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "اكتمل التشخيص";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "خطأ";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "يبدو أنك قد تحتاج إلى مزيد من المساعدة. هل ترغب في التواصل مع فريق الدعم لدينا؟";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "مرحبًا! أنا روبوت دعم Woo Mobile الخاص بك. ما الذي تواجه مشكلة معه اليوم؟";
+
+/* OK button in support chat error alert */
+"supportChatView.ok" = "موافق";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "اكتب رسالة…";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "متابعة المحادثة السابقة";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "جارٍ تشغيل التشخيص...";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "الدردشة مع فريق الدعم";
+
+/* Error message shown when sending a support chat message fails */
+"supportChatViewModel.errorMessage" = "حدث خطأ ما. يُرجى المحاولة مجددًا.";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "مرحبًا! أنا روبوت دعم Woo Mobile الخاص بك. هل هناك أي شيء يمكنني مساعدتك به اليوم؟";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "يُرجى وصف مشكلتك بمزيد من التفاصيل حتى أتمكن من مساعدتك.";
+
+/* Error message shown when loading a prior support chat transcript fails on resume */
+"supportChatViewModel.resumeErrorMessage" = "يتعذر علينا تحميل المحادثة السابقة. لا يزال بإمكانك إرسال رسالة جديدة.";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "تمكين التحليلات";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "تمكين تنبيهات الطلبات";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "فتح الإعدادات";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "تسجيل الجهاز";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "إعادة المحاولة";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "إعداد Jetpack";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "تعذر علينا التحقق من إعداد التحليلات لديك.";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "لم يتم تمكين WooCommerce Analytics على متجرك.\n\nلن تتوفر بيانات التحليلات مثل إحصاءات الإيرادات والطلبات حتى يتم تمكينها.";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "يتعذر علينا العمل بشكل صحيح بسبب استجابة موقعك.";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "لا يبدو أن جهازك مسجل لتلقي تنبيهات فورية.";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "يبدو أن هناك مشكلة في موقعك.\n\nيُرجى الاتصال بمزود الخدمة الخاص بك للحصول على مزيد من المساعدة.";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "يبدو أن إضافة Jetpack غير مفعَّلة على موقعك.\n\nتتطلب التنبيهات الفورية اتصالاً نشطًا بـ Jetpack.";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "يبدو أنك غير متصل بالإنترنت.\n\nتأكد من تشغيل شبكة Wi-Fi الخاصة بك. إذا كنت تحاول استخدام بيانات الهاتف المحمول، تأكّد أولاً من أنها مفعَّلة في إعدادات جهازك.";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "هناك مشكلة في محاولة اتصالك بـ Jetpack.";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "تعذر علينا التحقق من إعدادات التنبيهات الخاصة بك.";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "لا يسمح بالتنبيهات الفورية لهذا التطبيق.\n\nقم بتمكينها في إعدادات جهازك لتلقي تنبيهات الطلبات.";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "لم يتم تمكين تنبيهات الطلب لهذا المتجر.\n\nقم بتمكينها لتلقي تنبيهات عند ظهور طلبات جديدة.";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "يستغرق موقعك وقتًا طويلاً للغاية للاستجابة.\n\nيُرجى الاتصال بمزود الخدمة الخاص بك للحصول على مزيد من المساعدة.";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "يتعذر علينا الاتصال بـ WordPress.com الآن.\n\nيُرجى المحاولة مرة أخرى بعد بضع دقائق.";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "جارٍ التحقق من إعداد التحليلات";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "الاتصال بالإنترنت";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "جارٍ إحضار المنتجات في متجرك";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "جارٍ التحقق من إعدادات التنبيهات";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "جارٍ الاتصال بموقعك";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "جارٍ إحضار طلبات موقعك";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "الاتصال بخوادم WordPress.com";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "حصلت عليه";
 
@@ -14067,6 +14337,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WooPayments support area option */
 "supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "جارٍ تحميل التحليلات";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "جارٍ تحميل الطلبات";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "جارٍ تحميل المنتجات";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "أخرى";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "جارٍ تلقي تنبيهات فورية";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "تقرير حالة النظام";

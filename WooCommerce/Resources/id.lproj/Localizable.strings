@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-21 09:57:45+0000 */
+/* Translation-Revision-Date: 2026-05-13 16:54:10+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -9828,6 +9828,24 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
 "cardReaderSettingsConnectedViewController.reconnectingText" = "Menyambungkan kembali ke pembaca kartu...";
 
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "Batalkan";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "Konfirmasi dan lanjutkan";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "Terjadi error tak terduga saat mengonfirmasi penerimaan Anda. Coba lagi.";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "Error dalam mengonfirmasi penerimaan";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "Coba lagi";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "Pengiriman dari";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "Catat detail transaksi dalam catatan pesanan";
 
@@ -9977,6 +9995,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "Jangan lewatkan pesanan baru";
+
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "Obrolan dengan Dukungan";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Memecahkan Masalah Koneksi";
@@ -10582,6 +10603,18 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "Sembunyikan konten ini";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "Saya menyetujui %1$@.";
+
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "Untuk membeli label pengiriman FedEx, Anda harus menyetujui syarat berikut:";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "Ketentuan Layanan FedEx";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "Ketentuan Layanan FedEx";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "Terapkan";
 
@@ -10815,6 +10848,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Perangkat pembaca ditemukan, tetapi tidak memiliki alamat IP dan tidak dapat terhubung.";
+
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "Dapatkan bantuan dari asisten AI kami";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "Obrolan dengan Dukungan";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "Buka percakapan dukungan sebelumnya";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "Riwayat Obrolan";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "Uji apakah situs Anda bisa bekerja dengan aplikasi";
@@ -11640,6 +11685,36 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "Edit";
 
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "Hitung jumlah pesanan pada tanggal saat pesanan ditandai selesai.";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "Pesanan selesai";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "Pilih pesanan yang akan disertakan dalam metrik performa untuk rentang waktu yang dipilih.";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "Ini adalah pengaturan di seluruh toko, yang juga mengontrol pilihan \"Jenis tanggal\" di pengaturan analitik admin WooCommerce.";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "Hitung jumlah pesanan pada tanggal saat pesanan dibayar.";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "Pesanan dibayar";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "Hitung jumlah pesanan pada tanggal saat pesanan dibuat.";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "Pesanan yang dibuat";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "Jenis tanggal pesanan";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "Tidak dapat memperbarui jenis pesanan. Coba lagi.";
+
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "Perbarui %1$@";
 
@@ -12339,6 +12414,33 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Toko";
 
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "Tambahkan jumlah kustom";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "Jumlah";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "Kena pajak";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "Jumlah kustom";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "Nama";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "Jumlah kustom";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "Jumlah kustom";
+
+/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.message" = "Ketuk di sini untuk menambahkan biaya layanan, tip, atau baris khusus lainnya untuk pesanan.";
+
+/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.title" = "Tambahkan Jumlah kustom";
+
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Pemindaian barcode";
 
@@ -12509,6 +12611,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "Pengaturan WooCommerce";
+
+/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
+"pos.cartView.addCustomAmount.header.accessibilityLabel" = "Tambahkan jumlah kustom";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Ketuk produk untuk \n menambahkannya ke keranjang, atau ";
@@ -12759,11 +12864,17 @@ which should be translated separately and considered part of this sentence. */
 /* Description for refund via a specific payment method. %@ is the payment method name */
 "pos.orderListController.refund.viaPaymentMethodFormat" = "Melalui %@";
 
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "Segarkan";
+
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "Kami tidak menemukan pesanan dengan nama tersebut. Coba ganti istilah pencarian.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Tidak ada pesanan";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle.3" = "Pesanan akan muncul di sini setelah Anda mulai memproses penjualan melalui POS.";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "Belum ada pesanan";
@@ -13895,8 +14006,23 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "Tidak ada pendapatan untuk tanggal terpilih";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "Membuka lembar bawah untuk mengubah pesanan yang disertakan dalam total performa.";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Pesanan";
+
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "Jenis pendapatan";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "Bruto";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "Neto";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "Total";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Performa toko Anda tidak dapat ditampilkan";
@@ -13971,6 +14097,15 @@ which should be translated separately and considered part of this sentence. */
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "Pengunjung";
 
+/* Average order value (AOV) metric title for the store info widget. */
+"storeWidgets.metric.averageOrderValue" = "Nilai pesanan rata-rata";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "Item terjual";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "Penjualan bersih";
+
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "Login";
 
@@ -14029,6 +14164,144 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Percobaan gratis";
 
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "Obrolan tanpa judul";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "Anda belum mengobrol dengan dukungan.";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "Riwayat Obrolan";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "Obrolan dengan Dukungan";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "Semua pemeriksaan selesai tanpa kendala.";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "Hubungi Dukungan";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "Lanjutkan ke Obrolan";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "Diagnostik Selesai";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "Error";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "Sepertinya Anda perlu bantuan tambahan. Ingin menghubungi tim dukungan?";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "Halo! Saya adalah Bot Dukungan Seluler Woo. Masalah apa yang Anda alami?";
+
+/* OK button in support chat error alert */
+"supportChatView.ok" = "Oke";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "Ketik pesan…";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "Melanjutkan percakapan sebelumnya";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "Menjalankan diagnostik...";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "Obrolan dengan Dukungan";
+
+/* Error message shown when sending a support chat message fails */
+"supportChatViewModel.errorMessage" = "Terjadi masalah. Coba lagi.";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "Halo! Saya adalah Bot Dukungan Seluler Woo. Ada yang bisa kami bantu hari ini?";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "Jelaskan masalahnya secara lebih terperinci agar saya bisa membantu.";
+
+/* Error message shown when loading a prior support chat transcript fails on resume */
+"supportChatViewModel.resumeErrorMessage" = "Kami tidak dapat memuat percakapan sebelumnya. Anda masih dapat mengirimkan pesan baru.";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "Aktifkan Analitik";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "Aktifkan Pemberitahuan Pesanan";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "Buka Pengaturan";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "Daftarkan Perangkat";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "Coba lagi";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "Siapkan Jetpack";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "Kami tidak dapat memeriksa pengaturan analitik Anda.";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "WooCommerce Analytics tidak diaktifkan di toko Anda.\n\nData analitik seperti pendapatan dan statistik pesanan tidak akan tersedia sebelum diaktifkan.";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "Kami tidak dapat menangani respons situs Anda.";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "Perangkat Anda sepertinya tidak terdaftar untuk pemberitahuan push.";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "Situs Anda tampaknya mengalami masalah.\n\nHubungi penyedia hosting Anda untuk mendapatkan bantuan lebih lanjut.";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "Plugin Jetpack sepertinya tidak aktif di situs Anda.\n\nPemberitahuan push memerlukan koneksi Jetpack aktif.";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "Tampaknya Anda tidak terhubung ke internet.\n\nPastikan Wi-Fi Anda aktif. Jika Anda menggunakan data seluler, aktifkan di pengaturan perangkat Anda.";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "Terjadi masalah dengan koneksi Jetpack.";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "Kami tidak dapat memeriksa pengaturan pemberitahuan Anda.";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "Pemberitahuan push tidak diizinkan untuk aplikasi ini.\n\nAktifkan di Pengaturan perangkat Anda untuk menerima pemberitahuan pesanan.";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "Pemberitahuan pesanan tidak diaktifkan untuk toko ini.\n\nAktifkan untuk menerima pemberitahuan saat ada pesanan baru.";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "Situs tidak kunjung merespons.\n\nHubungi penyedia hosting Anda untuk mendapatkan bantuan lebih lanjut.";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "Saat ini kami tidak dapat menyambungkan ke WordPress.com.\n\nCoba lagi setelah beberapa menit.";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "Memeriksa pengaturan analitik";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "Koneksi Internet";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "Mengambil produk di toko Anda";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "Memeriksa pengaturan pemberitahuan";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "Menyambungkan ke situs Anda";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "Mengambil pesanan situs Anda";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "Menyambungkan ke Server WordPress.com";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "Mengerti";
 
@@ -14064,6 +14337,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WooPayments support area option */
 "supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "Memuat analitik";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "Memuat pesanan";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "Memuat produk";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "Lainnya";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "Menerima pemberitahuan push";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "Laporan Status Sistem";

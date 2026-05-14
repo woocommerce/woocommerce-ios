@@ -7,25 +7,25 @@ struct StoreTrendsEntryTests {
         // When
         let entry = StoreTrendsEntry(
             storeInfoEntry: .error,
-            dateRange: .last30Days,
+            dateRange: .lastMonth,
             metrics: [.orders]
         )
 
         // Then
         #expect(entry.unavailableMetricTitle == StoreInfoMetricType.orders.displayName)
-        #expect(entry.compactRange == StoreStatsWidgetDateRange.last30Days.localizedCompactRangeLabel)
+        #expect(entry.compactRange == StoreStatsWidgetDateRange.lastMonth.localizedCompactRangeLabel)
     }
 
     @Test func uses_first_visible_metric_for_unavailable_state() {
         // When
         let entry = StoreTrendsEntry(
             storeInfoEntry: .error,
-            dateRange: .last7Days,
+            dateRange: .lastWeek,
             metrics: [.itemsSold]
         )
 
         // Then
         #expect(entry.unavailableMetricTitle == StoreInfoMetricType.itemsSold.displayName)
-        #expect(entry.compactRange == StoreStatsWidgetDateRange.last7Days.localizedCompactRangeLabel)
+        #expect(entry.compactRange == StoreStatsWidgetDateRange.lastWeek.localizedCompactRangeLabel)
     }
 }

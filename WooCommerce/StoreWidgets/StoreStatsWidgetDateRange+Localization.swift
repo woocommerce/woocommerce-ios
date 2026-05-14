@@ -52,17 +52,35 @@ extension StoreStatsWidgetDateRange {
                 value: "1d",
                 comment: "Compact range label for the Today option in the Store Stats lock-screen widget"
             )
-        case .last7Days:
+        case .yesterday:
             return AppLocalizedString(
-                "storeWidgets.dateRange.last7DaysCompact",
-                value: "7d",
-                comment: "Compact range label for the Last 7 Days option in the Store Stats lock-screen widget"
+                "storeWidgets.dateRange.yesterdayCompact",
+                value: "Y",
+                comment: "Compact range label for the Yesterday option in the Store Stats lock-screen widget"
             )
-        case .last30Days:
+        case .lastWeek:
             return AppLocalizedString(
-                "storeWidgets.dateRange.last30DaysCompact",
+                "storeWidgets.dateRange.lastWeekCompact",
+                value: "7d",
+                comment: "Compact range label for the Last Week option in the Store Stats lock-screen widget"
+            )
+        case .lastMonth:
+            return AppLocalizedString(
+                "storeWidgets.dateRange.lastMonthCompact",
                 value: "30d",
-                comment: "Compact range label for the Last 30 Days option in the Store Stats lock-screen widget"
+                comment: "Compact range label for the Last Month option in the Store Stats lock-screen widget"
+            )
+        case .weekToDate:
+            return AppLocalizedString(
+                "storeWidgets.dateRange.weekToDateCompact",
+                value: "WTD",
+                comment: "Compact range label for the Week to Date option in the Store Stats lock-screen widget"
+            )
+        case .monthToDate:
+            return AppLocalizedString(
+                "storeWidgets.dateRange.monthToDateCompact",
+                value: "MTD",
+                comment: "Compact range label for the Month to Date option in the Store Stats lock-screen widget"
             )
         }
     }

@@ -389,6 +389,7 @@
 				StoreInfoMetricType.swift,
 				StoreStatsConfigurationIntent.swift,
 				StoreStatsWidgetDateRange.swift,
+				StoreTrendsConfigurationIntent.swift,
 				StoreWidgets.intentdefinition,
 				WidgetMetricPresenter.swift,
 				WidgetReportsURL.swift,

@@ -189,7 +189,7 @@ struct StoreTrendsRectangularWidget_Previews: PreviewProvider {
     static var previews: some View {
         StoreTrendsRectangularView(
             metric: sampleData.metrics[0],
-            compactRange: StoreStatsWidgetDateRange.last7Days.localizedCompactRangeLabel
+            compactRange: StoreStatsWidgetDateRange.lastWeek.localizedCompactRangeLabel
         )
         .widgetBackground(backgroundView: Color.clear)
         .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
@@ -197,7 +197,7 @@ struct StoreTrendsRectangularWidget_Previews: PreviewProvider {
 
         StoreTrendsRectangularView(
             metric: sampleData.metrics[1],
-            compactRange: StoreStatsWidgetDateRange.last7Days.localizedCompactRangeLabel
+            compactRange: StoreStatsWidgetDateRange.lastWeek.localizedCompactRangeLabel
         )
         .widgetBackground(backgroundView: AccessoryWidgetBackground())
         .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
@@ -205,7 +205,7 @@ struct StoreTrendsRectangularWidget_Previews: PreviewProvider {
 
         StoreTrendsRectangularUnavailableView(
             metricTitle: StoreInfoMetricType.orders.displayName,
-            compactRange: StoreStatsWidgetDateRange.last30Days.localizedCompactRangeLabel
+            compactRange: StoreStatsWidgetDateRange.lastMonth.localizedCompactRangeLabel
         )
             .widgetBackground(backgroundView: AccessoryWidgetBackground())
             .previewContext(WidgetPreviewContext(family: .accessoryRectangular))

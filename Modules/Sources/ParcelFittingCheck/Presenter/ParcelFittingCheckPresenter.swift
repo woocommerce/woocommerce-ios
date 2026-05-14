@@ -3,7 +3,13 @@ import SwiftUI
 
 public extension UnitLength {
     static func fromStoreUnit(_ unit: String) -> UnitLength {
-        unit.lowercased() == "in" ? .inches : .centimeters
+        switch unit.lowercased() {
+        case "in": return .inches
+        case "m": return .meters
+        case "mm": return .millimeters
+        case "yd": return .yards
+        default: return .centimeters
+        }
     }
 }
 
@@ -12,10 +18,11 @@ public final class ParcelFittingCheckPresenter {
     public static func presentSizing(
         from presenter: UIViewController,
         unit: UnitLength,
+        tintColor: UIColor? = nil,
         initial: ParcelDimensions? = nil,
         onConfirm: @escaping (ParcelDimensions) -> Void
     ) {
-        present(from: presenter) { dismiss in
+        present(from: presenter, tintColor: tintColor) { dismiss in
             ARParcelSizingView(
                 unit: unit,
                 initial: initial,
@@ -25,31 +32,36 @@ public final class ParcelFittingCheckPresenter {
         }
     }
 
-    public static func presentFitCheck(
+    public static func presentUnifiedFlow(
         from presenter: UIViewController,
         unit: UnitLength,
         carriers: [ParcelPresetCarrier],
-        initialPackageID: String? = nil,
-        onConfirm: @escaping (ParcelPresetPackage) -> Void
+        starredPackageIDs: Set<String> = [],
+        tintColor: UIColor? = nil,
+        delegate: ParcelFittingDelegate
     ) {
-        present(from: presenter) { dismiss in
-            ARParcelFitCheckView(
+        present(from: presenter, tintColor: tintColor) { dismiss in
+            ARUnifiedParcelFlowView(
                 unit: unit,
-                availableCarriers: carriers,
-                initialPackageID: initialPackageID,
-                onCancel: dismiss,
-                onConfirm: { package in dismiss(); onConfirm(package) }
+                carriers: carriers,
+                starredPackageIDs: starredPackageIDs,
+                delegate: delegate,
+                dismiss: dismiss
             )
         }
     }
 
     private static func present<V: View>(
         from presenter: UIViewController,
+        tintColor: UIColor? = nil,
         @ViewBuilder content: @escaping (@escaping () -> Void) -> V
     ) {
-        weak var weakHosting: UIHostingController<V>?
+        weak var weakHosting: UIHostingController<AnyView>?
         let dismiss: () -> Void = { weakHosting?.dismiss(animated: true) }
-        let hosting = UIHostingController(rootView: content(dismiss))
+        let rootView = AnyView(
+            content(dismiss).tint(tintColor.map { Color($0) })
+        )
+        let hosting = UIHostingController(rootView: rootView)
         weakHosting = hosting
         hosting.modalPresentationStyle = .fullScreen
         presenter.present(hosting, animated: true)

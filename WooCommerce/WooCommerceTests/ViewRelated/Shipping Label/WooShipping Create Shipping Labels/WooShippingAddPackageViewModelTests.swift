@@ -428,6 +428,46 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.selectedSavedPackage)
     }
 
+    func test_selectCarrierPackage_when_ID_exists_then_sets_correct_tab_index_and_package_ID() {
+        // Given
+        let siteID: Int64 = 1
+        let packages = WooShippingPackagesResponse(siteID: siteID,
+                                                   customPackages: [],
+                                                   savedPredefinedPackages: [],
+                                                   allPredefinedOptions: [sampleCarrierPredefinedOptions()])
+        let storageManager = MockStorageManager()
+        storageManager.insertSamplePackages(readOnlyPackages: packages)
+        let viewModel = WooShippingAddPackageViewModel(siteID: siteID, storage: storageManager)
+
+        // When
+        viewModel.selectCarrierPackage(withID: "small_flat_box")
+
+        // Then
+        XCTAssertEqual(viewModel.selectedCarriersPackageId, "small_flat_box")
+        XCTAssertEqual(viewModel.selectedCarriersTabIndex, 0)
+    }
+
+    func test_selectCarrierPackage_when_ID_not_found_then_state_is_unchanged() {
+        // Given
+        let siteID: Int64 = 1
+        let packages = WooShippingPackagesResponse(siteID: siteID,
+                                                   customPackages: [],
+                                                   savedPredefinedPackages: [],
+                                                   allPredefinedOptions: [sampleCarrierPredefinedOptions()])
+        let storageManager = MockStorageManager()
+        storageManager.insertSamplePackages(readOnlyPackages: packages)
+        let viewModel = WooShippingAddPackageViewModel(siteID: siteID, storage: storageManager)
+        let initialTabIndex = viewModel.selectedCarriersTabIndex
+        let initialPackageID = viewModel.selectedCarriersPackageId
+
+        // When
+        viewModel.selectCarrierPackage(withID: "non_existent_package")
+
+        // Then
+        XCTAssertEqual(viewModel.selectedCarriersTabIndex, initialTabIndex)
+        XCTAssertEqual(viewModel.selectedCarriersPackageId, initialPackageID)
+    }
+
     @MainActor
     func test_it_keeps_order_after_reloads() async {
         // Given

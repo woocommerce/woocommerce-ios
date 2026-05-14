@@ -121,6 +121,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return !buildConfig.isProduction
         case .wooAIAssistant:
             return !buildConfig.isProduction
+        case .arParcelFitting:
+            return false
         default:
             return true
         }

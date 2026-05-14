@@ -59,14 +59,42 @@ struct StoreInfoData {
     ///
     var updatedTime: String
 
-    /// Resolved metric entries for the new metric-catalog driven path. Ordering here is
-    /// the source of truth; metric-driven views render entries in this order. Currency-typed
-    /// metrics carry their own `CurrencySettings`, so this struct doesn't need a global one.
+    /// Slot-preserving metric entries for the metric-driven widget path. Explicit "None"
+    /// selections become `.empty` so the UI can keep the configured position blank.
     ///
-    var metrics: [StoreInfoMetric] = []
+    var metricSlots: [StoreInfoMetricSlot]
 
-    /// Used to build per-cell deep-link URLs. `nil` for surfaces without a configured range
-    /// (placeholder previews) — those render without deep-link affordance.
+    /// Concrete metric entries, derived from `metricSlots` for legacy readers and analytics
+    /// that should ignore explicit empty slots.
+    ///
+    var metrics: [StoreInfoMetric] {
+        metricSlots.compactMap(\.concreteMetric)
+    }
+
+    init(range: String,
+         name: String,
+         revenue: String,
+         revenueCompact: String,
+         visitors: String,
+         orders: String,
+         conversion: String,
+         updatedTime: String,
+         metrics: [StoreInfoMetric] = [],
+         metricSlots: [StoreInfoMetricSlot]? = nil,
+         dateRange: StoreStatsWidgetDateRange? = nil) {
+        self.range = range
+        self.name = name
+        self.revenue = revenue
+        self.revenueCompact = revenueCompact
+        self.visitors = visitors
+        self.orders = orders
+        self.conversion = conversion
+        self.updatedTime = updatedTime
+        self.metricSlots = metricSlots ?? metrics.map { .metric($0) }
+        self.dateRange = dateRange
+    }
+
+    /// Used to build per-cell deep-link URLs. `nil` for surfaces without a configured range.
     var dateRange: StoreStatsWidgetDateRange? = nil
 }
 
@@ -109,7 +137,24 @@ final class StoreInfoProvider: TimelineProvider {
     /// Redacted entry with sample data.
     ///
     func placeholder(in context: Context) -> StoreInfoEntry {
-        Self.placeholderEntry()
+        Self.placeholderEntry(
+            for: Self.fetchDependencies(),
+            metrics: StoreStatsConfigurationIntent.resolveMetricSelection(
+                requested: StoreStatsConfigurationIntent.defaultMetrics,
+                family: context.family
+            )
+        )
+    }
+
+    func placeholder(for configuration: StoreStatsConfigurationIntent, in context: Context) -> StoreInfoEntry {
+        Self.placeholderEntry(
+            for: Self.fetchDependencies(),
+            dateRange: configuration.dateRange,
+            metrics: StoreStatsConfigurationIntent.resolveMetricSelection(
+                requested: configuration.metrics,
+                family: context.family
+            )
+        )
     }
 
     func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
@@ -166,10 +211,10 @@ final class StoreInfoProvider: TimelineProvider {
 // MARK: - Metric presets
 
 extension StoreInfoProvider {
-    /// Hardcoded preset used by the legacy `StaticConfiguration` path (`getTimeline`) and by
-    /// `placeholderEntry`. Matches the original 4-cell shape — non-WPCom users see `visitors` /
-    /// `conversion` as `.unavailable`. Not consumed by the AppIntent path; the configurable
-    /// branch derives its own selection from the user's stored configuration.
+    /// Hardcoded preset used by the legacy `StaticConfiguration` path (`getTimeline`) and as the
+    /// fallback placeholder selection. Matches the original 4-cell shape — non-WPCom users see
+    /// `visitors` / `conversion` as `.unavailable`. Real AppIntent timelines and snapshots
+    /// derive their selection from the user's stored configuration.
     ///
     static let legacyMetricsPreset: [StoreInfoMetricType] = [
         .revenue, .visitors, .orders, .conversion
@@ -191,6 +236,8 @@ private extension StoreInfoDataService.Stats {
     ///
     func value(for metric: StoreInfoMetricType, currencySettings: CurrencySettings) -> StoreInfoMetricValue {
         switch metric {
+        case .none:
+            return .unavailable
         case .revenue:
             return .currency(revenue, currencySettings)
         case .netSales:
@@ -212,6 +259,7 @@ private extension StoreInfoDataService.Stats {
     func chartSeries(for metric: StoreInfoMetricType) -> [MetricChartPoint]? {
         let points: [IntervalPoint]
         switch metric {
+        case .none: return nil
         case .revenue: points = revenueSeries
         case .netSales: points = netRevenueSeries
         case .averageOrderValue: points = averageOrderValueSeries
@@ -320,17 +368,30 @@ private extension StoreInfoProvider {
 private extension StoreInfoProvider {
 
     /// Redacted entry with sample data. If dependencies are available — store name and currency
-    /// settings will be used. Both the legacy String fields and the metric-driven `metrics`
-    /// array derive from `Stats.placeholderSample` + `legacyMetricsPreset` so the two views of
-    /// the same data stay in sync.
+    /// settings will be used. Both the legacy String fields and the metric-driven slots derive
+    /// from `Stats.placeholderSample`, while the metric selection mirrors the family-specific
+    /// AppIntent defaults so the widget gallery renders a complete preview with trends and
+    /// charts.
     ///
-    static func placeholderEntry(for dependencies: Dependencies?,
-                                 dateRange: StoreStatsWidgetDateRange,
-                                 metrics metricTypes: [StoreInfoMetricType]) -> StoreInfoEntry {
+    static func placeholderEntry(
+        for dependencies: Dependencies?,
+        dateRange: StoreStatsWidgetDateRange = .today,
+        metrics: [StoreInfoMetricType] = legacyMetricsPreset
+    ) -> StoreInfoEntry {
         let currencySettings = dependencies?.store.storeCurrencySettings ?? CurrencySettings()
         let sample = StoreInfoDataService.Stats.placeholderSample
-        let metrics: [StoreInfoMetric] = metricTypes.map { type in
-            StoreInfoMetric(type: type, value: sample.value(for: type, currencySettings: currencySettings))
+        let previousSample = StoreInfoDataService.Stats.placeholderPreviousSample
+        let metricSlots: [StoreInfoMetricSlot] = metrics.map { type in
+            guard type != .none else {
+                return .empty
+            }
+
+            return .metric(StoreInfoMetric(
+                type: type,
+                value: sample.value(for: type, currencySettings: currencySettings),
+                previousValue: previousSample.value(for: type, currencySettings: currencySettings),
+                chartSeries: sample.chartSeries(for: type)
+            ))
         }
         let visitorsString = sample.totalVisitors.map(String.init) ?? StoreInfoFormatter.Constants.valuePlaceholderText
         let conversionString = sample.conversion.map(StoreInfoFormatter.formattedConversionString) ?? StoreInfoFormatter.Constants.valuePlaceholderText
@@ -343,13 +404,15 @@ private extension StoreInfoProvider {
             orders: "\(sample.totalOrders)",
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
-            metrics: metrics
+            metricSlots: metricSlots,
+            dateRange: dateRange
         ))
     }
 
     /// Real data entry. `metrics` is the resolved selection — already family-sliced and topped
     /// up by `resolveMetricSelection` for the AppIntent path, or the legacy hardcoded preset for
-    /// the `StaticConfiguration` path. Ordering here is what the home-screen view renders.
+    /// the `StaticConfiguration` path. Ordering here is what the home-screen view renders,
+    /// including explicit `.none` entries that preserve empty slots.
     ///
     /// Each `StoreInfoMetric` carries both the current and the previous-period value so the
     /// metric-driven home-screen view can render trend badges. The legacy String fields below
@@ -362,15 +425,18 @@ private extension StoreInfoProvider {
         let currencySettings = dependencies.store.storeCurrencySettings
         let stats = statsPeriod.current
         let previousStats = statsPeriod.previous
-        let resolvedMetrics: [StoreInfoMetric] = metrics.map { type in
-            StoreInfoMetric(
+        let metricSlots: [StoreInfoMetricSlot] = metrics.map { type in
+            guard type != .none else {
+                return .empty
+            }
+
+            return .metric(StoreInfoMetric(
                 type: type,
                 value: stats.value(for: type, currencySettings: currencySettings),
                 previousValue: previousStats?.value(for: type, currencySettings: currencySettings),
                 chartSeries: stats.chartSeries(for: type)
-            )
+            ))
         }
-
         let visitorsString: String = {
             if let visitors = stats.totalVisitors {
                 return "\(visitors)"
@@ -393,7 +459,7 @@ private extension StoreInfoProvider {
             orders: "\(stats.totalOrders)",
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
-            metrics: resolvedMetrics,
+            metricSlots: metricSlots,
             dateRange: dateRange
         ))
     }

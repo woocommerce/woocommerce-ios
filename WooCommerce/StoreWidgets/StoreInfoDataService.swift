@@ -264,8 +264,45 @@ extension StoreInfoDataService.Stats {
         totalOrders: 23,
         totalItemsSold: 41,
         totalVisitors: 67,
-        conversion: 23.0 / 67.0
+        conversion: 23.0 / 67.0,
+        revenueSeries: placeholderSeries(values: [
+            0, 0, 0, 0, 0.5, 1, 2, 3.5, 6.8, 9.5, 12.8, 14,
+            11.6, 10.8, 12.9, 13.2, 11.8, 8.9, 5.7, 3.6, 2, 1, 0.6, 0.034
+        ]),
+        netRevenueSeries: placeholderSeries(values: [
+            0, 0, 0, 0, 0.4, 0.9, 1.8, 3.2, 6.1, 8.7, 11.6, 12.9,
+            10.6, 9.7, 11.8, 11.7, 10.7, 8.1, 5.1, 3.2, 1.8, 0.9, 0.5, 0.3
+        ]),
+        averageOrderValueSeries: placeholderSeries(values: [
+            0, 0, 0, 0, 3.1, 4.2, 4.8, 5.1, 5.6, 5.9, 6.2, 6.1,
+            5.8, 5.6, 5.9, 6.3, 6, 5.7, 5.2, 4.9, 4.6, 4.1, 3.7, 3.2
+        ]),
+        ordersSeries: placeholderSeries(values: [
+            0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 3,
+            2, 2, 2, 3, 2, 1, 1, 0, 0, 0, 0, 0
+        ]),
+        itemsSoldSeries: placeholderSeries(values: [
+            0, 0, 0, 0, 0, 1, 1, 1, 2, 3, 4, 5,
+            4, 3, 4, 5, 3, 2, 2, 1, 0, 0, 0, 0
+        ])
     )
+
+    /// Previous-period sample used by the widget gallery placeholder to render trend badges.
+    static let placeholderPreviousSample = Self(
+        revenue: 118.000,
+        netRevenue: 125.000,
+        averageOrderValue: 5.20,
+        totalOrders: 31,
+        totalItemsSold: 34,
+        totalVisitors: 71,
+        conversion: 0.29
+    )
+
+    private static func placeholderSeries(values: [Double]) -> [IntervalPoint] {
+        values.enumerated().map { index, value in
+            IntervalPoint(date: Date(timeIntervalSinceReferenceDate: Double(index * 3_600)), value: value)
+        }
+    }
 }
 
 // MARK: - DateRange factories

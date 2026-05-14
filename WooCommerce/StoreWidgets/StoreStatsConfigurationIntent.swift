@@ -11,10 +11,7 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
 
     static let defaultDateRange: StoreStatsWidgetDateRange = .today
 
-    static let defaultMetrics: [StoreInfoMetricType] = [
-        .revenue, .orders, .itemsSold, .averageOrderValue,
-        .netSales, .visitors, .conversion
-    ]
+    static let defaultMetrics = StoreInfoMetricType.catalogCases
 
     static let metricsSlotCounts: [WidgetFamily: Int] = [
         .accessoryRectangular: 1,

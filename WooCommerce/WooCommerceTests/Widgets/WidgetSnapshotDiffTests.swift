@@ -181,6 +181,23 @@ struct WidgetSnapshotDiffTests {
         #expect(diff.removedMetrics.isEmpty)
     }
 
+    @Test func none_metric_is_excluded_from_metric_diffs() {
+        // Given
+        let previous = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(dateRange: .today, metrics: [.revenue, .none])
+        ])
+        let current = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(dateRange: .today, metrics: [.revenue, .orders])
+        ])
+
+        // When
+        let diff = WidgetSnapshotDiff(previous: previous, current: current)
+
+        // Then
+        #expect(diff.addedMetrics == ["orders"])
+        #expect(diff.removedMetrics == [])
+    }
+
     @Test func unconfigured_tiles_do_not_affect_metric_or_dateRange_diffs() {
         // Given
         let previous = WidgetSnapshot(tiles: [

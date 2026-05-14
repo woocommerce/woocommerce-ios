@@ -324,6 +324,8 @@ private extension WooAnalytics {
             switch widgetInfo.kind {
             case WooConstants.storeInfoWidgetKind:
                 return "\(WooAnalyticsEvent.Widgets.Name.todayStats.rawValue)-\(widgetInfo.family)"
+            case WooConstants.storeTrendsWidgetKind:
+                return "\(WooAnalyticsEvent.Widgets.Name.trends.rawValue)-\(widgetInfo.family)"
             case WooConstants.appLinkWidgetKind:
                 return WooAnalyticsEvent.Widgets.Name.appLink.rawValue
             default:

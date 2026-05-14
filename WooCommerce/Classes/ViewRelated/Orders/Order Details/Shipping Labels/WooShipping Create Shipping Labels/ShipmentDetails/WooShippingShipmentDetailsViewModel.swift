@@ -202,6 +202,12 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
     func parcelFittingDidCancel() {}
 
     func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool) {
+        if isStarred {
+            lastARStarredPackageIDs.insert(packageID)
+        } else {
+            lastARStarredPackageIDs.remove(packageID)
+        }
+
         let action: WooShippingAction
         if isStarred {
             let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])

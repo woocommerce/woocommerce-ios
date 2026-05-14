@@ -28,6 +28,21 @@ struct WidgetSiteCurrencyCacheTests {
         #expect(sut.currencySettings(forSiteID: 1) == settings)
     }
 
+    @Test func save_then_uses_site_specific_key_without_writing_shared_blob() {
+        // Given
+        let userDefaults = makeUserDefaults()
+        let sut = WidgetSiteCurrencyCache(userDefaults: userDefaults)
+
+        // When
+        sut.save(makeCurrencySettings(currencyCode: .EUR), forSiteID: 1)
+
+        // Then
+        let legacyBlobData: Data? = userDefaults.object(forKey: .widgetSiteCurrencySettingsCache)
+        let perSiteData = userDefaults.object(forKey: perSiteKey(forSiteID: 1)) as? Data
+        #expect(legacyBlobData == nil)
+        #expect(perSiteData != nil)
+    }
+
     @Test func save_when_multiple_sites_are_persisted_then_keeps_entries_separate() {
         // Given
         let sut = WidgetSiteCurrencyCache(userDefaults: makeUserDefaults())
@@ -43,7 +58,7 @@ struct WidgetSiteCurrencyCacheTests {
         #expect(sut.currencySettings(forSiteID: 2) == secondSiteSettings)
     }
 
-    @Test func currencySettings_when_top_level_json_is_corrupt_then_returns_nil_and_can_be_overwritten() {
+    @Test func currencySettings_when_legacy_shared_blob_is_corrupt_then_returns_nil_and_can_be_overwritten() {
         // Given
         let userDefaults = makeUserDefaults()
         userDefaults.set(Data([0xFF, 0xFE]), forKey: .widgetSiteCurrencySettingsCache)
@@ -63,12 +78,8 @@ struct WidgetSiteCurrencyCacheTests {
         // Given
         let userDefaults = makeUserDefaults()
         let validSettings = makeCurrencySettings(currencyCode: .CAD)
-        let validData = try JSONEncoder().encode(validSettings)
-        let map = [
-            "1": Data([0xFF, 0xFE]),
-            "2": validData
-        ]
-        userDefaults.set(try JSONEncoder().encode(map), forKey: .widgetSiteCurrencySettingsCache)
+        userDefaults.set(Data([0xFF, 0xFE]), forKey: perSiteKey(forSiteID: 1))
+        userDefaults.set(try JSONEncoder().encode(validSettings), forKey: perSiteKey(forSiteID: 2))
         let sut = WidgetSiteCurrencyCache(userDefaults: userDefaults)
 
         // When
@@ -82,9 +93,11 @@ struct WidgetSiteCurrencyCacheTests {
 
     @Test func clear_when_data_is_persisted_then_removes_all_entries() {
         // Given
-        let sut = WidgetSiteCurrencyCache(userDefaults: makeUserDefaults())
+        let userDefaults = makeUserDefaults()
+        let sut = WidgetSiteCurrencyCache(userDefaults: userDefaults)
         sut.save(makeCurrencySettings(currencyCode: .EUR), forSiteID: 1)
         sut.save(makeCurrencySettings(currencyCode: .GBP), forSiteID: 2)
+        userDefaults.set(Data([0xFF, 0xFE]), forKey: .widgetSiteCurrencySettingsCache)
 
         // When
         sut.clear()
@@ -92,6 +105,8 @@ struct WidgetSiteCurrencyCacheTests {
         // Then
         #expect(sut.currencySettings(forSiteID: 1) == nil)
         #expect(sut.currencySettings(forSiteID: 2) == nil)
+        let legacyBlobData: Data? = userDefaults.object(forKey: .widgetSiteCurrencySettingsCache)
+        #expect(legacyBlobData == nil)
     }
 
     @Test func removeCurrencySettings_when_data_is_persisted_then_removes_only_matching_site() {
@@ -122,5 +137,9 @@ struct WidgetSiteCurrencyCacheTests {
                          thousandSeparator: ",",
                          decimalSeparator: ".",
                          numberOfDecimals: 2)
+    }
+
+    private func perSiteKey(forSiteID siteID: Int64) -> String {
+        "\(UserDefaults.Key.widgetSiteCurrencySettingsCache.rawValue).\(siteID)"
     }
 }

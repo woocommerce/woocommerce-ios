@@ -14,7 +14,7 @@ struct WidgetSiteCurrencyCache {
     }
 
     func currencySettings(forSiteID siteID: Int64) -> CurrencySettings? {
-        guard let data = persistedMap()[String(siteID)] else {
+        guard let data = userDefaults?.object(forKey: key(forSiteID: siteID)) as? Data else {
             return nil
         }
         return try? JSONDecoder().decode(CurrencySettings.self, from: data)
@@ -24,35 +24,32 @@ struct WidgetSiteCurrencyCache {
         guard let data = try? JSONEncoder().encode(settings) else {
             return
         }
-        var map = persistedMap()
-        map[String(siteID)] = data
-        persist(map)
+        userDefaults?.set(data, forKey: key(forSiteID: siteID))
     }
 
     func removeCurrencySettings(forSiteID siteID: Int64) {
-        var map = persistedMap()
-        map.removeValue(forKey: String(siteID))
-        persist(map)
+        userDefaults?.removeObject(forKey: key(forSiteID: siteID))
     }
 
     func clear() {
-        userDefaults?.removeObject(forKey: .widgetSiteCurrencySettingsCache)
+        guard let userDefaults else {
+            return
+        }
+        userDefaults
+            .dictionaryRepresentation()
+            .keys
+            .filter { $0.hasPrefix(Constants.perSiteKeyPrefix) }
+            .forEach { userDefaults.removeObject(forKey: $0) }
+        userDefaults.removeObject(forKey: .widgetSiteCurrencySettingsCache)
     }
 }
 
 private extension WidgetSiteCurrencyCache {
-    func persistedMap() -> [String: Data] {
-        guard let data: Data = userDefaults?.object(forKey: .widgetSiteCurrencySettingsCache),
-              let map = try? JSONDecoder().decode([String: Data].self, from: data) else {
-            return [:]
-        }
-        return map
+    func key(forSiteID siteID: Int64) -> String {
+        "\(Constants.perSiteKeyPrefix)\(siteID)"
     }
 
-    func persist(_ map: [String: Data]) {
-        guard let data = try? JSONEncoder().encode(map) else {
-            return
-        }
-        userDefaults?.set(data, forKey: .widgetSiteCurrencySettingsCache)
+    enum Constants {
+        static let perSiteKeyPrefix = "\(UserDefaults.Key.widgetSiteCurrencySettingsCache.rawValue)."
     }
 }

@@ -723,11 +723,37 @@ extension MainTabBarController: DeepLinkNavigator {
             navigateTo(.orders) {
                 Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
             }
+        case let analyticsDestination as AnalyticsHubDestination:
+            navigateTo(.myStore) { [weak self] in
+                self?.presentAnalyticsHub(for: analyticsDestination)
+            }
         case is POSPromotionDestination:
             presentPOSPromotionModal()
         default:
             return
         }
+    }
+
+    private func presentAnalyticsHub(for destination: AnalyticsHubDestination) {
+        let analyticsHubVC: AnalyticsHubHostingViewController
+        switch destination {
+        case .focusedCard(let card, let range):
+            analyticsHubVC = AnalyticsHubHostingViewController(
+                siteID: stores.sessionManager.defaultStoreID ?? 0,
+                timeZone: .siteTimezone,
+                selectionType: range,
+                focusedCard: card,
+                usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()
+            )
+        case .defaultHub:
+            analyticsHubVC = AnalyticsHubHostingViewController(
+                siteID: stores.sessionManager.defaultStoreID ?? 0,
+                timeZone: .siteTimezone,
+                timeRange: .today,
+                usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()
+            )
+        }
+        dashboardNavigationController.pushViewController(analyticsHubVC, animated: true)
     }
 
     private func presentPOSPromotionModal() {

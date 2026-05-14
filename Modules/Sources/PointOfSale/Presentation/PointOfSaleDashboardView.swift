@@ -6,6 +6,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
+    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
 
@@ -18,6 +19,7 @@ struct PointOfSaleDashboardView: View {
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
+    @State private var phoneShowingCart: Bool = false
 
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
         posModel.viewStateCoordinatorForView
@@ -54,7 +56,8 @@ struct PointOfSaleDashboardView: View {
         PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: posModel.entryPointController.eligibilityState,
             itemsContainerState: itemsViewState.containerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
         )
     }
 
@@ -179,7 +182,112 @@ struct PointOfSaleDashboardView: View {
         POSNavigationRouter(navigationPath: $navigationPath)
     }
 
+    @ViewBuilder
     private var contentView: some View {
+        if isPhoneLayout {
+            phoneContentView
+        } else {
+            tabletContentView
+        }
+    }
+
+    private var isPhoneLayout: Bool {
+        horizontalSizeClass == .compact && featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+    }
+
+    @ViewBuilder
+    private var phoneContentView: some View {
+        @Bindable var viewStateCoordinator = viewStateCoordinator
+        // Building stage: ItemListView (which carries its own NavigationStack for product drill-down)
+        //                 + bottom Cart button — NO outer NavigationStack here, otherwise nested stacks
+        //                 break .navigationDestination resolution for pushed views.
+        // Finalizing stage: a fresh NavigationStack siblinged to (not wrapping) the items list, used
+        //                   for pushing cash payment, email receipt, etc. via navigationPath.
+        Group {
+            switch posModel.orderStage {
+            case .building:
+                VStack(spacing: POSSpacing.none) {
+                    ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                                 searchTerm: $viewStateCoordinator.searchTerm)
+                    if posModel.cart.isNotEmpty {
+                        phoneCartButton
+                    }
+                }
+            case .finalizing:
+                NavigationStack(path: $navigationPath) {
+                    TotalsView()
+                        .background(Color.posSurface)
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button {
+                                    posModel.addMoreToCart()
+                                } label: {
+                                    Label(Localization.phoneBackToItems, systemImage: "chevron.backward")
+                                }
+                                .disabled(!canExitFinalizingOnPhone)
+                            }
+                        }
+                        .navigationDestination(for: POSNavigationDestination.self) { destination in
+                            switch destination {
+                            case .cashPayment(let orderTotal):
+                                POSNavigationDestinationCashPaymentView(orderTotal: orderTotal)
+                            case .emailReceipt:
+                                POSNavigationDestinationEmailReceiptView()
+                            }
+                        }
+                }
+                .environment(\.posNavigationRouter, navigationRouter)
+            }
+        }
+        .onChange(of: posModel.paymentState.cash) { _, newValue in
+            if newValue == .collectingCash,
+               case .loaded(let totals) = posModel.orderState {
+                navigationRouter.pushCash(orderTotal: totals.orderTotal)
+            }
+        }
+        .onChange(of: posModel.orderStage) { _, newStage in
+            // Dismiss the cart sheet automatically when checkout starts so the user lands
+            // on the totals view rather than seeing cart fading away.
+            if newStage == .finalizing {
+                phoneShowingCart = false
+            }
+        }
+        .posSheet(isPresented: $phoneShowingCart) {
+            phoneCartSheetView
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        }
+        .animation(.default, value: posModel.orderStage)
+        .ignoresSafeArea()
+        .background(Color.posSurface.ignoresSafeArea())
+    }
+
+    private var canExitFinalizingOnPhone: Bool {
+        !CartViewHelper().shouldPreventCartEditing(
+            orderState: posModel.orderState,
+            paymentState: posModel.paymentState
+        )
+    }
+
+    private var phoneCartButton: some View {
+        Button {
+            phoneShowingCart = true
+        } label: {
+            Text(String(format: Localization.phoneCart, posModel.cart.totalItemCount))
+        }
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
+        .padding(.horizontal, POSPadding.medium)
+        .padding(.vertical, POSPadding.medium)
+        .accessibilityIdentifier("pos-phone-cart-button")
+    }
+
+    private var phoneCartSheetView: some View {
+        // Drag indicator + swipe-down handle dismissal; an explicit close button isn't needed.
+        CartView()
+            .background(Color.posSurface)
+    }
+
+    private var tabletContentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator
         return GeometryReader { geometry in
             // Fixed widths ensure views don't resize during offset-based transitions.
@@ -362,6 +470,16 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.support.cancel",
             value: "Cancel",
             comment: "Button to dismiss the support form from the POS dashboard."
+        )
+        static let phoneCart = NSLocalizedString(
+            "pointOfSaleDashboard.phone.cart",
+            value: "Cart (%1$d)",
+            comment: "Phone-only floating button to open the cart from the items list. %1$d is the cart item count."
+        )
+        static let phoneBackToItems = NSLocalizedString(
+            "pointOfSaleDashboard.phone.backToItems",
+            value: "Items",
+            comment: "Phone-only back button title to return from totals to the items list."
         )
     }
 }

@@ -20,7 +20,7 @@ struct WidgetSnapshotPersistenceTests {
             WidgetSnapshot.Tile(
                 kind: WooConstants.storeInfoWidgetKind,
                 family: .systemMedium,
-                configuration: .storeStats(dateRange: .last7Days, metrics: [.orders, .revenue])
+                configuration: .storeStats(dateRange: .lastWeek, metrics: [.orders, .revenue])
             )
         ])
 
@@ -99,7 +99,7 @@ struct WidgetSnapshotPersistenceTests {
                 kind: WooConstants.storeInfoWidgetKind,
                 family: .systemLarge,
                 configuration: .storeStats(
-                    dateRange: .last30Days,
+                    dateRange: .lastMonth,
                     metrics: [.visitors, .conversion, .averageOrderValue]
                 )
             )

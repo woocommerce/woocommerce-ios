@@ -48,7 +48,7 @@ struct WidgetSnapshotAnalyticsTests {
         let tile = WidgetSnapshot.Tile(
             kind: WooConstants.storeInfoWidgetKind,
             family: .systemSmall,
-            configuration: .storeStats(dateRange: .last7Days, metrics: [.orders, .revenue])
+            configuration: .storeStats(dateRange: .lastWeek, metrics: [.orders, .revenue])
         )
         let snapshot = WidgetSnapshot(tiles: [tile])
 
@@ -92,7 +92,7 @@ struct WidgetSnapshotAnalyticsTests {
         let customizedTile = WidgetSnapshot.Tile(
             kind: WooConstants.storeInfoWidgetKind,
             family: .systemSmall,
-            configuration: .storeStats(dateRange: .last30Days, metrics: [.orders, .revenue])
+            configuration: .storeStats(dateRange: .lastMonth, metrics: [.orders, .revenue])
         )
         let unconfiguredTile = WidgetSnapshot.Tile(
             kind: WooConstants.appLinkWidgetKind,
@@ -138,7 +138,7 @@ struct WidgetSnapshotAnalyticsTests {
         let tileB = WidgetSnapshot.Tile(
             kind: WooConstants.storeInfoWidgetKind,
             family: .systemMedium,
-            configuration: .storeStats(dateRange: .last7Days, metrics: [.revenue])
+            configuration: .storeStats(dateRange: .lastWeek, metrics: [.revenue])
         )
         let tileC = WidgetSnapshot.Tile(
             kind: WooConstants.storeInfoWidgetKind,
@@ -151,7 +151,7 @@ struct WidgetSnapshotAnalyticsTests {
         let props = snapshot.analyticsProperties
 
         // Then - multiset CSV preserves repetitions, alphabetically sorted
-        #expect(props["info_widget_date_ranges_in_use"] == "last7Days,today,today")
+        #expect(props["info_widget_date_ranges_in_use"] == "lastWeek,today,today")
     }
 
     @Test func unconfigured_tile_excluded_from_date_ranges() {
@@ -198,7 +198,7 @@ struct WidgetSnapshotAnalyticsTests {
         let tileB = WidgetSnapshot.Tile(
             kind: WooConstants.storeInfoWidgetKind,
             family: .systemMedium,
-            configuration: .storeStats(dateRange: .last7Days, metrics: [.orders, .visitors])
+            configuration: .storeStats(dateRange: .lastWeek, metrics: [.orders, .visitors])
         )
         let snapshot = WidgetSnapshot(tiles: [tileA, tileB])
 

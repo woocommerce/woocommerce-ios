@@ -45,10 +45,8 @@ struct MetricTrendPresentation: Equatable {
 
 // MARK: - StoreInfoMetric
 
-/// Format policy (v1): currency values use the compact form (e.g. `$12k`) on all surfaces.
-/// Size-specific formatting (full on `.systemLarge`, compact on `.systemSmall`) is a later
-/// refinement — swap in a size-aware formatter, not a different cell.
-///
+/// `tapURL` is intentionally unimplemented here — URLs are range-aware and the metric model
+/// is range-agnostic. Container views wrap metrics in `WidgetMetricPresenter` to compute it.
 extension StoreInfoMetric: MetricPresentable {
     var title: String {
         type.displayName
@@ -74,15 +72,6 @@ extension StoreInfoMetric: MetricPresentable {
 
     var trend: MetricTrendPresentation? {
         value.trend(comparedTo: previousValue)
-    }
-
-    var tapURL: URL? {
-        switch type {
-        case .orders:
-            return WooConstants.URLs.ordersScreen.asURL()
-        case .none, .revenue, .netSales, .itemsSold, .visitors, .conversion, .averageOrderValue:
-            return nil
-        }
     }
 
     var chartData: [MetricChartPoint]? {

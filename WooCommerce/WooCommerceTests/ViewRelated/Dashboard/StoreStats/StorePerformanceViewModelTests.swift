@@ -888,6 +888,107 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(properties["option"] as? String, "gross")
         XCTAssertEqual(properties["type"] as? String, "dashboard_stats")
     }
+
+    @MainActor
+    func test_didSelectStatsInterval_emits_chart_selection_reset_signal_only_when_index_is_nil() {
+        // Given
+        let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
+        var resetCount = 0
+        let cancellable = viewModel.chartSelectionResetPublisher.sink { resetCount += 1 }
+
+        // When — selecting a point should not fire the signal.
+        viewModel.didSelectStatsInterval(at: 1)
+
+        // Then
+        XCTAssertEqual(resetCount, 0)
+
+        // When — clearing the selection should fire it.
+        viewModel.didSelectStatsInterval(at: nil)
+
+        // Then
+        XCTAssertEqual(resetCount, 1)
+
+        cancellable.cancel()
+    }
+
+    @MainActor
+    func test_reloadDataIfNeeded_when_forceRefresh_then_clears_chart_selection() async {
+        // Given — a chart point is selected (PTR baseline).
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        mockSyncAllStats(with: stores)
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        viewModel.didSelectStatsInterval(at: 1)
+        XCTAssertTrue(viewModel.shouldHighlightStats)
+        var resetCount = 0
+        let cancellable = viewModel.chartSelectionResetPublisher.sink { resetCount += 1 }
+
+        // When
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
+
+        // Then — header reverts and the chart reset signal fired exactly once.
+        XCTAssertFalse(viewModel.shouldHighlightStats)
+        XCTAssertEqual(resetCount, 1)
+
+        cancellable.cancel()
+    }
+
+    @MainActor
+    func test_reloadDataIfNeeded_when_data_is_fresh_then_does_not_clear_chart_selection() async {
+        // Given — a chart point is selected and the cached timestamp is fresh.
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        mockSyncAllStats(with: stores)
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        viewModel.didSelectStatsInterval(at: 1)
+        XCTAssertTrue(viewModel.shouldHighlightStats)
+        DashboardTimestampStore.saveTimestamp(.now, for: .performance, at: viewModel.timeRange.timestampRange)
+        var resetCount = 0
+        let cancellable = viewModel.chartSelectionResetPublisher.sink { resetCount += 1 }
+
+        // When — non-forced reload short-circuits.
+        await viewModel.reloadDataIfNeeded(forceRefresh: false)
+
+        // Then — selection preserved; only forced refreshes invalidate it.
+        XCTAssertTrue(viewModel.shouldHighlightStats)
+        XCTAssertEqual(resetCount, 0)
+
+        cancellable.cancel()
+        DashboardTimestampStore.removeTimestamp(for: .performance, at: viewModel.timeRange.timestampRange)
+    }
+
+    @MainActor
+    func test_handleOrderTypeSelection_when_save_succeeds_then_clears_chart_selection() async {
+        // Given — a chart point is selected before the merchant changes the order type.
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case let .updateAnalyticsOrderDateType(_, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        mockSyncAllStats(with: stores)
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  usageTracksEventEmitter: .init())
+        viewModel.didSelectStatsInterval(at: 1)
+        XCTAssertTrue(viewModel.shouldHighlightStats)
+        var resetCount = 0
+        let cancellable = viewModel.chartSelectionResetPublisher.sink { resetCount += 1 }
+
+        // When
+        let shouldDismiss = await viewModel.handleOrderTypeSelection(.completed)
+
+        // Then — successful save triggers the post-save force refresh, which clears selection.
+        XCTAssertTrue(shouldDismiss)
+        XCTAssertFalse(viewModel.shouldHighlightStats)
+        XCTAssertEqual(resetCount, 1)
+
+        cancellable.cancel()
+    }
 }
 
 // MARK: - Private helpers

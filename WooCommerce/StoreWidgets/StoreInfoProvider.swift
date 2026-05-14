@@ -80,7 +80,8 @@ struct StoreInfoData {
          conversion: String,
          updatedTime: String,
          metrics: [StoreInfoMetric] = [],
-         metricSlots: [StoreInfoMetricSlot]? = nil) {
+         metricSlots: [StoreInfoMetricSlot]? = nil,
+         dateRange: StoreStatsWidgetDateRange? = nil) {
         self.range = range
         self.name = name
         self.revenue = revenue
@@ -90,7 +91,12 @@ struct StoreInfoData {
         self.conversion = conversion
         self.updatedTime = updatedTime
         self.metricSlots = metricSlots ?? metrics.map { .metric($0) }
+        self.dateRange = dateRange
     }
+
+    /// Used to build per-cell deep-link URLs. `nil` for surfaces without a configured range
+    /// (placeholder previews) — those render without deep-link affordance.
+    var dateRange: StoreStatsWidgetDateRange? = nil
 }
 
 extension StoreInfoData {
@@ -107,6 +113,11 @@ extension StoreInfoData {
         }
         assertionFailure("StoreInfoData missing expected metric: \(type.rawValue)")
         return StoreInfoMetric(type: type, value: .unavailable)
+    }
+
+    /// Wraps each metric in a `WidgetMetricPresenter` paired with the configured date range.
+    var presentableMetrics: [any MetricPresentable] {
+        metrics.map { WidgetMetricPresenter(metric: $0, dateRange: dateRange) }
     }
 }
 
@@ -500,7 +511,8 @@ private extension StoreInfoProvider {
             orders: "\(stats.totalOrders)",
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
-            metricSlots: metricSlots
+            metricSlots: metricSlots,
+            dateRange: dateRange
         ))
     }
 

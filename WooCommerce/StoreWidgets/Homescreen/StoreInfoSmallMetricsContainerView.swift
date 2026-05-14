@@ -29,7 +29,7 @@ struct StoreInfoSmallMetricsContainerView: View {
             VStack(alignment: .leading, spacing: Layout.metricSpacing) {
                 ForEach(Array(visibleMetricSlots.enumerated()), id: \.offset) { _, slot in
                     MetricSlotView(slot: slot, placeholderMinHeight: Layout.emptyMetricMinHeight) { metric in
-                        MetricCellView(metric: metric)
+                        MetricCellView(metric: WidgetMetricPresenter(metric: metric, dateRange: data.dateRange))
                     }
                 }
             }

@@ -24,16 +24,32 @@ final class StoreInfoDataService {
         let orderStatsQuantity: Int
         let earliestDateToInclude: Date
         let latestDateToInclude: Date
-        /// Period passed to `loadSiteSummaryStats`. The endpoint returns visitors for the
-        /// calendar-aligned period containing `latestDateToInclude` — so for `last7Days` /
-        /// `last30Days` the visitor total reflects the current calendar week / month rather
-        /// than a strict rolling window. Order stats use the rolling earliest/latest dates
-        /// above, so the two metrics can disagree on coverage early in a calendar period.
-        /// Acceptable for v1; matches Yosemite's `summaryStatsGranularity` for `thisWeek` /
-        /// `thisMonth`. Refining visitor coverage to a true rolling window is a follow-up.
-        ///
         let summaryStatsPeriod: StatGranularity
         let timezone: TimeZone
+        /// Set for ranges whose previous window doesn't fit "same length immediately
+        /// preceding" — week-to-date / month-to-date use a calendar-aligned previous window.
+        let previousPeriodOverride: PreviousPeriodOverride?
+
+        struct PreviousPeriodOverride {
+            let earliestDateToInclude: Date
+            let latestDateToInclude: Date
+        }
+
+        init(orderStatsGranularity: StatsGranularityV4,
+             orderStatsQuantity: Int,
+             earliestDateToInclude: Date,
+             latestDateToInclude: Date,
+             summaryStatsPeriod: StatGranularity,
+             timezone: TimeZone,
+             previousPeriodOverride: PreviousPeriodOverride? = nil) {
+            self.orderStatsGranularity = orderStatsGranularity
+            self.orderStatsQuantity = orderStatsQuantity
+            self.earliestDateToInclude = earliestDateToInclude
+            self.latestDateToInclude = latestDateToInclude
+            self.summaryStatsPeriod = summaryStatsPeriod
+            self.timezone = timezone
+            self.previousPeriodOverride = previousPeriodOverride
+        }
     }
 
     /// Data extracted from networking types.
@@ -303,55 +319,121 @@ extension StoreInfoDataService.DateRange {
              timezone: timezone)
     }
 
-    /// Rolling 7-day range ending at the end of `referenceDate` (inclusive).
-    ///
-    /// Order stats use a true 7-day window. Visitors use `period: .week`, which the
-    /// `SiteStatsRemote` endpoint resolves to the calendar week containing `referenceDate`
-    /// — see the `summaryStatsPeriod` doc comment on `DateRange` for the trade-off.
-    ///
-    static func last7Days(referenceDate: Date = Date(), timezone: TimeZone = .current) -> Self {
-        Self(orderStatsGranularity: .daily,
-             orderStatsQuantity: 7,
-             earliestDateToInclude: rollingStart(daysBack: 6, referenceDate: referenceDate, timezone: timezone),
-             latestDateToInclude: referenceDate.endOfDay(timezone: timezone),
-             summaryStatsPeriod: .week,
-             timezone: timezone)
+    static func yesterday(referenceDate: Date = Date(), timezone: TimeZone = .current) -> Self {
+        let calendar = makeCalendar(timezone: timezone)
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: referenceDate) ?? referenceDate
+        return Self(orderStatsGranularity: .hourly,
+                    orderStatsQuantity: 24,
+                    earliestDateToInclude: yesterday.startOfDay(timezone: timezone),
+                    latestDateToInclude: yesterday.endOfDay(timezone: timezone),
+                    summaryStatsPeriod: .day,
+                    timezone: timezone)
     }
 
-    /// Rolling 30-day range ending at the end of `referenceDate` (inclusive).
-    ///
-    static func last30Days(referenceDate: Date = Date(), timezone: TimeZone = .current) -> Self {
-        Self(orderStatsGranularity: .daily,
-             orderStatsQuantity: 30,
-             earliestDateToInclude: rollingStart(daysBack: 29, referenceDate: referenceDate, timezone: timezone),
-             latestDateToInclude: referenceDate.endOfDay(timezone: timezone),
-             summaryStatsPeriod: .month,
-             timezone: timezone)
+    static func lastWeek(referenceDate: Date = Date(), timezone: TimeZone = .current) -> Self {
+        let calendar = makeCalendar(timezone: timezone)
+        let oneWeekAgo = calendar.date(byAdding: .day, value: -7, to: referenceDate) ?? referenceDate
+        let earliest = oneWeekAgo.startOfWeek(timezone: timezone, calendar: calendar) ?? oneWeekAgo.startOfDay(timezone: timezone)
+        let latest = oneWeekAgo.endOfWeek(timezone: timezone, calendar: calendar) ?? oneWeekAgo.endOfDay(timezone: timezone)
+        return Self(orderStatsGranularity: .daily,
+                    orderStatsQuantity: 7,
+                    earliestDateToInclude: earliest,
+                    latestDateToInclude: latest,
+                    summaryStatsPeriod: .week,
+                    timezone: timezone)
     }
 
-    private static func rollingStart(daysBack: Int, referenceDate: Date, timezone: TimeZone) -> Date {
+    /// Override needed because calendar months have variable length; the default
+    /// derivation would slide back 30 days from Apr 1 → Mar 2 instead of Mar 1.
+    static func lastMonth(referenceDate: Date = Date(), timezone: TimeZone = .current) -> Self {
+        let calendar = makeCalendar(timezone: timezone)
+        let oneMonthAgo = calendar.date(byAdding: .month, value: -1, to: referenceDate) ?? referenceDate
+        let currentEarliest = oneMonthAgo.startOfMonth(timezone: timezone) ?? oneMonthAgo.startOfDay(timezone: timezone)
+        let currentLatest = oneMonthAgo.endOfMonth(timezone: timezone) ?? oneMonthAgo.endOfDay(timezone: timezone)
+
+        let twoMonthsAgo = calendar.date(byAdding: .month, value: -2, to: referenceDate) ?? referenceDate
+        let previousEarliest = twoMonthsAgo.startOfMonth(timezone: timezone) ?? twoMonthsAgo.startOfDay(timezone: timezone)
+        let previousLatest = twoMonthsAgo.endOfMonth(timezone: timezone) ?? twoMonthsAgo.endOfDay(timezone: timezone)
+
+        return Self(orderStatsGranularity: .daily,
+                    orderStatsQuantity: 31,
+                    earliestDateToInclude: currentEarliest,
+                    latestDateToInclude: currentLatest,
+                    summaryStatsPeriod: .month,
+                    timezone: timezone,
+                    previousPeriodOverride: .init(
+                        earliestDateToInclude: previousEarliest,
+                        latestDateToInclude: previousLatest))
+    }
+
+    /// `latestDateToInclude` extends to end-of-week intentionally — mirrors the hub's
+    /// future-tolerant end so the endpoint returns all available data across timezone edges.
+    static func weekToDate(referenceDate: Date = Date(), timezone: TimeZone = .current) -> Self {
+        let calendar = makeCalendar(timezone: timezone)
+        let currentEarliest = referenceDate.startOfWeek(timezone: timezone, calendar: calendar)
+            ?? referenceDate.startOfDay(timezone: timezone)
+        let currentLatest = referenceDate.endOfWeek(timezone: timezone, calendar: calendar)
+            ?? referenceDate.endOfDay(timezone: timezone)
+
+        let previousLatest = calendar.date(byAdding: .day, value: -7, to: referenceDate) ?? referenceDate
+        let previousEarliest = previousLatest.startOfWeek(timezone: timezone, calendar: calendar)
+            ?? previousLatest.startOfDay(timezone: timezone)
+
+        return Self(orderStatsGranularity: .daily,
+                    orderStatsQuantity: 7,
+                    earliestDateToInclude: currentEarliest,
+                    latestDateToInclude: currentLatest,
+                    summaryStatsPeriod: .week,
+                    timezone: timezone,
+                    previousPeriodOverride: .init(
+                        earliestDateToInclude: previousEarliest,
+                        latestDateToInclude: previousLatest))
+    }
+
+    static func monthToDate(referenceDate: Date = Date(), timezone: TimeZone = .current) -> Self {
+        let calendar = makeCalendar(timezone: timezone)
+        let currentEarliest = referenceDate.startOfMonth(timezone: timezone)
+            ?? referenceDate.startOfDay(timezone: timezone)
+        let currentLatest = referenceDate.endOfMonth(timezone: timezone)
+            ?? referenceDate.endOfDay(timezone: timezone)
+
+        let previousLatest = calendar.date(byAdding: .month, value: -1, to: referenceDate) ?? referenceDate
+        let previousEarliest = previousLatest.startOfMonth(timezone: timezone)
+            ?? previousLatest.startOfDay(timezone: timezone)
+
+        return Self(orderStatsGranularity: .daily,
+                    orderStatsQuantity: 31,
+                    earliestDateToInclude: currentEarliest,
+                    latestDateToInclude: currentLatest,
+                    summaryStatsPeriod: .month,
+                    timezone: timezone,
+                    previousPeriodOverride: .init(
+                        earliestDateToInclude: previousEarliest,
+                        latestDateToInclude: previousLatest))
+    }
+
+    private static func makeCalendar(timezone: TimeZone) -> Calendar {
         var calendar = Calendar.current
         calendar.timeZone = timezone
-        let startOfReferenceDay = referenceDate.startOfDay(timezone: timezone)
-        return calendar.date(byAdding: .day, value: -daysBack, to: startOfReferenceDay) ?? startOfReferenceDay
+        return calendar
     }
 }
 
 // MARK: - Previous-period comparison
 
 extension StoreInfoDataService.DateRange {
-    /// Returns the period of the same length immediately preceding this one. Used by
-    /// `fetchStats(for:dateRange:)` to run a parallel comparison fetch so widgets can
-    /// render period-over-period deltas (today → yesterday, last 7 days → previous 7 days,
-    /// last 30 days → previous 30 days).
-    ///
-    /// `latestDateToInclude` is one second before this period's `earliestDateToInclude`,
-    /// so the windows are contiguous. `summaryStatsPeriod` carries over so visitor stats
-    /// for the previous period continue to query the same calendar granularity (.day /
-    /// .week / .month) — the endpoint resolves it against the previous-period
-    /// `latestDateToInclude`.
-    ///
+    /// Uses `previousPeriodOverride` when set, otherwise derives "same length immediately
+    /// preceding" from the current bounds.
     func previousPeriod() -> Self {
+        if let previousPeriodOverride {
+            return Self(orderStatsGranularity: orderStatsGranularity,
+                        orderStatsQuantity: orderStatsQuantity,
+                        earliestDateToInclude: previousPeriodOverride.earliestDateToInclude,
+                        latestDateToInclude: previousPeriodOverride.latestDateToInclude,
+                        summaryStatsPeriod: summaryStatsPeriod,
+                        timezone: timezone)
+        }
+
         var calendar = Calendar.current
         calendar.timeZone = timezone
 

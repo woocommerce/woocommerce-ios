@@ -96,7 +96,7 @@ struct WidgetSnapshotDiffTests {
             Self.storeStatsTile(dateRange: .today, metrics: [.revenue])
         ])
         let current = WidgetSnapshot(tiles: [
-            Self.storeStatsTile(dateRange: .last7Days, metrics: [.revenue])
+            Self.storeStatsTile(dateRange: .lastWeek, metrics: [.revenue])
         ])
 
         // When
@@ -109,27 +109,27 @@ struct WidgetSnapshotDiffTests {
     // MARK: - addedDateRanges / removedDateRanges
 
     @Test func addedDateRanges_contains_only_newly_used_ranges() {
-        // Given - previous: today; current: today + last7Days (today still in use)
+        // Given - previous: today; current: today + lastWeek (today still in use)
         let previous = WidgetSnapshot(tiles: [
             Self.storeStatsTile(dateRange: .today, metrics: [.revenue])
         ])
         let current = WidgetSnapshot(tiles: [
             Self.storeStatsTile(dateRange: .today, metrics: [.revenue]),
-            Self.storeStatsTile(family: .systemSmall, dateRange: .last7Days, metrics: [.orders])
+            Self.storeStatsTile(family: .systemSmall, dateRange: .lastWeek, metrics: [.orders])
         ])
 
         // When
         let diff = WidgetSnapshotDiff(previous: previous, current: current)
 
-        // Then - today is shared so excluded; only last7Days is new
-        #expect(diff.addedDateRanges == ["last7Days"])
+        // Then - today is shared so excluded; only lastWeek is new
+        #expect(diff.addedDateRanges == ["lastWeek"])
         #expect(diff.removedDateRanges == [])
     }
 
     @Test func removedDateRanges_contains_only_no_longer_used_ranges() {
         // Given
         let previous = WidgetSnapshot(tiles: [
-            Self.storeStatsTile(dateRange: .last30Days, metrics: [.revenue])
+            Self.storeStatsTile(dateRange: .lastMonth, metrics: [.revenue])
         ])
         let current = WidgetSnapshot(tiles: [
             Self.storeStatsTile(dateRange: .today, metrics: [.revenue])
@@ -140,7 +140,7 @@ struct WidgetSnapshotDiffTests {
 
         // Then
         #expect(diff.addedDateRanges == ["today"])
-        #expect(diff.removedDateRanges == ["last30Days"])
+        #expect(diff.removedDateRanges == ["lastMonth"])
     }
 
     // MARK: - addedMetrics / removedMetrics
@@ -325,7 +325,7 @@ struct WidgetSnapshotDiffTests {
         ])
         let current = WidgetSnapshot(tiles: [
             Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue]),
-            Self.storeStatsTile(family: .systemMedium, dateRange: .last7Days, metrics: [.orders])
+            Self.storeStatsTile(family: .systemMedium, dateRange: .lastWeek, metrics: [.orders])
         ])
 
         // When
@@ -342,7 +342,7 @@ struct WidgetSnapshotDiffTests {
             Self.storeStatsTile(family: .systemMedium, dateRange: .today, metrics: [.revenue])
         ])
         let current = WidgetSnapshot(tiles: [
-            Self.storeStatsTile(family: .systemMedium, dateRange: .last7Days, metrics: [.visitors])
+            Self.storeStatsTile(family: .systemMedium, dateRange: .lastWeek, metrics: [.visitors])
         ])
 
         // When
@@ -351,7 +351,7 @@ struct WidgetSnapshotDiffTests {
         // Then - kind:family combo unchanged so widgets diff is empty; metric/dateRange diff non-empty
         #expect(diff.addedWidgets == [])
         #expect(diff.removedWidgets == [])
-        #expect(diff.addedDateRanges == ["last7Days"])
+        #expect(diff.addedDateRanges == ["lastWeek"])
         #expect(diff.removedDateRanges == ["today"])
     }
 }

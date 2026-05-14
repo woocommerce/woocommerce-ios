@@ -21,7 +21,7 @@ struct WidgetSnapshotDiffAnalyticsTests {
         let previous = WidgetSnapshot(tiles: [Self.storeStatsTile()])
         let current = WidgetSnapshot(tiles: [
             Self.storeStatsTile(),
-            Self.storeStatsTile(family: .systemSmall, dateRange: .last7Days, metrics: [.visitors])
+            Self.storeStatsTile(family: .systemSmall, dateRange: .lastWeek, metrics: [.visitors])
         ])
         let diff = WidgetSnapshotDiff(previous: previous, current: current)
 
@@ -61,7 +61,7 @@ struct WidgetSnapshotDiffAnalyticsTests {
         let previous = WidgetSnapshot(tiles: [Self.storeStatsTile()])
         let current = WidgetSnapshot(tiles: [
             Self.storeStatsTile(),
-            Self.storeStatsTile(family: .systemSmall, dateRange: .last7Days, metrics: [.visitors])
+            Self.storeStatsTile(family: .systemSmall, dateRange: .lastWeek, metrics: [.visitors])
         ])
         let diff = WidgetSnapshotDiff(previous: previous, current: current)
 
@@ -69,7 +69,7 @@ struct WidgetSnapshotDiffAnalyticsTests {
         let props = diff.analyticsProperties
 
         // Then
-        #expect(props["info_widget_date_ranges_added"] == "last7Days")
+        #expect(props["info_widget_date_ranges_added"] == "lastWeek")
         #expect(props["info_widget_metrics_added"] == "visitors")
         #expect(props["widgets_added"] == "StoreInfoWidget-systemSmall")
     }
@@ -78,7 +78,7 @@ struct WidgetSnapshotDiffAnalyticsTests {
         // Given
         let previous = WidgetSnapshot(tiles: [
             Self.storeStatsTile(),
-            Self.storeStatsTile(family: .systemSmall, dateRange: .last7Days, metrics: [.visitors])
+            Self.storeStatsTile(family: .systemSmall, dateRange: .lastWeek, metrics: [.visitors])
         ])
         let current = WidgetSnapshot(tiles: [Self.storeStatsTile()])
         let diff = WidgetSnapshotDiff(previous: previous, current: current)
@@ -88,7 +88,7 @@ struct WidgetSnapshotDiffAnalyticsTests {
 
         // Then
         #expect(props["widget_setup_change_type"] == "remove")
-        #expect(props["info_widget_date_ranges_removed"] == "last7Days")
+        #expect(props["info_widget_date_ranges_removed"] == "lastWeek")
         #expect(props["info_widget_metrics_removed"] == "visitors")
         #expect(props["widgets_removed"] == "StoreInfoWidget-systemSmall")
     }

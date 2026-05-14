@@ -10,12 +10,18 @@ struct StoreInfoMetricsGrid: View {
 
     private let leadingSlot: StoreInfoMetricSlot?
     private let rows: [[StoreInfoMetricSlot]]
+    private let dateRange: StoreStatsWidgetDateRange?
 
-    init(metricSlots: [StoreInfoMetricSlot], leadingMetricStyle: LeadingMetricStyle = .standard) {
-        self.init(slots: metricSlots, leadingMetricStyle: leadingMetricStyle)
+    init(
+        metricSlots: [StoreInfoMetricSlot],
+        dateRange: StoreStatsWidgetDateRange? = nil,
+        leadingMetricStyle: LeadingMetricStyle = .standard
+    ) {
+        self.init(slots: metricSlots, dateRange: dateRange, leadingMetricStyle: leadingMetricStyle)
     }
 
-    private init(slots: [StoreInfoMetricSlot], leadingMetricStyle: LeadingMetricStyle) {
+    private init(slots: [StoreInfoMetricSlot], dateRange: StoreStatsWidgetDateRange?, leadingMetricStyle: LeadingMetricStyle) {
+        self.dateRange = dateRange
         switch leadingMetricStyle {
         case .standard:
             self.leadingSlot = nil
@@ -52,14 +58,14 @@ struct StoreInfoMetricsGrid: View {
     @ViewBuilder
     private func regularSlotView(_ slot: StoreInfoMetricSlot) -> some View {
         MetricSlotView(slot: slot, placeholderMinHeight: Layout.regularSlotMinHeight) { metric in
-            MetricCellView(metric: metric)
+            MetricCellView(metric: WidgetMetricPresenter(metric: metric, dateRange: dateRange))
         }
     }
 
     @ViewBuilder
     private func leadingSlotView(_ slot: StoreInfoMetricSlot) -> some View {
         MetricSlotView(slot: slot, placeholderMinHeight: Layout.leadingSlotMinHeight) { metric in
-            MetricLargeCellView(metric: metric)
+            MetricLargeCellView(metric: WidgetMetricPresenter(metric: metric, dateRange: dateRange))
         }
     }
 

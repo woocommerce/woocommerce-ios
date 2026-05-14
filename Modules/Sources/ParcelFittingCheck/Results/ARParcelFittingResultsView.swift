@@ -184,10 +184,9 @@ public struct ARParcelFittingResultsView: View {
 
     private func confirmSelection() {
         switch selection {
-        case .carrier:
-            analytics.track(Event.arfittingSelectPackageTapped(selectionType: .carrier))
-            if case .carrier(let packageID) = selection,
-               let result = viewModel.carrierResults.first(where: { $0.package.id == packageID }) {
+        case .carrier(let packageID):
+            if let result = viewModel.carrierResults.first(where: { $0.package.id == packageID }) {
+                analytics.track(Event.arfittingSelectPackageTapped(selectionType: .carrier))
                 onConfirm(.carrierPackage(result.package, measurement: viewModel.measuredDimensions))
             }
         case .custom:

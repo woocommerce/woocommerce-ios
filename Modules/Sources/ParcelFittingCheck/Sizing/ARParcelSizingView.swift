@@ -66,7 +66,8 @@ struct ARParcelSizingView: View {
             if ready { viewModel.recordARReady() }
         }
         .onChange(of: isPlaced) { _, placed in
-            if placed {
+            if placed && !viewModel.hasTrackedPlacement {
+                viewModel.hasTrackedPlacement = true
                 let elapsed = viewModel.arReadyTime.map { Int(Date().timeIntervalSince($0)) } ?? 0
                 analytics.track(Event.arfittingBoxPlaced(timeToPlace: elapsed))
             }

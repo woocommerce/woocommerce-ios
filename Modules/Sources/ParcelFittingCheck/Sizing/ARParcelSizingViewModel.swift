@@ -9,6 +9,7 @@ final class ARParcelSizingViewModel {
     private(set) var rotateCount: Int = 0
     private(set) var resetCount: Int = 0
     private(set) var arReadyTime: Date?
+    var hasTrackedPlacement: Bool = false
 
     init(unit: UnitLength, initial: ParcelDimensions? = nil) {
         self.unit = unit

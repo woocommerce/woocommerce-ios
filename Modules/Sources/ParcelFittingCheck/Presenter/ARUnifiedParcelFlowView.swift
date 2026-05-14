@@ -1,4 +1,5 @@
 import SwiftUI
+import EventHorizonSDK
 
 struct ARUnifiedParcelFlowView: View {
     let unit: UnitLength
@@ -41,6 +42,11 @@ struct ARUnifiedParcelFlowView: View {
                                                          dimensionUnit: unit)
                     }
                 )
+            }
+        }
+        .onChange(of: path) { oldPath, newPath in
+            if !oldPath.isEmpty && newPath.isEmpty {
+                analytics.track(Event.arfittingResultsBackTapped)
             }
         }
     }

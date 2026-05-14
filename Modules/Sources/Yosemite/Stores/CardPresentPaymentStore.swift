@@ -685,19 +685,6 @@ private extension PaymentIntent {
     }
 }
 
-private extension Data {
-    var restErrorCode: String? {
-        guard let response = try? JSONDecoder().decode(RESTErrorResponse.self, from: self) else {
-            return nil
-        }
-        return response.code
-    }
-}
-
-private struct RESTErrorResponse: Decodable {
-    let code: String
-}
-
 private extension CardPresentTransactionDetails {
     var canProcessAsEftposAu: Bool {
         brand == .eftposAu || availableNetworks?.contains(.eftposAu) == true

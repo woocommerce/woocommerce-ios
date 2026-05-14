@@ -390,6 +390,7 @@
 				StoreInfoMetricType.swift,
 				StoreStatsConfigurationIntent.swift,
 				StoreStatsWidgetDateRange.swift,
+				"StoreStatsWidgetDateRange+Localization.swift",
 				StoreTrendsConfigurationIntent.swift,
 				StoreTrendsEntry.swift,
 				StoreWidgets.intentdefinition,

@@ -263,7 +263,10 @@ let package = Package(
             dependencies: ["Yosemite"]
         ),
         .target(
-            name: "ParcelFittingCheck"
+            name: "ParcelFittingCheck",
+            dependencies: [
+                "EventHorizonSDK",
+            ]
         ),
         .target(
             name: "PointOfSale",

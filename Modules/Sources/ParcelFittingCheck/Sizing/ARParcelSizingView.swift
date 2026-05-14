@@ -1,6 +1,8 @@
 import SwiftUI
+import EventHorizonSDK
 
 struct ARParcelSizingView: View {
+    private let analytics: ParcelFittingAnalyticsTracking
     private let onCancel: () -> Void
     private let onConfirm: (ParcelDimensions) -> Void
 
@@ -12,9 +14,11 @@ struct ARParcelSizingView: View {
 
     init(unit: UnitLength,
          initial: ParcelDimensions? = nil,
+         analytics: ParcelFittingAnalyticsTracking,
          onCancel: @escaping () -> Void,
          onConfirm: @escaping (ParcelDimensions) -> Void) {
         self._viewModel = State(initialValue: ARParcelSizingViewModel(unit: unit, initial: initial))
+        self.analytics = analytics
         self.onCancel = onCancel
         self.onConfirm = onConfirm
     }
@@ -26,7 +30,8 @@ struct ARParcelSizingView: View {
                 isPlaced: $isPlaced,
                 isARReady: $isARReady,
                 resetTrigger: resetTrigger,
-                onDimensionsChanged: { viewModel.update(fromMeters: $0) }
+                onDimensionsChanged: { viewModel.update(fromMeters: $0) },
+                onGestureCompleted: { viewModel.recordGestureCompleted(mode: $0) }
             )
             .ignoresSafeArea()
 
@@ -55,11 +60,26 @@ struct ARParcelSizingView: View {
         }
         .background(Color.black)
         .onChange(of: scenePhase) { _, newPhase in
-            if newPhase != .active { reset() }
+            if newPhase != .active { resetWithoutTracking() }
+        }
+        .onChange(of: isARReady) { _, ready in
+            if ready { viewModel.recordARReady() }
+        }
+        .onChange(of: isPlaced) { _, placed in
+            if placed {
+                let elapsed = viewModel.arReadyTime.map { Int(Date().timeIntervalSince($0)) } ?? 0
+                analytics.track(Event.arfittingBoxPlaced(timeToPlace: elapsed))
+            }
         }
     }
 
-    private func reset() {
+    private func userReset() {
+        resetTrigger += 1
+        viewModel.resetToDefaults()
+        viewModel.recordReset()
+    }
+
+    private func resetWithoutTracking() {
         resetTrigger += 1
         viewModel.resetToDefaults()
     }
@@ -75,11 +95,34 @@ struct ARParcelSizingView: View {
     }
 
     private var topToolbar: some View {
-        ARCuboidSceneToolbar(onCancel: onCancel, onReset: isPlaced ? { reset() } : nil)
+        ARCuboidSceneToolbar(
+            onCancel: {
+                analytics.track(Event.arfittingSizingCanceled(
+                    hadPlacedBox: isPlaced,
+                    arReady: isARReady,
+                    resizeCount: viewModel.resizeCount,
+                    rotateCount: viewModel.rotateCount,
+                    resetCount: viewModel.resetCount
+                ))
+                onCancel()
+            },
+            onReset: isPlaced ? { userReset() } : nil
+        )
     }
 
     private var confirmButton: some View {
-        Button { onConfirm(viewModel.confirmedDimensions) } label: {
+        Button {
+            let cm = viewModel.dimensions.toCentimeters(from: viewModel.unit)
+            analytics.track(Event.arfittingSizingCompleted(
+                lengthCm: cm.length,
+                widthCm: cm.width,
+                heightCm: cm.height,
+                resizeCount: viewModel.resizeCount,
+                rotateCount: viewModel.rotateCount,
+                resetCount: viewModel.resetCount
+            ))
+            onConfirm(viewModel.confirmedDimensions)
+        } label: {
             Text(Localization.useTheseDimensions)
                 .font(.headline)
                 .frame(maxWidth: .infinity)

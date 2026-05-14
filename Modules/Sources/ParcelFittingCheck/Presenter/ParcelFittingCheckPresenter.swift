@@ -1,5 +1,6 @@
 import UIKit
 import SwiftUI
+import EventHorizonSDK
 
 public extension UnitLength {
     static func fromStoreUnit(_ unit: String) -> UnitLength {
@@ -20,12 +21,14 @@ public final class ParcelFittingCheckPresenter {
         unit: UnitLength,
         tintColor: UIColor? = nil,
         initial: ParcelDimensions? = nil,
+        analytics: ParcelFittingAnalyticsTracking,
         onConfirm: @escaping (ParcelDimensions) -> Void
     ) {
         present(from: presenter, tintColor: tintColor) { dismiss in
             ARParcelSizingView(
                 unit: unit,
                 initial: initial,
+                analytics: analytics,
                 onCancel: dismiss,
                 onConfirm: { dims in dismiss(); onConfirm(dims) }
             )
@@ -38,13 +41,16 @@ public final class ParcelFittingCheckPresenter {
         carriers: [ParcelPresetCarrier],
         starredPackageIDs: Set<String> = [],
         tintColor: UIColor? = nil,
+        analytics: ParcelFittingAnalyticsTracking,
         delegate: ParcelFittingDelegate
     ) {
+        analytics.track(Event.arfittingFlowStarted)
         present(from: presenter, tintColor: tintColor) { dismiss in
             ARUnifiedParcelFlowView(
                 unit: unit,
                 carriers: carriers,
                 starredPackageIDs: starredPackageIDs,
+                analytics: analytics,
                 delegate: delegate,
                 dismiss: dismiss
             )

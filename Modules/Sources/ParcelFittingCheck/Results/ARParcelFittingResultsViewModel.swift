@@ -5,6 +5,7 @@ public final class ARParcelFittingResultsViewModel {
     public let measuredDimensions: ParcelDimensions
     public let unit: UnitLength
     public let carrierResults: [CarrierResult]
+    public let totalCarrierCount: Int
 
     public struct CarrierResult: Identifiable {
         public let carrier: ParcelPresetCarrier
@@ -15,6 +16,7 @@ public final class ARParcelFittingResultsViewModel {
     public init(measuredDimensions: ParcelDimensions, unit: UnitLength, carriers: [ParcelPresetCarrier]) {
         self.measuredDimensions = measuredDimensions
         self.unit = unit
+        self.totalCarrierCount = carriers.count
         self.carrierResults = carriers.compactMap { carrier in
             guard let best = Self.smallestFitting(in: carrier.packages, for: measuredDimensions) else { return nil }
             return CarrierResult(carrier: carrier, package: best)

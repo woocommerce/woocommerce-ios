@@ -14,6 +14,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     var onARReady: (() -> Void)?
     var onARLost: (() -> Void)?
     var onDimensionsChanged: ((SIMD3<Float>) -> Void)?
+    var onGestureCompleted: ((TwoFingerCuboidGestureRecognizer.Mode) -> Void)?
 
     func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
         onARReady?()
@@ -92,6 +93,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
         onARReady = nil
         onARLost = nil
         onDimensionsChanged = nil
+        onGestureCompleted = nil
     }
 
     @objc func handleTwoFingerGesture(_ gesture: TwoFingerCuboidGestureRecognizer) {
@@ -118,6 +120,9 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
             }
         case .ended, .cancelled, .failed:
             setInstalledGesturesEnabled(true)
+            if gesture.state == .ended {
+                onGestureCompleted?(gesture.mode)
+            }
             resizeInteraction.end()
             cachedResizeEnvironment = nil
         default:

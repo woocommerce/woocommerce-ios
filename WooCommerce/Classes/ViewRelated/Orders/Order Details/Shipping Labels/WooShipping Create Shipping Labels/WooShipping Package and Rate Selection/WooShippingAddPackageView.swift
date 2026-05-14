@@ -134,6 +134,7 @@ struct WooShippingAddPackageView: View {
             carriers: packagesViewModel.parcelPresetCarriers,
             starredPackageIDs: packagesViewModel.starredCarriersPackages,
             tintColor: .withColorStudio(.wooCommercePurple, shade: .shade60),
+            analytics: ParcelFittingAnalyticsAdaptor(),
             delegate: arDelegate
         )
     }

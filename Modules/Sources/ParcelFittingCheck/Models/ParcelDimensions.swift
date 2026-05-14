@@ -15,6 +15,15 @@ public struct ParcelDimensions: Hashable {
         String.localizedStringWithFormat(Constants.valueFormat, value)
     }
 
+    func toCentimeters(from unit: UnitLength) -> (length: Int, width: Int, height: Int) {
+        let factor = Float(Measurement(value: 1.0, unit: unit).converted(to: .centimeters).value)
+        return (
+            Int((length * factor).rounded()),
+            Int((width * factor).rounded()),
+            Int((height * factor).rounded())
+        )
+    }
+
     // MARK: - Internal
 
     func toMeters(unit: UnitLength) -> SIMD3<Float> {

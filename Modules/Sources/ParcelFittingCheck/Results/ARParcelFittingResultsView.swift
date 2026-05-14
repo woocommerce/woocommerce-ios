@@ -1,20 +1,25 @@
 import SwiftUI
+import EventHorizonSDK
 
 public struct ARParcelFittingResultsView: View {
     let viewModel: ARParcelFittingResultsViewModel
+    let analytics: ParcelFittingAnalyticsTracking
     let delegate: ParcelFittingDelegate?
     let onConfirm: (ParcelFittingResult) -> Void
     let onBrowseAllPackages: (() -> Void)?
 
     @State private var starredPackageIDs: Set<String>
     @State private var selection: Selection?
+    @State private var hasTrackedAppearance = false
 
     public init(viewModel: ARParcelFittingResultsViewModel,
          starredPackageIDs: Set<String>,
+         analytics: ParcelFittingAnalyticsTracking,
          delegate: ParcelFittingDelegate?,
          onConfirm: @escaping (ParcelFittingResult) -> Void,
          onBrowseAllPackages: (() -> Void)? = nil) {
         self.viewModel = viewModel
+        self.analytics = analytics
         self.delegate = delegate
         self.onConfirm = onConfirm
         self.onBrowseAllPackages = onBrowseAllPackages
@@ -35,6 +40,14 @@ public struct ARParcelFittingResultsView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle(Localization.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            guard !hasTrackedAppearance else { return }
+            hasTrackedAppearance = true
+            analytics.track(Event.arfittingResultsDisplayed(
+                carrierMatchCount: viewModel.carrierResults.count,
+                totalCarrierCount: viewModel.totalCarrierCount
+            ))
+        }
     }
 
     // MARK: - Subviews
@@ -71,16 +84,22 @@ public struct ARParcelFittingResultsView: View {
     private var bestFitSection: some View {
         ResultsSectionView(title: bestFitHeaderText) {
             VStack(spacing: 0) {
-                ForEach(viewModel.carrierResults) { result in
+                ForEach(Array(viewModel.carrierResults.enumerated()), id: \.element.id) { index, result in
                     CarrierPackageRow(
                         carrier: result.carrier,
                         package: result.package,
                         unit: viewModel.unit,
                         isSelected: selection == .carrier(result.package.id),
                         isStarred: starredPackageIDs.contains(result.package.id),
-                        onSelect: { selection = .carrier(result.package.id) },
+                        onSelect: {
+                            selection = .carrier(result.package.id)
+                            analytics.track(Event.arfittingCarrierPackageSelected(
+                                index: index,
+                                isStarred: starredPackageIDs.contains(result.package.id)
+                            ))
+                        },
                         onToggleStar: delegate.map { delegate in
-                            { toggleStar(packageID: result.package.id, carrierID: result.carrier.id, delegate: delegate) }
+                            { toggleStar(packageID: result.package.id, carrierID: result.carrier.id, index: index, delegate: delegate) }
                         }
                     )
 
@@ -105,7 +124,10 @@ public struct ARParcelFittingResultsView: View {
                 dimensions: viewModel.measuredDimensions,
                 unit: viewModel.unit,
                 isSelected: selection == .custom,
-                onSelect: { selection = .custom }
+                onSelect: {
+                    selection = .custom
+                    analytics.track(Event.arfittingCustomDimensionsSelected)
+                }
             )
             .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: Constants.cornerRadius))
         }
@@ -115,6 +137,7 @@ public struct ARParcelFittingResultsView: View {
     private var browseAllPackagesLink: some View {
         if let onBrowseAllPackages {
             Button {
+                analytics.track(Event.arfittingBrowseAllPackagesTapped)
                 onBrowseAllPackages()
             } label: {
                 Text(Localization.browseAllPackages)
@@ -148,23 +171,27 @@ public struct ARParcelFittingResultsView: View {
 
     // MARK: - Actions
 
-    private func toggleStar(packageID: String, carrierID: String, delegate: ParcelFittingDelegate) {
+    private func toggleStar(packageID: String, carrierID: String, index: Int, delegate: ParcelFittingDelegate) {
         let willBeStarred = !starredPackageIDs.contains(packageID)
         if willBeStarred {
             starredPackageIDs.insert(packageID)
         } else {
             starredPackageIDs.remove(packageID)
         }
+        analytics.track(Event.arfittingPackageStarTapped(index: index, isStarred: willBeStarred))
         delegate.parcelFittingDidToggleStar(packageID: packageID, carrierID: carrierID, isStarred: willBeStarred)
     }
 
     private func confirmSelection() {
         switch selection {
-        case .carrier(let packageID):
-            if let result = viewModel.carrierResults.first(where: { $0.package.id == packageID }) {
+        case .carrier:
+            analytics.track(Event.arfittingSelectPackageTapped(selectionType: .carrier))
+            if case .carrier(let packageID) = selection,
+               let result = viewModel.carrierResults.first(where: { $0.package.id == packageID }) {
                 onConfirm(.carrierPackage(result.package, measurement: viewModel.measuredDimensions))
             }
         case .custom:
+            analytics.track(Event.arfittingSelectPackageTapped(selectionType: .custom))
             onConfirm(.customDimensions(viewModel.measuredDimensions))
         case nil:
             break
@@ -190,6 +217,7 @@ public struct ARParcelFittingResultsView: View {
                 ]
             ),
             starredPackageIDs: ["usps_medium"],
+            analytics: NoOpParcelFittingAnalytics(),
             delegate: nil,
             onConfirm: { _ in }
         )
@@ -205,6 +233,7 @@ public struct ARParcelFittingResultsView: View {
                 carriers: []
             ),
             starredPackageIDs: [],
+            analytics: NoOpParcelFittingAnalytics(),
             delegate: nil,
             onConfirm: { _ in }
         )

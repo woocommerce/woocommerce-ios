@@ -57,6 +57,7 @@ struct WooShippingSelectedPackageView: View {
                             carriers: arState.carriers
                         ),
                         starredPackageIDs: arState.starredPackageIDs,
+                        analytics: ParcelFittingAnalyticsAdaptor(),
                         delegate: parcelFittingDelegate,
                         onConfirm: { result in
                             showARResults = false

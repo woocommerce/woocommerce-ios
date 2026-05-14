@@ -4,6 +4,7 @@ struct ARUnifiedParcelFlowView: View {
     let unit: UnitLength
     let carriers: [ParcelPresetCarrier]
     let starredPackageIDs: Set<String>
+    let analytics: ParcelFittingAnalyticsTracking
     let delegate: ParcelFittingDelegate
     let dismiss: () -> Void
 
@@ -13,6 +14,7 @@ struct ARUnifiedParcelFlowView: View {
         NavigationStack(path: $path) {
             ARParcelSizingView(
                 unit: unit,
+                analytics: analytics,
                 onCancel: {
                     dismiss()
                     delegate.parcelFittingDidCancel()
@@ -29,6 +31,7 @@ struct ARUnifiedParcelFlowView: View {
                         carriers: carriers
                     ),
                     starredPackageIDs: starredPackageIDs,
+                    analytics: analytics,
                     delegate: delegate,
                     onConfirm: { result in
                         dismiss()

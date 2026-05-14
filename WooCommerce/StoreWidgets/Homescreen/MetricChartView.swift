@@ -200,15 +200,16 @@ private extension MetricChartView {
     /// `*Deep` shades are reserved for zero-value bars and sit a step darker than the
     /// dark end of each gradient.
     enum Palette {
-        // Green (uptrend): dark green → light mint
-        static let upHigh = Color(red: 0.45, green: 0.95, blue: 0.70)
-        static let upLow = Color(red: 0.10, green: 0.55, blue: 0.30)
-        static let upDeep = Color(red: 0.07, green: 0.40, blue: 0.22)
+        // Uptrend: pastel mint → soft sage. Same green semantics as the original, with luminance raised and
+        // saturation dropped so the bars read as a highlight on purple rather than competing with it.
+        static let upHigh = Color(red: 0.75, green: 0.95, blue: 0.82)
+        static let upLow = Color(red: 0.45, green: 0.78, blue: 0.60)
+        static let upDeep = Color(red: 0.32, green: 0.62, blue: 0.48)
 
-        // Red (downtrend): dark red → light coral
-        static let downHigh = Color(red: 1.00, green: 0.55, blue: 0.55)
-        static let downLow = Color(red: 0.60, green: 0.12, blue: 0.12)
-        static let downDeep = Color(red: 0.45, green: 0.09, blue: 0.09)
+        // Downtrend: pastel rose → mauve. Same red semantics, calmed to match the uptrend's chroma band.
+        static let downHigh = Color(red: 1.00, green: 0.78, blue: 0.78)
+        static let downLow = Color(red: 0.80, green: 0.50, blue: 0.55)
+        static let downDeep = Color(red: 0.65, green: 0.38, blue: 0.42)
 
         // Neutral fallback when trend direction is unknown.
         static let neutralHigh = Color(red: 0.45, green: 0.95, blue: 0.78)

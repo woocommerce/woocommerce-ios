@@ -63,6 +63,13 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
       - Do not mention the release version or version number in the output.
       - The final text must be #{PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer, including spaces.
       - Preserve correct grammar and spelling. Do not drop letters from words, omit articles, or invent abbreviations to fit the character limit. If a draft is too long, restructure or remove a phrase or item rather than mutilating individual words.
+      - No hype filler. Avoid hype adverbs and stock launch words such as "excitingly", "amazingly", "incredibly", "brand new", "introducing", or "we're thrilled". State the change directly.
+      - No invented padding. Every clause must trace back to a provided item. Do not add generic claims like "smoother experience", "streamlined interface", or "improved performance" unless an item explicitly says so.
+      - No generic outro CTAs. Do not end with calls-to-action like "Update your app", "Update now!", "Try it today", or "Explore these features". The paragraph should end on a substantive change.
+      - Active, benefit-led voice. Lead with what the merchant can now do, not with passive "X has been added". Prefer "Switch between Gross, Net, and Total revenue" over "Revenue switching has been added".
+
+      Style reference (for tone only — do not reuse phrasing, only the cadence and merchant-led framing):
+      "Get deeper insights with a revamped Performance card. Quickly switch between Gross, Net, and Total revenue, and choose which order date (paid, placed, or completed) drives your totals. We've also improved shipping label flows with FedEx TOS handling, refreshed POS empty states, and expanded POS availability to Puerto Rico."
 
       Check your draft by calling the `validate_release_notes_length` tool with the proposed text.
       The tool will reply with `{ ok: true, length: }` if the draft fits within the character limit, or with `{ ok: false, length:, max:, cut_at_least?, reason? }` otherwise — `cut_at_least` is included when the draft is too long, `reason` is included for other rejections (e.g. an empty draft).

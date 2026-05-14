@@ -23,25 +23,47 @@ struct MetricChartView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            Chart(Array(data.enumerated()), id: \.offset) { index, point in
+            let layout = barLayout(chartWidth: proxy.size.width)
+            configuredChart(layout: layout)
+        }
+    }
+
+    @ViewBuilder
+    private func configuredChart(layout: BarLayout) -> some View {
+        let chart = Chart {
+            // Baseline rule is emitted before the bars so the bars paint on top of it.
+            if style == .bar, layout.showsBaseline {
+                RuleMark(y: .value("Baseline", 0))
+                    .foregroundStyle(Color.white.opacity(Constants.baselineOpacity))
+                    .lineStyle(StrokeStyle(
+                        lineWidth: Constants.baselineLineWidth,
+                        lineCap: .round,
+                        dash: Constants.baselineDashPattern
+                    ))
+            }
+            ForEach(Array(data.enumerated()), id: \.offset) { index, point in
                 switch style {
                 case .bar:
-                    barMark(
-                        index: index,
-                        point: point,
-                        cornerRadius: barCornerRadius(chartWidth: proxy.size.width)
-                    )
+                    barMark(index: index, point: point, barWidth: layout.barWidth)
                 case .sparkline:
                     sparklineMarks(index: index, point: point)
                 }
             }
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartYScale(domain: 0...yDomainMax)
-            .chartPlotStyle { plot in
-                plot.frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-            .accessibilityHidden(true)
+        }
+        .chartXAxis(.hidden)
+        .chartYAxis(.hidden)
+        .chartYScale(domain: 0...yDomainMax)
+        .chartPlotStyle { plot in
+            plot.frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .accessibilityHidden(true)
+
+        // chartXScale only applies to the bar style. For sparklines, the implicit
+        // data-fit domain keeps the line/area spanning the full chart width.
+        if style == .bar {
+            chart.chartXScale(domain: layout.domain)
+        } else {
+            chart
         }
     }
 }
@@ -55,19 +77,20 @@ private extension MetricChartView {
     /// baseline rather than disappearing entirely. Zero bars also use a muted tone
     /// color so they read as "no data" rather than a real low value.
     ///
-    /// `cornerRadius` is half the rendered bar width so tops are fully rounded.
+    /// Corner radius is half the rendered bar width so tops are fully rounded.
+    /// `barWidth` is fixed in points (capped to `maxBarSlotWidth * barWidthRatio`) so the
+    /// bars don't balloon on sparse data; the surrounding chart x-domain is expanded
+    /// in `barLayout` to center the bar group within the full chart width.
     ///
-    func barMark(index: Int, point: MetricChartPoint, cornerRadius: Double) -> some ChartContent {
+    func barMark(index: Int, point: MetricChartPoint, barWidth: Double) -> some ChartContent {
         let isZero = point.value <= 0
         return BarMark(
-            // Categorical x — numeric x makes BarMark widths size off the data range and
-            // overlap once the slot is narrow.
-            x: .value("Index", String(index)),
+            x: .value("Index", Double(index)),
             y: .value("Value", max(point.value, barMinHeight)),
-            width: .ratio(Constants.barWidthRatio)
+            width: .fixed(barWidth)
         )
         .foregroundStyle(isZero ? AnyShapeStyle(zeroBarColor) : AnyShapeStyle(lineGradient))
-        .cornerRadius(cornerRadius)
+        .cornerRadius(min(barWidth / 2, Constants.maxBarCornerRadius))
     }
 
     /// Area + line pair for the `.sparkline` style. Both share the same interpolation so
@@ -112,13 +135,43 @@ private extension MetricChartView {
         yDomainMax * Constants.barMinHeightRatio
     }
 
-    /// Approximate rendered bar width derived from the chart's outer width. Used to
-    /// pick a corner radius equal to half the bar width so tops are fully rounded.
-    /// Axis-hidden charts have negligible plot insets, so this is close enough.
-    func barCornerRadius(chartWidth: Double) -> Double {
-        guard !data.isEmpty, chartWidth > 0 else { return 0 }
-        let barWidth = chartWidth / Double(data.count) * Constants.barWidthRatio
-        return barWidth / 2
+    /// Derived bar geometry for the `.bar` style.
+    ///
+    /// `barWidth` is `min(naturalSlot, maxBarSlotWidth) * barWidthRatio` — capped so wide
+    /// widgets with few data points don't render chunky bars.
+    ///
+    /// `domain` is the x-scale domain to apply to the chart. When the cap isn't engaged
+    /// it matches the natural categorical-equivalent domain (`-0.5...count - 0.5`) so the
+    /// bars fill edge-to-edge. When the cap kicks in, the domain is widened symmetrically
+    /// so the bars cluster in the chart's middle while the chart view itself still occupies
+    /// the full width.
+    ///
+    /// Axis-hidden charts have negligible plot insets, so the chart's outer width is close
+    /// enough to the plot width for this math.
+    ///
+    func barLayout(chartWidth: Double) -> BarLayout {
+        let count = Double(data.count)
+        guard count > 0, chartWidth > 0 else {
+            return BarLayout(barWidth: 0, domain: -0.5...0.5, showsBaseline: false)
+        }
+        let naturalSlot = chartWidth / count
+        let slot = min(naturalSlot, Constants.maxBarSlotWidth)
+        let barWidth = slot * Constants.barWidthRatio
+        let domainSpan = chartWidth / slot
+        let halfEmpty = max(0, (domainSpan - count) / 2)
+        return BarLayout(
+            barWidth: barWidth,
+            domain: (-0.5 - halfEmpty)...(count - 0.5 + halfEmpty),
+            showsBaseline: halfEmpty > 0
+        )
+    }
+
+    struct BarLayout {
+        let barWidth: Double
+        let domain: ClosedRange<Double>
+        // True when the bar group is narrower than the chart and clusters in the middle.
+        // The caller anchors the chart visually by drawing a baseline rule across the full width.
+        let showsBaseline: Bool
     }
 
     /// Solid color for zero-value bars — uses the deepest shade of the tone palette
@@ -200,15 +253,16 @@ private extension MetricChartView {
     /// `*Deep` shades are reserved for zero-value bars and sit a step darker than the
     /// dark end of each gradient.
     enum Palette {
-        // Green (uptrend): dark green → light mint
-        static let upHigh = Color(red: 0.45, green: 0.95, blue: 0.70)
-        static let upLow = Color(red: 0.10, green: 0.55, blue: 0.30)
-        static let upDeep = Color(red: 0.07, green: 0.40, blue: 0.22)
+        // Uptrend: pastel mint → soft sage. Same green semantics as the original, with luminance raised and
+        // saturation dropped so the bars read as a highlight on purple rather than competing with it.
+        static let upHigh = Color(red: 0.75, green: 0.95, blue: 0.82)
+        static let upLow = Color(red: 0.45, green: 0.78, blue: 0.60)
+        static let upDeep = Color(red: 0.32, green: 0.62, blue: 0.48)
 
-        // Red (downtrend): dark red → light coral
-        static let downHigh = Color(red: 1.00, green: 0.55, blue: 0.55)
-        static let downLow = Color(red: 0.60, green: 0.12, blue: 0.12)
-        static let downDeep = Color(red: 0.45, green: 0.09, blue: 0.09)
+        // Downtrend: pastel rose → mauve. Same red semantics, calmed to match the uptrend's chroma band.
+        static let downHigh = Color(red: 1.00, green: 0.78, blue: 0.78)
+        static let downLow = Color(red: 0.80, green: 0.50, blue: 0.55)
+        static let downDeep = Color(red: 0.65, green: 0.38, blue: 0.42)
 
         // Neutral fallback when trend direction is unknown.
         static let neutralHigh = Color(red: 0.45, green: 0.95, blue: 0.78)
@@ -218,8 +272,15 @@ private extension MetricChartView {
 
     enum Constants {
         static let barWidthRatio = 0.87
+        // Per-bar slot cap in points. Bars never get wider than `maxBarSlotWidth * barWidthRatio`;
+        // sparser data clusters the bars in the middle of the chart instead of stretching them.
+        static let maxBarSlotWidth = 24.0
         static let barMinHeightRatio = 0.02
         static let sparklineLineWidth = 1.5
+        static let baselineLineWidth = 1.0
+        static let baselineOpacity = 0.25
+        static let baselineDashPattern: [CGFloat] = [8, 5]
+        static let maxBarCornerRadius = 6.0
         static let areaTopOpacity = 0.75
         static let minYDomainCeiling = 1.0
     }

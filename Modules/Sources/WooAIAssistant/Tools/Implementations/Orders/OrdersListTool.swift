@@ -49,11 +49,11 @@ public enum OrdersListTool {
                 ]),
                 "after": .object([
                     "type": .string("string"),
-                    "description": .string("ISO-8601 lower bound on date_modified.")
+                    "description": .string("ISO-8601 lower bound on date_created.")
                 ]),
                 "before": .object([
                     "type": .string("string"),
-                    "description": .string("ISO-8601 upper bound on date_modified.")
+                    "description": .string("ISO-8601 upper bound on date_created.")
                 ]),
                 "orderby": .object([
                     "type": .string("string"),

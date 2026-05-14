@@ -185,14 +185,13 @@ extension Analytics {
     }
 }
 
-// MARK: - EventHorizon Trackable Bridge
+// MARK: - EventHorizon Event Bridge
 
 extension Analytics {
-    /// Track a codegen'd Trackable event through the existing analytics pipeline.
-    func track(_ event: some Trackable) {
-        let properties = event.analyticsProperties as [AnyHashable: Any]
+    func track(_ event: Event) {
+        let properties = event.properties as [AnyHashable: Any]
         let enrichedProperties = appendSiteProperties(to: properties)
-        track(event.analyticsName, properties: enrichedProperties, error: nil)
+        track(event.name, properties: enrichedProperties, error: nil)
     }
 }
 

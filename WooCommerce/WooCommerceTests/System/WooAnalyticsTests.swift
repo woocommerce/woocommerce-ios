@@ -238,9 +238,9 @@ class WooAnalyticsTests: XCTestCase {
         }
     }
 
-    // MARK: - Trackable Bridge
+    // MARK: - Event Bridge
 
-    func test_track_Trackable_when_authenticated_then_includes_site_properties() {
+    func test_track_Event_when_authenticated_then_includes_site_properties() {
         // Given
         guard let testingProvider else {
             return XCTFail("Testing provider not available")
@@ -253,19 +253,18 @@ class WooAnalyticsTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: testingProvider)
 
         // When
-        analytics.track(MockTrackableEvent(analyticsName: "test_event",
-                                           analyticsProperties: ["key1": "value1"]))
+        analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
 
         // Then
-        XCTAssertEqual(testingProvider.receivedEvents.first, "test_event")
+        XCTAssertEqual(testingProvider.receivedEvents.first, "booking_detail_attendance_status_update")
         guard let receivedProperties = testingProvider.receivedProperties.first else {
             return XCTFail("No properties found")
         }
-        XCTAssertEqual(receivedProperties["key1"] as? String, "value1")
+        XCTAssertEqual(receivedProperties["booking_status"] as? String, "attended")
         XCTAssertEqual(receivedProperties["blog_id"] as? Int64, sampleSiteID)
     }
 
-    func test_track_Trackable_when_not_authenticated_then_skips_site_properties() {
+    func test_track_Event_when_not_authenticated_then_skips_site_properties() {
         // Given
         guard let testingProvider else {
             return XCTFail("Testing provider not available")
@@ -275,15 +274,14 @@ class WooAnalyticsTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: testingProvider)
 
         // When
-        analytics.track(MockTrackableEvent(analyticsName: "test_event",
-                                           analyticsProperties: ["key1": "value1"]))
+        analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
 
         // Then
-        XCTAssertEqual(testingProvider.receivedEvents.first, "test_event")
+        XCTAssertEqual(testingProvider.receivedEvents.first, "booking_detail_attendance_status_update")
         guard let receivedProperties = testingProvider.receivedProperties.first else {
             return XCTFail("No properties found")
         }
-        XCTAssertEqual(receivedProperties["key1"] as? String, "value1")
+        XCTAssertEqual(receivedProperties["booking_status"] as? String, "attended")
         XCTAssertNil(receivedProperties["blog_id"])
     }
 }
@@ -306,19 +304,3 @@ private extension WooAnalyticsTests {
     }
 }
 
-// MARK: - Mock Trackable
-
-private struct MockTrackableEvent: Trackable {
-    let analyticsName: String
-    let analyticsProperties: [String: any CustomStringConvertible]
-
-    var description: String { analyticsName }
-
-    static func == (lhs: MockTrackableEvent, rhs: MockTrackableEvent) -> Bool {
-        lhs.analyticsName == rhs.analyticsName
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(analyticsName)
-    }
-}

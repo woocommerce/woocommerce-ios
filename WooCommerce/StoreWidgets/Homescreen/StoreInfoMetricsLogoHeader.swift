@@ -2,6 +2,8 @@ import SwiftUI
 
 /// Logo-led header shared by all metric layouts.
 struct StoreInfoMetricsLogoHeader: View {
+    @Environment(\.storeWidgetTheme) private var theme
+
     let data: StoreInfoData
     private let showsRange: Bool
     private let showsUpdatePrefix: Bool
@@ -17,10 +19,12 @@ struct StoreInfoMetricsLogoHeader: View {
     var body: some View {
         HStack(alignment: .top, spacing: Layout.logoSpacing) {
             Image("woo-mini-logo", bundle: nil)
+                .renderingMode(.template)
                 .resizable()
                 .scaledToFit()
                 .frame(width: Layout.logoWidth, height: Layout.logoHeight)
                 .padding(.top, Layout.logoTopInset)
+                .foregroundStyle(theme.logoTintColor)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: Layout.textSpacing) {

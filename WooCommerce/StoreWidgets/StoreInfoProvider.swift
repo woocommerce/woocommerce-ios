@@ -21,10 +21,8 @@ enum StoreInfoEntry: TimelineEntry {
 
 /// Type that represents the the widget state data.
 ///
-/// Field shape matches trunk so the legacy `StoreInfoView` / `StatsCard` and the lock-screen
-/// widgets keep building unchanged. The metric catalog (`metrics`) is defaulted so callers
-/// that only need the legacy String fields don't have to populate it. The main provider
-/// populates both shapes; view selection is controlled by `useMetricsHomescreenWidget`.
+/// Lock-screen widgets read the pre-formatted String fields directly. The home-screen widget
+/// uses the metric catalog via `metricSlots`. The provider populates both shapes.
 ///
 struct StoreInfoData {
     /// Eg: Today, Weekly, Monthly, Yearly
@@ -64,7 +62,7 @@ struct StoreInfoData {
     ///
     var metricSlots: [StoreInfoMetricSlot]
 
-    /// Concrete metric entries, derived from `metricSlots` for legacy readers and analytics
+    /// Concrete metric entries, derived from `metricSlots` for analytics and other readers
     /// that should ignore explicit empty slots.
     ///
     var metrics: [StoreInfoMetric] {
@@ -130,13 +128,10 @@ extension StoreInfoData {
 
 /// Type that provides data entries to the widget system.
 ///
-/// Backs both the legacy `StaticConfiguration` path (via `TimelineProvider` here) and the
-/// `AppIntentConfiguration` path (via `AppIntentTimelineProvider` conformance in
-/// `StoreInfoProvider+AppIntentTimelineProvider.swift`). Sharing one provider keeps the
-/// data-fetching logic in a single place while the configurable widget rolls out behind
-/// `FeatureFlag.configurableStoreStatsWidgets`.
+/// Backs the `AppIntentConfiguration` path via `AppIntentTimelineProvider` conformance in
+/// `StoreInfoProvider+AppIntentTimelineProvider.swift`.
 ///
-final class StoreInfoProvider: TimelineProvider {
+final class StoreInfoProvider {
 
     /// Desired data reload interval provided to system = 30 minutes.
     ///
@@ -166,25 +161,8 @@ final class StoreInfoProvider: TimelineProvider {
         )
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
-        completion(placeholder(in: context))
-    }
-
-    func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
-        Task {
-            // Legacy `StaticConfiguration` path. Hardcoded today range + 4-cell preset, bypassing
-            // the AppIntent metric resolver on purpose — the configurable behavior belongs to
-            // the `AppIntentConfiguration` branch only.
-            let timeline = await loadTimeline(dateRange: .today, metrics: Self.legacyMetricsPreset)
-            completion(timeline)
-        }
-    }
-
-    /// Shared loader for both `TimelineProvider` and `AppIntentTimelineProvider` paths.
-    /// Visible to extensions in this module so the AppIntent conformance can share logic.
-    ///
-    /// The legacy path passes `legacyMetricsPreset`; the AppIntent path passes the resolved
-    /// user selection from `resolveMetricSelection`.
+    /// Shared loader for the `AppIntentTimelineProvider` path. Visible to extensions in this
+    /// module so the AppIntent conformance can share logic.
     ///
     func loadTimeline(
         dateRange: StoreStatsWidgetDateRange,
@@ -219,18 +197,7 @@ final class StoreInfoProvider: TimelineProvider {
     }
 }
 
-// MARK: - Metric presets & resolution
-
-extension StoreInfoProvider {
-    /// Hardcoded preset used by the legacy `StaticConfiguration` path (`getTimeline`) and as the
-    /// fallback placeholder selection. Matches the original 4-cell shape — non-WPCom users see
-    /// `visitors` / `conversion` as `.unavailable`. Real AppIntent timelines and snapshots
-    /// derive their selection from the user's stored configuration.
-    ///
-    static let legacyMetricsPreset: [StoreInfoMetricType] = [
-        .revenue, .visitors, .orders, .conversion
-    ]
-}
+// MARK: - Metric resolution
 
 extension StoreInfoProvider {
     /// Catalog priority order. Mirrors the parameter `default:` in `StoreStatsConfigurationIntent`
@@ -253,8 +220,6 @@ extension StoreInfoProvider {
     }
 
     /// Maps the user's requested metric set onto what the configurable widget can render.
-    /// **AppIntent path only** — the legacy `StaticConfiguration` path bypasses this entirely
-    /// and uses `legacyMetricsPreset`.
     ///
     /// iOS persists the user's selection per tile and does not auto-extend the array when a
     /// tile resizes to a larger family — `EntityQuery` has no default-fill hook to participate
@@ -431,15 +396,15 @@ private extension StoreInfoProvider {
 private extension StoreInfoProvider {
 
     /// Redacted entry with sample data. If dependencies are available — store name and currency
-    /// settings will be used. Both the legacy String fields and the metric-driven slots derive
-    /// from `Stats.placeholderSample`, while the metric selection mirrors the family-specific
-    /// AppIntent defaults so the widget gallery renders a complete preview with trends and
-    /// charts.
+    /// settings will be used. Both the pre-formatted String fields and the metric-driven slots
+    /// derive from `Stats.placeholderSample`, while the metric selection mirrors the
+    /// family-specific AppIntent defaults so the widget gallery renders a complete preview
+    /// with trends and charts.
     ///
     static func placeholderEntry(
         for dependencies: Dependencies?,
         dateRange: StoreStatsWidgetDateRange = .today,
-        metrics: [StoreInfoMetricType] = legacyMetricsPreset,
+        metrics: [StoreInfoMetricType],
         theme: StoreWidgetTheme = .brandPurple
     ) -> StoreInfoEntry {
         let currencySettings = dependencies?.store.storeCurrencySettings ?? CurrencySettings()
@@ -474,13 +439,12 @@ private extension StoreInfoProvider {
     }
 
     /// Real data entry. `metrics` is the resolved selection — already family-sliced and topped
-    /// up by `resolveMetricSelection` for the AppIntent path, or the legacy hardcoded preset for
-    /// the `StaticConfiguration` path. Ordering here is what the home-screen view renders,
+    /// up by `resolveMetricSelection`. Ordering here is what the home-screen view renders,
     /// including explicit `.none` entries that preserve empty slots.
     ///
     /// Each `StoreInfoMetric` carries both the current and the previous-period value so the
-    /// metric-driven home-screen view can render trend badges. The legacy String fields below
-    /// only reflect the current period.
+    /// metric-driven home-screen view can render trend badges. The pre-formatted String
+    /// fields below only reflect the current period.
     ///
     static func dataEntry(for statsPeriod: StoreInfoDataService.StatsPeriod,
                           dateRange: StoreStatsWidgetDateRange,

@@ -303,7 +303,7 @@ struct CardReferenceResolverTests {
         #expect(rendered.id == "821/822")
     }
 
-    @Test(arguments: ["822", "821/", "/822", "821/822/823", "abc/822", "821/abc", "0/822", "821/0"])
+    @Test(arguments: ["", "822", "821/", "/822", "821/822/823", "abc/822", "821/abc", "0/822", "821/0"])
     func test_resolve_when_variation_id_is_not_a_valid_combined_id_then_malformed(rawID: String) async {
         // Given
         let client = StubbedWCRESTClient()

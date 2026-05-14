@@ -194,7 +194,6 @@ private extension RefundConfirmationViewModel {
             switch details.charge?.paymentMethodDetails {
             case .some(.cardPresent(let cardDetails)), .some(.interacPresent(let cardDetails)):
                 return PaymentDetailsRow(cardIcon: cardDetails.brand.icon,
-                                         cardIconAspectHorizontal: cardDetails.brand.iconAspectHorizontal,
                                          paymentGateway: details.order.paymentMethodTitle,
                                          paymentMethodDescription: cardDetails.brand.cardDescription(last4: cardDetails.last4),
                                          accessibilityDescription: cardDetails.brand.cardAccessibilityDescription(last4: cardDetails.last4))
@@ -268,7 +267,6 @@ extension RefundConfirmationViewModel {
     /// A row that shows an optional payment method image, a gateway name, and an description for the payment below
     struct PaymentDetailsRow: RefundConfirmationViewModelRow {
         let cardIcon: UIImage?
-        let cardIconAspectHorizontal: CGFloat
         let paymentGateway: String
         let paymentMethodDescription: String
         let accessibilityDescription: NSAttributedString

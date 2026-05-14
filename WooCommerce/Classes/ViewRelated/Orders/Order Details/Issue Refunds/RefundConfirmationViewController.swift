@@ -183,7 +183,6 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             cell.update(title: row.paymentGateway,
                         cardDescription: row.paymentMethodDescription,
                         cardIcon: row.cardIcon,
-                        iconAspectHorizontal: row.cardIconAspectHorizontal,
                         accessibilityDescription: row.accessibilityDescription)
             return cell
         default:

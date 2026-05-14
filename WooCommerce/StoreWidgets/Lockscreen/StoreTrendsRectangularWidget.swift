@@ -189,7 +189,7 @@ struct StoreTrendsRectangularWidget_Previews: PreviewProvider {
     static var previews: some View {
         StoreTrendsRectangularView(
             metric: sampleData.metrics[0],
-            compactRange: StoreStatsWidgetDateRange.last30Days.localizedCompactRangeLabel
+            compactRange: StoreStatsWidgetDateRange.last7Days.localizedCompactRangeLabel
         )
         .widgetBackground(backgroundView: Color.clear)
         .previewContext(WidgetPreviewContext(family: .accessoryRectangular))

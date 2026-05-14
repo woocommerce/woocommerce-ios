@@ -153,7 +153,10 @@ final class StoreInfoDataService {
     ///
     func fetchGeneralSettings(siteID: Int64) async throws -> CurrencySettings {
         let siteSettings = try await fetchGeneralSiteSettings(for: siteID)
-        return CurrencySettings(siteSettings: siteSettings)
+        guard let currencySettings = CurrencySettings.completeSettings(siteSettings: siteSettings) else {
+            throw GeneralSettingsError.incompleteCurrencySettings
+        }
+        return currencySettings
     }
 #endif
 
@@ -444,6 +447,7 @@ private extension StoreInfoDataService {
 #if canImport(Networking)
     enum GeneralSettingsError: Error {
         case missingSettings
+        case incompleteCurrencySettings
     }
 
     /// Async wrapper that fetches general settings for the given site.

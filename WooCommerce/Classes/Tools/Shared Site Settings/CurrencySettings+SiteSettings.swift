@@ -9,6 +9,16 @@ extension CurrencySettings {
         siteSettings.forEach { updateCurrencyOptions(with: $0) }
     }
 
+    /// Returns currency settings only when the general settings response includes every key
+    /// the widget formatter needs. Missing keys would otherwise silently keep default values.
+    static func completeSettings(siteSettings: [SiteSetting]) -> CurrencySettings? {
+        let presentSettingIDs = Set(siteSettings.map(\.settingID))
+        guard Constants.requiredSettingIDs.isSubset(of: presentSettingIDs) else {
+            return nil
+        }
+        return CurrencySettings(siteSettings: siteSettings)
+    }
+
     func updateCurrencyOptions(with siteSetting: SiteSetting) {
         let value = siteSetting.value
 
@@ -40,5 +50,13 @@ extension CurrencySettings {
         static let thousandSeparatorKey = "woocommerce_price_thousand_sep"
         static let decimalSeparatorKey = "woocommerce_price_decimal_sep"
         static let numberOfDecimalsKey = "woocommerce_price_num_decimals"
+
+        static let requiredSettingIDs: Set<String> = [
+            currencyCodeKey,
+            currencyPositionKey,
+            thousandSeparatorKey,
+            decimalSeparatorKey,
+            numberOfDecimalsKey
+        ]
     }
 }

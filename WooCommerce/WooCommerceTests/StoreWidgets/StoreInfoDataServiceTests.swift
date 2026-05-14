@@ -189,6 +189,20 @@ struct StoreInfoDataServiceTests {
         #expect(network.requestsForResponseData.count == 1)
     }
 
+    @Test func fetchGeneralSettings_when_response_has_incomplete_currency_settings_then_throws() async {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "settings/general", filename: "broken-settings-general")
+        let sut = StoreInfoDataService(network: network)
+
+        // Then
+        await #expect(throws: Error.self) {
+            // When
+            try await sut.fetchGeneralSettings(siteID: 1234)
+        }
+        #expect(network.requestsForResponseData.count == 1)
+    }
+
     @Test func fetchGeneralSettings_when_request_fails_then_throws() async {
         // Given
         let network = MockNetwork()

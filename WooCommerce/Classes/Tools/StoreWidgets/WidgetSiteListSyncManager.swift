@@ -216,18 +216,7 @@ private extension WidgetSiteListSyncManager {
     /// for this site; otherwise returns `nil` so the widget can fall back to the default site's
     /// currency settings at render time.
     func currencySettings(from siteSettings: [SiteSetting]) -> CurrencySettings? {
-        let requiredSettingIDs: Set<String> = [
-            CurrencySettings.Constants.currencyCodeKey,
-            CurrencySettings.Constants.currencyPositionKey,
-            CurrencySettings.Constants.thousandSeparatorKey,
-            CurrencySettings.Constants.decimalSeparatorKey,
-            CurrencySettings.Constants.numberOfDecimalsKey
-        ]
-        let presentSettingIDs = Set(siteSettings.map(\.settingID))
-        guard requiredSettingIDs.isSubset(of: presentSettingIDs) else {
-            return nil
-        }
-        return CurrencySettings(siteSettings: siteSettings)
+        CurrencySettings.completeSettings(siteSettings: siteSettings)
     }
 
     func removeCachedCurrencySettingsForAuthoritativeSites(_ sites: [WidgetSite]) {

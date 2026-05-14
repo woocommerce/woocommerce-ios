@@ -60,6 +60,44 @@ struct WidgetSnapshotTests {
         #expect(configuration.isDefault == nil)
     }
 
+    @Test func storeInfo_tile_from_intent_uses_storeStats_configuration_intent() {
+        // Given
+        var intent = StoreStatsConfigurationIntent()
+        intent.dateRange = .last7Days
+        intent.metrics = [.revenue, .orders]
+
+        // When
+        let tile = WidgetSnapshot.Tile(
+            kind: WooConstants.storeInfoWidgetKind,
+            family: .systemMedium,
+            intent: intent
+        )
+
+        // Then
+        #expect(tile.kind == WooConstants.storeInfoWidgetKind)
+        #expect(tile.family == .systemMedium)
+        #expect(tile.configuration == .storeStats(dateRange: .last7Days, metrics: [.revenue, .orders, .itemsSold, .averageOrderValue]))
+    }
+
+    @Test func storeTrends_tile_from_intent_uses_storeTrends_configuration_intent() {
+        // Given
+        var intent = StoreTrendsConfigurationIntent()
+        intent.dateRange = .last30Days
+        intent.metrics = [.visitors]
+
+        // When
+        let tile = WidgetSnapshot.Tile(
+            kind: WooConstants.storeTrendsWidgetKind,
+            family: .accessoryRectangular,
+            intent: intent
+        )
+
+        // Then
+        #expect(tile.kind == WooConstants.storeTrendsWidgetKind)
+        #expect(tile.family == .accessoryRectangular)
+        #expect(tile.configuration == .storeStats(dateRange: .last30Days, metrics: [.revenue]))
+    }
+
     @Test func snapshots_with_same_tiles_are_equal_and_hash_equal() {
         // Given
         let tile = WidgetSnapshot.Tile(

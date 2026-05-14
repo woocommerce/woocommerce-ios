@@ -137,6 +137,16 @@ struct AssistantSystemPromptTests {
     }
 
     @Test
+    func test_build_documents_scope_and_off_topic_decline() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let scopeSection = section(in: prompt, from: "# Scope and off-topic requests", to: "# Where to send the merchant when no tool fits")
+
+        #expect(scopeSection.contains("apologise briefly and decline"))
+        #expect(scopeSection.contains("Call no tools, render no cards"))
+        #expect(prompt.contains("Off-topic / non-WooCommerce questions: apologise briefly and decline; no tools, no cards."))
+    }
+
+    @Test
     func test_build_when_called_then_prompt_does_not_mention_extra_fields() {
         // Given
         let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")

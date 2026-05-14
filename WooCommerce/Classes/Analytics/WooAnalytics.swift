@@ -193,6 +193,11 @@ extension Analytics {
         let enrichedProperties = appendSiteProperties(to: properties)
         track(event.name, properties: enrichedProperties, error: nil)
     }
+
+    func track(_ eventName: String, withEventProperties properties: [String: any CustomStringConvertible]) {
+        let enrichedProperties = appendSiteProperties(to: properties as [AnyHashable: Any])
+        track(eventName, properties: enrichedProperties, error: nil)
+    }
 }
 
 // MARK: - Site Property Enrichment

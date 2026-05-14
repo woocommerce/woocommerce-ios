@@ -1,9 +1,8 @@
-import EventHorizonSDK
 import Foundation
 
 /**
  * The first accepted user request starts a new assistant conversation. */
-public struct AiAssistantConversationStartedEvent: Trackable {
+public struct AiAssistantConversationStartedEvent {
 
   public static let eventName: String = "ai_assistant_conversation_started"
   /**
@@ -59,7 +58,7 @@ public struct AiAssistantConversationStartedEvent: Trackable {
 
 /**
  * A non-empty user request is accepted locally and assistant processing begins. */
-public struct AiAssistantTurnStartedEvent: Trackable {
+public struct AiAssistantTurnStartedEvent {
 
   public static let eventName: String = "ai_assistant_turn_started"
   public let conversationId: String
@@ -143,7 +142,7 @@ public struct AiAssistantTurnStartedEvent: Trackable {
 
 /**
  * A model-requested tool call reaches a final runtime decision. */
-public struct AiAssistantToolCallCompletedEvent: Trackable {
+public struct AiAssistantToolCallCompletedEvent {
 
   public static let eventName: String = "ai_assistant_tool_call_completed"
   public let conversationId: String
@@ -225,7 +224,7 @@ public struct AiAssistantToolCallCompletedEvent: Trackable {
 
 /**
  * A show_cards request is processed enough to know aggregate card quality counts. */
-public struct AiAssistantShowCardsProcessedEvent: Trackable {
+public struct AiAssistantShowCardsProcessedEvent {
 
   public static let eventName: String = "ai_assistant_show_cards_processed"
   public let conversationId: String
@@ -303,7 +302,7 @@ public struct AiAssistantShowCardsProcessedEvent: Trackable {
 
 /**
  * The merchant taps an assistant-rendered card or card action. */
-public struct AiAssistantCardTappedEvent: Trackable {
+public struct AiAssistantCardTappedEvent {
 
   public static let eventName: String = "ai_assistant_card_tapped"
   public let conversationId: String
@@ -367,7 +366,7 @@ public struct AiAssistantCardTappedEvent: Trackable {
 
 /**
  * The assistant response reaches a final user-visible state for a request. */
-public struct AiAssistantTurnCompletedEvent: Trackable {
+public struct AiAssistantTurnCompletedEvent {
 
   public static let eventName: String = "ai_assistant_turn_completed"
   public let conversationId: String

@@ -13,14 +13,15 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
     func track(_ event: AssistantTelemetryEvent) {
         switch event {
         case .conversationStarted(let context):
-            analytics.track(AiAssistantConversationStartedEvent(
+            let event = AiAssistantConversationStartedEvent(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID
-            ))
+            )
+            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
 
         case .turnStarted(let context, let isRetry, let stack, let prompt, let catalog):
-            analytics.track(AiAssistantTurnStartedEvent(
+            let event = AiAssistantTurnStartedEvent(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID,
@@ -28,10 +29,11 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
                 completionStack: stack,
                 promptVersion: prompt,
                 toolCatalogVersion: catalog
-            ))
+            )
+            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
 
         case .toolCallCompleted(let context, let toolName, let status, let errorKind, let durationMs):
-            analytics.track(AiAssistantToolCallCompletedEvent(
+            let event = AiAssistantToolCallCompletedEvent(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID,
@@ -39,10 +41,11 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
                 status: toShim(status),
                 errorKind: errorKind.map(toShim),
                 durationMs: durationMs.map(Int.init)
-            ))
+            )
+            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
 
         case .showCardsProcessed(let context, let requested, let rendered, let missing, let rejected):
-            analytics.track(AiAssistantShowCardsProcessedEvent(
+            let event = AiAssistantShowCardsProcessedEvent(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID,
@@ -50,16 +53,18 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
                 renderedCount: rendered,
                 missingCount: missing,
                 rejectedCount: rejected
-            ))
+            )
+            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
 
         case .cardTapped(let context, let cardFamily, let actionFamily):
-            analytics.track(AiAssistantCardTappedEvent(
+            let event = AiAssistantCardTappedEvent(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID,
                 cardFamily: toShim(cardFamily),
                 actionFamily: toShim(actionFamily)
-            ))
+            )
+            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
 
         case .turnCompleted(let context,
                             let outcome,
@@ -69,7 +74,7 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
                             let stack,
                             let prompt,
                             let catalog):
-            analytics.track(AiAssistantTurnCompletedEvent(
+            let event = AiAssistantTurnCompletedEvent(
                 conversationId: context.conversationID,
                 requestId: context.requestID,
                 messageId: context.messageID,
@@ -80,7 +85,8 @@ struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
                 completionStack: stack,
                 promptVersion: prompt,
                 toolCatalogVersion: catalog
-            ))
+            )
+            analytics.track(event.analyticsName, withEventProperties: event.analyticsProperties)
         }
     }
 

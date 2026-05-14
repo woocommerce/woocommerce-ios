@@ -3,6 +3,7 @@
 24.8
 -----
 - [*] Customer details: fixed bugs in form when adding a customer on iPad [https://github.com/woocommerce/woocommerce-ios/pull/17074]
+- [Internal] Silently discard push notifications whose `type` is not recognized, both in the main app and in the NotificationServiceExtension, so newer server-side push types do not surface broken UI in older clients.
 
 24.7
 -----

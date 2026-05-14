@@ -691,7 +691,10 @@ private extension CollectOrderPaymentUseCase {
 
     private func cancelPaymentAndComplete(with error: Error,
                                           onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        paymentOrchestrator.cancelPayment { _ in
+        paymentOrchestrator.cancelPayment { result in
+            if case .failure(let cancellationError) = result {
+                DDLogWarn("💳 Failed to cancel payment after payment error dismissal: \(cancellationError)")
+            }
             onCompletion(.failure(error))
         }
     }

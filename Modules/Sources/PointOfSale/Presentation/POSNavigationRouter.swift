@@ -137,8 +137,6 @@ struct POSNavigationDestinationEmailReceiptView: View {
 
 extension View {
     /// Routes every `POSNavigationDestination` case to its wrapper view.
-    /// Kept in one place so the phone and iPad `NavigationStack`s can't drift
-    /// out of sync when a new destination is added.
     func posNavigationDestinations() -> some View {
         navigationDestination(for: POSNavigationDestination.self) { destination in
             switch destination {

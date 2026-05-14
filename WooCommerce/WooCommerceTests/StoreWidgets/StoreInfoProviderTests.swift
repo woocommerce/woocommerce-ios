@@ -109,7 +109,7 @@ struct StoreInfoProviderTests {
         #expect(metadata.siteIDNeedingCurrencySettingsRefresh == nil)
     }
 
-    @Test func storeMetadataByRefreshingCurrencySettingsIfNeeded_when_refresh_succeeds_then_returns_fetched_currency_and_saves_cache() async {
+    @Test func refreshedStoreMetadata_when_refresh_succeeds_then_returns_fetched_currency_and_saves_cache() async {
         // Given
         let userDefaults = makeUserDefaults()
         let cache = WidgetSiteCurrencyCache(userDefaults: userDefaults)
@@ -121,9 +121,9 @@ struct StoreInfoProviderTests {
                                       siteIDNeedingCurrencySettingsRefresh: 1234)
 
         // When
-        let refreshedStore = await StoreInfoProvider.storeMetadataByRefreshingCurrencySettingsIfNeeded(store,
-                                                                                                       service: service,
-                                                                                                       currencyCache: cache)
+        let refreshedStore = await StoreInfoProvider.refreshedStoreMetadata(store,
+                                                                            service: service,
+                                                                            currencyCache: cache)
 
         // Then
         #expect(refreshedStore.storeCurrencySettings.currencyCode == .USD)
@@ -132,7 +132,7 @@ struct StoreInfoProviderTests {
         #expect(network.requestsForResponseData.count == 1)
     }
 
-    @Test func storeMetadataByRefreshingCurrencySettingsIfNeeded_when_refresh_fails_then_returns_original_store_and_does_not_cache() async {
+    @Test func refreshedStoreMetadata_when_refresh_fails_then_returns_original_store_and_does_not_cache() async {
         // Given
         let userDefaults = makeUserDefaults()
         let cache = WidgetSiteCurrencyCache(userDefaults: userDefaults)
@@ -143,9 +143,9 @@ struct StoreInfoProviderTests {
                                       siteIDNeedingCurrencySettingsRefresh: 1234)
 
         // When
-        let refreshedStore = await StoreInfoProvider.storeMetadataByRefreshingCurrencySettingsIfNeeded(store,
-                                                                                                       service: service,
-                                                                                                       currencyCache: cache)
+        let refreshedStore = await StoreInfoProvider.refreshedStoreMetadata(store,
+                                                                            service: service,
+                                                                            currencyCache: cache)
 
         // Then
         #expect(refreshedStore.storeCurrencySettings == currencySettings)

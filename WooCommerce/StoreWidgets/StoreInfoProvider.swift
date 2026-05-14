@@ -194,7 +194,7 @@ final class StoreInfoProvider: TimelineProvider {
                 for: dependencies.store.storeID,
                 dateRange: dateRange.serviceDateRange(timezone: dependencies.store.storeTimeZone)
             )
-            async let storeRequest = Self.storeMetadataByRefreshingCurrencySettingsIfNeeded(dependencies.store, service: service)
+            async let storeRequest = Self.refreshedStoreMetadata(dependencies.store, service: service)
             let statsPeriod = try await statsPeriodRequest
             let store = await storeRequest
             let updatedDependencies = Dependencies(credentials: dependencies.credentials, store: store)
@@ -212,9 +212,9 @@ final class StoreInfoProvider: TimelineProvider {
         }
     }
 
-    static func storeMetadataByRefreshingCurrencySettingsIfNeeded(_ store: StoreMetadata,
-                                                                  service: StoreInfoDataService,
-                                                                  currencyCache: WidgetSiteCurrencyCache = WidgetSiteCurrencyCache()) async -> StoreMetadata {
+    static func refreshedStoreMetadata(_ store: StoreMetadata,
+                                       service: StoreInfoDataService,
+                                       currencyCache: WidgetSiteCurrencyCache = WidgetSiteCurrencyCache()) async -> StoreMetadata {
         guard let siteID = store.siteIDNeedingCurrencySettingsRefresh else {
             return store
         }

@@ -90,7 +90,7 @@ private extension MetricChartView {
             width: .fixed(barWidth)
         )
         .foregroundStyle(isZero ? AnyShapeStyle(zeroBarColor) : AnyShapeStyle(lineGradient))
-        .cornerRadius(barWidth / 2)
+        .cornerRadius(min(barWidth / 2, Constants.maxBarCornerRadius))
     }
 
     /// Area + line pair for the `.sparkline` style. Both share the same interpolation so
@@ -280,6 +280,7 @@ private extension MetricChartView {
         static let baselineLineWidth = 1.0
         static let baselineOpacity = 0.25
         static let baselineDashPattern: [CGFloat] = [8, 5]
+        static let maxBarCornerRadius = 6.0
         static let areaTopOpacity = 0.75
         static let minYDomainCeiling = 1.0
     }

@@ -20,8 +20,24 @@ struct MetricSlotView<MetricContent: View>: View {
         case .metric(let metric):
             metricContent(metric)
         case .empty:
-            MetricSlotPlaceholderView(minHeight: placeholderMinHeight)
+            MetricSlotEmptyView(minHeight: placeholderMinHeight)
         }
+    }
+}
+
+struct MetricSlotEmptyView: View {
+    let minHeight: Double
+
+    var body: some View {
+        Text(StoreInfoFormatter.Constants.valuePlaceholderText)
+            .statValueStyle()
+            .opacity(Layout.placeholderOpacity)
+            .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .center)
+            .accessibilityHidden(true)
+    }
+
+    private enum Layout {
+        static let placeholderOpacity = 0.30
     }
 }
 

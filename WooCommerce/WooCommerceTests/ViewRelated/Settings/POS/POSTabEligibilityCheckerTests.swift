@@ -128,7 +128,8 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: country, currency: currency)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               stores: stores)
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
 
         // When
         let result = await checker.checkEligibility()

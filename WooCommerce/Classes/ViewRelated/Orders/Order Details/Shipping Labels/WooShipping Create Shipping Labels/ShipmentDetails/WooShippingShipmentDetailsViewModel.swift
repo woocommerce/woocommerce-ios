@@ -15,6 +15,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
     private let onLabelRefund: ((Int64) -> Void)?
     private var subscriptions: Set<AnyCancellable> = []
     private let analytics: Analytics
+    private lazy var starToggleService = PackageStarToggleService(siteID: order.siteID, stores: stores, analytics: analytics)
 
     @Published var hazmatCategory: ShippingLabelHazmatCategory?
     @Published private(set) var hazmatNotice: Notice?
@@ -207,27 +208,13 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
             lastARState?.starredPackageIDs.remove(packageID)
         }
 
-        let action: WooShippingAction
-        if isStarred {
-            let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])
-            action = .createPackage(siteID: order.siteID, customPackage: nil, predefinedOption: predefined) { [weak self] result in
-                if case .failure(let error) = result {
-                    DDLogError("⛔️ Error starring package from AR results: \(error)")
-                    self?.lastARState?.starredPackageIDs.remove(packageID)
-                }
+        starToggleService.toggle(packageID: packageID, carrierID: carrierID, isStarred: isStarred) { [weak self] in
+            if isStarred {
+                self?.lastARState?.starredPackageIDs.remove(packageID)
+            } else {
+                self?.lastARState?.starredPackageIDs.insert(packageID)
             }
-        } else {
-            action = .deletePackage(siteID: order.siteID,
-                                    packageID: packageID,
-                                    packageType: .predefined,
-                                    completion: { [weak self] result in
-                if case .failure(let error) = result {
-                    DDLogError("⛔️ Error unstarring package from AR results: \(error)")
-                    self?.lastARState?.starredPackageIDs.insert(packageID)
-                }
-            })
         }
-        stores.dispatch(action)
     }
 
     /// After accepting UPS TOS, the selected UPS package/rate need to be reloaded with user data.

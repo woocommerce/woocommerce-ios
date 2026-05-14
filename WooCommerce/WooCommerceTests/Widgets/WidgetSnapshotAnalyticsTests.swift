@@ -43,6 +43,27 @@ struct WidgetSnapshotAnalyticsTests {
         #expect(props["widget_customized_count"] == "0")
     }
 
+    @Test func single_default_storeTrends_tile_counts_as_default() {
+        // Given
+        let tile = WidgetSnapshot.Tile(
+            kind: WooConstants.storeTrendsWidgetKind,
+            family: .accessoryRectangular,
+            configuration: .storeStats(
+                dateRange: StoreTrendsConfigurationIntent.defaultDateRange,
+                metrics: StoreTrendsConfigurationIntent.defaultMetrics
+            )
+        )
+        let snapshot = WidgetSnapshot(tiles: [tile])
+
+        // When
+        let props = snapshot.analyticsProperties
+
+        // Then
+        #expect(props["widget_count"] == "1")
+        #expect(props["widget_default_count"] == "1")
+        #expect(props["widget_customized_count"] == "0")
+    }
+
     @Test func single_customized_storeStats_tile_counts_as_customized() {
         // Given
         let tile = WidgetSnapshot.Tile(

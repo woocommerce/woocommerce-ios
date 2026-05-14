@@ -23,6 +23,23 @@ extension WidgetSnapshot {
 }
 
 extension WidgetSnapshot.Tile {
+    var isDefault: Bool? {
+        switch kind {
+        case WooConstants.storeInfoWidgetKind:
+            return configuration.isDefault(
+                dateRange: StoreStatsConfigurationIntent.defaultDateRange,
+                metrics: StoreStatsConfigurationIntent.defaultMetrics
+            )
+        case WooConstants.storeTrendsWidgetKind:
+            return configuration.isDefault(
+                dateRange: StoreTrendsConfigurationIntent.defaultDateRange,
+                metrics: StoreTrendsConfigurationIntent.defaultMetrics
+            )
+        default:
+            return nil
+        }
+    }
+
     init(kind: String, family: WidgetFamily, intent: StoreStatsConfigurationIntent) {
         self.init(
             kind: kind,
@@ -68,12 +85,12 @@ private extension WidgetSnapshot.Tile {
     }
 }
 
-extension WidgetSnapshot.Configuration {
-    var isDefault: Bool? {
+private extension WidgetSnapshot.Configuration {
+    func isDefault(dateRange defaultDateRange: StoreStatsWidgetDateRange, metrics defaultMetrics: [StoreInfoMetricType]) -> Bool? {
         switch self {
         case .storeStats(let dateRange, let metrics):
-            let prefix = Array(StoreStatsConfigurationIntent.defaultMetrics.prefix(metrics.count))
-            return dateRange == StoreStatsConfigurationIntent.defaultDateRange && metrics == prefix
+            let prefix = Array(defaultMetrics.prefix(metrics.count))
+            return dateRange == defaultDateRange && metrics == prefix
         case .unconfigured:
             return nil
         }

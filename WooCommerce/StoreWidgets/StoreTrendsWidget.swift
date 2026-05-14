@@ -26,23 +26,6 @@ struct StoreTrendsWidget: Widget {
     }
 }
 
-struct StoreTrendsEntry: TimelineEntry {
-    let date: Date
-    let storeInfoEntry: StoreInfoEntry
-    let unavailableMetricTitle: String
-    let compactRange: String
-
-    init(date: Date = Date(),
-         storeInfoEntry: StoreInfoEntry,
-         dateRange: StoreStatsWidgetDateRange,
-         metrics visibleMetrics: [StoreInfoMetricType]) {
-        self.date = date
-        self.storeInfoEntry = storeInfoEntry
-        self.unavailableMetricTitle = visibleMetrics.first?.displayName ?? StoreInfoMetricType.revenue.displayName
-        self.compactRange = dateRange.localizedCompactRangeLabel
-    }
-}
-
 private struct StoreTrendsProvider: AppIntentTimelineProvider {
     typealias Intent = StoreTrendsConfigurationIntent
 

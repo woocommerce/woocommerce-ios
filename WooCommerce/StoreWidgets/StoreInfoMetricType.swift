@@ -1,7 +1,8 @@
 import AppIntents
 import Foundation
 
-/// Catalog of metrics that store widgets can surface.
+/// Catalog of metrics that store widgets can surface, plus the `.none` sentinel used to
+/// preserve an explicitly hidden widget slot.
 ///
 /// The raw value is the stable, persistence-safe identifier — written into App Group storage
 /// and into `AppIntentConfiguration` options (the intent system uses it as the entity `id`).
@@ -10,6 +11,7 @@ import Foundation
 enum StoreInfoMetricType: String, CaseIterable, Hashable {
     // ⚠️ Don't rename these raw values without a migration —
     // they are persisted to App Group storage and AppIntent configuration.
+    case none
     case revenue
     case netSales
     case orders
@@ -18,10 +20,20 @@ enum StoreInfoMetricType: String, CaseIterable, Hashable {
     case conversion
     case averageOrderValue
 
+    /// Picker options, in display order. The sentinel is first so users can clear any slot.
+    static let pickerCases: [StoreInfoMetricType] = [.none] + catalogCases
+
+    /// Concrete metrics that can be fetched and rendered.
+    static let catalogCases: [StoreInfoMetricType] = [
+        .revenue, .orders, .itemsSold, .averageOrderValue,
+        .netSales, .visitors, .conversion
+    ]
+
     /// Localized user-facing title rendered in the metric cell.
     ///
     var displayName: String {
         switch self {
+        case .none: return Localization.none
         case .revenue: return Localization.revenue
         case .netSales: return Localization.netSales
         case .orders: return Localization.orders
@@ -45,6 +57,7 @@ enum StoreInfoMetricType: String, CaseIterable, Hashable {
         case .revenue, .netSales, .averageOrderValue: return .currency
         case .orders, .itemsSold, .visitors: return .count
         case .conversion: return .percentage
+        case .none: return .count
         }
     }
 }
@@ -66,6 +79,7 @@ extension StoreInfoMetricType: AppEntity {
 
     var displayRepresentation: DisplayRepresentation {
         switch self {
+        case .none: return "None"
         case .revenue: return "Total sales"
         case .netSales: return "Net sales"
         case .orders: return "Orders"
@@ -90,6 +104,11 @@ private extension StoreInfoMetricType {
     // is unchanged, so existing GlotPress translations carry over without a regression.
     // Truly new metrics (netSales, itemsSold, averageOrderValue) use new `storeWidgets.metric.*` keys.
     enum Localization {
+        static let none = AppLocalizedString(
+            "storeWidgets.metric.none",
+            value: "None",
+            comment: "Metric picker sentinel that hides the corresponding widget metric slot."
+        )
         static let revenue = AppLocalizedString(
             "storeWidgets.infoView.totalSales",
             value: "Total sales",

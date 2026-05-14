@@ -6,9 +6,12 @@ struct StoreInfoSmallMetricsContainerView: View {
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    private var visibleMetrics: [any MetricPresentable] {
-        let limit = StoreInfoDynamicType.usesAccessibilityLayout(dynamicTypeSize) ? Layout.accessibilityMetricLimit : Layout.defaultMetricLimit
-        return Array(data.presentableMetrics.prefix(limit))
+    private var visibleMetricSlots: [StoreInfoMetricSlot] {
+        StoreInfoMetricSlotLayout.visibleSlots(
+            from: data.metricSlots,
+            family: .small,
+            dynamicTypeSize: dynamicTypeSize
+        )
     }
 
     private var showsUpdatePrefix: Bool {
@@ -24,8 +27,10 @@ struct StoreInfoSmallMetricsContainerView: View {
             Spacer(minLength: Layout.metricSpacing)
 
             VStack(alignment: .leading, spacing: Layout.metricSpacing) {
-                ForEach(Array(visibleMetrics.enumerated()), id: \.offset) { _, metric in
-                    MetricCellView(metric: metric)
+                ForEach(Array(visibleMetricSlots.enumerated()), id: \.offset) { _, slot in
+                    MetricSlotView(slot: slot, placeholderMinHeight: Layout.emptyMetricMinHeight) { metric in
+                        MetricCellView(metric: WidgetMetricPresenter(metric: metric, dateRange: data.dateRange))
+                    }
                 }
             }
         }
@@ -35,8 +40,7 @@ struct StoreInfoSmallMetricsContainerView: View {
     private enum Layout {
         static let headerSpacing = 6.0
         static let metricSpacing = 6.0
-        static let defaultMetricLimit = 2
-        static let accessibilityMetricLimit = 1
+        static let emptyMetricMinHeight = 36.0
     }
 }
 

@@ -92,4 +92,22 @@ struct WidgetSnapshotDiffAnalyticsTests {
         #expect(props["info_widget_metrics_removed"] == "visitors")
         #expect(props["widgets_removed"] == "StoreInfoWidget-systemSmall")
     }
+
+    @Test func none_metric_is_excluded_from_added_and_removed_aggregates() {
+        // Given
+        let previous = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(metrics: [.revenue, .none])
+        ])
+        let current = WidgetSnapshot(tiles: [
+            Self.storeStatsTile(metrics: [.revenue, .orders])
+        ])
+        let diff = WidgetSnapshotDiff(previous: previous, current: current)
+
+        // When
+        let props = diff.analyticsProperties
+
+        // Then
+        #expect(props["info_widget_metrics_added"] == "orders")
+        #expect(props["info_widget_metrics_removed"] == nil)
+    }
 }

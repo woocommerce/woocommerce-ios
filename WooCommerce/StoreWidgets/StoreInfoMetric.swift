@@ -41,3 +41,17 @@ struct StoreInfoMetric: Equatable {
         self.chartSeries = chartSeries
     }
 }
+
+enum StoreInfoMetricSlot: Equatable {
+    case metric(StoreInfoMetric)
+    case empty
+
+    var concreteMetric: StoreInfoMetric? {
+        switch self {
+        case .metric(let metric):
+            return metric
+        case .empty:
+            return nil
+        }
+    }
+}

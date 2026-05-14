@@ -19,7 +19,7 @@ extension WidgetSnapshot {
     var storeInfoMetricsInUse: [String] {
         tiles.flatMap { tile -> [String] in
             if case .storeStats(_, let metrics) = tile.configuration {
-                return metrics.map(\.rawValue)
+                return metrics.filter { $0 != .none }.map(\.rawValue)
             }
             return []
         }

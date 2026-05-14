@@ -5,7 +5,7 @@ import Testing
 struct AssistantConfigurationTests {
     @Test
     func test_pinned_constants_match_documented_values() {
-        #expect(AssistantConfiguration.chatModel == "gpt-4o-mini")
+        #expect(AssistantConfiguration.chatModel == "gpt-4o")
         #expect(AssistantConfiguration.featureName == "woo-ai-assistant")
     }
 }

@@ -16,8 +16,8 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 1234
 
-    private var ineligibleService: StubCardPresentExpansionEligibilityService!
-    private var eligibleService: StubCardPresentExpansionEligibilityService!
+    private var ineligibleService: StubCardPresentCountryEligibilityService!
+    private var eligibleService: StubCardPresentCountryEligibilityService!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -25,8 +25,8 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.sessionManager.setStoreId(sampleSiteID)
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
-        ineligibleService = StubCardPresentExpansionEligibilityService(isEligible: false)
-        eligibleService = StubCardPresentExpansionEligibilityService(isEligible: true)
+        ineligibleService = StubCardPresentCountryEligibilityService(isEligible: false)
+        eligibleService = StubCardPresentCountryEligibilityService(isEligible: true)
     }
 
     override func tearDownWithError() throws {
@@ -119,12 +119,24 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         XCTAssertEqual(loader.configuration.currencies, [.NZD])
     }
 
-    func test_configuration_for_Australia_remains_unsupported_when_expansion_eligible() {
-        // Given - Australia is intentionally excluded pending EFTPOS support (RSM-642 / RSM-643)
+    func test_configuration_for_Australia_is_supported_when_country_eligibility_is_cached() {
+        // Given
         setupCountry(country: .au)
 
         // When
         let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: eligibleService)
+
+        // Then
+        XCTAssertTrue(loader.configuration.isSupportedCountry)
+        XCTAssertEqual(loader.configuration.currencies, [.AUD])
+    }
+
+    func test_configuration_for_Australia_is_unsupported_when_country_eligibility_is_not_cached() {
+        // Given
+        setupCountry(country: .au)
+
+        // When
+        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: ineligibleService)
 
         // Then
         XCTAssertFalse(loader.configuration.isSupportedCountry)
@@ -157,7 +169,7 @@ private extension CardPresentConfigurationLoaderTests {
 
 // MARK: - Test Helper
 
-private final class StubCardPresentExpansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol {
+private final class StubCardPresentCountryEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol {
     private var isEligibleValue: Bool
 
     init(isEligible: Bool) {

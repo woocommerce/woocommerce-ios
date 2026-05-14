@@ -69,31 +69,51 @@ enum StoreWidgetAppearance {
 
 struct StoreWidgetHomeScreenBackground: View {
     @Environment(\.widgetRenderingMode) private var widgetRenderingMode
+    @Environment(\.storeWidgetTheme) private var theme
 
     var body: some View {
-        if StoreWidgetAppearance.isModernAppearanceEnabled {
-            switch widgetRenderingMode {
-            case .fullColor:
-                ZStack {
-                    LinearGradient(
-                        colors: Layout.backgroundGradientColors,
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    StoreWidgetAppearance.brandColor.opacity(Layout.brandOverlayOpacity)
-                    LinearGradient(
-                        colors: Layout.highlightGradientColors,
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+        switch widgetRenderingMode {
+        case .fullColor:
+            if theme.usesSystemAppearance {
+                systemBackground
+            } else {
+                brandBackground
+            }
+        case .accented, .vibrant:
+            Color.clear
+        default:
+            Color.clear
+        }
+    }
 
-                    RoundedRectangle(cornerRadius: Layout.cornerRadius, style: .continuous)
-                        .strokeBorder(Color.white.opacity(Layout.borderOpacity), lineWidth: Layout.borderWidth)
-                }
-            case .accented, .vibrant:
-                Color.clear
-            default:
-                Color.clear
+    @ViewBuilder
+    private var systemBackground: some View {
+        #if os(watchOS)
+        // watchOS widgets don't have a `systemBackground` equivalent; fall back to brand.
+        brandBackground
+        #else
+        Color(.systemBackground)
+        #endif
+    }
+
+    @ViewBuilder
+    private var brandBackground: some View {
+        if StoreWidgetAppearance.isModernAppearanceEnabled {
+            ZStack {
+                LinearGradient(
+                    colors: Layout.backgroundGradientColors,
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                StoreWidgetAppearance.brandColor.opacity(Layout.brandOverlayOpacity)
+                LinearGradient(
+                    colors: Layout.highlightGradientColors,
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+
+                RoundedRectangle(cornerRadius: Layout.cornerRadius, style: .continuous)
+                    .strokeBorder(Color.white.opacity(Layout.borderOpacity), lineWidth: Layout.borderWidth)
             }
         } else {
             StoreWidgetAppearance.brandColor

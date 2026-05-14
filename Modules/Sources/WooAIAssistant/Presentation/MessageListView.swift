@@ -4,7 +4,6 @@ struct MessageListView: View {
 
     let messages: [ChatMessage]
     let streamingState: AssistantConversation.StreamingState
-    let siteID: Int64
     var onPickPrompt: (String) -> Void = { _ in }
     var onSendSuggestion: (String) -> Void = { _ in }
     var onFeedbackTap: (() -> Void)? = nil
@@ -20,7 +19,7 @@ struct MessageListView: View {
     var body: some View {
         Group {
             if messages.isEmpty {
-                EmptyStateView(onPick: onSendSuggestion, onFeedbackTap: onFeedbackTap, siteID: siteID)
+                EmptyStateView(onPick: onSendSuggestion, onFeedbackTap: onFeedbackTap)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             } else {
                 ZStack(alignment: .bottomTrailing) {

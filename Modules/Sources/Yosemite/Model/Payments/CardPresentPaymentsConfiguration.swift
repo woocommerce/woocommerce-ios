@@ -168,6 +168,22 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 contactlessLimitAmount: 20000,
                 minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
+        case .AU:
+            self.init(
+                countryCode: country,
+                paymentMethods: [.cardPresent],
+                currencies: [.AUD],
+                paymentGateways: [WCPayAccount.gatewayID],
+                supportedReaders: [.wisepad3],
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: Constants.minimumWCPayVersionForTerminalPaymentPreparation)
+                ],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                // AUD 200 — Stripe Terminal contactless CVM limit
+                contactlessLimitAmount: 20000,
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
+            )
         default:
             self.init(
                 countryCode: country,
@@ -200,6 +216,7 @@ private enum Constants {
     static let fallbackInPersonPaymentsUrl = URL(string: "https://woocommerce.com/in-person-payments/")!
     static let purchaseReaderForCountryUrlBase = "https://woocommerce.com/products/hardware/"
     static let sharedMinimumIosVersion = OperatingSystemVersion(majorVersion: 18, minorVersion: 0, patchVersion: 1)
+    static let minimumWCPayVersionForTerminalPaymentPreparation = "10.8.0-test-1"
 }
 
 /// The `@retroactive` attribute is used to apply `Equatable` conformance to `OperatingSystemVersion` from the Foundation module.

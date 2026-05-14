@@ -230,7 +230,7 @@ struct MessageBubble: View {
     }
 
     private func userTextBubble(_ content: String) -> some View {
-        Text(renderedText(content))
+        Text(renderedText(content, linkColor: Color.assistantBubbleUserText))
             .font(.assistantBody)
             .foregroundStyle(Color.assistantBubbleUserText)
             .tint(Color.assistantBubbleUserText)
@@ -242,7 +242,7 @@ struct MessageBubble: View {
     }
 
     private func assistantText(_ content: String) -> some View {
-        Text(renderedText(content))
+        Text(renderedText(content, linkColor: Color.assistantLink))
             .font(.assistantBody)
             .foregroundStyle(Color.assistantBubbleAssistantText)
             .tint(Color.assistantBubbleAssistantText)
@@ -250,15 +250,22 @@ struct MessageBubble: View {
             .textSelection(.enabled)
     }
 
-
-    private func renderedText(_ content: String) -> AttributedString {
+    /// Parses inline Markdown and styles `.link` runs so they read as links
+    /// regardless of `.tint` - underline plus the caller's link color.
+    func renderedText(_ content: String, linkColor: Color) -> AttributedString {
         var options = AttributedString.MarkdownParsingOptions()
         options.interpretedSyntax = .inlineOnlyPreservingWhitespace
+        var parsed: AttributedString
         do {
-            return try AttributedString(markdown: content, options: options)
+            parsed = try AttributedString(markdown: content, options: options)
         } catch {
             return AttributedString(content)
         }
+        for run in parsed.runs where run.link != nil {
+            parsed[run.range].underlineStyle = .single
+            parsed[run.range].foregroundColor = linkColor
+        }
+        return parsed
     }
 
 }

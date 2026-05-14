@@ -393,6 +393,7 @@
 				"StoreStatsWidgetDateRange+Localization.swift",
 				StoreTrendsConfigurationIntent.swift,
 				StoreTrendsEntry.swift,
+				StoreWidgetTheme.swift,
 				StoreWidgets.intentdefinition,
 				WidgetMetricPresenter.swift,
 				WidgetReportsURL.swift,
@@ -422,6 +423,7 @@
 				Images.xcassets,
 				"Images/UIImage+Widgets.swift",
 				Lockscreen/AppLinkWidget.swift,
+				StoreWidgetTheme.swift,
 			);
 			target = 267A04842C051C5100C91CB4 /* WatchWidgetsExtension */;
 		};

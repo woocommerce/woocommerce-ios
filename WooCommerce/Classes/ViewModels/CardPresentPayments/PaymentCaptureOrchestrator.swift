@@ -17,6 +17,8 @@ protocol PaymentCaptureOrchestrating {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        countryCode: CountryCode,
+                        terminalPaymentPreparationEnabled: Bool,
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
@@ -72,6 +74,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        countryCode: CountryCode,
+                        terminalPaymentPreparationEnabled: Bool,
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
@@ -85,12 +89,14 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                                                    onCardInserted: onCardInserted,
                                                    onProcessingMessage: onProcessingMessage,
                                                    onDisplayMessage: onDisplayMessage,
-                                                   onProcessingCompletion: onProcessingCompletion)
+                                                   onProcessingCompletion: onProcessingCompletion,
+                                                   countryCode: countryCode,
+                                                   terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled)
         onPreparingReader()
 
         let parameters = paymentParameters(order: order,
                                            orderTotal: orderTotal,
-                                           country: paymentGatewayAccount.country,
+                                           countryCode: countryCode,
                                            statementDescriptor: paymentGatewayAccount.statementDescriptor,
                                            paymentMethodTypes: paymentMethodTypes,
                                            stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
@@ -105,6 +111,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             siteID: order.siteID,
             orderID: order.orderID,
             parameters: parameters,
+            countryCode: countryCode,
+            terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled,
             onCardReaderMessage: { event in
                 switch event {
                 case .waitingForInput(let inputMethods):
@@ -146,6 +154,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         let retryPaymentAction = CardPresentPaymentAction.retryPayment(
             siteID: order.siteID,
             orderID: order.orderID,
+            countryCode: handlers.countryCode,
+            terminalPaymentPreparationEnabled: handlers.terminalPaymentPreparationEnabled,
             onCardReaderMessage: { event in
                 switch event {
                 case .waitingForInput(let inputMethods):
@@ -286,7 +296,7 @@ private extension PaymentCaptureOrchestrator {
 
     func paymentParameters(order: Order,
                            orderTotal: NSDecimalNumber,
-                           country: String,
+                           countryCode: CountryCode,
                            statementDescriptor: String?,
                            paymentMethodTypes: [PaymentMethodType],
                            stripeSmallestCurrencyUnitMultiplier: Decimal,
@@ -304,20 +314,39 @@ private extension PaymentCaptureOrchestrator {
         return PaymentParameters(amount: orderTotal as Decimal,
                                  currency: order.currency,
                                  stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
-                                 applicationFee: applicationFee(for: orderTotal, country: country),
+                                 applicationFee: applicationFee(for: orderTotal, countryCode: countryCode),
                                  receiptDescription: receiptDescription(orderNumber: order.number),
                                  statementDescription: statementDescriptor,
                                  receiptEmail: paymentReceiptEmailParameterDeterminer.receiptEmail(from: order),
                                  paymentMethodTypes: paymentMethodTypes,
+                                 cardPresentCaptureMethod: cardPresentCaptureMethod(for: countryCode),
                                  metadata: metadata)
     }
 
-    private func applicationFee(for orderTotal: NSDecimalNumber, country: String) -> Decimal? {
-        guard country.uppercased() == CountryCode.CA.rawValue else {
+    private func cardPresentCaptureMethod(for countryCode: CountryCode) -> CardPresentCaptureMethod? {
+        switch countryCode {
+        case .AU, .CA:
+            return .manualPreferred
+        default:
+            return nil
+        }
+    }
+
+    private func applicationFee(for orderTotal: NSDecimalNumber, countryCode: CountryCode) -> Decimal? {
+        let flatFee: NSDecimalNumber
+        let percentageFee: NSDecimalNumber
+        switch countryCode {
+        case .CA:
+            flatFee = Constants.canadaFlatFee
+            percentageFee = Constants.canadaPercentageFee
+        case .AU:
+            flatFee = Constants.australiaFlatFee
+            percentageFee = Constants.australiaPercentageFee
+        default:
             return nil
         }
 
-        let fee = orderTotal.multiplying(by: Constants.canadaPercentageFee).adding(Constants.canadaFlatFee)
+        let fee = orderTotal.multiplying(by: percentageFee).adding(flatFee)
 
         let numberHandler = NSDecimalNumberHandler(roundingMode: .plain,
                                                    scale: 2,
@@ -356,6 +385,8 @@ private extension PaymentCaptureOrchestrator {
     enum Constants {
         static let canadaFlatFee = NSDecimalNumber(string: "0.15")
         static let canadaPercentageFee = NSDecimalNumber(0)
+        static let australiaFlatFee = NSDecimalNumber(string: "0.10")
+        static let australiaPercentageFee = NSDecimalNumber(string: "0.017")
     }
 }
 
@@ -391,5 +422,7 @@ private extension PaymentCaptureOrchestrator {
         let onProcessingMessage: () -> Void
         let onDisplayMessage: (String) -> Void
         let onProcessingCompletion: (PaymentIntent) -> Void
+        let countryCode: CountryCode
+        let terminalPaymentPreparationEnabled: Bool
     }
 }

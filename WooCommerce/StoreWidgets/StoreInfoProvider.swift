@@ -36,7 +36,8 @@ final class StoreInfoProvider: TimelineProvider {
             metrics: StoreStatsConfigurationIntent.resolveMetricSelection(
                 requested: configuration.metrics,
                 family: context.family
-            )
+            ),
+            theme: configuration.theme
         )
     }
 
@@ -63,7 +64,8 @@ final class StoreInfoProvider: TimelineProvider {
     func loadTimeline(
         dateRange: StoreStatsWidgetDateRange,
         metrics: [StoreInfoMetricType],
-        selectedStoreID: StoreStatsStoreEntity.ID? = nil
+        selectedStoreID: StoreStatsStoreEntity.ID? = nil,
+        theme: StoreWidgetTheme = .brandPurple
     ) async -> Timeline<StoreInfoEntry> {
         guard let dependencies = Self.fetchDependencies(selectedStoreID: selectedStoreID) else {
             return Timeline<StoreInfoEntry>(entries: [.notConnected], policy: .never)
@@ -80,7 +82,8 @@ final class StoreInfoProvider: TimelineProvider {
                 for: statsPeriod,
                 dateRange: dateRange,
                 with: dependencies,
-                metrics: metrics
+                metrics: metrics,
+                theme: theme
             )
             return Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
         } catch {
@@ -259,7 +262,8 @@ private extension StoreInfoProvider {
     static func placeholderEntry(
         for dependencies: Dependencies?,
         dateRange: StoreStatsWidgetDateRange = .today,
-        metrics: [StoreInfoMetricType] = legacyMetricsPreset
+        metrics: [StoreInfoMetricType] = legacyMetricsPreset,
+        theme: StoreWidgetTheme = .brandPurple
     ) -> StoreInfoEntry {
         let currencySettings = dependencies?.store.storeCurrencySettings ?? CurrencySettings()
         let sample = StoreInfoDataService.Stats.placeholderSample
@@ -288,7 +292,8 @@ private extension StoreInfoProvider {
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
             metricSlots: metricSlots,
-            dateRange: dateRange
+            dateRange: dateRange,
+            theme: theme
         ))
     }
 
@@ -304,7 +309,8 @@ private extension StoreInfoProvider {
     static func dataEntry(for statsPeriod: StoreInfoDataService.StatsPeriod,
                           dateRange: StoreStatsWidgetDateRange,
                           with dependencies: Dependencies,
-                          metrics: [StoreInfoMetricType]) -> StoreInfoEntry {
+                          metrics: [StoreInfoMetricType],
+                          theme: StoreWidgetTheme = .brandPurple) -> StoreInfoEntry {
         let currencySettings = dependencies.store.storeCurrencySettings
         let stats = statsPeriod.current
         let previousStats = statsPeriod.previous
@@ -343,7 +349,8 @@ private extension StoreInfoProvider {
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
             metricSlots: metricSlots,
-            dateRange: dateRange
+            dateRange: dateRange,
+            theme: theme
         ))
     }
 

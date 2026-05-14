@@ -6,13 +6,18 @@ import SwiftUI
 /// - `.bar` — one bar per interval. Reserved for the wider main-metric row.
 /// - `.barOnPrimary` — monochrome bars on lock-screen/accessory backgrounds.
 ///
-/// Color is driven by `tone` — green for upward trends, red for downward, neutral mint /
-/// periwinkle when the trend is unknown. `.barOnPrimary` ignores `tone` and uses primary
-/// foreground opacity. Edit `Palette` to retune all gradients in one place.
+/// Color is driven by `tone` (up/down/neutral) and the active `\.storeWidgetTheme` from the
+/// environment. The `.brandPurple` theme uses the brand-purple-friendly pastels declared in
+/// `Palette`; `.sameAsSystem` falls through to the matching `systemGreen` / `systemRed` /
+/// `systemGray` semantic colors so the chart adapts to light/dark mode. `.barOnPrimary` ignores
+/// `tone` and the theme entirely, drawing monochrome bars in `Color.primary` opacity over a
+/// reference-line backdrop suited to lock-screen accessory backgrounds.
 ///
 /// Caller sizes via `.frame(...)` and gates on `count > 1`.
 ///
 struct MetricChartView: View {
+    @Environment(\.storeWidgetTheme) private var theme
+
     let data: [MetricChartPoint]
     private let style: Style
     private let tone: Tone
@@ -25,27 +30,52 @@ struct MetricChartView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            Chart(Array(data.enumerated()), id: \.offset) { index, point in
+            let layout = barLayout(chartWidth: proxy.size.width)
+            configuredChart(layout: layout)
+        }
+    }
+
+    @ViewBuilder
+    private func configuredChart(layout: BarLayout) -> some View {
+        let chart = Chart {
+            // Baseline rule is emitted before the bars so the bars paint on top of it.
+            // Only the themed `.bar` style needs the rule; `.barOnPrimary` paints its own
+            // reference-line backdrop via `chartBackground`.
+            if style == .bar, layout.showsBaseline {
+                RuleMark(y: .value("Baseline", 0))
+                    .foregroundStyle(theme.chartBaselineColor)
+                    .lineStyle(StrokeStyle(
+                        lineWidth: Constants.baselineLineWidth,
+                        lineCap: .round,
+                        dash: Constants.baselineDashPattern
+                    ))
+            }
+            ForEach(Array(data.enumerated()), id: \.offset) { index, point in
                 switch style {
                 case .bar, .barOnPrimary:
-                    barMark(
-                        index: index,
-                        point: point,
-                        cornerRadius: barCornerRadius(chartWidth: proxy.size.width)
-                    )
+                    barMark(index: index, point: point, barWidth: layout.barWidth)
                 case .sparkline:
                     sparklineMarks(index: index, point: point)
                 }
             }
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartYScale(domain: 0...yDomainMax)
-            .chartPlotStyle { plot in
-                plot
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(chartBackground)
-            }
-            .accessibilityHidden(true)
+        }
+        .chartXAxis(.hidden)
+        .chartYAxis(.hidden)
+        .chartYScale(domain: 0...yDomainMax)
+        .chartPlotStyle { plot in
+            plot
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(chartBackground)
+        }
+        .accessibilityHidden(true)
+
+        // chartXScale only applies to bar styles. For sparklines, the implicit
+        // data-fit domain keeps the line/area spanning the full chart width.
+        switch style {
+        case .bar, .barOnPrimary:
+            chart.chartXScale(domain: layout.domain)
+        case .sparkline:
+            chart
         }
     }
 }
@@ -53,24 +83,25 @@ struct MetricChartView: View {
 // MARK: - Marks
 
 private extension MetricChartView {
-    /// Single bar at `index` for the `.bar` style.
+    /// Single bar at `index` for the bar styles (`.bar`, `.barOnPrimary`).
     ///
     /// Floors `y` to `barMinHeight` so a zero value renders as a small pill at the
     /// baseline rather than disappearing entirely. Zero bars also use a muted tone
     /// color so they read as "no data" rather than a real low value.
     ///
-    /// `cornerRadius` is half the rendered bar width so tops are fully rounded.
+    /// Corner radius is half the rendered bar width so tops are fully rounded.
+    /// `barWidth` is fixed in points (capped to `maxBarSlotWidth * barWidthRatio`) so the
+    /// bars don't balloon on sparse data; the surrounding chart x-domain is expanded
+    /// in `barLayout` to center the bar group within the full chart width.
     ///
-    func barMark(index: Int, point: MetricChartPoint, cornerRadius: Double) -> some ChartContent {
+    func barMark(index: Int, point: MetricChartPoint, barWidth: Double) -> some ChartContent {
         BarMark(
-            // Categorical x — numeric x makes BarMark widths size off the data range and
-            // overlap once the slot is narrow.
-            x: .value("Index", String(index)),
+            x: .value("Index", Double(index)),
             y: .value("Value", max(point.value, barMinHeight)),
-            width: .ratio(barWidthRatio)
+            width: .fixed(barWidth)
         )
         .foregroundStyle(barFillStyle(for: point))
-        .cornerRadius(cornerRadius)
+        .cornerRadius(min(barWidth / 2, Constants.maxBarCornerRadius))
     }
 
     /// Area + line pair for the `.sparkline` style. Both share the same interpolation so
@@ -115,15 +146,7 @@ private extension MetricChartView {
         yDomainMax * barMinHeightRatio
     }
 
-    /// Approximate rendered bar width derived from the chart's outer width. Used to
-    /// pick a corner radius equal to half the bar width so tops are fully rounded.
-    /// Axis-hidden charts have negligible plot insets, so this is close enough.
-    func barCornerRadius(chartWidth: Double) -> Double {
-        guard !data.isEmpty, chartWidth > 0 else { return 0 }
-        let barWidth = chartWidth / Double(data.count) * barWidthRatio
-        return barWidth / 2
-    }
-
+    /// Style-aware ratio of the slot width occupied by the rendered bar.
     var barWidthRatio: Double {
         switch style {
         case .barOnPrimary:
@@ -133,6 +156,7 @@ private extension MetricChartView {
         }
     }
 
+    /// Style-aware fraction of the y-domain used as the floor for zero-value bars.
     var barMinHeightRatio: Double {
         switch style {
         case .barOnPrimary:
@@ -142,6 +166,74 @@ private extension MetricChartView {
         }
     }
 
+    /// Derived bar geometry for both bar styles.
+    ///
+    /// `barWidth` is `min(naturalSlot, maxBarSlotWidth) * barWidthRatio` — capped so wide
+    /// widgets with few data points don't render chunky bars.
+    ///
+    /// `domain` is the x-scale domain to apply to the chart. When the cap isn't engaged
+    /// it matches the natural categorical-equivalent domain (`-0.5...count - 0.5`) so the
+    /// bars fill edge-to-edge. When the cap kicks in, the domain is widened symmetrically
+    /// so the bars cluster in the chart's middle while the chart view itself still occupies
+    /// the full width.
+    ///
+    /// Axis-hidden charts have negligible plot insets, so the chart's outer width is close
+    /// enough to the plot width for this math.
+    ///
+    func barLayout(chartWidth: Double) -> BarLayout {
+        let count = Double(data.count)
+        guard count > 0, chartWidth > 0 else {
+            return BarLayout(barWidth: 0, domain: -0.5...0.5, showsBaseline: false)
+        }
+        let naturalSlot = chartWidth / count
+        let slot = min(naturalSlot, Constants.maxBarSlotWidth)
+        let barWidth = slot * barWidthRatio
+        let domainSpan = chartWidth / slot
+        let halfEmpty = max(0, (domainSpan - count) / 2)
+        return BarLayout(
+            barWidth: barWidth,
+            domain: (-0.5 - halfEmpty)...(count - 0.5 + halfEmpty),
+            showsBaseline: halfEmpty > 0
+        )
+    }
+
+    struct BarLayout {
+        let barWidth: Double
+        let domain: ClosedRange<Double>
+        // True when the bar group is narrower than the chart and clusters in the middle.
+        // The caller anchors the chart visually by drawing a baseline rule across the full width.
+        let showsBaseline: Bool
+    }
+
+    /// Active tone palette stops `(high, low, deep)` — switches on the widget theme so the
+    /// chart matches its background. The brand-purple theme uses the brand-friendly pastels
+    /// from `Palette`; the three system-themed cases (`.light`, `.dark`, `.sameAsSystem`)
+    /// share the same semantic system colors and rely on the forced `\.colorScheme` to
+    /// resolve as light or dark variants.
+    var tonePalette: (high: Color, low: Color, deep: Color) {
+        if theme.usesSystemAppearance {
+            switch tone {
+            case .up:
+                return (Color(.systemGreen), Color(.systemGreen).opacity(0.65), Color(.systemGreen).opacity(0.45))
+            case .down:
+                return (Color(.systemRed), Color(.systemRed).opacity(0.65), Color(.systemRed).opacity(0.45))
+            case .neutral:
+                return (Color(.systemGray), Color(.systemGray).opacity(0.65), Color(.systemGray).opacity(0.45))
+            }
+        }
+        switch tone {
+        case .up:
+            return (Palette.upHigh, Palette.upLow, Palette.upDeep)
+        case .down:
+            return (Palette.downHigh, Palette.downLow, Palette.downDeep)
+        case .neutral:
+            return (Palette.neutralHigh, Palette.neutralLow, Palette.neutralDeep)
+        }
+    }
+
+    /// Style-aware fill for a bar. `.barOnPrimary` ignores the tone palette and paints a
+    /// monochrome `Color.primary` opacity so the chart reads on top of the lock-screen
+    /// accessory background.
     func barFillStyle(for point: MetricChartPoint) -> AnyShapeStyle {
         let isZero = point.value <= 0
         switch style {
@@ -153,6 +245,9 @@ private extension MetricChartView {
         }
     }
 
+    /// Backdrop drawn behind the plot. Empty for the themed bar / sparkline styles; the
+    /// `.barOnPrimary` style overlays a fixed three-line reference grid so even a sparse
+    /// chart reads as a chart, not a few stray pills.
     @ViewBuilder
     var chartBackground: some View {
         if style == .barOnPrimary {
@@ -163,56 +258,23 @@ private extension MetricChartView {
     /// Solid color for zero-value bars — uses the deepest shade of the tone palette
     /// so the dot reads as darker than the dark end of the regular bar gradient.
     var zeroBarColor: Color {
-        switch tone {
-        case .up: return Palette.upDeep
-        case .down: return Palette.downDeep
-        case .neutral: return Palette.neutralDeep
-        }
+        tonePalette.deep
     }
 
     /// Gradient applied to the bar fill / sparkline stroke. Lighter at the top, darker at
     /// the base — matches the iOS Stocks reading direction (peaks read brighter).
     var lineGradient: LinearGradient {
-        switch tone {
-        case .up:
-            return LinearGradient(
-                colors: [
-                    Palette.upHigh,
-                    Palette.upLow
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        case .down:
-            return LinearGradient(
-                colors: [
-                    Palette.downHigh,
-                    Palette.downLow
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        case .neutral:
-            return LinearGradient(
-                colors: [
-                    Palette.neutralHigh,
-                    Palette.neutralLow
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        }
+        LinearGradient(
+            colors: [tonePalette.high, tonePalette.low],
+            startPoint: .top,
+            endPoint: .bottom
+        )
     }
 
     /// Gradient applied to the sparkline `AreaMark`. Solid-ish at the top fading to fully
     /// transparent at the base, so the fill reads as a soft glow under the line.
     var areaGradient: LinearGradient {
-        let top: Color
-        switch tone {
-        case .up: top = Palette.upHigh
-        case .down: top = Palette.downHigh
-        case .neutral: top = Palette.neutralHigh
-        }
+        let top = tonePalette.high
         return LinearGradient(
             colors: [top.opacity(Constants.areaTopOpacity), top.opacity(0.05)],
             startPoint: .top,
@@ -236,19 +298,22 @@ extension MetricChartView {
 }
 
 private extension MetricChartView {
-    /// Single source of truth for chart colors — tweak here to retune both styles.
+    /// Palette stops for the `.brandPurple` theme — tweak here to retune the brand-themed
+    /// gradients applied by both the `.bar` and `.sparkline` styles. `.sameAsSystem` doesn't
+    /// read this palette; it uses semantic system colors instead.
     /// `*Deep` shades are reserved for zero-value bars and sit a step darker than the
     /// dark end of each gradient.
     enum Palette {
-        // Green (uptrend): dark green → light mint
-        static let upHigh = Color(red: 0.45, green: 0.95, blue: 0.70)
-        static let upLow = Color(red: 0.10, green: 0.55, blue: 0.30)
-        static let upDeep = Color(red: 0.07, green: 0.40, blue: 0.22)
+        // Uptrend: pastel mint → soft sage. Same green semantics as the original, with luminance raised and
+        // saturation dropped so the bars read as a highlight on purple rather than competing with it.
+        static let upHigh = Color(red: 0.75, green: 0.95, blue: 0.82)
+        static let upLow = Color(red: 0.45, green: 0.78, blue: 0.60)
+        static let upDeep = Color(red: 0.32, green: 0.62, blue: 0.48)
 
-        // Red (downtrend): dark red → light coral
-        static let downHigh = Color(red: 1.00, green: 0.55, blue: 0.55)
-        static let downLow = Color(red: 0.60, green: 0.12, blue: 0.12)
-        static let downDeep = Color(red: 0.45, green: 0.09, blue: 0.09)
+        // Downtrend: pastel rose → mauve. Same red semantics, calmed to match the uptrend's chroma band.
+        static let downHigh = Color(red: 1.00, green: 0.78, blue: 0.78)
+        static let downLow = Color(red: 0.80, green: 0.50, blue: 0.55)
+        static let downDeep = Color(red: 0.65, green: 0.38, blue: 0.42)
 
         // Neutral fallback when trend direction is unknown.
         static let neutralHigh = Color(red: 0.45, green: 0.95, blue: 0.78)
@@ -258,12 +323,18 @@ private extension MetricChartView {
 
     enum Constants {
         static let barWidthRatio = 0.87
+        // Per-bar slot cap in points. Bars never get wider than `maxBarSlotWidth * barWidthRatio`;
+        // sparser data clusters the bars in the middle of the chart instead of stretching them.
+        static let maxBarSlotWidth = 24.0
         static let barMinHeightRatio = 0.02
         static let onPrimaryBarWidthRatio = 0.65
         static let onPrimaryBarMinHeightRatio = 0.04
         static let onPrimaryBarOpacity = 0.9
         static let onPrimaryZeroBarOpacity = 0.32
         static let sparklineLineWidth = 1.5
+        static let baselineLineWidth = 1.0
+        static let baselineDashPattern: [CGFloat] = [8, 5]
+        static let maxBarCornerRadius = 6.0
         static let areaTopOpacity = 0.75
         static let minYDomainCeiling = 1.0
     }

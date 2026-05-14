@@ -15,7 +15,47 @@ struct AnalyticsOrdersToolTests {
         #expect(tool.definition.description.contains("Analytics stats are card-backed"))
         #expect(tool.definition.description.contains("do not stop with prose"))
         #expect(tool.definition.description.contains("family analytics_stats"))
-        #expect(tool.definition.description.contains("currency:none"))
+        #expect(tool.definition.description.contains("`card_id` string returned in this tool's result"))
+    }
+
+    @Test
+    func test_analytics_orders_when_response_ok_then_result_carries_synthetic_card_id() async {
+        // Given
+        let body = #"{"totals": {"orders_count": 3}, "intervals": []}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = AnalyticsOrdersTool.make()
+
+        // When
+        let result = await tool.executor(#"{"after":"2026-04-01","before":"2026-04-30","interval":"week"}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["card_id"] == .string(
+            "analytics_orders:after:2026-04-01:before:2026-04-30:interval:week:currency:none"
+        ))
+    }
+
+    @Test
+    func test_analytics_orders_when_interval_omitted_then_card_id_uses_day_default() async {
+        // Given
+        let body = #"{"totals": {"orders_count": 1}}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = AnalyticsOrdersTool.make()
+
+        // When
+        let result = await tool.executor(#"{"after":"2026-04-01","before":"2026-04-30"}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["card_id"] == .string(
+            "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        ))
     }
 
     @Test

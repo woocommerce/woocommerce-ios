@@ -8,6 +8,8 @@ import SwiftUI
 /// alongside the title and value.
 ///
 struct MetricTrendBadgeView: View {
+    @Environment(\.storeWidgetTheme) private var theme
+
     let trend: MetricTrendPresentation
     let size: MetricCellTextSize
     private let style: Style
@@ -69,7 +71,7 @@ private extension MetricTrendBadgeView {
     }
 
     var color: Color {
-        style.color(for: trend.direction)
+        style.color(for: trend.direction, theme: theme)
     }
 
     var accessibilityLabel: Text {
@@ -109,23 +111,32 @@ extension MetricTrendBadgeView {
             }
         }
 
-        fileprivate func color(for direction: MetricTrendPresentation.Direction) -> Color {
+        fileprivate func color(for direction: MetricTrendPresentation.Direction,
+                               theme: StoreWidgetTheme) -> Color {
             switch self {
             case .directionalColor:
-                return directionalColor(for: direction)
+                return directionalColor(for: direction, theme: theme)
             case .onPrimary:
                 return Color.primary.opacity(0.82)
             }
         }
 
-        private func directionalColor(for direction: MetricTrendPresentation.Direction) -> Color {
+        /// `.brandPurple` uses softened pastels tuned for the brand background; the
+        /// system-themed cases (`.light`, `.dark`, `.sameAsSystem`) use semantic colors so
+        /// the badge resolves to mode-appropriate variants alongside the chart.
+        private func directionalColor(for direction: MetricTrendPresentation.Direction,
+                                      theme: StoreWidgetTheme) -> Color {
             switch direction {
-            case .up:
-                return Color(.systemGreen)
-            case .down:
-                return Color(.systemRed)
             case .flat:
                 return Color(.systemGray)
+            case .up:
+                return theme.usesSystemAppearance
+                    ? Color(.systemGreen)
+                    : Color(red: 0.55, green: 0.88, blue: 0.70)
+            case .down:
+                return theme.usesSystemAppearance
+                    ? Color(.systemRed)
+                    : Color(red: 0.95, green: 0.65, blue: 0.70)
             }
         }
     }

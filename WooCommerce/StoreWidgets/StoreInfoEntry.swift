@@ -69,6 +69,11 @@ struct StoreInfoData {
         metricSlots.compactMap(\.concreteMetric)
     }
 
+    /// User-selected color scheme. Drives the background, text colors, logo tint, and
+    /// chart palette via `StoreWidgetTheme`.
+    ///
+    var theme: StoreWidgetTheme
+
     init(range: String,
          name: String,
          revenue: String,
@@ -79,7 +84,8 @@ struct StoreInfoData {
          updatedTime: String,
          metrics: [StoreInfoMetric] = [],
          metricSlots: [StoreInfoMetricSlot]? = nil,
-         dateRange: StoreStatsWidgetDateRange? = nil) {
+         dateRange: StoreStatsWidgetDateRange? = nil,
+         theme: StoreWidgetTheme = .brandPurple) {
         self.range = range
         self.name = name
         self.revenue = revenue
@@ -90,6 +96,7 @@ struct StoreInfoData {
         self.updatedTime = updatedTime
         self.metricSlots = metricSlots ?? metrics.map { .metric($0) }
         self.dateRange = dateRange
+        self.theme = theme
     }
 
     /// Used to build per-cell deep-link URLs. `nil` for surfaces without a configured range.

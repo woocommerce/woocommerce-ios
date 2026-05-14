@@ -10,10 +10,7 @@ struct WooShippingSelectedPackageView: View {
     @State private var showPackageSelection = false
     @State private var showARResults = false
 
-    let lastARMeasurement: ParcelDimensions?
-    let lastARCarriers: [ParcelPresetCarrier]
-    let lastARStarredPackageIDs: Set<String>
-    let lastARDimensionUnit: UnitLength
+    let lastARState: ARSelectionState?
     weak var parcelFittingDelegate: ParcelFittingDelegate?
     let updateSelectedPackage: (WooShippingPackageDataRepresentable) -> Void
 
@@ -24,7 +21,7 @@ struct WooShippingSelectedPackageView: View {
                     .headlineStyle()
                 Spacer()
                 PencilEditButton {
-                    if lastARMeasurement != nil {
+                    if lastARState != nil {
                         showARResults = true
                     } else {
                         showPackageSelection = true
@@ -51,23 +48,23 @@ struct WooShippingSelectedPackageView: View {
             )
         }
         .fullScreenCover(isPresented: $showARResults) {
-            if let measurement = lastARMeasurement {
+            if let arState = lastARState {
                 NavigationView {
                     ARParcelFittingResultsView(
                         viewModel: ARParcelFittingResultsViewModel(
-                            measuredDimensions: measurement,
-                            unit: lastARDimensionUnit,
-                            carriers: lastARCarriers
+                            measuredDimensions: arState.measurement,
+                            unit: arState.dimensionUnit,
+                            carriers: arState.carriers
                         ),
-                        starredPackageIDs: lastARStarredPackageIDs,
+                        starredPackageIDs: arState.starredPackageIDs,
                         delegate: parcelFittingDelegate,
                         onConfirm: { result in
                             showARResults = false
                             parcelFittingDelegate?.parcelFittingDidConfirm(
                                 result,
-                                carriers: lastARCarriers,
-                                starredPackageIDs: lastARStarredPackageIDs,
-                                dimensionUnit: lastARDimensionUnit
+                                carriers: arState.carriers,
+                                starredPackageIDs: arState.starredPackageIDs,
+                                dimensionUnit: arState.dimensionUnit
                             )
                         },
                         onBrowseAllPackages: {
@@ -150,10 +147,7 @@ private extension WooShippingSelectedPackageView {
                                                                    source: .predefined(sourceTitle: "USPS Priority Mail Flat Rate Boxes", sourceID: "usps"),
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
-                                   lastARMeasurement: nil,
-                                   lastARCarriers: [],
-                                   lastARStarredPackageIDs: [],
-                                   lastARDimensionUnit: .centimeters,
+                                   lastARState: nil,
                                    updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")
@@ -168,10 +162,7 @@ private extension WooShippingSelectedPackageView {
                                                                    source: .custom,
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
-                                   lastARMeasurement: nil,
-                                   lastARCarriers: [],
-                                   lastARStarredPackageIDs: [],
-                                   lastARDimensionUnit: .centimeters,
+                                   lastARState: nil,
                                    updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")

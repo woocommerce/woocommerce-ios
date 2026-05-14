@@ -36,10 +36,7 @@ struct WooShippingShipmentDetailsView: View {
                       let shippingService = viewModel.shippingService {
                 WooShippingSelectedPackageView(package: package,
                                                totalWeight: $viewModel.shipmentWeight,
-                                               lastARMeasurement: viewModel.lastARMeasurement,
-                                               lastARCarriers: viewModel.lastARCarriers,
-                                               lastARStarredPackageIDs: viewModel.lastARStarredPackageIDs,
-                                               lastARDimensionUnit: viewModel.lastARDimensionUnit,
+                                               lastARState: viewModel.lastARState,
                                                parcelFittingDelegate: viewModel,
                                                updateSelectedPackage: { viewModel.selectPackage($0) })
                 WooShippingServiceView(viewModel: shippingService)

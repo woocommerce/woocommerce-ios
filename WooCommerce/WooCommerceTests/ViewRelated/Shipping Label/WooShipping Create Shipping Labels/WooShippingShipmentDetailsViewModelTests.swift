@@ -1005,10 +1005,11 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(viewModel.selectedPackage)
         XCTAssertEqual(viewModel.selectedPackage?.id, "usps_medium")
-        XCTAssertNotNil(viewModel.lastARMeasurement)
-        XCTAssertEqual(viewModel.lastARCarriers.count, 1)
-        XCTAssertTrue(viewModel.lastARStarredPackageIDs.contains("usps_medium"))
-        XCTAssertEqual(viewModel.lastARDimensionUnit, .inches)
+        XCTAssertNotNil(viewModel.lastARState)
+        XCTAssertNotNil(viewModel.lastARState?.measurement)
+        XCTAssertEqual(viewModel.lastARState?.carriers.count, 1)
+        XCTAssertTrue(viewModel.lastARState?.starredPackageIDs.contains("usps_medium") == true)
+        XCTAssertEqual(viewModel.lastARState?.dimensionUnit, .inches)
     }
 }
 

@@ -55,11 +55,8 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
     /// Selected package data for the shipping label.
     @Published private(set) var selectedPackage: WooShippingPackageDataRepresentable?
 
-    /// Cached AR state from the last unified AR flow, if used.
-    private(set) var lastARMeasurement: ParcelDimensions?
-    private(set) var lastARCarriers: [ParcelPresetCarrier] = []
-    private(set) var lastARStarredPackageIDs: Set<String> = []
-    private(set) var lastARDimensionUnit: UnitLength = .centimeters
+    /// Cached AR state from the last unified AR flow. Nil when the package was selected manually.
+    private(set) var lastARState: ARSelectionState?
 
     /// String representing the total weight for the shipment.
     @Published var shipmentWeight: String = ""
@@ -182,7 +179,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
     /// Selecting a package also refreshes the available rates for the shipping service.
     func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
         selectedPackage = packageData
-        lastARMeasurement = nil
+        lastARState = nil
         analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
 
@@ -192,10 +189,12 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
                                   dimensionUnit: UnitLength) {
         let packageData = WooShippingPackageData.from(result, carriers: carriers)
         selectedPackage = packageData
-        lastARMeasurement = result.measurement
-        lastARCarriers = carriers
-        lastARStarredPackageIDs = starredPackageIDs
-        lastARDimensionUnit = dimensionUnit
+        lastARState = ARSelectionState(
+            measurement: result.measurement,
+            carriers: carriers,
+            starredPackageIDs: starredPackageIDs,
+            dimensionUnit: dimensionUnit
+        )
         analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
 
@@ -203,9 +202,9 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
 
     func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool) {
         if isStarred {
-            lastARStarredPackageIDs.insert(packageID)
+            lastARState?.starredPackageIDs.insert(packageID)
         } else {
-            lastARStarredPackageIDs.remove(packageID)
+            lastARState?.starredPackageIDs.remove(packageID)
         }
 
         let action: WooShippingAction
@@ -214,7 +213,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
             action = .createPackage(siteID: order.siteID, customPackage: nil, predefinedOption: predefined) { [weak self] result in
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Error starring package from AR results: \(error)")
-                    self?.lastARStarredPackageIDs.remove(packageID)
+                    self?.lastARState?.starredPackageIDs.remove(packageID)
                 }
             }
         } else {
@@ -224,7 +223,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
                                     completion: { [weak self] result in
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Error unstarring package from AR results: \(error)")
-                    self?.lastARStarredPackageIDs.insert(packageID)
+                    self?.lastARState?.starredPackageIDs.insert(packageID)
                 }
             })
         }

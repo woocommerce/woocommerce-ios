@@ -109,8 +109,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .configurableStoreStatsWidgets:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
             return false
         case .ciabBookingReschedule:

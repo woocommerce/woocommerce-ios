@@ -96,7 +96,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
 
         let parameters = paymentParameters(order: order,
                                            orderTotal: orderTotal,
-                                           country: paymentGatewayAccount.country,
+                                           countryCode: countryCode,
                                            statementDescriptor: paymentGatewayAccount.statementDescriptor,
                                            paymentMethodTypes: paymentMethodTypes,
                                            stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
@@ -296,7 +296,7 @@ private extension PaymentCaptureOrchestrator {
 
     func paymentParameters(order: Order,
                            orderTotal: NSDecimalNumber,
-                           country: String,
+                           countryCode: CountryCode,
                            statementDescriptor: String?,
                            paymentMethodTypes: [PaymentMethodType],
                            stripeSmallestCurrencyUnitMultiplier: Decimal,
@@ -314,16 +314,26 @@ private extension PaymentCaptureOrchestrator {
         return PaymentParameters(amount: orderTotal as Decimal,
                                  currency: order.currency,
                                  stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
-                                 applicationFee: applicationFee(for: orderTotal, country: country),
+                                 applicationFee: applicationFee(for: orderTotal, countryCode: countryCode),
                                  receiptDescription: receiptDescription(orderNumber: order.number),
                                  statementDescription: statementDescriptor,
                                  receiptEmail: paymentReceiptEmailParameterDeterminer.receiptEmail(from: order),
                                  paymentMethodTypes: paymentMethodTypes,
+                                 cardPresentCaptureMethod: cardPresentCaptureMethod(for: countryCode),
                                  metadata: metadata)
     }
 
-    private func applicationFee(for orderTotal: NSDecimalNumber, country: String) -> Decimal? {
-        guard country.uppercased() == CountryCode.CA.rawValue else {
+    private func cardPresentCaptureMethod(for countryCode: CountryCode) -> CardPresentCaptureMethod? {
+        switch countryCode {
+        case .AU, .CA:
+            return .manualPreferred
+        default:
+            return nil
+        }
+    }
+
+    private func applicationFee(for orderTotal: NSDecimalNumber, countryCode: CountryCode) -> Decimal? {
+        guard countryCode == .CA else {
             return nil
         }
 

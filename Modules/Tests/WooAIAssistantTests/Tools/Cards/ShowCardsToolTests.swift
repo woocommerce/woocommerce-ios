@@ -38,7 +38,7 @@ struct ShowCardsToolTests {
         }
         #expect(familyEnum.contains(.string("order")))
         #expect(familyEnum.contains(.string("product")))
-        #expect(familyEnum.contains(.string("product_variation")))
+        #expect(familyEnum.contains(.string("variation")))
         #expect(familyEnum.contains(.string("customer")))
         #expect(familyEnum.contains(.string("analytics_stats")))
         #expect(id["type"] == .string("string"))
@@ -195,7 +195,7 @@ struct ShowCardsToolTests {
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
-            {"family": "product_variation", "id": "822", "parent_id": "821"}
+            {"family": "variation", "id": "822", "parent_id": "821"}
         ]}
         """
 
@@ -220,7 +220,7 @@ struct ShowCardsToolTests {
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
-            {"family": "product_variation", "id": "822"}
+            {"family": "variation", "id": "822"}
         ]}
         """
 
@@ -240,7 +240,7 @@ struct ShowCardsToolTests {
         #expect(rejectedRefs.count == 1)
         if case .object(let entry) = rejectedRefs[0] {
             #expect(entry["reason"] == .string("malformed"))
-            #expect(entry["family"] == .string("product_variation"))
+            #expect(entry["family"] == .string("variation"))
         } else {
             Issue.record("expected rejected entry object")
         }

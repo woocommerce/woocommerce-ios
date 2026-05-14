@@ -13,8 +13,8 @@ public enum ShowCardsTool {
         description: """
         Render rich cards for specific entities the user should see. Call \
         this whenever you would otherwise mention an order/product/customer \
-        ID in prose. Supported families: order, product, product_variation, \
-        customer, analytics_stats. `product_variation` references require both \
+        ID in prose. Supported families: order, product, variation, \
+        customer, analytics_stats. `variation` references require both \
         `id` and `parent_id` (the parent product's id), and should be used only \
         for explicit variation-level questions about sizes, colors, options, or \
         known variation IDs. For broad product inventory lists, render product \
@@ -29,7 +29,7 @@ public enum ShowCardsTool {
         (each with id, name, quantity, sku, total, product_id, variation_id - \
         capped at 5 per order); product has id, name, sku, price, stock_status, \
         type, manage_stock, on_sale, stock_quantity, variations_count; \
-        product_variation adds parent_id; customer has id, first_name, \
+        variation adds parent_id; customer has id, first_name, \
         last_name, email, orders_count. For any other field (full descriptions, \
         billing/shipping address, phone, recent-order details beyond the first \
         five line items, etc.) use the appropriate get or list tool from the \
@@ -61,7 +61,7 @@ public enum ShowCardsTool {
                                 "enum": .array([
                                     .string("order"),
                                     .string("product"),
-                                    .string("product_variation"),
+                                    .string("variation"),
                                     .string("customer"),
                                     .string("analytics_stats")
                                 ])

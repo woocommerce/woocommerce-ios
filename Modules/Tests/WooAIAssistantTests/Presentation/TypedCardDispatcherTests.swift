@@ -51,9 +51,9 @@ struct TypedCardDispatcherTests {
     }
 
     @Test
-    func test_route_when_tool_is_show_cards_product_variation_then_routes_to_product_variation() {
+    func test_route_when_tool_is_show_cards_variation_then_routes_to_product_variation() {
         // When
-        let route = TypedCardDispatcher.route(for: "show_cards.product_variation")
+        let route = TypedCardDispatcher.route(for: "show_cards.variation")
 
         // Then
         #expect(route == .productVariation)

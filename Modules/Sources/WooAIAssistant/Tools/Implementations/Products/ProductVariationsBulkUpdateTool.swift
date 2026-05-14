@@ -21,7 +21,7 @@ public enum ProductVariationsBulkUpdateTool {
         instead of multiple product_variations_update calls when more than \
         one variation of the same parent is being updated together. After \
         the bulk update succeeds, call `show_cards` with family \
-        `product_variation` and one entry per updated variation (each with \
+        `variation` and one entry per updated variation (each with \
         the variation id and the parent product id) so the merchant sees \
         the new state.
         """,

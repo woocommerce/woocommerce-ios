@@ -274,7 +274,7 @@ enum TypedCardDispatcher {
             return .order
         case "product":
             return .product
-        case "product_variation":
+        case "variation":
             return .productVariation
         case "customer":
             return .customer

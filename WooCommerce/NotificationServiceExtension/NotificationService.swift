@@ -18,7 +18,7 @@ final class NotificationService: UNNotificationServiceExtension {
 
 private extension NotificationService {
     func shouldSuppressNotifications(with userInfo: [AnyHashable: Any]) -> Bool {
-        if !PushNotificationSharedConstants.isKnownNotificationType(in: userInfo) {
+        guard PushNotificationSharedConstants.isKnownNotificationType(in: userInfo) else {
             let type = (userInfo["type"] as? String) ?? "<missing>"
             NSLog("📱 NSE: discarded push with unknown type \(type)")
             return true

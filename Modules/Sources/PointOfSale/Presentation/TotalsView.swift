@@ -705,59 +705,35 @@ private extension TotalsView {
     /// processing / success / error).
     var useTapToPayHeroLayout: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
-        // BT reconnecting + idle card state: on phone POS the merchant has
-        // TTP as an immediate alternative, so we skip the iPad-style
-        // "Reconnecting reader…" wait and surface the TTP hero so they can
-        // take payment right now. If BT later reconnects on its own, the
-        // auto-resume path kicks back in and the BT-ready screen returns.
-        // We gate on idle card state to avoid swapping the screen away from
-        // a payment that's actually mid-collection.
-        if case .reconnecting = paymentModel.cardReaderConnectionStatus,
-           displayPaymentState.card == .idle,
-           displayPaymentState.cash == .idle,
-           displayPaymentState.scanToPay == .idle,
-           displayPaymentState.markAsPaid == .idle,
-           case .loaded(let totals) = posModel.orderState,
-           !totals.orderTotalDecimal.isZero {
-            return true
-        }
-        // Suppress only when BT is *currently* the active path — either we're
-        // in a BT session (`currentPaymentMethod == .bluetooth`) or a BT
-        // reader is still attached from a previous session
-        // (`lastConnectedMethod == .bluetooth` + reader status `.connected`).
-        // The second clause matters because `startPayment` auto-resumes BT
-        // collect when the reader is still there, and the TTP hero shouldn't
-        // flash in that brief window before the card state transitions.
-        //
-        // Critically we do NOT suppress on `lastConnectedMethod == .bluetooth`
-        // alone — that's a memory of the last successful connect, not a
-        // live signal. Once the BT reader drops, we should fall back to
-        // the TTP hero instead of leaving the merchant on a "Reader not
-        // connected" screen with no way back to TTP.
-        if paymentModel.currentPaymentMethod == .bluetooth { return false }
-        if paymentModel.lastConnectedMethod == .bluetooth,
-           case .connected = paymentModel.cardReaderConnectionStatus {
-            return false
-        }
+        // Idle-state gates — same as before. After a successful payment via
+        // any non-card method the totals view renders that method's success
+        // UI via `PaymentViewContent`; the hero must not show on top of it.
         guard displayPaymentState.card == .idle && displayPaymentState.cash == .idle else { return false }
-        // Also gate on scanToPay / markAsPaid being idle. After a successful
-        // payment via either of those the totals view renders their success
-        // UI via `PaymentViewContent` — we don't want the hero showing on
-        // top of (or instead of) that. Critically, without this the merchant
-        // could tap "Pay with Tap to pay" while `paymentState.markAsPaid`
-        // is still `.paymentSuccess`, and the card-state subscription's
-        // `markAsPaid != .idle` guard would silently swallow every Stripe
-        // event — the button disables but nothing happens.
         guard displayPaymentState.scanToPay == .idle && displayPaymentState.markAsPaid == .idle else { return false }
-        // Empty-cart / syncing / reconnecting guards computed directly. We
-        // can't reuse `shouldShowCollectCashPaymentButton` here — that helper
-        // also requires the reader to be disconnected when card state is idle
-        // (an iPad pay-row assumption). On TTP the device is silently
-        // pre-connected, so reusing it would collapse the hero whenever the
-        // pre-connect succeeds.
         guard case .loaded(let totals) = posModel.orderState else { return false }
         guard !totals.orderTotalDecimal.isZero else { return false }
-        if case .reconnecting = paymentModel.cardReaderConnectionStatus { return false }
+        // Suppress the TTP hero only when **BT is currently `.connected`**.
+        // That covers the BT-ready / BT-auto-resume scenarios where the
+        // merchant has committed to a reader that's actually attached. In
+        // every other reader state — `.disconnected`, `.reconnecting`,
+        // `.disconnecting`, `.cancellingConnection` — BT is unreachable
+        // and the merchant should see the TTP hero so they can take payment
+        // via TTP without waiting on BT recovery. If BT later reconnects,
+        // the auto-resume path kicks back in and the BT-ready screen
+        // returns naturally.
+        //
+        // The check is `currentPaymentMethod == .bluetooth || lastConnectedMethod == .bluetooth`
+        // so both flavours of "BT is the active path" are caught (active
+        // session vs. between-sessions auto-resume), but only when the reader
+        // is actually `.connected`. We deliberately don't suppress on those
+        // properties alone — once the reader drops, `currentPaymentMethod`
+        // stays stale and `lastConnectedMethod` is just a memory; relying on
+        // them in isolation would strand the merchant on a "Reader not
+        // connected" screen with no path back to TTP.
+        if case .connected = paymentModel.cardReaderConnectionStatus,
+           paymentModel.currentPaymentMethod == .bluetooth || paymentModel.lastConnectedMethod == .bluetooth {
+            return false
+        }
         return true
     }
 

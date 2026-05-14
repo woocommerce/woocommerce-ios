@@ -15,13 +15,11 @@ struct TypedCardDispatcherTests {
     }
 
     @Test
-    func test_route_when_tool_is_analytics_revenue_or_orders_then_routes_to_analytics_stats() {
+    func test_route_when_tool_is_analytics_orders_then_routes_to_analytics_stats() {
         // When
-        let revenue = TypedCardDispatcher.route(for: "analytics_revenue")
         let orders = TypedCardDispatcher.route(for: "analytics_orders")
 
         // Then
-        #expect(revenue == .analyticsStats)
         #expect(orders == .analyticsStats)
     }
 

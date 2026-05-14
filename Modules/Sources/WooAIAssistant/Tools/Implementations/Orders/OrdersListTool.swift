@@ -15,9 +15,9 @@ public enum OrdersListTool {
         Use to find specific orders, list pending fulfilment, or pull the most \
         recent N. For latest/last single-order questions, use per_page=1, \
         orderby=date, order=desc, then pass the result to `show_cards`. \
-        For aggregate sales numbers prefer analytics_orders / \
-        analytics_revenue. For prose questions about a specific order's \
-        payment method, customer email, etc., call orders_get with the ID. \
+        For aggregate sales numbers prefer analytics_orders. For prose \
+        questions about a specific order's payment method, customer email, \
+        etc., call orders_get with the ID. \
         After calling, pass results to `show_cards` to render rather than \
         re-fetching each order with orders_get. If a search returns no \
         matches, do not retry with synonyms or broader terms - say no match \

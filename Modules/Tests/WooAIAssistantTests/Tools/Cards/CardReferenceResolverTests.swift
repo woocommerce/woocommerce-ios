@@ -428,7 +428,7 @@ struct CardReferenceResolverTests {
     }
 
     @Test
-    func test_resolve_when_analytics_revenue_reference_then_dispatches_to_revenue_stats_path() async {
+    func test_resolve_when_analytics_stats_reference_then_dispatches_to_orders_stats_path() async {
         // Given
         let body = """
         {"totals":{"net_revenue":"123.45"},
@@ -436,9 +436,9 @@ struct CardReferenceResolverTests {
                        "subtotals":{"net_revenue":"50.00"}}]}
         """
         let client = StubbedWCRESTClient()
-        await client.stub(path: "wc-analytics/reports/revenue/stats", response: StubResponses.ok(body))
+        await client.stub(path: "wc-analytics/reports/orders/stats", response: StubResponses.ok(body))
         let resolver = CardReferenceResolver(client: client)
-        let analyticsID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let analyticsID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
         let references = [CardReference(family: .analyticsStats, id: analyticsID)]
 
         // When
@@ -479,7 +479,7 @@ struct CardReferenceResolverTests {
         let resolver = CardReferenceResolver(client: client)
         let references = [
             CardReference(family: .analyticsStats,
-                          id: "analytics_revenue:after:not-a-date:before:2026-04-30:interval:day:currency:none")
+                          id: "analytics_orders:after:not-a-date:before:2026-04-30:interval:day:currency:none")
         ]
 
         // When
@@ -523,10 +523,10 @@ struct CardReferenceResolverTests {
     func test_resolve_when_analytics_endpoint_returns_500_then_rejects_as_fetchFailed() async {
         // Given
         let client = StubbedWCRESTClient()
-        await client.stub(path: "wc-analytics/reports/revenue/stats",
+        await client.stub(path: "wc-analytics/reports/orders/stats",
                           response: StubResponses.failure(statusCode: 500))
         let resolver = CardReferenceResolver(client: client)
-        let analyticsID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let analyticsID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
         let references = [CardReference(family: .analyticsStats, id: analyticsID)]
 
         // When

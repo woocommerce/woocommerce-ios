@@ -35,12 +35,12 @@ public enum ShowCardsTool {
         five line items, etc.) use the appropriate get or list tool from the \
         catalog. Cards rendered \
         in this turn remain referenced; reuse their ids in follow-up tool \
-        calls. After a successful `analytics_revenue` or `analytics_orders` \
-        call, call this tool with family `analytics_stats` and an id using \
-        the same after, before, and interval values to render the analytics \
-        card. Use the same currency value when the analytics call had one; \
-        otherwise use `currency:none`. The synthetic analytics id format is \
-        described on the `id` property.
+        calls. After a successful `analytics_orders` call, call this tool \
+        with family `analytics_stats` and an id using the same after, before, \
+        and interval values to render the analytics card. Use the same \
+        currency value when the analytics call had one; otherwise use \
+        `currency:none`. The synthetic analytics id format is described on \
+        the `id` property.
         """,
         parametersSchema: .object([
             "type": .string("object"),

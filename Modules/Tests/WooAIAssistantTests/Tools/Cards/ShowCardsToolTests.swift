@@ -14,7 +14,7 @@ struct ShowCardsToolTests {
 
         // Then
         #expect(definition.name == "show_cards")
-        #expect(definition.description.contains("After a successful `analytics_revenue` or `analytics_orders`"))
+        #expect(definition.description.contains("After a successful `analytics_orders` call"))
         #expect(definition.description.contains("call this tool with family `analytics_stats`"))
         #expect(definition.description.contains("A single call may mix families"))
         #expect(definition.description.contains("For broad product inventory lists, render product"))
@@ -89,8 +89,8 @@ struct ShowCardsToolTests {
                        "subtotals":{"net_revenue":"50.00"}}]}
         """
         let client = StubbedWCRESTClient()
-        await client.stub(path: "wc-analytics/reports/revenue/stats", response: StubResponses.ok(body))
-        let analyticsID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        await client.stub(path: "wc-analytics/reports/orders/stats", response: StubResponses.ok(body))
+        let analyticsID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
@@ -128,8 +128,8 @@ struct ShowCardsToolTests {
          ]}
         """
         let client = StubbedWCRESTClient()
-        await client.stub(path: "wc-analytics/reports/revenue/stats", response: StubResponses.ok(body))
-        let analyticsID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        await client.stub(path: "wc-analytics/reports/orders/stats", response: StubResponses.ok(body))
+        let analyticsID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
@@ -163,7 +163,7 @@ struct ShowCardsToolTests {
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
-            {"family": "analytics_stats", "id": "analytics_revenue:after:not-a-date:before:2026-04-30:interval:day:currency:none"}
+            {"family": "analytics_stats", "id": "analytics_orders:after:not-a-date:before:2026-04-30:interval:day:currency:none"}
         ]}
         """
 

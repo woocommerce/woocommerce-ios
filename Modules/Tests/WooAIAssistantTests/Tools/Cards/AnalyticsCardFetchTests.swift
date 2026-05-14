@@ -16,7 +16,7 @@ struct AnalyticsCardFetchTests {
         }
         """
         let client = MockWCRESTClient(response: StubResponses.ok(body))
-        let spec = AnalyticsCardSpec(kind: .revenue, after: "2026-04-01", before: "2026-04-30",
+        let spec = AnalyticsCardSpec(kind: .orders, after: "2026-04-01", before: "2026-04-30",
                                      interval: nil, currency: nil)
         let fetch = AnalyticsCardFetch(client: client)
 
@@ -43,22 +43,6 @@ struct AnalyticsCardFetchTests {
     }
 
     @Test
-    func test_fetch_when_kind_is_revenue_then_uses_revenue_stats_path() async {
-        // Given
-        let client = MockWCRESTClient(response: StubResponses.ok(#"{"totals":{},"intervals":[]}"#))
-        let spec = AnalyticsCardSpec(kind: .revenue, after: "2026-04-01", before: "2026-04-30",
-                                     interval: nil, currency: nil)
-        let fetch = AnalyticsCardFetch(client: client)
-
-        // When
-        _ = await fetch.fetch(spec)
-
-        // Then
-        let calls = await client.calls
-        #expect(calls.first?.path == "wc-analytics/reports/revenue/stats")
-    }
-
-    @Test
     func test_fetch_when_kind_is_orders_then_uses_orders_stats_path() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok(#"{"totals":{},"intervals":[]}"#))
@@ -78,7 +62,7 @@ struct AnalyticsCardFetchTests {
     func test_fetch_when_interval_omitted_then_defaults_to_day_and_uses_day_boundaries() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok(#"{"totals":{},"intervals":[]}"#))
-        let spec = AnalyticsCardSpec(kind: .revenue, after: "2026-04-01", before: "2026-04-30",
+        let spec = AnalyticsCardSpec(kind: .orders, after: "2026-04-01", before: "2026-04-30",
                                      interval: nil, currency: nil)
         let fetch = AnalyticsCardFetch(client: client)
 
@@ -96,7 +80,7 @@ struct AnalyticsCardFetchTests {
     func test_fetch_when_currency_provided_then_forwards_currency_query_param() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok(#"{"totals":{},"intervals":[]}"#))
-        let spec = AnalyticsCardSpec(kind: .revenue, after: "2026-04-01", before: "2026-04-30",
+        let spec = AnalyticsCardSpec(kind: .orders, after: "2026-04-01", before: "2026-04-30",
                                      interval: nil, currency: "EUR")
         let fetch = AnalyticsCardFetch(client: client)
 
@@ -112,7 +96,7 @@ struct AnalyticsCardFetchTests {
     func test_fetch_when_dates_are_invalid_then_rejects_as_malformed_without_calling_client() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok("{}"))
-        let spec = AnalyticsCardSpec(kind: .revenue, after: "04/01/2026", before: "04/30/2026",
+        let spec = AnalyticsCardSpec(kind: .orders, after: "04/01/2026", before: "04/30/2026",
                                      interval: nil, currency: nil)
         let fetch = AnalyticsCardFetch(client: client)
 
@@ -132,7 +116,7 @@ struct AnalyticsCardFetchTests {
     func test_fetch_when_endpoint_returns_403_then_rejects_as_notPermitted() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 403))
-        let spec = AnalyticsCardSpec(kind: .revenue, after: "2026-04-01", before: "2026-04-30",
+        let spec = AnalyticsCardSpec(kind: .orders, after: "2026-04-01", before: "2026-04-30",
                                      interval: nil, currency: nil)
         let fetch = AnalyticsCardFetch(client: client)
 
@@ -151,7 +135,7 @@ struct AnalyticsCardFetchTests {
     func test_fetch_when_response_body_is_unparseable_then_rejects_as_internalError() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok("not json"))
-        let spec = AnalyticsCardSpec(kind: .revenue, after: "2026-04-01", before: "2026-04-30",
+        let spec = AnalyticsCardSpec(kind: .orders, after: "2026-04-01", before: "2026-04-30",
                                      interval: nil, currency: nil)
         let fetch = AnalyticsCardFetch(client: client)
 

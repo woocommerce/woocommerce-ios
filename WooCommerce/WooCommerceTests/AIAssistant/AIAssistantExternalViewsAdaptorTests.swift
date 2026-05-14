@@ -165,7 +165,7 @@ struct AIAssistantExternalViewsAdaptorTests {
     }
 
     @Test
-    func test_statsCardView_when_tool_is_analytics_revenue_with_totals_then_returns_anyview() {
+    func test_statsCardView_when_tool_is_analytics_orders_with_revenue_totals_then_returns_anyview() {
         // Given
         let sut = AIAssistantExternalViewsAdaptor()
         let payload = AnyCodableJSON.object([
@@ -178,7 +178,7 @@ struct AIAssistantExternalViewsAdaptorTests {
         ])
 
         // When
-        let view = sut.statsCardView(toolName: "analytics_revenue", payload: payload)
+        let view = sut.statsCardView(toolName: "analytics_orders", payload: payload)
 
         // Then
         #expect(view != nil)
@@ -227,7 +227,7 @@ struct AIAssistantExternalViewsAdaptorTests {
         ])
 
         // When
-        let view = sut.statsCardView(toolName: "analytics_revenue", payload: payload)
+        let view = sut.statsCardView(toolName: "analytics_orders", payload: payload)
         let leading = sut.testChartData(forKeys: ["total_sales", "gross_sales"], payload: payload)
         let trailing = sut.testChartData(forKeys: ["net_revenue"], payload: payload)
 
@@ -311,7 +311,7 @@ struct AIAssistantExternalViewsAdaptorTests {
         let payload = AnyCodableJSON.object(["unrelated": .string("garbage")])
 
         // When
-        let view = sut.statsCardView(toolName: "analytics_revenue", payload: payload)
+        let view = sut.statsCardView(toolName: "analytics_orders", payload: payload)
 
         // Then
         #expect(view == nil)

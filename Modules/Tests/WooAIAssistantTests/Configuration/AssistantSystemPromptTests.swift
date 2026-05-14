@@ -124,7 +124,6 @@ struct AssistantSystemPromptTests {
             "orders_get",
             "products_list",
             "products_get",
-            "analytics_revenue",
             "analytics_orders",
             "analytics_stats",
             "orders_bulk_update",

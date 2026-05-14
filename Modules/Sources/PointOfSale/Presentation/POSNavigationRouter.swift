@@ -134,3 +134,21 @@ struct POSNavigationDestinationEmailReceiptView: View {
         .toolbar(.hidden, for: .navigationBar)
     }
 }
+
+extension View {
+    /// Routes every `POSNavigationDestination` case to its wrapper view.
+    func posNavigationDestinations() -> some View {
+        navigationDestination(for: POSNavigationDestination.self) { destination in
+            switch destination {
+            case .cashPayment(let orderTotal):
+                POSNavigationDestinationCashPaymentView(orderTotal: orderTotal)
+            case .scanToPay(let orderTotal):
+                POSNavigationDestinationScanToPayView(orderTotal: orderTotal)
+            case .markAsPaid(let orderTotal):
+                POSNavigationDestinationMarkAsPaidView(orderTotal: orderTotal)
+            case .emailReceipt:
+                POSNavigationDestinationEmailReceiptView()
+            }
+        }
+    }
+}

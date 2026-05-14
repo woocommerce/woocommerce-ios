@@ -107,7 +107,7 @@ private struct StoreTrendsRectangularUnavailableView: View {
 }
 
 private enum StoreTrendsRectangularLayout {
-    static let verticalSpacing = 2.0
+    static let verticalSpacing = 0.0
     static let horizontalSpacing = 6.0
     static let chartHeight = 15.0
 }
@@ -124,7 +124,14 @@ private struct StoreTrendsRectangularHeader: View {
     }
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: StoreTrendsRectangularLayout.horizontalSpacing) {
+        HStack(alignment: .top, spacing: StoreTrendsRectangularLayout.horizontalSpacing) {
+            Image("woo-mini-logo", bundle: nil)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 17, height: 17)
+                .padding(.top, -2)
+                .accessibilityHidden(true)
+
             titleText
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)

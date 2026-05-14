@@ -186,22 +186,16 @@ extension POSPaymentModel {
         subscribeToPaymentSessionEvents()
 
         if preferredConnectionMethod == .tapToPay {
-            // If a BT reader is already attached from a previous session, the
-            // merchant explicitly chose BT — auto-resume the BT collect flow
-            // just like iPad's BT-preferred path. Without this, the TTP hero
-            // would re-appear on the next idle checkout even though the BT
-            // reader is still connected and ready to go. The reader-status
-            // check guards against the (rare) case where `lastConnectedMethod`
-            // says BT but the SDK has since disconnected — we don't want to
-            // collect on a non-existent reader.
-            if lastConnectedMethod == .bluetooth,
-               case .connected = cardReaderConnectionStatus {
-                DDLogInfo("🃏 [CardPayment] BT reader still attached — auto-resuming BT collect instead of TTP pre-connect")
-                currentPaymentMethod = .bluetooth
-                isAwaitingExplicitPaymentStart = false
-                await startPaymentFlow(using: .bluetooth)
-                return
-            }
+            // Phone POS with TTP available: TTP-only product scope (initial
+            // prototype release). BT is removed from the merchant-reachable
+            // UI on this path, so the BT auto-resume branch that used to live
+            // here is no longer needed — there's no way for the merchant to
+            // have committed to BT in the first place. The BT auto-resume code
+            // (and related state-machine paths) stays dormant in this file
+            // for a future re-introduction once the state-machine refactor
+            // lands; the gate at the UI level is the source of truth for
+            // "BT is not available on phone POS for now."
+            //
             // Awaiting an explicit method tap from the hero / sheet — leave the
             // gate true so transient Stripe events during pre-connect can't
             // advance the state machine. No `currentPaymentMethod` yet — the

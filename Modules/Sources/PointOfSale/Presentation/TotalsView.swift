@@ -653,7 +653,11 @@ private extension TotalsView {
         if isTapToPayAvailable {
             methods.append(.tapToPay)
         }
-        if isReaderDisconnected {
+        // On phone POS with TTP available we drop Bluetooth from the
+        // prototype's initial scope (see `isCardReaderRowAvailableInOtherMethodsSheet`
+        // for the rationale). Keep `.cardReader` only on iPad and on TTP-
+        // ineligible phones where BT is the lone card path.
+        if isReaderDisconnected && paymentModel.preferredConnectionMethod != .tapToPay {
             methods.append(.cardReader)
         }
         methods.append(.cashPayment)
@@ -712,24 +716,24 @@ private extension TotalsView {
         guard displayPaymentState.scanToPay == .idle && displayPaymentState.markAsPaid == .idle else { return false }
         guard case .loaded(let totals) = posModel.orderState else { return false }
         guard !totals.orderTotalDecimal.isZero else { return false }
-        // Suppress the TTP hero only when **BT is currently `.connected`**.
-        // That covers the BT-ready / BT-auto-resume scenarios where the
-        // merchant has committed to a reader that's actually attached. In
-        // every other reader state — `.disconnected`, `.reconnecting`,
-        // `.disconnecting`, `.cancellingConnection` — BT is unreachable
-        // and the merchant should see the TTP hero so they can take payment
-        // via TTP without waiting on BT recovery. If BT later reconnects,
-        // the auto-resume path kicks back in and the BT-ready screen
-        // returns naturally.
-        //
-        // The check is `currentPaymentMethod == .bluetooth || lastConnectedMethod == .bluetooth`
-        // so both flavours of "BT is the active path" are caught (active
-        // session vs. between-sessions auto-resume), but only when the reader
-        // is actually `.connected`. We deliberately don't suppress on those
-        // properties alone — once the reader drops, `currentPaymentMethod`
-        // stays stale and `lastConnectedMethod` is just a memory; relying on
-        // them in isolation would strand the merchant on a "Reader not
-        // connected" screen with no path back to TTP.
+        // On phone POS with TTP available (`preferredConnectionMethod == .tapToPay`)
+        // we've dropped Bluetooth from the prototype's initial scope, so any
+        // residual BT state in `currentPaymentMethod` / `lastConnectedMethod`
+        // — e.g. from prior testing / dogfood builds before the drop —
+        // shouldn't suppress the hero. TTP is the only reachable card path
+        // and the hero should always surface on idle.
+        guard paymentModel.preferredConnectionMethod != .tapToPay else {
+            return true
+        }
+        // iPad / TTP-ineligible phones: suppress the TTP hero only when
+        // **BT is currently `.connected`**. That covers the BT-ready / BT-
+        // auto-resume scenarios where the merchant has committed to a reader
+        // that's actually attached. In every other reader state — `.disconnected`,
+        // `.reconnecting`, `.disconnecting`, `.cancellingConnection` — BT is
+        // unreachable and the merchant should see the TTP hero (where TTP is
+        // even available — note this whole method already returned false at
+        // the top when TTP isn't available, so on iPad we never reach this
+        // path anyway).
         if case .connected = paymentModel.cardReaderConnectionStatus,
            paymentModel.currentPaymentMethod == .bluetooth || paymentModel.lastConnectedMethod == .bluetooth {
             return false
@@ -807,7 +811,14 @@ private extension TotalsView {
     /// `.connected` — only `currentPaymentMethod` distinguishes
     /// "merchant committed to BT" from "TTP reader is warm."
     var isCardReaderRowAvailableInOtherMethodsSheet: Bool {
-        paymentModel.currentPaymentMethod != .bluetooth
+        // On phone POS with Tap to Pay on iPhone available
+        // (`preferredConnectionMethod == .tapToPay`) we drop Bluetooth from
+        // the prototype's initial scope. TTP + Cash + Scan to Pay + Mark as
+        // Paid is the complete set; merchants who need BT use iPad. The BT
+        // code paths in `POSPaymentModel` stay in place (dormant) for a
+        // future re-introduction once the state-machine refactor lands.
+        if paymentModel.preferredConnectionMethod == .tapToPay { return false }
+        return paymentModel.currentPaymentMethod != .bluetooth
     }
 
     /// True when the Tap to Pay on iPhone row should appear inside the Other

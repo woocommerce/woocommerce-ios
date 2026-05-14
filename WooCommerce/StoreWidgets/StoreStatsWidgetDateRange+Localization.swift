@@ -48,27 +48,27 @@ extension StoreStatsWidgetDateRange {
         switch self {
         case .today:
             return AppLocalizedString(
-                "storeWidgets.dateRange.todayCompact",
-                value: "1d",
+                "storeWidgets.dateRange.todayCompact.today",
+                value: "Today",
                 comment: "Compact range label for the Today option in the Store Stats lock-screen widget"
             )
         case .yesterday:
             return AppLocalizedString(
-                "storeWidgets.dateRange.yesterdayCompact",
-                value: "Y",
+                "storeWidgets.dateRange.yesterdayCompact.yesterday",
+                value: "Yd",
                 comment: "Compact range label for the Yesterday option in the Store Stats lock-screen widget"
             )
         case .lastWeek:
             return AppLocalizedString(
-                "storeWidgets.dateRange.lastWeekCompact",
-                value: "7d",
-                comment: "Compact range label for the Last Week option in the Store Stats lock-screen widget"
+                "storeWidgets.dateRange.lastWeekCompact.calendarWeek",
+                value: "LW",
+                comment: "Compact range label for the previous calendar week option in the Store Stats lock-screen widget"
             )
         case .lastMonth:
             return AppLocalizedString(
-                "storeWidgets.dateRange.lastMonthCompact",
-                value: "30d",
-                comment: "Compact range label for the Last Month option in the Store Stats lock-screen widget"
+                "storeWidgets.dateRange.lastMonthCompact.calendarMonth",
+                value: "LM",
+                comment: "Compact range label for the previous calendar month option in the Store Stats lock-screen widget"
             )
         case .weekToDate:
             return AppLocalizedString(

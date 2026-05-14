@@ -1,5 +1,6 @@
 import XCTest
 import Yosemite
+import WooFoundation
 @testable import WooCommerce
 
 final class PaymentCaptureOrchestratorTests: XCTestCase {
@@ -34,7 +35,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         // When
         let paymentSiteID = waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-                if case let .collectPayment(siteID, _, _, _, _, _) = action {
+                if case let .collectPayment(siteID, _, _, _, _, _, _, _) = action {
                     promise(siteID)
                 }
             }
@@ -45,6 +46,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .US,
+                terminalPaymentPreparationEnabled: false,
                 channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
@@ -67,7 +70,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         // When
         let paymentOrderID = waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-                if case let .collectPayment(_, orderID, _, _, _, _) = action {
+                if case let .collectPayment(_, orderID, _, _, _, _, _, _) = action {
                     promise(orderID)
                 }
             }
@@ -78,6 +81,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .US,
+                terminalPaymentPreparationEnabled: false,
                 channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
@@ -90,6 +95,76 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
 
         // Then
         assertEqual(9283, paymentOrderID)
+    }
+
+    func test_collect_payment_passes_configured_country_to_payment_action() {
+        // Given
+        let order = Order.fake()
+        let orderTotal: NSDecimalNumber = 150
+
+        // When
+        let countryCode = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                if case let .collectPayment(_, _, _, countryCode, _, _, _, _) = action {
+                    promise(countryCode)
+                }
+            }
+
+            self.sut.collectPayment(
+                for: order,
+                orderTotal: orderTotal,
+                paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                paymentMethodTypes: [.cardPresent],
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .AU,
+                terminalPaymentPreparationEnabled: false,
+                channel: .storeManagement,
+                onPreparingReader: {},
+                onWaitingForInput: { _ in },
+                onCardInserted: {},
+                onProcessingMessage: {},
+                onDisplayMessage: { _ in },
+                onProcessingCompletion: { _ in },
+                onCompletion: { _ in })
+        }
+
+        // Then
+        assertEqual(.AU, countryCode)
+    }
+
+    func test_collect_payment_passes_terminal_payment_preparation_setting_to_payment_action() {
+        // Given
+        let order = Order.fake()
+        let orderTotal: NSDecimalNumber = 150
+
+        // When
+        let terminalPaymentPreparationEnabled = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                if case let .collectPayment(_, _, _, _, terminalPaymentPreparationEnabled, _, _, _) = action {
+                    promise(terminalPaymentPreparationEnabled)
+                }
+            }
+
+            self.sut.collectPayment(
+                for: order,
+                orderTotal: orderTotal,
+                paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                paymentMethodTypes: [.cardPresent],
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .AU,
+                terminalPaymentPreparationEnabled: true,
+                channel: .storeManagement,
+                onPreparingReader: {},
+                onWaitingForInput: { _ in },
+                onCardInserted: {},
+                onProcessingMessage: {},
+                onDisplayMessage: { _ in },
+                onProcessingCompletion: { _ in },
+                onCompletion: { _ in })
+        }
+
+        // Then
+        XCTAssertTrue(terminalPaymentPreparationEnabled)
     }
 
     func test_collect_payment_starts_payment_with_valid_parameters() {
@@ -108,7 +183,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         // When
         let paymentParameters = waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-                if case let .collectPayment(_, _, parameters, _, _, _) = action {
+                if case let .collectPayment(_, _, parameters, _, _, _, _, _) = action {
                     promise(parameters)
                 }
             }
@@ -119,6 +194,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .US,
+                terminalPaymentPreparationEnabled: false,
                 channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
@@ -163,7 +240,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         // When
         let parameters: PaymentParameters = waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-                if case let .collectPayment(_, _, parameters, _, _, _) = action {
+                if case let .collectPayment(_, _, parameters, _, _, _, _, _) = action {
                     promise(parameters)
                 }
             }
@@ -174,6 +251,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: account,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .US,
+                terminalPaymentPreparationEnabled: false,
                 channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
@@ -201,7 +280,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         // When
         let parameters: PaymentParameters = waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-                if case let .collectPayment(_, _, parameters, _, _, _) = action {
+                if case let .collectPayment(_, _, parameters, _, _, _, _, _) = action {
                     promise(parameters)
                 }
             }
@@ -212,6 +291,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: account,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .CA,
+                terminalPaymentPreparationEnabled: false,
                 channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },

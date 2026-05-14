@@ -332,6 +332,8 @@ private extension CollectOrderPaymentUseCase {
                     paymentGatewayAccount: paymentGatewayAccount,
                     paymentMethodTypes: self.configuration.paymentMethods,
                     stripeSmallestCurrencyUnitMultiplier: self.configuration.stripeSmallestCurrencyUnitMultiplier,
+                    countryCode: self.configuration.countryCode,
+                    terminalPaymentPreparationEnabled: false,
                     channel: channel,
                     onPreparingReader: { [weak self] in
                         self?.alertsPresenter.present(viewModel: paymentAlerts.preparingReader(onCancel: {

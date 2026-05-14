@@ -20,7 +20,7 @@ struct MessageListView: View {
     var body: some View {
         Group {
             if messages.isEmpty {
-                EmptyStateView(onPick: onSendSuggestion, onFeedbackTap: onFeedbackTap, siteID: siteID)
+                EmptyStateView(onPick: onSendSuggestion, onFeedbackTap: onFeedbackTap)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             } else {
                 ZStack(alignment: .bottomTrailing) {

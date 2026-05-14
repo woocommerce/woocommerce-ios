@@ -4,22 +4,13 @@ struct EmptyStateView: View {
 
     let onPick: (String) -> Void
     var onFeedbackTap: (() -> Void)? = nil
-    let siteID: Int64
-
-    @AppStorage private var hasDismissedEarlyAccessNotice: Bool
 
     private let suggestions: [SuggestionItem] = EmptyStateView.defaultSuggestions
 
     init(onPick: @escaping (String) -> Void,
-         onFeedbackTap: (() -> Void)? = nil,
-         siteID: Int64) {
+         onFeedbackTap: (() -> Void)? = nil) {
         self.onPick = onPick
         self.onFeedbackTap = onFeedbackTap
-        self.siteID = siteID
-        self._hasDismissedEarlyAccessNotice = AppStorage(
-            wrappedValue: false,
-            "hasDismissedWooAIAssistantEarlyAccessTooltip-\(siteID)"
-        )
     }
 
     struct SuggestionItem: Identifiable {
@@ -34,13 +25,10 @@ struct EmptyStateView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: AssistantSpacing.medium) {
-                if let onFeedbackTap, !hasDismissedEarlyAccessNotice {
-                    AssistantEarlyAccessNoticeCard(
-                        onFeedbackTap: onFeedbackTap,
-                        onDismiss: { hasDismissedEarlyAccessNotice = true }
-                    )
-                    .padding(.horizontal, AssistantSpacing.large)
-                    .padding(.top, AssistantSpacing.large)
+                if let onFeedbackTap {
+                    AssistantEarlyAccessNoticeCard(onFeedbackTap: onFeedbackTap)
+                        .padding(.horizontal, AssistantSpacing.large)
+                        .padding(.top, AssistantSpacing.large)
                 }
 
                 Text(Localization.title)
@@ -144,7 +132,7 @@ private struct SuggestionRow: View {
 }
 
 #Preview("Standalone") {
-    EmptyStateView(onPick: { _ in }, siteID: 0)
+    EmptyStateView(onPick: { _ in })
         .background(Color.assistantSurface)
 }
 #endif

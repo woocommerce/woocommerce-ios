@@ -3,8 +3,7 @@
 24.8
 -----
 - [*] Customer details: fixed bugs in form when adding a customer on iPad [https://github.com/woocommerce/woocommerce-ios/pull/17074]
-- [*] AI Assistant is now available across all build configurations.
-- [*] AI Assistant: expanded the suggestion chips into fuller, ChatGPT-style prompts.
+- [*] Introducing the AI Assistant: a new way to run your store from your pocket. Rolling out to selected stores.
 
 24.7
 -----

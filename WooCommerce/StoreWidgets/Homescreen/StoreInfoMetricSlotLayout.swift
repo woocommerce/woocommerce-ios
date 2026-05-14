@@ -8,7 +8,7 @@ enum StoreInfoMetricSlotLayout {
         case large
 
         var defaultLimit: Int {
-            StoreStatsConfigurationIntent.metricsSlotCounts[widgetFamily]!
+            StoreStatsConfigurationIntent.metricsSlotCounts[widgetFamily] ?? accessibilityLimit
         }
 
         private var widgetFamily: WidgetFamily {

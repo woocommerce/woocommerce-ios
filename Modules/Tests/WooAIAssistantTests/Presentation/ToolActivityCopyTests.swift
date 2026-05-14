@@ -112,18 +112,6 @@ struct ToolActivityCopyTests {
     }
 
     @Test
-    func test_label_when_analytics_revenue_then_says_checking_analytics() {
-        // Given
-        let toolName = "analytics_revenue"
-
-        // When
-        let label = ToolActivityCopy.label(for: toolName)
-
-        // Then
-        #expect(label == "Checking analytics")
-    }
-
-    @Test
     func test_label_when_analytics_orders_then_says_checking_analytics() {
         // Given
         let toolName = "analytics_orders"

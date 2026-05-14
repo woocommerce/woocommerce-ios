@@ -384,11 +384,10 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
         let bottomRow: StatsRowMapping
 
         init?(toolName: String) {
-            // Accept both analytics tool names: the orchestrator's synthetic toolName
-            // for an analytics_stats card depends on the kind the model put in the
-            // card id ("revenue" vs "orders"). Both render the same 4-metric layout
-            // since the orders endpoint already returns all four numbers.
-            guard toolName == AnalyticsOrdersTool.name || toolName == AnalyticsRevenueTool.name else {
+            // The orchestrator's synthetic toolName for an analytics_stats card is
+            // `analytics_orders`; the orders report already returns all four metrics
+            // the 4-metric layout renders.
+            guard toolName == AnalyticsOrdersTool.name else {
                 return nil
             }
             topRow = StatsRowMapping(

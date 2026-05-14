@@ -282,24 +282,24 @@ struct MessageBubbleOrderingTests {
     @Test
     func test_orderedSegments_when_synthetic_ids_contain_colons_then_dedupes_by_full_id() {
         // Given
-        let firstRevenueID = UUID()
-        let secondRevenueID = UUID()
-        let ordersID = UUID()
-        let revenueCardID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
-        let ordersCardID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let firstAprilID = UUID()
+        let secondAprilID = UUID()
+        let mayID = UUID()
+        let aprilCardID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let mayCardID = "analytics_orders:after:2026-05-01:before:2026-05-31:interval:day:currency:none"
         let message = ChatMessage(role: .assistant, segments: [
-            .cardRender(id: firstRevenueID,
-                        toolCallID: "call_a:card:0:analytics_stats:\(revenueCardID)",
-                        toolName: "analytics_revenue",
-                        payload: .object(["id": .string(revenueCardID)])),
-            .cardRender(id: secondRevenueID,
-                        toolCallID: "call_b:card:0:analytics_stats:\(revenueCardID)",
-                        toolName: "analytics_revenue",
-                        payload: .object(["id": .string(revenueCardID)])),
-            .cardRender(id: ordersID,
-                        toolCallID: "call_c:card:0:analytics_stats:\(ordersCardID)",
+            .cardRender(id: firstAprilID,
+                        toolCallID: "call_a:card:0:analytics_stats:\(aprilCardID)",
                         toolName: "analytics_orders",
-                        payload: .object(["id": .string(ordersCardID)]))
+                        payload: .object(["id": .string(aprilCardID)])),
+            .cardRender(id: secondAprilID,
+                        toolCallID: "call_b:card:0:analytics_stats:\(aprilCardID)",
+                        toolName: "analytics_orders",
+                        payload: .object(["id": .string(aprilCardID)])),
+            .cardRender(id: mayID,
+                        toolCallID: "call_c:card:0:analytics_stats:\(mayCardID)",
+                        toolName: "analytics_orders",
+                        payload: .object(["id": .string(mayCardID)]))
         ], isStreaming: false)
 
         // When
@@ -307,7 +307,7 @@ struct MessageBubbleOrderingTests {
         let ids = bubble.orderedSegments.map(\.id)
 
         // Then
-        #expect(ids == [firstRevenueID, ordersID])
+        #expect(ids == [firstAprilID, mayID])
     }
 
     @Test
@@ -477,7 +477,7 @@ struct MessageBubbleOrderingTests {
         let message = ChatMessage(role: .assistant, segments: [
             .toolCall(id: toolCallID,
                       toolCallID: "c1",
-                      toolName: "analytics_revenue",
+                      toolName: "analytics_orders",
                       argumentsPreview: nil,
                       status: .completed(summary: nil)),
             .text(id: textID, content: "Revenue dropped 4%.")
@@ -505,7 +505,7 @@ struct MessageBubbleOrderingTests {
             .toolCall(id: second, toolCallID: "c2", toolName: "products_list",
                       argumentsPreview: nil, status: .running),
             .text(id: textID, content: "Working on it."),
-            .toolCall(id: third, toolCallID: "c3", toolName: "analytics_revenue",
+            .toolCall(id: third, toolCallID: "c3", toolName: "analytics_orders",
                       argumentsPreview: nil, status: .running)
         ], isStreaming: true)
 

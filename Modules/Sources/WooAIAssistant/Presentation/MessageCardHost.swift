@@ -263,7 +263,7 @@ enum TypedCardDispatcher {
     }
 
     static func route(for toolName: String) -> Route {
-        if toolName == AnalyticsRevenueTool.name || toolName == AnalyticsOrdersTool.name { return .analyticsStats }
+        if toolName == AnalyticsOrdersTool.name { return .analyticsStats }
 
         let parts = toolName.split(separator: ".")
         guard parts.count >= 2 else { return .unknown }
@@ -274,7 +274,7 @@ enum TypedCardDispatcher {
             return .order
         case "product":
             return .product
-        case "product_variation":
+        case "variation":
             return .productVariation
         case "customer":
             return .customer

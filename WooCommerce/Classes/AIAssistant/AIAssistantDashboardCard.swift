@@ -9,6 +9,7 @@ struct AIAssistantDashboardCard: View {
 
     var body: some View {
         Button {
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .aiAssistant))
             isPresentingChat = true
         } label: {
             HStack(spacing: 12) {

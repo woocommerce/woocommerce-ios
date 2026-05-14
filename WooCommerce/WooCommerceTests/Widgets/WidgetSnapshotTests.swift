@@ -32,7 +32,7 @@ struct WidgetSnapshotTests {
         // Given
         let metrics = Array(StoreStatsConfigurationIntent.defaultMetrics.prefix(2))
         let configuration: WidgetSnapshot.Configuration = .storeStats(
-            dateRange: .last7Days,
+            dateRange: .lastWeek,
             metrics: metrics
         )
 
@@ -142,7 +142,7 @@ struct WidgetSnapshotTests {
         let tileB = WidgetSnapshot.Tile(
             kind: WooConstants.storeInfoWidgetKind,
             family: .systemMedium,
-            configuration: .storeStats(dateRange: .last7Days, metrics: [.revenue, .orders])
+            configuration: .storeStats(dateRange: .lastWeek, metrics: [.revenue, .orders])
         )
 
         // Then

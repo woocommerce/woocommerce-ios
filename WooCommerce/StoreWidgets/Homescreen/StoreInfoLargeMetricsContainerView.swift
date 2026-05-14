@@ -8,7 +8,7 @@ struct StoreInfoLargeMetricsContainerView: View {
         VStack(alignment: .leading, spacing: Layout.headerSpacing) {
             StoreInfoMetricsLogoHeader(data: data)
 
-            StoreInfoMetricsGrid(metrics: data.metrics, leadingMetricStyle: .large)
+            StoreInfoMetricsGrid(metrics: data.presentableMetrics, leadingMetricStyle: .large)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }

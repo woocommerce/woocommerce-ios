@@ -288,6 +288,7 @@
 				Tools/AppLocalizedString.swift,
 				Tools/StoreWidgets/WidgetSite.swift,
 				Tools/StoreWidgets/WidgetSiteListStore.swift,
+				"Universal Links/Routes/StoreMetricsReportRoute.swift",
 			);
 			target = 3F1FA83F28B60125009E246C /* StoreWidgetsExtension */;
 		};
@@ -382,10 +383,15 @@
 			membershipExceptions = (
 				AvailableMetricsQuery.swift,
 				Entitlements,
+				MetricPresentable.swift,
+				StoreInfoFormatter.swift,
+				StoreInfoMetric.swift,
 				StoreInfoMetricType.swift,
 				StoreStatsConfigurationIntent.swift,
 				StoreStatsWidgetDateRange.swift,
 				StoreWidgets.intentdefinition,
+				WidgetMetricPresenter.swift,
+				WidgetReportsURL.swift,
 			);
 			target = B56DB3C52049BFAA00D4AA8E /* WooCommerce */;
 		};

@@ -11592,9 +11592,6 @@ which should be translated separately and considered part of this sentence. */
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Payer en personne";
 
-/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "Acceptez les paiements en personne pour seulement 2,70 %% + 0,10 $ par transaction. Passez à la version Pro pour accéder au paiement sans contact sur votre téléphone et à notre système de point de vente complet avec synchronisation des stocks et des commandes en temps réel.%1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "La commande a été payée en espèces. Le client a payé %1$@. Le rendu s’élevait à %2$@.";
 
@@ -12042,9 +12039,6 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Code promo non appliqué";
 
-/* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "Réservations";
-
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "Annuler la reconnexion";
 
@@ -12152,12 +12146,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error when trying to send a receipt before an order has been loaded in the Point of Sale */
 "pointOfSale.paymentError.noOrder" = "Aucune commande chargée pour l’instant. Commencez un paiement avant d’envoyer un reçu.";
-
-/* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "Retour à la réservation";
-
-/* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "Terminé";
 
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "Modifier la commande";
@@ -12522,207 +12510,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "Tester votre scanner";
 
-/* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
-"pos.booking.durationHours" = "%dh";
-
-/* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
-"pos.booking.durationHoursAndMinutes" = "%1$d h %2$d m";
-
-/* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
-"pos.booking.durationMinutes" = "%d min";
-
-/* POS booking attendance status label when the customer attended. */
-"pos.bookingAttendanceDisplay.attended" = "Présence";
-
-/* POS booking attendance status label when the customer has not attended. */
-"pos.bookingAttendanceDisplay.unattended" = "Absence";
-
-/* Accessibility label for the next day button in the bookings date bar. */
-"pos.bookingDateBar.nextDay" = "Jour suivant";
-
-/* Accessibility label for the previous day button in the bookings date bar. */
-"pos.bookingDateBar.previousDay" = "Jour précédent";
-
-/* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
-"pos.bookingDateBar.selectedDate" = "%1$@, appuyez pour ouvrir le calendrier";
-
-/* Button to add a private note to a booking. */
-"pos.bookingDetailView.addNoteButton" = "Ajouter une note";
-
-/* Section title for the attendance status in booking details. */
-"pos.bookingDetailView.attendanceStatusTitle" = "État de présence";
-
-/* Subtitle text below the attendance section explaining why marking attendance matters. */
-"pos.bookingDetailView.attendanceSubtitle" = "Notez les présences pour que vos rapports soient exacts et repérer les tendances en matière de réservations.";
-
-/* Error message shown below attendance section when updating attendance status fails. */
-"pos.bookingDetailView.attendanceUpdateError" = "Échec de la mise à jour des présences. Veuillez réessayer.";
-
-/* Label for the attended pill button in booking attendance section. */
-"pos.bookingDetailView.attendedPill" = "Présence";
-
-/* Section title for booking details showing the booking ID number. %lld is the booking ID. */
-"pos.bookingDetailView.bookingIdTitle" = "N° de réservation%lld";
-
-/* Label for the private booking note section in booking details. */
-"pos.bookingDetailView.bookingNoteLabel" = "Note de réservation";
-
-/* Subtitle text below the booking note section explaining the note is private. */
-"pos.bookingDetailView.bookingNoteSubtitle" = "Ceci est une note privée. Elle ne sera pas partagée avec le client.";
-
-/* Menu action to cancel a booking from the POS booking detail view. */
-"pos.bookingDetailView.cancelBookingAction" = "Annuler la réservation";
-
-/* Button to initiate payment collection for a booking. */
-"pos.bookingDetailView.collectPaymentButton" = "Percevoir le paiement";
-
-/* Accessibility label for the copy email button in booking details. */
-"pos.bookingDetailView.copyEmail.accessibilityLabel" = "Copier l’adresse e-mail";
-
-/* Accessibility label for the copy phone button in booking details. */
-"pos.bookingDetailView.copyPhone.accessibilityLabel" = "Copier le numéro de téléphone";
-
-/* Section title for the customer details in booking details. */
-"pos.bookingDetailView.customerTitle" = "Client";
-
-/* Label for the duration in booking details. */
-"pos.bookingDetailView.durationLabel" = "Durée";
-
-/* Button to edit an existing private note on a booking. */
-"pos.bookingDetailView.editNoteButton" = "Modifier la note";
-
-/* Accessibility label for customer email row in booking details. %1$@ is the email address. */
-"pos.bookingDetailView.email.accessibilityLabel" = "E-mail : %1$@";
-
-/* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
-"pos.bookingDetailView.guestBadge" = "Invité";
-
-/* Menu action to issue a full refund for a booking. */
-"pos.bookingDetailView.issueRefundAction" = "Effectuer le remboursement";
-
-/* Label for the location in booking details. */
-"pos.bookingDetailView.locationLabel" = "Emplacement";
-
-/* Accessibility label for the overflow actions menu button in booking details. */
-"pos.bookingDetailView.moreActions.accessibilityLabel" = "Plus d’actions";
-
-/* Label for the customer note in booking details. */
-"pos.bookingDetailView.noteLabel" = "Remarque";
-
-/* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
-"pos.bookingDetailView.phone.accessibilityLabel" = "Téléphone : %1$@";
-
-/* Label for the team member / staff resource in booking details. */
-"pos.bookingDetailView.teamMemberLabel" = "Membre d’équipe";
-
-/* Label for the unattended pill button in booking attendance section. */
-"pos.bookingDetailView.unattendedPill" = "Absence";
-
-/* Button to view the linked order from the booking detail header. */
-"pos.bookingDetailView.viewOrderAction" = "Voir la commande";
-
-/* Text appearing in the booking details pane when no booking is selected. */
-"pos.bookingDetailsEmptyView.description" = "Appuyez sur une réservation pour voir ses détails";
-
-/* POS booking lifecycle status label for active bookings. */
-"pos.bookingLifecycleStatus.booked" = "Réservé";
-
-/* POS booking lifecycle status label for canceled bookings. */
-"pos.bookingLifecycleStatus.canceled" = "Annulé";
-
-/* POS booking lifecycle status label for completed bookings. */
-"pos.bookingLifecycleStatus.completed" = "Terminé";
-
-/* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
-"pos.bookingList.failedToLoadBookingsNextPageTitle" = "Impossible de charger d’autres réservations";
-
-/* Text appearing on the booking list screen when there's an error loading bookings. */
-"pos.bookingList.failedToLoadBookingsTitle" = "Impossible de charger les réservations";
-
-/* Title at the header for the Bookings view. */
-"pos.bookingListView.bookingsTitle" = "Réservations";
-
-/* Subtitle appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchSubtitle" = "Nous n’avons trouvé aucune réservation correspondant à votre recherche. Essayez d’ajuster votre terme de recherche.";
-
-/* Title appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchTitle" = "Aucune réservation trouvée";
-
-/* Subtitle appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsSubtitle.2" = "Toute réservation programmée pour cette date apparaîtra ici.";
-
-/* Title appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsTitle.2" = "Aucune réservation pour ce jour";
-
-/* Accessibility label for the search button in bookings list. */
-"pos.bookingListView.searchButton.accessibilityLabel" = "Chercher dans les réservations";
-
-/* Placeholder for a search field in the Bookings view. */
-"pos.bookingListView.searchFieldPlaceholder" = "Chercher dans les réservations";
-
-/* Button label shown when no changes have been made to the booking note yet. */
-"pos.bookingNoteView.addButton" = "Ajouter";
-
-/* Title shown at the top of the booking note editor screen when adding a new note. */
-"pos.bookingNoteView.addTitle" = "Ajouter une note";
-
-/* Title shown at the top of the booking note editor screen when editing an existing note. */
-"pos.bookingNoteView.editTitle" = "Modifier la note";
-
-/* Placeholder text shown in the booking note text field when empty. */
-"pos.bookingNoteView.placeholder" = "Saisir une note";
-
-/* Button to save the booking note. */
-"pos.bookingNoteView.saveButton" = "Enregistrer";
-
-/* Error message shown when saving a booking note fails. */
-"pos.bookingNoteView.saveError" = "Impossible d’enregistrer la note. Veuillez réessayer.";
-
-/* POS booking payment status label when the booking order payment authorization has been voided. */
-"pos.bookingPaymentStatus.authorizationVoided" = "Autorisation annulée";
-
-/* POS booking payment status label when the booking order payment is authorized but not yet captured. */
-"pos.bookingPaymentStatus.authorized" = "Autorisation accordée";
-
-/* POS booking payment status label when the booking order payment failed. */
-"pos.bookingPaymentStatus.failed" = "Échec";
-
-/* POS booking payment status label when the booking is paid. */
-"pos.bookingPaymentStatus.paid" = "Payé";
-
-/* POS booking payment status label when the booking order has been refunded. */
-"pos.bookingPaymentStatus.refunded" = "Remboursé";
-
-/* POS booking payment status label when the booking is unpaid. */
-"pos.bookingPaymentStatus.unpaid" = "Non payé";
-
-/* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
-"pos.bookingsContainer.cancelBookingSuccess.notice" = "Réservation annulée.";
-
-/* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessage" = "La réservation n°%1$@ pour %2$@ le %3$@ sera annulée.";
-
-/* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "La réservation n°%1$@ pour %2$@ le %3$@ pour %4$@ sera annulée.";
-
-/* Accessibility label for close button on cancel booking confirmation modal. */
-"pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "Fermer";
-
-/* Button to confirm and proceed with booking cancellation. */
-"pos.cancelBookingConfirmation.confirmButton" = "Oui, annuler la réservation";
-
-/* Secondary message informing that the customer will receive an email notification about the cancellation. */
-"pos.cancelBookingConfirmation.customerNotificationMessage" = "Le client sera averti par e-mail.";
-
-/* Error message shown inline in the cancel booking confirmation modal when cancellation fails. */
-"pos.cancelBookingConfirmation.inlineErrorMessage" = "Impossible d’annuler la réservation. Veuillez réessayer.";
-
-/* Button to dismiss the cancel booking confirmation and keep the booking. */
-"pos.cancelBookingConfirmation.keepButton" = "Non, la garder";
-
-/* Title for the cancel booking confirmation modal in POS. */
-"pos.cancelBookingConfirmation.title" = "Annuler cette réservation ?";
-
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "Réglages WooCommerce";
 
@@ -12768,23 +12555,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Quitter le mode point de vente ?";
 
-/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabPricingInfo" = "Acceptez les paiements en personne pour seulement 2,70 % + 0,10 $ par transaction.";
-
-/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabUpgradePrompt" = "Passez à la version Pro pour accéder au paiement sans contact sur votre téléphone et à notre système de point de vente complet avec synchronisation des stocks et des commandes en temps réel.";
-
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "Quitter le PDV";
 
 /* Button title to enable the POS feature switch and refresh POS eligibility check */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "Activer la fonctionnalité PDV";
-
-/* Button title to learn more about upgrading the plan for POS access */
-"pos.ineligible.learnMore.button.title" = "Lire la suite";
-
-/* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
-"pos.ineligible.planUpgrade.title" = "Plan Pro requis";
 
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "Réessayer";
@@ -12809,9 +12584,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "Chargement impossible";
-
-/* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
-"pos.ineligible.upgradePlan.webview.title" = "Mettre le plan à niveau";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Veuillez vérifier votre connexion internet et réessayer.";
@@ -12990,17 +12762,11 @@ which should be translated separately and considered part of this sentence. */
 /* Description for refund via a specific payment method. %@ is the payment method name */
 "pos.orderListController.refund.viaPaymentMethodFormat" = "Via %@";
 
-/* Button text for opening an information view when orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle2" = "Lire la suite";
-
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "Aucune commande ne correspond à ce nom. Veuillez modifier vos termes de recherche.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Aucune commande trouvée";
-
-/* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle2" = "Découvrez comment augmenter vos ventes.";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "Aucune commande pour le moment";
@@ -14135,9 +13901,6 @@ which should be translated separately and considered part of this sentence. */
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Commandes";
 
-/* Total sales stat label on dashboard — shows revenue including taxes and shipping. */
-"storePerformanceView.totalSales" = "Total des ventes";
-
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Impossible d’afficher les performances de votre boutique";
 
@@ -14189,13 +13952,16 @@ which should be translated separately and considered part of this sentence. */
 /* Range title for the today store info widget */
 "storeWidgets.infoProvider.today" = "Aujourd’hui";
 
-/* Conversion title label for the store info widget */
+/* Conversion rate metric title for the store info widget.
+   Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "Conversion";
 
-/* Orders title label for the store info widget */
+/* Orders metric title for the store info widget.
+   Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "Commandes";
 
-/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+/* Revenue metric title — gross revenue including taxes and shipping.
+   Total sales title label for the store info widget — shows revenue including taxes and shipping. */
 "storeWidgets.infoView.totalSales" = "Total des ventes";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
@@ -14204,7 +13970,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
 "storeWidgets.infoView.viewMore" = "Afficher plus";
 
-/* Visitors title label for the store info widget */
+/* Visitors metric title for the store info widget.
+   Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "Visiteurs";
 
 /* Title label for the login button on the store info widget. */
@@ -14550,9 +14317,6 @@ which should be translated separately and considered part of this sentence. */
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "Voir les détails du produit";
 
-/* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.cancel" = "Annuler";
-
 /* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
 "upsTermsView.checkbox1" = "J’accepte le %1$@.";
 
@@ -14562,26 +14326,11 @@ which should be translated separately and considered part of this sentence. */
 /* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
 "upsTermsView.checkbox3" = "J’accepte également le %1$@.";
 
-/* Button to confirm all agreements on the UPS Terms and Conditions view */
-"upsTermsView.confirmButton" = "Confirmer et continuer";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorMessage" = "Une erreur inattendue s’est produite lors de la confirmation de votre acceptation. Veuillez réessayer.";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorTitle" = "Erreur lors de la confirmation de l’acceptation";
-
 /* Message on the UPS Terms and Conditions view */
 "upsTermsView.message" = "Pour commencer à expédier depuis cette adresse avec UPS®, vous devez accepter les conditions générales suivantes :";
 
 /* Link to the prohibited items on the UPS Terms and Conditions view */
 "upsTermsView.prohibitedItems" = "Articles interdits";
-
-/* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.retry" = "Réessayer";
-
-/* Title label for the origin address on the UPS Terms and Conditions view */
-"upsTermsView.shippingFrom" = "Expédition depuis";
 
 /* Link to the technology agreement on the UPS Terms and Conditions view */
 "upsTermsView.technologyAgreement" = "Contrat relatif aux technologies UPS®";

@@ -4,7 +4,7 @@ import SwiftUI
 // MARK: StoreInfo widget view modifiers.
 //
 // Foreground colors switch on `\.storeWidgetTheme` from the environment so the same
-// modifier renders correctly against either the brand-purple background (default) or
+// modifier renders correctly against either the brand-purple background (brandPurple) or
 // the system widget background (sameAsSystem).
 
 public struct StoreNameStyle: ViewModifier {

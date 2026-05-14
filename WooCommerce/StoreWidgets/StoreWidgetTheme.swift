@@ -9,7 +9,7 @@ import AppIntents
 ///
 enum StoreWidgetTheme: String {
     /// Brand-purple background with white text and white logo.
-    case `default`
+    case brandPurple
     /// System widget background (adapts to light/dark) with system text colors and a
     /// brand-purple-tinted logo.
     case sameAsSystem
@@ -29,7 +29,7 @@ extension StoreWidgetTheme: AppEnum {
 
     static var caseDisplayRepresentations: [StoreWidgetTheme: DisplayRepresentation] {
         [
-            .default: DisplayRepresentation(title: "Default"),
+            .brandPurple: DisplayRepresentation(title: "Brand Purple"),
             .sameAsSystem: DisplayRepresentation(title: "Same as system")
         ]
     }
@@ -42,7 +42,7 @@ extension StoreWidgetTheme {
     /// Primary text color — store name, big metric values, body text.
     var primaryTextColor: Color {
         switch self {
-        case .default: return Color(.white)
+        case .brandPurple: return Color(.white)
         case .sameAsSystem: return Color.primary
         }
     }
@@ -50,7 +50,7 @@ extension StoreWidgetTheme {
     /// Secondary text color — date range, "As of …" line, metric titles.
     var secondaryTextColor: Color {
         switch self {
-        case .default:
+        case .brandPurple:
             #if os(watchOS)
             return Color.white.opacity(0.7)
             #else
@@ -67,7 +67,7 @@ extension StoreWidgetTheme {
     /// shade-40 RGB on watchOS where the asset catalog isn't available.
     var logoTintColor: Color {
         switch self {
-        case .default:
+        case .brandPurple:
             return Color(.white)
         case .sameAsSystem:
             #if os(watchOS)
@@ -83,7 +83,7 @@ extension StoreWidgetTheme {
     /// bar group clusters in the middle of a wide chart).
     var chartBaselineColor: Color {
         switch self {
-        case .default: return Color.white.opacity(0.25)
+        case .brandPurple: return Color.white.opacity(0.25)
         case .sameAsSystem: return Color.secondary.opacity(0.35)
         }
     }
@@ -92,7 +92,7 @@ extension StoreWidgetTheme {
 // MARK: - Environment
 
 private struct StoreWidgetThemeEnvironmentKey: EnvironmentKey {
-    static let defaultValue: StoreWidgetTheme = .default
+    static let defaultValue: StoreWidgetTheme = .brandPurple
 }
 
 extension EnvironmentValues {

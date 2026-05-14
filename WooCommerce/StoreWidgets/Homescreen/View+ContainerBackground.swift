@@ -75,7 +75,7 @@ struct StoreWidgetHomeScreenBackground: View {
         switch widgetRenderingMode {
         case .fullColor:
             switch theme {
-            case .default:
+            case .brandPurple:
                 brandBackground
             case .sameAsSystem:
                 systemBackground

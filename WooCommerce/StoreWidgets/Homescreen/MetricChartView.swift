@@ -6,7 +6,7 @@ import SwiftUI
 /// - `.bar` — one bar per interval. Reserved for the wider main-metric row.
 ///
 /// Color is driven by `tone` (up/down/neutral) and the active `\.storeWidgetTheme` from the
-/// environment. The `.default` theme uses the brand-purple-friendly pastels declared in
+/// environment. The `.brandPurple` theme uses the brand-purple-friendly pastels declared in
 /// `Palette`; `.sameAsSystem` falls through to the matching `systemGreen` / `systemRed` /
 /// `systemGray` semantic colors so the chart adapts to light/dark mode.
 ///
@@ -179,15 +179,15 @@ private extension MetricChartView {
     }
 
     /// Active tone palette stops `(high, low, deep)` — switches on the widget theme so the
-    /// chart matches its background. `default` uses the brand-purple-friendly pastels;
+    /// chart matches its background. `brandPurple` uses the brand-purple-friendly pastels;
     /// `sameAsSystem` uses semantic system colors that adapt to light/dark mode.
     var tonePalette: (high: Color, low: Color, deep: Color) {
         switch (theme, tone) {
-        case (.default, .up):
+        case (.brandPurple, .up):
             return (Palette.upHigh, Palette.upLow, Palette.upDeep)
-        case (.default, .down):
+        case (.brandPurple, .down):
             return (Palette.downHigh, Palette.downLow, Palette.downDeep)
-        case (.default, .neutral):
+        case (.brandPurple, .neutral):
             return (Palette.neutralHigh, Palette.neutralLow, Palette.neutralDeep)
         case (.sameAsSystem, .up):
             return (Color(.systemGreen), Color(.systemGreen).opacity(0.65), Color(.systemGreen).opacity(0.45))
@@ -240,9 +240,9 @@ extension MetricChartView {
 }
 
 private extension MetricChartView {
-    /// Palette stops for the `.default` (brand-purple) theme — tweak here to retune the
-    /// brand-themed gradients applied by both the `.bar` and `.sparkline` styles.
-    /// `.sameAsSystem` doesn't read this palette; it uses semantic system colors instead.
+    /// Palette stops for the `.brandPurple` theme — tweak here to retune the brand-themed
+    /// gradients applied by both the `.bar` and `.sparkline` styles. `.sameAsSystem` doesn't
+    /// read this palette; it uses semantic system colors instead.
     /// `*Deep` shades are reserved for zero-value bars and sit a step darker than the
     /// dark end of each gradient.
     enum Palette {

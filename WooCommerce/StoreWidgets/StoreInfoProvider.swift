@@ -87,7 +87,7 @@ struct StoreInfoData {
          metrics: [StoreInfoMetric] = [],
          metricSlots: [StoreInfoMetricSlot]? = nil,
          dateRange: StoreStatsWidgetDateRange? = nil,
-         theme: StoreWidgetTheme = .default) {
+         theme: StoreWidgetTheme = .brandPurple) {
         self.range = range
         self.name = name
         self.revenue = revenue
@@ -190,7 +190,7 @@ final class StoreInfoProvider: TimelineProvider {
         dateRange: StoreStatsWidgetDateRange,
         metrics: [StoreInfoMetricType],
         selectedStoreID: StoreStatsStoreEntity.ID? = nil,
-        theme: StoreWidgetTheme = .default
+        theme: StoreWidgetTheme = .brandPurple
     ) async -> Timeline<StoreInfoEntry> {
         guard let dependencies = Self.fetchDependencies(selectedStoreID: selectedStoreID) else {
             return Timeline<StoreInfoEntry>(entries: [.notConnected], policy: .never)
@@ -440,7 +440,7 @@ private extension StoreInfoProvider {
         for dependencies: Dependencies?,
         dateRange: StoreStatsWidgetDateRange = .today,
         metrics: [StoreInfoMetricType] = legacyMetricsPreset,
-        theme: StoreWidgetTheme = .default
+        theme: StoreWidgetTheme = .brandPurple
     ) -> StoreInfoEntry {
         let currencySettings = dependencies?.store.storeCurrencySettings ?? CurrencySettings()
         let sample = StoreInfoDataService.Stats.placeholderSample
@@ -486,7 +486,7 @@ private extension StoreInfoProvider {
                           dateRange: StoreStatsWidgetDateRange,
                           with dependencies: Dependencies,
                           metrics: [StoreInfoMetricType],
-                          theme: StoreWidgetTheme = .default) -> StoreInfoEntry {
+                          theme: StoreWidgetTheme = .brandPurple) -> StoreInfoEntry {
         let currencySettings = dependencies.store.storeCurrencySettings
         let stats = statsPeriod.current
         let previousStats = statsPeriod.previous

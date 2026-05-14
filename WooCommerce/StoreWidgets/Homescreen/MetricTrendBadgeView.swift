@@ -71,9 +71,9 @@ private extension MetricTrendBadgeView {
     var color: Color {
         switch trend.direction {
         case .up:
-            return Color(.systemGreen)
+            return Color(red: 0.55, green: 0.88, blue: 0.70)
         case .down:
-            return Color(.systemRed)
+            return Color(red: 0.95, green: 0.65, blue: 0.70)
         case .flat:
             return Color(.systemGray)
         }

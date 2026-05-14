@@ -257,4 +257,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables AR parcel fitting for shipping
     ///
     case arParcelFitting
+
+    /// Enables smarter (AI-powered) push notifications.
+    ///
+    case smarterNotifications
 }

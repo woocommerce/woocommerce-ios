@@ -123,6 +123,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return !buildConfig.isProduction
         case .arParcelFitting:
             return false
+        case .smarterNotifications:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

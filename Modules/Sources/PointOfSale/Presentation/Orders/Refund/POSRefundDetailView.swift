@@ -30,7 +30,8 @@ struct POSRefundDetailView: View {
         }
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
-        .posModalFullScreen(horizontalSizeClass == .compact)
+        // `.posModalFullScreen(horizontalSizeClass == .compact)` removed —
+        // `POSRootModalViewModifier` auto-detects compact width. See #17067 review.
     }
 }
 

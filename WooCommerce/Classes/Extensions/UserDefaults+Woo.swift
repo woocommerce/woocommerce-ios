@@ -91,6 +91,9 @@ extension UserDefaults {
 
         /// Sites available for selection in the configurable store stats widget picker
         case widgetSelectableSites
+
+        /// Per-site currency settings fetched lazily by the Store Stats widget extension
+        case widgetSiteCurrencySettingsCache
     }
 }
 

@@ -1,6 +1,8 @@
 @testable import WooCommerce
+@testable import Networking
 import Foundation
 import Testing
+import WooFoundationCore
 
 struct StoreInfoDataServiceTests {
     private let timeZone = TimeZone(secondsFromGMT: 0)!
@@ -165,6 +167,38 @@ struct StoreInfoDataServiceTests {
 
         // Then
         #expect(previous.latestDateToInclude.addingTimeInterval(1) == lastMonth.earliestDateToInclude)
+    }
+
+    // MARK: - General settings
+
+    @Test func fetchGeneralSettings_when_request_succeeds_then_returns_currency_settings() async throws {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
+        let sut = StoreInfoDataService(network: network)
+
+        // When
+        let settings = try await sut.fetchGeneralSettings(siteID: 1234)
+
+        // Then
+        #expect(settings.currencyCode == .USD)
+        #expect(settings.currencyPosition == .left)
+        #expect(settings.groupingSeparator == ",")
+        #expect(settings.decimalSeparator == ".")
+        #expect(settings.fractionDigits == 2)
+        #expect(network.requestsForResponseData.count == 1)
+    }
+
+    @Test func fetchGeneralSettings_when_request_fails_then_throws() async {
+        // Given
+        let network = MockNetwork()
+        let sut = StoreInfoDataService(network: network)
+
+        // Then
+        await #expect(throws: Error.self) {
+            // When
+            try await sut.fetchGeneralSettings(siteID: 1234)
+        }
     }
 
     // MARK: - Helpers

@@ -5,12 +5,16 @@ import SwiftUI
 /// - `.sparkline` — thin line with a fading area fill (iOS Stocks app style).
 /// - `.bar` — one bar per interval. Reserved for the wider main-metric row.
 ///
-/// Color is driven by `tone` — green for upward trends, red for downward, neutral mint /
-/// periwinkle when the trend is unknown. Edit `Palette` to retune all gradients in one place.
+/// Color is driven by `tone` (up/down/neutral) and the active `\.storeWidgetTheme` from the
+/// environment. The `.default` theme uses the brand-purple-friendly pastels declared in
+/// `Palette`; `.sameAsSystem` falls through to the matching `systemGreen` / `systemRed` /
+/// `systemGray` semantic colors so the chart adapts to light/dark mode.
 ///
 /// Caller sizes via `.frame(...)` and gates on `count > 1`.
 ///
 struct MetricChartView: View {
+    @Environment(\.storeWidgetTheme) private var theme
+
     let data: [MetricChartPoint]
     private let style: Style
     private let tone: Tone
@@ -34,7 +38,7 @@ struct MetricChartView: View {
             // Baseline rule is emitted before the bars so the bars paint on top of it.
             if style == .bar, layout.showsBaseline {
                 RuleMark(y: .value("Baseline", 0))
-                    .foregroundStyle(Color.white.opacity(Constants.baselineOpacity))
+                    .foregroundStyle(theme.chartBaselineColor)
                     .lineStyle(StrokeStyle(
                         lineWidth: Constants.baselineLineWidth,
                         lineCap: .round,
@@ -174,59 +178,46 @@ private extension MetricChartView {
         let showsBaseline: Bool
     }
 
+    /// Active tone palette stops `(high, low, deep)` — switches on the widget theme so the
+    /// chart matches its background. `default` uses the brand-purple-friendly pastels;
+    /// `sameAsSystem` uses semantic system colors that adapt to light/dark mode.
+    var tonePalette: (high: Color, low: Color, deep: Color) {
+        switch (theme, tone) {
+        case (.default, .up):
+            return (Palette.upHigh, Palette.upLow, Palette.upDeep)
+        case (.default, .down):
+            return (Palette.downHigh, Palette.downLow, Palette.downDeep)
+        case (.default, .neutral):
+            return (Palette.neutralHigh, Palette.neutralLow, Palette.neutralDeep)
+        case (.sameAsSystem, .up):
+            return (Color(.systemGreen), Color(.systemGreen).opacity(0.65), Color(.systemGreen).opacity(0.45))
+        case (.sameAsSystem, .down):
+            return (Color(.systemRed), Color(.systemRed).opacity(0.65), Color(.systemRed).opacity(0.45))
+        case (.sameAsSystem, .neutral):
+            return (Color(.systemGray), Color(.systemGray).opacity(0.65), Color(.systemGray).opacity(0.45))
+        }
+    }
+
     /// Solid color for zero-value bars — uses the deepest shade of the tone palette
     /// so the dot reads as darker than the dark end of the regular bar gradient.
     var zeroBarColor: Color {
-        switch tone {
-        case .up: return Palette.upDeep
-        case .down: return Palette.downDeep
-        case .neutral: return Palette.neutralDeep
-        }
+        tonePalette.deep
     }
 
     /// Gradient applied to the bar fill / sparkline stroke. Lighter at the top, darker at
     /// the base — matches the iOS Stocks reading direction (peaks read brighter).
     var lineGradient: LinearGradient {
-        switch tone {
-        case .up:
-            return LinearGradient(
-                colors: [
-                    Palette.upHigh,
-                    Palette.upLow
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        case .down:
-            return LinearGradient(
-                colors: [
-                    Palette.downHigh,
-                    Palette.downLow
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        case .neutral:
-            return LinearGradient(
-                colors: [
-                    Palette.neutralHigh,
-                    Palette.neutralLow
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        }
+        LinearGradient(
+            colors: [tonePalette.high, tonePalette.low],
+            startPoint: .top,
+            endPoint: .bottom
+        )
     }
 
     /// Gradient applied to the sparkline `AreaMark`. Solid-ish at the top fading to fully
     /// transparent at the base, so the fill reads as a soft glow under the line.
     var areaGradient: LinearGradient {
-        let top: Color
-        switch tone {
-        case .up: top = Palette.upHigh
-        case .down: top = Palette.downHigh
-        case .neutral: top = Palette.neutralHigh
-        }
+        let top = tonePalette.high
         return LinearGradient(
             colors: [top.opacity(Constants.areaTopOpacity), top.opacity(0.05)],
             startPoint: .top,
@@ -249,7 +240,9 @@ extension MetricChartView {
 }
 
 private extension MetricChartView {
-    /// Single source of truth for chart colors — tweak here to retune both styles.
+    /// Palette stops for the `.default` (brand-purple) theme — tweak here to retune the
+    /// brand-themed gradients applied by both the `.bar` and `.sparkline` styles.
+    /// `.sameAsSystem` doesn't read this palette; it uses semantic system colors instead.
     /// `*Deep` shades are reserved for zero-value bars and sit a step darker than the
     /// dark end of each gradient.
     enum Palette {
@@ -278,7 +271,6 @@ private extension MetricChartView {
         static let barMinHeightRatio = 0.02
         static let sparklineLineWidth = 1.5
         static let baselineLineWidth = 1.0
-        static let baselineOpacity = 0.25
         static let baselineDashPattern: [CGFloat] = [8, 5]
         static let maxBarCornerRadius = 6.0
         static let areaTopOpacity = 0.75

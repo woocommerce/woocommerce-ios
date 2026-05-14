@@ -20,6 +20,21 @@ struct EmptyStateView: View {
         let prompt: String
     }
 
+    static let defaultSuggestions: [SuggestionItem] = [
+        SuggestionItem(symbol: "chart.bar",
+                       title: Localization.suggestionRevenueWeek,
+                       prompt: Localization.promptRevenueWeek),
+        SuggestionItem(symbol: "tag",
+                       title: Localization.suggestionOutOfStock,
+                       prompt: Localization.promptOutOfStock),
+        SuggestionItem(symbol: "list.bullet.rectangle.portrait",
+                       title: Localization.suggestionRecentOrders,
+                       prompt: Localization.promptRecentOrders),
+        SuggestionItem(symbol: "person.2",
+                       title: Localization.suggestionNewCustomers,
+                       prompt: Localization.promptNewCustomers)
+    ]
+
     private static let symbolWidth: CGFloat = 20
     private static let dividerLeadingInset: CGFloat = AssistantSpacing.large + symbolWidth + AssistantSpacing.medium
 
@@ -62,21 +77,6 @@ struct EmptyStateView: View {
             .padding(.bottom, AssistantSpacing.large)
         }
     }
-
-    private static let defaultSuggestions: [SuggestionItem] = [
-        SuggestionItem(symbol: "chart.bar",
-                       title: Localization.suggestionRevenueWeek,
-                       prompt: Localization.promptRevenueWeek),
-        SuggestionItem(symbol: "tag",
-                       title: Localization.suggestionOutOfStock,
-                       prompt: Localization.promptOutOfStock),
-        SuggestionItem(symbol: "list.bullet.rectangle.portrait",
-                       title: Localization.suggestionRecentOrders,
-                       prompt: Localization.promptRecentOrders),
-        SuggestionItem(symbol: "person.2",
-                       title: Localization.suggestionNewCustomers,
-                       prompt: Localization.promptNewCustomers)
-    ]
 
     private enum Localization {
         static let title = NSLocalizedString(
@@ -127,19 +127,14 @@ struct EmptyStateView: View {
     }
 }
 
-struct SuggestionRow: View {
+private struct SuggestionRow: View {
 
     let item: EmptyStateView.SuggestionItem
     let symbolWidth: CGFloat
     let onPick: (String) -> Void
 
-    /// Tapping a chip sends the expanded `prompt`, not the short visible `title`.
-    func handleTap() {
-        onPick(item.prompt)
-    }
-
     var body: some View {
-        Button(action: handleTap) {
+        Button(action: { onPick(item.prompt) }) {
             HStack(spacing: AssistantSpacing.medium) {
                 Image(systemName: item.symbol)
                     .font(.system(size: 15, weight: .semibold))

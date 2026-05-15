@@ -64,13 +64,13 @@ private struct StoreInfoWidgetEntryView: View {
 private extension StoreInfoWidget {
     enum Localization {
         static let title = AppLocalizedString(
-            "storeWidgets.displayName",
-            value: "Today",
+            "storeWidgets.stats.displayName",
+            value: "Stats",
             comment: "Widget title, displayed when selecting which widget to add"
         )
         static let description = AppLocalizedString(
-            "storeWidgets.description",
-            value: "WooCommerce Stats Today",
+            "storeWidgets.stats.description",
+            value: "WooCommerce store stats",
             comment: "Widget description, displayed when selecting which widget to add"
         )
     }

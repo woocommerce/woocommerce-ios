@@ -92,10 +92,10 @@ struct ARParcelFittingResultsViewModelTests {
         vm.trackResultsDisplayed()
 
         // Then
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["action"] == "arfitting_results_displayed")
-        #expect(props?["carrier_match_count"] == "1")
-        #expect(props?["total_carrier_count"] == "2")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("action", value: "arfitting_results_displayed")
+        event.hasProperty("carrier_match_count", value: "1")
+        event.hasProperty("total_carrier_count", value: "2")
     }
 
     // MARK: - trackCarrierPackageSelected
@@ -109,10 +109,10 @@ struct ARParcelFittingResultsViewModelTests {
         vm.trackCarrierPackageSelected(index: 2, isStarred: true)
 
         // Then
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["action"] == "arfitting_carrier_package_selected")
-        #expect(props?["index"] == "2")
-        #expect(props?["is_starred"] == "true")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("action", value: "arfitting_carrier_package_selected")
+        event.hasProperty("index", value: "2")
+        event.hasProperty("is_starred", value: "true")
     }
 
     // MARK: - trackCustomDimensionsSelected
@@ -126,8 +126,8 @@ struct ARParcelFittingResultsViewModelTests {
         vm.trackCustomDimensionsSelected()
 
         // Then
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["action"] == "arfitting_custom_dimensions_selected")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("action", value: "arfitting_custom_dimensions_selected")
     }
 
     // MARK: - trackSelectPackageTapped
@@ -141,9 +141,9 @@ struct ARParcelFittingResultsViewModelTests {
         vm.trackSelectPackageTapped(selectionType: .carrier)
 
         // Then
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["action"] == "arfitting_select_package_tapped")
-        #expect(props?["selection_type"] == "carrier")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("action", value: "arfitting_select_package_tapped")
+        event.hasProperty("selection_type", value: "carrier")
     }
 
     @Test func test_trackSelectPackageTapped_when_custom_then_tracks_custom_type() {
@@ -155,8 +155,8 @@ struct ARParcelFittingResultsViewModelTests {
         vm.trackSelectPackageTapped(selectionType: .custom)
 
         // Then
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["selection_type"] == "custom")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("selection_type", value: "custom")
     }
 
     // MARK: - trackBrowseAllPackagesTapped
@@ -170,8 +170,8 @@ struct ARParcelFittingResultsViewModelTests {
         vm.trackBrowseAllPackagesTapped()
 
         // Then
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["action"] == "arfitting_browse_all_packages_tapped")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("action", value: "arfitting_browse_all_packages_tapped")
     }
 
     // MARK: - trackPackageStarTapped
@@ -185,10 +185,10 @@ struct ARParcelFittingResultsViewModelTests {
         vm.trackPackageStarTapped(index: 0, isStarred: true)
 
         // Then
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["action"] == "arfitting_package_star_tapped")
-        #expect(props?["index"] == "0")
-        #expect(props?["is_starred"] == "true")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("action", value: "arfitting_package_star_tapped")
+        event.hasProperty("index", value: "0")
+        event.hasProperty("is_starred", value: "true")
     }
 
     @Test func test_trackPackageStarTapped_when_unstarring_then_tracks_with_isStarred_false() {
@@ -200,8 +200,8 @@ struct ARParcelFittingResultsViewModelTests {
         vm.trackPackageStarTapped(index: 1, isStarred: false)
 
         // Then
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["is_starred"] == "false")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("is_starred", value: "false")
     }
 }
 

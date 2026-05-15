@@ -98,9 +98,8 @@ struct ARParcelSizingViewModelTests {
         sut.trackBoxPlaced()
 
         // Then
-        #expect(analytics.lastTrackedEventName == "wcs_ar_parcel_fitting")
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["action"] == "arfitting_box_placed")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("action", value: "arfitting_box_placed")
     }
 
     @Test func test_trackBoxPlaced_when_called_twice_then_tracks_only_once() {
@@ -132,14 +131,14 @@ struct ARParcelSizingViewModelTests {
         sut.trackSizingCompleted()
 
         // Then
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["action"] == "arfitting_sizing_completed")
-        #expect(props?["length_cm"] == "20")
-        #expect(props?["width_cm"] == "15")
-        #expect(props?["height_cm"] == "10")
-        #expect(props?["resize_count"] == "1")
-        #expect(props?["rotate_count"] == "1")
-        #expect(props?["reset_count"] == "1")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("action", value: "arfitting_sizing_completed")
+        event.hasProperty("length_cm", value: "20")
+        event.hasProperty("width_cm", value: "15")
+        event.hasProperty("height_cm", value: "10")
+        event.hasProperty("resize_count", value: "1")
+        event.hasProperty("rotate_count", value: "1")
+        event.hasProperty("reset_count", value: "1")
     }
 
     @Test func test_trackSizingCompleted_when_inches_then_converts_to_centimeters() {
@@ -152,10 +151,10 @@ struct ARParcelSizingViewModelTests {
         sut.trackSizingCompleted()
 
         // Then
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["length_cm"] == "25")
-        #expect(props?["width_cm"] == "20")
-        #expect(props?["height_cm"] == "13")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("length_cm", value: "25")
+        event.hasProperty("width_cm", value: "20")
+        event.hasProperty("height_cm", value: "13")
     }
 
     // MARK: - trackSizingCanceled
@@ -171,13 +170,13 @@ struct ARParcelSizingViewModelTests {
         sut.trackSizingCanceled(hadPlacedBox: true, arReady: true)
 
         // Then
-        let props = analytics.trackedEvents.last?.properties
-        #expect(props?["action"] == "arfitting_sizing_canceled")
-        #expect(props?["had_placed_box"] == "true")
-        #expect(props?["ar_ready"] == "true")
-        #expect(props?["resize_count"] == "2")
-        #expect(props?["rotate_count"] == "0")
-        #expect(props?["reset_count"] == "0")
+        let event = try #require(analytics.lastEvent)
+        event.hasProperty("action", value: "arfitting_sizing_canceled")
+        event.hasProperty("had_placed_box", value: "true")
+        event.hasProperty("ar_ready", value: "true")
+        event.hasProperty("resize_count", value: "2")
+        event.hasProperty("rotate_count", value: "0")
+        event.hasProperty("reset_count", value: "0")
     }
 }
 

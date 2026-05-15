@@ -16,7 +16,7 @@ public struct ParcelDimensions: Hashable {
     }
 
     internal func toCentimeters(from unit: UnitLength) -> (length: Int, width: Int, height: Int) {
-        let factor = Float(Measurement(value: 1.0, unit: unit).converted(to: .centimeters).value)
+        let factor = Self.metersPerUnit(unit) * 100
         return (
             Int((length * factor).rounded()),
             Int((width * factor).rounded()),

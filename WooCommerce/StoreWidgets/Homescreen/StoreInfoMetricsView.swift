@@ -12,9 +12,7 @@ enum StoreInfoDynamicType {
 
 /// Home-screen widget dispatcher driven by the metric catalog.
 ///
-/// Companion to the legacy `StoreInfoView`; both render the same widget families but consume
-/// different shapes off `StoreInfoData`. Selection happens in `StoreInfoHomescreenWidget`
-/// based on `useMetricsHomescreenWidget`.
+/// Renders the system family-specific container view off `StoreInfoData.metricSlots`.
 ///
 struct StoreInfoMetricsView: View {
     let entryData: StoreInfoData

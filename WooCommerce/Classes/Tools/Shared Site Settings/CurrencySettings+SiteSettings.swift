@@ -11,7 +11,7 @@ extension CurrencySettings {
 
     /// Returns currency settings only when the general settings response includes every key
     /// the widget formatter needs. Missing keys would otherwise silently keep default values.
-    static func completeSettings(siteSettings: [SiteSetting]) -> CurrencySettings? {
+    public static func completeSettings(siteSettings: [SiteSetting]) -> CurrencySettings? {
         let presentSettingIDs = Set(siteSettings.map(\.settingID))
         guard Constants.requiredSettingIDs.isSubset(of: presentSettingIDs) else {
             return nil

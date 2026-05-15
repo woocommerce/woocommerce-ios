@@ -3,7 +3,6 @@ import Testing
 import EventHorizonSDK
 @testable import ParcelFittingCheck
 
-@Suite("ARParcelSizingViewModel")
 struct ARParcelSizingViewModelTests {
 
     // MARK: - recordGestureCompleted
@@ -89,7 +88,7 @@ struct ARParcelSizingViewModelTests {
 
     // MARK: - trackBoxPlaced
 
-    @Test func test_trackBoxPlaced_when_called_then_tracks_arfittingBoxPlaced() {
+    @Test func test_trackBoxPlaced_when_called_then_tracks_arfittingBoxPlaced() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let sut = makeSUT(analytics: analytics)
@@ -100,7 +99,7 @@ struct ARParcelSizingViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        #expect(event.hasProperty("action", value: "arfitting_box_placed"))
+        #expect(event.name == "arfitting_box_placed")
     }
 
     @Test func test_trackBoxPlaced_when_called_twice_then_tracks_only_once() {
@@ -119,7 +118,7 @@ struct ARParcelSizingViewModelTests {
 
     // MARK: - trackSizingCompleted
 
-    @Test func test_trackSizingCompleted_when_called_then_tracks_with_dimensions_and_counts() {
+    @Test func test_trackSizingCompleted_when_called_then_tracks_with_dimensions_and_counts() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let sut = makeSUT(unit: .centimeters, analytics: analytics)
@@ -133,7 +132,7 @@ struct ARParcelSizingViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        #expect(event.hasProperty("action", value: "arfitting_sizing_completed"))
+        #expect(event.name == "arfitting_sizing_completed")
         #expect(event.hasProperty("length_cm", value: "20"))
         #expect(event.hasProperty("width_cm", value: "15"))
         #expect(event.hasProperty("height_cm", value: "10"))
@@ -142,7 +141,7 @@ struct ARParcelSizingViewModelTests {
         #expect(event.hasProperty("reset_count", value: "1"))
     }
 
-    @Test func test_trackSizingCompleted_when_inches_then_converts_to_centimeters() {
+    @Test func test_trackSizingCompleted_when_inches_then_converts_to_centimeters() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let sut = makeSUT(unit: .inches, analytics: analytics)
@@ -160,7 +159,7 @@ struct ARParcelSizingViewModelTests {
 
     // MARK: - trackSizingCanceled
 
-    @Test func test_trackSizingCanceled_when_called_then_tracks_with_state_and_counts() {
+    @Test func test_trackSizingCanceled_when_called_then_tracks_with_state_and_counts() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let sut = makeSUT(analytics: analytics)
@@ -172,7 +171,7 @@ struct ARParcelSizingViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        #expect(event.hasProperty("action", value: "arfitting_sizing_canceled"))
+        #expect(event.name == "arfitting_sizing_canceled")
         #expect(event.hasProperty("had_placed_box", value: "true"))
         #expect(event.hasProperty("ar_ready", value: "true"))
         #expect(event.hasProperty("resize_count", value: "2"))

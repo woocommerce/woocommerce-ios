@@ -2,7 +2,6 @@ import Testing
 import EventHorizonSDK
 @testable @preconcurrency import ParcelFittingCheck
 
-@Suite("ARParcelFittingResultsViewModel")
 struct ARParcelFittingResultsViewModelTests {
 
     // MARK: - fits(measured:into:)
@@ -80,7 +79,7 @@ struct ARParcelFittingResultsViewModelTests {
 
     // MARK: - trackResultsDisplayed
 
-    @Test func test_trackResultsDisplayed_when_called_then_tracks_with_counts() {
+    @Test func test_trackResultsDisplayed_when_called_then_tracks_with_counts() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let vm = makeSUT(carriers: [
@@ -93,14 +92,14 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        #expect(event.hasProperty("action", value: "arfitting_results_displayed"))
+        #expect(event.name == "arfitting_results_displayed")
         #expect(event.hasProperty("carrier_match_count", value: "1"))
         #expect(event.hasProperty("total_carrier_count", value: "2"))
     }
 
     // MARK: - trackCarrierPackageSelected
 
-    @Test func test_trackCarrierPackageSelected_when_called_then_tracks_with_index_and_starred() {
+    @Test func test_trackCarrierPackageSelected_when_called_then_tracks_with_index_and_starred() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let vm = makeSUT(analytics: analytics)
@@ -110,14 +109,14 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        #expect(event.hasProperty("action", value: "arfitting_carrier_package_selected"))
+        #expect(event.name == "arfitting_carrier_package_selected")
         #expect(event.hasProperty("index", value: "2"))
         #expect(event.hasProperty("is_starred", value: "true"))
     }
 
     // MARK: - trackCustomDimensionsSelected
 
-    @Test func test_trackCustomDimensionsSelected_when_called_then_tracks_event() {
+    @Test func test_trackCustomDimensionsSelected_when_called_then_tracks_event() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let vm = makeSUT(analytics: analytics)
@@ -127,12 +126,12 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        #expect(event.hasProperty("action", value: "arfitting_custom_dimensions_selected"))
+        #expect(event.name == "arfitting_custom_dimensions_selected")
     }
 
     // MARK: - trackSelectPackageTapped
 
-    @Test func test_trackSelectPackageTapped_when_carrier_then_tracks_carrier_type() {
+    @Test func test_trackSelectPackageTapped_when_carrier_then_tracks_carrier_type() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let vm = makeSUT(analytics: analytics)
@@ -142,11 +141,11 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        #expect(event.hasProperty("action", value: "arfitting_select_package_tapped"))
+        #expect(event.name == "arfitting_select_package_tapped")
         #expect(event.hasProperty("selection_type", value: "carrier"))
     }
 
-    @Test func test_trackSelectPackageTapped_when_custom_then_tracks_custom_type() {
+    @Test func test_trackSelectPackageTapped_when_custom_then_tracks_custom_type() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let vm = makeSUT(analytics: analytics)
@@ -161,7 +160,7 @@ struct ARParcelFittingResultsViewModelTests {
 
     // MARK: - trackBrowseAllPackagesTapped
 
-    @Test func test_trackBrowseAllPackagesTapped_when_called_then_tracks_event() {
+    @Test func test_trackBrowseAllPackagesTapped_when_called_then_tracks_event() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let vm = makeSUT(analytics: analytics)
@@ -171,12 +170,12 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        #expect(event.hasProperty("action", value: "arfitting_browse_all_packages_tapped"))
+        #expect(event.name == "arfitting_browse_all_packages_tapped")
     }
 
     // MARK: - trackPackageStarTapped
 
-    @Test func test_trackPackageStarTapped_when_starring_then_tracks_with_isStarred_true() {
+    @Test func test_trackPackageStarTapped_when_starring_then_tracks_with_isStarred_true() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let vm = makeSUT(analytics: analytics)
@@ -186,12 +185,12 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        #expect(event.hasProperty("action", value: "arfitting_package_star_tapped"))
+        #expect(event.name == "arfitting_package_star_tapped")
         #expect(event.hasProperty("index", value: "0"))
         #expect(event.hasProperty("is_starred", value: "true"))
     }
 
-    @Test func test_trackPackageStarTapped_when_unstarring_then_tracks_with_isStarred_false() {
+    @Test func test_trackPackageStarTapped_when_unstarring_then_tracks_with_isStarred_false() throws {
         // Given
         let analytics = MockParcelFittingAnalytics()
         let vm = makeSUT(analytics: analytics)

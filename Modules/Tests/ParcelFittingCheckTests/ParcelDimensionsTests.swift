@@ -1,7 +1,6 @@
 import Testing
 @testable import ParcelFittingCheck
 
-@Suite("ParcelDimensions")
 struct ParcelDimensionsTests {
 
     // MARK: - toCentimeters

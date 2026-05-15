@@ -2,10 +2,17 @@ import SwiftUI
 
 struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var modalParentSize: CGSize = UIScreen.main.bounds.size
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
+
+    /// On phone we standardize the modal experience: every posModal renders as a full-screen
+    /// take-over rather than a centered card, matching the rest of the phone-prototype UI.
+    private var isFullScreen: Bool {
+        modalManager.isFullScreen || horizontalSizeClass == .compact
+    }
 
     func body(content: Content) -> some View {
         content
@@ -31,11 +38,14 @@ struct POSRootModalViewModifier: ViewModifier {
                             .environment(\.posModalParentSize, modalParentSize)
                             .environment(\.posModalDismissAction, { modalManager.dismiss() })
                             .background(Color.posSurfaceBright)
-                            .cornerRadius(modalManager.isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
-                            .posShadow(modalManager.isFullScreen ? .none : .large,
-                                       cornerRadius: modalManager.isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
-                            .padding(modalManager.isFullScreen ? POSPadding.none : POSPadding.medium)
-                            .ignoresSafeArea(.container, edges: modalManager.isFullScreen ? .all : [])
+                            .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                            .posShadow(isFullScreen ? .none : .large,
+                                       cornerRadius: isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                            .padding(isFullScreen ? POSPadding.none : POSPadding.medium)
+                            // When full-screen we still respect the top safe area so the close
+                            // button (and any header) doesn't sit flush against the status bar /
+                            // notch. The bottom + horizontal edges still extend to the screen.
+                            .ignoresSafeArea(.container, edges: isFullScreen ? [.horizontal, .bottom] : [])
                     }
                     .zIndex(1)
                     // Scale the modal container in and out, fading appropriately.

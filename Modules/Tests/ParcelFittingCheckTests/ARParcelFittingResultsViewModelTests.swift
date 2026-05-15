@@ -93,9 +93,9 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        event.hasProperty("action", value: "arfitting_results_displayed")
-        event.hasProperty("carrier_match_count", value: "1")
-        event.hasProperty("total_carrier_count", value: "2")
+        #expect(event.hasProperty("action", value: "arfitting_results_displayed"))
+        #expect(event.hasProperty("carrier_match_count", value: "1"))
+        #expect(event.hasProperty("total_carrier_count", value: "2"))
     }
 
     // MARK: - trackCarrierPackageSelected
@@ -110,9 +110,9 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        event.hasProperty("action", value: "arfitting_carrier_package_selected")
-        event.hasProperty("index", value: "2")
-        event.hasProperty("is_starred", value: "true")
+        #expect(event.hasProperty("action", value: "arfitting_carrier_package_selected"))
+        #expect(event.hasProperty("index", value: "2"))
+        #expect(event.hasProperty("is_starred", value: "true"))
     }
 
     // MARK: - trackCustomDimensionsSelected
@@ -127,7 +127,7 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        event.hasProperty("action", value: "arfitting_custom_dimensions_selected")
+        #expect(event.hasProperty("action", value: "arfitting_custom_dimensions_selected"))
     }
 
     // MARK: - trackSelectPackageTapped
@@ -142,8 +142,8 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        event.hasProperty("action", value: "arfitting_select_package_tapped")
-        event.hasProperty("selection_type", value: "carrier")
+        #expect(event.hasProperty("action", value: "arfitting_select_package_tapped"))
+        #expect(event.hasProperty("selection_type", value: "carrier"))
     }
 
     @Test func test_trackSelectPackageTapped_when_custom_then_tracks_custom_type() {
@@ -156,7 +156,7 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        event.hasProperty("selection_type", value: "custom")
+        #expect(event.hasProperty("selection_type", value: "custom"))
     }
 
     // MARK: - trackBrowseAllPackagesTapped
@@ -171,7 +171,7 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        event.hasProperty("action", value: "arfitting_browse_all_packages_tapped")
+        #expect(event.hasProperty("action", value: "arfitting_browse_all_packages_tapped"))
     }
 
     // MARK: - trackPackageStarTapped
@@ -186,9 +186,9 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        event.hasProperty("action", value: "arfitting_package_star_tapped")
-        event.hasProperty("index", value: "0")
-        event.hasProperty("is_starred", value: "true")
+        #expect(event.hasProperty("action", value: "arfitting_package_star_tapped"))
+        #expect(event.hasProperty("index", value: "0"))
+        #expect(event.hasProperty("is_starred", value: "true"))
     }
 
     @Test func test_trackPackageStarTapped_when_unstarring_then_tracks_with_isStarred_false() {
@@ -201,7 +201,7 @@ struct ARParcelFittingResultsViewModelTests {
 
         // Then
         let event = try #require(analytics.lastEvent)
-        event.hasProperty("is_starred", value: "false")
+        #expect(event.hasProperty("is_starred", value: "false"))
     }
 }
 

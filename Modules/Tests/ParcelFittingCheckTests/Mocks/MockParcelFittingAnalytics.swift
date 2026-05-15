@@ -1,4 +1,3 @@
-import Testing
 import EventHorizonSDK
 @testable import ParcelFittingCheck
 
@@ -7,10 +6,8 @@ final class MockParcelFittingAnalytics: ParcelFittingAnalyticsTracking {
         let name: String
         let properties: [String: String]
 
-        func hasProperty(_ key: String, value: String, sourceLocation: SourceLocation = #_sourceLocation) {
-            let actual = properties[key]
-            #expect(actual == value, "Expected property \"\(key)\" to be \"\(value)\", got \"\(actual ?? "nil")\"",
-                    sourceLocation: sourceLocation)
+        func hasProperty(_ key: String, value: String) -> Bool {
+            properties[key] == value
         }
     }
 

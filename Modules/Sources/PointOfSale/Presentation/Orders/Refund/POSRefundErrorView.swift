@@ -18,8 +18,7 @@ struct POSRefundErrorView: View {
             buttonsSection
         }
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius(for: horizontalSizeClass)))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding(for: horizontalSizeClass) * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
         .onAppear {
             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                 isViewLoaded = true
@@ -80,7 +79,7 @@ private extension POSRefundErrorView {
             Button(Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .padding(POSPadding.xLarge)
+        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
         .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
         .opacity(isViewLoaded ? 1 : 0)
     }

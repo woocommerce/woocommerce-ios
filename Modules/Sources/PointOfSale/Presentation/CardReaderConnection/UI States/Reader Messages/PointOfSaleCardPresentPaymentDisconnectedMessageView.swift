@@ -11,8 +11,12 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     @State private var width: CGFloat = 0
 
     private var connectButtonWidth: CGFloat {
-        // iPad: half the container; phone: align with the totals lines (full width minus standard insets).
-        horizontalSizeClass == .compact ? max(width - POSPadding.large * 2, 0) : width * 0.5
+        // iPad: half the container.
+        // Phone: 16pt insets each side, matching the cash button below. TotalsView
+        // drops PaymentViewPaddingModifier's sidePadding to 0 on phone so the parent's
+        // edge is the screen edge — subtracting POSPadding.medium * 2 lands the button
+        // at [16, screenWidth − 16].
+        horizontalSizeClass == .compact ? max(width - POSPadding.medium * 2, 0) : width * 0.5
     }
 
     init(animation: POSCardPresentPaymentInLineMessageAnimation,

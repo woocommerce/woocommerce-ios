@@ -210,6 +210,7 @@ public struct PointOfSaleEntryPointView: View {
         .environmentObject(posCoverManager)
         .environment(orderListModel)
         .environment(\.siteTimezone, siteTimezone)
+        .environment(\.posLayoutScale, horizontalSizeClass == .compact ? .phone : .tablet)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

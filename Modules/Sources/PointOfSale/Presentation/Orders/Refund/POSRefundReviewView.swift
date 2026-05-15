@@ -22,8 +22,7 @@ struct POSRefundReviewView: View {
             buttonsSection
         }
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius(for: horizontalSizeClass)))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding(for: horizontalSizeClass) * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -127,7 +126,7 @@ private extension POSRefundReviewView {
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
         }
-        .padding(POSPadding.xLarge)
+        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 
     func summaryRow(label: String, value: String, labelColor: Color, valueColor: Color) -> some View {

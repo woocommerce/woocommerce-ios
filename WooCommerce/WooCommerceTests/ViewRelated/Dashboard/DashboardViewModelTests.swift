@@ -1252,7 +1252,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_aiAssistant_when_eligible_user_has_saved_cards_without_it_then_card_is_auto_inserted() async throws {
+    func test_ensureAIAssistantCardInSavedCards_when_onboarding_present_then_inserts_at_top() async throws {
         // Given
         let savedCards: [DashboardCard] = [
             DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -1303,9 +1303,10 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         let updatedCards = try XCTUnwrap(capturedSaves.first)
+        XCTAssertGreaterThanOrEqual(updatedCards.count, 2)
+        XCTAssertEqual(updatedCards.first?.type, .aiAssistant)
+        XCTAssertEqual(updatedCards[1].type, .onboarding)
         let aiIndex = try XCTUnwrap(updatedCards.firstIndex(where: { $0.type == .aiAssistant }))
-        let onboardingIndex = try XCTUnwrap(updatedCards.firstIndex(where: { $0.type == .onboarding }))
-        XCTAssertEqual(aiIndex, onboardingIndex + 1)
         XCTAssertTrue(updatedCards[aiIndex].enabled)
         XCTAssertEqual(updatedCards[aiIndex].availability, .show)
     }

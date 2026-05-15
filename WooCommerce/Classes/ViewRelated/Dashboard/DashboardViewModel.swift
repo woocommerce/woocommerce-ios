@@ -443,14 +443,8 @@ private extension DashboardViewModel {
         guard !savedCards.contains(where: { $0.type == .aiAssistant }) else { return }
 
         let aiAssistantCard = DashboardCard(type: .aiAssistant, availability: .show, enabled: true)
-        let insertionIndex: Int = {
-            if let onboardingIndex = savedCards.firstIndex(where: { $0.type == .onboarding }) {
-                return savedCards.index(after: onboardingIndex)
-            }
-            return savedCards.startIndex
-        }()
         var updatedSaved = savedCards
-        updatedSaved.insert(aiAssistantCard, at: insertionIndex)
+        updatedSaved.insert(aiAssistantCard, at: savedCards.startIndex)
         saveDashboardCards(cards: updatedSaved)
     }
 }

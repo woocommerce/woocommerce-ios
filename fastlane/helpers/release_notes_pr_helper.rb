@@ -51,26 +51,37 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
   def build_ai_release_notes_prompt(version:, items_text:)
     <<~QUESTION
       Act like a mobile app marketer preparing release notes for the App Store.
-      Write effective release notes for WooCommerce iOS #{version} that help merchants understand what changed in this update.
+      Write effective release notes for WooCommerce iOS #{version} that help merchants understand what changed in this update — in a voice that feels like a helpful person talking to a shop owner, not a changelog.
 
       Each item is prefixed by an optional priority marker — `[***]` highest, `[**]` medium, `[*]` standard — that you can use to emphasize the most important changes.
 
-      Rules:
+      ### Non-negotiable (accuracy)
+      These rules are absolute. Warmth never justifies bending them.
       - Only use the provided items.
       - Do not invent features, fixes, or benefits.
-      - Write for WooCommerce merchants, not developers — avoid engineering jargon.
-      - Do not write it point by point — write a single, unique paragraph.
+      - Every clause must trace back to a provided item. Do not add generic claims like "smoother experience", "streamlined interface", or "improved performance" unless an item explicitly says so.
       - Do not mention the release version or version number in the output.
+      - Write a single, unique paragraph — not a point-by-point list.
       - The final text must be #{PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer, including spaces.
       - Preserve correct grammar and spelling. Do not drop letters from words, omit articles, or invent abbreviations to fit the character limit. If a draft is too long, restructure or remove a phrase or item rather than mutilating individual words.
-      - No hype filler. Avoid hype adverbs and stock launch words such as "excitingly", "amazingly", "incredibly", "brand new", "introducing", or "we're thrilled". State the change directly.
-      - No invented padding. Every clause must trace back to a provided item. Do not add generic claims like "smoother experience", "streamlined interface", or "improved performance" unless an item explicitly says so.
-      - No generic outro CTAs. Do not end with calls-to-action like "Update your app", "Update now!", "Try it today", or "Explore these features". The paragraph should end on a substantive change.
+
+      ### Style (aim for warmth within these limits)
+      - Write in a warm, direct second-person voice — "you", "your store", "your customers". Sound like a person, not a release log.
       - Active, benefit-led voice. Lead with what the merchant can now do, not with passive "X has been added". Prefer "Switch between Gross, Net, and Total revenue" over "Revenue switching has been added".
+      - You may open with a short, natural lead-in **as long as it names a real change** — e.g. "Selling on iPad just got easier:" is fine because the items back it up; "We've been hard at work!" is not, because it says nothing.
+      - You may use **one** warm touch — either an opener or a closing line, not both. A closing line is fine if it refers to a specific change. It must not be a generic call-to-action ("Update now!", "Try it today", "Explore these features"). When in doubt, end on a substantive change.
+      - Plain benefit words are welcome: "now", "easier", "no longer", and "faster" — but only "faster" when an item literally describes a speed improvement. The hype ban is about *unsupported intensifiers* and stock launch words: avoid "lightning-fast", "faster than ever", "seamless", "supercharged", "amazingly", "incredibly", "brand new", "introducing", "we're thrilled". State the change directly, warmly.
+      - Use the available character budget as room to write naturally. Short item lists do not need to be terse — a 120-character draft that could comfortably be 220 is usually too clipped. Spend the space on a fuller, friendlier sentence, never on padding.
+      - Write for WooCommerce merchants, not developers — avoid engineering jargon.
 
-      Style reference (for tone only — do not reuse phrasing, only the cadence and merchant-led framing):
-      "Get deeper insights with a revamped Performance card. Quickly switch between Gross, Net, and Total revenue, and choose which order date (paid, placed, or completed) drives your totals. We've also improved shipping label flows with FedEx TOS handling, refreshed POS empty states, and expanded POS availability to Puerto Rico."
+      ### Worked example (tone target)
+      Items: fixed barcode scanning not working after completing a payment; onboarding tasks now show after switching stores.
+      - **Good (warm and accurate):** "A couple of fixes to keep your day moving: barcode scanning in Point of Sale now keeps working after you take a payment, and your store setup tasks stay put when you switch stores."
+      - **Too flat:** "Barcode scanning works after payment. Onboarding tasks show after switching stores."
+      - **Too far (invents tone and benefit):** "We've supercharged Point of Sale! Update now for a seamless, lightning-fast experience."
+      Match the cadence and merchant-led framing of the "Good" example — do not reuse its phrasing.
 
+      ### Validation
       Check your draft by calling the `validate_release_notes_length` tool with the proposed text.
       The tool will reply with `{ ok: true, length: }` if the draft fits within the character limit, or with `{ ok: false, length:, max:, cut_at_least?, reason? }` otherwise — `cut_at_least` is included when the draft is too long, `reason` is included for other rejections (e.g. an empty draft).
       When the tool replies `ok: false`, shorten the draft by at least `cut_at_least` characters when present, or address the `reason` otherwise, then call the tool again.

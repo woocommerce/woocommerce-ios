@@ -13,6 +13,45 @@ require_relative 'release_notes_pr_helper'
 class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassLength
   Helper = ReleaseNotesPRHelper
 
+  REQUIRED_PROMPT_FRAGMENTS = [
+    'Act like a mobile app marketer',
+    'App Store',
+    'help merchants understand what changed',
+    'helpful person talking to a shop owner',
+    'priority marker',
+    '### Non-negotiable (accuracy)',
+    'Only use the provided items.',
+    'Do not invent features, fixes, or benefits.',
+    'Every clause must trace back to a provided item',
+    'Do not mention the release version or version number',
+    'single, unique paragraph — not a point-by-point list',
+    "The final text must be #{Helper::PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer",
+    'Preserve correct grammar and spelling',
+    'Do not drop letters from words',
+    '### Style (aim for warmth within these limits)',
+    'warm, direct second-person voice',
+    'Active, benefit-led voice',
+    'natural lead-in',
+    '**one** warm touch',
+    'generic call-to-action',
+    'Plain benefit words are welcome',
+    'hype ban',
+    'supercharged',
+    'Use the available character budget',
+    'Write for WooCommerce merchants',
+    '### Worked example (tone target)',
+    'Good (warm and accurate)',
+    'Too flat',
+    'Too far',
+    'Match the cadence and merchant-led framing',
+    '### Validation',
+    '`validate_release_notes_length` tool',
+    '`{ ok: true, length: }`',
+    '`{ ok: false, length:, max:, cut_at_least?, reason? }`',
+    'shorten the draft by at least `cut_at_least` characters when present',
+    'Do not include the release-notes text in your plain-text reply'
+  ].freeze
+
   # --- Version validation ----------------------------------------------------
 
   def test_validate_version_accepts_major_minor
@@ -51,33 +90,7 @@ class ReleaseNotesPRHelperTest < Minitest::Test # rubocop:disable Metrics/ClassL
 
   def test_prompt_includes_required_rules
     prompt = Helper.build_ai_release_notes_prompt(version: '24.8', items_text: '- [*] Foo')
-    [
-      'Act like a mobile app marketer',
-      'App Store',
-      'help merchants understand what changed',
-      'priority marker',
-      'Only use the provided items.',
-      'Do not invent features, fixes, or benefits.',
-      'Write for WooCommerce merchants',
-      'Do not write it point by point',
-      'single, unique paragraph',
-      'Do not mention the release version or version number',
-      "The final text must be #{Helper::PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer",
-      'Preserve correct grammar and spelling',
-      'Do not drop letters from words',
-      'No hype filler',
-      'excitingly',
-      'No invented padding',
-      'No generic outro CTAs',
-      'Update your app',
-      'Active, benefit-led voice',
-      'Style reference',
-      '`validate_release_notes_length` tool',
-      '`{ ok: true, length: }`',
-      '`{ ok: false, length:, max:, cut_at_least?, reason? }`',
-      'shorten the draft by at least `cut_at_least` characters when present',
-      'Do not include the release-notes text in your plain-text reply'
-    ].each do |fragment|
+    REQUIRED_PROMPT_FRAGMENTS.each do |fragment|
       assert_includes prompt, fragment, "Expected prompt to include `#{fragment}`"
     end
     assert_includes prompt, '24.8'

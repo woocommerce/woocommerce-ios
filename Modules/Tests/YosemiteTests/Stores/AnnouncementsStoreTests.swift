@@ -224,6 +224,7 @@ private extension AnnouncementsStoreTests {
     }
 
     func makeAnnouncement() -> Yosemite.Announcement {
+        // swiftlint:disable literal_expression_end_indentation
         Announcement.fake().copy(appVersionName: "1",
                                  detailsUrl: "http://wordpress.org",
                                  announcementVersion: "2",
@@ -234,6 +235,7 @@ private extension AnnouncementsStoreTests {
                                                         subtitle: "bar",
                                                         icons: [FeatureIcon.fake().copy(iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")],
                                                         iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")])
+        // swiftlint:enable literal_expression_end_indentation
     }
 
     func makeStorageAnnouncement(displayed: Bool = false) -> StorageAnnouncement {

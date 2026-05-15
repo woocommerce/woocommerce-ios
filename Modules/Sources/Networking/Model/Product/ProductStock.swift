@@ -72,7 +72,7 @@ public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFa
                                                                     // `true`
                                                                     value.lowercased() == Values.manageStockParent ? true : false
                                                                 })
-        ]) ?? false
+                                                            ]) ?? false
 
         // Even though WooCommerce Core returns Int or null values,
         // some plugins alter the field value from Int to Decimal or String.

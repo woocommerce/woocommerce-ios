@@ -657,6 +657,7 @@ private extension ShippingLabelSinglePackageViewModelTests {
                                                      weightUnit: "oz",
                                                      originCountry: "US")
 
+        // swiftlint:disable literal_expression_end_indentation
         let customPackages = [
             ShippingLabelCustomPackage(isUserDefined: true,
                                        title: "Box",
@@ -676,6 +677,7 @@ private extension ShippingLabelSinglePackageViewModelTests {
                                        dimensions: "10 x 40 x 3",
                                        boxWeight: 7,
                                        maxWeight: 10)]
+        // swiftlint:enable literal_expression_end_indentation
 
         let predefinedOptions = [ShippingLabelPredefinedOption(title: "USPS",
                                                                providerID: "USPS",

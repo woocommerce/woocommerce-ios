@@ -127,6 +127,7 @@ private extension ChildItemList {
     )
     let parentItem = POSItem.variableParentProduct(parentProduct)
     let itemsController = PointOfSalePreviewItemsController()
+    // swiftlint:disable literal_expression_end_indentation
     let itemsStack = ItemsStackState(
         root: .loading([]),
         itemStates: [
@@ -155,6 +156,7 @@ private extension ChildItemList {
                         )
                     )
                 ], hasMoreItems: false)])
+    // swiftlint:enable literal_expression_end_indentation
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
 
     return ChildItemList(parentItem: parentItem,

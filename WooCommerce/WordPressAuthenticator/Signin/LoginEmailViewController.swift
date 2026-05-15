@@ -146,7 +146,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         stackView.addConstraints([
             button.leadingAnchor.constraint(equalTo: instructionLabel.leadingAnchor),
             button.trailingAnchor.constraint(equalTo: instructionLabel.trailingAnchor)
-            ])
+        ])
 
         googleLoginButton = button
     }
@@ -166,7 +166,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         stackView.addConstraints([
             button.leadingAnchor.constraint(equalTo: instructionLabel.leadingAnchor),
             button.trailingAnchor.constraint(equalTo: instructionLabel.trailingAnchor)
-            ])
+        ])
 
         selfHostedLoginButton = button
     }
@@ -234,7 +234,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         stackView.addConstraints([
             button.leadingAnchor.constraint(equalTo: instructionLabel.leadingAnchor),
             button.trailingAnchor.constraint(equalTo: instructionLabel.trailingAnchor)
-            ])
+        ])
 
         wpcomSignupButton = button
     }

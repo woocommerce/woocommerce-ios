@@ -20,7 +20,7 @@ final class ARParcelSizingViewModel {
         self.analytics = analytics
     }
 
-    func recordGestureCompleted(mode: TwoFingerCuboidGestureRecognizer.Mode) {
+    func recordGestureCompleted(mode: TwoFingerTracker.Mode) {
         switch mode {
         case .resize: resizeCount += 1
         case .rotate: rotateCount += 1

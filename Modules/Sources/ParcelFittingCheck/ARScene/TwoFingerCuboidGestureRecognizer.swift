@@ -4,32 +4,20 @@ import UIKit.UIGestureRecognizerSubclass
 /// significant motion crosses a threshold. The mode persists until both fingers
 /// lift, so a single pinch never mixes rotation and resize.
 final class TwoFingerCuboidGestureRecognizer: UIGestureRecognizer {
-    enum Mode { case undecided, rotate, resize }
 
     var isResizeEnabled: Bool = true
 
-    private(set) var mode: Mode = .undecided
-    private(set) var startLocations: (first: CGPoint, second: CGPoint) = (.zero, .zero)
-    private(set) var currentLocations: (first: CGPoint, second: CGPoint) = (.zero, .zero)
-    private(set) var rotationFromStart: CGFloat = 0
-    private(set) var distanceFromStart: CGFloat = 0
+    private(set) var tracker = TwoFingerTracker()
+
+    var mode: TwoFingerTracker.Mode { tracker.mode }
+    var startLocations: (first: CGPoint, second: CGPoint) { tracker.startLocations }
+    var currentLocations: (first: CGPoint, second: CGPoint) { tracker.currentLocations }
+    var rotationFromStart: CGFloat { tracker.rotationFromStart }
+    var distanceFromStart: CGFloat { tracker.distanceFromStart }
 
     private var trackedTouches: [UITouch] = []
-    private var initialDistance: CGFloat = 0
-    private var initialAngle: CGFloat = 0
-
-    private enum Threshold {
-        static let distancePoints: CGFloat = 24
-        static let distanceFraction: CGFloat = 0.06
-        static let angleRadians: CGFloat = 8 * .pi / 180
-        /// Multiplier on `distancePoints` above which a pinch dominates over a
-        /// concurrent rotation cross — picks resize even when both thresholds
-        /// have been crossed.
-        static let pinchDominanceMultiplier: CGFloat = 1.5
-    }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        guard let view else { return }
         let countBefore = trackedTouches.count
         for touch in touches where trackedTouches.count < 2 && !trackedTouches.contains(where: { $0 === touch }) {
             trackedTouches.append(touch)
@@ -38,19 +26,67 @@ final class TwoFingerCuboidGestureRecognizer: UIGestureRecognizer {
 
         let p0 = trackedTouches[0].location(in: view)
         let p1 = trackedTouches[1].location(in: view)
-        startLocations = (p0, p1)
-        currentLocations = (p0, p1)
-        initialDistance = hypot(p1.x - p0.x, p1.y - p0.y)
-        initialAngle = atan2(p1.y - p0.y, p1.x - p0.x)
+        tracker.begin(first: p0, second: p1)
         state = .began
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
-        guard let view, trackedTouches.count == 2 else { return }
+        guard trackedTouches.count == 2 else { return }
         guard state == .began || state == .changed else { return }
 
         let p0 = trackedTouches[0].location(in: view)
         let p1 = trackedTouches[1].location(in: view)
+        tracker.update(first: p0, second: p1, isResizeEnabled: isResizeEnabled)
+        state = .changed
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        for touch in touches { trackedTouches.removeAll { $0 === touch } }
+        if trackedTouches.count < 2 {
+            state = (mode == .undecided) ? .failed : .ended
+        }
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+        state = .cancelled
+    }
+
+    override func reset() {
+        super.reset()
+        tracker.reset()
+        trackedTouches.removeAll()
+    }
+}
+
+/// Pure-logic tracker for two-finger gesture mode detection, separated from
+/// UIGestureRecognizer so it can be unit-tested without UIKit's touch pipeline.
+struct TwoFingerTracker {
+    enum Mode { case undecided, rotate, resize }
+
+    private(set) var mode: Mode = .undecided
+    private(set) var startLocations: (first: CGPoint, second: CGPoint) = (.zero, .zero)
+    private(set) var currentLocations: (first: CGPoint, second: CGPoint) = (.zero, .zero)
+    private(set) var rotationFromStart: CGFloat = 0
+    private(set) var distanceFromStart: CGFloat = 0
+
+    private var initialDistance: CGFloat = 0
+    private var initialAngle: CGFloat = 0
+
+    private enum Threshold {
+        static let distancePoints: CGFloat = 24
+        static let distanceFraction: CGFloat = 0.06
+        static let angleRadians: CGFloat = 8 * .pi / 180
+        static let pinchDominanceMultiplier: CGFloat = 1.5
+    }
+
+    mutating func begin(first: CGPoint, second: CGPoint) {
+        startLocations = (first, second)
+        currentLocations = (first, second)
+        initialDistance = hypot(second.x - first.x, second.y - first.y)
+        initialAngle = atan2(second.y - first.y, second.x - first.x)
+    }
+
+    mutating func update(first p0: CGPoint, second p1: CGPoint, isResizeEnabled: Bool) {
         currentLocations = (p0, p1)
 
         let currentDistance = hypot(p1.x - p0.x, p1.y - p0.y)
@@ -71,25 +107,10 @@ final class TwoFingerCuboidGestureRecognizer: UIGestureRecognizer {
                 mode = .rotate
             }
         }
-
-        state = .changed
     }
 
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
-        for touch in touches { trackedTouches.removeAll { $0 === touch } }
-        if trackedTouches.count < 2 {
-            state = (mode == .undecided) ? .failed : .ended
-        }
-    }
-
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
-        state = .cancelled
-    }
-
-    override func reset() {
-        super.reset()
+    mutating func reset() {
         mode = .undecided
-        trackedTouches.removeAll()
         startLocations = (.zero, .zero)
         currentLocations = (.zero, .zero)
         rotationFromStart = 0

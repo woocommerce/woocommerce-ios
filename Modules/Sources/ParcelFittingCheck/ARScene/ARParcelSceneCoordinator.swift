@@ -14,7 +14,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     var onARReady: (() -> Void)?
     var onARLost: (() -> Void)?
     var onDimensionsChanged: ((SIMD3<Float>) -> Void)?
-    var onGestureCompleted: ((TwoFingerCuboidGestureRecognizer.Mode) -> Void)?
+    var onGestureCompleted: ((TwoFingerTracker.Mode) -> Void)?
 
     func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
         onARReady?()

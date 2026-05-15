@@ -1,6 +1,5 @@
 import Foundation
 import Testing
-import EventHorizonSDK
 @testable import ParcelFittingCheck
 
 struct ARParcelSizingViewModelTests {

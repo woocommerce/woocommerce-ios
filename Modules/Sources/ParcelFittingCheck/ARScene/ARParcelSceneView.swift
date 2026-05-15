@@ -9,7 +9,7 @@ struct ARParcelSceneView: UIViewRepresentable {
     let resetTrigger: Int
     var isResizeEnabled: Bool = true
     var onDimensionsChanged: ((SIMD3<Float>) -> Void)?
-    var onGestureCompleted: ((TwoFingerCuboidGestureRecognizer.Mode) -> Void)?
+    var onGestureCompleted: ((TwoFingerTracker.Mode) -> Void)?
 
     func makeCoordinator() -> ARParcelSceneCoordinator {
         let coordinator = ARParcelSceneCoordinator()

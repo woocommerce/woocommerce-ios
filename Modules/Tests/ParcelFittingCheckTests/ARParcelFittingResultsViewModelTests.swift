@@ -1,5 +1,4 @@
 import Testing
-import EventHorizonSDK
 @testable @preconcurrency import ParcelFittingCheck
 
 struct ARParcelFittingResultsViewModelTests {

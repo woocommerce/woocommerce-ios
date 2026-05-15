@@ -597,6 +597,12 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Afghanistan" = "Afghanistan";
 
+/* Error shown when the JWT mint endpoint returns an empty token string. */
+"aiAssistant.jwt.error.invalidResponse" = "The store returned an empty Jetpack AI token.";
+
+/* Accessibility label for the loading spinner shown while a chat-linked detail is being fetched */
+"aiAssistant.loadingPlaceholder.accessibilityLabel" = "Loading";
+
 /* Reads as 'AID'. Part of the mandatory data in receipts */
 "AID" = "AID";
 
@@ -1017,6 +1023,60 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message shown when a video file failed to export from the local library. */
 "assetExportError.failedToExportVideo.message" = "Failed to export the selected media.";
+
+/* Placeholder shown on the assistant customer row when the customer has no email. */
+"assistant.externalViews.customer.noEmailPlaceholder" = "No email on file";
+
+/* Plural orders-count badge on the assistant customer row. %1$@ is the count. */
+"assistant.externalViews.customer.orderCount.plural" = "%1$@ orders";
+
+/* Singular orders-count badge on the assistant customer row. */
+"assistant.externalViews.customer.orderCount.singular" = "1 order";
+
+/* Customer name shown on the assistant order card when the order has no registered customer. */
+"assistant.externalViews.order.guestCustomer" = "Guest";
+
+/* Fallback shown on the assistant order card when a registered customer has no billing name and no email on file. %@ is the customer id. */
+"assistant.externalViews.order.registeredCustomerWithID" = "Customer #%@";
+
+/* Subtitle on the assistant product row inlining the stock count. %1$@ is the count. */
+"assistant.externalViews.product.stock.countFormat" = "%1$@ in stock";
+
+/* Stock status badge on the assistant product card. */
+"assistant.externalViews.product.stock.inStock" = "In stock";
+
+/* Accessory on the assistant product row when stock quantity is known. %1$@ is the count. */
+"assistant.externalViews.product.stock.left" = "%1$@ left";
+
+/* Stock status badge on the assistant product card. */
+"assistant.externalViews.product.stock.onBackorder" = "On backorder";
+
+/* Stock status badge on the assistant product card. */
+"assistant.externalViews.product.stock.outOfStock" = "Out of stock";
+
+/* Variations badge on the assistant product row for variable products. %1$@ is the count. */
+"assistant.externalViews.product.variations.plural" = "%1$@ variations";
+
+/* Variations badge on the assistant product row when the product has exactly one variation. */
+"assistant.externalViews.product.variations.singular" = "1 variation";
+
+/* Trailing column title on the assistant orders analytics card. */
+"assistant.externalViews.stats.avgOrderValue" = "Average Order Value";
+
+/* Placeholder shown on the assistant analytics card when a metric is missing from the tool result. */
+"assistant.externalViews.stats.metricUnavailable" = "-";
+
+/* Trailing column title on the assistant revenue analytics card. */
+"assistant.externalViews.stats.netSales" = "Net Sales";
+
+/* Shell title shared by the assistant revenue and orders analytics cards. */
+"assistant.externalViews.stats.shellTitle" = "Analytics";
+
+/* Leading column title on the assistant orders analytics card. */
+"assistant.externalViews.stats.totalOrders" = "Total Orders";
+
+/* Leading column title on the assistant revenue analytics card. */
+"assistant.externalViews.stats.totalSales" = "Total Sales";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Attribute name";
@@ -4000,6 +4060,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Czech Republic" = "Czech Republic";
+
+/* Accessibility label for the AI Assistant entry card on the dashboard. */
+"dashboardCard.aiAssistant.accessibilityLabel" = "Open the AI assistant";
+
+/* Placeholder text on the AI Assistant entry card on the dashboard, styled like a chat input. */
+"dashboardCard.aiAssistant.placeholder" = "Ask about your store…";
+
+/* Name for the AI Assistant dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.aiAssistant" = "AI Assistant";
 
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blazeCampaigns" = "Blaze campaigns";
@@ -8757,11 +8826,35 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "Settings";
 
+/* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.edit.button.accessibilityLabel" = "Edit";
+
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Remove";
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Loading";
+
+/* Cancel button on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.cancelButton" = "Cancel";
+
+/* Confirmation button on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.confirmButton" = "Mark as paid";
+
+/* Body of the Point of Sale confirmation for manually marking an order as paid. %1$@ is the formatted order total, e.g. $24.99. */
+"pointOfSale.markAsPaid.confirmation.message" = "This will mark the %1$@ order as completed. Use this only if you've already collected payment another way.";
+
+/* Label above the optional note text field on the Point of Sale Mark as paid confirmation, where the merchant can record reconciliation context for the order. */
+"pointOfSale.markAsPaid.confirmation.noteLabel" = "Add a note (optional)";
+
+/* Placeholder shown inside the optional note text field on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.notePlaceholder" = "e.g. Bank transfer from Maria, ref 4827";
+
+/* Title of the Point of Sale confirmation for manually marking an order as paid. */
+"pointOfSale.markAsPaid.confirmation.title" = "Mark order as paid?";
+
+/* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
+"pointOfSale.markAsPaid.failureMessage" = "Couldn't mark this order as paid. Try again.";
 
 /* Fallback name for a product that couldn't be identified in error handling. */
 "pointOfSale.orderController.unknownProduct" = "One or more products";
@@ -8811,6 +8904,18 @@ which should be translated separately and considered part of this sentence. */
 /* Generic product name used when we can't identify which specific product is unavailable */
 "pointOfSale.orderSync.missingProductsError.unknownProductName" = "One or more products";
 
+/* Row subtitle in the Other Payment Methods popover for manually marking an order as paid. */
+"pointOfSale.otherPaymentMethods.markOrderAsPaid.subtitle" = "Use when payment was already collected another way.";
+
+/* Row title in the Other Payment Methods popover for manually marking an order as paid. */
+"pointOfSale.otherPaymentMethods.markOrderAsPaid.title" = "Mark order as paid";
+
+/* Row subtitle in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
+"pointOfSale.otherPaymentMethods.scanToPay.subtitle" = "Show a QR code for the customer to pay from their phone.";
+
+/* Row title in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
+"pointOfSale.otherPaymentMethods.scanToPay.title" = "Scan to Pay";
+
 /* Message shown while loading the order for a payment in Point of Sale */
 "pointOfSale.payment.loading.message" = "Loading order";
 
@@ -8844,11 +8949,50 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.cash.1" = "A cash payment of %1$@ was successfully made.";
 
+/* Message shown to users when an order is marked as paid manually. %1$@ is a placeholder for the order total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.markAsPaid.1" = "A payment of %1$@ was marked as received.";
+
+/* Message shown to users when a scan-to-pay payment is confirmed. %1$@ is a placeholder for the order total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.scanToPay.1" = "A Scan to Pay payment of %1$@ was successfully made.";
+
 /* Informational message shown on payment success screen when an email receipt is automatically sent. %1$@ is a placeholder for the customer's email address. */
 "pointOfSale.paymentSuccessful.receiptSent" = "A receipt has been sent to %1$@.";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "Payment successful";
+
+/* Error message shown when confirming a scan-to-pay payment fails in Point of Sale. */
+"pointOfSale.scanToPay.failedToConfirmPayment.errorMessage" = "Error confirming payment. Try again.";
+
+/* Button to confirm a scan-to-pay payment was received in Point of Sale. */
+"pointOfSale.scanToPay.markpaymentcompleted.button.title" = "Mark payment as complete";
+
+/* Subtitle showing the order total on the Point of Sale scan-to-pay screen. Reads as 'Total: $1.23' */
+"pointOfSale.scanToPay.navigation.subtitle" = "Total: %1$@";
+
+/* Title for the Point of Sale scan-to-pay screen */
+"pointOfSale.scanToPay.navigation.title" = "Scan to Pay";
+
+/* Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale. */
+"pointOfSale.scanToPay.orderNote" = "Customer paid via Scan to Pay";
+
+/* Loading message shown while preparing the order for scan-to-pay (promoting it to pending). */
+"pointOfSale.scanToPay.preparing.message" = "Generating QR code…";
+
+/* Message shown when no payment URL is available to render a QR code in Point of Sale scan-to-pay. */
+"pointOfSale.scanToPay.qrUnavailable.message" = "We couldn't generate a QR code for this order. Please try a different payment method.";
+
+/* Instruction text shown above the QR code in the Point of Sale scan-to-pay screen. */
+"pointOfSale.scanToPay.scan.instruction" = "Ask the customer to scan the QR code with their phone to complete the payment.";
+
+/* Status text shown after the backend confirms a scan-to-pay payment, while the app finalizes success. */
+"pointOfSale.scanToPay.status.confirming" = "Payment received. Confirming…";
+
+/* Status text shown when polling for scan-to-pay payment fails (network etc.). Polling will retry. */
+"pointOfSale.scanToPay.status.error" = "Couldn't check payment status. Retrying…";
+
+/* Status text shown under the scan-to-pay QR code while polling for payment. */
+"pointOfSale.scanToPay.status.waiting" = "Waiting for payment…";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "Send";
@@ -8868,11 +9012,20 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Cancel";
 
+/* Phone-only back button title to return from totals to the items list. */
+"pointOfSaleDashboard.phone.backToItems" = "Items";
+
+/* Phone-only floating button to open the cart from the items list. %1$d is the cart item count. */
+"pointOfSaleDashboard.phone.cart" = "Cart (%1$d)";
+
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "Cancel";
 
 /* Title for the payment method used when collecting cash payment in Point of Sale. */
 "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Pay in Person";
+
+/* Title for the payment method used when manually marking an order as paid in Point of Sale. */
+"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle" = "Other";
 
 /* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
@@ -9068,6 +9221,9 @@ which should be translated separately and considered part of this sentence. */
 /* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
 "pos.addCustomAmount.defaultName" = "Custom amount";
 
+/* Title of the full-screen Point of Sale form when editing an existing custom amount on the order. */
+"pos.addCustomAmount.editTitle" = "Edit custom amount";
+
 /* Label above the name field in the Point of Sale add custom amount form. */
 "pos.addCustomAmount.nameLabel" = "Name";
 
@@ -9077,11 +9233,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
 "pos.addCustomAmount.title" = "Custom amount";
 
-/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.message" = "Tap here to add a service fee, tip, or any custom line to the order.";
-
-/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.title" = "Add a custom amount";
+/* Primary button in the Point of Sale custom amount form when editing, that saves the changes to the order. */
+"pos.addCustomAmount.updateButton" = "Update custom amount";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Barcode scanning";
@@ -9254,9 +9407,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce Settings";
 
-/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
-"pos.cartView.addCustomAmount.header.accessibilityLabel" = "Add custom amount";
-
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Tap on a product to \n add it to the cart, or ";
 
@@ -9331,6 +9481,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Please check your internet connection and try again.";
+
+/* Subtitle for the row in the Point of Sale products list that opens the custom amount form. */
+"pos.itemList.customAmountEntryRow.subtitle" = "Add a one-off charge.";
+
+/* Title for the row in the Point of Sale products list that opens the custom amount form. */
+"pos.itemList.customAmountEntryRow.title" = "Custom amount";
 
 /* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
 "pos.itemList.enablingCouponsErrorTitle.2" = "Unable to enable coupons";
@@ -9428,8 +9584,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "Order";
 
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "Products";
+/* Section title for the items list (products and custom amounts) shown in the loading skeleton */
+"pos.orderDetailsLoadingView.itemsTitle" = "Items";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Totals";
@@ -9439,6 +9595,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown when a refund creation has failed */
 "pos.orderDetailsView.createRefundError.title" = "Failed to create refund";
+
+/* Accessibility label for a custom amount row. %1$@ is the name, %2$@ is the formatted total. */
+"pos.orderDetailsView.customAmountRow.accessibilityLabel" = "%1$@, %2$@";
 
 /* Accessibility hint for email receipt button on order details view */
 "pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Tap to send order receipt via email";
@@ -9458,6 +9617,12 @@ which should be translated separately and considered part of this sentence. */
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "Issue refund";
 
+/* Label for items subtotal (products and custom amounts) in the totals section */
+"pos.orderDetailsView.itemsLabel" = "Items";
+
+/* Section title for the order items list (products and custom amounts) in order details */
+"pos.orderDetailsView.itemsTitle" = "Items";
+
 /* Subtitle shown when loading refund information has failed */
 "pos.orderDetailsView.loadRefundError.subtitle" = "Please try again.";
 
@@ -9476,17 +9641,11 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "Quantity: %1$@ at %2$@ each, Total %3$@";
 
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "Products";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "Products";
-
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
-/* Section title for the refunded products list in order details */
-"pos.orderDetailsView.refundedProductsTitle" = "Refunded products";
+/* Section title for the refunded items list (products and custom amounts) in order details */
+"pos.orderDetailsView.refundedItemsTitle" = "Refunded items";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "Refund #%1$d";
@@ -9541,6 +9700,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder for a search field in the Orders view. */
 "pos.orderListView.searchFieldPlaceholder" = "Search orders";
+
+/* Fallback label shown for a fee on a Point of Sale order whose name is missing or blank. */
+"pos.orderMapper.defaultFeeName" = "Custom amount";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Options available";
@@ -9628,6 +9790,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for refunded product row. %1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total. */
 "pos.refundedProductRow.accessibilityLabel" = "%1$@, Quantity: %2$@ at %3$@ each, Refunded %4$@";
+
+/* Accessibility label for refunded custom amount/fee row. %1$@ is the custom amount name, %2$@ is the refund total. */
+"pos.refundedProductRow.lumpSumAccessibilityLabel" = "%1$@, Refunded %2$@";
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.refundedProductRow.quantityLabel" = "%1$d × %2$@";
@@ -9834,6 +9999,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "Discount total";
 
+/* Title for the Other payment methods button in the Point of Sale checkout. Tapping this button opens a sheet listing alternative payment methods like Scan to Pay or Mark order as paid. */
+"pos.totalsView.otherPaymentMethods.button.title" = "Other payment methods";
+
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Subtotal";
 
@@ -10008,6 +10176,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the WordPress REST API test card in the pre-login connectivity tool */
 "preLoginConnectivityTool.test.wordPressRESTAPI" = "WordPress REST API";
+
+/* Chat with AI support button in the pre-login connectivity tool */
+"preLoginConnectivityToolView.chatWithSupport" = "Chat with Support";
 
 /* Contact support button in the pre-login connectivity tool */
 "preLoginConnectivityToolView.contactSupport" = "Contact Support";
@@ -12056,6 +12227,45 @@ which should be translated separately and considered part of this sentence. */
 /* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
 "storeStatsChart.zeroRevenue" = "Zero revenue";
 
+/* Fallback label for a store stats widget site entity when its name is unknown. */
+"storeStatsWidget.storeEntity.fallbackName" = "Store";
+
+/* Range label for the Last Month option in the Store Stats widget */
+"storeWidgets.dateRange.lastMonth" = "Last Month";
+
+/* Compact range label for the previous calendar month option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.lastMonthCompact.calendarMonth" = "LM";
+
+/* Range label for the Last Week option in the Store Stats widget */
+"storeWidgets.dateRange.lastWeek" = "Last Week";
+
+/* Compact range label for the previous calendar week option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.lastWeekCompact.calendarWeek" = "LW";
+
+/* Range label for the Month to Date option in the Store Stats widget */
+"storeWidgets.dateRange.monthToDate" = "Month to Date";
+
+/* Compact range label for the Month to Date option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.monthToDateCompact" = "MTD";
+
+/* Range label for the Today option in the Store Stats widget */
+"storeWidgets.dateRange.today" = "Today";
+
+/* Compact range label for the Today option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.todayCompact.today" = "Today";
+
+/* Range label for the Week to Date option in the Store Stats widget */
+"storeWidgets.dateRange.weekToDate" = "Week to Date";
+
+/* Compact range label for the Week to Date option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.weekToDateCompact" = "WTD";
+
+/* Range label for the Yesterday option in the Store Stats widget */
+"storeWidgets.dateRange.yesterday" = "Yesterday";
+
+/* Compact range label for the Yesterday option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.yesterdayCompact.yesterday" = "Yd";
+
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce Stats Today";
 
@@ -12064,9 +12274,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "My Shop";
-
-/* Range title for the today store info widget */
-"storeWidgets.infoProvider.today" = "Today";
 
 /* Conversion rate metric title for the store info widget.
    Conversion title label for the store info widget */
@@ -12090,14 +12297,26 @@ which should be translated separately and considered part of this sentence. */
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "Visitors";
 
-/* Average order value (AOV) metric title for the store info widget. */
-"storeWidgets.metric.averageOrderValue" = "Average order value";
+/* Compact title for the average order value metric, shown on the widget cell. */
+"storeWidgets.metric.averageOrderValueShort" = "Avg. order";
 
 /* Items sold metric title — total units sold in the period. */
 "storeWidgets.metric.itemsSold" = "Items sold";
 
 /* Net sales metric title — revenue excluding tax, shipping, and refunds. */
 "storeWidgets.metric.netSales" = "Net sales";
+
+/* Metric picker sentinel that hides the corresponding widget metric slot. */
+"storeWidgets.metric.none" = "None";
+
+/* Accessibility label for a downward metric trend. %1$@ is the formatted percentage change. */
+"storeWidgets.metricTrend.decreased" = "Decreased by %1$@";
+
+/* Accessibility label for an upward metric trend. %1$@ is the formatted percentage change. */
+"storeWidgets.metricTrend.increased" = "Increased by %1$@";
+
+/* Accessibility label for a metric trend that did not change between the current and previous period. */
+"storeWidgets.metricTrend.unchanged" = "Unchanged";
 
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "Log in";
@@ -12116,6 +12335,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
 "storeWidgets.storeInfoRectangularWidget.totalSales" = "Total sales";
+
+/* Widget description, displayed when selecting the configurable Store Stats trends widget. */
+"storeWidgets.trends.description" = "Track store trends on your lock screen.";
+
+/* Widget title, displayed when selecting the configurable Store Stats trends widget. */
+"storeWidgets.trends.displayName" = "Trends";
+
+/* Label when the Trends rectangular lock-screen widget cannot fetch data. */
+"storeWidgets.trendsRectangularWidget.noData" = "No data";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Unable to fetch today's stats";
@@ -12202,6 +12430,18 @@ which should be translated separately and considered part of this sentence. */
 /* In Order Details, the name of the billed person when there are no name and last name. */
 "SummaryTableViewCellViewModel.guestName" = "Guest";
 
+/* Message shown after user rates a bot response as helpful */
+"supportChatFeedbackRow.helpful" = "Helpful";
+
+/* Message shown after user rates a bot response as not helpful */
+"supportChatFeedbackRow.notHelpful" = "Not helpful";
+
+/* Accessibility label for thumbs up button to rate bot response as helpful */
+"supportChatFeedbackRow.rateHelpful" = "Rate helpful";
+
+/* Accessibility label for thumbs down button to rate bot response as not helpful */
+"supportChatFeedbackRow.rateNotHelpful" = "Rate not helpful";
+
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Untitled chat";
 
@@ -12214,8 +12454,14 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the AI support chat screen */
 "supportChatHostingController.title" = "Chat with Support";
 
+/* VoiceOver label for a user chat message that failed to send. %1$@ is the message text. */
+"supportChatMessageRow.failedAccessibilityLabel" = "Not sent. %1$@";
+
 /* Message shown when all diagnostic checks pass */
 "supportChatView.allChecksPassed" = "All checks completed with no issues.";
+
+/* Message shown when the merchant has marked a support chat as resolved */
+"supportChatView.chatResolvedMessage" = "This chat has been marked as resolved.";
 
 /* Button to contact human support from the chat */
 "supportChatView.contactSupport" = "Contact Support";
@@ -12226,6 +12472,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header shown when diagnostics have finished running */
 "supportChatView.diagnosticsComplete" = "Diagnostics Complete";
 
+/* Cancel button in the support chat error alert */
+"supportChatView.errorDismiss" = "Dismiss";
+
 /* Title for the error alert in support chat */
 "supportChatView.errorTitle" = "Error";
 
@@ -12235,8 +12484,14 @@ which should be translated separately and considered part of this sentence. */
 /* Greeting and header for the issue picker in support chat */
 "supportChatView.issuePickerHeader" = "Hello! I'm your Woo Mobile Support Bot. What are you having trouble with today?";
 
-/* OK button in support chat error alert */
-"supportChatView.ok" = "OK";
+/* Confirmation button for marking a support chat as resolved */
+"supportChatView.markResolvedConfirmation.confirm" = "Mark Resolved";
+
+/* Message for the confirmation alert before marking a support chat as resolved */
+"supportChatView.markResolvedConfirmation.message" = "This will close the chat actions for this conversation.";
+
+/* Title for the confirmation alert before marking a support chat as resolved */
+"supportChatView.markResolvedConfirmation.title" = "Mark chat as resolved?";
 
 /* Placeholder text for the chat input field */
 "supportChatView.placeholder" = "Type a message...";
@@ -12247,11 +12502,20 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown while running diagnostics in support chat */
 "supportChatView.runningDiagnostics" = "Running diagnostics...";
 
+/* Message shown when a support ticket has already been created for this chat */
+"supportChatView.ticketCreatedMessage" = "A support ticket has been created for this chat. We'll respond via email.";
+
 /* Navigation title for the AI support chat screen */
 "supportChatView.title" = "Chat with Support";
 
-/* Error message shown when sending a support chat message fails */
-"supportChatViewModel.errorMessage" = "Something went wrong. Please try again.";
+/* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
+"supportChatView.toolbar.contactSupport" = "Contact Support";
+
+/* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
+"supportChatView.toolbar.markResolved" = "Mark Resolved";
+
+/* Generic error message shown when an AI support chat request fails */
+"supportChatViewModel.errorMessage" = "We couldn't connect to AI chat right now.";
 
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Hello! I'm your Woo Mobile Support Bot. Is there anything I can help you with today?";
@@ -12259,8 +12523,11 @@ which should be translated separately and considered part of this sentence. */
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "Please describe your issue in more detail so I can help.";
 
-/* Error message shown when loading a prior support chat transcript fails on resume */
-"supportChatViewModel.resumeErrorMessage" = "We couldn't load the previous conversation. You can still send a new message.";
+/* Error message shown when the AI support chat rate limit (HTTP 429) is hit */
+"supportChatViewModel.rateLimitErrorMessage" = "You've reached the chat limit. Please try again later.";
+
+/* Message shown by the bot when a support chat answer appears to have solved the merchant's issue */
+"supportChatViewModel.resolvedPromptMessage" = "Please mark the chat as resolved if your problem is resolved, or leave a message if you have other questions.";
 
 /* Action button to enable WooCommerce Analytics */
 "supportDiagnosticsService.action.enableAnalytics" = "Enable Analytics";
@@ -12340,6 +12607,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the WPCom servers diagnostic test */
 "supportDiagnosticsService.test.wpComServers" = "Connecting to WordPress.com Servers";
 
+/* Loading message shown while creating a support ticket */
+"supportEscalationCoordinator.creatingTicket" = "Creating support request...";
+
+/* Button on the ticket created alert */
+"supportEscalationCoordinator.gotIt" = "Got it";
+
+/* Alert message shown after support ticket is created successfully */
+"supportEscalationCoordinator.ticketCreatedMessage" = "Your support request has landed safely in our inbox. We will reply via email as quickly as we can.";
+
+/* Alert title shown after support ticket is created successfully */
+"supportEscalationCoordinator.ticketCreatedTitle" = "Request Sent!";
+
+/* Header text before the chat transcript in support ticket description */
+"supportEscalationCoordinator.transcriptHeader" = "Following is the transcript of an in-app AI support chat session:";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "Got It";
 
@@ -12369,6 +12651,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the app can't create a zendesk identity. */
 "supportFormViewModel.badIdentityError" = "Sorry, we cannot create support requests right now, please try again later.";
+
+/* Subject line for auto-created support tickets for card reader/IPP issues */
+"supportFormViewModel.subject.cardReader" = "Card Reader Support Request";
+
+/* Subject line for auto-created support tickets for mobile app issues */
+"supportFormViewModel.subject.mobileApp" = "Mobile App Support Request";
+
+/* Subject line for auto-created support tickets for other plugin/extension issues */
+"supportFormViewModel.subject.otherPlugin" = "Plugin Support Request";
+
+/* Subject line for auto-created support tickets for WooCommerce plugin issues */
+"supportFormViewModel.subject.wooCommercePlugin" = "WooCommerce Plugin Support Request";
+
+/* Subject line for auto-created support tickets for WooPayments issues */
+"supportFormViewModel.subject.wooPayments" = "WooPayments Support Request";
 
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "Sorry, we cannot create support requests right now, please try again later.";
@@ -15152,6 +15449,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to retry loading carrier packages in the shipping label creation flow */
 "wooShipping.packagesSelectionView.retryCTA" = "Retry";
 
+/* Message on a notice when removing a package fails in the shipping creation flow */
+"wooShipping.packageStarToggle.removingFailure" = "Unable to remove package";
+
+/* Button to retry saving/removing a package in the shipping creation flow */
+"wooShipping.packageStarToggle.retry" = "Retry";
+
+/* Message on a notice when saving a package fails in the shipping creation flow */
+"wooShipping.packageStarToggle.savingFailure" = "Unable to save package";
+
 /* Button to navigate to the custom package screen in the shipping label creation flow */
 "wooShipping.savedPackagesSelectionView.createCustomPackageCTA" = "Create a custom package";
 
@@ -15182,14 +15488,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "Split shipments";
 
-/* Message on a notice when removing a package fails in the shipping creation flow */
+/* Message on a notice when removing a saved package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.removingPackageFailure" = "Unable to remove package";
 
-/* Button to retry saving/removing a package in the shipping creation flow */
+/* Button to retry removing a saved package in the shipping creation flow */
 "wooShippingAddPackageViewModel.retry" = "Retry";
-
-/* Message on a notice when saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageFailure" = "Unable to save package";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "Please enter a valid ITN in one of these formats: AES X12345678901234, or NOEEI 30.37(a).";

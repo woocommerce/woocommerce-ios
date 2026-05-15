@@ -11,6 +11,7 @@ struct WooShippingSelectedPackageView: View {
     @State private var showARResults = false
 
     let lastARState: ARSelectionState?
+    let arAnalytics: ParcelFittingAnalyticsTracking
     weak var parcelFittingDelegate: ParcelFittingDelegate?
     let updateSelectedPackage: (WooShippingPackageDataRepresentable) -> Void
 
@@ -44,6 +45,7 @@ struct WooShippingSelectedPackageView: View {
                     showPackageSelection = false
                     updateSelectedPackage(newPackage)
                 },
+                arAnalytics: arAnalytics,
                 arDelegate: parcelFittingDelegate
             )
         }
@@ -57,7 +59,7 @@ struct WooShippingSelectedPackageView: View {
                             carriers: arState.carriers
                         ),
                         starredPackageIDs: arState.starredPackageIDs,
-                        analytics: ParcelFittingAnalyticsAdaptor(),
+                        analytics: arAnalytics,
                         delegate: parcelFittingDelegate,
                         onConfirm: { result in
                             showARResults = false
@@ -149,6 +151,7 @@ private extension WooShippingSelectedPackageView {
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
                                    lastARState: nil,
+                                   arAnalytics: NoOpParcelFittingAnalytics(),
                                    updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")
@@ -164,6 +167,7 @@ private extension WooShippingSelectedPackageView {
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
                                    lastARState: nil,
+                                   arAnalytics: NoOpParcelFittingAnalytics(),
                                    updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")

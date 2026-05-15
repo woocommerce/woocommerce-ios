@@ -22,6 +22,7 @@ struct TotalsView: View {
     // _should be_ showing, so that we can animate the change.
     // Default true so totals fields would be included in the view hiearchy on first render and animate with TotalsView
     @State private var isShowingTotalsFields: Bool = true
+    @State private var isShowingOtherPaymentMethodsSheet: Bool = false
 
     /// Payment state with in-progress secondary methods neutralized.
     /// `.collectingCash` (cash), `.showingQRCode` (scan-to-pay), and `.confirming`/`.processing`
@@ -52,7 +53,9 @@ struct TotalsView: View {
                 VStack(alignment: .center) {
                     Spacer()
 
-                    if isShowingPaymentView {
+                    if useTapToPayHeroLayout {
+                        POSTapToPayHeroView(onPayTapped: handleTapToPayTapped)
+                    } else if isShowingPaymentView {
                         PaymentViewContent(
                             paymentState: displayPaymentState,
                             cardReaderViewLayout: cardReaderViewLayout,
@@ -66,7 +69,7 @@ struct TotalsView: View {
                         )
                     }
 
-                    if isShowingPaymentView && isShowingTotalsFields {
+                    if (useTapToPayHeroLayout || isShowingPaymentView) && isShowingTotalsFields {
                         Spacer()
                     }
 
@@ -82,7 +85,9 @@ struct TotalsView: View {
 
                     Spacer()
 
-                    if !checkoutPaymentMethods.isEmpty {
+                    if useTapToPayHeroLayout {
+                        tapToPayBottomStrip
+                    } else if !checkoutPaymentMethods.isEmpty {
                         POSCheckoutPaymentButtonsRow(
                             methods: checkoutPaymentMethods,
                             onSelect: handlePaymentMethodSelection
@@ -91,6 +96,7 @@ struct TotalsView: View {
                 }
                 .scrollVerticallyIfNeeded()
                 .animation(.default, value: isShowingPaymentView)
+                .animation(.default, value: useTapToPayHeroLayout)
             case .error(.other(let message), let handler):
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
@@ -110,6 +116,11 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields) {
             hideTotalsFieldsWithDelay(shouldShowTotalsFields)
+        }
+        .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
+            POSOtherPaymentMethodsSheet(onCardReader: { paymentModel.connectCardReader() })
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
         }
     }
 
@@ -293,6 +304,14 @@ private extension TotalsView {
             "pos.totalsView.discountTotal2",
             value: "Discount total",
             comment: "Title for discount total amount field")
+        static let cashPaymentButtonTitle = NSLocalizedString(
+            "pos.totalsView.cash.button.title",
+            value: "Cash payment",
+            comment: "Title for the cash payment button title")
+        static let otherPaymentMethodsButtonTitle = NSLocalizedString(
+            "pos.totalsView.otherPaymentMethods.button.title",
+            value: "Other payment methods",
+            comment: "Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout.")
     }
 }
 
@@ -560,15 +579,57 @@ private extension TotalsView {
     func handlePaymentMethodSelection(_ method: POSCheckoutPaymentMethod) {
         switch method {
         case .tapToPay:
-            // Intentionally a no-op for now. Action wiring (and any architectural
-            // changes it requires) lands in a later, focused commit so the row
-            // composition can be verified in isolation first.
-            DDLogInfo("📱 [TapToPay] row tapped (action wiring pending)")
+            handleTapToPayTapped()
         case .cardReader:
             paymentModel.connectCardReader()
         case .cashPayment:
             paymentModel.startCashPayment()
         }
+    }
+
+    /// True when the merchant should see the Android-style Tap to Pay hero +
+    /// bottom-strip layout: TTP availability has resolved `.available` and no
+    /// payment is currently in progress (idle card + idle cash). When a TTP
+    /// payment kicks off, `paymentState.card` transitions out of `.idle` and the
+    /// existing `PaymentViewContent` flow takes over (preparing / accepting /
+    /// processing / success / error).
+    var useTapToPayHeroLayout: Bool {
+        guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
+        return displayPaymentState.card == .idle && displayPaymentState.cash == .idle
+    }
+
+    /// Cash + Other payment methods stacked outlined buttons rendered below the
+    /// totals when the Tap to Pay hero is showing. Mirrors the Android phone POS
+    /// "Cash + Other payment methods" row from samiuelson #15825.
+    @ViewBuilder
+    var tapToPayBottomStrip: some View {
+        VStack(spacing: POSSpacing.medium) {
+            Button(action: { paymentModel.startCashPayment() }) {
+                Text(Localization.cashPaymentButtonTitle)
+                    .font(POSFontStyle.posBodyLargeBold)
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .accessibilityIdentifier("pos-cash-payment-button")
+
+            Button(action: handleOtherPaymentMethodsTapped) {
+                Text(Localization.otherPaymentMethodsButtonTitle)
+                    .font(POSFontStyle.posBodyLargeBold)
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .accessibilityIdentifier("pos-other-payment-methods-button")
+        }
+        .padding(.horizontal, POSPadding.medium)
+        .padding(.bottom, POSPadding.xxLarge)
+    }
+
+    func handleTapToPayTapped() {
+        // Intentionally a no-op for now — action wiring lands in a later focused
+        // commit so this layout change can be verified in isolation first.
+        DDLogInfo("📱 [TapToPay] hero tapped (action wiring pending)")
+    }
+
+    func handleOtherPaymentMethodsTapped() {
+        isShowingOtherPaymentMethodsSheet = true
     }
 }
 

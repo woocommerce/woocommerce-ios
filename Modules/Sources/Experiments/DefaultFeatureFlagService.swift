@@ -120,7 +120,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .aiSupportChat:
             return !buildConfig.isProduction
         case .wooAIAssistant:
-            return !buildConfig.isProduction
+            return true
+        case .arParcelFitting:
+            return false
         default:
             return true
         }

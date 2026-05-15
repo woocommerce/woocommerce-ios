@@ -66,6 +66,10 @@ public enum WooConstants {
     ///
     static let storeInfoWidgetKind = "StoreInfoWidget"
 
+    /// Store Trends Widget Identifier.
+    ///
+    static let storeTrendsWidgetKind = "StoreTrendsWidget"
+
     /// App link Widget Identifier.
     ///
     static let appLinkWidgetKind = "AppLinkWidget"

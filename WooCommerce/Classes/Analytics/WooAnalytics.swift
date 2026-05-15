@@ -185,14 +185,18 @@ extension Analytics {
     }
 }
 
-// MARK: - EventHorizon Trackable Bridge
+// MARK: - EventHorizon Event Bridge
 
 extension Analytics {
-    /// Track a codegen'd Trackable event through the existing analytics pipeline.
-    func track(_ event: some Trackable) {
-        let properties = event.analyticsProperties as [AnyHashable: Any]
+    func track(_ event: Event) {
+        let properties = event.properties as [AnyHashable: Any]
         let enrichedProperties = appendSiteProperties(to: properties)
-        track(event.analyticsName, properties: enrichedProperties, error: nil)
+        track(event.name, properties: enrichedProperties, error: nil)
+    }
+
+    func track(_ eventName: String, withEventProperties properties: [String: any CustomStringConvertible]) {
+        let enrichedProperties = appendSiteProperties(to: properties as [AnyHashable: Any])
+        track(eventName, properties: enrichedProperties, error: nil)
     }
 }
 
@@ -325,6 +329,8 @@ private extension WooAnalytics {
             switch widgetInfo.kind {
             case WooConstants.storeInfoWidgetKind:
                 return "\(WooAnalyticsEvent.Widgets.Name.todayStats.rawValue)-\(widgetInfo.family)"
+            case WooConstants.storeTrendsWidgetKind:
+                return "\(WooAnalyticsEvent.Widgets.Name.trends.rawValue)-\(widgetInfo.family)"
             case WooConstants.appLinkWidgetKind:
                 return WooAnalyticsEvent.Widgets.Name.appLink.rawValue
             default:

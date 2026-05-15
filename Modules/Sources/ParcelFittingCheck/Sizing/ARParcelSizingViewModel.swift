@@ -17,12 +17,7 @@ final class ARParcelSizingViewModel {
     var confirmedDimensions: ParcelDimensions { dimensions }
 
     var dimensionsLabel: String {
-        let format = "L: %.1f  W: %.1f  H: %.1f %@"
-        return String(format: format,
-                      dimensions.length,
-                      dimensions.width,
-                      dimensions.height,
-                      unit.symbol)
+        dimensions.formattedWithLabels(unit: unit)
     }
 
     func update(fromMeters meters: SIMD3<Float>) {

@@ -4,11 +4,22 @@ import SwiftUI
 struct StoreInfoMediumMetricsContainerView: View {
     let data: StoreInfoData
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var visibleMetricSlots: [StoreInfoMetricSlot] {
+        StoreInfoMetricSlotLayout.visibleSlots(
+            from: data.metricSlots,
+            family: .medium,
+            dynamicTypeSize: dynamicTypeSize
+        )
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
             StoreInfoMetricsLogoHeader(data: data)
 
-            StoreInfoMetricsGrid(metrics: data.presentableMetrics)
+            StoreInfoMetricsGrid(metricSlots: visibleMetricSlots,
+                                 dateRange: data.dateRange)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }

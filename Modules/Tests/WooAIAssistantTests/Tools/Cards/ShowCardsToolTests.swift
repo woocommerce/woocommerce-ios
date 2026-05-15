@@ -14,7 +14,7 @@ struct ShowCardsToolTests {
 
         // Then
         #expect(definition.name == "show_cards")
-        #expect(definition.description.contains("After a successful `analytics_revenue` or `analytics_orders`"))
+        #expect(definition.description.contains("After a successful `analytics_orders` call"))
         #expect(definition.description.contains("call this tool with family `analytics_stats`"))
         #expect(definition.description.contains("A single call may mix families"))
         #expect(definition.description.contains("For broad product inventory lists, render product"))
@@ -38,23 +38,21 @@ struct ShowCardsToolTests {
         }
         #expect(familyEnum.contains(.string("order")))
         #expect(familyEnum.contains(.string("product")))
-        #expect(familyEnum.contains(.string("product_variation")))
+        #expect(familyEnum.contains(.string("variation")))
         #expect(familyEnum.contains(.string("customer")))
         #expect(familyEnum.contains(.string("analytics_stats")))
         #expect(id["type"] == .string("string"))
-        // No pattern on `id` - resolver-side AnalyticsCardSpec.decode validates synthetic format.
+        // No pattern on `id` - the resolver validates the variation combined id
+        // and the analytics synthetic format itself.
         #expect(id["pattern"] == nil)
         if case .string(let idDescription) = id["description"] {
             #expect(idDescription.contains("analytics_stats"))
+            #expect(idDescription.contains("{parentProductId}/{variationId}"))
         } else {
             Issue.record("expected id.description string documenting the synthetic format")
         }
-        guard case .object(let parentID) = itemProperties["parent_id"] else {
-            Issue.record("expected parent_id property in item schema")
-            return
-        }
-        #expect(parentID["type"] == .string("string"))
-        #expect(parentID["pattern"] == .string("^[1-9][0-9]*$"))
+        // The combined variation id replaced the separate parent_id property.
+        #expect(itemProperties["parent_id"] == nil)
     }
 
     @Test
@@ -89,8 +87,8 @@ struct ShowCardsToolTests {
                        "subtotals":{"net_revenue":"50.00"}}]}
         """
         let client = StubbedWCRESTClient()
-        await client.stub(path: "wc-analytics/reports/revenue/stats", response: StubResponses.ok(body))
-        let analyticsID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        await client.stub(path: "wc-analytics/reports/orders/stats", response: StubResponses.ok(body))
+        let analyticsID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
@@ -128,8 +126,8 @@ struct ShowCardsToolTests {
          ]}
         """
         let client = StubbedWCRESTClient()
-        await client.stub(path: "wc-analytics/reports/revenue/stats", response: StubResponses.ok(body))
-        let analyticsID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        await client.stub(path: "wc-analytics/reports/orders/stats", response: StubResponses.ok(body))
+        let analyticsID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
@@ -163,7 +161,7 @@ struct ShowCardsToolTests {
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
-            {"family": "analytics_stats", "id": "analytics_revenue:after:not-a-date:before:2026-04-30:interval:day:currency:none"}
+            {"family": "analytics_stats", "id": "analytics_orders:after:not-a-date:before:2026-04-30:interval:day:currency:none"}
         ]}
         """
 
@@ -184,7 +182,7 @@ struct ShowCardsToolTests {
     }
 
     @Test
-    func test_executor_when_product_variation_with_parent_id_then_resolves_via_nested_path() async {
+    func test_executor_when_variation_combined_id_then_resolves_via_nested_path() async {
         // Given
         let client = StubbedWCRESTClient()
         await client.stub(path: "wc/v3/products/821/variations/822",
@@ -195,7 +193,7 @@ struct ShowCardsToolTests {
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
-            {"family": "product_variation", "id": "822", "parent_id": "821"}
+            {"family": "variation", "id": "821/822"}
         ]}
         """
 
@@ -210,17 +208,17 @@ struct ShowCardsToolTests {
         let cards = success.uiStructured?.cards ?? []
         #expect(cards.count == 1)
         #expect(cards[0].family == .productVariation)
-        #expect(cards[0].id == "822")
+        #expect(cards[0].id == "821/822")
     }
 
     @Test
-    func test_executor_when_product_variation_missing_parent_id_then_rejected_as_malformed() async {
+    func test_executor_when_variation_id_is_not_combined_then_rejected_as_malformed() async {
         // Given
         let client = StubbedWCRESTClient()
         let tool = ShowCardsTool.make()
         let arguments = """
         {"references": [
-            {"family": "product_variation", "id": "822"}
+            {"family": "variation", "id": "822"}
         ]}
         """
 
@@ -240,7 +238,7 @@ struct ShowCardsToolTests {
         #expect(rejectedRefs.count == 1)
         if case .object(let entry) = rejectedRefs[0] {
             #expect(entry["reason"] == .string("malformed"))
-            #expect(entry["family"] == .string("product_variation"))
+            #expect(entry["family"] == .string("variation"))
         } else {
             Issue.record("expected rejected entry object")
         }

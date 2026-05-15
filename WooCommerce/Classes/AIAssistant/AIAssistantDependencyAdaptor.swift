@@ -85,7 +85,6 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
             ProductVariationsBulkUpdateTool.make(),
             CustomersListTool.make(),
             AnalyticsOrdersTool.make(),
-            AnalyticsRevenueTool.make(),
             ShowCardsTool.make()
         ]
     }

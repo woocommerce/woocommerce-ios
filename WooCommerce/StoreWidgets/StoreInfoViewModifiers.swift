@@ -2,52 +2,68 @@ import Foundation
 import SwiftUI
 
 // MARK: StoreInfo widget view modifiers.
+//
+// Foreground colors switch on `\.storeWidgetTheme` from the environment so the same
+// modifier renders correctly against either the brand-purple background (brandPurple) or
+// the system widget background (sameAsSystem).
 
 public struct StoreNameStyle: ViewModifier {
+    @Environment(\.storeWidgetTheme) private var theme
+
     public func body(content: Content) -> some View {
         content
             .font(.footnote.weight(.bold))
-            .foregroundColor(Color(.white))
+            .foregroundColor(theme.primaryTextColor)
     }
 }
 
 public struct StatRangeStyle: ViewModifier {
+    @Environment(\.storeWidgetTheme) private var theme
+
     public func body(content: Content) -> some View {
         content
             .font(.caption)
-            .foregroundColor(Color(.lightText))
+            .foregroundColor(theme.secondaryTextColor)
     }
 }
 
 public struct StatTitleStyle: ViewModifier {
+    @Environment(\.storeWidgetTheme) private var theme
+
     public func body(content: Content) -> some View {
         content
             .font(.caption.bold())
-            .foregroundColor(Color(.lightText))
+            .foregroundColor(theme.secondaryTextColor)
     }
 }
 
 public struct StatValueStyle: ViewModifier {
+    @Environment(\.storeWidgetTheme) private var theme
+
     public func body(content: Content) -> some View {
         content
             .font(.title3)
-            .foregroundColor(Color(.white))
+            .foregroundColor(theme.primaryTextColor)
     }
 }
 
 public struct StatTitleLargeStyle: ViewModifier {
+    @Environment(\.storeWidgetTheme) private var theme
+
     public func body(content: Content) -> some View {
         content
             .font(.subheadline.bold())
-            .foregroundColor(Color(.lightText))
+            .foregroundColor(theme.secondaryTextColor)
     }
 }
 
 public struct StatValueLargeStyle: ViewModifier {
+    @Environment(\.storeWidgetTheme) private var theme
+
     public func body(content: Content) -> some View {
         content
             .font(.title2)
-            .foregroundColor(Color(.white))
+            .foregroundColor(theme.primaryTextColor)
     }
 }
 
@@ -88,18 +104,22 @@ public struct StatTrendTextLargeStyle: ViewModifier {
 }
 
 public struct StatTextStyle: ViewModifier {
+    @Environment(\.storeWidgetTheme) private var theme
+
     public func body(content: Content) -> some View {
         content
             .font(.footnote)
-            .foregroundColor(Color(.white))
+            .foregroundColor(theme.primaryTextColor)
     }
 }
 
 public struct StatButtonStyle: ViewModifier {
+    @Environment(\.storeWidgetTheme) private var theme
+
     public func body(content: Content) -> some View {
         content
             .font(.subheadline.weight(.semibold))
-            .foregroundColor(Color(.white))
+            .foregroundColor(theme.primaryTextColor)
     }
 }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-21 09:58:20+0000 */
+/* Translation-Revision-Date: 2026-05-14 11:56:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -9831,6 +9831,24 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
 "cardReaderSettingsConnectedViewController.reconnectingText" = "カードリーダーに再接続中…";
 
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "キャンセル";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "確認して続行";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "承認の確認中に予期しないエラーが発生しました。 もう一度お試しください。";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "承認の確認中にエラーが発生しました";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "再試行";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "発送元";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "トランザクションの詳細を注文メモに記録する";
 
@@ -9980,6 +9998,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "新規注文を見逃さない";
+
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "サポートとチャット";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "接続のトラブルシューティング";
@@ -10585,6 +10606,18 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "このコンテンツを非表示";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "%1$@ に同意します。";
+
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "FedEx の配送ラベルを購入するには、次の規約に同意する必要があります。";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "FedEx 利用規約";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "FedEx 利用規約";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "適用";
 
@@ -10818,6 +10851,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "検出により返されたリーダーには IP アドレスがないため、接続できません。";
+
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "AI アシスタントのサポートを受ける";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "サポートとチャット";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "過去のサポート会話に再アクセス";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "チャットの履歴";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "サイトでアプリが機能するかをテストします";
@@ -11643,6 +11688,36 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "編集";
 
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "完了としてマークされた日付に注文をカウントします。";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "完了した注文";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "選択した時間範囲のパフォーマンスメトリクスに含める注文を選択します。";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "これはストア全体の設定であり、WooCommerce の管理分析設定の「日付タイプ」オプションも制御します。";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "注文が支払われた日付に注文をカウントします。";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "支払い済み注文";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "注文が行われた日付または作成された日付に注文をカウントします。";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "注文済み注文";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "注文日のタイプ";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "注文のタイプを更新できませんでした。 もう一度お試しください。";
+
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "%1$@を更新";
 
@@ -12342,6 +12417,33 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "ストア";
 
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "カスタム金額を追加";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "金額";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "税金を請求";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "カスタム金額";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "名前";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "カスタム金額";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "カスタム金額";
+
+/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.message" = "こちらをタップして、サービス料金、チップ、任意のカスタムラインのいずれかを注文に追加します。";
+
+/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.title" = "カスタム金額を追加";
+
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "バーコードスキャン";
 
@@ -12512,6 +12614,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce 設定";
+
+/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
+"pos.cartView.addCustomAmount.header.accessibilityLabel" = "カスタム金額を追加";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "商品をタップして\n お買い物カゴに追加するか ";
@@ -12762,11 +12867,17 @@ which should be translated separately and considered part of this sentence. */
 /* Description for refund via a specific payment method. %@ is the payment method name */
 "pos.orderListController.refund.viaPaymentMethodFormat" = "%@経由";
 
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "再読み込み";
+
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "その名前の注文は見つかりませんでした。 検索キーワードを調整してみてください。";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "注文がありません";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle.3" = "POS で売上の処理を開始すると、注文がここに表示されます。";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "注文はまだありません";
@@ -13898,8 +14009,23 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "選択した日付には収益がありません";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "下部のシートを開き、どの注文をパフォーマンス合計に含めるかを変更します。";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "注文";
+
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "収益の種類";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "総額";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "純額";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "合計";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "ストアのパフォーマンスを表示できません";
@@ -13974,6 +14100,15 @@ which should be translated separately and considered part of this sentence. */
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "訪問者";
 
+/* Average order value (AOV) metric title for the store info widget. */
+"storeWidgets.metric.averageOrderValue" = "平均注文金額";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "販売済み商品";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "純売上高";
+
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "ログイン";
 
@@ -14032,6 +14167,144 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "無料お試し";
 
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "無題のチャット";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "まだサポートとチャットしていません。";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "チャットの履歴";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "サポートとチャット";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "すべてのチェックが問題なく完了しました。";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "サポートに連絡";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "チャットに進む";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "診断が完了しました";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "エラー";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "追加のサポートが必要なようです。 サポートチームへの問い合わせを希望しますか ?";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "こんにちは。 Woo モバイルサポートボットです。 今日は何にお困りですか ?";
+
+/* OK button in support chat error alert */
+"supportChatView.ok" = "OK";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "メッセージを入力…";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "以前の会話の継続";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "診断を実行中…";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "サポートとチャット";
+
+/* Error message shown when sending a support chat message fails */
+"supportChatViewModel.errorMessage" = "エラーが発生しました。 もう一度お試しください。";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "こんにちは。 Woo モバイルサポートボットです。 今日は何かお手伝いできることはありますか ?";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "お手伝いできるよう、問題をより詳しく説明してください。";
+
+/* Error message shown when loading a prior support chat transcript fails on resume */
+"supportChatViewModel.resumeErrorMessage" = "以前の会話を読み込めませんでした。 新しいメッセージは送信できます。";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "分析を有効化";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "注文通知を有効化";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "設定を開く";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "端末を登録";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "再試行";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "Jetpack を設定";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "分析設定を確認できませんでした。";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "ストアで WooCommerce Analytics が有効になっていません。\n\n有効にされるまで、収益や注文統計などの分析データは利用できません。";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "サイトの応答が正常に機能していません。";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "お使いの端末はプッシュ通知に登録されていないようです。";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "サイトに問題があるようです。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "Jetpack プラグインがサイトで有効になっていないようです。\n\nプッシュ通知には有効な Jetpack 連携が必要です。";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "インターネットに接続されていないようです。\n\nWi-Fi がオンになっていることをご確認ください。 モバイルデータを使用している場合、端末の設定で有効になっていることを確認してください。 ";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "Jetpack 連携で問題が発生しています。";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "通知設定を確認できませんでした。";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "このアプリではプッシュ通知が許可されていません。\n\nお使いの端末の設定で有効にすると、注文通知を受け取ることができます。";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "このストアでは注文通知が有効になっていません。\n\n有効にすると、新規注文が入った際にアラートを受け取ることができます。";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "サイトの応答に時間がかかっています。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "現在 WordPress.com に接続できません。\n\n数分後にもう一度お試しください。";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "分析設定の確認";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "インターネット接続";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "ストアでの商品の取得";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "通知設定の確認";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "サイトへの接続";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "サイトの注文の取得";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "WordPress.com サーバーへの接続";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "了解";
 
@@ -14067,6 +14340,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WooPayments support area option */
 "supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "分析の読み込み";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "注文の読み込み";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "商品の読み込み";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "その他";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "プッシュ通知の受信";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "システムステータスレポート";

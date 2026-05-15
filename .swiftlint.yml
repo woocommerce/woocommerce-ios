@@ -25,6 +25,9 @@ only_rules:
   # There should be no space before and one after any comma.
   - comma
 
+  # All elements in a collection literal should be vertically aligned.
+  - collection_alignment
+
   # Prefer `contains` over using `filter(where:).isEmpty`.
   - contains_over_filter_is_empty
 

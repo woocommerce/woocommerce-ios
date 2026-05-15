@@ -2894,8 +2894,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
         let nonBundleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 777, purchasable: true)
         insertProducts([nonBundleProduct,
-                                       // Product of the bundled item.
-                                       .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+                        // Product of the bundled item.
+                        .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
             // Bundle product order item.
             .fake().copy(itemID: 6, productID: bundleProduct.productID, quantity: 2),
@@ -2962,8 +2962,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Non-bundle product is in storage but not part of the order.
         let nonBundleProduct = Product.fake().copy(siteID: sampleSiteID, productID: itemProductID, purchasable: true)
         insertProducts([nonBundleProduct,
-                                       // Product of the bundled item.
-                                       .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+                        // Product of the bundled item.
+                        .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
 
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
             // Bundle product order item.
@@ -3151,7 +3151,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                             ProductBundleItem.fake().copy(productID: 3, pricedIndividually: true)]
         let product = createAndInsertBundleProduct(siteID: sampleSiteID, productID: sampleProductID, bundleItems: bundledItems)
         insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 2),
-                                       Product.fake().copy(siteID: sampleSiteID, productID: 3)])
+                        Product.fake().copy(siteID: sampleSiteID, productID: 3)])
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
@@ -3172,7 +3172,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                             ProductBundleItem.fake().copy(productID: 3, pricedIndividually: true)]
         let product = createAndInsertBundleProduct(siteID: sampleSiteID, productID: sampleProductID, bundleItems: bundledItems)
         insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 2),
-                                       Product.fake().copy(siteID: sampleSiteID, productID: 3)])
+                        Product.fake().copy(siteID: sampleSiteID, productID: 3)])
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
@@ -3190,8 +3190,8 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_createProductRowViewModel_sets_isReadOnly_to_false_for_non_bundle_parent_and_child_items() throws {
         // Given
         insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 1),
-                                       Product.fake().copy(siteID: sampleSiteID, productID: 2),
-                                       Product.fake().copy(siteID: sampleSiteID, productID: 3)])
+                        Product.fake().copy(siteID: sampleSiteID, productID: 2),
+                        Product.fake().copy(siteID: sampleSiteID, productID: 3)])
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When

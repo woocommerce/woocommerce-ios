@@ -10,8 +10,8 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
 
     private let sampleReviews: [ProductReview] = [ProductReview.fake().copy(siteID: 1337, reviewID: 1),
-                                 ProductReview.fake().copy(siteID: 1337, reviewID: 2),
-                                 ProductReview.fake().copy(siteID: 1337, reviewID: 3)]
+                                                  ProductReview.fake().copy(siteID: 1337, reviewID: 2),
+                                                  ProductReview.fake().copy(siteID: 1337, reviewID: 3)]
 
     /// Mock Storage: InMemory
     private var storageManager: StorageManagerType!

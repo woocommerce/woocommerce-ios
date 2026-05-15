@@ -158,11 +158,11 @@ private extension PushNotificationBackgroundSynchronizerTests {
     private static let sampleOrderID: Int64 = 12345
 
     static var sampleUserInfo: [String: Any] = [APNSKey.siteID: sampleSiteID,
-                                               APNSKey.identifier: sampleNoteID,
-                                               APNSKey.aps: [APNSKey.alert: [
-                                                APNSKey.alertTitle: ""
-                                               ]],
-                                               APNSKey.type: sampleOrderType]
+                                                APNSKey.identifier: sampleNoteID,
+                                                APNSKey.aps: [APNSKey.alert: [
+                                                    APNSKey.alertTitle: ""
+                                                ]],
+                                                APNSKey.type: sampleOrderType]
 
     static var sampleNote: Yosemite.Note = {
         let payload: [String: AnyCodable] = [MetaContainer.Containers.ids.rawValue:

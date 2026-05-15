@@ -107,9 +107,9 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     var sections: [AddEditTrackingSection] {
         let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
-                                                      .trackingNumber,
-                                                      .dateShipped,
-                                                      .datePicker]
+                                                  .trackingNumber,
+                                                  .dateShipped,
+                                                  .datePicker]
 
         return [
             AddEditTrackingSection(rows: trackingRows)]

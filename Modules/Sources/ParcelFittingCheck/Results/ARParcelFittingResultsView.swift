@@ -206,7 +206,8 @@ public struct ARParcelFittingResultsView: View {
                         ParcelPresetPackage(id: "fedex_medium", name: "Medium Box (M2)",
                                             length: 33.0, width: 24.0, height: 17.0),
                     ]),
-                ]
+                ],
+                analytics: NoOpParcelFittingAnalytics()
             ),
             starredPackageIDs: ["usps_medium"],
             delegate: nil,
@@ -221,7 +222,8 @@ public struct ARParcelFittingResultsView: View {
             viewModel: ARParcelFittingResultsViewModel(
                 measuredDimensions: ParcelDimensions(length: 20.0, width: 15.0, height: 10.0),
                 unit: .centimeters,
-                carriers: []
+                carriers: [],
+                analytics: NoOpParcelFittingAnalytics()
             ),
             starredPackageIDs: [],
             delegate: nil,

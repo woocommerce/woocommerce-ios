@@ -69,7 +69,8 @@ struct ARParcelFittingResultsViewModelTests {
         let carrierB = ParcelPresetCarrier(id: "b", name: "B", packages: [makePackage(id: "small", length: 5, width: 4, height: 3)])
         let carrierC = ParcelPresetCarrier(id: "c", name: "C", packages: [makePackage(id: "tiny", length: 1, width: 1, height: 1)])
 
-        let vm = ARParcelFittingResultsViewModel(measuredDimensions: measured, unit: .centimeters, carriers: [carrierA, carrierB, carrierC])
+        let vm = ARParcelFittingResultsViewModel(measuredDimensions: measured, unit: .centimeters, carriers: [carrierA, carrierB, carrierC],
+                                                  analytics: MockParcelFittingAnalytics())
 
         #expect(vm.carrierResults.count == 2)
         #expect(vm.carrierResults[0].package.id == "small")

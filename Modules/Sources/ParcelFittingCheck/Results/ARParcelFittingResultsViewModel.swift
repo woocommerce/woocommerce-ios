@@ -19,7 +19,7 @@ public final class ARParcelFittingResultsViewModel {
     public init(measuredDimensions: ParcelDimensions,
                 unit: UnitLength,
                 carriers: [ParcelPresetCarrier],
-                analytics: ParcelFittingAnalyticsTracking = NoOpParcelFittingAnalytics()) {
+                analytics: ParcelFittingAnalyticsTracking) {
         self.measuredDimensions = measuredDimensions
         self.unit = unit
         self.totalCarrierCount = carriers.count

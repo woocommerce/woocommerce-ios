@@ -146,6 +146,17 @@ struct TotalsView: View {
         .onChange(of: paymentModel.paymentState.cash) {
             isStartingPayment = false
         }
+        .onChange(of: paymentModel.paymentState.scanToPay) {
+            // Scan to Pay transitions out of `.idle` when the QR flow starts —
+            // release the gate so the merchant can interact with the next state.
+            isStartingPayment = false
+        }
+        .onChange(of: paymentModel.paymentState.markAsPaid) {
+            // Mark as Paid transitions out of `.idle` when the confirmation push
+            // happens — release the gate so the merchant can interact with the
+            // next state.
+            isStartingPayment = false
+        }
         .onChange(of: paymentModel.isPaymentSessionActive) { _, isActive in
             // The card-state onChange above doesn't always fire when a flow
             // wraps up — TTP filters intermediate states (idle → idle on
@@ -193,12 +204,23 @@ struct TotalsView: View {
                 },
                 isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
                 onScanToPay: {
+                    // Same double-tap guard the other sheet callbacks use. Without
+                    // this, a quick double-tap in the brief window between the merchant
+                    // tapping Scan to Pay and `paymentState.scanToPay` transitioning
+                    // out of `.idle` could fire `startScanToPayPayment()` twice.
+                    guard !isStartingPayment else { return }
+                    isStartingPayment = true
                     Task { @MainActor in
                         await paymentModel.startScanToPayPayment()
                     }
                 },
                 isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
                 onMarkOrderAsPaid: {
+                    // Same double-tap guard as the other sheet callbacks. Mark as Paid
+                    // dispatches into a push that the merchant could otherwise re-trigger
+                    // by tapping the row a second time during the same render frame.
+                    guard !isStartingPayment else { return }
+                    isStartingPayment = true
                     paymentModel.startMarkAsPaidPayment()
                 }
             )

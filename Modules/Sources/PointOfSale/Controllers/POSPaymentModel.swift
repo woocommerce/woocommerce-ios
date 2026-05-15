@@ -252,7 +252,11 @@ extension POSPaymentModel {
         // Stripe Terminal would reject it.
         if let active = currentPaymentMethod, active != method {
             DDLogInfo("🃏 [CardPayment] startPaymentWithMethod switching \(active) -> \(method) — cancelling current payment first")
-            try? await cardPresentPaymentService.cancelPayment()
+            do {
+                try await cardPresentPaymentService.cancelPayment()
+            } catch {
+                DDLogError("🃏 [CardPayment] cancelPayment on method switch failed: \(error)")
+            }
         }
 
         // When switching to Bluetooth from a TTP-pre-connect-in-flight state
@@ -410,7 +414,11 @@ extension POSPaymentModel {
     /// The generation check after the cancel guards against a newer
     /// `startPayment()` call that may have started during the await.
     private func cancelThenCollectCardPayment(generation: Int, using method: CardReaderConnectionMethod) async {
-        try? await cardPresentPaymentService.cancelPayment()
+        do {
+            try await cardPresentPaymentService.cancelPayment()
+        } catch {
+            DDLogError("🃏 [CardPayment] cancelPayment before collect failed: \(error)")
+        }
         DDLogInfo("🃏 [CardPayment] startPayment cancel completed — card state: \(paymentState.card), cash state: \(paymentState.cash)")
 
         guard startPaymentGeneration == generation else {
@@ -451,7 +459,11 @@ extension POSPaymentModel {
             await cardPresentPaymentService.cancelReconnection()
         }
 
-        try? await cardPresentPaymentService.cancelPayment()
+        do {
+            try await cardPresentPaymentService.cancelPayment()
+        } catch {
+            DDLogError("🃏 [CardPayment] cancelPayment before retry-collect failed: \(error)")
+        }
 
         guard case .connected = cardReaderConnectionStatus else {
             return

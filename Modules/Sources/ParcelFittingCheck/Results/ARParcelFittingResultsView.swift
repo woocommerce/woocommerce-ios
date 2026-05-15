@@ -191,6 +191,7 @@ public struct ARParcelFittingResultsView: View {
     }
 }
 
+#if DEBUG
 #Preview("With carrier matches") {
     NavigationView {
         ARParcelFittingResultsView(
@@ -231,6 +232,7 @@ public struct ARParcelFittingResultsView: View {
         )
     }
 }
+#endif
 
 private extension ARParcelFittingResultsView {
     enum Constants {

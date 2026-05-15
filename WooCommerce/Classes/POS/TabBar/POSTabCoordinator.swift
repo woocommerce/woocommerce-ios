@@ -305,6 +305,10 @@ private extension POSTabCoordinator {
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
                     sunsetWarningChecker: sunsetWarningChecker,
+                    tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecker(
+                        siteID: siteID,
+                        eligibilityService: POSEligibilityService()
+                    ),
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )

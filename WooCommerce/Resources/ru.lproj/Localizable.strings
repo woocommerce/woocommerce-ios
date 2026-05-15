@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-24 17:54:25+0000 */
+/* Translation-Revision-Date: 2026-05-14 13:57:26+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -9831,6 +9831,24 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
 "cardReaderSettingsConnectedViewController.reconnectingText" = "Повторное подключение к платёжному терминалу...";
 
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "Отмена";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "Подтвердить и продолжить";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "При подтверждении вашего согласия произошла непредвиденная ошибка. Повторите попытку.";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "Ошибка при подтверждении согласия";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "Повторить";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "Доставка из";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "Записывать данные транзакции в примечаниях к заказам";
 
@@ -9980,6 +9998,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "Не пропускайте новые заказы";
+
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "Чат со службой поддержки";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Устранение неполадок при подключении";
@@ -10585,6 +10606,18 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "Скрыть этот контент";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "Я принимаю %1$@.";
+
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "Чтобы приобрести транспортные этикетки FedEx, необходимо принять следующие условия:";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "Условия предоставления услуг FedEx";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "Условия предоставления услуг FedEx";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "Применить";
 
@@ -10818,6 +10851,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Найденный платёжный терминал не имеет IP-адреса и не может быть подключён.";
+
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "Получить подсказку от помощника на базе ИИ";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "Чат со службой поддержки";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "Просмотреть предыдущие беседы в службе поддержки";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "История чата";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "Проверьте, работает ли ваш сайт с приложением";
@@ -11643,6 +11688,36 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "Редактировать";
 
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "Учитывать заказы на дату, когда они были отмечены как выполненные.";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "Выполненные заказы";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "Выберите заказы для включения в показатели производительности за выбранный период времени.";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "Это параметр на уровне магазина, который также управляет параметром «Тип даты» в настройках аналитики администратора WooCommerce.";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "Учитывать заказы на дату оплаты.";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "Оплаченные заказы";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "Учитывать заказы на дату размещения или создания.";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "Размещённые заказы";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "Тип даты заказа";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "Не удалось обновить тип заказа. Повторите попытку.";
+
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "Обновить %1$@";
 
@@ -12342,6 +12417,33 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Магазин";
 
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "Добавить индивидуальную сумму";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "Сумма";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "Удержать налоги";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "Индивидуальная сумма";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "Имя";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "Индивидуальная сумма";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "Индивидуальная сумма";
+
+/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.message" = "Нажмите, чтобы добавить сервисный сбор, чаевые или любую произвольную строку к заказу.";
+
+/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.title" = "Добавить индивидуальную сумму";
+
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Сканирование штрихкодов";
 
@@ -12512,6 +12614,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "Настройки WooCommerce";
+
+/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
+"pos.cartView.addCustomAmount.header.accessibilityLabel" = "Добавить индивидуальную сумму";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Нажмите на товар, чтобы \n добавить его в корзину, или ";
@@ -12762,11 +12867,17 @@ which should be translated separately and considered part of this sentence. */
 /* Description for refund via a specific payment method. %@ is the payment method name */
 "pos.orderListController.refund.viaPaymentMethodFormat" = "Через %@";
 
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "Обновить";
+
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "Заказов с таким именем не найдено. Уточните поисковый запрос.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Заказов не обнаружено";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle.3" = "Заказы появятся здесь, как только вы начнёте обрабатывать продажи в POS.";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "Нет заказов";
@@ -13898,8 +14009,23 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "Отсутствует доход в выбранные даты";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "Открывает нижний лист, чтобы изменить заказы, которые включаются в общие показатели производительности.";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Заказы";
+
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "Тип дохода";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "Брутто";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "Нетто";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "Итого";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Не удалось отобразить результаты работы вашего магазина";
@@ -13974,6 +14100,15 @@ which should be translated separately and considered part of this sentence. */
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "Посетители";
 
+/* Average order value (AOV) metric title for the store info widget. */
+"storeWidgets.metric.averageOrderValue" = "Средняя стоимость заказа";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "Продано товаров";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "Чистая выручка";
+
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "Войти";
 
@@ -14032,6 +14167,144 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Пробный период";
 
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "Чат без названия";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "Вы ещё не общались со службой поддержки.";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "История чата";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "Чат со службой поддержки";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "Диагностика выполнена, проблем не обнаружено.";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "Обратиться в службу поддержки";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "Продолжить чат";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "Диагностика завершена";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "Ошибка";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "Похоже, вам требуется дополнительная помощь. Хотите обратиться в нашу службу поддержки?";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "Здравствуйте! Я ваш бот поддержки Woo Mobile. Что у вас случилось?";
+
+/* OK button in support chat error alert */
+"supportChatView.ok" = "ОК";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "Написать сообщение…";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "Продолжение предыдущей беседы";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "Запуск диагностики...";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "Чат со службой поддержки";
+
+/* Error message shown when sending a support chat message fails */
+"supportChatViewModel.errorMessage" = "Что-то пошло не так. Повторите попытку.";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "Здравствуйте! Я ваш бот поддержки Woo Mobile. Могу ли я вам чем-нибудь помочь?";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "Пожалуйста, опишите вашу проблему подробнее, чтобы я мог вам помочь.";
+
+/* Error message shown when loading a prior support chat transcript fails on resume */
+"supportChatViewModel.resumeErrorMessage" = "Не удалось загрузить предыдущую беседу. Вы по-прежнему можете отправить новое сообщение.";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "Включить аналитику";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "Включить уведомления о заказах";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "Открыть настройки";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "Зарегистрировать устройство";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "Повторить";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "Настройка Jetpack";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "Не удалось проверить параметры аналитики.";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "WooCommerce Analytics не включена в вашем магазине.\n\nАналитические данные, такие как статистика доходов и заказов, не будут доступны, пока она не будет активирована.";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "Не удаётся правильно обрабатывать ответ вашего сайта.";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "По-видимому, ваше устройство не зарегистрировано для получения push-уведомлений.";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "По-видимому, с вашим сайтом возникла проблема.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "По-видимому, плагин Jetpack не активен на вашем сайте.\n\nДля получения push-уведомлений требуется активное подключение Jetpack.";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "По-видимому, отсутствует подключение к Интернету.\n\nУбедитесь, что ваш Wi-Fi включён. Если вы используете мобильные данные, убедитесь, что они включены в настройках вашего устройства.";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "Возникла проблема с подключением к Jetpack.";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "Не удалось проверить настройки уведомлений.";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "Push-уведомления для этого приложения не разрешены.\n\nВключите их в настройках устройства, чтобы получать уведомления о заказах.";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "Уведомления о заказах не включены в этом магазине.\n\nВключите возможность получать оповещения при поступлении новых заказов.";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "Ваш сайт отвечает слишком долго.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "Не удалось подключиться к WordPress.com.\n\nПопробуйте ещё раз через пару минут.";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "Проверка параметров аналитики";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "Подключение к Интернету";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "Получение товаров вашего магазина";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "Проверка настроек уведомлений";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "Подключение к вашему сайту";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "Получение заказов с вашего сайта";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "Подключение к серверам WordPress.com";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "Понятно";
 
@@ -14067,6 +14340,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WooPayments support area option */
 "supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "Загрузка аналитики";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "Загрузка заказов";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "Загрузка товаров";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "Другое";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "Получение push-уведомлений";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "Отчёт о статусе системы";

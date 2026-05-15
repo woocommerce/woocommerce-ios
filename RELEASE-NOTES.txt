@@ -1,5 +1,11 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+24.9
+-----
+- [*] The Store Stats widget is now configurable: choose your size (small / medium / large), metrics, date range, store, and theme. [https://github.com/woocommerce/woocommerce-ios/pull/17170]
+- [*] New Trends widget for the lock screen, with a metric and date-range picker. [https://github.com/woocommerce/woocommerce-ios/pull/17160]
+
+
 24.8
 -----
 - [*] Customer details: fixed bugs in form when adding a customer on iPad [https://github.com/woocommerce/woocommerce-ios/pull/17074]

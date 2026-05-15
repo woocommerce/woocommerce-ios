@@ -317,7 +317,7 @@ struct SupportChatViewModelTests {
             Issue.record("Expected state to be .error after 500, got \(String(describing: sut.state))")
             return
         }
-        #expect(message.contains("Something went wrong. Please try again."), "Expected generic copy, got: \(message)")
+        #expect(message.contains("We couldn't connect to AI chat right now."), "Expected generic copy, got: \(message)")
     }
 
     @Test func sendMessage_when_failure_then_marks_last_user_message_as_failed() async {
@@ -358,7 +358,7 @@ struct SupportChatViewModelTests {
             Issue.record("Expected state to be .error after timeout, got \(String(describing: sut.state))")
             return
         }
-        #expect(message.contains("Something went wrong. Please try again."), "Expected generic copy, got: \(message)")
+        #expect(message.contains("We couldn't connect to AI chat right now."), "Expected generic copy, got: \(message)")
     }
 
     @Test func sendMessage_tracks_messageSent_with_isFirstMessage_toggling_across_multiple_sends() {

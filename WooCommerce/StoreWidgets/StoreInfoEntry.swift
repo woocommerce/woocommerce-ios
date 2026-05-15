@@ -19,10 +19,8 @@ enum StoreInfoEntry: TimelineEntry {
 
 /// Type that represents the the widget state data.
 ///
-/// Field shape matches trunk so the legacy `StoreInfoView` / `StatsCard` and the lock-screen
-/// widgets keep building unchanged. The metric catalog (`metrics`) is defaulted so callers
-/// that only need the legacy String fields don't have to populate it. The main provider
-/// populates both shapes; view selection is controlled by `useMetricsHomescreenWidget`.
+/// Lock-screen widgets read the pre-formatted String fields directly. The home-screen widget
+/// uses the metric catalog via `metricSlots`. The provider populates both shapes.
 ///
 struct StoreInfoData {
     /// Eg: Today, Weekly, Monthly, Yearly
@@ -62,7 +60,7 @@ struct StoreInfoData {
     ///
     var metricSlots: [StoreInfoMetricSlot]
 
-    /// Concrete metric entries, derived from `metricSlots` for legacy readers and analytics
+    /// Concrete metric entries, derived from `metricSlots` for analytics and other readers
     /// that should ignore explicit empty slots.
     ///
     var metrics: [StoreInfoMetric] {

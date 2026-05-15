@@ -50,14 +50,6 @@ extension View {
 }
 
 enum StoreWidgetAppearance {
-    static var isModernAppearanceEnabled: Bool {
-#if os(watchOS)
-        return false
-#else
-        return UserDefaults.group?.configurableStoreStatsWidgetsEnabled ?? false
-#endif
-    }
-
     static var brandColor: Color {
 #if os(watchOS)
         return Layout.watchBrandColor
@@ -98,25 +90,25 @@ struct StoreWidgetHomeScreenBackground: View {
 
     @ViewBuilder
     private var brandBackground: some View {
-        if StoreWidgetAppearance.isModernAppearanceEnabled {
-            ZStack {
-                LinearGradient(
-                    colors: Layout.backgroundGradientColors,
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                StoreWidgetAppearance.brandColor.opacity(Layout.brandOverlayOpacity)
-                LinearGradient(
-                    colors: Layout.highlightGradientColors,
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+#if os(watchOS)
+        StoreWidgetAppearance.brandColor
+#else
+        ZStack {
+            LinearGradient(
+                colors: Layout.backgroundGradientColors,
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            StoreWidgetAppearance.brandColor.opacity(Layout.brandOverlayOpacity)
+            LinearGradient(
+                colors: Layout.highlightGradientColors,
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
 
-                RoundedRectangle(cornerRadius: Layout.cornerRadius, style: .continuous)
-                    .strokeBorder(Color.white.opacity(Layout.borderOpacity), lineWidth: Layout.borderWidth)
-            }
-        } else {
-            StoreWidgetAppearance.brandColor
+            RoundedRectangle(cornerRadius: Layout.cornerRadius, style: .continuous)
+                .strokeBorder(Color.white.opacity(Layout.borderOpacity), lineWidth: Layout.borderWidth)
         }
+#endif
     }
 }

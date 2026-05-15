@@ -221,6 +221,12 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleMarkOrderAsPaid
 
+    /// Enables Tap to Pay as a payment method in Point of Sale on phone.
+    /// When enabled and the device + site support TTP, the totals view promotes "Tap to Pay"
+    /// as the primary payment method. Mirrors the Android `WOO_POS_TAP_TO_PAY` flag.
+    ///
+    case pointOfSaleTapToPay
+
     /// Enables self driven push token registration
     ///
     case selfDrivenPushToken
@@ -228,10 +234,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
     ///
     case clientSideDashboardBanner
-
-    /// Enables configurable store stats widgets
-    ///
-    case configurableStoreStatsWidgets
 
     /// Enables age range verification features
     /// https://developer.apple.com/news/?id=2ezb6jhj

@@ -1646,6 +1646,431 @@ struct POSPaymentModelTests {
         }
         #expect(service.connectReaderCallCount == 1)
     }
+
+    // MARK: - Scan to Pay
+
+    @Test("startScanToPayPayment transitions scanToPay to showingQRCode")
+    @MainActor
+    func startScanToPayPayment_when_idle_then_transitions_to_showingQRCode() async {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(orderProvider: orderProvider)
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Then
+        #expect(sut.paymentState.scanToPay.isShowingQRCode == true)
+    }
+
+    @Test("startScanToPayPayment populates scanToPayURL after order is provided")
+    @MainActor
+    func startScanToPayPayment_when_orderProvided_then_scanToPayURL_is_set() async {
+        // Given
+        let expectedURL = URL(string: "https://example.com/pay/42")!
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = expectedURL
+
+        let sut = makePaymentController(orderProvider: orderProvider)
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Then
+        #expect(sut.scanToPayURL == expectedURL)
+    }
+
+    @Test("startScanToPayPayment tracks checkout scan-to-pay tapped analytics")
+    @MainActor
+    func startScanToPayPayment_tracks_analytics() async {
+        // Given
+        let analytics = MockPOSAnalytics()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+
+        let sut = makePaymentController(orderProvider: orderProvider, analytics: analytics)
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Then
+        #expect(analytics.events.contains {
+            $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutScanToPayPaymentTapped.rawValue
+        })
+    }
+
+    @Test("startScanToPayPayment is a no-op when already in scan-to-pay flow")
+    @MainActor
+    func startScanToPayPayment_when_alreadyShowingQRCode_then_noOp() async {
+        // Given
+        let analytics = MockPOSAnalytics()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            analytics: analytics,
+            paymentState: PointOfSalePaymentState(card: .idle, cash: .idle, scanToPay: .showingQRCode(verification: .waiting)))
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Then: no extra analytics fired and state unchanged
+        #expect(analytics.events.contains {
+            $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutScanToPayPaymentTapped.rawValue
+        } == false)
+        #expect(sut.paymentState.scanToPay == .showingQRCode(verification: .waiting))
+    }
+
+    @Test("cancelScanToPayPayment resets scanToPay state to idle")
+    @MainActor
+    func cancelScanToPayPayment_when_showingQRCode_then_resets_to_idle() async {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(orderProvider: orderProvider)
+
+        await sut.startScanToPayPayment()
+        #expect(sut.paymentState.scanToPay.isShowingQRCode == true)
+
+        // When
+        await sut.cancelScanToPayPayment()
+
+        // Then
+        #expect(sut.paymentState.scanToPay == .idle)
+    }
+
+    @Test("cancelScanToPayPayment clears scanToPayURL")
+    @MainActor
+    func cancelScanToPayPayment_clears_scanToPayURL() async {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(orderProvider: orderProvider)
+
+        await sut.startScanToPayPayment()
+        #expect(sut.scanToPayURL != nil)
+
+        // When
+        await sut.cancelScanToPayPayment()
+
+        // Then
+        #expect(sut.scanToPayURL == nil)
+    }
+
+    @Test("cancelScanToPayPayment tracks back-to-checkout analytics")
+    @MainActor
+    func cancelScanToPayPayment_tracks_analytics() async {
+        // Given
+        let analytics = MockPOSAnalytics()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+
+        let sut = makePaymentController(orderProvider: orderProvider, analytics: analytics)
+
+        await sut.startScanToPayPayment()
+
+        // When
+        await sut.cancelScanToPayPayment()
+
+        // Then
+        #expect(analytics.events.contains {
+            $0.eventName == WooAnalyticsStat.pointOfSaleBackToCheckoutFromScanToPayTapped.rawValue
+        })
+    }
+
+    @Test("completeScanToPayPayment calls handler and transitions to paymentSuccess")
+    @MainActor
+    func completeScanToPayPayment_calls_handler_and_transitions_to_success() async throws {
+        // Given
+        let handler = MockPOSScanToPayHandler()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        let order = Order.fake().copy(orderID: 55, total: "20.00")
+        orderProvider.orderToReturn = order
+        let celebration = MockPaymentCaptureCelebration()
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayHandler: handler,
+            celebration: celebration)
+
+        // When
+        try await sut.completeScanToPayPayment()
+
+        // Then
+        #expect(handler.completeScanToPayPaymentCalled == true)
+        #expect(handler.completeScanToPayPaymentReceivedOrder?.orderID == order.orderID)
+        #expect(sut.paymentState.scanToPay == .paymentSuccess)
+        #expect(celebration.celebrationWasCalled == true)
+    }
+
+    @Test("completeScanToPayPayment runs post-payment step on success")
+    @MainActor
+    func completeScanToPayPayment_runs_postPaymentStep() async throws {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake()
+        var postPaymentStepCalled = false
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            postPaymentStep: { postPaymentStepCalled = true })
+
+        // When
+        try await sut.completeScanToPayPayment()
+
+        // Then
+        #expect(postPaymentStepCalled == true)
+    }
+
+    @Test("completeScanToPayPayment tracks successful scan-to-pay analytics")
+    @MainActor
+    func completeScanToPayPayment_tracks_successAnalytics() async throws {
+        // Given
+        let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake()
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            collectOrderPaymentAnalyticsTracker: tracker)
+
+        // When
+        try await sut.completeScanToPayPayment()
+
+        // Then
+        #expect(tracker.didCallTrackSuccessfulScanToPayPayment == true)
+    }
+
+    @Test("completeScanToPayPayment reuses cached order when available")
+    @MainActor
+    func completeScanToPayPayment_when_currentOrderCached_then_doesNotCallProvideOrder() async throws {
+        // Given: prime the cache via startScanToPayPayment which populates currentOrder.
+        let cachedOrder = Order.fake().copy(orderID: 77, total: "15.00")
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = cachedOrder
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+        let handler = MockPOSScanToPayHandler()
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayHandler: handler)
+
+        // Start scan-to-pay to populate currentOrder from the provider
+        await sut.startScanToPayPayment()
+
+        // When
+        try await sut.completeScanToPayPayment()
+
+        // Then: provideOrder was NOT called (cached order was reused)
+        #expect(orderProvider.provideOrderCallCount == 0)
+        #expect(handler.completeScanToPayPaymentReceivedOrder?.orderID == cachedOrder.orderID)
+    }
+
+    // MARK: - Scan to Pay Polling
+
+    @Test("startScanToPayPolling calls verifier at least once after flow begins")
+    @MainActor
+    func startScanToPayPayment_with_verifier_calls_verifier_at_least_once() async {
+        // Given: verifier stays on .pending so the loop runs continuously.
+        // poll interval is 0 for fast test execution.
+        let verifier = MockPOSScanToPayVerifier()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            scanToPayPollInterval: 0)
+
+        // When: kick off the flow and wait for the polling task to deterministically
+        // fire `checkPaymentStatus` at least once. The previous `Task.yield()` ×3 form
+        // was sensitive to scheduler timing — the polling task's `Task.sleep` + nested
+        // `MainActor.run` hops aren't guaranteed to complete inside three yields, which
+        // is exactly the case the `onCheckPaymentStatusCalled` mock hook exists for.
+        await fireOnce { fire in
+            verifier.onCheckPaymentStatusCalled = { fire() }
+            Task { @MainActor in await sut.startScanToPayPayment() }
+        }
+
+        // Then
+        #expect(verifier.checkPaymentStatusCallCount >= 1)
+    }
+
+    @Test("startScanToPayPolling transitions to paymentSuccess when verifier returns paid")
+    @MainActor
+    func startScanToPayPayment_when_verifierReturnsPaid_then_transitions_to_success() async {
+        // Given
+        let verifier = MockPOSScanToPayVerifier()
+        verifier.resultQueue = [.success(.paid)]
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+        let celebration = MockPaymentCaptureCelebration()
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            celebration: celebration,
+            scanToPayPollInterval: 0)
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Wait for the polling task to process the .paid result and call scanToPayPaymentSuccess.
+        await fireOnce { fire in
+            withObservationTracking {
+                _ = sut.paymentState.scanToPay
+            } onChange: {
+                Task { @MainActor in fire() }
+            }
+        }
+
+        // Then
+        #expect(sut.paymentState.scanToPay == .paymentSuccess)
+        #expect(celebration.celebrationWasCalled == true)
+    }
+
+    @Test("startScanToPayPolling sets verification error state when verifier throws")
+    @MainActor
+    func startScanToPayPayment_when_verifierThrows_then_verification_state_is_error() async {
+        // Given
+        struct PollingError: Error {}
+        let verifier = MockPOSScanToPayVerifier()
+        verifier.resultQueue = [.failure(PollingError())]
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            scanToPayPollInterval: 0)
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Wait for the polling task to write .error into the state
+        await fireOnce { fire in
+            withObservationTracking {
+                _ = sut.paymentState.scanToPay
+            } onChange: {
+                Task { @MainActor in fire() }
+            }
+        }
+
+        // Then
+        #expect(sut.paymentState.scanToPay == .showingQRCode(verification: .error))
+    }
+
+    @Test("cancelScanToPayPayment stops polling — verifier no longer called after cancel")
+    @MainActor
+    func cancelScanToPayPayment_stops_polling() async {
+        // Given: verifier is always .pending so polling would continue indefinitely without cancel.
+        let verifier = MockPOSScanToPayVerifier()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            scanToPayPollInterval: 0)
+
+        await sut.startScanToPayPayment()
+
+        // Let at least one poll fire
+        await Task.yield()
+        await Task.yield()
+
+        let callCountAtCancel = verifier.checkPaymentStatusCallCount
+
+        // When
+        await sut.cancelScanToPayPayment()
+
+        // Give any in-flight task a chance to complete before sampling
+        await Task.yield()
+        await Task.yield()
+
+        let callCountAfterCancel = verifier.checkPaymentStatusCallCount
+
+        // Then: poll count should not grow meaningfully after cancel (allow at most 1 in-flight call)
+        #expect(callCountAfterCancel <= callCountAtCancel + 1)
+        #expect(sut.paymentState.scanToPay == .idle)
+    }
+
+    @Test("deactivate stops scan-to-pay polling")
+    @MainActor
+    func deactivate_stops_scanToPay_polling() async {
+        // Given
+        let verifier = MockPOSScanToPayVerifier()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            scanToPayPollInterval: 0)
+
+        await sut.startScanToPayPayment()
+
+        // Let at least one poll fire
+        await Task.yield()
+        await Task.yield()
+
+        let callCountAtDeactivate = verifier.checkPaymentStatusCallCount
+
+        // When
+        sut.deactivate()
+
+        await Task.yield()
+        await Task.yield()
+
+        let callCountAfterDeactivate = verifier.checkPaymentStatusCallCount
+
+        // Then: polling stopped — allow at most 1 in-flight call during the cancel window
+        #expect(callCountAfterDeactivate <= callCountAtDeactivate + 1)
+        // State is preserved (deactivate does NOT reset state)
+        #expect(sut.paymentState.scanToPay.isShowingQRCode == true)
+    }
+
+    @Test("activate resumes polling when QR code is on screen")
+    @MainActor
+    func activate_when_scanToPayShowing_resumes_polling() async {
+        // Given: start the flow, then immediately deactivate to stop polling.
+        let verifier = MockPOSScanToPayVerifier()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            scanToPayPollInterval: 0)
+
+        await sut.startScanToPayPayment()
+        sut.deactivate()
+
+        // When: reactivate while QR is still showing, then wait for the poll loop to fire.
+        // The verifier exposes `onCheckPaymentStatusCalled` to avoid polling yield-count guessing.
+        await fireOnce { fire in
+            verifier.onCheckPaymentStatusCalled = { fire() }
+            Task { @MainActor in await sut.activate() }
+        }
+
+        // Then: verifier was called at least once after activate
+        #expect(verifier.checkPaymentStatusCallCount >= 1)
+    }
 }
 
 // MARK: - Factory

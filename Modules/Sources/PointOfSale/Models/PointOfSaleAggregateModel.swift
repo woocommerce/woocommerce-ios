@@ -145,7 +145,8 @@ protocol PointOfSaleAggregateModelProtocol {
          cartProductObserver: POSCartProductObserving? = nil,
          isLocalCatalogEligible: Bool = false,
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
-         tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil) {
+         tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil,
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -187,6 +188,7 @@ protocol PointOfSaleAggregateModelProtocol {
                 }),
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+            preferredConnectionMethod: preferredConnectionMethod,
             paymentState: paymentState)
         weakSelf = self
 

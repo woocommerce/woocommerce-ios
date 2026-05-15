@@ -151,7 +151,7 @@ private extension WooShippingSelectedPackageView {
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
                                    lastARState: nil,
-                                   arAnalytics: NoOpParcelFittingAnalytics(),
+                                   arAnalytics: ParcelFittingAnalyticsAdaptor(),
                                    updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")
@@ -167,7 +167,7 @@ private extension WooShippingSelectedPackageView {
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
                                    lastARState: nil,
-                                   arAnalytics: NoOpParcelFittingAnalytics(),
+                                   arAnalytics: ParcelFittingAnalyticsAdaptor(),
                                    updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")

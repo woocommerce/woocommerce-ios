@@ -2,7 +2,7 @@
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
 ## 24.8
-Exciting update! We're ironing out issues by fixing bugs in the customer form on iPad, ensuring a smoother experience for everyone. Plus, we're thrilled to introduce the AI Assistant—a revolutionary way for selected stores to manage operations flexibly with just your phone! Keep an eye out as it rolls your way.
+Managing your store is now even more convenient. With our new AI Assistant, selected stores can effortlessly run operations right from your pocket. Plus, those pesky bugs in the customer form on iPad are history, making adding new customers smoother. Enjoy these enhancements as you continue to grow your business.
 
 ## 24.7
 Get deeper insights with a revamped Performance card. Quickly switch between Gross, Net, and Total revenue, and choose which order date (paid, placed, or completed) drives your totals. We’ve also improved shipping label flows with FedEx TOS handling, refreshed POS empty states, and expanded POS availability to Puerto Rico.

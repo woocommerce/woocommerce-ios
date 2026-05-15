@@ -387,13 +387,16 @@
 				AvailableMetricsQuery.swift,
 				Entitlements,
 				MetricPresentable.swift,
+				StoreInfoDataService.swift,
 				StoreInfoEntry.swift,
 				StoreInfoFormatter.swift,
 				StoreInfoMetric.swift,
 				StoreInfoMetricType.swift,
+				StoreInfoProvider.swift,
 				StoreStatsConfigurationIntent.swift,
 				StoreStatsWidgetDateRange.swift,
 				"StoreStatsWidgetDateRange+Localization.swift",
+				"StoreStatsWidgetDateRange+Service.swift",
 				StoreTrendsConfigurationIntent.swift,
 				StoreTrendsEntry.swift,
 				StoreWidgets.intentdefinition,
@@ -433,7 +436,6 @@
 		3F9860002F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				StoreInfoDataService.swift,
 			);
 			target = B56DB3DC2049BFAA00D4AA8E /* WooCommerceTests */;
 		};

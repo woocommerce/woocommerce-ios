@@ -14,6 +14,19 @@ struct ItemListView: View {
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
+    /// Optional accessory rendered in the trailing slot of the items list header when not searching.
+    /// Hidden while the Coupons tab is showing the create-coupon button so the trailing slot
+    /// doesn't crowd the Products / Coupons tab titles — that gate lives here because the same
+    /// view also owns `isAddingCouponAllowed`.
+    private let trailingHeaderAccessoryHiddenOnCoupons: AnyView?
+
+    init(selectedItemListType: Binding<ItemListType>,
+         searchTerm: Binding<String>,
+         trailingHeaderAccessoryHiddenOnCoupons: AnyView? = nil) {
+        self._selectedItemListType = selectedItemListType
+        self._searchTerm = searchTerm
+        self.trailingHeaderAccessoryHiddenOnCoupons = trailingHeaderAccessoryHiddenOnCoupons
+    }
 
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
         PointOfSaleItemListAnalyticsTracker(
@@ -402,6 +415,13 @@ private extension ItemListView {
                             setSearch(true)
                         }
                         .transition(.opacity.combined(with: .scale))
+
+                        // Hidden on the Coupons tab where the createCouponButton already crowds the
+                        // trailing slot, otherwise the Products / Coupons tab titles get squeezed.
+                        if let trailingHeaderAccessoryHiddenOnCoupons, !isAddingCouponAllowed {
+                            trailingHeaderAccessoryHiddenOnCoupons
+                                .transition(.opacity.combined(with: .scale))
+                        }
                     }
 
                 }

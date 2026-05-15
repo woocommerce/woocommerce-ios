@@ -21,6 +21,11 @@ struct PointOfSaleDashboardView: View {
     @State private var floatingControlSuppressed: Bool = false
     @State private var phoneShowingCart: Bool = false
 
+    /// Tracks Dynamic Type scaling for the phone overflow menu chip so it grows in sync with
+    /// the adjacent `POSPageHeaderActionButton` (search) at large content sizes. Same 1.0…1.2x
+    /// clamp around `POSHeaderLayoutConstants.minHeight` as `POSPageHeaderActionButton`.
+    @ScaledMetric private var phoneOverflowMenuScaledSize: CGFloat = POSHeaderLayoutConstants.minHeight
+
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
         posModel.viewStateCoordinatorForView
     }
@@ -115,7 +120,7 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(viewState.showsFloatingControl && !floatingControlSuppressed)
+            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
 
             POSConnectivityView()
         }
@@ -155,6 +160,9 @@ struct PointOfSaleDashboardView: View {
         }
         .posFullScreenCover(isPresented: $showSettings) {
             POSSettingsView(settingsController: posModel.settingsController)
+        }
+        .posFullScreenCover(isPresented: $phoneShowOrders) {
+            POSOrdersView(isPresented: $phoneShowOrders)
         }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
@@ -208,7 +216,8 @@ struct PointOfSaleDashboardView: View {
             case .building:
                 VStack(spacing: POSSpacing.none) {
                     ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                                 searchTerm: $viewStateCoordinator.searchTerm)
+                                 searchTerm: $viewStateCoordinator.searchTerm,
+                                 trailingHeaderAccessoryHiddenOnCoupons: AnyView(phoneOverflowMenu))
                     if posModel.cart.isNotEmpty {
                         phoneCartButton
                     }
@@ -260,6 +269,51 @@ struct PointOfSaleDashboardView: View {
             orderState: posModel.orderState,
             paymentState: posModel.paymentState
         )
+    }
+
+    @State private var phoneShowOrders: Bool = false
+
+    private var phoneOverflowMenu: some View {
+        Menu {
+            Button {
+                analytics.track(.pointOfSaleExitMenuItemTapped)
+                showExitPOSModal = true
+            } label: {
+                Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
+            }
+            Button {
+                analytics.track(.pointOfSaleSettingsMenuItemTapped)
+                showSettings = true
+            } label: {
+                Label(Localization.phoneMenuSettings, systemImage: "gearshape")
+            }
+            if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+                Button {
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
+                    phoneShowOrders = true
+                } label: {
+                    Label(Localization.phoneMenuOrders, systemImage: "text.document")
+                }
+            }
+        } label: {
+            Circle()
+                .foregroundColor(.posSurfaceContainerLow)
+                .overlay {
+                    Image(systemName: "ellipsis")
+                        .font(.posButtonSymbolSmall)
+                        .foregroundColor(.posOnSurface)
+                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                }
+                .frame(width: phoneOverflowMenuConstrainedSize, height: phoneOverflowMenuConstrainedSize)
+                .fixedSize()
+        }
+        .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
+        .accessibilityIdentifier("pos-phone-overflow-menu")
+    }
+
+    private var phoneOverflowMenuConstrainedSize: CGFloat {
+        max(POSHeaderLayoutConstants.minHeight,
+            min(phoneOverflowMenuScaledSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
     private var phoneCartButton: some View {
@@ -462,6 +516,26 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.phone.backToItems",
             value: "Items",
             comment: "Phone-only back button title to return from totals to the items list."
+        )
+        static let phoneMenuExit = NSLocalizedString(
+            "pointOfSaleDashboard.phone.menu.exit",
+            value: "Exit POS",
+            comment: "Phone-only overflow menu item to exit Point of Sale."
+        )
+        static let phoneMenuSettings = NSLocalizedString(
+            "pointOfSaleDashboard.phone.menu.settings",
+            value: "Settings",
+            comment: "Phone-only overflow menu item to open Point of Sale settings."
+        )
+        static let phoneMenuOrders = NSLocalizedString(
+            "pointOfSaleDashboard.phone.menu.orders",
+            value: "Orders",
+            comment: "Phone-only overflow menu item to open the historical orders view."
+        )
+        static let phoneMenuAccessibilityLabel = NSLocalizedString(
+            "pointOfSaleDashboard.phone.menu.accessibilityLabel",
+            value: "More options",
+            comment: "VoiceOver label for the phone-only Point of Sale overflow menu button."
         )
     }
 }

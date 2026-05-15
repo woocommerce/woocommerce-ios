@@ -434,8 +434,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(storeHasOrders: false)
 
-        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
-                             DashboardCard(type: .aiAssistant, availability: .hide, enabled: false),
+        let expectedCards = [DashboardCard(type: .aiAssistant, availability: .hide, enabled: false),
+                             DashboardCard(type: .onboarding, availability: .show, enabled: true),
                              DashboardCard(type: .performance, availability: .unavailable, enabled: false),
                              DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
                              DashboardCard(type: .blaze, availability: .hide, enabled: false),
@@ -475,8 +475,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(storeHasOrders: false)
 
-        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
-                             DashboardCard(type: .aiAssistant, availability: .hide, enabled: false),
+        let expectedCards = [DashboardCard(type: .aiAssistant, availability: .hide, enabled: false),
+                             DashboardCard(type: .onboarding, availability: .show, enabled: true),
                              DashboardCard(type: .performance, availability: .unavailable, enabled: false),
                              DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
                              DashboardCard(type: .blaze, availability: .hide, enabled: false),

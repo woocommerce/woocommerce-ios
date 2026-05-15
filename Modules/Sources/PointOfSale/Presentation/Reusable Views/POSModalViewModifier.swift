@@ -33,18 +33,23 @@ struct POSRootModalViewModifier: ViewModifier {
                         }
                     // Don't scale/fade in the backdrop
                         .animation(nil, value: modalManager.isPresented)
+                    // Phone full-screen: paint the bright surface as a sibling above the dim
+                    // backdrop so the screen reads as a single solid take-over, with no
+                    // backdrop showing through above the status bar.
+                    if isFullScreen {
+                        Color.posSurfaceBright
+                            .edgesIgnoringSafeArea(.all)
+                            .animation(nil, value: modalManager.isPresented)
+                    }
                     ZStack {
                         modalManager.getContent()
                             .environment(\.posModalParentSize, modalParentSize)
                             .environment(\.posModalDismissAction, { modalManager.dismiss() })
-                            .background(Color.posSurfaceBright)
+                            .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
                             .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                             .posShadow(isFullScreen ? .none : .large,
                                        cornerRadius: isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                             .padding(isFullScreen ? POSPadding.none : POSPadding.medium)
-                            // When full-screen we still respect the top safe area so the close
-                            // button (and any header) doesn't sit flush against the status bar /
-                            // notch. The bottom + horizontal edges still extend to the screen.
                             .ignoresSafeArea(.container, edges: isFullScreen ? [.horizontal, .bottom] : [])
                     }
                     .zIndex(1)

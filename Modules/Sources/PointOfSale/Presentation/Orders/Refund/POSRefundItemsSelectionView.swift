@@ -29,20 +29,22 @@ struct POSRefundItemsSelectionView: View {
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
-            headerView
-            itemsHeaderView
+            VStack(spacing: POSSpacing.none) {
+                headerView
+                itemsHeaderView
 
-            Divider()
-                .overlay(Color.posOutlineVariant.opacity(0.5))
+                Divider()
+                    .overlay(Color.posOutlineVariant.opacity(0.5))
 
-            itemsList
+                itemsList
+            }
+            .padding(POSPadding.xLarge)
 
             continueButton
+                .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
         }
-        .padding(POSPadding.xLarge)
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius(for: horizontalSizeClass)))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding(for: horizontalSizeClass) * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -126,7 +128,6 @@ private extension POSRefundItemsSelectionView {
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .disabled(!hasSelectedItems)
-        .padding(.top, POSPadding.medium)
     }
 }
 

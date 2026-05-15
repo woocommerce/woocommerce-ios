@@ -13,8 +13,7 @@ struct POSRefundNothingToRefundView: View {
             buttonsSection
         }
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius(for: horizontalSizeClass)))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding(for: horizontalSizeClass) * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -52,7 +51,7 @@ private extension POSRefundNothingToRefundView {
     var buttonsSection: some View {
         Button(Localization.doneButton, action: onClose)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .padding(POSPadding.xLarge)
+            .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

@@ -14,6 +14,26 @@ struct ItemListView: View {
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
+    /// Optional builder rendered in the trailing slot of the items list header when not searching.
+    /// The dashboard uses this to fold the "create coupon" entry into its overflow menu when the
+    /// merchant is on the Coupons tab, without leaking ItemListView's internal state.
+    private let phoneHeaderAccessoryBuilder: ((PhoneHeaderAccessoryContext) -> AnyView)?
+
+    init(selectedItemListType: Binding<ItemListType>,
+         searchTerm: Binding<String>,
+         phoneHeaderAccessoryBuilder: ((PhoneHeaderAccessoryContext) -> AnyView)? = nil) {
+        self._selectedItemListType = selectedItemListType
+        self._searchTerm = searchTerm
+        self.phoneHeaderAccessoryBuilder = phoneHeaderAccessoryBuilder
+    }
+
+    /// Context handed to the dashboard so the phone overflow menu can fold the
+    /// "create coupon" entry in when the merchant is on the Coupons tab. Avoids
+    /// leaking ItemListView's internal state up to the dashboard.
+    struct PhoneHeaderAccessoryContext {
+        let canCreateCoupon: Bool
+        let onCreateCoupon: () -> Void
+    }
 
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
         PointOfSaleItemListAnalyticsTracker(
@@ -48,7 +68,17 @@ struct ItemListView: View {
 
     private var isBarcodeScanningEnabled: Binding<Bool> {
         Binding(
-            get: { !isSearching && !modalManager.isPresented && !sheetManager.isPresented && !coverManager.isPresented },
+            // Also gated on `isAddingCustomAmount` — that form is pushed via NavigationStack
+            // (not a sheet/cover) so none of the manager flags flip, and typing in its text
+            // field would otherwise feed each character to the HID barcode listener and add
+            // bogus rows to the cart.
+            get: {
+                !isSearching
+                && !modalManager.isPresented
+                && !sheetManager.isPresented
+                && !coverManager.isPresented
+                && !isAddingCustomAmount
+            },
             set: { _ in }
         )
     }
@@ -395,13 +425,31 @@ private extension ItemListView {
                         )
                         .transition(.opacity.combined(with: .move(edge: .trailing)))
                     } else {
-                        createCouponButton
+                        // Tablet keeps the inline + button. On phone (when a header
+                        // accessory builder is provided) the + folds into the overflow
+                        // menu so the menu chip is always visible.
+                        if phoneHeaderAccessoryBuilder == nil {
+                            createCouponButton
+                        }
 
                         POSPageHeaderActionButton(systemName: "magnifyingglass") {
                             analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                             setSearch(true)
                         }
                         .transition(.opacity.combined(with: .scale))
+
+                        if let phoneHeaderAccessoryBuilder {
+                            phoneHeaderAccessoryBuilder(
+                                PhoneHeaderAccessoryContext(
+                                    canCreateCoupon: isAddingCouponAllowed,
+                                    onCreateCoupon: {
+                                        analytics.track(.pointOfSaleCouponsCreateTapped)
+                                        showCouponCreationModal = true
+                                    }
+                                )
+                            )
+                            .transition(.opacity.combined(with: .scale))
+                        }
                     }
 
                 }

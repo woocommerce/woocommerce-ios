@@ -1043,7 +1043,7 @@ private extension SupportChatViewModel {
             comment: "Message shown by the bot when a support chat answer appears to have solved the merchant's issue"
         )
         static let errorMessage = NSLocalizedString(
-            "supportChatViewModel.errorMessage",
+            "supportChatViewModel.aiChatConnectionErrorMessage",
             value: "We couldn't connect to AI chat right now.",
             comment: "Generic error message shown when an AI support chat request fails"
         )

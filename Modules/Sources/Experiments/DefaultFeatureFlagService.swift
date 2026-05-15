@@ -105,6 +105,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleMarkOrderAsPaid:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleTapToPay:
+            // Behind the flag while the TTP integration lands. localDeveloper-only so
+            // alpha and beta keep showing only Cash + Card reader for now.
+            return buildConfig == .localDeveloper
         case .selfDrivenPushToken:
             return false
         case .clientSideDashboardBanner:
@@ -121,6 +125,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .arParcelFitting:
             return false
+        case .smarterNotifications:
+            return !buildConfig.isProduction
         default:
             return true
         }

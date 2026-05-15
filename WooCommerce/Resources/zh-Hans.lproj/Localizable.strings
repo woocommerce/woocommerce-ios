@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-21 11:54:20+0000 */
+/* Translation-Revision-Date: 2026-05-15 06:49:00+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -9831,6 +9831,24 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
 "cardReaderSettingsConnectedViewController.reconnectingText" = "正在重新连接到读卡器…";
 
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "取消";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "确认并继续";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "确认接受时发生意外错误。 请重试。";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "确认接受时出错";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "重试";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "发货地";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "在订单备注中记录交易详情";
 
@@ -9980,6 +9998,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "不错过任何新订单";
+
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "联系支持人员";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "排查连接故障";
@@ -10585,6 +10606,18 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "隐藏此内容";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "我同意 %1$@。";
+
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "要购买 FedEx 配送标签，您需要同意以下条款：";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "FedEx 服务条款";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "FedEx 服务条款";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "应用";
 
@@ -10818,6 +10851,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "在发现过程中找到的读卡器没有 IP 地址，无法连接。";
+
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "向我们的 AI 助手寻求帮助";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "联系支持人员";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "查看以往的支持人员对话";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "聊天记录";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "测试您的站点是否与该应用程序兼容";
@@ -11643,6 +11688,36 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "编辑";
 
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "按订单标记为已完成的日期进行统计。";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "已完成的订单";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "选择要纳入所选时间范围绩效指标中的订单。";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "这是一项全商店设置，它同时还控制着 WooCommerce 管理分析设置中的“日期类型”选项。";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "按订单付款日期进行统计。";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "付费订单";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "在订单下单或创建日期计算订单。";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "已下订单";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "订单日期类型";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "无法更新订单类型。 请重试。";
+
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "更新 %1$@";
 
@@ -12342,6 +12417,33 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "商店";
 
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "添加自定义金额";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "金额";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "收取税费";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "自定义金额";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "姓名";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "自定义金额";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "自定义金额";
+
+/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.message" = "点击此处即可为订单添加服务费、小费或任何自定义行。";
+
+/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.title" = "添加自定义金额";
+
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "条形码扫描";
 
@@ -12512,6 +12614,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce 设置";
+
+/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
+"pos.cartView.addCustomAmount.header.accessibilityLabel" = "添加自定义金额";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "点击产品以 \n 将其添加到购物车，或者 ";
@@ -12762,11 +12867,17 @@ which should be translated separately and considered part of this sentence. */
 /* Description for refund via a specific payment method. %@ is the payment method name */
 "pos.orderListController.refund.viaPaymentMethodFormat" = "通过 %@";
 
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "刷新";
+
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "我们找不到以该名称下达的任何订单。 尝试调整您的搜索字词。";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "没有找到订单";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle.3" = "当您开始在 POS 上处理销售时，订单将显示在此处。";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "暂无订单";
@@ -13898,8 +14009,23 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "选定的日期无收入";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "打开底部工作表，以更改计入绩效总计的订单。";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "订单";
+
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "收入类型";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "毛收入";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "净收入";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "总收入";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "无法显示您商店的业绩";
@@ -13974,6 +14100,15 @@ which should be translated separately and considered part of this sentence. */
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "访客";
 
+/* Average order value (AOV) metric title for the store info widget. */
+"storeWidgets.metric.averageOrderValue" = "平均订单价值";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "已售商品";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "净销售额";
+
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "登录";
 
@@ -14032,6 +14167,144 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "免费试用期";
 
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "无标题聊天";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "您尚未与支持人员联系。";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "聊天记录";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "联系支持人员";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "所有检查均已完成，未发现任何问题。";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "联系支持人员";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "继续聊天";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "诊断完成";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "错误";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "看起来您可能需要额外的帮助。 是否要联系我们的支持团队？";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "您好！ 我是您的 Woo 移动支持机器人。 您今天遇到了什么困难？";
+
+/* OK button in support chat error alert */
+"supportChatView.ok" = "确定";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "输入消息…";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "继续上一个对话";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "正在运行诊断…";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "联系支持人员";
+
+/* Error message shown when sending a support chat message fails */
+"supportChatViewModel.errorMessage" = "出错了。 请重试。";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "您好！ 我是您的 Woo 移动支持机器人。 今天有什么可以帮您的吗？";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "请详细描述您的问题，以便我为您提供帮助。";
+
+/* Error message shown when loading a prior support chat transcript fails on resume */
+"supportChatViewModel.resumeErrorMessage" = "我们无法加载上一个对话。 您仍然可以发送新消息。";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "启用分析";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "启用订单通知";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "打开设置";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "注册设备";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "重试";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "设置 Jetpack";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "我们无法检查您的分析设置。";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "您的商店未启用 WooCommerce Analytics。\n\n在启用之前，收入和订单统计信息等分析数据将不可用。";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "我们无法正常处理您站点的响应。";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "您的设备似乎未注册推送通知。";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "您的站点似乎存在问题。\n\n请联系您的主机服务提供商以获得进一步帮助。";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "您的站点似乎未激活 Jetpack 插件。\n\n推送通知功能需要依赖激活的 Jetpack 连接。";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "您似乎未连接到互联网。\n\n请确保您的 Wi-Fi 已打开。 如果您要使用移动数据，请确保已在设备设置中将其启用。";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "您的 Jetpack 连接存在问题。";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "我们无法检查您的通知设置。";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "此应用程序不支持推送通知。\n\n在您的设备设置中启用此功能即可接收订单通知。";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "此商店未启用订单通知。\n\n启用此功能即可在有新订单时收到提醒。";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "您的站点响应时间过长。\n\n请联系您的主机服务提供商以获得进一步帮助。";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "我们目前无法连接至 WordPress.com。\n\n在几分钟后重试。";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "检查分析设置";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "互联网连接";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "获取您商店中的产品";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "检查通知设置";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "连接到您的站点";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "获取您的站点订单";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "连接到 WordPress.com 服务器";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "已接受";
 
@@ -14067,6 +14340,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WooPayments support area option */
 "supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "加载分析";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "加载订单";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "加载产品";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "其他";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "接收推送通知";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "系统状态报告";

@@ -5,16 +5,22 @@ struct POSBarcodeScannerSetup: View {
     @State private var flowManager: PointOfSaleBarcodeScannerSetupFlowManager
     @Environment(\.posModalParentSize) var parentSize
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     init(isPresented: Binding<Bool>, analytics: POSAnalyticsProviding) {
         self._isPresented = isPresented
         self.flowManager = PointOfSaleBarcodeScannerSetupFlowManager(isPresented: isPresented, analytics: analytics)
     }
 
+    /// On phone the modal is taken to full screen to avoid the cramped iPad-tuned card.
+    private var isCompactWidth: Bool { horizontalSizeClass == .compact }
+    private var widthRatio: CGFloat { isCompactWidth ? 1.0 : Constants.parentWidthRatio }
+    private var heightRatio: CGFloat { isCompactWidth ? 1.0 : Constants.maxParentHeightRatio }
+
     var body: some View {
         AnimatedTransitionContainer(
-            maxWidth: parentSize.width * Constants.parentWidthRatio,
-            maxHeight: parentSize.height * Constants.maxParentHeightRatio,
+            maxWidth: parentSize.width * widthRatio,
+            maxHeight: parentSize.height * heightRatio,
             id: flowManager.currentStepKey
         ) {
             VStack(spacing: POSSpacing.xLarge) {
@@ -45,6 +51,7 @@ struct POSBarcodeScannerSetup: View {
             flowManager.onDisappear()
         }
         .maximumScreenBrightness()
+        .posModalFullScreen(isCompactWidth)
     }
 
     // MARK: - Computed Properties

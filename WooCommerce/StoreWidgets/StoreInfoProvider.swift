@@ -3,124 +3,6 @@ import WooFoundation
 import KeychainAccess
 import Networking
 
-/// Type that represents the all the possible Widget states.
-///
-enum StoreInfoEntry: TimelineEntry {
-    // Represents a not logged-in state
-    case notConnected
-
-    // Represents a fetching error state
-    case error
-
-    // Represents a fetched data state
-    case data(StoreInfoData)
-
-    // Current date, needed by the `TimelineEntry` protocol.
-    var date: Date { Date() }
-}
-
-/// Type that represents the the widget state data.
-///
-/// Field shape matches trunk so the legacy `StoreInfoView` / `StatsCard` and the lock-screen
-/// widgets keep building unchanged. The metric catalog (`metrics`) is defaulted so callers
-/// that only need the legacy String fields don't have to populate it. The main provider
-/// populates both shapes; view selection is controlled by `useMetricsHomescreenWidget`.
-///
-struct StoreInfoData {
-    /// Eg: Today, Weekly, Monthly, Yearly
-    ///
-    var range: String
-
-    /// Store name
-    ///
-    var name: String
-
-    /// Revenue at the range (eg: today)
-    ///
-    var revenue: String
-
-    /// Revenue at the range (eg: today) in compact format (eg: $12k)
-    ///
-    var revenueCompact: String
-
-    /// Visitors count at the range (eg: today)
-    ///
-    var visitors: String
-
-    /// Order count at the range (eg: today)
-    ///
-    var orders: String
-
-    /// Conversion at the range (eg: today)
-    ///
-    var conversion: String
-
-    /// Time when the widget was last refreshed (eg: 10.24PM)
-    ///
-    var updatedTime: String
-
-    /// Slot-preserving metric entries for the metric-driven widget path. Explicit "None"
-    /// selections become `.empty` so the UI can keep the configured position blank.
-    ///
-    var metricSlots: [StoreInfoMetricSlot]
-
-    /// Concrete metric entries, derived from `metricSlots` for legacy readers and analytics
-    /// that should ignore explicit empty slots.
-    ///
-    var metrics: [StoreInfoMetric] {
-        metricSlots.compactMap(\.concreteMetric)
-    }
-
-    init(range: String,
-         name: String,
-         revenue: String,
-         revenueCompact: String,
-         visitors: String,
-         orders: String,
-         conversion: String,
-         updatedTime: String,
-         metrics: [StoreInfoMetric] = [],
-         metricSlots: [StoreInfoMetricSlot]? = nil,
-         dateRange: StoreStatsWidgetDateRange? = nil) {
-        self.range = range
-        self.name = name
-        self.revenue = revenue
-        self.revenueCompact = revenueCompact
-        self.visitors = visitors
-        self.orders = orders
-        self.conversion = conversion
-        self.updatedTime = updatedTime
-        self.metricSlots = metricSlots ?? metrics.map { .metric($0) }
-        self.dateRange = dateRange
-    }
-
-    /// Used to build per-cell deep-link URLs. `nil` for surfaces without a configured range
-    /// (placeholder previews) — those render without deep-link affordance.
-    var dateRange: StoreStatsWidgetDateRange? = nil
-}
-
-extension StoreInfoData {
-    /// Returns the entry for the given metric type, or an `.unavailable` placeholder
-    /// if the metric isn't present in the current data set.
-    ///
-    /// A miss is treated as a wiring bug (provider didn't include an expected metric);
-    /// `assertionFailure` catches it in debug, while production falls through to the
-    /// placeholder so the widget still renders as `-` instead of crashing.
-    ///
-    func metric(of type: StoreInfoMetricType) -> StoreInfoMetric {
-        if let metric = metrics.first(where: { $0.type == type }) {
-            return metric
-        }
-        assertionFailure("StoreInfoData missing expected metric: \(type.rawValue)")
-        return StoreInfoMetric(type: type, value: .unavailable)
-    }
-
-    /// Wraps each metric in a `WidgetMetricPresenter` paired with the configured date range.
-    var presentableMetrics: [any MetricPresentable] {
-        metrics.map { WidgetMetricPresenter(metric: $0, dateRange: dateRange) }
-    }
-}
-
 /// Type that provides data entries to the widget system.
 ///
 /// Backs both the legacy `StaticConfiguration` path (via `TimelineProvider` here) and the
@@ -140,7 +22,7 @@ final class StoreInfoProvider: TimelineProvider {
     func placeholder(in context: Context) -> StoreInfoEntry {
         Self.placeholderEntry(
             for: Self.fetchDependencies(),
-            metrics: Self.resolveMetricSelection(
+            metrics: StoreStatsConfigurationIntent.resolveMetricSelection(
                 requested: StoreStatsConfigurationIntent.defaultMetrics,
                 family: context.family
             )
@@ -151,10 +33,11 @@ final class StoreInfoProvider: TimelineProvider {
         Self.placeholderEntry(
             for: Self.fetchDependencies(),
             dateRange: configuration.dateRange,
-            metrics: Self.resolveMetricSelection(
+            metrics: StoreStatsConfigurationIntent.resolveMetricSelection(
                 requested: configuration.metrics,
                 family: context.family
-            )
+            ),
+            theme: configuration.theme
         )
     }
 
@@ -181,7 +64,8 @@ final class StoreInfoProvider: TimelineProvider {
     func loadTimeline(
         dateRange: StoreStatsWidgetDateRange,
         metrics: [StoreInfoMetricType],
-        selectedStoreID: StoreStatsStoreEntity.ID? = nil
+        selectedStoreID: StoreStatsStoreEntity.ID? = nil,
+        theme: StoreWidgetTheme = .brandPurple
     ) async -> Timeline<StoreInfoEntry> {
         guard let dependencies = Self.fetchDependencies(selectedStoreID: selectedStoreID) else {
             return Timeline<StoreInfoEntry>(entries: [.notConnected], policy: .never)
@@ -202,7 +86,8 @@ final class StoreInfoProvider: TimelineProvider {
                 for: statsPeriod,
                 dateRange: dateRange,
                 with: updatedDependencies,
-                metrics: metrics
+                metrics: metrics,
+                theme: theme
             )
             return Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
         } catch {
@@ -230,7 +115,7 @@ final class StoreInfoProvider: TimelineProvider {
     }
 }
 
-// MARK: - Metric presets & resolution
+// MARK: - Metric presets
 
 extension StoreInfoProvider {
     /// Hardcoded preset used by the legacy `StaticConfiguration` path (`getTimeline`) and as the
@@ -241,64 +126,12 @@ extension StoreInfoProvider {
     static let legacyMetricsPreset: [StoreInfoMetricType] = [
         .revenue, .visitors, .orders, .conversion
     ]
-}
 
-extension StoreInfoProvider {
-    /// Catalog priority order. Mirrors the parameter `default:` in `StoreStatsConfigurationIntent`
-    /// so the render-time top-up draws from the same list iOS hands out at first install — a
-    /// resize-up tile renders identically to a fresh install at the new family.
-    ///
-    private static let catalogPriorityOrder = StoreInfoMetricType.catalogCases
-
-    /// Family slot counts that the home-screen view caps at when rendering. Mirrors the `size:`
-    /// map on the intent's `metrics` parameter. Lock-screen families return `nil` — they ignore
-    /// `StoreInfoData.metrics` and read fixed fields off `StoreInfoData` directly.
-    ///
-    private static func homescreenSlotCount(_ family: WidgetFamily) -> Int? {
-        switch family {
-        case .systemSmall: return 2
-        case .systemMedium: return 4
-        case .systemLarge: return 7
-        default: return nil
-        }
-    }
-
-    /// Maps the user's requested metric set onto what the configurable widget can render.
-    /// **AppIntent path only** — the legacy `StaticConfiguration` path bypasses this entirely
-    /// and uses `legacyMetricsPreset`.
-    ///
-    /// iOS persists the user's selection per tile and does not auto-extend the array when a
-    /// tile resizes to a larger family — `EntityQuery` has no default-fill hook to participate
-    /// in that. To keep the widget body looking complete after a resize-up, this resolver:
-    ///
-    /// 1. Slices oversized arrays (resize-down) to the family's slot count.
-    /// 2. Tops up undersized arrays from `catalogPriorityOrder` until full, deduping concrete
-    ///    metrics. Explicit `.none` selections count as occupied slots and are not replaced.
-    ///    The auto-fill order matches the parameter `default:` so resize-up content is
-    ///    predictable and identical to a fresh install at the new family.
-    ///
-    /// Trade-off: the Edit Widget UI is iOS-controlled and shows "Choose" placeholders for
-    /// slots that don't have an explicit user pick — even though the widget body has rendered
-    /// content there. Apple owns the Edit Widget UI; we can't surface our top-up there.
-    ///
-    static func resolveMetricSelection(
-        requested: [StoreInfoMetricType],
-        family: WidgetFamily
-    ) -> [StoreInfoMetricType] {
-        guard let target = homescreenSlotCount(family) else {
-            return requested
-        }
-
-        if requested.count > target {
-            return Array(requested.prefix(target))
-        }
-
-        var resolved = requested
-        for fallback in catalogPriorityOrder where resolved.count < target {
-            guard !resolved.contains(fallback) else { continue }
-            resolved.append(fallback)
-        }
-        return resolved
+    static func placeholderEntry(
+        dateRange: StoreStatsWidgetDateRange = .today,
+        metrics: [StoreInfoMetricType] = legacyMetricsPreset
+    ) -> StoreInfoEntry {
+        placeholderEntry(for: fetchDependencies(), dateRange: dateRange, metrics: metrics)
     }
 }
 
@@ -471,7 +304,8 @@ private extension StoreInfoProvider {
     static func placeholderEntry(
         for dependencies: Dependencies?,
         dateRange: StoreStatsWidgetDateRange = .today,
-        metrics: [StoreInfoMetricType] = legacyMetricsPreset
+        metrics: [StoreInfoMetricType] = legacyMetricsPreset,
+        theme: StoreWidgetTheme = .brandPurple
     ) -> StoreInfoEntry {
         let currencySettings = dependencies?.store.storeCurrencySettings ?? CurrencySettings()
         let sample = StoreInfoDataService.Stats.placeholderSample
@@ -499,7 +333,9 @@ private extension StoreInfoProvider {
             orders: "\(sample.totalOrders)",
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
-            metricSlots: metricSlots
+            metricSlots: metricSlots,
+            dateRange: dateRange,
+            theme: theme
         ))
     }
 
@@ -515,7 +351,8 @@ private extension StoreInfoProvider {
     static func dataEntry(for statsPeriod: StoreInfoDataService.StatsPeriod,
                           dateRange: StoreStatsWidgetDateRange,
                           with dependencies: Dependencies,
-                          metrics: [StoreInfoMetricType]) -> StoreInfoEntry {
+                          metrics: [StoreInfoMetricType],
+                          theme: StoreWidgetTheme = .brandPurple) -> StoreInfoEntry {
         let currencySettings = dependencies.store.storeCurrencySettings
         let stats = statsPeriod.current
         let previousStats = statsPeriod.previous
@@ -554,7 +391,8 @@ private extension StoreInfoProvider {
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
             metricSlots: metricSlots,
-            dateRange: dateRange
+            dateRange: dateRange,
+            theme: theme
         ))
     }
 

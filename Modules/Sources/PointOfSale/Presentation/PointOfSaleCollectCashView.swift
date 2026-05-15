@@ -114,6 +114,8 @@ struct PointOfSaleCollectCashView: View {
                             }
                         }, label: {
                             Text(Localization.markPaymentCompletedButtonTitle)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
                         })
                         .measureFrame {
                             buttonFrame = $0

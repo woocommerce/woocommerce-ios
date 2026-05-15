@@ -35,6 +35,7 @@ struct AssistantSystemPromptTests {
         #expect(analyticsPattern.contains("call `show_cards` to render the matching analytics card"))
         #expect(analyticsPattern.contains("grouping grain with a date window"))
         #expect(analyticsPattern.contains("Do not turn a monthly window into interval=month"))
+        #expect(analyticsPattern.contains("pass that id straight to `show_cards` rather than building one yourself"))
         #expect(directProseLines.allSatisfy { !$0.localizedCaseInsensitiveContains("analytics") })
     }
 
@@ -124,7 +125,6 @@ struct AssistantSystemPromptTests {
             "orders_get",
             "products_list",
             "products_get",
-            "analytics_revenue",
             "analytics_orders",
             "analytics_stats",
             "orders_bulk_update",
@@ -134,6 +134,17 @@ struct AssistantSystemPromptTests {
 
         #expect(prompt.contains("`show_cards`"))
         #expect(remoteToolNames.allSatisfy { !prompt.contains($0) })
+    }
+
+    @Test
+    func test_build_documents_scope_and_off_topic_decline() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let scopeSection = section(in: prompt, from: "# Scope and off-topic requests", to: "# Where to send the merchant when no tool fits")
+
+        #expect(scopeSection.contains("apologise briefly and decline"))
+        #expect(scopeSection.contains("Call no tools, render no cards"))
+        #expect(scopeSection.contains("still in scope"))
+        #expect(prompt.contains("Off-topic / non-WooCommerce questions: apologise briefly and decline; no tools, no cards."))
     }
 
     @Test

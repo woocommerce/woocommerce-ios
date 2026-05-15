@@ -8,6 +8,7 @@ struct POSRefundItemsSelectionView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var refundSelectableItems: [POSRefundSelectableItem] {
         orderListModel.ordersController.refundSelectableItems
@@ -40,8 +41,8 @@ struct POSRefundItemsSelectionView: View {
         }
         .padding(POSPadding.xLarge)
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius(for: horizontalSizeClass)))
+        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding(for: horizontalSizeClass) * 2))
     }
 }
 
@@ -54,6 +55,7 @@ private extension POSRefundItemsSelectionView {
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .lineLimit(1)
+                .minimumScaleFactor(horizontalSizeClass == .compact ? 0.7 : 1.0)
             Spacer()
             Button {
                 onClose()

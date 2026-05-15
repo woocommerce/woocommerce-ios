@@ -6,6 +6,7 @@ struct PointOfSalePaymentSuccessView: View {
     let successAction: PaymentFlowAction
     let onSuccessScreenBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var isViewLoaded: Bool = false
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -79,8 +80,16 @@ struct PointOfSalePaymentSuccessView: View {
 
                 Spacer().frame(height: POSSpacing.xxLarge)
 
+                // iPad: buttons take half the screen width (count:2 span:1).
+                // Phone: half the screen width is ~190pt, too narrow for "New order" /
+                // "Email receipt" — let them span the container minus standard insets instead.
                 PaymentsActionButtons(successAction: successAction)
-                    .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
+                    .if(horizontalSizeClass != .compact) { view in
+                        view.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
+                    }
+                    .if(horizontalSizeClass == .compact) { view in
+                        view.padding(.horizontal, POSPadding.large)
+                    }
                     .frame(maxWidth: .infinity, alignment: .center)
                     .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
                     .opacity(isViewLoaded ? 1 : 0)

@@ -171,6 +171,37 @@ struct OrdersListToolTests {
     }
 
     @Test
+    func test_orders_list_when_after_and_before_are_bare_dates_then_query_pads_to_iso_day_boundaries() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersListTool.make()
+
+        // When
+        _ = await tool.executor(#"{"after": "2026-05-14", "before": "2026-05-14"}"#, client)
+
+        // Then
+        #expect(await client.calls.first?.query["after"] == "2026-05-14T00:00:00")
+        #expect(await client.calls.first?.query["before"] == "2026-05-14T23:59:59")
+    }
+
+    @Test
+    func test_orders_list_when_after_is_invalid_date_then_returns_failed_with_invalid_tool_call() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"after": "last week"}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed, got \(result)")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+    }
+
+    @Test
     func test_orders_list_when_status_is_any_then_status_param_omitted() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok("[]"))

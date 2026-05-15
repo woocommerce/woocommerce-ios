@@ -177,7 +177,7 @@ private struct NotLoggedInView: View {
                 .statButtonStyle()
         }
         .padding(.vertical, Layout.cardVerticalPadding)
-        .widgetBackground(backgroundView: Color(.brand))
+        .widgetBackground(backgroundView: StoreWidgetHomeScreenBackground())
     }
 }
 
@@ -197,7 +197,7 @@ private struct UnableToFetchView: View {
             Spacer()
         }
         .padding(.vertical, Layout.cardVerticalPadding)
-        .widgetBackground(backgroundView: Color(.brand))
+        .widgetBackground(backgroundView: StoreWidgetHomeScreenBackground())
     }
 }
 

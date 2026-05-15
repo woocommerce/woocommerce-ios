@@ -3,7 +3,7 @@ import Testing
 @testable import WooAIAssistant
 
 @Suite(.timeLimit(.minutes(1)))
-struct AnalyticsDateBoundsTests {
+struct RESTDateBoundsTests {
     @Test
     func test_previous_period_bounds_when_inputs_are_seven_days_then_previous_window_is_immediately_preceding_seven_days() {
         // Given
@@ -11,7 +11,7 @@ struct AnalyticsDateBoundsTests {
         let before = "2026-05-07"
 
         // When
-        let result = AnalyticsDateBounds.previousPeriodBounds(after: after, before: before)
+        let result = RESTDateBounds.previousPeriodBounds(after: after, before: before)
 
         // Then
         #expect(result?.after == "2026-04-24")
@@ -25,7 +25,7 @@ struct AnalyticsDateBoundsTests {
         let before = "2026-05-15"
 
         // When
-        let result = AnalyticsDateBounds.previousPeriodBounds(after: after, before: before)
+        let result = RESTDateBounds.previousPeriodBounds(after: after, before: before)
 
         // Then
         #expect(result?.after == "2026-05-14")
@@ -35,7 +35,7 @@ struct AnalyticsDateBoundsTests {
     @Test
     func test_previous_period_bounds_when_inputs_invalid_then_returns_nil() {
         // Given / When
-        let result = AnalyticsDateBounds.previousPeriodBounds(after: "not-a-date", before: "2026-05-07")
+        let result = RESTDateBounds.previousPeriodBounds(after: "not-a-date", before: "2026-05-07")
 
         // Then
         #expect(result == nil)

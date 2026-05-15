@@ -14,6 +14,7 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
     static let defaultMetrics = StoreInfoMetricType.catalogCases
 
     static let metricsSlotCounts: [WidgetFamily: Int] = [
+        .accessoryRectangular: 1,
         .systemSmall: 2,
         .systemMedium: 4,
         .systemLarge: 7
@@ -25,16 +26,19 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
     @Parameter(title: "Date Range", default: .today)
     var dateRange: StoreStatsWidgetDateRange
 
+    @Parameter(title: "Theme", default: .brandPurple)
+    var theme: StoreWidgetTheme
+
     /// User-selected metric set, in display order.
     ///
-    /// The `size:` map drives iOS's family-aware fixed-slot rendering — small shows 2 metrics,
-    /// medium 4, and large 7. The picker shows the full catalog; metrics whose data isn't
-    /// available for the user's auth mode (`visitors`, `conversion` on self-hosted) render
-    /// with the standard "-" placeholder in the cell.
+    /// The `size:` map drives iOS's family-aware fixed-slot rendering — rectangular shows 1
+    /// metric, small shows 2, medium 4, and large 7. The picker shows the full catalog; metrics
+    /// whose data isn't available for the user's auth mode (`visitors`, `conversion` on
+    /// self-hosted) render with the standard "-" placeholder in the cell.
     ///
     /// The default lists the full catalog in priority order so iOS persists enough state
     /// to cover the largest family and available choices on first install. After a resize-up,
-    /// `StoreInfoProvider.resolveMetricSelection` tops up undersized arrays from the same
+    /// `resolveMetricSelection` tops up undersized arrays from the same
     /// priority order so the widget body renders identically to a fresh install at the new
     /// family.
     ///
@@ -45,6 +49,7 @@ struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
             .netSales, .visitors, .conversion
         ],
         size: [
+            .accessoryRectangular: .init(exactly: 1),
             .systemSmall: .init(exactly: 2),
             .systemMedium: .init(exactly: 4),
             .systemLarge: .init(exactly: 7),
@@ -150,5 +155,41 @@ struct StoreStatsStoreQuery: EntityQuery {
 
     func defaultResult() async -> StoreStatsStoreEntity? {
         StoreStatsStoreEntity.defaultStore
+    }
+}
+
+extension StoreStatsConfigurationIntent {
+    /// Maps the user's requested metric set onto what the widget can render in a given family.
+    ///
+    /// Home-screen families keep their fixed slot counts and top up undersized selections from
+    /// the default priority order. The configurable rectangular lock-screen family renders one
+    /// chart-backed metric; aggregate-only metrics fall back to the first chart-backed selection
+    /// or total sales.
+    static func resolveMetricSelection(
+        requested: [StoreInfoMetricType],
+        family: WidgetFamily
+    ) -> [StoreInfoMetricType] {
+        if family == .accessoryRectangular {
+            return [requested.first(where: \.supportsChart) ?? defaultChartBackedMetric]
+        }
+
+        guard let target = metricsSlotCounts[family] else {
+            return requested
+        }
+
+        if requested.count > target {
+            return Array(requested.prefix(target))
+        }
+
+        var resolved = requested
+        for fallback in defaultMetrics where resolved.count < target {
+            guard !resolved.contains(fallback) else { continue }
+            resolved.append(fallback)
+        }
+        return resolved
+    }
+
+    private static var defaultChartBackedMetric: StoreInfoMetricType {
+        defaultMetrics.first(where: \.supportsChart) ?? .revenue
     }
 }

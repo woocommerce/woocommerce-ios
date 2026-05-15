@@ -6,8 +6,14 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     private let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var width: CGFloat = 0
+
+    private var connectButtonWidth: CGFloat {
+        // iPad: half the container; phone: align with the totals lines (full width minus standard insets).
+        horizontalSizeClass == .compact ? max(width - POSPadding.large * 2, 0) : width * 0.5
+    }
 
     init(animation: POSCardPresentPaymentInLineMessageAnimation,
          connectCardReader: @escaping () -> Void) {
@@ -45,9 +51,11 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
                 connectCardReader()
             } label: {
                 Text(viewModel.connectReaderButtonTitle)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .frame(width: width * 0.5)
+            .frame(width: connectButtonWidth)
         }
         .frame(maxWidth: .infinity)
         .measureWidth({ containerWidth in

@@ -98,7 +98,9 @@ extension DashboardCard.CardType {
             "google-ads"
         case .connectWPCom:
             "push_notifications"
-        case .shareStore, .inAppFeedback, .newCardsNotice, .aiAssistant:
+        case .aiAssistant:
+            "ai_assistant"
+        case .shareStore, .inAppFeedback, .newCardsNotice:
             "" // Not tracked
         }
     }

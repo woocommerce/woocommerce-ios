@@ -326,7 +326,8 @@ private extension StorePerformanceView {
         if let chartViewModel = viewModel.chartViewModel,
            chartViewModel.hasRevenue {
             VStack {
-                StoreStatsChart(viewModel: chartViewModel) { selectedIndex in
+                StoreStatsChart(viewModel: chartViewModel,
+                                resetSignal: viewModel.chartSelectionResetPublisher) { selectedIndex in
                     viewModel.didSelectStatsInterval(at: selectedIndex)
                 }
                 .frame(height: Layout.chartViewHeight)

@@ -15,13 +15,11 @@ struct TypedCardDispatcherTests {
     }
 
     @Test
-    func test_route_when_tool_is_analytics_revenue_or_orders_then_routes_to_analytics_stats() {
+    func test_route_when_tool_is_analytics_orders_then_routes_to_analytics_stats() {
         // When
-        let revenue = TypedCardDispatcher.route(for: "analytics_revenue")
         let orders = TypedCardDispatcher.route(for: "analytics_orders")
 
         // Then
-        #expect(revenue == .analyticsStats)
         #expect(orders == .analyticsStats)
     }
 
@@ -53,9 +51,9 @@ struct TypedCardDispatcherTests {
     }
 
     @Test
-    func test_route_when_tool_is_show_cards_product_variation_then_routes_to_product_variation() {
+    func test_route_when_tool_is_show_cards_variation_then_routes_to_product_variation() {
         // When
-        let route = TypedCardDispatcher.route(for: "show_cards.product_variation")
+        let route = TypedCardDispatcher.route(for: "show_cards.variation")
 
         // Then
         #expect(route == .productVariation)

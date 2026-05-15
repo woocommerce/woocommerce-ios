@@ -4,28 +4,31 @@ import enum WooFoundation.CurrencyCode
 
 /// Validator for POS country and currency support.
 ///
-/// Single source of truth for the supported country/currency pairings. The 13 expansion
-/// countries (RSM-637) are accepted only when the supplied
-/// ``CardPresentPaymentsCountryExpansionEligibilityServiceProtocol`` reports the site as
-/// eligible. US/PR/GB are always supported.
+/// Single source of truth for the supported country/currency pairings. Callers
+/// are expected to refresh the per-site gated-country eligibility cache for the
+/// current store country before validating. While the country-expansion flags
+/// are temporary, the cache is a coarse per-site Boolean: the refresher decides
+/// which remote flag controls the current store country, then this validator
+/// applies the cached result to the set of countries that are still gated.
+/// US/PR/GB are always supported.
 public enum POSCountryCurrencyValidator {
     /// Supported countries for POS feature.
-    /// Always includes US, PR, and GB. The 13 expansion countries are added when the supplied
-    /// eligibility service reports the site as eligible.
+    /// Always includes US, PR, and GB. Gated countries are added when the supplied
+    /// eligibility service reports the current site country as eligible.
     public static func supportedCountries(
         siteID: Int64,
         eligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
     ) -> [CountryCode] {
         var countries: [CountryCode] = [.US, .PR, .GB]
         if eligibilityService.isEligible(siteID: siteID) {
-            countries.append(contentsOf: expansionCountries)
+            countries.append(contentsOf: remoteFlagGatedCountries)
         }
         return countries
     }
 
     /// Supported currencies per country for POS feature.
-    /// Always includes US/USD, PR/USD, and GB/GBP. Expansion entries are added when the supplied
-    /// eligibility service reports the site as eligible.
+    /// Always includes US/USD, PR/USD, and GB/GBP. Gated entries are added when the supplied
+    /// eligibility service reports the current site country as eligible.
     public static func supportedCurrencies(
         siteID: Int64,
         eligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
@@ -41,6 +44,7 @@ public enum POSCountryCurrencyValidator {
             }
             map[.SG] = [.SGD]
             map[.NZ] = [.NZD]
+            map[.AU] = [.AUD]
         }
         return map
     }
@@ -49,8 +53,8 @@ public enum POSCountryCurrencyValidator {
     /// - Parameters:
     ///   - countryCode: The store's country code.
     ///   - currencyCode: The store's currency code.
-    ///   - siteID: The site ID, used to look up per-site expansion eligibility.
-    ///   - eligibilityService: The cached expansion eligibility for this site.
+    ///   - siteID: The site ID, used to look up per-site gated-country eligibility.
+    ///   - eligibilityService: The cached gated-country eligibility for this site.
     /// - Returns: Eligibility state with reason if ineligible.
     public static func validate(
         countryCode: CountryCode,
@@ -77,8 +81,10 @@ public enum POSCountryCurrencyValidator {
         .AT, .BE, .FI, .FR, .DE, .IE, .IT, .LU, .NL, .PT, .ES
     ]
 
-    private static var expansionCountries: [CountryCode] {
-        eeaEuroCountries + [.SG, .NZ]
+    /// Countries whose POS eligibility is still controlled by remote rollout
+    /// flags. The specific flag is resolved before this validator is called.
+    private static var remoteFlagGatedCountries: [CountryCode] {
+        eeaEuroCountries + [.SG, .NZ, .AU]
     }
 }
 

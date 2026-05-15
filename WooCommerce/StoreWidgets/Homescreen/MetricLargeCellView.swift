@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Full-row metric cell rendered as the leading row of the large widget.
 ///
-/// Splits horizontally between the text stack (left, intrinsic width) and a bar
-/// chart (right) that fills the remaining width and the cell height.
+/// Stacks vertically: the text stack sits above a bar chart that fills the
+/// remaining width and height of the cell.
 ///
 struct MetricLargeCellView: View {
     let metric: any MetricPresentable
@@ -12,12 +12,13 @@ struct MetricLargeCellView: View {
 
     var body: some View {
         MetricCellLink(destination: metric.tapURL) {
-            HStack(spacing: Layout.contentSpacing) {
+            VStack(alignment: .leading, spacing: Layout.contentSpacing) {
                 MetricCellTextStack(
                     metric: metric,
                     trendPlacement: .alongsideValue,
                     size: .large
                 )
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 if showsChart, let chart = metric.chartData, chart.count > 1 {
                     MetricChartView(
@@ -28,7 +29,7 @@ struct MetricLargeCellView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
     }
 }

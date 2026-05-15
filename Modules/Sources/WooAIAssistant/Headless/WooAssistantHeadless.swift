@@ -155,7 +155,7 @@ public actor WooAssistantHeadless {
 
         /// One card the orchestrator authorized for render via a `.cardRender`
         /// event. `kind` and `toolName` carry the orchestrator's synthetic tool
-        /// name (e.g. `show_cards.order`, `analytics_revenue`). `payloadJSON` is
+        /// name (e.g. `show_cards.order`, `analytics_orders`). `payloadJSON` is
         /// the canonical JSON encoding of the rendered card payload, identical
         /// to what `MessageCardHost` would receive in the SwiftUI surface.
         public struct CardRecord: Sendable, Equatable {
@@ -200,7 +200,7 @@ public actor WooAssistantHeadless {
         /// Every card the orchestrator authorized for render this turn, in
         /// emission order, deduped first-wins by `(family, id)` to mirror the
         /// SwiftUI surface. A turn whose tools never emit `.cardRender` (e.g. a
-        /// bare `orders_list` or `analytics_revenue`) yields an empty list here.
+        /// bare `orders_list` or `analytics_orders`) yields an empty list here.
         public var cards: [CardRecord]
 
         /// Every confirmation surfaced and how it resolved.
@@ -384,7 +384,7 @@ public actor WooAssistantHeadless {
             case .failed(let error):
                 result.failureMessage = error.message
 
-            case .completed:
+            case .completed, .terminated:
                 break
             }
         }

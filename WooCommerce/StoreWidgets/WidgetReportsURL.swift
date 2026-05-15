@@ -1,25 +1,20 @@
 import Foundation
 
-/// Builds `https://woocommerce.com/mobile/analytics?metric=<rawValue>&range=<rawValue>` —
-/// the deep link a widget metric cell opens when tapped.
+/// Builds `https://woocommerce.com/mobile/analytics?metric=<rawValue>&range=<rawValue>&source=store-info-widget` —
+/// the deep link a widget metric cell opens when tapped. URL shape is owned by
+/// `StoreMetricsReportRoute`, the cross-target contract shared with the host app's
+/// `ReportsRoute`.
 enum WidgetReportsURL {
     static func url(for metric: StoreInfoMetricType, range: StoreStatsWidgetDateRange) -> URL? {
         var components = URLComponents()
-        components.scheme = Constants.scheme
-        components.host = Constants.host
-        components.path = Constants.path
+        components.scheme = StoreMetricsReportRoute.scheme
+        components.host = StoreMetricsReportRoute.host
+        components.path = StoreMetricsReportRoute.path
         components.queryItems = [
-            URLQueryItem(name: Constants.metricQueryKey, value: metric.rawValue),
-            URLQueryItem(name: Constants.rangeQueryKey, value: range.rawValue)
+            URLQueryItem(name: StoreMetricsReportRoute.QueryKey.metric, value: metric.rawValue),
+            URLQueryItem(name: StoreMetricsReportRoute.QueryKey.range, value: range.rawValue),
+            URLQueryItem(name: StoreMetricsReportRoute.QueryKey.source, value: StoreMetricsReportRoute.Source.storeInfoWidget)
         ]
         return components.url
-    }
-
-    enum Constants {
-        static let scheme = "https"
-        static let host = "woocommerce.com"
-        static let path = "/mobile/analytics"
-        static let metricQueryKey = "metric"
-        static let rangeQueryKey = "range"
     }
 }

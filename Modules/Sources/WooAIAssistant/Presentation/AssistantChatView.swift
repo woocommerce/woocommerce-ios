@@ -8,14 +8,11 @@ public struct AssistantChatView: View {
 
     private let onClose: () -> Void
     private let onFeedbackTap: (() -> Void)?
-    private let siteID: Int64
 
     public init(controller: AssistantController,
-                siteID: Int64,
                 onClose: @escaping () -> Void = {},
                 onFeedbackTap: (() -> Void)? = nil) {
         self.controller = controller
-        self.siteID = siteID
         self.onClose = onClose
         self.onFeedbackTap = onFeedbackTap
     }
@@ -65,6 +62,12 @@ public struct AssistantChatView: View {
                           AssistantConfirmationHandler(
                             onConfirm: { id in controller.confirmProposal(id) },
                             onCancel: { id in controller.cancelProposal(id) }))
+            .environment(\.assistantCardTelemetry,
+                          AssistantCardTelemetryDispatcher(
+                            tracker: controller.telemetryTracker,
+                            contextLookup: { [conversation = controller.conversation] messageID in
+                                conversation.telemetryContext(for: messageID)
+                            }))
             .onDisappear {
                 if !controller.canSend {
                     controller.cancel()
@@ -84,12 +87,16 @@ public struct AssistantChatView: View {
     }
 
     private var messageList: some View {
-        MessageListView(messages: controller.conversation.messages,
-                        streamingState: controller.conversation.streamingState,
-                        siteID: siteID,
-                        onPickPrompt: { draft = $0; inputFocused = true },
-                        onSendSuggestion: sendSuggestion,
-                        onFeedbackTap: onFeedbackTap)
+        // Always wire the retry handler so an error banner configured during the brief window
+        // where activeTask hasn't cleared yet still has a live closure. The controller no-ops
+        // internally when canSend is false.
+        let retryHandler: (() -> Void)? = { controller.retryLastFailedTurn() }
+        return MessageListView(messages: controller.conversation.messages,
+                               streamingState: controller.conversation.streamingState,
+                               onPickPrompt: { draft = $0; inputFocused = true },
+                               onSendSuggestion: sendSuggestion,
+                               onFeedbackTap: onFeedbackTap,
+                               onRetry: retryHandler)
             .background(
                 Color.clear
                     .contentShape(Rectangle())
@@ -157,7 +164,7 @@ extension AssistantChatView {
     @MainActor
     static func preview(_ scenario: AssistantChatScenario) -> some View {
         let configuration = AssistantChatScenarioBuilder(scenario: scenario).build()
-        return AssistantChatView(controller: configuration.controller, siteID: 0, onClose: {})
+        return AssistantChatView(controller: configuration.controller, onClose: {})
     }
 }
 

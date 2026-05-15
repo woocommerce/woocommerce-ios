@@ -288,6 +288,7 @@
 				Tools/AppLocalizedString.swift,
 				Tools/StoreWidgets/WidgetSite.swift,
 				Tools/StoreWidgets/WidgetSiteListStore.swift,
+				"Universal Links/Routes/StoreMetricsReportRoute.swift",
 			);
 			target = 3F1FA83F28B60125009E246C /* StoreWidgetsExtension */;
 		};
@@ -383,11 +384,16 @@
 				AvailableMetricsQuery.swift,
 				Entitlements,
 				MetricPresentable.swift,
+				StoreInfoEntry.swift,
 				StoreInfoFormatter.swift,
 				StoreInfoMetric.swift,
 				StoreInfoMetricType.swift,
 				StoreStatsConfigurationIntent.swift,
 				StoreStatsWidgetDateRange.swift,
+				"StoreStatsWidgetDateRange+Localization.swift",
+				StoreTrendsConfigurationIntent.swift,
+				StoreTrendsEntry.swift,
+				StoreWidgetTheme.swift,
 				StoreWidgets.intentdefinition,
 				WidgetMetricPresenter.swift,
 				WidgetReportsURL.swift,
@@ -417,6 +423,7 @@
 				Images.xcassets,
 				"Images/UIImage+Widgets.swift",
 				Lockscreen/AppLinkWidget.swift,
+				StoreWidgetTheme.swift,
 			);
 			target = 267A04842C051C5100C91CB4 /* WatchWidgetsExtension */;
 		};

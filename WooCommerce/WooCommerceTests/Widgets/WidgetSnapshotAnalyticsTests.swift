@@ -43,6 +43,27 @@ struct WidgetSnapshotAnalyticsTests {
         #expect(props["widget_customized_count"] == "0")
     }
 
+    @Test func single_default_storeTrends_tile_counts_as_default() {
+        // Given
+        let tile = WidgetSnapshot.Tile(
+            kind: WooConstants.storeTrendsWidgetKind,
+            family: .accessoryRectangular,
+            configuration: .storeStats(
+                dateRange: StoreTrendsConfigurationIntent.defaultDateRange,
+                metrics: StoreTrendsConfigurationIntent.defaultMetrics
+            )
+        )
+        let snapshot = WidgetSnapshot(tiles: [tile])
+
+        // When
+        let props = snapshot.analyticsProperties
+
+        // Then
+        #expect(props["widget_count"] == "1")
+        #expect(props["widget_default_count"] == "1")
+        #expect(props["widget_customized_count"] == "0")
+    }
+
     @Test func single_customized_storeStats_tile_counts_as_customized() {
         // Given
         let tile = WidgetSnapshot.Tile(
@@ -188,6 +209,25 @@ struct WidgetSnapshotAnalyticsTests {
         #expect(props["info_widget_metrics_in_use"] == "orders,revenue")
     }
 
+    @Test func accessoryRectangular_reports_resolved_chart_backed_metric() {
+        // Given - snapshot construction stores the family-resolved visible metric before analytics.
+        let metrics = StoreTrendsConfigurationIntent.resolveMetricSelection(
+            requested: [.visitors]
+        )
+        let tile = WidgetSnapshot.Tile(
+            kind: WooConstants.storeTrendsWidgetKind,
+            family: .accessoryRectangular,
+            configuration: .storeStats(dateRange: .today, metrics: metrics)
+        )
+        let snapshot = WidgetSnapshot(tiles: [tile])
+
+        // When
+        let props = snapshot.analyticsProperties
+
+        // Then
+        #expect(props["info_widget_metrics_in_use"] == "revenue")
+    }
+
     @Test func multiple_tiles_combine_metrics_with_repetitions() {
         // Given - tiles with overlapping metrics
         let tileA = WidgetSnapshot.Tile(
@@ -207,6 +247,22 @@ struct WidgetSnapshotAnalyticsTests {
 
         // Then - multiset CSV: orders appears twice, sorted alphabetically
         #expect(props["info_widget_metrics_in_use"] == "orders,orders,revenue,visitors")
+    }
+
+    @Test func none_metric_is_excluded_from_metrics_in_use() {
+        // Given
+        let tile = WidgetSnapshot.Tile(
+            kind: WooConstants.storeInfoWidgetKind,
+            family: .systemMedium,
+            configuration: .storeStats(dateRange: .today, metrics: [.revenue, .none, .orders])
+        )
+        let snapshot = WidgetSnapshot(tiles: [tile])
+
+        // When
+        let props = snapshot.analyticsProperties
+
+        // Then
+        #expect(props["info_widget_metrics_in_use"] == "orders,revenue")
     }
 
     @Test func unconfigured_tile_excluded_from_metrics_combined() {

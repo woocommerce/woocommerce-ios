@@ -1468,12 +1468,21 @@ struct POSPaymentModelTests {
         // When: merchant explicitly taps "Tap to Pay" — opens the gate
         await sut.startPaymentWithMethod(.tapToPay)
 
-        // Then: subsequent events now drive the card state machine
+        // Then: events propagate through the now-open gate. The mock's
+        // `collectPayment` auto-fires a `paymentSuccess` event — a terminal
+        // state that reaches `paymentState.card` because the TTP path only
+        // suppresses *intermediate* states (`.acceptingCard`, `.preparingReader`,
+        // etc.) so the merchant's UI doesn't flicker behind Apple's modal.
+        // The `.idle → .cardPaymentSuccessful` transition is unreachable
+        // without an open gate, so observing it here proves propagation.
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+
+        // And the TTP intermediate-state filter is active: a subsequent
+        // `acceptingCard` event does not roll state backward.
         service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
             inputMethods: [.tap, .swipe, .insert],
             cancelPayment: {}))
-
-        #expect(sut.paymentState.card == .acceptingCard)
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
     }
 
     @Test("TTP: cancelledOnReader resets card state to idle and re-arms the gate")
@@ -1493,17 +1502,18 @@ struct POSPaymentModelTests {
 
         await sut.startPayment()
 
-        // Open the gate: merchant taps Tap to Pay
+        // Open the gate: merchant taps Tap to Pay. The mock's `collectPayment`
+        // auto-fires a terminal `paymentSuccess` event (intermediate states are
+        // filtered on TTP — see `subscribeToPaymentSessionEvents`).
         await sut.startPaymentWithMethod(.tapToPay)
-        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
-            inputMethods: [.tap, .swipe, .insert],
-            cancelPayment: {}))
-        #expect(sut.paymentState.card == .acceptingCard)
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
 
         // When: merchant cancels on reader
         service.paymentEvent = .show(eventDetails: .cancelledOnReader)
 
-        // Then: card state resets to idle AND inline message is cleared
+        // Then: card state resets to idle AND inline message is cleared.
+        // The cancelledOnReader sink runs unconditionally on the TTP path
+        // (no gate check), so cancellation resets even a terminal state.
         #expect(sut.paymentState.card == .idle)
         #expect(sut.cardPresentPaymentInlineMessage == nil)
 
@@ -1567,12 +1577,11 @@ struct POSPaymentModelTests {
 
         await sut.startPayment()
 
-        // Round 1: open gate, reach acceptingCard, then cancel on reader
+        // Round 1: open gate, reach a terminal state, then cancel on reader.
+        // (Intermediates like `.acceptingCard` are filtered on TTP; the mock's
+        // auto-fired `paymentSuccess` is the terminal state that lands.)
         await sut.startPaymentWithMethod(.tapToPay)
-        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
-            inputMethods: [.tap, .swipe, .insert],
-            cancelPayment: {}))
-        #expect(sut.paymentState.card == .acceptingCard)
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
 
         // When: merchant cancels on reader — gate must close and state must reset
         service.paymentEvent = .show(eventDetails: .cancelledOnReader)
@@ -1580,19 +1589,26 @@ struct POSPaymentModelTests {
         // Then: state is idle immediately
         #expect(sut.paymentState.card == .idle)
 
-        // Round 2: a subsequent startPaymentWithMethod must succeed (gate re-opens)
-        await sut.startPaymentWithMethod(.tapToPay)
-        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
-            inputMethods: [.tap, .swipe, .insert],
-            cancelPayment: {}))
+        // Re-attach the mock reader for Round 2. `connectTapToPayReader` (kicked off
+        // by Round 1's `startPayment`) disconnected the mock — the mock's
+        // `connectReader` returns a `.connected` result but doesn't update
+        // `connectedReader`, so the publisher stays at `.disconnected`. Without this
+        // reset, `startPaymentFlow`'s `guard case .connected` would short-circuit and
+        // collectPayment wouldn't fire in Round 2, masking the invariant we're testing.
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
 
-        // If the gate was stale (remained open after cancel-then-reopen), this would
-        // fail because subscribeToPaymentSessionEvents would guard-return early.
-        // If the subscriber order were reversed, the card state would have been set to
-        // acceptingCard by the card-state sink before the gate closed, so the reset
-        // to idle would be a no-op and the assertion below would still pass — but the
-        // cancelledOnReader-card state would not be idle between the two rounds.
-        #expect(sut.paymentState.card == .acceptingCard)
+        // Round 2: a subsequent startPaymentWithMethod must succeed (gate re-opens
+        // and the mock auto-fires `paymentSuccess` again).
+        await sut.startPaymentWithMethod(.tapToPay)
+
+        // If subscriber ordering were inverted — card-state sink before
+        // cancelledOnReader sink — `cancelledOnReader` would have advanced
+        // `paymentState.card` past `.idle` (terminal states bypass the filter),
+        // and `startPaymentWithMethod`'s `guard paymentState.card == .idle` would
+        // have short-circuited Round 2, leaving us stuck at the prior terminal
+        // state without the second auto-fired `paymentSuccess` ever running.
+        // Reaching `.cardPaymentSuccessful` again proves Round 2 actually proceeded.
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
     }
 
     @Test("connectCardReader skips a second call while the first is in flight")

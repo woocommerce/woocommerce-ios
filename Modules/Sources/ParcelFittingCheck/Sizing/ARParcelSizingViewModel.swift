@@ -41,7 +41,7 @@ final class ARParcelSizingViewModel {
     func trackBoxPlaced() {
         guard !hasTrackedPlacement else { return }
         hasTrackedPlacement = true
-        let elapsed = arReadyTime.map { Int(Date().timeIntervalSince($0)) } ?? 0
+        let elapsed = arReadyTime.map { Int(Date().timeIntervalSince($0) * 1000) } ?? 0
         analytics.track(Event.arfittingBoxPlaced(timeToPlace: elapsed))
     }
 

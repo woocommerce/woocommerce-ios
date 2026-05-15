@@ -1,8 +1,6 @@
 import SwiftUI
-import EventHorizonSDK
 
 struct ARParcelSizingView: View {
-    private let analytics: ParcelFittingAnalyticsTracking
     private let onCancel: () -> Void
     private let onConfirm: (ParcelDimensions) -> Void
 
@@ -17,8 +15,7 @@ struct ARParcelSizingView: View {
          analytics: ParcelFittingAnalyticsTracking,
          onCancel: @escaping () -> Void,
          onConfirm: @escaping (ParcelDimensions) -> Void) {
-        self._viewModel = State(initialValue: ARParcelSizingViewModel(unit: unit, initial: initial))
-        self.analytics = analytics
+        self._viewModel = State(initialValue: ARParcelSizingViewModel(unit: unit, initial: initial, analytics: analytics))
         self.onCancel = onCancel
         self.onConfirm = onConfirm
     }
@@ -66,11 +63,7 @@ struct ARParcelSizingView: View {
             if ready { viewModel.recordARReady() }
         }
         .onChange(of: isPlaced) { _, placed in
-            if placed && !viewModel.hasTrackedPlacement {
-                viewModel.hasTrackedPlacement = true
-                let elapsed = viewModel.arReadyTime.map { Int(Date().timeIntervalSince($0)) } ?? 0
-                analytics.track(Event.arfittingBoxPlaced(timeToPlace: elapsed))
-            }
+            if placed { viewModel.trackBoxPlaced() }
         }
     }
 
@@ -98,13 +91,7 @@ struct ARParcelSizingView: View {
     private var topToolbar: some View {
         ARCuboidSceneToolbar(
             onCancel: {
-                analytics.track(Event.arfittingSizingCanceled(
-                    hadPlacedBox: isPlaced,
-                    arReady: isARReady,
-                    resizeCount: viewModel.resizeCount,
-                    rotateCount: viewModel.rotateCount,
-                    resetCount: viewModel.resetCount
-                ))
+                viewModel.trackSizingCanceled(hadPlacedBox: isPlaced, arReady: isARReady)
                 onCancel()
             },
             onReset: isPlaced ? { userReset() } : nil
@@ -113,15 +100,7 @@ struct ARParcelSizingView: View {
 
     private var confirmButton: some View {
         Button {
-            let cm = viewModel.dimensions.toCentimeters(from: viewModel.unit)
-            analytics.track(Event.arfittingSizingCompleted(
-                lengthCm: cm.length,
-                widthCm: cm.width,
-                heightCm: cm.height,
-                resizeCount: viewModel.resizeCount,
-                rotateCount: viewModel.rotateCount,
-                resetCount: viewModel.resetCount
-            ))
+            viewModel.trackSizingCompleted()
             onConfirm(viewModel.confirmedDimensions)
         } label: {
             Text(Localization.useTheseDimensions)

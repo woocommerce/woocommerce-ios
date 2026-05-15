@@ -56,10 +56,10 @@ struct WooShippingSelectedPackageView: View {
                         viewModel: ARParcelFittingResultsViewModel(
                             measuredDimensions: arState.measurement,
                             unit: arState.dimensionUnit,
-                            carriers: arState.carriers
+                            carriers: arState.carriers,
+                            analytics: arAnalytics
                         ),
                         starredPackageIDs: arState.starredPackageIDs,
-                        analytics: arAnalytics,
                         delegate: parcelFittingDelegate,
                         onConfirm: { result in
                             showARResults = false

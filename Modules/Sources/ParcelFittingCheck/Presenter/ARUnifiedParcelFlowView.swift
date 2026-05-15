@@ -29,10 +29,10 @@ struct ARUnifiedParcelFlowView: View {
                     viewModel: ARParcelFittingResultsViewModel(
                         measuredDimensions: dims,
                         unit: unit,
-                        carriers: carriers
+                        carriers: carriers,
+                        analytics: analytics
                     ),
                     starredPackageIDs: starredPackageIDs,
-                    analytics: analytics,
                     delegate: delegate,
                     onConfirm: { result in
                         dismiss()

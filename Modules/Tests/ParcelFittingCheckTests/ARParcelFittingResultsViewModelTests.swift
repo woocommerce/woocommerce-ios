@@ -1,4 +1,5 @@
 import Testing
+import EventHorizonSDK
 @testable import ParcelFittingCheck
 
 @Suite("ARParcelFittingResultsViewModel")
@@ -76,6 +77,132 @@ struct ARParcelFittingResultsViewModelTests {
         #expect(vm.carrierResults[0].package.id == "small")
         #expect(vm.carrierResults[1].package.id == "big")
     }
+
+    // MARK: - trackResultsDisplayed
+
+    @Test func test_trackResultsDisplayed_when_called_then_tracks_with_counts() {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(carriers: [
+            ParcelPresetCarrier(id: "a", name: "A", packages: [makePackage(id: "fit", length: 30, width: 20, height: 15)]),
+            ParcelPresetCarrier(id: "b", name: "B", packages: [makePackage(id: "nofit", length: 1, width: 1, height: 1)]),
+        ], analytics: analytics)
+
+        // When
+        vm.trackResultsDisplayed()
+
+        // Then
+        let props = analytics.trackedEvents.last?.properties
+        #expect(props?["action"] == "arfitting_results_displayed")
+        #expect(props?["carrier_match_count"] == "1")
+        #expect(props?["total_carrier_count"] == "2")
+    }
+
+    // MARK: - trackCarrierPackageSelected
+
+    @Test func test_trackCarrierPackageSelected_when_called_then_tracks_with_index_and_starred() {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackCarrierPackageSelected(index: 2, isStarred: true)
+
+        // Then
+        let props = analytics.trackedEvents.last?.properties
+        #expect(props?["action"] == "arfitting_carrier_package_selected")
+        #expect(props?["index"] == "2")
+        #expect(props?["is_starred"] == "true")
+    }
+
+    // MARK: - trackCustomDimensionsSelected
+
+    @Test func test_trackCustomDimensionsSelected_when_called_then_tracks_event() {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackCustomDimensionsSelected()
+
+        // Then
+        let props = analytics.trackedEvents.last?.properties
+        #expect(props?["action"] == "arfitting_custom_dimensions_selected")
+    }
+
+    // MARK: - trackSelectPackageTapped
+
+    @Test func test_trackSelectPackageTapped_when_carrier_then_tracks_carrier_type() {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackSelectPackageTapped(selectionType: .carrier)
+
+        // Then
+        let props = analytics.trackedEvents.last?.properties
+        #expect(props?["action"] == "arfitting_select_package_tapped")
+        #expect(props?["selection_type"] == "carrier")
+    }
+
+    @Test func test_trackSelectPackageTapped_when_custom_then_tracks_custom_type() {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackSelectPackageTapped(selectionType: .custom)
+
+        // Then
+        let props = analytics.trackedEvents.last?.properties
+        #expect(props?["selection_type"] == "custom")
+    }
+
+    // MARK: - trackBrowseAllPackagesTapped
+
+    @Test func test_trackBrowseAllPackagesTapped_when_called_then_tracks_event() {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackBrowseAllPackagesTapped()
+
+        // Then
+        let props = analytics.trackedEvents.last?.properties
+        #expect(props?["action"] == "arfitting_browse_all_packages_tapped")
+    }
+
+    // MARK: - trackPackageStarTapped
+
+    @Test func test_trackPackageStarTapped_when_starring_then_tracks_with_isStarred_true() {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackPackageStarTapped(index: 0, isStarred: true)
+
+        // Then
+        let props = analytics.trackedEvents.last?.properties
+        #expect(props?["action"] == "arfitting_package_star_tapped")
+        #expect(props?["index"] == "0")
+        #expect(props?["is_starred"] == "true")
+    }
+
+    @Test func test_trackPackageStarTapped_when_unstarring_then_tracks_with_isStarred_false() {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackPackageStarTapped(index: 1, isStarred: false)
+
+        // Then
+        let props = analytics.trackedEvents.last?.properties
+        #expect(props?["is_starred"] == "false")
+    }
 }
 
 // MARK: - Helpers
@@ -85,5 +212,15 @@ extension ARParcelFittingResultsViewModelTests.FitsCase: Sendable {}
 private extension ARParcelFittingResultsViewModelTests {
     func makePackage(id: String = "pkg", length: Float, width: Float, height: Float) -> ParcelPresetPackage {
         ParcelPresetPackage(id: id, name: id, length: length, width: width, height: height)
+    }
+
+    func makeSUT(carriers: [ParcelPresetCarrier] = [],
+                 analytics: ParcelFittingAnalyticsTracking = MockParcelFittingAnalytics()) -> ARParcelFittingResultsViewModel {
+        ARParcelFittingResultsViewModel(
+            measuredDimensions: ParcelDimensions(length: 20, width: 15, height: 10),
+            unit: .centimeters,
+            carriers: carriers,
+            analytics: analytics
+        )
     }
 }

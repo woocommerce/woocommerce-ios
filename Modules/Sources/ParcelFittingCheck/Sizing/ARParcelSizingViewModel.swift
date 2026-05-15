@@ -1,4 +1,5 @@
 import Foundation
+import EventHorizonSDK
 
 @Observable
 final class ARParcelSizingViewModel {
@@ -9,11 +10,14 @@ final class ARParcelSizingViewModel {
     private(set) var rotateCount: Int = 0
     private(set) var resetCount: Int = 0
     private(set) var arReadyTime: Date?
-    var hasTrackedPlacement: Bool = false
+    private(set) var hasTrackedPlacement: Bool = false
 
-    init(unit: UnitLength, initial: ParcelDimensions? = nil) {
+    private let analytics: ParcelFittingAnalyticsTracking
+
+    init(unit: UnitLength, initial: ParcelDimensions? = nil, analytics: ParcelFittingAnalyticsTracking) {
         self.unit = unit
         self.dimensions = initial ?? .defaultDimensions(for: unit)
+        self.analytics = analytics
     }
 
     func recordGestureCompleted(mode: TwoFingerCuboidGestureRecognizer.Mode) {
@@ -32,6 +36,35 @@ final class ARParcelSizingViewModel {
         if arReadyTime == nil {
             arReadyTime = Date()
         }
+    }
+
+    func trackBoxPlaced() {
+        guard !hasTrackedPlacement else { return }
+        hasTrackedPlacement = true
+        let elapsed = arReadyTime.map { Int(Date().timeIntervalSince($0)) } ?? 0
+        analytics.track(Event.arfittingBoxPlaced(timeToPlace: elapsed))
+    }
+
+    func trackSizingCompleted() {
+        let cm = dimensions.toCentimeters(from: unit)
+        analytics.track(Event.arfittingSizingCompleted(
+            lengthCm: cm.length,
+            widthCm: cm.width,
+            heightCm: cm.height,
+            resizeCount: resizeCount,
+            rotateCount: rotateCount,
+            resetCount: resetCount
+        ))
+    }
+
+    func trackSizingCanceled(hadPlacedBox: Bool, arReady: Bool) {
+        analytics.track(Event.arfittingSizingCanceled(
+            hadPlacedBox: hadPlacedBox,
+            arReady: arReady,
+            resizeCount: resizeCount,
+            rotateCount: rotateCount,
+            resetCount: resetCount
+        ))
     }
 
     var dimensionsInMeters: SIMD3<Float> {

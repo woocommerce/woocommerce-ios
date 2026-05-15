@@ -1,4 +1,5 @@
 import Foundation
+import EventHorizonSDK
 
 @Observable
 public final class ARParcelFittingResultsViewModel {
@@ -7,16 +8,22 @@ public final class ARParcelFittingResultsViewModel {
     public let carrierResults: [CarrierResult]
     public let totalCarrierCount: Int
 
+    private let analytics: ParcelFittingAnalyticsTracking
+
     public struct CarrierResult: Identifiable {
         public let carrier: ParcelPresetCarrier
         public let package: ParcelPresetPackage
         public var id: String { package.id }
     }
 
-    public init(measuredDimensions: ParcelDimensions, unit: UnitLength, carriers: [ParcelPresetCarrier]) {
+    public init(measuredDimensions: ParcelDimensions,
+                unit: UnitLength,
+                carriers: [ParcelPresetCarrier],
+                analytics: ParcelFittingAnalyticsTracking = NoOpParcelFittingAnalytics()) {
         self.measuredDimensions = measuredDimensions
         self.unit = unit
         self.totalCarrierCount = carriers.count
+        self.analytics = analytics
         self.carrierResults = carriers.compactMap { carrier in
             guard let best = Self.smallestFitting(in: carrier.packages, for: measuredDimensions) else { return nil }
             return CarrierResult(carrier: carrier, package: best)
@@ -24,10 +31,37 @@ public final class ARParcelFittingResultsViewModel {
         .sorted { $0.package.volume < $1.package.volume }
     }
 
-    /// Orientation-independent fit check. Both the measured and package dimensions
-    /// are sorted descending and compared component-wise (largest-to-largest,
-    /// middle-to-middle, smallest-to-smallest). This allows the item to fit in any
-    /// rotation — e.g. a 12×8×6 item fits a 8×12×6 package.
+    // MARK: - Analytics
+
+    func trackResultsDisplayed() {
+        analytics.track(Event.arfittingResultsDisplayed(
+            carrierMatchCount: carrierResults.count,
+            totalCarrierCount: totalCarrierCount
+        ))
+    }
+
+    func trackCarrierPackageSelected(index: Int, isStarred: Bool) {
+        analytics.track(Event.arfittingCarrierPackageSelected(index: index, isStarred: isStarred))
+    }
+
+    func trackCustomDimensionsSelected() {
+        analytics.track(Event.arfittingCustomDimensionsSelected)
+    }
+
+    func trackSelectPackageTapped(selectionType: ArfittingSelectionType) {
+        analytics.track(Event.arfittingSelectPackageTapped(selectionType: selectionType))
+    }
+
+    func trackBrowseAllPackagesTapped() {
+        analytics.track(Event.arfittingBrowseAllPackagesTapped)
+    }
+
+    func trackPackageStarTapped(index: Int, isStarred: Bool) {
+        analytics.track(Event.arfittingPackageStarTapped(index: index, isStarred: isStarred))
+    }
+
+    // MARK: - Fitting Logic
+
     static func fits(measured: ParcelDimensions, into package: ParcelPresetPackage) -> Bool {
         let sortedMeasured = [measured.length, measured.width, measured.height].sorted(by: >)
         let sortedPackage = [package.length, package.width, package.height].sorted(by: >)

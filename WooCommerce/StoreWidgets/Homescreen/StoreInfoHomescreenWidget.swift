@@ -10,10 +10,13 @@ struct StoreInfoHomescreenWidget: View {
         switch entry {
         case .notConnected:
             NotLoggedInView()
+                .widgetAccentable()
         case .error:
             UnableToFetchView()
+                .widgetAccentable()
         case .data(let data):
             StoreInfoMetricsView(entryData: data)
+                .widgetAccentable()
         }
     }
 }

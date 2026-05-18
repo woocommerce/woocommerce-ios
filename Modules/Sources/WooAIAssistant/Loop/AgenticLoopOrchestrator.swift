@@ -513,41 +513,65 @@ public actor AgenticLoopOrchestrator {
                                                     argumentsJSON: call.function.arguments))
                 startTimesByIndex[index] = clock.nowMs()
             }
+            // Partition so non-safe (writes / unknown) tools finish before safe reads in the same batch.
+            // Without this a write+read pair like `products_update` then `show_cards` race, and the read
+            // can render pre-write data. Unknown tool entries are treated as unsafe to stay defensive.
+            var writeIndices: [Int] = []
+            var readIndices: [Int] = []
+            for index in approvedIndices {
+                let level = toolsByName[calls[index].function.name]?.safetyLevel ?? .unsafe
+                if level == .safe {
+                    readIndices.append(index)
+                } else {
+                    writeIndices.append(index)
+                }
+            }
+
             // withTaskGroup (not throwing) so a single tool failure no longer
             // tears down sibling tasks. Errors from the registry get folded
             // into a per-tool failed result and surface as toolCallCompleted
             // events for every call - no orphan running pills.
-            await withTaskGroup(of: (Int, ToolResult).self) { group in
-                for index in approvedIndices {
-                    let call = calls[index]
-                    group.addTask {
-                        let result = await registry.execute(name: call.function.name,
-                                                            arguments: call.function.arguments,
-                                                            toolCallID: call.id)
-                        return (index, result)
+            func runGroup(for indices: [Int]) async {
+                guard !indices.isEmpty else { return }
+                await withTaskGroup(of: (Int, ToolResult).self) { group in
+                    for index in indices {
+                        let call = calls[index]
+                        group.addTask {
+                            let result = await registry.execute(name: call.function.name,
+                                                                arguments: call.function.arguments,
+                                                                toolCallID: call.id)
+                            return (index, result)
+                        }
+                    }
+                    for await (index, result) in group {
+                        let call = calls[index]
+                        let payload = self.handleToolResult(result,
+                                                            for: call,
+                                                            continuation: continuation)
+                        resolvedResults[index] = payload
+                        if case .failed(let failed) = result,
+                           failed.kind == .outcomeUnknown,
+                           toolsByName[call.function.name]?.safetyLevel == .unsafe,
+                           (writeOutcomeUnknown ?? .max) > index {
+                            writeOutcomeUnknown = index
+                        }
+                        if let telemetryContext, let startMs = startTimesByIndex[index] {
+                            let duration = max(0, clock.nowMs() - startMs)
+                            await emitToolDecisionTelemetry(result: result,
+                                                            call: call,
+                                                            durationMs: duration,
+                                                            telemetryContext: telemetryContext,
+                                                            toolsByName: toolsByName)
+                        }
                     }
                 }
-                for await (index, result) in group {
-                    let call = calls[index]
-                    let payload = self.handleToolResult(result,
-                                                        for: call,
-                                                        continuation: continuation)
-                    resolvedResults[index] = payload
-                    if case .failed(let failed) = result,
-                       failed.kind == .outcomeUnknown,
-                       toolsByName[call.function.name]?.safetyLevel == .unsafe,
-                       (writeOutcomeUnknown ?? .max) > index {
-                        writeOutcomeUnknown = index
-                    }
-                    if let telemetryContext, let startMs = startTimesByIndex[index] {
-                        let duration = max(0, clock.nowMs() - startMs)
-                        await emitToolDecisionTelemetry(result: result,
-                                                        call: call,
-                                                        durationMs: duration,
-                                                        telemetryContext: telemetryContext,
-                                                        toolsByName: toolsByName)
-                    }
-                }
+            }
+
+            if writeIndices.isEmpty {
+                await runGroup(for: approvedIndices)
+            } else {
+                await runGroup(for: writeIndices)
+                await runGroup(for: readIndices)
             }
         }
 

@@ -1,6 +1,6 @@
 ---
 name: woo-ai-smoke
-description: Evaluate WooAIAssistant against a structured scenario suite with hard invariants + LLM-as-judge rubric scoring. Runs live against the demo store + gpt-5.4-mini via the woo-mobile-ai backend wrapper, writes a JSONL run record, compares against stored baselines, and surfaces regressions. Always delegated to a subagent so the main context only sees the markdown report.
+description: Evaluate WooAIAssistant against a structured scenario suite with hard invariants + LLM-as-judge rubric scoring. Runs live against the demo store + gpt-5.1 via the woo-mobile-ai backend wrapper, writes a JSONL run record, compares against stored baselines, and surfaces regressions. Always delegated to a subagent so the main context only sees the markdown report.
 user-invocable: true
 allowed-tools: "Task, Bash, Read, Write, Edit, Grep, Glob"
 argument-hint: "[suite=default|scenario \"turn1; turn2\"] [samples=N]"

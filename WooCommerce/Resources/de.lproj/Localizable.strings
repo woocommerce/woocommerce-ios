@@ -12438,12 +12438,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
 "pos.addCustomAmount.title" = "Individueller Betrag";
 
-/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.message" = "Tippe hier, um eine Servicegebühr, ein Trinkgeld oder eine beliebige individuelle Position zur Bestellung hinzuzufügen.";
-
-/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.title" = "Individuellen Betrag hinzufügen";
-
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Barcode-Scans";
 
@@ -12614,9 +12608,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce-Einstellungen";
-
-/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
-"pos.cartView.addCustomAmount.header.accessibilityLabel" = "Individuellen Betrag hinzufügen";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Tippe auf ein Produkt, um \n es dem Warenkorb hinzuzufügen oder den ";
@@ -12789,9 +12780,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "Bestellung";
 
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "Produkte";
-
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Gesamt";
 
@@ -12837,20 +12825,11 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "Menge: %1$@ zu je %2$@, insgesamt %3$@";
 
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "Produkte";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "Produkte";
-
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "Rückerstattung Nr. %1$d";
-
-/* Section title for the refunded products list in order details */
-"pos.orderDetailsView.refundedProductsTitle" = "Rückerstattete Produkte";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Gesamt";
@@ -14075,9 +14054,6 @@ which should be translated separately and considered part of this sentence. */
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "Mein Shop";
 
-/* Range title for the today store info widget */
-"storeWidgets.infoProvider.today" = "Heute";
-
 /* Conversion rate metric title for the store info widget.
    Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "Conversion";
@@ -14099,9 +14075,6 @@ which should be translated separately and considered part of this sentence. */
 /* Visitors metric title for the store info widget.
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "Besucher";
-
-/* Average order value (AOV) metric title for the store info widget. */
-"storeWidgets.metric.averageOrderValue" = "Durchschnittlicher Bestellwert";
 
 /* Items sold metric title — total units sold in the period. */
 "storeWidgets.metric.itemsSold" = "Verkaufte Artikel";
@@ -14200,9 +14173,6 @@ which should be translated separately and considered part of this sentence. */
 /* Greeting and header for the issue picker in support chat */
 "supportChatView.issuePickerHeader" = "Hallo! Ich bin dein mobiler Woo-Support-Bot. Womit hast du heute Probleme?";
 
-/* OK button in support chat error alert */
-"supportChatView.ok" = "OK";
-
 /* Placeholder text for the chat input field */
 "supportChatView.placeholder" = "Gib eine Nachricht ein …";
 
@@ -14215,17 +14185,11 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the AI support chat screen */
 "supportChatView.title" = "Mit dem Support chatten";
 
-/* Error message shown when sending a support chat message fails */
-"supportChatViewModel.errorMessage" = "Es ist ein Fehler aufgetreten. Bitte versuche es erneut.";
-
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Hallo! Ich bin dein mobiler Woo-Support-Bot. Gibt es etwas, womit ich dir heute helfen kann?";
 
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "Beschreibe dein Problem bitte ausführlicher, damit ich dir helfen kann.";
-
-/* Error message shown when loading a prior support chat transcript fails on resume */
-"supportChatViewModel.resumeErrorMessage" = "Wir konnten die vorherige Unterhaltung nicht laden. Du kannst jedoch weiterhin eine neue Nachricht senden.";
 
 /* Action button to enable WooCommerce Analytics */
 "supportDiagnosticsService.action.enableAnalytics" = "Statistiken aktivieren";
@@ -15406,14 +15370,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "Sendungen aufteilen";
 
-/* Message on a notice when removing a package fails in the shipping creation flow */
+/* Message on a notice when removing a saved package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.removingPackageFailure" = "Paket kann nicht entfernt werden";
 
-/* Button to retry saving/removing a package in the shipping creation flow */
+/* Button to retry removing a saved package in the shipping creation flow */
 "wooShippingAddPackageViewModel.retry" = "Erneut versuchen";
-
-/* Message on a notice when saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageFailure" = "Paket kann nicht gespeichert werden";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "Bitte gib eine gültige ITN in einem der folgenden Formate ein: AES X12345678901234 oder NOEEI 30.37(a).";

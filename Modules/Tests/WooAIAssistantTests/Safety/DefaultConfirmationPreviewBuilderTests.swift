@@ -763,13 +763,34 @@ struct DefaultConfirmationPreviewBuilderTests {
         #expect(unwrapped.summary.flattened() == "Update 2 products")
         let names = unwrapped.fields.map(\.name)
         #expect(Set(names) == ["percent_discount", "status", "sale_price"])
-        // Each key is set by exactly one entry, so values agree across entries that set them.
+        // Each key is set by exactly one of two entries, so the preview marks it "varies per item"
+        // to avoid implying the value is applied to entries that did not set it.
         let percentField = try #require(unwrapped.fields.first(where: { $0.name == "percent_discount" }))
-        #expect(percentField.value.flattened() == "15% off")
+        #expect(percentField.value.flattened() == "varies per item")
         let statusField = try #require(unwrapped.fields.first(where: { $0.name == "status" }))
-        #expect(statusField.value == .raw("Draft"))
+        #expect(statusField.value.flattened() == "varies per item")
         let saleField = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
-        #expect(saleField.value == .raw("9.99"))
+        #expect(saleField.value.flattened() == "varies per item")
+    }
+
+    @Test
+    func test_build_when_products_update_field_set_by_some_entries_then_renders_varies_per_item() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[{"id":1,"sale_price":"9.99"},{"id":2,"name":"Tee"},{"id":3,"name":"Shirt"}]}
+            """#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let saleField = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(saleField.value.flattened() == "varies per item")
     }
 
     @Test

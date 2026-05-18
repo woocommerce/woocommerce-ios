@@ -188,6 +188,11 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         let valuesWithEntries = updates.compactMap { entry -> ConfirmationPreviewText? in
             productFieldValue(for: key, entry: entry)
         }
+        // Partial coverage (some entries set the key, others omit it) is treated as "varies" so the
+        // safety preview never implies a uniform change that would not be applied to every entity.
+        if valuesWithEntries.count < updates.count {
+            return ConfirmationPreviewField(name: key, label: label, value: .localized(Strings.variesPerItem))
+        }
         // Distinct on the flattened text so equivalent renderings (e.g. both "Cleared") collapse.
         let distinct = Set(valuesWithEntries.map { $0.flattened() })
         if let only = valuesWithEntries.first, distinct.count == 1 {

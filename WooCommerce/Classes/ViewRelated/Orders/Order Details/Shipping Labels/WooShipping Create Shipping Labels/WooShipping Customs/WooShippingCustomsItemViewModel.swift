@@ -104,8 +104,7 @@ private extension WooShippingCustomsItemViewModel {
     func combineToPreselectCountry() {
         $originCountryCode
             .compactMap { $0 }
-            .filter { !$0.isEmpty }
-            .first() /// Make sure to only handle the initial value
+            .first(where: { !$0.isEmpty }) /// Make sure to only handle the initial value
             .combineLatest($countries)
             .map { code, countries in
                 return countries.first(where: { $0.code == code })

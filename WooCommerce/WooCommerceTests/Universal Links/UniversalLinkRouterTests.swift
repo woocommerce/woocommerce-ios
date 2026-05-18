@@ -169,13 +169,14 @@ final class UniversalLinkRouterTests: XCTestCase {
         let routes = UniversalLinkRouter.defaultRoutes(navigator: mockNavigator)
 
         // Then
-        assertEqual(5, routes.count)
+        assertEqual(6, routes.count)
 
         XCTAssert(routes.contains { $0 is OrderDetailsRoute })
         XCTAssert(routes.contains { $0 is MyStoreRoute })
         XCTAssert(routes.contains { $0 is PaymentsRoute })
         XCTAssert(routes.contains { $0 is OrdersRoute })
         XCTAssert(routes.contains { $0 is POSRoute })
+        XCTAssert(routes.contains { $0 is ReportsRoute })
     }
 
     func test_canHandle_returns_false_for_magic_link_url() throws {

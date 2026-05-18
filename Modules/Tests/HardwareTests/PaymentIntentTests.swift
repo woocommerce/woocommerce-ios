@@ -87,4 +87,42 @@ final class PaymentIntentTests: XCTestCase {
         // Then
         XCTAssertEqual(intent.paymentMethod(), .card)
     }
+
+    func test_paymentMethod_prefers_collected_payment_method_before_charges() {
+        let collectedPaymentMethod = PaymentMethod.interacPresent(details: cardPresentDetails(brand: .interac))
+
+        // When
+        let intent = PaymentIntent(id: "",
+                                   status: .processing,
+                                   created: .init(),
+                                   amount: 1201,
+                                   currency: "cad",
+                                   metadata: nil,
+                                   charges: [.init(id: "",
+                                                   amount: 201,
+                                                   currency: "cad",
+                                                   status: .failed,
+                                                   description: nil,
+                                                   metadata: nil,
+                                                   paymentMethod: .card)],
+                                   collectedPaymentMethod: collectedPaymentMethod)
+
+        // Then
+        XCTAssertEqual(intent.paymentMethod(), collectedPaymentMethod)
+    }
+}
+
+private extension PaymentIntentTests {
+    func cardPresentDetails(brand: CardBrand) -> CardPresentTransactionDetails {
+        CardPresentTransactionDetails(last4: "1234",
+                                      expMonth: 12,
+                                      expYear: 2030,
+                                      cardholderName: nil,
+                                      brand: brand,
+                                      generatedCard: nil,
+                                      receipt: nil,
+                                      emvAuthData: nil,
+                                      wallet: nil,
+                                      network: nil)
+    }
 }

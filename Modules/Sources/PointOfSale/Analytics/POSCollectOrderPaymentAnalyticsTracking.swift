@@ -5,4 +5,6 @@ public protocol POSCollectOrderPaymentAnalyticsTracking {
     func trackCardReaderTapped()
     func trackCheckoutTapped()
     func trackSuccessfulCashPayment()
+    func trackSuccessfulScanToPayPayment()
+    func trackSuccessfulMarkAsPaidPayment()
 }

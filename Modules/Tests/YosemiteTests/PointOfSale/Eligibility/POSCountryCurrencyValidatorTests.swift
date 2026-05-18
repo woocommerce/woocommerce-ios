@@ -30,8 +30,8 @@ struct POSCountryCurrencyValidatorTests {
         #expect(result == .eligible)
     }
 
-    @Test("PR with USD is eligible without expansion eligibility")
-    func test_PR_with_USD_is_eligible_without_expansion_eligibility() {
+    @Test("PR with USD is eligible without cached country eligibility")
+    func test_PR_with_USD_is_eligible_without_cached_country_eligibility() {
         let result = POSCountryCurrencyValidator.validate(countryCode: .PR,
                                                           currencyCode: .USD,
                                                           siteID: siteID,
@@ -39,9 +39,9 @@ struct POSCountryCurrencyValidatorTests {
         #expect(result == .eligible)
     }
 
-    // MARK: - Unsupported Countries (eligibility off)
+    // MARK: - Unsupported Countries (cached country eligibility off)
 
-    @Test("CA with USD is ineligible due to unsupported country when expansion eligibility off")
+    @Test("CA with USD is ineligible due to unsupported country when cached country eligibility is off")
     func testCAWithUSDIsIneligible() {
         let result = POSCountryCurrencyValidator.validate(countryCode: .CA,
                                                           currencyCode: .USD,
@@ -61,12 +61,12 @@ struct POSCountryCurrencyValidatorTests {
         #expect(!supportedCountries.contains(.CA))
     }
 
-    @Test("AU with AUD is ineligible due to unsupported country")
-    func testAUWithAUDIsIneligible() {
+    @Test("AU with AUD is ineligible due to unsupported country when cached country eligibility is off")
+    func testAUWithAUDIsIneligibleWhenCachedCountryEligibilityOff() {
         let result = POSCountryCurrencyValidator.validate(countryCode: .AU,
                                                           currencyCode: .AUD,
                                                           siteID: siteID,
-                                                          eligibilityService: eligibleService)
+                                                          eligibilityService: ineligibleService)
 
         guard case .ineligible(let reason) = result else {
             Issue.record("Expected ineligible result")
@@ -76,6 +76,16 @@ struct POSCountryCurrencyValidatorTests {
             Issue.record("Expected unsupportedCountry reason")
             return
         }
+    }
+
+    @Test("AU with AUD is eligible when current-site country eligibility is cached")
+    func testAUWithAUDIsEligibleWhenCurrentSiteCountryEligibilityIsCached() {
+        let result = POSCountryCurrencyValidator.validate(countryCode: .AU,
+                                                          currencyCode: .AUD,
+                                                          siteID: siteID,
+                                                          eligibilityService: eligibleService)
+
+        #expect(result == .eligible)
     }
 
     // MARK: - Unsupported Currencies for Supported Countries
@@ -158,7 +168,7 @@ struct POSCountryCurrencyValidatorTests {
 
     // MARK: - Supported Countries List
 
-    @Test("Supported countries list contains only US, PR, and GB when expansion eligibility off")
+    @Test("Supported countries list contains only US, PR, and GB when cached country eligibility is off")
     func testSupportedCountriesList() {
         let supportedCountries = POSCountryCurrencyValidator.supportedCountries(siteID: siteID, eligibilityService: ineligibleService)
         #expect(supportedCountries.count == 3)
@@ -167,23 +177,21 @@ struct POSCountryCurrencyValidatorTests {
         #expect(supportedCountries.contains(.GB))
     }
 
-    @Test("Supported countries list contains all 16 countries when expansion eligibility on")
-    func testSupportedCountriesIncludeExpansionCountriesWhenEligibilityOn() {
+    @Test("Supported countries list includes the validator's gated-country set when the current site country is eligible")
+    func testSupportedCountriesIncludeValidatorGatedCountrySetWhenCurrentSiteCountryEligible() {
         let supportedCountries = POSCountryCurrencyValidator.supportedCountries(siteID: siteID, eligibilityService: eligibleService)
 
         #expect(supportedCountries.contains(.US))
         #expect(supportedCountries.contains(.PR))
         #expect(supportedCountries.contains(.GB))
-        for country in expansionCountries {
-            #expect(supportedCountries.contains(country), "Expected \(country) to be supported when eligibility is on")
+        for country in validatorGatedCountrySet {
+            #expect(supportedCountries.contains(country), "Expected \(country) to be present in the validator's gated-country set")
         }
-        // Australia is intentionally excluded pending EFTPOS support (RSM-642/643)
-        #expect(!supportedCountries.contains(.AU))
     }
 
     // MARK: - Supported Currencies Map
 
-    @Test("Supported currencies map only contains US, PR, and GB entries when expansion eligibility off")
+    @Test("Supported currencies map only contains US, PR, and GB entries when cached country eligibility is off")
     func testSupportedCurrenciesMap() {
         let supportedCurrencies = POSCountryCurrencyValidator.supportedCurrencies(siteID: siteID, eligibilityService: ineligibleService)
 
@@ -196,19 +204,19 @@ struct POSCountryCurrencyValidatorTests {
         #expect(supportedCurrencies[.NZ] == nil)
     }
 
-    @Test("Supported currencies map includes EUR/SGD/NZD entries when expansion eligibility on")
-    func testSupportedCurrenciesMapIncludesExpansionEntriesWhenEligibilityOn() {
+    @Test("Supported currencies map includes the validator's gated-country entries when the current site country is eligible")
+    func testSupportedCurrenciesMapIncludesValidatorGatedEntriesWhenCurrentSiteCountryEligible() {
         let supportedCurrencies = POSCountryCurrencyValidator.supportedCurrencies(siteID: siteID, eligibilityService: eligibleService)
 
         for country in eeaEuroCountries {
-            #expect(supportedCurrencies[country] == [.EUR], "Expected \(country) to map to EUR when eligibility is on")
+            #expect(supportedCurrencies[country] == [.EUR], "Expected \(country) to map to EUR in the validator's gated-country set")
         }
         #expect(supportedCurrencies[.SG] == [.SGD])
         #expect(supportedCurrencies[.NZ] == [.NZD])
-        #expect(supportedCurrencies[.AU] == nil)
+        #expect(supportedCurrencies[.AU] == [.AUD])
     }
 
-    // MARK: - Country Expansion (eligibility on)
+    // MARK: - Validator gated-country behavior
 
     @Test(arguments: [
         (country: CountryCode.AT, currency: CurrencyCode.EUR),
@@ -223,9 +231,10 @@ struct POSCountryCurrencyValidatorTests {
         (country: CountryCode.PT, currency: CurrencyCode.EUR),
         (country: CountryCode.ES, currency: CurrencyCode.EUR),
         (country: CountryCode.SG, currency: CurrencyCode.SGD),
-        (country: CountryCode.NZ, currency: CurrencyCode.NZD)
+        (country: CountryCode.NZ, currency: CurrencyCode.NZD),
+        (country: CountryCode.AU, currency: CurrencyCode.AUD)
     ])
-    func expansion_country_with_local_currency_is_eligible_when_eligibility_on(country: CountryCode, currency: CurrencyCode) {
+    func gated_country_with_local_currency_is_eligible_when_current_site_country_is_eligible(country: CountryCode, currency: CurrencyCode) {
         let result = POSCountryCurrencyValidator.validate(countryCode: country,
                                                           currencyCode: currency,
                                                           siteID: siteID,
@@ -233,8 +242,8 @@ struct POSCountryCurrencyValidatorTests {
         #expect(result == .eligible)
     }
 
-    @Test("Expansion country with mismatched currency is ineligible when eligibility on")
-    func test_expansion_country_with_mismatched_currency_is_ineligible() {
+    @Test("Gated country with mismatched currency is ineligible when the current site country is eligible")
+    func test_gated_country_with_mismatched_currency_is_ineligible() {
         let result = POSCountryCurrencyValidator.validate(countryCode: .DE,
                                                           currencyCode: .USD,
                                                           siteID: siteID,
@@ -242,8 +251,8 @@ struct POSCountryCurrencyValidatorTests {
         #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: .DE, supportedCurrencies: [.EUR])))
     }
 
-    @Test("Expansion country is unsupported when eligibility off")
-    func test_expansion_country_is_unsupported_when_eligibility_off() {
+    @Test("Gated country is unsupported when eligibility off")
+    func test_gated_country_is_unsupported_when_eligibility_off() {
         let result = POSCountryCurrencyValidator.validate(countryCode: .DE,
                                                           currencyCode: .EUR,
                                                           siteID: siteID,
@@ -258,8 +267,11 @@ struct POSCountryCurrencyValidatorTests {
         .AT, .BE, .FI, .FR, .DE, .IE, .IT, .LU, .NL, .PT, .ES
     ]
 
-    private var expansionCountries: [CountryCode] {
-        eeaEuroCountries + [.SG, .NZ]
+    // Mirrors the validator's temporary coarse gated-country set. The specific
+    // rollout flag is resolved by the refresher before the validator reads the
+    // cached eligibility value.
+    private var validatorGatedCountrySet: [CountryCode] {
+        eeaEuroCountries + [.SG, .NZ, .AU]
     }
 }
 

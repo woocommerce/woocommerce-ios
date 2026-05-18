@@ -482,6 +482,11 @@ extension PushNotificationsManager {
             return UNNotificationPresentationOptions(rawValue: 0)
         }
 
+        guard PushNotificationSharedConstants.isKnownNotificationType(in: content.userInfo) else {
+            DDLogVerbose("📱 Discarding foreground push notification with unknown type")
+            return UNNotificationPresentationOptions(rawValue: 0)
+        }
+
         handleRemoteNotificationInAllAppStates(content.userInfo)
 
         if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
@@ -516,9 +521,20 @@ extension PushNotificationsManager {
 
     @MainActor
     func handleUserResponseToNotification(_ response: UNNotificationResponse) async {
+        let userInfo = response.notification.request.content.userInfo
+
+        // Silently discard remote notifications whose `type` we don't recognize, so newer push
+        // types added server-side don't surface broken UI in older app versions. Local
+        // notifications have no `type` key — `isKnownNotificationType` treats those as known so
+        // they fall through to the local-response subject below.
+        guard PushNotificationSharedConstants.isKnownNotificationType(in: userInfo) else {
+            DDLogVerbose("📱 Discarding push notification response with unknown type")
+            return
+        }
+
         // Remote notification response is handled separately.
-        if let notification = PushNotification.from(userInfo: response.notification.request.content.userInfo) {
-            handleRemoteNotificationInAllAppStates(response.notification.request.content.userInfo)
+        if let notification = PushNotification.from(userInfo: userInfo) {
+            handleRemoteNotificationInAllAppStates(userInfo)
             await handleInactiveRemoteNotification(notification: notification)
         } else {
             localNotificationResponsesSubject.send(response)
@@ -534,6 +550,11 @@ extension PushNotificationsManager {
         guard applicationState == .background, // Proceeds only if the app is in background.
               let _ = userInfo[APNSKey.identifier] // Ensures that we are only processing a remote notification.
         else {
+            return .noData
+        }
+
+        guard PushNotificationSharedConstants.isKnownNotificationType(in: userInfo) else {
+            DDLogVerbose("📱 Discarding background push notification with unknown type")
             return .noData
         }
 

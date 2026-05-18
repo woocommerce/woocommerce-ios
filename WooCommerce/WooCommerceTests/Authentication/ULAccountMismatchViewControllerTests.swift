@@ -271,7 +271,7 @@ private final class MismatchViewModel: ULAccountMismatchViewModel {
 
     let image: UIImage = .loginNoJetpackError
 
-    let text: NSAttributedString = NSAttributedString(string: "woocommerce")
+    let text = NSAttributedString(string: "woocommerce")
 
     let auxiliaryButtonTitle: String = "Aux"
 

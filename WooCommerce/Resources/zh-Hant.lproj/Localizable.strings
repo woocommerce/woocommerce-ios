@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-21 13:55:33+0000 */
+/* Translation-Revision-Date: 2026-05-14 09:55:18+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -9828,6 +9828,24 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
 "cardReaderSettingsConnectedViewController.reconnectingText" = "正在重新連結讀卡機...";
 
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "取消";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "確認並繼續";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "確認同意時，發生不明錯誤。 請再試一次。";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "確認同意時發生錯誤";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "重試";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "送件地址";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "在訂單備註中記錄交易詳細資料";
 
@@ -9977,6 +9995,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "絕不錯過新訂單";
+
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "與支援團隊交談";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "對連結進行疑難排解";
@@ -10582,6 +10603,18 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "隱藏此內容";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "我同意 %1$@。";
+
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "若要購買 FedEx 貨運標籤，請同意以下條款：";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "FedEx 服務條款";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "FedEx 服務條款";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "套用";
 
@@ -10815,6 +10848,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "探索程序所回傳的讀卡機沒有 IP 位址，故無法連結。";
+
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "取得 AI 助理的協助";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "與支援團隊交談";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "重新檢視過去的支援對話";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "聊天記錄";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "測試網站是否可搭配應用程式使用";
@@ -11589,9 +11634,6 @@ which should be translated separately and considered part of this sentence. */
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "親自付款";
 
-/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "當面付款，每筆交易只要 2.70%% + 0.10 美元。 升級至專業版，即可存取手機的感應支付功能，以及我們的完整銷售點系統，包括即時庫存與訂單同步處理。%1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "這筆訂單使用現金付款。 顧客支付了 %1$@。 需找零 %2$@。";
 
@@ -11642,6 +11684,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "編輯";
+
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "在標示為完成的日期計算訂單。";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "已完成訂單";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "選擇要在指定時間範圍績效指標內包含的訂單。";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "這是全店設定，也會控制 WooCommerce 管理員分析設定中的「日期類型」選項。";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "在付款的日期計算訂單。";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "已付款訂單";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "在送出或建立的日期計算訂單。";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "已送出訂單";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "訂單日期類型";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "無法更新訂單類型。 請再試一次。";
 
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "更新「%1$@」";
@@ -12039,9 +12111,6 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "未套用優惠券";
 
-/* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "預訂";
-
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "取消重新連結";
 
@@ -12149,12 +12218,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error when trying to send a receipt before an order has been loaded in the Point of Sale */
 "pointOfSale.paymentError.noOrder" = "尚未載入訂單。 請先開始付款，再傳送收據。";
-
-/* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "返回預訂";
-
-/* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "完成";
 
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "編輯訂單";
@@ -12351,6 +12414,33 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "商店";
 
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "新增自訂金額";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "金額";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "收取稅金";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "自訂金額";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "名稱";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "自訂金額";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "自訂金額";
+
+/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.message" = "點選此處，為訂單新增服務費、小費或任何自訂行。";
+
+/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.title" = "新增自訂金額";
+
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "掃描條碼";
 
@@ -12519,209 +12609,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "測試掃描器";
 
-/* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
-"pos.booking.durationHours" = "%d 小時";
-
-/* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
-"pos.booking.durationHoursAndMinutes" = "%1$d 小時 %2$d 分";
-
-/* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
-"pos.booking.durationMinutes" = "%d 分";
-
-/* POS booking attendance status label when the customer attended. */
-"pos.bookingAttendanceDisplay.attended" = "已出席";
-
-/* POS booking attendance status label when the customer has not attended. */
-"pos.bookingAttendanceDisplay.unattended" = "未出席";
-
-/* Accessibility label for the next day button in the bookings date bar. */
-"pos.bookingDateBar.nextDay" = "隔天";
-
-/* Accessibility label for the previous day button in the bookings date bar. */
-"pos.bookingDateBar.previousDay" = "前一天";
-
-/* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
-"pos.bookingDateBar.selectedDate" = "點選 %1$@ 以開啟月曆";
-
-/* Button to add a private note to a booking. */
-"pos.bookingDetailView.addNoteButton" = "新增備註";
-
-/* Section title for the attendance status in booking details. */
-"pos.bookingDetailView.attendanceStatusTitle" = "出席狀態";
-
-/* Subtitle text below the attendance section explaining why marking attendance matters. */
-"pos.bookingDetailView.attendanceSubtitle" = "標示出席狀況，讓報告保持準確並掌握預訂趨勢。";
-
-/* Error message shown below attendance section when updating attendance status fails. */
-"pos.bookingDetailView.attendanceUpdateError" = "無法更新出席狀態。 請再試一次。";
-
-/* Label for the attended pill button in booking attendance section. */
-"pos.bookingDetailView.attendedPill" = "已出席";
-
-/* Section title for booking details showing the booking ID number. %lld is the booking ID. */
-"pos.bookingDetailView.bookingIdTitle" = "預訂 #%lld";
-
-/* Label for the private booking note section in booking details. */
-"pos.bookingDetailView.bookingNoteLabel" = "預訂備註";
-
-/* Subtitle text below the booking note section explaining the note is private. */
-"pos.bookingDetailView.bookingNoteSubtitle" = "這是私人備註。 不會與顧客分享。";
-
-/* Menu action to cancel a booking from the POS booking detail view. */
-"pos.bookingDetailView.cancelBookingAction" = "取消預訂";
-
-/* Button to initiate payment collection for a booking. */
-"pos.bookingDetailView.collectPaymentButton" = "收取付款";
-
-/* Accessibility label for the copy email button in booking details. */
-"pos.bookingDetailView.copyEmail.accessibilityLabel" = "複製電子郵件地址";
-
-/* Accessibility label for the copy phone button in booking details. */
-"pos.bookingDetailView.copyPhone.accessibilityLabel" = "複製電話號碼";
-
-/* Section title for the customer details in booking details. */
-"pos.bookingDetailView.customerTitle" = "顧客";
-
-/* Label for the duration in booking details. */
-"pos.bookingDetailView.durationLabel" = "時間長度";
-
-/* Button to edit an existing private note on a booking. */
-"pos.bookingDetailView.editNoteButton" = "編輯備註";
-
-/* Accessibility label for customer email row in booking details. %1$@ is the email address. */
-"pos.bookingDetailView.email.accessibilityLabel" = "電子郵件地址：%1$@";
-
-/* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
-"pos.bookingDetailView.guestBadge" = "訪客";
-
-/* Menu action to issue a full refund for a booking. */
-"pos.bookingDetailView.issueRefundAction" = "核發退款";
-
-/* Label for the location in booking details. */
-"pos.bookingDetailView.locationLabel" = "地點";
-
-/* Accessibility label for the overflow actions menu button in booking details. */
-"pos.bookingDetailView.moreActions.accessibilityLabel" = "更多動作";
-
-/* Label for the customer note in booking details. */
-"pos.bookingDetailView.noteLabel" = "備註";
-
-/* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
-"pos.bookingDetailView.phone.accessibilityLabel" = "電話：%1$@";
-
-/* Label for the team member / staff resource in booking details. */
-"pos.bookingDetailView.teamMemberLabel" = "團隊成員";
-
-/* Label for the unattended pill button in booking attendance section. */
-"pos.bookingDetailView.unattendedPill" = "未出席";
-
-/* Button to view the linked order from the booking detail header. */
-"pos.bookingDetailView.viewOrderAction" = "檢視訂單";
-
-/* Text appearing in the booking details pane when no booking is selected. */
-"pos.bookingDetailsEmptyView.description" = "點選預訂以檢視其詳細資料";
-
-/* POS booking lifecycle status label for active bookings. */
-"pos.bookingLifecycleStatus.booked" = "已預訂";
-
-/* POS booking lifecycle status label for canceled bookings. */
-"pos.bookingLifecycleStatus.canceled" = "已取消";
-
-/* POS booking lifecycle status label for completed bookings. */
-"pos.bookingLifecycleStatus.completed" = "已完成";
-
-/* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
-"pos.bookingList.failedToLoadBookingsNextPageTitle" = "無法載入更多預訂";
-
-/* Text appearing on the booking list screen when there's an error loading bookings. */
-"pos.bookingList.failedToLoadBookingsTitle" = "無法載入預訂";
-
-/* Title at the header for the Bookings view. */
-"pos.bookingListView.bookingsTitle" = "預訂";
-
-/* Subtitle appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchSubtitle" = "我們找不到任何符合搜尋條件的預訂。 請嘗試調整搜尋字詞。";
-
-/* Title appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchTitle" = "找不到預訂";
-
-/* Subtitle appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsSubtitle.2" = "此日期的排程的任何預訂皆會顯示於此處。";
-
-/* Title appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsTitle.2" = "這一天沒有預訂";
-
-/* Accessibility label for the search button in bookings list. */
-"pos.bookingListView.searchButton.accessibilityLabel" = "搜尋預訂";
-
-/* Placeholder for a search field in the Bookings view. */
-"pos.bookingListView.searchFieldPlaceholder" = "搜尋預訂";
-
-/* Button label shown when no changes have been made to the booking note yet. */
-"pos.bookingNoteView.addButton" = "新增";
-
-/* Title shown at the top of the booking note editor screen when adding a new note. */
-"pos.bookingNoteView.addTitle" = "新增備註";
-
-/* Title shown at the top of the booking note editor screen when editing an existing note. */
-"pos.bookingNoteView.editTitle" = "編輯備註";
-
-/* Placeholder text shown in the booking note text field when empty. */
-"pos.bookingNoteView.placeholder" = "輸入備註";
-
-/* Button to save the booking note. */
-"pos.bookingNoteView.saveButton" = "儲存";
-
-/* Error message shown when saving a booking note fails. */
-"pos.bookingNoteView.saveError" = "無法儲存備註。 請再試一次。";
-
-/* POS booking payment status label when the booking order payment authorization has been voided. */
-"pos.bookingPaymentStatus.authorizationVoided" = "授權作廢";
-
-/* POS booking payment status label when the booking order payment is authorized but not yet captured. */
-"pos.bookingPaymentStatus.authorized" = "已授權";
-
-/* POS booking payment status label when the booking order payment failed. */
-"pos.bookingPaymentStatus.failed" = "失敗";
-
-/* POS booking payment status label when the booking is paid. */
-"pos.bookingPaymentStatus.paid" = "已付費";
-
-/* POS booking payment status label when the booking order has been refunded. */
-"pos.bookingPaymentStatus.refunded" = "已退款";
-
-/* POS booking payment status label when the booking is unpaid. */
-"pos.bookingPaymentStatus.unpaid" = "未付款";
-
-/* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
-"pos.bookingsContainer.cancelBookingSuccess.notice" = "預訂已成功取消。";
-
-/* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessage" = "%3$@ 的 %2$@ 預訂 #%1$@ 將取消。";
-
-/* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "%4$@ 於 %3$@ 的 %2$@ 預訂 #%1$@ 將取消。";
-
-/* Accessibility label for close button on cancel booking confirmation modal. */
-"pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "關閉";
-
-/* Button to confirm and proceed with booking cancellation. */
-"pos.cancelBookingConfirmation.confirmButton" = "是，取消預訂";
-
-/* Secondary message informing that the customer will receive an email notification about the cancellation. */
-"pos.cancelBookingConfirmation.customerNotificationMessage" = "顧客將會收到電子郵件通知。";
-
-/* Error message shown inline in the cancel booking confirmation modal when cancellation fails. */
-"pos.cancelBookingConfirmation.inlineErrorMessage" = "無法取消預訂。 請再試一次。";
-
-/* Button to dismiss the cancel booking confirmation and keep the booking. */
-"pos.cancelBookingConfirmation.keepButton" = "否，保留預訂";
-
-/* Title for the cancel booking confirmation modal in POS. */
-"pos.cancelBookingConfirmation.title" = "要取消此預訂嗎？";
-
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce 設定";
+
+/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
+"pos.cartView.addCustomAmount.header.accessibilityLabel" = "新增自訂金額";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "點選商品即可\n 將其新增至購物車，或 ";
@@ -12765,23 +12657,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "要結束銷售時點情報系統模式嗎？";
 
-/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabPricingInfo" = "當面付款，每筆交易只要 2.70% + 0.10 美元。";
-
-/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabUpgradePrompt" = "升級至專業版，即可存取手機的感應支付功能，以及我們的完整銷售點系統，包括即時庫存與訂單同步處理。";
-
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "結束 POS";
 
 /* Button title to enable the POS feature switch and refresh POS eligibility check */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "啟用 POS 功能";
-
-/* Button title to learn more about upgrading the plan for POS access */
-"pos.ineligible.learnMore.button.title" = "深入了解";
-
-/* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
-"pos.ineligible.planUpgrade.title" = "需要專業版方案";
 
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "重試";
@@ -12806,9 +12686,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "無法載入";
-
-/* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
-"pos.ineligible.upgradePlan.webview.title" = "升級方案";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "請檢查你的網際網路連線並再試一次。";
@@ -12987,8 +12864,8 @@ which should be translated separately and considered part of this sentence. */
 /* Description for refund via a specific payment method. %@ is the payment method name */
 "pos.orderListController.refund.viaPaymentMethodFormat" = "透過 %@";
 
-/* Button text for opening an information view when orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle2" = "深入了解";
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "重新整理";
 
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "我們找不到任何使用該名稱的訂單。 嘗試調整搜尋字詞。";
@@ -12997,7 +12874,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.orderListView.emptyOrdersSearchTitle" = "找不到訂單";
 
 /* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle2" = "探索如何增加商店銷售額。";
+"pos.orderListView.emptyOrdersSubtitle.3" = "開始處理 POS 上的銷售時，訂單會顯示在這裡。";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "尚無訂單";
@@ -14129,11 +14006,23 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "所選日期沒有收益";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "開啟底端工作表，變更績效總額中包含的訂單。";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "訂單";
 
-/* Total sales stat label on dashboard — shows revenue including taxes and shipping. */
-"storePerformanceView.totalSales" = "銷售總計";
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "收益類型";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "總額";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "淨額";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "總計";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "無法顯示你的商店績效";
@@ -14186,13 +14075,16 @@ which should be translated separately and considered part of this sentence. */
 /* Range title for the today store info widget */
 "storeWidgets.infoProvider.today" = "今日";
 
-/* Conversion title label for the store info widget */
+/* Conversion rate metric title for the store info widget.
+   Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "轉換";
 
-/* Orders title label for the store info widget */
+/* Orders metric title for the store info widget.
+   Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "訂單";
 
-/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+/* Revenue metric title — gross revenue including taxes and shipping.
+   Total sales title label for the store info widget — shows revenue including taxes and shipping. */
 "storeWidgets.infoView.totalSales" = "銷售總計";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
@@ -14201,8 +14093,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
 "storeWidgets.infoView.viewMore" = "檢視更多";
 
-/* Visitors title label for the store info widget */
+/* Visitors metric title for the store info widget.
+   Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "訪客";
+
+/* Average order value (AOV) metric title for the store info widget. */
+"storeWidgets.metric.averageOrderValue" = "平均訂單金額";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "售出的項目";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "淨銷售額";
 
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "登入";
@@ -14262,6 +14164,144 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "免費試用";
 
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "未命名的聊天";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "你尚未與支援人員交談。";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "聊天記錄";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "與支援團隊交談";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "已完成所有檢查，沒有問題。";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "聯絡支援團隊";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "繼續聊天";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "診斷完成";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "錯誤";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "你似乎需要其他協助。 是否要聯絡我們的支援團隊？";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "嗨！ 我是你的 Woo 行動支援機器人。 你今天遇到什麼問題？";
+
+/* OK button in support chat error alert */
+"supportChatView.ok" = "確定";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "輸入訊息...";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "繼續上一個對話";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "正在執行診斷...";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "與支援團隊交談";
+
+/* Error message shown when sending a support chat message fails */
+"supportChatViewModel.errorMessage" = "發生錯誤。 請再試一次。";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "嗨！ 我是你的 Woo 行動支援機器人。 今天有什麼需要我幫忙的嗎？";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "請更詳細地描述問題，我才能提供協助。";
+
+/* Error message shown when loading a prior support chat transcript fails on resume */
+"supportChatViewModel.resumeErrorMessage" = "我們無法載入上一個對話。 你仍然可以傳送新訊息。";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "啟用分析";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "啟用訂單通知";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "開啟設定";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "註冊裝置";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "重試";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "設定 Jetpack";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "我們無法檢查你的分析設定。";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "你的商店未啟用 WooCommerce Analytics。\n\n除非啟用，否則將無法使用收益和訂單統計等分析資料。";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "你的網站回應無法正常運作。";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "你的裝置似乎未註冊推播通知。";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "看來你的網站發生問題。\n\n請聯絡你的主機服務提供者，尋求進一步協助。";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "你的網站似乎未啟用 Jetpack 外掛程式。\n\n推播通知需要啟用中的 Jetpack 連線。";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "你目前沒有網際網路連線。\n\n請確認 Wi-Fi 已開啟。 如果你使用行動數據，請確認已在裝置設定中啟用。";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "你的 Jetpack 連結發生問題。";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "我們無法檢查你的通知設定。";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "此應用程式不允許推播通知。\n\n在裝置設定中啟用這些功能，即可接收訂單通知。";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "此商店未啟用訂單通知。\n\n讓他們在接獲新訂單時收到提醒。";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "你的網站太久沒有回應。\n\n請聯絡你的主機服務提供者，尋求進一步協助。";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "我們目前無法連結至 WordPress.com。\n\n請稍待幾分鐘後再試一次。";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "正在檢查分析設定";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "網際網路連線";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "正在擷取商店商品";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "正在檢查通知設定";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "正在連結你的網站";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "正在擷取網站訂單";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "正在連線至 WordPress.com 伺服器";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "收到";
 
@@ -14297,6 +14337,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WooPayments support area option */
 "supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "正在載入分析";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "正在載入訂單";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "正在載入商品";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "其他";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "正在接收推播通知";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "系統狀態報告";
@@ -14547,9 +14602,6 @@ which should be translated separately and considered part of this sentence. */
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "檢視產品詳細資訊";
 
-/* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.cancel" = "取消";
-
 /* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
 "upsTermsView.checkbox1" = "我同意 %1$@。";
 
@@ -14559,26 +14611,11 @@ which should be translated separately and considered part of this sentence. */
 /* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
 "upsTermsView.checkbox3" = "我也同意 %1$@。";
 
-/* Button to confirm all agreements on the UPS Terms and Conditions view */
-"upsTermsView.confirmButton" = "確認並繼續";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorMessage" = "確認同意時，發生不明錯誤。 請再試一次。";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorTitle" = "確認同意時發生錯誤";
-
 /* Message on the UPS Terms and Conditions view */
 "upsTermsView.message" = "若要採用 UPS® 服務從這個地址開始送貨，請同意以下條款與條件：";
 
 /* Link to the prohibited items on the UPS Terms and Conditions view */
 "upsTermsView.prohibitedItems" = "禁運物品";
-
-/* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.retry" = "重試";
-
-/* Title label for the origin address on the UPS Terms and Conditions view */
-"upsTermsView.shippingFrom" = "送件地址";
 
 /* Link to the technology agreement on the UPS Terms and Conditions view */
 "upsTermsView.technologyAgreement" = "UPS® 技術協議";

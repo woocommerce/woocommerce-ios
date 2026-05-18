@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import Experiments
 import WooFoundation
 @testable import WooCommerce
 
@@ -343,6 +344,45 @@ struct PreLoginConnectivityToolViewModelTests {
         #expect(firstProperties?["success"] as? Bool == false)
         #expect(firstProperties?["time_taken"] as? Double != nil)
     }
+
+    // MARK: - AI Support Chat Button Visibility
+
+    @Test func test_startConnectivityTests_when_AI_chat_enabled_then_showChatButton_is_true() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = true
+        let sut = makeSUTForButtonVisibilityTests(featureFlagService: featureFlagService)
+
+        // When
+        await sut.startConnectivityTests()
+
+        // Then
+        #expect(sut.showChatButton == true)
+        #expect(sut.showContactSupportButton == false)
+    }
+
+    @Test func test_startConnectivityTests_when_AI_chat_disabled_then_showContactSupportButton_is_true() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = false
+        let sut = makeSUTForButtonVisibilityTests(featureFlagService: featureFlagService)
+
+        // When
+        await sut.startConnectivityTests()
+
+        // Then
+        #expect(sut.showChatButton == false)
+        #expect(sut.showContactSupportButton == true)
+    }
+
+    @Test func test_buttons_are_hidden_before_tests_complete() {
+        // Given
+        let sut = makeSUT()
+
+        // Then
+        #expect(sut.showChatButton == false)
+        #expect(sut.showContactSupportButton == false)
+    }
 }
 
 // MARK: - Helpers
@@ -354,13 +394,44 @@ private extension PreLoginConnectivityToolViewModelTests {
     func makeSUT(siteURL: URL = URL(string: "https://example.com")!,
                  session: MockURLSession = MockURLSession(),
                  analytics: Analytics = ServiceLocator.analytics,
+                 featureFlagService: FeatureFlagService = MockFeatureFlagService(),
                  discoverAPIRoot: @escaping (String) async -> String? = { _ in nil }
     ) -> PreLoginConnectivityToolViewModel {
         PreLoginConnectivityToolViewModel(
             siteURL: siteURL,
             session: session,
             analytics: analytics,
+            featureFlagService: featureFlagService,
             discoverAPIRoot: discoverAPIRoot
+        )
+    }
+
+    /// Creates a SUT with minimal mocking for button visibility tests (all tests pass quickly).
+    func makeSUTForButtonVisibilityTests(featureFlagService: FeatureFlagService) -> PreLoginConnectivityToolViewModel {
+        let mockSession = MockURLSession()
+
+        // Site info succeeds
+        let siteInfoJSON = """
+        {"name":"Store","urlAfterRedirects":"https://example.com",\
+        "hasJetpack":false,"isJetpackActive":false,"isJetpackConnected":false,\
+        "isWordPressDotCom":false,"isCommerceGarden":false,"isWordPress":true,"exists":true}
+        """
+        mockSession.simulateResponse(
+            for: "https://public-api.wordpress.com/rest/v1.1/connect/site-info/?url=https://example.com",
+            data: siteInfoJSON.data(using: .utf8)!
+        )
+
+        // REST API root returns valid JSON with app passwords
+        let restJSON = """
+        {"name":"Site","namespaces":["wp/v2","wc/v3"],\
+        "authentication":{"application-passwords":{"endpoints":{"authorization":"https://example.com/wp-login.php"}}}}
+        """
+        mockSession.simulateResponse(for: "https://example.com/wp-json/", data: restJSON.data(using: .utf8)!)
+
+        return makeSUT(
+            session: mockSession,
+            featureFlagService: featureFlagService,
+            discoverAPIRoot: { _ in Self.discoveredAPIRoot }
         )
     }
 

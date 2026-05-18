@@ -887,6 +887,28 @@ struct ProductsUpdateToolTests {
     }
 
     @Test
+    func test_update_when_duplicate_target_id_then_returns_invalidToolCall() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"id": 42, "sale_price": "9"}, {"id": 42, "sale_price": "19"}]}"#,
+            client
+        )
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed, got \(result)")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.lowercased().contains("duplicate"))
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
     func test_update_when_batch_response_contains_per_entry_error_then_failed_array_captures_it() async throws {
         // Given
         let probeA = #"{"id": 50, "type": "simple", "regular_price": "20.00"}"#

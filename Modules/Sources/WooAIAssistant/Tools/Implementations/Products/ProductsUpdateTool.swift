@@ -166,10 +166,17 @@ public enum ProductsUpdateTool {
                                  reason: "updates has \(envelope.updates.count) entries; max is \(maxBatchSize)"))
         }
         var validated: [ValidatedEntry] = []
+        var seenIDs: Set<Int> = []
         for entry in envelope.updates {
             switch validate(entry: entry) {
-            case .valid(let value): validated.append(value)
-            case .invalid(let failed): return .failed(failed)
+            case .valid(let value):
+                if !seenIDs.insert(value.id).inserted {
+                    let reason = "Duplicate target ID: \(value.id). Specify each entity id at most once per update call."
+                    return .failed(.init(toolName: name, kind: .invalidToolCall, reason: reason))
+                }
+                validated.append(value)
+            case .invalid(let failed):
+                return .failed(failed)
             }
         }
         let captured = await ProductsUpdateDiscovery(client: client).discover(entries: validated)

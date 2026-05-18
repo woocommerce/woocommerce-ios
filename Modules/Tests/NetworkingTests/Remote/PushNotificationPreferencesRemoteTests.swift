@@ -72,13 +72,30 @@ struct PushNotificationPreferencesRemoteTests {
         #expect(parameters["store_stock"] == nil)
 
         let storeOrder = try #require(parameters["store_order"] as? [String: Any])
+        #expect(storeOrder.count == 2)
         #expect(storeOrder["enabled"] as? Bool == true)
-        #expect(storeOrder["min_amount"] != nil)
+        #expect(storeOrder["min_amount"] as? Int == 100)
 
         let storeReview = try #require(parameters["store_review"] as? [String: Any])
         #expect(storeReview.count == 1)
         #expect(storeReview["max_rating"] as? Int == 3)
         #expect(storeReview["enabled"] == nil)
+    }
+
+    @Test func updatePreferences_when_storeOrder_minAmount_is_nil_then_sends_explicit_null() async throws {
+        // Given
+        let remote = PushNotificationPreferencesRemote(network: network)
+        let changes = PushNotificationPreferences(storeOrder: .init(enabled: false, minAmount: nil))
+
+        // When
+        _ = try? await remote.updatePreferences(siteID: sampleSiteID, changes: changes)
+
+        // Then — the wire body must include `min_amount` as JSON null so the server clears the threshold.
+        let parameters = try #require(network.queryParametersDictionary)
+        let storeOrder = try #require(parameters["store_order"] as? [String: Any])
+        #expect(storeOrder.count == 2)
+        #expect(storeOrder["enabled"] as? Bool == false)
+        #expect(storeOrder["min_amount"] is NSNull)
     }
 
     // MARK: - Response decoding

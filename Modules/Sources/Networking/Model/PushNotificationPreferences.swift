@@ -48,30 +48,40 @@ public extension PushNotificationPreferences {
 
     /// Preferences for new-order notifications.
     ///
+    /// Callers always send a complete `StoreOrder` when updating — the client
+    /// never produces a partial `store_order` body. Two valid client-controlled
+    /// states:
+    /// - `enabled: false, minAmount: nil` — off, threshold cleared.
+    /// - `enabled: true, minAmount: <positive>` — on with a specific threshold.
+    ///
+    /// The server's default for fresh users (`enabled: true, minAmount: nil`)
+    /// is still decoded correctly on reads.
+    ///
     struct StoreOrder: Codable, Equatable, Sendable {
 
         /// Master toggle for new-order notifications.
-        public let enabled: Bool?
+        public let enabled: Bool
 
         /// Order-total threshold below which notifications are suppressed.
-        /// `nil` means no threshold; the server stores any value `<= 0` as `nil`.
+        /// `nil` is sent on the wire as JSON `null`, which the server interprets
+        /// as "no threshold" (notify on every order when `enabled` is true).
         public let minAmount: Decimal?
 
-        public init(enabled: Bool? = nil, minAmount: Decimal? = nil) {
+        public init(enabled: Bool, minAmount: Decimal? = nil) {
             self.enabled = enabled
             self.minAmount = minAmount
         }
 
-        public init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.enabled = try container.decodeIfPresent(Bool.self, forKey: .enabled)
-            self.minAmount = try container.decodeIfPresent(Decimal.self, forKey: .minAmount)
-        }
-
         public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encodeIfPresent(enabled, forKey: .enabled)
-            try container.encodeIfPresent(minAmount, forKey: .minAmount)
+            try container.encode(enabled, forKey: .enabled)
+            // Use `encode` (not `encodeIfPresent`) so `nil` is written as JSON `null`
+            // — the server interprets explicit null as "clear the threshold".
+            if let minAmount {
+                try container.encode(minAmount, forKey: .minAmount)
+            } else {
+                try container.encodeNil(forKey: .minAmount)
+            }
         }
 
         enum CodingKeys: String, CodingKey {

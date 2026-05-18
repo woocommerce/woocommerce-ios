@@ -1,6 +1,12 @@
 import Foundation
 import EventHorizonSDK
 
+enum ARPhase: Equatable {
+    case detecting
+    case awaitingTap
+    case placed(hintsVisible: Bool)
+}
+
 @Observable
 final class ARParcelSizingViewModel {
     let unit: UnitLength
@@ -11,13 +17,21 @@ final class ARParcelSizingViewModel {
     private(set) var resetCount: Int = 0
     private(set) var arReadyTime: Date?
     private(set) var hasTrackedPlacement: Bool = false
+    private(set) var hintsVisible: Bool = false
 
+    private var hasSeenHints: Bool
+    private let defaults: UserDefaults
     private let analytics: ParcelFittingAnalyticsTracking
 
-    init(unit: UnitLength, initial: ParcelDimensions? = nil, analytics: ParcelFittingAnalyticsTracking) {
+    init(unit: UnitLength,
+         initial: ParcelDimensions? = nil,
+         analytics: ParcelFittingAnalyticsTracking,
+         defaults: UserDefaults = .standard) {
         self.unit = unit
         self.dimensions = initial ?? .defaultDimensions(for: unit)
         self.analytics = analytics
+        self.defaults = defaults
+        self.hasSeenHints = defaults.bool(forKey: Constants.hintsSeenKey)
     }
 
     func recordGestureCompleted(mode: TwoFingerTracker.Mode) {
@@ -71,8 +85,6 @@ final class ARParcelSizingViewModel {
         dimensions.toMeters(unit: unit)
     }
 
-    var confirmedDimensions: ParcelDimensions { dimensions }
-
     var dimensionsLabel: String {
         dimensions.formattedWithLabels(unit: unit)
     }
@@ -83,5 +95,23 @@ final class ARParcelSizingViewModel {
 
     func resetToDefaults() {
         dimensions = .defaultDimensions(for: unit)
+    }
+
+    func onBoxPlaced() {
+        hintsVisible = !hasSeenHints
+    }
+
+    func dismissHints() {
+        hintsVisible = false
+        hasSeenHints = true
+        defaults.set(true, forKey: Constants.hintsSeenKey)
+    }
+
+    func showHints() {
+        hintsVisible = true
+    }
+
+    enum Constants {
+        static let hintsSeenKey = "parcelFitting.coachingHintsDismissed"
     }
 }

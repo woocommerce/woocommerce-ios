@@ -15,6 +15,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
     private let abTestVariationProvider: ABTestVariationProvider
+    private let isRemoteARParcelFittingEnabled: Bool
     private let shippingSettingsService: ShippingSettingsService
 
     private let starAnimation: Animation = .spring(duration: 0.2)
@@ -39,6 +40,12 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.abTestVariationProvider = abTestVariationProvider
         self.shippingSettingsService = shippingSettingsService
+
+        var remoteFFEnabled = false
+        stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(.arParcelFitting, defaultValue: false) { isEnabled in
+            remoteFFEnabled = isEnabled
+        })
+        self.isRemoteARParcelFittingEnabled = remoteFFEnabled
         self.starToggleService = PackageStarToggleService(siteID: siteID, stores: stores, analytics: analytics)
 
         selectedPackageType = .custom
@@ -141,17 +148,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         return isRemoteARParcelFittingEnabled
             || abTestVariationProvider.variation(for: .arParcelFitting) == .treatment
             || featureFlagService.isFeatureFlagEnabled(.arParcelFitting)
-    }
-
-    /// Reads the remote FF value from cache via synchronous dispatch.
-    /// Returns `false` if cache is cold (the completion fires asynchronously in that case).
-    private var isRemoteARParcelFittingEnabled: Bool {
-        var result = false
-        let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.arParcelFitting, defaultValue: false) { isEnabled in
-            result = isEnabled
-        }
-        stores.dispatch(action)
-        return result
     }
 
     var arDimensionUnit: UnitLength {

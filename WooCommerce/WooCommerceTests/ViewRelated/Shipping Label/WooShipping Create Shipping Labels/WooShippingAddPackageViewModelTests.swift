@@ -546,6 +546,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
             }
         }
     }
+
     // MARK: - AR Parcel Fitting Gating
 
     // Note: ARWorldTrackingConfiguration.isSupported returns false on simulators,

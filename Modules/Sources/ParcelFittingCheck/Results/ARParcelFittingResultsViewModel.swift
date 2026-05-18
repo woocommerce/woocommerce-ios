@@ -56,10 +56,6 @@ public final class ARParcelFittingResultsViewModel {
         analytics.track(Event.arfittingBrowseAllPackagesTapped)
     }
 
-    func trackPackageStarTapped(index: Int, isStarred: Bool) {
-        analytics.track(Event.arfittingPackageStarTapped(index: index, isStarred: isStarred))
-    }
-
     // MARK: - Fitting Logic
 
     static func fits(measured: ParcelDimensions, into package: ParcelPresetPackage) -> Bool {

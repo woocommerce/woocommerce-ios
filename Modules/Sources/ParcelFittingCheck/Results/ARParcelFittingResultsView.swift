@@ -92,7 +92,7 @@ public struct ARParcelFittingResultsView: View {
                             )
                         },
                         onToggleStar: delegate.map { delegate in
-                            { toggleStar(packageID: result.package.id, carrierID: result.carrier.id, index: index, delegate: delegate) }
+                            { toggleStar(packageID: result.package.id, carrierID: result.carrier.id, delegate: delegate) }
                         }
                     )
 
@@ -164,14 +164,13 @@ public struct ARParcelFittingResultsView: View {
 
     // MARK: - Actions
 
-    private func toggleStar(packageID: String, carrierID: String, index: Int, delegate: ParcelFittingDelegate) {
+    private func toggleStar(packageID: String, carrierID: String, delegate: ParcelFittingDelegate) {
         let willBeStarred = !starredPackageIDs.contains(packageID)
         if willBeStarred {
             starredPackageIDs.insert(packageID)
         } else {
             starredPackageIDs.remove(packageID)
         }
-        viewModel.trackPackageStarTapped(index: index, isStarred: willBeStarred)
         delegate.parcelFittingDidToggleStar(packageID: packageID, carrierID: carrierID, isStarred: willBeStarred)
     }
 

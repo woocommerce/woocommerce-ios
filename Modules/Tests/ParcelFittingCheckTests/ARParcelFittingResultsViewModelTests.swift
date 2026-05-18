@@ -173,35 +173,6 @@ struct ARParcelFittingResultsViewModelTests {
         #expect(event.name == "arfitting_browse_all_packages_tapped")
     }
 
-    // MARK: - trackPackageStarTapped
-
-    @Test func test_trackPackageStarTapped_when_starring_then_tracks_with_isStarred_true() throws {
-        // Given
-        let analytics = MockParcelFittingAnalytics()
-        let vm = makeSUT(analytics: analytics)
-
-        // When
-        vm.trackPackageStarTapped(index: 0, isStarred: true)
-
-        // Then
-        let event = try #require(analytics.lastEvent)
-        #expect(event.name == "arfitting_package_star_tapped")
-        #expect(event.hasProperty("index", value: "0"))
-        #expect(event.hasProperty("is_starred", value: "true"))
-    }
-
-    @Test func test_trackPackageStarTapped_when_unstarring_then_tracks_with_isStarred_false() throws {
-        // Given
-        let analytics = MockParcelFittingAnalytics()
-        let vm = makeSUT(analytics: analytics)
-
-        // When
-        vm.trackPackageStarTapped(index: 1, isStarred: false)
-
-        // Then
-        let event = try #require(analytics.lastEvent)
-        #expect(event.hasProperty("is_starred", value: "false"))
-    }
 }
 
 // MARK: - Helpers

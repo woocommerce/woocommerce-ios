@@ -1,6 +1,6 @@
 ---
 name: woo-ai-smoke
-description: Evaluate WooAIAssistant against a structured scenario suite with hard invariants + LLM-as-judge rubric scoring. Runs live against the demo store + gpt-5.4-mini via the ai-api-proxy backend, writes a JSONL run record, compares against stored baselines, and surfaces regressions. Always delegated to a subagent so the main context only sees the markdown report.
+description: Evaluate WooAIAssistant against a structured scenario suite with hard invariants + LLM-as-judge rubric scoring. Runs live against the demo store + gpt-5.4-mini via the woo-mobile-ai-assistant backend wrapper, writes a JSONL run record, compares against stored baselines, and surfaces regressions. Always delegated to a subagent so the main context only sees the markdown report.
 user-invocable: true
 allowed-tools: "Task, Bash, Read, Write, Edit, Grep, Glob"
 argument-hint: "[suite=default|scenario \"turn1; turn2\"] [samples=N]"
@@ -125,7 +125,7 @@ inside the subagent's context.
 ## Prerequisites
 
 - Xcode + iOS simulator (the project's `bootstrap` skill covers this).
-- A WooCommerce demo store with an admin **application password** (for the REST tool calls) and an authenticated iOS app session whose WPCOM OAuth bearer can be captured (for the ai-api-proxy LLM calls).
+- A WooCommerce demo store with an admin **application password** (for the REST tool calls) and an authenticated iOS app session whose WPCOM OAuth bearer can be captured (for the woo-mobile-ai-assistant LLM calls).
 - Required CLI tools (all macOS-default): `xcodebuild`, `xcrun simctl`, `open`.
 - Store credentials in **`~/.woo-ai-smoke/store.env`** with `WOO_SITE_URL`, `WOO_SITE_ID`, `WOO_USERNAME`, `WOO_APP_PASSWORD`, and `WOO_DOTCOM_ACCESS_TOKEN`. On first run the skill scaffolds the file with placeholders and opens it for editing — see Credentials below.
 
@@ -135,7 +135,7 @@ The skill never commits credentials. Swift reads `~/.woo-ai-smoke/store.env` dir
 
 The engineer maintains `~/.woo-ai-smoke/store.env` (the source of truth, dotenv format). The skill stages a `/tmp/woo-ai-smoke-store.env` mirror at run-start because the iOS simulator process sandboxes `~` to its own container and can't read the host's home directly; the `trap` cleanup deletes the `/tmp` mirror at run-end. Swift reads from `/tmp/woo-ai-smoke-store.env`.
 
-The harness sends LLM traffic through the wpcom `ai-api-proxy` backend using a captured iOS-app WPCOM OAuth bearer (`WOO_DOTCOM_ACCESS_TOKEN`). Live smoke runs require wpcom PR 212632 to be deployed to production. For pre-merge testing the engineer can route locally via mitmproxy, `/etc/hosts`, or a temporary hardcoded URLSession in the harness (not committed); the committed code only ships production-URL routing because nginx on the wpcom sandbox vhost rejects requests whose `Host` header isn't `public-api.wordpress.com`. REST tool calls still hit the merchant store directly with the application password.
+The harness sends LLM traffic through the wpcom `woo-mobile-ai-assistant` backend wrapper using a captured iOS-app WPCOM OAuth bearer (`WOO_DOTCOM_ACCESS_TOKEN`). For pre-merge testing the engineer can route locally via mitmproxy, `/etc/hosts`, or a temporary hardcoded URLSession in the harness (not committed); the committed code only ships production-URL routing because nginx on the wpcom sandbox vhost rejects requests whose `Host` header isn't `public-api.wordpress.com`. REST tool calls still hit the merchant store directly with the application password.
 
 **First-run flow**: if `~/.woo-ai-smoke/store.env` doesn't exist, scaffold it with placeholders, open it for the engineer to fill in, then stop. The engineer saves the file and re-runs the skill.
 
@@ -155,7 +155,7 @@ WOO_SITE_ID=123456
 WOO_USERNAME=your-admin-username
 WOO_APP_PASSWORD=xxxx xxxx xxxx xxxx xxxx xxxx
 # WPCOM OAuth bearer captured from an authenticated iOS app session. Required
-# for the ai-api-proxy LLM path. Grab it by inspecting any /me request the
+# for the woo-mobile-ai-assistant LLM path. Grab it by inspecting any /me request the
 # app issues.
 WOO_DOTCOM_ACCESS_TOKEN=
 TEMPLATE

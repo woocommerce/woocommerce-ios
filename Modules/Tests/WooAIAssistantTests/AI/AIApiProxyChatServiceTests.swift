@@ -39,7 +39,7 @@ struct AIApiProxyChatServiceTests {
     }
 
     @Test
-    func test_sendChat_sets_X_WPCOM_AI_Feature_header_to_woo_mobile_ai_assistant() async throws {
+    func test_sendChat_does_not_set_X_WPCOM_AI_Feature_header() async throws {
         // Given
         let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
         let service = makeService(transport: transport)
@@ -50,7 +50,7 @@ struct AIApiProxyChatServiceTests {
         // Then
         let captured = await transport.lastRequest
         let request = try #require(captured)
-        #expect(request.value(forHTTPHeaderField: "X-WPCOM-AI-Feature") == AIApiProxyChatService.featureHeaderValue)
+        #expect(request.value(forHTTPHeaderField: "X-WPCOM-AI-Feature") == nil)
     }
 
     @Test
@@ -71,7 +71,7 @@ struct AIApiProxyChatServiceTests {
     @Test
     func test_sendChat_uses_endpoint_override_when_provided() async throws {
         // Given
-        let override = URL(string: "https://test.example/wpcom/v2/ai-api-proxy/v1/chat/completions")!
+        let override = URL(string: "https://test.example/wpcom/v2/woo-mobile-ai-assistant/chat/completions")!
         let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
         let service = AIApiProxyChatService(tokenProvider: ConstantWPCOMTokenProvider(value: "tok"),
                                             endpoint: override,
@@ -92,7 +92,7 @@ struct AIApiProxyChatServiceTests {
         // Given
         let expectedBase = try #require(URL(string: Settings.wordpressApiBaseURL))
         let expected = try #require(
-            URL(string: "wpcom/v2/ai-api-proxy/v1/chat/completions", relativeTo: expectedBase)?.absoluteURL
+            URL(string: "wpcom/v2/woo-mobile-ai-assistant/chat/completions", relativeTo: expectedBase)?.absoluteURL
         )
         let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
         let service = AIApiProxyChatService(tokenProvider: ConstantWPCOMTokenProvider(value: "tok"),
@@ -452,10 +452,9 @@ struct AIApiProxyChatServiceTests {
     // MARK: - Error envelope decoder
 
     @Test
-    func test_sendChat_when_response_is_401_with_ai_api_unauthorized_error_then_throws_typed_auth_error()
-    async throws {
+    func test_sendChat_when_response_is_401_with_rest_unauthorized_then_throws_typed_auth_error() async throws {
         // Given
-        let body = proxyEnvelopeBody(code: "ai_api_unauthorized_error", message: "Unauthorized", status: 401)
+        let body = proxyEnvelopeBody(code: "rest_unauthorized", message: "Unauthorized", status: 401)
         let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 401, body: body)])
         let service = makeService(transport: transport)
 
@@ -470,46 +469,31 @@ struct AIApiProxyChatServiceTests {
     }
 
     @Test
-    func test_sendChat_when_response_is_402_with_ai_api_plan_required_error_then_throws_typed_plan_error()
+    func test_sendChat_when_response_is_403_with_rest_forbidden_then_throws_typed_auth_error_with_server_message()
     async throws {
         // Given
-        let body = proxyEnvelopeBody(code: "ai_api_plan_required_error", message: "Plan required", status: 402)
-        let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 402, body: body)])
-        let service = makeService(transport: transport)
-
-        // When / Then
-        do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
-            Issue.record("Expected typed plan error to surface.")
-        } catch let error as AssistantError {
-            #expect(error.kind == .auth)
-            #expect(error.code == "402")
-        }
-    }
-
-    @Test
-    func test_sendChat_when_response_is_403_with_ai_api_blog_access_denied_error_then_throws_typed_access_error()
-    async throws {
-        // Given
-        let body = proxyEnvelopeBody(code: "ai_api_blog_access_denied_error", message: "Access denied", status: 403)
+        let serverMessage = "Sorry, this OAuth client is not allowed to use this endpoint."
+        let body = proxyEnvelopeBody(code: "rest_forbidden", message: serverMessage, status: 403)
         let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 403, body: body)])
         let service = makeService(transport: transport)
 
         // When / Then
         do {
             _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
-            Issue.record("Expected typed access error to surface.")
+            Issue.record("Expected typed auth error to surface.")
         } catch let error as AssistantError {
             #expect(error.kind == .auth)
             #expect(error.code == "403")
+            #expect(error.message == serverMessage)
         }
     }
 
     @Test
-    func test_sendChat_when_response_is_429_with_ai_api_user_rate_limit_error_then_throws_typed_user_rate_limit_error_after_retries()
+    func test_sendChat_when_response_is_429_with_woo_mobile_ai_user_rate_limit_then_throws_rate_limit_error_after_retries()
     async throws {
         // Given
-        let body = proxyEnvelopeBody(code: "ai_api_user_rate_limit_error", message: "User rate limit", status: 429)
+        let serverMessage = "Too many AI requests. Please slow down and try again in a minute."
+        let body = proxyEnvelopeBody(code: "woo_mobile_ai_user_rate_limit", message: serverMessage, status: 429)
         let scenarios: [ProxyTransportScenario] = (0..<3).map { _ in .errorBody(status: 429, body: body) }
         let transport = ScriptedProxyTransport(scenarios: scenarios)
         let service = makeService(transport: transport)
@@ -521,35 +505,16 @@ struct AIApiProxyChatServiceTests {
         } catch let error as AssistantError {
             #expect(error.kind == .rateLimit)
             #expect(error.code == "429")
+            #expect(error.message == serverMessage)
         }
         #expect(await transport.callCount == 3)
     }
 
     @Test
-    func test_sendChat_when_response_is_429_with_ai_api_blog_rate_limit_error_then_throws_typed_blog_rate_limit_error_after_retries()
+    func test_sendChat_when_response_is_429_with_unknown_code_then_falls_through_to_generic_error_after_retries()
     async throws {
         // Given
-        let body = proxyEnvelopeBody(code: "ai_api_blog_rate_limit_error", message: "Blog rate limit", status: 429)
-        let scenarios: [ProxyTransportScenario] = (0..<3).map { _ in .errorBody(status: 429, body: body) }
-        let transport = ScriptedProxyTransport(scenarios: scenarios)
-        let service = makeService(transport: transport)
-
-        // When / Then
-        do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
-            Issue.record("Expected typed blog rate limit error to surface.")
-        } catch let error as AssistantError {
-            #expect(error.kind == .rateLimit)
-            #expect(error.code == "429")
-        }
-        #expect(await transport.callCount == 3)
-    }
-
-    @Test
-    func test_sendChat_when_response_is_429_with_unknown_ai_api_code_then_falls_through_to_generic_error_after_retries()
-    async throws {
-        // Given
-        let body = proxyEnvelopeBody(code: "ai_api_some_unknown_error", message: "Unknown limit", status: 429)
+        let body = proxyEnvelopeBody(code: "some_other_error", message: "Unknown limit", status: 429)
         let scenarios: [ProxyTransportScenario] = (0..<3).map { _ in .errorBody(status: 429, body: body) }
         let transport = ScriptedProxyTransport(scenarios: scenarios)
         let service = makeService(transport: transport)
@@ -560,13 +525,13 @@ struct AIApiProxyChatServiceTests {
             Issue.record("Expected error to surface.")
         } catch let error as AssistantError {
             #expect(error.code == "429")
-            #expect(error.message.contains("ai_api_some_unknown_error"))
+            #expect(error.message.contains("some_other_error"))
         }
         #expect(await transport.callCount == 3)
     }
 
     @Test
-    func test_sendChat_when_response_is_400_with_non_ai_api_envelope_then_surfaces_envelope_message() async throws {
+    func test_sendChat_when_response_is_400_with_generic_envelope_then_surfaces_envelope_message() async throws {
         // Given
         let body = proxyEnvelopeBody(code: "validation_error", message: "Invalid input provided", status: 400)
         let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 400, body: body)])
@@ -604,7 +569,7 @@ struct AIApiProxyChatServiceTests {
     @Test
     func test_sendChat_when_429_then_retries_up_to_3_times_with_backoff_then_throws() async throws {
         // Given
-        let body = proxyEnvelopeBody(code: "ai_api_user_rate_limit_error", message: "Rate limited", status: 429)
+        let body = proxyEnvelopeBody(code: "woo_mobile_ai_user_rate_limit", message: "Rate limited", status: 429)
         let scenarios: [ProxyTransportScenario] = (0..<3).map { _ in .errorBody(status: 429, body: body) }
         let transport = ScriptedProxyTransport(scenarios: scenarios)
         let recorder = SleepDelayRecorder()
@@ -632,7 +597,7 @@ struct AIApiProxyChatServiceTests {
     @Test
     func test_sendChat_when_429_then_200_on_retry_then_yields_success_events() async throws {
         // Given
-        let rateLimitBody = proxyEnvelopeBody(code: "ai_api_user_rate_limit_error", message: "Rate limited", status: 429)
+        let rateLimitBody = proxyEnvelopeBody(code: "woo_mobile_ai_user_rate_limit", message: "Rate limited", status: 429)
         let successChunk = singleTextChunk(text: "retry worked")
         let scenarios: [ProxyTransportScenario] = [
             .errorBody(status: 429, body: rateLimitBody),
@@ -707,7 +672,7 @@ struct AIApiProxyChatServiceTests {
     func test_sendChat_streaming_when_first_chunk_is_wrapped_error_envelope_then_throws_typed_error() async throws {
         // Given
         let envelope = """
-        {"code":"ai_api_unauthorized_error","message":"Unauthorized","data":{"status":401}}
+        {"code":"rest_unauthorized","message":"Unauthorized","data":{"status":401}}
         """
         let frame = "data: \(envelope)\n\n"
         let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data(frame.utf8)])])
@@ -742,7 +707,7 @@ struct AIApiProxyChatServiceTests {
     // MARK: - Helpers
 
     private var testEndpoint: URL {
-        URL(string: "https://test.example/wpcom/v2/ai-api-proxy/v1/chat/completions")!
+        URL(string: "https://test.example/wpcom/v2/woo-mobile-ai-assistant/chat/completions")!
     }
 
     private var noOpSleep: AIApiProxyChatService.Sleep {

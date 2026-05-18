@@ -1,3 +1,4 @@
+import EventHorizonSDK
 import SwiftUI
 import ParcelFittingCheck
 
@@ -78,6 +79,7 @@ struct WooShippingSelectedPackageView: View {
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button(Localization.done) {
+                                arAnalytics.track(Event.arfittingResultsDoneTapped)
                                 showARResults = false
                             }
                         }

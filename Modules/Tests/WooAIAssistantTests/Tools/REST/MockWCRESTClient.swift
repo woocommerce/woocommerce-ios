@@ -33,8 +33,8 @@ actor MockWCRESTClient: WCRESTClient {
 }
 
 enum StubResponses {
-    static func ok(_ json: String) -> WCRESTResponse {
-        WCRESTResponse(data: Data(json.utf8), statusCode: 200)
+    static func ok(_ json: String, headers: [String: String] = [:]) -> WCRESTResponse {
+        WCRESTResponse(data: Data(json.utf8), statusCode: 200, headers: headers)
     }
 
     static func failure(statusCode: Int, body: String = "") -> WCRESTResponse {

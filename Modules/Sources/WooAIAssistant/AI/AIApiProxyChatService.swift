@@ -30,8 +30,7 @@ public struct AIApiProxyChatService: AIChatService {
         self.sleep = sleep
     }
 
-    private static let endpointPath = "wpcom/v2/ai-api-proxy/v1/chat/completions"
-    static let featureHeaderValue = "woo-mobile-ai-assistant"
+    private static let endpointPath = "wpcom/v2/woo-mobile-ai-assistant/chat/completions"
 
     // Compose against `Settings.wordpressApiBaseURL` so launch-arg overrides
     // (`mocked-wpcom-api`, `wpcom-api-base-url=...`) reroute the chat traffic too.
@@ -216,7 +215,6 @@ public struct AIApiProxyChatService: AIChatService {
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        urlRequest.setValue(Self.featureHeaderValue, forHTTPHeaderField: "X-WPCOM-AI-Feature")
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("text/event-stream", forHTTPHeaderField: "Accept")
         urlRequest.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")

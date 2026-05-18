@@ -387,7 +387,6 @@ final class CustomerListViewModelTests: XCTestCase {
         assertEqual(.results, viewModel.syncState)
         assertEqual(1, viewModel.customers.count)
     }
-
 }
 
 private extension CustomerListViewModelTests {

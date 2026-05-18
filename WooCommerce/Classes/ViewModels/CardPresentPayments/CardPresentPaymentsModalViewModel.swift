@@ -108,7 +108,6 @@ enum PaymentsModalActionsMode {
 
     /// Two action buttons and an auxiliary button
     case twoActionAndAuxiliary
-
 }
 
 extension CardPresentPaymentsModalViewModelUIKitActions {

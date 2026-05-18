@@ -25,7 +25,6 @@ extension ProductAddOn {
     @NSManaged public var options: NSOrderedSet?
     @NSManaged public var product: Product?
     @NSManaged public var group: AddOnGroup?
-
 }
 
 // MARK: Generated accessors for options
@@ -42,5 +41,4 @@ extension ProductAddOn {
 
     @objc(removeOptions:)
     @NSManaged public func removeFromOptions(_ values: NSOrderedSet)
-
 }

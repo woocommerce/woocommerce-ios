@@ -225,7 +225,6 @@ private extension AddEditProductCategoryViewController {
                                                          placeholder: Strings.titleCellPlaceholder,
                                                          onTextChange: { [weak self] newCategoryName in
                                                             self?.viewModel.categoryTitle = newCategoryName ?? ""
-
             }, onTextDidBeginEditing: {
         }, onTextDidReturn: nil, inputFormatter: nil, keyboardType: .default)
         cell.configure(viewModel: viewModel)

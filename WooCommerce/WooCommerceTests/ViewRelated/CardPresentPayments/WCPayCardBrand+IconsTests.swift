@@ -69,5 +69,4 @@ class WCPayCardBrand_IconsTests: XCTestCase {
         XCTAssertNotNil(sut.icon)
         XCTAssertEqual(sut.iconName, "card-brand-unknown")
     }
-
 }

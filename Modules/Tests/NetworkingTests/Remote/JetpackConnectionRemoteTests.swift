@@ -289,5 +289,4 @@ final class JetpackConnectionRemoteTests: XCTestCase {
             XCTAssertEqual(error as? NetworkError, expectedError)
         }
     }
-
 }

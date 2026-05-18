@@ -127,6 +127,5 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         viewModel.updateAmount(oldAmount + newInput)
 
         XCTAssertEqual(viewModel.formattedAmount, "€\(newInput)")
-
     }
 }

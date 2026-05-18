@@ -593,7 +593,6 @@ final class NotificationStoreTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-
 }
 
 // MARK: - Private Methods

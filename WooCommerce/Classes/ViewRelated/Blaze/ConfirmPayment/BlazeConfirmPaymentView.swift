@@ -57,7 +57,6 @@ struct BlazeConfirmPaymentView: View {
                         cardDetailView
                             .padding(.horizontal, Layout.contentPadding)
                     }
-
                 } else {
                     loadingView
                         .padding(.horizontal, Layout.contentPadding)

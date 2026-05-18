@@ -2995,7 +2995,6 @@ extension WooAnalyticsEvent {
         static func loginDismissed() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordLoginDismissed, properties: [:])
         }
-
     }
 }
 

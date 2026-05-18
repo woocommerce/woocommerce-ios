@@ -89,7 +89,6 @@ struct RefundCreationUseCase {
                             taxes: createTaxes(from: feeLine),
                             total: feeLine.total)
         }
-
     }
 
     /// Creates an array of `OrderItemTaxRefund` from the tax lines in the provided `RefundableOrderItem`

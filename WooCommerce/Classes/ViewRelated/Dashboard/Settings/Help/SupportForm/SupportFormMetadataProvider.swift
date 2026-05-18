@@ -188,7 +188,6 @@ private extension SupportFormMetadataProvider {
 
         return "\(site.url) (\(site.description))"
     }
-
 }
 
 // MARK: Definitions

@@ -23,7 +23,6 @@ extension OrderItemRefund {
     @NSManaged public var totalTax: String?
     @NSManaged public var taxes: Set<OrderItemTaxRefund>?
     @NSManaged public var refund: Refund?
-
 }
 
 // MARK: Generated accessors for taxes
@@ -40,5 +39,4 @@ extension OrderItemRefund {
 
     @objc(removeTaxes:)
     @NSManaged public func removeFromTaxes(_ values: NSSet)
-
 }

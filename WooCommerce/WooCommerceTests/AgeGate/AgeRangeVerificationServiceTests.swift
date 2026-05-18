@@ -179,7 +179,6 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
 
         waitForExpectations(timeout: 1)
     }
-
 }
 
 private final class MockAgeRangeProvider: AgeRangeProviding {

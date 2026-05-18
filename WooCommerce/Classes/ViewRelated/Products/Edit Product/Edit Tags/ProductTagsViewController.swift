@@ -271,7 +271,6 @@ private extension ProductTagsViewController {
         }
         ServiceLocator.stores.dispatch(action)
     }
-
 }
 
 // MARK: Error handling

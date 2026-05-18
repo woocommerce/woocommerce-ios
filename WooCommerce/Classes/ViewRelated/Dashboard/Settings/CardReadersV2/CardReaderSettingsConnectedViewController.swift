@@ -469,6 +469,5 @@ private extension CardReaderSettingsConnectedViewController {
             value: "Cancelling...",
             comment: "Settings > Manage Card Reader > Connected Reader > Button title shown while cancellation is in progress"
         )
-
     }
 }

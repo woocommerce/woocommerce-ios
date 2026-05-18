@@ -618,7 +618,6 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                 parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
                                 countryCode: .US,
                                 terminalPaymentPreparationEnabled: false) { cardReaderEvent in
-
                 } onProcessingCompletion: { intent in
                     promise(intent)
                 } onCompletion: { result in
@@ -1174,7 +1173,6 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         // Then
         XCTAssertNil(mockCardReaderConfigProvider.currentSiteID)
     }
-
 }
 
 private extension CardPresentPaymentStoreTests {

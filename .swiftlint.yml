@@ -83,7 +83,7 @@ only_rules:
 
   # Prefer the shorthand `if let foo` form over `if let foo = foo`.
   - shorthand_optional_binding
-  
+
   # Prefer `min(by:)` / `max(by:)` over `sorted { ... }.first` / `.last`.
   - sorted_first_last
 
@@ -100,6 +100,8 @@ only_rules:
   - trailing_whitespace
 
   - vertical_whitespace
+
+  - vertical_whitespace_closing_braces
 
   - weak_delegate
 

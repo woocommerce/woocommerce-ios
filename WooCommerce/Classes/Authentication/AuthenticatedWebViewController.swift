@@ -291,7 +291,6 @@ private extension AuthenticatedWebViewController {
             }
         }
     }
-
 }
 
 extension AuthenticatedWebViewController: WKNavigationDelegate {

@@ -86,5 +86,4 @@ final class CardBrandTests: XCTestCase {
             XCTAssert(!cardBrand.iconData.isEmpty)
         }
     }
-
 }

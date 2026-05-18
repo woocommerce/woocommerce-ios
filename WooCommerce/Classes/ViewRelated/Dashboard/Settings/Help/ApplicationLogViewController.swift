@@ -232,7 +232,6 @@ private extension ApplicationLogViewController {
             } catch let error {
                 DDLogError("⚠️ Error deleting log files \(error)")
             }
-
         }
 
         DDLogWarn("⚠️ All log files erased.")

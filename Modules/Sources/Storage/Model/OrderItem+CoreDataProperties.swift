@@ -25,7 +25,6 @@ extension OrderItem {
     @NSManaged public var attributes: NSOrderedSet?
     @NSManaged public var parent: NSNumber?
     @NSManaged public var addOns: NSOrderedSet?
-
 }
 
 // MARK: Generated accessors for attributes
@@ -60,7 +59,6 @@ extension OrderItem {
 
     @objc(removeAttributes:)
     @NSManaged public func removeFromAttributes(_ values: NSOrderedSet)
-
 }
 
 // MARK: Generated accessors for taxes
@@ -77,7 +75,6 @@ extension OrderItem {
 
     @objc(removeTaxes:)
     @NSManaged public func removeFromTaxes(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for addOns
@@ -112,9 +109,7 @@ extension OrderItem {
 
     @objc(removeAddOns:)
     @NSManaged public func removeFromAddOns(_ values: NSOrderedSet)
-
 }
 
 extension OrderItem: Identifiable {
-
 }

@@ -214,5 +214,4 @@ final class WooShippingServiceCardViewModelTests: XCTestCase {
         XCTAssertFalse(completionSaturdayDelivery)
         XCTAssertFalse(completionAdditionalHandling)
     }
-
 }

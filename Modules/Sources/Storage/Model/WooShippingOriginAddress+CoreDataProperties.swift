@@ -22,5 +22,4 @@ extension WooShippingOriginAddress {
     @NSManaged public var email: String
     @NSManaged public var defaultAddress: Bool
     @NSManaged public var isVerified: Bool
-
 }

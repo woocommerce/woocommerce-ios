@@ -334,7 +334,6 @@ private extension CustomerSearchUICommand {
         self.filter = filter
         resynchronizeModels()
     }
-
 }
 
 private extension CustomerSearchUICommand {

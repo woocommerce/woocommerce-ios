@@ -22,5 +22,4 @@ final class PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModelTests
                                expectedCount: 4,
                                messageHint: "Please check that the manual hashable conformance includes new properties.")
     }
-
 }

@@ -3,5 +3,4 @@ import CoreData
 
 @objc(StoredSupportChat)
 public class StoredSupportChat: NSManagedObject {
-
 }

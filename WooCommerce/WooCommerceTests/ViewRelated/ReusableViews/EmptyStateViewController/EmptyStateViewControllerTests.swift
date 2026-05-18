@@ -313,11 +313,9 @@ private extension EmptyStateViewControllerTests {
     }
 
     func notifyWhenInteractionEnds(_ handler: @escaping (UIViewControllerTransitionCoordinatorContext) -> Void) {
-
     }
 
     func notifyWhenInteractionChanges(_ handler: @escaping (UIViewControllerTransitionCoordinatorContext) -> Void) {
-
     }
 
     let isAnimated: Bool = false

@@ -255,6 +255,5 @@ final class GlobalReviewsDataSourceCustomizer: ReviewsDataSourceCustomizing {
                                           ProductReviewStatus.hold.rawValue)
 
         return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
-
     }
 }

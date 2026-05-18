@@ -38,5 +38,4 @@ final class AztecStrikethroughFormatBarCommandTests: XCTestCase {
                              formatBar: formatBar)
         XCTAssertEqual(editorView.getHTML(), originalHTML)
     }
-
 }

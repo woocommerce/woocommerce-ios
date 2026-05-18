@@ -60,7 +60,6 @@ class TextLinkButtonTableViewCell: UITableViewCell {
     public func enableButton(_ isEnabled: Bool) {
         button.isEnabled = isEnabled
     }
-
 }
 
 // MARK: - Private methods

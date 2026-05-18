@@ -267,7 +267,6 @@ struct MessageBubble: View {
         }
         return parsed
     }
-
 }
 
 #if DEBUG

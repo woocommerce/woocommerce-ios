@@ -1069,7 +1069,6 @@ private extension DashboardViewModel {
             !dismissedWPComConnectionSuggestion &&
             isEligibleForSelfDrivenPN
     }
-
 }
 
 // MARK: InAppFeedback card

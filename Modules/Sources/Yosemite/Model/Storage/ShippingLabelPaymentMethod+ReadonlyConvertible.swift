@@ -12,7 +12,6 @@ extension Storage.ShippingLabelPaymentMethod: ReadOnlyConvertible {
         cardType = paymentMethod.cardType.rawValue
         cardDigits = paymentMethod.cardDigits
         expiry = paymentMethod.expiry
-
     }
 
     /// Returns a ReadOnly version of the receiver.

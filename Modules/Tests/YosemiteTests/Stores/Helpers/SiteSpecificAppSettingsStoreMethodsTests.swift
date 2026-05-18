@@ -331,7 +331,6 @@ struct SiteSpecificAppSettingsStoreMethodsTests {
         // Then
         #expect(date == expectedDate)
     }
-
 }
 
 // MARK: - Mock FileStorage

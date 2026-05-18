@@ -45,7 +45,6 @@ struct Woo_Watch_AppApp: App {
                 } else {
 
                     ConnectView(synchronizer: phoneDependencySynchronizer)
-
                 }
             }
             .environmentObject(tracksProvider)

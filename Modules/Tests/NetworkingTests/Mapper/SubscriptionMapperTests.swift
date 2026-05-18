@@ -48,7 +48,6 @@ final class SubscriptionMapperTests: XCTestCase {
 
         assertEqual(expectedSubscription, subscription)
     }
-
 }
 
 // MARK: - Test Helpers

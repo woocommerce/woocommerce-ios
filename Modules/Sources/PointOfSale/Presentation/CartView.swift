@@ -316,7 +316,6 @@ private struct CartClearMenuButton: View {
             }) {
                 Text(Localization.clearButtonTitle)
             }
-
         } label: {
             Image(systemName: "trash")
                 .font(.posButtonSymbolMedium)

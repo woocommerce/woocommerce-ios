@@ -97,10 +97,8 @@ struct PointOfSalePaymentSuccessView: View {
                 Spacer()
             }
             .multilineTextAlignment(.center)
-
         }
     }
-
 }
 
 private extension PointOfSalePaymentSuccessView {

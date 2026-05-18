@@ -999,7 +999,6 @@ private extension OrderDetailsDataSource {
         cell.host(view, insets: insets)
         cell.hideSeparator()
         cell.selectionStyle = .none
-
     }
 
     func configureShipmentDetail(cell: HostingConfigurationTableViewCell<OrderDetailsShipmentDetailsView>,

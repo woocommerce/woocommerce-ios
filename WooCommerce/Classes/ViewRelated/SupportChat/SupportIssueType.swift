@@ -41,7 +41,6 @@ enum SupportIssueType: String, CaseIterable {
             return Localization.other
         }
     }
-
 }
 
 // MARK: - Localization

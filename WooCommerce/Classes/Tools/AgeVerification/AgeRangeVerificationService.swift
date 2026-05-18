@@ -39,7 +39,6 @@ protocol AgeRangeVerificationServiceProtocol {
         minimumAge: Int,
         completion: @escaping (AgeRangeVerificationResult) -> Void
     )
-
 }
 
 final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {

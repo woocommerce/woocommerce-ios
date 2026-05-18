@@ -51,7 +51,6 @@ extension ProductVariation {
     @NSManaged public var attributes: NSOrderedSet
     @NSManaged public var subscription: ProductSubscription?
     @NSManaged public var globalUniqueID: String?
-
 }
 
 // MARK: Generated accessors for downloads
@@ -68,7 +67,6 @@ extension ProductVariation {
 
     @objc(removeDownloads:)
     @NSManaged public func removeFromDownloads(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for attributes
@@ -103,5 +101,4 @@ extension ProductVariation {
 
     @objc(removeAttributes:)
     @NSManaged public func removeFromAttributes(_ values: NSOrderedSet)
-
 }

@@ -356,7 +356,6 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
                    with syncingCoordinator: SyncingCoordinator) {}
 
     func refreshDataObservers() {}
-
 }
 
 final class MockReviewsStoresManager: DefaultStoresManager {

@@ -56,7 +56,6 @@ class GravatarEmailTableViewCell: UITableViewCell {
     func updateEmailAddress(_ email: String?) {
         emailLabel?.text = email
     }
-
 }
 
 // MARK: - Password Manager Handling
@@ -80,5 +79,4 @@ private extension GravatarEmailTableViewCell {
 
         onChangeSelectionHandler?(emailTextField)
     }
-
 }

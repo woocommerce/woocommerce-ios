@@ -23,5 +23,4 @@ final class Color_RGBStringDecoding_Tests: XCTestCase {
         let actualColor = try XCTUnwrap(try? Color(rgbString: whiteRGBStringWithDecimals))
         assertEqual(Color.white, actualColor)
     }
-
 }

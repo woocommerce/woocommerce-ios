@@ -4,5 +4,4 @@ import CoreData
 
 @objc(ProductCategory)
 public class ProductCategory: NSManagedObject {
-
 }

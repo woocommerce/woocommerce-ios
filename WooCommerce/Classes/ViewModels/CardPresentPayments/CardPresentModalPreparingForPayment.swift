@@ -38,7 +38,6 @@ final class CardPresentModalPreparingForPayment: CardPresentPaymentsModalViewMod
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

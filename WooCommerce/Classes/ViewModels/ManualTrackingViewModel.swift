@@ -113,7 +113,6 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
         return [
             AddEditTrackingSection(rows: trackingRows)]
-
     }
 
     var shipmentProvider: ShipmentTrackingProvider?
@@ -220,7 +219,6 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
 
         return [
             AddEditTrackingSection(rows: trackingRows)]
-
     }
 
     var shipmentProvider: ShipmentTrackingProvider?

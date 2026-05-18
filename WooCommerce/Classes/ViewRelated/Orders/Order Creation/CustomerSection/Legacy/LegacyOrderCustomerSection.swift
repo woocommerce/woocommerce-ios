@@ -112,7 +112,6 @@ private struct OrderCustomerSectionContent: View {
             Divider()
                 .padding(.leading)
             addressDetails(title: Localization.shippingTitle, formattedAddress: viewModel.shippingAddressFormatted)
-
         }
     }
 

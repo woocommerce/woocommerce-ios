@@ -94,7 +94,6 @@ private extension WPComConnectionSetupHandler {
                 didFailConnection(with: error)
             }
         }
-
     }
 
     func didFailConnection(with error: Error) {
@@ -178,6 +177,5 @@ private extension WPComConnectionSetupHandler {
                 comment: "Error message when the connection step is canceled during push notification setup"
             )
         }
-
     }
 }

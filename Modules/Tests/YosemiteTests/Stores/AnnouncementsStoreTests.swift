@@ -214,7 +214,6 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertNotNil(firstResult)
         XCTAssertNotNil(secondResult)
     }
-
 }
 
 // MARK: - Utils

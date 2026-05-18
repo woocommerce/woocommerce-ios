@@ -94,7 +94,6 @@ final class NonAtomicSiteViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(secondaryButtonTitle, Expectations.secondaryButtonTitle)
     }
-
 }
 
 private extension NonAtomicSiteViewModelTests {

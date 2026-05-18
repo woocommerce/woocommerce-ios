@@ -120,7 +120,6 @@ final class BulkUpdateViewModel {
                                                 bulkUpdateOptionsModel: bulkUpdateFormModel,
                                                 editingPriceType: editingPriceType,
                                                 priceUpdateDidFinish: priceUpdateDidFinish)
-
     }
 
     /// Provides the view model with all user facing data of the option for updating the regular price

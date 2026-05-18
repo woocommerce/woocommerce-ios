@@ -3,18 +3,22 @@ import SwiftUI
 struct ARCoachCard: View {
     let onDismiss: () -> Void
 
+    private let hints: [Hint] = [
+        Hint(iconName: "hand.draw", label: Localization.drag),
+        Hint(iconName: "arrow.trianglehead.counterclockwise.rotate.90", label: Localization.twist),
+        Hint(iconName: "hand.pinch", label: Localization.pinch),
+    ]
+
     var body: some View {
         ARGlassCard {
             VStack(alignment: .leading, spacing: 0) {
                 header
-                ARHintRow(iconName: "hand.draw", label: Localization.drag)
-                    .padding(.vertical, 8)
-                separator
-                ARHintRow(iconName: "arrow.trianglehead.counterclockwise.rotate.90", label: Localization.twist)
-                    .padding(.vertical, 8)
-                separator
-                ARHintRow(iconName: "hand.pinch", label: Localization.pinch)
-                    .padding(.vertical, 8)
+                ForEach(Array(hints.enumerated()), id: \.element.iconName) { index, hint in
+                    if index > 0 {
+                        separator
+                    }
+                    hintRow(hint)
+                }
             }
         }
     }
@@ -22,27 +26,45 @@ struct ARCoachCard: View {
     private var header: some View {
         HStack {
             Text(Localization.title)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.footnote.weight(.semibold))
                 .foregroundStyle(.white)
             Spacer()
             Button(action: onDismiss) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.white.opacity(0.55))
-                    .padding(5)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.white.opacity(Constants.dismissButtonOpacity))
+                    .padding(Constants.dismissButtonPadding)
                     .contentShape(Rectangle())
             }
             .accessibilityLabel(Localization.dismiss)
         }
-        .padding(.bottom, 4)
+        .padding(.bottom, Constants.headerBottomPadding)
+    }
+
+    private func hintRow(_ hint: Hint) -> some View {
+        ARHintRow(iconName: hint.iconName, label: hint.label)
+            .padding(.vertical, Constants.rowVerticalPadding)
     }
 
     private var separator: some View {
-        Divider().overlay(Color.white.opacity(0.06))
+        Divider().overlay(Color.white.opacity(Constants.separatorOpacity))
     }
 }
 
 private extension ARCoachCard {
+    struct Hint {
+        let iconName: String
+        let label: String
+    }
+
+    enum Constants {
+        static let dismissButtonOpacity: Double = 0.55
+        static let dismissButtonPadding: CGFloat = 5
+        static let headerBottomPadding: CGFloat = 4
+        static let rowVerticalPadding: CGFloat = 8
+        static let separatorOpacity: Double = 0.06
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "parcelFitting.coaching.title",

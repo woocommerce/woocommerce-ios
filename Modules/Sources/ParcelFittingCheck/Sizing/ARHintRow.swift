@@ -5,17 +5,27 @@ struct ARHintRow: View {
     let label: String
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Constants.spacing) {
             Image(systemName: iconName)
-                .font(.system(size: 16))
+                .font(.system(size: Constants.iconFontSize))
                 .foregroundStyle(.white)
-                .frame(width: 28, height: 28)
-                .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+                .frame(width: Constants.iconTileSize, height: Constants.iconTileSize)
+                .background(Color.white.opacity(Constants.iconTileBackgroundOpacity), in: RoundedRectangle(cornerRadius: Constants.iconTileCornerRadius))
 
             Text(label)
-                .font(.system(size: 13.5))
-                .lineSpacing(13.5 * 0.35)
-                .foregroundStyle(.white.opacity(0.62))
+                .font(.footnote)
+                .foregroundStyle(.white.opacity(Constants.labelOpacity))
         }
+    }
+}
+
+private extension ARHintRow {
+    enum Constants {
+        static let spacing: CGFloat = 10
+        static let iconFontSize: CGFloat = 16
+        static let iconTileSize: CGFloat = 28
+        static let iconTileCornerRadius: CGFloat = 8
+        static let iconTileBackgroundOpacity: Double = 0.08
+        static let labelOpacity: Double = 0.62
     }
 }

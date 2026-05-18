@@ -6,24 +6,36 @@ struct ARDimensionTile: View {
     let unit: String
 
     var body: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: Constants.innerSpacing) {
             Text(label)
-                .font(.system(size: 9.5, weight: .bold))
-                .tracking(1)
-                .foregroundStyle(.white.opacity(0.55))
+                .font(.caption2.bold())
+                .tracking(Constants.labelTracking)
+                .foregroundStyle(.white.opacity(Constants.secondaryOpacity))
 
             Text(value)
-                .font(.system(size: 22, weight: .semibold).monospacedDigit())
+                .font(.title2.monospacedDigit().weight(.semibold))
                 .foregroundStyle(.white)
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .minimumScaleFactor(Constants.minimumScaleFactor)
 
             Text(unit)
-                .font(.system(size: 10))
+                .font(.caption2)
                 .foregroundStyle(.white)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, Constants.verticalPadding)
         .frame(maxWidth: .infinity)
-        .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+        .background(Color.white.opacity(Constants.backgroundOpacity), in: RoundedRectangle(cornerRadius: Constants.cornerRadius))
+    }
+}
+
+private extension ARDimensionTile {
+    enum Constants {
+        static let innerSpacing: CGFloat = 2
+        static let verticalPadding: CGFloat = 8
+        static let cornerRadius: CGFloat = 10
+        static let labelTracking: CGFloat = 1
+        static let backgroundOpacity: Double = 0.08
+        static let secondaryOpacity: Double = 0.55
+        static let minimumScaleFactor: CGFloat = 0.7
     }
 }

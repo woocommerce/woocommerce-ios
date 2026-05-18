@@ -9,7 +9,7 @@ struct ARSizingFooterHUD: View {
 
     var body: some View {
         ARGlassCard {
-            VStack(spacing: 12) {
+            VStack(spacing: Constants.contentSpacing) {
                 measuredRow
                 dimensionTiles
                 confirmButton
@@ -20,28 +20,28 @@ struct ARSizingFooterHUD: View {
     private var measuredRow: some View {
         HStack {
             Text(Localization.measured)
-                .font(.system(size: 10.5, weight: .semibold))
-                .tracking(1.2)
-                .foregroundStyle(.white.opacity(0.55))
+                .font(.caption2.weight(.semibold))
+                .tracking(Constants.measuredTracking)
+                .foregroundStyle(.white.opacity(Constants.secondaryOpacity))
 
             Spacer()
 
             Button(action: onShowHints) {
                 Image(systemName: "info.circle")
-                    .font(.system(size: 14))
+                    .font(.footnote)
                     .foregroundStyle(.white)
-                    .frame(width: 22, height: 22)
-                    .background(Color.white.opacity(0.10), in: Circle())
+                    .frame(width: Constants.infoButtonSize, height: Constants.infoButtonSize)
+                    .background(Color.white.opacity(Constants.infoButtonBackgroundOpacity), in: Circle())
             }
             .accessibilityLabel(Localization.showHints)
             .opacity(hintsVisible ? 0 : 1)
             .allowsHitTesting(!hintsVisible)
         }
-        .animation(.easeOut(duration: 0.18), value: hintsVisible)
+        .animation(.easeOut(duration: Constants.infoButtonAnimationDuration), value: hintsVisible)
     }
 
     private var dimensionTiles: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: Constants.tileSpacing) {
             ARDimensionTile(label: ParcelDimensions.Localization.lengthLabel,
                             value: ParcelDimensions.formatValue(dimensions.length),
                             unit: unit.symbol)
@@ -59,7 +59,7 @@ struct ARSizingFooterHUD: View {
             Text(Localization.useTheseDimensions)
                 .font(.headline)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
+                .padding(.vertical, Constants.confirmButtonVerticalPadding)
                 .background(Color.accentColor, in: Capsule())
                 .foregroundStyle(.white)
         }
@@ -67,6 +67,17 @@ struct ARSizingFooterHUD: View {
 }
 
 private extension ARSizingFooterHUD {
+    enum Constants {
+        static let contentSpacing: CGFloat = 12
+        static let measuredTracking: CGFloat = 1.2
+        static let secondaryOpacity: Double = 0.55
+        static let infoButtonSize: CGFloat = 22
+        static let infoButtonBackgroundOpacity: Double = 0.10
+        static let infoButtonAnimationDuration: Double = 0.18
+        static let tileSpacing: CGFloat = 8
+        static let confirmButtonVerticalPadding: CGFloat = 12
+    }
+
     enum Localization {
         static let measured = NSLocalizedString(
             "parcelFitting.sizing.measured",

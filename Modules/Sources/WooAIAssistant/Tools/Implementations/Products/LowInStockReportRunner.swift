@@ -125,23 +125,19 @@ struct LowInStockReportRunner {
     private func enrichVariations(grouped: [Int: [Int]]) async -> [Int: AnyCodableJSON] {
         guard !grouped.isEmpty else { return [:] }
         let client = client
-        return await withTaskGroup(of: [Int: AnyCodableJSON].self) { group in
-            for (parentID, variationIDs) in grouped {
-                group.addTask {
-                    let runner = LowInStockReportRunner(client: client)
-                    if let result = await runner.fetchByInclude(path: "wc/v3/products/\(parentID)/variations",
-                                                                ids: variationIDs) {
-                        return result
-                    }
-                    DDLogError("\(ProductsListTool.name): low-stock variation enrichment failed for parent \(parentID)")
-                    return [:]
-                }
+        let pairs = Array(grouped.map { ($0.key, $0.value) })
+        let partials = await BoundedTaskGroup.runOrdered(pairs,
+                                                         limit: ProductsUpdateTool.concurrencyCap) { pair in
+            let runner = LowInStockReportRunner(client: client)
+            if let result = await runner.fetchByInclude(path: "wc/v3/products/\(pair.0)/variations",
+                                                        ids: pair.1) {
+                return result
             }
-            var merged: [Int: AnyCodableJSON] = [:]
-            for await partial in group {
-                merged.merge(partial) { _, new in new }
-            }
-            return merged
+            DDLogError("\(ProductsListTool.name): low-stock variation enrichment failed for parent \(pair.0)")
+            return [Int: AnyCodableJSON]()
+        }
+        return partials.reduce(into: [Int: AnyCodableJSON]()) { merged, partial in
+            merged.merge(partial) { _, new in new }
         }
     }
 

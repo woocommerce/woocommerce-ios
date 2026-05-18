@@ -71,7 +71,7 @@ struct AIApiProxyChatServiceTests {
     @Test
     func test_sendChat_uses_endpoint_override_when_provided() async throws {
         // Given
-        let override = URL(string: "https://test.example/wpcom/v2/woo-mobile-ai-assistant/chat/completions")!
+        let override = URL(string: "https://test.example/wpcom/v2/woo-mobile-ai/chat/completions")!
         let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
         let service = AIApiProxyChatService(tokenProvider: ConstantWPCOMTokenProvider(value: "tok"),
                                             endpoint: override,
@@ -92,7 +92,7 @@ struct AIApiProxyChatServiceTests {
         // Given
         let expectedBase = try #require(URL(string: Settings.wordpressApiBaseURL))
         let expected = try #require(
-            URL(string: "wpcom/v2/woo-mobile-ai-assistant/chat/completions", relativeTo: expectedBase)?.absoluteURL
+            URL(string: "wpcom/v2/woo-mobile-ai/chat/completions", relativeTo: expectedBase)?.absoluteURL
         )
         let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
         let service = AIApiProxyChatService(tokenProvider: ConstantWPCOMTokenProvider(value: "tok"),
@@ -707,7 +707,7 @@ struct AIApiProxyChatServiceTests {
     // MARK: - Helpers
 
     private var testEndpoint: URL {
-        URL(string: "https://test.example/wpcom/v2/woo-mobile-ai-assistant/chat/completions")!
+        URL(string: "https://test.example/wpcom/v2/woo-mobile-ai/chat/completions")!
     }
 
     private var noOpSleep: AIApiProxyChatService.Sleep {

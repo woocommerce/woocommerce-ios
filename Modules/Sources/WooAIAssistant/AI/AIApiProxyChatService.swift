@@ -30,7 +30,7 @@ public struct AIApiProxyChatService: AIChatService {
         self.sleep = sleep
     }
 
-    private static let endpointPath = "wpcom/v2/woo-mobile-ai-assistant/chat/completions"
+    private static let endpointPath = "wpcom/v2/woo-mobile-ai/chat/completions"
 
     // Compose against `Settings.wordpressApiBaseURL` so launch-arg overrides
     // (`mocked-wpcom-api`, `wpcom-api-base-url=...`) reroute the chat traffic too.
@@ -220,7 +220,7 @@ public struct AIApiProxyChatService: AIChatService {
         urlRequest.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
         // include_usage adds a trailing SSE chunk with prompt-cache + token counts so
-        // the wpcom proxy can bump openai-tokens-feature/woo-mobile-ai-assistant-cached.
+        // the wpcom proxy can populate per-feature openai-tokens MC stats.
         let body = OpenAIChat.Request(messages: messages,
                                       tools: tools,
                                       toolChoice: toolChoice,

@@ -3,6 +3,7 @@ import TestKit
 import YosemiteTestHelpers
 @testable import WooCommerce
 import Yosemite
+import enum AutomatticTracks.Variation
 import enum Networking.WooShippingPackageType
 
 final class WooShippingAddPackageViewModelTests: XCTestCase {
@@ -544,6 +545,47 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
                 XCTAssertEqual(package.id, viewModel.customSavedPackages[index].id)
             }
         }
+    }
+    // MARK: - AR Parcel Fitting Gating
+
+    // Note: ARWorldTrackingConfiguration.isSupported returns false on simulators,
+    // so isARParcelFittingAvailable is always false in CI. These tests verify
+    // the feature flag / ExPlat gating logic is wired correctly.
+
+    func test_isARParcelFittingAvailable_when_both_feature_flag_and_explat_disabled_then_returns_false() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let featureFlagService = MockFeatureFlagService()
+        let abTestProvider = MockABTestVariationProvider()
+        abTestProvider.mockVariationValue = .control
+
+        // When
+        let viewModel = WooShippingAddPackageViewModel(siteID: 1,
+                                                       stores: mockStores,
+                                                       featureFlagService: featureFlagService,
+                                                       abTestVariationProvider: abTestProvider)
+
+        // Then
+        XCTAssertFalse(viewModel.isARParcelFittingAvailable)
+    }
+
+    func test_isARParcelFittingAvailable_when_explat_returns_treatment_then_still_false_on_simulator() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let featureFlagService = MockFeatureFlagService()
+        let abTestProvider = MockABTestVariationProvider()
+        abTestProvider.mockVariationValue = .treatment
+
+        // When
+        let viewModel = WooShippingAddPackageViewModel(siteID: 1,
+                                                       stores: mockStores,
+                                                       featureFlagService: featureFlagService,
+                                                       abTestVariationProvider: abTestProvider)
+
+        // Then
+        // On a physical device with AR support this would return true.
+        // On simulators ARWorldTrackingConfiguration.isSupported is false.
+        XCTAssertFalse(viewModel.isARParcelFittingAvailable)
     }
 }
 

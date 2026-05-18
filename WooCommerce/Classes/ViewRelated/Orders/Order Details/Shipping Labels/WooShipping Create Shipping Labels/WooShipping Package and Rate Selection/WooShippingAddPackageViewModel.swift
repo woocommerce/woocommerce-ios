@@ -14,6 +14,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let storage: StorageManagerType
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
+    private let abTestVariationProvider: ABTestVariationProvider
     private let shippingSettingsService: ShippingSettingsService
 
     private let starAnimation: Animation = .spring(duration: 0.2)
@@ -29,12 +30,14 @@ final class WooShippingAddPackageViewModel: ObservableObject {
          storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider(),
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
         self.siteID = siteID
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.abTestVariationProvider = abTestVariationProvider
         self.shippingSettingsService = shippingSettingsService
         self.starToggleService = PackageStarToggleService(siteID: siteID, stores: stores, analytics: analytics)
 
@@ -128,9 +131,27 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     // MARK: - AR Parcel Fitting
 
+    /// Resolves AR parcel fitting availability using a cascade:
+    /// remote FF (includes override store) → ExPlat → local FF.
+    /// The first gate returning `true` enables the feature.
     var isARParcelFittingAvailable: Bool {
-        featureFlagService.isFeatureFlagEnabled(.arParcelFitting)
-        && ARWorldTrackingConfiguration.isSupported
+        guard ARWorldTrackingConfiguration.isSupported else {
+            return false
+        }
+        return isRemoteARParcelFittingEnabled
+            || abTestVariationProvider.variation(for: .arParcelFitting) == .treatment
+            || featureFlagService.isFeatureFlagEnabled(.arParcelFitting)
+    }
+
+    /// Reads the remote FF value from cache via synchronous dispatch.
+    /// Returns `false` if cache is cold (the completion fires asynchronously in that case).
+    private var isRemoteARParcelFittingEnabled: Bool {
+        var result = false
+        let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.arParcelFitting, defaultValue: false) { isEnabled in
+            result = isEnabled
+        }
+        stores.dispatch(action)
+        return result
     }
 
     var arDimensionUnit: UnitLength {

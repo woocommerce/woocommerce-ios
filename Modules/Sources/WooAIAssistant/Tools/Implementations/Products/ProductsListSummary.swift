@@ -1,13 +1,27 @@
 import Foundation
 
 enum ProductsListSummary {
-    static func make(from rows: [AnyCodableJSON], canLoadMore: Bool) -> AnyCodableJSON {
+    enum RowKind: String {
+        case product
+        case variation
+    }
+
+    static func make(from rows: [AnyCodableJSON],
+                     canLoadMore: Bool,
+                     kind: RowKind = .product) -> AnyCodableJSON {
+        make(tagged: rows.map { ($0, kind) }, canLoadMore: canLoadMore)
+    }
+
+    /// Use when the same response carries both product and variation rows (e.g. the low-stock
+    /// report covers either kind) so each row is projected with its own shape and `kind` tag.
+    static func make(tagged rows: [(AnyCodableJSON, RowKind)],
+                     canLoadMore: Bool) -> AnyCodableJSON {
         var ids: [AnyCodableJSON] = []
         var stockStatusCounts: [String: Int] = [:]
         var prices: [Decimal] = []
         var products: [AnyCodableJSON] = []
 
-        for row in rows {
+        for (row, kind) in rows {
             if let id = RESTResponseParsing.intField(row, "id") {
                 ids.append(.int(id))
             }
@@ -17,7 +31,7 @@ enum ProductsListSummary {
             if let price = RESTResponseParsing.decimalField(row, "price") {
                 prices.append(price)
             }
-            products.append(ProductSummary.listRow(from: row))
+            products.append(makeRow(from: row, kind: kind))
         }
 
         var fields: [String: AnyCodableJSON] = [
@@ -30,6 +44,19 @@ enum ProductsListSummary {
         if let priceRange = RESTResponseParsing.decimalRange(prices) {
             fields["price_range"] = priceRange
         }
+        return .object(fields)
+    }
+
+    private static func makeRow(from row: AnyCodableJSON, kind: RowKind) -> AnyCodableJSON {
+        let projected: AnyCodableJSON
+        switch kind {
+        case .product:
+            projected = ProductSummary.listRow(from: row)
+        case .variation:
+            projected = ProductVariationDetailSummary.make(from: row)
+        }
+        guard case .object(var fields) = projected else { return projected }
+        fields["kind"] = .string(kind.rawValue)
         return .object(fields)
     }
 }

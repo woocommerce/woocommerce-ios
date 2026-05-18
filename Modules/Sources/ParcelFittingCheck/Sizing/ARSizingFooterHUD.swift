@@ -42,15 +42,15 @@ struct ARSizingFooterHUD: View {
 
     private var dimensionTiles: some View {
         HStack(spacing: 8) {
-            DimensionTile(label: ParcelDimensions.Localization.lengthLabel,
-                          value: ParcelDimensions.formatValue(dimensions.length),
-                          unit: unit.symbol)
-            DimensionTile(label: ParcelDimensions.Localization.widthLabel,
-                          value: ParcelDimensions.formatValue(dimensions.width),
-                          unit: unit.symbol)
-            DimensionTile(label: ParcelDimensions.Localization.heightLabel,
-                          value: ParcelDimensions.formatValue(dimensions.height),
-                          unit: unit.symbol)
+            ARDimensionTile(label: ParcelDimensions.Localization.lengthLabel,
+                            value: ParcelDimensions.formatValue(dimensions.length),
+                            unit: unit.symbol)
+            ARDimensionTile(label: ParcelDimensions.Localization.widthLabel,
+                            value: ParcelDimensions.formatValue(dimensions.width),
+                            unit: unit.symbol)
+            ARDimensionTile(label: ParcelDimensions.Localization.heightLabel,
+                            value: ParcelDimensions.formatValue(dimensions.height),
+                            unit: unit.symbol)
         }
     }
 
@@ -63,34 +63,6 @@ struct ARSizingFooterHUD: View {
                 .background(Color.accentColor, in: Capsule())
                 .foregroundStyle(.white)
         }
-    }
-}
-
-private struct DimensionTile: View {
-    let label: String
-    let value: String
-    let unit: String
-
-    var body: some View {
-        VStack(spacing: 2) {
-            Text(label)
-                .font(.system(size: 9.5, weight: .bold))
-                .tracking(1)
-                .foregroundStyle(.white.opacity(0.55))
-
-            Text(value)
-                .font(.system(size: 22, weight: .semibold).monospacedDigit())
-                .foregroundStyle(.white)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-
-            Text(unit)
-                .font(.system(size: 10))
-                .foregroundStyle(.white)
-        }
-        .padding(.vertical, 8)
-        .frame(maxWidth: .infinity)
-        .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
     }
 }
 

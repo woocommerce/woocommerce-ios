@@ -24,8 +24,8 @@ public protocol PushNotificationPreferencesRemoteProtocol {
 }
 
 /// Remote for the WooCommerce push notification preferences endpoint
-/// (`wc-push-notifications/preferences`). Calls are Jetpack-tunneled to the
-/// merchant's site using the same pattern as `DevicesRemote`'s push-tokens calls.
+/// (`wc-push-notifications/preferences`). Requests prefer the REST fallback when an
+/// application password is available and fall back to the Jetpack tunnel otherwise.
 ///
 public final class PushNotificationPreferencesRemote: Remote, PushNotificationPreferencesRemoteProtocol {
 
@@ -34,7 +34,7 @@ public final class PushNotificationPreferencesRemote: Remote, PushNotificationPr
                                      method: .get,
                                      siteID: siteID,
                                      path: Paths.preferences,
-                                     availableAsRESTRequest: false)
+                                     availableAsRESTRequest: true)
         return try await enqueue(request)
     }
 
@@ -46,7 +46,7 @@ public final class PushNotificationPreferencesRemote: Remote, PushNotificationPr
                                      siteID: siteID,
                                      path: Paths.preferences,
                                      parameters: parameters,
-                                     availableAsRESTRequest: false)
+                                     availableAsRESTRequest: true)
         return try await enqueue(request)
     }
 }

@@ -437,7 +437,7 @@ public actor WooAssistantHeadless {
         // Trunk's safety surface only distinguishes safe vs unsafe; reaching the resolver path
         // implies unsafe. Keep the string typed so future safety taxonomies plug in cleanly.
         switch toolName {
-        case OrdersBulkUpdateTool.name, ProductsBulkUpdateTool.name:
+        case OrdersBulkUpdateTool.name:
             return "unsafe-bulk"
         default:
             return "unsafe"
@@ -513,12 +513,7 @@ public actor WooAssistantHeadless {
             OrdersUpdateTool.make(),
             OrdersBulkUpdateTool.make(),
             ProductsListTool.make(),
-            ProductsGetTool.make(),
             ProductsUpdateTool.make(),
-            ProductsBulkUpdateTool.make(),
-            ProductVariationsListTool.make(),
-            ProductVariationsUpdateTool.make(),
-            ProductVariationsBulkUpdateTool.make(),
             CustomersListTool.make(),
             AnalyticsOrdersTool.make(),
             ShowCardsTool.make()

@@ -2,8 +2,7 @@ import Foundation
 
 public enum AssistantSystemPrompt {
 
-    // The date anchor renders as `YYYY-MM-DD (Weekday)` because the model
-    // misreads the weekday from a bare ISO date about a quarter of the time.
+    // Render YYYY-MM-DD (Weekday) - models misread weekday from a bare ISO date often enough to matter.
     public static func build(todayISODate: String? = nil) -> String {
         let isoDate = todayISODate ?? defaultToday()
         let date = weekdayAnchor(fromISO: isoDate) ?? isoDate

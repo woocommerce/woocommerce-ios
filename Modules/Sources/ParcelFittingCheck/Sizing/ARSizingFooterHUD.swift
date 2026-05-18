@@ -88,7 +88,9 @@ private struct DimensionTile: View {
                 .font(.system(size: 10))
                 .foregroundStyle(.white)
         }
+        .padding(.vertical, 8)
         .frame(maxWidth: .infinity)
+        .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
     }
 }
 

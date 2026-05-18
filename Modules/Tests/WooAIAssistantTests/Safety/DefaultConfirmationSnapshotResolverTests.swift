@@ -1,5 +1,7 @@
 import Foundation
 import Testing
+import enum Networking.ProductStatus
+import enum Networking.ProductStockStatus
 @testable import WooAIAssistant
 
 @Suite(.timeLimit(.minutes(1)))
@@ -91,6 +93,58 @@ struct DefaultConfirmationSnapshotResolverTests {
         let calls = await client.recordedCalls
         #expect(calls.isEmpty)
         #expect(snapshot == nil)
+    }
+
+    @Test
+    func test_resolveProductsUpdate_when_single_product_then_snapshot_carries_prior_field_values() async throws {
+        // Given
+        let body = """
+        [{"id":7,"name":"Cap","regular_price":"1000","sale_price":"500","stock_quantity":12,\
+        "status":"publish","stock_status":"instock","sku":"CAP-1"}]
+        """
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products", body: body)
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":7,"sale_price":"15"}]}"#
+        )
+
+        // Then
+        let values = try #require(snapshot?.currentValues)
+        #expect(values["name"] == .raw("Cap"))
+        #expect(values["regular_price"] == .raw("1000"))
+        #expect(values["sale_price"] == .raw("500"))
+        #expect(values["stock_quantity"] == .raw("12"))
+        #expect(values["status"] == .raw(ProductStatus(rawValue: "publish").description))
+        #expect(values["stock_status"] == .raw(ProductStockStatus(rawValue: "instock").description))
+        #expect(values["sku"] == .raw("CAP-1"))
+        #expect(snapshot?.displayName == "Cap")
+        #expect(snapshot?.bulkEntries.map(\.id) == [7])
+    }
+
+    @Test
+    func test_resolveProductsUpdate_when_bulk_then_snapshot_currentValues_stays_empty() async throws {
+        // Given
+        let body = """
+        [{"id":7,"name":"Cap","regular_price":"1000","sale_price":"500"},\
+        {"id":8,"name":"Hat","regular_price":"800","sale_price":"400"}]
+        """
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products", body: body)
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":7,"sale_price":"5"},{"id":8,"sale_price":"5"}]}"#
+        )
+
+        // Then
+        #expect(snapshot?.currentValues.isEmpty == true)
+        #expect(snapshot?.bulkEntries.map(\.id) == [7, 8])
     }
 
     @Test

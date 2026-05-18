@@ -154,13 +154,14 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
                 combinedKeys.append(key)
             }
         }
+        let isBulk = count > 1
         let fields = combinedKeys.map { key in
-            Self.productField(for: key, across: updates)
+            Self.productField(for: key, across: updates, snapshot: snapshot, isBulk: isBulk)
         }
         let bulkEntries = snapshot?.bulkEntries ?? ids.map { ConfirmationBulkEntry(id: $0) }
         return ConfirmationPreview(summary: summary,
                                    fields: fields,
-                                   isBulk: count > 1,
+                                   isBulk: isBulk,
                                    bulkEntries: bulkEntries)
     }
 
@@ -183,7 +184,9 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
     }
 
     private static func productField(for key: String,
-                                     across updates: [ProductsUpdateEntry]) -> ConfirmationPreviewField {
+                                     across updates: [ProductsUpdateEntry],
+                                     snapshot: ConfirmationSnapshot?,
+                                     isBulk: Bool) -> ConfirmationPreviewField {
         let label = productFieldLabel(for: key)
         let valuesWithEntries = updates.compactMap { entry -> ConfirmationPreviewText? in
             productFieldValue(for: key, entry: entry)
@@ -196,12 +199,22 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         // Distinct on the flattened text so equivalent renderings (e.g. both "Cleared") collapse.
         let distinct = Set(valuesWithEntries.map { $0.flattened() })
         if let only = valuesWithEntries.first, distinct.count == 1 {
-            return ConfirmationPreviewField(name: key, label: label, value: only)
+            let prior = isBulk ? nil : productPriorValue(for: key, in: snapshot, newValue: only)
+            return ConfirmationPreviewField(name: key, label: label, value: only, priorValue: prior)
         }
         if distinct.isEmpty {
             return ConfirmationPreviewField(name: key, label: label, value: .localized(Strings.fieldValueUpdated))
         }
         return ConfirmationPreviewField(name: key, label: label, value: .localized(Strings.variesPerItem))
+    }
+
+    private static func productPriorValue(for key: String,
+                                          in snapshot: ConfirmationSnapshot?,
+                                          newValue: ConfirmationPreviewText) -> ConfirmationPreviewText? {
+        guard let prior = snapshot?.currentValues[key] else { return nil }
+        // Same rendered text means there is no diff to show.
+        guard prior.flattened() != newValue.flattened() else { return nil }
+        return prior
     }
 
     /// Returns a rendered value when `entry` has set `key`, or nil so the caller can tell

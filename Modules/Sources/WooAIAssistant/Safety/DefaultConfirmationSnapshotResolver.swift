@@ -1,5 +1,7 @@
 import Foundation
 import CocoaLumberjackSwift
+import enum Networking.ProductStatus
+import enum Networking.ProductStockStatus
 
 public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving {
 
@@ -61,16 +63,55 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
               let updates = parsed.updates else { return nil }
         let ids = updates.compactMap(\.id)
         guard !ids.isEmpty else { return nil }
-        struct ProductResponse: Decodable {
-            let id: Int?
-            let name: String?
+        let responses = await fetchBulkResponses(ids: ids,
+                                                 path: "wc/v3/products",
+                                                 type: [ProductSnapshotResponse].self)
+        let resolvedByID = Dictionary(uniqueKeysWithValues:
+            (responses ?? []).compactMap { response -> (Int, ProductSnapshotResponse)? in
+                guard let id = response.id else { return nil }
+                return (id, response)
+            }
+        )
+        let entries = ids.map { id -> ConfirmationBulkEntry in
+            guard let response = resolvedByID[id] else { return ConfirmationBulkEntry(id: id) }
+            return ConfirmationBulkEntry(id: id, displayName: response.name)
         }
-        let entries = await fetchBulkEntries(ids: ids,
-                                             path: "wc/v3/products",
-                                             type: [ProductResponse].self) { response in
-            ConfirmationBulkEntry(id: response.id ?? 0, displayName: response.name)
+        // Bulk previews stay empty: per-entity prior values are a follow-up.
+        if ids.count == 1, let response = resolvedByID[ids[0]] {
+            let values = Self.productCurrentValues(from: response)
+            let displayName = response.name?.trimmingCharacters(in: .whitespacesAndNewlines).nonEmptyOrNil
+            return ConfirmationSnapshot(currentValues: values,
+                                        displayName: displayName,
+                                        bulkEntries: entries)
         }
         return ConfirmationSnapshot(currentValues: [:], bulkEntries: entries)
+    }
+
+    private static func productCurrentValues(from response: ProductSnapshotResponse) -> [String: ConfirmationPreviewText] {
+        var values: [String: ConfirmationPreviewText] = [:]
+        if let name = response.name?.trimmingCharacters(in: .whitespacesAndNewlines).nonEmptyOrNil {
+            values["name"] = .raw(name)
+        }
+        if let price = response.regular_price?.nonEmptyOrNil { values["regular_price"] = .raw(price) }
+        if let sale = response.sale_price?.nonEmptyOrNil { values["sale_price"] = .raw(sale) }
+        if let quantity = response.stock_quantity {
+            values["stock_quantity"] = .raw(Self.formatStockQuantity(quantity))
+        }
+        if let status = response.status?.nonEmptyOrNil {
+            values["status"] = .raw(ProductStatus(rawValue: status).description)
+        }
+        if let stockStatus = response.stock_status?.nonEmptyOrNil {
+            values["stock_status"] = .raw(ProductStockStatus(rawValue: stockStatus).description)
+        }
+        if let sku = response.sku?.nonEmptyOrNil { values["sku"] = .raw(sku) }
+        return values
+    }
+
+    static func formatStockQuantity(_ value: Double) -> String {
+        if value.truncatingRemainder(dividingBy: 1.0) == 0 {
+            return String(Int(value))
+        }
+        return String(value)
     }
 
     private func resolveOrdersBulk(arguments: String) async -> ConfirmationSnapshot? {
@@ -101,24 +142,34 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
         type: [Response].Type,
         map: (Response) -> ConfirmationBulkEntry
     ) async -> [ConfirmationBulkEntry] {
-        let include = ids.map(String.init).joined(separator: ",")
-        let query = ["include": include, "per_page": String(ids.count)]
-        let response = await client.request(method: "GET", path: path, query: query, body: nil)
-        guard (200..<300).contains(response.statusCode) else {
-            DDLogError("DefaultConfirmationSnapshotResolver bulk fetch \(path) returned HTTP \(response.statusCode)")
-            return ids.map { ConfirmationBulkEntry(id: $0) }
-        }
-        let decoded: [Response]
-        do {
-            decoded = try JSONDecoder().decode(type, from: response.data)
-        } catch {
-            DDLogError("DefaultConfirmationSnapshotResolver bulk decode \(type) failed: \(error)")
+        let decoded = await fetchBulkResponses(ids: ids, path: path, type: type)
+        guard let decoded else {
             return ids.map { ConfirmationBulkEntry(id: $0) }
         }
         let resolved = decoded.map(map)
         let resolvedByID = Dictionary(uniqueKeysWithValues: resolved.map { ($0.id, $0) })
         // Preserve the requested id order; substitute id-only entries for any the API skipped.
         return ids.map { id in resolvedByID[id] ?? ConfirmationBulkEntry(id: id) }
+    }
+
+    private func fetchBulkResponses<Response: Decodable>(
+        ids: [Int],
+        path: String,
+        type: [Response].Type
+    ) async -> [Response]? {
+        let include = ids.map(String.init).joined(separator: ",")
+        let query = ["include": include, "per_page": String(ids.count)]
+        let response = await client.request(method: "GET", path: path, query: query, body: nil)
+        guard (200..<300).contains(response.statusCode) else {
+            DDLogError("DefaultConfirmationSnapshotResolver bulk fetch \(path) returned HTTP \(response.statusCode)")
+            return nil
+        }
+        do {
+            return try JSONDecoder().decode(type, from: response.data)
+        } catch {
+            DDLogError("DefaultConfirmationSnapshotResolver bulk decode \(type) failed: \(error)")
+            return nil
+        }
     }
 
     private func fetch<T: Decodable>(_ type: T.Type, path: String) async -> T? {
@@ -155,4 +206,20 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
             .filter { !$0.isEmpty }
         return parts.isEmpty ? nil : parts.joined(separator: " ")
     }
+}
+
+// snake_case mirrors the WC REST shape so JSONDecoder needs no CodingKeys map.
+fileprivate struct ProductSnapshotResponse: Decodable {
+    let id: Int?
+    let name: String?
+    let regular_price: String?
+    let sale_price: String?
+    let stock_quantity: Double?
+    let status: String?
+    let stock_status: String?
+    let sku: String?
+}
+
+private extension String {
+    var nonEmptyOrNil: String? { isEmpty ? nil : self }
 }

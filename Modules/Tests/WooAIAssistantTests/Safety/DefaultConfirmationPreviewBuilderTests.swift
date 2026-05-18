@@ -828,4 +828,67 @@ struct DefaultConfirmationPreviewBuilderTests {
         let saleField = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
         #expect(saleField.value == .raw("10.00"))
     }
+
+    @Test
+    func test_build_when_single_product_update_and_snapshot_differs_then_priorValue_is_set() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(currentValues: ["sale_price": .raw("1000")],
+                                            bulkEntries: [ConfirmationBulkEntry(id: 7)])
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":7,"sale_price":"15"}]}"#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(field.value == .raw("15"))
+        #expect(field.priorValue == .raw("1000"))
+    }
+
+    @Test
+    func test_build_when_single_product_update_and_snapshot_matches_then_priorValue_is_nil() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(currentValues: ["sale_price": .raw("15")],
+                                            bulkEntries: [ConfirmationBulkEntry(id: 7)])
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":7,"sale_price":"15"}]}"#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(field.priorValue == nil)
+    }
+
+    @Test
+    func test_build_when_bulk_product_update_then_priorValue_is_nil_even_with_snapshot() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(currentValues: ["sale_price": .raw("1000")],
+                                            bulkEntries: [ConfirmationBulkEntry(id: 7),
+                                                          ConfirmationBulkEntry(id: 8)])
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":7,"sale_price":"15"},{"id":8,"sale_price":"15"}]}"#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        #expect(unwrapped.isBulk == true)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(field.priorValue == nil)
+    }
 }

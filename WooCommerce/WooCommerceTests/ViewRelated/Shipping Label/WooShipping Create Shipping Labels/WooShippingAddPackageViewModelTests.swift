@@ -549,44 +549,44 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
 
     // MARK: - AR Parcel Fitting Gating
 
-    // Note: ARWorldTrackingConfiguration.isSupported returns false on simulators,
-    // so isARParcelFittingAvailable is always false in CI. These tests verify
-    // the feature flag / ExPlat gating logic is wired correctly.
+    // (remoteFF, explatTreatment, localFF, expected)
+    func test_isARParcelFittingAvailable_for_all_flag_permutations() {
+        let cases: [(Bool, Bool, Bool, Bool)] = [
+            (false, false, false, false),
+            (false, false, true,  true),
+            (false, true,  false, true),
+            (false, true,  true,  true),
+            (true,  false, false, true),
+            (true,  false, true,  true),
+            (true,  true,  false, true),
+            (true,  true,  true,  true),
+        ]
 
-    func test_isARParcelFittingAvailable_when_both_feature_flag_and_explat_disabled_then_returns_false() {
-        // Given
-        let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let featureFlagService = MockFeatureFlagService()
-        let abTestProvider = MockABTestVariationProvider()
-        abTestProvider.mockVariationValue = .control
+        for (remoteFF, explatTreatment, localFF, expected) in cases {
+            // Given
+            let mockStores = MockStoresManager(sessionManager: .testingInstance)
+            mockStores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+                switch action {
+                case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
+                    completion(remoteFF)
+                }
+            }
+            let featureFlagService = MockFeatureFlagService()
+            featureFlagService.isFeatureFlagEnabledReturnValue[.arParcelFitting] = localFF
+            let abTestProvider = MockABTestVariationProvider()
+            abTestProvider.mockVariationValue = explatTreatment ? .treatment : .control
 
-        // When
-        let viewModel = WooShippingAddPackageViewModel(siteID: 1,
-                                                       stores: mockStores,
-                                                       featureFlagService: featureFlagService,
-                                                       abTestVariationProvider: abTestProvider)
+            // When
+            let viewModel = WooShippingAddPackageViewModel(siteID: 1,
+                                                           stores: mockStores,
+                                                           featureFlagService: featureFlagService,
+                                                           abTestVariationProvider: abTestProvider,
+                                                           isARWorldTrackingSupported: true)
 
-        // Then
-        XCTAssertFalse(viewModel.isARParcelFittingAvailable)
-    }
-
-    func test_isARParcelFittingAvailable_when_explat_returns_treatment_then_still_false_on_simulator() {
-        // Given
-        let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let featureFlagService = MockFeatureFlagService()
-        let abTestProvider = MockABTestVariationProvider()
-        abTestProvider.mockVariationValue = .treatment
-
-        // When
-        let viewModel = WooShippingAddPackageViewModel(siteID: 1,
-                                                       stores: mockStores,
-                                                       featureFlagService: featureFlagService,
-                                                       abTestVariationProvider: abTestProvider)
-
-        // Then
-        // On a physical device with AR support this would return true.
-        // On simulators ARWorldTrackingConfiguration.isSupported is false.
-        XCTAssertFalse(viewModel.isARParcelFittingAvailable)
+            // Then
+            XCTAssertEqual(viewModel.isARParcelFittingAvailable, expected,
+                           "remoteFF=\(remoteFF), explat=\(explatTreatment), localFF=\(localFF)")
+        }
     }
 }
 

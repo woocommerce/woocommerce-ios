@@ -16,6 +16,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let abTestVariationProvider: ABTestVariationProvider
     private let isRemoteARParcelFittingEnabled: Bool
+    private let isARWorldTrackingSupported: Bool
     private let shippingSettingsService: ShippingSettingsService
 
     private let starAnimation: Animation = .spring(duration: 0.2)
@@ -32,6 +33,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider(),
+         isARWorldTrackingSupported: Bool = ARWorldTrackingConfiguration.isSupported,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
         self.siteID = siteID
         self.stores = stores
@@ -39,6 +41,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         self.abTestVariationProvider = abTestVariationProvider
+        self.isARWorldTrackingSupported = isARWorldTrackingSupported
         self.shippingSettingsService = shippingSettingsService
 
         var remoteFFEnabled = false
@@ -142,7 +145,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     /// remote FF (includes override store) → ExPlat → local FF.
     /// The first gate returning `true` enables the feature.
     var isARParcelFittingAvailable: Bool {
-        guard ARWorldTrackingConfiguration.isSupported else {
+        guard isARWorldTrackingSupported else {
             return false
         }
         return isRemoteARParcelFittingEnabled

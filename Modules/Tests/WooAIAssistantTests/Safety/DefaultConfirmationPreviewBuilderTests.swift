@@ -354,210 +354,133 @@ struct DefaultConfirmationPreviewBuilderTests {
     // MARK: - Products update
 
     @Test
-    func test_build_when_products_update_then_emits_field_per_changed_attribute() throws {
+    func test_build_when_products_update_single_then_emits_combined_changed_keys_and_isBulk_false() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()
 
         // When
         let preview = builder.build(
             toolName: ProductsUpdateTool.name,
-            arguments: #"{"id":7,"name":"Cap","regular_price":"24.99","stock_quantity":12,"status":"publish"}"#,
+            arguments: #"{"updates":[{"id":12,"regular_price":"24.99","status":"publish"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        #expect(unwrapped.isBulk == false)
+        let names = unwrapped.fields.map(\.name)
+        #expect(names == ["regular_price", "status"])
+        #expect(unwrapped.bulkEntries.map(\.id) == [12])
+    }
+
+    @Test
+    func test_build_when_products_update_multiple_then_isBulk_true_and_keys_unioned() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":1,"percent_discount":10},{"id":2,"sale_price":"5"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        #expect(unwrapped.isBulk == true)
+        let names = Set(unwrapped.fields.map(\.name))
+        #expect(names == ["sale_price", "percent_discount"])
+        #expect(unwrapped.bulkEntries.map(\.id) == [1, 2])
+    }
+
+    @Test
+    func test_build_when_products_update_snapshot_carries_bulk_entries_then_uses_them() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(currentValues: [:],
+                                            bulkEntries: [
+                                                ConfirmationBulkEntry(id: 1, displayName: "Hoodie"),
+                                                ConfirmationBulkEntry(id: 2, displayName: "Tee")
+                                            ])
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":1,"percent_discount":10},{"id":2,"percent_discount":10}]}"#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        #expect(unwrapped.bulkEntries.compactMap(\.displayName) == ["Hoodie", "Tee"])
+    }
+
+    @Test
+    func test_build_when_products_update_single_then_summary_flattened_is_update_1_product() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":12,"regular_price":"24.99"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        #expect(unwrapped.summary.flattened() == "Update 1 product")
+    }
+
+    @Test
+    func test_build_when_products_update_multiple_then_summary_flattened_is_update_2_products() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":1,"sale_price":"5"},{"id":2,"sale_price":"5"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        #expect(unwrapped.summary.flattened() == "Update 2 products")
+    }
+
+    @Test
+    func test_build_when_products_update_sets_name_stock_status_sku_then_all_three_render_as_fields() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":12,"name":"Renamed","stock_status":"outofstock","sku":"TEE-1"}]}"#,
             snapshot: nil
         )
 
         // Then
         let unwrapped = try #require(preview)
         let names = unwrapped.fields.map(\.name)
-        #expect(names == ["name", "regular_price", "stock_quantity", "status"])
-        #expect(unwrapped.fields.first(where: { $0.name == "stock_quantity" })?.value == .raw("12"))
+        #expect(names == ["name", "stock_status", "sku"])
     }
 
     @Test
-    func test_build_when_products_update_multiple_fields_with_snapshot_then_each_field_has_priorValue() throws {
-        // Given
-        let builder = DefaultConfirmationPreviewBuilder()
-        let snapshot = ConfirmationSnapshot(currentValues: [
-            "name": .raw("Old name"),
-            "regular_price": .raw("9.99"),
-            "stock_quantity": .raw("3"),
-            "status": .raw("draft")
-        ])
-
-        // When
-        let preview = builder.build(
-            toolName: ProductsUpdateTool.name,
-            arguments: #"{"id":7,"name":"New name","regular_price":"24.99","stock_quantity":12,"status":"publish"}"#,
-            snapshot: snapshot
-        )
-
-        // Then
-        let unwrapped = try #require(preview)
-        let nameField = try #require(unwrapped.fields.first(where: { $0.name == "name" }))
-        #expect(nameField.priorValue == .raw("Old name"))
-        let priceField = try #require(unwrapped.fields.first(where: { $0.name == "regular_price" }))
-        #expect(priceField.priorValue == .raw("9.99"))
-        let stockField = try #require(unwrapped.fields.first(where: { $0.name == "stock_quantity" }))
-        #expect(stockField.priorValue == .raw("3"))
-        let statusField = try #require(unwrapped.fields.first(where: { $0.name == "status" }))
-        #expect(statusField.priorValue == .raw("Draft"))
-    }
-
-    @Test
-    func test_build_when_products_update_sale_price_empty_then_value_is_off_marker() throws {
+    func test_build_when_products_update_invalid_arguments_then_returns_fallback() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()
 
         // When
         let preview = builder.build(toolName: ProductsUpdateTool.name,
-                                    arguments: #"{"id":7,"sale_price":""}"#,
+                                    arguments: #"{}"#,
                                     snapshot: nil)
 
         // Then
         let unwrapped = try #require(preview)
-        let saleField = unwrapped.fields.first(where: { $0.name == "sale_price" })
-        #expect(saleField != nil)
-        if case .localized = saleField?.value {} else {
-            Issue.record("expected sale_price value to be a localized off marker")
-        }
-    }
-
-    // MARK: - Products bulk update
-
-    @Test
-    func test_build_when_products_bulk_update_then_isBulk_and_priorValue_never_set() throws {
-        // Given
-        let builder = DefaultConfirmationPreviewBuilder()
-
-        // When
-        let preview = builder.build(
-            toolName: ProductsBulkUpdateTool.name,
-            arguments: #"{"ids":[1,2],"patch":{"status":"draft"}}"#,
-            snapshot: nil
-        )
-
-        // Then
-        let unwrapped = try #require(preview)
-        #expect(unwrapped.isBulk == true)
-        #expect(unwrapped.fields.allSatisfy { $0.priorValue == nil })
-    }
-
-    // MARK: - Product variations update
-
-    @Test
-    func test_build_when_product_variation_update_then_includes_variation_fields() throws {
-        // Given
-        let builder = DefaultConfirmationPreviewBuilder()
-
-        // When
-        let preview = builder.build(
-            toolName: ProductVariationsUpdateTool.name,
-            arguments: #"{"product_id":7,"id":15,"regular_price":"19.99","sku":"CAP-RED","stock_status":"instock"}"#,
-            snapshot: nil
-        )
-
-        // Then
-        let unwrapped = try #require(preview)
-        let names = unwrapped.fields.map(\.name)
-        #expect(names == ["regular_price", "stock_status", "sku"])
-    }
-
-    @Test
-    func test_build_when_product_variations_update_multiple_fields_with_snapshot_then_each_field_has_priorValue() throws {
-        // Given
-        let builder = DefaultConfirmationPreviewBuilder()
-        let snapshot = ConfirmationSnapshot(currentValues: [
-            "regular_price": .raw("9.99"),
-            "stock_status": .raw("instock"),
-            "sku": .raw("OLD-SKU"),
-            "status": .raw("draft")
-        ])
-
-        // When
-        let preview = builder.build(
-            toolName: ProductVariationsUpdateTool.name,
-            arguments: #"{"product_id":7,"id":15,"regular_price":"19.99","stock_status":"outofstock","sku":"NEW-SKU","status":"publish"}"#,
-            snapshot: snapshot
-        )
-
-        // Then
-        let unwrapped = try #require(preview)
-        let priceField = try #require(unwrapped.fields.first(where: { $0.name == "regular_price" }))
-        #expect(priceField.priorValue == .raw("9.99"))
-        let stockField = try #require(unwrapped.fields.first(where: { $0.name == "stock_status" }))
-        if case .localized(let resource, _) = stockField.priorValue {
-            #expect(String(describing: resource).contains("instock"))
-        } else {
-            Issue.record("expected stock_status priorValue to be a localized resource")
-        }
-        let skuField = try #require(unwrapped.fields.first(where: { $0.name == "sku" }))
-        #expect(skuField.priorValue == .raw("OLD-SKU"))
-        let statusField = try #require(unwrapped.fields.first(where: { $0.name == "status" }))
-        #expect(statusField.priorValue == .raw("Draft"))
-    }
-
-    @Test
-    func test_build_when_product_variation_stock_status_outofstock_then_value_is_humanized() throws {
-        // Given
-        let builder = DefaultConfirmationPreviewBuilder()
-
-        // When
-        let preview = builder.build(
-            toolName: ProductVariationsUpdateTool.name,
-            arguments: #"{"product_id":7,"id":15,"stock_status":"outofstock"}"#,
-            snapshot: nil
-        )
-
-        // Then
-        let unwrapped = try #require(preview)
-        let stockStatus = unwrapped.fields.first(where: { $0.name == "stock_status" })
-        if case .localized(let resource, _) = stockStatus?.value {
-            #expect(String(describing: resource).contains("outofstock"))
-        } else {
-            Issue.record("expected stock_status value to be a localized resource")
-        }
-    }
-
-    @Test
-    func test_build_when_product_variation_snapshot_carries_stock_status_then_priorValue_is_humanized() throws {
-        // Given
-        let builder = DefaultConfirmationPreviewBuilder()
-        let snapshot = ConfirmationSnapshot(currentValues: ["stock_status": .raw("instock")])
-
-        // When
-        let preview = builder.build(
-            toolName: ProductVariationsUpdateTool.name,
-            arguments: #"{"product_id":7,"id":15,"stock_status":"outofstock"}"#,
-            snapshot: snapshot
-        )
-
-        // Then
-        let unwrapped = try #require(preview)
-        let stockStatus = unwrapped.fields.first(where: { $0.name == "stock_status" })
-        if case .localized(let resource, _) = stockStatus?.priorValue {
-            #expect(String(describing: resource).contains("instock"))
-        } else {
-            Issue.record("expected stock_status priorValue to be a localized resource")
-        }
-    }
-
-    // MARK: - Product variations bulk update
-
-    @Test
-    func test_build_when_product_variations_bulk_update_then_no_fields_and_isBulk_true() throws {
-        // Given
-        let builder = DefaultConfirmationPreviewBuilder()
-
-        // When
-        let preview = builder.build(
-            toolName: ProductVariationsBulkUpdateTool.name,
-            arguments: #"{"product_id":7,"variations":[{"id":15},{"id":16}]}"#,
-            snapshot: nil
-        )
-
-        // Then
-        let unwrapped = try #require(preview)
-        #expect(unwrapped.isBulk == true)
         #expect(unwrapped.fields.isEmpty)
+        #expect(unwrapped.summary.flattened() == "Update products")
     }
 
     // MARK: - Summary headline shape
@@ -589,47 +512,19 @@ struct DefaultConfirmationPreviewBuilderTests {
         // When
         let preview = builder.build(
             toolName: ProductsUpdateTool.name,
-            arguments: #"{"id":12,"regular_price":"24.99","status":"publish"}"#,
+            arguments: #"{"updates":[{"id":12,"regular_price":"24.99","status":"publish"}]}"#,
             snapshot: nil
         )
 
         // Then
         let unwrapped = try #require(preview)
         let summary = unwrapped.summary.flattened()
-        #expect(summary == "Update product #12")
         #expect(!summary.contains("24.99"))
         #expect(!summary.contains("Publish"))
         #expect(unwrapped.fields.contains(where: { $0.name == "regular_price" }))
     }
 
-    @Test
-    func test_build_when_product_variations_update_then_summary_does_not_include_field_values() throws {
-        // Given
-        let builder = DefaultConfirmationPreviewBuilder()
-
-        // When
-        let preview = builder.build(
-            toolName: ProductVariationsUpdateTool.name,
-            arguments: #"{"product_id":7,"id":15,"regular_price":"19.99","sku":"CAP-RED"}"#,
-            snapshot: nil
-        )
-
-        // Then
-        let unwrapped = try #require(preview)
-        let summary = unwrapped.summary.flattened()
-        #expect(summary == "Update variation #15 of product #7")
-        #expect(!summary.contains("19.99"))
-        #expect(!summary.contains("CAP-RED"))
-        #expect(unwrapped.fields.contains(where: { $0.name == "regular_price" }))
-    }
-
     // MARK: - Flattened summary regression
-
-    // Regression: the `LocalizedStringResource(defaultValue:)` interpolation
-    // syntax `\(placeholder: .object)` rendered as the literal string `(null)`
-    // when read via `String(localized:)`, which made the production card
-    // surface "Update order #(null)" instead of "Update order #42".
-    // Pin every summary template flattens to a substituted string with no `(null)`.
 
     @Test
     func test_build_when_orders_update_then_summary_flattened_substitutes_args() throws {
@@ -666,21 +561,250 @@ struct DefaultConfirmationPreviewBuilderTests {
     }
 
     @Test
-    func test_build_when_product_variations_update_then_summary_flattened_substitutes_args() throws {
+    func test_build_when_products_update_then_summary_flattened_substitutes_count() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()
 
         // When
         let preview = builder.build(
-            toolName: ProductVariationsUpdateTool.name,
-            arguments: #"{"product_id":7,"id":15,"regular_price":"19.99"}"#,
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":7,"sale_price":"5"},{"id":8,"sale_price":"5"}]}"#,
             snapshot: nil
         )
 
         // Then
         let summary = try #require(preview).summary.flattened()
         #expect(!summary.contains("(null)"))
-        #expect(summary.contains("15"))
-        #expect(summary.contains("7"))
+        #expect(summary.contains("2"))
+    }
+
+    // MARK: - Products update concrete values
+
+    @Test
+    func test_build_when_products_update_sale_price_then_summary_includes_formatted_price() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":12,"sale_price":"19.99"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(field.value == .raw("19.99"))
+        #expect(unwrapped.flattenedSummary().contains("19.99"))
+    }
+
+    @Test
+    func test_build_when_products_update_sale_price_is_empty_then_summary_includes_cleared_marker() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":12,"sale_price":""}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(field.value.flattened() == "Cleared")
+    }
+
+    @Test
+    func test_build_when_products_update_percent_discount_then_summary_includes_percent() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":12,"percent_discount":10}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "percent_discount" }))
+        #expect(field.value.flattened() == "10% off")
+    }
+
+    @Test
+    func test_build_when_products_update_status_then_summary_includes_humanized_status() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":12,"status":"draft"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "status" }))
+        #expect(field.value == .raw("Draft"))
+    }
+
+    @Test
+    func test_build_when_products_update_status_publish_then_value_is_humanized_to_published() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":12,"status":"publish"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "status" }))
+        #expect(field.value == .raw("Published"))
+    }
+
+    @Test
+    func test_build_when_products_update_stock_status_then_summary_includes_humanized_label() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":12,"stock_status":"outofstock"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "stock_status" }))
+        #expect(field.value == .raw("Out of stock"))
+    }
+
+    @Test
+    func test_build_when_products_update_stock_quantity_then_value_is_decimal_string() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":12,"stock_quantity":5}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "stock_quantity" }))
+        #expect(field.value == .raw("5"))
+    }
+
+    @Test
+    func test_build_when_products_update_name_and_sku_then_values_render_as_raw() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":12,"name":"Premium Cashmere Scarf","sku":"PCS-BLK-01"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let nameField = try #require(unwrapped.fields.first(where: { $0.name == "name" }))
+        #expect(nameField.value == .raw("Premium Cashmere Scarf"))
+        let skuField = try #require(unwrapped.fields.first(where: { $0.name == "sku" }))
+        #expect(skuField.value == .raw("PCS-BLK-01"))
+    }
+
+    @Test
+    func test_build_when_products_update_regular_price_then_field_value_is_raw_decimal_string() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":12,"regular_price":"29.99"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "regular_price" }))
+        #expect(field.value == .raw("29.99"))
+    }
+
+    @Test
+    func test_build_when_products_update_multi_entry_then_summary_includes_count_and_field_union() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":1,"percent_discount":15,"status":"draft"},{"id":2,"sale_price":"9.99"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        #expect(unwrapped.isBulk == true)
+        #expect(unwrapped.summary.flattened() == "Update 2 products")
+        let names = unwrapped.fields.map(\.name)
+        #expect(Set(names) == ["percent_discount", "status", "sale_price"])
+        // Each key is set by exactly one entry, so values agree across entries that set them.
+        let percentField = try #require(unwrapped.fields.first(where: { $0.name == "percent_discount" }))
+        #expect(percentField.value.flattened() == "15% off")
+        let statusField = try #require(unwrapped.fields.first(where: { $0.name == "status" }))
+        #expect(statusField.value == .raw("Draft"))
+        let saleField = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(saleField.value == .raw("9.99"))
+    }
+
+    @Test
+    func test_build_when_products_update_field_values_diverge_then_renders_varies_per_item() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":1,"sale_price":"19.99"},{"id":2,"sale_price":"5.00"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let saleField = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(saleField.value.flattened() == "varies per item")
+    }
+
+    @Test
+    func test_build_when_products_update_field_values_uniform_then_renders_value() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"id":1,"sale_price":"10.00"},{"id":2,"sale_price":"10.00"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let saleField = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(saleField.value == .raw("10.00"))
     }
 }

@@ -555,13 +555,13 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
     func test_isARParcelFittingAvailable_for_all_flag_permutations() {
         let cases: [(Bool, Bool, Bool, Bool)] = [
             (false, false, false, false),
-            (false, false, true,  false),
-            (false, true,  false, false),
-            (false, true,  true,  true),
-            (true,  false, false, false),
-            (true,  false, true,  true),
-            (true,  true,  false, false),
-            (true,  true,  true,  true),
+            (false, false, true, false),
+            (false, true, false, false),
+            (false, true, true, true),
+            (true, false, false, false),
+            (true, false, true, true),
+            (true, true, false, false),
+            (true, true, true, true),
         ]
 
         for (remoteFF, explatTreatment, localFF, expected) in cases {

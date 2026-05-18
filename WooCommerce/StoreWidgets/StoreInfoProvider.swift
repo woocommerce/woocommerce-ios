@@ -54,14 +54,18 @@ final class StoreInfoProvider {
         let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
         let service = StoreInfoDataService(credentials: dependencies.credentials)
         do {
-            let statsPeriod = try await service.fetchStats(
+            async let statsPeriodRequest = service.fetchStats(
                 for: dependencies.store.storeID,
                 dateRange: dateRange.serviceDateRange(timezone: dependencies.store.storeTimeZone)
             )
+            async let storeRequest = Self.refreshedStoreMetadata(dependencies.store, service: service)
+            let statsPeriod = try await statsPeriodRequest
+            let store = await storeRequest
+            let updatedDependencies = Dependencies(credentials: dependencies.credentials, store: store)
             let entry = Self.dataEntry(
                 for: statsPeriod,
                 dateRange: dateRange,
-                with: dependencies,
+                with: updatedDependencies,
                 metrics: metrics,
                 theme: theme
             )
@@ -70,6 +74,23 @@ final class StoreInfoProvider {
             // WooFoundation does not expose `DDLOG` types. Should we include them?
             print("⛔️ Error fetching widget stats: \(error)")
             return Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
+        }
+    }
+
+    static func refreshedStoreMetadata(_ store: StoreMetadata,
+                                       service: StoreInfoDataService,
+                                       currencyCache: WidgetSiteCurrencyCache = WidgetSiteCurrencyCache()) async -> StoreMetadata {
+        guard let siteID = store.siteIDNeedingCurrencySettingsRefresh else {
+            return store
+        }
+
+        do {
+            let currencySettings = try await service.fetchGeneralSettings(siteID: siteID)
+            currencyCache.save(currencySettings, forSiteID: siteID)
+            return store.replacingCurrencySettings(currencySettings)
+        } catch {
+            print("⛔️ Error fetching widget currency settings: \(error)")
+            return store
         }
     }
 }
@@ -133,7 +154,7 @@ private extension StoreInfoDataService.Stats {
     }
 }
 
-private extension StoreInfoProvider {
+extension StoreInfoProvider {
 
     /// Dependencies needed by the `StoreInfoProvider`
     ///
@@ -147,6 +168,15 @@ private extension StoreInfoProvider {
         let storeName: String
         let storeCurrencySettings: CurrencySettings
         let storeTimeZone: TimeZone
+        let siteIDNeedingCurrencySettingsRefresh: Int64?
+
+        func replacingCurrencySettings(_ currencySettings: CurrencySettings) -> StoreMetadata {
+            StoreMetadata(storeID: storeID,
+                          storeName: storeName,
+                          storeCurrencySettings: currencySettings,
+                          storeTimeZone: storeTimeZone,
+                          siteIDNeedingCurrencySettingsRefresh: nil)
+        }
     }
 
     /// Fetches the required dependencies from the keychain and the shared users default.
@@ -188,7 +218,8 @@ private extension StoreInfoProvider {
 
     static func selectedStoreMetadata(defaultStore: StoreMetadata,
                                       selectedStoreID: StoreStatsStoreEntity.ID?,
-                                      sites: [WidgetSite]) -> StoreMetadata {
+                                      sites: [WidgetSite],
+                                      currencyCache: WidgetSiteCurrencyCache = WidgetSiteCurrencyCache()) -> StoreMetadata {
         guard let selectedStoreID,
               StoreStatsStoreSelection.isDefaultStoreEntityID(selectedStoreID) == false,
               let selectedSiteID = Int64(selectedStoreID),
@@ -196,17 +227,27 @@ private extension StoreInfoProvider {
             return defaultStore
         }
 
-        let currencySettings: CurrencySettings = {
+        let currencyResult: (settings: CurrencySettings, siteIDNeedingRefresh: Int64?) = {
             guard selectedSite.siteID != defaultStore.storeID else {
-                return defaultStore.storeCurrencySettings
+                return (defaultStore.storeCurrencySettings, nil)
             }
-            return selectedSite.currencySettings ?? defaultStore.storeCurrencySettings
+
+            if let currencySettings = selectedSite.currencySettings {
+                return (currencySettings, nil)
+            }
+
+            if let currencySettings = currencyCache.currencySettings(forSiteID: selectedSite.siteID) {
+                return (currencySettings, nil)
+            }
+
+            return (defaultStore.storeCurrencySettings, selectedSite.siteID)
         }()
 
         return StoreMetadata(storeID: selectedSite.siteID,
                              storeName: selectedSite.name,
-                             storeCurrencySettings: currencySettings,
-                             storeTimeZone: selectedSite.timezone)
+                             storeCurrencySettings: currencyResult.settings,
+                             storeTimeZone: selectedSite.timezone,
+                             siteIDNeedingCurrencySettingsRefresh: currencyResult.siteIDNeedingRefresh)
     }
 
     static func defaultStoreMetadata(sites: [WidgetSite]) -> StoreMetadata? {
@@ -220,7 +261,8 @@ private extension StoreInfoProvider {
         return StoreMetadata(storeID: storeID,
                              storeName: storeName,
                              storeCurrencySettings: storeCurrencySettings,
-                             storeTimeZone: sites.first(where: { $0.siteID == storeID })?.timezone ?? .current)
+                             storeTimeZone: sites.first(where: { $0.siteID == storeID })?.timezone ?? .current,
+                             siteIDNeedingCurrencySettingsRefresh: nil)
     }
 }
 

@@ -26,17 +26,16 @@ struct ARSizingFooterHUD: View {
 
             Spacer()
 
-            if !hintsVisible {
-                Button(action: onShowHints) {
-                    Image(systemName: "info.circle")
-                        .font(.system(size: 14))
-                        .foregroundStyle(.white)
-                        .frame(width: 22, height: 22)
-                        .background(Color.white.opacity(0.10), in: Circle())
-                }
-                .accessibilityLabel(Localization.showHints)
-                .transition(.scale(scale: 0.7).combined(with: .opacity))
+            Button(action: onShowHints) {
+                Image(systemName: "info.circle")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.white)
+                    .frame(width: 22, height: 22)
+                    .background(Color.white.opacity(0.10), in: Circle())
             }
+            .accessibilityLabel(Localization.showHints)
+            .opacity(hintsVisible ? 0 : 1)
+            .allowsHitTesting(!hintsVisible)
         }
         .animation(.easeOut(duration: 0.18), value: hintsVisible)
     }

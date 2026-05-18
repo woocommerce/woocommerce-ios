@@ -172,8 +172,9 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         await viewModel.loadPackages()
 
         // Then
-        XCTAssertEqual(mockStores.receivedActions.count, 1)
-        assertThat(mockStores.receivedActions.first, isAnInstanceOf: WooShippingAction.self)
+        XCTAssertEqual(mockStores.receivedActions.count, 2)
+        assertThat(mockStores.receivedActions.first, isAnInstanceOf: FeatureFlagAction.self)
+        assertThat(mockStores.receivedActions.last, isAnInstanceOf: WooShippingAction.self)
     }
 
     @MainActor
@@ -549,16 +550,17 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
 
     // MARK: - AR Parcel Fitting Gating
 
+    // localFF AND (remoteFF OR explatTreatment)
     // (remoteFF, explatTreatment, localFF, expected)
     func test_isARParcelFittingAvailable_for_all_flag_permutations() {
         let cases: [(Bool, Bool, Bool, Bool)] = [
             (false, false, false, false),
-            (false, false, true,  true),
-            (false, true,  false, true),
+            (false, false, true,  false),
+            (false, true,  false, false),
             (false, true,  true,  true),
-            (true,  false, false, true),
+            (true,  false, false, false),
             (true,  false, true,  true),
-            (true,  true,  false, true),
+            (true,  true,  false, false),
             (true,  true,  true,  true),
         ]
 

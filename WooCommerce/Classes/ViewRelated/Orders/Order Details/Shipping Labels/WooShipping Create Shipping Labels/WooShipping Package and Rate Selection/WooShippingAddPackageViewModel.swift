@@ -141,16 +141,16 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     // MARK: - AR Parcel Fitting
 
-    /// Resolves AR parcel fitting availability using a cascade:
-    /// remote FF (includes override store) → ExPlat → local FF.
-    /// The first gate returning `true` enables the feature.
+    /// Resolves AR parcel fitting availability:
+    /// localFF AND (remoteFF OR ExPlat).
+    /// Local FF gates client capability. Remote FF and ExPlat control enablement.
     var isARParcelFittingAvailable: Bool {
         guard isARWorldTrackingSupported else {
             return false
         }
-        return isRemoteARParcelFittingEnabled
-            || abTestVariationProvider.variation(for: .arParcelFitting) == .treatment
-            || featureFlagService.isFeatureFlagEnabled(.arParcelFitting)
+        return featureFlagService.isFeatureFlagEnabled(.arParcelFitting)
+            && (isRemoteARParcelFittingEnabled
+                || abTestVariationProvider.variation(for: .arParcelFitting) == .treatment)
     }
 
     var arDimensionUnit: UnitLength {

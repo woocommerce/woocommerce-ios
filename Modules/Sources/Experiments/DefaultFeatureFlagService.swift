@@ -124,7 +124,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .wooAIAssistant:
             return true
         case .arParcelFitting:
-            return !buildConfig.isProduction
+            return true
         case .smarterNotifications:
             return !buildConfig.isProduction
         default:

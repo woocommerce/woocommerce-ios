@@ -279,16 +279,13 @@ public struct AIApiProxyChatService: AIChatService {
         let httpStatus = envelope.data?.status
         let codeString = httpStatus.map(String.init) ?? envelope.code
         switch envelope.code {
-        case "ai_api_unauthorized_error":
+        case "rest_unauthorized":
             return AssistantError(kind: .auth, code: codeString, message: Localization.unauthorized)
-        case "ai_api_plan_required_error":
-            return AssistantError(kind: .auth, code: codeString, message: Localization.planRequired)
-        case "ai_api_blog_access_denied_error":
-            return AssistantError(kind: .auth, code: codeString, message: Localization.blogAccessDenied)
-        case "ai_api_user_rate_limit_error":
-            return AssistantError(kind: .rateLimit, code: codeString, message: Localization.userRateLimit)
-        case "ai_api_blog_rate_limit_error":
-            return AssistantError(kind: .rateLimit, code: codeString, message: Localization.blogRateLimit)
+        case "rest_forbidden":
+            return AssistantError(kind: .auth, code: codeString, message: envelope.message)
+        case "woo_mobile_ai_user_rate_limit":
+            // Server message distinguishes minute vs month; pass it through verbatim.
+            return AssistantError(kind: .rateLimit, code: codeString, message: envelope.message)
         default:
             let kind = httpStatus.map(HTTPStatusClassification.errorKind(forStatusCode:)) ?? .upstreamFailure
             return AssistantError(kind: kind,
@@ -321,27 +318,7 @@ extension AIApiProxyChatService {
         static let unauthorized = NSLocalizedString(
             "ai.assistant.networking.proxy.unauthorized",
             value: "WPCOM credentials missing or expired.",
-            comment: "Surfaced when the AI proxy rejects the request with ai_api_unauthorized_error."
-        )
-        static let planRequired = NSLocalizedString(
-            "ai.assistant.networking.proxy.plan_required",
-            value: "AI Assistant isn't included in this site's plan.",
-            comment: "Surfaced when the AI proxy rejects the request with ai_api_plan_required_error."
-        )
-        static let blogAccessDenied = NSLocalizedString(
-            "ai.assistant.networking.proxy.blog_access_denied",
-            value: "AI Assistant requires the Manage WooCommerce capability on this store.",
-            comment: "Surfaced when the AI proxy rejects the request with ai_api_blog_access_denied_error."
-        )
-        static let userRateLimit = NSLocalizedString(
-            "ai.assistant.networking.proxy.user_rate_limit",
-            value: "You're sending messages too quickly. Try again in a minute.",
-            comment: "Surfaced when the AI proxy rejects the request with ai_api_user_rate_limit_error."
-        )
-        static let blogRateLimit = NSLocalizedString(
-            "ai.assistant.networking.proxy.blog_rate_limit",
-            value: "This store has reached its monthly AI Assistant request limit.",
-            comment: "Surfaced when the AI proxy rejects the request with ai_api_blog_rate_limit_error."
+            comment: "Surfaced when the AI proxy rejects the request with rest_unauthorized."
         )
     }
 }

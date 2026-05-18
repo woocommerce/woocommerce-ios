@@ -99,12 +99,14 @@ final class ARParcelSizingViewModel {
 
     func onBoxPlaced() {
         hintsVisible = !hasSeenHints
+        if !hasSeenHints {
+            hasSeenHints = true
+            defaults.set(true, forKey: Constants.hintsSeenKey)
+        }
     }
 
     func dismissHints() {
         hintsVisible = false
-        hasSeenHints = true
-        defaults.set(true, forKey: Constants.hintsSeenKey)
     }
 
     func showHints() {

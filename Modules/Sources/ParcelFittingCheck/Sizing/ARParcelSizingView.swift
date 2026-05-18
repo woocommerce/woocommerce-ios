@@ -68,6 +68,7 @@ struct ARParcelSizingView: View {
                 }
             }
             .animation(.easeOut(duration: 0.22), value: phase)
+            .animation(.easeOut(duration: 0.22), value: viewModel.hintsVisible)
         }
         .background(Color.black)
         .onChange(of: scenePhase) { _, newPhase in

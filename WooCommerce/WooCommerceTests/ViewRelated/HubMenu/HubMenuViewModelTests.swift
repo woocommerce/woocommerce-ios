@@ -545,9 +545,9 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         waitUntil {
-            viewModel.generalElements.firstIndex(where: { item in
+            !viewModel.generalElements.contains(where: { item in
                 item.id == HubMenuViewModel.Bookings.id
-            }) == nil
+            })
         }
 
         // Then

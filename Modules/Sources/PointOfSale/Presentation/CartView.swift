@@ -1,10 +1,20 @@
 import SwiftUI
 import WooFoundation
+import struct Yosemite.POSCustomAmount
 
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posCurrencyProvider) private var currencyProvider
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let viewHelper = CartViewHelper()
+
+    /// Optional override for triggering the barcode-scanner setup from outside CartView.
+    /// On phone this lets the dashboard host the scanner cover *above* the cart sheet (the cart
+    /// sheet's POSSheet binding hides itself whenever a descendant cover is presented, which
+    /// otherwise tears CartView down and the inner cover with it). On iPad this is nil and
+    /// the cover is presented from CartView directly.
+    var onPresentBarcodeScannerSetup: (() -> Void)? = nil
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
@@ -26,6 +36,7 @@ struct CartView: View {
     @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {
+        @Bindable var posModel = posModel
         ZStack {
             VStack(spacing: 0) {
                 CartHeaderView(
@@ -57,8 +68,34 @@ struct CartView: View {
                 }
             }
             .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
+            // iPad path only — on phone the dashboard hosts the cover above the cart sheet via
+            // `onPresentBarcodeScannerSetup`, otherwise POSSheet's coverManager interaction would
+            // tear CartView down before the cover fully presents.
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
+            }
+            // Cart-side edit only: the add path pushes from the products list and tracks
+            // its own `mode: .add` analytics inline in `ItemListView`.
+            //
+            // iPad-only here. On phone the cart is presented as a sheet; presenting a
+            // .posFullScreenCover from inside it triggers POSSheet's coverManager check
+            // and the sheet dismisses CartView along with the cover. The dashboard hosts
+            // the same cover for compact width via `posModel.editingCustomAmount` directly.
+            .if(horizontalSizeClass != .compact) { view in
+                view.posFullScreenCover(item: $posModel.editingCustomAmount) { customAmount in
+                    AddCustomAmountView(
+                        currencySettings: currencyProvider.currencySettings,
+                        editing: customAmount,
+                        backButtonStyle: .close,
+                        // Explicit-dismiss path (back button + post-submit). System-driven dismissal
+                        // already nils the `item` binding; this closure handles the user-driven cases
+                        // where `submit()` calls `onDismiss()` to close the cover.
+                        onDismiss: { posModel.editingCustomAmount = nil },
+                        onSubmit: { updated in
+                            posModel.upsertCustomAmount(updated, mode: .edit)
+                        }
+                    )
+                }
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)
@@ -247,7 +284,11 @@ private extension CartView {
                 }
                 Button(action: {
                     analytics.track(.pointOfSaleEmptyCartSetupScannerTapped)
-                    showBarcodeScanningModal = true
+                    if let onPresentBarcodeScannerSetup {
+                        onPresentBarcodeScannerSetup()
+                    } else {
+                        showBarcodeScanningModal = true
+                    }
                 }, label: {
                     HStack {
                         Text(Localization.barcodeScanningSetup)
@@ -416,7 +457,7 @@ private struct CustomAmountsCartSection: View {
                 let isInteractive = posModel.orderStage == .building
                 CustomAmountRowView(
                     customAmount: customAmount,
-                    onEdit: isInteractive ? { posModel.presentEditCustomAmount(customAmount) } : nil,
+                    onEdit: isInteractive ? { posModel.editingCustomAmount = customAmount } : nil,
                     onRemove: isInteractive ? {
                         analytics.track(
                             event: .PointOfSale.itemRemovedFromCart(

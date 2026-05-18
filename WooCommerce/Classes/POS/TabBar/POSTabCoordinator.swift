@@ -271,6 +271,23 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
+                // Resolve TTP eligibility once, up front, so we can hand the right
+                // preferred method down to POSPaymentModel. The same checker is also
+                // passed in for the availability controller that drives the buttons /
+                // hero, but POSPaymentModel needs the answer synchronously to know
+                // whether to skip the BT auto-collect on checkout entry.
+                let tapToPayAvailabilityChecker = POSTapToPayAvailabilityChecker(
+                    siteID: siteID,
+                    eligibilityService: POSEligibilityService()
+                )
+                let preferredConnectionMethod: CardReaderConnectionMethod
+                switch await tapToPayAvailabilityChecker.checkAvailability() {
+                case .available:
+                    preferredConnectionMethod = .tapToPay
+                case .unknown, .unavailable:
+                    preferredConnectionMethod = .bluetooth
+                }
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -305,6 +322,8 @@ private extension POSTabCoordinator {
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
                     sunsetWarningChecker: sunsetWarningChecker,
+                    tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
+                    preferredConnectionMethod: preferredConnectionMethod,
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )

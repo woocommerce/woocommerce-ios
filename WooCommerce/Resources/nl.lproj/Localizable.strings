@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-24 17:58:01+0000 */
+/* Translation-Revision-Date: 2026-05-13 16:55:51+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -9828,6 +9828,24 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
 "cardReaderSettingsConnectedViewController.reconnectingText" = "Opnieuw verbinding maken met kaartlezer ...";
 
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "Annuleren";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "Bevestigen en doorgaan";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "Er is een onverwacht fout opgetreden bij het bevestigen van je acceptatie. Probeer het nog eens.";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "Fout bij bevestiging van acceptatie";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "Opnieuw proberen";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "Verzenden vanaf";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "Noteer transactiedetails in bestelnotitie";
 
@@ -9977,6 +9995,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "Nooit een nieuwe bestelling missen";
+
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "Chat met het ondersteuningsteam";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Problemen met verbinding oplossen";
@@ -10582,6 +10603,18 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "Verberg deze inhoud";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "Ik ga akkoord met de %1$@.";
+
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "Om FedEx-verzendlabels aan te schaffen, moet je akkoord gaan met de volgende voorwaarden:";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "Servicevoorwaarden FedEx";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "Servicevoorwaarden FedEx";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "Toepassen";
 
@@ -10815,6 +10848,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "De lezer heeft na ontdekking geen IP-adres gevonden en verbinding is niet mogelijk.";
+
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "Krijg hulp van onze AI-assistent";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "Chat met het ondersteuningsteam";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "Bekijk eerdere ondersteuningsgesprekken opnieuw";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "Chatgeschiedenis";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "Test of je site werkt met de app";
@@ -11589,9 +11634,6 @@ which should be translated separately and considered part of this sentence. */
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Fysiek betalen";
 
-/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "Accepteer fysieke betalingen voor slechts 2,70%% + $ 0,10 per transactie. Upgrade naar Pro om toegang te krijgen tot Tap-to-Pay op je telefoon en ons volledige point-of-sale-systeem met realtime synchronisatie van voorraad en bestellingen. %1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "De bestelling werd met cash betaald. De klant betaalde %1$@. Het wisselgeld was %2$@.";
 
@@ -11642,6 +11684,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "Bewerken";
+
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "Tel bestellingen op de datum waarop ze als voltooid zijn gemarkeerd.";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "Afgeronde bestellingen";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "Kies welke bestellingen je wilt opnemen in je prestatiestatistieken voor het geselecteerde tijdsbereik.";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "Dit is een instelling voor de hele winkel, die ook de optie 'Datumtype' beheert in de instellingen voor beheerdersanalyses van WooCommerce.";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "Tel bestellingen op de datum waarop de bestelling is betaald.";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "Betaalde bestellingen";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "Tel bestellingen op de datum waarop ze zijn geplaatst of aangemaakt.";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "Bestellingen geplaatst";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "Datum besteltype";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "Kon het besteltype niet bijwerken. Probeer het nog eens.";
 
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "%1$@ bijwerken";
@@ -12039,9 +12111,6 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Coupon niet toegepast";
 
-/* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "Reserveringen";
-
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "Opnieuw koppelen annuleren";
 
@@ -12149,12 +12218,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error when trying to send a receipt before an order has been loaded in the Point of Sale */
 "pointOfSale.paymentError.noOrder" = "Nog geen bestelling geladen. Begin een betaling voordat je een betalingsbewijs verzendt.";
-
-/* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "Terug naar reservering";
-
-/* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "Gereed";
 
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "Bestelling bewerken";
@@ -12351,6 +12414,33 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Winkel";
 
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "Aangepast bedrag toevoegen";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "Bedrag";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "Btw rekenen";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "Aangepast bedrag";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "Naam";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "Aangepast bedrag";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "Aangepast bedrag";
+
+/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.message" = "Tik hier om servicekosten, fooi of een aangepaste regel aan de bestelling toe te voegen.";
+
+/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.title" = "Een aangepast bedrag toevoegen";
+
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Streepjescode scannen";
 
@@ -12519,209 +12609,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "Test je scanner";
 
-/* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
-"pos.booking.durationHours" = "%du";
-
-/* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
-"pos.booking.durationHoursAndMinutes" = "%1$du %2$d m";
-
-/* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
-"pos.booking.durationMinutes" = "%d min.";
-
-/* POS booking attendance status label when the customer attended. */
-"pos.bookingAttendanceDisplay.attended" = "Beheerd";
-
-/* POS booking attendance status label when the customer has not attended. */
-"pos.bookingAttendanceDisplay.unattended" = "Onbeheerd";
-
-/* Accessibility label for the next day button in the bookings date bar. */
-"pos.bookingDateBar.nextDay" = "Volgende dag";
-
-/* Accessibility label for the previous day button in the bookings date bar. */
-"pos.bookingDateBar.previousDay" = "Vorige dag";
-
-/* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
-"pos.bookingDateBar.selectedDate" = "%1$@, tik om agenda te openen";
-
-/* Button to add a private note to a booking. */
-"pos.bookingDetailView.addNoteButton" = "Notitie toevoegen";
-
-/* Section title for the attendance status in booking details. */
-"pos.bookingDetailView.attendanceStatusTitle" = "Aanwezigheidsstatus";
-
-/* Subtitle text below the attendance section explaining why marking attendance matters. */
-"pos.bookingDetailView.attendanceSubtitle" = "Markeer aanwezigheid om je rapporten accuraat te houden en reserveringstrends te herkennen.";
-
-/* Error message shown below attendance section when updating attendance status fails. */
-"pos.bookingDetailView.attendanceUpdateError" = "Bijwerken van aanwezigheid mislukt. Probeer het nog eens.";
-
-/* Label for the attended pill button in booking attendance section. */
-"pos.bookingDetailView.attendedPill" = "Beheerd";
-
-/* Section title for booking details showing the booking ID number. %lld is the booking ID. */
-"pos.bookingDetailView.bookingIdTitle" = "Reserveringsnr. %lld";
-
-/* Label for the private booking note section in booking details. */
-"pos.bookingDetailView.bookingNoteLabel" = "Notitie bij reservering";
-
-/* Subtitle text below the booking note section explaining the note is private. */
-"pos.bookingDetailView.bookingNoteSubtitle" = "Dit is een privébericht. Het wordt niet gedeeld met de klant.";
-
-/* Menu action to cancel a booking from the POS booking detail view. */
-"pos.bookingDetailView.cancelBookingAction" = "Annuleer reservering";
-
-/* Button to initiate payment collection for a booking. */
-"pos.bookingDetailView.collectPaymentButton" = "Betaling innen";
-
-/* Accessibility label for the copy email button in booking details. */
-"pos.bookingDetailView.copyEmail.accessibilityLabel" = "E-mailadres kopiëren";
-
-/* Accessibility label for the copy phone button in booking details. */
-"pos.bookingDetailView.copyPhone.accessibilityLabel" = "Telefoonnummer kopiëren";
-
-/* Section title for the customer details in booking details. */
-"pos.bookingDetailView.customerTitle" = "Klant";
-
-/* Label for the duration in booking details. */
-"pos.bookingDetailView.durationLabel" = "Duur";
-
-/* Button to edit an existing private note on a booking. */
-"pos.bookingDetailView.editNoteButton" = "Notitie bewerken";
-
-/* Accessibility label for customer email row in booking details. %1$@ is the email address. */
-"pos.bookingDetailView.email.accessibilityLabel" = "E-mail: %1$@";
-
-/* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
-"pos.bookingDetailView.guestBadge" = "Gast";
-
-/* Menu action to issue a full refund for a booking. */
-"pos.bookingDetailView.issueRefundAction" = "Restitueren";
-
-/* Label for the location in booking details. */
-"pos.bookingDetailView.locationLabel" = "Locatie";
-
-/* Accessibility label for the overflow actions menu button in booking details. */
-"pos.bookingDetailView.moreActions.accessibilityLabel" = "Meer acties";
-
-/* Label for the customer note in booking details. */
-"pos.bookingDetailView.noteLabel" = "Notitie";
-
-/* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
-"pos.bookingDetailView.phone.accessibilityLabel" = "Telefoon: %1$@";
-
-/* Label for the team member / staff resource in booking details. */
-"pos.bookingDetailView.teamMemberLabel" = "Teamlid";
-
-/* Label for the unattended pill button in booking attendance section. */
-"pos.bookingDetailView.unattendedPill" = "Onbeheerd";
-
-/* Button to view the linked order from the booking detail header. */
-"pos.bookingDetailView.viewOrderAction" = "Bestelling weergeven";
-
-/* Text appearing in the booking details pane when no booking is selected. */
-"pos.bookingDetailsEmptyView.description" = "Tik op een reservering om de details te bekijken";
-
-/* POS booking lifecycle status label for active bookings. */
-"pos.bookingLifecycleStatus.booked" = "Geboekt";
-
-/* POS booking lifecycle status label for canceled bookings. */
-"pos.bookingLifecycleStatus.canceled" = "Geannuleerd";
-
-/* POS booking lifecycle status label for completed bookings. */
-"pos.bookingLifecycleStatus.completed" = "Voltooid";
-
-/* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
-"pos.bookingList.failedToLoadBookingsNextPageTitle" = "Kan niet meer reserveringen laden";
-
-/* Text appearing on the booking list screen when there's an error loading bookings. */
-"pos.bookingList.failedToLoadBookingsTitle" = "Kan reserveringen niet laden";
-
-/* Title at the header for the Bookings view. */
-"pos.bookingListView.bookingsTitle" = "Reserveringen";
-
-/* Subtitle appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchSubtitle" = "We konden geen reserveringen vinden die aan je zoekopdracht voldoen. Pas je zoekterm aan.";
-
-/* Title appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchTitle" = "Geen reserveringen gevonden";
-
-/* Subtitle appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsSubtitle.2" = "Alle reserveringen die gepland zijn voor deze datum zullen hier verschijnen.";
-
-/* Title appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsTitle.2" = "Geen reserveringen voor deze dag";
-
-/* Accessibility label for the search button in bookings list. */
-"pos.bookingListView.searchButton.accessibilityLabel" = "Zoek reserveringen";
-
-/* Placeholder for a search field in the Bookings view. */
-"pos.bookingListView.searchFieldPlaceholder" = "Zoek reserveringen";
-
-/* Button label shown when no changes have been made to the booking note yet. */
-"pos.bookingNoteView.addButton" = "Toevoegen";
-
-/* Title shown at the top of the booking note editor screen when adding a new note. */
-"pos.bookingNoteView.addTitle" = "Notitie toevoegen";
-
-/* Title shown at the top of the booking note editor screen when editing an existing note. */
-"pos.bookingNoteView.editTitle" = "Notitie bewerken";
-
-/* Placeholder text shown in the booking note text field when empty. */
-"pos.bookingNoteView.placeholder" = "Maak notitie";
-
-/* Button to save the booking note. */
-"pos.bookingNoteView.saveButton" = "Opslaan";
-
-/* Error message shown when saving a booking note fails. */
-"pos.bookingNoteView.saveError" = "Opslaan mislukt Probeer het opnieuw.";
-
-/* POS booking payment status label when the booking order payment authorization has been voided. */
-"pos.bookingPaymentStatus.authorizationVoided" = "Autorisatie nietig verklaard";
-
-/* POS booking payment status label when the booking order payment is authorized but not yet captured. */
-"pos.bookingPaymentStatus.authorized" = "Geautoriseerd";
-
-/* POS booking payment status label when the booking order payment failed. */
-"pos.bookingPaymentStatus.failed" = "Mislukt";
-
-/* POS booking payment status label when the booking is paid. */
-"pos.bookingPaymentStatus.paid" = "Betaald";
-
-/* POS booking payment status label when the booking order has been refunded. */
-"pos.bookingPaymentStatus.refunded" = "Terugbetaald";
-
-/* POS booking payment status label when the booking is unpaid. */
-"pos.bookingPaymentStatus.unpaid" = "Onbetaald";
-
-/* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
-"pos.bookingsContainer.cancelBookingSuccess.notice" = "Boeking is geannuleerd.";
-
-/* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessage" = "Reservering #%1$@ voor %2$@ op %3$@ wordt geannuleerd.";
-
-/* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "Reservering #%1$@ voor %2$@ op %3$@ voor %4$@ wordt geannuleerd.";
-
-/* Accessibility label for close button on cancel booking confirmation modal. */
-"pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "Sluiten";
-
-/* Button to confirm and proceed with booking cancellation. */
-"pos.cancelBookingConfirmation.confirmButton" = "Ja, reservering annuleren";
-
-/* Secondary message informing that the customer will receive an email notification about the cancellation. */
-"pos.cancelBookingConfirmation.customerNotificationMessage" = "De klant wordt via e-mail op de hoogte gesteld.";
-
-/* Error message shown inline in the cancel booking confirmation modal when cancellation fails. */
-"pos.cancelBookingConfirmation.inlineErrorMessage" = "Kan de reservering niet annuleren. Probeer het nog eens.";
-
-/* Button to dismiss the cancel booking confirmation and keep the booking. */
-"pos.cancelBookingConfirmation.keepButton" = "Nee, bewaar hem";
-
-/* Title for the cancel booking confirmation modal in POS. */
-"pos.cancelBookingConfirmation.title" = "Deze reservering annuleren?";
-
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce-instellingen";
+
+/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
+"pos.cartView.addCustomAmount.header.accessibilityLabel" = "Aangepast bedrag toevoegen";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Tik op een product om het \n toe te voegen aan de winkelwagen of ";
@@ -12765,23 +12657,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Verkooppuntmodus afsluiten?";
 
-/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabPricingInfo" = "Accepteer fysieke betalingen voor slechts 2,70% + $ 0,10 per transactie.";
-
-/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabUpgradePrompt" = "Upgrade naar Pro om toegang te krijgen tot Tap-to-Pay op je telefoon en ons volledige point-of-sale-systeem met realtime synchronisatie van voorraad en bestellingen.";
-
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "POS afsluiten";
 
 /* Button title to enable the POS feature switch and refresh POS eligibility check */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "POS-functie inschakelen";
-
-/* Button title to learn more about upgrading the plan for POS access */
-"pos.ineligible.learnMore.button.title" = "Meer informatie";
-
-/* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
-"pos.ineligible.planUpgrade.title" = "Pro abonnement vereist";
 
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "Opnieuw proberen";
@@ -12806,9 +12686,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "Kan niet laden";
-
-/* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
-"pos.ineligible.upgradePlan.webview.title" = "Upgrade abonnement";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Controleer je internetverbinding en probeer het opnieuw.";
@@ -12987,8 +12864,8 @@ which should be translated separately and considered part of this sentence. */
 /* Description for refund via a specific payment method. %@ is the payment method name */
 "pos.orderListController.refund.viaPaymentMethodFormat" = "Via %@";
 
-/* Button text for opening an information view when orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle2" = "Meer informatie";
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "Vernieuwen";
 
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "We konden geen bestellingen vinden met die naam. Pas je zoekterm aan.";
@@ -12997,7 +12874,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Geen bestellingen gevonden";
 
 /* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle2" = "Ontdek hoe je de verkoop van je winkel kan verhogen.";
+"pos.orderListView.emptyOrdersSubtitle.3" = "Bestellingen verschijnen hier zodra je de verkoop van de POS verwerkt.";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "Nog geen bestellingen";
@@ -14129,11 +14006,23 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "Geen inkomsten voor geselecteerde data";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "Opent een onderste sheet om te wijzigen welke bestellingen zijn inbegrepen in je prestatietotalen.";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Bestellingen";
 
-/* Total sales stat label on dashboard — shows revenue including taxes and shipping. */
-"storePerformanceView.totalSales" = "Totale verkopen";
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "Opbrengsttype";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "Bruto";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "Netto";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "Totaal";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Kan de prestaties van je winkel niet weergeven";
@@ -14186,13 +14075,16 @@ which should be translated separately and considered part of this sentence. */
 /* Range title for the today store info widget */
 "storeWidgets.infoProvider.today" = "Vandaag";
 
-/* Conversion title label for the store info widget */
+/* Conversion rate metric title for the store info widget.
+   Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "Conversie";
 
-/* Orders title label for the store info widget */
+/* Orders metric title for the store info widget.
+   Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "Bestellingen";
 
-/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+/* Revenue metric title — gross revenue including taxes and shipping.
+   Total sales title label for the store info widget — shows revenue including taxes and shipping. */
 "storeWidgets.infoView.totalSales" = "Totale verkopen";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
@@ -14201,8 +14093,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
 "storeWidgets.infoView.viewMore" = "Meer weergeven";
 
-/* Visitors title label for the store info widget */
+/* Visitors metric title for the store info widget.
+   Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "Bezoekers";
+
+/* Average order value (AOV) metric title for the store info widget. */
+"storeWidgets.metric.averageOrderValue" = "Gemiddelde bestelwaarde";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "Verkochte artikelen";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "Netto omzet";
 
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "Inloggen";
@@ -14262,6 +14164,144 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Gratis proefabonnement";
 
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "Chat zonder titel";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "Je hebt nog niet met support gechat.";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "Chatgeschiedenis";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "Chat met het ondersteuningsteam";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "Alle controles zijn zonder problemen voltooid.";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "Neem contact op met de ondersteuning";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "Doorgaan met chatten";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "Diagnose voltooid";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "Fout";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "Het lijkt erop dat je extra hulp nodig hebt. Wil je contact opnemen met ons ondersteuningsteam?";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "Hallo! Ik ben je Woo Mobile Support-bot. Waar heb je vandaag problemen mee?";
+
+/* OK button in support chat error alert */
+"supportChatView.ok" = "OK";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "Voer een bericht in ...";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "Vorig gesprek wordt voortgezet";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "Diagnose wordt uitgevoerd...";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "Chat met het ondersteuningsteam";
+
+/* Error message shown when sending a support chat message fails */
+"supportChatViewModel.errorMessage" = "Er is iets misgegaan. Probeer het nog eens.";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "Hallo! Ik ben je Woo Mobile Support-bot. Is er iets waar ik je vandaag mee kan helpen?";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "Beschrijf je probleem in meer detail, zodat ik kan helpen.";
+
+/* Error message shown when loading a prior support chat transcript fails on resume */
+"supportChatViewModel.resumeErrorMessage" = "We konden het vorige gesprek niet laden. Je kan nog steeds een nieuw bericht verzenden.";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "Analyses inschakelen";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "Bestelmeldingen inschakelen";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "Instellingen openen";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "Apparaat registreren";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "Opnieuw proberen";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "Jetpack instellen";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "We konden je analyse-instelling niet controleren.";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "WooCommerce Analytics is niet ingeschakeld voor je winkel.\n\nAnalysegegevens zoals omzet- en bestelstatistieken zijn niet beschikbaar totdat deze zijn ingeschakeld.";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "We kunnen niet goed werken met de reactie van je site.";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "Je apparaat lijkt niet te zijn geregistreerd voor pushmeldingen.";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "Er lijkt een probleem te zijn met je site.\n\nNeem contact op met je hostingprovider voor verdere ondersteuning.";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "De Jetpack-plugin lijkt niet actief te zijn op je site.\n\nPushmeldingen vereisen een actieve Jetpack-verbinding.";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "Het lijkt erop dat je niet bent verbonden met het internet.\n\nZorg ervoor dat je wifi aan staat. Als je mobiele data gebruikt, zorg er dan voor dat deze is ingeschakeld in de instellingen van je apparaat.";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "Er is een probleem met je Jetpack-verbinding.";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "We konden je meldingsinstellingen niet controleren.";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "Pushmeldingen zijn niet toegestaan voor deze app.\n\nSchakel ze in de instellingen van je apparaat in om bestelmeldingen te ontvangen.";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "Meldingen van bestellingen zijn niet ingeschakeld voor deze winkel.\n\nSchakel ze in om meldingen te ontvangen wanneer nieuwe bestellingen binnenkomen.";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "Het duurt te lang voordat je site reageert.\n\nNeem contact op met je hostingprovider voor verdere ondersteuning.";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "We kunnen momenteel geen verbinding maken met WordPress.com.\n\nProbeer het over een paar minuten opnieuw.";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "Analyse-instelling wordt gecontroleerd";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "Internetverbinding";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "Producten ophalen in je winkel";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "Meldingsinstellingen controleren";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "Er wordt verbinding gemaakt met je site";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "De bestellingen van je site worden opgehaald";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "Er wordt verbinding gemaakt met de servers van WordPress.com";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "Duidelijk";
 
@@ -14297,6 +14337,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WooPayments support area option */
 "supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "Analyses laden";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "Bestellingen laden";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "Producten worden geladen";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "Overige";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "Pushmeldingen ontvangen";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "Systeemstatusrapport";
@@ -14547,9 +14602,6 @@ which should be translated separately and considered part of this sentence. */
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "Productgegevens bekijken";
 
-/* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.cancel" = "Annuleren";
-
 /* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
 "upsTermsView.checkbox1" = "Ik ga akkoord met de %1$@.";
 
@@ -14559,26 +14611,11 @@ which should be translated separately and considered part of this sentence. */
 /* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
 "upsTermsView.checkbox3" = "Ik ga ook akkoord met de %1$@.";
 
-/* Button to confirm all agreements on the UPS Terms and Conditions view */
-"upsTermsView.confirmButton" = "Bevestigen en doorgaan";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorMessage" = "Er is een onverwacht fout opgetreden bij het bevestigen van je acceptatie. Probeer het nog eens.";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorTitle" = "Fout bij bevestiging van acceptatie";
-
 /* Message on the UPS Terms and Conditions view */
 "upsTermsView.message" = "Je moet akkoord gaan met de volgende algemene voorwaarden om vanaf dit adres te kunnen verzenden met UPS®:";
 
 /* Link to the prohibited items on the UPS Terms and Conditions view */
 "upsTermsView.prohibitedItems" = "Verboden artikelen";
-
-/* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.retry" = "Opnieuw proberen";
-
-/* Title label for the origin address on the UPS Terms and Conditions view */
-"upsTermsView.shippingFrom" = "Verzenden vanaf";
 
 /* Link to the technology agreement on the UPS Terms and Conditions view */
 "upsTermsView.technologyAgreement" = "UPS®-technologieovereenkomst";

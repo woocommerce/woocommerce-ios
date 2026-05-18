@@ -19,10 +19,14 @@ public protocol AssistantBackendConfirming: AssistantBackend {
 public struct AssistantTurn: Sendable {
     public let id: String
     public let prompt: String
+    public let telemetryContext: AssistantTelemetryContext?
 
-    public init(id: String = UUID().uuidString, prompt: String) {
+    public init(id: String = UUID().uuidString,
+                prompt: String,
+                telemetryContext: AssistantTelemetryContext? = nil) {
         self.id = id
         self.prompt = prompt
+        self.telemetryContext = telemetryContext
     }
 }
 

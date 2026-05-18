@@ -61,7 +61,7 @@ public final class NotificationCountStore: Store {
 private extension NotificationCountStore {
     func incrementNotificationCount(siteID: Int64, type: Note.Kind, incrementCount: Int, onCompletion: () -> Void) {
         guard let existingData = readContents() else {
-            let notificationTypeBySite: SiteNotificationCountFileContents = SiteNotificationCountFileContents(countBySite: [siteID: [type: incrementCount]])
+            let notificationTypeBySite = SiteNotificationCountFileContents(countBySite: [siteID: [type: incrementCount]])
             writeContents(notificationTypeBySite)
             onCompletion()
             return

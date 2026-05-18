@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-24 17:55:23+0000 */
+/* Translation-Revision-Date: 2026-05-14 13:58:58+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -9828,6 +9828,24 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
 "cardReaderSettingsConnectedViewController.reconnectingText" = "Kart okuyucuya yeniden bağlanıyor...";
 
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "İptal Et";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "Onayla ve devam et";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "Kabul edildiğiniz doğrulanırken beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "Kabul onaylanırken hata oluştu";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "Tekrar dene";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "Şuradan gönderim:";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "İşlem ayrıntılarını sipariş notunda kaydet";
 
@@ -9977,6 +9995,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "Yeni bir siparişi asla kaçırmayın";
+
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "Destek ile sohbet edin";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Bağlantı Sorununu Giderin";
@@ -10582,6 +10603,18 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "Bu içeriği gizle";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "%1$@ hükümlerini kabul ediyorum.";
+
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "FedEx gönderim etiketleri satın almak için şu koşulları kabul etmeniz gerekir:";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "FedEx Hizmet Koşulları";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "FedEx Hizmet Koşulları";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "Uygula";
 
@@ -10815,6 +10848,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Keşiften döndürülen okuyucunun IP adresi yok ve bu okuyucuya bağlanılamıyor.";
+
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "Yapay zeka yardımcımızdan yardım alın";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "Destek ile sohbet edin";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "Geçmiş destek konuşmalarını yeniden ziyaret edin";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "Sohbet Geçmişi";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "Sitenizin uygulama ile çalışıp çalışmadığını test edin";
@@ -11589,9 +11634,6 @@ which should be translated separately and considered part of this sentence. */
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Şahsen Ödeyin";
 
-/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "İşlem başına sadece %%2,70 + 0,10 ile şahsen ödemeleri kabul edin. Telefonunuzda tap-to-pay'e ve eşzamanlı envanter ve sipariş senkronizasyonu ile tam satış noktası sistemimize erişmek için Pro'ya yükseltin.%1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "Sipariş nakit ile ödendi. Müşteri %1$@ ödedi. Ödenmesi gereken para üstü %2$@.";
 
@@ -11642,6 +11684,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "Düzenle";
+
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "Tamamlandı olarak işaretlendikleri tarihteki siparişleri sayın.";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "Tamamlanmış siparişler";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "Seçilen zaman aralığı için performans ölçümlerinize hangi siparişlerin dahil edileceğini seçin.";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "Bu, mağaza genelinde kullanılan ve aynı zamanda WooCommerce yönetici analizleri ayarlarında \"Tarih türü\" seçeneğini de kontrol eden bir ayardır.";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "Siparişin ödendiği tarihte siparişleri sayın.";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "Ücretli siparişler";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "Siparişlerin verildiği veya oluşturulduğu tarihe kadar say.";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "Verilen siparişler";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "Sipariş tarihi türü";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "Sipariş türü güncellenemedi. Lütfen tekrar deneyin.";
 
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "%1$@ güncelle";
@@ -12039,9 +12111,6 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Kupon uygulanmadı";
 
-/* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "Rezervasyonlar";
-
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "Yeniden bağlantı kurmayı iptal et";
 
@@ -12149,12 +12218,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error when trying to send a receipt before an order has been loaded in the Point of Sale */
 "pointOfSale.paymentError.noOrder" = "Henüz sipariş yüklenmedi. Fatura göndermeden önce ödeme başlatın.";
-
-/* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "Rezervasyona geri dön";
-
-/* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "Tamam";
 
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "Siparişi düzenle";
@@ -12351,6 +12414,33 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Mağaza";
 
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "Özel tutar ekle";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "Tutar";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "Vergileri alın";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "Özel tutar";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "Ad";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "Özel tutar";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "Özel tutar";
+
+/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.message" = "Siparişe bir hizmet ücreti, ipucu veya özel satır eklemek için buraya dokunun.";
+
+/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.title" = "Özel tutar ekleyin";
+
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Barkod taraması";
 
@@ -12519,209 +12609,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "Tarayıcınızı test edin";
 
-/* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
-"pos.booking.durationHours" = "%ds.";
-
-/* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
-"pos.booking.durationHoursAndMinutes" = "%1$ds. %2$ddk.";
-
-/* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
-"pos.booking.durationMinutes" = "%d dk.";
-
-/* POS booking attendance status label when the customer attended. */
-"pos.bookingAttendanceDisplay.attended" = "Katılındı";
-
-/* POS booking attendance status label when the customer has not attended. */
-"pos.bookingAttendanceDisplay.unattended" = "Katılınmadı";
-
-/* Accessibility label for the next day button in the bookings date bar. */
-"pos.bookingDateBar.nextDay" = "Ertesi gün";
-
-/* Accessibility label for the previous day button in the bookings date bar. */
-"pos.bookingDateBar.previousDay" = "Önceki gün";
-
-/* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
-"pos.bookingDateBar.selectedDate" = "%1$@, takvimi açmak için dokunun";
-
-/* Button to add a private note to a booking. */
-"pos.bookingDetailView.addNoteButton" = "Not ekle";
-
-/* Section title for the attendance status in booking details. */
-"pos.bookingDetailView.attendanceStatusTitle" = "Katılım durumu";
-
-/* Subtitle text below the attendance section explaining why marking attendance matters. */
-"pos.bookingDetailView.attendanceSubtitle" = "Raporlarınızı doğru tutmak ve rezervasyon trendlerini tespit etmek için katılımı işaretleyin.";
-
-/* Error message shown below attendance section when updating attendance status fails. */
-"pos.bookingDetailView.attendanceUpdateError" = "Katılım güncellenemedi. Lütfen tekrar deneyin.";
-
-/* Label for the attended pill button in booking attendance section. */
-"pos.bookingDetailView.attendedPill" = "Katılındı";
-
-/* Section title for booking details showing the booking ID number. %lld is the booking ID. */
-"pos.bookingDetailView.bookingIdTitle" = "Rezervasyon No.%lld";
-
-/* Label for the private booking note section in booking details. */
-"pos.bookingDetailView.bookingNoteLabel" = "Rezervasyon notu";
-
-/* Subtitle text below the booking note section explaining the note is private. */
-"pos.bookingDetailView.bookingNoteSubtitle" = "Bu özel bir nottur. Bu, müşteriyle paylaşılmayacak.";
-
-/* Menu action to cancel a booking from the POS booking detail view. */
-"pos.bookingDetailView.cancelBookingAction" = "Rezervasyonu İptal Et";
-
-/* Button to initiate payment collection for a booking. */
-"pos.bookingDetailView.collectPaymentButton" = "Ödemeyi topla";
-
-/* Accessibility label for the copy email button in booking details. */
-"pos.bookingDetailView.copyEmail.accessibilityLabel" = "E-posta adresini kopyala";
-
-/* Accessibility label for the copy phone button in booking details. */
-"pos.bookingDetailView.copyPhone.accessibilityLabel" = "Telefon numarasını kopyala";
-
-/* Section title for the customer details in booking details. */
-"pos.bookingDetailView.customerTitle" = "Müşteri";
-
-/* Label for the duration in booking details. */
-"pos.bookingDetailView.durationLabel" = "Süre";
-
-/* Button to edit an existing private note on a booking. */
-"pos.bookingDetailView.editNoteButton" = "Notu düzenle";
-
-/* Accessibility label for customer email row in booking details. %1$@ is the email address. */
-"pos.bookingDetailView.email.accessibilityLabel" = "E-posta: %1$@";
-
-/* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
-"pos.bookingDetailView.guestBadge" = "Misafir";
-
-/* Menu action to issue a full refund for a booking. */
-"pos.bookingDetailView.issueRefundAction" = "Geri Ödeme Yap";
-
-/* Label for the location in booking details. */
-"pos.bookingDetailView.locationLabel" = "Konum";
-
-/* Accessibility label for the overflow actions menu button in booking details. */
-"pos.bookingDetailView.moreActions.accessibilityLabel" = "Daha fazla işlem";
-
-/* Label for the customer note in booking details. */
-"pos.bookingDetailView.noteLabel" = "Not";
-
-/* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
-"pos.bookingDetailView.phone.accessibilityLabel" = "Telefon: %1$@";
-
-/* Label for the team member / staff resource in booking details. */
-"pos.bookingDetailView.teamMemberLabel" = "Ekip üyesi";
-
-/* Label for the unattended pill button in booking attendance section. */
-"pos.bookingDetailView.unattendedPill" = "Katılınmadı";
-
-/* Button to view the linked order from the booking detail header. */
-"pos.bookingDetailView.viewOrderAction" = "Siparişi Görüntüle";
-
-/* Text appearing in the booking details pane when no booking is selected. */
-"pos.bookingDetailsEmptyView.description" = "Ayrıntılarını görüntülemek için bir rezervasyona dokunun";
-
-/* POS booking lifecycle status label for active bookings. */
-"pos.bookingLifecycleStatus.booked" = "Rezerve Edildi";
-
-/* POS booking lifecycle status label for canceled bookings. */
-"pos.bookingLifecycleStatus.canceled" = "İptal edildi";
-
-/* POS booking lifecycle status label for completed bookings. */
-"pos.bookingLifecycleStatus.completed" = "Tamamlandı";
-
-/* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
-"pos.bookingList.failedToLoadBookingsNextPageTitle" = "Daha fazla rezervasyon yüklenemiyor";
-
-/* Text appearing on the booking list screen when there's an error loading bookings. */
-"pos.bookingList.failedToLoadBookingsTitle" = "Rezervasyonlar yüklenemiyor";
-
-/* Title at the header for the Bookings view. */
-"pos.bookingListView.bookingsTitle" = "Rezervasyonlar";
-
-/* Subtitle appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchSubtitle" = "Aramanızla eşleşen bir rezervasyon bulamadık. Arama teriminizi düzenlemeyi deneyin.";
-
-/* Title appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchTitle" = "Rezervasyon bulunamadı";
-
-/* Subtitle appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsSubtitle.2" = "Bu tarih için zamanlanmış tüm rezervasyonlar burada görünür.";
-
-/* Title appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsTitle.2" = "Bugün için rezervasyon yok";
-
-/* Accessibility label for the search button in bookings list. */
-"pos.bookingListView.searchButton.accessibilityLabel" = "Rezervasyon ara";
-
-/* Placeholder for a search field in the Bookings view. */
-"pos.bookingListView.searchFieldPlaceholder" = "Rezervasyon ara";
-
-/* Button label shown when no changes have been made to the booking note yet. */
-"pos.bookingNoteView.addButton" = "Ekle";
-
-/* Title shown at the top of the booking note editor screen when adding a new note. */
-"pos.bookingNoteView.addTitle" = "Not ekle";
-
-/* Title shown at the top of the booking note editor screen when editing an existing note. */
-"pos.bookingNoteView.editTitle" = "Notu düzenle";
-
-/* Placeholder text shown in the booking note text field when empty. */
-"pos.bookingNoteView.placeholder" = "Notun türü";
-
-/* Button to save the booking note. */
-"pos.bookingNoteView.saveButton" = "Kaydet";
-
-/* Error message shown when saving a booking note fails. */
-"pos.bookingNoteView.saveError" = "Not kaydedilemedi. Tekrar deneyin.";
-
-/* POS booking payment status label when the booking order payment authorization has been voided. */
-"pos.bookingPaymentStatus.authorizationVoided" = "Yetkilendirme İptal Edildi";
-
-/* POS booking payment status label when the booking order payment is authorized but not yet captured. */
-"pos.bookingPaymentStatus.authorized" = "Kimlik Doğrulandı";
-
-/* POS booking payment status label when the booking order payment failed. */
-"pos.bookingPaymentStatus.failed" = "Başarısız";
-
-/* POS booking payment status label when the booking is paid. */
-"pos.bookingPaymentStatus.paid" = "Ücretli";
-
-/* POS booking payment status label when the booking order has been refunded. */
-"pos.bookingPaymentStatus.refunded" = "Geri ödeme yapıldı";
-
-/* POS booking payment status label when the booking is unpaid. */
-"pos.bookingPaymentStatus.unpaid" = "Ödenmemiş";
-
-/* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
-"pos.bookingsContainer.cancelBookingSuccess.notice" = "Rezervasyon başarıyla iptal edildi.";
-
-/* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessage" = "%3$@ tarihindeki %2$@ için %1$@ numaralı rezervasyon iptal edilecektir.";
-
-/* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "%4$@ için %3$@ tarihinde %2$@ için %1$@ numaralı rezervasyon iptal edilecektir.";
-
-/* Accessibility label for close button on cancel booking confirmation modal. */
-"pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "Kapat";
-
-/* Button to confirm and proceed with booking cancellation. */
-"pos.cancelBookingConfirmation.confirmButton" = "Evet, rezervasyonu iptal et";
-
-/* Secondary message informing that the customer will receive an email notification about the cancellation. */
-"pos.cancelBookingConfirmation.customerNotificationMessage" = "Müşteri e-posta yoluyla bilgilendirilecektir.";
-
-/* Error message shown inline in the cancel booking confirmation modal when cancellation fails. */
-"pos.cancelBookingConfirmation.inlineErrorMessage" = "Rezervasyon iptal edilemedi. Lütfen tekrar deneyin.";
-
-/* Button to dismiss the cancel booking confirmation and keep the booking. */
-"pos.cancelBookingConfirmation.keepButton" = "Hayır, kalsın";
-
-/* Title for the cancel booking confirmation modal in POS. */
-"pos.cancelBookingConfirmation.title" = "Bu rezervasyon iptal edilsin mi?";
-
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce Ayarları";
+
+/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
+"pos.cartView.addCustomAmount.header.accessibilityLabel" = "Özel tutar ekleyin";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = " için bir ürüne dokununSepete eklemek için  veya ";
@@ -12765,23 +12657,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Satış Noktası Modundan Çıkılsın Mı?";
 
-/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabPricingInfo" = "İşlem başına sadece %2,70 + 0,10 ile şahsen ödemeleri kabul edin.";
-
-/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabUpgradePrompt" = "Telefonunuzda tap-to-pay'e ve eşzamanlı envanter ve sipariş senkronizasyonu ile tam satış noktası sistemimize erişmek için Pro'ya yükseltin.";
-
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "POS'tan çık";
 
 /* Button title to enable the POS feature switch and refresh POS eligibility check */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "POS Özelliğini Etkinleştir";
-
-/* Button title to learn more about upgrading the plan for POS access */
-"pos.ineligible.learnMore.button.title" = "Daha Fazla Bilgi Edinin";
-
-/* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
-"pos.ineligible.planUpgrade.title" = "Pro paket gerekli";
 
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "Tekrar dene";
@@ -12806,9 +12686,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "Yüklenemedi";
-
-/* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
-"pos.ineligible.upgradePlan.webview.title" = "Paketi Yükselt";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
@@ -12987,8 +12864,8 @@ which should be translated separately and considered part of this sentence. */
 /* Description for refund via a specific payment method. %@ is the payment method name */
 "pos.orderListController.refund.viaPaymentMethodFormat" = "%@ ile";
 
-/* Button text for opening an information view when orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle2" = "Daha fazla bilgi edinin";
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "Yenile";
 
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "Bu ada sahip herhangi bir sipariş bulamadık. Arama teriminizi düzenlemeyi deneyin.";
@@ -12997,7 +12874,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Sipariş bulunamadı";
 
 /* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle2" = "Mağaza satışlarınızı nasıl artırabileceğinizi keşfedin.";
+"pos.orderListView.emptyOrdersSubtitle.3" = "POS'ta satışları işlemeye başladığınızda siparişler burada görünür.";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "Henüz sipariş yok";
@@ -14129,11 +14006,23 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "Seçilen tarihlerde gelir yok";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "Performans toplamlarınıza hangi siparişlerin dahil olduğunu değiştirmek için bir alt sayfa açar.";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Siparişler";
 
-/* Total sales stat label on dashboard — shows revenue including taxes and shipping. */
-"storePerformanceView.totalSales" = "Toplam satışlar";
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "Kazanç türü";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "Brüt";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "Net";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "Toplam";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Mağazanızdaki en iyi performans görüntülenemiyor";
@@ -14186,13 +14075,16 @@ which should be translated separately and considered part of this sentence. */
 /* Range title for the today store info widget */
 "storeWidgets.infoProvider.today" = "Bugün";
 
-/* Conversion title label for the store info widget */
+/* Conversion rate metric title for the store info widget.
+   Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "Dönüşüm";
 
-/* Orders title label for the store info widget */
+/* Orders metric title for the store info widget.
+   Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "Siparişler";
 
-/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+/* Revenue metric title — gross revenue including taxes and shipping.
+   Total sales title label for the store info widget — shows revenue including taxes and shipping. */
 "storeWidgets.infoView.totalSales" = "Toplam satışlar";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
@@ -14201,8 +14093,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
 "storeWidgets.infoView.viewMore" = "Daha Fazlasını Görüntüle";
 
-/* Visitors title label for the store info widget */
+/* Visitors metric title for the store info widget.
+   Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "Ziyaretçiler";
+
+/* Average order value (AOV) metric title for the store info widget. */
+"storeWidgets.metric.averageOrderValue" = "Ortalama sipariş değeri";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "Satılan ürünler";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "Net satışlar";
 
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "Giriş yap";
@@ -14262,6 +14164,144 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Ücretsiz deneme sürümü";
 
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "Adsız sohbet";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "Henüz destekle sohbet etmediniz.";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "Sohbet Geçmişi";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "Destek ile sohbet edin";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "Tüm kontroller sorunsuz şekilde tamamlandı.";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "Desteğe Başvur";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "Sohbete Devam Et";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "Tanılama Tamamlandı";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "Hata";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "Daha fazla yardıma ihtiyacınız olabilir gibi görünüyor. Destek ekibimizle iletişime geçmek ister misiniz?";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "Merhaba! Woo Mobil Destek Robotunuzum. Bugün neyle ilgili sorun yaşıyorsunuz?";
+
+/* OK button in support chat error alert */
+"supportChatView.ok" = "Tamam";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "Bir mesaj yazın...";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "Önceki sohbete devam ediliyor";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "Tanılama çalıştırılıyor...";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "Destek ile sohbet edin";
+
+/* Error message shown when sending a support chat message fails */
+"supportChatViewModel.errorMessage" = "Bir sorun oluştu. Lütfen tekrar deneyin.";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "Merhaba! Woo Mobil Destek Robotunuzum. Bugün size yardımcı olabileceğim bir şey var mı?";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "Lütfen size yardımcı olabilmem için sorununuzu daha ayrıntılı olarak açıklayın.";
+
+/* Error message shown when loading a prior support chat transcript fails on resume */
+"supportChatViewModel.resumeErrorMessage" = "Önceki sohbeti yükleyemedik. Yine de yeni bir mesaj gönderebilirsiniz.";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "Analytics'i Etkinleştir";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "Sipariş Bildirimlerini Etkinleştir";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "Ayarları Aç";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "Cihazı Kaydet";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "Tekrar dene";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "Jetpack'i kur";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "Analiz ayarlarınızı kontrol edemedik.";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "WooCommerce Analytics, mağazanızda etkinleştirilmedi.\n\nGelir ve sipariş istatistikleri gibi analiz verileri, etkinleştirilene kadar kullanılamaz.";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "Sitenizin yanıtında düzgün bir şekilde çalışamıyoruz.";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "Cihazınız anlık bildirimler için kaydedilmiş görünmüyor.";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "Görünüşe göre sitenizde bir sorun oluştu.\n\nDaha fazla yardım almak için lütfen barındırma sağlayıcınızla iletişime geçin.";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "Jetpack eklentisi sitenizde etkin görünmüyor.\n\nAnlık bildirimler etkin bir Jetpack bağlantısı gerektirir.";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "Görünüşe göre internete bağlı değilsiniz.\n\nWi-Fi ağınızın açık olduğundan emin olun. Mobil veri kullanıyorsanız cihazınızın ayarlarında etkinleştirildiğinden emin olun.";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "Jetpack bağlantınızla ilgili bir sorun oluştu.";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "Bildirim ayarlarınızı kontrol edemedik.";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "Bu uygulama için anlık bildirimlere izin verilmiyor.\n\nSipariş bildirimleri almak için bunları cihaz Ayarlarınızda etkinleştirin.";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "Bu mağaza için sipariş bildirimleri etkinleştirilmedi.\n\nYeni siparişler geldiğinde uyarı almak için etkinleştirin.";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "Sitenizin yanıt vermesi uzun sürüyor.\n\nDaha fazla yardım almak için lütfen barındırma sağlayıcınızla iletişime geçin.";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "Şu anda WordPress.com'a bağlanılamıyor.\n\nBirkaç dakika içinde tekrar deneyin.";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "Analiz ayarları kontrol ediliyor";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "İnternet Bağlantısı";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "Mağazanızdaki ürünler alınıyor";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "Bildirim ayarları kontrol ediliyor";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "Sitenize bağlanılıyor";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "Site siparişleriniz alınıyor";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "WordPress.com Sunucularına bağlanılıyor";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "Anladım";
 
@@ -14297,6 +14337,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WooPayments support area option */
 "supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "Analizleri yükleme";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "Siparişleri yükleme";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "Ürünleri yükleme";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "Diğer";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "Anlık bildirimler alma";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "Sistem Durum Raporu";
@@ -14547,9 +14602,6 @@ which should be translated separately and considered part of this sentence. */
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "Ürün Ayrıntılarını Görüntüle";
 
-/* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.cancel" = "İptal Et";
-
 /* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
 "upsTermsView.checkbox1" = "%1$@ hükümlerini kabul ediyorum.";
 
@@ -14559,26 +14611,11 @@ which should be translated separately and considered part of this sentence. */
 /* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
 "upsTermsView.checkbox3" = "%1$@ hükümlerini de kabul ediyorum.";
 
-/* Button to confirm all agreements on the UPS Terms and Conditions view */
-"upsTermsView.confirmButton" = "Onayla ve devam et";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorMessage" = "Kabul edildiğiniz doğrulanırken beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorTitle" = "Kabul onaylanırken hata oluştu";
-
 /* Message on the UPS Terms and Conditions view */
 "upsTermsView.message" = "Bu adresten UPS® ile gönderim yapmaya başlamak için şu şartları ve hükümleri kabul etmeniz gerekir:";
 
 /* Link to the prohibited items on the UPS Terms and Conditions view */
 "upsTermsView.prohibitedItems" = "Yasaklanmış Ürünler";
-
-/* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.retry" = "Tekrar dene";
-
-/* Title label for the origin address on the UPS Terms and Conditions view */
-"upsTermsView.shippingFrom" = "Şuradan gönderim:";
 
 /* Link to the technology agreement on the UPS Terms and Conditions view */
 "upsTermsView.technologyAgreement" = "UPS® Teknoloji Sözleşmesi";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-21 09:55:38+0000 */
+/* Translation-Revision-Date: 2026-05-14 11:56:49+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -9831,6 +9831,24 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
 "cardReaderSettingsConnectedViewController.reconnectingText" = "מתחבר מחדש לקורא הכרטיסים...";
 
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "ביטול";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "אישור והמשך";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "אירעה שגיאה בלתי צפויה בעת אישור הקבלה שלך. יש לנסות שוב.";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "שגיאה באישור הקבלה";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "לנסות שוב";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "מוצא המשלוח";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "לרשום את פרטי העסקה בהערות ההזמנה";
 
@@ -9980,6 +9998,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "לעולם לא לפספס הזמנה חדשה";
+
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "שיחה עם התמיכה בצ'אט";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "פתרון בעיות לחיבור";
@@ -10585,6 +10606,18 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "הסתר תוכן זה";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "הבעתי את הסכמתי ל%1$@.";
+
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "כדי לרכוש תוויות משלוח של FedEx, יש להסכים לתנאים הבאים:";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "תנאי השימוש של FedEx";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "תנאי השימוש של FedEx";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "להחיל";
 
@@ -10818,6 +10851,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "לקורא הכרטיסים שחזר מהאיתור אין כתובת IP ולא ניתן להתחבר אליו.";
+
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "קבלת עזרה מסייען הבינה המלאכותית שלנו:";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "שיחה עם התמיכה בצ'אט";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "חזרה לשיחות תמיכה קודמות";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "היסטוריית צ'אטים";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "בדיקה אם האתר שלך עובד עם האפליקציה";
@@ -11592,9 +11637,6 @@ which should be translated separately and considered part of this sentence. */
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "לשלם באופן אישי";
 
-/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "ניתן לקבל תשלומים במסירה אישית בעלות של 2.70%%% + 0.10 דולר לכל עסקה. יש לשדרג לתוכנית Pro כדי לגשת לתשלום בנגיעה בטלפון ולמערכת נקודת המכירה המלאה שלנו, עם סנכרון של מלאי והזמנות בזמן אמת. %1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "התקבל עבור ההזמנה תשלום במזומן. הלקוח שילם %1$@. העודף הנדרש היה %2$@.";
 
@@ -11645,6 +11687,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "לערוך";
+
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "ספירת הזמנות בתאריך שבו סומנו כהזמנות שהושלמו.";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "הזמנות שהושלמו";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "יש לבחור אילו הזמנות לכלול במדדי הביצועים עבור טווח הזמן שנבחר.";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "זוהי הגדרה שכוללת את כל החנות ושולטת גם באפשרות \"סוג תאריך\" בהגדרות של כלי הניתוח של מנהל המערכת של WooCommerce.";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "ספירת הזמנות בתאריך תשלום ההזמנה.";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "הזמנות ששולמו";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "ספירת הזמנות בתאריך שבו בוצעו או נוצרו.";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "הזמנות שבוצעו";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "סוג תאריך הזמנה";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "לא ניתן לעדכן את סוג ההזמנה. יש לנסות שוב.";
 
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "עדכון %1$@";
@@ -12042,9 +12114,6 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "הקופון לא הוחל";
 
-/* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "הזמנות";
-
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "ביטול חיבור מחדש";
 
@@ -12152,12 +12221,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error when trying to send a receipt before an order has been loaded in the Point of Sale */
 "pointOfSale.paymentError.noOrder" = "טרם נטענה הזמנה. יש להתחיל תשלום לפני שליחת קבלה.";
-
-/* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "לחזור להזמנה";
-
-/* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "בוצע";
 
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "לערוך הזמנה";
@@ -12354,6 +12417,33 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "חנות";
 
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "הוספת סכום בהתאמה אישית";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "סכום";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "גביית מסים";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "סכום מותאם אישית";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "שם";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "סכום מותאם אישית";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "סכום מותאם אישית";
+
+/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.message" = "יש להקיש כאן כדי להוסיף דמי שירות, טיפ או כל שורה מותאמת אישית להזמנה.";
+
+/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
+"pos.addCustomAmountTip.title" = "הוספה של סכום בהתאמה אישית";
+
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "סריקת ברקוד";
 
@@ -12522,209 +12612,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "לבדוק את הסורק";
 
-/* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
-"pos.booking.durationHours" = "%d שע'";
-
-/* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
-"pos.booking.durationHoursAndMinutes" = "⁦%1$d⁩ שע' ו-⁦%2$d⁩ דק'";
-
-/* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
-"pos.booking.durationMinutes" = "%d דק'";
-
-/* POS booking attendance status label when the customer attended. */
-"pos.bookingAttendanceDisplay.attended" = "טופל";
-
-/* POS booking attendance status label when the customer has not attended. */
-"pos.bookingAttendanceDisplay.unattended" = "לא טופל";
-
-/* Accessibility label for the next day button in the bookings date bar. */
-"pos.bookingDateBar.nextDay" = "היום הבא";
-
-/* Accessibility label for the previous day button in the bookings date bar. */
-"pos.bookingDateBar.previousDay" = "היום הקודם";
-
-/* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
-"pos.bookingDateBar.selectedDate" = "%1$@, יש להקיש כדי לפתוח את לוח השנה";
-
-/* Button to add a private note to a booking. */
-"pos.bookingDetailView.addNoteButton" = "להוסיף הערה";
-
-/* Section title for the attendance status in booking details. */
-"pos.bookingDetailView.attendanceStatusTitle" = "סטטוס נוכחות";
-
-/* Subtitle text below the attendance section explaining why marking attendance matters. */
-"pos.bookingDetailView.attendanceSubtitle" = "יש לסמן סטטוס טיפול כדי לשמור על דיוק הדיווחים ולזהות מגמות בהזמנות.";
-
-/* Error message shown below attendance section when updating attendance status fails. */
-"pos.bookingDetailView.attendanceUpdateError" = "עדכון סטטוס הטיפול נכשל. יש לנסות שוב.";
-
-/* Label for the attended pill button in booking attendance section. */
-"pos.bookingDetailView.attendedPill" = "טופל";
-
-/* Section title for booking details showing the booking ID number. %lld is the booking ID. */
-"pos.bookingDetailView.bookingIdTitle" = "הזמנה מס' %lld";
-
-/* Label for the private booking note section in booking details. */
-"pos.bookingDetailView.bookingNoteLabel" = "הערה להזמנה";
-
-/* Subtitle text below the booking note section explaining the note is private. */
-"pos.bookingDetailView.bookingNoteSubtitle" = "זוהי הערה פרטית. היא לא תשותף עם הלקוח.";
-
-/* Menu action to cancel a booking from the POS booking detail view. */
-"pos.bookingDetailView.cancelBookingAction" = "לבטל הזמנה";
-
-/* Button to initiate payment collection for a booking. */
-"pos.bookingDetailView.collectPaymentButton" = "לגבות תשלום";
-
-/* Accessibility label for the copy email button in booking details. */
-"pos.bookingDetailView.copyEmail.accessibilityLabel" = "להעתיק כתובת אימייל";
-
-/* Accessibility label for the copy phone button in booking details. */
-"pos.bookingDetailView.copyPhone.accessibilityLabel" = "העתק מספר טלפון";
-
-/* Section title for the customer details in booking details. */
-"pos.bookingDetailView.customerTitle" = "לקוח";
-
-/* Label for the duration in booking details. */
-"pos.bookingDetailView.durationLabel" = "משך זמן";
-
-/* Button to edit an existing private note on a booking. */
-"pos.bookingDetailView.editNoteButton" = "לערוך הערה";
-
-/* Accessibility label for customer email row in booking details. %1$@ is the email address. */
-"pos.bookingDetailView.email.accessibilityLabel" = "אימייל: %1$@";
-
-/* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
-"pos.bookingDetailView.guestBadge" = "אורח";
-
-/* Menu action to issue a full refund for a booking. */
-"pos.bookingDetailView.issueRefundAction" = "לבצע החזר כספי";
-
-/* Label for the location in booking details. */
-"pos.bookingDetailView.locationLabel" = "מיקום";
-
-/* Accessibility label for the overflow actions menu button in booking details. */
-"pos.bookingDetailView.moreActions.accessibilityLabel" = "פעולות נוספות";
-
-/* Label for the customer note in booking details. */
-"pos.bookingDetailView.noteLabel" = "הערה";
-
-/* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
-"pos.bookingDetailView.phone.accessibilityLabel" = "טלפון: %1$@";
-
-/* Label for the team member / staff resource in booking details. */
-"pos.bookingDetailView.teamMemberLabel" = "חבר צוות";
-
-/* Label for the unattended pill button in booking attendance section. */
-"pos.bookingDetailView.unattendedPill" = "לא טופל";
-
-/* Button to view the linked order from the booking detail header. */
-"pos.bookingDetailView.viewOrderAction" = "להציג הזמנה";
-
-/* Text appearing in the booking details pane when no booking is selected. */
-"pos.bookingDetailsEmptyView.description" = "יש להקיש על הזמנה כדי להציג את הפרטים שלה";
-
-/* POS booking lifecycle status label for active bookings. */
-"pos.bookingLifecycleStatus.booked" = "הזמנות שבוצעו";
-
-/* POS booking lifecycle status label for canceled bookings. */
-"pos.bookingLifecycleStatus.canceled" = "בוטל";
-
-/* POS booking lifecycle status label for completed bookings. */
-"pos.bookingLifecycleStatus.completed" = "הושלם";
-
-/* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
-"pos.bookingList.failedToLoadBookingsNextPageTitle" = "לא ניתן לטעון הזמנות נוספות";
-
-/* Text appearing on the booking list screen when there's an error loading bookings. */
-"pos.bookingList.failedToLoadBookingsTitle" = "לא ניתן לטעון הזמנות";
-
-/* Title at the header for the Bookings view. */
-"pos.bookingListView.bookingsTitle" = "הזמנות";
-
-/* Subtitle appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchSubtitle" = "לא הצלחנו למצוא תוצאות שתואמות לחיפוש שלך. נסה לשנות את המונח לחיפוש.";
-
-/* Title appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchTitle" = "לא נמצאו הזמנות";
-
-/* Subtitle appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsSubtitle.2" = "כל ההזמנות המתוזמנות לתאריך זה יופיעו כאן.";
-
-/* Title appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsTitle.2" = "אין הזמנות ליום זה";
-
-/* Accessibility label for the search button in bookings list. */
-"pos.bookingListView.searchButton.accessibilityLabel" = "לחפש הזמנות";
-
-/* Placeholder for a search field in the Bookings view. */
-"pos.bookingListView.searchFieldPlaceholder" = "לחפש הזמנות";
-
-/* Button label shown when no changes have been made to the booking note yet. */
-"pos.bookingNoteView.addButton" = "להוסיף";
-
-/* Title shown at the top of the booking note editor screen when adding a new note. */
-"pos.bookingNoteView.addTitle" = "להוסיף הערה";
-
-/* Title shown at the top of the booking note editor screen when editing an existing note. */
-"pos.bookingNoteView.editTitle" = "לערוך הערה";
-
-/* Placeholder text shown in the booking note text field when empty. */
-"pos.bookingNoteView.placeholder" = "להקליד הערה";
-
-/* Button to save the booking note. */
-"pos.bookingNoteView.saveButton" = "לשמור";
-
-/* Error message shown when saving a booking note fails. */
-"pos.bookingNoteView.saveError" = "שמירת ההערה נכשלה. יש לנסות שוב.";
-
-/* POS booking payment status label when the booking order payment authorization has been voided. */
-"pos.bookingPaymentStatus.authorizationVoided" = "האישור בוטל";
-
-/* POS booking payment status label when the booking order payment is authorized but not yet captured. */
-"pos.bookingPaymentStatus.authorized" = "אושר";
-
-/* POS booking payment status label when the booking order payment failed. */
-"pos.bookingPaymentStatus.failed" = "נכשל";
-
-/* POS booking payment status label when the booking is paid. */
-"pos.bookingPaymentStatus.paid" = "שולם";
-
-/* POS booking payment status label when the booking order has been refunded. */
-"pos.bookingPaymentStatus.refunded" = "החזר כספי בוצע";
-
-/* POS booking payment status label when the booking is unpaid. */
-"pos.bookingPaymentStatus.unpaid" = "לא שולם";
-
-/* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
-"pos.bookingsContainer.cancelBookingSuccess.notice" = "ההזמנה בוטלה בהצלחה.";
-
-/* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessage" = "הזמנה #%1$@ עבור %2$@ באתר %3$@ תבוטל.";
-
-/* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "הזמנה #%1$@ עבור %2$@ באתר %3$@ עבור %4$@ תבוטל.";
-
-/* Accessibility label for close button on cancel booking confirmation modal. */
-"pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "לסגור";
-
-/* Button to confirm and proceed with booking cancellation. */
-"pos.cancelBookingConfirmation.confirmButton" = "כן, לבטל הזמנה";
-
-/* Secondary message informing that the customer will receive an email notification about the cancellation. */
-"pos.cancelBookingConfirmation.customerNotificationMessage" = "הלקוח יקבל הודעה באימייל.";
-
-/* Error message shown inline in the cancel booking confirmation modal when cancellation fails. */
-"pos.cancelBookingConfirmation.inlineErrorMessage" = "לא ניתן לבטל את ההזמנה. יש לנסות שוב.";
-
-/* Button to dismiss the cancel booking confirmation and keep the booking. */
-"pos.cancelBookingConfirmation.keepButton" = "לא, להשאיר אותה";
-
-/* Title for the cancel booking confirmation modal in POS. */
-"pos.cancelBookingConfirmation.title" = "האם לבטל הזמנה זו?";
-
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "הגדרות WooCommerce";
+
+/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
+"pos.cartView.addCustomAmount.header.accessibilityLabel" = "הוספת סכום בהתאמה אישית";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "יש להקיש על מוצר כדי \n להוסיף את המוצר לעגלה, או ";
@@ -12768,23 +12660,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "האם לצאת ממצב 'נקודת מכירה'?";
 
-/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabPricingInfo" = "ניתן לקבל תשלומים במסירה אישית בעלות של 2.70% + 0.10 דולר לכל עסקה.";
-
-/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabUpgradePrompt" = "יש לשדרג לתוכנית Pro כדי לגשת לתשלום בנגיעה בטלפון ולמערכת נקודת המכירה המלאה שלנו, עם סנכרון של מלאי והזמנות בזמן אמת.";
-
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "לצאת מ-POS";
 
 /* Button title to enable the POS feature switch and refresh POS eligibility check */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "להפעיל את האפשרות של POS";
-
-/* Button title to learn more about upgrading the plan for POS access */
-"pos.ineligible.learnMore.button.title" = "למידע נוסף";
-
-/* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
-"pos.ineligible.planUpgrade.title" = "נדרשת תוכנית Pro";
 
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "לנסות שוב";
@@ -12809,9 +12689,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "לא ניתן לטעון";
-
-/* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
-"pos.ineligible.upgradePlan.webview.title" = "שדרוג התוכנית";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "יש לבדוק את החיבור לאינטרנט ולנסות שוב.";
@@ -12990,8 +12867,8 @@ which should be translated separately and considered part of this sentence. */
 /* Description for refund via a specific payment method. %@ is the payment method name */
 "pos.orderListController.refund.viaPaymentMethodFormat" = "דרך %@";
 
-/* Button text for opening an information view when orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle2" = "למידע נוסף";
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "רענון";
 
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "לא הצלחנו למצוא הזמנות בשם זה. כדאי לשנות את המונח לחיפוש.";
@@ -13000,7 +12877,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.orderListView.emptyOrdersSearchTitle" = "לא נמצאו הזמנות";
 
 /* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle2" = "כדאי לראות איך אפשר להגדיל את המכירות בחנות שלך.";
+"pos.orderListView.emptyOrdersSubtitle.3" = "הזמנות יופיעו כאן לאחר עם התחלת עיבוד של מכירות ב-POS.";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "עדיין לא התקבלו הזמנות";
@@ -14132,11 +14009,23 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "אין רווחים בתאריכים שנבחרו";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "האפשרות פותחת גיליון תחתון לשינוי ההזמנות שנכללות בסיכומי הביצועים שלך.";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "הזמנות";
 
-/* Total sales stat label on dashboard — shows revenue including taxes and shipping. */
-"storePerformanceView.totalSales" = "סך כל המכירות";
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "סוג הכנסה";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "ברוטו";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "נטו";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "סכום כולל";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "אין אפשרות להציג את הביצועים בחנות שלך";
@@ -14189,13 +14078,16 @@ which should be translated separately and considered part of this sentence. */
 /* Range title for the today store info widget */
 "storeWidgets.infoProvider.today" = "היום";
 
-/* Conversion title label for the store info widget */
+/* Conversion rate metric title for the store info widget.
+   Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "המרה";
 
-/* Orders title label for the store info widget */
+/* Orders metric title for the store info widget.
+   Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "הזמנות";
 
-/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+/* Revenue metric title — gross revenue including taxes and shipping.
+   Total sales title label for the store info widget — shows revenue including taxes and shipping. */
 "storeWidgets.infoView.totalSales" = "סך כל המכירות";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
@@ -14204,8 +14096,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
 "storeWidgets.infoView.viewMore" = "הצגת פריטים נוספים";
 
-/* Visitors title label for the store info widget */
+/* Visitors metric title for the store info widget.
+   Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "מבקרים";
+
+/* Average order value (AOV) metric title for the store info widget. */
+"storeWidgets.metric.averageOrderValue" = "ערך הזמנה ממוצע";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "פריטים שנמכרו";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "סכום מכירות נטו";
 
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "התחברות";
@@ -14265,6 +14167,144 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "התנסות בחינם";
 
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "צ'אט ללא כותרת";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "עדיין לא התחלת שיחת צ'אט עם התמיכה.";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "היסטוריית צ'אטים";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "שיחה עם התמיכה בצ'אט";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "כל הבדיקות הושלמו ללא בעיות.";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "פנייה לתמיכה";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "המשך לצ'אט";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "האבחון הושלם";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "שגיאה";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "נראה שאולי נדרשת לך עזרה נוספת. רוצה לפנות לצוות התמיכה שלנו?";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "שלום! אני בוט התמיכה שלך עבור Woo Mobile. באיזו בעיה נתקלת היום?";
+
+/* OK button in support chat error alert */
+"supportChatView.ok" = "אישור";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "יש להקליד הודעה...";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "המשך השיחה הקודמת";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "מפעיל אבחונים...";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "שיחה עם התמיכה בצ'אט";
+
+/* Error message shown when sending a support chat message fails */
+"supportChatViewModel.errorMessage" = "משהו השתבש. יש לנסות שוב.";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "שלום! אני בוט התמיכה שלך עבור Woo Mobile. יש משהו שאני יכול לעזור לך איתו היום?";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "יש לתאר את הבעיה שלך בפירוט רב יותר כדי שאוכל לעזור.";
+
+/* Error message shown when loading a prior support chat transcript fails on resume */
+"supportChatViewModel.resumeErrorMessage" = "לא הצלחנו לטעון את השיחה הקודמת. עדיין ניתן לשלוח הודעה חדשה.";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "הפעלת נתונים אנליטיים";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "הפעלת הודעות על הזמנות";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "פתיחת הגדרות";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "רישום מכשיר";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "לנסות שוב";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "הגדרת Jetpack";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "לא הצלחנו לבדוק את הגדרת הנתונים האנליטיים שלך.";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "השירות של WooCommerce Analytics אינו מופעל בחנות שלך.\n\nנתונים אנליטיים כגון נתוני רווחים והזמנות לא יהיו זמינים עד שהאפשרות תופעל.";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "איננו יכולים לאפשר פעילות תקינה עם מהירות התגובה של האתר שלך.";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "נראה שהמכשיר שלך אינו רשום להודעות בדחיפה.";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "נראה שיש בעיה באתר שלך.\n\nיש לפנות לספקית האחסון להמשך עזרה.";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "נראה שהתוסף של Jetpack אינו פעיל באתר שלך.\n\nלהודעות דחיפה נדרש חיבור פעיל ל-Jetpack.";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "נראה שהחיבור שלך לאינטרנט אינו פעיל.\n\nיש לוודא שהחיבור ל-Wi-Fi הופעל. אם ברצונך להשתמש בנתונים הניידים, יש לוודא שהאפשרות הופעלה בהגדרות המכשיר.";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "קיימת בעיה עם החיבור שלך אל Jetpack.";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "לא הצלחנו לבדוק את הגדרות ההודעות שלך.";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "הודעות בדחיפה אינן מותרות עבור אפליקציה זו.\n\nיש להפעיל אותן בהגדרות המכשיר כדי לקבל הודעות על הזמנות.";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "הודעות על הזמנות אינן מופעלות עבור חנות זו.\n\nיש להפעיל אותן כדי לקבל התראות כאשר מתקבלות הזמנות חדשות.";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "זמן התגובה של האתר שלך ארוך מדי.\n\nיש לפנות לספקית האחסון להמשך עזרה.";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "אנחנו לא יכולים להתחבר אל WordPress.com כרגע.\n\nיש לנסות שוב בעוד כמה דקות.";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "בדיקת הגדרות של נתונים אנליטיים";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "חיבור לאינטרנט";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "שליפת מוצרים בחנות שלך";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "בדיקת הגדרות של הודעות";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "חיבור לאתר שלך";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "שליפת הזמנות מהאתר שלך";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "התחברות לשרתי WordPress.com";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "הבנתי";
 
@@ -14300,6 +14340,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WooPayments support area option */
 "supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "טעינת נתונים אנליטיים";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "טעינת הזמנות";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "טעינת מוצרים";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "אחר";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "קבלת הודעות בדחיפה";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "דוח מצב המערכת";
@@ -14550,9 +14605,6 @@ which should be translated separately and considered part of this sentence. */
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "להציג פרטי המוצר";
 
-/* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.cancel" = "ביטול";
-
 /* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
 "upsTermsView.checkbox1" = "הבעתי את הסכמתי על %1$@.";
 
@@ -14562,26 +14614,11 @@ which should be translated separately and considered part of this sentence. */
 /* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
 "upsTermsView.checkbox3" = "הבעתי את הסכמתי גם על %1$@.";
 
-/* Button to confirm all agreements on the UPS Terms and Conditions view */
-"upsTermsView.confirmButton" = "לאשר ולהמשיך";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorMessage" = "אירעה שגיאה בלתי צפויה בעת אישור הקבלה שלך. יש לנסות שוב.";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorTitle" = "שגיאה באישור הקבלה";
-
 /* Message on the UPS Terms and Conditions view */
 "upsTermsView.message" = "כדי להתחיל לשלוח מהכתובת הזו עם UPS®‎, אנחנו צריכים לקבל את הסכמתך לתנאים וההתניות הבאים:";
 
 /* Link to the prohibited items on the UPS Terms and Conditions view */
 "upsTermsView.prohibitedItems" = "פריטים אסורים";
-
-/* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.retry" = "לנסות שוב";
-
-/* Title label for the origin address on the UPS Terms and Conditions view */
-"upsTermsView.shippingFrom" = "מוצא המשלוח";
 
 /* Link to the technology agreement on the UPS Terms and Conditions view */
 "upsTermsView.technologyAgreement" = "הסכם הטכנולוגיה של UPS®‎";

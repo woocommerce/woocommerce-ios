@@ -97,11 +97,21 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleCustomAmounts:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSalePhonePrototype:
+            // Behind the flag for now — gates and UI follow in stacked PRs. Default to
+            // localDeveloper only so alpha builds aren't affected until we're ready.
+            return buildConfig == .localDeveloper
+        case .pointOfSaleScanToPay:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleMarkOrderAsPaid:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleTapToPay:
+            // Behind the flag while the TTP integration lands. localDeveloper-only so
+            // alpha and beta keep showing only Cash + Card reader for now.
+            return buildConfig == .localDeveloper
         case .selfDrivenPushToken:
             return false
         case .clientSideDashboardBanner:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .configurableStoreStatsWidgets:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
             return false
@@ -112,6 +122,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .aiSupportChat:
             return !buildConfig.isProduction
         case .wooAIAssistant:
+            return true
+        case .arParcelFitting:
+            return false
+        case .smarterNotifications:
             return !buildConfig.isProduction
         default:
             return true

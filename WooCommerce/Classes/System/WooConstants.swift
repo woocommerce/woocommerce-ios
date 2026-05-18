@@ -66,6 +66,10 @@ public enum WooConstants {
     ///
     static let storeInfoWidgetKind = "StoreInfoWidget"
 
+    /// Store Trends Widget Identifier.
+    ///
+    static let storeTrendsWidgetKind = "StoreTrendsWidget"
+
     /// App link Widget Identifier.
     ///
     static let appLinkWidgetKind = "AppLinkWidget"
@@ -205,6 +209,10 @@ extension WooConstants {
         /// URL for the products feedback survey
         ///
         case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
+
+        /// URL for the AI Assistant beta feedback survey
+        ///
+        case aiAssistantFeedback = "https://automattic.survey.fm/woo-mobile-ai-assistant"
 
         /// URL for the order add-on i1 feedback survey
         ///

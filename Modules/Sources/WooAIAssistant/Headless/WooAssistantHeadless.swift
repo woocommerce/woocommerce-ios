@@ -153,11 +153,11 @@ public actor WooAssistantHeadless {
             }
         }
 
-        /// One structured tool payload captured from a `.toolResult` event. `kind`
-        /// is the tool name on trunk (e.g. `show_cards`, `orders_list`) since the
-        /// orchestrator no longer carries a separate result-kind tag.
-        /// `payloadJSON` is the canonical JSON encoding of the structured payload
-        /// the model received on its next turn.
+        /// One card the orchestrator authorized for render via a `.cardRender`
+        /// event. `kind` and `toolName` carry the orchestrator's synthetic tool
+        /// name (e.g. `show_cards.order`, `analytics_orders`). `payloadJSON` is
+        /// the canonical JSON encoding of the rendered card payload, identical
+        /// to what `MessageCardHost` would receive in the SwiftUI surface.
         public struct CardRecord: Sendable, Equatable {
             public let kind: String
             public let toolName: String
@@ -197,9 +197,10 @@ public actor WooAssistantHeadless {
         /// Every tool dispatched by the loop, in call order.
         public var toolCalls: [ToolCallRecord]
 
-        /// Every `.toolResult` payload captured during the turn. Trunk emits one
-        /// per tool with a structured success payload, so this list mirrors the
-        /// successful-dispatch subset of `toolCalls`.
+        /// Every card the orchestrator authorized for render this turn, in
+        /// emission order, deduped first-wins by `(family, id)` to mirror the
+        /// SwiftUI surface. A turn whose tools never emit `.cardRender` (e.g. a
+        /// bare `orders_list` or `analytics_orders`) yields an empty list here.
         public var cards: [CardRecord]
 
         /// Every confirmation surfaced and how it resolved.
@@ -260,10 +261,11 @@ public actor WooAssistantHeadless {
         self.configuration = configuration
         let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.allTools())
         let prompt = configuration.systemPrompt
+        let resolver = DefaultConfirmationSnapshotResolver(client: restClient)
         self.backend = AgenticChatBackend(
             chatService: chatService,
             toolRegistry: toolRegistry,
-            safetyPolicy: DefaultSafetyPolicy(),
+            safetyPolicy: DefaultSafetyPolicy(snapshotResolver: resolver),
             systemPromptProvider: { prompt },
             maxIterations: configuration.maxIterations
         )
@@ -282,6 +284,10 @@ public actor WooAssistantHeadless {
         // Tool calls land via `.toolCallStarted` before their `.toolCallCompleted`; index by id so
         // the completed event can attach the result to the same record without rebuilding the array.
         var toolCallIndexByID: [String: Int] = [:]
+        // The orchestrator emits a synthetic `.toolResult` immediately before each `.cardRender`.
+        // Buffer those payloads so the `.cardRender` arm can pick the right one up.
+        var pendingCardPayloads: [String: PendingCardPayload] = [:]
+        var cardKeysSeen: Set<SyntheticCardKey> = []
         let policy = configuration.defaultConfirmationPolicy
 
         let turn = AssistantTurn(prompt: message)
@@ -311,21 +317,32 @@ public actor WooAssistantHeadless {
                     result.toolCalls[index].resultJSON = resultJSON
                 }
 
-            case .toolResult(_, let toolName, let payload):
-                let payloadJSON = Self.encodeJSON(payload)
-                result.cards.append(.init(kind: toolName,
-                                          toolName: toolName,
-                                          payloadJSON: payloadJSON))
+            case .toolResult(let toolCallID, let toolName, let payload):
+                // Only synthetic toolResults (paired with a cardRender) carry render payloads;
+                // the model-visible toolResult that precedes them has a non-card-shaped ID.
+                if Self.parseSyntheticCardID(toolCallID) != nil {
+                    pendingCardPayloads[toolCallID] = PendingCardPayload(
+                        toolName: toolName,
+                        payloadJSON: Self.encodeJSON(payload)
+                    )
+                }
 
-            case .cardRender:
-                // The headless harness records raw `toolResult` payloads above; the
-                // separate `cardRender` UI hint is meaningful only in the SwiftUI layer.
-                break
+            case .cardRender(let toolCallID):
+                guard let pending = pendingCardPayloads.removeValue(forKey: toolCallID),
+                      let key = Self.parseSyntheticCardID(toolCallID) else { continue }
+                let record = ConversationTurnResult.CardRecord(kind: pending.toolName,
+                                                               toolName: pending.toolName,
+                                                               payloadJSON: pending.payloadJSON)
+                if !cardKeysSeen.contains(key) {
+                    cardKeysSeen.insert(key)
+                    result.cards.append(record)
+                }
 
             case .confirmationRequired(let proposal):
+                let flatPreview = proposal.preview.flattenedSummary()
                 let pending = PendingConfirmation(
                     toolName: proposal.toolName,
-                    preview: proposal.preview,
+                    preview: flatPreview,
                     classification: Self.classificationString(for: proposal.toolName)
                 )
                 let approved: Bool
@@ -351,7 +368,7 @@ public actor WooAssistantHeadless {
                 result.confirmations.append(.init(
                     toolName: proposal.toolName,
                     classification: pending.classification,
-                    preview: proposal.preview,
+                    preview: flatPreview,
                     decision: decisionLabel
                 ))
                 if approved {
@@ -367,7 +384,7 @@ public actor WooAssistantHeadless {
             case .failed(let error):
                 result.failureMessage = error.message
 
-            case .completed:
+            case .completed, .terminated:
                 break
             }
         }
@@ -376,6 +393,33 @@ public actor WooAssistantHeadless {
     }
 
     // MARK: - Helpers
+
+    private struct PendingCardPayload: Sendable {
+        let toolName: String
+        let payloadJSON: String
+    }
+
+    private struct SyntheticCardKey: Hashable {
+        let family: String
+        let entityID: String
+    }
+
+    /// Parses the orchestrator's synthetic toolCallID `<callID>:card:<index>:<family>:<id>`.
+    /// Mirrors `MessageBubble.cardKey(fromSyntheticToolCallID:)` so the harness applies the
+    /// same `(family, id)` dedupe as the SwiftUI surface. Returns nil for any other shape.
+    private static func parseSyntheticCardID(_ toolCallID: String) -> SyntheticCardKey? {
+        let parts = toolCallID.split(separator: ":", omittingEmptySubsequences: false)
+        guard let markerIndex = parts.indices.first(where: { parts[$0] == "card" }),
+              let entityIDStartIndex = parts.index(markerIndex, offsetBy: 3, limitedBy: parts.endIndex),
+              entityIDStartIndex < parts.endIndex else {
+            return nil
+        }
+        let familyIndex = parts.index(markerIndex, offsetBy: 2)
+        let entityID = parts[entityIDStartIndex...].joined(separator: ":")
+        guard !parts[familyIndex].isEmpty, !entityID.isEmpty else { return nil }
+        return SyntheticCardKey(family: String(parts[familyIndex]),
+                                entityID: entityID)
+    }
 
     private static func encodeJSON(_ value: AnyCodableJSON) -> String {
         let encoder = JSONEncoder()
@@ -474,8 +518,8 @@ public actor WooAssistantHeadless {
             ProductsBulkUpdateTool.make(),
             ProductVariationsListTool.make(),
             ProductVariationsUpdateTool.make(),
+            ProductVariationsBulkUpdateTool.make(),
             CustomersListTool.make(),
-            AnalyticsRevenueTool.make(),
             AnalyticsOrdersTool.make(),
             ShowCardsTool.make()
         ]

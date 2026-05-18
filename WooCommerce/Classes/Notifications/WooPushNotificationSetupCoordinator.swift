@@ -67,7 +67,7 @@ final class WooPushNotificationSetupCoordinator {
 
 enum WooPluginRequirements {
     static let pluginPath = "woocommerce/woocommerce.php"
-    static let minimumVersion = "10.8.0-dev" // This is for testing
+    static let minimumVersion = "10.9.0"
 }
 
 private extension WooPushNotificationSetupCoordinator {

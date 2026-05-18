@@ -1197,6 +1197,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Widgets
     case widgetTapped = "widget_tapped"
+    case storeStatsWidgetMetricTapped = "store_stats_widget_metric_tapped"
 
     // MARK: Application password Events
     case applicationPasswordsNewPasswordCreated = "application_passwords_new_password_created"
@@ -1298,6 +1299,18 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleCashPaymentTapped = "cash_payment_tapped"
     case pointOfSaleCashPaymentFailed = "cash_payment_failed"
     case pointOfSaleBackToCheckoutFromCashTapped = "back_to_checkout_from_cash"
+    case pointOfSaleOtherPaymentMethodsTapped = "other_payment_methods_tapped"
+    case pointOfSaleCheckoutScanToPayPaymentTapped = "checkout_scan_to_pay_payment_tapped"
+    case pointOfSaleScanToPayPaymentTapped = "scan_to_pay_payment_tapped"
+    case pointOfSaleScanToPayPaymentFailed = "scan_to_pay_payment_failed"
+    case pointOfSaleScanToPayCollectPaymentSuccess = "scan_to_pay_collect_payment_success"
+    case pointOfSaleScanToPayPaymentDetectedViaPolling = "scan_to_pay_payment_detected_via_polling"
+    case pointOfSaleBackToCheckoutFromScanToPayTapped = "back_to_checkout_from_scan_to_pay"
+    case pointOfSaleCheckoutMarkAsPaidTapped = "checkout_mark_as_paid_tapped"
+    case pointOfSaleMarkAsPaidConfirmed = "mark_as_paid_confirmed"
+    case pointOfSaleMarkAsPaidFailed = "mark_as_paid_failed"
+    case pointOfSaleMarkAsPaidSuccess = "mark_as_paid_success"
+    case pointOfSaleBackToCheckoutFromMarkAsPaidTapped = "back_to_checkout_from_mark_as_paid"
     case pointOfSaleClearCartTapped = "clear_cart_tapped"
     case pointOfSaleExitMenuItemTapped = "exit_menu_item_tapped"
     case pointOfSaleExitConfirmed = "exit_confirmed"
@@ -1308,6 +1321,8 @@ public enum WooAnalyticsStat: String {
     case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
     case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
     case pointOfSaleCardReaderConnectionTapped = "card_reader_connection_tapped"
+    case pointOfSaleCheckoutTapToPayTapped = "checkout_tap_to_pay_tapped"
+    case pointOfSaleTapToPayNotAvailable = "tap_to_pay_not_available"
     case pointOfSaleInteractionWithCustomerStarted = "interaction_with_customer_started"
     case pointOfSaleViewDocsTapped = "view_docs_tapped"
     case pointOfSaleReaderReadyForCardPayment = "reader_ready_for_card_payment"
@@ -1398,6 +1413,20 @@ public enum WooAnalyticsStat: String {
     case wooShippingPaymentStep = "wcs_payment_step"
     case wooShippingPurchaseStep = "wcs_purchase_step"
     case wooShippingRefundRequested = "wcs_refund_requested"
+
+    // MARK: Support Chat events
+    case supportChatEntryPointTapped = "support_chat_entry_point_tapped"
+    case supportChatIssueSelected = "support_chat_issue_selected"
+    case supportChatTroubleshootingCompleted = "support_chat_troubleshooting_completed"
+    case supportChatMessageSent = "support_chat_message_sent"
+    case supportChatResponseReceived = "support_chat_response_received"
+    case supportChatFeedbackSubmitted = "support_chat_feedback_submitted"
+    case supportChatEscalationButtonShown = "support_chat_escalation_button_shown"
+    case supportChatEscalationTapped = "support_chat_escalation_tapped"
+    case supportChatTicketCreated = "support_chat_ticket_created"
+    case supportChatTicketCreationFailed = "support_chat_ticket_creation_failed"
+    case supportChatResolutionButtonShown = "support_chat_resolution_button_shown"
+    case supportChatMarkResolvedTapped = "support_chat_mark_resolved_tapped"
 }
 
 extension WooAnalyticsStat {

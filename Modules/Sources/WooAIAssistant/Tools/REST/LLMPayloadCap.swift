@@ -7,11 +7,11 @@ enum LLMPayloadCap {
     static let maxBytes = 64_000
 
     /// Returns `value` unchanged if it serializes under the cap, otherwise a
-    /// truncation marker that tells the model the card already answered the
-    /// merchant and explicitly forbids retry. Earlier wording asked the model
-    /// to "narrow the query" and gpt-4o-mini retried with different sort
-    /// params, hit the same cap, and ended up apologizing while a valid card
-    /// sat right above the prose.
+    /// truncation marker that nudges the model toward `show_cards` (or a
+    /// narrower query) without lying about cards being rendered. Earlier
+    /// wording told the model "the data is already in a card", which is
+    /// only true for tools that emit cards inline. None of our current
+    /// tools do.
     static func capped(_ value: AnyCodableJSON, toolName: String) -> AnyCodableJSON {
         let encoder = JSONEncoder()
         guard let data = try? encoder.encode(value), data.count > maxBytes else {
@@ -22,10 +22,11 @@ enum LLMPayloadCap {
             "tool": .string(toolName),
             "original_bytes": .int(Int64(data.count)),
             "instructions": .string(
-                "The full data is ALREADY rendered in a card visible to the merchant. " +
-                "Do NOT call this tool again - a retry will hit the same cap. " +
-                "Do NOT tell the merchant you failed to retrieve anything. " +
-                "Respond with AT MOST one short conversational sentence, or no text at all."
+                "The response exceeded the model payload cap. " +
+                "If you already have entity ids the merchant asked about, call `show_cards` with them and stop. " +
+                "Otherwise narrow the request (smaller per_page, more specific filter) and retry ONCE - retrying with " +
+                "the same parameters will hit the same cap. " +
+                "Do NOT tell the merchant you failed to retrieve anything."
             )
         ])
     }

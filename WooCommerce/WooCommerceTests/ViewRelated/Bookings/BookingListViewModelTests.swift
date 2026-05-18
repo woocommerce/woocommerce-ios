@@ -13,7 +13,7 @@ class BookingListViewModelTests {
 
     private let sampleSiteID: Int64 = 322
     private let analyticsProvider = MockAnalyticsProvider()
-    private lazy var analytics: WooAnalytics = WooAnalytics(analyticsProvider: self.analyticsProvider)
+    private lazy var analytics = WooAnalytics(analyticsProvider: self.analyticsProvider)
     private let stores = MockStoresManager(sessionManager: .testingInstance)
 
     /// Mock Storage: InMemory

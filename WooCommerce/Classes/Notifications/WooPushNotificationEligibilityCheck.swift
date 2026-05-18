@@ -2,8 +2,14 @@ import Foundation
 import Yosemite
 import Experiments
 
+/// Protocol for checking self-driven push notification eligibility.
+protocol WooPushNotificationEligibilityChecking {
+    @MainActor
+    func checkEligibility() async -> Bool
+}
+
 /// Helper to check whether self-driven push notifications should be enabled.
-final class WooPushNotificationEligibilityCheck {
+final class WooPushNotificationEligibilityCheck: WooPushNotificationEligibilityChecking {
     private let featureFlagService: FeatureFlagService
     private let stores: StoresManager
 

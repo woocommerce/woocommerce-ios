@@ -9,7 +9,7 @@ final class MockPluginsService: PluginsServiceProtocol {
     }
 
     func loadPluginInStorage(siteID: Int64, plugin: Yosemite.Plugin, isActive: Bool?) -> SystemPlugin? {
-        pluginsToReturnForLoadPluginInStorageByPlugin[plugin] ?? nil
+        pluginsToReturnForLoadPluginInStorageByPlugin[plugin]
     }
 }
 

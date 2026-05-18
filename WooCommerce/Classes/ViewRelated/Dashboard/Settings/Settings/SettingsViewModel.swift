@@ -322,7 +322,17 @@ private extension SettingsViewModel {
                 return isSelfDrivenPNEligible &&
                 pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
             }()
-            if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
+            let isRegisteredForWooDrivenPushes: Bool = {
+                guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+                    return false
+                }
+                return pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
+            }()
+            let showPushNotificationPreferences = isRegisteredForWooDrivenPushes
+                && featureFlagService.isFeatureFlagEnabled(.smarterNotifications)
+            if showPushNotificationPreferences {
+                rows = [.pushNotificationPreferences, .privacy]
+            } else if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]
             } else {
                 rows = [.privacy]

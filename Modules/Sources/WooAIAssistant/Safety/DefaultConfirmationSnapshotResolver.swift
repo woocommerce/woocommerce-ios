@@ -108,7 +108,11 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
             DDLogError("DefaultConfirmationSnapshotResolver bulk fetch \(path) returned HTTP \(response.statusCode)")
             return ids.map { ConfirmationBulkEntry(id: $0) }
         }
-        guard let decoded = try? JSONDecoder().decode(type, from: response.data) else {
+        let decoded: [Response]
+        do {
+            decoded = try JSONDecoder().decode(type, from: response.data)
+        } catch {
+            DDLogError("DefaultConfirmationSnapshotResolver bulk decode \(type) failed: \(error)")
             return ids.map { ConfirmationBulkEntry(id: $0) }
         }
         let resolved = decoded.map(map)

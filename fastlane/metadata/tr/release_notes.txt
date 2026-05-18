@@ -1,1 +1,0 @@
-Yenilenen Performans kartı ile daha derin içgörüler elde edin. Brüt, Net ve Toplam gelir arasında hızlıca geçiş yapın ve hangi sipariş tarihinin (ödendi, verildi veya tamamlandı) toplamlarınızı belirleyeceğini seçin. Ayrıca FedEx TOS işleme ile gönderim etiketi akışlarını iyileştirdik, boş POS durumlarını yeniledik ve POS kullanılabilirliğini Porto Riko'ya genişlettik.

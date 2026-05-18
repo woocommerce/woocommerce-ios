@@ -38,7 +38,7 @@ struct DefaultConfirmationPreviewBuilderTests {
         #expect(unwrapped.isBulk == false)
         #expect(unwrapped.fields.count == 1)
         #expect(unwrapped.fields.first?.name == "status")
-        #expect(unwrapped.fields.first?.value == .raw("Pending"))
+        #expect(unwrapped.fields.first?.value == .raw("Pending Payment"))
         #expect(unwrapped.fields.first?.priorValue == nil)
     }
 
@@ -79,7 +79,7 @@ struct DefaultConfirmationPreviewBuilderTests {
 
         // Then
         let unwrapped = try #require(preview)
-        #expect(unwrapped.fields.first?.priorValue == .raw("Pending"))
+        #expect(unwrapped.fields.first?.priorValue == .raw("Pending Payment"))
     }
 
     @Test

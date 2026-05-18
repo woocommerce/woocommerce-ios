@@ -1,5 +1,8 @@
 import Foundation
 import CocoaLumberjackSwift
+import enum NetworkingCore.OrderStatusEnum
+import enum Networking.ProductStatus
+import enum Networking.ProductStockStatus
 
 public protocol ConfirmationPreviewBuilding: Sendable {
     func build(toolName: String,
@@ -21,12 +24,6 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             return ordersBulkUpdate(arguments: arguments, snapshot: snapshot)
         case ProductsUpdateTool.name:
             return productsUpdate(arguments: arguments, snapshot: snapshot)
-        case ProductsBulkUpdateTool.name:
-            return productsBulkUpdate(arguments: arguments, snapshot: snapshot)
-        case ProductVariationsUpdateTool.name:
-            return productVariationsUpdate(arguments: arguments, snapshot: snapshot)
-        case ProductVariationsBulkUpdateTool.name:
-            return productVariationsBulkUpdate(arguments: arguments, snapshot: snapshot)
         default:
             return nil
         }
@@ -137,209 +134,114 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
     // MARK: - Products
 
     private func productsUpdate(arguments: String, snapshot: ConfirmationSnapshot?) -> ConfirmationPreview {
-        struct Args: Decodable {
-            let id: Int?
-            let name: String?
-            let regular_price: String?
-            let sale_price: String?
-            let stock_quantity: Int?
-            let status: String?
-        }
-        guard let args = decode(Args.self, from: arguments), let id = args.id else {
+        guard let args = decode(ProductsUpdateArgs.self, from: arguments),
+              let updates = args.updates, !updates.isEmpty else {
             return ConfirmationPreview(summary: .localized(Strings.productsUpdateFallback))
         }
-        let fields = productFields(name: args.name,
-                                   regularPrice: args.regular_price,
-                                   salePrice: args.sale_price,
-                                   stockQuantity: args.stock_quantity,
-                                   stockStatus: nil,
-                                   sku: nil,
-                                   status: args.status,
-                                   includeName: true,
-                                   includeStockStatus: false,
-                                   includeSku: false,
-                                   snapshot: snapshot)
-        let summary: ConfirmationPreviewText
-        if let name = snapshot?.displayName {
-            summary = .localized(Strings.productsUpdateSummaryNamed,
-                                 args: [.raw(name), .raw(String(id))])
-        } else {
-            summary = .localized(Strings.productsUpdateSummary, args: [.raw(String(id))])
-        }
-        return ConfirmationPreview(summary: summary, fields: fields)
-    }
-
-    private func productsBulkUpdate(arguments: String, snapshot: ConfirmationSnapshot?) -> ConfirmationPreview {
-        struct Args: Decodable {
-            let ids: [Int]?
-            let patch: Patch?
-            struct Patch: Decodable {
-                let name: String?
-                let regular_price: String?
-                let sale_price: String?
-                let stock_quantity: Int?
-                let status: String?
+        let ids = updates.compactMap(\.id)
+        let count = ids.count
+        let summary: ConfirmationPreviewText = .quantity(
+            count,
+            singular: Strings.productsUpdateSummarySingular,
+            plural: Strings.productsUpdateSummaryPlural,
+            args: [.raw(String(count))]
+        )
+        var combinedKeys: [String] = []
+        var seenKeys: Set<String> = []
+        for entry in updates {
+            for key in entry.changedKeys where !seenKeys.contains(key) {
+                seenKeys.insert(key)
+                combinedKeys.append(key)
             }
         }
-        guard let args = decode(Args.self, from: arguments),
-              let ids = args.ids, let patch = args.patch else {
-            return ConfirmationPreview(summary: .localized(Strings.productsBulkUpdateFallback))
+        let fields = combinedKeys.map { key in
+            Self.productField(for: key, across: updates)
         }
-        let fields = productFields(name: patch.name,
-                                   regularPrice: patch.regular_price,
-                                   salePrice: patch.sale_price,
-                                   stockQuantity: patch.stock_quantity,
-                                   stockStatus: nil,
-                                   sku: nil,
-                                   status: patch.status,
-                                   includeName: true,
-                                   includeStockStatus: false,
-                                   includeSku: false,
-                                   snapshot: nil)
-        let summary: ConfirmationPreviewText = .quantity(
-            ids.count,
-            singular: Strings.productsBulkUpdateSummarySingular,
-            plural: Strings.productsBulkUpdateSummaryPlural,
-            args: [.raw(String(ids.count))]
-        )
         let bulkEntries = snapshot?.bulkEntries ?? ids.map { ConfirmationBulkEntry(id: $0) }
         return ConfirmationPreview(summary: summary,
                                    fields: fields,
-                                   isBulk: true,
+                                   isBulk: count > 1,
                                    bulkEntries: bulkEntries)
     }
 
-    private func productVariationsUpdate(arguments: String, snapshot: ConfirmationSnapshot?) -> ConfirmationPreview {
-        struct Args: Decodable {
-            let product_id: Int?
-            let id: Int?
-            let regular_price: String?
-            let sale_price: String?
-            let stock_quantity: Int?
-            let stock_status: String?
-            let sku: String?
-            let status: String?
-        }
-        guard let args = decode(Args.self, from: arguments),
-              let pid = args.product_id, let vid = args.id else {
-            return ConfirmationPreview(summary: .localized(Strings.productVariationsUpdateFallback))
-        }
-        let fields = productFields(name: nil,
-                                   regularPrice: args.regular_price,
-                                   salePrice: args.sale_price,
-                                   stockQuantity: args.stock_quantity,
-                                   stockStatus: args.stock_status,
-                                   sku: args.sku,
-                                   status: args.status,
-                                   includeName: false,
-                                   includeStockStatus: true,
-                                   includeSku: true,
-                                   snapshot: snapshot)
-        return ConfirmationPreview(
-            summary: .localized(Strings.productVariationsUpdateSummary,
-                                args: [.raw(String(vid)), .raw(String(pid))]),
-            fields: fields
-        )
+    private struct ProductsUpdateArgs: Decodable {
+        let updates: [ProductsUpdateEntry]?
     }
 
-    private func productVariationsBulkUpdate(arguments: String, snapshot: ConfirmationSnapshot?) -> ConfirmationPreview {
-        struct Args: Decodable {
-            let product_id: Int?
-            let variations: [V]?
-            struct V: Decodable { let id: Int? }
-        }
-        guard let args = decode(Args.self, from: arguments),
-              let pid = args.product_id, let variations = args.variations else {
-            return ConfirmationPreview(summary: .localized(Strings.productVariationsBulkUpdateFallback))
-        }
-        let count = variations.count
-        let summary: ConfirmationPreviewText = .quantity(
-            count,
-            singular: Strings.productVariationsBulkUpdateSummarySingular,
-            plural: Strings.productVariationsBulkUpdateSummaryPlural,
-            args: [.raw(String(count)), .raw(String(pid))]
-        )
-        let bulkEntries = snapshot?.bulkEntries
-            ?? variations.compactMap(\.id).map { ConfirmationBulkEntry(id: $0) }
-        return ConfirmationPreview(summary: summary,
-                                   fields: [],
-                                   isBulk: true,
-                                   bulkEntries: bulkEntries)
-    }
-
-    // MARK: - Product field helpers
-
-    private func productFields(name: String?,
-                               regularPrice: String?,
-                               salePrice: String?,
-                               stockQuantity: Int?,
-                               stockStatus: String?,
-                               sku: String?,
-                               status: String?,
-                               includeName: Bool,
-                               includeStockStatus: Bool,
-                               includeSku: Bool,
-                               snapshot: ConfirmationSnapshot?) -> [ConfirmationPreviewField] {
-        var fields: [ConfirmationPreviewField] = []
-        if includeName, let name {
-            fields.append(.init(name: "name",
-                                label: .localized(Strings.fieldName),
-                                value: .raw(name),
-                                priorValue: priorValue(for: "name", in: snapshot, currentValue: name)))
-        }
-        if let price = regularPrice {
-            fields.append(.init(name: "regular_price",
-                                label: .localized(Strings.fieldRegularPrice),
-                                value: .raw(price),
-                                priorValue: priorValue(for: "regular_price", in: snapshot, currentValue: price)))
-        }
-        if let sale = salePrice {
-            let value: ConfirmationPreviewText = sale.isEmpty
-                ? .localized(Strings.fieldValueOff)
-                : .raw(sale)
-            fields.append(.init(name: "sale_price",
-                                label: .localized(Strings.fieldSalePrice),
-                                value: value,
-                                priorValue: priorSalePrice(in: snapshot, currentValue: sale)))
-        }
-        if let quantity = stockQuantity {
-            let formatted = String(quantity)
-            fields.append(.init(name: "stock_quantity",
-                                label: .localized(Strings.fieldStockQuantity),
-                                value: .raw(formatted),
-                                priorValue: priorValue(for: "stock_quantity",
-                                                       in: snapshot,
-                                                       currentValue: formatted)))
-        }
-        if includeStockStatus, let stockStatus {
-            fields.append(.init(name: "stock_status",
-                                label: .localized(Strings.fieldStockStatus),
-                                value: humanizedStockStatus(stockStatus),
-                                priorValue: priorStockStatus(in: snapshot, currentValueRaw: stockStatus)))
-        }
-        if let status {
-            fields.append(.init(name: "status",
-                                label: .localized(Strings.fieldStatus),
-                                value: .raw(Self.humanizedProductStatus(status)),
-                                priorValue: priorProductStatus(in: snapshot, currentValueRaw: status)))
-        }
-        if includeSku, let sku {
-            fields.append(.init(name: "sku",
-                                label: .localized(Strings.fieldSku),
-                                value: .raw(sku),
-                                priorValue: priorValue(for: "sku", in: snapshot, currentValue: sku)))
-        }
-        return fields
-    }
-
-    private func humanizedStockStatus(_ raw: String) -> ConfirmationPreviewText {
-        switch raw {
-        case "instock": return .localized(Strings.stockStatusInStock)
-        case "outofstock": return .localized(Strings.stockStatusOutOfStock)
-        case "onbackorder": return .localized(Strings.stockStatusOnBackorder)
-        default: return .raw(raw)
+    private static func productFieldLabel(for key: String) -> ConfirmationPreviewText {
+        switch key {
+        case "regular_price": return .localized(Strings.fieldRegularPrice)
+        case "sale_price": return .localized(Strings.fieldSalePrice)
+        case "percent_discount": return .localized(Strings.fieldPercentDiscount)
+        case "stock_quantity": return .localized(Strings.fieldStockQuantity)
+        case "status": return .localized(Strings.fieldStatus)
+        case "name": return .localized(Strings.fieldName)
+        case "stock_status": return .localized(Strings.fieldStockStatus)
+        case "sku": return .localized(Strings.fieldSKU)
+        default: return .raw(key)
         }
     }
+
+    private static func productField(for key: String,
+                                     across updates: [ProductsUpdateEntry]) -> ConfirmationPreviewField {
+        let label = productFieldLabel(for: key)
+        let valuesWithEntries = updates.compactMap { entry -> ConfirmationPreviewText? in
+            productFieldValue(for: key, entry: entry)
+        }
+        // Distinct on the flattened text so equivalent renderings (e.g. both "Cleared") collapse.
+        let distinct = Set(valuesWithEntries.map { $0.flattened() })
+        if let only = valuesWithEntries.first, distinct.count == 1 {
+            return ConfirmationPreviewField(name: key, label: label, value: only)
+        }
+        if distinct.isEmpty {
+            return ConfirmationPreviewField(name: key, label: label, value: .localized(Strings.fieldValueUpdated))
+        }
+        return ConfirmationPreviewField(name: key, label: label, value: .localized(Strings.variesPerItem))
+    }
+
+    /// Returns a rendered value when `entry` has set `key`, or nil so the caller can tell
+    /// "entry did not change this key" apart from "entry changed it to an empty string".
+    private static func productFieldValue(for key: String,
+                                          entry: ProductsUpdateEntry) -> ConfirmationPreviewText? {
+        switch key {
+        case "regular_price":
+            guard let value = entry.regularPrice else { return nil }
+            if value.isEmpty { return .localized(Strings.fieldValueUpdated) }
+            return .raw(value)
+        case "sale_price":
+            guard let value = entry.salePrice else { return nil }
+            if value.isEmpty { return .localized(Strings.fieldValueCleared) }
+            return .raw(value)
+        case "percent_discount":
+            guard let value = entry.percentDiscount else { return nil }
+            return .localized(Strings.percentDiscountFormat, args: [.raw(formatPercent(value))])
+        case "stock_quantity":
+            guard let value = entry.stockQuantity else { return nil }
+            return .raw(String(value))
+        case "status":
+            guard let value = entry.status else { return nil }
+            return .raw(ProductStatus(rawValue: value).description)
+        case "name":
+            guard let value = entry.name else { return nil }
+            if value.isEmpty { return .localized(Strings.fieldValueUpdated) }
+            return .raw(value)
+        case "stock_status":
+            guard let value = entry.stockStatus else { return nil }
+            return .raw(ProductStockStatus(rawValue: value).description)
+        case "sku":
+            guard let value = entry.sku else { return nil }
+            return .raw(value)
+        default:
+            return nil
+        }
+    }
+
+    private static func formatPercent(_ value: Double) -> String {
+        if value.rounded() == value { return String(Int(value)) }
+        return String(format: "%g", value)
+    }
+
+    // MARK: - Order field helpers
 
     private func priorValue(for name: String,
                             in snapshot: ConfirmationSnapshot?,
@@ -349,28 +251,8 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         return prior
     }
 
-    private func priorSalePrice(in snapshot: ConfirmationSnapshot?,
-                                currentValue: String) -> ConfirmationPreviewText? {
-        guard let snapshot, let prior = snapshot.currentValues["sale_price"] else { return nil }
-        if case .raw(let priorRaw) = prior, priorRaw == currentValue { return nil }
-        if case .raw(let priorRaw) = prior, priorRaw.isEmpty {
-            return .localized(Strings.fieldValueOff)
-        }
-        return prior
-    }
-
-    private func priorStockStatus(in snapshot: ConfirmationSnapshot?,
-                                  currentValueRaw: String) -> ConfirmationPreviewText? {
-        guard let snapshot, let prior = snapshot.currentValues["stock_status"] else { return nil }
-        if case .raw(let priorRaw) = prior, priorRaw == currentValueRaw { return nil }
-        if case .raw(let priorRaw) = prior {
-            return humanizedStockStatus(priorRaw)
-        }
-        return prior
-    }
-
     private func orderStatusValue(_ status: String, isBulk: Bool) -> ConfirmationPreviewText {
-        let humanized = Self.humanizedOrderStatus(status)
+        let humanized = OrderStatusEnum(rawValue: status).localizedName
         guard customerNotifyingStatuses.contains(status) else { return .raw(humanized) }
         let template = isBulk ? Strings.statusValueEmailsCustomers : Strings.statusValueEmailsCustomer
         return .localized(template, args: [.raw(humanized)])
@@ -381,31 +263,9 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         guard let snapshot, let prior = snapshot.currentValues["status"] else { return nil }
         if case .raw(let priorRaw) = prior, priorRaw == currentValueRaw { return nil }
         if case .raw(let priorRaw) = prior {
-            return .raw(Self.humanizedOrderStatus(priorRaw))
+            return .raw(OrderStatusEnum(rawValue: priorRaw).localizedName)
         }
         return prior
-    }
-
-    private func priorProductStatus(in snapshot: ConfirmationSnapshot?,
-                                    currentValueRaw: String) -> ConfirmationPreviewText? {
-        guard let snapshot, let prior = snapshot.currentValues["status"] else { return nil }
-        if case .raw(let priorRaw) = prior, priorRaw == currentValueRaw { return nil }
-        if case .raw(let priorRaw) = prior {
-            return .raw(Self.humanizedProductStatus(priorRaw))
-        }
-        return prior
-    }
-
-    private static func humanizedOrderStatus(_ raw: String) -> String {
-        switch raw {
-        case "on-hold": return "On hold"
-        case "checkout-draft": return "Checkout draft"
-        default: return raw.prefix(1).uppercased() + raw.dropFirst()
-        }
-    }
-
-    private static func humanizedProductStatus(_ raw: String) -> String {
-        raw.prefix(1).uppercased() + raw.dropFirst()
     }
 
     private func decode<T: Decodable>(_ type: T.Type, from json: String) -> T? {
@@ -450,53 +310,17 @@ private enum Strings {
     )
     static let productsUpdateFallback = LocalizedStringResource(
         "ai.assistant.preview.products_update.fallback",
-        defaultValue: "Update a product"
+        defaultValue: "Update products"
     )
-    static let productsUpdateSummary = LocalizedStringResource(
-        "ai.assistant.preview.products_update.summary.headline",
-        defaultValue: "Update product #%@"
-    )
-    static let productsUpdateSummaryNamed = LocalizedStringResource(
-        "ai.assistant.preview.products_update.summary.headline.named",
-        defaultValue: "Update %@ (#%@)"
-    )
-    static let productsBulkUpdateFallback = LocalizedStringResource(
-        "ai.assistant.preview.products_bulk_update.fallback",
-        defaultValue: "Update many products"
-    )
-    static let productsBulkUpdateSummarySingular = LocalizedStringResource(
-        "ai.assistant.preview.products_bulk_update.summary.headline.singular",
+    static let productsUpdateSummarySingular = LocalizedStringResource(
+        "ai.assistant.preview.products_update.summary.headline.singular",
         defaultValue: "Update %@ product"
     )
-    static let productsBulkUpdateSummaryPlural = LocalizedStringResource(
-        "ai.assistant.preview.products_bulk_update.summary.headline.plural",
+    static let productsUpdateSummaryPlural = LocalizedStringResource(
+        "ai.assistant.preview.products_update.summary.headline.plural",
         defaultValue: "Update %@ products"
     )
-    static let productVariationsUpdateFallback = LocalizedStringResource(
-        "ai.assistant.preview.product_variations_update.fallback",
-        defaultValue: "Update product variation"
-    )
-    static let productVariationsUpdateSummary = LocalizedStringResource(
-        "ai.assistant.preview.product_variations_update.summary.headline",
-        defaultValue: "Update variation #%@ of product #%@"
-    )
-    static let productVariationsBulkUpdateFallback = LocalizedStringResource(
-        "ai.assistant.preview.product_variations_bulk_update.fallback",
-        defaultValue: "Update many variations"
-    )
-    static let productVariationsBulkUpdateSummarySingular = LocalizedStringResource(
-        "ai.assistant.preview.product_variations_bulk_update.summary.singular",
-        defaultValue: "Update %@ variation of product #%@"
-    )
-    static let productVariationsBulkUpdateSummaryPlural = LocalizedStringResource(
-        "ai.assistant.preview.product_variations_bulk_update.summary.plural",
-        defaultValue: "Update %@ variations of product #%@"
-    )
 
-    static let fieldName = LocalizedStringResource(
-        "ai.assistant.preview.field.name",
-        defaultValue: "Name"
-    )
     static let fieldStatus = LocalizedStringResource(
         "ai.assistant.preview.field.status",
         defaultValue: "Status"
@@ -509,15 +333,23 @@ private enum Strings {
         "ai.assistant.preview.field.sale_price",
         defaultValue: "Sale"
     )
+    static let fieldPercentDiscount = LocalizedStringResource(
+        "ai.assistant.preview.field.percent_discount",
+        defaultValue: "Discount"
+    )
     static let fieldStockQuantity = LocalizedStringResource(
         "ai.assistant.preview.field.stock_quantity",
         defaultValue: "Stock"
+    )
+    static let fieldName = LocalizedStringResource(
+        "ai.assistant.preview.field.name",
+        defaultValue: "Name"
     )
     static let fieldStockStatus = LocalizedStringResource(
         "ai.assistant.preview.field.stock_status",
         defaultValue: "Stock status"
     )
-    static let fieldSku = LocalizedStringResource(
+    static let fieldSKU = LocalizedStringResource(
         "ai.assistant.preview.field.sku",
         defaultValue: "SKU"
     )
@@ -533,22 +365,17 @@ private enum Strings {
         "ai.assistant.preview.field.value.updated_marker",
         defaultValue: "Updated"
     )
-    static let fieldValueOff = LocalizedStringResource(
-        "ai.assistant.preview.field.value.off_marker",
-        defaultValue: "Off"
+    static let fieldValueCleared = LocalizedStringResource(
+        "ai.assistant.preview.field.value.cleared_marker",
+        defaultValue: "Cleared"
     )
-
-    static let stockStatusInStock = LocalizedStringResource(
-        "ai.assistant.preview.stock_status.instock",
-        defaultValue: "In stock"
+    static let variesPerItem = LocalizedStringResource(
+        "ai.assistant.preview.products_update.field.varies",
+        defaultValue: "varies per item"
     )
-    static let stockStatusOutOfStock = LocalizedStringResource(
-        "ai.assistant.preview.stock_status.outofstock",
-        defaultValue: "Out of stock"
-    )
-    static let stockStatusOnBackorder = LocalizedStringResource(
-        "ai.assistant.preview.stock_status.onbackorder",
-        defaultValue: "On backorder"
+    static let percentDiscountFormat = LocalizedStringResource(
+        "ai.assistant.preview.field.percent_discount.value",
+        defaultValue: "%@%% off"
     )
 
     static let statusValueEmailsCustomer = LocalizedStringResource(

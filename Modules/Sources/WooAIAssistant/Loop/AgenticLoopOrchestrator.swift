@@ -277,15 +277,23 @@ public actor AgenticLoopOrchestrator {
                 let priorResults = Self.computePriorResultsBySignature(in: messages)
                 let priorTurnTallies = Self.computePerToolPriorTallies(in: messages)
 
-                let payloads = try await dispatchTools(calls,
+                let dispatch = try await dispatchTools(calls,
                                                        toolsByName: toolsByName,
                                                        priorCallSignatures: priorSignatures,
                                                        priorResultsBySignature: priorResults,
                                                        priorPerToolTallies: priorTurnTallies,
                                                        telemetryContext: telemetryContext,
                                                        continuation: continuation)
-                for (call, payload) in zip(calls, payloads) {
+                for (call, payload) in zip(calls, dispatch.payloads) {
                     messages.append(.init(role: .tool, content: payload, toolCallID: call.id))
+                }
+
+                // Outcome-unknown write must not invite a retry: terminate the turn here.
+                if dispatch.writeOutcomeUnknown != nil {
+                    continuation.yield(.textChunk(Localization.outcomeUnknownTerminal))
+                    continuation.yield(.completed(routeConfidence: nil))
+                    setOutcome(.completed)
+                    return
                 }
                 continue
             }
@@ -352,7 +360,7 @@ public actor AgenticLoopOrchestrator {
                                priorPerToolTallies: [String: Int],
                                telemetryContext: AssistantTelemetryContext?,
                                continuation: AsyncThrowingStream<AssistantEvent, Error>.Continuation)
-    async throws -> [String] {
+    async throws -> DispatchResult {
         guard let registry = toolRegistry else {
             for call in calls {
                 continuation.yield(.toolCallStarted(id: call.id,
@@ -371,7 +379,8 @@ public actor AgenticLoopOrchestrator {
                                                            durationMs: nil))
                 }
             }
-            return calls.map { _ in #"{"error":"No tool registry is configured for this client."}"# }
+            let payloads = calls.map { _ in #"{"error":"No tool registry is configured for this client."}"# }
+            return DispatchResult(payloads: payloads, writeOutcomeUnknown: nil)
         }
 
         var approvedIndices: [Int] = []
@@ -379,6 +388,8 @@ public actor AgenticLoopOrchestrator {
         var liveSignatures = priorCallSignatures
         let liveResults = priorResultsBySignature
         var liveTurnTallies = priorPerToolTallies
+        // Keep only the earliest-in-batch unsafe outcome-unknown so the terminal message names one tool.
+        var writeOutcomeUnknown: Int?
 
         // Without intra-batch dedupe the task group fires the registry once per duplicate in parallel.
         var firstPrimaryByIntraSignature: [String: Int] = [:]
@@ -522,6 +533,12 @@ public actor AgenticLoopOrchestrator {
                                                         for: call,
                                                         continuation: continuation)
                     resolvedResults[index] = payload
+                    if case .failed(let failed) = result,
+                       failed.kind == .outcomeUnknown,
+                       toolsByName[call.function.name]?.safetyLevel == .unsafe,
+                       (writeOutcomeUnknown ?? .max) > index {
+                        writeOutcomeUnknown = index
+                    }
                     if let telemetryContext, let startMs = startTimesByIndex[index] {
                         let duration = max(0, clock.nowMs() - startMs)
                         await emitToolDecisionTelemetry(result: result,
@@ -566,13 +583,14 @@ public actor AgenticLoopOrchestrator {
             }
         }
 
-        return resolvedResults.map { payload -> String in
+        let payloads = resolvedResults.map { payload -> String in
             guard let payload else {
                 assertionFailure("dispatchTools left a nil result slot - safety-branch coverage gap")
                 return #"{"error":"missing tool result"}"#
             }
             return payload
         }
+        return DispatchResult(payloads: payloads, writeOutcomeUnknown: writeOutcomeUnknown)
     }
 
     private func handleToolResult(_ result: ToolResult,
@@ -605,7 +623,7 @@ public actor AgenticLoopOrchestrator {
         case .failed(let failed) where failed.kind == .outcomeUnknown:
             // Per-call event, not a terminal failure: the model still gets a tool message so it can
             // react, and the UI gets a typed failed event so it can render the distinct unknown state.
-            let payload = Self.outcomeUnknownJSON(toolName: call.function.name)
+            let payload = Self.outcomeUnknownJSON(toolName: call.function.name, reason: failed.reason)
             continuation.yield(.toolCallCompleted(id: call.id,
                                                    name: call.function.name,
                                                    resultJSON: payload))
@@ -767,14 +785,19 @@ public actor AgenticLoopOrchestrator {
         #"{"status":"user_cancelled","reason":"User declined this action in the iOS confirmation prompt."}"#
     }
 
-    private static func outcomeUnknownJSON(toolName: String) -> String {
-        let body: [String: Any] = [
-            "outcome": "unknown",
-            "tool": toolName,
-            "advice": "Ask the merchant to verify the operation by viewing the order in the native UI."
-        ]
+    private struct OutcomeUnknownPayload: Encodable {
+        let outcome = "unknown"
+        let tool: String
+        let detail: String?
+    }
+
+    private static func outcomeUnknownJSON(toolName: String, reason: String) -> String {
+        let payload = OutcomeUnknownPayload(tool: toolName,
+                                            detail: reason.isEmpty ? nil : reason)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
         do {
-            let data = try JSONSerialization.data(withJSONObject: body, options: [.sortedKeys])
+            let data = try encoder.encode(payload)
             if let json = String(data: data, encoding: .utf8) { return json }
         } catch {
             DDLogError("AgenticLoopOrchestrator outcomeUnknownJSON encode failed: \(error)")
@@ -968,6 +991,11 @@ public actor AgenticLoopOrchestrator {
             value: "The chat service ended the stream without finishing cleanly. Try again.",
             comment: "Failure surfaced when the chat service's stream ends without emitting a finish event, indicating an upstream truncation."
         )
+        static let outcomeUnknownTerminal = NSLocalizedString(
+            "ai.assistant.loop.outcome_unknown_terminal",
+            value: "I couldn't confirm whether the previous change applied. Please check your store and try again if it didn't take effect.",
+            comment: "Synthesized terminal assistant message when a write tool's outcome could not be confirmed."
+        )
     }
 }
 
@@ -976,6 +1004,11 @@ public actor AgenticLoopOrchestrator {
 private enum TurnOutcome {
     case completed
     case toolCalls([OpenAIChat.ToolCall])
+}
+
+struct DispatchResult {
+    let payloads: [String]
+    let writeOutcomeUnknown: Int?
 }
 
 /// Tests/read-only prototypes that don't need a real safety check.

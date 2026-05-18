@@ -263,7 +263,10 @@ let package = Package(
             dependencies: ["Yosemite"]
         ),
         .target(
-            name: "ParcelFittingCheck"
+            name: "ParcelFittingCheck",
+            dependencies: [
+                "EventHorizonSDK",
+            ]
         ),
         .target(
             name: "PointOfSale",
@@ -377,12 +380,13 @@ let package = Package(
             name: "ParcelFittingCheckTests",
             dependencies: [
                 .target(name: "ParcelFittingCheck"),
+                "EventHorizonSDK",
             ]
         ),
         .binaryTarget(
             name: "EventHorizonSDK",
-            url: "https://a8c-libs.s3.amazonaws.com/ios/EventHorizon/woocommerce-2026-05-14-10-57-30/EventHorizon-woocommerce-2026-05-14-10-57-30.xcframework.zip",
-            checksum: "fe6a28a6f0b7dd265ff6b362b709cb4371f9096df4be37cd75a0a5f0582b778a"
+            url: "https://a8c-libs.s3.amazonaws.com/ios/EventHorizon/woocommerce-2026-05-18-07-24-01/EventHorizon-woocommerce-2026-05-18-07-24-01.xcframework.zip",
+            checksum: "6102a42bb973ff8be2b8b2aa7aa4089d7fd1ed43d3df2aed87955a0e62abce69"
         ),
     ]
 )

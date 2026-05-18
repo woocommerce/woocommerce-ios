@@ -24,6 +24,7 @@ final class WidgetSiteListSyncManager {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let widgetSiteListStore: WidgetSiteListStore
+    private let widgetSiteCurrencyCache: WidgetSiteCurrencyCache
     private let userDefaults: UserDefaults
     private let notificationCenter: NotificationCenter
 
@@ -51,11 +52,13 @@ final class WidgetSiteListSyncManager {
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          widgetSiteListStore: WidgetSiteListStore = WidgetSiteListStore(),
+         widgetSiteCurrencyCache: WidgetSiteCurrencyCache = WidgetSiteCurrencyCache(),
          userDefaults: UserDefaults = .standard,
          notificationCenter: NotificationCenter = .default) {
         self.stores = stores
         self.storageManager = storageManager
         self.widgetSiteListStore = widgetSiteListStore
+        self.widgetSiteCurrencyCache = widgetSiteCurrencyCache
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
     }
@@ -90,6 +93,7 @@ final class WidgetSiteListSyncManager {
         hasStarted = false
 
         widgetSiteListStore.clear()
+        widgetSiteCurrencyCache.clear()
         WidgetCenter.shared.reloadAllTimelines()
     }
 }
@@ -140,6 +144,7 @@ private extension WidgetSiteListSyncManager {
                                                         object: nil,
                                                         queue: .main) { [weak self] _ in
             self?.widgetSiteListStore.clear()
+            self?.widgetSiteCurrencyCache.clear()
             WidgetCenter.shared.reloadAllTimelines()
         }
     }
@@ -168,6 +173,7 @@ private extension WidgetSiteListSyncManager {
     func rebuildAndPersist() {
         let sites = buildSites()
         widgetSiteListStore.save(sites)
+        removeCachedCurrencySettingsForAuthoritativeSites(sites)
         WidgetCenter.shared.reloadAllTimelines()
     }
 
@@ -201,27 +207,13 @@ private extension WidgetSiteListSyncManager {
 
     func currencySettingsBySiteID() -> [Int64: CurrencySettings] {
         let settingsBySiteID = Dictionary(grouping: siteSettingsResultsController.fetchedObjects, by: \.siteID)
-        return settingsBySiteID.compactMapValues { settings in
-            currencySettings(from: settings)
-        }
+        return settingsBySiteID.compactMapValues(CurrencySettings.completeSettings(siteSettings:))
     }
 
-    /// Returns `CurrencySettings` only when all keys required by the widget formatter are present
-    /// for this site; otherwise returns `nil` so the widget can fall back to the default site's
-    /// currency settings at render time.
-    func currencySettings(from siteSettings: [SiteSetting]) -> CurrencySettings? {
-        let requiredSettingIDs: Set<String> = [
-            CurrencySettings.Constants.currencyCodeKey,
-            CurrencySettings.Constants.currencyPositionKey,
-            CurrencySettings.Constants.thousandSeparatorKey,
-            CurrencySettings.Constants.decimalSeparatorKey,
-            CurrencySettings.Constants.numberOfDecimalsKey
-        ]
-        let presentSettingIDs = Set(siteSettings.map(\.settingID))
-        guard requiredSettingIDs.isSubset(of: presentSettingIDs) else {
-            return nil
-        }
-        return CurrencySettings(siteSettings: siteSettings)
+    func removeCachedCurrencySettingsForAuthoritativeSites(_ sites: [WidgetSite]) {
+        sites
+            .filter { $0.currencySettings != nil }
+            .forEach { widgetSiteCurrencyCache.removeCurrencySettings(forSiteID: $0.siteID) }
     }
 
     var exposesSiteSelector: Bool {

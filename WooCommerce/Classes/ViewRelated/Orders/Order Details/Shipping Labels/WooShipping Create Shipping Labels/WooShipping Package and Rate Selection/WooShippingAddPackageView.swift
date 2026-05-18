@@ -22,6 +22,7 @@ struct WooShippingAddPackageView: View {
     @ObservedObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+    let arAnalytics: ParcelFittingAnalyticsTracking
     weak var arDelegate: ParcelFittingDelegate?
 
     @State private var cancellable: AnyCancellable?
@@ -32,8 +33,10 @@ struct WooShippingAddPackageView: View {
 
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void,
+         arAnalytics: ParcelFittingAnalyticsTracking = ParcelFittingAnalyticsAdaptor(),
          arDelegate: ParcelFittingDelegate? = nil) {
         self.addPackageAction = addPackageAction
+        self.arAnalytics = arAnalytics
         self.arDelegate = arDelegate
         packagesViewModel = WooShippingAddPackageViewModel(selectedPackage: selectedPackage)
         switch selectedPackage?.source {
@@ -134,6 +137,7 @@ struct WooShippingAddPackageView: View {
             carriers: packagesViewModel.parcelPresetCarriers,
             starredPackageIDs: packagesViewModel.starredCarriersPackages,
             tintColor: .withColorStudio(.wooCommercePurple, shade: .shade60),
+            analytics: arAnalytics,
             delegate: arDelegate
         )
     }

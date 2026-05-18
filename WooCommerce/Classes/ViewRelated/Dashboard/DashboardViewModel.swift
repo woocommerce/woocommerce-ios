@@ -443,14 +443,8 @@ private extension DashboardViewModel {
         guard !savedCards.contains(where: { $0.type == .aiAssistant }) else { return }
 
         let aiAssistantCard = DashboardCard(type: .aiAssistant, availability: .show, enabled: true)
-        let insertionIndex: Int = {
-            if let onboardingIndex = savedCards.firstIndex(where: { $0.type == .onboarding }) {
-                return savedCards.index(after: onboardingIndex)
-            }
-            return savedCards.startIndex
-        }()
         var updatedSaved = savedCards
-        updatedSaved.insert(aiAssistantCard, at: insertionIndex)
+        updatedSaved.insert(aiAssistantCard, at: savedCards.startIndex)
         saveDashboardCards(cards: updatedSaved)
     }
 }
@@ -890,16 +884,15 @@ private extension DashboardViewModel {
                               canShowAIAssistant: Bool) -> [DashboardCard] {
         var cards = [DashboardCard]()
 
+        cards.append(DashboardCard(type: .aiAssistant,
+                                   availability: canShowAIAssistant ? .show : .hide,
+                                   enabled: canShowAIAssistant))
+
         // Onboarding card.
         // When not available, Onboarding card needs to be hidden from Dashboard and Customize
         cards.append(DashboardCard(type: .onboarding,
                                    availability: canShowOnboarding ? .show : .hide,
                                    enabled: canShowOnboarding))
-
-        // AI Assistant lands right after onboarding, at the top of the editable list.
-        cards.append(DashboardCard(type: .aiAssistant,
-                                   availability: canShowAIAssistant ? .show : .hide,
-                                   enabled: canShowAIAssistant))
 
         // Performance and Top Performance cards (also known as Analytics cards).
         // When not available, Analytics cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"

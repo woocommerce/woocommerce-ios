@@ -281,7 +281,9 @@
 				"Extensions/UserDefaults+Woo.swift",
 				System/WooConstants.swift,
 				Tools/AppLocalizedString.swift,
+				"Tools/Shared Site Settings/CurrencySettings+SiteSettings.swift",
 				Tools/StoreWidgets/WidgetSite.swift,
+				Tools/StoreWidgets/WidgetSiteCurrencyCache.swift,
 				Tools/StoreWidgets/WidgetSiteListStore.swift,
 				"Universal Links/Routes/StoreMetricsReportRoute.swift",
 			);
@@ -388,8 +390,8 @@
 				"StoreStatsWidgetDateRange+Localization.swift",
 				StoreTrendsConfigurationIntent.swift,
 				StoreTrendsEntry.swift,
-				StoreWidgetTheme.swift,
 				StoreWidgets.intentdefinition,
+				StoreWidgetTheme.swift,
 				WidgetMetricPresenter.swift,
 				WidgetReportsURL.swift,
 			);

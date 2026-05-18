@@ -288,8 +288,8 @@ public actor AgenticLoopOrchestrator {
                     messages.append(.init(role: .tool, content: payload, toolCallID: call.id))
                 }
 
-                // Outcome-unknown write must not invite a retry: terminate the turn here.
-                if dispatch.writeOutcomeUnknown != nil {
+                // A write we can't confirm must not be retried: that risks applying it twice.
+                if dispatch.hasUncertainWrite {
                     continuation.yield(.textChunk(Localization.outcomeUnknownTerminal))
                     continuation.yield(.completed(routeConfidence: nil))
                     setOutcome(.completed)
@@ -349,6 +349,22 @@ public actor AgenticLoopOrchestrator {
         return .toolCalls(pendingCalls)
     }
 
+    // MARK: - Tool dispatch
+
+    /// Unknown tool names default to unsafe so an unrecognized name never skips the write ordering.
+    private func isUnsafe(_ call: OpenAIChat.ToolCall, toolsByName: [String: AITool]) -> Bool {
+        (toolsByName[call.function.name]?.safetyLevel ?? .unsafe) == .unsafe
+    }
+
+    /// Writes run before reads in the same batch so a read paired with a write renders post-write state.
+    private func dispatchBatchesInSafetyOrder(_ approvedIndices: [Int],
+                                              calls: [OpenAIChat.ToolCall],
+                                              toolsByName: [String: AITool]) -> [[Int]] {
+        let writes = approvedIndices.filter { isUnsafe(calls[$0], toolsByName: toolsByName) }
+        let reads = approvedIndices.filter { !isUnsafe(calls[$0], toolsByName: toolsByName) }
+        return [writes, reads].filter { !$0.isEmpty }
+    }
+
     /// Dispatch every call in `calls` under the safety policy and return the per-call payloads in input
     /// order. Identical calls (across the turn or within this batch) replay the cached payload via a
     /// success-shaped `cached_result_reused` envelope rather than an error shape, because models treat
@@ -380,7 +396,7 @@ public actor AgenticLoopOrchestrator {
                 }
             }
             let payloads = calls.map { _ in #"{"error":"No tool registry is configured for this client."}"# }
-            return DispatchResult(payloads: payloads, writeOutcomeUnknown: nil)
+            return DispatchResult(payloads: payloads, hasUncertainWrite: false)
         }
 
         var approvedIndices: [Int] = []
@@ -388,8 +404,7 @@ public actor AgenticLoopOrchestrator {
         var liveSignatures = priorCallSignatures
         let liveResults = priorResultsBySignature
         var liveTurnTallies = priorPerToolTallies
-        // Keep only the earliest-in-batch unsafe outcome-unknown so the terminal message names one tool.
-        var writeOutcomeUnknown: Int?
+        var hasUncertainWrite = false
 
         // Without intra-batch dedupe the task group fires the registry once per duplicate in parallel.
         var firstPrimaryByIntraSignature: [String: Int] = [:]
@@ -513,41 +528,47 @@ public actor AgenticLoopOrchestrator {
                                                     argumentsJSON: call.function.arguments))
                 startTimesByIndex[index] = clock.nowMs()
             }
-            // withTaskGroup (not throwing) so a single tool failure no longer
-            // tears down sibling tasks. Errors from the registry get folded
-            // into a per-tool failed result and surface as toolCallCompleted
-            // events for every call - no orphan running pills.
-            await withTaskGroup(of: (Int, ToolResult).self) { group in
-                for index in approvedIndices {
-                    let call = calls[index]
-                    group.addTask {
-                        let result = await registry.execute(name: call.function.name,
-                                                            arguments: call.function.arguments,
-                                                            toolCallID: call.id)
-                        return (index, result)
+            // Non-throwing task group: a single tool's failure becomes a per-tool failed result
+            // instead of tearing down its siblings and leaving orphan running pills.
+            func runGroup(for indices: [Int]) async {
+                guard !indices.isEmpty else { return }
+                await withTaskGroup(of: (Int, ToolResult).self) { group in
+                    for index in indices {
+                        let call = calls[index]
+                        group.addTask {
+                            let result = await registry.execute(name: call.function.name,
+                                                                arguments: call.function.arguments,
+                                                                toolCallID: call.id)
+                            return (index, result)
+                        }
+                    }
+                    for await (index, result) in group {
+                        let call = calls[index]
+                        let payload = self.handleToolResult(result,
+                                                            for: call,
+                                                            continuation: continuation)
+                        resolvedResults[index] = payload
+                        if case .failed(let failed) = result,
+                           failed.kind == .outcomeUnknown,
+                           isUnsafe(call, toolsByName: toolsByName) {
+                            hasUncertainWrite = true
+                        }
+                        if let telemetryContext, let startMs = startTimesByIndex[index] {
+                            let duration = max(0, clock.nowMs() - startMs)
+                            await emitToolDecisionTelemetry(result: result,
+                                                            call: call,
+                                                            durationMs: duration,
+                                                            telemetryContext: telemetryContext,
+                                                            toolsByName: toolsByName)
+                        }
                     }
                 }
-                for await (index, result) in group {
-                    let call = calls[index]
-                    let payload = self.handleToolResult(result,
-                                                        for: call,
-                                                        continuation: continuation)
-                    resolvedResults[index] = payload
-                    if case .failed(let failed) = result,
-                       failed.kind == .outcomeUnknown,
-                       toolsByName[call.function.name]?.safetyLevel == .unsafe,
-                       (writeOutcomeUnknown ?? .max) > index {
-                        writeOutcomeUnknown = index
-                    }
-                    if let telemetryContext, let startMs = startTimesByIndex[index] {
-                        let duration = max(0, clock.nowMs() - startMs)
-                        await emitToolDecisionTelemetry(result: result,
-                                                        call: call,
-                                                        durationMs: duration,
-                                                        telemetryContext: telemetryContext,
-                                                        toolsByName: toolsByName)
-                    }
-                }
+            }
+
+            for batch in dispatchBatchesInSafetyOrder(approvedIndices,
+                                                      calls: calls,
+                                                      toolsByName: toolsByName) {
+                await runGroup(for: batch)
             }
         }
 
@@ -590,7 +611,7 @@ public actor AgenticLoopOrchestrator {
             }
             return payload
         }
-        return DispatchResult(payloads: payloads, writeOutcomeUnknown: writeOutcomeUnknown)
+        return DispatchResult(payloads: payloads, hasUncertainWrite: hasUncertainWrite)
     }
 
     private func handleToolResult(_ result: ToolResult,
@@ -655,6 +676,8 @@ public actor AgenticLoopOrchestrator {
             return payload
         }
     }
+
+    // MARK: - Turn message assembly
 
     /// Inject a one-shot system nudge when this turn's transcript shows the model misbehaving (an
     /// empty-list retry loop or the same tool called 3+ times). Each guard key fires at most once.
@@ -1008,7 +1031,7 @@ private enum TurnOutcome {
 
 struct DispatchResult {
     let payloads: [String]
-    let writeOutcomeUnknown: Int?
+    let hasUncertainWrite: Bool
 }
 
 /// Tests/read-only prototypes that don't need a real safety check.

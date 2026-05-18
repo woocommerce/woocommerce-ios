@@ -5,14 +5,24 @@ import Testing
 @Suite(.timeLimit(.minutes(1)))
 struct ProductsGetToolTests {
     @Test
-    func test_definition_limits_variation_lookup_to_explicit_variation_questions() {
+    func test_definition_routes_variation_questions_to_product_variations_list() {
         // Given
         let tool = ProductsGetTool.make()
 
         // Then
-        #expect(tool.definition.description.contains("explicitly asks about variations"))
-        #expect(tool.definition.description.contains("variation-level stock"))
-        #expect(tool.definition.description.contains("Do NOT call this tool to render a card after products_list"))
+        #expect(tool.definition.description.contains("product_variations_list"))
+        #expect(tool.definition.description.contains("variations / sizes / colors"))
+    }
+
+    @Test
+    func test_definition_triggers_on_field_drill_downs_not_card_re_renders() {
+        // Given
+        let tool = ProductsGetTool.make()
+
+        // Then
+        #expect(tool.definition.description.contains("Required when the merchant asks"))
+        #expect(tool.definition.description.contains("by position from a prior turn"))
+        #expect(!tool.definition.description.contains("Do NOT call this tool to render a card"))
     }
 
     @Test

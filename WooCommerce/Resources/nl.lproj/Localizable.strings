@@ -12435,12 +12435,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
 "pos.addCustomAmount.title" = "Aangepast bedrag";
 
-/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.message" = "Tik hier om servicekosten, fooi of een aangepaste regel aan de bestelling toe te voegen.";
-
-/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.title" = "Een aangepast bedrag toevoegen";
-
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Streepjescode scannen";
 
@@ -12611,9 +12605,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce-instellingen";
-
-/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
-"pos.cartView.addCustomAmount.header.accessibilityLabel" = "Aangepast bedrag toevoegen";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Tik op een product om het \n toe te voegen aan de winkelwagen of ";
@@ -12786,9 +12777,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "Bestelling";
 
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "Producten";
-
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Totalen";
 
@@ -12834,20 +12822,11 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "Aantal: %1$@ voor elk %2$@, totaal %3$@";
 
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "Producten";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "Producten";
-
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "Terugbetaling #%1$d";
-
-/* Section title for the refunded products list in order details */
-"pos.orderDetailsView.refundedProductsTitle" = "Gerestitueerde producten";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Totalen";
@@ -14072,9 +14051,6 @@ which should be translated separately and considered part of this sentence. */
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "Mijn winkel";
 
-/* Range title for the today store info widget */
-"storeWidgets.infoProvider.today" = "Vandaag";
-
 /* Conversion rate metric title for the store info widget.
    Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "Conversie";
@@ -14096,9 +14072,6 @@ which should be translated separately and considered part of this sentence. */
 /* Visitors metric title for the store info widget.
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "Bezoekers";
-
-/* Average order value (AOV) metric title for the store info widget. */
-"storeWidgets.metric.averageOrderValue" = "Gemiddelde bestelwaarde";
 
 /* Items sold metric title — total units sold in the period. */
 "storeWidgets.metric.itemsSold" = "Verkochte artikelen";
@@ -14197,9 +14170,6 @@ which should be translated separately and considered part of this sentence. */
 /* Greeting and header for the issue picker in support chat */
 "supportChatView.issuePickerHeader" = "Hallo! Ik ben je Woo Mobile Support-bot. Waar heb je vandaag problemen mee?";
 
-/* OK button in support chat error alert */
-"supportChatView.ok" = "OK";
-
 /* Placeholder text for the chat input field */
 "supportChatView.placeholder" = "Voer een bericht in ...";
 
@@ -14212,17 +14182,11 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the AI support chat screen */
 "supportChatView.title" = "Chat met het ondersteuningsteam";
 
-/* Error message shown when sending a support chat message fails */
-"supportChatViewModel.errorMessage" = "Er is iets misgegaan. Probeer het nog eens.";
-
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Hallo! Ik ben je Woo Mobile Support-bot. Is er iets waar ik je vandaag mee kan helpen?";
 
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "Beschrijf je probleem in meer detail, zodat ik kan helpen.";
-
-/* Error message shown when loading a prior support chat transcript fails on resume */
-"supportChatViewModel.resumeErrorMessage" = "We konden het vorige gesprek niet laden. Je kan nog steeds een nieuw bericht verzenden.";
 
 /* Action button to enable WooCommerce Analytics */
 "supportDiagnosticsService.action.enableAnalytics" = "Analyses inschakelen";
@@ -15403,14 +15367,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "Verzendingen spreiden";
 
-/* Message on a notice when removing a package fails in the shipping creation flow */
+/* Message on a notice when removing a saved package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.removingPackageFailure" = "Kan verpakking niet verwijderen";
 
-/* Button to retry saving/removing a package in the shipping creation flow */
+/* Button to retry removing a saved package in the shipping creation flow */
 "wooShippingAddPackageViewModel.retry" = "Opnieuw proberen";
-
-/* Message on a notice when saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageFailure" = "Kan verpakking niet opslaan.";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "Voer een geldig ITN in een van deze indelingen in: AES X12345678901234 of NOEEI 30.37(a).";

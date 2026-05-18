@@ -12435,12 +12435,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
 "pos.addCustomAmount.title" = "Özel tutar";
 
-/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.message" = "Siparişe bir hizmet ücreti, ipucu veya özel satır eklemek için buraya dokunun.";
-
-/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.title" = "Özel tutar ekleyin";
-
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Barkod taraması";
 
@@ -12611,9 +12605,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce Ayarları";
-
-/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
-"pos.cartView.addCustomAmount.header.accessibilityLabel" = "Özel tutar ekleyin";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = " için bir ürüne dokununSepete eklemek için  veya ";
@@ -12786,9 +12777,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "Sipariş";
 
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "Ürünler";
-
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Toplamlar";
 
@@ -12834,20 +12822,11 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "Miktar: %1$@ her biri %2$@, Toplam %3$@";
 
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "Ürünler";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "Ürünler";
-
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "%1$d numaralı para iadesi";
-
-/* Section title for the refunded products list in order details */
-"pos.orderDetailsView.refundedProductsTitle" = "Para iadesi yapılan ürünler";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Toplamlar";
@@ -14072,9 +14051,6 @@ which should be translated separately and considered part of this sentence. */
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "Mağazam";
 
-/* Range title for the today store info widget */
-"storeWidgets.infoProvider.today" = "Bugün";
-
 /* Conversion rate metric title for the store info widget.
    Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "Dönüşüm";
@@ -14096,9 +14072,6 @@ which should be translated separately and considered part of this sentence. */
 /* Visitors metric title for the store info widget.
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "Ziyaretçiler";
-
-/* Average order value (AOV) metric title for the store info widget. */
-"storeWidgets.metric.averageOrderValue" = "Ortalama sipariş değeri";
 
 /* Items sold metric title — total units sold in the period. */
 "storeWidgets.metric.itemsSold" = "Satılan ürünler";
@@ -14197,9 +14170,6 @@ which should be translated separately and considered part of this sentence. */
 /* Greeting and header for the issue picker in support chat */
 "supportChatView.issuePickerHeader" = "Merhaba! Woo Mobil Destek Robotunuzum. Bugün neyle ilgili sorun yaşıyorsunuz?";
 
-/* OK button in support chat error alert */
-"supportChatView.ok" = "Tamam";
-
 /* Placeholder text for the chat input field */
 "supportChatView.placeholder" = "Bir mesaj yazın...";
 
@@ -14212,17 +14182,11 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the AI support chat screen */
 "supportChatView.title" = "Destek ile sohbet edin";
 
-/* Error message shown when sending a support chat message fails */
-"supportChatViewModel.errorMessage" = "Bir sorun oluştu. Lütfen tekrar deneyin.";
-
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Merhaba! Woo Mobil Destek Robotunuzum. Bugün size yardımcı olabileceğim bir şey var mı?";
 
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "Lütfen size yardımcı olabilmem için sorununuzu daha ayrıntılı olarak açıklayın.";
-
-/* Error message shown when loading a prior support chat transcript fails on resume */
-"supportChatViewModel.resumeErrorMessage" = "Önceki sohbeti yükleyemedik. Yine de yeni bir mesaj gönderebilirsiniz.";
 
 /* Action button to enable WooCommerce Analytics */
 "supportDiagnosticsService.action.enableAnalytics" = "Analytics'i Etkinleştir";
@@ -15403,14 +15367,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "Gönderimleri böl";
 
-/* Message on a notice when removing a package fails in the shipping creation flow */
+/* Message on a notice when removing a saved package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.removingPackageFailure" = "Paket kaldırılamıyor";
 
-/* Button to retry saving/removing a package in the shipping creation flow */
+/* Button to retry removing a saved package in the shipping creation flow */
 "wooShippingAddPackageViewModel.retry" = "Tekrar dene";
-
-/* Message on a notice when saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageFailure" = "Paket kaydedilemiyor";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "Lütfen şu biçimlerden birine geçerli bir ITN girin: AES X12345678901234 veya NOEEI 30.37(a).";

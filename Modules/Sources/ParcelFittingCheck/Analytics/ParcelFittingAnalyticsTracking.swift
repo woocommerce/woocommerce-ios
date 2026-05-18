@@ -1,4 +1,4 @@
-@_exported import EventHorizonSDK
+import EventHorizonSDK
 
 public protocol ParcelFittingAnalyticsTracking {
     func track(_ event: Event)

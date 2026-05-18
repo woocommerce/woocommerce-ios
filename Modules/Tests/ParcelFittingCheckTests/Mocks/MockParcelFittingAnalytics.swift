@@ -1,3 +1,4 @@
+import EventHorizonSDK
 @testable import ParcelFittingCheck
 
 final class MockParcelFittingAnalytics: ParcelFittingAnalyticsTracking {

@@ -1,3 +1,4 @@
+import EventHorizonSDK
 import Testing
 @testable @preconcurrency import ParcelFittingCheck
 

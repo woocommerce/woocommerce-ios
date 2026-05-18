@@ -380,6 +380,7 @@ let package = Package(
             name: "ParcelFittingCheckTests",
             dependencies: [
                 .target(name: "ParcelFittingCheck"),
+                "EventHorizonSDK",
             ]
         ),
         .binaryTarget(

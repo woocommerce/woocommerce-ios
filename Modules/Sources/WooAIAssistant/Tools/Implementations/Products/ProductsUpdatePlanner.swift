@@ -173,7 +173,10 @@ struct ProductsUpdatePlanner {
                              preDispatchFailures: [(entry.id, "Could not enumerate variations for parent \(parentID)")])
         }
         // Refuse partial application: writing only the first page would leave variations inconsistent.
-        if totalPagesValue(headers: response.headers) > 1 {
+        // Also refuse when the page is full and no header info disambiguates, since we can't prove a
+        // second page doesn't exist (covers older adapters or mocks that drop X-WP-TotalPages).
+        let pageCapMet = rows.count >= ProductsUpdateTool.variationsPerPage
+        if totalPagesValue(headers: response.headers) > 1 || pageCapMet {
             let reason = "Cannot update variable product #\(entry.id): it has more than "
                 + "\(ProductsUpdateTool.variationsPerPage) variations and updating only the first "
                 + "\(ProductsUpdateTool.variationsPerPage) would leave the rest in an inconsistent state. "

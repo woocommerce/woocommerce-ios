@@ -37,8 +37,8 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
                                             availableAsRESTRequest: true)
 
         do {
-            let (data, _) = try await network.responseDataAndHeaders(for: jetpackRequest)
-            return WCRESTResponse(data: unwrap(data), statusCode: 200)
+            let (data, headers) = try await network.responseDataAndHeaders(for: jetpackRequest)
+            return WCRESTResponse(data: unwrap(data), statusCode: 200, headers: headers ?? [:])
         } catch let error as NetworkError {
             let body = unwrap(error.responseData ?? Data())
             if case .timeout = error {

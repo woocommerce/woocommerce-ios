@@ -643,6 +643,37 @@ struct ProductsUpdateToolTests {
     }
 
     @Test
+    func test_planVariableParent_when_full_page_and_no_total_pages_header_then_refused_as_unsafe() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let rows = (1...100).map { #"{"id": \#($0), "regular_price": "20.00"}"# }.joined(separator: ",")
+        let variationsList = "[\(rows)]"
+        let client = MockWCRESTClient(responses: [
+            StubResponses.ok("[\(probe)]"),
+            StubResponses.ok(variationsList)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"updates": [{"id": 50, "sale_price": "15.00"}]}"#, client)
+
+        // Then
+        let receipt = try successReceipt(result)
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.isEmpty)
+        guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
+            Issue.record("expected failed entry")
+            return
+        }
+        #expect(entry["id"] == .int(50))
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("more than 100 variations"))
+        } else {
+            Issue.record("expected reason string")
+        }
+    }
+
+    @Test
     func test_planVariableParent_when_expansion_succeeds_with_parent_only_field_then_dispatches_both() async throws {
         // Given
         let probe = #"{"id": 50, "type": "variable"}"#
@@ -902,32 +933,38 @@ struct ProductsUpdateToolTests {
     }
 
     @Test
-    func test_update_when_variations_batch_exceeds_100_entries_then_splits_into_two_batches() async throws {
+    func test_update_when_variations_page_is_full_without_pagination_headers_then_refuses_to_avoid_partial_write() async throws {
         // Given
         let probe = #"{"id": 50, "type": "variable"}"#
-        let variations = (1...150).map { #"{"id": \#($0 + 1000), "regular_price": "10.00"}"# }
+        let variations = (1...100).map { #"{"id": \#($0 + 1000), "regular_price": "10.00"}"# }
         let variationsList = "[\(variations.joined(separator: ","))]"
-        let successEntries = (1...100).map { #"{"id": \#($0 + 1000)}"# }
-        let firstBatchBody = "{\"update\": [\(successEntries.joined(separator: ","))]}"
-        let remainderEntries = (101...150).map { #"{"id": \#($0 + 1000)}"# }
-        let secondBatchBody = "{\"update\": [\(remainderEntries.joined(separator: ","))]}"
         let client = MockWCRESTClient(responses: [
             StubResponses.ok("[\(probe)]"),
-            StubResponses.ok(variationsList),
-            StubResponses.ok(firstBatchBody),
-            StubResponses.ok(secondBatchBody)
+            StubResponses.ok(variationsList)
         ])
         let tool = ProductsUpdateTool.make()
 
         // When
-        _ = await tool.executor(#"{"updates": [{"id": 50, "sale_price": "9.00"}]}"#, client)
+        let result = await tool.executor(#"{"updates": [{"id": 50, "sale_price": "9.00"}]}"#, client)
 
         // Then
         let posts = await client.calls.filter { $0.method == "POST" }
-        #expect(posts.count == 2)
-        #expect(posts.allSatisfy { $0.path == "wc/v3/products/50/variations/batch" })
-        let sizes = try posts.map { try requireBatchBody($0.body).count }.sorted()
-        #expect(sizes == [50, 100])
+        #expect(posts.isEmpty)
+        let receipt = try successReceipt(result)
+        guard case .array(let failed) = receipt["failed"] else {
+            Issue.record("expected failed array in receipt")
+            return
+        }
+        #expect(failed.count == 1)
+        guard case .object(let entry) = failed.first else {
+            Issue.record("expected first failed entry to be an object")
+            return
+        }
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("more than 100"))
+        } else {
+            Issue.record("expected reason string on failed entry")
+        }
     }
 
     @Test(arguments: [

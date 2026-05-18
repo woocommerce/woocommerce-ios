@@ -3,6 +3,7 @@ import SwiftUI
 struct ARParcelSizingView: View {
     private let onCancel: () -> Void
     private let onConfirm: (ParcelDimensions) -> Void
+    private let isSessionActive: Bool
 
     @State private var viewModel: ARParcelSizingViewModel
     @Environment(\.scenePhase) private var scenePhase
@@ -13,9 +14,11 @@ struct ARParcelSizingView: View {
     init(unit: UnitLength,
          initial: ParcelDimensions? = nil,
          analytics: ParcelFittingAnalyticsTracking,
+         isSessionActive: Bool = true,
          onCancel: @escaping () -> Void,
          onConfirm: @escaping (ParcelDimensions) -> Void) {
         self._viewModel = State(initialValue: ARParcelSizingViewModel(unit: unit, initial: initial, analytics: analytics))
+        self.isSessionActive = isSessionActive
         self.onCancel = onCancel
         self.onConfirm = onConfirm
     }
@@ -27,6 +30,7 @@ struct ARParcelSizingView: View {
                 isPlaced: $isPlaced,
                 isARReady: $isARReady,
                 resetTrigger: resetTrigger,
+                isSessionActive: isSessionActive,
                 onDimensionsChanged: { viewModel.update(fromMeters: $0) },
                 onGestureCompleted: { viewModel.recordGestureCompleted(mode: $0) }
             )
@@ -58,6 +62,12 @@ struct ARParcelSizingView: View {
         .background(Color.black)
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase != .active { resetWithoutTracking() }
+        }
+        .onChange(of: isSessionActive) { _, active in
+            if active {
+                resetWithoutTracking()
+                isARReady = false
+            }
         }
         .onChange(of: isARReady) { _, ready in
             if ready { viewModel.recordARReady() }

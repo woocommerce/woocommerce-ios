@@ -16,6 +16,7 @@ struct ARUnifiedParcelFlowView: View {
             ARParcelSizingView(
                 unit: unit,
                 analytics: analytics,
+                isSessionActive: path.isEmpty,
                 onCancel: {
                     dismiss()
                     delegate.parcelFittingDidCancel()

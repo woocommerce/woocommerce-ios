@@ -8,6 +8,7 @@ final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARC
     var dimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
     private let initialDimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
     var lastResetTrigger: Int = 0
+    var isSessionPaused: Bool = false
 
     var onPlaced: (() -> Void)?
     var onRemoved: (() -> Void)?

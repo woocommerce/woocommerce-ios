@@ -8,6 +8,7 @@ struct ARParcelSceneView: UIViewRepresentable {
     @Binding var isARReady: Bool
     let resetTrigger: Int
     var isResizeEnabled: Bool = true
+    var isSessionActive: Bool = true
     var onDimensionsChanged: ((SIMD3<Float>) -> Void)?
     var onGestureCompleted: ((TwoFingerTracker.Mode) -> Void)?
 
@@ -42,6 +43,14 @@ struct ARParcelSceneView: UIViewRepresentable {
         context.coordinator.onDimensionsChanged = onDimensionsChanged
         context.coordinator.onGestureCompleted = onGestureCompleted
         context.coordinator.updateDimensions(dimensions)
+
+        if isSessionActive && context.coordinator.isSessionPaused {
+            configureSession(for: uiView)
+            context.coordinator.isSessionPaused = false
+        } else if !isSessionActive && !context.coordinator.isSessionPaused {
+            uiView.session.pause()
+            context.coordinator.isSessionPaused = true
+        }
     }
 
     static func dismantleUIView(_ uiView: ARView, coordinator: ARParcelSceneCoordinator) {

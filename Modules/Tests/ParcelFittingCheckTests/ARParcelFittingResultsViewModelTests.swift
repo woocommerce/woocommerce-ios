@@ -1,7 +1,7 @@
+import EventHorizonSDK
 import Testing
-@testable import ParcelFittingCheck
+@testable @preconcurrency import ParcelFittingCheck
 
-@Suite("ARParcelFittingResultsViewModel")
 struct ARParcelFittingResultsViewModelTests {
 
     // MARK: - fits(measured:into:)
@@ -70,12 +70,110 @@ struct ARParcelFittingResultsViewModelTests {
         let carrierB = ParcelPresetCarrier(id: "b", name: "B", packages: [makePackage(id: "small", length: 5, width: 4, height: 3)])
         let carrierC = ParcelPresetCarrier(id: "c", name: "C", packages: [makePackage(id: "tiny", length: 1, width: 1, height: 1)])
 
-        let vm = ARParcelFittingResultsViewModel(measuredDimensions: measured, unit: .centimeters, carriers: [carrierA, carrierB, carrierC])
+        let vm = ARParcelFittingResultsViewModel(measuredDimensions: measured, unit: .centimeters, carriers: [carrierA, carrierB, carrierC],
+                                                  analytics: MockParcelFittingAnalytics())
 
         #expect(vm.carrierResults.count == 2)
         #expect(vm.carrierResults[0].package.id == "small")
         #expect(vm.carrierResults[1].package.id == "big")
     }
+
+    // MARK: - trackResultsDisplayed
+
+    @Test func test_trackResultsDisplayed_when_called_then_tracks_with_counts() throws {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(carriers: [
+            ParcelPresetCarrier(id: "a", name: "A", packages: [makePackage(id: "fit", length: 30, width: 20, height: 15)]),
+            ParcelPresetCarrier(id: "b", name: "B", packages: [makePackage(id: "nofit", length: 1, width: 1, height: 1)]),
+        ], analytics: analytics)
+
+        // When
+        vm.trackResultsDisplayed()
+
+        // Then
+        let event = try #require(analytics.lastEvent)
+        #expect(event.name == "arfitting_results_displayed")
+        #expect(event.hasProperty("carrier_match_count", value: "1"))
+        #expect(event.hasProperty("total_carrier_count", value: "2"))
+    }
+
+    // MARK: - trackCarrierPackageSelected
+
+    @Test func test_trackCarrierPackageSelected_when_called_then_tracks_with_index_and_starred() throws {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackCarrierPackageSelected(index: 2, isStarred: true)
+
+        // Then
+        let event = try #require(analytics.lastEvent)
+        #expect(event.name == "arfitting_carrier_package_selected")
+        #expect(event.hasProperty("index", value: "2"))
+        #expect(event.hasProperty("is_starred", value: "true"))
+    }
+
+    // MARK: - trackCustomDimensionsSelected
+
+    @Test func test_trackCustomDimensionsSelected_when_called_then_tracks_event() throws {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackCustomDimensionsSelected()
+
+        // Then
+        let event = try #require(analytics.lastEvent)
+        #expect(event.name == "arfitting_custom_dimensions_selected")
+    }
+
+    // MARK: - trackSelectPackageTapped
+
+    @Test func test_trackSelectPackageTapped_when_carrier_then_tracks_carrier_type() throws {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackSelectPackageTapped(selectionType: .carrier)
+
+        // Then
+        let event = try #require(analytics.lastEvent)
+        #expect(event.name == "arfitting_select_package_tapped")
+        #expect(event.hasProperty("selection_type", value: "carrier"))
+    }
+
+    @Test func test_trackSelectPackageTapped_when_custom_then_tracks_custom_type() throws {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackSelectPackageTapped(selectionType: .custom)
+
+        // Then
+        let event = try #require(analytics.lastEvent)
+        #expect(event.hasProperty("selection_type", value: "custom"))
+    }
+
+    // MARK: - trackBrowseAllPackagesTapped
+
+    @Test func test_trackBrowseAllPackagesTapped_when_called_then_tracks_event() throws {
+        // Given
+        let analytics = MockParcelFittingAnalytics()
+        let vm = makeSUT(analytics: analytics)
+
+        // When
+        vm.trackBrowseAllPackagesTapped()
+
+        // Then
+        let event = try #require(analytics.lastEvent)
+        #expect(event.name == "arfitting_browse_all_packages_tapped")
+    }
+
 }
 
 // MARK: - Helpers
@@ -85,5 +183,15 @@ extension ARParcelFittingResultsViewModelTests.FitsCase: Sendable {}
 private extension ARParcelFittingResultsViewModelTests {
     func makePackage(id: String = "pkg", length: Float, width: Float, height: Float) -> ParcelPresetPackage {
         ParcelPresetPackage(id: id, name: id, length: length, width: width, height: height)
+    }
+
+    func makeSUT(carriers: [ParcelPresetCarrier] = [],
+                 analytics: ParcelFittingAnalyticsTracking = MockParcelFittingAnalytics()) -> ARParcelFittingResultsViewModel {
+        ARParcelFittingResultsViewModel(
+            measuredDimensions: ParcelDimensions(length: 20, width: 15, height: 10),
+            unit: .centimeters,
+            carriers: carriers,
+            analytics: analytics
+        )
     }
 }

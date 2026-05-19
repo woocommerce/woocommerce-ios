@@ -171,9 +171,89 @@ struct ARParcelSizingViewModelTests {
             #expect(event.hasProperty("reset_count", value: "0"))
         }
     }
+
+    struct HintVisibility {
+
+        @Test func test_onBoxPlaced_when_first_placement_then_hintsVisible_is_true() {
+            // Given
+            let sut = makeSUT()
+
+            // When
+            sut.onBoxPlaced()
+
+            // Then
+            #expect(sut.hintsVisible == true)
+        }
+
+        @Test func test_onBoxPlaced_when_second_placement_then_hintsVisible_is_false() {
+            // Given
+            let sut = makeSUT()
+            sut.onBoxPlaced()
+
+            // When
+            sut.onBoxPlaced()
+
+            // Then
+            #expect(sut.hintsVisible == false)
+        }
+
+        @Test func test_onBoxPlaced_when_previously_seen_then_hintsVisible_is_false() {
+            // Given
+            let defaults = UserDefaults(suiteName: "test-\(UUID().uuidString)")!
+            defaults.set(true, forKey: ARParcelSizingViewModel.Constants.hintsSeenKey)
+            let sut = makeSUT(defaults: defaults)
+
+            // When
+            sut.onBoxPlaced()
+
+            // Then
+            #expect(sut.hintsVisible == false)
+        }
+
+        @Test func test_dismissHints_then_sets_hintsVisible_false() {
+            // Given
+            let sut = makeSUT()
+            sut.onBoxPlaced()
+
+            // When
+            sut.dismissHints()
+
+            // Then
+            #expect(sut.hintsVisible == false)
+        }
+
+        @Test func test_onBoxPlaced_persists_then_new_instance_starts_collapsed() {
+            // Given
+            let defaults = UserDefaults(suiteName: "test-\(UUID().uuidString)")!
+            let first = makeSUT(defaults: defaults)
+            first.onBoxPlaced()
+
+            // When
+            let second = makeSUT(defaults: defaults)
+            second.onBoxPlaced()
+
+            // Then
+            #expect(second.hintsVisible == false)
+        }
+
+        @Test func test_showHints_then_sets_hintsVisible_true() {
+            // Given
+            let sut = makeSUT()
+            sut.onBoxPlaced()
+            sut.dismissHints()
+
+            // When
+            sut.showHints()
+
+            // Then
+            #expect(sut.hintsVisible == true)
+        }
+    }
 }
 
 private func makeSUT(unit: UnitLength = .centimeters,
-                     analytics: ParcelFittingAnalyticsTracking = MockParcelFittingAnalytics()) -> ARParcelSizingViewModel {
-    ARParcelSizingViewModel(unit: unit, analytics: analytics)
+                     analytics: ParcelFittingAnalyticsTracking = MockParcelFittingAnalytics(),
+                     defaults: UserDefaults? = nil) -> ARParcelSizingViewModel {
+    let store = defaults ?? UserDefaults(suiteName: "test-\(UUID().uuidString)")!
+    return ARParcelSizingViewModel(unit: unit, analytics: analytics, defaults: store)
 }

@@ -23,6 +23,12 @@ struct ARParcelSizingView: View {
         self.onConfirm = onConfirm
     }
 
+    private var phase: ARPhase {
+        if isPlaced { return .placed(hintsVisible: viewModel.hintsVisible) }
+        if isARReady { return .awaitingTap }
+        return .detecting
+    }
+
     var body: some View {
         ZStack {
             ARParcelSceneView(
@@ -39,25 +45,30 @@ struct ARParcelSizingView: View {
             VStack {
                 topToolbar
 
-                if let message = headerMessage {
-                    Text(message)
-                        .font(.callout.monospacedDigit())
-                        .foregroundStyle(.white)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
-                        .background(.black.opacity(0.55), in: Capsule())
-                        .padding(.horizontal)
-                        .padding(.top, 8)
-                }
+                coachingContent
+                    .padding(.horizontal, Constants.horizontalPadding)
+                    .padding(.top, Constants.coachingTopPadding)
 
                 Spacer()
 
                 if isPlaced {
-                    confirmButton
+                    ARSizingFooterHUD(
+                        dimensions: viewModel.dimensions,
+                        unit: viewModel.unit,
+                        hintsVisible: viewModel.hintsVisible,
+                        onShowHints: { viewModel.showHints() },
+                        onConfirm: {
+                            viewModel.trackSizingCompleted()
+                            onConfirm(viewModel.dimensions)
+                        }
+                    )
+                    .padding(.horizontal, Constants.horizontalPadding)
+                    .padding(.bottom, Constants.bottomPadding)
+                    .transition(Self.cardTransition)
                 }
             }
-            .animation(.easeInOut(duration: 0.2), value: isPlaced)
+            .animation(.easeOut(duration: Constants.animationDuration), value: phase)
+            .animation(.easeOut(duration: Constants.animationDuration), value: viewModel.hintsVisible)
         }
         .background(Color.black)
         .onChange(of: scenePhase) { _, newPhase in
@@ -73,9 +84,32 @@ struct ARParcelSizingView: View {
             if ready { viewModel.recordARReady() }
         }
         .onChange(of: isPlaced) { _, placed in
-            if placed { viewModel.trackBoxPlaced() }
+            if placed {
+                viewModel.trackBoxPlaced()
+                viewModel.onBoxPlaced()
+            }
         }
     }
+
+    @ViewBuilder
+    private var coachingContent: some View {
+        switch phase {
+        case .detecting:
+            EmptyView()
+        case .awaitingTap:
+            ARTapHintCard()
+                .transition(Self.cardTransition)
+        case .placed(hintsVisible: true):
+            ARCoachCard(onDismiss: { viewModel.dismissHints() })
+                .transition(Self.cardTransition)
+        case .placed(hintsVisible: false):
+            EmptyView()
+        }
+    }
+
+    private static let cardTransition: AnyTransition = .opacity
+        .combined(with: .scale(scale: Constants.transitionScale, anchor: .top))
+        .combined(with: .offset(y: Constants.transitionOffsetY))
 
     private func userReset() {
         resetTrigger += 1
@@ -88,14 +122,13 @@ struct ARParcelSizingView: View {
         viewModel.resetToDefaults()
     }
 
-    private var headerMessage: String? {
-        if isPlaced {
-            return viewModel.dimensionsLabel
-        }
-        if isARReady {
-            return Localization.placementHint
-        }
-        return nil
+    private enum Constants {
+        static let horizontalPadding: CGFloat = 16
+        static let coachingTopPadding: CGFloat = 8
+        static let bottomPadding: CGFloat = 16
+        static let animationDuration: Double = 0.22
+        static let transitionScale: CGFloat = 0.97
+        static let transitionOffsetY: CGFloat = -6
     }
 
     private var topToolbar: some View {
@@ -106,34 +139,5 @@ struct ARParcelSizingView: View {
             },
             onReset: isPlaced ? { userReset() } : nil
         )
-    }
-
-    private var confirmButton: some View {
-        Button {
-            viewModel.trackSizingCompleted()
-            onConfirm(viewModel.confirmedDimensions)
-        } label: {
-            Text(Localization.useTheseDimensions)
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(Color.accentColor, in: Capsule())
-                .foregroundStyle(.white)
-        }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 16)
-    }
-}
-
-private extension ARParcelSizingView {
-    enum Localization {
-        static let placementHint = NSLocalizedString(
-            "parcelFitting.sizing.placementHint",
-            value: "Tap on the surface to place the fitting box",
-            comment: "Hint text shown when the AR surface is ready for cuboid placement")
-        static let useTheseDimensions = NSLocalizedString(
-            "parcelFitting.sizing.useTheseDimensions",
-            value: "Use these dimensions",
-            comment: "Button to confirm the measured dimensions in the AR sizing view")
     }
 }

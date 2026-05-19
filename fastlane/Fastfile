@@ -1733,6 +1733,7 @@ def generate_ai_release_notes(version:, items_text:)
     prompt: :release_notes,
     question: question,
     api_token: get_required_env('OPENAI_API_KEY'),
+    model: 'gpt-4.1',
     tools: [release_notes_length_validation_tool],
     tool_handlers: { 'validate_release_notes_length' => handler }
   )

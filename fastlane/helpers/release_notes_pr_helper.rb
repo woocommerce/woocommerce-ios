@@ -60,6 +60,7 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
       - Only use the provided items.
       - Do not invent features, fixes, or benefits.
       - Every clause must trace back to a provided item. Do not add generic claims like "smoother experience", "streamlined interface", or "improved performance" unless an item explicitly says so.
+      - Do not infer or specify a device, platform, or hardware unless the source item explicitly names it. WooCommerce iOS runs on both iPhone and iPad — if an item says "from your pocket" or doesn't name a device, keep the description device-agnostic. Don't turn "your pocket" into "your iPhone"; echo the item's framing or describe the capability without naming a device.
       - Do not mention the release version or version number in the output.
       - Write a single, unique paragraph — not a point-by-point list.
       - The final text must be #{PREFERRED_RELEASE_NOTES_MAX_LENGTH} characters or fewer, including spaces.
@@ -71,6 +72,10 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
       - You may open with a short, natural lead-in **as long as it names a real change** — e.g. "Selling on iPad just got easier:" is fine because the items back it up; "We've been hard at work!" is not, because it says nothing.
       - You may use **one** warm touch — either an opener or a closing line, not both. A closing line is fine if it refers to a specific change. It must not be a generic call-to-action ("Update now!", "Try it today", "Explore these features"). When in doubt, end on a substantive change.
       - Plain benefit words are welcome: "now", "easier", "no longer", and "faster" — but only "faster" when an item literally describes a speed improvement. The hype ban is about *unsupported intensifiers* and stock launch words: avoid "lightning-fast", "faster than ever", "seamless", "supercharged", "amazingly", "incredibly", "brand new", "introducing", "we're thrilled". State the change directly, warmly.
+      - Avoid folksy filler and anthropomorphized-bug phrasing: "pesky", "say goodbye to", "are history" / "is history", "no more headaches", "smooth sailing", "without any hiccups", "without a hitch", "we've been hard at work", "those annoying issues". These read as marketing flourish rather than warmth.
+      - Describe bug fixes in terms of what now works for the merchant, not in terms of the bug disappearing. Prefer "Adding new customers from the iPad customer form works again" over "Those pesky bugs in the customer form are history".
+      - When items don't share a theme — for example, a new feature plus an unrelated bug fix — separate them with sentence breaks rather than coordinating them with "and" or "plus". Each sentence stands on its own; stringing unrelated clauses together with conjunctions produces run-on copy that buries the second item.
+      - Keep availability or rollout caveats (e.g. "rolling out to selected stores") attached to the feature they qualify, ideally as a trailing clause on the same sentence. Don't trap a caveat between two unrelated clauses, where it reads as a parenthetical break that disrupts the flow.
       - Use the available character budget as room to write naturally. Short item lists do not need to be terse — a 120-character draft that could comfortably be 220 is usually too clipped. Spend the space on a fuller, friendlier sentence, never on padding.
       - Write for WooCommerce merchants, not developers — avoid engineering jargon.
 
@@ -79,6 +84,8 @@ module ReleaseNotesPRHelper # rubocop:disable Metrics/ModuleLength
       - **Good (warm and accurate):** "A couple of fixes to keep your day moving: barcode scanning in Point of Sale now keeps working after you take a payment, and your store setup tasks stay put when you switch stores."
       - **Too flat:** "Barcode scanning works after payment. Onboarding tasks show after switching stores."
       - **Too far (invents tone and benefit):** "We've supercharged Point of Sale! Update now for a seamless, lightning-fast experience."
+      - **Too folksy (anthropomorphizes the bug, invents device):** "Those pesky barcode scanning bugs are history on your iPhone — say goodbye to onboarding headaches when you switch stores."
+      - **Too tangled (coordinates unrelated items with "and", traps caveat mid-sentence):** "You can now scan barcodes after payment—if you're part of the rollout—and your onboarding tasks stay put when you switch stores, so you can keep building your business without any hiccups." Better: two sentences, with the caveat sitting next to the feature it qualifies — "Barcode scanning in Point of Sale now keeps working after you take a payment, rolling out to selected stores. Your store setup tasks also stay put when you switch stores."
       Match the cadence and merchant-led framing of the "Good" example — do not reuse its phrasing.
 
       ### Validation

@@ -71,7 +71,7 @@ public struct ParcelDimensions: Hashable {
         Float(Measurement(value: 1.0, unit: unit).converted(to: .meters).value)
     }
 
-    private enum Localization {
+    enum Localization {
         static let lengthLabel = NSLocalizedString(
             "parcelFitting.dimensions.lengthLabel",
             value: "L",

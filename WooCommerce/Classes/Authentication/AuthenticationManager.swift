@@ -152,6 +152,11 @@ class AuthenticationManager: Authentication {
                                                                         rootViewController: rootViewController)
         }
 
+        if isQRLoginUrl(url),
+           let handled = handleQRLoginUrl(url, rootViewController: rootViewController) {
+            return handled
+        }
+
         if isAppLoginUrl(url) {
             guard let navigationController = displayAuthenticatorIfLoggedOut?() else {
                 DDLogWarn("App login link error: cannot display authenticator UI.")
@@ -216,6 +221,59 @@ class AuthenticationManager: Authentication {
     private func isAppLoginUrl(_ url: URL) -> Bool {
         let expectedPrefix = WooConstants.appLoginURLPrefix
         return url.absoluteString.hasPrefix(expectedPrefix)
+    }
+
+    /// Case-insensitive match for `woocommerce://qr-login` deep links
+    /// (spec §3 footer: scheme + host check is case-insensitive).
+    private func isQRLoginUrl(_ url: URL) -> Bool {
+        guard url.scheme?.lowercased() == "woocommerce",
+              url.host?.lowercased() == "qr-login" else {
+            return false
+        }
+        return url.path.isEmpty || url.path == "/"
+    }
+
+    /// Handles an inbound `woocommerce://qr-login?...` URL by starting the
+    /// QR coordinator in deep-link mode.
+    ///
+    /// Returns `nil` when the feature isn't available — the caller falls
+    /// through to the standard handlers so the user lands on the regular
+    /// prologue instead of a no-op (spec §2.2).
+    ///
+    /// Token / grant lifetime is not managed here: clearing the URL from the
+    /// launch state is the OS / scene-delegate's job; this method makes a
+    /// best-effort to not retain the payload anywhere persistent.
+    private func handleQRLoginUrl(_ url: URL, rootViewController: UIViewController) -> Bool? {
+        // Sync availability check is enough: the merchant chose this path
+        // by opening the link, so we just need the flag (or debug override)
+        // to be on. Bucket and camera are bypassed.
+        guard let overrideValue = (qrLoginAvailability as? QRLoginAvailability)?.deepLinkSyncOverride(),
+              overrideValue else {
+            return nil
+        }
+
+        guard let navigationController = displayAuthenticatorIfLoggedOut?() else {
+            DDLogWarn("QR-login deep link: cannot display authenticator UI.")
+            return false
+        }
+
+        let payload = QRLoginPayloadParser().parse(url)
+        let coordinator = QRLoginCoordinator(
+            mode: .deepLink(payload: payload),
+            navigationController: navigationController,
+            onEnterSiteURL: { [weak navigationController] in
+                guard let navigationController else { return }
+                NavigateToEnterSite().execute(from: navigationController)
+            },
+            onSuccess: { [weak self, weak navigationController] in
+                guard let self, let navigationController else { return }
+                self.qrLoginCoordinator = nil
+                self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+            }
+        )
+        qrLoginCoordinator = coordinator
+        coordinator.start()
+        return true
     }
 
     /// Injects `loggedOutAppSettings`

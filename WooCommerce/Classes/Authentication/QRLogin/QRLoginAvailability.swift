@@ -62,6 +62,13 @@ struct QRLoginAvailability: QRLoginAvailabilityProvider {
         // testing on simulator.
         return false
     }
+
+    /// Sync deep-link gate: ignores camera + bucket, returns the override or
+    /// `nil` if no override is set. The caller can fall back to the standard
+    /// handlers when this returns `nil`.
+    func deepLinkSyncOverride() -> Bool? {
+        overrideStore?.overrideValue(for: .qrCodeLogin)
+    }
 }
 
 private extension QRLoginAvailability {

@@ -173,7 +173,6 @@ struct ARParcelFittingResultsViewModelTests {
         let event = try #require(analytics.lastEvent)
         #expect(event.name == "arfitting_browse_all_packages_tapped")
     }
-
 }
 
 // MARK: - Helpers

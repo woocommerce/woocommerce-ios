@@ -6,6 +6,9 @@ public enum ABTest: String, Codable, CaseIterable {
     /// Mocks for unit testing
     case mockLoggedIn, mockLoggedOut
 
+    /// AR parcel fitting experiment
+    case arParcelFitting = "woocommerceios_shipping_ar_parcel_fitting"
+
     /// Returns a variation for the given experiment
     ///
     public var variation: Variation? {
@@ -22,6 +25,8 @@ public enum ABTest: String, Codable, CaseIterable {
             return .loggedIn
         case .mockLoggedOut:
             return .loggedOut
+        case .arParcelFitting:
+            return .loggedIn
         }
     }
 

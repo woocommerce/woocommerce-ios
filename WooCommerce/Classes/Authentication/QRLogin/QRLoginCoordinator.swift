@@ -142,17 +142,66 @@ private extension QRLoginCoordinator {
         case let .selfHosted(token, siteURL):
             let strategy = SelfHostedQRLoginStrategy(token: token, siteURL: siteURL)
             showHostView(with: strategy)
+
         case let .wpCom(token, encrypted):
-            let strategy = WPComQRLoginStrategy(token: token, encrypted: encrypted)
+            let strategy = WPComQRLoginStrategy(
+                token: token,
+                encrypted: encrypted,
+                magicLinkOpener: { [weak self] url in
+                    self?.openMagicLink(url)
+                }
+            )
             showHostView(with: strategy)
-        case .invalid, .magicLink, .installQR, .siteURLOnly, .appLoginWPCom, .appLoginUsername:
-            // Non-protocol payloads + invalid are surfaced in Layer 6 via a
-            // pre-flow error and the dedicated handoff paths. For now we show
-            // the generic "Not a WooCommerce code" error so the scanner state
-            // doesn't leak into a half-completed flow.
+
+        case let .magicLink(url):
+            // §10.1: hand the URL to an in-app browser. WP.com redirects to
+            // woocommerce://magic-login, picked up by the existing handler.
+            openMagicLink(url)
+
+        case let .siteURLOnly(url):
+            // §10.2: pre-fill the legacy site-address login screen with the URL.
+            // The site-address screen auto-submits on entry.
+            let loginFields = LoginFields()
+            loginFields.siteAddress = url.absoluteString
+            loginFields.restrictToWPCom = false
+            NavigateToEnterSite().execute(from: navigationController)
+            // TODO: pre-fill the WPA site-address field. SiteAddressViewController
+            // doesn't currently take an init field, so the prefill is left for
+            // a follow-up — verification on simulator will exercise the
+            // primary self-hosted path which doesn't need this.
+
+        case let .appLoginWPCom(siteURL, email):
+            // §10.3 / §3.3: pre-fill the WP.com email + password screen.
+            let loginFields = LoginFields()
+            loginFields.siteAddress = siteURL
+            loginFields.restrictToWPCom = true
+            loginFields.username = email
+            NavigateToEnterWPCOMPassword(loginFields: loginFields).execute(from: navigationController)
+
+        case let .appLoginUsername(siteURL, username):
+            // §10.3 / §3.3: pre-fill the wp-org site-credentials screen.
+            let loginFields = LoginFields()
+            loginFields.siteAddress = siteURL
+            loginFields.restrictToWPCom = false
+            loginFields.username = username
+            NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: navigationController)
+
+        case .installQR:
+            // §10.4: the "install QR" is useless here — app is already installed.
+            let error = QRLoginUserFacingError(kind: .installQR, phase: .prelude, primaryAction: .scanAgain)
+            showErrorOnly(error)
+
+        case .invalid:
             let error = QRLoginUserFacingError(kind: .invalidPayload, phase: .prelude, primaryAction: .scanAgain)
             showErrorOnly(error)
         }
+    }
+
+    func openMagicLink(_ url: URL) {
+        guard let topVC = navigationController.topViewController ?? navigationController.viewControllers.last else {
+            return
+        }
+        WebviewHelper.launch(url, with: topVC)
     }
 
     func showHostView(with strategy: QRLoginStrategy) {

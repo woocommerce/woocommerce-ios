@@ -18,24 +18,29 @@ final class SelfHostedQRLoginStrategy: QRLoginStrategy {
     private let siteURL: URL
     private let stores: StoresManager
     private let deviceInfoProvider: QRLoginDeviceInfoProvider
+    private let postExchangeService: QRLoginPostExchangeServicing
 
     /// Set once `/scan` succeeds. Reused across poll attempts.
     private var sessionID: String?
     private var tokenHash: String?
 
-    /// Set once `/exchange` succeeds. Held so the post-exchange step (Layer 4)
-    /// can use the credentials, and so that an exchange-retry doesn't re-run
-    /// scan or poll.
+    /// Set once `/exchange` succeeds and post-exchange site setup completes.
+    /// Retry-after-success short-circuits to a no-op success rather than
+    /// minting a fresh AP, in case the user taps "Try again" on a transient
+    /// downstream failure.
     private var exchangeResponse: QRLoginSelfHostedExchangeResponse?
+    private var postExchangeCompleted = false
 
     init(token: String,
          siteURL: URL,
          stores: StoresManager = ServiceLocator.stores,
-         deviceInfoProvider: QRLoginDeviceInfoProvider = DefaultQRLoginDeviceInfoProvider()) {
+         deviceInfoProvider: QRLoginDeviceInfoProvider = DefaultQRLoginDeviceInfoProvider(),
+         postExchangeService: QRLoginPostExchangeServicing = QRLoginPostExchangeService()) {
         self.token = token
         self.siteURL = siteURL
         self.stores = stores
         self.deviceInfoProvider = deviceInfoProvider
+        self.postExchangeService = postExchangeService
     }
 
     func scan() async -> Result<QRLoginScanResult, QRLoginUserFacingError> {
@@ -78,39 +83,38 @@ final class SelfHostedQRLoginStrategy: QRLoginStrategy {
     }
 
     func exchange(grant: String) async -> Result<Void, QRLoginUserFacingError> {
-        // Reuse a previously-retained successful exchange (retry path).
-        if let exchangeResponse {
-            return await completeAfterExchange(exchangeResponse)
+        // If post-exchange already completed in a prior retry, no work to do.
+        if postExchangeCompleted {
+            return .success(())
         }
 
-        let result: Result<QRLoginSelfHostedExchangeResponse, QRLoginNetworkError>
-        do {
-            result = .success(try await Self.dispatch(stores: stores) { completion in
-                QRLoginAction.selfHostedExchange(siteURL: siteURL,
-                                                 token: token,
-                                                 exchangeGrant: grant,
-                                                 completion: completion)
-            })
-        } catch let error as QRLoginNetworkError {
-            result = .failure(error)
-        } catch {
-            result = .failure(.network)
+        let response: QRLoginSelfHostedExchangeResponse
+        if let cached = exchangeResponse {
+            // Retry path: exchange already succeeded server-side, but the
+            // post-exchange site setup failed. Don't mint a new AP — re-run
+            // post-exchange against the cached response.
+            response = cached
+        } else {
+            do {
+                response = try await Self.dispatch(stores: stores) { completion in
+                    QRLoginAction.selfHostedExchange(siteURL: siteURL,
+                                                     token: token,
+                                                     exchangeGrant: grant,
+                                                     completion: completion)
+                }
+                exchangeResponse = response
+            } catch let error as QRLoginNetworkError {
+                return .failure(QRLoginErrorMapper.userFacingError(forExchange: error, protocol_: protocol_))
+            } catch {
+                return .failure(QRLoginErrorMapper.userFacingError(forExchange: .network, protocol_: protocol_))
+            }
         }
 
-        switch result {
-        case .success(let response):
-            exchangeResponse = response
-            return await completeAfterExchange(response)
-        case .failure(let error):
-            return .failure(QRLoginErrorMapper.userFacingError(forExchange: error, protocol_: protocol_))
+        let result = await postExchangeService.complete(response)
+        if case .success = result {
+            postExchangeCompleted = true
         }
-    }
-
-    /// Post-exchange site setup. Stubbed in Layer 3 — Layer 4 wires the
-    /// SiteModel fetch, AP storage, eligibility check, store switch.
-    private func completeAfterExchange(_ response: QRLoginSelfHostedExchangeResponse) async -> Result<Void, QRLoginUserFacingError> {
-        // TODO: Layer 4 — implement spec §5.1.4 here.
-        .success(())
+        return result
     }
 }
 

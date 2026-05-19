@@ -13,5 +13,4 @@ import CoreData
 ///
 @objc(GenericAttribute)
 public class GenericAttribute: NSManagedObject {
-
 }

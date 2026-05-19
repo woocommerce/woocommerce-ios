@@ -45,7 +45,6 @@ final class AddAttributeViewController: UIViewController, GhostableViewControlle
         configureViewModel()
         enableDoneButton(false)
     }
-
 }
 
 // MARK: - View Configuration

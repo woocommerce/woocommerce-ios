@@ -104,7 +104,6 @@ struct LinkLoadingButtonStyle: ButtonStyle {
         } else {
             LinkButton(configuration: configuration)
         }
-
     }
 }
 

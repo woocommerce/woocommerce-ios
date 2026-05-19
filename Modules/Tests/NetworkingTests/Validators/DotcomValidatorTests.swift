@@ -37,7 +37,6 @@ class DotcomValidatorTests: XCTestCase {
             }
             XCTAssertEqual(dotcomError, .noRestRoute())
         }
-
     }
 
     /// Verifies that the DotcomValidator successfully extracts the `noStatsPermission` Dotcom Error contained within a `Data` instance.
@@ -54,7 +53,6 @@ class DotcomValidatorTests: XCTestCase {
             }
             XCTAssertEqual(dotcomError, .noStatsPermission())
         }
-
     }
 
     /// Verifies that the DotcomValidator successfully extracts the `statsModuleDisabled` Dotcom Error contained within a `Data` instance.

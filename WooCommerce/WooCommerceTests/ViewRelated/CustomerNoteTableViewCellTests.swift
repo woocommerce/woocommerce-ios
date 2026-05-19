@@ -45,5 +45,4 @@ final class CustomerNoteTableViewCellTests: XCTestCase {
     func testBodyLabelValues() {
         XCTAssertEqual(cell?.getBodyTextView().text, bodyMock)
     }
-
 }

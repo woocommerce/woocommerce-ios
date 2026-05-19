@@ -42,7 +42,6 @@ struct SiteAddressViewModel {
             }
 
             completion(.success)
-
         }, failure: { error in
             guard let error else {
                 return

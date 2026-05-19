@@ -91,7 +91,6 @@ public class BottomSheetViewController: UIViewController {
                 popoverPresentationController?.delegate = self
                 popoverPresentationController?.backgroundColor = view.backgroundColor
             }
-
         } else {
             transitioningDelegate = self
             modalPresentationStyle = .custom

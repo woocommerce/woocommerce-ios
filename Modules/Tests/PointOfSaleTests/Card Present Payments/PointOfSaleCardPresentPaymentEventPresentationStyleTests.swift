@@ -168,5 +168,4 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
                 dismissReaderConnectionModal: dismissReaderConnectionModalAction
             )
         }
-
 }

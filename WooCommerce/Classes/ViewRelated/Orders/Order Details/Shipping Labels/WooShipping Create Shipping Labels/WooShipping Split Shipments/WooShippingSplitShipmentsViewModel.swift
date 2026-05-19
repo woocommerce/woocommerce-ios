@@ -727,7 +727,6 @@ private extension WooShippingSplitShipmentsViewModel {
                 comment: "Instructions to ask customer to select items to split during shipping label creation. " +
                 "The placeholder is title of a button to move items to a new shipment ."
             )
-
         }
         static func itemsCount(_ count: Decimal) -> String {
             return String.pluralize(count, singular: Localization.itemsCountSingularFormat, plural: Localization.itemsCountPluralFormat)

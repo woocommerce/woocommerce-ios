@@ -21,7 +21,6 @@ public enum ProductTagAction: Action {
     /// `onCompletion` will be invoked when the add operation finishes.
     ///
     case deleteProductTags(siteID: Int64, ids: [Int64], onCompletion: (Result<[ProductTag], Error>) -> Void)
-
 }
 
 /// Defines all errors that a `ProductTagAction` can return

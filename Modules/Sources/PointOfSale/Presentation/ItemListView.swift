@@ -451,7 +451,6 @@ private extension ItemListView {
                             .transition(.opacity.combined(with: .scale))
                         }
                     }
-
                 }
             })
         }

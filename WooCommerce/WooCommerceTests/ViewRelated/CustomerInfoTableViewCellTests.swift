@@ -60,5 +60,4 @@ final class CustomerInfoTableViewCellTests: XCTestCase {
     func testAddressLabelValues() {
         XCTAssertEqual(cell?.getAddressLabel().text, addressMock)
     }
-
 }

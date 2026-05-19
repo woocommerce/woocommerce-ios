@@ -345,6 +345,5 @@ private extension SimplePaymentsSummaryViewModel {
         static let invalidEmail = NSLocalizedString("Please enter a valid email address.", comment: "Notice text when the merchant enters an invalid email")
         static let tax = NSLocalizedString("Tax",
                                              comment: "Tax label for the tax detail row.")
-
     }
 }

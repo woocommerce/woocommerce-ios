@@ -23,5 +23,4 @@ final class MockKnownReaderProvider: CardReaderSettingsKnownReaderProvider {
     func forgetCardReader() {
         knownReaderSubject.send(nil)
     }
-
 }

@@ -81,7 +81,6 @@ final class WooSubscriptionProductsEligibilityCheckerTests: XCTestCase {
         // Then
         XCTAssertTrue(isEligible)
     }
-
 }
 
 private extension WooSubscriptionProductsEligibilityCheckerTests {

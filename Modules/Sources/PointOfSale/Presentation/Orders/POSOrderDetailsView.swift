@@ -315,7 +315,6 @@ private extension POSOrderDetailsView {
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
     }
-
 }
 
 
@@ -357,7 +356,6 @@ private extension POSOrderDetailsView {
             status: status
         )
     }
-
 }
 
 // MARK: - Product Components
@@ -540,7 +538,6 @@ private extension POSOrderDetailsView {
             .menuIndicator(.hidden)
         }
     }
-
 }
 
 private extension POSOrderDetailsView {

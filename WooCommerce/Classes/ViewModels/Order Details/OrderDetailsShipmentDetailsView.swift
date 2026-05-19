@@ -67,7 +67,6 @@ struct OrderDetailsShipmentDetailsView: View {
                 Button(Localization.createShippingLabel, action: onCreateLabel)
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(.vertical, Layout.extraSpacing)
-
             } else if let shippingLabel = shipment.shippingLabel, shippingLabel.refund == nil {
                 Divider()
                     .padding(.trailing, -Layout.contentPadding)

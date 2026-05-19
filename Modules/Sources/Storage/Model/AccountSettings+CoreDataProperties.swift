@@ -12,5 +12,4 @@ extension AccountSettings {
     @NSManaged public var userID: Int64
     @NSManaged public var firstName: String?
     @NSManaged public var lastName: String?
-
 }

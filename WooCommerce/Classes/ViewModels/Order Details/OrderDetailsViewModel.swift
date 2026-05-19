@@ -908,7 +908,6 @@ extension OrderDetailsViewModel {
 
                                                                     ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
                                                                     onCompletion(nil)
-
         }
 
         stores.dispatch(deleteTrackingAction)

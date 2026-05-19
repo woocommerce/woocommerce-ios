@@ -50,7 +50,6 @@ private extension TopProductsFromCachedOrdersProvider {
                 }
 
                 return $0.value > $1.value
-
             }
             .map { $0.key }
             .uniqued()

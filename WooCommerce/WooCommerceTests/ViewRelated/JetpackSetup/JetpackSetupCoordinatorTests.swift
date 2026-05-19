@@ -381,6 +381,5 @@ private extension MockStoresManager {
                 break
             }
         }
-
     }
 }

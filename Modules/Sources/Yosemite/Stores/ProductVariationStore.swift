@@ -195,7 +195,6 @@ private extension ProductVariationStore {
                                                                productID: productID) { [weak self] in
                     guard let storageProductVariation = self?.storageManager.viewStorage.loadProductVariations(siteID: siteID, productID: productID) else {
                         return onCompletion(.failure(ProductVariationLoadError.notFoundInStorage))
-
                     }
                     onCompletion(.success(storageProductVariation.map { $0.toReadOnly() }))
                 }

@@ -124,5 +124,4 @@ final class SubscriptionsRemoteTests: XCTestCase {
         let resultError = try XCTUnwrap(result.failure as? NetworkError)
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 403))
     }
-
 }

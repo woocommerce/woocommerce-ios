@@ -1524,7 +1524,6 @@ private extension EditableOrderViewModel {
         }
 
         return inputsToBeRemoved
-
     }
 
     /// Adds, or removes multiple products from an Order
@@ -2317,7 +2316,6 @@ private extension EditableOrderViewModel {
                                 detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
                                                                              siteID: siteID,
                                                                              didSelectSave: saveCouponLine))
-
         }
     }
 

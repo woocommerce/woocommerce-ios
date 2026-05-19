@@ -38,5 +38,4 @@ final class ProductVisibilityTests: XCTestCase {
 
         XCTAssertEqual(visibility, .passwordProtected)
     }
-
 }

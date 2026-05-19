@@ -242,6 +242,5 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items[4].itemID, 7)
         XCTAssertEqual(refund.items[4].total, "65.00")
         XCTAssertEqual(refund.items[4].taxes, [expectedTransformedFeeTaxes])
-
     }
 }

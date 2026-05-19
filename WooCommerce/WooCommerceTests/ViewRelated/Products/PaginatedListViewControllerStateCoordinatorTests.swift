@@ -48,5 +48,4 @@ final class PaginatedListViewControllerStateCoordinatorTests: XCTestCase {
         stateCoordinator.transitionToResultsUpdatedState(hasData: false)
         waitForExpectations(timeout: 0.1, handler: nil)
     }
-
 }

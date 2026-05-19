@@ -146,7 +146,6 @@ struct RangedDatePicker: View {
         } message: {
             Text(Localization.InvalidTimeRangeAlert.message)
         }
-
     }
 }
 

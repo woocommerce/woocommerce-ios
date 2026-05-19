@@ -37,7 +37,6 @@ struct BulletPointView_Previews: PreviewProvider {
             BulletPointView(
                 text: "Another example of a really long text so we can see the bullet behavior for two and more lines"
             )
-
         }
     }
 }

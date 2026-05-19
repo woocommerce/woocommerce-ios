@@ -249,7 +249,6 @@ struct JetpackSetupView: View {
                         }
                         .buttonStyle(.plain)
                         .foregroundColor(Color(uiColor: .withColorStudio(.blue, shade: .shade50)))
-
                     }
                     .renderedIf(viewModel.setupFailed)
                 }

@@ -110,9 +110,7 @@ struct ThemesPreviewView: View {
                             }
                         }
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.installingTheme))
-
                     }.padding(Layout.footerPadding)
-
                 } else {
                     errorView
                 }

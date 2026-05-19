@@ -4,5 +4,4 @@
 /// for which symbols it will generate a `.fake()` method for.
 ///
 public protocol GeneratedFakeable {
-
 }

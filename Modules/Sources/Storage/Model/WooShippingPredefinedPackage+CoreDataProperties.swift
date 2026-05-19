@@ -16,9 +16,7 @@ extension WooShippingPredefinedPackage {
     @NSManaged public var name: String?
     @NSManaged public var predefinedOption: WooShippingPredefinedOption?
     @NSManaged public var savedPredefinedPackage: WooShippingSavedPredefinedPackage?
-
 }
 
 extension WooShippingPredefinedPackage: Identifiable {
-
 }

@@ -13,9 +13,7 @@ extension MetaData {
     @NSManaged public var metadataID: Int64
     @NSManaged public var order: Order?
     @NSManaged public var product: Product?
-
 }
 
 extension MetaData: Identifiable {
-
 }

@@ -193,7 +193,6 @@ final class StoreInfoDataService {
                          averageOrderValueSeries: series.averageOrderValue,
                          ordersSeries: series.orders,
                          itemsSoldSeries: series.itemsSold)
-
         } catch {
 
             // If there was an error fetching the stats chances are that is because jetpack is not properly configure to return stats.

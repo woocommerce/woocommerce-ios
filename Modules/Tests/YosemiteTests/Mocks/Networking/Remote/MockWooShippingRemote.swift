@@ -333,7 +333,6 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")
             }
-
         }
     }
 

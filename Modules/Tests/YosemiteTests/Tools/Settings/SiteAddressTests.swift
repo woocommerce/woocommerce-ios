@@ -20,7 +20,6 @@ final class SiteAddressTests: XCTestCase {
         XCTAssertEqual(siteAddress.countryName, "United States")
         XCTAssertEqual(siteAddress.state, "NY")
     }
-
 }
 
 private extension SiteAddressTests {

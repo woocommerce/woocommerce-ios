@@ -35,5 +35,4 @@ final class ProductStatusSettingListSelectorCommandTests: XCTestCase {
 
         XCTAssertEqual(cell.textLabel?.text, product.productStatus.description)
     }
-
 }

@@ -167,7 +167,6 @@ final class CustomerDetailViewModelTests: XCTestCase {
         assertEqual(shipping.fullNameWithCompanyAndAddress, vm.formattedShipping)
         assertEqual(billing.phone, vm.phone)
     }
-
 }
 
 private extension CustomerDetailViewModelTests {

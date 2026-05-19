@@ -46,5 +46,4 @@ final class CreateProductVariationTests: XCTestCase {
         // Then
         XCTAssertNil(parameters["meta_data"])
     }
-
 }

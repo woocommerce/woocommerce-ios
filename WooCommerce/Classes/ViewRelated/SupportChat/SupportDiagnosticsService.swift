@@ -62,7 +62,6 @@ final class SupportDiagnosticsService {
                 return Localization.Test.notifications
             }
         }
-
     }
 
     /// Actions that can fix diagnostic issues.

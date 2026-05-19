@@ -32,5 +32,4 @@ open class WPHelpIndicatorView: UIView {
     override open func draw(_ rect: CGRect) {
         super.draw(rect.inset(by: insets))
     }
-
 }

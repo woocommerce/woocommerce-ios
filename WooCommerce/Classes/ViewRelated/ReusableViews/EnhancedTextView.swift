@@ -49,7 +49,6 @@ final class EnhancedTextView: UITextView {
             self.placeholderLabel?.alpha = 0
         }
     }
-
 }
 
 

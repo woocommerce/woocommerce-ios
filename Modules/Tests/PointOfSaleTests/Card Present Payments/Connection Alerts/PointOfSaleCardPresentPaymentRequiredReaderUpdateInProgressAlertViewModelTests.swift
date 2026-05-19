@@ -22,5 +22,4 @@ final class PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertView
                                expectedCount: 7,
                                messageHint: "Please check that the manual hashable conformance includes new properties.")
     }
-
 }

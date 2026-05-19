@@ -33,7 +33,6 @@ extension OrderFeeLine {
 
     @objc(removeTaxes:)
     @NSManaged public func removeFromTaxes(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for attributes
@@ -50,5 +49,4 @@ extension OrderFeeLine {
 
     @objc(removeAttributes:)
     @NSManaged public func removeFromAttributes(_ values: NSSet)
-
 }

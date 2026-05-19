@@ -107,6 +107,5 @@ final class ServiceLocatorTests: XCTestCase {
     func test_crash_logging_defaults_to_woo_crash_logging() {
         let crashLogging = ServiceLocator.crashLogging
         XCTAssertTrue(crashLogging is WooCrashLoggingStack)
-
     }
 }

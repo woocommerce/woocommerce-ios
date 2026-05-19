@@ -18,5 +18,4 @@ final class PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTes
                                expectedCount: 3,
                                messageHint: "Please check that the manual equatable conformance includes new properties.")
     }
-
 }

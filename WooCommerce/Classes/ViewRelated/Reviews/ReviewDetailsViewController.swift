@@ -531,5 +531,4 @@ private extension ReviewDetailsViewController {
             }
         }
     }
-
 }

@@ -78,7 +78,6 @@ final class MockCardReaderService: CardReaderService {
 
 
     init() {
-
     }
 
     func checkSupport(for cardReaderType: Hardware.CardReaderType,

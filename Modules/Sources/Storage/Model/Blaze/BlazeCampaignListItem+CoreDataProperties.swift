@@ -26,9 +26,7 @@ extension BlazeCampaignListItem {
     @NSManaged public var isEvergreen: Bool
     @NSManaged public var durationDays: Int64
     @NSManaged public var startTime: Date?
-
 }
 
 extension BlazeCampaignListItem: Identifiable {
-
 }

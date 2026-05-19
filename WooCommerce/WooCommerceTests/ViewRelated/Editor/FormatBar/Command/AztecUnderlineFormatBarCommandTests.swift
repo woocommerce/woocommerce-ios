@@ -38,5 +38,4 @@ final class AztecUnderlineFormatBarCommandTests: XCTestCase {
                              formatBar: formatBar)
         XCTAssertEqual(editorView.getHTML(), originalHTML)
     }
-
 }

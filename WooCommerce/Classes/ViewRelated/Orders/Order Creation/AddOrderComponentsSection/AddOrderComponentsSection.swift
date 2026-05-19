@@ -211,7 +211,6 @@ private extension AddOrderComponentsSection {
             "order.form.coupon.moreInfo.accessibilityLabel",
             value: "Coupon information",
             comment: "An accessibility label for a More info button, rendered as a question mark icon, which shows coupon information.")
-
     }
 
     enum Constants {

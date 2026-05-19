@@ -845,7 +845,6 @@ private extension ProductFormViewController {
                 ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productDetailPromoteButton))
             }
         }
-
     }
 
     /// Updates table view model and datasource.

@@ -661,7 +661,6 @@ private extension ProductFormViewModel {
         let hasProductChanges = productModelToSave.product.copy(images: []) != originalProduct.product.copy(images: [])
         let hasUploadedImageChanges = productModelToSave.images.map(\.imageID) != originalProduct.images.map(\.imageID)
         return hasProductChanges || hasUploadedImageChanges || password != originalPassword || isNewTemplateProduct()
-
     }
 
     func replaceProductID(productIDBeforeSave: Int64) {
@@ -842,7 +841,6 @@ private extension ProductFormViewModel {
     func configureResultsController() {
         blazeCampaignResultsController.onDidChangeContent = { [weak self] in
             self?.updateBlazeCampaignResult()
-
         }
         blazeCampaignResultsController.onDidResetContent = { [weak self] in
             self?.updateBlazeCampaignResult()

@@ -15,7 +15,6 @@ extension ProductShippingClass {
     @NSManaged public var count: Int64
     @NSManaged public var siteID: Int64
     @NSManaged public var products: Set<Product>?
-
 }
 
 // MARK: Generated accessors for products
@@ -32,5 +31,4 @@ extension ProductShippingClass {
 
     @objc(removeProducts:)
     @NSManaged public func removeFromProducts(_ values: NSSet)
-
 }

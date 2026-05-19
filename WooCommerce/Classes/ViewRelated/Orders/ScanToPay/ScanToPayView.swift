@@ -40,7 +40,6 @@ struct ScanToPayView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .background(Color(.gray(.shade70)))
                 .cornerRadius(Layout.scanToPayBoxCornerRadius)
-
             }
             .padding(Layout.scanToPayBoxOutterPadding)
             .frame(maxWidth: .infinity, alignment: .center)

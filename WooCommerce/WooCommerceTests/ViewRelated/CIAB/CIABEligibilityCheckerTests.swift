@@ -119,7 +119,6 @@ class CIABEligibilityCheckerTests: XCTestCase {
         // Then
         XCTAssertFalse(checker.isFeatureSupported(.payments, for: site))
     }
-
 }
 
 // MARK: - Helpers

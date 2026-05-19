@@ -35,7 +35,6 @@ struct NoSecureConnectionErrorViewModel: ULErrorViewModel {
     func viewDidLoad(_ viewController: UIViewController?) {
         // NO-OP
     }
-
 }
 
 private extension NoSecureConnectionErrorViewModel {

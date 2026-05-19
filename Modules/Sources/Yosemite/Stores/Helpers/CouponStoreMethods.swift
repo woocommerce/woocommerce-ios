@@ -331,7 +331,6 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
             }
         }
     }
-
 }
 
 // MARK: - Persistence

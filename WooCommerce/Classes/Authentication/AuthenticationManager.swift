@@ -61,6 +61,12 @@ class AuthenticationManager: Authentication {
     /// Keeps a reference to the use case
     private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
 
+    /// Keeps a reference to the QR-login coordinator while the flow is active.
+    private var qrLoginCoordinator: QRLoginCoordinator?
+
+    /// Availability gate for the QR-login prologue / deep link entry.
+    private let qrLoginAvailability: QRLoginAvailabilityProvider
+
     /// Injected for unit test purposes
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol?
 
@@ -72,7 +78,8 @@ class AuthenticationManager: Authentication {
          analytics: Analytics = ServiceLocator.analytics,
          abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
-         userDefaults: UserDefaults = .standard) {
+         userDefaults: UserDefaults = .standard,
+         qrLoginAvailability: QRLoginAvailabilityProvider = QRLoginAvailability()) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
@@ -80,6 +87,7 @@ class AuthenticationManager: Authentication {
         self.abTestVariationProvider = abTestVariationProvider
         self.switchStoreUseCase = switchStoreUseCase
         self.userDefaults = userDefaults
+        self.qrLoginAvailability = qrLoginAvailability
     }
 
     /// Initializes the WordPress Authenticator.
@@ -92,6 +100,9 @@ class AuthenticationManager: Authentication {
     /// Returns the Login Flow view controller.
     ///
     func authenticationUI() -> UIViewController {
+        if qrLoginAvailability.isAvailableForPrologueSync() {
+            return makeQRLoginUI()
+        }
         let loginViewController: UIViewController = {
             let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
                 guard let self else { return }
@@ -106,6 +117,31 @@ class AuthenticationManager: Authentication {
             return loginVC
         }()
         return loginViewController
+    }
+
+    /// Builds the QR-login navigation controller used as the root login UI when
+    /// QR-login is available. The QR coordinator owns the prologue and
+    /// scanner; the fallback CTA inside the prologue pushes the legacy
+    /// site-address view onto the same navigation stack.
+    ///
+    private func makeQRLoginUI() -> UIViewController {
+        let navigationController = LoginNavigationController()
+        navigationController.modalPresentationStyle = .fullScreen
+        let coordinator = QRLoginCoordinator(
+            navigationController: navigationController,
+            onEnterSiteURL: { [weak navigationController] in
+                guard let navigationController else { return }
+                NavigateToEnterSite().execute(from: navigationController)
+            },
+            onSuccess: { [weak self, weak navigationController] in
+                guard let self, let navigationController else { return }
+                self.qrLoginCoordinator = nil
+                self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+            }
+        )
+        self.qrLoginCoordinator = coordinator
+        coordinator.start()
+        return navigationController
     }
 
     /// Handles an Authentication URL Callback. Returns *true* on success.

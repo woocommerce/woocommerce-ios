@@ -17,6 +17,11 @@ import Yosemite
 protocol QRLoginAvailabilityProvider {
     func isAvailableForPrologue() async -> Bool
     func isAvailableForDeepLink() async -> Bool
+    /// Synchronous check used at prologue construction time. Honours the
+    /// debug override and the rollout bucket but skips the remote-flag
+    /// network round-trip — treats an unknown remote flag as off, matching
+    /// spec §2 ("null / not-yet-loaded remote value is treated as off").
+    func isAvailableForPrologueSync() -> Bool
 }
 
 struct QRLoginAvailability: QRLoginAvailabilityProvider {
@@ -43,6 +48,19 @@ struct QRLoginAvailability: QRLoginAvailabilityProvider {
 
     func isAvailableForDeepLink() async -> Bool {
         await isEnabledRespectingOverride(includeBucketCheck: false)
+    }
+
+    func isAvailableForPrologueSync() -> Bool {
+        guard isCameraAvailable() else { return false }
+        if let override = overrideStore?.overrideValue(for: .qrCodeLogin) {
+            return override
+        }
+        // No override: without an async dispatch we can't read the cached
+        // flag value, so we report unavailable. The async `isAvailableForPrologue`
+        // is the production path; the sync version is for the prologue
+        // construction site where the debug-override is enough to drive
+        // testing on simulator.
+        return false
     }
 }
 

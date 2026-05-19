@@ -109,7 +109,9 @@ private extension PushNotificationPreferencesViewModel {
             } catch {
                 DDLogError("⛔️ Error updating push notification preferences: \(error)")
                 revert()
-                errorNotice = Notice(title: Localization.errorNotice, feedbackType: .error)
+                errorNotice = Notice(title: Localization.errorNoticeTitle,
+                                     message: Localization.errorNoticeMessage,
+                                     feedbackType: .error)
             }
         }
     }
@@ -137,10 +139,15 @@ private extension PushNotificationPreferencesViewModel {
 
 extension PushNotificationPreferencesViewModel {
     enum Localization {
-        static let errorNotice = NSLocalizedString(
-            "pushNotificationPreferencesViewModel.errorNotice",
-            value: "Couldn't update notification preferences. Please try again.",
-            comment: "Notice shown when updating push notification preferences fails."
+        static let errorNoticeTitle = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.errorNoticeTitle",
+            value: "Couldn't update notification preferences",
+            comment: "Title of the notice shown when updating push notification preferences fails."
+        )
+        static let errorNoticeMessage = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.errorNoticeMessage",
+            value: "Please try again.",
+            comment: "Message of the notice shown when updating push notification preferences fails."
         )
     }
 }

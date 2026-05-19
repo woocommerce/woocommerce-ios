@@ -33,12 +33,16 @@ final class WPComQRLoginStrategy: QRLoginStrategy {
          encrypted: String,
          stores: StoresManager = ServiceLocator.stores,
          deviceInfoProvider: QRLoginDeviceInfoProvider = DefaultQRLoginDeviceInfoProvider(),
-         magicLinkOpener: @escaping QRLoginMagicLinkOpener = WPComQRLoginStrategy.defaultMagicLinkOpener) {
+         magicLinkOpener: QRLoginMagicLinkOpener? = nil) {
         self.token = token
         self.encrypted = encrypted
         self.stores = stores
         self.deviceInfoProvider = deviceInfoProvider
-        self.magicLinkOpener = magicLinkOpener
+        // `defaultMagicLinkOpener` is @MainActor-isolated (it lives on this
+        // @MainActor class), which prevents using it as a default parameter
+        // expression. The strategy itself is @MainActor so the lookup is
+        // safe inside the body.
+        self.magicLinkOpener = magicLinkOpener ?? WPComQRLoginStrategy.defaultMagicLinkOpener
     }
 
     func scan() async -> Result<QRLoginScanResult, QRLoginUserFacingError> {

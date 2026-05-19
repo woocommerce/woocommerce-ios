@@ -35,12 +35,17 @@ final class SelfHostedQRLoginStrategy: QRLoginStrategy {
          siteURL: URL,
          stores: StoresManager = ServiceLocator.stores,
          deviceInfoProvider: QRLoginDeviceInfoProvider = DefaultQRLoginDeviceInfoProvider(),
-         postExchangeService: QRLoginPostExchangeServicing = QRLoginPostExchangeService()) {
+         postExchangeService: QRLoginPostExchangeServicing? = nil) {
         self.token = token
         self.siteURL = siteURL
         self.stores = stores
         self.deviceInfoProvider = deviceInfoProvider
-        self.postExchangeService = postExchangeService
+        // `QRLoginPostExchangeService()` is @MainActor-isolated, so it can't be
+        // a default parameter expression (those are evaluated in the caller's
+        // context, which the compiler can't always prove is MainActor). The
+        // strategy itself is @MainActor, so constructing the service in the
+        // body is allowed.
+        self.postExchangeService = postExchangeService ?? QRLoginPostExchangeService()
     }
 
     func scan() async -> Result<QRLoginScanResult, QRLoginUserFacingError> {

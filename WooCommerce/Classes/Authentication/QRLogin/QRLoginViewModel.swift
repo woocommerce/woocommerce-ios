@@ -61,9 +61,14 @@ final class QRLoginViewModel {
     private var lastGrant: String?
 
     init(strategy: QRLoginStrategy,
-         analytics: QRLoginAnalyticsTracking = DefaultQRLoginAnalyticsTracking(),
+         analytics: QRLoginAnalyticsTracking? = nil,
          pollIntervalSeconds: TimeInterval = 2.0) {
         self.strategy = strategy
+        // `DefaultQRLoginAnalyticsTracking()` is @MainActor-isolated, so it
+        // can't be a default parameter expression (those are evaluated in
+        // the caller's context). The view model is @MainActor so constructing
+        // it in the body is fine.
+        let analytics = analytics ?? DefaultQRLoginAnalyticsTracking()
         self.analytics = analytics
         self.pollIntervalSeconds = pollIntervalSeconds
 

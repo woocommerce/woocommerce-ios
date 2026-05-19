@@ -36,14 +36,17 @@ final class QRLoginCoordinator {
          navigationController: UINavigationController,
          parser: QRLoginPayloadParser = QRLoginPayloadParser(),
          cameraPermissionChecker: QRLoginCameraPermissionCheckerProtocol = DefaultQRLoginCameraPermissionChecker(),
-         analytics: QRLoginAnalyticsTracking = DefaultQRLoginAnalyticsTracking(),
+         analytics: QRLoginAnalyticsTracking? = nil,
          onEnterSiteURL: @escaping () -> Void,
          onSuccess: @escaping () -> Void) {
         self.mode = mode
         self.navigationController = navigationController
         self.parser = parser
         self.cameraPermissionChecker = cameraPermissionChecker
-        self.analytics = analytics
+        // `DefaultQRLoginAnalyticsTracking()` is @MainActor-isolated; can't be
+        // a default parameter expression. The coordinator is @MainActor so
+        // constructing it in the body is fine.
+        self.analytics = analytics ?? DefaultQRLoginAnalyticsTracking()
         self.onEnterSiteURL = onEnterSiteURL
         self.onSuccess = onSuccess
     }

@@ -46,8 +46,8 @@ struct ARParcelSizingView: View {
                 topToolbar
 
                 coachingContent
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
+                    .padding(.horizontal, Constants.horizontalPadding)
+                    .padding(.top, Constants.coachingTopPadding)
 
                 Spacer()
 
@@ -62,13 +62,13 @@ struct ARParcelSizingView: View {
                             onConfirm(viewModel.dimensions)
                         }
                     )
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 16)
+                    .padding(.horizontal, Constants.horizontalPadding)
+                    .padding(.bottom, Constants.bottomPadding)
                     .transition(Self.cardTransition)
                 }
             }
-            .animation(.easeOut(duration: 0.22), value: phase)
-            .animation(.easeOut(duration: 0.22), value: viewModel.hintsVisible)
+            .animation(.easeOut(duration: Constants.animationDuration), value: phase)
+            .animation(.easeOut(duration: Constants.animationDuration), value: viewModel.hintsVisible)
         }
         .background(Color.black)
         .onChange(of: scenePhase) { _, newPhase in
@@ -108,8 +108,8 @@ struct ARParcelSizingView: View {
     }
 
     private static let cardTransition: AnyTransition = .opacity
-        .combined(with: .scale(scale: 0.97, anchor: .top))
-        .combined(with: .offset(y: -6))
+        .combined(with: .scale(scale: Constants.transitionScale, anchor: .top))
+        .combined(with: .offset(y: Constants.transitionOffsetY))
 
     private func userReset() {
         resetTrigger += 1
@@ -120,6 +120,15 @@ struct ARParcelSizingView: View {
     private func resetWithoutTracking() {
         resetTrigger += 1
         viewModel.resetToDefaults()
+    }
+
+    private enum Constants {
+        static let horizontalPadding: CGFloat = 16
+        static let coachingTopPadding: CGFloat = 8
+        static let bottomPadding: CGFloat = 16
+        static let animationDuration: Double = 0.22
+        static let transitionScale: CGFloat = 0.97
+        static let transitionOffsetY: CGFloat = -6
     }
 
     private var topToolbar: some View {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-05-13 16:58:06+0000 */
+/* Translation-Revision-Date: 2026-05-18 10:37:08+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -10606,6 +10606,9 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "إخفاء هذا المحتوى";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "أوافق على %1$@.";
+
 /* Message on the FedEx Terms of Service view */
 "fedExTermsView.message" = "لشراء ملصقات شحن FedEx، يجب الموافقة على الشروط التالية:";
 
@@ -12426,6 +12429,9 @@ which should be translated separately and considered part of this sentence. */
 /* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
 "pos.addCustomAmount.defaultName" = "مبلغ مخصص";
 
+/* Title of the full-screen Point of Sale form when editing an existing custom amount on the order. */
+"pos.addCustomAmount.editTitle" = "تعديل المبلغ المحدد";
+
 /* Label above the name field in the Point of Sale add custom amount form. */
 "pos.addCustomAmount.nameLabel" = "الاسم";
 
@@ -12434,12 +12440,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
 "pos.addCustomAmount.title" = "مبلغ مخصص";
-
-/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.message" = "انقر هنا لإضافة رسوم خدمة، أو إكرامية، أو أي بند مخصص إلى الطلب.";
-
-/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.title" = "أضف مبلغًا مخصصًا";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "مسح الرمز الشريطي";
@@ -12612,9 +12612,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "إعدادات WooCommerce";
 
-/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
-"pos.cartView.addCustomAmount.header.accessibilityLabel" = "إضافة مبلغ مخصص";
-
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "النقر على منتج من أجل \n إضافته إلى عربة التسوق، أو ";
 
@@ -12786,9 +12783,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "طلب";
 
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "المنتجات";
-
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "الإجماليات";
 
@@ -12816,6 +12810,9 @@ which should be translated separately and considered part of this sentence. */
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "إصدار أمر باسترداد الأموال";
 
+/* Label for items subtotal (products and custom amounts) in the totals section */
+"pos.orderDetailsView.itemsLabel" = "عناصر";
+
 /* Subtitle shown when loading refund information has failed */
 "pos.orderDetailsView.loadRefundError.subtitle" = "يُرجى المحاولة مرة أخرى.";
 
@@ -12834,20 +12831,11 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "الكمية: %1$@ بالسعر %2$@ لكل وحدة، إجمالي السعر %3$@";
 
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "المنتجات";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "المنتجات";
-
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "عملية استرداد الأموال رقم ⁦%1$d⁩";
-
-/* Section title for the refunded products list in order details */
-"pos.orderDetailsView.refundedProductsTitle" = "المنتجات المستردة";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "الإجماليات";
@@ -14072,9 +14060,6 @@ which should be translated separately and considered part of this sentence. */
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "متجري";
 
-/* Range title for the today store info widget */
-"storeWidgets.infoProvider.today" = "اليوم";
-
 /* Conversion rate metric title for the store info widget.
    Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "تحويل";
@@ -14096,9 +14081,6 @@ which should be translated separately and considered part of this sentence. */
 /* Visitors metric title for the store info widget.
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "الزائرون";
-
-/* Average order value (AOV) metric title for the store info widget. */
-"storeWidgets.metric.averageOrderValue" = "متوسط قيمة الطلب";
 
 /* Items sold metric title — total units sold in the period. */
 "storeWidgets.metric.itemsSold" = "العناصر المباعة";
@@ -14197,9 +14179,6 @@ which should be translated separately and considered part of this sentence. */
 /* Greeting and header for the issue picker in support chat */
 "supportChatView.issuePickerHeader" = "مرحبًا! أنا روبوت دعم Woo Mobile الخاص بك. ما الذي تواجه مشكلة معه اليوم؟";
 
-/* OK button in support chat error alert */
-"supportChatView.ok" = "موافق";
-
 /* Placeholder text for the chat input field */
 "supportChatView.placeholder" = "اكتب رسالة…";
 
@@ -14212,17 +14191,11 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the AI support chat screen */
 "supportChatView.title" = "الدردشة مع فريق الدعم";
 
-/* Error message shown when sending a support chat message fails */
-"supportChatViewModel.errorMessage" = "حدث خطأ ما. يُرجى المحاولة مجددًا.";
-
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "مرحبًا! أنا روبوت دعم Woo Mobile الخاص بك. هل هناك أي شيء يمكنني مساعدتك به اليوم؟";
 
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "يُرجى وصف مشكلتك بمزيد من التفاصيل حتى أتمكن من مساعدتك.";
-
-/* Error message shown when loading a prior support chat transcript fails on resume */
-"supportChatViewModel.resumeErrorMessage" = "يتعذر علينا تحميل المحادثة السابقة. لا يزال بإمكانك إرسال رسالة جديدة.";
 
 /* Action button to enable WooCommerce Analytics */
 "supportDiagnosticsService.action.enableAnalytics" = "تمكين التحليلات";
@@ -15403,14 +15376,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "تقسيم الشحنات";
 
-/* Message on a notice when removing a package fails in the shipping creation flow */
+/* Message on a notice when removing a saved package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.removingPackageFailure" = "تتعذر إزالة الطرد";
 
-/* Button to retry saving/removing a package in the shipping creation flow */
+/* Button to retry removing a saved package in the shipping creation flow */
 "wooShippingAddPackageViewModel.retry" = "إعادة المحاولة";
-
-/* Message on a notice when saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageFailure" = "يتعذر حفظ الطرد";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "يرجى إدخال رقم معاملة دولي صالح بأحد هذه التنسيقات: AES X12345678901234، أو NOEEI 30.37(a).";

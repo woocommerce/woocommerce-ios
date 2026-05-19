@@ -157,6 +157,8 @@ private extension SettingsViewController {
             configureSendFeedback(cell: cell)
         case let cell as BasicTableViewCell where row == .notifications:
             configureNotificationSettings(cell: cell)
+        case let cell as BasicTableViewCell where row == .pushNotificationPreferences:
+            configurePushNotificationPreferences(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
@@ -242,6 +244,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.notificationSettings
+    }
+
+    func configurePushNotificationPreferences(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.pushNotifications
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -506,6 +514,14 @@ private extension SettingsViewController {
         show(controller, sender: self)
     }
 
+    func showPushNotificationPreferences() {
+        guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+            return
+        }
+        let controller = PushNotificationPreferencesHostingController(siteID: siteID, stores: stores)
+        show(controller, sender: self)
+    }
+
     func showConnectivityTool() {
         ServiceLocator.analytics.track(event: .ConnectivityTool.settingsTroubleshootTapped())
         let controller = ConnectivityToolViewController()
@@ -659,6 +675,8 @@ extension SettingsViewController: UITableViewDelegate {
             showThemeSettings()
         case .notifications:
             showNotificationSettings()
+        case .pushNotificationPreferences:
+            showPushNotificationPreferences()
         case .connectivity:
             showConnectivityTool()
         default:
@@ -729,6 +747,7 @@ extension SettingsViewController {
 
         // App Settings
         case notifications
+        case pushNotificationPreferences
         case privacy
 
         // About the App
@@ -773,7 +792,7 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .logout, .accountSettings:
                 return BasicTableViewCell.self
-            case .privacy, .notifications:
+            case .privacy, .notifications, .pushNotificationPreferences:
                 return BasicTableViewCell.self
             case .enablePushNotifications:
                 return BasicTableViewCell.self
@@ -879,6 +898,12 @@ private extension SettingsViewController {
             "settingsViewController.notificationSettings",
             value: "Notification Settings",
             comment: "Navigates to the Notification Settings screen"
+        )
+
+        static let pushNotifications = NSLocalizedString(
+            "settingsViewController.pushNotifications",
+            value: "Push Notifications",
+            comment: "Navigates to the Push Notifications preferences screen"
         )
 
         static let experimentalFeatures = NSLocalizedString(

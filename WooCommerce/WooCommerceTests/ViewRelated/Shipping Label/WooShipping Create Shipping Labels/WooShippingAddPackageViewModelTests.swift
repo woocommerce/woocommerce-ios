@@ -3,7 +3,6 @@ import TestKit
 import YosemiteTestHelpers
 @testable import WooCommerce
 import Yosemite
-import enum AutomatticTracks.Variation
 import enum Networking.WooShippingPackageType
 
 final class WooShippingAddPackageViewModelTests: XCTestCase {
@@ -172,9 +171,8 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         await viewModel.loadPackages()
 
         // Then
-        XCTAssertEqual(mockStores.receivedActions.count, 2)
-        assertThat(mockStores.receivedActions.first, isAnInstanceOf: FeatureFlagAction.self)
-        assertThat(mockStores.receivedActions.last, isAnInstanceOf: WooShippingAction.self)
+        XCTAssertEqual(mockStores.receivedActions.count, 1)
+        assertThat(mockStores.receivedActions.first, isAnInstanceOf: WooShippingAction.self)
     }
 
     @MainActor
@@ -545,49 +543,6 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
             for (index, package) in sortedCustomSavedPackages.enumerated() {
                 XCTAssertEqual(package.id, viewModel.customSavedPackages[index].id)
             }
-        }
-    }
-
-    // MARK: - AR Parcel Fitting Gating
-
-    // localFF AND (remoteFF OR explatTreatment)
-    // (remoteFF, explatTreatment, localFF, expected)
-    func test_isARParcelFittingAvailable_for_all_flag_permutations() {
-        let cases: [(Bool, Bool, Bool, Bool)] = [
-            (false, false, false, false),
-            (false, false, true, false),
-            (false, true, false, false),
-            (false, true, true, true),
-            (true, false, false, false),
-            (true, false, true, true),
-            (true, true, false, false),
-            (true, true, true, true),
-        ]
-
-        for (remoteFF, explatTreatment, localFF, expected) in cases {
-            // Given
-            let mockStores = MockStoresManager(sessionManager: .testingInstance)
-            mockStores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
-                switch action {
-                case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
-                    completion(remoteFF)
-                }
-            }
-            let featureFlagService = MockFeatureFlagService()
-            featureFlagService.isFeatureFlagEnabledReturnValue[.arParcelFitting] = localFF
-            let abTestProvider = MockABTestVariationProvider()
-            abTestProvider.mockVariationValue = explatTreatment ? .treatment : .control
-
-            // When
-            let viewModel = WooShippingAddPackageViewModel(siteID: 1,
-                                                           stores: mockStores,
-                                                           featureFlagService: featureFlagService,
-                                                           abTestVariationProvider: abTestProvider,
-                                                           isARWorldTrackingSupported: true)
-
-            // Then
-            XCTAssertEqual(viewModel.isARParcelFittingAvailable, expected,
-                           "remoteFF=\(remoteFF), explat=\(explatTreatment), localFF=\(localFF)")
         }
     }
 }

@@ -1,4 +1,3 @@
-import ARKit
 import Combine
 import Experiments
 import Foundation
@@ -14,9 +13,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let storage: StorageManagerType
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
-    private let abTestVariationProvider: ABTestVariationProvider
-    private let isRemoteARParcelFittingEnabled: Bool
-    private let isARWorldTrackingSupported: Bool
+    private let arParcelFittingEligibilityChecker: ARParcelFittingEligibilityChecking
     private let shippingSettingsService: ShippingSettingsService
 
     private let starAnimation: Animation = .spring(duration: 0.2)
@@ -32,23 +29,15 @@ final class WooShippingAddPackageViewModel: ObservableObject {
          storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider(),
-         isARWorldTrackingSupported: Bool = ARWorldTrackingConfiguration.isSupported,
+         arParcelFittingEligibilityChecker: ARParcelFittingEligibilityChecking = ARParcelFittingEligibilityChecker(),
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
         self.siteID = siteID
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
         self.featureFlagService = featureFlagService
-        self.abTestVariationProvider = abTestVariationProvider
-        self.isARWorldTrackingSupported = isARWorldTrackingSupported
+        self.arParcelFittingEligibilityChecker = arParcelFittingEligibilityChecker
         self.shippingSettingsService = shippingSettingsService
-
-        var remoteFFEnabled = false
-        stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(.arParcelFitting, defaultValue: false) { isEnabled in
-            remoteFFEnabled = isEnabled
-        })
-        self.isRemoteARParcelFittingEnabled = remoteFFEnabled
         self.starToggleService = PackageStarToggleService(siteID: siteID, stores: stores, analytics: analytics)
 
         selectedPackageType = .custom
@@ -67,6 +56,14 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         configureResultsController()
         analytics.track(event: .WooShipping.packageSelectionStep(state: .started))
         starToggleSubscription = starToggleService.$notice.assign(to: \.notice, on: self)
+        refreshARParcelFittingEligibility()
+    }
+
+    private func refreshARParcelFittingEligibility() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.isARParcelFittingAvailable = await self.arParcelFittingEligibilityChecker.isEligible()
+        }
     }
 
     @Published private(set) var isLoadingPackages: Bool = false
@@ -141,17 +138,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     // MARK: - AR Parcel Fitting
 
-    /// Resolves AR parcel fitting availability:
-    /// localFF AND (remoteFF OR ExPlat).
-    /// Local FF gates client capability. Remote FF and ExPlat control enablement.
-    var isARParcelFittingAvailable: Bool {
-        guard isARWorldTrackingSupported else {
-            return false
-        }
-        return featureFlagService.isFeatureFlagEnabled(.arParcelFitting)
-            && (isRemoteARParcelFittingEnabled
-                || abTestVariationProvider.variation(for: .arParcelFitting) == .treatment)
-    }
+    @Published private(set) var isARParcelFittingAvailable: Bool = false
 
     var arDimensionUnit: UnitLength {
         .fromStoreUnit(shippingSettingsService.dimensionUnit ?? "in")

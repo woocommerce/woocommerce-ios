@@ -412,8 +412,7 @@ platform :ios do
 
     # Download the latest translations from GlotPress
     download_localized_strings_and_metadata_from_glotpress
-    # Temporarily disable `lint_localizations` for beta build after submission
-    # lint_localizations
+    lint_localizations
 
     # Bump the build code
     UI.message('Bumping build code...')

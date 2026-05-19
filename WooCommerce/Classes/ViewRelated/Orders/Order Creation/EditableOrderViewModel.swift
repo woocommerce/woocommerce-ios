@@ -1951,8 +1951,7 @@ private extension EditableOrderViewModel {
     }
 
     func observeGiftCardStatesForAnalytics() {
-        $paymentDataViewModel.filter { $0.isGiftCardEnabled && $0.isAddGiftCardActionEnabled }
-            .first()
+        $paymentDataViewModel.first(where: { $0.isGiftCardEnabled && $0.isAddGiftCardActionEnabled })
             .sink { [weak self] _ in
                 guard let self else { return }
                 self.analytics.track(event: .Orders.orderFormAddGiftCardCTAShown(flow: self.flow.analyticsFlow))

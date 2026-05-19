@@ -7,42 +7,58 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
     private let orchestrator: AgenticLoopOrchestrator
     private let transcript = TranscriptStore()
     private let systemPromptProvider: @Sendable () -> String?
+    private let historyBudgeter: HistoryBudgeter
 
     public init(chatService: AIChatService,
                 toolRegistry: ToolRegistry? = nil,
                 safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
                 systemPromptProvider: @escaping @Sendable () -> String? = { nil },
-                maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations) {
+                historyBudgeter: HistoryBudgeter = SlidingWindowHistoryBudgeter(),
+                maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
+                telemetryTracker: AssistantTelemetryTracker = NoopAssistantTelemetryTracker(),
+                clock: SystemClock = MonotonicSystemClock()) {
         self.systemPromptProvider = systemPromptProvider
+        self.historyBudgeter = historyBudgeter
         self.orchestrator = AgenticLoopOrchestrator(chatService: chatService,
                                                     toolRegistry: toolRegistry,
                                                     safetyPolicy: safetyPolicy,
                                                     systemPrompt: nil,
-                                                    maxIterations: maxIterations)
+                                                    maxIterations: maxIterations,
+                                                    telemetryTracker: telemetryTracker,
+                                                    clock: clock)
     }
 
     public convenience init(chatService: AIChatService,
                             toolRegistry: ToolRegistry? = nil,
                             safetyPolicy: SafetyPolicy = AlwaysExecuteSafetyPolicy(),
                             systemPrompt: String?,
-                            maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations) {
+                            historyBudgeter: HistoryBudgeter = SlidingWindowHistoryBudgeter(),
+                            maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
+                            telemetryTracker: AssistantTelemetryTracker = NoopAssistantTelemetryTracker(),
+                            clock: SystemClock = MonotonicSystemClock()) {
         let captured = systemPrompt
         self.init(chatService: chatService,
                   toolRegistry: toolRegistry,
                   safetyPolicy: safetyPolicy,
                   systemPromptProvider: { captured },
-                  maxIterations: maxIterations)
+                  historyBudgeter: historyBudgeter,
+                  maxIterations: maxIterations,
+                  telemetryTracker: telemetryTracker,
+                  clock: clock)
     }
 
     public func send(turn: AssistantTurn,
                      context: AssistantContext,
                      session: AssistantSession?) -> AsyncThrowingStream<BackendYield, Error> {
         AsyncThrowingStream { continuation in
-            let task = Task { [orchestrator, transcript, systemPromptProvider] in
-                var prior = await transcript.messages()
-                if let systemPrompt = systemPromptProvider() {
-                    prior.insert(.init(role: .system, content: systemPrompt), at: 0)
+            let task = Task { [orchestrator, transcript, systemPromptProvider, historyBudgeter] in
+                let rawTranscript = await transcript.messages()
+                let systemMessage: OpenAIChat.Message? = systemPromptProvider().map {
+                    .init(role: .system, content: $0)
                 }
+                let prior = historyBudgeter.budget(systemPrompt: systemMessage,
+                                                   priorMessages: rawTranscript,
+                                                   currentUserPrompt: turn.prompt)
 
                 var pendingText = ""
                 var pendingToolCalls: [OpenAIChat.ToolCall] = []
@@ -51,7 +67,8 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
 
                 do {
                     for try await event in orchestrator.run(prompt: turn.prompt,
-                                                            priorMessages: prior) {
+                                                            priorMessages: prior,
+                                                            telemetryContext: turn.telemetryContext) {
                         Self.accumulate(event,
                                         text: &pendingText,
                                         toolCalls: &pendingToolCalls,
@@ -122,7 +139,7 @@ public final class AgenticChatBackend: AssistantBackendConfirming, Sendable {
         case .toolCallCompleted(let id, _, let resultJSON):
             toolResults.append((id, resultJSON ?? "{}"))
         case .toolResult, .cardRender, .confirmationRequired,
-             .confirmationResolved, .completed, .failed:
+             .confirmationResolved, .completed, .failed, .terminated:
             break
         }
     }

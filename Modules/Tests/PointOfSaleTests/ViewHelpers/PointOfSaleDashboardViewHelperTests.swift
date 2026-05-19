@@ -18,7 +18,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -35,7 +36,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -54,7 +56,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -79,7 +82,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -98,7 +102,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -115,7 +120,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -145,7 +151,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -164,7 +171,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -181,7 +189,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -198,11 +207,109 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: false
         )
 
         // Then
         #expect(result == .ineligible(reason: .featureSwitchDisabled))
+    }
+
+    // MARK: - Phone Prototype Flag Tests
+
+    @Test func determineViewState_when_phonePrototype_flag_enabled_and_compact_returns_content() async throws {
+        // Given
+        let eligibilityState: POSEligibilityState = .eligible
+        let itemsContainerState: ItemsContainerState = .content
+        let horizontalSizeClass: UserInterfaceSizeClass = .compact
+
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: eligibilityState,
+            itemsContainerState: itemsContainerState,
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: true
+        )
+
+        // Then
+        #expect(result == .content)
+    }
+
+    @Test func determineViewState_when_phonePrototype_flag_enabled_and_nil_sizeClass_returns_content() async throws {
+        // Given
+        let eligibilityState: POSEligibilityState = .eligible
+        let itemsContainerState: ItemsContainerState = .content
+        let horizontalSizeClass: UserInterfaceSizeClass? = nil
+
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: eligibilityState,
+            itemsContainerState: itemsContainerState,
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: true
+        )
+
+        // Then
+        #expect(result == .content)
+    }
+
+    @Test func determineViewState_when_phonePrototype_flag_enabled_and_ineligible_returns_ineligible() async throws {
+        // Given
+        let eligibilityState: POSEligibilityState = .ineligible(reason: .featureSwitchDisabled)
+        let itemsContainerState: ItemsContainerState = .content
+        let horizontalSizeClass: UserInterfaceSizeClass = .compact
+
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: eligibilityState,
+            itemsContainerState: itemsContainerState,
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: true
+        )
+
+        // Then
+        #expect(result == .ineligible(reason: .featureSwitchDisabled))
+    }
+
+    @Test func determineViewState_when_phonePrototype_flag_enabled_and_nil_eligibility_returns_loading() async throws {
+        // Given
+        let eligibilityState: POSEligibilityState? = nil
+        let itemsContainerState: ItemsContainerState = .content
+        let horizontalSizeClass: UserInterfaceSizeClass = .compact
+
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: eligibilityState,
+            itemsContainerState: itemsContainerState,
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: true
+        )
+
+        // Then
+        #expect(result == .loading())
+    }
+
+    @Test(arguments: [
+        PointOfSaleErrorState.errorOnLoadingProducts(),
+        PointOfSaleErrorState.errorOnLoadingVariations(),
+        PointOfSaleErrorState.errorOnLoadingCoupons()
+    ])
+    func determineViewState_when_phonePrototype_flag_enabled_and_error_returns_error(errorState: PointOfSaleErrorState) async throws {
+        // Given
+        let eligibilityState: POSEligibilityState = .eligible
+        let itemsContainerState: ItemsContainerState = .error(errorState)
+        let horizontalSizeClass: UserInterfaceSizeClass = .compact
+
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: eligibilityState,
+            itemsContainerState: itemsContainerState,
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: true
+        )
+
+        // Then
+        #expect(result == .error(errorState))
     }
 
     // MARK: - Floating Control Tests

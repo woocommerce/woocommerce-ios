@@ -87,14 +87,6 @@ final class DashboardViewModelTests: XCTestCase {
             }
         }
 
-        // FeatureFlagAction - dispatched by child view models checking feature availability
-        storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
-            switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
-                onCompletion(false)
-            }
-        }
-
         // StatsActionV4 - dispatched by stats view models during data sync
         storesManager.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -438,10 +430,12 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(storeHasOrders: false)
 
-        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+        let expectedCards = [DashboardCard(type: .aiAssistant, availability: .hide, enabled: false),
+                             DashboardCard(type: .onboarding, availability: .show, enabled: true),
                              DashboardCard(type: .performance, availability: .unavailable, enabled: false),
                              DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
                              DashboardCard(type: .blaze, availability: .hide, enabled: false),
@@ -477,10 +471,12 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(storeHasOrders: false)
 
-        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+        let expectedCards = [DashboardCard(type: .aiAssistant, availability: .hide, enabled: false),
+                             DashboardCard(type: .onboarding, availability: .show, enabled: true),
                              DashboardCard(type: .performance, availability: .unavailable, enabled: false),
                              DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
                              DashboardCard(type: .blaze, availability: .hide, enabled: false),
@@ -516,7 +512,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
 
         mockReloadingData(storeHasOrders: true)
 
@@ -597,7 +594,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
 
         let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
                            DashboardCard(type: .performance, availability: .show, enabled: true),
@@ -634,7 +632,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
 
         mockReloadingData()
 
@@ -870,7 +869,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(shouldShowInAppFeedback: true)
 
         // When
@@ -1031,22 +1031,23 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_disabled() async {
+    func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_not_wpcom_login_and_not_eligible() async {
         // Given
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: false)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = false
         let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
                                                             hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: eligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1056,22 +1057,23 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldSuggestWPComConnection_returns_true_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_enabled() async {
+    func test_shouldSuggestWPComConnection_returns_true_when_site_is_not_registered_and_not_wpcom_login_and_eligible() async {
         // Given
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
                                                             hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: eligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1127,24 +1129,25 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldSuggestWPComConnection_returns_true_when_site_is_JCP_and_not_registered_and_feature_flag_enabled() async {
+    func test_shouldSuggestWPComConnection_returns_true_when_site_is_JCP_and_not_registered_and_eligible() async {
         // Given
         let jcpSite = Site.fake().copy(siteID: sampleSiteID, isJetpackThePluginInstalled: false, isJetpackConnected: true)
         stores.updateDefaultStore(jcpSite)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
                                                             hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: eligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1178,6 +1181,206 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.dismissedWPComConnectionSuggestion)
     }
 
+    @MainActor
+    func test_dashboard_when_aiAssistant_eligible_and_no_saved_cards_then_card_is_show_and_enabled() async throws {
+        // Given
+        mockReloadingData()
+        let checker = MockAIAssistantEligibilityChecker(isEligible: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: checker)
+
+        // When
+        await viewModel.reloadAllData()
+        await until { viewModel.dashboardCards.contains(where: { $0.type == .aiAssistant }) }
+
+        // Then
+        let card = try XCTUnwrap(viewModel.dashboardCards.first(where: { $0.type == .aiAssistant }))
+        XCTAssertEqual(card.availability, .show)
+        XCTAssertTrue(card.enabled)
+        XCTAssertTrue(viewModel.showOnDashboardCards.contains(where: { $0.type == .aiAssistant }))
+    }
+
+    @MainActor
+    func test_dashboard_when_aiAssistant_not_eligible_then_card_is_hidden() async throws {
+        // Given
+        mockReloadingData()
+        let checker = MockAIAssistantEligibilityChecker(isEligible: false)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: checker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        let card = try XCTUnwrap(viewModel.dashboardCards.first(where: { $0.type == .aiAssistant }))
+        XCTAssertEqual(card.availability, .hide)
+        XCTAssertFalse(viewModel.showOnDashboardCards.contains(where: { $0.type == .aiAssistant }))
+    }
+
+    @MainActor
+    func test_dashboard_when_aiAssistant_disabled_in_customize_then_not_in_showOnDashboardCards() async {
+        // Given
+        let savedCards: [DashboardCard] = [
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .aiAssistant, availability: .show, enabled: false)
+        ]
+        mockReloadingData(storedDashboardCards: savedCards)
+        let checker = MockAIAssistantEligibilityChecker(isEligible: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: checker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.showOnDashboardCards.contains(where: { $0.type == .aiAssistant }))
+    }
+
+    @MainActor
+    func test_ensureAIAssistantCardInSavedCards_when_onboarding_present_then_inserts_at_top() async throws {
+        // Given
+        let savedCards: [DashboardCard] = [
+            DashboardCard(type: .onboarding, availability: .show, enabled: true),
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .blaze, availability: .show, enabled: true)
+        ]
+        mockReloadingData(storedDashboardCards: savedCards)
+        var capturedSaves: [[DashboardCard]] = []
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .setDashboardCards(_, cards):
+                capturedSaves.append(cards)
+            case let .loadDashboardCards(_, onCompletion):
+                onCompletion(savedCards)
+            case let .loadJetpackBenefitsBannerVisibility(_, _, completion):
+                completion(false)
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(false))
+            case let .loadLastSelectedPerformanceTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedTopPerformersTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedMostActiveCouponsTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedStockType(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedOrderStatus(_, onCompletion):
+                onCompletion(nil)
+            case let .getPOSSurveyPotentialMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
+            case let .getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
+            default:
+                break
+            }
+        }
+        let checker = MockAIAssistantEligibilityChecker(isEligible: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: checker)
+
+        // When
+        await viewModel.onViewAppear()
+
+        // Then
+        let updatedCards = try XCTUnwrap(capturedSaves.first)
+        XCTAssertGreaterThanOrEqual(updatedCards.count, 2)
+        XCTAssertEqual(updatedCards.first?.type, .aiAssistant)
+        XCTAssertEqual(updatedCards[1].type, .onboarding)
+        let aiIndex = try XCTUnwrap(updatedCards.firstIndex(where: { $0.type == .aiAssistant }))
+        XCTAssertTrue(updatedCards[aiIndex].enabled)
+        XCTAssertEqual(updatedCards[aiIndex].availability, .show)
+    }
+
+    @MainActor
+    func test_aiAssistant_when_already_in_saved_cards_disabled_then_no_re_insert() async {
+        // Given
+        let savedCards: [DashboardCard] = [
+            DashboardCard(type: .onboarding, availability: .show, enabled: true),
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .aiAssistant, availability: .show, enabled: false)
+        ]
+        mockReloadingData(storedDashboardCards: savedCards)
+        var setCardsCallCount = 0
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .setDashboardCards:
+                setCardsCallCount += 1
+            case let .loadDashboardCards(_, onCompletion):
+                onCompletion(savedCards)
+            case let .loadJetpackBenefitsBannerVisibility(_, _, completion):
+                completion(false)
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(false))
+            case let .loadLastSelectedPerformanceTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedTopPerformersTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedMostActiveCouponsTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedStockType(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedOrderStatus(_, onCompletion):
+                onCompletion(nil)
+            case let .getPOSSurveyPotentialMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
+            case let .getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
+            default:
+                break
+            }
+        }
+        let checker = MockAIAssistantEligibilityChecker(isEligible: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           aiAssistantEligibilityChecker: checker)
+
+        // When
+        await viewModel.onViewAppear()
+
+        // Then
+        XCTAssertEqual(setCardsCallCount, 0)
+    }
+
+}
+
+private final class MockAIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {
+    let isEligibleResult: Bool
+
+    init(isEligible: Bool) {
+        self.isEligibleResult = isEligible
+    }
+
+    func isEligible(for site: Site?) -> Bool {
+        isEligibleResult
+    }
+
+    func isEligible(for site: Site?, useCache: Bool) async -> Bool {
+        isEligibleResult
+    }
 }
 
 private extension DashboardViewModelTests {
@@ -1221,13 +1424,6 @@ private extension DashboardViewModelTests {
                 onCompletion(false)
             default:
                 break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
-            switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
-                onCompletion(false)
             }
         }
 

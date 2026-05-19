@@ -1,7 +1,6 @@
 import Foundation
 import Observation
 
-/// Observable source of truth for one chat conversation.
 @MainActor
 @Observable
 public final class AssistantConversation {
@@ -17,12 +16,21 @@ public final class AssistantConversation {
     public private(set) var messages: [ChatMessage] = []
     public private(set) var streamingState: StreamingState = .idle
     public internal(set) var session: AssistantSession?
+    public private(set) var conversationID: String
 
+    private let idGenerator: AssistantIdGenerator
     private(set) var outcomeUnknownObserved: Bool = false
+    private var telemetryContextByMessageID: [ChatMessage.ID: AssistantTelemetryContext] = [:]
 
-    public init() {}
+    public init(idGenerator: AssistantIdGenerator = UUIDAssistantIdGenerator()) {
+        self.idGenerator = idGenerator
+        self.conversationID = idGenerator.nextID()
+    }
 
-    init(seededMessages: [ChatMessage]) {
+    init(seededMessages: [ChatMessage],
+         idGenerator: AssistantIdGenerator = UUIDAssistantIdGenerator()) {
+        self.idGenerator = idGenerator
+        self.conversationID = idGenerator.nextID()
         self.messages = seededMessages
     }
 
@@ -31,6 +39,16 @@ public final class AssistantConversation {
         streamingState = .idle
         outcomeUnknownObserved = false
         session = nil
+        conversationID = idGenerator.nextID()
+        telemetryContextByMessageID.removeAll()
+    }
+
+    func recordTelemetryContext(_ context: AssistantTelemetryContext, for messageID: ChatMessage.ID) {
+        telemetryContextByMessageID[messageID] = context
+    }
+
+    public func telemetryContext(for messageID: ChatMessage.ID) -> AssistantTelemetryContext? {
+        telemetryContextByMessageID[messageID]
     }
 
     func applyConfirmationResolution(proposalID: UUID, approved: Bool) {
@@ -60,6 +78,8 @@ public final class AssistantConversation {
         case .textChunk(let chunk):
             messages[index].updateText(appending: chunk)
         case .toolCallStarted(let id, let name, let args):
+            // show_cards renders cards directly, so the activity pill would just add noise.
+            if name == ShowCardsTool.name { break }
             messages[index].append(.toolCall(id: UUID(),
                                              toolCallID: id,
                                              toolName: name,
@@ -74,7 +94,6 @@ public final class AssistantConversation {
                                                toolName: toolName,
                                                payload: payload))
         case .cardRender(let toolCallID):
-            // Silently drop renders for unknown tool call IDs.
             if let match = Self.firstMatchingToolResult(in: messages[index].segments,
                                                        toolCallID: toolCallID) {
                 messages[index].append(.cardRender(id: UUID(),
@@ -96,7 +115,6 @@ public final class AssistantConversation {
         case .failed(let error):
             switch error.kind {
             case .outcomeUnknown:
-                // Per-call event; rest of turn keeps the distinct surface.
                 outcomeUnknownObserved = true
                 streamingState = .outcomeUnknown(error.message)
             default:
@@ -105,6 +123,8 @@ public final class AssistantConversation {
                     streamingState = .failed(error.message)
                 }
             }
+        case .terminated:
+            break
         }
     }
 

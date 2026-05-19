@@ -52,7 +52,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
     }
 
-    /// Checks the initial visibility without the `POSTabVisibilityChecker` instsance
+    /// Checks the initial visibility without the `POSTabVisibilityChecker` instance
     /// Used for the initial state check when a site instance hasn't been loaded but a `siteID` is available
     static func checkInitialVisibility(
         for siteID: Int64,
@@ -63,7 +63,8 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
-        guard userInterfaceIdiom == .pad else {
+        let phonePrototypeEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+        guard userInterfaceIdiom == .pad || phonePrototypeEnabled else {
             return false
         }
 

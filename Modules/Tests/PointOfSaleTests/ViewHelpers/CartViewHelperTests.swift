@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 @testable import PointOfSale
-import Experiments
+import struct Yosemite.POSCustomAmount
 import struct Yosemite.POSItemIdentifier
 
 struct CartViewHelperTests {
@@ -114,34 +114,6 @@ struct CartViewHelperTests {
         #expect(sut.shouldShowClearCartButton(cart: .init(purchasableItems: [makeItem()]), orderStage: .finalizing) == false)
     }
 
-    @Test func shouldShowAddCustomAmountButton_when_feature_flag_disabled_then_false() async throws {
-        // Given
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleCustomAmounts] = false
-
-        // When, Then
-        #expect(sut.shouldShowAddCustomAmountButton(featureFlags: featureFlags, orderStage: .building) == false)
-        #expect(sut.shouldShowAddCustomAmountButton(featureFlags: featureFlags, orderStage: .finalizing) == false)
-    }
-
-    @Test func shouldShowAddCustomAmountButton_when_feature_flag_enabled_and_building_then_true() async throws {
-        // Given
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleCustomAmounts] = true
-
-        // When, Then
-        #expect(sut.shouldShowAddCustomAmountButton(featureFlags: featureFlags, orderStage: .building) == true)
-    }
-
-    @Test func shouldShowAddCustomAmountButton_when_feature_flag_enabled_and_finalizing_then_false() async throws {
-        // Given
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleCustomAmounts] = true
-
-        // When, Then
-        #expect(sut.shouldShowAddCustomAmountButton(featureFlags: featureFlags, orderStage: .finalizing) == false)
-    }
-
     @Test func couponRowState_building_stage_returns_idle() async throws {
         // Given
         let coupon = Cart.CouponItem(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")
@@ -240,6 +212,14 @@ struct CartViewHelperTests {
     @Test func shouldShowCheckout_when_building_stage_and_cart_has_purchasable_items_returns_true() async throws {
         // Given
         let cart = Cart(purchasableItems: [makeItem()])
+
+        // When, Then
+        #expect(sut.shouldShowCheckout(orderStage: .building, cart: cart) == true)
+    }
+
+    @Test func shouldShowCheckout_when_building_stage_and_cart_has_only_custom_amounts_returns_true() async throws {
+        // Given
+        let cart = Cart(customAmounts: [POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)])
 
         // When, Then
         #expect(sut.shouldShowCheckout(orderStage: .building, cart: cart) == true)

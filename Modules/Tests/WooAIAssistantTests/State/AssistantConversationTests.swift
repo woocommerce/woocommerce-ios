@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 @MainActor
 struct AssistantConversationTests {
 
@@ -102,6 +103,28 @@ struct AssistantConversationTests {
     }
 
     @Test
+    func test_apply_when_toolCallStarted_for_show_cards_then_no_toolCall_segment_appended()
+    async throws {
+        // Given
+        let conversation = AssistantConversation()
+        let messageID = conversation.beginAssistantMessage()
+
+        // When
+        conversation.apply(.toolCallStarted(id: "c1",
+                                            name: ShowCardsTool.name,
+                                            argumentsJSON: nil),
+                           to: messageID)
+
+        // Then
+        let segments = conversation.messages.last?.segments ?? []
+        let toolCallSegments = segments.filter { segment in
+            if case .toolCall = segment { return true }
+            return false
+        }
+        #expect(toolCallSegments.isEmpty)
+    }
+
+    @Test
     func test_apply_when_failed_with_outcomeUnknown_then_appends_distinct_failure_segment()
     async throws {
         // Given
@@ -152,13 +175,52 @@ struct AssistantConversationTests {
     }
 
     @Test
+    func test_apply_when_completed_then_trims_trailing_whitespace_from_text_segments() async throws {
+        // Given
+        let conversation = AssistantConversation()
+        let messageID = conversation.beginAssistantMessage()
+
+        // When
+        conversation.apply(.textChunk("Hello world."), to: messageID)
+        conversation.apply(.textChunk("\n\n\n"), to: messageID)
+        conversation.apply(.completed(routeConfidence: nil), to: messageID)
+
+        // Then
+        let segments = try #require(conversation.messages.last?.segments)
+        guard case .text(_, let content) = segments[0] else {
+            Issue.record("expected .text, got \(segments[0])")
+            return
+        }
+        #expect(content == "Hello world.")
+    }
+
+    @Test
+    func test_apply_mid_stream_does_not_trim_text() async throws {
+        // Given
+        let conversation = AssistantConversation()
+        let messageID = conversation.beginAssistantMessage()
+
+        // When
+        conversation.apply(.textChunk("Hello\n"), to: messageID)
+        conversation.apply(.textChunk("world."), to: messageID)
+
+        // Then
+        let segments = try #require(conversation.messages.last?.segments)
+        guard case .text(_, let content) = segments[0] else {
+            Issue.record("expected .text, got \(segments[0])")
+            return
+        }
+        #expect(content == "Hello\nworld.")
+    }
+
+    @Test
     func test_apply_when_confirmationRequired_then_pending_segment_is_appended() async throws {
         // Given
         let conversation = AssistantConversation()
         let messageID = conversation.beginAssistantMessage()
         let proposal = ToolProposal(toolName: "orders_update",
                                     toolCallID: "c1",
-                                    preview: "Mark order 42 as processing")
+                                    preview: ConfirmationPreview(summary: .raw("Mark order 42 as processing")))
 
         // When
         conversation.apply(.confirmationRequired(proposal: proposal), to: messageID)

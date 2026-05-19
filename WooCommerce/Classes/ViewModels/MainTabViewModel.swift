@@ -38,7 +38,7 @@ final class MainTabViewModel {
 
     private var cancellables = Set<AnyCancellable>()
 
-    private(set) lazy var tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker()
+    private(set) lazy var tapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker()
 
     init(storesManager: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {

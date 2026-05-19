@@ -12,20 +12,14 @@ struct ErrorBanner: View {
                     .font(.assistantBody)
                     .foregroundStyle(Color.primary)
                     .fixedSize(horizontal: false, vertical: true)
-
                 if let onRetry {
                     Button(action: onRetry) {
                         Text(Localization.retry)
                             .font(.assistantBodyEmphasized)
                             .foregroundStyle(Color.assistantError)
-                            .frame(minHeight: 44)
-                            .padding(.horizontal, AssistantSpacing.medium)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: AssistantRadius.medium)
-                                    .stroke(Color.assistantError.opacity(0.5), lineWidth: 1)
-                            )
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(Localization.retryAccessibility)
                 }
             }
         }
@@ -40,7 +34,12 @@ struct ErrorBanner: View {
         static let retry = NSLocalizedString(
             "assistant.banner.error.retry",
             value: "Retry",
-            comment: "Retry button label in the AI Assistant error banner"
+            comment: "Button on the AI Assistant inline error banner to re-send the failed prompt"
+        )
+        static let retryAccessibility = NSLocalizedString(
+            "assistant.banner.error.retry.accessibility",
+            value: "Retry the previous message",
+            comment: "Accessibility label for the Retry button on the AI Assistant inline error banner"
         )
     }
 }
@@ -51,8 +50,12 @@ struct ErrorBanner: View {
 }
 
 #Preview("Standalone") {
-    ErrorBanner(reason: "Network is unreachable. Try again in a moment.",
-                onRetry: {})
+    ErrorBanner(reason: "Network is unreachable. Try again in a moment.")
+        .padding()
+}
+
+#Preview("With Retry") {
+    ErrorBanner(reason: "Network is unreachable. Try again in a moment.", onRetry: {})
         .padding()
 }
 #endif

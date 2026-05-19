@@ -13,8 +13,9 @@ public enum ProductsGetTool {
         description: """
         Fetch a single product with full detail (price, stock, categories, \
         type). Use when the merchant references a specific product by ID. \
-        For variable products use product_variations_list to inspect the \
-        variants. Do NOT call this tool to render a card after products_list \
+        For variable products, use product_variations_list only when the \
+        merchant explicitly asks about variations, sizes, colors, options, or \
+        variation-level stock. Do NOT call this tool to render a card after products_list \
         - `show_cards` re-fetches product detail itself when given a reference. \
         Use bounded fanout: only call after a list/card when the merchant \
         asks for fields the list summary or card doesn't show, and limit to \
@@ -38,7 +39,14 @@ public enum ProductsGetTool {
         let id: Int
     }
 
+    private static let allowedArguments: Set<String> = ["id"]
+
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -58,12 +66,7 @@ public enum ProductsGetTool {
         }
         let pruned = RESTPayloadPruning.prune(entity)
         let summary = ProductSummary.make(from: pruned)
-        let resolvedID = RESTResponseParsing.intField(pruned, "id").map(String.init) ?? String(args.id)
-        let card = RenderedCardPayload(family: .product,
-                                       id: resolvedID,
-                                       element: pruned)
         return .success(.init(toolName: name,
-                              structured: LLMPayloadCap.capped(summary, toolName: name),
-                              uiStructured: UIStructured(cards: [card])))
+                              structured: LLMPayloadCap.capped(summary, toolName: name)))
     }
 }

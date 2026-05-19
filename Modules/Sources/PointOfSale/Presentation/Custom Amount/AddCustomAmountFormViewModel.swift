@@ -1,11 +1,6 @@
 import Foundation
 import WooFoundation
-
-struct POSCustomAmountInput: Equatable {
-    let name: String
-    let amount: String
-    let isTaxable: Bool
-}
+import struct Yosemite.POSCustomAmount
 
 @Observable
 final class AddCustomAmountFormViewModel {
@@ -14,10 +9,14 @@ final class AddCustomAmountFormViewModel {
     var isTaxable: Bool = true
 
     let currencySymbol: String
-    let sanitizer: CurrencyInputSanitizer
+    private let sanitizer: CurrencyInputSanitizer
     private let numberFormatter: NumberFormatter
+    private let editingID: UUID?
+    private let resolvedID: UUID
 
-    init(currencySettings: CurrencySettings) {
+    var isEditing: Bool { editingID != nil }
+
+    init(currencySettings: CurrencySettings, editing existing: POSCustomAmount? = nil) {
         self.sanitizer = CurrencyInputSanitizer(currencySettings: currencySettings)
         self.currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
 
@@ -29,6 +28,17 @@ final class AddCustomAmountFormViewModel {
         formatter.minimumFractionDigits = currencySettings.fractionDigits
         formatter.maximumFractionDigits = currencySettings.fractionDigits
         self.numberFormatter = formatter
+
+        if let existing {
+            self.editingID = existing.id
+            self.resolvedID = existing.id
+            self.amount = sanitizer.sanitize(existing.amount) ?? existing.amount
+            self.name = Localization.isDefaultName(existing.name) ? "" : existing.name
+            self.isTaxable = existing.isTaxable
+        } else {
+            self.editingID = nil
+            self.resolvedID = UUID()
+        }
     }
 
     func setAmount(_ rawInput: String) {
@@ -41,9 +51,10 @@ final class AddCustomAmountFormViewModel {
         return value > 0
     }
 
-    func resolvedInput() -> POSCustomAmountInput? {
+    func resolvedCustomAmount() -> POSCustomAmount? {
         guard isAddEnabled else { return nil }
-        return POSCustomAmountInput(
+        return POSCustomAmount(
+            id: resolvedID,
             name: resolvedName,
             amount: amount,
             isTaxable: isTaxable
@@ -62,11 +73,17 @@ final class AddCustomAmountFormViewModel {
     }
 }
 
-private extension AddCustomAmountFormViewModel {
+extension AddCustomAmountFormViewModel {
     enum Localization {
         static let defaultName = NSLocalizedString(
             "pos.addCustomAmount.defaultName",
             value: "Custom amount",
             comment: "Default name used for a Point of Sale custom amount when the merchant leaves the name field empty.")
+
+        /// Whether `name` matches the localized default placeholder, used to clear the
+        /// field when the merchant re-opens an entry they originally submitted unnamed.
+        static func isDefaultName(_ name: String) -> Bool {
+            name == defaultName
+        }
     }
 }

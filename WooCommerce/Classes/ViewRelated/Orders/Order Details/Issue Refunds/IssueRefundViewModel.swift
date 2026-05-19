@@ -377,7 +377,7 @@ extension IssueRefundViewModel {
     ///
     private func createItemsToRefundSection() -> Section {
         let itemsRows = state.itemsToRefund.map { refundable -> RefundItemViewModel in
-            let product = products.filter { $0.productID == refundable.item.productID }.first
+            let product = products.first(where: { $0.productID == refundable.item.productID })
             return RefundItemViewModel(refundable: refundable,
                                        product: product,
                                        refundQuantity: state.refundQuantityStore.refundQuantity(for: refundable.item),
@@ -518,7 +518,7 @@ extension IssueRefundViewModel {
         }
 
         // Return true if there is any non-empty shipping refund
-        return state.refunds.first { $0.shippingLines?.isNotEmpty ?? false } != nil
+        return state.refunds.contains { $0.shippingLines?.isNotEmpty ?? false }
     }
 
     private func isAnyCustomAmountAvailableForRefund() -> Bool {

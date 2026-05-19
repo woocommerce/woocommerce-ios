@@ -17,6 +17,7 @@ struct SupportChatRemoteTests {
         _ = try? await remote.sendMessage(botSlug: botSlug,
                                           message: "hi",
                                           chatID: nil,
+                                          sessionID: nil,
                                           context: nil)
 
         // Then
@@ -33,6 +34,7 @@ struct SupportChatRemoteTests {
         _ = try? await remote.sendMessage(botSlug: botSlug,
                                           message: "hi",
                                           chatID: chatID,
+                                          sessionID: nil,
                                           context: nil)
 
         // Then
@@ -49,6 +51,7 @@ struct SupportChatRemoteTests {
         _ = try? await remote.sendMessage(botSlug: botSlug,
                                           message: message,
                                           chatID: nil,
+                                          sessionID: nil,
                                           context: nil)
 
         // Then
@@ -68,6 +71,7 @@ struct SupportChatRemoteTests {
         _ = try? await remote.sendMessage(botSlug: botSlug,
                                           message: "hi",
                                           chatID: nil,
+                                          sessionID: nil,
                                           context: context)
 
         // Then
@@ -85,6 +89,7 @@ struct SupportChatRemoteTests {
         _ = try? await remote.sendMessage(botSlug: botSlug,
                                           message: "hi",
                                           chatID: nil,
+                                          sessionID: nil,
                                           context: nil)
 
         // Then
@@ -104,6 +109,7 @@ struct SupportChatRemoteTests {
         let response = try await remote.sendMessage(botSlug: botSlug,
                                                     message: "hi",
                                                     chatID: nil,
+                                                    sessionID: nil,
                                                     context: nil)
 
         // Then
@@ -129,6 +135,7 @@ struct SupportChatRemoteTests {
         let response = try await remote.sendMessage(botSlug: botSlug,
                                                     message: "hi",
                                                     chatID: nil,
+                                                    sessionID: nil,
                                                     context: nil)
 
         // Then
@@ -151,6 +158,7 @@ struct SupportChatRemoteTests {
         let response = try await remote.sendMessage(botSlug: botSlug,
                                                     message: "hi",
                                                     chatID: nil,
+                                                    sessionID: nil,
                                                     context: nil)
 
         // Then
@@ -171,6 +179,7 @@ struct SupportChatRemoteTests {
         let response = try await remote.sendMessage(botSlug: botSlug,
                                                     message: "hi",
                                                     chatID: nil,
+                                                    sessionID: nil,
                                                     context: nil)
 
         // Then — unrecognized roles must not crash decoding; they fall back to .unknown.
@@ -188,12 +197,70 @@ struct SupportChatRemoteTests {
         let response = try await remote.sendMessage(botSlug: botSlug,
                                                     message: "I need a human",
                                                     chatID: nil,
+                                                    sessionID: nil,
                                                     context: nil)
 
         // Then
         let flags = try #require(response.messages.first?.context?.flags)
         #expect(flags.forwardToHumanSupport == true)
         #expect(flags.branch == "escalation")
+    }
+
+    @Test func sendMessage_when_response_has_support_area_then_area_is_decoded() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)",
+                                 filename: "support-chat-with-support-area")
+
+        // When
+        let response = try await remote.sendMessage(botSlug: botSlug,
+                                                    message: "My card reader won't connect",
+                                                    chatID: nil,
+                                                    sessionID: nil,
+                                                    context: nil)
+
+        // Then
+        let supportArea = try #require(response.messages.first?.context?.supportArea)
+        #expect(supportArea.area == .cardReader)
+        #expect(supportArea.topic == "woo_mobile_issue_card_reader")
+        #expect(supportArea.confidence == .high)
+        #expect(supportArea.isHighConfidence == true)
+    }
+
+    @Test func sendMessage_when_response_has_is_resolved_then_value_is_decoded() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)",
+                                 filename: "support-chat-with-support-area")
+
+        // When
+        let response = try await remote.sendMessage(botSlug: botSlug,
+                                                    message: "My card reader won't connect",
+                                                    chatID: nil,
+                                                    sessionID: nil,
+                                                    context: nil)
+
+        // Then
+        #expect(response.messages.first?.context?.isResolved == true)
+    }
+
+    @Test func sendMessage_when_response_lacks_support_area_then_support_area_is_nil() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)",
+                                 filename: "support-chat-forward-to-human")
+
+        // When
+        let response = try await remote.sendMessage(botSlug: botSlug,
+                                                    message: "hi",
+                                                    chatID: nil,
+                                                    sessionID: nil,
+                                                    context: nil)
+
+        // Then
+        let context = try #require(response.messages.first?.context)
+        #expect(context.supportArea == nil)
+        #expect(context.isResolved == false)
     }
 
     // MARK: - Error paths
@@ -207,6 +274,7 @@ struct SupportChatRemoteTests {
             try await remote.sendMessage(botSlug: botSlug,
                                          message: "hi",
                                          chatID: nil,
+                                         sessionID: nil,
                                          context: nil)
         }
     }
@@ -222,6 +290,7 @@ struct SupportChatRemoteTests {
             try await remote.sendMessage(botSlug: botSlug,
                                          message: "hi",
                                          chatID: nil,
+                                         sessionID: nil,
                                          context: nil)
         }
     }
@@ -234,12 +303,26 @@ struct SupportChatRemoteTests {
         let chatID: Int64 = 4522824
 
         // When
-        _ = try? await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+        _ = try? await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: nil)
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? DotcomRequest)
         #expect(request.path == "odie/chat/\(botSlug)/\(chatID)")
         #expect(request.method == .get)
+    }
+
+    @Test func fetchChat_when_sessionID_provided_then_sends_sessionID_in_request_parameters() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let chatID: Int64 = 4522824
+        let sessionID = "session-abc"
+
+        // When
+        _ = try? await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: sessionID)
+
+        // Then
+        let parameters = try #require(network.queryParametersDictionary)
+        #expect(parameters["session_id"] as? String == sessionID)
     }
 
     @Test func fetchChat_when_response_is_valid_then_returns_every_turn_in_order() async throws {
@@ -250,7 +333,7 @@ struct SupportChatRemoteTests {
                                  filename: "support-chat-fetch-chat")
 
         // When
-        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: nil)
 
         // Then
         #expect(response.chatID == chatID)
@@ -266,7 +349,7 @@ struct SupportChatRemoteTests {
                                  filename: "support-chat-fetch-chat")
 
         // When
-        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: nil)
 
         // Then
         let firstMessage = try #require(response.messages.first)
@@ -282,7 +365,7 @@ struct SupportChatRemoteTests {
                                  filename: "support-chat-fetch-chat")
 
         // When
-        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+        let response = try await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: nil)
 
         // Then — the failsafe decoder produces empty sources + nil flags rather than throwing.
         let userMessageContext = try #require(response.messages.first?.context)
@@ -296,7 +379,7 @@ struct SupportChatRemoteTests {
 
         // When / Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.fetchChat(botSlug: botSlug, chatID: 4522824)
+            try await remote.fetchChat(botSlug: botSlug, chatID: 4522824, sessionID: nil)
         }
     }
 
@@ -309,7 +392,81 @@ struct SupportChatRemoteTests {
 
         // When / Then
         await #expect(throws: NetworkError.timeout()) {
-            try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+            try await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: nil)
+        }
+    }
+
+    // MARK: - submitFeedback
+
+    @Test func submitFeedback_posts_to_correct_path() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let botSlug = "woo-chat"
+        let chatID: Int64 = 999
+        let messageID: Int64 = 123
+        let sessionID = "session-abc-123"
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)/\(messageID)/feedback",
+                                 filename: "generic_success")
+
+        // When
+        try await remote.submitFeedback(botSlug: botSlug, chatID: chatID, messageID: messageID, sessionID: sessionID, upvoted: true)
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? DotcomRequest)
+        #expect(request.path == "odie/chat/\(botSlug)/\(chatID)/\(messageID)/feedback")
+        #expect(request.method == .post)
+    }
+
+    @Test func submitFeedback_sends_sessionID_and_positive_ratingValue_in_parameters() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let botSlug = "woo-chat"
+        let chatID: Int64 = 999
+        let messageID: Int64 = 123
+        let sessionID = "session-abc-123"
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)/\(messageID)/feedback",
+                                 filename: "generic_success")
+
+        // When
+        try await remote.submitFeedback(botSlug: botSlug, chatID: chatID, messageID: messageID, sessionID: sessionID, upvoted: true)
+
+        // Then
+        let parameters = try #require(network.queryParametersDictionary)
+        #expect(parameters["session_id"] as? String == sessionID)
+        #expect(parameters["rating_value"] as? Int == 1)
+    }
+
+    @Test func submitFeedback_sends_negative_ratingValue_in_parameters_when_downvoted() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let botSlug = "woo-chat"
+        let chatID: Int64 = 888
+        let messageID: Int64 = 456
+        let sessionID = "session-xyz"
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)/\(messageID)/feedback",
+                                 filename: "generic_success")
+
+        // When
+        try await remote.submitFeedback(botSlug: botSlug, chatID: chatID, messageID: messageID, sessionID: sessionID, upvoted: false)
+
+        // Then
+        let parameters = try #require(network.queryParametersDictionary)
+        #expect(parameters["rating_value"] as? Int == -1)
+    }
+
+    @Test func submitFeedback_when_network_errors_then_propagates_error() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let botSlug = "woo-chat"
+        let chatID: Int64 = 999
+        let messageID: Int64 = 123
+        let sessionID = "session-abc"
+        network.simulateError(requestUrlSuffix: "odie/chat/\(botSlug)/\(chatID)/\(messageID)/feedback",
+                              error: NetworkError.timeout())
+
+        // When / Then
+        await #expect(throws: NetworkError.timeout()) {
+            try await remote.submitFeedback(botSlug: botSlug, chatID: chatID, messageID: messageID, sessionID: sessionID, upvoted: true)
         }
     }
 }

@@ -20,12 +20,34 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
     /// Coordinator to handle Google Ads campaign creation.
     private var googleAdsCampaignCoordinator: GoogleAdsCampaignCoordinator?
 
+    convenience init(siteID: Int64,
+                     timeZone: TimeZone,
+                     timeRange: StatsTimeRangeV4,
+                     systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+                     usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
+        self.init(siteID: siteID,
+                  timeZone: timeZone,
+                  selectionType: AnalyticsHubTimeRangeSelection.SelectionType(timeRange),
+                  focusedCard: nil,
+                  systemNoticePresenter: systemNoticePresenter,
+                  usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
+    /// Initializes the hub in either default or focused-card mode. The Analytics Hub time-range
+    /// selection is richer than `StatsTimeRangeV4` (it can express e.g. `lastWeek`,
+    /// `weekToDate`), so widget deep links route through this initializer.
+    ///
     init(siteID: Int64,
          timeZone: TimeZone,
-         timeRange: StatsTimeRangeV4,
+         selectionType: AnalyticsHubTimeRangeSelection.SelectionType,
+         focusedCard: AnalyticsCard.CardType? = nil,
          systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
-        self.viewModel = AnalyticsHubViewModel(siteID: siteID, timeZone: timeZone, statsTimeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
+        self.viewModel = AnalyticsHubViewModel(siteID: siteID,
+                                               timeZone: timeZone,
+                                               selectionType: selectionType,
+                                               focusedCard: focusedCard,
+                                               usageTracksEventEmitter: usageTracksEventEmitter)
         self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: AnalyticsHubView(viewModel: self.viewModel))
 
@@ -151,11 +173,13 @@ struct AnalyticsHubView: View {
             })
         )
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    viewModel.customizeAnalytics()
-                } label: {
-                    Text(Localization.editButton)
+            if !viewModel.isFocusedCardMode {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewModel.customizeAnalytics()
+                    } label: {
+                        Text(Localization.editButton)
+                    }
                 }
             }
         }

@@ -1,11 +1,12 @@
 import Foundation
+import Networking
+import WooFoundation
 import Yosemite
-import protocol WooFoundation.Analytics
 import struct NetworkingCore.ApplicationPassword
 import protocol NetworkingCore.ApplicationPasswordUseCase
 import class NetworkingCore.OneTimeApplicationPasswordUseCase
 import enum NetworkingCore.Credentials
-import struct WordPressShared.Secret
+import struct NetworkingCore.Secret
 
 /// Runs the self-hosted post-exchange sequence from spec §5.1.4 once the QR
 /// `/exchange` call has minted an Application Password:
@@ -71,7 +72,7 @@ final class QRLoginPostExchangeService: QRLoginPostExchangeServicing {
         let credentials = Credentials.applicationPassword(username: response.userLogin,
                                                           password: response.applicationPassword,
                                                           siteAddress: response.siteURL)
-        stores.authenticate(credentials: credentials)
+        _ = stores.authenticate(credentials: credentials)
 
         let siteResult = await fetchSiteInfo(siteURL: response.siteURL)
         let site: Site
@@ -126,7 +127,7 @@ private extension QRLoginPostExchangeService {
         // the original user-facing error rather than masking it with a
         // network failure on revoke.
         try? await useCase.deletePassword(locally: true)
-        stores.deauthenticate()
+        _ = stores.deauthenticate()
         return .failure(.init(kind: kind, phase: .postExchange, primaryAction: .scanAgain))
     }
 

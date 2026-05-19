@@ -5,6 +5,7 @@ import Yosemite
 import struct NetworkingCore.ApplicationPassword
 import protocol NetworkingCore.ApplicationPasswordUseCase
 import enum NetworkingCore.ApplicationPasswordUseCaseError
+import struct NetworkingCore.Secret
 @testable import WooCommerce
 
 @Suite(.timeLimit(.minutes(1)))

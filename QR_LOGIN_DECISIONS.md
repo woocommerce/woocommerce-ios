@@ -258,3 +258,48 @@ state currently falls through to `return false` from the AppDelegate
 handler — the URL is dropped. For verification on simulator this isn't a
 blocker (the merchant is signed-out during testing); the full session-replace
 warning + logout-and-resume sequence is a polish-phase follow-up.
+
+---
+
+## Simulator verification — partial
+
+The verification phase ran into a pre-existing build issue on this
+checkout: `WatchWidgetsExtension` fails to compile because two `Color(.brand)`
+/ `Color(.accent)` references in `WooCommerce/StoreWidgets/Homescreen/View+ContainerBackground.swift`
+and `WooCommerce/StoreWidgets/StoreWidgetTheme.swift` reference
+`ColorResource` values that the `WatchWidgetsExtension` asset catalog
+doesn't generate. The files are unchanged on this branch (`git diff trunk
+-- ...` is empty), so this is environment-specific. I attempted to add
+the missing `brand` / `accent` colorsets to both `WatchWidgetsExtension/Assets.xcassets`
+and `StoreWidgets/Assets.xcassets` but `actool` for `WatchWidgetsExtension`
+didn't generate the matching `GeneratedAssetSymbols.swift` — likely a
+target-level `ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS`
+setting issue, or stale DerivedData. Investigating further would have
+been more useful as a separate change.
+
+The screenshots in `screenshots/` are from the binary built earlier in
+this session (timestamp May 19 13:45) which **predates Layer 5 and 6** —
+it has the parser, networking, and Yosemite store but neither the QR
+prologue UI nor the deep-link handler. The screenshots show what the app
+looks like *without* QR-login active (existing onboarding + WPA prologue
++ standard "Log In" site-address screen), plus one screenshot of the iOS
+"Open in Woo (Dev)?" confirmation dialog when sending the deep link.
+
+To run the live verification, the maintainer should:
+1. Fix the WatchWidgets asset issue (or do a clean DerivedData rebuild on
+   a fresh machine — the issue may be cache corruption local to this
+   environment).
+2. Build the WooCommerce target.
+3. Install on the simulator: `xcrun simctl install booted <path>/WooCommerce.app`.
+4. Enable the override: `xcrun simctl spawn booted defaults write com.automattic.woocommerce "com.woocommerce.featureflag.override.remote.qrCodeLogin" -bool YES`.
+5. To unblock the camera check on simulator (the spec gates the prologue
+   on `AVCaptureDevice.default(for: .video) != nil` which is `nil` on
+   simulator), either edit `QRLoginAvailability.defaultCameraAvailability()`
+   to return `true` on `#if targetEnvironment(simulator)`, or use the
+   deep-link entry which bypasses the camera check.
+6. Launch the app and either tap "Log In" (for the prologue) or send
+   `xcrun simctl openurl booted 'woocommerce://qr-login?token=<64+a's>&siteUrl=https://example.com'`.
+
+Mock server fixtures for the QR endpoints would land in
+`Modules/Sources/APIMocks/Resources/` alongside the existing WireMock
+mappings — those are also a polish-phase follow-up.

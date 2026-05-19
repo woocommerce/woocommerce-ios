@@ -45,7 +45,6 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSaleCardPresentPaymentCancelledOnReaderMessageView(viewModel: viewModel, animation: animation)
         }
     }
-
 }
 
 #if DEBUG

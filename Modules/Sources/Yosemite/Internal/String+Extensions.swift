@@ -18,5 +18,4 @@ extension String {
 
         return result
     }
-
 }

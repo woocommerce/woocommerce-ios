@@ -140,5 +140,4 @@ final class ProductsReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.isRedacted)
         XCTAssertFalse(vm.showItemsSoldError)
     }
-
 }

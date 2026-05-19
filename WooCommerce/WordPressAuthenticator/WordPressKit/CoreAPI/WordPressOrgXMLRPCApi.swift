@@ -383,7 +383,6 @@ private extension WordPressAPIResult<HTTPAPIResponse<Data>, WordPressOrgXMLRPCAp
             return .success(HTTPAPIResponse(response: response.response, body: responseXML as AnyObject))
         }
     }
-
 }
 
 private extension WordPressAPIError where EndpointError == WordPressOrgXMLRPCApiFault {
@@ -428,5 +427,4 @@ private extension WordPressAPIError where EndpointError == WordPressOrgXMLRPCApi
 
         return WordPressOrgXMLRPCApi.convertError(error, data: data, statusCode: statusCode)
     }
-
 }

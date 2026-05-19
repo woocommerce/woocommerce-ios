@@ -51,5 +51,4 @@ struct EntityCardTests {
     func test_visibleRowLimit_is_ten() {
         #expect(entityCardVisibleRowLimit == 10)
     }
-
 }

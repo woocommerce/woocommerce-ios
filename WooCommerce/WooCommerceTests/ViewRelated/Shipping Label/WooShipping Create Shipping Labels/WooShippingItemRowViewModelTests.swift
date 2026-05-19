@@ -53,5 +53,4 @@ final class WooShippingItemRowViewModelTests: XCTestCase {
         assertEqual("30 oz", row.weightLabel)
         assertEqual("£60.00", row.priceLabel)
     }
-
 }

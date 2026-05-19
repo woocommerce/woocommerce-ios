@@ -116,7 +116,6 @@ enum ProductImagesCellConfig: Equatable {
 
         // only the extended add image cell
         case extendedAddImages(isVariation: Bool)
-
 }
 
 /// Private Methods

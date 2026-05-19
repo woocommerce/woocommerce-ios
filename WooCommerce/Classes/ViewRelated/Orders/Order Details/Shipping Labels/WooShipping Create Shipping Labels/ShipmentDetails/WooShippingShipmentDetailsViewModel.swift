@@ -196,7 +196,6 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
             starredPackageIDs: starredPackageIDs,
             dimensionUnit: dimensionUnit
         )
-        analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
 
     func parcelFittingDidCancel() {}

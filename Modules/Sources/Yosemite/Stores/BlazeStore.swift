@@ -302,8 +302,6 @@ private extension BlazeStore {
                 onCompletion(.failure(error))
             }
         }
-
-
     }
 }
 

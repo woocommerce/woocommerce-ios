@@ -14,5 +14,4 @@ extension ShippingLabelPaymentMethod {
     @NSManaged public var name: String?
     @NSManaged public var paymentMethodID: Int64
     @NSManaged public var accountSettings: ShippingLabelAccountSettings?
-
 }

@@ -61,7 +61,6 @@ struct TopPerformersDashboardView: View {
                     .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? [.placeholder] : [])
                     .shimmering(active: viewModel.periodViewModel.redacted.actionButton)
             }
-
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))

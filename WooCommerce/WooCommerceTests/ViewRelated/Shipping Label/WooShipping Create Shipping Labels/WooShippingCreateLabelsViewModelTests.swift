@@ -1833,7 +1833,6 @@ private extension WooShippingCreateLabelsViewModelTests {
     func insert(originAddress: WooShippingOriginAddress) {
         let storageAddress = storage.insertNewObject(ofType: StorageWooShippingOriginAddress.self)
         storageAddress.update(with: originAddress)
-
     }
 
     func insert(accountSettings: ShippingLabelAccountSettings) {

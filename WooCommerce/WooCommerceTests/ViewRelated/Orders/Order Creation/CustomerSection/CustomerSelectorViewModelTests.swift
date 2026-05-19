@@ -142,7 +142,6 @@ final class CustomerSelectorViewModelTests: XCTestCase {
             viewModel.loadCustomersListData() { result in
                 if case let .failure(error) = result {
                     passedError = error as NSError
-
                 }
                 expectation.fulfill()
             }
@@ -238,7 +237,6 @@ final class CustomerSelectorViewModelTests: XCTestCase {
             viewModel.onCustomerSelected(registeredCustomer) { result in
                 if case let .failure(error) = result {
                     passedError = error as NSError
-
                 }
                 expectation.fulfill()
             }

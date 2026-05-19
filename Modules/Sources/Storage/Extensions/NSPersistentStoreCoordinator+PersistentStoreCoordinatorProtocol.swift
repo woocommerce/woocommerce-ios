@@ -4,5 +4,4 @@ import CoreData
 /// consumers of `CoreDataIterativeMigrator.init()` can pass in
 /// `NSPersistentStoreCoordinator` instances.
 extension NSPersistentStoreCoordinator: PersistentStoreCoordinatorProtocol {
-
 }

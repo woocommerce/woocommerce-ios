@@ -948,7 +948,6 @@ private extension ShippingLabelStoreTests {
                                              customPackages: sampleShippingLabelCustomPackages(),
                                              predefinedOptions: sampleShippingLabelPredefinedOptions(),
                                              unactivatedPredefinedOptions: [])
-
     }
 
     func sampleShippingLabelStoreOptions() -> ShippingLabelStoreOptions {

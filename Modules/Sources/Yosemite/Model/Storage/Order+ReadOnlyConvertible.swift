@@ -127,7 +127,6 @@ extension Storage.Order: ReadOnlyConvertible {
                      shippingLabels: orderShippingLabels,
                      fulfillments: orderFulfillments,
                      createdVia: createdVia)
-
     }
 
 

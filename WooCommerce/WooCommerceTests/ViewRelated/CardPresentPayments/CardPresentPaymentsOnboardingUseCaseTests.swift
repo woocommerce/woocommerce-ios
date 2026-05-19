@@ -295,7 +295,6 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertEqual(state, .pluginNotInstalled)
-
     }
 
     func test_onboarding_sends_install_plugin_action_for_wcpay_plugin_when_installPlugin_is_invoked_then_installs_wcpay_plugin() throws {
@@ -1366,7 +1365,6 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
         case minimumSupportedVersion = "6.2.0" // Should match `CardPresentPaymentsConfiguration` `minimumSupportedPluginVersion`
         case unsupportedVersion = "6.1.0"
     }
-
 }
 
 // MARK: - Account helpers

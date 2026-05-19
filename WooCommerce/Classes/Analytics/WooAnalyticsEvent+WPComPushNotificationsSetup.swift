@@ -39,7 +39,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pushNotificationsSetupFlowButtonTap,
                               properties: [Keys.buttonLabel.rawValue: button.rawValue])
         }
-
     }
 }
 

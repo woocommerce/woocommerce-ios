@@ -65,6 +65,7 @@ struct POSRefundModalContentView: View {
     @Binding var modalState: RefundModalState?
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     /// Dismisses the modal directly, bypassing the `onChange(of:)` chain in `POSModalViewModifier`
     /// which can fail to fire when the view is inside a pushed navigation destination.
@@ -87,6 +88,7 @@ struct POSRefundModalContentView: View {
 
     var body: some View {
         content
+            .posModalFullScreen(horizontalSizeClass == .compact)
             .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
                 POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
                     try await orderListModel.sendReceipt(order: order, email: email)

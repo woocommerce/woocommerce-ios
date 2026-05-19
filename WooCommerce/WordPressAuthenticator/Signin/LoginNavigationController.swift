@@ -19,5 +19,4 @@ public class LoginNavigationController: RotationAwareNavigationViewController {
 
         super.pushViewController(viewController, animated: animated)
     }
-
 }

@@ -1364,7 +1364,6 @@ final class DashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(setCardsCallCount, 0)
     }
-
 }
 
 private final class MockAIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {

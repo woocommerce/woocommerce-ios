@@ -115,5 +115,4 @@ final class MockAssistantBackend: AssistantBackendConfirming {
         cancelledProposalIDs.append(id)
         cancelledProposalWaiters.removeValue(forKey: id)?.resume()
     }
-
 }

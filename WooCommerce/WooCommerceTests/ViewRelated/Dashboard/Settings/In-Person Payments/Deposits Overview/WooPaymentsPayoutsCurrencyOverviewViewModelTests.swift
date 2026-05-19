@@ -77,5 +77,4 @@ final class WooPaymentsPayoutsCurrencyOverviewViewModelTests: XCTestCase {
         // Then
         assertEqual(sut.availableBalance, "CA$12.35")
     }
-
 }

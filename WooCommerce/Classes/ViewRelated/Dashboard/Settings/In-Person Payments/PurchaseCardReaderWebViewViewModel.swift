@@ -23,7 +23,6 @@ struct PurchaseCardReaderWebViewViewModel: AuthenticatedWebViewModel {
     }
 
     func handleRedirect(for url: URL?) {
-
     }
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {

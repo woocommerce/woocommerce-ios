@@ -46,7 +46,6 @@ final class NotificationsBadgeController {
     private func showDotOn(with input: NotificationsBadgeInput) {
         guard case let .show(type) = input.action else {
             return
-
         }
         hideDotOn(with: input)
         let dot = DotView(frame: CGRect(x: DotConstants.xOffset,

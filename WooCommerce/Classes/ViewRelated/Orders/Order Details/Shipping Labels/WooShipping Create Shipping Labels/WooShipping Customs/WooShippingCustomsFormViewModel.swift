@@ -276,7 +276,6 @@ enum WooShippingRestrictionType: String, CaseIterable {
             return Localization.sanitary
         case .other:
             return Localization.other
-
         }
     }
 }

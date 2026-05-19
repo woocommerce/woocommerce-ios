@@ -85,7 +85,6 @@ extension Address {
                                           state: taxRate.state,
                                           postcode: taxRate.postcodes.first ?? taxRate.postcode,
                                           country: taxRate.country)
-
     }
 
     /// Generates an Address object from a TaxRate object data

@@ -12,5 +12,4 @@ extension BlazeCampaignObjective {
     @NSManaged public var generalDescription: String
     @NSManaged public var suitableForDescription: String
     @NSManaged public var locale: String
-
 }

@@ -36,7 +36,6 @@ struct WooCrashLoggingStack: CrashLoggingStack {
                 eventLogging.uploadNextLogFileIfNeeded()
                 DDLogDebug("📜 Resumed encrypted log upload queue due to app entering foreground")
             }
-
         )
 
         do {

@@ -407,7 +407,6 @@ private extension ProductStore {
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }
             }
-
         }
     }
 

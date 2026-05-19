@@ -111,7 +111,6 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID,
                                                     onTaxRateSelected: { taxRate in
             selectedTaxRate = taxRate
-
         },
                                                     stores: stores,
                                                     storageManager: storageManager)

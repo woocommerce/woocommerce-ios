@@ -97,5 +97,4 @@ final class OrdersReportCardViewModelTests: XCTestCase {
         XCTAssertFalse(vm.showSyncError)
         XCTAssertNotNil(vm.reportViewModel)
     }
-
 }

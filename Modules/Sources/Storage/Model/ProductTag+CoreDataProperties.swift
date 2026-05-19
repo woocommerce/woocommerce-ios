@@ -13,7 +13,6 @@ extension ProductTag {
     @NSManaged public var name: String
     @NSManaged public var slug: String
     @NSManaged public var products: Set<Product>?
-
 }
 
 // MARK: Generated accessors for products
@@ -30,5 +29,4 @@ extension ProductTag {
 
     @objc(removeProducts:)
     @NSManaged public func removeFromProducts(_ values: NSSet)
-
 }

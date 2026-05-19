@@ -224,7 +224,6 @@ private extension BillingInformationViewController {
         ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
                                                                              "status": order.status.rawValue,
                                                                              "type": "call"])
-
     }
 
     /// Initiate communication with a customer via message

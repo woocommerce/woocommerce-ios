@@ -236,7 +236,6 @@ extension RefundConfirmationViewModel {
 
 /// A base protocol for the row types used by `RefundConfirmationViewModel`.
 protocol RefundConfirmationViewModelRow {
-
 }
 
 extension RefundConfirmationViewModel {

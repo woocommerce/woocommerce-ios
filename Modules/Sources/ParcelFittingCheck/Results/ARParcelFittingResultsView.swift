@@ -8,6 +8,7 @@ public struct ARParcelFittingResultsView: View {
 
     @State private var starredPackageIDs: Set<String>
     @State private var selection: Selection?
+    @State private var hasTrackedAppearance = false
 
     public init(viewModel: ARParcelFittingResultsViewModel,
          starredPackageIDs: Set<String>,
@@ -35,6 +36,11 @@ public struct ARParcelFittingResultsView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle(Localization.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            guard !hasTrackedAppearance else { return }
+            hasTrackedAppearance = true
+            viewModel.trackResultsDisplayed()
+        }
     }
 
     // MARK: - Subviews
@@ -71,14 +77,20 @@ public struct ARParcelFittingResultsView: View {
     private var bestFitSection: some View {
         ResultsSectionView(title: bestFitHeaderText) {
             VStack(spacing: 0) {
-                ForEach(viewModel.carrierResults) { result in
+                ForEach(Array(viewModel.carrierResults.enumerated()), id: \.element.id) { index, result in
                     CarrierPackageRow(
                         carrier: result.carrier,
                         package: result.package,
                         unit: viewModel.unit,
                         isSelected: selection == .carrier(result.package.id),
                         isStarred: starredPackageIDs.contains(result.package.id),
-                        onSelect: { selection = .carrier(result.package.id) },
+                        onSelect: {
+                            selection = .carrier(result.package.id)
+                            viewModel.trackCarrierPackageSelected(
+                                index: index,
+                                isStarred: starredPackageIDs.contains(result.package.id)
+                            )
+                        },
                         onToggleStar: delegate.map { delegate in
                             { toggleStar(packageID: result.package.id, carrierID: result.carrier.id, delegate: delegate) }
                         }
@@ -105,7 +117,10 @@ public struct ARParcelFittingResultsView: View {
                 dimensions: viewModel.measuredDimensions,
                 unit: viewModel.unit,
                 isSelected: selection == .custom,
-                onSelect: { selection = .custom }
+                onSelect: {
+                    selection = .custom
+                    viewModel.trackCustomDimensionsSelected()
+                }
             )
             .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: Constants.cornerRadius))
         }
@@ -115,6 +130,7 @@ public struct ARParcelFittingResultsView: View {
     private var browseAllPackagesLink: some View {
         if let onBrowseAllPackages {
             Button {
+                viewModel.trackBrowseAllPackagesTapped()
                 onBrowseAllPackages()
             } label: {
                 Text(Localization.browseAllPackages)
@@ -162,9 +178,11 @@ public struct ARParcelFittingResultsView: View {
         switch selection {
         case .carrier(let packageID):
             if let result = viewModel.carrierResults.first(where: { $0.package.id == packageID }) {
+                viewModel.trackSelectPackageTapped(selectionType: .carrier)
                 onConfirm(.carrierPackage(result.package, measurement: viewModel.measuredDimensions))
             }
         case .custom:
+            viewModel.trackSelectPackageTapped(selectionType: .custom)
             onConfirm(.customDimensions(viewModel.measuredDimensions))
         case nil:
             break
@@ -172,6 +190,7 @@ public struct ARParcelFittingResultsView: View {
     }
 }
 
+#if DEBUG
 #Preview("With carrier matches") {
     NavigationView {
         ARParcelFittingResultsView(
@@ -187,7 +206,8 @@ public struct ARParcelFittingResultsView: View {
                         ParcelPresetPackage(id: "fedex_medium", name: "Medium Box (M2)",
                                             length: 33.0, width: 24.0, height: 17.0),
                     ]),
-                ]
+                ],
+                analytics: NoOpParcelFittingAnalytics()
             ),
             starredPackageIDs: ["usps_medium"],
             delegate: nil,
@@ -202,7 +222,8 @@ public struct ARParcelFittingResultsView: View {
             viewModel: ARParcelFittingResultsViewModel(
                 measuredDimensions: ParcelDimensions(length: 20.0, width: 15.0, height: 10.0),
                 unit: .centimeters,
-                carriers: []
+                carriers: [],
+                analytics: NoOpParcelFittingAnalytics()
             ),
             starredPackageIDs: [],
             delegate: nil,
@@ -210,6 +231,7 @@ public struct ARParcelFittingResultsView: View {
         )
     }
 }
+#endif
 
 private extension ARParcelFittingResultsView {
     enum Constants {

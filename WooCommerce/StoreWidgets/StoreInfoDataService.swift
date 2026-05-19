@@ -100,14 +100,14 @@ final class StoreInfoDataService {
 
     /// Network helper.
     ///
-    private let network: AlamofireNetwork
+    private let network: Network
 
     /// Whether the app is authenticated with site credentials
     ///
     private let isAuthenticatedWithoutWPCom: Bool
 
     init(credentials: Credentials) {
-        network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil) // opt out from network switching
+        self.network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil) // opt out from network switching
         orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
         siteStatsRemote = SiteStatsRemote(network: network)
         if case .wpcom = credentials {
@@ -115,6 +115,13 @@ final class StoreInfoDataService {
         } else {
             isAuthenticatedWithoutWPCom = true
         }
+    }
+
+    init(network: Network, isAuthenticatedWithoutWPCom: Bool = false) {
+        self.network = network
+        self.orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
+        self.siteStatsRemote = SiteStatsRemote(network: network)
+        self.isAuthenticatedWithoutWPCom = isAuthenticatedWithoutWPCom
     }
 
     /// Async function that fetches today's stats. Preserved for the Woo Watch App, which
@@ -140,6 +147,18 @@ final class StoreInfoDataService {
         let previous = try? await previousRequest
         return StatsPeriod(current: current, previous: previous)
     }
+
+#if canImport(Networking)
+    /// Fetches the store's general settings and extracts currency formatting settings.
+    ///
+    func fetchGeneralSettings(siteID: Int64) async throws -> CurrencySettings {
+        let siteSettings = try await fetchGeneralSiteSettings(for: siteID)
+        guard let currencySettings = CurrencySettings.completeSettings(siteSettings: siteSettings) else {
+            throw GeneralSettingsError.incompleteCurrencySettings
+        }
+        return currencySettings
+    }
+#endif
 
     /// Internal helper that fetches stats for a single date range. The public `fetchStats`
     /// invokes this twice in parallel (current and previous period).
@@ -174,7 +193,6 @@ final class StoreInfoDataService {
                          averageOrderValueSeries: series.averageOrderValue,
                          ordersSeries: series.orders,
                          itemsSoldSeries: series.itemsSold)
-
         } catch {
 
             // If there was an error fetching the stats chances are that is because jetpack is not properly configure to return stats.
@@ -461,6 +479,29 @@ extension StoreInfoDataService.DateRange {
 /// Async Wrappers
 ///
 private extension StoreInfoDataService {
+
+#if canImport(Networking)
+    enum GeneralSettingsError: Error {
+        case missingSettings
+        case incompleteCurrencySettings
+    }
+
+    /// Async wrapper that fetches general settings for the given site.
+    ///
+    func fetchGeneralSiteSettings(for siteID: Int64) async throws -> [SiteSetting] {
+        try await withCheckedThrowingContinuation { continuation in
+            let siteSettingsRemote = SiteSettingsRemote(network: network)
+            siteSettingsRemote.loadGeneralSettings(for: siteID) { settings, error in
+                if let settings {
+                    continuation.resume(returning: settings)
+                    return
+                }
+
+                continuation.resume(throwing: error ?? GeneralSettingsError.missingSettings)
+            }
+        }
+    }
+#endif
 
     /// Async wrapper that fetches revenue and order stats for the given range.
     ///

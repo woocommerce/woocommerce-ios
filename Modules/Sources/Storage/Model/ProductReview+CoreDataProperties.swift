@@ -19,5 +19,4 @@ extension ProductReview {
     @NSManaged public var siteID: Int64
     @NSManaged public var statusKey: String?
     @NSManaged public var verified: Bool
-
 }

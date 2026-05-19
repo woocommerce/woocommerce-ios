@@ -57,6 +57,5 @@ private extension NotWPErrorViewModel {
         static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",
                                                             comment: "Action button that will restart the login flow."
                                                             + "Presented when logging in with a site address that does not have a valid Jetpack installation")
-
     }
 }

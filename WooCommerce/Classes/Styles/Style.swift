@@ -45,7 +45,6 @@ final class StyleManager {
 
     static var footerLabelFont: UIFont {
         return .font(forStyle: .footnote, weight: .regular, maxFontSize: maxFontSize)
-
     }
 
     // MARK: - NavBar

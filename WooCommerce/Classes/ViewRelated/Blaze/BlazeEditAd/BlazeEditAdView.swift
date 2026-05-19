@@ -438,7 +438,6 @@ private extension BlazeEditAdView {
                 value: "Edit call to action",
                 comment: "Accessibility label for the call to action group in the Blaze Edit Ad screen."
             )
-
         }
     }
 }

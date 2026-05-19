@@ -86,11 +86,11 @@ extension UserDefaults {
         /// Debug override for the minimum WooCommerce plugin version required for WPCom connection setup
         case debugMinWooVersionForSelfDrivenPushNotifications
 
-        /// Whether configurable store stats widgets are enabled
-        case configurableStoreStatsWidgetsEnabled
-
         /// Sites available for selection in the configurable store stats widget picker
         case widgetSelectableSites
+
+        /// Per-site currency settings fetched lazily by the Store Stats widget extension
+        case widgetSiteCurrencySettingsCache
     }
 }
 
@@ -99,20 +99,6 @@ extension UserDefaults {
     ///
     static let group = UserDefaults(suiteName: WooConstants.sharedUserDefaultsSuiteName)
 }
-
-extension UserDefaults {
-    /// Whether configurable store stats widgets are enabled.
-    ///
-    var configurableStoreStatsWidgetsEnabled: Bool {
-        get {
-            object(forKey: .configurableStoreStatsWidgetsEnabled) ?? false
-        }
-        set {
-            set(newValue, forKey: .configurableStoreStatsWidgetsEnabled)
-        }
-    }
-}
-
 
 // MARK: - Convenience Methods
 //

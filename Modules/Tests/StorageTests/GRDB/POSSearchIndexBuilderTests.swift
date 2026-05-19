@@ -659,5 +659,4 @@ struct POSSearchIndexBuilderTests {
         }
         #expect(count == 0) // no ß normalization
     }
-
 }

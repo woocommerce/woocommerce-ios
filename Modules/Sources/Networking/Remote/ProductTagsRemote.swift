@@ -89,7 +89,6 @@ public final class ProductTagsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
-
 }
 
 

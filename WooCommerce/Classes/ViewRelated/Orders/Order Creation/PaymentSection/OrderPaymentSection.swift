@@ -242,7 +242,6 @@ private extension OrderPaymentSection {
                 .foregroundColor(Color(.wooCommercePurple(.shade60)))
                 .renderedIf(viewModel.shouldShowTaxesInfoButton)
         }
-
     }
 
     @ViewBuilder var taxRateAddedAutomaticallyRow: some View {

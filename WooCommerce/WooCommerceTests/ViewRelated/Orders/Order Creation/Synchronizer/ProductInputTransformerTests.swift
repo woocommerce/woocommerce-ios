@@ -332,7 +332,6 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.price, 9.99)
         XCTAssertEqual(item.subtotal, "19.98")
         XCTAssertEqual(item.total, "19.98")
-
     }
 
     func test_sending_an_update_product_input_uses_price_from_product() throws {

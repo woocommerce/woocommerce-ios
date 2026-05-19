@@ -92,7 +92,6 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-
     }
 
     func test_viewModel_has_unsaved_changes_after_updating_downloadExpiry() {

@@ -251,5 +251,4 @@ struct EntityCardPayloadTests {
         // Then
         #expect(variation?.firstImageURL == nil)
     }
-
 }

@@ -181,7 +181,6 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             DDLogInfo("📋 POSLocalCatalogEligibilityService: Site \(siteID) catalog size \(size.totalCount) is within limit \(catalogSizeLimit)")
             eligibilityStates[siteID] = .eligible
             return .eligible
-
         } catch AFError.explicitlyCancelled, is CancellationError {
             throw POSCatalogSyncError.requestCancelled
         } catch {

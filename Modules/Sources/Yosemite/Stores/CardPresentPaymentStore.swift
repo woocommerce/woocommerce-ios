@@ -703,7 +703,6 @@ private extension CardPresentPaymentStore {
 
             let storageAccount = storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
             storageAccount.update(with: readonlyAccount)
-
         }, completion: onCompletion, on: .main)
     }
 

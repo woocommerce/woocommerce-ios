@@ -60,7 +60,6 @@ public final class WordPressOrgNetwork: Network {
                         continuation.resume(throwing: error)
                     }
                 }
-
             })
         }
     }

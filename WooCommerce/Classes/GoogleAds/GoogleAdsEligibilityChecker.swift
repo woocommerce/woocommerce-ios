@@ -61,7 +61,6 @@ final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
         let remotePlugin = await fetchPluginFromRemote(siteID: siteID)
         return checkIfGoogleAdsIsSupported(plugin: remotePlugin)
     }
-
 }
 
 private extension DefaultGoogleAdsEligibilityChecker {

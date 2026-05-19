@@ -33,7 +33,6 @@ public final class MetaDataRemote: Remote, MetaDataRemoteProtocol {
         let mapper = MetaDataMapper()
 
         return try await enqueue(request, mapper: mapper)
-
     }
 }
 

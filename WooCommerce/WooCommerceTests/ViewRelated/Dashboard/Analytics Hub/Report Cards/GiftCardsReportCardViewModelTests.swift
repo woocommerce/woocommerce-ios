@@ -104,5 +104,4 @@ final class GiftCardsReportCardViewModelTests: XCTestCase {
         XCTAssertFalse(vm.showSyncError)
         XCTAssertNotNil(vm.reportViewModel)
     }
-
 }

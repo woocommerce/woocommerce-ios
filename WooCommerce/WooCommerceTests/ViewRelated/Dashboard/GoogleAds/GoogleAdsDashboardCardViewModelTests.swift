@@ -122,7 +122,6 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.syncingData)
-
     }
 
     @MainActor

@@ -178,7 +178,6 @@ final class MetaDataMapperTests: XCTestCase {
         XCTAssertTrue(fieldNames.contains("dict_field_2"))
         XCTAssertTrue(fieldNames.contains("_internal_dict_field"))
     }
-
 }
 
 // MARK: - Test Helpers

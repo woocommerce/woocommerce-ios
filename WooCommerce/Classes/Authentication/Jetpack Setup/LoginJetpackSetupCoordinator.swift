@@ -64,7 +64,6 @@ private extension LoginJetpackSetupCoordinator {
                     self?.showStorePickerForLogin()
                 })
             }
-
         })
         guard let contentNavigationController = navigationController.presentedViewController as? UINavigationController else {
             // this is not likely to happen but handling this for safety

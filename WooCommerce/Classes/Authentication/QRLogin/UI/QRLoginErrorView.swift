@@ -1,3 +1,4 @@
+import Networking
 import SwiftUI
 
 /// Fullscreen error variant for any failure surfaced by the QR-login flow.
@@ -25,7 +26,7 @@ struct QRLoginErrorView: View {
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
-                Text(body)
+                Text(bodyText)
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -88,7 +89,7 @@ private extension QRLoginErrorView {
         }
     }
 
-    var body: String {
+    var bodyText: String {
         switch error.kind {
         case .invalidPayload: return Localization.invalidPayloadBody
         case .installQR: return Localization.installQRBody

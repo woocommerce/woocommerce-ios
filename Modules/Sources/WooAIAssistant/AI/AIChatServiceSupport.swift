@@ -5,67 +5,63 @@ import NetworkingCore
 
 typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
 
-public enum AIChatTransport {
+struct AIChatTransport: Sendable {
+
+    private let session: URLSession
+
+    init(session: URLSession = AIChatTransport.sharedSession) {
+        self.session = session
+    }
 
     public static let defaultRetrySleep: @Sendable (UInt64) async throws -> Void = { nanoseconds in
         try await Task.sleep(nanoseconds: nanoseconds)
     }
 
-    static let sharedLLMSession: URLSession = {
-        let config = URLSessionConfiguration.default
-        config.httpMaximumConnectionsPerHost = 64
-        config.timeoutIntervalForRequest = 120
-        config.timeoutIntervalForResource = 180
-        return URLSession(configuration: config)
-    }()
-
-    static func urlSessionStreamingTransport(_ session: URLSession) -> StreamingHTTPTransport {
-        return { request in
-            let bytes: URLSession.AsyncBytes
-            let response: URLResponse
-            do {
-                (bytes, response) = try await session.bytes(for: request)
-            } catch let urlError as URLError {
-                throw mapURLError(urlError)
-            }
-            guard let http = response as? HTTPURLResponse else {
-                throw AssistantError(kind: .network,
-                                     message: AIChatTransport.nonHTTPResponseMessage)
-            }
-            // Cancelling only the Swift Task leaves the URL loader holding the socket;
-            // an idle SSE connection never throws via the byte iterator.
-            let urlSessionTask = bytes.task
-            let stream = AsyncThrowingStream<Data, Error> { continuation in
-                let task = Task {
-                    var buffer = Data()
-                    do {
-                        for try await byte in bytes {
-                            buffer.append(byte)
-                            if buffer.count >= 4096 {
-                                continuation.yield(buffer)
-                                buffer.removeAll(keepingCapacity: true)
-                            }
-                        }
-                        if !buffer.isEmpty {
-                            continuation.yield(buffer)
-                        }
-                        continuation.finish()
-                    } catch let urlError as URLError {
-                        continuation.finish(throwing: mapURLError(urlError))
-                    } catch {
-                        continuation.finish(throwing: error)
-                    }
-                }
-                continuation.onTermination = { _ in
-                    task.cancel()
-                    urlSessionTask.cancel()
-                }
-            }
-            return (stream, http)
+    func stream(_ request: URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse) {
+        let bytes: URLSession.AsyncBytes
+        let response: URLResponse
+        do {
+            (bytes, response) = try await session.bytes(for: request)
+        } catch let urlError as URLError {
+            throw mapURLError(urlError)
         }
+        guard let http = response as? HTTPURLResponse else {
+            throw AssistantError(kind: .network,
+                                 message: AIChatTransport.nonHTTPResponseMessage)
+        }
+        // Cancelling only the Swift Task leaves the URL loader holding the socket;
+        // an idle SSE connection never throws via the byte iterator.
+        let urlSessionTask = bytes.task
+        let stream = AsyncThrowingStream<Data, Error> { continuation in
+            let task = Task {
+                var buffer = Data()
+                do {
+                    for try await byte in bytes {
+                        buffer.append(byte)
+                        if buffer.count >= 4096 {
+                            continuation.yield(buffer)
+                            buffer.removeAll(keepingCapacity: true)
+                        }
+                    }
+                    if !buffer.isEmpty {
+                        continuation.yield(buffer)
+                    }
+                    continuation.finish()
+                } catch let urlError as URLError {
+                    continuation.finish(throwing: mapURLError(urlError))
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+            continuation.onTermination = { _ in
+                task.cancel()
+                urlSessionTask.cancel()
+            }
+        }
+        return (stream, http)
     }
 
-    static func mapURLError(_ error: URLError) -> AssistantError {
+    private func mapURLError(_ error: URLError) -> AssistantError {
         let kind: AssistantErrorKind
         switch error.code {
         case .timedOut:
@@ -81,6 +77,16 @@ public enum AIChatTransport {
                               code: String(error.code.rawValue),
                               message: error.localizedDescription)
     }
+
+    // Shared process-wide session keeps the connection pool bounded under parallel load;
+    // a per-instance session would multiply sockets. This shared static is intentional.
+    private static let sharedSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.httpMaximumConnectionsPerHost = 64
+        config.timeoutIntervalForRequest = 120
+        config.timeoutIntervalForResource = 180
+        return URLSession(configuration: config)
+    }()
 
     private static let nonHTTPResponseMessage = NSLocalizedString(
         "ai.assistant.networking.shared.non_http_response",

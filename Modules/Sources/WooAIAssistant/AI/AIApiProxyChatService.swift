@@ -257,13 +257,22 @@ public struct AIApiProxyChatService: AIChatService {
             }
             if let deltaCalls = choice.delta.toolCalls {
                 for delta in deltaCalls {
-                    applyToolCallDelta(delta, to: &toolCallBuffers, order: &toolCallOrder)
+                    apply(delta)
                 }
             }
             if let reason = choice.finishReason {
                 finishReason = reason
             }
             return events
+        }
+
+        private mutating func apply(_ delta: OpenAIChat.ToolCallDelta) {
+            var asm = toolCallBuffers[delta.index] ?? ToolCallAssembly()
+            if asm.id == nil, let id = delta.id { asm.id = id }
+            if asm.name == nil, let name = delta.function?.name { asm.name = name }
+            if let args = delta.function?.arguments { asm.arguments.append(args) }
+            toolCallBuffers[delta.index] = asm
+            if !toolCallOrder.contains(delta.index) { toolCallOrder.append(delta.index) }
         }
 
         func completedToolCalls() -> [OpenAIChat.ToolCall] {

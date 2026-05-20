@@ -124,14 +124,3 @@ struct ToolCallAssembly {
     var name: String?
     var arguments: String = ""
 }
-
-func applyToolCallDelta(_ delta: OpenAIChat.ToolCallDelta,
-                        to buffers: inout [Int: ToolCallAssembly],
-                        order: inout [Int]) {
-    var asm = buffers[delta.index] ?? ToolCallAssembly()
-    if asm.id == nil, let id = delta.id { asm.id = id }
-    if asm.name == nil, let name = delta.function?.name { asm.name = name }
-    if let args = delta.function?.arguments { asm.arguments.append(args) }
-    buffers[delta.index] = asm
-    if !order.contains(delta.index) { order.append(delta.index) }
-}

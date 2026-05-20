@@ -61,6 +61,14 @@ final class QRLoginCoordinator {
             handleScanned(payload: payload)
         }
     }
+
+    /// Feeds a deep-link payload into the live flow on an already-started
+    /// coordinator. Used when a `woocommerce://qr-login` URL arrives while this
+    /// coordinator is already presenting the prologue — reusing it avoids
+    /// orphaning a second coordinator on the same navigation stack.
+    func presentDeepLink(payload: QRLoginPayload) {
+        handleScanned(payload: payload)
+    }
 }
 
 // MARK: - Prologue + scanner
@@ -213,22 +221,18 @@ private extension QRLoginCoordinator {
         let host = QRLoginHostView(
             viewModel: viewModel,
             onDone: { [weak self] in self?.onSuccess() },
-            onIdle: { [weak self] in self?.handleHostIdle() },
+            onCancel: { [weak self] in self?.handleHostCancelled() },
             onEnterSiteURLTapped: { [weak self] in self?.onEnterSiteURL() }
         )
         navigationController.pushViewController(UIHostingController(rootView: host), animated: true)
     }
 
-    func handleHostIdle() {
-        // View model returned to idle (cancel from number-match). In camera
-        // mode the merchant gets the scanner back; in deep-link mode we exit.
-        switch mode {
-        case .camera:
-            // Pop the host VC so the scanner is back on top.
-            navigationController.popViewController(animated: true)
-        case .deepLink:
-            navigationController.popViewController(animated: true)
-        }
+    /// Merchant cancelled from the number-match screen. In camera mode the
+    /// merchant gets the scanner back; in deep-link mode there's no scanner to
+    /// fall back to, so popping the host view exits the QR-login surface
+    /// (spec §4.2 / §6.2).
+    func handleHostCancelled() {
+        navigationController.popViewController(animated: true)
     }
 
     func showErrorOnly(_ error: QRLoginUserFacingError) {

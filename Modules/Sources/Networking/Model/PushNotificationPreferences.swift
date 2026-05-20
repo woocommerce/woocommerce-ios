@@ -98,6 +98,8 @@ public extension PushNotificationPreferences {
         public let enabled: Bool?
 
         /// Maximum star rating that triggers a notification. Server clamps to `1...5`.
+        /// `nil` is sent on the wire as JSON `null`, which the server interprets as
+        /// "notify on every review" (matches the "All new reviews" radio option).
         public let maxRating: Int?
 
         public init(enabled: Bool? = nil, maxRating: Int? = nil) {
@@ -114,7 +116,15 @@ public extension PushNotificationPreferences {
         public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encodeIfPresent(enabled, forKey: .enabled)
-            try container.encodeIfPresent(maxRating, forKey: .maxRating)
+            // Use `encode`/`encodeNil` (not `encodeIfPresent`) so `nil` is written as
+            // JSON `null` — the server interprets explicit null as "clear the rating".
+            // Without this, omitting the key would mean "no change", and the user
+            // could never switch from "Only low-rated reviews" back to "All new reviews".
+            if let maxRating {
+                try container.encode(maxRating, forKey: .maxRating)
+            } else {
+                try container.encodeNil(forKey: .maxRating)
+            }
         }
 
         enum CodingKeys: String, CodingKey {

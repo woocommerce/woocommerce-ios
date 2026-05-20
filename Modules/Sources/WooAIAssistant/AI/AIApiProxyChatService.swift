@@ -301,14 +301,6 @@ public struct AIApiProxyChatService: AIChatService {
     }
 }
 
-public func makeAIApiProxyChatService(tokenProvider: WPCOMTokenProviding,
-                                       endpointOverride: URL? = nil,
-                                       sleep: @escaping AIApiProxyChatService.Sleep) -> some AIChatService {
-    AIApiProxyChatService(tokenProvider: tokenProvider,
-                          endpointOverride: endpointOverride,
-                          sleep: sleep)
-}
-
 extension AIApiProxyChatService {
     enum Localization {
         static let httpFailureFallback = NSLocalizedString(

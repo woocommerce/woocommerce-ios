@@ -131,22 +131,32 @@ class AuthenticationManager: Authentication {
         // the root login view controller). `QRLoginCoordinator` is @MainActor,
         // so we assert main-actor isolation to construct + start it.
         MainActor.assumeIsolated {
-            let coordinator = QRLoginCoordinator(
-                navigationController: navigationController,
-                onEnterSiteURL: { [weak navigationController] in
-                    guard let navigationController else { return }
-                    NavigateToEnterSite().execute(from: navigationController)
-                },
-                onSuccess: { [weak self, weak navigationController] in
-                    guard let self, let navigationController else { return }
-                    self.qrLoginCoordinator = nil
-                    self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
-                }
-            )
-            self.qrLoginCoordinator = coordinator
-            coordinator.start()
+            makeQRLoginCoordinator(mode: .camera, navigationController: navigationController).start()
         }
         return navigationController
+    }
+
+    /// Builds a `QRLoginCoordinator` wired with the shared site-address
+    /// fallback and success handlers, and retains it as `qrLoginCoordinator`.
+    /// Starting it is the caller's responsibility.
+    @MainActor
+    private func makeQRLoginCoordinator(mode: QRLoginCoordinator.Mode,
+                                        navigationController: UINavigationController) -> QRLoginCoordinator {
+        let coordinator = QRLoginCoordinator(
+            mode: mode,
+            navigationController: navigationController,
+            onEnterSiteURL: { [weak navigationController] in
+                guard let navigationController else { return }
+                NavigateToEnterSite().execute(from: navigationController)
+            },
+            onSuccess: { [weak self, weak navigationController] in
+                guard let self, let navigationController else { return }
+                self.qrLoginCoordinator = nil
+                self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+            }
+        )
+        qrLoginCoordinator = coordinator
+        return coordinator
     }
 
     /// Handles an Authentication URL Callback. Returns *true* on success.
@@ -229,17 +239,15 @@ class AuthenticationManager: Authentication {
     }
 
     /// Case-insensitive match for `woocommerce://qr-login` deep links
-    /// (spec §3 footer: scheme + host check is case-insensitive).
+    /// (spec §3 footer: scheme + host check is case-insensitive). Uses a
+    /// prefix check — matching `isAppLoginUrl` — because `URL.host` is
+    /// unreliable for custom-scheme URLs across Foundation versions.
     private func isQRLoginUrl(_ url: URL) -> Bool {
-        guard url.scheme?.lowercased() == "woocommerce",
-              url.host?.lowercased() == "qr-login" else {
-            return false
-        }
-        return url.path.isEmpty || url.path == "/"
+        url.absoluteString.lowercased().hasPrefix(WooConstants.qrLoginURLPrefix)
     }
 
-    /// Handles an inbound `woocommerce://qr-login?...` URL by starting the
-    /// QR coordinator in deep-link mode.
+    /// Handles an inbound `woocommerce://qr-login?...` URL by driving the QR
+    /// coordinator's deep-link flow.
     ///
     /// Returns `nil` when the feature isn't available — the caller falls
     /// through to the standard handlers so the user lands on the regular
@@ -266,21 +274,19 @@ class AuthenticationManager: Authentication {
         // `handleAuthenticationUrl` runs on the main thread (URL handling from
         // the scene/app delegate). `QRLoginCoordinator` is @MainActor.
         MainActor.assumeIsolated {
-            let coordinator = QRLoginCoordinator(
-                mode: .deepLink(payload: payload),
-                navigationController: navigationController,
-                onEnterSiteURL: { [weak navigationController] in
-                    guard let navigationController else { return }
-                    NavigateToEnterSite().execute(from: navigationController)
-                },
-                onSuccess: { [weak self, weak navigationController] in
-                    guard let self, let navigationController else { return }
-                    self.qrLoginCoordinator = nil
-                    self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
-                }
-            )
-            self.qrLoginCoordinator = coordinator
-            coordinator.start()
+            if let qrLoginCoordinator {
+                // Displaying the authenticator already built the QR-login UI
+                // and started a coordinator on the prologue. Reuse it for the
+                // deep-link payload — starting a second coordinator would
+                // orphan the first and leave a dead prologue underneath the
+                // number-match screen.
+                qrLoginCoordinator.presentDeepLink(payload: payload)
+            } else {
+                // The legacy authenticator UI is the root; start a standalone
+                // deep-link coordinator on its navigation stack.
+                makeQRLoginCoordinator(mode: .deepLink(payload: payload),
+                                       navigationController: navigationController).start()
+            }
         }
         return true
     }

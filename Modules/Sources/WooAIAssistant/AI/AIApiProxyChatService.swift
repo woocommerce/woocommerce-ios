@@ -80,14 +80,26 @@ public struct AIApiProxyChatService: AIChatService {
                 return
             } catch let error as AssistantError {
                 if await shouldRetryRateLimit(error: error, bridge: bridge, attempt: attempt) {
-                    let delaySeconds: UInt64 = attempt == 0 ? 2 : 4
-                    try await sleep(delaySeconds * 1_000_000_000)
+                    try await backOff(attempt: attempt)
                     attempt += 1
                     continue
                 }
                 throw error
+            } catch let wrapped as WrappedEnvelopeError {
+                // A rate limit can also arrive as an HTTP-200 SSE error envelope, not just a real 429.
+                if await shouldRetryRateLimit(error: wrapped.assistantError, bridge: bridge, attempt: attempt) {
+                    try await backOff(attempt: attempt)
+                    attempt += 1
+                    continue
+                }
+                throw wrapped
             }
         }
+    }
+
+    private func backOff(attempt: Int) async throws {
+        let delaySeconds: UInt64 = attempt == 0 ? 2 : 4
+        try await sleep(delaySeconds * 1_000_000_000)
     }
 
     private func shouldRetryRateLimit(error: AssistantError, bridge: StreamBridge, attempt: Int) async -> Bool {

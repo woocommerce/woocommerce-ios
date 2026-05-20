@@ -1,34 +1,23 @@
 import SwiftUI
 
-/// QR-login prologue. Shown when the user taps the primary "Log in" CTA and
-/// QR login is available (spec §4.1).
+/// QR-login prologue. Pushed onto the login navigation stack when the user taps
+/// the primary "Log in" CTA and QR login is available (spec §4.1).
 ///
-/// Three actions reach the coordinator via the callbacks:
+/// Two actions reach the coordinator via the callbacks:
 ///   - Primary "Scan QR code" → coordinator requests camera permission and,
 ///     if granted, presents the scanner.
 ///   - Secondary "No computer? Log in with site address" → coordinator falls
 ///     back to the legacy site-address login flow.
-///   - Top-right help icon → coordinator opens Help & Support with the
-///     `LOGIN_WITH_QR_CODE` origin.
+///
+/// The Help button and the back button live in the navigation bar — the
+/// coordinator wires them on the hosting controller.
 struct QRLoginPrologueView: View {
     let onScanTapped: () -> Void
     let onSiteAddressTapped: () -> Void
-    let onHelpTapped: () -> Void
     let onURLTapped: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Spacer()
-                Button(action: onHelpTapped) {
-                    Image(systemName: "questionmark.circle")
-                        .imageScale(.large)
-                        .accessibilityLabel(Localization.helpAccessibility)
-                }
-                .padding(.trailing)
-                .padding(.top, 8)
-            }
-
             ScrollView {
                 VStack(spacing: 24) {
                     Image(systemName: "qrcode.viewfinder")
@@ -73,7 +62,7 @@ struct QRLoginPrologueView: View {
                         .padding(.horizontal)
                 }
                 .padding(.horizontal, 32)
-                .padding(.bottom, 24)
+                .padding(.vertical, 24)
             }
 
             VStack(spacing: 12) {
@@ -95,6 +84,22 @@ struct QRLoginPrologueView: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
         }
+        .background(prologueBackground)
+    }
+
+    /// A soft brand-tinted wash so the QR prologue isn't a flat white screen,
+    /// while staying light enough for the standard navigation bar and the
+    /// dark-on-light content.
+    private var prologueBackground: some View {
+        LinearGradient(
+            colors: [
+                Color(uiColor: .brand).opacity(0.12),
+                Color(uiColor: .systemBackground)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
     }
 }
 
@@ -133,11 +138,6 @@ private extension QRLoginPrologueView {
             value: "No computer? Log in with site address",
             comment: "Secondary call-to-action on the QR-login prologue."
         )
-        static let helpAccessibility = NSLocalizedString(
-            "qrLogin.prologue.help.accessibility",
-            value: "Help",
-            comment: "Accessibility label for the help button on the QR-login prologue."
-        )
     }
 }
 
@@ -146,7 +146,6 @@ private extension QRLoginPrologueView {
     QRLoginPrologueView(
         onScanTapped: {},
         onSiteAddressTapped: {},
-        onHelpTapped: {},
         onURLTapped: {}
     )
 }

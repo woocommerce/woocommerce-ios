@@ -83,10 +83,9 @@ private extension QRLoginCoordinator {
         let view = QRLoginPrologueView(
             onScanTapped: { [weak self] in self?.handleScanCTA() },
             onSiteAddressTapped: { [weak self] in self?.fallbackToSiteAddress() },
-            onHelpTapped: { [weak self] in self?.showHelp() },
             onURLTapped: { Self.copyLoginURL() }
         )
-        navigationController.pushViewController(UIHostingController(rootView: view), animated: true)
+        pushScreen(view)
     }
 
     func handleScanCTA() {
@@ -125,9 +124,9 @@ private extension QRLoginCoordinator {
             onCancel: { [weak self] in self?.popScanner() },
             onHelpTapped: { [weak self] in self?.showHelp() }
         )
-        let hosting = UIHostingController(rootView: view)
-        hosting.modalPresentationStyle = .fullScreen
-        navigationController.pushViewController(hosting, animated: true)
+        // The scanner is full-bleed camera UI with its own in-view chrome, so it
+        // keeps the navigation bar hidden and does not use the toolbar Help item.
+        pushScreen(view, showsNavigationBar: false, showsHelpButton: false)
     }
 
     func popScanner() {
@@ -224,7 +223,7 @@ private extension QRLoginCoordinator {
             onCancel: { [weak self] in self?.handleHostCancelled() },
             onEnterSiteURLTapped: { [weak self] in self?.onEnterSiteURL() }
         )
-        navigationController.pushViewController(UIHostingController(rootView: host), animated: true)
+        pushScreen(host)
     }
 
     /// Merchant cancelled from the number-match screen. In camera mode the
@@ -243,7 +242,29 @@ private extension QRLoginCoordinator {
             onPrimaryTapped: { [weak self] in self?.popScanner() },
             onEnterSiteURLTapped: { [weak self] in self?.onEnterSiteURL() }
         )
-        navigationController.pushViewController(UIHostingController(rootView: view), animated: true)
+        pushScreen(view)
+    }
+}
+
+// MARK: - Navigation
+
+private extension QRLoginCoordinator {
+    /// Wraps `view` in a `QRLoginHostingController` and pushes it onto the login
+    /// navigation stack, showing the navigation bar with a "Help" item by default.
+    @discardableResult
+    func pushScreen<Content: View>(_ view: Content,
+                                   showsNavigationBar: Bool = true,
+                                   showsHelpButton: Bool = true) -> QRLoginHostingController<Content> {
+        let hosting = QRLoginHostingController(rootView: view)
+        hosting.showsNavigationBar = showsNavigationBar
+        if showsHelpButton {
+            hosting.navigationItem.rightBarButtonItem = UIBarButtonItem(
+                title: Localization.help,
+                primaryAction: UIAction { [weak self] _ in self?.showHelp() }
+            )
+        }
+        navigationController.pushViewController(hosting, animated: true)
+        return hosting
     }
 }
 
@@ -288,6 +309,11 @@ private extension QRLoginCoordinator {
 
 private extension QRLoginCoordinator {
     enum Localization {
+        static let help = NSLocalizedString(
+            "qrLogin.help",
+            value: "Help",
+            comment: "Navigation-bar Help button on the QR-login screens."
+        )
         static let cancel = NSLocalizedString(
             "qrLogin.cameraPermission.cancel",
             value: "Cancel",

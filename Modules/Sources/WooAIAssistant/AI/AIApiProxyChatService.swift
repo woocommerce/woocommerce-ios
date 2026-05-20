@@ -120,91 +120,68 @@ public struct AIApiProxyChatService: AIChatService {
                                        token: token)
         let (byteStream, http) = try await streamingTransport(request)
 
-        if !(200..<300).contains(http.statusCode) {
-            var buffer = Data()
-            for try await chunk in byteStream {
-                buffer.append(chunk)
-            }
-            throw Self.errorFromFailedResponse(status: http.statusCode, body: buffer)
+        guard (200..<300).contains(http.statusCode) else {
+            throw try await failedResponseError(status: http.statusCode, from: byteStream)
         }
 
         var parser = SSEParser()
-        var toolCallBuffers: [Int: ToolCallAssembly] = [:]
-        var toolCallOrder: [Int] = []
-        var finishReason: OpenAIChat.FinishReason?
+        var state = StreamDecodeState()
         var pendingBytes = Data()
-        var receivedAnyChunk = false
 
         for try await rawChunk in byteStream {
             pendingBytes.append(rawChunk)
             let (decoded, remainder) = decodeUTF8WithBoundaryCarry(pendingBytes)
             pendingBytes = remainder
             guard let text = decoded, !text.isEmpty else { continue }
-            for event in parser.feed(text) {
-                try await handle(event: event,
-                                 bridge: bridge,
-                                 continuation: continuation,
-                                 buffers: &toolCallBuffers,
-                                 order: &toolCallOrder,
-                                 finishReason: &finishReason,
-                                 receivedAnyChunk: &receivedAnyChunk)
-            }
+            try await process(parser.feed(text), bridge: bridge, continuation: continuation, state: &state)
         }
         if !pendingBytes.isEmpty,
            let tail = String(data: pendingBytes, encoding: .utf8),
            !tail.isEmpty {
-            for event in parser.feed(tail) {
-                try await handle(event: event,
-                                 bridge: bridge,
-                                 continuation: continuation,
-                                 buffers: &toolCallBuffers,
-                                 order: &toolCallOrder,
-                                 finishReason: &finishReason,
-                                 receivedAnyChunk: &receivedAnyChunk)
-            }
+            try await process(parser.feed(tail), bridge: bridge, continuation: continuation, state: &state)
         }
-        for event in parser.finish() {
-            try await handle(event: event,
-                             bridge: bridge,
-                             continuation: continuation,
-                             buffers: &toolCallBuffers,
-                             order: &toolCallOrder,
-                             finishReason: &finishReason,
-                             receivedAnyChunk: &receivedAnyChunk)
-        }
+        try await process(parser.finish(), bridge: bridge, continuation: continuation, state: &state)
 
-        for index in toolCallOrder {
-            guard let asm = toolCallBuffers[index], let id = asm.id, let name = asm.name else {
-                DDLogError("⛔️ Skipping tool call at index \(index): id or name absent.")
-                continue
-            }
+        for toolCall in state.completedToolCalls() {
             await bridge.markEmitted()
-            continuation.yield(.toolCall(OpenAIChat.ToolCall(id: id,
-                                                             function: .init(name: name,
-                                                                             arguments: asm.arguments))))
+            continuation.yield(.toolCall(toolCall))
         }
 
         // The wpcom streaming path closes upstream errors as HTTP 200 with zero SSE frames; a
         // framed-but-content-less turn is a legitimate empty turn the orchestrator handles.
-        guard receivedAnyChunk else {
+        guard state.receivedAnyChunk else {
             throw AssistantError(kind: .upstreamFailure, code: "200", message: Localization.emptyStream)
         }
-        continuation.yield(.completed(finishReason))
+        continuation.yield(.completed(state.finishReason))
+    }
+
+    private func failedResponseError(status: Int, from byteStream: AsyncThrowingStream<Data, Error>) async throws -> AssistantError {
+        var buffer = Data()
+        for try await chunk in byteStream {
+            buffer.append(chunk)
+        }
+        return errorFromFailedResponse(status: status, body: buffer)
+    }
+
+    private func process(_ events: [SSEParser.Event],
+                         bridge: StreamBridge,
+                         continuation: AsyncThrowingStream<ChatStreamEvent, Error>.Continuation,
+                         state: inout StreamDecodeState) async throws {
+        for event in events {
+            try await handle(event: event, bridge: bridge, continuation: continuation, state: &state)
+        }
     }
 
     private func handle(event: SSEParser.Event,
                         bridge: StreamBridge,
                         continuation: AsyncThrowingStream<ChatStreamEvent, Error>.Continuation,
-                        buffers: inout [Int: ToolCallAssembly],
-                        order: inout [Int],
-                        finishReason: inout OpenAIChat.FinishReason?,
-                        receivedAnyChunk: inout Bool) async throws {
+                        state: inout StreamDecodeState) async throws {
         let trimmed = event.data.trimmingCharacters(in: .whitespaces)
         if trimmed.isEmpty || trimmed == "[DONE]" { return }
         guard let data = trimmed.data(using: .utf8) else { return }
 
         // Soft errors can ship as 200 + envelope; surface as a typed error before any event lands.
-        if await bridge.didEmitAnyEvent == false, let envelope = Self.decodeProxyEnvelopeError(from: data) {
+        if await bridge.didEmitAnyEvent == false, let envelope = decodeProxyEnvelopeError(from: data) {
             throw WrappedEnvelopeError(assistantError: envelope)
         }
 
@@ -215,22 +192,12 @@ public struct AIApiProxyChatService: AIChatService {
             DDLogError("⛔️ Malformed SSE chunk dropped: \(error.localizedDescription)")
             throw AssistantError(kind: .invalidStream, message: Localization.invalidStreamPayload)
         }
-        // Any decodable chunk (including finish-only and usage-only frames) proves the stream
-        // wasn't the frameless wpcom-gap signature, distinct from emitting user-visible content.
-        receivedAnyChunk = true
-        guard let choice = chunk.choices.first else { return }
 
-        if let text = choice.delta.content, !text.isEmpty {
-            await bridge.markEmitted()
-            continuation.yield(.textDelta(text))
-        }
-        if let deltaCalls = choice.delta.toolCalls {
-            for delta in deltaCalls {
-                applyToolCallDelta(delta, to: &buffers, order: &order)
+        for event in state.ingest(chunk) {
+            if case .textDelta = event {
+                await bridge.markEmitted()
             }
-        }
-        if let reason = choice.finishReason {
-            finishReason = reason
+            continuation.yield(event)
         }
     }
 
@@ -276,7 +243,47 @@ public struct AIApiProxyChatService: AIChatService {
         }
     }
 
-    static func errorFromFailedResponse(status: Int, body: Data) -> AssistantError {
+    private struct StreamDecodeState {
+        private var toolCallBuffers: [Int: ToolCallAssembly] = [:]
+        private var toolCallOrder: [Int] = []
+        private(set) var finishReason: OpenAIChat.FinishReason?
+        private(set) var receivedAnyChunk = false
+
+        mutating func ingest(_ chunk: OpenAIChat.Chunk) -> [ChatStreamEvent] {
+            // Any decodable chunk (including finish-only and usage-only frames) proves the stream
+            // wasn't the frameless wpcom-gap signature, distinct from emitting user-visible content.
+            receivedAnyChunk = true
+            guard let choice = chunk.choices.first else { return [] }
+
+            var events: [ChatStreamEvent] = []
+            if let text = choice.delta.content, !text.isEmpty {
+                events.append(.textDelta(text))
+            }
+            if let deltaCalls = choice.delta.toolCalls {
+                for delta in deltaCalls {
+                    applyToolCallDelta(delta, to: &toolCallBuffers, order: &toolCallOrder)
+                }
+            }
+            if let reason = choice.finishReason {
+                finishReason = reason
+            }
+            return events
+        }
+
+        func completedToolCalls() -> [OpenAIChat.ToolCall] {
+            var calls: [OpenAIChat.ToolCall] = []
+            for index in toolCallOrder {
+                guard let asm = toolCallBuffers[index], let id = asm.id, let name = asm.name else {
+                    DDLogError("⛔️ Skipping tool call at index \(index): id or name absent.")
+                    continue
+                }
+                calls.append(OpenAIChat.ToolCall(id: id, function: .init(name: name, arguments: asm.arguments)))
+            }
+            return calls
+        }
+    }
+
+    private func errorFromFailedResponse(status: Int, body: Data) -> AssistantError {
         if let envelope = decodeProxyEnvelopeError(from: body) {
             return envelope
         }
@@ -286,7 +293,7 @@ public struct AIApiProxyChatService: AIChatService {
                               message: fallback)
     }
 
-    static func decodeProxyEnvelopeError(from data: Data) -> AssistantError? {
+    private func decodeProxyEnvelopeError(from data: Data) -> AssistantError? {
         let envelope: ProxyError
         do {
             envelope = try JSONDecoder().decode(ProxyError.self, from: data)
@@ -298,7 +305,7 @@ public struct AIApiProxyChatService: AIChatService {
     }
 
     // Route on `code`: `data.reason` is informational and not stable enough for branching.
-    private static func mapEnvelope(_ envelope: ProxyError) -> AssistantError {
+    private func mapEnvelope(_ envelope: ProxyError) -> AssistantError {
         let httpStatus = envelope.data?.status
         let codeString = httpStatus.map(String.init) ?? envelope.code
         switch envelope.code {

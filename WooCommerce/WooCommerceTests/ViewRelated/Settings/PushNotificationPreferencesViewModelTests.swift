@@ -23,7 +23,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - Loading
 
-    @Test func test_load_when_remote_succeeds_then_loadState_becomes_loaded_and_toggles_reflect_response() async {
+    @Test func test_load_when_remote_succeeds_then_loadState_becomes_loaded_and_toggles_reflect_response() async throws {
         // Given
         let stores = makeStores()
         let response = PushNotificationPreferences(
@@ -48,7 +48,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.isStoreStockEnabled == true)
     }
 
-    @Test func test_load_when_remote_fails_then_loadState_becomes_error() async {
+    @Test func test_load_when_remote_fails_then_loadState_becomes_error() async throws {
         // Given
         struct AnyError: Error {}
         let stores = makeStores()
@@ -66,7 +66,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.loadState == .error)
     }
 
-    @Test func test_load_when_unsaved_edits_exist_then_response_does_not_stomp_displayed_state() async {
+    @Test func test_load_when_unsaved_edits_exist_then_response_does_not_stomp_displayed_state() async throws {
         // Given the user has flipped a toggle (creating an unsaved edit) before a fresh load.
         let stores = makeStores()
         let response = PushNotificationPreferences(
@@ -94,7 +94,7 @@ struct PushNotificationPreferencesViewModelTests {
         async let load: () = sut.load()
         // Wait until `load()` has actually registered its continuation, otherwise
         // resolving the handler too early no-ops and the test hangs.
-        _ = await wait { pendingLoadCompletion.handler != nil }
+        _ = try await wait { pendingLoadCompletion.handler != nil }
         pendingLoadCompletion.handler?(.success(response))
         await load
 
@@ -104,7 +104,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - Individual setters
 
-    @Test func test_setStoreOrderEnabled_dispatches_update_with_only_store_order_field() async {
+    @Test func test_setStoreOrderEnabled_dispatches_update_with_only_store_order_field() async throws {
         // Given
         let stores = makeStores()
         let dispatched = DispatchedChanges()
@@ -118,7 +118,7 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When
         sut.setStoreOrderEnabled(true)
-        _ = await wait { dispatched.calls.count >= 1 }
+        _ = try await wait { dispatched.calls.count >= 1 }
 
         // Then
         #expect(dispatched.calls.count == 1)
@@ -127,7 +127,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.last?.storeStock == nil)
     }
 
-    @Test func test_setStoreReviewEnabled_dispatches_update_with_only_store_review_field() async {
+    @Test func test_setStoreReviewEnabled_dispatches_update_with_only_store_review_field() async throws {
         // Given
         let stores = makeStores()
         let dispatched = DispatchedChanges()
@@ -141,7 +141,7 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When
         sut.setStoreReviewEnabled(true)
-        _ = await wait { dispatched.calls.count >= 1 }
+        _ = try await wait { dispatched.calls.count >= 1 }
 
         // Then
         #expect(dispatched.last?.storeReview?.enabled == true)
@@ -149,7 +149,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.last?.storeStock == nil)
     }
 
-    @Test func test_setStoreStockEnabled_dispatches_update_with_only_store_stock_field() async {
+    @Test func test_setStoreStockEnabled_dispatches_update_with_only_store_stock_field() async throws {
         // Given
         let stores = makeStores()
         let dispatched = DispatchedChanges()
@@ -163,7 +163,7 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When
         sut.setStoreStockEnabled(true)
-        _ = await wait { dispatched.calls.count >= 1 }
+        _ = try await wait { dispatched.calls.count >= 1 }
 
         // Then
         #expect(dispatched.last?.storeStock?.enabled == true)
@@ -173,7 +173,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - Debounce and conflate
 
-    @Test func test_three_rapid_setter_calls_coalesce_into_one_dispatch_with_all_fields() async {
+    @Test func test_three_rapid_setter_calls_coalesce_into_one_dispatch_with_all_fields() async throws {
         // Given
         let stores = makeStores()
         let dispatched = DispatchedChanges()
@@ -190,10 +190,10 @@ struct PushNotificationPreferencesViewModelTests {
         sut.setStoreOrderEnabled(true)
         sut.setStoreReviewEnabled(true)
         sut.setStoreStockEnabled(true)
-        _ = await wait { dispatched.calls.count >= 1 }
+        _ = try await wait { dispatched.calls.count >= 1 }
         // Give the consumer a comfortable window to fire a (would-be) second dispatch
         // if conflation isn't working, then re-check.
-        try? await Task.sleep(for: .milliseconds(50))
+        try await Task.sleep(for: .milliseconds(50))
 
         // Then exactly one dispatch fired carrying all three changed sections.
         #expect(dispatched.calls.count == 1)
@@ -202,7 +202,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.last?.storeStock?.enabled == true)
     }
 
-    @Test func test_edits_while_save_in_flight_are_queued_then_dispatched_after_completion() async {
+    @Test func test_edits_while_save_in_flight_are_queued_then_dispatched_after_completion() async throws {
         // Given a mock that holds the first dispatch's completion to keep it in flight.
         let stores = makeStores()
         let dispatched = DispatchedChanges()
@@ -222,17 +222,17 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When the first save starts and the user flips two more toggles while it's in flight.
         sut.setStoreOrderEnabled(true)
-        _ = await wait { dispatched.calls.count >= 1 && firstCompletion.handler != nil }
+        _ = try await wait { dispatched.calls.count >= 1 && firstCompletion.handler != nil }
 
         sut.setStoreReviewEnabled(true)
         sut.setStoreStockEnabled(true)
         // Allow the queue to settle; we expect at most one trigger to remain because of drop-oldest.
-        try? await Task.sleep(for: .milliseconds(30))
+        try await Task.sleep(for: .milliseconds(30))
 
         // Release the first save so the consumer picks up the queued trigger.
         firstCompletion.handler?(.success(PushNotificationPreferences(storeOrder: .init(enabled: true))))
-        _ = await wait { dispatched.calls.count >= 2 }
-        try? await Task.sleep(for: .milliseconds(50))
+        _ = try await wait { dispatched.calls.count >= 2 }
+        try await Task.sleep(for: .milliseconds(50))
 
         // Then exactly two dispatches fired total.
         #expect(dispatched.calls.count == 2)
@@ -242,7 +242,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.calls[1].storeStock?.enabled == true)
     }
 
-    @Test func test_edit_during_debounce_window_restarts_the_countdown() async {
+    @Test func test_edit_during_debounce_window_restarts_the_countdown() async throws {
         // Given a non-zero debounce so we can observe the countdown.
         let stores = makeStores()
         let dispatched = DispatchedChanges()
@@ -257,23 +257,23 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When the user edits, waits past most of the window, then edits again.
         sut.setStoreOrderEnabled(true)
-        try? await Task.sleep(for: .milliseconds(100))
+        try await Task.sleep(for: .milliseconds(100))
         sut.setStoreReviewEnabled(true)
 
         // Then no save has fired yet — the second edit reset the timer, so the
         // original 150ms deadline at t=150 has already been cancelled.
-        try? await Task.sleep(for: .milliseconds(100))
+        try await Task.sleep(for: .milliseconds(100))
         #expect(dispatched.calls.isEmpty)
 
         // And the save fires once after the new debounce window from the second edit.
-        _ = await wait(timeout: .milliseconds(300)) { dispatched.calls.count >= 1 }
-        try? await Task.sleep(for: .milliseconds(50))
+        _ = try await wait(timeout: .milliseconds(300)) { dispatched.calls.count >= 1 }
+        try await Task.sleep(for: .milliseconds(50))
         #expect(dispatched.calls.count == 1)
         #expect(dispatched.last?.storeOrder?.enabled == true)
         #expect(dispatched.last?.storeReview?.enabled == true)
     }
 
-    @Test func test_toggle_flipped_back_within_debounce_window_produces_no_dispatch() async {
+    @Test func test_toggle_flipped_back_within_debounce_window_produces_no_dispatch() async throws {
         // Given a non-zero debounce so we can flip on-then-off inside the window.
         let stores = makeStores()
         let dispatched = DispatchedChanges()
@@ -299,7 +299,7 @@ struct PushNotificationPreferencesViewModelTests {
         sut.setStoreOrderEnabled(true)
         sut.setStoreOrderEnabled(false)
         // Wait well past the debounce window.
-        try? await Task.sleep(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(200))
 
         // Then no update dispatch was made — the diff against `lastSaved` is empty.
         #expect(dispatched.calls.isEmpty)
@@ -307,7 +307,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - Failure rollback
 
-    @Test func test_setStoreOrderEnabled_when_remote_fails_then_reverts_optimistic_state_and_surfaces_notice() async {
+    @Test func test_setStoreOrderEnabled_when_remote_fails_then_reverts_optimistic_state_and_surfaces_notice() async throws {
         // Given
         struct AnyError: Error {}
         let stores = makeStores()
@@ -321,14 +321,14 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When
         sut.setStoreOrderEnabled(true)
-        _ = await wait { sut.errorNotice != nil }
+        _ = try await wait { sut.errorNotice != nil }
 
         // Then
         #expect(sut.isStoreOrderEnabled == false)
         #expect(sut.errorNotice != nil)
     }
 
-    @Test func test_setStoreReviewEnabled_when_remote_fails_then_reverts_optimistic_state_and_surfaces_notice() async {
+    @Test func test_setStoreReviewEnabled_when_remote_fails_then_reverts_optimistic_state_and_surfaces_notice() async throws {
         // Given
         struct AnyError: Error {}
         let stores = makeStores()
@@ -342,14 +342,14 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When
         sut.setStoreReviewEnabled(true)
-        _ = await wait { sut.errorNotice != nil }
+        _ = try await wait { sut.errorNotice != nil }
 
         // Then
         #expect(sut.isStoreReviewEnabled == false)
         #expect(sut.errorNotice != nil)
     }
 
-    @Test func test_setStoreStockEnabled_when_remote_fails_then_reverts_optimistic_state_and_surfaces_notice() async {
+    @Test func test_setStoreStockEnabled_when_remote_fails_then_reverts_optimistic_state_and_surfaces_notice() async throws {
         // Given
         struct AnyError: Error {}
         let stores = makeStores()
@@ -363,14 +363,14 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When
         sut.setStoreStockEnabled(true)
-        _ = await wait { sut.errorNotice != nil }
+        _ = try await wait { sut.errorNotice != nil }
 
         // Then
         #expect(sut.isStoreStockEnabled == false)
         #expect(sut.errorNotice != nil)
     }
 
-    @Test func test_failure_with_newer_edits_in_flight_then_optimistic_state_is_preserved() async {
+    @Test func test_failure_with_newer_edits_in_flight_then_optimistic_state_is_preserved() async throws {
         // Given the first save will fail. We hold its completion so we can flip a
         // newer toggle before the failure lands.
         struct AnyError: Error {}
@@ -393,13 +393,13 @@ struct PushNotificationPreferencesViewModelTests {
         // When the first save (order: true) is in flight, the user flips review on,
         // and then the first save fails.
         sut.setStoreOrderEnabled(true)
-        _ = await wait { firstCompletion.handler != nil }
+        _ = try await wait { firstCompletion.handler != nil }
         sut.setStoreReviewEnabled(true)
         firstCompletion.handler?(.failure(AnyError()))
 
         // Allow the failure path and the queued save to settle.
-        _ = await wait { dispatched.calls.count >= 2 }
-        try? await Task.sleep(for: .milliseconds(30))
+        _ = try await wait { dispatched.calls.count >= 2 }
+        try await Task.sleep(for: .milliseconds(30))
 
         // Then the optimistic order value is preserved (no rollback) because a
         // newer edit existed by the time the failure landed, and no error notice
@@ -411,7 +411,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - Flush on dismissal
 
-    @Test func test_flushPendingSaves_dispatches_immediately_bypassing_debounce() async {
+    @Test func test_flushPendingSaves_dispatches_immediately_bypassing_debounce() async throws {
         // Given a long debounce that would otherwise delay the save.
         let stores = makeStores()
         let dispatched = DispatchedChanges()
@@ -428,12 +428,12 @@ struct PushNotificationPreferencesViewModelTests {
         sut.flushPendingSaves()
 
         // Then a dispatch fires well before the debounce window would have elapsed.
-        let fired = await wait(timeout: .milliseconds(500)) { dispatched.calls.count >= 1 }
+        let fired = try await wait(timeout: .milliseconds(500)) { dispatched.calls.count >= 1 }
         #expect(fired)
         #expect(dispatched.last?.storeOrder?.enabled == true)
     }
 
-    @Test func test_flushPendingSaves_while_save_in_flight_skips_redundant_sections() async {
+    @Test func test_flushPendingSaves_while_save_in_flight_skips_redundant_sections() async throws {
         // Given a save is in flight (its completion is held) and the user has
         // since edited a different section.
         let stores = makeStores()
@@ -454,10 +454,10 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When the first save is in flight and the user flips a different toggle, then dismisses.
         sut.setStoreOrderEnabled(true)
-        _ = await wait { firstCompletion.handler != nil }
+        _ = try await wait { firstCompletion.handler != nil }
         sut.setStoreReviewEnabled(true)
         sut.flushPendingSaves()
-        _ = await wait { dispatched.calls.count >= 2 }
+        _ = try await wait { dispatched.calls.count >= 2 }
 
         // Then the flush dispatch carries only the newer section — the in-flight
         // request is left to cover what's already on the wire.
@@ -470,7 +470,7 @@ struct PushNotificationPreferencesViewModelTests {
         firstCompletion.handler?(.success(PushNotificationPreferences(storeOrder: .init(enabled: true))))
     }
 
-    @Test func test_flushPendingSaves_when_no_pending_diff_then_no_dispatch() async {
+    @Test func test_flushPendingSaves_when_no_pending_diff_then_no_dispatch() async throws {
         // Given no edits have been made.
         let stores = makeStores()
         let dispatched = DispatchedChanges()
@@ -484,7 +484,7 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When
         sut.flushPendingSaves()
-        try? await Task.sleep(for: .milliseconds(50))
+        try await Task.sleep(for: .milliseconds(50))
 
         // Then no dispatch ever fires.
         #expect(dispatched.calls.isEmpty)
@@ -497,13 +497,13 @@ struct PushNotificationPreferencesViewModelTests {
     /// calls so tests aren't sensitive to scheduler timing.
     @discardableResult
     private func wait(timeout: Duration = .milliseconds(500),
-                      until condition: () -> Bool) async -> Bool {
+                      until condition: () -> Bool) async throws -> Bool {
         let deadline = ContinuousClock.now.advanced(by: timeout)
         while !condition() {
             if ContinuousClock.now > deadline {
                 return condition()
             }
-            try? await Task.sleep(for: .milliseconds(5))
+            try await Task.sleep(for: .milliseconds(5))
         }
         return true
     }

@@ -193,13 +193,13 @@ tests — the SUT runs through several state transitions in a single test, so
 checking inside `onChange` would create a re-entrancy hazard. The 1ms poll
 yields immediately if the predicate already matches.
 
-### Help button is a stub for now
+### Help & Support hookup
 
-The spec §4.1 calls for help to open `LOGIN_WITH_QR_CODE` origin. iOS
-already has `AuthenticationManager.presentSupport(from:sourceTag:)` and a
-`WordPressSupportSourceTag` — wiring those up is mechanical but requires
-threading the support presenter into the coordinator. Left for the polish
-phase; the analytics click is already tracked.
+The Help button routes through a new `onShowHelp` coordinator callback to
+`AuthenticationManager.presentSupport(from:sourceTag:siteURL:)`. A
+dedicated `WordPressSupportSourceTag.loginWithQRCode`
+(`origin:login-with-qr-code`) was added for origin parity with Android's
+`LOGIN_WITH_QR_CODE` (spec §4.1).
 
 ### `Color(.accent)` / `Color(uiColor: .brand)` for tinting
 
@@ -233,11 +233,13 @@ plumbing the existing magic-link UI uses. WP.com 3xx-redirects to
   - `.installQR` → "That's the install QR" error variant
   - `.invalid` → "Not a WooCommerce code" error variant
 
-Note: site-address prefill (§10.2) currently pushes WPA's site-address
-screen without the URL pre-filled — `SiteAddressViewController` doesn't
-accept an init prefill. Left as a follow-up; the merchant just sees an
-empty site-address form for now. The primary self-hosted / wp.com paths,
-which don't depend on this, are unaffected.
+Site-address prefill (§10.2): `.siteURLOnly` pushes WPA's site-address
+screen via `NavigateToEnterSite(loginFields:autoSubmitsPrefilledSiteAddress:)`
+— the screen is pre-filled and auto-submits once on first appearance.
+`NavigateToEnterSite` also gained a `(from as? UINavigationController)`
+fallback so it works when handed a navigation controller directly; it
+previously no-op'd, which had quietly broken the QR-login "Enter site
+URL" fallbacks.
 
 ### `woocommerce://qr-login` deep-link entry handled in `AuthenticationManager`
 
@@ -265,16 +267,21 @@ This surfaced during simulator verification once the prologue became
 reachable on the simulator — see the camera-availability change in
 `QRLoginAvailability.defaultCameraAvailability()`.
 
-### Session-replace warning is deferred
+### Session-replace warning
 
-Spec §4.4 calls for a "You're already signed in" warning when a deep link
-arrives in a signed-in state. The existing `AppDelegate.handleAuthenticationUrl`
-already gates signed-in URL handling on a `PendingAuthFlow` enum; only
-`jetpackSetup` is currently supported. The QR-login deep-link in signed-in
-state currently falls through to `return false` from the AppDelegate
-handler — the URL is dropped. For verification on simulator this isn't a
-blocker (the merchant is signed-out during testing); the full session-replace
-warning + logout-and-resume sequence is a polish-phase follow-up.
+Spec §4.4: a `woocommerce://qr-login` deep link arriving while signed in
+now presents a "You're already signed in" warning
+(`QRLoginSessionReplaceView`), reached via
+`AuthenticationManager.handleSignedInQRLoginDeepLink` from the
+`AppDelegate.handleAuthenticationUrl` signed-in branch. Confirming runs
+`ServiceLocator.stores.deauthenticate()` and resumes the deep link on the
+logged-out path; cancelling keeps the current session.
+
+The resume is deferred one run-loop tick (`DispatchQueue.main.async`)
+rather than run synchronously: `deauthenticate()` triggers `AppCoordinator`'s
+Combine sink to swap in the logged-out login UI, and re-handling the URL
+synchronously would race that swap. iOS `deauthenticate()` is best-effort
+local teardown with no failure path, so the resume is unconditional.
 
 ---
 

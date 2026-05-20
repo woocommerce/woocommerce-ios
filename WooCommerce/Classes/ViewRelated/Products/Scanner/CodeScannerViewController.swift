@@ -392,7 +392,7 @@ private extension CodeScannerViewController {
         var deviceInput: AVCaptureDeviceInput!
         do {
             deviceInput = try AVCaptureDeviceInput(device: validDevice)
-        } catch let error {
+        } catch {
             DDLogError("Error creating device input: \(error)")
             return
         }

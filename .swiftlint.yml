@@ -105,6 +105,8 @@ only_rules:
   # Lines should not have trailing whitespace.
   - trailing_whitespace
 
+  - untyped_error_in_catch
+
   - vertical_whitespace
 
   - vertical_whitespace_closing_braces

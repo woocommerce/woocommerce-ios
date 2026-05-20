@@ -37,8 +37,7 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
                                            selectedSite: defaultSitePublisher,
                                            appPasswordSupportState: appPasswordSupport)
 
-        let chatService = AIApiProxyChatService(tokenProvider: AIApiProxyTokenAdaptor(credentials: credentials),
-                                                sleep: AIChatTransport.defaultRetrySleep)
+        let chatService = AIApiProxyChatService(tokenProvider: AIApiProxyTokenAdaptor(credentials: credentials))
 
         let restClient = WCRESTClientAdaptor(network: restNetwork, siteID: siteID)
         let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.defaultTools())

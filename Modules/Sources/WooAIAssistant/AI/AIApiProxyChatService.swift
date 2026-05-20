@@ -13,7 +13,7 @@ public struct AIApiProxyChatService: AIChatService {
 
     public init(tokenProvider: WPCOMTokenProviding,
                 endpointOverride: URL? = nil,
-                sleep: @escaping Sleep) {
+                sleep: @escaping Sleep = { try await Task.sleep(nanoseconds: $0) }) {
         self.init(tokenProvider: tokenProvider,
                   endpoint: endpointOverride,
                   streamingTransport: nil,

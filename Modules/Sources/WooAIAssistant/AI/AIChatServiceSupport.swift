@@ -13,10 +13,6 @@ struct AIChatTransport: Sendable {
         self.session = session
     }
 
-    public static let defaultRetrySleep: @Sendable (UInt64) async throws -> Void = { nanoseconds in
-        try await Task.sleep(nanoseconds: nanoseconds)
-    }
-
     func stream(_ request: URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse) {
         let bytes: URLSession.AsyncBytes
         let response: URLResponse

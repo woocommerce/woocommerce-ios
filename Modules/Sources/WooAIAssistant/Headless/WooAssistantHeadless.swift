@@ -191,10 +191,7 @@ public actor WooAssistantHeadless {
         let basicAuthHeader = Self.basicAuthHeader(username: credentials.username, appPassword: credentials.appPassword)
         let session = URLSession.shared
         let tokenProvider = ConstantWPCOMTokenProvider(value: credentials.dotcomAccessToken)
-        let chatService = AIApiProxyChatService(
-            tokenProvider: tokenProvider,
-            sleep: AIChatTransport.defaultRetrySleep
-        )
+        let chatService = AIApiProxyChatService(tokenProvider: tokenProvider)
         let restClient = HeadlessURLSessionWCRESTClient(siteURL: normalizedSiteURL,
                                                         basicAuthHeader: basicAuthHeader,
                                                         session: session)

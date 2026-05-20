@@ -10,14 +10,15 @@ struct QRLoginErrorView: View {
     let onEnterSiteURLTapped: () -> Void
 
     var body: some View {
-        ScrollView {
+        VStack(spacing: 0) {
+            Spacer(minLength: 24)
+
             VStack(spacing: 20) {
                 Image(systemName: errorIconName)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 88, height: 88)
                     .foregroundColor(Color(uiColor: .systemRed))
-                    .padding(.top, 48)
                     .accessibilityHidden(true)
 
                 Text(title)
@@ -32,26 +33,28 @@ struct QRLoginErrorView: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
-        }
 
-        VStack(spacing: 12) {
-            Button(action: onPrimaryTapped) {
-                Text(primaryCTA)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .tint(Color(uiColor: .accent))
+            Spacer(minLength: 24)
 
-            Button(action: onEnterSiteURLTapped) {
-                Text(Localization.enterSiteURL)
-                    .frame(maxWidth: .infinity)
+            VStack(spacing: 12) {
+                Button(action: onPrimaryTapped) {
+                    Text(primaryCTA)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .tint(Color(uiColor: .accent))
+
+                Button(action: onEnterSiteURLTapped) {
+                    Text(Localization.enterSiteURL)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
             }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
+            .padding(.horizontal, 24)
+            .padding(.bottom, 24)
         }
-        .padding(.horizontal, 24)
-        .padding(.bottom, 24)
     }
 }
 

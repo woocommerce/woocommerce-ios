@@ -15,11 +15,12 @@ struct QRLoginNumberMatchView: View {
 
     var body: some View {
         VStack(spacing: 24) {
+            Spacer()
+
             Text(Localization.title)
                 .font(.title)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
-                .padding(.top, 32)
                 .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: 8) {

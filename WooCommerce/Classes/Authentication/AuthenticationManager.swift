@@ -100,41 +100,29 @@ class AuthenticationManager: Authentication {
 
     /// Returns the Login Flow view controller.
     ///
-    func authenticationUI() -> UIViewController {
-        if qrLoginAvailability.isAvailableForPrologueSync() {
-            return makeQRLoginUI()
-        }
-        let loginViewController: UIViewController = {
-            let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
-                guard let self else { return }
-                // Resets Apple ID at the beginning of the authentication.
-                self.appleUserID = nil
-
-                self.analytics.track(.loginPrologueContinueTapped)
-            })
-            guard let loginVC = loginUI else {
-                fatalError("Cannot instantiate login UI from WordPressAuthenticator")
-            }
-            return loginVC
-        }()
-        return loginViewController
-    }
-
-    /// Builds the QR-login navigation controller used as the root login UI when
-    /// QR-login is available. The QR coordinator owns the prologue and
-    /// scanner; the fallback CTA inside the prologue pushes the legacy
-    /// site-address view onto the same navigation stack.
+    /// When QR login is available, the primary "Log in" CTA on the standard prologue routes to
+    /// the QR-login prologue — pushed onto the same navigation stack — rather than the standard
+    /// site-address flow. The standard prologue stays as the app's first screen (spec §4.1).
     ///
-    private func makeQRLoginUI() -> UIViewController {
-        let navigationController = LoginNavigationController()
-        navigationController.modalPresentationStyle = .fullScreen
-        // `authenticationUI()` is always called on the main thread (it returns
-        // the root login view controller). `QRLoginCoordinator` is @MainActor,
-        // so we assert main-actor isolation to construct + start it.
-        MainActor.assumeIsolated {
-            makeQRLoginCoordinator(mode: .camera, navigationController: navigationController).start()
+    func authenticationUI() -> UIViewController {
+        let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
+            guard let self else { return false }
+            // Resets Apple ID at the beginning of the authentication.
+            self.appleUserID = nil
+            guard self.qrLoginAvailability.isAvailableForPrologueSync(),
+                  let navigationController = self.displayAuthenticatorIfLoggedOut?() else {
+                self.analytics.track(.loginPrologueContinueTapped)
+                return false
+            }
+            MainActor.assumeIsolated {
+                self.makeQRLoginCoordinator(mode: .camera, navigationController: navigationController).start()
+            }
+            return true
+        })
+        guard let loginVC = loginUI else {
+            fatalError("Cannot instantiate login UI from WordPressAuthenticator")
         }
-        return navigationController
+        return loginVC
     }
 
     /// Builds a `QRLoginCoordinator` wired with the shared site-address

@@ -120,9 +120,11 @@ import WordPressUI
     /// - Parameters:
     ///   - showCancel: Whether a cancel CTA is shown on the login prologue screen.
     ///   - restrictToWPCom: Whether only WordPress.com login is enabled.
-    ///   - onLoginButtonTapped: Called when the login button on the prologue screen is tapped.
+    ///   - onLoginButtonTapped: Called when the primary login CTA on the prologue screen is tapped.
+    ///     Return `true` to indicate the host app handled navigation (the prologue then skips its
+    ///     default action); return `false` to let the default login navigation proceed.
     /// - Returns: The root view controller for the login flow.
-    public class func loginUI(showCancel: Bool = false, restrictToWPCom: Bool = false, onLoginButtonTapped: (() -> Void)? = nil) -> UIViewController? {
+    public class func loginUI(showCancel: Bool = false, restrictToWPCom: Bool = false, onLoginButtonTapped: (() -> Bool)? = nil) -> UIViewController? {
         let storyboard = Storyboard.login.instance
         guard let controller = storyboard.instantiateInitialViewController() else {
             assertionFailure("Cannot instantiate initial login controller from Login.storyboard")
@@ -131,6 +133,7 @@ import WordPressUI
 
         if let loginNavController = controller as? LoginNavigationController, let loginPrologueViewController = loginNavController.viewControllers.first as? LoginPrologueViewController {
             loginPrologueViewController.showCancel = showCancel
+            loginPrologueViewController.onLoginButtonTapped = onLoginButtonTapped
         }
 
         controller.modalPresentationStyle = .fullScreen

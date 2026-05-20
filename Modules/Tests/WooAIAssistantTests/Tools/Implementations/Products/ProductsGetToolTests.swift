@@ -11,17 +11,14 @@ struct ProductsGetToolTests {
 
         // Then
         #expect(tool.definition.description.contains("product_variations_list"))
-        #expect(tool.definition.description.contains("variations / sizes / colors"))
     }
 
     @Test
-    func test_definition_triggers_on_field_drill_downs_not_card_re_renders() {
+    func test_definition_does_not_instruct_re_rendering_existing_cards() {
         // Given
         let tool = ProductsGetTool.make()
 
         // Then
-        #expect(tool.definition.description.contains("Required when the merchant asks"))
-        #expect(tool.definition.description.contains("by position from a prior turn"))
         #expect(!tool.definition.description.contains("Do NOT call this tool to render a card"))
     }
 

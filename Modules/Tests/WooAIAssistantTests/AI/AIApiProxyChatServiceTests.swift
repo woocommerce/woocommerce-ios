@@ -164,7 +164,7 @@ struct AIApiProxyChatServiceTests {
     }
 
     @Test
-    func test_sendChat_body_defaults_model_to_gpt_5_4_mini() async throws {
+    func test_sendChat_body_defaults_model_to_configured_model() async throws {
         // Given
         let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
         let service = makeService(transport: transport)

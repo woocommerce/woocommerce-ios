@@ -55,9 +55,6 @@ public enum OpenAIChat {
         }
     }
 
-    /// `arguments` is a JSON string the caller must parse against the tool's
-    /// declared schema; OpenAI sends arguments as a serialised string rather
-    /// than an inline object.
     public struct ToolCall: Codable, Sendable, Equatable {
         public let id: String
         public let type: String
@@ -80,9 +77,7 @@ public enum OpenAIChat {
         }
     }
 
-    /// `parameters` is a JSON Schema object describing the function's
-    /// argument shape. Stored as `AnyCodableJSON` so any valid schema
-    /// round-trips without bespoke decoding per tool.
+    /// `parameters` is stored as `AnyCodableJSON` so any valid JSON Schema round-trips without bespoke decoding per tool.
     public struct ToolDefinition: Codable, Sendable, Equatable {
         public let type: String
         public let function: FunctionDefinition

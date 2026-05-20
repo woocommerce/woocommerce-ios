@@ -1,9 +1,9 @@
 import Foundation
 
 enum LLMPayloadCap {
-    /// gpt-4o-mini has a 128 KB context; 64 KB headroom keeps a single tool
-    /// result from crowding everything else out. Compact summaries fit far
-    /// under this; the cap exists for pathological inputs.
+    /// 64 KB headroom keeps a single tool result from crowding the pinned chat
+    /// model's context window out. Compact summaries fit far under this; the cap
+    /// exists for pathological inputs.
     static let maxBytes = 64_000
 
     /// Returns `value` unchanged if it serializes under the cap, otherwise a

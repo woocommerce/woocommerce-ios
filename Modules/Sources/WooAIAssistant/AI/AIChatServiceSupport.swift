@@ -7,7 +7,6 @@ typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (Async
 
 public enum AIChatTransport {
 
-    /// Shared retry-backoff sleep used by both `AIApiProxyChatService` and the app-target adaptor.
     public static let defaultRetrySleep: @Sendable (UInt64) async throws -> Void = { nanoseconds in
         try await Task.sleep(nanoseconds: nanoseconds)
     }

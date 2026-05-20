@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Observation
 import Yosemite
@@ -10,8 +11,8 @@ import Yosemite
 ///
 /// Saves are debounced and conflated: rapid edits coalesce into a single
 /// network call ~`debounceDelay` after the *last* change. While a save is in
-/// flight, further edits are queued behind it via a single-slot drop-oldest
-/// stream — newer edits replace older queued ones, so saves never stack.
+/// flight, further edits collapse to a single follow-up save that fires once
+/// the in-flight one completes.
 ///
 @MainActor
 @Observable
@@ -33,8 +34,6 @@ final class PushNotificationPreferencesViewModel {
 
     private let siteID: Int64
     private let stores: StoresManager
-    private let debounceDelay: Duration
-    private let clock: any Clock<Duration>
 
     /// Optimistic UI snapshot — what the toggles currently show.
     private var displayed: PushNotificationPreferences?
@@ -43,35 +42,25 @@ final class PushNotificationPreferencesViewModel {
     /// Payload that's currently being saved. `nil` when no save is in flight.
     private var inFlight: PushNotificationPreferences?
 
-    private var debounceTask: Task<Void, Never>?
-    private let saveTrigger: AsyncStream<Void>
-    private let saveTriggerContinuation: AsyncStream<Void>.Continuation
-    private var saveConsumerTask: Task<Void, Never>?
+    private let editSubject = PassthroughSubject<Void, Never>()
+    private var subscriptions: Set<AnyCancellable> = []
+    /// The currently running save, if any. Drives serialisation: only one
+    /// `processSave` runs at a time.
+    private var saveTask: Task<Void, Never>?
+    /// Set when a save trigger arrives during an in-flight save. Drives the
+    /// drop-oldest, conflate follow-up: multiple triggers collapse to one
+    /// follow-up save fired after the in-flight one completes.
+    private var pendingSaveAfterInFlight = false
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         debounceDelay: Duration = .milliseconds(1000),
-         clock: any Clock<Duration> = ContinuousClock()) {
+         debounceDelay: DispatchQueue.SchedulerTimeType.Stride = .seconds(1)) {
         self.siteID = siteID
         self.stores = stores
-        self.debounceDelay = debounceDelay
-        self.clock = clock
-        let (stream, continuation) = AsyncStream<Void>.makeStream(bufferingPolicy: .bufferingNewest(1))
-        self.saveTrigger = stream
-        self.saveTriggerContinuation = continuation
-        // Weak self so the consumer doesn't keep the view model alive while
-        // suspended on `next()`. When the continuation is finished (in `deinit`
-        // or `flushPendingSaves`), `next()` resolves to `nil` and the loop exits.
-        self.saveConsumerTask = Task { [weak self, stream] in
-            for await _ in stream {
-                guard !Task.isCancelled, let self else { break }
-                await self.processSave()
-            }
-        }
-    }
-
-    deinit {
-        saveTriggerContinuation.finish()
+        editSubject
+            .debounce(for: debounceDelay, scheduler: DispatchQueue.main)
+            .sink { [weak self] in self?.enqueueSave() }
+            .store(in: &subscriptions)
     }
 
     func load() async {
@@ -128,10 +117,6 @@ final class PushNotificationPreferencesViewModel {
     /// fire-and-forget — the network request continues even after the view
     /// model is deallocated, since the store retains the completion closure.
     func flushPendingSaves() {
-        debounceTask?.cancel()
-        saveTriggerContinuation.finish()
-        saveConsumerTask?.cancel()
-
         // Diff against the in-flight snapshot (if any) so we don't re-send
         // sections already on the wire. `inFlight` is always a full snapshot
         // of what was being saved, so it doubles as the post-save baseline.
@@ -152,25 +137,34 @@ final class PushNotificationPreferencesViewModel {
 
 private extension PushNotificationPreferencesViewModel {
 
-    /// Updates `displayed` by applying `transform` to the current best-known
-    /// state and (re)starts the debounce countdown. The previous debounce task
-    /// — if any — is cancelled, so a fresh edit always resets the timer.
+    /// Updates `displayed` by applying `transform` and pings the debounce
+    /// subject so a save fires `debounceDelay` after the last edit.
     func updateDisplayed(_ transform: (PushNotificationPreferences) -> PushNotificationPreferences) {
         let base = displayed ?? lastSaved ?? PushNotificationPreferences()
         displayed = transform(base)
+        editSubject.send()
+    }
 
-        debounceTask?.cancel()
-        let continuation = saveTriggerContinuation
-        let clock = self.clock
-        let delay = debounceDelay
-        debounceTask = Task {
-            do {
-                try await clock.sleep(for: delay)
-            } catch {
-                // Cancelled by a newer edit (or by `flushPendingSaves`).
-                return
+    /// Called when the debounce timer fires. Starts a save if none is running;
+    /// otherwise flips a flag so a single follow-up save fires after the
+    /// in-flight one completes.
+    func enqueueSave() {
+        guard saveTask == nil else {
+            pendingSaveAfterInFlight = true
+            return
+        }
+        startSave()
+    }
+
+    func startSave() {
+        saveTask = Task { @MainActor [weak self] in
+            await self?.processSave()
+            guard let self else { return }
+            self.saveTask = nil
+            if self.pendingSaveAfterInFlight {
+                self.pendingSaveAfterInFlight = false
+                self.startSave()
             }
-            continuation.yield()
         }
     }
 

@@ -8,11 +8,12 @@ struct PushNotificationPreferencesViewModelTests {
 
     private let siteID: Int64 = 123
 
-    /// Build the SUT with a zero debounce so saves fire as soon as the consumer
-    /// task gets a chance to run. Drop-oldest queueing still applies, so rapid
-    /// setter calls in the same MainActor turn still coalesce into one save.
+    /// Build the SUT with a zero debounce so saves fire on the next runloop
+    /// tick. Combine's `.debounce` still coalesces synchronous bursts of
+    /// edits, so rapid setter calls in the same MainActor turn collapse to
+    /// one save.
     private func makeSUT(stores: MockStoresManager,
-                         debounceDelay: Duration = .zero) -> PushNotificationPreferencesViewModel {
+                         debounceDelay: DispatchQueue.SchedulerTimeType.Stride = .zero) -> PushNotificationPreferencesViewModel {
         PushNotificationPreferencesViewModel(siteID: siteID, stores: stores, debounceDelay: debounceDelay)
     }
 
@@ -251,7 +252,7 @@ struct PushNotificationPreferencesViewModelTests {
                 onCompletion(.success(changes))
             }
         }
-        let debounce: Duration = .milliseconds(150)
+        let debounce: DispatchQueue.SchedulerTimeType.Stride = .milliseconds(150)
         let sut = makeSUT(stores: stores, debounceDelay: debounce)
 
         // When the user edits, waits past most of the window, then edits again.

@@ -502,6 +502,206 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.storeOrderDetailText == "Orders over $500")
     }
 
+    // MARK: - setStoreReviewMaxRating
+
+    @Test func test_setStoreReviewMaxRating_mutates_displayed_only_and_preserves_enabled() async {
+        // Given a loaded VM with the master toggle on.
+        let stores = makeStores()
+        let dispatched = DispatchedChanges()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeReview: .init(enabled: true))))
+            }
+            if case let .updatePushNotificationPreferences(_, changes, onCompletion) = action {
+                dispatched.append(changes)
+                onCompletion(.success(changes))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+
+        // When
+        sut.setStoreReviewMaxRating(3)
+
+        // Then `displayed` reflects the edit, no dispatch fires yet.
+        #expect(sut.storeReviewMaxRating == 3)
+        #expect(sut.isStoreReviewEnabled == true)
+        #expect(sut.hasUnsavedChanges == true)
+        #expect(sut.lastKnownStoreReviewMaxRating == 3)
+        #expect(dispatched.calls.isEmpty)
+    }
+
+    @Test func test_setStoreReviewMaxRating_above_5_clamps_to_5() async {
+        // Given
+        let sut = makeSUT(stores: makeStores())
+
+        // When
+        sut.setStoreReviewMaxRating(9)
+
+        // Then
+        #expect(sut.storeReviewMaxRating == 5)
+        #expect(sut.lastKnownStoreReviewMaxRating == 5)
+    }
+
+    @Test func test_setStoreReviewMaxRating_below_1_clamps_to_1() async {
+        // Given
+        let sut = makeSUT(stores: makeStores())
+
+        // When
+        sut.setStoreReviewMaxRating(0)
+
+        // Then
+        #expect(sut.storeReviewMaxRating == 1)
+        #expect(sut.lastKnownStoreReviewMaxRating == 1)
+    }
+
+    @Test func test_setStoreReviewMaxRating_with_nil_clears_rating_and_preserves_lastKnown() async {
+        // Given a loaded VM with an in-range rating.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeReview: .init(enabled: true, maxRating: 4))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+
+        // When
+        sut.setStoreReviewMaxRating(nil)
+
+        // Then the rating is cleared but lastKnown still holds the previous value.
+        #expect(sut.storeReviewMaxRating == nil)
+        #expect(sut.lastKnownStoreReviewMaxRating == 4)
+    }
+
+    @Test func test_setStoreReviewEnabled_preserves_existing_maxRating_in_displayed() async {
+        // Given a loaded VM with an in-range maxRating.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeReview: .init(enabled: true, maxRating: 2))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+
+        // When the user flips the master toggle off.
+        sut.setStoreReviewEnabled(false)
+
+        // Then `displayed` retains the rating so a later save preserves it.
+        #expect(sut.displayed.storeReview?.enabled == false)
+        #expect(sut.displayed.storeReview?.maxRating == 2)
+    }
+
+    // MARK: - discardStoreReviewEdits
+
+    @Test func test_discardStoreReviewEdits_reverts_storeReview_to_lastSaved_and_clears_unsaved_flag() async {
+        // Given a loaded VM with an in-range rating the user then edits.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeReview: .init(enabled: true, maxRating: 4))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+        sut.setStoreReviewMaxRating(2)
+        #expect(sut.hasUnsavedChanges == true)
+
+        // When
+        sut.discardStoreReviewEdits()
+
+        // Then `displayed.storeReview` matches the server snapshot again.
+        #expect(sut.displayed.storeReview?.enabled == true)
+        #expect(sut.displayed.storeReview?.maxRating == 4)
+        #expect(sut.hasUnsavedChanges == false)
+    }
+
+    @Test func test_discardStoreReviewEdits_leaves_other_sections_untouched() async {
+        // Given a loaded VM where the user edits review *and* order.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(
+                    storeOrder: .init(enabled: false),
+                    storeReview: .init(enabled: true)
+                )))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+        sut.setStoreOrderEnabled(true)
+        sut.setStoreReviewMaxRating(3)
+
+        // When the user discards the review edits.
+        sut.discardStoreReviewEdits()
+
+        // Then the order edit is preserved — the discard is scoped to the review section.
+        #expect(sut.displayed.storeOrder?.enabled == true)
+        #expect(sut.displayed.storeReview?.maxRating == nil)
+    }
+
+    @Test func test_load_when_response_has_in_range_maxRating_then_lastKnown_is_populated() async {
+        // Given
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeReview: .init(enabled: true, maxRating: 3))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        await sut.load()
+
+        // Then
+        #expect(sut.lastKnownStoreReviewMaxRating == 3)
+    }
+
+    // MARK: - storeReviewDetailText
+
+    @Test func test_storeReviewDetailText_when_maxRating_nil_then_returns_all_reviews() async {
+        // Given
+        let sut = makeSUT(stores: makeStores())
+
+        // Then
+        #expect(sut.storeReviewDetailText == "All reviews")
+    }
+
+    @Test func test_storeReviewDetailText_when_maxRating_is_plural_then_returns_stars_and_below() async {
+        // Given
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeReview: .init(enabled: true, maxRating: 3))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        await sut.load()
+
+        // Then
+        #expect(sut.storeReviewDetailText == "3 stars and below")
+    }
+
+    @Test func test_storeReviewDetailText_when_maxRating_is_one_then_returns_singular_star_phrasing() async {
+        // Given
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeReview: .init(enabled: true, maxRating: 1))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        await sut.load()
+
+        // Then
+        #expect(sut.storeReviewDetailText == "1 star and below")
+    }
+
     // MARK: - StoreOrderThreshold helpers
 
     @Test func test_storeOrderThreshold_isAllowedInput_accepts_positive_ascii_integer() {

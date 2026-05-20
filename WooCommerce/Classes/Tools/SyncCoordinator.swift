@@ -85,9 +85,9 @@ class SyncingCoordinator: SyncingCoordinatorProtocol {
 
     /// Should be called whenever a given Entity becomes visible. This method will:
     ///
-    ///     1.  Proceed only if a given Element is the last one in it's page
-    ///     2.  Verify if the (NEXT) page isn't being sync'ed (OR) if its cache has expired
-    ///     3.  Proceed sync'ing the next page, if possible / needed
+    ///     1. Proceed only if a given Element is the last one in it's page
+    ///     2. Verify if the (NEXT) page isn't being sync'ed (OR) if its cache has expired
+    ///     3. Proceed sync'ing the next page, if possible / needed
     ///
     func ensureNextPageIsSynchronized(lastVisibleIndex: Int) {
         guard isLastElementInPage(elementIndex: lastVisibleIndex) else {

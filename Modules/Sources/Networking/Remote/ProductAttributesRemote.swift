@@ -76,7 +76,7 @@ public final class ProductAttributesRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Delete a `ProductAttribute`.  This also will delete all terms from the selected attribute.
+    /// Delete a `ProductAttribute`. This also will delete all terms from the selected attribute.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll delete the product attribute.

@@ -2,7 +2,7 @@ import UIKit
 import WordPressShared
 
 /// Step one in the auth link flow. This VC displays a form to request a "magic"
-/// authentication link be emailed to the user.  Allows the user to signin via
+/// authentication link be emailed to the user. Allows the user to signin via
 /// email instead of their password.
 ///
 class LoginLinkRequestViewController: LoginViewController {

@@ -41,9 +41,9 @@ public final class AsyncPaginationTracker {
 
     /// Should be called whenever a scroll position is approaching the end of the list for infinite scroll support.
     /// This method will:
-    ///     1.  Proceed only if there is next page to sync.
-    ///     2.  Verify if the next page isn't currently being synced.
-    ///     3.  Proceed syncing the next page.
+    ///     1. Proceed only if there is next page to sync.
+    ///     2. Verify if the next page isn't currently being synced.
+    ///     3. Proceed syncing the next page.
     public func ensureNextPageIsSynced(syncFunction: @escaping SyncFunction) async throws -> NextPageSyncState {
         guard hasNextPage else {
             return .noNextPage

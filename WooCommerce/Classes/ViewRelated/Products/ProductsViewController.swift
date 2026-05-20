@@ -1480,7 +1480,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
         ServiceLocator.stores.dispatch(action)
     }
 
-    /// Fetch local Products Settings (eg.  sort order or filters stored in Products settings)
+    /// Fetch local Products Settings (eg. sort order or filters stored in Products settings)
     ///
     private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings.Setting, Error>) -> Void) {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in

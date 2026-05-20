@@ -452,7 +452,7 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
 
 // MARK: - Stored Order Settings (eg. filters)
 private extension OrdersRootViewController {
-    /// Fetch local Orders Settings (eg.  status or date range filters stored in Orders settings)
+    /// Fetch local Orders Settings (eg. status or date range filters stored in Orders settings)
     ///
     func syncLocalOrdersSettings(onCompletion: @escaping (Result<StoredOrderSettings.Setting, Error>) -> Void) {
         let action = AppSettingsAction.loadOrdersSettings(siteID: siteID) { [weak self] (result) in

@@ -81,6 +81,9 @@ only_rules:
 
   - overridden_super_call
 
+  # No whitespace should follow a period.
+  - period_spacing
+
   # Prefer `0` over explicit type initializers like `CGFloat(0)`.
   - prefer_zero_over_explicit_init
 

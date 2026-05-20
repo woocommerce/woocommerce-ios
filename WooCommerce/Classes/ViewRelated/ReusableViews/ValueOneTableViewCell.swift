@@ -5,7 +5,7 @@ class ValueOneTableViewCell: UITableViewCell {
     /// The style options for the `ValueOneTableViewCell`
     ///
     enum Style {
-        /// Uses BodyStyle for the Text  and Subheadline for the DetailText.  This is the default.
+        /// Uses BodyStyle for the Text  and Subheadline for the DetailText. This is the default.
         case primary
         /// The same as `primary` except that for the DetailText uses a Tertiary text color.
         case secondary

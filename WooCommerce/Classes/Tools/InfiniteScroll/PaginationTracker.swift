@@ -59,9 +59,9 @@ final class PaginationTracker {
 
     /// Should be called whenever a scroll position is approaching the end of the list for infinite scroll support.
     /// This method will:
-    ///     1.  Proceed only if a given element is the last one in it's page
-    ///     2.  Verify if the nextpage isn't currently being synced
-    ///     3.  Proceed syncing the next page, if possible / needed
+    ///     1. Proceed only if a given element is the last one in it's page
+    ///     2. Verify if the nextpage isn't currently being synced
+    ///     3. Proceed syncing the next page, if possible / needed
     func ensureNextPageIsSynced() {
         guard hasNextPage else {
             return

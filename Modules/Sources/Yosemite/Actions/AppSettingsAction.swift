@@ -158,7 +158,7 @@ public enum AppSettingsAction: Action {
     case forgetCardReader(onCompletion: (Result<Void, Error>) -> Void)
 
     /// Loads the most recently membered reader, if any (i.e. a reader that should be reconnected to automatically)
-    /// E.g.  "CHB204909005931"
+    /// E.g. "CHB204909005931"
     ///
     case loadCardReader(onCompletion: (Result<String?, Error>) -> Void)
 

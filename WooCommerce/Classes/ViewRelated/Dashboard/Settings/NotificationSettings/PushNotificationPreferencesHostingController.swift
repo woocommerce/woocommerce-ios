@@ -14,11 +14,11 @@ final class PushNotificationPreferencesHostingController: UIHostingController<Pu
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        // Only flush when the screen is actually leaving the stack — `viewWillDisappear`
-        // also fires when another screen is pushed on top, and we don't want to end
-        // the debounce queue in that case.
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        // Flush after the transition is finalised so an interactive back-swipe
+        // the user then cancels doesn't tear down the save pipeline. Both flags
+        // remain valid during `viewDidDisappear`.
         if isMovingFromParent || isBeingDismissed {
             viewModel.flushPendingSaves()
         }

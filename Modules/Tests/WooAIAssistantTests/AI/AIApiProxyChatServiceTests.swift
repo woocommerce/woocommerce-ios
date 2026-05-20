@@ -485,6 +485,23 @@ struct AIApiProxyChatServiceTests {
     }
 
     @Test
+    func test_sendChat_when_response_is_401_with_oauth2_invalid_token_then_throws_typed_auth_error() async throws {
+        // Given
+        let body = proxyEnvelopeBody(code: "oauth2_invalid_token", message: "The OAuth2 token is invalid.", status: 401)
+        let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 401, body: body)])
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected typed auth error to surface.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .auth)
+            #expect(error.code == "401")
+        }
+    }
+
+    @Test
     func test_sendChat_when_response_is_403_with_rest_forbidden_then_throws_typed_auth_error_with_server_message()
     async throws {
         // Given

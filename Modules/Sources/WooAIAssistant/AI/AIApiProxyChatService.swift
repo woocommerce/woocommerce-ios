@@ -285,7 +285,7 @@ public struct AIApiProxyChatService: AIChatService {
         let httpStatus = envelope.data?.status
         let codeString = httpStatus.map(String.init) ?? envelope.code
         switch envelope.code {
-        case "rest_unauthorized":
+        case "rest_unauthorized", "oauth2_invalid_token":
             return AssistantError(kind: .auth, code: codeString, message: Localization.unauthorized)
         case "rest_forbidden":
             return AssistantError(kind: .auth, code: codeString, message: envelope.message)
@@ -324,7 +324,7 @@ extension AIApiProxyChatService {
         static let unauthorized = NSLocalizedString(
             "ai.assistant.networking.proxy.unauthorized",
             value: "WPCOM credentials missing or expired.",
-            comment: "Surfaced when the AI proxy rejects the request with rest_unauthorized."
+            comment: "Surfaced when the AI proxy rejects the request with rest_unauthorized or oauth2_invalid_token."
         )
         static let emptyStream = NSLocalizedString(
             "ai.assistant.networking.proxy.empty_stream",

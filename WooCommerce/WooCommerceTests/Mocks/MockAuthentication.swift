@@ -20,6 +20,10 @@ final class MockAuthentication: Authentication {
         true
     }
 
+    func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) -> Bool {
+        false
+    }
+
     func authenticationUI() -> UIViewController {
         UIViewController()
     }

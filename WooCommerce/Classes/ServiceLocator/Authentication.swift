@@ -25,6 +25,12 @@ protocol Authentication {
     ///
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool
 
+    /// Handles a `woocommerce://qr-login` deep link that arrived while the merchant is
+    /// already signed in. Returns *true* when the URL was a QR-login deep link this
+    /// method took over, *false* otherwise.
+    ///
+    func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) -> Bool
+
     /// Returns authentication UI for display by the caller.
     ///
     func authenticationUI() -> UIViewController

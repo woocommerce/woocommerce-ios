@@ -1,6 +1,7 @@
 import Foundation
 import SafariServices
 import KeychainAccess
+import SwiftUI
 import WordPressAuthenticator
 import WordPressUI
 import Yosemite
@@ -173,7 +174,7 @@ class AuthenticationManager: Authentication {
         }
 
         if isQRLoginUrl(url),
-           let handled = handleQRLoginUrl(url, rootViewController: rootViewController) {
+           let handled = handleQRLoginUrl(url) {
             return handled
         }
 
@@ -261,7 +262,7 @@ class AuthenticationManager: Authentication {
     /// Token / grant lifetime is not managed here: clearing the URL from the
     /// launch state is the OS / scene-delegate's job; this method makes a
     /// best-effort to not retain the payload anywhere persistent.
-    private func handleQRLoginUrl(_ url: URL, rootViewController: UIViewController) -> Bool? {
+    private func handleQRLoginUrl(_ url: URL) -> Bool? {
         // Sync availability check is enough: the merchant chose this path
         // by opening the link, so we just need the flag (or debug override)
         // to be on. Bucket and camera are bypassed.
@@ -294,6 +295,61 @@ class AuthenticationManager: Authentication {
             }
         }
         return true
+    }
+
+    /// Handles a `woocommerce://qr-login` deep link that arrived while the
+    /// merchant is already signed in (spec §4.4). Shows a warning; confirming
+    /// signs the merchant out and resumes the QR sign-in, cancelling keeps the
+    /// current session. Returns `true` when the URL was a QR-login deep link
+    /// this method took over, `false` otherwise (the caller then drops it).
+    func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) -> Bool {
+        guard isQRLoginUrl(url),
+              let overrideValue = (qrLoginAvailability as? QRLoginAvailability)?.deepLinkSyncOverride(),
+              overrideValue else {
+            return false
+        }
+        // URL handling from the scene/app delegate runs on the main thread.
+        MainActor.assumeIsolated {
+            presentSessionReplaceWarning(for: url, from: rootViewController)
+        }
+        return true
+    }
+
+    @MainActor
+    private func presentSessionReplaceWarning(for url: URL, from presentingViewController: UIViewController) {
+        let analytics = DefaultQRLoginAnalyticsTracking()
+        analytics.setFlow(.loginQR)
+        analytics.trackStep(.qrSessionReplaceWarning)
+
+        let warningView = QRLoginSessionReplaceView(
+            onConfirm: { [weak self] in
+                analytics.trackClick(.submit)
+                presentingViewController.dismiss(animated: true) {
+                    self?.signOutAndResumeQRLogin(url: url)
+                }
+            },
+            onCancel: {
+                analytics.trackClick(.dismiss)
+                presentingViewController.dismiss(animated: true)
+            }
+        )
+        let hostingController = UIHostingController(rootView: warningView)
+        hostingController.modalPresentationStyle = .fullScreen
+        presentingViewController.present(hostingController, animated: true)
+    }
+
+    /// Signs the merchant out and resumes the QR sign-in. `deauthenticate()` is
+    /// best-effort local teardown that always leaves the app signed out, so the
+    /// QR sign-in can always resume. The deep link is re-handled on the next
+    /// run-loop tick, once `AppCoordinator` has reacted to the deauthentication
+    /// and installed the logged-out login UI — re-handling synchronously would
+    /// race that Combine-driven swap (spec §4.4).
+    @MainActor
+    private func signOutAndResumeQRLogin(url: URL) {
+        ServiceLocator.stores.deauthenticate()
+        DispatchQueue.main.async { [weak self] in
+            _ = self?.handleQRLoginUrl(url)
+        }
     }
 
     /// Injects `loggedOutAppSettings`

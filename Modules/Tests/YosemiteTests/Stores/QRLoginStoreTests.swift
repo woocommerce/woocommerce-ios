@@ -19,7 +19,7 @@ struct QRLoginStoreTests {
         let response = await dispatchScanSelfHosted(store: store)
 
         // Then
-        #expect(try? response.get() == expected)
+        #expect((try? response.get()) == expected)
         #expect(selfHosted.scanCalls.count == 1)
         #expect(selfHosted.scanCalls.first?.token == "token-a")
     }
@@ -87,7 +87,7 @@ struct QRLoginStoreTests {
         }
 
         // Then
-        #expect(try? response.get() == expected)
+        #expect((try? response.get()) == expected)
         #expect(selfHosted.exchangeCalls.first?.exchangeGrant == "grant-a")
     }
 
@@ -109,7 +109,7 @@ struct QRLoginStoreTests {
         }
 
         // Then
-        #expect(try? response.get() == expected)
+        #expect((try? response.get()) == expected)
         #expect(wpCom.scanCalls.first?.token == "compound")
         #expect(wpCom.scanCalls.first?.encrypted == "blob")
     }
@@ -130,7 +130,7 @@ struct QRLoginStoreTests {
         }
 
         // Then
-        #expect(try? response.get().state == .expired)
+        #expect((try? response.get())?.state == .expired)
     }
 
     @Test func wpComExchange_dispatch_forwards_to_remote() async {
@@ -149,7 +149,7 @@ struct QRLoginStoreTests {
         }
 
         // Then
-        #expect(try? response.get() == expected)
+        #expect((try? response.get()) == expected)
         #expect(wpCom.exchangeCalls.first?.exchangeGrant == "g")
     }
 }

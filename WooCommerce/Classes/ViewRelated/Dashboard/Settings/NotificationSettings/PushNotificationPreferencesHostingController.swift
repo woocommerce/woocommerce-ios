@@ -8,9 +8,12 @@ final class PushNotificationPreferencesHostingController: UIHostingController<Pu
         let viewModel = PushNotificationPreferencesViewModel(siteID: siteID, stores: stores)
         self.viewModel = viewModel
         super.init(rootView: PushNotificationPreferencesView(viewModel: viewModel))
-        // Set after `super.init` so the closure can capture `self` weakly.
+        // Set after `super.init` so the closures can capture `self` weakly.
         rootView.onNewOrderTapped = { [weak self] in
             self?.showNewOrderDetail()
+        }
+        rootView.onNewReviewTapped = { [weak self] in
+            self?.showNewReviewDetail()
         }
     }
 
@@ -20,6 +23,11 @@ final class PushNotificationPreferencesHostingController: UIHostingController<Pu
 
     private func showNewOrderDetail() {
         let detail = NewOrderNotificationPreferencesHostingController(viewModel: viewModel)
+        navigationController?.pushViewController(detail, animated: true)
+    }
+
+    private func showNewReviewDetail() {
+        let detail = NewReviewNotificationPreferencesHostingController(viewModel: viewModel)
         navigationController?.pushViewController(detail, animated: true)
     }
 }

@@ -121,6 +121,7 @@ public struct AIApiProxyChatService: AIChatService {
         var toolCallOrder: [Int] = []
         var finishReason: OpenAIChat.FinishReason?
         var pendingBytes = Data()
+        var receivedAnyChunk = false
 
         for try await rawChunk in byteStream {
             pendingBytes.append(rawChunk)
@@ -133,7 +134,8 @@ public struct AIApiProxyChatService: AIChatService {
                                  continuation: continuation,
                                  buffers: &toolCallBuffers,
                                  order: &toolCallOrder,
-                                 finishReason: &finishReason)
+                                 finishReason: &finishReason,
+                                 receivedAnyChunk: &receivedAnyChunk)
             }
         }
         if !pendingBytes.isEmpty,
@@ -145,7 +147,8 @@ public struct AIApiProxyChatService: AIChatService {
                                  continuation: continuation,
                                  buffers: &toolCallBuffers,
                                  order: &toolCallOrder,
-                                 finishReason: &finishReason)
+                                 finishReason: &finishReason,
+                                 receivedAnyChunk: &receivedAnyChunk)
             }
         }
         for event in parser.finish() {
@@ -154,7 +157,8 @@ public struct AIApiProxyChatService: AIChatService {
                              continuation: continuation,
                              buffers: &toolCallBuffers,
                              order: &toolCallOrder,
-                             finishReason: &finishReason)
+                             finishReason: &finishReason,
+                             receivedAnyChunk: &receivedAnyChunk)
         }
 
         for index in toolCallOrder {
@@ -168,9 +172,9 @@ public struct AIApiProxyChatService: AIChatService {
                                                                              arguments: asm.arguments))))
         }
 
-        // The wpcom streaming path closes upstream errors as HTTP 200 with no SSE frames; a turn
-        // that produced no text and no tool calls is that error signature, not a real completion.
-        guard await bridge.didEmitAnyEvent else {
+        // The wpcom streaming path closes upstream errors as HTTP 200 with zero SSE frames; a
+        // framed-but-content-less turn is a legitimate empty turn the orchestrator handles.
+        guard receivedAnyChunk else {
             throw AssistantError(kind: .upstreamFailure, code: "200", message: Localization.emptyStream)
         }
         continuation.yield(.completed(finishReason))
@@ -181,7 +185,8 @@ public struct AIApiProxyChatService: AIChatService {
                         continuation: AsyncThrowingStream<ChatStreamEvent, Error>.Continuation,
                         buffers: inout [Int: ToolCallAssembly],
                         order: inout [Int],
-                        finishReason: inout OpenAIChat.FinishReason?) async throws {
+                        finishReason: inout OpenAIChat.FinishReason?,
+                        receivedAnyChunk: inout Bool) async throws {
         let trimmed = event.data.trimmingCharacters(in: .whitespaces)
         if trimmed.isEmpty || trimmed == "[DONE]" { return }
         guard let data = trimmed.data(using: .utf8) else { return }
@@ -198,6 +203,9 @@ public struct AIApiProxyChatService: AIChatService {
             DDLogError("⛔️ Malformed SSE chunk dropped: \(error.localizedDescription)")
             throw AssistantError(kind: .invalidStream, message: Localization.invalidStreamPayload)
         }
+        // Any decodable chunk (including finish-only and usage-only frames) proves the stream
+        // wasn't the frameless wpcom-gap signature, distinct from emitting user-visible content.
+        receivedAnyChunk = true
         guard let choice = chunk.choices.first else { return }
 
         if let text = choice.delta.content, !text.isEmpty {

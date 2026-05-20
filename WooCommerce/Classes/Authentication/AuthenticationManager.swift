@@ -127,20 +127,25 @@ class AuthenticationManager: Authentication {
     private func makeQRLoginUI() -> UIViewController {
         let navigationController = LoginNavigationController()
         navigationController.modalPresentationStyle = .fullScreen
-        let coordinator = QRLoginCoordinator(
-            navigationController: navigationController,
-            onEnterSiteURL: { [weak navigationController] in
-                guard let navigationController else { return }
-                NavigateToEnterSite().execute(from: navigationController)
-            },
-            onSuccess: { [weak self, weak navigationController] in
-                guard let self, let navigationController else { return }
-                self.qrLoginCoordinator = nil
-                self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
-            }
-        )
-        self.qrLoginCoordinator = coordinator
-        coordinator.start()
+        // `authenticationUI()` is always called on the main thread (it returns
+        // the root login view controller). `QRLoginCoordinator` is @MainActor,
+        // so we assert main-actor isolation to construct + start it.
+        MainActor.assumeIsolated {
+            let coordinator = QRLoginCoordinator(
+                navigationController: navigationController,
+                onEnterSiteURL: { [weak navigationController] in
+                    guard let navigationController else { return }
+                    NavigateToEnterSite().execute(from: navigationController)
+                },
+                onSuccess: { [weak self, weak navigationController] in
+                    guard let self, let navigationController else { return }
+                    self.qrLoginCoordinator = nil
+                    self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+                }
+            )
+            self.qrLoginCoordinator = coordinator
+            coordinator.start()
+        }
         return navigationController
     }
 
@@ -258,21 +263,25 @@ class AuthenticationManager: Authentication {
         }
 
         let payload = QRLoginPayloadParser().parse(url)
-        let coordinator = QRLoginCoordinator(
-            mode: .deepLink(payload: payload),
-            navigationController: navigationController,
-            onEnterSiteURL: { [weak navigationController] in
-                guard let navigationController else { return }
-                NavigateToEnterSite().execute(from: navigationController)
-            },
-            onSuccess: { [weak self, weak navigationController] in
-                guard let self, let navigationController else { return }
-                self.qrLoginCoordinator = nil
-                self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
-            }
-        )
-        qrLoginCoordinator = coordinator
-        coordinator.start()
+        // `handleAuthenticationUrl` runs on the main thread (URL handling from
+        // the scene/app delegate). `QRLoginCoordinator` is @MainActor.
+        MainActor.assumeIsolated {
+            let coordinator = QRLoginCoordinator(
+                mode: .deepLink(payload: payload),
+                navigationController: navigationController,
+                onEnterSiteURL: { [weak navigationController] in
+                    guard let navigationController else { return }
+                    NavigateToEnterSite().execute(from: navigationController)
+                },
+                onSuccess: { [weak self, weak navigationController] in
+                    guard let self, let navigationController else { return }
+                    self.qrLoginCoordinator = nil
+                    self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+                }
+            )
+            self.qrLoginCoordinator = coordinator
+            coordinator.start()
+        }
         return true
     }
 

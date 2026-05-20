@@ -241,12 +241,29 @@ which don't depend on this, are unaffected.
 
 ### `woocommerce://qr-login` deep-link entry handled in `AuthenticationManager`
 
-`isQRLoginUrl(_:)` recognises the scheme + host case-insensitively (spec
-§3 footer). If the QR-login debug override is set, a fresh
-`QRLoginCoordinator` is constructed in `.deepLink(payload:)` mode and
-started; the URL is parsed via `QRLoginPayloadParser`. The deep-link sync
-check uses `QRLoginAvailability.deepLinkSyncOverride()` which only checks
-the override — no camera, no bucket — matching spec §2.2.
+`isQRLoginUrl(_:)` matches the deep link by lowercased URL prefix
+(`WooConstants.qrLoginURLPrefix`) rather than `URL.host`, which is
+unreliable for custom-scheme URLs across Foundation versions. The
+deep-link sync check uses `QRLoginAvailability.deepLinkSyncOverride()`
+which only checks the override — no camera, no bucket — matching spec
+§2.2. The URL is parsed via `QRLoginPayloadParser`.
+
+**Coordinator reuse (not a second coordinator).** Displaying the
+authenticator (`displayAuthenticatorIfLoggedOut`) can itself start a
+`QRLoginCoordinator`: when the QR-login prologue is available,
+`authenticationUI()` returns `makeQRLoginUI()`, which builds and starts
+a `.camera` coordinator. So `handleQRLoginUrl` must **not** start a
+second one — it reuses that coordinator via `presentDeepLink(payload:)`,
+and only starts a standalone `.deepLink` coordinator when the legacy
+login UI is the root (the prologue isn't available). Starting two
+coordinators orphaned the first (its `qrLoginCoordinator` reference was
+overwritten) and left a dead prologue underneath the number-match
+screen. The shared construction lives in
+`makeQRLoginCoordinator(mode:navigationController:)`.
+
+This surfaced during simulator verification once the prologue became
+reachable on the simulator — see the camera-availability change in
+`QRLoginAvailability.defaultCameraAvailability()`.
 
 ### Session-replace warning is deferred
 

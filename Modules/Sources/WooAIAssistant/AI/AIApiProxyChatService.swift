@@ -101,8 +101,7 @@ public struct AIApiProxyChatService: AIChatService {
     private func shouldRetryRateLimit(error: AssistantError, bridge: StreamBridge, attempt: Int) async -> Bool {
         guard attempt < 2 else { return false }
         guard await bridge.didEmitAnyEvent == false else { return false }
-        // Only generic transient 429s retry. The wrapper's per-user quota surfaces with its own
-        // code (woo_mobile_ai_user_rate_limit), so it is excluded and reported immediately.
+        // Retrying a per-user quota can't clear it and only bumps the minute limiter; only generic 429s retry.
         return error.code == "429"
     }
 
@@ -313,9 +312,7 @@ public struct AIApiProxyChatService: AIChatService {
         case "rest_forbidden":
             return AssistantError(kind: .auth, code: codeString, message: envelope.message)
         case "woo_mobile_ai_user_rate_limit":
-            // Preserve the wrapper code so the retry guard skips it: a per-user quota won't clear
-            // within the backoff window and retrying only bumps the minute limiter. The server
-            // message distinguishes minute vs month, so pass it through verbatim.
+            // Keep the wrapper code (not the HTTP status) so the retry guard skips this quota.
             return AssistantError(kind: .rateLimit, code: envelope.code, message: envelope.message)
         default:
             let kind = httpStatus.map(HTTPStatusClassification.errorKind(forStatusCode:)) ?? .upstreamFailure

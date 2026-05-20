@@ -100,8 +100,6 @@ public enum OpenAIChat {
         }
     }
 
-    // The wpcom wrapper intentionally does not expose `tool_choice` (it mistranslates
-    // auto/none/required), so the request omits it entirely.
     struct Request: Encodable, Sendable {
         let messages: [Message]
         let tools: [ToolDefinition]?

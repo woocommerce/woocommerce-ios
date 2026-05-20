@@ -3,17 +3,17 @@ import Foundation
 /// Test-only `URLProtocol` that stubs HTTP responses for the QR-login Remote
 /// tests.
 ///
-/// Each test sets up a stub keyed by URL absolute string (which the test
-/// builds via the same URL-construction helpers the Remote uses), then runs
-/// its `URLSession` request. The protocol intercepts the request before it
-/// hits the network and produces the configured response: any status code,
-/// any body, or a transport-style failure (`URLError`).
+/// `canInit` always returns `true`, so a request made on a session built by
+/// `makeSession()` can **never** escape to the real network — a missing stub
+/// fails the request with a distinctive `URLError.resourceUnavailable` rather
+/// than silently hitting a live server.
 ///
-/// Distinct from the existing `MockURLProtocol` because we need:
-///   - Raw `Data` bodies (some QR error responses are non-JSON, and we want
-///     to assert behaviour for malformed bodies).
-///   - Transport-failure simulation (the 4-strike polling threshold has to
-///     be testable).
+/// State is global (a `URLProtocol` is instantiated by `URLSession`, so
+/// there's no per-instance injection point) but lock-guarded and **host-
+/// scoped**: `reset(host:)` only clears entries for one host. Swift Testing
+/// runs tests in parallel, so the two Remote test suites use disjoint hosts
+/// (`shop.example` vs `public-api.wordpress.com`) and each is marked
+/// `@Suite(.serialized)` — together that keeps the shared store collision-free.
 final class QRLoginStubURLProtocol: URLProtocol {
 
     /// Response the stub should serve for a request to `url`.
@@ -24,29 +24,31 @@ final class QRLoginStubURLProtocol: URLProtocol {
 
     /// Test entry point. Register the stub *before* sending the request.
     static func stub(_ stub: Stub, for url: URL) {
-        stubsByURL[url.absoluteString] = stub
+        lock.withLock { _ = stubsByURL.updateValue(stub, forKey: url.absoluteString) }
     }
 
-    /// Counts how many times each URL was requested (across all stubs).
+    /// Counts how many times each URL was requested.
     static func requestCount(for url: URL) -> Int {
-        requestCountsByURL[url.absoluteString] ?? 0
+        lock.withLock { requestCountsByURL[url.absoluteString] ?? 0 }
     }
 
     /// Captures the HTTP body sent on the most recent request to `url`.
     static func capturedBody(for url: URL) -> Data? {
-        capturedBodies[url.absoluteString]
+        lock.withLock { capturedBodies[url.absoluteString] }
     }
 
-    /// Clears all configuration & captured state. Call at the start of every
-    /// test to keep tests independent.
-    static func reset() {
-        stubsByURL.removeAll()
-        requestCountsByURL.removeAll()
-        capturedBodies.removeAll()
+    /// Clears all stub state for a single host. Host-scoped so two parallel
+    /// suites targeting different hosts never wipe each other.
+    static func reset(host: String) {
+        lock.withLock {
+            stubsByURL = stubsByURL.filter { URL(string: $0.key)?.host != host }
+            requestCountsByURL = requestCountsByURL.filter { URL(string: $0.key)?.host != host }
+            capturedBodies = capturedBodies.filter { URL(string: $0.key)?.host != host }
+        }
     }
 
-    /// `URLSessionConfiguration.ephemeral` with this stub installed as the
-    /// only protocol. Pass the resulting `URLSession` to the Remote under test.
+    /// A `URLSession` with this stub installed as the only protocol. Pass the
+    /// resulting session to the Remote under test.
     static func makeSession() -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [QRLoginStubURLProtocol.self]
@@ -58,7 +60,9 @@ final class QRLoginStubURLProtocol: URLProtocol {
     // MARK: - URLProtocol overrides
 
     override class func canInit(with request: URLRequest) -> Bool {
-        request.url.flatMap { stubsByURL[$0.absoluteString] != nil } ?? false
+        // Always intercept — a request on a stub session must never reach the
+        // real network, even if its URL wasn't stubbed.
+        true
     }
 
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {
@@ -66,14 +70,26 @@ final class QRLoginStubURLProtocol: URLProtocol {
     }
 
     override func startLoading() {
-        guard let url = request.url,
-              let stub = QRLoginStubURLProtocol.stubsByURL[url.absoluteString] else {
+        guard let url = request.url else {
             client?.urlProtocol(self, didFailWithError: URLError(.badURL))
             return
         }
 
-        QRLoginStubURLProtocol.requestCountsByURL[url.absoluteString, default: 0] += 1
-        QRLoginStubURLProtocol.capturedBodies[url.absoluteString] = bodyData(for: request)
+        let body = bodyData(for: request)
+        let stub: Stub? = Self.lock.withLock {
+            Self.requestCountsByURL[url.absoluteString, default: 0] += 1
+            if let body {
+                Self.capturedBodies[url.absoluteString] = body
+            }
+            return Self.stubsByURL[url.absoluteString]
+        }
+
+        guard let stub else {
+            // No stub registered — fail loudly instead of escaping to the
+            // network, so the test reports a clear "stub missing" error.
+            client?.urlProtocol(self, didFailWithError: URLError(.resourceUnavailable))
+            return
+        }
 
         switch stub {
         case let .response(statusCode, body):
@@ -93,13 +109,14 @@ final class QRLoginStubURLProtocol: URLProtocol {
 
     // MARK: - State
 
+    private static let lock = NSLock()
     private static var stubsByURL: [String: Stub] = [:]
     private static var requestCountsByURL: [String: Int] = [:]
     private static var capturedBodies: [String: Data] = [:]
 
-    /// `URLSession` strips httpBody from URLRequests for some upload methods
-    /// before they reach the protocol. We fall back to `httpBodyStream` when
-    /// `httpBody` is unset so tests that POST JSON can still assert the body.
+    /// `URLSession` moves an upload request's body into `httpBodyStream`
+    /// before it reaches the protocol, so we read the stream when `httpBody`
+    /// is unset.
     private func bodyData(for request: URLRequest) -> Data? {
         if let body = request.httpBody {
             return body

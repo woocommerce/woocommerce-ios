@@ -6,6 +6,7 @@ import Testing
 /// QR-login Remote, plus the protocol-specific behaviours called out in the
 /// spec: `client_id` / `client_secret` on every request, poll 404 coerced to
 /// `expired`, and the legacy `status` field name accepted in place of `state`.
+@Suite(.serialized)
 struct WPComQRLoginRemoteTests {
 
     private let clientID = "55584"
@@ -25,7 +26,7 @@ struct WPComQRLoginRemoteTests {
     @Test func scan_when_200_then_decodes_response_with_user_email() async throws {
         // Given
         let url = makeURL(path: "/scan")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json([
             "session_id": "wpcom-1",
             "real_number": "713",
@@ -47,7 +48,7 @@ struct WPComQRLoginRemoteTests {
     @Test func scan_when_user_email_missing_then_malformed() async {
         // Given
         let url = makeURL(path: "/scan")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json([
             "session_id": "x", "real_number": "001", "expires_in": 90
         ])), for: url)
@@ -62,7 +63,7 @@ struct WPComQRLoginRemoteTests {
     @Test func scan_sends_client_credentials_token_encrypted_and_device() async throws {
         // Given
         let url = makeURL(path: "/scan")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json([
             "session_id": "x", "real_number": "001", "expires_in": 90, "user_email": "u@e"
         ])), for: url)
@@ -114,7 +115,7 @@ struct WPComQRLoginRemoteTests {
             path: "/session-status",
             query: "client_id=\(clientID)&client_secret=\(clientSecret)&session_id=\(sessionID)&token_hash=hash-1"
         )
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json(["state": "scanned"])), for: url)
         let remote = makeRemote()
 
@@ -132,7 +133,7 @@ struct WPComQRLoginRemoteTests {
             path: "/session-status",
             query: "client_id=\(clientID)&client_secret=\(clientSecret)&session_id=\(sessionID)&token_hash=hash-1"
         )
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json(["status": "approved", "exchange_grant": "g"])), for: url)
         let remote = makeRemote()
 
@@ -149,7 +150,7 @@ struct WPComQRLoginRemoteTests {
             path: "/session-status",
             query: "client_id=\(clientID)&client_secret=\(clientSecret)&session_id=\(sessionID)&token_hash=hash-1"
         )
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json(["state": "consumed"])), for: url)
         let remote = makeRemote()
 
@@ -167,7 +168,7 @@ struct WPComQRLoginRemoteTests {
             path: "/session-status",
             query: "client_id=\(clientID)&client_secret=\(clientSecret)&session_id=\(sessionID)&token_hash=hash-1"
         )
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 404, body: Data()), for: url)
         let remote = makeRemote()
 
@@ -184,7 +185,7 @@ struct WPComQRLoginRemoteTests {
             path: "/session-status",
             query: "client_id=\(clientID)&client_secret=\(clientSecret)&session_id=\(sessionID)&token_hash=hash-1"
         )
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 403, body: Data()), for: url)
         let remote = makeRemote()
 
@@ -199,7 +200,7 @@ struct WPComQRLoginRemoteTests {
     @Test func exchange_when_200_then_decodes_magic_link_url() async throws {
         // Given
         let url = makeURL(path: "/exchange")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json([
             "magic_link_url": "https://wordpress.com/wp-login.php?action=magic-login&scheme=woocommerce&token=abc"
         ])), for: url)
@@ -215,7 +216,7 @@ struct WPComQRLoginRemoteTests {
     @Test func exchange_sends_client_credentials_token_encrypted_and_grant() async throws {
         // Given
         let url = makeURL(path: "/exchange")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json([
             "magic_link_url": "https://wordpress.com/wp-login.php?token=x"
         ])), for: url)
@@ -239,7 +240,7 @@ struct WPComQRLoginRemoteTests {
     @Test func exchange_when_412_qr_login_not_approved_then_preconditionFailed_with_code() async {
         // Given
         let url = makeURL(path: "/exchange")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 412, body: json([
             "code": "qr_login_not_approved"
         ])), for: url)
@@ -256,7 +257,7 @@ struct WPComQRLoginRemoteTests {
     @Test func exchange_when_500_already_consumed_then_internalServerError_with_code() async {
         // Given
         let url = makeURL(path: "/exchange")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: 500, body: json([
             "code": "already_consumed"
         ])), for: url)
@@ -274,6 +275,12 @@ struct WPComQRLoginRemoteTests {
 // MARK: - Helpers
 
 private extension WPComQRLoginRemoteTests {
+
+    /// Host of the wp.com API base URL — used to scope stub resets so this
+    /// suite never wipes the self-hosted suite's stubs when run in parallel.
+    static var wpComHost: String {
+        URL(string: Settings.wordpressApiBaseURL)?.host ?? "public-api.wordpress.com"
+    }
 
     func makeRemote() -> WPComQRLoginRemote {
         WPComQRLoginRemote(clientID: clientID,
@@ -302,7 +309,7 @@ private extension WPComQRLoginRemoteTests {
     func expectScanError(statusCode: Int, body: Data, expected: QRLoginNetworkError) async {
         // Given
         let url = makeURL(path: "/scan")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: Self.wpComHost)
         QRLoginStubURLProtocol.stub(.response(statusCode: statusCode, body: body), for: url)
         let remote = makeRemote()
 

@@ -5,6 +5,7 @@ import Testing
 /// Tests every row of spec §5.1.1, §5.1.2, §5.1.3 against the self-hosted
 /// QR-login Remote, plus the request-shape assertions that the spec calls out
 /// explicitly (Cache-Control on poll, no `device.*` on exchange).
+@Suite(.serialized)
 struct SelfHostedQRLoginRemoteTests {
 
     private let siteURL = URL(string: "https://shop.example")!
@@ -22,7 +23,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func scan_when_200_then_decodes_response() async throws {
         // Given
         let url = makeURL(path: "/qr-login-scan")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json([
             "session_id": "abc",
             "real_number": "428",
@@ -43,7 +44,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func scan_sends_supports_number_matching_and_device_fields() async throws {
         // Given
         let url = makeURL(path: "/qr-login-scan")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json([
             "session_id": "x", "real_number": "001", "expires_in": 90
         ])), for: url)
@@ -93,7 +94,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func scan_when_malformed_body_then_throws_malformed() async {
         // Given — 200 OK but missing real_number
         let url = makeURL(path: "/qr-login-scan")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json([
             "session_id": "abc", "expires_in": 90
         ])), for: url)
@@ -108,7 +109,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func scan_when_network_failure_then_throws_network() async {
         // Given
         let url = makeURL(path: "/qr-login-scan")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.failure(URLError(.notConnectedToInternet)), for: url)
         let remote = SelfHostedQRLoginRemote(session: QRLoginStubURLProtocol.makeSession())
 
@@ -123,7 +124,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func pollSessionStatus_sends_session_id_and_token_hash_and_no_cache_header() async throws {
         // Given
         let url = makeURL(path: "/qr-login-session-status", query: "session_id=session-1&token_hash=hash-1")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json(["state": "scanned"])), for: url)
         let remote = SelfHostedQRLoginRemote(session: QRLoginStubURLProtocol.makeSession())
 
@@ -140,7 +141,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func pollSessionStatus_when_approved_with_grant_then_returns_approved() async throws {
         // Given
         let url = makeURL(path: "/qr-login-session-status", query: "session_id=session-1&token_hash=hash-1")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json([
             "state": "approved",
             "exchange_grant": "grant-abc"
@@ -157,7 +158,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func pollSessionStatus_when_unknown_state_then_maps_to_unknown() async throws {
         // Given — server returns a state value the client doesn't recognise.
         let url = makeURL(path: "/qr-login-session-status", query: "session_id=session-1&token_hash=hash-1")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json(["state": "spinning"])), for: url)
         let remote = SelfHostedQRLoginRemote(session: QRLoginStubURLProtocol.makeSession())
 
@@ -171,7 +172,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func pollSessionStatus_when_404_then_throws_notFound() async {
         // Given
         let url = makeURL(path: "/qr-login-session-status", query: "session_id=session-1&token_hash=hash-1")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 404, body: Data()), for: url)
         let remote = SelfHostedQRLoginRemote(session: QRLoginStubURLProtocol.makeSession())
 
@@ -184,7 +185,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func pollSessionStatus_when_429_then_throws_rateLimited() async {
         // Given
         let url = makeURL(path: "/qr-login-session-status", query: "session_id=session-1&token_hash=hash-1")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 429, body: Data()), for: url)
         let remote = SelfHostedQRLoginRemote(session: QRLoginStubURLProtocol.makeSession())
 
@@ -199,7 +200,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func exchange_when_200_then_decodes_response() async throws {
         // Given
         let url = makeURL(path: "/qr-login-exchange")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json([
             "user_login": "shopkeeper",
             "site_url": "https://shop.example",
@@ -220,7 +221,7 @@ struct SelfHostedQRLoginRemoteTests {
         // Given — spec §5.1.3 explicitly: "The exchange request does not carry
         // `device.*` metadata; that lives only on `/scan`."
         let url = makeURL(path: "/qr-login-exchange")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 200, body: json([
             "user_login": "a", "site_url": "https://shop.example", "application_password": "p"
         ])), for: url)
@@ -241,7 +242,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func exchange_when_412_qr_login_not_approved_then_preconditionFailed_with_code() async {
         // Given
         let url = makeURL(path: "/qr-login-exchange")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 412, body: json([
             "code": "qr_login_not_approved",
             "message": "Not approved yet"
@@ -257,7 +258,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func exchange_when_412_invalid_exchange_grant_then_preconditionFailed_with_code() async {
         // Given
         let url = makeURL(path: "/qr-login-exchange")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 412, body: json([
             "code": "invalid_exchange_grant"
         ])), for: url)
@@ -272,7 +273,7 @@ struct SelfHostedQRLoginRemoteTests {
     @Test func exchange_when_412_unknown_code_then_preconditionFailed_with_nil_code() async {
         // Given — 412 with a body that doesn't carry a usable `code`.
         let url = makeURL(path: "/qr-login-exchange")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: 412, body: Data("not json".utf8)), for: url)
         let remote = SelfHostedQRLoginRemote(session: QRLoginStubURLProtocol.makeSession())
 
@@ -311,7 +312,7 @@ private extension SelfHostedQRLoginRemoteTests {
     func expectScanError(statusCode: Int, body: Data, expected: QRLoginNetworkError) async {
         // Given
         let url = makeURL(path: "/qr-login-scan")
-        QRLoginStubURLProtocol.reset()
+        QRLoginStubURLProtocol.reset(host: "shop.example")
         QRLoginStubURLProtocol.stub(.response(statusCode: statusCode, body: body), for: url)
         let remote = SelfHostedQRLoginRemote(session: QRLoginStubURLProtocol.makeSession())
 

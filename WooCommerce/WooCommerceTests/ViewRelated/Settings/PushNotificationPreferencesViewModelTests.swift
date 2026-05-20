@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 import Yosemite
+import class WooFoundation.CurrencySettings
 @testable import WooCommerce
 
 @MainActor
@@ -8,8 +9,19 @@ struct PushNotificationPreferencesViewModelTests {
 
     private let siteID: Int64 = 123
 
-    private func makeSUT(stores: MockStoresManager) -> PushNotificationPreferencesViewModel {
-        PushNotificationPreferencesViewModel(siteID: siteID, stores: stores)
+    /// Fixed currency settings for deterministic detail-text formatting in tests.
+    /// USD, left-position `$`, no decimals.
+    private static let testCurrencySettings = CurrencySettings(currencyCode: .USD,
+                                                               currencyPosition: .left,
+                                                               thousandSeparator: ",",
+                                                               decimalSeparator: ".",
+                                                               numberOfDecimals: 0)
+
+    private func makeSUT(stores: MockStoresManager,
+                         currencySettings: CurrencySettings = Self.testCurrencySettings) -> PushNotificationPreferencesViewModel {
+        PushNotificationPreferencesViewModel(siteID: siteID,
+                                             stores: stores,
+                                             currencySettings: currencySettings)
     }
 
     private func makeStores() -> MockStoresManager {
@@ -405,6 +417,33 @@ struct PushNotificationPreferencesViewModelTests {
 
         // Then
         #expect(sut.lastKnownStoreOrderMinAmount == 250)
+    }
+
+    // MARK: - storeOrderDetailText
+
+    @Test func test_storeOrderDetailText_when_minAmount_nil_then_returns_all_orders() async {
+        // Given
+        let sut = makeSUT(stores: makeStores())
+
+        // Then
+        #expect(sut.storeOrderDetailText == "All orders")
+    }
+
+    @Test func test_storeOrderDetailText_when_minAmount_positive_then_returns_formatted_currency_string() async {
+        // Given
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeOrder: .init(enabled: true, minAmount: 500))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        await sut.load()
+
+        // Then
+        #expect(sut.storeOrderDetailText == "Orders over $500")
     }
 
     // MARK: - StoreOrderThreshold helpers

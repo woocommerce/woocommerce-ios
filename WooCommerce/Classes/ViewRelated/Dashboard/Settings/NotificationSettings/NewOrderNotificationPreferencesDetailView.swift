@@ -113,7 +113,8 @@ struct NewOrderNotificationPreferencesDetailView: View {
 
     private var thresholdField: some View {
         HStack {
-            Text(Localization.thresholdLabel)
+            Text(String.localizedStringWithFormat(Localization.thresholdLabelFormat,
+                                                  viewModel.storeOrderCurrencySymbol))
                 .bodyStyle()
             Spacer()
             TextField(Localization.thresholdPlaceholder, text: $thresholdInput)
@@ -171,10 +172,10 @@ private extension NewOrderNotificationPreferencesDetailView {
             value: "Filter to orders above your threshold.",
             comment: "Subtitle of the radio row that filters notifications to orders above a threshold."
         )
-        static let thresholdLabel = NSLocalizedString(
-            "newOrderNotificationPreferencesDetailView.threshold.label",
-            value: "Threshold",
-            comment: "Label for the order-total threshold text field."
+        static let thresholdLabelFormat = NSLocalizedString(
+            "newOrderNotificationPreferencesDetailView.threshold.labelFormat",
+            value: "Minimum value (%1$@)",
+            comment: "Label for the order-total threshold text field. %1$@ is the active site's currency symbol, e.g. $."
         )
         static let thresholdPlaceholder = NSLocalizedString(
             "newOrderNotificationPreferencesDetailView.threshold.placeholder",

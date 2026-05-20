@@ -1,6 +1,8 @@
 import Foundation
 import Observation
 import Yosemite
+import class WooFoundation.CurrencyFormatter
+import class WooFoundation.CurrencySettings
 
 /// View model for `PushNotificationPreferencesView` and the per-section detail
 /// screens. Setters mutate `displayed`; `save()` diffs against `lastSaved` and
@@ -30,20 +32,40 @@ final class PushNotificationPreferencesViewModel {
     /// `nil` means "all orders".
     var storeOrderMinAmount: Decimal? { displayed.storeOrder?.minAmount }
 
+    var storeOrderCurrencySymbol: String {
+        currencySettings.symbol(from: currencySettings.currencyCode)
+    }
+
     /// Last positive threshold seen, used to restore the value when the user
     /// toggles "Only high-value orders" back on after switching to "All new orders".
     private(set) var lastKnownStoreOrderMinAmount: Decimal?
 
     static let defaultStoreOrderMinAmount: Decimal = 100
 
+    var storeOrderDetailText: String {
+        guard let amount = storeOrderMinAmount, amount > 0 else {
+            return Localization.allOrders
+        }
+        let formatted = currencyFormatter.formatAmount(amount,
+                                                       with: currencySettings.currencyCode.rawValue,
+                                                       numberOfDecimals: 0) ?? ""
+        return String.localizedStringWithFormat(Localization.ordersOverFormat, formatted)
+    }
+
     var errorNotice: Notice?
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let currencyFormatter: CurrencyFormatter
+    private let currencySettings: CurrencySettings
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.stores = stores
+        self.currencySettings = currencySettings
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
 
     func load() async {
@@ -217,6 +239,16 @@ extension PushNotificationPreferencesViewModel {
             "pushNotificationPreferencesViewModel.errorNoticeMessage",
             value: "Please try again.",
             comment: "Message of the notice shown when saving push notification preferences fails."
+        )
+        static let allOrders = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeOrder.allOrders",
+            value: "All orders",
+            comment: "Detail text for the New orders row when notifications fire for every order."
+        )
+        static let ordersOverFormat = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeOrder.ordersOverFormat",
+            value: "Orders over %1$@",
+            comment: "Detail text for the New orders row when a threshold is set. %1$@ is the formatted currency amount, e.g. $500."
         )
     }
 }

@@ -57,7 +57,7 @@ struct PushNotificationPreferencesView: View {
         List {
             Section {
                 row(title: Localization.newOrdersTitle,
-                    detail: viewModel.isStoreOrderEnabled ? Localization.newOrdersDetail : Localization.off,
+                    detail: viewModel.isStoreOrderEnabled ? viewModel.storeOrderDetailText : Localization.off,
                     accessibilityHint: Localization.newOrdersAccessibilityHint,
                     action: onNewOrderTapped)
                 row(title: Localization.newReviewsTitle,
@@ -130,11 +130,6 @@ extension PushNotificationPreferencesView {
             "pushNotificationPreferencesView.newOrders.title",
             value: "New orders",
             comment: "Title of the row that toggles new-order push notifications."
-        )
-        static let newOrdersDetail = NSLocalizedString(
-            "pushNotificationPreferencesView.newOrders.detail",
-            value: "All orders",
-            comment: "Detail text for the row that toggles new-order push notifications."
         )
         static let newOrdersAccessibilityHint = NSLocalizedString(
             "pushNotificationPreferencesView.newOrders.accessibilityHint",

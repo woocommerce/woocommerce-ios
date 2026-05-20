@@ -63,7 +63,9 @@ struct NewOrderNotificationPreferencesDetailView: View {
             radioRow(title: Localization.allOrdersTitle,
                      subtitle: Localization.allOrdersSubtitle,
                      isSelected: viewModel.storeOrderMinAmount == nil) {
-                viewModel.setStoreOrderMinAmount(nil)
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    viewModel.setStoreOrderMinAmount(nil)
+                }
             }
             radioRow(title: Localization.highValueTitle,
                      subtitle: Localization.highValueSubtitle,
@@ -73,10 +75,13 @@ struct NewOrderNotificationPreferencesDetailView: View {
                 // Seed the input synchronously so the threshold field doesn't render
                 // with empty text for a frame before the VM's `onChange` syncs it.
                 thresholdInput = Threshold.formatInput(restore)
-                viewModel.setStoreOrderMinAmount(restore)
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    viewModel.setStoreOrderMinAmount(restore)
+                }
             }
             if viewModel.storeOrderMinAmount != nil {
                 thresholdField
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
         } header: {
             Text(Localization.customizeHeader)

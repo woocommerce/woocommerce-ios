@@ -245,14 +245,11 @@ public struct AIApiProxyChatService: AIChatService {
         urlRequest.setValue("text/event-stream", forHTTPHeaderField: "Accept")
         urlRequest.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
-        // include_usage adds a trailing SSE chunk with prompt-cache + token counts so
-        // the wpcom proxy can populate per-feature openai-tokens MC stats.
         let body = OpenAIChat.Request(messages: messages,
                                       tools: tools,
                                       toolChoice: toolChoice,
                                       model: AssistantConfiguration.chatModel,
-                                      stream: true,
-                                      streamOptions: .init(includeUsage: true))
+                                      stream: true)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.withoutEscapingSlashes]
         urlRequest.httpBody = try encoder.encode(body)

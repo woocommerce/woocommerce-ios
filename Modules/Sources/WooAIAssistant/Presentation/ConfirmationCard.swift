@@ -100,7 +100,7 @@ struct ConfirmationCard: View {
                     DiffFieldRow(field: field, isBulk: preview.isBulk)
                 }
             }
-        } else {
+        } else if preview.showsSummaryInBody {
             Text(preview.summary.flattened())
                 .font(.assistantBody)
                 .foregroundStyle(Color.primary)

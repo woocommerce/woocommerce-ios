@@ -620,7 +620,7 @@ struct AIApiProxyChatServiceTests {
             #expect(error.code == "429")
         }
         #expect(await transport.callCount == 3)
-        let delays = recorder.delays
+        let delays = await recorder.delays
         #expect(delays.count == 2)
         #expect(delays[0] == 2_000_000_000)
         #expect(delays[1] == 4_000_000_000)
@@ -696,7 +696,7 @@ struct AIApiProxyChatServiceTests {
             #expect(error.code == "500")
         }
         #expect(await transport.callCount == 1)
-        #expect(recorder.delays.isEmpty)
+        #expect(await recorder.delays.isEmpty)
     }
 
     // MARK: - Stream-level wrapped errors
@@ -817,6 +817,9 @@ private enum ProxyTransportScenario {
     case successChunks([Data])
     case errorBody(status: Int, body: Data)
     case partialChunksThenError(chunks: [Data], error: Error)
+    // Yields chunks then leaves the SSE stream open until the consumer terminates it, so a
+    // cancellation can be observed without a real completion ever arriving.
+    case chunksThenHangUntilCancelled([Data])
 }
 
 private actor ScriptedProxyTransport {
@@ -864,16 +867,27 @@ private actor ScriptedProxyTransport {
             }
             let http = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!
             return (stream, http)
+        case .chunksThenHangUntilCancelled(let chunks):
+            let stream = AsyncThrowingStream<Data, Error> { continuation in
+                for chunk in chunks { continuation.yield(chunk) }
+                continuation.onTermination = { _ in continuation.finish() }
+            }
+            let http = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (stream, http)
         }
     }
 }
 
-private final class SleepDelayRecorder {
-    nonisolated(unsafe) private(set) var delays: [UInt64] = []
+private actor SleepDelayRecorder {
+    private(set) var delays: [UInt64] = []
+
+    private func record(_ nanoseconds: UInt64) {
+        delays.append(nanoseconds)
+    }
 
     nonisolated var handler: AIApiProxyChatService.Sleep {
         { [self] nanoseconds in
-            self.delays.append(nanoseconds)
+            await self.record(nanoseconds)
         }
     }
 }

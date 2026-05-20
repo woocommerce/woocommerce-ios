@@ -76,7 +76,7 @@ steps:
     command: .buildkite/commands/run-ruby-automation-tests.sh
     plugins: [$CI_TOOLKIT]
     agents:
-      queue: linter
+      queue: default
     notify:
       - github_commit_status:
           context: Ruby Automation Tests

@@ -104,6 +104,15 @@ private extension QRLoginAvailability {
     }
 
     static func defaultCameraAvailability() -> Bool {
-        AVCaptureDevice.default(for: .video) != nil
+        #if targetEnvironment(simulator)
+        // Simulators never expose a video capture device. Report a camera as
+        // available so the QR-login prologue is reachable for development and
+        // UI testing on the simulator. This branch is compiled out of every
+        // device build (including App Store builds), so real hardware is
+        // still gated on an actual camera.
+        return true
+        #else
+        return AVCaptureDevice.default(for: .video) != nil
+        #endif
     }
 }

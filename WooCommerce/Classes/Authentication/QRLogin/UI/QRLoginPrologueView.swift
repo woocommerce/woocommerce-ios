@@ -21,6 +21,9 @@ struct QRLoginPrologueView: View {
     let onSiteAddressTapped: () -> Void
     let onURLTapped: () -> Void
 
+    /// Drives the transient "copied" confirmation on the URL pill.
+    @State private var didCopyURL = false
+
     var body: some View {
         VStack(spacing: 0) {
             topBar
@@ -59,9 +62,11 @@ struct QRLoginPrologueView: View {
     }
 
     /// Light Back / Help controls drawn where a navigation bar would sit, since
-    /// the shared (purple-tinted) navigation bar is hidden for this screen.
+    /// the shared (purple-tinted) navigation bar is hidden for this screen. The
+    /// insets line up with the standard navigation-bar items on the other
+    /// QR-login screens.
     private var topBar: some View {
-        HStack {
+        HStack(spacing: 0) {
             Button(action: onBackTapped) {
                 Image(systemName: "chevron.backward")
                     .font(.body.weight(.semibold))
@@ -77,9 +82,9 @@ struct QRLoginPrologueView: View {
                     .font(.body)
                     .foregroundColor(.white)
                     .frame(height: 44)
+                    .padding(.horizontal, 16)
             }
         }
-        .padding(.horizontal, 8)
     }
 
     private var qrIcon: some View {
@@ -94,23 +99,40 @@ struct QRLoginPrologueView: View {
             .accessibilityHidden(true)
     }
 
+    /// The URL the merchant should open on their computer — the most prominent
+    /// step on the screen, so it uses a larger font. Tapping copies it and
+    /// briefly confirms with a "copied" state.
     private var urlPill: some View {
-        Button(action: onURLTapped) {
+        Button(action: copyURL) {
             HStack(spacing: 8) {
-                Image(systemName: "desktopcomputer")
-                Text(verbatim: Localization.urlPillValue)
-                    .fontWeight(.medium)
+                Image(systemName: didCopyURL ? "checkmark.circle.fill" : "desktopcomputer")
+                Group {
+                    if didCopyURL {
+                        Text(Localization.urlCopied)
+                    } else {
+                        Text(verbatim: Localization.urlPillValue)
+                    }
+                }
+                .fontWeight(.semibold)
             }
+            .font(.title3)
             .foregroundColor(.white)
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
+            .padding(.horizontal, 24)
+            .padding(.vertical, 14)
             .background(
-                RoundedRectangle(cornerRadius: 24)
-                    .fill(Color.white.opacity(0.12))
+                Capsule().fill(Color.white.opacity(0.12))
             )
         }
         .buttonStyle(.plain)
         .accessibilityHint(Localization.urlPillAccessibilityHint)
+    }
+
+    private func copyURL() {
+        onURLTapped()
+        withAnimation { didCopyURL = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            withAnimation { didCopyURL = false }
+        }
     }
 
     private var buttons: some View {
@@ -193,6 +215,11 @@ private extension QRLoginPrologueView {
             comment: "Subtitle on the QR-login prologue, introducing the URL the user should visit."
         )
         static let urlPillValue = "woo.com/mobilelogin"
+        static let urlCopied = NSLocalizedString(
+            "qrLogin.prologue.urlPill.copied",
+            value: "Link copied!",
+            comment: "Confirmation shown on the QR-login prologue URL pill after it is tapped to copy."
+        )
         static let urlPillAccessibilityHint = NSLocalizedString(
             "qrLogin.prologue.urlPill.accessibilityHint",
             value: "Copies the URL to the clipboard.",

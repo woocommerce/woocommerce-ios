@@ -18,6 +18,12 @@ final class SiteAddressViewController: LoginViewController {
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    /// When `true`, the screen submits its pre-filled `loginFields.siteAddress`
+    /// once on first appearance. Set by callers that already know the site
+    /// address (e.g. the QR-login site-URL payload). Consumed on first use so
+    /// rotation or re-appearance never re-submits.
+    var autoSubmitsPrefilledSiteAddress = false
+
     /// A state variable that is `true` if network calls are currently happening and so the
     /// view should be showing a loading indicator.
     ///
@@ -100,6 +106,18 @@ final class SiteAddressViewController: LoginViewController {
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
         configureViewForEditingIfNeeded()
+        autoSubmitPrefilledSiteAddressIfNeeded()
+    }
+
+    /// Submits the pre-filled site address once, when the screen was opened by a
+    /// flow that supplied one (e.g. the QR-login site-URL payload). Consumed on
+    /// first appearance so rotation or re-appearance never re-submits.
+    private func autoSubmitPrefilledSiteAddressIfNeeded() {
+        guard autoSubmitsPrefilledSiteAddress, loginFields.siteAddress.isEmpty == false else {
+            return
+        }
+        autoSubmitsPrefilledSiteAddress = false
+        validateForm()
     }
 
     // MARK: - Overrides

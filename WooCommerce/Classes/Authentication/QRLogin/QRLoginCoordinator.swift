@@ -174,16 +174,13 @@ private extension QRLoginCoordinator {
             openMagicLink(url)
 
         case let .siteURLOnly(url):
-            // §10.2: pre-fill the legacy site-address login screen with the URL.
-            // The site-address screen auto-submits on entry.
+            // §10.2: pre-fill the legacy site-address login screen with the URL
+            // and auto-submit on entry so the merchant skips manual typing.
             let loginFields = LoginFields()
             loginFields.siteAddress = url.absoluteString
             loginFields.restrictToWPCom = false
-            NavigateToEnterSite().execute(from: navigationController)
-            // TODO: pre-fill the WPA site-address field. SiteAddressViewController
-            // doesn't currently take an init field, so the prefill is left for
-            // a follow-up — verification on simulator will exercise the
-            // primary self-hosted path which doesn't need this.
+            NavigateToEnterSite(loginFields: loginFields,
+                                autoSubmitsPrefilledSiteAddress: true).execute(from: navigationController)
 
         case let .appLoginWPCom(siteURL, email):
             // §10.3 / §3.3: pre-fill the WP.com email + password screen.

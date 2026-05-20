@@ -32,12 +32,37 @@ struct NewOrderNotificationPreferencesDetailView: View {
         // one routes through the discard handler.
         .navigationBarBackButtonHidden(true)
         .notice($viewModel.errorNotice)
+        .onChange(of: thresholdInput) { oldValue, newValue in
+            // Reject any input that isn't a positive integer (no "0", leading
+            // zeros, decimals, or non-digits). Reverting through the binding
+            // forces the TextField to re-sync.
+            let trimmed = newValue.trimmingCharacters(in: .whitespaces)
+            if !trimmed.isEmpty && !Threshold.isAllowedInput(trimmed) {
+                thresholdInput = oldValue
+                return
+            }
+            commitThreshold()
+        }
         .onChange(of: viewModel.storeOrderMinAmount) { _, newValue in
+            // Skip the re-sync when the input already represents `newValue` —
+            // otherwise non-Latin digits the user typed (Arabic-Indic,
+            // Devanagari, etc.) get rewritten as ASCII by `formatInput`.
+            if Threshold.parse(thresholdInput) == newValue { return }
             let formatted = Threshold.formatInput(newValue)
             if formatted != thresholdInput {
                 thresholdInput = formatted
             }
         }
+    }
+
+    private func commitThreshold() {
+        // Guard against writing back while the threshold field is hidden
+        // (e.g. "All new orders" selected) — a stale input would re-enable
+        // the high-value mode on the VM.
+        guard viewModel.storeOrderMinAmount != nil,
+              let parsed = Threshold.parse(thresholdInput),
+              parsed > 0 else { return }
+        viewModel.setStoreOrderMinAmount(parsed)
     }
 
     private var masterToggleSection: some View {

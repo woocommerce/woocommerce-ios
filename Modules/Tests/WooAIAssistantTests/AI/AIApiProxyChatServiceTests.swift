@@ -15,7 +15,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let captured = await transport.lastRequest
@@ -30,7 +30,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport, token: "test-bearer-token")
 
         // When
-        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let captured = await transport.lastRequest
@@ -45,7 +45,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let captured = await transport.lastRequest
@@ -60,7 +60,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let captured = await transport.lastRequest
@@ -79,7 +79,7 @@ struct AIApiProxyChatServiceTests {
                                             sleep: noOpSleep)
 
         // When
-        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let captured = await transport.lastRequest
@@ -101,7 +101,7 @@ struct AIApiProxyChatServiceTests {
                                             sleep: noOpSleep)
 
         // When
-        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let captured = await transport.lastRequest
@@ -118,7 +118,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let captured = await transport.lastRequest
@@ -135,7 +135,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let captured = await transport.lastRequest
@@ -152,7 +152,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let captured = await transport.lastRequest
@@ -174,7 +174,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        _ = try await collect(service.streamTurn(messages: messages, tools: nil, toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: messages, tools: nil))
 
         // Then
         let captured = await transport.lastRequest
@@ -200,7 +200,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: [tool], toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: [tool]))
 
         // Then
         let captured = await transport.lastRequest
@@ -220,7 +220,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let captured = await transport.lastRequest
@@ -231,22 +231,20 @@ struct AIApiProxyChatServiceTests {
     }
 
     @Test
-    func test_sendChat_body_includes_tool_choice_when_provided() async throws {
+    func test_sendChat_body_omits_tool_choice() async throws {
         // Given
         let transport = ScriptedProxyTransport(scenarios: [.successChunks([singleTextChunk()])])
         let service = makeService(transport: transport)
 
         // When
-        _ = try await collect(
-            service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: .auto)
-        )
+        _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let captured = await transport.lastRequest
         let request = try #require(captured)
         let body = try #require(request.httpBody)
         let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
-        #expect(json["tool_choice"] as? String == "auto")
+        #expect(json["tool_choice"] == nil)
     }
 
     // MARK: - Token provider failures
@@ -267,7 +265,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected token provider error to surface.")
         } catch let error as AssistantError {
             #expect(error.kind == .auth)
@@ -288,7 +286,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         #expect(textDeltas(in: events).joined() == "Hello, world")
@@ -305,7 +303,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         if case .completed(let reason) = events.last {
@@ -330,7 +328,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let calls = toolCalls(in: events)
@@ -356,7 +354,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         #expect(textDeltas(in: events).joined() == "café")
@@ -370,7 +368,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected empty 200 stream to surface as upstream error.")
         } catch let error as AssistantError {
             #expect(error.kind == .upstreamFailure)
@@ -391,7 +389,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let deltas = textDeltas(in: events)
@@ -416,7 +414,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let calls = toolCalls(in: events)
@@ -437,7 +435,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         if case .completed(let reason) = events.last {
@@ -458,7 +456,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected typed auth error to surface.")
         } catch let error as AssistantError {
             #expect(error.kind == .auth)
@@ -475,7 +473,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected typed auth error to surface.")
         } catch let error as AssistantError {
             #expect(error.kind == .auth)
@@ -494,7 +492,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected typed auth error to surface.")
         } catch let error as AssistantError {
             #expect(error.kind == .auth)
@@ -504,25 +502,24 @@ struct AIApiProxyChatServiceTests {
     }
 
     @Test
-    func test_sendChat_when_response_is_429_with_woo_mobile_ai_user_rate_limit_then_throws_rate_limit_error_after_retries()
+    func test_sendChat_when_response_is_429_with_woo_mobile_ai_user_rate_limit_then_surfaces_immediately_without_retry()
     async throws {
         // Given
         let serverMessage = "Too many AI requests. Please slow down and try again in a minute."
         let body = proxyEnvelopeBody(code: "woo_mobile_ai_user_rate_limit", message: serverMessage, status: 429)
-        let scenarios: [ProxyTransportScenario] = (0..<3).map { _ in .errorBody(status: 429, body: body) }
-        let transport = ScriptedProxyTransport(scenarios: scenarios)
+        let transport = ScriptedProxyTransport(scenarios: [.errorBody(status: 429, body: body)])
         let service = makeService(transport: transport)
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected typed rate limit error to surface.")
         } catch let error as AssistantError {
             #expect(error.kind == .rateLimit)
-            #expect(error.code == "429")
+            #expect(error.code == "woo_mobile_ai_user_rate_limit")
             #expect(error.message == serverMessage)
         }
-        #expect(await transport.callCount == 3)
+        #expect(await transport.callCount == 1)
     }
 
     @Test
@@ -536,7 +533,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected error to surface.")
         } catch let error as AssistantError {
             #expect(error.code == "429")
@@ -554,7 +551,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected 400 error to surface.")
         } catch let error as AssistantError {
             #expect(error.code == "400")
@@ -571,7 +568,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected 500 to surface.")
         } catch let error as AssistantError {
             #expect(error.kind == .upstreamFailure)
@@ -582,9 +579,9 @@ struct AIApiProxyChatServiceTests {
     // MARK: - Retry behavior
 
     @Test
-    func test_sendChat_when_429_then_retries_up_to_3_times_with_backoff_then_throws() async throws {
+    func test_sendChat_when_transient_429_then_retries_up_to_3_times_with_backoff_then_throws() async throws {
         // Given
-        let body = proxyEnvelopeBody(code: "woo_mobile_ai_user_rate_limit", message: "Rate limited", status: 429)
+        let body = proxyEnvelopeBody(code: "rate_limit_exceeded", message: "Rate limited", status: 429)
         let scenarios: [ProxyTransportScenario] = (0..<3).map { _ in .errorBody(status: 429, body: body) }
         let transport = ScriptedProxyTransport(scenarios: scenarios)
         let recorder = SleepDelayRecorder()
@@ -595,7 +592,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected 429 to surface after retries.")
         } catch let error as AssistantError {
             #expect(error.kind == .rateLimit)
@@ -610,9 +607,9 @@ struct AIApiProxyChatServiceTests {
     }
 
     @Test
-    func test_sendChat_when_429_then_200_on_retry_then_yields_success_events() async throws {
+    func test_sendChat_when_transient_429_then_200_on_retry_then_yields_success_events() async throws {
         // Given
-        let rateLimitBody = proxyEnvelopeBody(code: "woo_mobile_ai_user_rate_limit", message: "Rate limited", status: 429)
+        let rateLimitBody = proxyEnvelopeBody(code: "rate_limit_exceeded", message: "Rate limited", status: 429)
         let successChunk = singleTextChunk(text: "retry worked")
         let scenarios: [ProxyTransportScenario] = [
             .errorBody(status: 429, body: rateLimitBody),
@@ -622,7 +619,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         #expect(await transport.callCount == 2)
@@ -643,7 +640,7 @@ struct AIApiProxyChatServiceTests {
         var observed: [ChatStreamEvent] = []
         var caught: AssistantError?
         do {
-            for try await event in service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil) {
+            for try await event in service.streamTurn(messages: [userMessage()], tools: nil) {
                 observed.append(event)
             }
             Issue.record("Expected mid-stream 429 to surface after partial events.")
@@ -671,7 +668,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected 500 to surface.")
         } catch let error as AssistantError {
             #expect(error.kind == .upstreamFailure)
@@ -695,7 +692,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected wrapped envelope inside SSE stream to surface as typed error.")
         } catch let error as AssistantError {
             #expect(error.kind == .auth)
@@ -712,7 +709,7 @@ struct AIApiProxyChatServiceTests {
 
         // When / Then
         do {
-            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
             Issue.record("Expected malformed SSE chunk to surface as invalid stream error.")
         } catch let error as AssistantError {
             #expect(error.kind == .invalidStream)
@@ -720,10 +717,10 @@ struct AIApiProxyChatServiceTests {
     }
 
     @Test
-    func test_sendChat_when_200_stream_envelope_is_user_rate_limit_then_retries() async throws {
+    func test_sendChat_when_200_stream_envelope_is_transient_rate_limit_then_retries() async throws {
         // Given
         let envelope = """
-        {"code":"woo_mobile_ai_user_rate_limit","message":"Rate limited","data":{"status":429}}
+        {"code":"rate_limit_exceeded","message":"Rate limited","data":{"status":429}}
         """
         let firstAttempt = Data("data: \(envelope)\n\n".utf8)
         let secondAttempt = singleTextChunk(text: "retry worked")
@@ -738,12 +735,37 @@ struct AIApiProxyChatServiceTests {
                                             sleep: recorder.handler)
 
         // When
-        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         #expect(await transport.callCount == 2)
         #expect(await recorder.delays.count == 1)
         #expect(textDeltas(in: events).joined() == "retry worked")
+    }
+
+    @Test
+    func test_sendChat_when_200_stream_envelope_is_user_rate_limit_then_does_not_retry() async throws {
+        // Given
+        let envelope = """
+        {"code":"woo_mobile_ai_user_rate_limit","message":"Rate limited","data":{"status":429}}
+        """
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data("data: \(envelope)\n\n".utf8)])])
+        let recorder = SleepDelayRecorder()
+        let service = AIApiProxyChatService(tokenProvider: ConstantWPCOMTokenProvider(value: "tok"),
+                                            endpoint: testEndpoint,
+                                            streamingTransport: transport.handler,
+                                            sleep: recorder.handler)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
+            Issue.record("Expected wrapper quota envelope to surface without retry.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .rateLimit)
+            #expect(error.code == "woo_mobile_ai_user_rate_limit")
+        }
+        #expect(await transport.callCount == 1)
+        #expect(await recorder.delays.isEmpty)
     }
 
     // MARK: - Coverage
@@ -765,7 +787,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         let calls = toolCalls(in: events)
@@ -788,7 +810,7 @@ struct AIApiProxyChatServiceTests {
         // When
         let consumer = Task { () -> [ChatStreamEvent] in
             var seen: [ChatStreamEvent] = []
-            for try await event in service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil) {
+            for try await event in service.streamTurn(messages: [userMessage()], tools: nil) {
                 seen.append(event)
                 break
             }
@@ -816,7 +838,7 @@ struct AIApiProxyChatServiceTests {
         var observed: [ChatStreamEvent] = []
         var caught: AssistantError?
         do {
-            for try await event in service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil) {
+            for try await event in service.streamTurn(messages: [userMessage()], tools: nil) {
                 observed.append(event)
             }
             Issue.record("Expected malformed chunk after valid text to surface invalid stream error.")
@@ -838,7 +860,7 @@ struct AIApiProxyChatServiceTests {
         let service = makeService(transport: transport)
 
         // When
-        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil))
 
         // Then
         #expect(textDeltas(in: events).isEmpty)

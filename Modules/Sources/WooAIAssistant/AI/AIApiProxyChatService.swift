@@ -44,14 +44,12 @@ public struct AIApiProxyChatService: AIChatService {
     }
 
     public func streamTurn(messages: [OpenAIChat.Message],
-                           tools: [OpenAIChat.ToolDefinition]?,
-                           toolChoice: OpenAIChat.ToolChoice?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
+                           tools: [OpenAIChat.ToolDefinition]?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
         AsyncThrowingStream { continuation in
             let task = Task {
                 do {
                     try await self.runWithRateLimitRetry(messages: messages,
                                                          tools: tools,
-                                                         toolChoice: toolChoice,
                                                          continuation: continuation)
                     continuation.finish()
                 } catch let envelope as WrappedEnvelopeError {
@@ -66,7 +64,6 @@ public struct AIApiProxyChatService: AIChatService {
 
     private func runWithRateLimitRetry(messages: [OpenAIChat.Message],
                                        tools: [OpenAIChat.ToolDefinition]?,
-                                       toolChoice: OpenAIChat.ToolChoice?,
                                        continuation: AsyncThrowingStream<ChatStreamEvent, Error>.Continuation) async throws {
         var attempt = 0
         while true {
@@ -74,7 +71,6 @@ public struct AIApiProxyChatService: AIChatService {
             do {
                 try await sendStreaming(messages: messages,
                                         tools: tools,
-                                        toolChoice: toolChoice,
                                         bridge: bridge,
                                         continuation: continuation)
                 return
@@ -105,18 +101,18 @@ public struct AIApiProxyChatService: AIChatService {
     private func shouldRetryRateLimit(error: AssistantError, bridge: StreamBridge, attempt: Int) async -> Bool {
         guard attempt < 2 else { return false }
         guard await bridge.didEmitAnyEvent == false else { return false }
+        // Only generic transient 429s retry. The wrapper's per-user quota surfaces with its own
+        // code (woo_mobile_ai_user_rate_limit), so it is excluded and reported immediately.
         return error.code == "429"
     }
 
     private func sendStreaming(messages: [OpenAIChat.Message],
                                tools: [OpenAIChat.ToolDefinition]?,
-                               toolChoice: OpenAIChat.ToolChoice?,
                                bridge: StreamBridge,
                                continuation: AsyncThrowingStream<ChatStreamEvent, Error>.Continuation) async throws {
         let token = try await tokenProvider.token()
         let request = try buildRequest(messages: messages,
                                        tools: tools,
-                                       toolChoice: toolChoice,
                                        token: token)
         let (byteStream, http) = try await streamingTransport(request)
 
@@ -199,7 +195,6 @@ public struct AIApiProxyChatService: AIChatService {
 
     private func buildRequest(messages: [OpenAIChat.Message],
                               tools: [OpenAIChat.ToolDefinition]?,
-                              toolChoice: OpenAIChat.ToolChoice?,
                               token: String) throws -> URLRequest {
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = "POST"
@@ -210,7 +205,6 @@ public struct AIApiProxyChatService: AIChatService {
 
         let body = OpenAIChat.Request(messages: messages,
                                       tools: tools,
-                                      toolChoice: toolChoice,
                                       model: AssistantConfiguration.chatModel,
                                       stream: true)
         let encoder = JSONEncoder()
@@ -319,8 +313,10 @@ public struct AIApiProxyChatService: AIChatService {
         case "rest_forbidden":
             return AssistantError(kind: .auth, code: codeString, message: envelope.message)
         case "woo_mobile_ai_user_rate_limit":
-            // Server message distinguishes minute vs month; pass it through verbatim.
-            return AssistantError(kind: .rateLimit, code: codeString, message: envelope.message)
+            // Preserve the wrapper code so the retry guard skips it: a per-user quota won't clear
+            // within the backoff window and retrying only bumps the minute limiter. The server
+            // message distinguishes minute vs month, so pass it through verbatim.
+            return AssistantError(kind: .rateLimit, code: envelope.code, message: envelope.message)
         default:
             let kind = httpStatus.map(HTTPStatusClassification.errorKind(forStatusCode:)) ?? .upstreamFailure
             return AssistantError(kind: kind,

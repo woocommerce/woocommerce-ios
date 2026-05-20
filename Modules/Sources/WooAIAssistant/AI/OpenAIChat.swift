@@ -100,38 +100,11 @@ public enum OpenAIChat {
         }
     }
 
-    /// Encoded-only; the wpcom AI proxy never returns `tool_choice`.
-    public enum ToolChoice: Encodable, Sendable, Equatable {
-        case auto
-        case required
-        case function(name: String)
-
-        public func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            switch self {
-            case .auto:
-                try container.encode("auto")
-            case .required:
-                try container.encode("required")
-            case .function(let name):
-                try container.encode(SpecificFunctionChoice(
-                    type: "function",
-                    function: .init(name: name)
-                ))
-            }
-        }
-
-        private struct SpecificFunctionChoice: Encodable {
-            let type: String
-            let function: FunctionName
-            struct FunctionName: Encodable { let name: String }
-        }
-    }
-
+    // The wpcom wrapper intentionally does not expose `tool_choice` (it mistranslates
+    // auto/none/required), so the request omits it entirely.
     struct Request: Encodable, Sendable {
         let messages: [Message]
         let tools: [ToolDefinition]?
-        let toolChoice: ToolChoice?
         let model: String?
         let stream: Bool
         let temperature: Double?
@@ -139,14 +112,12 @@ public enum OpenAIChat {
 
         init(messages: [Message],
              tools: [ToolDefinition]? = nil,
-             toolChoice: ToolChoice? = nil,
              model: String? = nil,
              stream: Bool = false,
              temperature: Double? = nil,
              maxTokens: Int? = nil) {
             self.messages = messages
             self.tools = tools
-            self.toolChoice = toolChoice
             self.model = model
             self.stream = stream
             self.temperature = temperature
@@ -155,7 +126,6 @@ public enum OpenAIChat {
 
         enum CodingKeys: String, CodingKey {
             case messages, tools, model, stream, temperature
-            case toolChoice = "tool_choice"
             case maxTokens = "max_tokens"
         }
 
@@ -163,7 +133,6 @@ public enum OpenAIChat {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(messages, forKey: .messages)
             try container.encodeIfPresent(tools, forKey: .tools)
-            try container.encodeIfPresent(toolChoice, forKey: .toolChoice)
             try container.encodeIfPresent(model, forKey: .model)
             try container.encode(stream, forKey: .stream)
             try container.encodeIfPresent(temperature, forKey: .temperature)

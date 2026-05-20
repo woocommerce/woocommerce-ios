@@ -216,7 +216,8 @@ private extension QRLoginErrorView {
         )
         static let installQRBody = NSLocalizedString(
             "qrLogin.error.installQR.body",
-            value: "The app's already installed — this QR installs it. In wp-admin, tap the App is installed button to reveal the sign-in QR. Or visit woo.com/mobilelogin on your computer.",
+            value: "The app's already installed — this QR installs it. In wp-admin, tap the App is installed " +
+                "button to reveal the sign-in QR. Or visit woo.com/mobilelogin on your computer.",
             comment: "QR-login error body when the user scans the wp-admin install QR."
         )
         static let scannerFailureBody = NSLocalizedString(
@@ -231,7 +232,8 @@ private extension QRLoginErrorView {
         )
         static let storeUnsupportedBody = NSLocalizedString(
             "qrLogin.error.storeUnsupported.body",
-            value: "Your WooCommerce plugin doesn't support QR login. Please update WooCommerce on your store and try again, or sign in by entering your site URL.",
+            value: "Your WooCommerce plugin doesn't support QR login. Please update WooCommerce on your store " +
+                "and try again, or sign in by entering your site URL.",
             comment: "QR-login error body for the store-can't-complete case."
         )
         static let rateLimitedBody = NSLocalizedString(

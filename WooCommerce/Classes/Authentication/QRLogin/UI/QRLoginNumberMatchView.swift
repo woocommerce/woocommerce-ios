@@ -10,7 +10,7 @@ struct QRLoginNumberMatchView: View {
     let subtitle: QRLoginNumberMatchSubtitle
     let onCancel: () -> Void
 
-    @State private var now: Date = Date()
+    @State private var now = Date()
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -93,12 +93,7 @@ struct QRLoginNumberMatchView: View {
 
     private var countdownText: String {
         let remainingSeconds = max(0, Int(expiresAt.timeIntervalSince(now)))
-        let format = NSLocalizedString(
-            "qrLogin.numberMatch.countdown",
-            value: "Expires in %1$ds",
-            comment: "Countdown label on the QR number-match screen. %1$d is the number of seconds remaining."
-        )
-        return String(format: format, remainingSeconds)
+        return String(format: Localization.countdown, remainingSeconds)
     }
 }
 
@@ -135,6 +130,11 @@ private extension QRLoginNumberMatchView {
             "qrLogin.numberMatch.cancel",
             value: "Cancel",
             comment: "Button to cancel sign-in from the QR number-match screen."
+        )
+        static let countdown = NSLocalizedString(
+            "qrLogin.numberMatch.countdown",
+            value: "Expires in %1$ds",
+            comment: "Countdown label on the QR number-match screen. %1$d is the number of seconds remaining."
         )
     }
 }

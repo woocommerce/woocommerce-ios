@@ -7,7 +7,7 @@ final class PushNotificationPreferencesHostingController: UIHostingController<Pu
         super.init(rootView: PushNotificationPreferencesView(viewModel: viewModel))
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

@@ -20,7 +20,7 @@ public final class WordPressThemeStore: Store {
     ///   - dispatcher: The dispatcher used to subscribe to `WordPressThemeAction`.
     ///   - network: The network layer used to fetch theme details
     ///
-    public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.init(dispatcher: dispatcher,
                   storageManager: storageManager,
                   network: network,

@@ -23,23 +23,23 @@ public struct NoteRange: Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Comment ID, if any.
     ///
-    private(set) public var commentID: Int64?
+    public private(set) var commentID: Int64?
 
     /// Post ID, if any.
     ///
-    private(set) public var postID: Int64?
+    public private(set) var postID: Int64?
 
     /// Site ID, if any.
     ///
-    private(set) public var siteID: Int64?
+    public private(set) var siteID: Int64?
 
     /// User ID, if any.
     ///
-    private(set) public var userID: Int64?
+    public private(set) var userID: Int64?
 
     /// String Payload, if any.
     ///
-    private(set) public var value: String?
+    public private(set) var value: String?
 }
 
 extension NoteRange {

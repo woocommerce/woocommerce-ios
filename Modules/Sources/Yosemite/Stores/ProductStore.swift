@@ -9,7 +9,7 @@ public class ProductStore: Store {
     private let generativeContentRemote: GenerativeContentRemoteProtocol
     private let productVariationStorageManager: ProductVariationStorageManager
 
-    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductsRemote(network: network)
         let generativeContentRemote = GenerativeContentRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, generativeContentRemote: generativeContentRemote)

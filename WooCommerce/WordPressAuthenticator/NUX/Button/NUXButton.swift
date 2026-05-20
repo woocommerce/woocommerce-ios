@@ -53,7 +53,7 @@ public struct NUXButtonStyle {
     var buttonStyle: NUXButtonStyle?
     var contentInsets: UIEdgeInsets = UIImage.DefaultRenderMetrics.contentInsets
 
-    open override var isEnabled: Bool {
+    override open var isEnabled: Bool {
         didSet {
             activityIndicator.color = activityIndicatorColor(isEnabled: isEnabled)
         }
@@ -80,7 +80,7 @@ public struct NUXButtonStyle {
         }
     }
 
-    open override func tintColorDidChange() {
+    override open func tintColorDidChange() {
         // Update colors when toggling light/dark mode.
         super.tintColorDidChange()
         configureBackgrounds()
@@ -128,13 +128,13 @@ public struct NUXButtonStyle {
 
     // MARK: - LifeCycle Methods
 
-    open override func didMoveToWindow() {
+    override open func didMoveToWindow() {
         super.didMoveToWindow()
         configureAppearance()
         observeTraitChanges()
     }
 
-    open override func awakeFromNib() {
+    override open func awakeFromNib() {
         super.awakeFromNib()
         configureAppearance()
     }

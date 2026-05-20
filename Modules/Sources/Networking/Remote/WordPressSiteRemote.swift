@@ -7,7 +7,7 @@ public final class WordPressSiteRemote: Remote {
 
     private let apiRootCache: RESTAPIRootCaching
 
-    public override init(network: Network) {
+    override public init(network: Network) {
         self.apiRootCache = WordPressRESTAPIRootCache.shared
         super.init(network: network)
     }

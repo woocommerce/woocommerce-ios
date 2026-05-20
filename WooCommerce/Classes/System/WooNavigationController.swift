@@ -7,7 +7,7 @@ import enum WooFoundation.ConnectivityStatus
 ///
 class WooNavigationController: UINavigationController {
 
-    weak override var delegate: UINavigationControllerDelegate? {
+    override weak var delegate: UINavigationControllerDelegate? {
         get {
             return navigationDelegate.forwardDelegate
         }
@@ -42,7 +42,7 @@ class WooNavigationController: UINavigationController {
 }
 
 extension WooNavigationController {
-    public override func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
+    override public func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
         checkIfNavigationBarShouldPop(item: item)
     }
 }

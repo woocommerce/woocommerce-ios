@@ -34,7 +34,7 @@ final class SetUpTapToPayOnboardingViewController: UIHostingController<SetUpTapT
         self.init(viewModel: viewModel, onWillDisappear: nil)
     }
 
-    @objc required dynamic init?(coder aDecoder: NSCoder) {
+    @objc dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 

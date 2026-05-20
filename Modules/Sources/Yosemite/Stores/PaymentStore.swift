@@ -16,7 +16,7 @@ public final class PaymentStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    public convenience override init(dispatcher: Dispatcher,
+    override public convenience init(dispatcher: Dispatcher,
                                      storageManager: StorageManagerType,
                                      network: Network) {
         let remote = PaymentRemote(network: network)
@@ -26,13 +26,13 @@ public final class PaymentStore: Store {
                   network: network)
     }
 
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: PaymentAction.self)
     }
 
     /// Called whenever a given Action is dispatched.
     ///
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? PaymentAction else {
             assertionFailure("PaymentStore received an unsupported action: \(action)")
             return

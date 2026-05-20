@@ -13,7 +13,7 @@ public final class StatsStoreV4: Store {
     private let productBundleStatsRemote: ProductBundleStatsRemote
     private let giftCardStatsRemote: GiftCardStatsRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.siteStatsRemote = SiteStatsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)

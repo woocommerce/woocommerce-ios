@@ -7,7 +7,7 @@ import Storage
 public final class WooShippingStore: Store {
     private let remote: WooShippingRemoteProtocol
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = WooShippingRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

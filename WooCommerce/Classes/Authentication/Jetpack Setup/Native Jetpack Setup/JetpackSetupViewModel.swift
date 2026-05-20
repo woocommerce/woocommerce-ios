@@ -74,7 +74,7 @@ final class JetpackSetupViewModel: ObservableObject {
     }
 
     /// Attributed string for the description text
-    lazy private(set) var descriptionAttributedString: NSAttributedString = {
+    private(set) lazy var descriptionAttributedString: NSAttributedString = {
         let font: UIFont = .body
         let boldFont: UIFont = font.bold
         let siteName = siteURL.trimHTTPScheme()

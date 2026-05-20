@@ -3,10 +3,10 @@ import Storage
 
 // MARK: SitePostStore
 ///
-final public class SitePostStore: Store {
+public final class SitePostStore: Store {
     private let remote: SitePostsRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = SitePostsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

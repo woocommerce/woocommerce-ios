@@ -69,7 +69,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     /// We need to recreate the view model every time the budget screen is opened to get the updated target options.
-    lazy private(set) var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
+    private(set) lazy var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
                                     isEvergreen: isEvergreen,
@@ -104,35 +104,35 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         })
     }
 
-    lazy private(set) var campaignObjectiveViewModel: BlazeCampaignObjectivePickerViewModel = {
+    private(set) lazy var campaignObjectiveViewModel: BlazeCampaignObjectivePickerViewModel = {
         BlazeCampaignObjectivePickerViewModel(siteID: siteID, selectedObjective: campaignObjective) { [weak self] selectedObjective in
             self?.campaignObjective = selectedObjective
             self?.campaignObjectiveText = selectedObjective?.title
         }
     }()
 
-    lazy private(set) var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel = {
+    private(set) lazy var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel = {
         BlazeTargetLanguagePickerViewModel(siteID: siteID, selectedLanguages: languages) { [weak self] selectedLanguages in
             self?.languages = selectedLanguages
             self?.updateTargetLanguagesText()
         }
     }()
 
-    lazy private(set) var targetDeviceViewModel: BlazeTargetDevicePickerViewModel = {
+    private(set) lazy var targetDeviceViewModel: BlazeTargetDevicePickerViewModel = {
         BlazeTargetDevicePickerViewModel(siteID: siteID, selectedDevices: devices) { [weak self] selectedDevices in
             self?.devices = selectedDevices
             self?.updateTargetDevicesText()
         }
     }()
 
-    lazy private(set) var targetTopicViewModel: BlazeTargetTopicPickerViewModel = {
+    private(set) lazy var targetTopicViewModel: BlazeTargetTopicPickerViewModel = {
         BlazeTargetTopicPickerViewModel(siteID: siteID, selectedTopics: pageTopics) { [weak self] topics in
             self?.pageTopics = topics
             self?.updateTargetTopicText()
         }
     }()
 
-    lazy private(set) var targetLocationViewModel: BlazeTargetLocationPickerViewModel = {
+    private(set) lazy var targetLocationViewModel: BlazeTargetLocationPickerViewModel = {
         BlazeTargetLocationPickerViewModel(siteID: siteID, selectedLocations: locations) { [weak self] locations in
             self?.locations = locations
             self?.updateTargetLocationText()
@@ -152,7 +152,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         })
     }
 
-    lazy private(set) var adDestinationViewModel: BlazeAdDestinationSettingViewModel? = {
+    private(set) lazy var adDestinationViewModel: BlazeAdDestinationSettingViewModel? = {
         // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
         guard let productURL, let siteURL else {
             DDLogError("Error: unable to create BlazeAdDestinationSettingViewModel because productURL and/or siteURL is empty.")

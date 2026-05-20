@@ -6,7 +6,7 @@ extension DateFormatter {
 
     /// Date And Time Formatter. Converts String to Date type
     ///
-    static public func dateFromString(with dateString: String,
+    public static func dateFromString(with dateString: String,
                                       locale: Locale? = .init(identifier: "en_US_POSIX"),
                                       timeZone: TimeZone? = .init(identifier: "GMT"),
                                       dateFormat: String? = "yyyy'-'MM'-'dd'T'HH:mm:ss") -> Date {

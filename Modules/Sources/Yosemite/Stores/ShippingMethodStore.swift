@@ -15,7 +15,7 @@ public final class ShippingMethodStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    public override convenience init(dispatcher: Dispatcher,
+    override public convenience init(dispatcher: Dispatcher,
                                      storageManager: StorageManagerType,
                                      network: Network) {
         let remote = ShippingMethodsRemote(network: network)
@@ -27,13 +27,13 @@ public final class ShippingMethodStore: Store {
 
     /// Registers to support `ShippingMethodAction`
     ///
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: ShippingMethodAction.self)
     }
 
     /// Receives and executes actions
     ///
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? ShippingMethodAction else {
             assertionFailure("ShippingMethodStore receives an unsupported action!")
             return

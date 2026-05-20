@@ -11,7 +11,7 @@ public protocol PaymentCaptureCelebrationProtocol {
 public final class PaymentCaptureCelebration: NSObject, PaymentCaptureCelebrationProtocol {
     private var soundID: SystemSoundID = 0
 
-    public override init() {
+    override public init() {
         super.init()
     }
 

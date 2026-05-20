@@ -70,7 +70,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
 
     @Published private var customsForm: ShippingLabelCustomsForm?
 
-    lazy private(set) var customsFormViewModel: WooShippingCustomsFormViewModel = {
+    private(set) lazy var customsFormViewModel: WooShippingCustomsFormViewModel = {
         return WooShippingCustomsFormViewModel(
             order: order,
             shipment: shipment,

@@ -9,7 +9,7 @@ public class AccountStore: Store {
     private let remote: AccountRemoteProtocol
     private var cancellables = Set<AnyCancellable>()
 
-    public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = AccountRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }

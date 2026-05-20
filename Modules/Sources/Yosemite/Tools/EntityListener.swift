@@ -14,7 +14,7 @@ public class EntityListener<T: ReadOnlyType> {
 
     /// Last known state of the Observed ReadOnly Entity.
     ///
-    private(set) public var readOnlyEntity: T
+    public private(set) var readOnlyEntity: T
 
     /// NotificationCenter Observer Token.
     ///

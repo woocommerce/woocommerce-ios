@@ -362,7 +362,7 @@ struct SimplePaymentsSummary_Preview: PreviewProvider {
             .previewDisplayName("Accessibility")
     }
 
-    static private func createSampleViewModel(noteContent: String? = nil) -> SimplePaymentsSummaryViewModel {
+    private static func createSampleViewModel(noteContent: String? = nil) -> SimplePaymentsSummaryViewModel {
         let taxAmount = "$2.3"
         let taxLine: SimplePaymentsSummaryViewModel.TaxLine = .init(id: Int64.random(in: 0 ..< Int64.max),
                                                                     title: "State Tax (5.55%)",

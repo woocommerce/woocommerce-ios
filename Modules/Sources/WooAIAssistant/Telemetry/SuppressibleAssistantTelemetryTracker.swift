@@ -14,7 +14,7 @@ public final class SuppressibleAssistantTelemetryTracker: AssistantTelemetryTrac
         suppressedRequestIDs.insert(requestID)
     }
 
-    public nonisolated func track(_ event: AssistantTelemetryEvent) {
+    nonisolated public func track(_ event: AssistantTelemetryEvent) {
         MainActor.assumeIsolated {
             if shouldDrop(event) { return }
             underlying.track(event)

@@ -27,7 +27,7 @@ public final class AsyncPaginationTracker {
     private var pagesBeingSynced = IndexSet()
 
     /// Whether there might be more pages to fetch from the API, set by the sync function.
-    private(set) public var hasNextPage: Bool = true
+    public private(set) var hasNextPage: Bool = true
 
     /// Returns the highest page number that has been successfully synced, if any.
     private var highestPageSynced: Int? {

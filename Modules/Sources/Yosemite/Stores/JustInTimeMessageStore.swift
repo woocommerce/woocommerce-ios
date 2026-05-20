@@ -9,7 +9,7 @@ import WooFoundation
 public class JustInTimeMessageStore: Store {
     private let remote: JustInTimeMessagesRemoteProtocol
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = JustInTimeMessagesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

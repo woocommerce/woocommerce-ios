@@ -42,7 +42,7 @@ public actor WooAssistantHeadless {
     /// directly. The trap cleanup deletes the `/tmp` copy at run-end.
     /// Returns nil when the file is missing or any required key is absent so
     /// smoke runs that lack credentials skip without failing the test build.
-    public nonisolated static func credentialsFromStoreEnv() -> Credentials? {
+    nonisolated public static func credentialsFromStoreEnv() -> Credentials? {
         let path = "/tmp/woo-ai-smoke-store.env"
         guard let env = try? parseDotenv(at: URL(fileURLWithPath: path)) else { return nil }
         guard let siteURL = env["WOO_SITE_URL"],

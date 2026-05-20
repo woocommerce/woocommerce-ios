@@ -95,8 +95,8 @@ public class MockStoresManager: StoresManager {
 
     /// A mock session manager that aligns with our mock object graph
     ///
-    private(set)
-    lazy public var sessionManager: SessionManagerProtocol = {
+    public private(set)
+    lazy var sessionManager: SessionManagerProtocol = {
         return MockSessionManager(objectGraph: objectGraph)
     }()
 

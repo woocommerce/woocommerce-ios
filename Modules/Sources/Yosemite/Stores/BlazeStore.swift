@@ -22,7 +22,7 @@ public final class BlazeStore: Store {
     ///   - storageManager: The storage layer used to store and retrieve persisted Blaze campaigns.
     ///   - network: The network layer used to fetch Blaze campaigns
     ///
-    public override convenience init(dispatcher: Dispatcher,
+    override public convenience init(dispatcher: Dispatcher,
                                      storageManager: StorageManagerType,
                                      network: Network) {
         self.init(dispatcher: dispatcher,

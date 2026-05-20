@@ -3,7 +3,7 @@ import Yosemite
 
 final class ProductVisibilityViewController: UIViewController {
 
-    @IBOutlet weak private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     private var sections: [Section] = []
 

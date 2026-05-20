@@ -8,7 +8,7 @@ public class TelemetryStore: Store {
 
     private let minimalIntervalBetweenReports: TimeInterval = 60*60*24
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.telemetryRemote = TelemetryRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

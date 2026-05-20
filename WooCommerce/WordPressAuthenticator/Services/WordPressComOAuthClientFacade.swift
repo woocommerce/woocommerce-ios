@@ -4,7 +4,7 @@ import Foundation
 
     private let client: WordPressComOAuthClient
 
-    @objc required public init(client: String, secret: String) {
+    @objc public required init(client: String, secret: String) {
         self.client = WordPressComOAuthClient(
             clientID: client,
             secret: secret,

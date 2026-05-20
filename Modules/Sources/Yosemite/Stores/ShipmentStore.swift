@@ -12,7 +12,7 @@ public class ShipmentStore: Store {
     ///
     public static let customGroupName = NSLocalizedString("Custom", comment: "Name of the group of tracking providers created manually by users")
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ShipmentsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

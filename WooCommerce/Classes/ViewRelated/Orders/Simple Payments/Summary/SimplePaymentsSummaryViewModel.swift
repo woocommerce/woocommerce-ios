@@ -156,7 +156,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// ViewModel for the edit order note view.
     ///
-    lazy private(set) var noteViewModel = { SimplePaymentsNoteViewModel(analytics: analytics) }()
+    private(set) lazy var noteViewModel = { SimplePaymentsNoteViewModel(analytics: analytics) }()
 
     init(providedAmount: String,
          amountName: String? = nil,

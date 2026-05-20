@@ -5,7 +5,7 @@ import Yosemite
 //
 final class ProductPriceSettingsViewController: UIViewController {
 
-    @IBOutlet weak private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     /// Product Price Settings dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter due to modal page sheet situations)
     ///

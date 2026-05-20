@@ -22,13 +22,13 @@ public final class AccountCreationStore: DeauthenticatedStore {
         self.init(dotcomClientID: dotcomClientID, dotcomClientSecret: dotcomClientSecret, remote: remote, dispatcher: dispatcher)
     }
 
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: AccountCreationAction.self)
     }
 
     /// Called whenever a given Action is dispatched.
     ///
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? AccountCreationAction else {
             assertionFailure("AccountCreationStore received an unsupported action: \(action)")
             return

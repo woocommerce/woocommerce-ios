@@ -40,7 +40,7 @@ public protocol ApplicationPasswordUseCase {
     func deletePassword(locally: Bool) async throws
 }
 
-final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
+public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     /// Authentication type
     ///
     private let authenticationType: AuthenticationType

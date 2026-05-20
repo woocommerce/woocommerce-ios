@@ -7,8 +7,14 @@ struct PushNotificationPreferencesView: View {
 
     @Bindable private var viewModel: PushNotificationPreferencesViewModel
 
-    init(viewModel: PushNotificationPreferencesViewModel) {
+    /// Invoked when the user taps the New orders row. The hosting controller
+    /// performs the push in UIKit.
+    private let onNewOrderTapped: () -> Void
+
+    init(viewModel: PushNotificationPreferencesViewModel,
+         onNewOrderTapped: @escaping () -> Void = {}) {
         self.viewModel = viewModel
+        self.onNewOrderTapped = onNewOrderTapped
     }
 
     var body: some View {
@@ -51,7 +57,9 @@ struct PushNotificationPreferencesView: View {
         List {
             Section {
                 row(title: Localization.newOrdersTitle,
-                    detail: viewModel.isStoreOrderEnabled ? Localization.newOrdersDetail : Localization.off)
+                    detail: viewModel.isStoreOrderEnabled ? Localization.newOrdersDetail : Localization.off,
+                    accessibilityHint: Localization.newOrdersAccessibilityHint,
+                    action: onNewOrderTapped)
                 row(title: Localization.newReviewsTitle,
                     detail: viewModel.isStoreReviewEnabled ? Localization.newReviewsDetail : Localization.off)
                 row(title: Localization.stockTitle,
@@ -61,7 +69,12 @@ struct PushNotificationPreferencesView: View {
         .listStyle(.insetGrouped)
     }
 
-    private func row(title: String, detail: String) -> some View {
+    /// Title + detail + chevron. Tappable when `action` is non-nil. Uses
+    /// `onTapGesture` rather than `Button` to avoid List's interactive-row tint.
+    private func row(title: String,
+                     detail: String,
+                     accessibilityHint: String? = nil,
+                     action: (() -> Void)? = nil) -> some View {
         HStack(spacing: Layout.contentSpacing) {
             VStack(alignment: .leading, spacing: Layout.titleDetailSpacing) {
                 Text(title)
@@ -77,8 +90,25 @@ struct PushNotificationPreferencesView: View {
                 .accessibilityHidden(true)
         }
         .contentShape(Rectangle())
+        .onTapGesture { action?() }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
+        .ifLet(accessibilityHint) { view, hint in
+            view.accessibilityHint(hint)
+        }
+    }
+}
+
+private extension View {
+    /// Applies `transform` only when `value` is non-nil.
+    @ViewBuilder
+    func ifLet<T, Transform: View>(_ value: T?,
+                                   transform: (Self, T) -> Transform) -> some View {
+        if let value {
+            transform(self, value)
+        } else {
+            self
+        }
     }
 }
 
@@ -105,6 +135,11 @@ extension PushNotificationPreferencesView {
             "pushNotificationPreferencesView.newOrders.detail",
             value: "All orders",
             comment: "Detail text for the row that toggles new-order push notifications."
+        )
+        static let newOrdersAccessibilityHint = NSLocalizedString(
+            "pushNotificationPreferencesView.newOrders.accessibilityHint",
+            value: "Customize new order notifications",
+            comment: "VoiceOver hint announced when focused on the New orders row, describing that it opens a detail screen."
         )
         static let newReviewsTitle = NSLocalizedString(
             "pushNotificationPreferencesView.newReviews.title",

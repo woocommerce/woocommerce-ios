@@ -170,6 +170,55 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.displayed.storeOrder?.minAmount == 100)
     }
 
+    // MARK: - discardStoreOrderEdits
+
+    @Test func test_discardStoreOrderEdits_reverts_storeOrder_to_lastSaved_and_clears_unsaved_flag() async {
+        // Given a loaded VM with a positive threshold the user then edits.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeOrder: .init(enabled: true, minAmount: 100))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+        sut.setStoreOrderEnabled(false)
+        sut.setStoreOrderMinAmount(500)
+        #expect(sut.hasUnsavedChanges == true)
+
+        // When
+        sut.discardStoreOrderEdits()
+
+        // Then `displayed.storeOrder` matches the server snapshot again.
+        #expect(sut.displayed.storeOrder?.enabled == true)
+        #expect(sut.displayed.storeOrder?.minAmount == 100)
+        #expect(sut.hasUnsavedChanges == false)
+    }
+
+    @Test func test_discardStoreOrderEdits_leaves_other_sections_untouched() async {
+        // Given a loaded VM where the user edits review *and* order.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(
+                    storeOrder: .init(enabled: true),
+                    storeReview: .init(enabled: false)
+                )))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+        sut.setStoreOrderEnabled(false)
+        sut.setStoreReviewEnabled(true)
+
+        // When the user discards the order edits.
+        sut.discardStoreOrderEdits()
+
+        // Then the review edit is preserved — the discard is scoped to the order section.
+        #expect(sut.displayed.storeOrder?.enabled == true)
+        #expect(sut.displayed.storeReview?.enabled == true)
+    }
+
     // MARK: - hasUnsavedChanges
 
     @Test func test_hasUnsavedChanges_when_displayed_equals_lastSaved_then_false() async {
@@ -285,6 +334,135 @@ struct PushNotificationPreferencesViewModelTests {
         // Then
         #expect(success == true)
         #expect(dispatched.calls.isEmpty)
+    }
+
+    // MARK: - setStoreOrderMinAmount
+
+    @Test func test_setStoreOrderMinAmount_mutates_displayed_only_and_preserves_enabled() async {
+        // Given a loaded VM with the master toggle on.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeOrder: .init(enabled: true))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+
+        // When
+        sut.setStoreOrderMinAmount(300)
+
+        // Then
+        #expect(sut.storeOrderMinAmount == 300)
+        #expect(sut.isStoreOrderEnabled == true)
+        #expect(sut.hasUnsavedChanges == true)
+        #expect(sut.lastKnownStoreOrderMinAmount == 300)
+    }
+
+    @Test func test_setStoreOrderMinAmount_with_zero_normalizes_to_nil_and_keeps_lastKnown() async {
+        // Given a loaded VM with a positive threshold.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeOrder: .init(enabled: true, minAmount: 200))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+
+        // When
+        sut.setStoreOrderMinAmount(0)
+
+        // Then
+        #expect(sut.storeOrderMinAmount == nil)
+        // `lastKnown` keeps the previous positive value so a later restore works.
+        #expect(sut.lastKnownStoreOrderMinAmount == 200)
+    }
+
+    @Test func test_setStoreOrderMinAmount_with_negative_normalizes_to_nil() async {
+        // Given
+        let sut = makeSUT(stores: makeStores())
+
+        // When
+        sut.setStoreOrderMinAmount(-50)
+
+        // Then
+        #expect(sut.storeOrderMinAmount == nil)
+    }
+
+    @Test func test_load_when_response_has_positive_minAmount_then_lastKnown_is_populated() async {
+        // Given
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeOrder: .init(enabled: true, minAmount: 250))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        await sut.load()
+
+        // Then
+        #expect(sut.lastKnownStoreOrderMinAmount == 250)
+    }
+
+    // MARK: - StoreOrderThreshold helpers
+
+    @Test func test_storeOrderThreshold_isAllowedInput_accepts_positive_ascii_integer() {
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("5"))
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("12345"))
+    }
+
+    @Test func test_storeOrderThreshold_isAllowedInput_accepts_non_latin_digits() {
+        // Arabic-Indic "500", Eastern Arabic-Indic "500", Devanagari "500".
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("\u{0665}\u{0660}\u{0660}"))
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("\u{06F5}\u{06F0}\u{06F0}"))
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("\u{096B}\u{0966}\u{0966}"))
+    }
+
+    @Test func test_storeOrderThreshold_isAllowedInput_rejects_empty_zero_and_leading_zero() {
+        #expect(!PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput(""))
+        #expect(!PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("0"))
+        #expect(!PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("00"))
+        #expect(!PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("01"))
+        // Arabic-Indic leading zero (\u{0660} = "٠").
+        #expect(!PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("\u{0660}\u{0665}"))
+    }
+
+    @Test func test_storeOrderThreshold_isAllowedInput_rejects_non_digit_characters() {
+        #expect(!PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("abc"))
+        #expect(!PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("1.5"))
+        #expect(!PushNotificationPreferencesViewModel.StoreOrderThreshold.isAllowedInput("5e3"))
+    }
+
+    @Test func test_storeOrderThreshold_parse_returns_value_for_ascii_and_non_latin_digits() {
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.parse("500") == 500)
+        // Arabic-Indic "500" → 500.
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.parse("\u{0665}\u{0660}\u{0660}") == 500)
+        // Devanagari "500" → 500.
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.parse("\u{096B}\u{0966}\u{0966}") == 500)
+    }
+
+    @Test func test_storeOrderThreshold_parse_returns_nil_for_empty_or_invalid() {
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.parse("") == nil)
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.parse("   ") == nil)
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.parse("abc") == nil)
+    }
+
+    @Test func test_storeOrderThreshold_parse_trims_whitespace() {
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.parse("  500  ") == 500)
+    }
+
+    @Test func test_storeOrderThreshold_formatInput_returns_ascii_integer_for_positive_amount() {
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.formatInput(100) == "100")
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.formatInput(99999) == "99999")
+    }
+
+    @Test func test_storeOrderThreshold_formatInput_returns_empty_for_nil_zero_or_negative() {
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.formatInput(nil).isEmpty)
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.formatInput(0).isEmpty)
+        #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.formatInput(-5).isEmpty)
     }
 
     @Test func test_save_dispatches_only_changed_sections() async {

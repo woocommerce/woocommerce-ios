@@ -27,6 +27,15 @@ final class PushNotificationPreferencesViewModel {
     var isStoreReviewEnabled: Bool { displayed.storeReview?.enabled ?? false }
     var isStoreStockEnabled: Bool { displayed.storeStock?.enabled ?? false }
 
+    /// `nil` means "all orders".
+    var storeOrderMinAmount: Decimal? { displayed.storeOrder?.minAmount }
+
+    /// Last positive threshold seen, used to restore the value when the user
+    /// toggles "Only high-value orders" back on after switching to "All new orders".
+    private(set) var lastKnownStoreOrderMinAmount: Decimal?
+
+    static let defaultStoreOrderMinAmount: Decimal = 100
+
     var errorNotice: Notice?
 
     private let siteID: Int64
@@ -51,6 +60,7 @@ final class PushNotificationPreferencesViewModel {
                 displayed = preferences
             }
             lastSaved = preferences
+            rememberLastKnownMinAmount(from: preferences.storeOrder?.minAmount)
             loadState = .loaded
         } catch {
             DDLogError("⛔️ Error loading push notification preferences for siteID=\(siteID): \(error)")
@@ -72,6 +82,7 @@ final class PushNotificationPreferencesViewModel {
                 })
             }
             lastSaved = server
+            rememberLastKnownMinAmount(from: server.storeOrder?.minAmount)
             // Adopt the server's view so any clamped field (e.g. negative
             // threshold → nil) shows correctly without re-triggering
             // `hasUnsavedChanges`.
@@ -89,6 +100,25 @@ final class PushNotificationPreferencesViewModel {
     func setStoreOrderEnabled(_ newValue: Bool) {
         displayed = displayed.with(storeOrder: .init(enabled: newValue,
                                                      minAmount: displayed.storeOrder?.minAmount))
+    }
+
+    /// Reverts only the new-order section of `displayed` to `lastSaved`.
+    /// Other sections are left untouched — their detail screens own their
+    /// own discard paths.
+    func discardStoreOrderEdits() {
+        displayed = PushNotificationPreferences(storeOrder: lastSaved.storeOrder,
+                                                storeReview: displayed.storeReview,
+                                                storeStock: displayed.storeStock)
+    }
+
+    func setStoreOrderMinAmount(_ newValue: Decimal?) {
+        let normalized: Decimal? = {
+            guard let value = newValue, value > 0 else { return nil }
+            return value
+        }()
+        rememberLastKnownMinAmount(from: normalized)
+        displayed = displayed.with(storeOrder: .init(enabled: isStoreOrderEnabled,
+                                                     minAmount: normalized))
     }
 
     func setStoreReviewEnabled(_ newValue: Bool) {
@@ -116,6 +146,45 @@ private extension PushNotificationPreferencesViewModel {
             storeReview: target.storeReview != baseline.storeReview ? target.storeReview : nil,
             storeStock: target.storeStock != baseline.storeStock ? target.storeStock : nil
         )
+    }
+
+    func rememberLastKnownMinAmount(from value: Decimal?) {
+        guard let value, value > 0 else { return }
+        lastKnownStoreOrderMinAmount = value
+    }
+}
+
+extension PushNotificationPreferencesViewModel {
+    /// Threshold text-field input helpers. Accepts digits from any Unicode
+    /// script (ASCII, Arabic-Indic, Devanagari, etc.).
+    enum StoreOrderThreshold {
+        /// `true` if `s` is a positive integer string with no leading zero.
+        static func isAllowedInput(_ s: String) -> Bool {
+            guard !s.isEmpty else { return false }
+            guard let firstDigit = s.first?.wholeNumberValue, firstDigit != 0 else { return false }
+            return s.unicodeScalars.allSatisfy(CharacterSet.decimalDigits.contains)
+        }
+
+        /// Parses `input` as a non-negative integer Decimal, or `nil` for
+        /// empty / invalid input.
+        static func parse(_ input: String) -> Decimal? {
+            let trimmed = input.trimmingCharacters(in: .whitespaces)
+            guard !trimmed.isEmpty else { return nil }
+            var value: Decimal = 0
+            for char in trimmed {
+                guard let digit = char.wholeNumberValue else { return nil }
+                value = value * 10 + Decimal(digit)
+            }
+            return value
+        }
+
+        /// Formats `amount` for display in the threshold text field as an
+        /// integer string (no decimals, no thousands separator).
+        static func formatInput(_ amount: Decimal?) -> String {
+            guard let amount, amount > 0 else { return "" }
+            let rounded = NSDecimalNumber(decimal: amount).intValue
+            return String(rounded)
+        }
     }
 }
 

@@ -380,6 +380,22 @@ struct AIApiProxyChatServiceTests {
         #expect(textDeltas(in: events).joined() == "café")
     }
 
+    @Test
+    func test_sendChat_when_stream_completes_with_no_events_on_200_then_throws_upstream_error() async throws {
+        // Given
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data("data: [DONE]\n\n".utf8)])])
+        let service = makeService(transport: transport)
+
+        // When / Then
+        do {
+            _ = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+            Issue.record("Expected empty 200 stream to surface as upstream error.")
+        } catch let error as AssistantError {
+            #expect(error.kind == .upstreamFailure)
+            #expect(error.code == "200")
+        }
+    }
+
     // MARK: - Single-chunk success paths
 
     @Test

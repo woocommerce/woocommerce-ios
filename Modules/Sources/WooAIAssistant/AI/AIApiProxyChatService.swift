@@ -167,6 +167,12 @@ public struct AIApiProxyChatService: AIChatService {
                                                              function: .init(name: name,
                                                                              arguments: asm.arguments))))
         }
+
+        // The wpcom streaming path closes upstream errors as HTTP 200 with no SSE frames; a turn
+        // that produced no text and no tool calls is that error signature, not a real completion.
+        guard await bridge.didEmitAnyEvent else {
+            throw AssistantError(kind: .upstreamFailure, code: "200", message: Localization.emptyStream)
+        }
         continuation.yield(.completed(finishReason))
     }
 
@@ -319,6 +325,11 @@ extension AIApiProxyChatService {
             "ai.assistant.networking.proxy.unauthorized",
             value: "WPCOM credentials missing or expired.",
             comment: "Surfaced when the AI proxy rejects the request with rest_unauthorized."
+        )
+        static let emptyStream = NSLocalizedString(
+            "ai.assistant.networking.proxy.empty_stream",
+            value: "The AI service returned an empty response. Please try again.",
+            comment: "Surfaced when the proxy closes a streaming response with HTTP 200 but no assistant text or tool calls."
         )
     }
 }

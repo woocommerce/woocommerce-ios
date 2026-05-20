@@ -4,7 +4,7 @@ import Yosemite
 
 // MARK: - OrderTableViewCell
 //
-final class OrderTableViewCell: UITableViewCell & SearchResultCell {
+final class OrderTableViewCell: UITableViewCell, SearchResultCell {
     typealias SearchModel = OrderListCellViewModel
 
     /// Order's Title

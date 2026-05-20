@@ -81,11 +81,15 @@ private extension QRLoginCoordinator {
     func showPrologue() {
         analytics.trackStep(.qrPrologue)
         let view = QRLoginPrologueView(
+            onBackTapped: { [weak self] in self?.navigationController.popViewController(animated: true) },
+            onHelpTapped: { [weak self] in self?.showHelp() },
             onScanTapped: { [weak self] in self?.handleScanCTA() },
             onSiteAddressTapped: { [weak self] in self?.fallbackToSiteAddress() },
             onURLTapped: { Self.copyLoginURL() }
         )
-        pushScreen(view)
+        // The dark prologue hides the shared navigation bar and draws its own
+        // light Back / Help controls over the bubble background.
+        pushScreen(view, navigationBarStyle: .hidden, prefersLightStatusBar: true, showsHelpButton: false)
     }
 
     func handleScanCTA() {
@@ -126,7 +130,7 @@ private extension QRLoginCoordinator {
         )
         // The scanner is full-bleed camera UI with its own in-view chrome, so it
         // keeps the navigation bar hidden and does not use the toolbar Help item.
-        pushScreen(view, showsNavigationBar: false, showsHelpButton: false)
+        pushScreen(view, navigationBarStyle: .hidden, showsHelpButton: false)
     }
 
     func popScanner() {
@@ -253,10 +257,12 @@ private extension QRLoginCoordinator {
     /// navigation stack, showing the navigation bar with a "Help" item by default.
     @discardableResult
     func pushScreen<Content: View>(_ view: Content,
-                                   showsNavigationBar: Bool = true,
+                                   navigationBarStyle: QRLoginNavigationBarStyle = .inherited,
+                                   prefersLightStatusBar: Bool = false,
                                    showsHelpButton: Bool = true) -> QRLoginHostingController<Content> {
         let hosting = QRLoginHostingController(rootView: view)
-        hosting.showsNavigationBar = showsNavigationBar
+        hosting.navigationBarStyle = navigationBarStyle
+        hosting.prefersLightStatusBar = prefersLightStatusBar
         if showsHelpButton {
             hosting.navigationItem.rightBarButtonItem = UIBarButtonItem(
                 title: Localization.help,

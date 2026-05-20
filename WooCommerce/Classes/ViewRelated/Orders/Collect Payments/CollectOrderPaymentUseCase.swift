@@ -481,7 +481,8 @@ private extension CollectOrderPaymentUseCase {
     func handlePaymentCancellationFromReader(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>) {
         analyticsTracker.trackPaymentCancelation(cancelationSource: .reader)
         guard let dismissedOnReaderAlert = paymentAlerts.cancelledOnReader() else {
-            return alertsPresenter.dismiss()
+            alertsPresenter.dismiss()
+            return
         }
         alertsPresenter.present(viewModel: dismissedOnReaderAlert)
     }
@@ -495,11 +496,12 @@ private extension CollectOrderPaymentUseCase {
                                                       channel: PaymentChannel,
                                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         guard case ServerSidePaymentCaptureError.paymentGateway = error else {
-            return handlePaymentFailureAndRetryPayment(error,
+            handlePaymentFailureAndRetryPayment(error,
                                                        alertProvider: paymentAlerts,
                                                        paymentGatewayAccount: paymentGatewayAccount,
                                                        channel: channel,
                                                        onCompletion: onCompletion)
+            return
         }
 
         // This is an unknown error during payment capture.
@@ -702,7 +704,8 @@ private extension CollectOrderPaymentUseCase {
     private func completeAfterErrorDismissal(_ error: Error,
                                              onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         guard shouldCancelPaymentAfterDismissing(error) else {
-            return onCompletion(.failure(error))
+            onCompletion(.failure(error))
+            return
         }
 
         cancelPaymentAndComplete(with: error, onCompletion: onCompletion)
@@ -915,7 +918,8 @@ private extension CollectOrderPaymentUseCase {
 
         // Order only fails when the payment is declined by the payment processor, other types of failure don't produce failure states and receipts.
         guard isErrorEligibleForSendingFailureReceiptAfterPayment else {
-            return completion(.noEmailReceipt)
+            completion(.noEmailReceipt)
+            return
         }
 
         receiptEligibilityUseCase.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: paymentGatewayID) { [weak self] isEligible in

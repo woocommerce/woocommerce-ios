@@ -216,7 +216,7 @@ private extension LastOrdersDashboardCardViewModel {
 
     @MainActor
     func loadOrderStatuses() async throws {
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
                 switch result {
                 case .success:
@@ -226,6 +226,7 @@ private extension LastOrdersDashboardCardViewModel {
                 }
             })
         }
+        return
     }
 
     func configureStatusResultsController() {

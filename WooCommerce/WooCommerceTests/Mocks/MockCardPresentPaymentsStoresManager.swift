@@ -87,10 +87,12 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
                 return
             }
             guard let batteryLevel = reader.batteryLevel, batteryLevel > 0.1 else {
-                return onCompletion(.failure(CardReaderServiceError.connection(underlyingError: .bluetoothConnectionFailedBatteryCriticallyLow)))
+                onCompletion(.failure(CardReaderServiceError.connection(underlyingError: .bluetoothConnectionFailedBatteryCriticallyLow)))
+                return
             }
             guard !failUpdate else {
-                return onCompletion(.failure(CardReaderServiceError.softwareUpdate(underlyingError: .readerSoftwareUpdateFailedBatteryLow, batteryLevel: 0.25)))
+                onCompletion(.failure(CardReaderServiceError.softwareUpdate(underlyingError: .readerSoftwareUpdateFailedBatteryLow, batteryLevel: 0.25)))
+                return
             }
             onCompletion(Result.success(reader))
         case .cancelCardReaderDiscovery(let onCompletion):

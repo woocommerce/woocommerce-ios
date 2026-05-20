@@ -40,7 +40,8 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
         readinessUseCase.checkCardPaymentReadiness()
 
         guard case .ready = readinessUseCase.readiness else {
-            return showOnboarding(readyToCollectPayment: completion)
+            showOnboarding(readyToCollectPayment: completion)
+            return
         }
 
         completion()

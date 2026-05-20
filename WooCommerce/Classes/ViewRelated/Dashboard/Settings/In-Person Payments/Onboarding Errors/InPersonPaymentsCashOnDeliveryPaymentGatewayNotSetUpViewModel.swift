@@ -68,7 +68,8 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
         trackSkipTapped()
 
         guard let siteID else {
-            return completion()
+            completion()
+            return
         }
 
         let action = AppSettingsAction.setSkippedCashOnDeliveryOnboardingStep(siteID: siteID)
@@ -80,7 +81,8 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
         trackEnableTapped()
 
         guard let siteID else {
-            return completion()
+            completion()
+            return
         }
 
         awaitingResponse = true

@@ -240,7 +240,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
             guard case .success = imageState else {
                 analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
-                return onProductCreated(remoteProduct)
+                onProductCreated(remoteProduct)
+                return
             }
 
             /// Updates local product with images

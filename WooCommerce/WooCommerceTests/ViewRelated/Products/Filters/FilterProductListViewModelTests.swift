@@ -207,7 +207,8 @@ final class FilterProductListViewModelTests: XCTestCase {
 
         // Then
         guard case .staticOptions = viewModel.listSelectorConfig else {
-            return XCTFail("Expected static options for product type filter.")
+            XCTFail("Expected static options for product type filter.")
+            return
         }
         XCTAssertEqual(checker.lastSite, sampleSite)
     }

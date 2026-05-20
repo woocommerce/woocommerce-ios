@@ -353,7 +353,8 @@ private extension AppSettingsStore {
         do {
             if let installationDate = generalAppSettings.value(for: \.installationDate),
                date > installationDate {
-                return onCompletion(.success(false))
+                onCompletion(.success(false))
+                return
             }
 
             try generalAppSettings.setValue(date, for: \.installationDate)
@@ -409,7 +410,8 @@ private extension AppSettingsStore {
     ///
     func loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void) {
         guard let errorInfo = generalAppSettings.value(for: \.lastEligibilityErrorInfo) else {
-            return onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+            onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+            return
         }
 
         onCompletion(.success(errorInfo))
@@ -438,11 +440,13 @@ private extension AppSettingsStore {
     func loadJetpackBenefitsBannerVisibility(currentTime: Date, calendar: Calendar, onCompletion: (Bool) -> Void) {
         guard let lastDismissedTime = generalAppSettings.value(for: \.lastJetpackBenefitsBannerDismissedTime) else {
             // If the banner has not been dismissed before, the banner is default to be visible.
-            return onCompletion(true)
+            onCompletion(true)
+            return
         }
 
         guard let numberOfDaysSinceLastDismissal = calendar.dateComponents([.day], from: lastDismissedTime, to: currentTime).day else {
-            return onCompletion(true)
+            onCompletion(true)
+            return
         }
         onCompletion(numberOfDaysSinceLastDismissal >= 5)
     }
@@ -474,7 +478,8 @@ private extension AppSettingsStore {
     func rememberCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void) {
         do {
             guard !generalAppSettings.value(for: \.knownCardReaders).contains(cardReaderID) else {
-                return onCompletion(.success(()))
+                onCompletion(.success(()))
+                return
             }
 
             /// NOTE: We now only persist one card reader maximum, although for backwards compatibility
@@ -1143,7 +1148,8 @@ extension AppSettingsStore {
 
     func getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ()) {
         guard let campaignSettings = generalAppSettings.value(for: \.featureAnnouncementCampaignSettings)[campaign] else {
-            return onCompletion(.success(true))
+            onCompletion(.success(true))
+            return
         }
 
         if let remindAfter = campaignSettings.remindAfter {

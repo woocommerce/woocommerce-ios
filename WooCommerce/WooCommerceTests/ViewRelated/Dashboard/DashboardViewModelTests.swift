@@ -185,7 +185,8 @@ final class DashboardViewModelTests: XCTestCase {
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "jitm_fetch_success"),
               let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: AnyHashable]
         else {
-            return XCTFail("Expected event was not logged")
+            XCTFail("Expected event was not logged")
+            return
         }
 
         assertEqual("my_store", properties["source"] as? String)
@@ -233,7 +234,8 @@ final class DashboardViewModelTests: XCTestCase {
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "jitm_fetch_failure"),
               let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: AnyHashable]
         else {
-            return XCTFail("Expected event was not logged")
+            XCTFail("Expected event was not logged")
+            return
         }
 
         assertEqual("my_store", properties["source"] as? String)
@@ -318,7 +320,8 @@ final class DashboardViewModelTests: XCTestCase {
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "dashboard_store_timezone_differ_from_device"),
               let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: AnyHashable]
         else {
-            return XCTFail("Expected event was not logged")
+            XCTFail("Expected event was not logged")
+            return
         }
 
         assertEqual("-1", properties["local_timezone"] as? String)
@@ -342,7 +345,8 @@ final class DashboardViewModelTests: XCTestCase {
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "dashboard_store_timezone_differ_from_device"),
               let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: AnyHashable]
         else {
-            return XCTFail("Expected event was not logged")
+            XCTFail("Expected event was not logged")
+            return
         }
 
         assertEqual("-1.5", properties["local_timezone"] as? String)

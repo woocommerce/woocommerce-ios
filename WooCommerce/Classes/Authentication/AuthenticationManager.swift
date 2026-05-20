@@ -431,15 +431,17 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         guard let siteURL = credentials.wpcom?.siteURL ?? credentials.wporg?.siteURL else {
             // This should not happen since the resulting credentials should be either `wpcom` or `wporg`
-            return DDLogError("⛔️ No site URL found to present Login Epilogue.")
+            DDLogError("⛔️ No site URL found to present Login Epilogue.")
+            return
         }
 
         /// If the user logged in with site credentials,
         /// check if they can use the app and navigates to the home screen.
         if let siteCredentials = credentials.wporg {
-            return didAuthenticateUser(to: siteURL,
+            didAuthenticateUser(to: siteURL,
                                        with: siteCredentials,
                                        in: navigationController)
+            return
         }
 
         let matcher = ULAccountMatcher(storageManager: storageManager)
@@ -554,7 +556,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             ServiceLocator.stores.authenticate(credentials: .wporg(username: wporg.username,
                                                                    password: wporg.password,
                                                                    siteAddress: wporg.siteURL))
-            return onCompletion()
+            onCompletion()
+            return
         }
 
         guard let wpcom = credentials.wpcom else {
@@ -820,7 +823,8 @@ private extension AuthenticationManager {
             password: siteCredentials.password,
             siteAddress: siteCredentials.siteURL
         ) else {
-            return assertionFailure("⛔️ Error creating application password use case")
+            assertionFailure("⛔️ Error creating application password use case")
+            return
         }
         checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController, previousViewController: nil)
     }

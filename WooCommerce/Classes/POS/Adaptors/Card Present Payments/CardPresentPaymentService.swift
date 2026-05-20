@@ -149,7 +149,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
         connectionControllerManager.knownReaderProvider.forgetCardReader()
 
-        return await withCheckedContinuation { continuation in
+        await withCheckedContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, Never>? = continuation
 
             let action = CardPresentPaymentAction.disconnect { [weak self] _ in
@@ -163,6 +163,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             }
             stores.dispatch(action)
         }
+        return
     }
 
     @MainActor

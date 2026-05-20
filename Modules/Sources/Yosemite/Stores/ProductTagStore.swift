@@ -89,7 +89,8 @@ private extension ProductTagStore {
     ///
     func addProductTags(siteID: Int64, tags: [String], onCompletion: @escaping (Result<[ProductTag], Error>) -> Void) {
         guard tags.isEmpty == false else {
-            return onCompletion(.success([]))
+            onCompletion(.success([]))
+            return
         }
         remote.createProductTags(for: siteID, names: tags) { [weak self] (result) in
             switch result {

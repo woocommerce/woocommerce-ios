@@ -1190,7 +1190,8 @@ private extension MainTabBarController {
         if let productsSplitViewWrapperController = productsContainerController.wrappedController as? ProductsSplitViewWrapperController,
            let productForm = productsSplitViewWrapperController.currentProductForm(for: error.productOrVariationID.id) {
             // Ask the product form to display an alert about the error
-            return productForm.handleProductUploadError(error)
+            productForm.handleProductUploadError(error)
+            return
         }
 
         let model: ProductLoaderViewController.Model = {

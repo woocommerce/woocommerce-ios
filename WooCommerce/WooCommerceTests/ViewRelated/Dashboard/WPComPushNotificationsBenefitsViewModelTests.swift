@@ -119,7 +119,8 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
         // Then
         guard case .generic = viewModel.error else {
-            return XCTFail("Expected generic error, got \(String(describing: viewModel.error))")
+            XCTFail("Expected generic error, got \(String(describing: viewModel.error))")
+            return
         }
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
@@ -372,7 +373,8 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
         // Then
         guard case .noPermission = viewModel.error else {
-            return XCTFail("Expected noPermission error, got \(String(describing: viewModel.error))")
+            XCTFail("Expected noPermission error, got \(String(describing: viewModel.error))")
+            return
         }
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
@@ -388,7 +390,8 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
         // Then
         guard case .generic = viewModel.error else {
-            return XCTFail("Expected generic error, got \(String(describing: viewModel.error))")
+            XCTFail("Expected generic error, got \(String(describing: viewModel.error))")
+            return
         }
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }

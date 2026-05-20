@@ -112,7 +112,8 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
         guard validateEmail() else {
             notice = AddressFormViewModel.NoticeFactory.createInvalidEmailNotice()
-            return onFinish(false)
+            onFinish(false)
+            return
         }
 
         let updatedAddress = fields.toAddress()

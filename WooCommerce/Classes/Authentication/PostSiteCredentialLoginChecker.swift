@@ -49,7 +49,8 @@ private extension PostSiteCredentialLoginChecker {
                                   with useCase: ApplicationPasswordUseCase,
                                   in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
         guard useCase.applicationPassword == nil else {
-            return onSuccess()
+            onSuccess()
+            return
         }
         Task { @MainActor in
             do {

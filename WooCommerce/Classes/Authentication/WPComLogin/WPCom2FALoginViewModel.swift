@@ -58,7 +58,8 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     @available(iOS 16, *)
     func loginWithSecurityKey() {
         guard let twoStepNonce = loginFields.nonceInfo?.nonceWebauthn else {
-            return handleError(.webAuthNonceNotFound)
+            handleError(.webAuthNonceNotFound)
+            return
         }
 
         isLoggingIn = true
@@ -78,7 +79,8 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
         if let nonceInfo = loginFields.nonceInfo {
             let (authType, nonce) = nonceInfo.authTypeAndNonce(for: strippedCode)
             guard nonce.isNotEmpty else {
-                return handleError(.bad2FACode)
+                handleError(.bad2FACode)
+                return
             }
             loginFacade.loginToWordPressDotCom(withUser: loginFields.nonceUserID, authType: authType, twoStepCode: strippedCode, twoStepNonce: nonce)
         } else {
@@ -133,12 +135,14 @@ extension WPCom2FALoginViewModel: ASAuthorizationControllerDelegate, ASAuthoriza
               let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion,
               let challengeInfo = loginFields.webauthnChallengeInfo,
               let clientDataJson = extractClientData(from: credential, challengeInfo: challengeInfo) else {
-            return handleError(.webAuthChallengeRequestFailed)
+            handleError(.webAuthChallengeRequestFailed)
+            return
         }
 
         // Validate that the submitted passkey is allowed.
         guard challengeInfo.allowedCredentialIDs.contains(credential.credentialID.base64URLEncodedString()) else {
-            return handleError(.invalidSecurityKey)
+            handleError(.invalidSecurityKey)
+            return
         }
 
         loginFacade.authenticateWebauthnSignature(userID: loginFields.nonceUserID,

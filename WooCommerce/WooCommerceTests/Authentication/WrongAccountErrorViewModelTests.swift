@@ -294,7 +294,8 @@ private final class MockAuthenticator: Authenticator {
     static func fetchSiteInfo(for siteURL: String, onCompletion: @escaping (Result<WordPressComSiteInfo, Error>) -> Void) {
         fetchSiteInfoTriggered = true
         guard let siteInfo else {
-            return onCompletion(.failure(AuthenticatorError.serviceError))
+            onCompletion(.failure(AuthenticatorError.serviceError))
+            return
         }
         onCompletion(.success(siteInfo))
     }

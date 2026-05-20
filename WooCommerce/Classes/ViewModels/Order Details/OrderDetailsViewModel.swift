@@ -413,7 +413,7 @@ extension OrderDetailsViewModel {
     func syncTrackingsWhenShipmentTrackingIsEnabled() async {
         let orderID = order.orderID
         let siteID = order.siteID
-        return await withCheckedContinuation { continuation in
+        await withCheckedContinuation { continuation in
             stores.dispatch(
                 ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
                                                                orderID: orderID) { error in
@@ -429,6 +429,7 @@ extension OrderDetailsViewModel {
                                                                }
             )
         }
+        return
     }
 
     /// Syncs order fulfillments from the fulfillments endpoint.
@@ -436,7 +437,7 @@ extension OrderDetailsViewModel {
     func syncOrderFulfillments() async {
         let orderID = order.orderID
         let siteID = order.siteID
-        return await withCheckedContinuation { continuation in
+        await withCheckedContinuation { continuation in
             stores.dispatch(
                 OrderFulfillmentAction.synchronizeOrderFulfillments(
                     siteID: siteID,
@@ -449,6 +450,7 @@ extension OrderDetailsViewModel {
                 }
             )
         }
+        return
     }
 }
 
@@ -753,7 +755,8 @@ extension OrderDetailsViewModel {
             }()
             // Update the order with the newly synced shipping labels
             let updatedOrder = order.copy(shippingLabels: shippingLabels)
-            return update(order: updatedOrder)
+            update(order: updatedOrder)
+            return
         }
 
         guard !orderContainsOnlyVirtualProducts else {

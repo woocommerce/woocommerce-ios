@@ -12,7 +12,8 @@ class DotcomValidatorTests: XCTestCase {
     func testGenericErrorIsProperlyExtractedFromData() {
         guard let payloadAsData = Loader.contentsOf("generic_error", extension: "json")
             else {
-            return XCTFail()
+            XCTFail()
+            return
         }
 
         XCTAssertThrowsError(try DotcomValidator().validate(data: payloadAsData)) { error in
@@ -28,7 +29,8 @@ class DotcomValidatorTests: XCTestCase {
     func testRestNoRouteErrorIsProperlyExtractedFromData() {
         guard let payloadAsData = Loader.contentsOf("restnoroute_error", extension: "json")
             else {
-            return XCTFail()
+            XCTFail()
+            return
         }
 
         XCTAssertThrowsError(try DotcomValidator().validate(data: payloadAsData)) { error in
@@ -44,7 +46,8 @@ class DotcomValidatorTests: XCTestCase {
     func testNoStatsPermissionErrorIsProperlyExtractedFromData() {
         guard let payloadAsData = Loader.contentsOf("no_stats_permission_error", extension: "json")
             else {
-            return XCTFail()
+            XCTFail()
+            return
         }
 
         XCTAssertThrowsError(try DotcomValidator().validate(data: payloadAsData)) { error in
@@ -60,7 +63,8 @@ class DotcomValidatorTests: XCTestCase {
     func testStatsModuleDisabledErrorIsProperlyExtractedFromData() {
         guard let payloadAsData = Loader.contentsOf("stats_module_disabled_error", extension: "json")
             else {
-            return XCTFail()
+            XCTFail()
+            return
         }
 
         XCTAssertThrowsError(try DotcomValidator().validate(data: payloadAsData)) { error in

@@ -133,9 +133,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         }
 
         if isSelfHostedSite {
-            return showSiteCredentialLoginAndJetpackConnection(from: viewController)
+            showSiteCredentialLoginAndJetpackConnection(from: viewController)
+            return
         }
-        return presentConnectToWPComSiteAlert(from: viewController)
+        presentConnectToWPComSiteAlert(from: viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

@@ -90,7 +90,8 @@ struct InPersonPaymentsSelectPluginView: View {
         guard let selectedPlugin else {
             // This should not be possible
             assertionFailure()
-            return DDLogError("Attempt to confirm a payment gateway selection with no gateway selected")
+            DDLogError("Attempt to confirm a payment gateway selection with no gateway selected")
+            return
         }
         onPluginSelected(selectedPlugin)
     }

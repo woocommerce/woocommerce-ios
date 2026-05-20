@@ -25,7 +25,8 @@ final class CookieNonceAuthenticator: RequestInterceptor {
     // MARK: Request Adapter
     func adapt(_ urlRequest: URLRequest, for session: Alamofire.Session, completion: @escaping (Result<URLRequest, Swift.Error>) -> Void) {
         guard let nonce = state.nonce else {
-            return completion(.success(urlRequest))
+            completion(.success(urlRequest))
+            return
         }
         var adaptedRequest = urlRequest
         adaptedRequest.addValue(nonce, forHTTPHeaderField: "X-WP-Nonce")
@@ -43,7 +44,8 @@ final class CookieNonceAuthenticator: RequestInterceptor {
             // Only retry because of failed authorization
             case .responseValidationFailed(reason: .unacceptableStatusCode(code: 401)) = error as? AFError
         else {
-            return completion(.doNotRetry)
+            completion(.doNotRetry)
+            return
         }
 
         let shouldStartAuthentication = state.enqueueRetry(completion)
@@ -67,7 +69,8 @@ private extension CookieNonceAuthenticator {
         DDLogInfo("Starting Cookie+Nonce login sequence for \(loginURL)")
         guard let nonceRetrievalURL = buildNonceRequestURL(base: adminURL),
               let nonceRequest = try? URLRequest(url: nonceRetrievalURL, method: .get) else {
-            return invalidateLoginSequence(error: .invalidNewPostURL)
+            invalidateLoginSequence(error: .invalidNewPostURL)
+            return
         }
         Task(priority: .medium) {
             do {
@@ -92,7 +95,7 @@ private extension CookieNonceAuthenticator {
 
     func handleSiteCredentialLogin(session: Session) async throws {
         let request = authenticatedRequest()
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             session.request(request)
                 .validate()
                 .response { response in
@@ -103,6 +106,7 @@ private extension CookieNonceAuthenticator {
                     }
                 }
         }
+        return
     }
 
     func handleNonceRetrieval(request: URLRequest, session: Session) async throws -> String {

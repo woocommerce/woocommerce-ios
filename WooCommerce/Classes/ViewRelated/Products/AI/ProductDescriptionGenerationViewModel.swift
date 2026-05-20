@@ -70,10 +70,12 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     /// Generates product description async.
     func generateDescription() {
         guard name.isNotEmpty else {
-            return missingName = true
+            missingName = true
+            return
         }
         guard features.isNotEmpty else {
-            return missingFeatures = true
+            missingFeatures = true
+            return
         }
         analytics.track(event: .ProductFormAI.productDescriptionAIGenerateButtonTapped(isRetry: suggestedText?.isNotEmpty == true))
 

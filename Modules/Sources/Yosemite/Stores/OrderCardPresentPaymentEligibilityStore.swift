@@ -36,7 +36,8 @@ private extension OrderCardPresentPaymentEligibilityStore {
         let storage = storageManager.viewStorage
 
         guard let order = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
-            return onCompletion(.failure(OrderIsEligibleForCardPresentPaymentError.orderNotFoundInStorage))
+            onCompletion(.failure(OrderIsEligibleForCardPresentPaymentError.orderNotFoundInStorage))
+            return
         }
 
         let orderProductsIDs = order.items.map(\.productID)

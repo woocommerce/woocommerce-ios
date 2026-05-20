@@ -477,7 +477,8 @@ private extension WooShippingSplitShipmentsViewModel {
             .reduce(0, +)
 
         guard selectedItemsCount > 0 else {
-            return moveToNoticeViewModel = nil
+            moveToNoticeViewModel = nil
+            return
         }
 
         let totalItemCount = currentShipment.contents
@@ -491,10 +492,12 @@ private extension WooShippingSplitShipmentsViewModel {
 
         if shipments.count == 1 && allItemsSelected {
             // do not allow moving all items if there is only one shipment at the moment
-            return moveToNoticeViewModel = nil
+            moveToNoticeViewModel = nil
+            return
         } else if existingShipmentsIndexesToMove.isEmpty && allItemsSelected {
             // prevent moving all items if all other shipments are fulfilled
-            return moveToNoticeViewModel = nil
+            moveToNoticeViewModel = nil
+            return
         }
 
         moveToNoticeViewModel = MoveToShipmentNoticeViewModel(

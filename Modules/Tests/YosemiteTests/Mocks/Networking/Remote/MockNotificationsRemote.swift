@@ -27,7 +27,8 @@ extension MockNotificationsRemote: NotificationsRemoteProtocol {
 
     func loadNotes(noteIDs: [Int64]?, pageSize: Int?, completion: @escaping (Result<[Note], Error>) -> Void) {
         guard let noteIDs else {
-            return XCTFail("Expected noteIDs to not be nil.")
+            XCTFail("Expected noteIDs to not be nil.")
+            return
         }
 
         DispatchQueue.main.async { [weak self] in

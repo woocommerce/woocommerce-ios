@@ -22,13 +22,15 @@ private extension CreateBlazeCampaignMapperTests {
             throw FileNotFoundError()
         }
 
-        return try CreateBlazeCampaignMapper().map(response: response)
+        try CreateBlazeCampaignMapper().map(response: response)
+        return
     }
 
     /// Returns the CreateBlazeCampaignMapper output from `blaze-create-campaign-success.json`
     ///
     func mapLoadCreateBlazeCampaignResponse() throws {
-        return try mapCreateBlazeCampaignResponse(from: "blaze-create-campaign-success")
+        try mapCreateBlazeCampaignResponse(from: "blaze-create-campaign-success")
+        return
     }
 
     struct FileNotFoundError: Error {}

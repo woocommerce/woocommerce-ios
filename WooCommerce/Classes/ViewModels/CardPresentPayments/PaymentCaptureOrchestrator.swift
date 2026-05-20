@@ -146,7 +146,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     func retryPayment(for order: Order,
                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         guard let handlers = handlersForActivePayment else {
-            return onCompletion(.failure(PaymentCaptureOrchestratorError.couldNotRetryPayment))
+            onCompletion(.failure(PaymentCaptureOrchestratorError.couldNotRetryPayment))
+            return
         }
 
         handlers.onPreparingReader()

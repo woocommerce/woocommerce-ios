@@ -113,7 +113,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     func showAlertsForReconnection(from alertsPresenter: AlertPresenter,
                                    onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         guard isReconnecting else {
-            return onCompletion(.failure(TapToPayReconnectionError.noReconnectionInProgress))
+            onCompletion(.failure(TapToPayReconnectionError.noReconnectionInProgress))
+            return
         }
         adoptedConnectionCompletionHandler = onCompletion
         silencingAlertsPresenter.startPresentingAlerts(from: alertsPresenter)

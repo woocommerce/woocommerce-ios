@@ -247,7 +247,8 @@ private extension ProductTagsViewController {
         textView.resignFirstResponder()
 
         guard allTags.isNotEmpty else {
-            return onCompletion([])
+            onCompletion([])
+            return
         }
 
         createNewTagsRemotely()

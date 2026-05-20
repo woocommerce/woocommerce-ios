@@ -388,7 +388,8 @@ private extension SettingsViewController {
     func sitePluginsWasPressed() {
         ServiceLocator.analytics.track(.settingsPluginListTapped)
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return DDLogError("⛔️ Cannot find ID for current site to load plugins for!")
+            DDLogError("⛔️ Cannot find ID for current site to load plugins for!")
+            return
         }
         let pluginListViewModel = PluginListViewModel(siteID: siteID)
         let pluginListHostingController = UIHostingController(rootView: PluginListView(siteID: siteID, viewModel: pluginListViewModel, onClose: { [weak self] in
@@ -443,7 +444,8 @@ private extension SettingsViewController {
         ServiceLocator.analytics.track(.settingsPushNotificationsButtonTap)
         DDLogInfo("🔔 Settings: Enable Push Notifications tapped")
         guard let site = stores.sessionManager.defaultSite else {
-            return DDLogError("⛔️ Cannot find ID for current site to enable push notifications!")
+            DDLogError("⛔️ Cannot find ID for current site to enable push notifications!")
+            return
         }
         let viewModel = WPComPushNotificationsBenefitsViewModel(siteID: site.siteID, siteURL: site.url, onDismiss: { [weak self] in
             self?.dismiss(animated: true)

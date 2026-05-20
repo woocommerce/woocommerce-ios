@@ -167,7 +167,7 @@ private extension ProductsSplitViewCoordinator {
         // This works based on the assumption that there is only one product form in the secondary navigation stack.
         if let lastProductFormViewController = secondaryNavigationController.viewControllers
             .compactMap({ $0 as? ProductFormViewController<ProductFormViewModel> }).last {
-            return lastProductFormViewController.close(completion: {
+            lastProductFormViewController.close(completion: {
                 closure()
             }, onCancel: { [weak self] in
                 guard let self else { return }
@@ -175,6 +175,7 @@ private extension ProductsSplitViewCoordinator {
                 // Otherwise, the most recently tapped row is selected in the table view.
                 contentTypes = contentTypes
             })
+            return
         } else {
             closure()
         }

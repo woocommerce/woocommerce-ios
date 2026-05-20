@@ -72,7 +72,8 @@ extension MockSiteRemote: SiteRemoteProtocol {
             throw NetworkError.notFound()
         }
 
-        return try result.get()
+        try result.get()
+        return
     }
 
     func enableFreeTrial(siteID: Int64) async throws {
@@ -81,7 +82,8 @@ extension MockSiteRemote: SiteRemoteProtocol {
             throw NetworkError.notFound()
         }
 
-        return try result.get()
+        try result.get()
+        return
     }
 
     func uploadStoreProfilerAnswers(siteID: Int64, answers: Networking.StoreProfilerAnswers) async throws {
@@ -90,7 +92,8 @@ extension MockSiteRemote: SiteRemoteProtocol {
             throw NetworkError.notFound()
         }
 
-        return try result.get()
+        try result.get()
+        return
     }
 
     func loadSite(siteID: Int64) async throws -> Site {
@@ -116,6 +119,7 @@ extension MockSiteRemote: SiteRemoteProtocol {
             XCTFail("Could not find result for updating site title")
             throw NetworkError.notFound()
         }
-        return try result.get()
+        try result.get()
+        return
     }
 }

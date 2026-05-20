@@ -110,7 +110,8 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         guard let notificationTime = Calendar.current.date(byAdding: .hour,
                                                            value: Constants.AbandonedCampaignCreationReminder.hoursDurationForNotification,
                                                            to: Date.now) else {
-            return DDLogDebug("Blaze: Failed calculating notification time for abandoned campaign creation local notification.")
+            DDLogDebug("Blaze: Failed calculating notification time for abandoned campaign creation local notification.")
+            return
         }
 
         let notification = LocalNotification(scenario: LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder,
@@ -189,7 +190,8 @@ private extension DefaultBlazeLocalNotificationScheduler {
             Task { @MainActor in
                 await scheduler.cancel(scenario: .blazeNoCampaignReminder)
             }
-            return DDLogDebug("Blaze: An active evergreen campaign is present. No need to schedule a no campaign local notification.")
+            DDLogDebug("Blaze: An active evergreen campaign is present. No need to schedule a no campaign local notification.")
+            return
         }
 
         let latestEndTime = campaigns
@@ -205,17 +207,20 @@ private extension DefaultBlazeLocalNotificationScheduler {
             .max()
 
         guard let latestEndTime else {
-            return DDLogDebug("Blaze: Failed calculating latest campaign end time.")
+            DDLogDebug("Blaze: Failed calculating latest campaign end time.")
+            return
         }
 
         guard let notificationTime = Calendar.current.date(byAdding: .day,
                                                            value: Constants.NoCampaignReminder.daysDurationForNotification,
                                                            to: latestEndTime) else {
-            return DDLogDebug("Blaze: Failed calculating no campaign notification time from latest campaign end time.")
+            DDLogDebug("Blaze: Failed calculating no campaign notification time from latest campaign end time.")
+            return
         }
 
         guard notificationTime > Date.now else {
-            return DDLogDebug("Blaze: Calculated no campaign notification time already passed.")
+            DDLogDebug("Blaze: Calculated no campaign notification time already passed.")
+            return
         }
 
         Task { @MainActor in

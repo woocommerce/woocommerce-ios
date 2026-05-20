@@ -46,7 +46,8 @@ final class ProductImagesSaver {
 
         let imageStatuses = imageActionHandler.productImageStatuses
         guard imageStatuses.hasPendingUpload else {
-            return saveProductImages(imageStatuses.images, onProductSave: onProductSave)
+            saveProductImages(imageStatuses.images, onProductSave: onProductSave)
+            return
         }
 
         imageStatusesToSave = imageStatuses

@@ -164,7 +164,8 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         guard case .presentEmailController = result else {
-            return XCTFail("Unexpected result returned for non-Jetpack site")
+            XCTFail("Unexpected result returned for non-Jetpack site")
+            return
         }
     }
 
@@ -187,7 +188,8 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         guard case .presentEmailController = result else {
-            return XCTFail("Unexpected result returned for non-Jetpack site")
+            XCTFail("Unexpected result returned for non-Jetpack site")
+            return
         }
     }
 
@@ -211,7 +213,8 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         guard case .presentEmailController = result else {
-            return XCTFail("Expected presentEmailController for Commerce Garden site")
+            XCTFail("Expected presentEmailController for Commerce Garden site")
+            return
         }
     }
 
@@ -234,7 +237,8 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         guard case .presentPasswordController = result else {
-            return XCTFail("Unexpected result returned for non-Jetpack site")
+            XCTFail("Unexpected result returned for non-Jetpack site")
+            return
         }
     }
 

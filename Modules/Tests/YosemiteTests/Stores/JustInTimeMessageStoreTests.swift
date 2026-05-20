@@ -102,7 +102,8 @@ final class JustInTimeMessageStoreTests: XCTestCase {
         XCTAssert(result.isFailure)
         guard case .failure(let error) = result,
             let error = error as? DotcomError else {
-            return XCTFail("Expected error not recieved")
+            XCTFail("Expected error not recieved")
+            return
         }
         assertEqual(DotcomError.noRestRoute(), error)
     }

@@ -53,7 +53,8 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         let siteWasStored = wooCommerceSites.contains(where: { $0.siteID == storeID })
 
         guard siteWasStored else {
-            return onCompletion(false)
+            onCompletion(false)
+            return
         }
 
         switchStore(with: storeID, onCompletion: onCompletion)
@@ -81,7 +82,8 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     ///
     private func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
         guard stores.sessionManager.defaultStoreID != nil else {
-            return onCompletion()
+            onCompletion()
+            return
         }
 
         stores.removeDefaultStore()

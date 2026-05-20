@@ -101,13 +101,15 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
     public func launchSite(siteID: Int64) async throws {
         let path = Path.siteLaunch(siteID: siteID)
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path)
-        return try await enqueue(request)
+        try await enqueue(request)
+        return
     }
 
     public func enableFreeTrial(siteID: Int64) async throws {
         let path = Path.enableFreeTrial(siteID: siteID)
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path)
-        return try await enqueue(request)
+        try await enqueue(request)
+        return
     }
 
     public func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers) async throws {
@@ -138,7 +140,8 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
                                      path: Path.uploadStoreProfilerAnswers,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        return try await enqueue(request)
+        try await enqueue(request)
+        return
     }
 
     public func loadSite(siteID: Int64) async throws -> Site {

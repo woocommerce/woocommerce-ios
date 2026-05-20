@@ -11,15 +11,18 @@ extension SupportFormHostingController {
 
         // If the controller is a UIViewController, set the modal display for iPad.
         if !controller.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad {
-            return showViewModally(from: controller)
+            showViewModally(from: controller)
+            return
         }
 
         if let navController = controller as? UINavigationController {
-            return navController.pushViewController(self, animated: true)
+            navController.pushViewController(self, animated: true)
+            return
         }
 
         if let navController = controller.navigationController {
-            return navController.pushViewController(self, animated: true)
+            navController.pushViewController(self, animated: true)
+            return
         }
 
         showViewModally(from: controller)

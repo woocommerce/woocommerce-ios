@@ -277,7 +277,8 @@ final class ShippingLabelFormViewModel {
     func handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm], isValidated: Bool) {
         self.customsForms = customsForms
         guard isValidated else {
-            return updateRowState(type: .customs, dataState: .pending, displayMode: .editable)
+            updateRowState(type: .customs, dataState: .pending, displayMode: .editable)
+            return
         }
         updateRowState(type: .customs, dataState: .validated, displayMode: .editable)
         // We reset the carrier and rates selected because if the package change
@@ -868,7 +869,8 @@ extension ShippingLabelFormViewModel {
         guard packages.isNotEmpty else {
             let error = PurchaseError.invalidPackageDetails
             DDLogError("⛔️ Error finding matching package: \(error)")
-            return onCompletion(.failure(error))
+            onCompletion(.failure(error))
+            return
         }
 
         let startTime = Date()
@@ -927,7 +929,8 @@ extension ShippingLabelFormViewModel {
 
     private func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {
         guard isEUShippingNotificationEnabled else {
-            return onCompletion(false)
+            onCompletion(false)
+            return
         }
 
         let action = AppSettingsAction.loadEUShippingNoticeDismissState { result in

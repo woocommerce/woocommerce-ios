@@ -68,7 +68,8 @@ final class CardPresentModalNonRetryableErrorEmailSent: CardPresentPaymentsModal
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
         guard let viewController else {
-            return onDismiss()
+            onDismiss()
+            return
         }
         viewController.dismiss(animated: true) { [weak self] in
             self?.onDismiss()

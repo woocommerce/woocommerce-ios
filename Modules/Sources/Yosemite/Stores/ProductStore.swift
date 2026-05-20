@@ -418,7 +418,8 @@ private extension ProductStore {
                                                                                           ItemIdentifierSearchResultSource), Error>) -> Void) {
 
         guard !identifier.isEmpty else {
-            return onCompletion(.failure(ProductLoadError.emptyIdentifier))
+            onCompletion(.failure(ProductLoadError.emptyIdentifier))
+            return
         }
 
         Task {
@@ -576,7 +577,8 @@ private extension ProductStore {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
         if storage.hasProducts(siteID: siteID, status: status?.rawValue, type: productType?.rawValue) {
-            return onCompletion(.success(true))
+            onCompletion(.success(true))
+            return
         }
 
         // If there are no locally stored products, then check remote.

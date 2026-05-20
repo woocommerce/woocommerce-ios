@@ -212,7 +212,8 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
             completion(false)
         case false:
             guard featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory), isCameraAvailable else {
-                return completion(false)
+                completion(false)
+                return
             }
             // If all conditions are met, scan to update inventory should be visible:
             // 1. No Square plugin

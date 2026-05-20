@@ -28,7 +28,8 @@ final class WooPaymentsPayoutsOverviewViewModelTests: XCTestCase {
               let properties = analyticsProvider.receivedProperties[safe: index],
               let trackedCurrencyProperty = properties[WooAnalyticsEvent.PayoutSummary.Keys.currency] as? String
         else {
-            return XCTFail("Expected properties not found")
+            XCTFail("Expected properties not found")
+            return
         }
 
         assertEqual("GBP", trackedCurrencyProperty)
@@ -53,7 +54,8 @@ final class WooPaymentsPayoutsOverviewViewModelTests: XCTestCase {
               let properties = analyticsProvider.receivedProperties[safe: index],
               let trackedNumberOfCurrenciesProperty = properties[WooAnalyticsEvent.PayoutSummary.Keys.numberOfCurrencies] as? Int
         else {
-            return XCTFail("Expected properties not found")
+            XCTFail("Expected properties not found")
+            return
         }
 
         assertEqual(trackedNumberOfCurrenciesProperty, 2)

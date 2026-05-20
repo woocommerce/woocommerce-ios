@@ -41,7 +41,8 @@ final class JetpackConnectionServiceTests: XCTestCase {
 
         // Then
         guard case .alreadyConnected(let email) = outcome else {
-            return XCTFail("Expected .alreadyConnected, got \(outcome)")
+            XCTFail("Expected .alreadyConnected, got \(outcome)")
+            return
         }
         XCTAssertEqual(email, testEmail)
     }
@@ -79,7 +80,8 @@ final class JetpackConnectionServiceTests: XCTestCase {
 
         // Then
         guard case .webViewRequired = outcome else {
-            return XCTFail("Expected .webViewRequired, got \(outcome)")
+            XCTFail("Expected .webViewRequired, got \(outcome)")
+            return
         }
     }
 
@@ -226,7 +228,8 @@ private extension JetpackConnectionServiceTests {
         let outcome = try await service.evaluateAndConnect(siteURL: testURL, credentials: credentials)
 
         guard case .connected(let email) = outcome else {
-            return XCTFail("Expected .connected, got \(outcome)")
+            XCTFail("Expected .connected, got \(outcome)")
+            return
         }
         XCTAssertEqual(email, testEmail)
         XCTAssertEqual(triggeredRegister, expectsRegister)

@@ -178,7 +178,8 @@ final class SettingsViewModelTests: XCTestCase {
             storageManager: storageManager)
         guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         else {
-            return XCTFail("Could not get the current app version")
+            XCTFail("Could not get the current app version")
+            return
         }
 
         waitFor { [weak self] promise in

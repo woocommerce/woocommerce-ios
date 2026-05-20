@@ -735,7 +735,8 @@ extension AppSettingsStoreTests {
         // Then
         let savedSettings: GeneralAppSettings? = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
         guard let savedSettings else {
-            return XCTFail("Expected settings to be saved, but none were found")
+            XCTFail("Expected settings to be saved, but none were found")
+            return
         }
         let dismissedDate: Date = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.linkedProductsPromo]?.dismissedDate)
         XCTAssert(Calendar.current.isDateInToday(dismissedDate))

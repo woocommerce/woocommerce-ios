@@ -179,7 +179,8 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         userName = name
         userEmail = email
         saveUserProfile()
-        return try await createZendeskIdentity()
+        try await createZendeskIdentity()
+        return
     }
 
     /// Creates a Zendesk Identity to be able to submit support request tickets.
@@ -274,7 +275,8 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     private func uploadSingleAttachment(_ attachment: ZendeskAttachment?, _ completionHandler: @escaping (ZDKUploadResponse?) -> Void) {
         guard let attachment else {
-            return completionHandler(nil)
+            completionHandler(nil)
+            return
         }
 
         let uploadProvider = ZDKUploadProvider()
@@ -326,7 +328,7 @@ private extension ZendeskManager {
 
     @MainActor
     func createZendeskIdentity() async throws {
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             createZendeskIdentity { [weak self] success in
                 guard let self, success else {
                     DDLogError("⛔️ Creating Zendesk identity failed.")
@@ -337,6 +339,7 @@ private extension ZendeskManager {
                 continuation.resume(returning: ())
             }
         }
+        return
     }
 
     func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {

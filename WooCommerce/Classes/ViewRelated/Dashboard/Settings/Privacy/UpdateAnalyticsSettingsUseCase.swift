@@ -31,12 +31,14 @@ final class UpdateAnalyticsSettingUseCase {
     @MainActor func update(optOut: Bool) async throws {
         // There is no need to perform any request if the user hasn't changed the current analytic setting.
         guard analytics.userHasOptedIn == optOut else {
-            return updateLocally(optOut: optOut)
+            updateLocally(optOut: optOut)
+            return
         }
 
         // If we can't find an account(non-jp sites), lets commit the change immediately.
         guard let defaultAccount = stores.sessionManager.defaultAccount else {
-            return updateLocally(optOut: optOut)
+            updateLocally(optOut: optOut)
+            return
         }
 
         let userID = defaultAccount.userID

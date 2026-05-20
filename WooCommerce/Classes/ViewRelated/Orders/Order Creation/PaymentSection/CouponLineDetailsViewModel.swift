@@ -83,7 +83,8 @@ private extension CouponLineDetailsViewModel {
     func saveData() {
         guard let initialCode,
              initialCode.isNotEmpty else {
-            return didSelectSave(.added(newCode: code))
+            didSelectSave(.added(newCode: code))
+            return
         }
 
         didSelectSave(.edited(oldCode: initialCode, newCode: code))

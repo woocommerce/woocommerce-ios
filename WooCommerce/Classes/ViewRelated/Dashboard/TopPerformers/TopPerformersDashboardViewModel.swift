@@ -116,7 +116,8 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         // Preemptively show any cached content
         // Stop if data is relatively new
         if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .topPerformers, at: timeRange.timestampRange) {
-            return updateUIInLoadedState()
+            updateUIInLoadedState()
+            return
         }
 
         syncingData = true
@@ -320,7 +321,8 @@ private extension TopPerformersDashboardViewModel {
         }
         guard let items = topEarnerStats?.items?.sorted(by: >), items.isNotEmpty else {
             entityListeners = [:]
-            return periodViewModel.update(state: .loaded(rows: []))
+            periodViewModel.update(state: .loaded(rows: []))
+            return
         }
         periodViewModel.update(state: .loaded(rows: items))
         observeProducts(for: items)

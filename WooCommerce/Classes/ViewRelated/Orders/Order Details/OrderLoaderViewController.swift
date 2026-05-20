@@ -97,7 +97,8 @@ private extension OrderLoaderViewController {
         // If we have an stored order there is no point on re-loading it now and delaying the user interface.
         // In any the OrderDetailViewController will reload the order data.
         if let storedOrder = orderResultsController.fetchedObjects.first {
-            return self.state = .success(order: storedOrder)
+            self.state = .success(order: storedOrder)
+            return
         }
 
         let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { [weak self] (order, error) in

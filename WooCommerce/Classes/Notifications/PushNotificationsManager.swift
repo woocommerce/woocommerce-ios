@@ -1015,7 +1015,8 @@ private extension PushNotificationsManager {
         guard let siteID,
               let tokenID = registrationState.wooPushNotificationToken,
               let tokenIDInt = Int64(tokenID) else {
-            return completion(.success(()))
+            completion(.success(()))
+            return
         }
         stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
             siteID: siteID,

@@ -92,7 +92,7 @@ private struct CurrentOrderListSyncUseCase {
     ///
     @MainActor
     private func syncOrders(filters: FilterOrderListViewModel.Filters) async throws {
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             let useCase = OrderListSyncActionUseCase(siteID: siteID, filters: filters)
             let action = useCase.actionFor(pageNumber: SyncingCoordinator.Defaults.pageFirstIndex,
                                            pageSize: SyncingCoordinator.Defaults.pageSize,
@@ -107,5 +107,6 @@ private struct CurrentOrderListSyncUseCase {
             })
             stores.dispatch(action)
         }
+        return
     }
 }

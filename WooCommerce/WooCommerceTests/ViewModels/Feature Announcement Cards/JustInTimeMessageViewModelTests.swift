@@ -193,7 +193,8 @@ final class JustInTimeMessageViewModelTests: XCTestCase {
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: name),
               let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: AnyHashable]
         else {
-            return XCTFail("Analytics not logged")
+            XCTFail("Analytics not logged")
+            return
         }
 
         for property in expectedProperties {

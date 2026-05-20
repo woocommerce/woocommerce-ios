@@ -21,7 +21,8 @@ final class ReceiptViewModelTests: XCTestCase {
         let fakeReceipt = Receipt.fake().copy(receiptURL: "https://mywootestingstore.com/transient/12345",
                                               expirationDate: "2024-01-27")
         guard let validURL = URL(string: fakeReceipt.receiptURL) else {
-            return XCTFail("Invalid URL")
+            XCTFail("Invalid URL")
+            return
         }
         let expectedURLRequest = URLRequest(url: validURL)
 

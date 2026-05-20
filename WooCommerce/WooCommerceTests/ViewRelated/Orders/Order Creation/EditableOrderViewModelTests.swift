@@ -1196,7 +1196,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(analytics.receivedEvents.contains(where: { $0.description == WooAnalyticsStat.orderProductAdd.rawValue}))
 
         guard let eventIndex = analytics.receivedEvents.firstIndex(where: { $0.description == WooAnalyticsStat.orderProductAdd.rawValue}) else {
-            return XCTFail("No event received")
+            XCTFail("No event received")
+            return
         }
 
         let eventProperties = analytics.receivedProperties[eventIndex]
@@ -1283,12 +1284,14 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         guard let eventIndex = analytics.receivedEvents.firstIndex(where: {
             $0.description == WooAnalyticsStat.orderCreationProductSelectorClearSelectionButtonTapped.rawValue }) else {
-            return XCTFail("No event received")
+            XCTFail("No event received")
+            return
         }
 
         let eventProperties = analytics.receivedProperties[eventIndex]
         guard let event = eventProperties.first(where: { $0.key as? String == "source"}) else {
-            return XCTFail("No property received")
+            XCTFail("No property received")
+            return
         }
 
         XCTAssertEqual(event.value as? String, "product_selector")
@@ -2335,7 +2338,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentOrderItems.count, 1)
 
         guard let item = viewModel.currentOrderItems.first else {
-            return XCTFail("Expected 1 item, but got none")
+            XCTFail("Expected 1 item, but got none")
+            return
         }
         XCTAssertEqual(item.productID, sampleProductID)
     }

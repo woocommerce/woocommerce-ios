@@ -167,7 +167,8 @@ extension WatchDependenciesSynchronizer {
         // The user info could contain a track event. Send it if we found one.
         guard let rawEvent = userInfo[WooConstants.watchTracksKey] as? String,
               let analyticEvent = WooAnalyticsStat(rawValue: rawEvent) else {
-            return DDLogError("⛔️ Unsupported watch tracks event: \(userInfo)")
+            DDLogError("⛔️ Unsupported watch tracks event: \(userInfo)")
+            return
         }
         analytics.track(analyticEvent)
     }
@@ -185,7 +186,8 @@ extension WatchDependenciesSynchronizer {
     ///
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
         guard message[WooConstants.watchSyncKey] as? Bool == true else {
-            return DDLogError("⛔️ Unsupported sync request message: \(message)")
+            DDLogError("⛔️ Unsupported sync request message: \(message)")
+            return
         }
         syncTrigger.toggle()
     }

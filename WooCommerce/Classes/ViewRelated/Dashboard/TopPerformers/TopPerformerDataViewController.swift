@@ -112,7 +112,8 @@ private extension TopPerformerDataViewController {
             }
         }
         guard let items = topEarnerStats?.items?.sorted(by: >), items.isNotEmpty else {
-            return viewModel.update(state: .loaded(rows: []))
+            viewModel.update(state: .loaded(rows: []))
+            return
         }
         viewModel.update(state: .loaded(rows: items))
     }

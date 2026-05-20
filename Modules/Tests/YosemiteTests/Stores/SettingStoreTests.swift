@@ -998,7 +998,8 @@ final class SettingStoreTests: XCTestCase {
 
         // Then
         guard case let .failure(error) = result else {
-            return XCTFail("Expected failure")
+            XCTFail("Expected failure")
+            return
         }
         XCTAssertEqual(error as? SettingError, .parseError)
         XCTAssertNil(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_date_type"))
@@ -1058,7 +1059,8 @@ final class SettingStoreTests: XCTestCase {
 
         // Then
         guard case let .failure(error) = result else {
-            return XCTFail("Expected failure")
+            XCTFail("Expected failure")
+            return
         }
         XCTAssertEqual(error as? SettingError, .parseError)
         XCTAssertNil(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_date_type"))

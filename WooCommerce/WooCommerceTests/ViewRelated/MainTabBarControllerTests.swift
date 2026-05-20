@@ -132,7 +132,8 @@ final class MainTabBarControllerTests: XCTestCase {
         // Simulate that the network call returns a parcel
         let receivedAction = try XCTUnwrap(storesManager.receivedActions.first(where: { $0 is ProductReviewAction }) as? ProductReviewAction)
         guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
-            return XCTFail("Expected retrieveProductReviewFromNote action.")
+            XCTFail("Expected retrieveProductReviewFromNote action.")
+            return
         }
         completion(.success(ProductReviewFromNoteParcelFactory().parcel(metaSiteID: 606)))
 

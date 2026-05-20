@@ -88,7 +88,8 @@ private extension GenerateAllVariationsPresenter {
         // There should be already a presented `InProgressViewController`. But we present one in case there isn;t.
         guard let inProgressViewController = baseViewController.presentedViewController as? InProgressViewController else {
             let inProgressViewController = InProgressViewController(viewProperties: newViewProperties)
-            return baseViewController.present(inProgressViewController, animated: true)
+            baseViewController.present(inProgressViewController, animated: true)
+            return
         }
 
         // Update the already presented view controller with the "Creating..." copy.

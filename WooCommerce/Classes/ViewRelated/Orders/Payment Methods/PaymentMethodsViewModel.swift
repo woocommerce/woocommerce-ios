@@ -219,12 +219,14 @@ final class PaymentMethodsViewModel: ObservableObject {
 
         guard let rootViewController else {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
-            return presentNoticeSubject.send(.error(Localization.genericCollectError))
+            presentNoticeSubject.send(.error(Localization.genericCollectError))
+            return
         }
 
         guard let order = ordersResultController.fetchedObjects.first else {
             DDLogError("⛔️ Order not found, can't collect payment.")
-            return presentNoticeSubject.send(.error(Localization.genericCollectError))
+            presentNoticeSubject.send(.error(Localization.genericCollectError))
+            return
         }
         let alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
         let merchantEducationPresenter = TapToPayCardReaderMerchantEducationPresenter(rootViewController: rootViewController)

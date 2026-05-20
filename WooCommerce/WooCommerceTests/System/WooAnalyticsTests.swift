@@ -163,7 +163,8 @@ class WooAnalyticsTests: XCTestCase {
     func test_events_when_logged_in_include_site_properties() {
         // Given
         guard let testingProvider else {
-            return XCTFail("Testing provider not available")
+            XCTFail("Testing provider not available")
+            return
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
                                                                    defaultSite: Site.fake().copy(
@@ -181,7 +182,8 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(testingProvider.receivedEvents.first, WooAnalyticsStat.sitePickerContinueTapped.rawValue)
 
         guard let receivedProperties = testingProvider.receivedProperties.first as? [AnyHashable: AnyHashable] else {
-            return XCTFail("Non-equatable properties found")
+            XCTFail("Non-equatable properties found")
+            return
         }
 
         let expectedProperties: [String: AnyHashable] = [
@@ -205,7 +207,8 @@ class WooAnalyticsTests: XCTestCase {
     func test_events_when_logged_out_do_not_include_site_properties() {
         // Given
         guard let testingProvider else {
-            return XCTFail("Testing provider not available")
+            XCTFail("Testing provider not available")
+            return
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false,
                                                                    defaultSite: Site.fake().copy(
@@ -219,7 +222,8 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(testingProvider.receivedEvents.first, WooAnalyticsStat.sitePickerContinueTapped.rawValue)
 
         guard let receivedProperties = testingProvider.receivedProperties.first else {
-            return XCTFail("No properties found")
+            XCTFail("No properties found")
+            return
         }
 
         let expectedToBeAbsentProperties = [
@@ -243,7 +247,8 @@ class WooAnalyticsTests: XCTestCase {
     func test_track_Event_when_authenticated_then_includes_site_properties() {
         // Given
         guard let testingProvider else {
-            return XCTFail("Testing provider not available")
+            XCTFail("Testing provider not available")
+            return
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
                                                                    defaultSite: Site.fake().copy(
@@ -258,7 +263,8 @@ class WooAnalyticsTests: XCTestCase {
         // Then
         XCTAssertEqual(testingProvider.receivedEvents.first, "booking_detail_attendance_status_update")
         guard let receivedProperties = testingProvider.receivedProperties.first else {
-            return XCTFail("No properties found")
+            XCTFail("No properties found")
+            return
         }
         XCTAssertEqual(receivedProperties["booking_status"] as? String, "attended")
         XCTAssertEqual(receivedProperties["blog_id"] as? Int64, sampleSiteID)
@@ -267,7 +273,8 @@ class WooAnalyticsTests: XCTestCase {
     func test_track_Event_when_not_authenticated_then_skips_site_properties() {
         // Given
         guard let testingProvider else {
-            return XCTFail("Testing provider not available")
+            XCTFail("Testing provider not available")
+            return
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         ServiceLocator.setStores(stores)
@@ -279,7 +286,8 @@ class WooAnalyticsTests: XCTestCase {
         // Then
         XCTAssertEqual(testingProvider.receivedEvents.first, "booking_detail_attendance_status_update")
         guard let receivedProperties = testingProvider.receivedProperties.first else {
-            return XCTFail("No properties found")
+            XCTFail("No properties found")
+            return
         }
         XCTAssertEqual(receivedProperties["booking_status"] as? String, "attended")
         XCTAssertNil(receivedProperties["blog_id"])

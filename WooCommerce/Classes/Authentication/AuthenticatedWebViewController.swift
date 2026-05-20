@@ -231,7 +231,8 @@ private extension AuthenticatedWebViewController {
 private extension AuthenticatedWebViewController {
     func authenticateWPComAndLoadContent(url: URL) {
         guard let wpcomCredentials, case .wpcom = wpcomCredentials else {
-            return loadContent(url: url)
+            loadContent(url: url)
+            return
         }
         do {
             try webView.authenticateForWPComAndRedirect(to: url, credentials: wpcomCredentials)
@@ -247,7 +248,8 @@ private extension AuthenticatedWebViewController {
 
     func authenticateUsingSiteCredentialsAndLoadContent(url: URL) {
         guard let siteCredentials, let request = try? webView.authenticateForWPOrg(with: siteCredentials) else {
-            return loadContent(url: url)
+            loadContent(url: url)
+            return
         }
         webView.load(request)
     }
@@ -265,7 +267,8 @@ private extension AuthenticatedWebViewController {
         switch url.absoluteString {
         case WooConstants.URLs.wpcomTempRedirectURL.rawValue:
             guard let currentSite, let host = URL(string: currentSite.url)?.host else {
-                return loadContent(url: initialURL)
+                loadContent(url: initialURL)
+                return
             }
             let cookie = HTTPCookie(properties: [
                 .domain: host,
@@ -276,7 +279,8 @@ private extension AuthenticatedWebViewController {
 
             let queryItem = URLQueryItem(name: Constants.actionParam, value: Constants.jetpackSSOAction)
             guard let cookie, let loginURL = URL(string: currentSite.loginURL)?.appending(queryItems: [queryItem]) else {
-                return loadContent(url: initialURL)
+                loadContent(url: initialURL)
+                return
             }
             webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
             loadContent(url: loginURL)

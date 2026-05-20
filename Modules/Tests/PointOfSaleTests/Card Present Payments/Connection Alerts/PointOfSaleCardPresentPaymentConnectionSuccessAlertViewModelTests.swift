@@ -47,7 +47,8 @@ final class PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests: X
         )
 
         guard let autoDismissWorkItem = try? XCTUnwrap(testScheduler.scheduledActions.first?.2) else {
-            return XCTFail("The autoDismiss work item wasn't found")
+            XCTFail("The autoDismiss work item wasn't found")
+            return
         }
 
         XCTAssertFalse(autoDismissWorkItem.isCancelled)
@@ -69,7 +70,8 @@ final class PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests: X
         )
 
         guard let autoDismissWorkItem = try? XCTUnwrap(testScheduler.scheduledActions.first?.2) else {
-            return XCTFail("The autoDismiss work item wasn't found")
+            XCTFail("The autoDismiss work item wasn't found")
+            return
         }
 
         XCTAssertFalse(autoDismissWorkItem.isCancelled)

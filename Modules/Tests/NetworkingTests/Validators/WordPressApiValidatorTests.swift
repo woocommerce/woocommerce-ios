@@ -12,7 +12,8 @@ class WordPressApiValidatorTests: XCTestCase {
     func testForbiddenErrorIsProperlyExtractedFromData() {
         guard let payloadAsData = Loader.contentsOf("error-wp-rest-forbidden", extension: "json")
             else {
-            return XCTFail()
+            XCTFail()
+            return
         }
 
         XCTAssertThrowsError(try WordPressApiValidator().validate(data: payloadAsData)) { error in

@@ -721,7 +721,8 @@ final class CouponStoreTests: XCTestCase {
 
         // Then
         guard case let .success(isValidated) = result else {
-            return XCTFail("Expected success but it wasn't.")
+            XCTFail("Expected success but it wasn't.")
+            return
         }
 
         XCTAssertTrue(isValidated)
@@ -745,7 +746,8 @@ final class CouponStoreTests: XCTestCase {
 
         // Then
         guard case let .success(isValidated) = result else {
-            return XCTFail("Expected success but it wasn't.")
+            XCTFail("Expected success but it wasn't.")
+            return
         }
 
         XCTAssertFalse(isValidated)

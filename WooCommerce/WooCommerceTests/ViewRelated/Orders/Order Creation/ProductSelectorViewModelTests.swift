@@ -852,12 +852,14 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(where: { $0 == "order_creation_product_selector_confirm_button_tapped"}) else {
-            return XCTFail("No event received")
+            XCTFail("No event received")
+            return
         }
 
         let eventProperties = analyticsProvider.receivedProperties[eventIndex]
         guard let property = eventProperties.first(where: { $0.key as? String == "product_count"}) else {
-            return XCTFail("No property received")
+            XCTFail("No property received")
+            return
         }
         XCTAssertEqual(property.value as? Int64, 3)
     }
@@ -886,12 +888,14 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(where: { $0 == "order_creation_product_selector_confirm_button_tapped"}) else {
-            return XCTFail("No event received")
+            XCTFail("No event received")
+            return
         }
 
         let eventProperties = analyticsProvider.receivedProperties[eventIndex]
         guard let property = eventProperties.first(where: { $0.key as? String == "is_filter_active"}) else {
-            return XCTFail("No property received")
+            XCTFail("No property received")
+            return
         }
         XCTAssertTrue((property.value as? Bool) ?? false)
     }
@@ -931,13 +935,15 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(where: { $0 == "order_creation_product_selector_confirm_button_tapped"}) else {
-            return XCTFail("No event received")
+            XCTFail("No event received")
+            return
         }
 
         let eventProperties = analyticsProvider.receivedProperties[eventIndex]
         guard let property = eventProperties.first(where: { $0.key as? String == "source"}),
         let propertyValue = property.value as? String else {
-            return XCTFail("No property received")
+            XCTFail("No property received")
+            return
         }
 
         XCTAssertTrue(propertyValue.contains("popular"))
@@ -969,13 +975,15 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(where: { $0 == "order_creation_product_selector_confirm_button_tapped"}) else {
-            return XCTFail("No event received")
+            XCTFail("No event received")
+            return
         }
 
         let eventProperties = analyticsProvider.receivedProperties[eventIndex]
         guard let property = eventProperties.first(where: { $0.key as? String == "source"}),
         let propertyValue = property.value as? String else {
-            return XCTFail("No property received")
+            XCTFail("No property received")
+            return
         }
 
         XCTAssertEqual(propertyValue, "search")
@@ -1016,13 +1024,15 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(where: { $0 == "order_creation_product_selector_confirm_button_tapped"}) else {
-            return XCTFail("No event received")
+            XCTFail("No event received")
+            return
         }
 
         let eventProperties = analyticsProvider.receivedProperties[eventIndex]
         guard let property = eventProperties.first(where: { $0.key as? String == "source"}),
         let propertyValue = property.value as? String else {
-            return XCTFail("No property received")
+            XCTFail("No property received")
+            return
         }
 
         XCTAssertTrue(propertyValue.contains("popular"))

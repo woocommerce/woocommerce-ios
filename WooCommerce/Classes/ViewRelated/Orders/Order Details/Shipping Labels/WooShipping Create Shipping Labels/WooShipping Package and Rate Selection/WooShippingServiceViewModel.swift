@@ -141,12 +141,14 @@ final class WooShippingServiceViewModel: ObservableObject {
 
         guard let originAddress, let destinationAddress, hasDestinationAddress else {
             onLoadingCompletion(.failure(Error.missingDestinationAddress))
-            return updateLoadingState(to: .error(Error.missingDestinationAddress))
+            updateLoadingState(to: .error(Error.missingDestinationAddress))
+            return
         }
 
         guard selectedPackage.weight > 0 else {
             onLoadingCompletion(.failure(Error.missingShipmentWeight))
-            return updateLoadingState(to: .error(Error.missingShipmentWeight))
+            updateLoadingState(to: .error(Error.missingShipmentWeight))
+            return
         }
 
         updateLoadingState(to: .loading)

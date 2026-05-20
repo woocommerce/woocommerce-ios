@@ -19,7 +19,8 @@ final class ProductImageStatusCodableTests: XCTestCase {
 
         // Then
         guard case let .uploading(.uiImage(decodedImage, decodedFilename, decodedAltText), siteID, productID) = decodedStatus else {
-            return XCTFail("Decoded status should be .uploading with .uiImage asset")
+            XCTFail("Decoded status should be .uploading with .uiImage asset")
+            return
         }
 
         XCTAssertNotNil(decodedImage.pngData(), "Decoded image data should not be nil")
@@ -74,7 +75,8 @@ final class ProductImageStatusCodableTests: XCTestCase {
 
         // Then
         guard case let .remote(image, siteID, productID) = decodedStatus else {
-            return XCTFail("Decoded status should be .remote")
+            XCTFail("Decoded status should be .remote")
+            return
         }
 
         XCTAssertEqual(image.imageID, 111)
@@ -101,7 +103,8 @@ final class ProductImageStatusCodableTests: XCTestCase {
 
         // Then
         guard case let .uploadFailure(.uiImage(_, decodedFilename, decodedAltText), decodedError as NSError, siteID, productID) = decodedStatus else {
-            return XCTFail("Decoded status should be .uploadFailure with .uiImage asset")
+            XCTFail("Decoded status should be .uploadFailure with .uiImage asset")
+            return
         }
 
         XCTAssertEqual(decodedFilename, "failure.png")

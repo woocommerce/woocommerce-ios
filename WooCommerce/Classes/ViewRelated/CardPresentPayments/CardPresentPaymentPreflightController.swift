@@ -136,7 +136,8 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             analyticsTracker.setCandidateReader(connectedReader)
             if connectedReader.discoveryMethod == discoveryMethod,
                paymentGatewayAccount.siteID == siteID {
-                return handleConnectionResult(.success(.connected(connectedReader)), paymentGatewayAccount: paymentGatewayAccount)
+                handleConnectionResult(.success(.connected(connectedReader)), paymentGatewayAccount: paymentGatewayAccount)
+                return
             } else {
                 // Wrong discovery method or different store - disconnect and reconnect
                 do {
@@ -144,8 +145,9 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                     analyticsTracker.automaticallyDisconnectedFromReader()
                     checkOnboarding(connectionAttemptID: connectionAttemptID)
                 } catch {
-                    return handlePreflightFailure(
+                    handlePreflightFailure(
                         error: CardPresentPaymentPreflightError.failedToAutomaticallyDisconnect(reader: connectedReader))
+                    return
                 }
             }
         } else {
@@ -180,7 +182,8 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         // Once onboarding is complete, a Payment Gateway will have been chosen
         guard let paymentGatewayAccount = await selectedPaymentGateway() else {
             DDLogError("⛔️ Cannot proceed with reader connection, no Payment Gateway found")
-            return handlePreflightFailure(error: CardPresentPaymentPreflightError.paymentGatewayAccountNotFound)
+            handlePreflightFailure(error: CardPresentPaymentPreflightError.paymentGatewayAccountNotFound)
+            return
         }
 
         await startReaderConnection(using: paymentGatewayAccount, connectionAttemptID: connectionAttemptID)
@@ -191,7 +194,8 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         guard isCurrentConnectionAttempt(connectionAttemptID) else { return }
         let isReconnecting = tapToPayReconnectionController.isReconnecting
         guard !isReconnecting else {
-            return adoptReconnection(using: paymentGatewayAccount, connectionAttemptID: connectionAttemptID)
+            adoptReconnection(using: paymentGatewayAccount, connectionAttemptID: connectionAttemptID)
+            return
         }
         let tapToPayReaderSupported = await supportDeterminer.deviceSupportsTapToPayReader() && supportDeterminer.siteSupportsTapToPayReader()
         guard isCurrentConnectionAttempt(connectionAttemptID) else { return }

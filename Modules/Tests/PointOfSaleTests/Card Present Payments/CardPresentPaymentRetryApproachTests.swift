@@ -14,7 +14,8 @@ final class CardPresentPaymentRetryApproachTests: XCTestCase {
 
         // Then
         guard case .tryAgain = sut else {
-            return XCTFail("Unexpected retry approach, expected tryAgain, got \(sut)")
+            XCTFail("Unexpected retry approach, expected tryAgain, got \(sut)")
+            return
         }
     }
 
@@ -27,7 +28,8 @@ final class CardPresentPaymentRetryApproachTests: XCTestCase {
 
         // Then
         guard case .dontRetry = sut else {
-            return XCTFail("Unexpected retry approach, expected dontRetry, got \(sut)")
+            XCTFail("Unexpected retry approach, expected dontRetry, got \(sut)")
+            return
         }
     }
 
@@ -41,7 +43,8 @@ final class CardPresentPaymentRetryApproachTests: XCTestCase {
 
         // Then
         guard case .tryAgain = sut else {
-            return XCTFail("Unexpected retry approach, expected tryAgain, got \(sut)")
+            XCTFail("Unexpected retry approach, expected tryAgain, got \(sut)")
+            return
         }
     }
 
@@ -55,7 +58,8 @@ final class CardPresentPaymentRetryApproachTests: XCTestCase {
 
         // Then
         guard case .tryAgain = sut else {
-            return XCTFail("Unexpected retry approach, expected tryAgain, got \(sut)")
+            XCTFail("Unexpected retry approach, expected tryAgain, got \(sut)")
+            return
         }
     }
 
@@ -69,7 +73,8 @@ final class CardPresentPaymentRetryApproachTests: XCTestCase {
 
         // Then
         guard case .tryAnotherPaymentMethod = sut else {
-            return XCTFail("Unexpected retry approach, expected tryAnotherPaymentMethod, got \(sut)")
+            XCTFail("Unexpected retry approach, expected tryAnotherPaymentMethod, got \(sut)")
+            return
         }
     }
 
@@ -83,7 +88,8 @@ final class CardPresentPaymentRetryApproachTests: XCTestCase {
 
         // Then
         guard case .tryAnotherPaymentMethod = sut else {
-            return XCTFail("Unexpected retry approach, expected tryAnotherPaymentMethod, got \(sut)")
+            XCTFail("Unexpected retry approach, expected tryAnotherPaymentMethod, got \(sut)")
+            return
         }
     }
 }

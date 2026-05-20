@@ -46,7 +46,8 @@ struct DefaultThemeInstaller: ThemeInstaller {
     /// - Parameter siteID: site ID to install and activate the theme
     func installPendingThemeIfNeeded(siteID: Int64) async throws {
         guard let themeID = userDefaults.pendingThemeID(for: siteID) else {
-            return DDLogInfo("No pending theme installation.")
+            DDLogInfo("No pending theme installation.")
+            return
         }
 
         DDLogInfo("Attempt to perform pending theme installation. Theme ID: \(themeID), Site ID : \(siteID)")

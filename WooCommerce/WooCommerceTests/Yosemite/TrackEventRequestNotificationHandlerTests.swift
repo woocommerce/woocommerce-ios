@@ -42,7 +42,8 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
 
         guard let actualProperties = analyticsProvider.receivedProperties.first(where: { $0.keys.contains("scenario")
         }) else {
-            return XCTFail("Expected properties were not logged")
+            XCTFail("Expected properties were not logged")
+            return
         }
 
         assertEqual("regeneration", actualProperties["scenario"] as? String)
@@ -60,7 +61,8 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
 
         guard let actualProperties = analyticsProvider.receivedProperties.first(where: { $0.keys.contains("scenario")
         }) else {
-            return XCTFail("Expected properties were not logged")
+            XCTFail("Expected properties were not logged")
+            return
         }
 
         assertEqual("regeneration", actualProperties["scenario"] as? String)
@@ -79,7 +81,8 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
 
         guard let actualProperties = analyticsProvider.receivedProperties.first(where: { $0.keys.contains("scenario")
         }) else {
-            return XCTFail("Expected properties were not logged")
+            XCTFail("Expected properties were not logged")
+            return
         }
 
         assertEqual("regeneration", actualProperties["scenario"] as? String)
@@ -98,7 +101,8 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
 
         guard let actualProperties = analyticsProvider.receivedProperties.first(where: { $0.keys.contains("scenario")
         }) else {
-            return XCTFail("Expected properties were not logged")
+            XCTFail("Expected properties were not logged")
+            return
         }
 
         assertEqual("regeneration", actualProperties["scenario"] as? String)
@@ -117,7 +121,8 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
 
         guard let actualProperties = analyticsProvider.receivedProperties.first(where: { $0.keys.contains("scenario")
         }) else {
-            return XCTFail("Expected properties were not logged")
+            XCTFail("Expected properties were not logged")
+            return
         }
 
         assertEqual("regeneration", actualProperties["scenario"] as? String)

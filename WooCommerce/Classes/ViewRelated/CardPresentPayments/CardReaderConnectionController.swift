@@ -651,7 +651,8 @@ private extension CardReaderConnectionController {
 
         if case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: _) = error,
            underlyingError.isSoftwareUpdateError {
-            return onUpdateFailed(error: error)
+            onUpdateFailed(error: error)
+            return
         }
         showConnectionFailed(error: error)
     }
@@ -697,10 +698,11 @@ private extension CardReaderConnectionController {
         }
 
         guard case CardReaderServiceError.connection(let underlyingError) = error else {
-            return alertsPresenter.present(
+            alertsPresenter.present(
                 viewModel: alertsProvider.connectingFailed(error: error,
                                                            retrySearch: continueSearch,
                                                            cancelSearch: cancelSearch))
+            return
         }
 
         switch underlyingError {

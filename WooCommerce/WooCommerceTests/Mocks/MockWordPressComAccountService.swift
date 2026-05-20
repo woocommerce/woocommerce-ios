@@ -12,7 +12,8 @@ final class MockWordPressComAccountService: WordPressComAccountServiceProtocol {
     func isPasswordlessAccount(username: String, success: @escaping (Bool) -> Void, failure: @escaping (Error) -> Void) {
         triggeredIsPasswordlessAccount = true
         guard let passwordlessAccountCheckError else {
-            return success(shouldReturnPasswordlessAccount)
+            success(shouldReturnPasswordlessAccount)
+            return
         }
         failure(passwordlessAccountCheckError)
     }
@@ -24,7 +25,8 @@ final class MockWordPressComAccountService: WordPressComAccountServiceProtocol {
                                    failure: @escaping (Error) -> Void) {
         triggeredRequestAuthenticationLink = true
         guard let authenticationLinkRequestError else {
-            return success()
+            success()
+            return
         }
         failure(authenticationLinkRequestError)
     }

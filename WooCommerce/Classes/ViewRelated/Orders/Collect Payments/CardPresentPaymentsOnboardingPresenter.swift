@@ -36,7 +36,8 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
                                   readyToCollectPayment completion: @escaping () -> Void) {
         readinessUseCase.checkCardPaymentReadiness()
         guard case .ready = readinessUseCase.readiness else {
-            return showOnboarding(from: viewController, readyToCollectPayment: completion)
+            showOnboarding(from: viewController, readyToCollectPayment: completion)
+            return
         }
         completion()
     }

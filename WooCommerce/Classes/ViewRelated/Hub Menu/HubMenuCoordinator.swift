@@ -82,7 +82,8 @@ final class HubMenuCoordinator {
         }
 
         guard let noteID = notification.noteID else {
-            return attemptRetrieveProductReviewWithoutNoteID(notification: notification)
+            attemptRetrieveProductReviewWithoutNoteID(notification: notification)
+            return
         }
         let action = ProductReviewAction.retrieveProductReviewFromNote(noteID: Int64(noteID)) { [weak self] result in
             self?.handleProductReviewResult(result)

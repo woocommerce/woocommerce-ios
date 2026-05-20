@@ -375,16 +375,19 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     func didTapConfirmDetails() {
         guard image != nil else {
-            return isShowingMissingImageErrorAlert = true
+            isShowingMissingImageErrorAlert = true
+            return
         }
 
         guard finalDestinationURL.isNotEmpty else {
-            return isShowingMissingDestinationURLAlert = true
+            isShowingMissingDestinationURLAlert = true
+            return
         }
 
         if featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective),
            campaignObjective == nil {
-            return isShowingMissingObjectiveAlert = true
+            isShowingMissingObjectiveAlert = true
+            return
         }
 
         let taglineMatching = suggestions.map { $0.siteName }.contains { $0 == tagline }

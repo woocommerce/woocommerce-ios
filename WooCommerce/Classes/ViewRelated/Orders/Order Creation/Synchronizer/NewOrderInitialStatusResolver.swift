@@ -25,7 +25,8 @@ struct NewOrderInitialStatusResolver {
     @MainActor
     func resolve(onCompletion: @escaping (OrderStatusEnum) -> ()) {
         guard let wooPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true) else {
-            return onCompletion(.pending)
+            onCompletion(.pending)
+            return
         }
 
         // auto-draft should exists in versions greater than `6.3.0`

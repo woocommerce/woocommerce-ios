@@ -83,7 +83,8 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
             }
         case .custom:
             guard datePaid != nil else {
-                return onCompletion(false)
+                onCompletion(false)
+                return
             }
             isEligibleForBackendReceipts { isEligibleForReceipt in
                 onCompletion(isEligibleForReceipt)
@@ -98,7 +99,8 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
                 }
             }
         default:
-            return onCompletion(false)
+            onCompletion(false)
+            return
         }
     }
 }

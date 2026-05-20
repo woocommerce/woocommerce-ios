@@ -85,7 +85,8 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
         guard validateEmail() else {
             notice = AddressFormViewModel.NoticeFactory.createInvalidEmailNotice()
-            return onFinish(false)
+            onFinish(false)
+            return
         }
 
         if showDifferentAddressForm {

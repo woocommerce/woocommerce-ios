@@ -277,11 +277,13 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         // The product has to exist remotely in order to save its images remotely.
         // In product creation, this save function should be called after a new product is saved remotely for the first time.
         guard key.isLocalID == false else {
-            return onProductSave(.failure(ProductImageUploaderError.noRemoteProductIDFound))
+            onProductSave(.failure(ProductImageUploaderError.noRemoteProductIDFound))
+            return
         }
 
         guard let handler = actionHandlersByProduct[key] else {
-            return onProductSave(.failure(ProductImageUploaderError.noActionHandlerFound))
+            onProductSave(.failure(ProductImageUploaderError.noActionHandlerFound))
+            return
         }
 
         let imagesSaver: ProductImagesSaver

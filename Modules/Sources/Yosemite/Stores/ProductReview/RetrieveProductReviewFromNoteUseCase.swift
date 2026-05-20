@@ -108,7 +108,8 @@ final class RetrieveProductReviewFromNoteUseCase {
                            abort: @escaping AbortBlock,
                            next: @escaping (Note) -> Void) {
         if let noteInStorage = storageManager?.viewStorage.loadNotification(noteID: noteID) {
-            return next(noteInStorage.toReadOnly())
+            next(noteInStorage.toReadOnly())
+            return
         }
 
         notificationsRemote.loadNotes(noteIDs: [noteID], pageSize: nil) { result in
@@ -133,7 +134,8 @@ final class RetrieveProductReviewFromNoteUseCase {
                                     next: @escaping (ProductReview) -> Void) {
 
         if let productReviewInStorage = storageManager?.viewStorage.loadProductReview(siteID: siteID, reviewID: reviewID) {
-            return next(productReviewInStorage.toReadOnly())
+            next(productReviewInStorage.toReadOnly())
+            return
         }
 
         productReviewsRemote.loadProductReview(for: Int64(siteID), reviewID: Int64(reviewID)) { result in
@@ -152,7 +154,8 @@ final class RetrieveProductReviewFromNoteUseCase {
                                    abort: @escaping AbortBlock,
                                    next: @escaping () -> Void) {
         guard let storageManager else {
-            return abort(ProductReviewFromNoteRetrieveError.storageNoLongerAvailable)
+            abort(ProductReviewFromNoteRetrieveError.storageNoLongerAvailable)
+            return
         }
         storageManager.performAndSave({ storage in
             let storageReview = storage.loadProductReview(siteID: review.siteID, reviewID: review.reviewID)
@@ -168,7 +171,8 @@ final class RetrieveProductReviewFromNoteUseCase {
                               abort: @escaping AbortBlock,
                               next: @escaping (Product) -> Void) {
         if let productInStorage = storageManager?.viewStorage.loadProduct(siteID: siteID, productID: productID) {
-            return next(productInStorage.toReadOnly())
+            next(productInStorage.toReadOnly())
+            return
         }
 
         productsRemote.loadProduct(for: siteID, productID: productID) { result in

@@ -199,7 +199,8 @@ private extension CardPresentPaymentStore {
         do {
             try cardReaderService.start(commonReaderConfigProvider, discoveryMethod: discoveryMethod)
         } catch {
-            return onError(error)
+            onError(error)
+            return
         }
 
         // Over simplification. This is the point where we would receive

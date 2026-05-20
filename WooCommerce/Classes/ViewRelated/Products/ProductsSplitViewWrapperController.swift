@@ -59,7 +59,8 @@ private extension ProductsSplitViewWrapperController {
 
     func configureChildViewController() {
         guard let contentView = productsSplitViewController.view else {
-            return assertionFailure("Split view not available")
+            assertionFailure("Split view not available")
+            return
         }
         addChild(productsSplitViewController)
         view.addSubview(contentView)

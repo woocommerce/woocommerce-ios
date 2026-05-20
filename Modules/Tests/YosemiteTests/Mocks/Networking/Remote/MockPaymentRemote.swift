@@ -51,6 +51,7 @@ extension MockPaymentRemote: PaymentRemoteProtocol {
             XCTFail("Could not find result for creating a cart.")
             throw NetworkError.notFound()
         }
-        return try result.get()
+        try result.get()
+        return
     }
 }

@@ -325,7 +325,8 @@ private extension AppCoordinator {
         /// If authenticating with site credentials only is incomplete,
         /// show the prologue screen to force the user to log in again.
         guard stores.isAuthenticatedWithoutWPCom == false else {
-            return displayAuthenticatorWithOnboardingIfNeeded()
+            displayAuthenticatorWithOnboardingIfNeeded()
+            return
         }
 
         let matcher = ULAccountMatcher(storageManager: storageManager)

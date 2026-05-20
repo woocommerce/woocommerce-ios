@@ -25,7 +25,8 @@ public final class JetpackSettingsRemote: Remote, JetpackSettingsRemoteProtocol 
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
 
-        return try await enqueue(request)
+        try await enqueue(request)
+        return
     }
 }
 

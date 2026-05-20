@@ -160,7 +160,8 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
         let path = Path.notificationSettings
         let parameters = try settings.toDictionary()
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters, encoding: JSONEncoding.default)
-        return try await enqueue(request)
+        try await enqueue(request)
+        return
     }
 
     public func createAccount(email: String,
@@ -199,7 +200,8 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
     public func closeAccount() async throws {
         let path = Path.closeAccount
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path)
-        return try await enqueue(request)
+        try await enqueue(request)
+        return
     }
 }
 

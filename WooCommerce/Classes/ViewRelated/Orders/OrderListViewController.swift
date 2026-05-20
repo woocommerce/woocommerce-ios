@@ -383,7 +383,8 @@ extension OrderListViewController {
 
     private func markOrderAsCompleted(resultID: FetchResultSnapshotObjectID) {
         guard let orderDetailsViewModel = viewModel.detailsViewModel(withID: resultID) else {
-            return DDLogError("⛔️ ViewModel for resultID: \(resultID) not found")
+            DDLogError("⛔️ ViewModel for resultID: \(resultID) not found")
+            return
         }
         /// Actions that performs the mark completed request remotely.
         let fulfillmentProcess = orderDetailsViewModel.markCompleted(flow: .list)
@@ -596,7 +597,8 @@ private extension OrderListViewController {
                 state != .empty else {
             selectedOrderID = nil
             selectedIndexPath = nil
-            return switchDetailsHandler([], 0, false, nil)
+            switchDetailsHandler([], 0, false, nil)
+            return
         }
         switchDetailsHandler([orderDetailsViewModel], 0, false) { [weak self] hasBeenSelected in
             guard let self else { return }

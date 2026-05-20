@@ -30,7 +30,8 @@ private extension StoreOnboardingStoreDetailsCoordinator {
         let urlString = Constants.url(site: site)
 
         guard let url = URL(string: urlString) else {
-            return assertionFailure("Invalid URL for onboarding Store details: \(urlString)")
+            assertionFailure("Invalid URL for onboarding Store details: \(urlString)")
+            return
         }
 
         let webViewModel = WPAdminWebViewModel(title: Localization.title, initialURL: url)

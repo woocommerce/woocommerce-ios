@@ -226,7 +226,8 @@ private extension OrderStore {
         let storage = storageManager.viewStorage
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         if storage.firstObject(ofType: StorageOrder.self, matching: predicate) != nil {
-            return onCompletion(.success(true))
+            onCompletion(.success(true))
+            return
         }
 
         // If there are no locally stored orders, then check remote.
@@ -246,7 +247,8 @@ private extension OrderStore {
         // Check first if the order exists in storage. If it doesn't, fetch it from remote.
         let storage = storageManager.viewStorage
         guard let storedOrder = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
-            return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+            loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+            return
         }
 
         Task {
@@ -651,11 +653,13 @@ private extension OrderStore {
             case .success(let order):
                 // Auto-draft orders are temporary and should not be stored
                 guard order.status != .autoDraft else {
-                    return onCompletion(result)
+                    onCompletion(result)
+                    return
                 }
 
                 if let giftCard, order.appliedGiftCards.contains(where: { $0.code == giftCard }) == false {
-                    return onCompletion(.failure(GiftCardError.notApplied))
+                    onCompletion(.failure(GiftCardError.notApplied))
+                    return
                 }
 
                 upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
@@ -666,11 +670,14 @@ private extension OrderStore {
                    case let .unknown(code, message, _) = dotcomError {
                     switch code {
                         case "woocommerce_rest_gift_card_cannot_apply":
-                            return onCompletion(.failure(GiftCardError.cannotApply(reason: message)))
+                            onCompletion(.failure(GiftCardError.cannotApply(reason: message)))
+                            return
                         case "woocommerce_rest_gift_card_cannot_parse_data":
-                            return onCompletion(.failure(GiftCardError.invalid(reason: message)))
+                            onCompletion(.failure(GiftCardError.invalid(reason: message)))
+                            return
                         default:
-                            return onCompletion(result)
+                            onCompletion(result)
+                            return
                     }
                 }
                 onCompletion(result)

@@ -19,7 +19,8 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
 
         // Then
         guard case .message(.paymentError(let viewModel)) = presentationStyle else {
-            return XCTFail("Expected payment error message not found")
+            XCTFail("Expected payment error message not found")
+            return
         }
 
         viewModel.tryAgainButtonViewModel.actionHandler()
@@ -45,7 +46,8 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
 
         // Then
         guard case .message(.paymentError(let viewModel)) = presentationStyle else {
-            return XCTFail("Expected payment error message not found")
+            XCTFail("Expected payment error message not found")
+            return
         }
 
         viewModel.tryAgainButtonViewModel.actionHandler()
@@ -71,7 +73,8 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
 
         // Then
         guard case .message(.paymentErrorNonRetryable(let viewModel)) = presentationStyle else {
-            return XCTFail("Expected payment error message not found")
+            XCTFail("Expected payment error message not found")
+            return
         }
 
         viewModel.tryAnotherPaymentMethodButtonViewModel.actionHandler()
@@ -90,7 +93,8 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
 
         // Then
         guard case .message(.paymentSuccess(let viewModel)) = presentationStyle else {
-            return XCTFail("Expected payment success message not found")
+            XCTFail("Expected payment success message not found")
+            return
         }
 
         XCTAssertEqual(viewModel.message, "A card payment of $200.50 was successfully made.")
@@ -117,7 +121,8 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
 
         // Then
         guard case .message(.paymentCaptureError(let viewModel)) = presentationStyle else {
-            return XCTFail("Expected payment capture error message not found")
+            XCTFail("Expected payment capture error message not found")
+            return
         }
 
         viewModel.tryAgainButtonViewModel.actionHandler()
@@ -143,7 +148,8 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
 
         // Then
         guard case .alert(.scanningForReaders(let viewModel)) = presentationStyle else {
-            return XCTFail("Expected scanning for readers alert not found")
+            XCTFail("Expected scanning for readers alert not found")
+            return
         }
 
         viewModel.buttonViewModel.actionHandler()

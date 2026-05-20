@@ -31,14 +31,16 @@ final class TapToPayBadgePromotionChecker {
     @MainActor
     private func checkTapToPayBadgeVisibility() async {
         guard let siteID = stores.sessionManager.defaultStoreID else {
-            return shouldShowTapToPayBadges = false
+            shouldShowTapToPayBadges = false
+            return
         }
 
         let supportDeterminer = CardReaderSupportDeterminer(siteID: siteID)
         guard supportDeterminer.siteSupportsTapToPayReader(),
               await supportDeterminer.deviceSupportsTapToPayReader(),
               await !supportDeterminer.hasPreviousTapToPayUsage() else {
-            return shouldShowTapToPayBadges = false
+            shouldShowTapToPayBadges = false
+            return
         }
 
         do {

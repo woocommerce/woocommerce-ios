@@ -230,9 +230,10 @@ private extension JetpackSetupCoordinator {
     func startJetpackSetupFlow(authToken: String) {
         /// Dismiss any existing login flow if possible.
         if rootViewController.presentedViewController != nil {
-            return rootViewController.dismiss(animated: true) {
+            rootViewController.dismiss(animated: true) {
                 self.startJetpackSetupFlow(authToken: authToken)
             }
+            return
         }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)

@@ -42,7 +42,8 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
                           completion: @escaping () -> Void) {
         guard MFMailComposeViewController.canSendMail() else {
             DDLogError("⛔️ Failed to submit email receipt for order: \(data.order.orderID). Email is not configured.")
-            return completion()
+            completion()
+            return
         }
 
         self.completion = completion

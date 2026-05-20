@@ -863,7 +863,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure as? ServerSidePaymentCaptureError)
         guard case .paymentGateway = error else {
-            return XCTFail("Unexpected payment gateway error: \(error)")
+            XCTFail("Unexpected payment gateway error: \(error)")
+            return
         }
     }
 
@@ -898,7 +899,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure as? ServerSidePaymentCaptureError)
         guard case .terminalPaymentPreparation = error else {
-            return XCTFail("Unexpected terminal payment preparation error: \(error)")
+            XCTFail("Unexpected terminal payment preparation error: \(error)")
+            return
         }
         XCTAssertFalse(mockCardReaderService.didHitWaitForInsertedCardToBeRemoved)
     }

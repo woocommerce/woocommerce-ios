@@ -441,7 +441,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let task = Task { try await viewModel.cancelBooking() }
         let action = try await waitForFirstBookingAction()
         guard case let .cancelBooking(_, _, onCompletion) = action else {
-            return XCTFail("Expected cancelBooking action")
+            XCTFail("Expected cancelBooking action")
+            return
         }
         onCompletion(nil)
         try await task.value

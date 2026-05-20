@@ -75,7 +75,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
     @MainActor
     public func enableCoupons() async throws {
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             settingsStoreMethods.enableCouponSetting(siteID: siteID) { result in
                 switch result {
                 case .success:
@@ -85,6 +85,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                 }
             }
         }
+        return
     }
 }
 

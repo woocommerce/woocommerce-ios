@@ -137,7 +137,8 @@ private extension ManualTrackingViewController {
 
     @objc func dismissButtonTapped() {
         guard !viewModel.hasUnsavedChanges else {
-            return displayDismissConfirmationAlert()
+            displayDismissConfirmationAlert()
+            return
         }
         dismiss()
     }

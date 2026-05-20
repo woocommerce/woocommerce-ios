@@ -108,7 +108,8 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
         expectedCampaign: FeatureAnnouncementCampaign) {
         guard let actualProperties = analyticsProvider.receivedProperties.first(where: { $0.keys.contains("source")
         }) else {
-            return XCTFail("Expected properties were not logged")
+            XCTFail("Expected properties were not logged")
+            return
         }
 
         assertEqual(expectedSource.rawValue, actualProperties["source"] as? String)

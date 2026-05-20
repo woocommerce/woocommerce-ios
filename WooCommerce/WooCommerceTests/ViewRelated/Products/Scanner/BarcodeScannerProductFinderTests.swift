@@ -79,7 +79,8 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: source)
 
         guard case let .product(retrievedProduct) = result else {
-            return XCTFail("It didn't provide a product as expected")
+            XCTFail("It didn't provide a product as expected")
+            return
         }
 
         // Then
@@ -106,7 +107,8 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: source)
 
         guard case let .product(retrievedProduct) = result else {
-            return XCTFail("It didn't provide a product as expected")
+            XCTFail("It didn't provide a product as expected")
+            return
         }
 
         // Then
@@ -146,7 +148,8 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: .orderCreation)
 
         guard case let .product(retrievedProduct) = result else {
-            return XCTFail("It didn't provide a product as expected")
+            XCTFail("It didn't provide a product as expected")
+            return
         }
 
 
@@ -177,7 +180,8 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: .orderCreation)
 
         guard case let .product(retrievedProduct) = result else {
-            return XCTFail("It didn't provide a product as expected")
+            XCTFail("It didn't provide a product as expected")
+            return
         }
 
 

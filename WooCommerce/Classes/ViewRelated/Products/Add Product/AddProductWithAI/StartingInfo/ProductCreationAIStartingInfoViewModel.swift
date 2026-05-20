@@ -79,7 +79,8 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
         imageState = .loading
 
         guard let image = await onPickPackagePhoto(source) else {
-            return imageState = previousState
+            imageState = previousState
+            return
         }
 
         await detectTexts(from: image.image)

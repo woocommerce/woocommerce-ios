@@ -498,7 +498,8 @@ private extension ProductVariationsViewController {
         }
 
         guard let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) else {
-            return show(editAttributeViewController, sender: nil)
+            show(editAttributeViewController, sender: nil)
+            return
         }
 
         let viewControllersUntilSelf = navigationController.viewControllers[0...indexOfSelf]

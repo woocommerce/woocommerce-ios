@@ -589,7 +589,8 @@ private extension FilterListViewController {
             // Do not allow selection for an unavailable promotable type.
             // Instead, just launch a webview to promote it.
             if let promotable = selected as? PromotableProductType, !promotable.isAvailable {
-                return launchPromoteWebview(for: promotable)
+                launchPromoteWebview(for: promotable)
+                return
             }
 
             onItemSelectedSubject.send(selected)

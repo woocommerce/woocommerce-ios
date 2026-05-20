@@ -26,7 +26,8 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, any Error>) -> Void) {
         guard invalidated == false else {
-            return onCompletion(.failure(CardPresentPaymentInvalidatablePaymentOrchestratorError.paymentInvalidated))
+            onCompletion(.failure(CardPresentPaymentInvalidatablePaymentOrchestratorError.paymentInvalidated))
+            return
         }
         paymentOrchestrator.collectPayment(for: order,
                                            orderTotal: orderTotal,
@@ -48,7 +49,8 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
     func retryPayment(for order: Order,
                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, any Error>) -> Void) {
         guard invalidated == false else {
-            return onCompletion(.failure(CardPresentPaymentInvalidatablePaymentOrchestratorError.paymentInvalidated))
+            onCompletion(.failure(CardPresentPaymentInvalidatablePaymentOrchestratorError.paymentInvalidated))
+            return
         }
         paymentOrchestrator.retryPayment(for: order,
                                          onCompletion: onCompletion)

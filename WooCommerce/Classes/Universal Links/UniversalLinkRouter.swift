@@ -70,7 +70,8 @@ struct UniversalLinkRouter {
         guard let matchedRoute = matcher.firstRouteMatching(url),
               matchedRoute.performAction() else {
             analyticsTracker?.trackUniversalLinkFailure(url: url)
-            return bouncingURLOpener.open(url)
+            bouncingURLOpener.open(url)
+            return
         }
 
         analyticsTracker?.trackUniversalLinkOpened(subPath: matchedRoute.subPath)

@@ -2309,7 +2309,8 @@ final class ProductStoreTests: XCTestCase {
         let skuSearchResult = try XCTUnwrap(result.get())
 
         guard case let (.product(productMatch), _) = skuSearchResult else {
-            return XCTFail("It didn't provide a product as expected")
+            XCTFail("It didn't provide a product as expected")
+            return
         }
 
         XCTAssertEqual(productMatch.productID, expectedProductID)
@@ -2341,7 +2342,8 @@ final class ProductStoreTests: XCTestCase {
         let identifierSearchResult = try XCTUnwrap(result.get())
 
         guard case let (.product(productMatch), _) = identifierSearchResult else {
-            return XCTFail("It didn't provide a product as expected")
+            XCTFail("It didn't provide a product as expected")
+            return
         }
 
         XCTAssertEqual(productMatch.productID, expectedProductID)
@@ -2373,7 +2375,8 @@ final class ProductStoreTests: XCTestCase {
         let skuSearchResult = try XCTUnwrap(result.get())
 
         guard case let (.variation(variationMatch), _) = skuSearchResult else {
-            return XCTFail("It didn't provide a product as expected")
+            XCTFail("It didn't provide a product as expected")
+            return
         }
 
         XCTAssertEqual(variationMatch.productVariationID, expectedProductID)
@@ -2405,7 +2408,8 @@ final class ProductStoreTests: XCTestCase {
         let skuSearchResult = try XCTUnwrap(result.get())
 
         guard case let (.variation(variationMatch), _) = skuSearchResult else {
-            return XCTFail("It didn't provide a product as expected")
+            XCTFail("It didn't provide a product as expected")
+            return
         }
 
         XCTAssertEqual(variationMatch.productVariationID, expectedProductID)
@@ -2479,7 +2483,8 @@ final class ProductStoreTests: XCTestCase {
         let skuSearchResult = try XCTUnwrap(result.get())
 
         guard case let (.product(productMatch), _) = skuSearchResult else {
-            return XCTFail("It didn't provide a product as expected")
+            XCTFail("It didn't provide a product as expected")
+            return
         }
 
         XCTAssertEqual(productMatch.sku, "chocobars")

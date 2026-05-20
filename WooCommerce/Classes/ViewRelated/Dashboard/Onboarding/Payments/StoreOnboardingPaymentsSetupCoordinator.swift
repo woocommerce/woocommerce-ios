@@ -75,7 +75,8 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
         }
 
         guard let url = URL(string: urlString) else {
-            return assertionFailure("Invalid URL for onboarding payments setup: \(urlString)")
+            assertionFailure("Invalid URL for onboarding payments setup: \(urlString)")
+            return
         }
 
         let webViewModel = WooPaymentSetupWebViewModel(title: title, initialURL: url) { [weak self] success in

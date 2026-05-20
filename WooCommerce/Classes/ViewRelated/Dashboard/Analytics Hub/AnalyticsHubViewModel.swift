@@ -701,7 +701,8 @@ extension AnalyticsHubViewModel {
         }
 
         guard let storedCards else {
-            return allCardsWithSettings = AnalyticsHubViewModel.defaultCards
+            allCardsWithSettings = AnalyticsHubViewModel.defaultCards
+            return
         }
 
         // Any new cards added to the analytics hub since the stored cards were saved.

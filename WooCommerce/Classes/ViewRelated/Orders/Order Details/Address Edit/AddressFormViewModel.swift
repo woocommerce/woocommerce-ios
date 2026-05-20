@@ -386,7 +386,8 @@ private extension AddressFormViewModel {
 
         // Trigger a sync request if there are no countries.
         guard !countriesResultsController.isEmpty else {
-            return syncCountriesTrigger.send()
+            syncCountriesTrigger.send()
+            return
         }
     }
 

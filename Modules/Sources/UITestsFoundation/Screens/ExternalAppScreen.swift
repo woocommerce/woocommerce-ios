@@ -31,7 +31,8 @@ public final class ExternalAppScreen {
         safari.buttons["Go"].tap()
 
         guard safari.links[universalLink].waitForIsHittable(timeout: 10) else {
-            return XCTFail("\(universalLink) is not displayed!")
+            XCTFail("\(universalLink) is not displayed!")
+            return
         }
         safari.links[universalLink].tap()
     }

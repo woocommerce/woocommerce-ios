@@ -56,7 +56,8 @@ final class OrderListCellViewModelTests: XCTestCase {
 
         // Then
         guard let accessoryView = viewModel.accessoryView else {
-            return XCTFail("Cell does not have an accessory view.")
+            XCTFail("Cell does not have an accessory view.")
+            return
         }
         XCTAssertEqual(accessoryView.image, expectedImage)
         XCTAssertEqual(accessoryView.tintColor, .tertiaryLabel)

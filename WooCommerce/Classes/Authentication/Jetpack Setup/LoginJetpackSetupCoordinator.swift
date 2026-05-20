@@ -67,7 +67,8 @@ private extension LoginJetpackSetupCoordinator {
         })
         guard let contentNavigationController = navigationController.presentedViewController as? UINavigationController else {
             // this is not likely to happen but handling this for safety
-            return navigationController.present(UINavigationController(rootViewController: setupUI), animated: true)
+            navigationController.present(UINavigationController(rootViewController: setupUI), animated: true)
+            return
         }
         contentNavigationController.setViewControllers([setupUI], animated: true)
     }

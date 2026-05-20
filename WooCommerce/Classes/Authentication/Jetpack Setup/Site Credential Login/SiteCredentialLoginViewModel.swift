@@ -117,7 +117,8 @@ private extension SiteCredentialLoginViewModel {
             // Error 404 means Jetpack is not installed. Allow this to come through.
             // Error 403 means the lack of permission to manage plugins. Also allow this error
             // since we want to show the error on the next screen.
-            return handleCompletion()
+            handleCompletion()
+            return
         case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401)):
             errorMessage = Localization.wrongCredentials
         default:

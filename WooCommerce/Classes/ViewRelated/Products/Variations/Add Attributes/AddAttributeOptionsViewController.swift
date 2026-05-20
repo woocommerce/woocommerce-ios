@@ -76,7 +76,8 @@ private extension AddAttributeOptionsViewController {
     func configureRightButtonItem() {
         // The update indicator has precedence over the next button
         if viewModel.showUpdateIndicator {
-            return navigationItem.rightBarButtonItems = [createUpdateIndicatorButton()]
+            navigationItem.rightBarButtonItems = [createUpdateIndicatorButton()]
+            return
         }
 
         // Assemble buttons based view model visibility

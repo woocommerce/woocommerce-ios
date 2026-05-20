@@ -249,7 +249,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
         // Perform local email validation
         guard email.isEmpty || EmailFormatValidator.validate(string: email) else {
-            return presentNoticeSubject.send(.error(Localization.invalidEmail))
+            presentNoticeSubject.send(.error(Localization.invalidEmail))
+            return
         }
 
         showLoadingIndicator = true

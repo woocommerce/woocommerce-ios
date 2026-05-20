@@ -287,7 +287,8 @@ private extension ShippingLabelStore {
                                                      settings: ShippingLabelSettings,
                                                      onCompletion: @escaping () -> Void) {
         guard shippingLabels.isEmpty == false else {
-            return onCompletion()
+            onCompletion()
+            return
         }
 
         storageManager.performAndSave ({ [weak self] storage in

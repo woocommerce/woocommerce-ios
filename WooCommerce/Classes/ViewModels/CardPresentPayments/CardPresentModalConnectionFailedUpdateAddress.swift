@@ -50,7 +50,8 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
         guard let openWCSettingsAction else {
-            return retrySearchAction()
+            retrySearchAction()
+            return
         }
         openWCSettingsAction()
     }

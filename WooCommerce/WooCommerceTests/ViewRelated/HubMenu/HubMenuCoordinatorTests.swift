@@ -104,7 +104,8 @@ final class HubMenuCoordinatorTests: XCTestCase {
         // Simulate that the network call returns a parcel
         let receivedAction = try XCTUnwrap(storesManager.receivedActions.first as? ProductReviewAction)
         guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
-            return XCTFail("Expected retrieveProductReviewFromNote action.")
+            XCTFail("Expected retrieveProductReviewFromNote action.")
+            return
         }
         completion(.failure(NSError(domain: "domain", code: 0)))
 

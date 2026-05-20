@@ -50,7 +50,8 @@ final class OrdersSplitViewWrapperController: UIViewController {
             }
             let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
             let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
-            return showSecondaryView(loaderNavigationController)
+            showSecondaryView(loaderNavigationController)
+            return
         }
     }
 

@@ -825,7 +825,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -874,7 +875,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -920,7 +922,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -966,7 +969,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -1014,7 +1018,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When — new token arrives, clearing previously registered sites
@@ -1059,7 +1064,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -1107,7 +1113,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -1150,7 +1157,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -1195,7 +1203,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -1395,7 +1404,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -1436,7 +1446,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -1475,7 +1486,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -1642,7 +1654,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         manager = makeManager()
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When — first call stores pending token since eligibility is nil
@@ -1709,7 +1722,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -1762,7 +1776,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
 
         // When
@@ -1807,7 +1822,8 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Provide a device token so the manager has one
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+            XCTFail("Invalid sample token")
+            return
         }
         manager.registerDeviceToken(with: tokenAsData)
 

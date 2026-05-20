@@ -9,7 +9,8 @@ public final class IPLocationRemote: Remote {
     public func getIPCountryCode(onCompletion: @escaping (Result<String, Error>) -> Void) {
         let path = "geo/" // Needs the trailing slash otherwise the request will fail.
         guard let url = URL(string: Settings.wordpressApiBaseURL + path) else {
-            return onCompletion(.failure(IPLocationError.malformedURL)) // Should not happen.
+            onCompletion(.failure(IPLocationError.malformedURL)) // Should not happen.
+            return // Should not happen.
         }
 
         let request = UnauthenticatedRequest(request: .init(url: url)).asURLRequest()

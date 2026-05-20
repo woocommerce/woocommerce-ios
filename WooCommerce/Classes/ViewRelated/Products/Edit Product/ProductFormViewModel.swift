@@ -507,7 +507,8 @@ extension ProductFormViewModel {
 
         // If the product doesn't have any pending changes, we can safely override the original product
         guard hasUnsavedChanges() else {
-            return resetProduct(newOriginalProduct)
+            resetProduct(newOriginalProduct)
+            return
         }
 
         // If the product has pending changes, we need to override the `originalProduct` first and the `living product` later with a saved copy.

@@ -99,7 +99,8 @@ final class WPComPushNotificationsBenefitsViewModel {
 
         /// Skip Jetpack connection check if site is JCP
         guard stores.sessionManager.defaultSite?.isJetpackCPConnected == false else {
-            return await checkWooPluginVersion()
+            await checkWooPluginVersion()
+            return
         }
 
         do {

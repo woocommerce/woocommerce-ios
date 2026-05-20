@@ -50,7 +50,8 @@ final class AreaSelectorCommand: ObservableListSelectorCommand {
     ///
     func filterAreas(term: String) {
         guard term.isNotEmpty else {
-            return data = areas
+            data = areas
+            return
         }
 
         // Trim the search term to remove newlines or whitespaces (e.g added from the keyboard predictive text) from both ends

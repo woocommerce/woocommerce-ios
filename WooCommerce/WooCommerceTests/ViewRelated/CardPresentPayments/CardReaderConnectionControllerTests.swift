@@ -81,7 +81,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .canceled(let source) = connectionResult else {
-            return XCTFail("Expected connection to be canceled")
+            XCTFail("Expected connection to be canceled")
+            return
         }
         assertEqual(.searchingForReader, source)
     }
@@ -124,7 +125,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .connected(let reader) = connectionResult else {
-            return XCTFail("Expected reader to be connected")
+            XCTFail("Expected reader to be connected")
+            return
         }
         assertEqual(MockCardReader.bbposChipper2XBT(), reader)
 
@@ -171,7 +173,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .connected(let reader) = connectionResult else {
-            return XCTFail("Expected reader to be connected")
+            XCTFail("Expected reader to be connected")
+            return
         }
         assertEqual(MockCardReader.bbposChipper2XBT(), reader)
     }
@@ -256,7 +259,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .canceled(let source) = connectionResult else {
-            return XCTFail("Expected connection to be canceled")
+            XCTFail("Expected connection to be canceled")
+            return
         }
         assertEqual(.foundSeveralReaders, source)
     }
@@ -303,7 +307,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .canceled(let source) = connectionResult else {
-            return XCTFail("Expected connection to be canceled")
+            XCTFail("Expected connection to be canceled")
+            return
         }
         assertEqual(.connectionError, source)
 
@@ -351,7 +356,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .canceled(let source) = connectionResult else {
-            return XCTFail("Expected connection to be canceled")
+            XCTFail("Expected connection to be canceled")
+            return
         }
         assertEqual(.connectionError, source)
     }
@@ -396,7 +402,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .connected(let reader) = connectionResult else {
-            return XCTFail("Expected reader to be connected")
+            XCTFail("Expected reader to be connected")
+            return
         }
         assertEqual(MockCardReader.bbposChipper2XBT(), reader)
     }
@@ -443,7 +450,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .canceled(let source) = connectionResult else {
-            return XCTFail("Expected connection to be canceled")
+            XCTFail("Expected connection to be canceled")
+            return
         }
         assertEqual(.searchingForReader, source)
     }
@@ -490,7 +498,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .canceled(let source) = connectionResult else {
-            return XCTFail("Expected connection to be canceled")
+            XCTFail("Expected connection to be canceled")
+            return
         }
         assertEqual(.searchingForReader, source)
     }
@@ -533,7 +542,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .canceled(let source) = connectionResult else {
-            return XCTFail("Expected connection to be canceled")
+            XCTFail("Expected connection to be canceled")
+            return
         }
         assertEqual(.foundReader, source)
     }
@@ -582,7 +592,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .connected(let reader) = connectionResult else {
-            return XCTFail("Expected reader to be connected")
+            XCTFail("Expected reader to be connected")
+            return
         }
         assertEqual(MockCardReader.bbposChipper2XBT(), reader)
     }
@@ -635,7 +646,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         guard case .canceled(let source) = connectionResult else {
-            return XCTFail("Expected connection to be canceled")
+            XCTFail("Expected connection to be canceled")
+            return
         }
         assertEqual(.locationPermissionDenied, source)
     }

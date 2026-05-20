@@ -14,7 +14,8 @@ final class MockProductListViewModel: ProductsListViewModelProtocol {
     func scanToUpdateInventoryButtonShouldBeVisible(isCameraAvailable: Bool? = true, completion: @escaping (Bool) -> (Void)) {
         guard self.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory) else {
             scanToUpdateInventoryShouldBeVisible = false
-            return completion(false)
+            completion(false)
+            return
         }
         scanToUpdateInventoryShouldBeVisible = true
         completion(true)

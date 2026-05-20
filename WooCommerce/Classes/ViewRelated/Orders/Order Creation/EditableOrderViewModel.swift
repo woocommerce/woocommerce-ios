@@ -613,7 +613,8 @@ final class EditableOrderViewModel: ObservableObject {
         // Creates the product row view model needed for `ProductInOrderViewModel`.
         guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
               let rowViewModel = createProductRowViewModel(for: orderItem, childItems: []) else {
-            return discountViewModel = nil
+            discountViewModel = nil
+            return
         }
 
         discountViewModel = .init(id: itemID,

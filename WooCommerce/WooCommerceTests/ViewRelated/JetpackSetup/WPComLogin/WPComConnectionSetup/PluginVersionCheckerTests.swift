@@ -35,7 +35,8 @@ final class PluginVersionCheckerTests: XCTestCase {
 
         // Then
         guard case .compatible = result else {
-            return XCTFail("Expected .compatible, got \(result)")
+            XCTFail("Expected .compatible, got \(result)")
+            return
         }
     }
 
@@ -59,7 +60,8 @@ final class PluginVersionCheckerTests: XCTestCase {
 
         // Then
         guard case let .incompatible(currentVersion, requiredVersion) = result else {
-            return XCTFail("Expected .incompatible, got \(result)")
+            XCTFail("Expected .incompatible, got \(result)")
+            return
         }
         XCTAssertEqual(currentVersion, "14.3")
         XCTAssertEqual(requiredVersion, "14.4")

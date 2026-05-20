@@ -149,6 +149,11 @@ class AuthenticationManager: Authentication {
                 guard let navigationController else { return }
                 NavigateToEnterSite().execute(from: navigationController)
             },
+            onShowHelp: { [weak self, weak navigationController] in
+                guard let self, let navigationController else { return }
+                let presenter = navigationController.topViewController ?? navigationController
+                self.presentSupport(from: presenter, sourceTag: .loginWithQRCode, siteURL: nil)
+            },
             onSuccess: { [weak self, weak navigationController] in
                 guard let self, let navigationController else { return }
                 self.qrLoginCoordinator = nil

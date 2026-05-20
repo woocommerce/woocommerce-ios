@@ -41,6 +41,9 @@ extension WordPressSupportSourceTag {
     public static var loginSiteAddress: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "loginSiteAddress", origin: "origin:login-site-address")
     }
+    public static var loginWithQRCode: WordPressSupportSourceTag {
+        return WordPressSupportSourceTag(name: "loginWithQRCode", origin: "origin:login-with-qr-code")
+    }
 
     /// For `VerifyEmailViewController`
     public static var verifyEmailInstructions: WordPressSupportSourceTag {

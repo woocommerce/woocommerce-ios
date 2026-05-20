@@ -30,6 +30,7 @@ final class QRLoginCoordinator {
     private let cameraPermissionChecker: QRLoginCameraPermissionCheckerProtocol
     private let analytics: QRLoginAnalyticsTracking
     private let onEnterSiteURL: () -> Void
+    private let onShowHelp: () -> Void
     private let onSuccess: () -> Void
 
     init(mode: Mode = .camera,
@@ -38,6 +39,7 @@ final class QRLoginCoordinator {
          cameraPermissionChecker: QRLoginCameraPermissionCheckerProtocol = DefaultQRLoginCameraPermissionChecker(),
          analytics: QRLoginAnalyticsTracking? = nil,
          onEnterSiteURL: @escaping () -> Void,
+         onShowHelp: @escaping () -> Void,
          onSuccess: @escaping () -> Void) {
         self.mode = mode
         self.navigationController = navigationController
@@ -48,6 +50,7 @@ final class QRLoginCoordinator {
         // constructing it in the body is fine.
         self.analytics = analytics ?? DefaultQRLoginAnalyticsTracking()
         self.onEnterSiteURL = onEnterSiteURL
+        self.onShowHelp = onShowHelp
         self.onSuccess = onSuccess
     }
 
@@ -280,12 +283,7 @@ private extension QRLoginCoordinator {
 
     func showHelp() {
         analytics.trackClick(.showHelp)
-        // Help integration is hooked up via the existing
-        // `AuthenticationManager.presentSupport(from:sourceTag:)`. For Layer 5
-        // we delegate to the system: the WordPress-Authenticator help icon
-        // path already covers this — see the existing prologue's help button
-        // wiring. Keeping this method as the analytics-only stub for now;
-        // the full Support hookup is part of the polish phase.
+        onShowHelp()
     }
 }
 

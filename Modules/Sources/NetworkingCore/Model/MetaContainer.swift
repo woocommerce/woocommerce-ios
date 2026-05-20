@@ -56,6 +56,7 @@ extension MetaContainer {
         case order
         case campaignID = "campaign_id"
         case post
+        case product
         case reply  = "reply_comment"
         case site
         case user

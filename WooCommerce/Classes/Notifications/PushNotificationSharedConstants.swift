@@ -21,6 +21,7 @@ enum PushNotificationSharedConstants {
         "new_post",
         "post",
         "store_order",
+        "store_stock",
         "user",
         "blaze_performed_note",
         "blaze_cancelled_note",

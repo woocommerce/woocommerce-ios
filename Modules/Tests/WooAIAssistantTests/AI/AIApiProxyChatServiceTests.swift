@@ -737,6 +737,137 @@ struct AIApiProxyChatServiceTests {
         }
     }
 
+    @Test
+    func test_sendChat_when_200_stream_envelope_is_user_rate_limit_then_retries() async throws {
+        // Given
+        let envelope = """
+        {"code":"woo_mobile_ai_user_rate_limit","message":"Rate limited","data":{"status":429}}
+        """
+        let firstAttempt = Data("data: \(envelope)\n\n".utf8)
+        let secondAttempt = singleTextChunk(text: "retry worked")
+        let transport = ScriptedProxyTransport(scenarios: [
+            .successChunks([firstAttempt]),
+            .successChunks([secondAttempt])
+        ])
+        let recorder = SleepDelayRecorder()
+        let service = AIApiProxyChatService(tokenProvider: ConstantWPCOMTokenProvider(value: "tok"),
+                                            endpoint: testEndpoint,
+                                            streamingTransport: transport.handler,
+                                            sleep: recorder.handler)
+
+        // When
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        #expect(await transport.callCount == 2)
+        #expect(await recorder.delays.count == 1)
+        #expect(textDeltas(in: events).joined() == "retry worked")
+    }
+
+    // MARK: - Coverage
+
+    @Test
+    func test_sendChat_when_two_tool_calls_in_one_stream_then_both_yielded_in_index_order() async throws {
+        // Given
+        let frames = [
+            toolCallSkeletonFrame(index: 0, id: "call_a", name: "orders_list"),
+            toolCallSkeletonFrame(index: 1, id: "call_b", name: "products_list"),
+            toolCallArgsFrame(index: 0, args: "{\"page\":"),
+            toolCallArgsFrame(index: 1, args: "{\"q\":"),
+            toolCallArgsFrame(index: 0, args: "1}"),
+            toolCallArgsFrame(index: 1, args: "\"hat\"}"),
+            finishFrame(reason: "tool_calls"),
+            "data: [DONE]\n\n"
+        ]
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data(frames.joined().utf8)])])
+        let service = makeService(transport: transport)
+
+        // When
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        let calls = toolCalls(in: events)
+        #expect(calls.count == 2)
+        #expect(calls.first?.id == "call_a")
+        #expect(calls.first?.function.name == "orders_list")
+        #expect(calls.first?.function.arguments == "{\"page\":1}")
+        #expect(calls.last?.id == "call_b")
+        #expect(calls.last?.function.name == "products_list")
+        #expect(calls.last?.function.arguments == "{\"q\":\"hat\"}")
+    }
+
+    @Test
+    func test_sendChat_when_stream_cancelled_then_no_completion_event_emitted() async throws {
+        // Given
+        let textFrame = sseFrame("{\"choices\":[{\"index\":0,\"delta\":{\"content\":\"partial\"}}]}")
+        let transport = ScriptedProxyTransport(scenarios: [.chunksThenHangUntilCancelled([Data(textFrame.utf8)])])
+        let service = makeService(transport: transport)
+
+        // When
+        let consumer = Task { () -> [ChatStreamEvent] in
+            var seen: [ChatStreamEvent] = []
+            for try await event in service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil) {
+                seen.append(event)
+                break
+            }
+            return seen
+        }
+        let observed = try await consumer.value
+
+        // Then
+        #expect(observed.count == 1)
+        #expect(textDeltas(in: observed) == ["partial"])
+        #expect(!observed.contains { if case .completed = $0 { return true } else { return false } })
+    }
+
+    @Test
+    func test_sendChat_when_malformed_chunk_after_valid_text_then_throws_invalid_stream() async throws {
+        // Given
+        let frames = [
+            sseFrame("{\"choices\":[{\"index\":0,\"delta\":{\"content\":\"valid\"}}]}"),
+            "data: {\"completely\":\"invalid\"}\n\n"
+        ]
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data(frames.joined().utf8)])])
+        let service = makeService(transport: transport)
+
+        // When / Then
+        var observed: [ChatStreamEvent] = []
+        var caught: AssistantError?
+        do {
+            for try await event in service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil) {
+                observed.append(event)
+            }
+            Issue.record("Expected malformed chunk after valid text to surface invalid stream error.")
+        } catch let error as AssistantError {
+            caught = error
+        }
+        #expect(textDeltas(in: observed) == ["valid"])
+        #expect(caught?.kind == .invalidStream)
+    }
+
+    @Test
+    func test_sendChat_when_finish_only_empty_content_stream_then_completes_without_upstream_error() async throws {
+        // Given
+        let frames = [
+            finishFrame(reason: "stop"),
+            "data: [DONE]\n\n"
+        ]
+        let transport = ScriptedProxyTransport(scenarios: [.successChunks([Data(frames.joined().utf8)])])
+        let service = makeService(transport: transport)
+
+        // When
+        let events = try await collect(service.streamTurn(messages: [userMessage()], tools: nil, toolChoice: nil))
+
+        // Then
+        #expect(textDeltas(in: events).isEmpty)
+        #expect(toolCalls(in: events).isEmpty)
+        if case .completed(let reason) = events.last {
+            #expect(reason == .stop)
+        } else {
+            Issue.record("Expected a finish-only stream to complete without an upstream error.")
+        }
+    }
+
     // MARK: - Helpers
 
     private var testEndpoint: URL {

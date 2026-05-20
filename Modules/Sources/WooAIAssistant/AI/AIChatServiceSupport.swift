@@ -1,7 +1,7 @@
 import Foundation
 import NetworkingCore
 
-/// Shared transport, UTF-8 boundary carry, and tool-call assembly for both chat clients.
+/// Transport, UTF-8 boundary carry, and tool-call assembly for the chat-completions client.
 
 typealias StreamingHTTPTransport = @Sendable (URLRequest) async throws -> (AsyncThrowingStream<Data, Error>, HTTPURLResponse)
 

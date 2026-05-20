@@ -10,7 +10,7 @@
 #   merged state is validated.
 
 if [[ "${BUILDKITE_PULL_REQUEST:-false}" =~ ^[0-9]+$ ]]; then
-  if ! pr_changed_files --any-match 'fastlane/*'; then
+  if ! pr_changed_files --any-match 'fastlane/**'; then
     echo "--- :fast_forward: Skipping — no fastlane/ changes in this PR"
     exit 0
   fi

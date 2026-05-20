@@ -126,18 +126,14 @@ public struct AIApiProxyChatService: AIChatService {
 
         var parser = SSEParser()
         var state = StreamDecodeState()
-        var pendingBytes = Data()
+        var utf8 = UTF8StreamDecoder()
 
         for try await rawChunk in byteStream {
-            pendingBytes.append(rawChunk)
-            let (decoded, remainder) = decodeUTF8WithBoundaryCarry(pendingBytes)
-            pendingBytes = remainder
-            guard let text = decoded, !text.isEmpty else { continue }
-            try await process(parser.feed(text), bridge: bridge, continuation: continuation, state: &state)
+            if let text = utf8.decode(rawChunk), !text.isEmpty {
+                try await process(parser.feed(text), bridge: bridge, continuation: continuation, state: &state)
+            }
         }
-        if !pendingBytes.isEmpty,
-           let tail = String(data: pendingBytes, encoding: .utf8),
-           !tail.isEmpty {
+        if let tail = utf8.flush(), !tail.isEmpty {
             try await process(parser.feed(tail), bridge: bridge, continuation: continuation, state: &state)
         }
         try await process(parser.finish(), bridge: bridge, continuation: continuation, state: &state)

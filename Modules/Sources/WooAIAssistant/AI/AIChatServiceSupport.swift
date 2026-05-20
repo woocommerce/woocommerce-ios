@@ -89,20 +89,34 @@ public enum AIChatTransport {
     )
 }
 
-// Carry up to 3 trailing bytes when a multi-byte UTF-8 char straddles a chunk;
-// otherwise `String(data:encoding:)` drops the whole chunk.
-func decodeUTF8WithBoundaryCarry(_ buffer: Data) -> (decoded: String?, remainder: Data) {
-    if let full = String(data: buffer, encoding: .utf8) {
-        return (full, Data())
-    }
-    for backoff in 1...min(3, buffer.count) {
-        let split = buffer.count - backoff
-        let prefix = buffer.prefix(split)
-        if let decoded = String(data: prefix, encoding: .utf8) {
-            return (decoded, buffer.suffix(from: split))
+struct UTF8StreamDecoder {
+    private var pending = Data()
+
+    /// Appends bytes and returns the longest decodable UTF-8 prefix, carrying any
+    /// trailing partial multi-byte sequence (up to 3 bytes) to the next call.
+    mutating func decode(_ data: Data) -> String? {
+        pending.append(data)
+        if let full = String(data: pending, encoding: .utf8) {
+            pending = Data()
+            return full
         }
+        for backoff in 1...min(3, pending.count) {
+            let split = pending.count - backoff
+            let prefix = pending.prefix(split)
+            if let decoded = String(data: prefix, encoding: .utf8) {
+                pending = pending.suffix(from: split)
+                return decoded
+            }
+        }
+        return nil
     }
-    return (nil, buffer)
+
+    /// Returns whatever remains once the stream ends (nil if the tail is an
+    /// incomplete sequence).
+    mutating func flush() -> String? {
+        defer { pending = Data() }
+        return String(data: pending, encoding: .utf8)
+    }
 }
 
 struct ToolCallAssembly {

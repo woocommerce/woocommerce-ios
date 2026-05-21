@@ -21,6 +21,9 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
         viewModel.onStartJetpackSetup = { [weak self] in
             self?.startJetpackSetup()
         }
+        viewModel.onUpdateWooCommercePlugin = { [weak self] onDismissed in
+            self?.presentWooCommercePluginUpdate(onDismissed: onDismissed)
+        }
     }
 
     @available(*, unavailable)
@@ -41,6 +44,18 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
         })
         jetpackSetupCoordinator = coordinator
         coordinator.startSetup()
+    }
+
+    private func presentWooCommercePluginUpdate(onDismissed: @escaping () -> Void) {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite,
+              let url = URL(string: site.adminURL + Constants.wooCommercePluginUpdatePath) else {
+            onDismissed()
+            return
+        }
+        let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce, onDismiss: onDismissed)
+        let viewController = UIHostingController(rootView: webView)
+        viewController.modalPresentationStyle = .formSheet
+        present(viewController, animated: true)
     }
 }
 
@@ -65,11 +80,20 @@ extension SupportChatHostingController {
 // MARK: - Localization
 //
 private extension SupportChatHostingController {
+    enum Constants {
+        static let wooCommercePluginUpdatePath = "plugin-install.php?tab=plugin-information&plugin=woocommerce"
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "supportChatHostingController.title",
             value: "Chat with Support",
             comment: "Navigation title for the AI support chat screen"
+        )
+        static let updateWooCommerce = NSLocalizedString(
+            "supportChatHostingController.updateWooCommerce",
+            value: "Update WooCommerce",
+            comment: "Title of the web view to update WooCommerce plugin from support chat"
         )
     }
 }

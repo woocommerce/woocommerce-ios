@@ -265,6 +265,7 @@ final class SupportChatViewModel {
     private var didTrackBotEscalationButtonShown = false
     private var didTrackErrorEscalationButtonShown = false
     var onStartJetpackSetup: () -> Void
+    var onUpdateWooCommercePlugin: (@escaping () -> Void) -> Void
     private let diagnosticsService: SupportDiagnosticsServicing
 
     /// Pre-fetched system status report, if available (e.g., from connectivity tool).
@@ -285,7 +286,8 @@ final class SupportChatViewModel {
          isChatResolved: Bool = false,
          systemStatusReport: String? = nil,
          onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: EntryPoint) -> Void,
-         onStartJetpackSetup: @escaping () -> Void = {}) {
+         onStartJetpackSetup: @escaping () -> Void = {},
+         onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
         self.stores = stores
@@ -300,6 +302,7 @@ final class SupportChatViewModel {
         self.prefetchedSystemStatusReport = systemStatusReport
         self.onContactHumanSupport = onContactHumanSupport
         self.onStartJetpackSetup = onStartJetpackSetup
+        self.onUpdateWooCommercePlugin = onUpdateWooCommercePlugin
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.entryPointTapped(
             entryPoint: entryPoint,
@@ -420,6 +423,11 @@ final class SupportChatViewModel {
 
             case .setupJetpack:
                 onStartJetpackSetup()
+
+            case .updateWooCommercePlugin:
+                onUpdateWooCommercePlugin { [weak self] in
+                    self?.replaceActionWithRetry()
+                }
 
             case .openNotificationSettings:
                 if let selectedURL = diagnosticsService.openNotificationSettings(),

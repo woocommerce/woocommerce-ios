@@ -549,6 +549,39 @@ struct SupportChatViewModelTests {
         #expect(sut.isExecutingAction == false)
     }
 
+    @Test func executeAction_updateWooCommercePlugin_calls_handler_and_replaces_action_with_retry() async {
+        // Given
+        let diagnosticsService = MockSupportDiagnosticsService { tests in
+            tests.map { test in
+                .failure(
+                    test: test,
+                    failure: .init(errorMessage: "Update required", suggestedAction: .updateWooCommercePlugin)
+                )
+            }
+        }
+        var handlerCalled = false
+        let sut = makeSUT(
+            diagnosticsService: diagnosticsService,
+            onUpdateWooCommercePlugin: { onDismissed in
+                handlerCalled = true
+                onDismissed()
+            }
+        )
+        await sut.selectIssue(.receivingNotifications)
+
+        // When
+        await sut.executeAction(.updateWooCommercePlugin)
+
+        // Then
+        #expect(handlerCalled == true)
+        #expect(sut.isExecutingAction == false)
+        guard case .diagnosticsFailure(let result) = sut.messages.last?.content else {
+            Issue.record("Expected diagnostics failure message after update plugin action")
+            return
+        }
+        #expect(result.suggestedAction == .retryDiagnostics)
+    }
+
     // MARK: - Resume Chat Tests
 
     @Test(.timeLimit(.minutes(1)))
@@ -1893,7 +1926,8 @@ struct SupportChatViewModelTests {
         stores: StoresManager? = nil,
         diagnosticsService: SupportDiagnosticsServicing? = nil,
         analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider(),
-        onStartJetpackSetup: @escaping () -> Void = {}
+        onStartJetpackSetup: @escaping () -> Void = {},
+        onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }
     ) -> SupportChatViewModel {
         let stores = stores ?? MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let viewModel = SupportChatViewModel(
@@ -1901,7 +1935,8 @@ struct SupportChatViewModelTests {
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
             diagnosticsService: diagnosticsService,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _ in },
+            onUpdateWooCommercePlugin: onUpdateWooCommercePlugin
         )
         viewModel.onStartJetpackSetup = onStartJetpackSetup
         return viewModel

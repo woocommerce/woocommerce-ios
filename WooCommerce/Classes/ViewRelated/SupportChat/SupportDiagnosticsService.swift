@@ -71,6 +71,7 @@ final class SupportDiagnosticsService {
         case registerDevice
         case enableOrderNotifications(settings: NotificationSettings)
         case setupJetpack
+        case updateWooCommercePlugin
         case openNotificationSettings
         case retryDiagnostics
 
@@ -84,6 +85,8 @@ final class SupportDiagnosticsService {
                 return Localization.Action.enableOrderNotifications
             case .setupJetpack:
                 return Localization.Action.setupJetpack
+            case .updateWooCommercePlugin:
+                return Localization.Action.updateWooCommercePlugin
             case .openNotificationSettings:
                 return Localization.Action.openSettings
             case .retryDiagnostics:
@@ -97,6 +100,8 @@ final class SupportDiagnosticsService {
                 return "checkmark.circle"
             case .setupJetpack:
                 return "bolt.fill"
+            case .updateWooCommercePlugin:
+                return "arrow.up.circle"
             case .openNotificationSettings:
                 return "gear"
             case .retryDiagnostics:
@@ -170,6 +175,8 @@ final class SupportDiagnosticsService {
     private let systemStatusRemote: SystemStatusRemote
     private let ordersRemote: OrdersRemote
     private let productsRemote: ProductsRemote
+    private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
+    private let pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol
 
     /// Active plugins from site status, cached after site test.
     ///
@@ -190,6 +197,8 @@ final class SupportDiagnosticsService {
          connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
          userNotificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck(),
+         pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol = PluginVersionCheckerFactory(),
          network: Network? = nil) {
         let network = network ?? AlamofireNetwork(credentials: session.defaultCredentials,
                                                    selectedSite: nil,
@@ -203,6 +212,8 @@ final class SupportDiagnosticsService {
         self.connectivityObserver = connectivityObserver
         self.userNotificationCenter = userNotificationCenter
         self.pushNotesManager = pushNotesManager
+        self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
+        self.pluginVersionCheckerFactory = pluginVersionCheckerFactory
         self.siteID = session.defaultStoreID ?? .zero
         self.siteURL = session.defaultSite?.url
     }
@@ -352,13 +363,7 @@ final class SupportDiagnosticsService {
     }
 
     private func checkNotifications() async -> Failure? {
-        // Sub-check 1: Jetpack plugin is active
-        if !isJetpackPluginActive {
-            DDLogError("SupportDiagnostics: ❌ Jetpack not active")
-            return Failure(errorMessage: Localization.Error.jetpackNotActive, suggestedAction: .setupJetpack)
-        }
-
-        // Sub-check 2: iOS notification permission
+        // Sub-check 1: iOS notification permission
         let permissionResult = await checkNotificationPermission()
         if case .failure = permissionResult {
             DDLogInfo("SupportDiagnostics: ⚠️ Notifications not authorized")
@@ -366,31 +371,79 @@ final class SupportDiagnosticsService {
                            suggestedAction: .openNotificationSettings)
         }
 
+        let isEligibleForWooDrivenPushNotifications = await pushNotificationEligibilityChecker.checkEligibility()
+
+        // Sub-check 2: if not eligible for Woo-driven PN
+        if !isEligibleForWooDrivenPushNotifications {
+            // Subcheck 2.1: does device have Jetpack?
+            if !isJetpackPluginActive {
+                DDLogError("SupportDiagnostics: ❌ Jetpack not active")
+                return Failure(errorMessage: Localization.Error.jetpackNotActive, suggestedAction: .setupJetpack)
+            } else if pushNotesManager.deviceID == nil { // Subcheck 2.2: registered with WPCom?
+                DDLogError("SupportDiagnostics: ❌ device is not registered")
+                return Failure(errorMessage: Localization.Error.deviceNotRegistered,
+                               suggestedAction: .registerDevice)
+            } else {
+                // Sub-check 2.3: WPCom notification config
+                let configResult = await checkNotificationConfig()
+                switch configResult {
+                case .success:
+                    DDLogInfo("SupportDiagnostics: ✅ Notification settings configured")
+                    return nil
+                case .failure(let configError):
+                    DDLogInfo("SupportDiagnostics: ⚠️ Notification config issue: \(configError)")
+                    switch configError {
+                    case .deviceNotRegistered:
+                        return Failure(errorMessage: Localization.Error.deviceNotRegistered,
+                                       suggestedAction: .registerDevice)
+                    case .orderNotificationsDisabled(let settings):
+                        return Failure(errorMessage: Localization.Error.orderNotificationsDisabled,
+                                       suggestedAction: .enableOrderNotifications(settings: settings))
+                    case .requestFailed(let error):
+                        return Failure(errorMessage: Localization.Error.notificationConfigCheckFailed,
+                                       technicalDetails: error.formattedTechnicalDetails)
+                    }
+                }
+            }
+        }
+
         // Sub-check 3: Self-driven push notifications
         if pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) {
             DDLogInfo("SupportDiagnostics: ✅ Site registered for self-driven push notifications")
             return nil
-        }
-
-        // Sub-check 4: WPCom notification config
-        let configResult = await checkNotificationConfig()
-        switch configResult {
-        case .success:
-            DDLogInfo("SupportDiagnostics: ✅ Notification settings configured")
-            return nil
-        case .failure(let configError):
-            DDLogInfo("SupportDiagnostics: ⚠️ Notification config issue: \(configError)")
-            switch configError {
-            case .deviceNotRegistered:
+        } else {
+            do {
+                let minimumVersion = WooPluginRequirements.minimumVersion
+                let pluginVersionChecker = pluginVersionCheckerFactory.makeChecker(
+                    siteID: siteID,
+                    pluginPath: WooPluginRequirements.pluginPath,
+                    minimumVersion: minimumVersion
+                )
+                let result = try await pluginVersionChecker.checkCompatibility()
+                if case .incompatible(let currentVersion, _) = result {
+                    DDLogError("SupportDiagnostics: ❌ Unable to register self-driven push token: " +
+                               "WooCommerce plugin version \(currentVersion) is below required \(minimumVersion)")
+                    return notificationFailure(
+                        for: .wooCommercePluginUpdateRequired(currentVersion: currentVersion, requiredVersion: minimumVersion)
+                    )
+                } else {
+                    DDLogError("SupportDiagnostics: ❌ device is not registered")
+                    return Failure(errorMessage: Localization.Error.deviceNotRegistered,
+                                   suggestedAction: .registerDevice)
+                }
+            } catch {
+                DDLogError("SupportDiagnostics: ❌ device is not registered")
                 return Failure(errorMessage: Localization.Error.deviceNotRegistered,
                                suggestedAction: .registerDevice)
-            case .orderNotificationsDisabled(let settings):
-                return Failure(errorMessage: Localization.Error.orderNotificationsDisabled,
-                               suggestedAction: .enableOrderNotifications(settings: settings))
-            case .requestFailed(let error):
-                return Failure(errorMessage: Localization.Error.notificationConfigCheckFailed,
-                               technicalDetails: error.formattedTechnicalDetails)
             }
+        }
+    }
+
+    private func notificationFailure(for error: NotificationRegistrationError) -> Failure {
+        switch error {
+        case .wooCommercePluginUpdateRequired(_, let requiredVersion):
+            return Failure(errorMessage: Localization.Error.wooCommercePluginUpdateRequired(requiredVersion: requiredVersion),
+                           suggestedAction: .updateWooCommercePlugin)
         }
     }
 
@@ -540,6 +593,10 @@ final class SupportDiagnosticsService {
         case orderNotificationsDisabled(settings: NotificationSettings)
         case requestFailed(Error)
     }
+
+    enum NotificationRegistrationError: Error, Equatable {
+        case wooCommercePluginUpdateRequired(currentVersion: String, requiredVersion: String)
+    }
 }
 
 extension SupportDiagnosticsService: SupportDiagnosticsServicing {}
@@ -621,6 +678,11 @@ private extension SupportDiagnosticsService {
                 value: "Setup Jetpack",
                 comment: "Action button to start the Jetpack setup flow"
             )
+            static let updateWooCommercePlugin = NSLocalizedString(
+                "supportDiagnosticsService.action.updateWooCommercePlugin",
+                value: "Update WooCommerce",
+                comment: "Action button to update the WooCommerce plugin"
+            )
             static let openSettings = NSLocalizedString(
                 "supportDiagnosticsService.action.openSettings",
                 value: "Open Settings",
@@ -696,6 +758,16 @@ private extension SupportDiagnosticsService {
                 value: "Your device doesn't appear to be registered for push notifications.",
                 comment: "Message when the device is not registered for push notifications"
             )
+            static func wooCommercePluginUpdateRequired(requiredVersion: String) -> String {
+                let format = NSLocalizedString(
+                    "supportDiagnosticsService.error.wooCommercePluginUpdateRequired",
+                    value: "Your WooCommerce plugin needs to be updated to enable push notifications.\n\n" +
+                    "Update WooCommerce to version %1$@ or newer, then try registering again.",
+                    comment: "Message when WooCommerce plugin must be updated for push notifications. " +
+                    "%1$@ is the required WooCommerce plugin version."
+                )
+                return String.localizedStringWithFormat(format, requiredVersion)
+            }
             static let orderNotificationsDisabled = NSLocalizedString(
                 "supportDiagnosticsService.error.orderNotificationsDisabled",
                 value: "Order notifications are not enabled for this store.\n\n" +

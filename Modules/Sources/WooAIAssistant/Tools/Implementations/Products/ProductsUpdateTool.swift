@@ -98,7 +98,8 @@ public enum ProductsUpdateTool {
                             ]),
                             "percent_discount": .object([
                                 "type": .string("number"),
-                                "description": .string("Percent off (1-99). Computed against the entity's current regular_price.")
+                                "description": .string("Percent off, greater than 0 and less than 100. "
+                                    + "Computed against the entity's current regular_price.")
                             ]),
                             "stock_quantity": .object([
                                 "type": .string("integer"),

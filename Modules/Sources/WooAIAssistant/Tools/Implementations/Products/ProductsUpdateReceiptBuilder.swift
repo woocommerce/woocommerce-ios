@@ -16,28 +16,41 @@ enum ProductsUpdateReceiptBuilder {
             unknownStatuses.append(contentsOf: outcome.outcomeUnknownStatuses)
         }
 
-        let updatedIDs = updatedIDs(plans: plans, successes: updatedTargets)
+        let updated = updatedTargetObjects(plans: plans, successes: updatedTargets)
         let failed = failedPayload(plans: plans, notes: failureNotes)
 
-        let partialSuccess = !updatedIDs.isEmpty && !failed.isEmpty
+        let partialSuccess = !updated.isEmpty && !failed.isEmpty
         let payload: AnyCodableJSON = .object([
             "tool": .string(ProductsUpdateTool.name),
             "requested_count": .int(Int64(requestedCount)),
-            "updated_ids": .array(updatedIDs.map { .int(Int64($0)) }),
+            "updated": .array(updated),
             "failed": .array(failed),
             "partial_success": .bool(partialSuccess)
         ])
         return RunReceipt(payload: payload, outcomeUnknownStatuses: unknownStatuses)
     }
 
-    private static func updatedIDs(plans: [EntryPlan], successes: Set<Int>) -> [Int] {
-        var updatedIDs: [Int] = []
+    /// Each successful write becomes a target object the model can hand back to `show_cards` or
+    /// `products_update`: variations carry `parent_id` so the right family is rendered.
+    private static func updatedTargetObjects(plans: [EntryPlan], successes: Set<Int>) -> [AnyCodableJSON] {
+        var updated: [AnyCodableJSON] = []
         for plan in plans {
             for write in plan.writes where successes.contains(write.targetID) {
-                updatedIDs.append(write.targetID)
+                if let parentID = write.expandedParent {
+                    updated.append(.object([
+                        "kind": .string("variation"),
+                        "id": .int(Int64(write.targetID)),
+                        "parent_id": .int(Int64(parentID))
+                    ]))
+                } else {
+                    updated.append(.object([
+                        "kind": .string("product"),
+                        "id": .int(Int64(write.targetID))
+                    ]))
+                }
             }
         }
-        return updatedIDs
+        return updated
     }
 
     private static func failedPayload(plans: [EntryPlan],

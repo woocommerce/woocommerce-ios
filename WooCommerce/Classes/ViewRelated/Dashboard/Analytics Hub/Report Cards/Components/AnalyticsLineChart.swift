@@ -42,7 +42,7 @@ struct AnalyticsLineChart: UIViewRepresentable {
         // Adds provided `dataPoints` to data set
         var dataEntries: [ChartDataEntry] = []
         for count in (0..<dataPoints.count) {
-            dataEntries.append(ChartDataEntry.init(x: Double(count), y: dataPoints[count]))
+            dataEntries.append(ChartDataEntry(x: Double(count), y: dataPoints[count]))
         }
         let dataSet = LineChartDataSet(entries: dataEntries, label: "Data")
 

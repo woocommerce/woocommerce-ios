@@ -101,7 +101,7 @@ struct POSNavigationDestinationMarkAsPaidView: View {
                 }
             }
         )
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         // Fill the right pane so the visual transition reads as "totals → confirmation → totals"
         // rather than a card landing on top.
         .frame(maxWidth: .infinity, maxHeight: .infinity)

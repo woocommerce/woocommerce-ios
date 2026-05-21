@@ -49,7 +49,7 @@ final class BadgeLabel: UILabel {
         borderColor.setStroke()
         path.stroke()
 
-        let insets = UIEdgeInsets.init(top: 0, left: horizontalPadding, bottom: 0, right: horizontalPadding)
+        let insets = UIEdgeInsets(top: 0, left: horizontalPadding, bottom: 0, right: horizontalPadding)
         super.drawText(in: rect.inset(by: insets))
     }
 

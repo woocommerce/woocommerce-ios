@@ -197,7 +197,7 @@ private extension SettingsViewController {
     }
 
     func configureWooCommmerceDetails(cell: HostingTableViewCell<PluginDetailsRowContent>) {
-        let view = PluginDetailsRowContent.init(viewModel: woocommercePluginViewModel)
+        let view = PluginDetailsRowContent(viewModel: woocommercePluginViewModel)
         cell.host(view, parent: self)
         let hasUpdates = woocommercePluginViewModel.updateURL != nil
         cell.accessoryType = hasUpdates ? .disclosureIndicator : .none

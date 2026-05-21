@@ -310,6 +310,77 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.spyMarkOrderAsCompletedManuallyOrder?.orderID == 42)
     }
 
+    @Test func markOrderAsPaidManually_with_non_empty_note_calls_addOrderNote_with_trimmed_note() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(orderID: 99, items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        try await sut.markOrderAsPaidManually(note: "  Payment received in cash  ")
+
+        // Then
+        #expect(mockOrderService.addOrderNoteWasCalled == true)
+        #expect(mockOrderService.spyAddOrderNoteOrderID == 99)
+        #expect(mockOrderService.spyAddOrderNoteText == "Payment received in cash")
+        #expect(mockOrderService.spyAddOrderNoteIsCustomerNote == false)
+    }
+
+    @Test func markOrderAsPaidManually_with_whitespace_only_note_does_not_call_addOrderNote() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        try await sut.markOrderAsPaidManually(note: "   ")
+
+        // Then
+        #expect(mockOrderService.markOrderAsCompletedManuallyWasCalled == true)
+        #expect(mockOrderService.addOrderNoteWasCalled == false)
+    }
+
+    @Test func markOrderAsPaidManually_when_addOrderNote_fails_still_completes_order() async throws {
+        // Given
+        struct NoteAttachmentError: Error {}
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        // markOrderAsCompletedManually succeeds via resultToReturn; addOrderNote fails via its own override.
+        mockOrderService.resultToReturn = .success(())
+        mockOrderService.addOrderNoteResult = .failure(NoteAttachmentError())
+
+        // When — must NOT throw even though addOrderNote fails
+        try await sut.markOrderAsPaidManually(note: "Cash payment")
+
+        // Then — order was marked complete and note attachment was attempted but its error was swallowed
+        #expect(mockOrderService.markOrderAsCompletedManuallyWasCalled == true)
+        #expect(mockOrderService.addOrderNoteWasCalled == true)
+    }
+
     @Test func markOrderAsPaidManually_when_orderService_throws_then_rethrows() async throws {
         // Given
         struct OrderServiceError: Error {}

@@ -318,7 +318,7 @@ private extension ProductFormRemoteActionUseCase {
                     let updatedProduct = EditableProductModel(product: productModel)
                     onCompletion(.success(updatedProduct))
                 }
-            } catch let error {
+            } catch {
                 await MainActor.run {
                     onCompletion(.failure(.unknown(error: AnyError(error))))
                 }

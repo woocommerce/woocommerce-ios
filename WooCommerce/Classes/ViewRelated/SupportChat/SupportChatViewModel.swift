@@ -176,6 +176,10 @@ final class SupportChatViewModel {
     private(set) var hasProceededToChat: Bool = false
     private(set) var isExecutingAction: Bool = false
 
+    var site: Site? {
+        stores.sessionManager.defaultSite
+    }
+
     /// `true` when the view model was seeded with a prior `chatID` — i.e. the merchant
     /// tapped a history row rather than starting fresh. Drives the "Continuing conversation"
     /// header in the chat surface.
@@ -265,6 +269,8 @@ final class SupportChatViewModel {
     private var didTrackBotEscalationButtonShown = false
     private var didTrackErrorEscalationButtonShown = false
     var onStartJetpackSetup: () -> Void
+    var onUpdateWooCommercePlugin: (@escaping () -> Void) -> Void
+    var onOpenPushNotificationPreferences: (@escaping () -> Void) -> Void
     private let diagnosticsService: SupportDiagnosticsServicing
 
     /// Pre-fetched system status report, if available (e.g., from connectivity tool).
@@ -285,7 +291,9 @@ final class SupportChatViewModel {
          isChatResolved: Bool = false,
          systemStatusReport: String? = nil,
          onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: EntryPoint) -> Void,
-         onStartJetpackSetup: @escaping () -> Void = {}) {
+         onStartJetpackSetup: @escaping () -> Void = {},
+         onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() },
+         onOpenPushNotificationPreferences: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
         self.stores = stores
@@ -300,6 +308,8 @@ final class SupportChatViewModel {
         self.prefetchedSystemStatusReport = systemStatusReport
         self.onContactHumanSupport = onContactHumanSupport
         self.onStartJetpackSetup = onStartJetpackSetup
+        self.onUpdateWooCommercePlugin = onUpdateWooCommercePlugin
+        self.onOpenPushNotificationPreferences = onOpenPushNotificationPreferences
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.entryPointTapped(
             entryPoint: entryPoint,
@@ -421,12 +431,22 @@ final class SupportChatViewModel {
             case .setupJetpack:
                 onStartJetpackSetup()
 
+            case .updateWooCommercePlugin:
+                onUpdateWooCommercePlugin { [weak self] in
+                    self?.replaceActionWithRetry()
+                }
+
             case .openNotificationSettings:
                 if let selectedURL = diagnosticsService.openNotificationSettings(),
                    UIApplication.shared.canOpenURL(selectedURL) {
                     await UIApplication.shared.open(selectedURL)
                 }
                 replaceActionWithRetry()
+
+            case .openPushNotificationPreferences:
+                onOpenPushNotificationPreferences { [weak self] in
+                    self?.replaceActionWithRetry()
+                }
 
             case .retryDiagnostics:
                 await rerunAllTests()

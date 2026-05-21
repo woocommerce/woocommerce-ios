@@ -28,10 +28,7 @@ struct LowInStockReportRunner {
         }
         let split = Self.splitReportRows(reportRows)
         if split.orderedIDs.isEmpty {
-            let summary = ProductsListSummary.make(tagged: [], canLoadMore: false)
-            return .success(.init(toolName: ProductsListTool.name,
-                                  structured: LLMPayloadCap.capped(summary, toolName: ProductsListTool.name),
-                                  uiStructured: nil))
+            return successResult(tagged: [], canLoadMore: false)
         }
         async let productLookup = enrichProducts(ids: split.productIDs)
         async let variationLookup = enrichVariations(grouped: split.variationsByParent)
@@ -49,6 +46,11 @@ struct LowInStockReportRunner {
         // Source page being full implies more low-stock pages may exist; post-filtering can shrink
         // the visible window below per_page but does not change that signal.
         let canLoadMore = reportRows.count >= perPage
+        return successResult(tagged: tagged, canLoadMore: canLoadMore)
+    }
+
+    private func successResult(tagged: [(AnyCodableJSON, ProductsListSummary.RowKind)],
+                               canLoadMore: Bool) -> ToolResult {
         let summary = ProductsListSummary.make(tagged: tagged, canLoadMore: canLoadMore)
         return .success(.init(toolName: ProductsListTool.name,
                               structured: LLMPayloadCap.capped(summary, toolName: ProductsListTool.name),

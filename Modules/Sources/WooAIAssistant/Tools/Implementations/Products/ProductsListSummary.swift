@@ -8,12 +8,12 @@ enum ProductsListSummary {
 
     static func make(from rows: [AnyCodableJSON],
                      canLoadMore: Bool,
-                     kind: RowKind) -> AnyCodableJSON {
+                     kind: RowKind = .product) -> AnyCodableJSON {
         make(tagged: rows.map { ($0, kind) }, canLoadMore: canLoadMore)
     }
 
-    /// Use when the same response carries both product and variation rows so each row is
-    /// projected with its own shape and `kind` tag.
+    /// Use when the same response carries both product and variation rows (e.g. the low-stock
+    /// report covers either kind) so each row is projected with its own shape and `kind` tag.
     static func make(tagged rows: [(AnyCodableJSON, RowKind)],
                      canLoadMore: Bool) -> AnyCodableJSON {
         var ids: [AnyCodableJSON] = []

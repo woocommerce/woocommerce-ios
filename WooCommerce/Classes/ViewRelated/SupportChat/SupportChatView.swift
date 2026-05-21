@@ -267,7 +267,7 @@ struct SupportChatView: View {
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
             }
- 
+
             Button(Localization.continueToChat) {
                 viewModel.proceedToChat()
             }

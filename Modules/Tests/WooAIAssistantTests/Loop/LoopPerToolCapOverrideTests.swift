@@ -134,4 +134,65 @@ struct LoopPerToolCapOverrideTests {
             .contains { ($0.content ?? "").contains("per_tool_cap_exceeded") }
         #expect(!anyCapRejection)
     }
+
+    @Test
+    func test_cap_when_confirmation_declined_then_cap_not_burned_and_retry_allowed() async throws {
+        // Given a products_update declined at confirmation, then retried in a follow-up turn. A decline
+        // yields a non-success user_cancelled payload, so the cap-1 slot must stay free for the retry.
+        let writeTool = AITool(name: "products_update",
+                               description: "Update products",
+                               parametersSchema: .object([:]),
+                               safetyLevel: .unsafe)
+        let firstCall = OpenAIChat.ToolCall(
+            id: "call_1",
+            function: .init(name: "products_update", arguments: #"{"updates":[{"target":"A"}]}"#)
+        )
+        let retryCall = OpenAIChat.ToolCall(
+            id: "call_2",
+            function: .init(name: "products_update", arguments: #"{"updates":[{"target":"A"}],"retry":true}"#)
+        )
+        let chat = MockAIChatService()
+        await chat.setScriptedTurns([
+            [.toolCall(firstCall), .completed(.toolCalls)],
+            [.toolCall(retryCall), .completed(.toolCalls)],
+            [.textDelta("Done."), .completed(.stop)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([writeTool])
+        await registry.setResult(for: "products_update",
+                                 result: .success(.init(toolName: "products_update",
+                                                        structured: .object(["updated": .int(1)]))))
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   safetyPolicy: DefaultSafetyPolicy())
+
+        // When the first proposal is declined and the second is confirmed.
+        var pendingDecisionTasks: [Task<Void, Never>] = []
+        for try await event in orchestrator.run(prompt: "Update A, decline, then retry") {
+            if case .confirmationRequired(let proposal) = event {
+                if proposal.toolCallID == "call_1" {
+                    pendingDecisionTasks.append(Task { await orchestrator.cancel(proposalID: proposal.id) })
+                } else {
+                    pendingDecisionTasks.append(Task { await orchestrator.confirm(proposalID: proposal.id) })
+                }
+            }
+        }
+        for task in pendingDecisionTasks { await task.value }
+
+        // Then the declined call never ran, the retry executed, and no cap rejection fired.
+        let invocations = await registry.invocationCount(for: "products_update")
+        #expect(invocations == 1)
+
+        let capturedRequests = await chat.capturedRequests
+        let declinedMessage = capturedRequests
+            .flatMap { $0.messages }
+            .first { $0.role == .tool && $0.toolCallID == "call_1" }
+        let declinedContent = try #require(declinedMessage?.content)
+        #expect(declinedContent.contains("user_cancelled"))
+
+        let capRejection = capturedRequests
+            .flatMap { $0.messages }
+            .first { ($0.content ?? "").contains("per_tool_cap_exceeded") }
+        #expect(capRejection == nil)
+    }
 }

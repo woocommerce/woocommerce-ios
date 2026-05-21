@@ -40,7 +40,7 @@ struct DefaultSafetyPolicyTests {
             return
         }
         #expect(preview.fields.first?.name == "status")
-        #expect(preview.fields.first?.value == .raw("Pending"))
+        #expect(preview.fields.first?.value == .raw("Pending Payment"))
     }
 
     // The default-arg construction the production adaptor uses: real resolver + real builder, only the

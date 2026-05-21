@@ -208,6 +208,101 @@ struct OrderSummaryTests {
     }
 
     @Test
+    func test_make_when_line_item_is_simple_product_then_target_is_product_kind() {
+        // Given
+        let entity = AnyCodableJSON.object([
+            "id": .int(7),
+            "line_items": .array([
+                .object([
+                    "id": .int(1),
+                    "name": .string("Tee"),
+                    "quantity": .int(2),
+                    "product_id": .int(42),
+                    "variation_id": .int(0)
+                ])
+            ])
+        ])
+
+        // When
+        let summary = OrderSummary.make(from: entity)
+
+        // Then
+        guard case .object(let fields) = summary,
+              case .array(let items) = fields["line_items"],
+              case .object(let first) = items.first,
+              case .object(let target) = first["target"] else {
+            Issue.record("expected line_items target object")
+            return
+        }
+        #expect(target["kind"] == .string("product"))
+        #expect(target["id"] == .int(42))
+        #expect(target["parent_id"] == nil)
+        #expect(first["product_id"] == nil)
+        #expect(first["variation_id"] == nil)
+    }
+
+    @Test
+    func test_make_when_line_item_is_variation_then_target_carries_parent_id() {
+        // Given
+        let entity = AnyCodableJSON.object([
+            "id": .int(7),
+            "line_items": .array([
+                .object([
+                    "id": .int(1),
+                    "name": .string("Tee - Red / L"),
+                    "quantity": .int(1),
+                    "product_id": .int(41),
+                    "variation_id": .int(58)
+                ])
+            ])
+        ])
+
+        // When
+        let summary = OrderSummary.make(from: entity)
+
+        // Then
+        guard case .object(let fields) = summary,
+              case .array(let items) = fields["line_items"],
+              case .object(let first) = items.first,
+              case .object(let target) = first["target"] else {
+            Issue.record("expected line_items target object")
+            return
+        }
+        #expect(target["kind"] == .string("variation"))
+        #expect(target["id"] == .int(58))
+        #expect(target["parent_id"] == .int(41))
+        #expect(first["product_id"] == nil)
+        #expect(first["variation_id"] == nil)
+    }
+
+    @Test
+    func test_make_when_line_item_has_no_product_id_then_target_is_omitted() {
+        // Given
+        let entity = AnyCodableJSON.object([
+            "id": .int(7),
+            "line_items": .array([
+                .object([
+                    "id": .int(1),
+                    "name": .string("Custom"),
+                    "quantity": .int(1)
+                ])
+            ])
+        ])
+
+        // When
+        let summary = OrderSummary.make(from: entity)
+
+        // Then
+        guard case .object(let fields) = summary,
+              case .array(let items) = fields["line_items"],
+              case .object(let first) = items.first else {
+            Issue.record("expected line_items array")
+            return
+        }
+        #expect(first["target"] == nil)
+    }
+
+    @Test
     func test_orderRow_when_lineItemLimit_is_five_then_only_first_five_returned() {
         // Given
         let items = (0..<7).map { idx in

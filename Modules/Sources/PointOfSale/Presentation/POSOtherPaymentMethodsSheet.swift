@@ -2,13 +2,17 @@ import SwiftUI
 
 /// Bottom sheet shown when the merchant taps "Other payment methods" on the phone
 /// POS checkout (TTP-available layout). Lists the non-TTP payment methods available
-/// to the merchant — currently Card reader only; Scan to Pay and Mark order as paid
-/// will join here once those features land on this branch.
+/// to the merchant: Card reader, Scan to Pay (when enabled), and Mark order as paid
+/// (when enabled).
 ///
 /// Mirrors the Android phone POS overflow dialog that pairs with the TTP hero
 /// (samiuelson #15842 / #15825).
 struct POSOtherPaymentMethodsSheet: View {
     let onCardReader: () -> Void
+    var isScanToPayAvailable: Bool = false
+    var onScanToPay: (() -> Void)?
+    var isMarkOrderAsPaidAvailable: Bool = false
+    var onMarkOrderAsPaid: (() -> Void)?
 
     @Environment(\.dismiss) private var dismiss
 
@@ -27,6 +31,26 @@ struct POSOtherPaymentMethodsSheet: View {
                 accessibilityIdentifier: "pos-other-payments-card-reader") {
                 dismiss()
                 onCardReader()
+            }
+
+            if isScanToPayAvailable, let onScanToPay {
+                row(systemImage: "qrcode",
+                    title: Localization.scanToPayTitle,
+                    subtitle: Localization.scanToPaySubtitle,
+                    accessibilityIdentifier: "pos-other-payments-scan-to-pay") {
+                    dismiss()
+                    onScanToPay()
+                }
+            }
+
+            if isMarkOrderAsPaidAvailable, let onMarkOrderAsPaid {
+                row(systemImage: "checkmark.circle",
+                    title: Localization.markAsPaidTitle,
+                    subtitle: Localization.markAsPaidSubtitle,
+                    accessibilityIdentifier: "pos-other-payments-mark-as-paid") {
+                    dismiss()
+                    onMarkOrderAsPaid()
+                }
             }
 
             Spacer(minLength: 0)
@@ -94,11 +118,41 @@ private extension POSOtherPaymentMethodsSheet {
             value: "Connect a Bluetooth reader to take card payments.",
             comment: "Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader."
         )
+        static let scanToPayTitle = NSLocalizedString(
+            "pos.otherPaymentMethods.scanToPay.title",
+            value: "Scan to pay",
+            comment: "Row title in the Other Payment Methods sheet for collecting payment via a QR code the customer scans."
+        )
+        static let scanToPaySubtitle = NSLocalizedString(
+            "pos.otherPaymentMethods.scanToPay.subtitle",
+            value: "Show a QR code for the customer to pay from their phone.",
+            comment: "Row subtitle in the Other Payment Methods sheet for collecting payment via a QR code the customer scans."
+        )
+        static let markAsPaidTitle = NSLocalizedString(
+            "pos.otherPaymentMethods.markAsPaid.title",
+            value: "Mark order as paid",
+            comment: "Row title in the Other Payment Methods sheet for marking the order paid out-of-band."
+        )
+        static let markAsPaidSubtitle = NSLocalizedString(
+            "pos.otherPaymentMethods.markAsPaid.subtitle",
+            value: "Record payment collected outside this device.",
+            comment: "Row subtitle in the Other Payment Methods sheet for marking the order paid out-of-band."
+        )
     }
 }
 
 #if DEBUG
-#Preview {
+#Preview("Card reader only") {
     POSOtherPaymentMethodsSheet(onCardReader: {})
+}
+
+#Preview("All methods enabled") {
+    POSOtherPaymentMethodsSheet(
+        onCardReader: {},
+        isScanToPayAvailable: true,
+        onScanToPay: {},
+        isMarkOrderAsPaidAvailable: true,
+        onMarkOrderAsPaid: {}
+    )
 }
 #endif

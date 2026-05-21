@@ -158,13 +158,25 @@ struct TotalsView: View {
             }
         }
         .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
-            POSOtherPaymentMethodsSheet(onCardReader: {
-                guard !isStartingPayment else { return }
-                isStartingPayment = true
-                Task { @MainActor in
-                    await paymentModel.startPaymentWithMethod(.bluetooth)
+            POSOtherPaymentMethodsSheet(
+                onCardReader: {
+                    guard !isStartingPayment else { return }
+                    isStartingPayment = true
+                    Task { @MainActor in
+                        await paymentModel.startPaymentWithMethod(.bluetooth)
+                    }
+                },
+                isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
+                onScanToPay: {
+                    Task { @MainActor in
+                        await paymentModel.startScanToPayPayment()
+                    }
+                },
+                isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
+                onMarkOrderAsPaid: {
+                    paymentModel.startMarkAsPaidPayment()
                 }
-            })
+            )
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
         }

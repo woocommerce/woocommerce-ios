@@ -104,7 +104,7 @@ struct ConfirmationCard: View {
                                  bulkEntries: preview.bulkEntries)
                 }
             }
-        } else {
+        } else if preview.showsSummaryInBody {
             Text(preview.summary.flattened())
                 .font(.assistantBody)
                 .foregroundStyle(Color.primary)

@@ -18,6 +18,12 @@ public struct ConfirmationPreview: Equatable, Sendable {
         self.isBulk = isBulk
         self.bulkEntries = bulkEntries
     }
+
+    /// True only when there is nothing else to render in the card body. The summary already shows as
+    /// the card title, so repeating it in the body is redundant whenever fields or bulk rows exist.
+    public var showsSummaryInBody: Bool {
+        fields.isEmpty && bulkEntries.isEmpty
+    }
 }
 
 public struct ConfirmationPreviewField: Equatable, Sendable {

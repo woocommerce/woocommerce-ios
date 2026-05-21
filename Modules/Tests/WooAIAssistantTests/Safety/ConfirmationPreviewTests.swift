@@ -44,4 +44,34 @@ struct ConfirmationPreviewTests {
         #expect(preview.isBulk == false)
         #expect(preview.fields.isEmpty)
     }
+
+    @Test
+    func test_showsSummaryInBody_when_bulk_entries_present_then_false() {
+        // Given
+        let preview = ConfirmationPreview(summary: .raw("Update 2 orders"),
+                                          isBulk: true,
+                                          bulkEntries: [ConfirmationBulkEntry(id: 1)])
+
+        // When / Then
+        #expect(preview.showsSummaryInBody == false)
+    }
+
+    @Test
+    func test_showsSummaryInBody_when_fields_present_then_false() {
+        // Given
+        let field = ConfirmationPreviewField(name: "status", label: .raw("Status"), value: .raw("processing"))
+        let preview = ConfirmationPreview(summary: .raw("Update order #42"), fields: [field])
+
+        // When / Then
+        #expect(preview.showsSummaryInBody == false)
+    }
+
+    @Test
+    func test_showsSummaryInBody_when_only_summary_then_true() {
+        // Given
+        let preview = ConfirmationPreview(summary: .raw("Update order #42"))
+
+        // When / Then
+        #expect(preview.showsSummaryInBody == true)
+    }
 }

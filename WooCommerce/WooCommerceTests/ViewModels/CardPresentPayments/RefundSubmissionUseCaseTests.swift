@@ -463,7 +463,7 @@ private extension RefundSubmissionUseCaseTests {
 
         return RefundSubmissionUseCase(
             details: details,
-            rootViewController: .init(),
+            rootViewController: UIViewController(),
             alerts: alerts,
             cardPresentConfiguration: Mocks.configuration,
             cardReaderConnectionAlerts: cardReaderConnectionAlerts,

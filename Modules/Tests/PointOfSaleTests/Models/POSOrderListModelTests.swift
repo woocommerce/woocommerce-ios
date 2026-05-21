@@ -9,7 +9,8 @@ final class POSOrderListModelTests {
     private let mockReceiptSender = MockPOSReceiptSender()
     private lazy var sut = POSOrderListModel(
         ordersController: mockOrdersController,
-        receiptSender: mockReceiptSender
+        receiptSender: mockReceiptSender,
+        refundSubmissionModel: POSRefundSubmissionModel()
     )
 
     @Test func sendReceipt_when_successful_then_calls_receipt_controller_and_updates_order() async throws {

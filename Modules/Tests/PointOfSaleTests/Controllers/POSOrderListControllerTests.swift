@@ -26,11 +26,12 @@ final class POSOrderListControllerTests {
     private lazy var featureFlags = MockFeatureFlagService()
     private lazy var currencySettingsProvider = MockCurrencySettingsProvider()
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
+    private lazy var refundSubmissionProcessor = MockPOSRefundSubmissionProcessor(refundsService: refundsService,
+                                                                                  currencyFormatter: currencyFormatter)
     private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory,
                                                    refundsService: refundsService,
-                                                   featureFlags: featureFlags,
-                                                   currencySettingsProvider: currencySettingsProvider,
-                                                   currencyFormatter: currencyFormatter)
+                                                   refundSubmissionProcessor: refundSubmissionProcessor,
+                                                   featureFlags: featureFlags)
 
     @Test func loadOrders_requests_first_page_after_loading_two_pages() async throws {
         try #require(sut.ordersViewState.isLoading)
@@ -1553,14 +1554,13 @@ final class POSOrderListControllerTests {
 
 private extension POSOrderListControllerTests {
     func makeController(currencySettings: CurrencySettings) -> POSOrderListController {
-        let provider = MockCurrencySettingsProvider(currencySettings: currencySettings)
         let formatter = CurrencyFormatter(currencySettings: currencySettings)
         return POSOrderListController(
             orderListFetchStrategyFactory: fetchStrategyFactory,
             refundsService: refundsService,
-            featureFlags: featureFlags,
-            currencySettingsProvider: provider,
-            currencyFormatter: formatter
+            refundSubmissionProcessor: MockPOSRefundSubmissionProcessor(refundsService: refundsService,
+                                                                        currencyFormatter: formatter),
+            featureFlags: featureFlags
         )
     }
 
@@ -1632,5 +1632,104 @@ private extension POSOrderListControllerTests {
             imageSrc: imageSrc,
             attributes: attributes
         )
+    }
+}
+
+private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcessing {
+    let stateModel = POSRefundSubmissionModel()
+
+    nonisolated(unsafe) private let refundsService: MockPOSRefundsService
+    nonisolated(unsafe) private let currencyFormatter: CurrencyFormatter
+    private var refundResultsByOrderID: [Int64: POSRefundsResult] = [:]
+
+    nonisolated init(refundsService: MockPOSRefundsService,
+                     currencyFormatter: CurrencyFormatter) {
+        self.refundsService = refundsService
+        self.currencyFormatter = currencyFormatter
+    }
+
+    func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {
+        let refundsResult = try await refundsService.providePointOfSaleRefunds(for: order)
+        refundResultsByOrderID[order.id] = refundsResult
+
+        let refundedQuantitiesByItemID = refundsResult.refunds.flatMap(\.items).refundedQuantitiesByItemID()
+        let productSelectables = order.lineItems.flatMap { item -> [POSRefundSelectableItem] in
+            let originalQuantity = NSDecimalNumber(decimal: item.quantity).intValue
+            let refundedQuantity = refundedQuantitiesByItemID[item.itemID] ?? 0
+            let availableQuantity = originalQuantity - refundedQuantity
+            guard availableQuantity > 0 else { return [] }
+
+            return (0..<availableQuantity).map { index in
+                POSRefundSelectableItem(from: item, isSelected: true, index: index)
+            }
+        }
+
+        let alreadyRefundedItemIDs = Set(refundsResult.refunds.flatMap(\.items).compactMap(\.refundedItemID))
+        let feeSelectables = order.customAmounts
+            .filter { !alreadyRefundedItemIDs.contains($0.id) }
+            .map { POSRefundSelectableItem(from: $0, isSelected: true) }
+
+        return POSRefundPreparation(
+            orderID: order.id,
+            selectableItems: productSelectables + feeSelectables,
+            paymentMethodDescription: String(format: "Via %@", order.paymentMethodTitle),
+            customerEmail: order.customerEmail
+        )
+    }
+
+    func prepareReviewData(for order: POSOrder,
+                           preparation: POSRefundPreparation,
+                           selectedItems: [POSRefundSelectableItem],
+                           reason: String?) -> POSRefundReviewData? {
+        let refundableItems = selectedItems.map { item in
+            POSRefundableItem(
+                itemID: item.itemID,
+                lineItemTotal: item.lineItemTotal,
+                totalTax: item.totalTax,
+                originalQuantity: item.originalQuantity,
+                isLumpSum: item.isLumpSum
+            )
+        }
+
+        let amounts = refundsService.calculateRefundAmounts(for: refundableItems)
+        guard let formattedSubtotal = currencyFormatter.formatAmount(amounts.subtotal),
+              let formattedTax = currencyFormatter.formatAmount(amounts.tax),
+              let formattedTotal = currencyFormatter.formatAmount(amounts.total) else {
+            return nil
+        }
+
+        return POSRefundReviewData(
+            itemsCount: selectedItems.count,
+            formattedItemsSubtotal: formattedSubtotal,
+            formattedTax: formattedTax,
+            formattedRefundTotal: formattedTotal,
+            paymentMethodDescription: preparation.paymentMethodDescription,
+            customerEmail: preparation.customerEmail,
+            refundReason: reason,
+            isFullRefund: selectedItems.count == preparation.selectableItems.count
+        )
+    }
+
+    func submitRefund(for order: POSOrder,
+                      preparation: POSRefundPreparation,
+                      selectedItems: [POSRefundSelectableItem],
+                      reason: String?) async throws {
+        let refundableItems = selectedItems.map { item in
+            POSRefundableItem(
+                itemID: item.itemID,
+                lineItemTotal: item.lineItemTotal,
+                totalTax: item.totalTax,
+                originalQuantity: item.originalQuantity,
+                isLumpSum: item.isLumpSum
+            )
+        }
+
+        try await refundsService.createRefund(
+            orderID: order.id,
+            items: refundableItems,
+            reason: reason,
+            isAutomaticRefund: refundResultsByOrderID[preparation.orderID]?.supportsAutomaticRefund ?? true
+        )
+        stateModel.state = .completed
     }
 }

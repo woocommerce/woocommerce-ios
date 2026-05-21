@@ -144,11 +144,16 @@ private extension QRLoginPayloadParser {
         return .wpCom(token: token, encrypted: encrypted)
     }
 
-    /// §3.4 — self-hosted `siteUrl` is https-only, no userinfo/query/fragment,
-    /// host lowercased, trailing slash stripped.
+    /// §3.4 — self-hosted `siteUrl` rejects userinfo/query/fragment, lowercases
+    /// the host, and strips a trailing slash.
+    ///
+    /// Release builds are https-only: the `/scan` token and the `/exchange`
+    /// Application Password must never travel in cleartext. DEBUG builds also
+    /// accept `http` so the flow can be exercised against a local test server.
     func normalisedSelfHostedSiteURL(_ raw: String) -> URL? {
         guard let components = URLComponents(string: raw),
-              components.scheme?.lowercased() == "https",
+              let scheme = components.scheme?.lowercased(),
+              Self.allowedSelfHostedSchemes.contains(scheme),
               let host = components.host, host.isEmpty == false,
               components.user == nil, components.password == nil,
               (components.query ?? "").isEmpty,
@@ -156,7 +161,7 @@ private extension QRLoginPayloadParser {
             return nil
         }
         var normalised = components
-        normalised.scheme = "https"
+        normalised.scheme = scheme
         normalised.host = host.lowercased()
         // Trailing slash strip on the path.
         if normalised.path == "/" {
@@ -164,6 +169,14 @@ private extension QRLoginPayloadParser {
         }
         return normalised.url
     }
+
+    /// Schemes accepted for a self-hosted `siteUrl`. `http` is DEBUG-only — see
+    /// `normalisedSelfHostedSiteURL`.
+    #if DEBUG
+    static let allowedSelfHostedSchemes: Set<String> = ["https", "http"]
+    #else
+    static let allowedSelfHostedSchemes: Set<String> = ["https"]
+    #endif
 
     func isValidSelfHostedToken(_ token: String) -> Bool {
         token.range(of: #"^[A-Za-z0-9]{64,512}$"#, options: .regularExpression) != nil

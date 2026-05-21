@@ -148,8 +148,10 @@ struct QRLoginPayloadParserTests {
         #expect(payload == .invalid)
     }
 
-    @Test func parse_when_self_hosted_qr_with_non_https_siteUrl_then_returns_invalid() {
-        // Given — http siteUrl is rejected for protocol payloads.
+    @Test func parse_when_self_hosted_qr_with_http_siteUrl_then_rejected_in_release_only() {
+        // Given — http siteUrl. Release builds reject it (the /scan token and
+        // /exchange Application Password must not travel in cleartext, §3.4);
+        // DEBUG builds accept it so the flow can be tested against a local server.
         let token = String(repeating: "a", count: 64)
         let input = "woocommerce://qr-login?token=\(token)&siteUrl=http://example.com"
 
@@ -157,7 +159,11 @@ struct QRLoginPayloadParserTests {
         let payload = parser.parse(input)
 
         // Then
+        #if DEBUG
+        #expect(payload == .selfHosted(token: token, siteURL: URL(string: "http://example.com")!))
+        #else
         #expect(payload == .invalid)
+        #endif
     }
 
     @Test func parse_when_self_hosted_qr_with_query_in_siteUrl_then_returns_invalid() {

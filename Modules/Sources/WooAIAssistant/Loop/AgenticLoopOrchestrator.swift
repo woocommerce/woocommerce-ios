@@ -10,12 +10,18 @@ public actor AgenticLoopOrchestrator {
     /// 4 keeps "list + 3 drill-downs" flows legitimate while catching varied-args fanouts.
     public static let defaultPerToolPerTurnCap = 4
 
+    /// Tools that must be batched in a single call per merchant turn rather than fanned out.
+    public static let defaultPerToolCapOverrides: [String: Int] = [
+        ProductsUpdateTool.name: 1
+    ]
+
     private let chatService: AIChatService
     private let toolRegistry: ToolRegistry?
     private let safetyPolicy: SafetyPolicy
     private let systemPrompt: String?
     private let maxIterations: Int
     private let perToolPerTurnCap: Int
+    private let perToolCapOverrides: [String: Int]
     private let telemetryTracker: AssistantTelemetryTracker
     private let clock: SystemClock
 
@@ -30,6 +36,7 @@ public actor AgenticLoopOrchestrator {
                 systemPrompt: String? = nil,
                 maxIterations: Int = AgenticLoopOrchestrator.defaultMaxIterations,
                 perToolPerTurnCap: Int = AgenticLoopOrchestrator.defaultPerToolPerTurnCap,
+                perToolCapOverrides: [String: Int] = AgenticLoopOrchestrator.defaultPerToolCapOverrides,
                 telemetryTracker: AssistantTelemetryTracker = NoopAssistantTelemetryTracker(),
                 clock: SystemClock = MonotonicSystemClock()) {
         self.chatService = chatService
@@ -38,6 +45,7 @@ public actor AgenticLoopOrchestrator {
         self.systemPrompt = systemPrompt
         self.maxIterations = maxIterations
         self.perToolPerTurnCap = perToolPerTurnCap
+        self.perToolCapOverrides = perToolCapOverrides
         self.telemetryTracker = telemetryTracker
         self.clock = clock
     }
@@ -276,12 +284,14 @@ public actor AgenticLoopOrchestrator {
                 let priorSignatures = Self.computePriorCallSignatures(in: messages)
                 let priorResults = Self.computePriorResultsBySignature(in: messages)
                 let priorTurnTallies = Self.computePerToolPriorTallies(in: messages)
+                let priorTurnSuccessTallies = Self.computePerToolPriorSuccessTallies(in: messages)
 
                 let payloads = try await dispatchTools(calls,
                                                        toolsByName: toolsByName,
                                                        priorCallSignatures: priorSignatures,
                                                        priorResultsBySignature: priorResults,
                                                        priorPerToolTallies: priorTurnTallies,
+                                                       priorPerToolSuccessTallies: priorTurnSuccessTallies,
                                                        telemetryContext: telemetryContext,
                                                        continuation: continuation)
                 for (call, payload) in zip(calls, payloads) {
@@ -349,6 +359,7 @@ public actor AgenticLoopOrchestrator {
                                priorCallSignatures: [String: Int],
                                priorResultsBySignature: [String: String],
                                priorPerToolTallies: [String: Int],
+                               priorPerToolSuccessTallies: [String: Int],
                                telemetryContext: AssistantTelemetryContext?,
                                continuation: AsyncThrowingStream<AssistantEvent, Error>.Continuation)
     async throws -> [String] {
@@ -373,35 +384,65 @@ public actor AgenticLoopOrchestrator {
             return calls.map { _ in #"{"error":"No tool registry is configured for this client."}"# }
         }
 
+        // Merge adjacent same-tool calls (currently only products_update) before any check fires.
+        // Belt+suspenders with the cap override: the model may still fan out in one batch even though
+        // the system prompt asks for batching, and the underlying REST stays a single batch either way.
+        let mergeOutcome = Self.applyIntraBatchMerges(calls: calls)
+        let calls = mergeOutcome.calls
+        let mergedSecondaryToLeader = mergeOutcome.mergedSecondaryToLeader
+
         var approvedIndices: [Int] = []
         var resolvedResults = [String?](repeating: nil, count: calls.count)
         var liveSignatures = priorCallSignatures
         let liveResults = priorResultsBySignature
         var liveTurnTallies = priorPerToolTallies
+        var liveTurnSuccessTallies = priorPerToolSuccessTallies
+        // Counts approvals this batch so same-batch fanout still hits the cap before any dispatch resolves.
+        var inBatchApprovals: [String: Int] = [:]
 
         // Without intra-batch dedupe the task group fires the registry once per duplicate in parallel.
         var firstPrimaryByIntraSignature: [String: Int] = [:]
         var intraBatchSecondaryToPrimary: [Int: Int] = [:]
 
         for (index, call) in calls.enumerated() {
+            if let leaderIndex = mergedSecondaryToLeader[index] {
+                let leaderID = calls[leaderIndex].id
+                continuation.yield(.toolCallStarted(id: call.id,
+                                                    name: call.function.name,
+                                                    argumentsJSON: call.function.arguments))
+                let payload = Self.mergedIntoCallJSON(leaderCallID: leaderID)
+                continuation.yield(.toolCallCompleted(id: call.id,
+                                                      name: call.function.name,
+                                                      resultJSON: payload))
+                resolvedResults[index] = payload
+                continue
+            }
             let signature = Self.canonicalCallSignature(name: call.function.name,
                                                         argumentsJSON: call.function.arguments)
             let priorSeen = liveSignatures[signature, default: 0]
             liveSignatures[signature] = priorSeen + 1
 
-            let priorToolCount = liveTurnTallies[call.function.name, default: 0]
-            liveTurnTallies[call.function.name] = priorToolCount + 1
-            if priorToolCount >= perToolPerTurnCap {
-                let payload = Self.perToolCapJSON(toolName: call.function.name,
-                                                  cap: perToolPerTurnCap)
+            let toolName = call.function.name
+            let priorToolCount = liveTurnTallies[toolName, default: 0]
+            liveTurnTallies[toolName] = priorToolCount + 1
+            let hasOverride = perToolCapOverrides[toolName] != nil
+            let effectiveCap = perToolCapOverrides[toolName] ?? perToolPerTurnCap
+            // Override tools cap on prior successes + this batch's position so failures don't burn the slot.
+            let countAgainstCap = hasOverride
+                ? liveTurnSuccessTallies[toolName, default: 0] + inBatchApprovals[toolName, default: 0]
+                : priorToolCount
+            if countAgainstCap >= effectiveCap {
+                let payload = Self.perToolCapJSON(toolName: toolName,
+                                                  cap: effectiveCap,
+                                                  isBatchingTool: hasOverride)
                 continuation.yield(.toolCallStarted(id: call.id,
-                                                    name: call.function.name,
+                                                    name: toolName,
                                                     argumentsJSON: call.function.arguments))
                 continuation.yield(.toolCallCompleted(id: call.id,
-                                                      name: call.function.name,
+                                                      name: toolName,
                                                       resultJSON: payload))
                 if let telemetryContext {
-                    let canonical = Self.canonicalToolName(call.function.name, toolsByName: toolsByName)
+                    let canonical = Self.canonicalToolName(toolName, toolsByName: toolsByName)
                     await emitTelemetry(.toolCallCompleted(context: telemetryContext,
                                                            toolName: canonical,
                                                            status: .failure,
@@ -461,6 +502,7 @@ public actor AgenticLoopOrchestrator {
             switch decision {
             case .execute:
                 approvedIndices.append(index)
+                inBatchApprovals[call.function.name, default: 0] += 1
 
             case .refusePreDispatch(let reason):
                 let payload = Self.errorJSON(reason)
@@ -489,6 +531,7 @@ public actor AgenticLoopOrchestrator {
                 continuation.yield(.confirmationResolved(proposalID: proposal.id, approved: approved))
                 if approved {
                     approvedIndices.append(index)
+                    inBatchApprovals[call.function.name, default: 0] += 1
                 } else {
                     let payload = Self.userCancelledJSON()
                     continuation.yield(.toolCallStarted(id: call.id,
@@ -539,6 +582,9 @@ public actor AgenticLoopOrchestrator {
                                                         for: call,
                                                         continuation: continuation)
                     resolvedResults[index] = payload
+                    if case .success = result {
+                        liveTurnSuccessTallies[call.function.name, default: 0] += 1
+                    }
                     if let telemetryContext, let startMs = startTimesByIndex[index] {
                         let duration = max(0, clock.nowMs() - startMs)
                         await emitToolDecisionTelemetry(result: result,
@@ -799,14 +845,123 @@ public actor AgenticLoopOrchestrator {
         return #"{"outcome":"unknown"}"#
     }
 
-    private static func perToolCapJSON(toolName: String, cap: Int) -> String {
+    /// Tools whose argument shape supports merging multiple calls into one. Keep the merger generic
+    /// so other batched writers can opt in later by adding their name + concat helper here.
+    static let mergeableToolNames: Set<String> = [ProductsUpdateTool.name]
+
+    struct IntraBatchMergeOutcome {
+        let calls: [OpenAIChat.ToolCall]
+        let mergedSecondaryToLeader: [Int: Int]
+    }
+
+    /// Groups adjacent same-tool calls (currently only products_update) and rewrites each group's
+    /// leader with merged `updates[]`. Secondary indices map to their leader so the per-call loop
+    /// can emit a `merged_into_call` envelope rather than re-dispatching.
+    static func applyIntraBatchMerges(calls: [OpenAIChat.ToolCall]) -> IntraBatchMergeOutcome {
+        guard !calls.isEmpty else {
+            return IntraBatchMergeOutcome(calls: calls, mergedSecondaryToLeader: [:])
+        }
+        var workingCalls = calls
+        var secondaryToLeader: [Int: Int] = [:]
+        var groupStart = 0
+        for index in 1...calls.count {
+            let endOfGroup = index == calls.count
+                || calls[index].function.name != calls[groupStart].function.name
+            if endOfGroup {
+                let groupEnd = index - 1
+                let toolName = calls[groupStart].function.name
+                if groupEnd > groupStart, mergeableToolNames.contains(toolName) {
+                    let groupArgs = (groupStart...groupEnd).map { calls[$0].function.arguments }
+                    if let merged = mergedArgsForTool(name: toolName, groupArgs: groupArgs) {
+                        let leader = calls[groupStart]
+                        workingCalls[groupStart] = OpenAIChat.ToolCall(
+                            id: leader.id,
+                            function: .init(name: toolName, arguments: merged)
+                        )
+                        for secondary in (groupStart + 1)...groupEnd {
+                            secondaryToLeader[secondary] = groupStart
+                        }
+                    }
+                }
+                groupStart = index
+            }
+        }
+        return IntraBatchMergeOutcome(calls: workingCalls, mergedSecondaryToLeader: secondaryToLeader)
+    }
+
+    /// Dispatch to the per-tool merger. Returns nil when the tool isn't mergeable or the args can't
+    /// be combined (decode failure, size cap, etc).
+    private static func mergedArgsForTool(name: String, groupArgs: [String]) -> String? {
+        switch name {
+        case ProductsUpdateTool.name:
+            return mergeProductsUpdateArgs(jsonArgs: groupArgs)
+        default:
+            return nil
+        }
+    }
+
+    /// Concat each call's `updates[]` array into one. Returns nil if any payload fails to decode or
+    /// the merged total exceeds `ProductsUpdateTool.maxBatchSize`; the caller leaves the calls split
+    /// in that case so the cap path can reject the overflow.
+    static func mergeProductsUpdateArgs(jsonArgs: [String]) -> String? {
+        var mergedUpdates: [Any] = []
+        for argString in jsonArgs {
+            guard let data = argString.data(using: .utf8) else { return nil }
+            do {
+                guard let obj = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                      let updates = obj["updates"] as? [Any] else {
+                    return nil
+                }
+                mergedUpdates.append(contentsOf: updates)
+            } catch {
+                DDLogError("AgenticLoopOrchestrator mergeProductsUpdateArgs decode failed: \(error)")
+                return nil
+            }
+        }
+        if mergedUpdates.count > ProductsUpdateTool.maxBatchSize { return nil }
+        do {
+            let data = try JSONSerialization.data(withJSONObject: ["updates": mergedUpdates],
+                                                  options: [.sortedKeys])
+            return String(data: data, encoding: .utf8)
+        } catch {
+            DDLogError("AgenticLoopOrchestrator mergeProductsUpdateArgs encode failed: \(error)")
+            return nil
+        }
+    }
+
+    /// Success-shaped envelope handed back to merged-away calls so the model still gets a result
+    /// for every tool_call_id while learning that the batch was consolidated.
+    static func mergedIntoCallJSON(leaderCallID: String) -> String {
+        let body: [String: Any] = [
+            "merged_into_call": leaderCallID,
+            "note": "Your earlier call in this batch was combined with the same-tool calls " +
+                    "that followed, so all your requested updates ran in a single batch."
+        ]
+        do {
+            let data = try JSONSerialization.data(withJSONObject: body, options: [.sortedKeys])
+            if let json = String(data: data, encoding: .utf8) { return json }
+        } catch {
+            DDLogError("AgenticLoopOrchestrator mergedIntoCallJSON encode failed: \(error)")
+        }
+        return #"{"merged_into_call":""}"#
+    }
+
+    private static func perToolCapJSON(toolName: String, cap: Int, isBatchingTool: Bool = false) -> String {
+        let hint: String
+        if isBatchingTool {
+            hint = "You've already called this tool. To update multiple entities, " +
+                   "include them all in one call's updates[] array. Do not call " +
+                   "this tool again unless the previous call failed."
+        } else {
+            hint = "You've already called this tool \(cap) times this turn. " +
+                   "Answer the merchant now using show_cards or plain text. " +
+                   "Do not call this tool again."
+        }
         let body: [String: Any] = [
             "error": "per_tool_cap_exceeded",
             "tool": toolName,
             "cap": cap,
-            "hint": "You've already called this tool \(cap) times this turn. " +
-                    "Answer the merchant now using show_cards or plain text. " +
-                    "Do not call this tool again."
+            "hint": hint
         ]
         do {
             let data = try JSONSerialization.data(withJSONObject: body, options: [.sortedKeys])
@@ -950,6 +1105,49 @@ public actor AgenticLoopOrchestrator {
             }
         }
         return counts
+    }
+
+    /// Per-tool tallies counting only successful prior dispatches. Failed/cancelled/outcome-unknown
+    /// payloads are excluded so a tool can be retried after a failure without hitting an override cap.
+    static func computePerToolPriorSuccessTallies(in messages: [OpenAIChat.Message]) -> [String: Int] {
+        guard let lastUserIdx = messages.lastIndex(where: { $0.role == .user }) else { return [:] }
+        var upperBound = messages.count
+        if let last = messages.last, last.role == .assistant, last.toolCalls != nil {
+            upperBound -= 1
+        }
+        guard lastUserIdx + 1 < upperBound else { return [:] }
+        var resultByCallID: [String: String] = [:]
+        for msg in messages[(lastUserIdx + 1)..<upperBound] {
+            guard msg.role == .tool, let id = msg.toolCallID, let content = msg.content else { continue }
+            if resultByCallID[id] == nil {
+                resultByCallID[id] = content
+            }
+        }
+        var counts: [String: Int] = [:]
+        for msg in messages[(lastUserIdx + 1)..<upperBound] {
+            guard msg.role == .assistant, let calls = msg.toolCalls else { continue }
+            for call in calls {
+                guard let payload = resultByCallID[call.id], payloadIsToolSuccess(payload) else { continue }
+                counts[call.function.name, default: 0] += 1
+            }
+        }
+        return counts
+    }
+
+    /// A tool result counts as success when it isn't an error envelope, a user-cancelled marker,
+    /// or an outcome-unknown shape. The cap-override path uses this to leave room for retries.
+    static func payloadIsToolSuccess(_ payload: String) -> Bool {
+        guard let data = payload.data(using: .utf8) else { return false }
+        do {
+            let parsed = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+            if parsed?["error"] != nil { return false }
+            if let status = parsed?["status"] as? String, status == "user_cancelled" { return false }
+            if let outcome = parsed?["outcome"] as? String, outcome == "unknown" { return false }
+            return true
+        } catch {
+            DDLogError("AgenticLoopOrchestrator payloadIsToolSuccess parse failed: \(error)")
+            return false
+        }
     }
 
     private static func encodeJSON(_ value: AnyCodableJSON) -> String {

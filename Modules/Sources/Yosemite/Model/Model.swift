@@ -136,6 +136,7 @@ public typealias ReaderLocation = Networking.ReaderLocation
 public typealias Receipt = Networking.Receipt
 public typealias Refund = Networking.Refund
 public typealias RemoteFeatureFlag = Networking.RemoteFeatureFlag
+public typealias RemoteFeatureFlagOverrideStore = Networking.RemoteFeatureFlagOverrideStore
 public typealias StatGranularity = Networking.StatGranularity
 public typealias StatsGranularityV4 = Networking.StatsGranularityV4
 public typealias ShipmentTracking = Networking.ShipmentTracking

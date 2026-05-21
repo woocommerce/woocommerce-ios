@@ -105,19 +105,29 @@ class AuthenticationManager: Authentication {
     /// site-address flow. The standard prologue stays as the app's first screen (spec §4.1).
     ///
     func authenticationUI() -> UIViewController {
+        // Warm the QR-login availability cache so the synchronous prologue gate
+        // below can see the remote flag value (spec §2.1). `authenticationUI()`
+        // is synchronous, so the async resolution runs ahead of the merchant
+        // reaching the "Log In" CTA.
+        Task { @MainActor [weak self] in
+            await self?.qrLoginAvailability.refreshAvailability()
+        }
         let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
-            guard let self else { return false }
-            // Resets Apple ID at the beginning of the authentication.
-            self.appleUserID = nil
-            guard self.qrLoginAvailability.isAvailableForPrologueSync(),
-                  let navigationController = self.displayAuthenticatorIfLoggedOut?() else {
-                self.analytics.track(.loginPrologueContinueTapped)
-                return false
-            }
             MainActor.assumeIsolated {
+                guard let self else { return false }
+                // Resets Apple ID at the beginning of the authentication.
+                self.appleUserID = nil
+                guard self.qrLoginAvailability.isAvailableForPrologueSync(),
+                      let navigationController = self.displayAuthenticatorIfLoggedOut?() else {
+                    self.analytics.track(.loginPrologueContinueTapped)
+                    return false
+                }
+                // Track the click while the active flow is still `prologue`;
+                // the QR coordinator's `start()` switches it to `login_qr`.
+                DefaultQRLoginAnalyticsTracking().trackClick(.loginWithQR)
                 self.makeQRLoginCoordinator(mode: .camera, navigationController: navigationController).start()
+                return true
             }
-            return true
         })
         guard let loginVC = loginUI else {
             fatalError("Cannot instantiate login UI from WordPressAuthenticator")
@@ -145,8 +155,12 @@ class AuthenticationManager: Authentication {
             },
             onSuccess: { [weak self, weak navigationController] in
                 guard let self, let navigationController else { return }
-                self.qrLoginCoordinator = nil
                 self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+            },
+            onFinished: { [weak self] in
+                // Release the coordinator once its UI is left for good, so a
+                // later deep link doesn't reuse a stale, dismissed instance.
+                self?.qrLoginCoordinator = nil
             }
         )
         qrLoginCoordinator = coordinator
@@ -251,23 +265,25 @@ class AuthenticationManager: Authentication {
     /// launch state is the OS / scene-delegate's job; this method makes a
     /// best-effort to not retain the payload anywhere persistent.
     private func handleQRLoginUrl(_ url: URL) -> Bool? {
-        // Sync availability check is enough: the merchant chose this path
-        // by opening the link, so we just need the flag (or debug override)
-        // to be on. Bucket and camera are bypassed.
-        guard let overrideValue = (qrLoginAvailability as? QRLoginAvailability)?.deepLinkSyncOverride(),
-              overrideValue else {
-            return nil
-        }
-
-        guard let navigationController = displayAuthenticatorIfLoggedOut?() else {
-            DDLogWarn("QR-login deep link: cannot display authenticator UI.")
-            return false
-        }
-
-        let payload = QRLoginPayloadParser().parse(url)
         // `handleAuthenticationUrl` runs on the main thread (URL handling from
-        // the scene/app delegate). `QRLoginCoordinator` is @MainActor.
+        // the scene/app delegate); `QRLoginCoordinator` and the availability
+        // gate are @MainActor.
         MainActor.assumeIsolated {
+            // Sync availability check is enough: the merchant chose this path
+            // by opening the link, so we just need the flag (or debug override)
+            // to be on. Bucket and camera are bypassed. A cold cache returns
+            // `nil`, so the caller falls through to the standard handlers.
+            guard let isAvailable = qrLoginAvailability.isAvailableForDeepLinkSync(),
+                  isAvailable else {
+                return nil
+            }
+
+            guard let navigationController = displayAuthenticatorIfLoggedOut?() else {
+                DDLogWarn("QR-login deep link: cannot display authenticator UI.")
+                return false
+            }
+
+            let payload = QRLoginPayloadParser().parse(url)
             if let qrLoginCoordinator {
                 // Displaying the authenticator already built the QR-login UI
                 // and started a coordinator on the prologue. Reuse it for the
@@ -281,8 +297,8 @@ class AuthenticationManager: Authentication {
                 makeQRLoginCoordinator(mode: .deepLink(payload: payload),
                                        navigationController: navigationController).start()
             }
+            return true
         }
-        return true
     }
 
     /// Handles a `woocommerce://qr-login` deep link that arrived while the
@@ -291,16 +307,19 @@ class AuthenticationManager: Authentication {
     /// current session. Returns `true` when the URL was a QR-login deep link
     /// this method took over, `false` otherwise (the caller then drops it).
     func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) -> Bool {
-        guard isQRLoginUrl(url),
-              let overrideValue = (qrLoginAvailability as? QRLoginAvailability)?.deepLinkSyncOverride(),
-              overrideValue else {
+        guard isQRLoginUrl(url) else {
             return false
         }
-        // URL handling from the scene/app delegate runs on the main thread.
-        MainActor.assumeIsolated {
+        // URL handling from the scene/app delegate runs on the main thread;
+        // the availability gate is @MainActor.
+        return MainActor.assumeIsolated {
+            guard let isAvailable = qrLoginAvailability.isAvailableForDeepLinkSync(),
+                  isAvailable else {
+                return false
+            }
             presentSessionReplaceWarning(for: url, from: rootViewController)
+            return true
         }
-        return true
     }
 
     @MainActor

@@ -1,8 +1,6 @@
 import Foundation
-import Networking
 import Observation
 import WordPressAuthenticator
-import Yosemite
 
 /// Drives the QR-login flow once the user has scanned a self-hosted or wp.com
 /// payload. Owns the state machine — the UI layer just observes `state` and
@@ -13,6 +11,10 @@ import Yosemite
 ///   idle ─start()→ authenticating ─/scan ok→ numberMatch ─poll terminal approved→ authenticating ─/exchange ok→ done
 ///                                                       ↘ poll terminal !approved | transient × 4 → error
 ///        ↘ scan fails → error
+///
+/// `/exchange` resolves to `done` for the self-hosted flow (the merchant is
+/// fully signed in) or `handedOff` for wp.com (the magic link was opened in an
+/// in-app browser; sign-in completes via the magic-login redirect, not here).
 ///
 /// Retry semantics (spec §6.1):
 ///   - error during scan   → retry runs scan again.
@@ -29,7 +31,12 @@ final class QRLoginViewModel {
         case idle
         case authenticating
         case numberMatch(scan: QRLoginScanResult)
+        /// Self-hosted sign-in completed — the app can proceed to the store picker.
         case done
+        /// wp.com magic link handed to an in-app browser — sign-in completes
+        /// asynchronously via the magic-login redirect, so the QR-login surface
+        /// must not route to the store picker itself (spec §10.1).
+        case handedOff
         case error(QRLoginUserFacingError)
     }
 
@@ -180,10 +187,11 @@ private extension QRLoginViewModel {
 
     func runExchange(grant: String) async {
         setAuthenticatingIfNeeded()
-        let result = await strategy.exchange(grant: grant)
-        switch result {
-        case .success:
+        switch await strategy.exchange(grant: grant) {
+        case .success(.authenticated):
             state = .done
+        case .success(.magicLinkHandedOff):
+            state = .handedOff
         case .failure(let error):
             surface(error: error)
         }
@@ -200,49 +208,5 @@ private extension QRLoginViewModel {
         state = .error(error)
         analytics.trackStep(.qrError)
         analytics.trackFailure(QRLoginAnalyticsFailure.failureString(for: error))
-    }
-}
-
-// MARK: - Failure-string mapping
-
-extension QRLoginAnalyticsFailure {
-    /// Maps a user-facing error to the §9.3 failure string. Centralised so
-    /// the iOS and Android emissions stay byte-identical.
-    static func failureString(for error: QRLoginUserFacingError) -> String {
-        let phase: Phase
-        switch error.phase {
-        case .scan: phase = .scan
-        case .poll: phase = .poll
-        case .exchange: phase = .exchange
-        case .postExchange: phase = .auth
-        case .prelude:
-            // Payload / scanner failures never have a phase suffix.
-            switch error.kind {
-            case .invalidPayload: return invalidPayload
-            case .scannerFailure: return scanner
-            case .installQR: return installQrCode
-            default: return invalidPayload
-            }
-        }
-
-        let reason: Reason
-        switch error.kind {
-        case .network: reason = .network
-        case .rateLimited: reason = .rateLimited
-        case .unexpected: reason = .serverError
-        case .storeUnsupported: reason = .endpointMissing
-        case .codeExpired: reason = .tokenRejected
-        case .signInTimedOut: reason = .matchTimedOut
-        case .signInDenied: reason = .matchRejected
-        case .codeAlreadyUsed: reason = .matchAlreadyScanned
-        case .signInInterrupted: reason = .matchInvalidGrant
-        case .alreadySignedInElsewhere: reason = .matchAlreadyCompleted
-        case .notAWooSite: reason = .notAWooSite
-        case .userNotEligible: reason = .userNotEligible
-        case .siteAuthFailure: reason = .siteAuthFailure
-        case .invalidPayload, .installQR, .scannerFailure: reason = .unknown
-        }
-
-        return Self.reason(reason, phase: phase)
     }
 }

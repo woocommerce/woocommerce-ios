@@ -1,6 +1,6 @@
 import Foundation
-import struct Networking.QRLoginScanDevice
 import UIKit
+import Yosemite
 
 /// Produces the `device.*` metadata sent on every QR-login `/scan`. Injectable
 /// so tests can pin the values without touching `UIDevice` / `Bundle`.

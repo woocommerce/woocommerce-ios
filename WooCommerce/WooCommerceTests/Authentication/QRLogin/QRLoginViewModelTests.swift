@@ -3,7 +3,6 @@ import Networking
 import Testing
 import WordPressAuthenticator
 @testable import WooCommerce
-@testable import Yosemite
 
 @Suite(.timeLimit(.minutes(1)))
 @MainActor
@@ -19,7 +18,7 @@ struct QRLoginViewModelTests {
             .success(.init(state: .scanned, exchangeGrant: nil)),
             .success(.init(state: .approved, exchangeGrant: "grant-1"))
         ]
-        strategy.exchangeResult = .success(())
+        strategy.exchangeResult = .success(.authenticated)
         let viewModel = QRLoginViewModel(strategy: strategy, analytics: SpyAnalytics(), pollIntervalSeconds: 0)
 
         // When
@@ -28,6 +27,25 @@ struct QRLoginViewModelTests {
         // Then
         #expect(viewModel.state == .done)
         #expect(strategy.scanCount == 1)
+        #expect(strategy.exchangeCalls == ["grant-1"])
+    }
+
+    @Test func start_when_exchange_hands_off_magic_link_then_state_is_handedOff() async {
+        // Given — the wp.com exchange opens a magic link in an in-app browser
+        // instead of completing sign-in in-app (spec §10.1).
+        let strategy = MockQRLoginStrategy()
+        strategy.scanResult = .success(makeScanResult())
+        strategy.pollResults = [.success(.init(state: .approved, exchangeGrant: "grant-1"))]
+        strategy.exchangeResult = .success(.magicLinkHandedOff)
+        let viewModel = QRLoginViewModel(strategy: strategy, analytics: SpyAnalytics(), pollIntervalSeconds: 0)
+
+        // When
+        await viewModel.start()
+
+        // Then — the flow stops at .handedOff, never .done, so the coordinator
+        // won't route to the store picker before the magic-login redirect
+        // finishes the sign-in.
+        #expect(viewModel.state == .handedOff)
         #expect(strategy.exchangeCalls == ["grant-1"])
     }
 
@@ -68,7 +86,7 @@ struct QRLoginViewModelTests {
         // When — next scan succeeds, then poll approves, then exchange OK.
         strategy.scanResult = .success(makeScanResult())
         strategy.pollResults = [.success(.init(state: .approved, exchangeGrant: "g"))]
-        strategy.exchangeResult = .success(())
+        strategy.exchangeResult = .success(.authenticated)
         await viewModel.retry()
 
         // Then
@@ -94,7 +112,7 @@ struct QRLoginViewModelTests {
         #expect(strategy.exchangeCalls == ["grant-x"])
 
         // When — next exchange succeeds.
-        strategy.exchangeResult = .success(())
+        strategy.exchangeResult = .success(.authenticated)
         await viewModel.retry()
 
         // Then
@@ -122,7 +140,7 @@ struct QRLoginViewModelTests {
 
         // When
         strategy.pollResults = [.success(.init(state: .approved, exchangeGrant: "g"))]
-        strategy.exchangeResult = .success(())
+        strategy.exchangeResult = .success(.authenticated)
         await viewModel.retry()
 
         // Then
@@ -137,7 +155,7 @@ struct QRLoginViewModelTests {
         let strategy = MockQRLoginStrategy()
         strategy.scanResult = .success(makeScanResult())
         strategy.pollResults = [.success(.init(state: .approved, exchangeGrant: "g"))]
-        strategy.exchangeResult = .success(())
+        strategy.exchangeResult = .success(.authenticated)
         let analytics = SpyAnalytics()
         let viewModel = QRLoginViewModel(strategy: strategy, analytics: analytics, pollIntervalSeconds: 0)
 
@@ -196,9 +214,8 @@ private final class MockQRLoginStrategy: QRLoginStrategy {
                                                                                        phase: .scan,
                                                                                        primaryAction: .retryFailedPhase))
     var pollResults: [Result<QRLoginSessionStatus, QRLoginNetworkError>] = []
-    var exchangeResult: Result<Void, QRLoginUserFacingError> = .failure(.init(kind: .unexpected,
-                                                                              phase: .exchange,
-                                                                              primaryAction: .retryFailedPhase))
+    var exchangeResult: Result<QRLoginExchangeOutcome, QRLoginUserFacingError> =
+        .failure(.init(kind: .unexpected, phase: .exchange, primaryAction: .retryFailedPhase))
 
     private(set) var scanCount = 0
     private(set) var exchangeCalls: [String] = []
@@ -234,7 +251,7 @@ private final class MockQRLoginStrategy: QRLoginStrategy {
         }
     }
 
-    func exchange(grant: String) async -> Result<Void, QRLoginUserFacingError> {
+    func exchange(grant: String) async -> Result<QRLoginExchangeOutcome, QRLoginUserFacingError> {
         exchangeCalls.append(grant)
         return exchangeResult
     }

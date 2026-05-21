@@ -1,6 +1,5 @@
 import AVFoundation
 import Foundation
-import protocol Networking.RemoteFeatureFlagOverrideStore
 import Yosemite
 
 /// Computes whether the QR-login flow is available right now.
@@ -12,24 +11,42 @@ import Yosemite
 ///     The bucket is bypassed (the user explicitly opened a `qr-login` URL) and
 ///     no camera is needed (the token is already in the URL).
 ///
-/// A debug override (set via the logged-out feature-flag panel) bypasses both
-/// the remote flag and the rollout bucket entirely.
+/// `authenticationUI()` is synchronous and can't await the remote-flag
+/// round-trip, so `refreshAvailability()` resolves the async gates ahead of
+/// time and caches the result; the `…Sync` accessors then read that cache.
+/// A debug override is always honoured synchronously and bypasses both the
+/// remote flag and the rollout bucket.
 protocol QRLoginAvailabilityProvider {
     func isAvailableForPrologue() async -> Bool
     func isAvailableForDeepLink() async -> Bool
-    /// Synchronous check used at prologue construction time. Honours the
-    /// debug override and the rollout bucket but skips the remote-flag
-    /// network round-trip — treats an unknown remote flag as off, matching
-    /// spec §2 ("null / not-yet-loaded remote value is treated as off").
-    func isAvailableForPrologueSync() -> Bool
+
+    /// Resolves the async prologue / deep-link gates and caches the results so
+    /// the synchronous accessors can return an up-to-date value. Call this when
+    /// the login UI is built, before the merchant can reach a QR entry point.
+    @MainActor func refreshAvailability() async
+
+    /// Synchronous prologue gate. Returns the debug override when set; otherwise
+    /// the value cached by the most recent `refreshAvailability()`, or `false`
+    /// when the cache is cold (spec §2: a not-yet-loaded remote value is off).
+    @MainActor func isAvailableForPrologueSync() -> Bool
+
+    /// Synchronous deep-link gate. Returns the debug override when set; otherwise
+    /// the cached value, or `nil` when the cache is cold so the caller can fall
+    /// back to the standard login handlers (spec §2.2).
+    @MainActor func isAvailableForDeepLinkSync() -> Bool?
 }
 
-struct QRLoginAvailability: QRLoginAvailabilityProvider {
+final class QRLoginAvailability: QRLoginAvailabilityProvider {
 
     private let stores: StoresManager
     private let overrideStore: RemoteFeatureFlagOverrideStore?
     private let rolloutBucket: QRLoginRolloutBucket
     private let isCameraAvailable: () -> Bool
+
+    /// Results of the async gates, cached by `refreshAvailability()`.
+    /// `nil` means "not resolved yet".
+    private var cachedPrologueAvailability: Bool?
+    private var cachedDeepLinkAvailability: Bool?
 
     init(stores: StoresManager = ServiceLocator.stores,
          overrideStore: RemoteFeatureFlagOverrideStore? = ServiceLocator.remoteFeatureFlagOverrideStore,
@@ -50,24 +67,31 @@ struct QRLoginAvailability: QRLoginAvailabilityProvider {
         await isEnabledRespectingOverride(includeBucketCheck: false)
     }
 
+    @MainActor
+    func refreshAvailability() async {
+        // Resolved sequentially: the second call hits the feature-flag store's
+        // warmed cache, so this is one network round-trip, not two.
+        let prologue = await isAvailableForPrologue()
+        let deepLink = await isAvailableForDeepLink()
+        cachedPrologueAvailability = prologue
+        cachedDeepLinkAvailability = deepLink
+    }
+
+    @MainActor
     func isAvailableForPrologueSync() -> Bool {
         guard isCameraAvailable() else { return false }
         if let override = overrideStore?.overrideValue(for: .qrCodeLogin) {
             return override
         }
-        // No override: without an async dispatch we can't read the cached
-        // flag value, so we report unavailable. The async `isAvailableForPrologue`
-        // is the production path; the sync version is for the prologue
-        // construction site where the debug-override is enough to drive
-        // testing on simulator.
-        return false
+        return cachedPrologueAvailability ?? false
     }
 
-    /// Sync deep-link gate: ignores camera + bucket, returns the override or
-    /// `nil` if no override is set. The caller can fall back to the standard
-    /// handlers when this returns `nil`.
-    func deepLinkSyncOverride() -> Bool? {
-        overrideStore?.overrideValue(for: .qrCodeLogin)
+    @MainActor
+    func isAvailableForDeepLinkSync() -> Bool? {
+        if let override = overrideStore?.overrideValue(for: .qrCodeLogin) {
+            return override
+        }
+        return cachedDeepLinkAvailability
     }
 }
 

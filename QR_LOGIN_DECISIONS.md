@@ -58,11 +58,13 @@ state rather than surfaced as an error. `WPComQRLoginRemote.pollSessionStatus`
 catches `.notFound` and returns a synthetic `QRLoginSessionStatus(state:
 .expired, exchangeGrant: nil)`. The mapper doesn't need to know about it.
 
-### Polling loop is in Yosemite, not Networking
+### Polling loop lives in the app target
 
-`QRLoginPollingLoop` lives under `Modules/Sources/Yosemite/Tools/QRLogin/`
-because it composes a Remote method call with phase + protocol-aware error
-mapping. The Networking layer stays focused on raw HTTP shape.
+`QRLoginPollingLoop` lives under `WooCommerce/Classes/Authentication/QRLogin/`.
+It is pure orchestration — it composes an injected `PollAttempt` closure with
+phase + protocol-aware error mapping. It imports `Yosemite` only (for the
+re-exported `QRLoginNetworkError` / `QRLoginSessionStatus`), never `Networking`
+directly. The Networking layer stays focused on raw HTTP shape.
 
 ---
 
@@ -174,15 +176,18 @@ intercepting at `AuthenticationManager.authenticationUI()` because:
     `NavigateToEnterSite`, so the user never sees the WPA prologue. Matches
     the spec.
 
-### Sync availability check uses debug override only
+### Sync availability check is backed by a pre-warmed cache
 
-`QRLoginAvailability.isAvailableForPrologueSync()` returns `true` only when
-the debug override is on. The cached-remote-flag path is async (Yosemite
-`FeatureFlagAction.isRemoteFeatureFlagEnabled`) and `authenticationUI()` is
-sync. For the verification phase the debug override is enough; the
-production async-cache path is a polish-phase follow-up — the spec already
-mandates "null / not-yet-loaded → off" so the worst case is the QR prologue
-is hidden until the cache is warmed and the app restarts.
+`authenticationUI()` is synchronous, so it can't await the remote-flag
+round-trip. `QRLoginAvailability.refreshAvailability()` resolves the async
+prologue / deep-link gates and caches the result; `authenticationUI()` kicks
+that refresh off when it builds the login UI, and the `…Sync` accessors read
+the cache. A debug override is still honoured synchronously and bypasses the
+flag + bucket. Spec §2 ("null / not-yet-loaded → off") still holds: a cold
+cache reports the prologue unavailable until the refresh lands.
+
+(See the Review fixes section — this replaces the earlier debug-override-only
+stopgap.)
 
 ### `QRLoginViewModel` is `@Observable` (Swift 5.9+)
 
@@ -327,3 +332,57 @@ To run the live verification, the maintainer should:
 Mock server fixtures for the QR endpoints would land in
 `Modules/Sources/APIMocks/Resources/` alongside the existing WireMock
 mappings — those are also a polish-phase follow-up.
+
+---
+
+## Review fixes
+
+Architecture-review follow-ups applied on top of Layers 2–6.
+
+### App-only types moved out of Networking; app imports `Yosemite` only
+
+Two parts:
+
+1. `QRLoginUserFacingError` and `QRLoginErrorMapper` are consumed only by the
+   app layer (the Remotes throw `QRLoginNetworkError`; the mapper translates
+   it into the UI-facing variant). They moved to
+   `WooCommerce/Classes/Authentication/QRLogin/`, and `QRLoginErrorMapperTests`
+   moved to `WooCommerceTests`.
+
+2. The QR-login Networking types that surface through `QRLoginAction`
+   (`QRLoginScanResponse`, `QRLoginSessionStatus`, `QRLoginScanDevice`, the
+   exchange responses, `QRLoginNetworkError`, `QRLoginTokenHash`) are now
+   re-exported by Yosemite as `public typealias`es in `QRLoginAction.swift` —
+   the same pattern `Model.swift` uses for `Order` / `Product`.
+   `RemoteFeatureFlagOverrideStore` joined the existing feature-flag
+   re-exports in `Model.swift`.
+
+The QR-login app files therefore import `Yosemite` alone and **no longer
+import `Networking` directly at all**, satisfying the layering rule in
+AGENTS.md rather than just matching the targeted-import workaround used
+elsewhere in the app.
+
+### Prologue gate consults the remote flag, not just the override
+
+`QRLoginAvailability` is now a class with a cached resolved availability.
+`refreshAvailability()` runs the async flag/bucket/camera checks;
+`authenticationUI()` kicks it off so the synchronous prologue gate sees the
+real remote flag in production. `deepLinkSyncOverride()` became
+`isAvailableForDeepLinkSync()` and likewise falls back to the cached value.
+
+### wp.com `/exchange` no longer routes to the store picker
+
+`QRLoginStrategy.exchange` now returns `QRLoginExchangeOutcome`:
+`.authenticated` (self-hosted, fully signed in → store picker) vs.
+`.magicLinkHandedOff` (wp.com, magic link opened in an in-app browser).
+The view model maps the latter to a new `handedOff` state, and the
+coordinator dismisses the QR surface without calling `onSuccess` — sign-in
+completes through the existing `woocommerce://magic-login` redirect.
+
+### Coordinator lifetime scoped to every exit
+
+`QRLoginCoordinator` gained an `onFinished` callback fired once when the QR
+surface is left for good (success, prologue back-out, deep-link exit,
+fallback-to-site-address, magic-link handoff). `AuthenticationManager`
+clears its `qrLoginCoordinator` reference there, so a later deep link can't
+reuse a stale, dismissed coordinator.

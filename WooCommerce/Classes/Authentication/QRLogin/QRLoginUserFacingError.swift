@@ -10,11 +10,11 @@ import Foundation
 ///     know which Remote method to re-run on retry — §6.1).
 ///
 /// The user-facing copy (title / body / button labels) lives in the UI layer
-/// (`QRLoginErrorView`), so this type stays free of localised strings and is
-/// safe to use from the Yosemite / Networking layers.
-public struct QRLoginUserFacingError: Error, Equatable {
+/// (`QRLoginErrorView`); this type only carries the structured kind / phase /
+/// CTA so it stays free of localised strings.
+struct QRLoginUserFacingError: Error, Equatable {
 
-    public enum Kind: Equatable {
+    enum Kind: Equatable {
         // Payload / scanner (raised before the network flow starts).
         /// "Not a WooCommerce code".
         case invalidPayload
@@ -56,7 +56,7 @@ public struct QRLoginUserFacingError: Error, Equatable {
         case userNotEligible
     }
 
-    public enum Phase: Equatable {
+    enum Phase: Equatable {
         case scan
         case poll
         case exchange
@@ -68,7 +68,7 @@ public struct QRLoginUserFacingError: Error, Equatable {
         case prelude
     }
 
-    public enum PrimaryAction: Equatable {
+    enum PrimaryAction: Equatable {
         /// "Try again" — re-runs the failed step (`scan`, `poll`, or
         /// `exchange`) per spec §6.1.
         case retryFailedPhase
@@ -77,11 +77,11 @@ public struct QRLoginUserFacingError: Error, Equatable {
         case scanAgain
     }
 
-    public let kind: Kind
-    public let phase: Phase
-    public let primaryAction: PrimaryAction
+    let kind: Kind
+    let phase: Phase
+    let primaryAction: PrimaryAction
 
-    public init(kind: Kind, phase: Phase, primaryAction: PrimaryAction) {
+    init(kind: Kind, phase: Phase, primaryAction: PrimaryAction) {
         self.kind = kind
         self.phase = phase
         self.primaryAction = primaryAction

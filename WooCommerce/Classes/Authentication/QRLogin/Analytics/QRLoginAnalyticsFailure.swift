@@ -47,4 +47,44 @@ struct QRLoginAnalyticsFailure {
 
     /// Session-replace logout failure (§9.3 exception).
     static let sessionReplaceLogoutFailed = "Network:session_replace_logout_failed"
+
+    /// Maps a user-facing error to the §9.3 failure string. Centralised so the
+    /// iOS and Android emissions stay byte-identical.
+    static func failureString(for error: QRLoginUserFacingError) -> String {
+        let phase: Phase
+        switch error.phase {
+        case .scan: phase = .scan
+        case .poll: phase = .poll
+        case .exchange: phase = .exchange
+        case .postExchange: phase = .auth
+        case .prelude:
+            // Payload / scanner failures never have a phase suffix.
+            switch error.kind {
+            case .invalidPayload: return invalidPayload
+            case .scannerFailure: return scanner
+            case .installQR: return installQrCode
+            default: return invalidPayload
+            }
+        }
+
+        let reason: Reason
+        switch error.kind {
+        case .network: reason = .network
+        case .rateLimited: reason = .rateLimited
+        case .unexpected: reason = .serverError
+        case .storeUnsupported: reason = .endpointMissing
+        case .codeExpired: reason = .tokenRejected
+        case .signInTimedOut: reason = .matchTimedOut
+        case .signInDenied: reason = .matchRejected
+        case .codeAlreadyUsed: reason = .matchAlreadyScanned
+        case .signInInterrupted: reason = .matchInvalidGrant
+        case .alreadySignedInElsewhere: reason = .matchAlreadyCompleted
+        case .notAWooSite: reason = .notAWooSite
+        case .userNotEligible: reason = .userNotEligible
+        case .siteAuthFailure: reason = .siteAuthFailure
+        case .invalidPayload, .installQR, .scannerFailure: reason = .unknown
+        }
+
+        return Self.reason(reason, phase: phase)
+    }
 }

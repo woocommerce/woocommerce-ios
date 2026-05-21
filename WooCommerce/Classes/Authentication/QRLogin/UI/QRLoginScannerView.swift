@@ -68,6 +68,8 @@ private struct QRLoginScannerRepresentable: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         let scanner = CodeScannerViewController(
             instructionText: QRLoginScannerView.Localization.instruction,
+            // The QR-login scanner draws its own close control over the camera
+            // feed, so the controller's built-in cancel button is hidden.
             format: .barcode(completion: { result in
                 guard case let .success(barcodes) = result else { return }
                 guard let payload = barcodes
@@ -76,7 +78,8 @@ private struct QRLoginScannerRepresentable: UIViewControllerRepresentable {
                 Task { @MainActor in
                     context.coordinator.deliver(payload: payload)
                 }
-            })
+            }),
+            showsBuiltInCancelButton: false
         )
         return scanner
     }

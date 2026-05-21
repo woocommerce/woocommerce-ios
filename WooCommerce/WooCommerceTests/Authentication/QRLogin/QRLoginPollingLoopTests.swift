@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 import Networking
-@testable import Yosemite
+@testable import WooCommerce
 
 @Suite(.timeLimit(.minutes(1)))
 struct QRLoginPollingLoopTests {

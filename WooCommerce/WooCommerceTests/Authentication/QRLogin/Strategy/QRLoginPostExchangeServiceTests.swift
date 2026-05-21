@@ -25,7 +25,7 @@ struct QRLoginPostExchangeServiceTests {
         let appPasswordUseCase = MockApplicationPasswordUseCase()
         stubFetchSiteInfo(stores: stores, result: .success(makeWooSite()))
         let service = makeService(stores: stores,
-                                  roleEligibility: MockRoleEligibilityUseCase(result: .success(())),
+                                  roleEligibility: StubRoleEligibilityUseCase(result: .success(())),
                                   appPasswordUseCase: appPasswordUseCase,
                                   analytics: analytics)
 
@@ -50,7 +50,7 @@ struct QRLoginPostExchangeServiceTests {
         let appPasswordUseCase = MockApplicationPasswordUseCase()
         stubFetchSiteInfo(stores: stores, result: .failure(NSError(domain: "test", code: 0)))
         let service = makeService(stores: stores,
-                                  roleEligibility: MockRoleEligibilityUseCase(result: .success(())),
+                                  roleEligibility: StubRoleEligibilityUseCase(result: .success(())),
                                   appPasswordUseCase: appPasswordUseCase,
                                   analytics: analytics)
 
@@ -75,7 +75,7 @@ struct QRLoginPostExchangeServiceTests {
         let appPasswordUseCase = MockApplicationPasswordUseCase()
         stubFetchSiteInfo(stores: stores, result: .success(makeNonWooSite()))
         let service = makeService(stores: stores,
-                                  roleEligibility: MockRoleEligibilityUseCase(result: .success(())),
+                                  roleEligibility: StubRoleEligibilityUseCase(result: .success(())),
                                   appPasswordUseCase: appPasswordUseCase)
 
         // When
@@ -97,7 +97,7 @@ struct QRLoginPostExchangeServiceTests {
         stubFetchSiteInfo(stores: stores, result: .success(makeWooSite()))
         let info = StorageEligibilityErrorInfo(name: "shopkeeper", roles: ["author"])
         let service = makeService(stores: stores,
-                                  roleEligibility: MockRoleEligibilityUseCase(result: .failure(.insufficientRole(info: info))),
+                                  roleEligibility: StubRoleEligibilityUseCase(result: .failure(.insufficientRole(info: info))),
                                   appPasswordUseCase: appPasswordUseCase)
 
         // When
@@ -119,7 +119,7 @@ struct QRLoginPostExchangeServiceTests {
         stubFetchSiteInfo(stores: stores, result: .success(makeWooSite()))
         let underlying = NSError(domain: "test", code: 42)
         let service = makeService(stores: stores,
-                                  roleEligibility: MockRoleEligibilityUseCase(result: .failure(.unknown(error: underlying))),
+                                  roleEligibility: StubRoleEligibilityUseCase(result: .failure(.unknown(error: underlying))),
                                   appPasswordUseCase: appPasswordUseCase)
 
         // When
@@ -141,7 +141,7 @@ struct QRLoginPostExchangeServiceTests {
         let appPasswordUseCase = MockApplicationPasswordUseCase()
         appPasswordUseCase.deletePasswordError = ApplicationPasswordUseCaseError.applicationPasswordsDisabled
         let service = makeService(stores: stores,
-                                  roleEligibility: MockRoleEligibilityUseCase(result: .success(())),
+                                  roleEligibility: StubRoleEligibilityUseCase(result: .success(())),
                                   appPasswordUseCase: appPasswordUseCase)
 
         // When
@@ -219,7 +219,7 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
     }
 }
 
-private final class MockRoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
+private final class StubRoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
     private let result: Result<Void, RoleEligibilityError>
 
     init(result: Result<Void, RoleEligibilityError>) {

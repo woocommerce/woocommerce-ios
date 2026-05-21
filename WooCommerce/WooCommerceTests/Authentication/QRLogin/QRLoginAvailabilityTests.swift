@@ -132,6 +132,39 @@ struct QRLoginAvailabilityTests {
         // Then
         #expect(enabled == false)
     }
+
+    // MARK: - Synchronous gates backed by the refreshed cache (§2.1)
+
+    @Test func isAvailableForPrologueSync_is_false_until_refreshed_then_reflects_remote_flag() async {
+        // Given — flag on, no override. The sync gate is cold until refreshed.
+        let availability = QRLoginAvailability(stores: makeStores(remoteFlag: true),
+                                               overrideStore: nil,
+                                               rolloutBucket: makeBucket(value: 1),
+                                               isCameraAvailable: { true })
+        #expect(availability.isAvailableForPrologueSync() == false)
+
+        // When
+        await availability.refreshAvailability()
+
+        // Then — the synchronous gate now sees the resolved remote flag.
+        #expect(availability.isAvailableForPrologueSync() == true)
+    }
+
+    @Test func isAvailableForDeepLinkSync_is_nil_until_refreshed_then_reflects_remote_flag() async {
+        // Given — deep-link gate ignores the bucket and the camera.
+        let availability = QRLoginAvailability(stores: makeStores(remoteFlag: true),
+                                               overrideStore: nil,
+                                               rolloutBucket: makeBucket(value: 9),
+                                               isCameraAvailable: { false })
+        // Cold cache → nil so the caller falls through to the standard handlers.
+        #expect(availability.isAvailableForDeepLinkSync() == nil)
+
+        // When
+        await availability.refreshAvailability()
+
+        // Then
+        #expect(availability.isAvailableForDeepLinkSync() == true)
+    }
 }
 
 // MARK: - Helpers
@@ -159,4 +192,5 @@ private final class StubOverrideStore: RemoteFeatureFlagOverrideStore {
     init(value: Bool?) { self.value = value }
     func overrideValue(for featureFlag: RemoteFeatureFlag) -> Bool? { value }
     func setOverrideValue(_ value: Bool?, for featureFlag: RemoteFeatureFlag) {}
+    func removeAllOverrides() {}
 }

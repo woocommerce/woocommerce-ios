@@ -1,5 +1,4 @@
 import AVFoundation
-import Networking
 import SwiftUI
 import UIKit
 import WordPressAuthenticator
@@ -33,6 +32,22 @@ final class QRLoginCoordinator {
     private let onShowHelp: () -> Void
     private let onSuccess: () -> Void
 
+    /// Invoked once when the QR-login surface is left for good — success,
+    /// back-out, deep-link exit, navigating to a fallback login, or a wp.com
+    /// magic-link handoff — so the owner can release its reference to this
+    /// coordinator. Scoping the lifetime here (not just on success) keeps a
+    /// stale coordinator from being reused by the deep-link entry point.
+    private let onFinished: () -> Void
+
+    /// Guards `onFinished` so it fires at most once.
+    private var didFinish = false
+
+    /// The prologue screen, held weakly so "Scan a new code" can pop back to it
+    /// and present a fresh scanner. The previous scanner latches onto its
+    /// consumed payload and the camera session keeps running, so it can never
+    /// deliver a second result — it must be replaced, not reused.
+    private weak var prologueViewController: UIViewController?
+
     init(mode: Mode = .camera,
          navigationController: UINavigationController,
          parser: QRLoginPayloadParser = QRLoginPayloadParser(),
@@ -40,7 +55,8 @@ final class QRLoginCoordinator {
          analytics: QRLoginAnalyticsTracking? = nil,
          onEnterSiteURL: @escaping () -> Void,
          onShowHelp: @escaping () -> Void,
-         onSuccess: @escaping () -> Void) {
+         onSuccess: @escaping () -> Void,
+         onFinished: @escaping () -> Void) {
         self.mode = mode
         self.navigationController = navigationController
         self.parser = parser
@@ -52,6 +68,7 @@ final class QRLoginCoordinator {
         self.onEnterSiteURL = onEnterSiteURL
         self.onShowHelp = onShowHelp
         self.onSuccess = onSuccess
+        self.onFinished = onFinished
     }
 
     /// Entry point. The coordinator manages its own UI from here on.
@@ -81,7 +98,7 @@ private extension QRLoginCoordinator {
     func showPrologue() {
         analytics.trackStep(.qrPrologue)
         let view = QRLoginPrologueView(
-            onBackTapped: { [weak self] in self?.navigationController.popViewController(animated: true) },
+            onBackTapped: { [weak self] in self?.handlePrologueBack() },
             onHelpTapped: { [weak self] in self?.showHelp() },
             onScanTapped: { [weak self] in self?.handleScanCTA() },
             onSiteAddressTapped: { [weak self] in self?.fallbackToSiteAddress() },
@@ -89,11 +106,23 @@ private extension QRLoginCoordinator {
         )
         // The dark prologue hides the shared navigation bar and draws its own
         // light Back / Help controls over the bubble background.
-        pushScreen(view, navigationBarStyle: .hidden, prefersLightStatusBar: true, showsHelpButton: false)
+        prologueViewController = pushScreen(view,
+                                            navigationBarStyle: .hidden,
+                                            prefersLightStatusBar: true,
+                                            showsHelpButton: false)
     }
 
     func handleScanCTA() {
         analytics.trackClick(.qrLoginScan)
+        presentScannerAfterCameraPermissionCheck()
+    }
+
+    /// Checks camera permission — requesting it when undetermined — and either
+    /// presents the scanner or the appropriate denial alert. Shared by the
+    /// prologue "Scan QR code" CTA and the error "Scan a new code" CTA so both
+    /// honour the permission gate (spec §4.1.1) rather than pushing a scanner
+    /// that has no camera access.
+    func presentScannerAfterCameraPermissionCheck() {
         Task { @MainActor in
             switch cameraPermissionChecker.status {
             case .authorized:
@@ -139,11 +168,11 @@ private extension QRLoginCoordinator {
 
     func fallbackToSiteAddress() {
         analytics.trackClick(.qrLoginFallback)
-        onEnterSiteURL()
+        handleEnterSiteURL()
     }
 
     static func copyLoginURL() {
-        UIPasteboard.general.string = "https://woo.com/mobilelogin"
+        UIPasteboard.general.string = WooConstants.qrLoginInstructionsURL
         // Snackbar / toast is owned by the prologue view — for now a Notice via
         // NoticePresenter would belong, but presenting it requires a host
         // controller. Left as a follow-up — the clipboard side is the
@@ -175,6 +204,7 @@ private extension QRLoginCoordinator {
             // §10.1: hand the URL to an in-app browser. WP.com redirects to
             // woocommerce://magic-login, picked up by the existing handler.
             openMagicLink(url)
+            finish()
 
         case let .siteURLOnly(url):
             // §10.2: pre-fill the legacy site-address login screen with the URL
@@ -184,6 +214,7 @@ private extension QRLoginCoordinator {
             loginFields.restrictToWPCom = false
             NavigateToEnterSite(loginFields: loginFields,
                                 autoSubmitsPrefilledSiteAddress: true).execute(from: navigationController)
+            finish()
 
         case let .appLoginWPCom(siteURL, email):
             // §10.3 / §3.3: pre-fill the WP.com email + password screen.
@@ -192,6 +223,7 @@ private extension QRLoginCoordinator {
             loginFields.restrictToWPCom = true
             loginFields.username = email
             NavigateToEnterWPCOMPassword(loginFields: loginFields).execute(from: navigationController)
+            finish()
 
         case let .appLoginUsername(siteURL, username):
             // §10.3 / §3.3: pre-fill the wp-org site-credentials screen.
@@ -200,6 +232,7 @@ private extension QRLoginCoordinator {
             loginFields.restrictToWPCom = false
             loginFields.username = username
             NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: navigationController)
+            finish()
 
         case .installQR:
             // §10.4: the "install QR" is useless here — app is already installed.
@@ -212,20 +245,22 @@ private extension QRLoginCoordinator {
         }
     }
 
+    /// Opens a magic-link URL in an in-app browser. Presented from the
+    /// navigation controller itself (not its top view controller) so the
+    /// QR-login screen underneath can be safely popped after the handoff.
     func openMagicLink(_ url: URL) {
-        guard let topVC = navigationController.topViewController ?? navigationController.viewControllers.last else {
-            return
-        }
-        WebviewHelper.launch(url, with: topVC)
+        WebviewHelper.launch(url, with: navigationController)
     }
 
     func showHostView(with strategy: QRLoginStrategy) {
         let viewModel = QRLoginViewModel(strategy: strategy)
         let host = QRLoginHostView(
             viewModel: viewModel,
-            onDone: { [weak self] in self?.onSuccess() },
+            onDone: { [weak self] in self?.handleSuccess() },
+            onMagicLinkHandedOff: { [weak self] in self?.handleMagicLinkHandedOff() },
             onCancel: { [weak self] in self?.handleHostCancelled() },
-            onEnterSiteURLTapped: { [weak self] in self?.onEnterSiteURL() }
+            onScanAgain: { [weak self] in self?.handleScanAgain() },
+            onEnterSiteURLTapped: { [weak self] in self?.handleEnterSiteURL() }
         )
         pushScreen(host)
     }
@@ -236,15 +271,79 @@ private extension QRLoginCoordinator {
     /// (spec §4.2 / §6.2).
     func handleHostCancelled() {
         navigationController.popViewController(animated: true)
+        if case .deepLink = mode {
+            finish()
+        }
+    }
+
+    /// Primary CTA on a non-retryable error ("Scan a new code", spec §6.1). In
+    /// camera mode this returns the merchant to a *fresh* scanner — the
+    /// previous scanner already consumed its payload and can't deliver again,
+    /// so it is dropped from the stack rather than reused. In deep-link mode
+    /// there's no scanner to return to, so the QR-login surface is dismissed
+    /// (spec §4.2).
+    func handleScanAgain() {
+        analytics.trackClick(.qrStartOver)
+        switch mode {
+        case .camera:
+            if let prologueViewController {
+                navigationController.popToViewController(prologueViewController, animated: false)
+            }
+            presentScannerAfterCameraPermissionCheck()
+        case .deepLink:
+            navigationController.popViewController(animated: true)
+            finish()
+        }
+    }
+
+    // MARK: - Lifecycle
+
+    /// The merchant backed out of the prologue — the QR-login surface is done.
+    func handlePrologueBack() {
+        navigationController.popViewController(animated: true)
+        finish()
+    }
+
+    /// Routes the merchant to the legacy site-address login and ends the
+    /// QR-login flow.
+    func handleEnterSiteURL() {
+        onEnterSiteURL()
+        finish()
+    }
+
+    /// Self-hosted sign-in completed — hand off to the store picker and end the
+    /// QR-login flow.
+    func handleSuccess() {
+        onSuccess()
+        finish()
+    }
+
+    /// The wp.com flow handed the magic link to an in-app browser. Sign-in
+    /// completes via the magic-login redirect, so pop the host view (revealing
+    /// the scanner / prologue if the merchant dismisses the browser) and end the
+    /// QR-login flow — without routing to the store picker (spec §10.1).
+    func handleMagicLinkHandedOff() {
+        navigationController.popViewController(animated: false)
+        finish()
+    }
+
+    /// Fires `onFinished` exactly once so the owner can release this coordinator.
+    func finish() {
+        guard didFinish == false else { return }
+        didFinish = true
+        onFinished()
     }
 
     func showErrorOnly(_ error: QRLoginUserFacingError) {
         analytics.trackStep(.qrError)
         analytics.trackFailure(QRLoginAnalyticsFailure.failureString(for: error))
+        // `showErrorOnly` only ever carries a `.scanAgain` error (`.installQR`
+        // / `.invalidPayload`), so the primary CTA always routes to a fresh
+        // scanner.
         let view = QRLoginErrorView(
             error: error,
-            onPrimaryTapped: { [weak self] in self?.popScanner() },
-            onEnterSiteURLTapped: { [weak self] in self?.onEnterSiteURL() }
+            onPrimaryTapped: { [weak self] in self?.handleScanAgain() },
+            onEnterSiteURLTapped: { [weak self] in self?.handleEnterSiteURL() }
         )
         pushScreen(view)
     }

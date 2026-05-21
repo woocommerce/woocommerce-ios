@@ -1,4 +1,3 @@
-import Networking
 import SwiftUI
 
 /// Fullscreen error variant for any failure surfaced by the QR-login flow.

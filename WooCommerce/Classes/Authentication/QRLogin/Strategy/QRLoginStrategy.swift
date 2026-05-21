@@ -1,6 +1,4 @@
 import Foundation
-import Networking
-import Yosemite
 
 /// Subtitle to display on the number-match screen. Per spec §4.3, the
 /// self-hosted flow shows the site host and the wp.com flow shows the user's
@@ -21,6 +19,20 @@ struct QRLoginScanResult: Equatable {
     let tokenHash: String
     /// Subtitle to display on the number-match screen.
     let subtitle: QRLoginNumberMatchSubtitle
+}
+
+/// Outcome of a successful `/exchange` step. The two protocols finish a
+/// sign-in very differently, so the view model needs to tell them apart:
+///   - `authenticated`: the self-hosted flow has fully signed the merchant in
+///     (AP minted + persisted, eligibility checked) — the app can proceed to
+///     the store picker.
+///   - `magicLinkHandedOff`: the wp.com flow has handed a magic link to an
+///     in-app browser. Sign-in completes asynchronously via the existing
+///     `woocommerce://magic-login` redirect handler, NOT here — so the QR-login
+///     surface must not route to the store picker itself (spec §10.1).
+enum QRLoginExchangeOutcome: Equatable {
+    case authenticated
+    case magicLinkHandedOff
 }
 
 /// Protocol-specific façade for the QR-login flow.
@@ -47,7 +59,8 @@ protocol QRLoginStrategy: AnyObject {
     func makePollAttempt() -> QRLoginPollingLoop.PollAttempt
 
     /// Run `/exchange` and the protocol-specific post-success work
-    /// (self-hosted: site fetch + AP save + eligibility + store switch;
-    /// wp.com: open magic-link URL).
-    func exchange(grant: String) async -> Result<Void, QRLoginUserFacingError>
+    /// (self-hosted: site fetch + AP save + eligibility; wp.com: open the
+    /// magic-link URL). The outcome tells the view model whether sign-in is
+    /// complete or has been handed off to an in-app browser.
+    func exchange(grant: String) async -> Result<QRLoginExchangeOutcome, QRLoginUserFacingError>
 }

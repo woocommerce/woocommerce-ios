@@ -1,5 +1,4 @@
 import Foundation
-import Networking
 import WooFoundation
 import Yosemite
 import struct NetworkingCore.ApplicationPassword

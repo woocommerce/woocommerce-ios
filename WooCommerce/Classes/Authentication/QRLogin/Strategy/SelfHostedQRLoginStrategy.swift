@@ -1,14 +1,10 @@
 import Foundation
-import Networking
 import Yosemite
 
 /// Self-hosted (wp-admin) QR-login strategy. Wraps `QRLoginAction.selfHosted*`
 /// dispatches and translates `QRLoginNetworkError` into user-facing variants
-/// via `QRLoginErrorMapper`.
-///
-/// `completeAfterExchange` is intentionally a stub in this layer — Layer 4
-/// will plug in the post-exchange site-setup (fetch SiteModel, save AP,
-/// eligibility, store switch, AP revoke on failure).
+/// via `QRLoginErrorMapper`. After a successful `/exchange` it hands the minted
+/// Application Password to `QRLoginPostExchangeService` for site setup.
 @MainActor
 final class SelfHostedQRLoginStrategy: QRLoginStrategy {
 
@@ -87,10 +83,10 @@ final class SelfHostedQRLoginStrategy: QRLoginStrategy {
         }
     }
 
-    func exchange(grant: String) async -> Result<Void, QRLoginUserFacingError> {
+    func exchange(grant: String) async -> Result<QRLoginExchangeOutcome, QRLoginUserFacingError> {
         // If post-exchange already completed in a prior retry, no work to do.
         if postExchangeCompleted {
-            return .success(())
+            return .success(.authenticated)
         }
 
         let response: QRLoginSelfHostedExchangeResponse
@@ -115,11 +111,13 @@ final class SelfHostedQRLoginStrategy: QRLoginStrategy {
             }
         }
 
-        let result = await postExchangeService.complete(response)
-        if case .success = result {
+        switch await postExchangeService.complete(response) {
+        case .success:
             postExchangeCompleted = true
+            return .success(.authenticated)
+        case .failure(let error):
+            return .failure(error)
         }
-        return result
     }
 }
 

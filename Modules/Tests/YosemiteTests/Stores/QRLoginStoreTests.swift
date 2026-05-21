@@ -4,6 +4,7 @@ import Networking
 @testable import Yosemite
 
 @Suite(.timeLimit(.minutes(1)))
+@MainActor
 struct QRLoginStoreTests {
 
     // MARK: - Self-hosted dispatch

@@ -1,6 +1,7 @@
 import Foundation
+import Networking
 import Testing
-@testable import Networking
+@testable import WooCommerce
 
 /// Walks every cell of the spec §8 error catalog through the mapper. Each test
 /// names the spec row it covers in its `// Given` comment.

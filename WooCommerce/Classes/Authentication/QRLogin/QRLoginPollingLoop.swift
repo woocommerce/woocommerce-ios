@@ -1,5 +1,5 @@
 import Foundation
-import Networking
+import Yosemite
 
 /// Drives the `GET /qr-login-session-status` poll until a terminal outcome is
 /// reached.
@@ -17,19 +17,19 @@ import Networking
 ///     which translates them defensively to `signInTimedOut`.
 ///   - Cancellation: cooperative — observes `Task.checkCancellation()` before
 ///     every poll and sleep.
-public final class QRLoginPollingLoop {
+final class QRLoginPollingLoop {
 
-    public enum Outcome: Equatable {
+    enum Outcome: Equatable {
         case approved(exchangeGrant: String)
         case error(QRLoginUserFacingError)
         case cancelled
     }
 
     /// A single poll attempt. Implementations call the appropriate Remote.
-    public typealias PollAttempt = () async throws -> QRLoginSessionStatus
+    typealias PollAttempt = () async throws -> QRLoginSessionStatus
 
     /// Async sleep — injectable so tests can run the loop instantly.
-    public typealias Sleeper = (TimeInterval) async throws -> Void
+    typealias Sleeper = (TimeInterval) async throws -> Void
 
     private let attempt: PollAttempt
     private let sleeper: Sleeper
@@ -37,7 +37,7 @@ public final class QRLoginPollingLoop {
     private let pollInterval: TimeInterval
     private let transientErrorBudget: Int
 
-    public init(protocol_: QRLoginErrorMapper.Protocol_,
+    init(protocol_: QRLoginErrorMapper.Protocol_,
                 pollInterval: TimeInterval = 2.0,
                 transientErrorBudget: Int = 3,
                 sleeper: @escaping Sleeper = QRLoginPollingLoop.defaultSleeper,
@@ -49,7 +49,7 @@ public final class QRLoginPollingLoop {
         self.attempt = attempt
     }
 
-    public func run() async -> Outcome {
+    func run() async -> Outcome {
         var transientFailures = 0
 
         while true {
@@ -106,7 +106,7 @@ public final class QRLoginPollingLoop {
         }
     }
 
-    public static let defaultSleeper: Sleeper = { interval in
+    static let defaultSleeper: Sleeper = { interval in
         try await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
     }
 }

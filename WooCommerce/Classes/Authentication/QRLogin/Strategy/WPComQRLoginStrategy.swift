@@ -1,5 +1,4 @@
 import Foundation
-import Networking
 import Yosemite
 
 /// Closure that opens a magic-link URL in an in-app browser. Injected by the
@@ -87,10 +86,10 @@ final class WPComQRLoginStrategy: QRLoginStrategy {
         }
     }
 
-    func exchange(grant: String) async -> Result<Void, QRLoginUserFacingError> {
+    func exchange(grant: String) async -> Result<QRLoginExchangeOutcome, QRLoginUserFacingError> {
         if let exchangeResponse {
             await magicLinkOpener(exchangeResponse.magicLinkURL)
-            return .success(())
+            return .success(.magicLinkHandedOff)
         }
         do {
             let response = try await Self.dispatch(stores: stores) { completion in
@@ -101,7 +100,7 @@ final class WPComQRLoginStrategy: QRLoginStrategy {
             }
             exchangeResponse = response
             await magicLinkOpener(response.magicLinkURL)
-            return .success(())
+            return .success(.magicLinkHandedOff)
         } catch let error as QRLoginNetworkError {
             return .failure(QRLoginErrorMapper.userFacingError(forExchange: error, protocol_: protocol_))
         } catch {

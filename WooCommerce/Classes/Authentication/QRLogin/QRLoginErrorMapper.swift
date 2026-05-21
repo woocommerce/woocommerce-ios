@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// Maps `QRLoginNetworkError`s and other Remote-level outcomes into the
 /// user-facing variants from spec §8.
@@ -17,16 +18,16 @@ import Foundation
 ///
 /// The mapper is intentionally pure — no I/O, no logging — so it is exhaustively
 /// testable against the spec tables.
-public enum QRLoginErrorMapper {
+enum QRLoginErrorMapper {
 
-    public enum Protocol_ {
+    enum Protocol_ {
         case selfHosted
         case wpCom
     }
 
     /// Map a network error from /scan into a user-facing variant.
-    public static func userFacingError(forScan error: QRLoginNetworkError,
-                                       protocol_: Protocol_) -> QRLoginUserFacingError {
+    static func userFacingError(forScan error: QRLoginNetworkError,
+                                protocol_: Protocol_) -> QRLoginUserFacingError {
         switch error {
         case .unauthorized:
             return .init(kind: .codeExpired, phase: .scan, primaryAction: .scanAgain)
@@ -62,8 +63,8 @@ public enum QRLoginErrorMapper {
     ///
     /// Note: wp.com's poll 404 is handled inside `WPComQRLoginRemote` (it is
     /// coerced to a `.expired` session status, not surfaced as an error).
-    public static func userFacingError(forPoll error: QRLoginNetworkError,
-                                       protocol_: Protocol_) -> QRLoginUserFacingError? {
+    static func userFacingError(forPoll error: QRLoginNetworkError,
+                                protocol_: Protocol_) -> QRLoginUserFacingError? {
         switch error {
         case .notFound:
             // Self-hosted poll 404 is terminal (the merchant's WC plugin
@@ -87,7 +88,7 @@ public enum QRLoginErrorMapper {
 
     /// Used after the 4-strike threshold has fired — converts a transient
     /// network error into the final user-facing variant.
-    public static func userFacingError(forPollAfterThreshold error: QRLoginNetworkError) -> QRLoginUserFacingError {
+    static func userFacingError(forPollAfterThreshold error: QRLoginNetworkError) -> QRLoginUserFacingError {
         switch error {
         case .network:
             return .init(kind: .network, phase: .poll, primaryAction: .retryFailedPhase)
@@ -97,8 +98,8 @@ public enum QRLoginErrorMapper {
     }
 
     /// Map a terminal poll *state* into a user-facing variant.
-    public static func userFacingError(forTerminalState state: QRLoginSessionStatus.State,
-                                       protocol_: Protocol_) -> QRLoginUserFacingError? {
+    static func userFacingError(forTerminalState state: QRLoginSessionStatus.State,
+                                protocol_: Protocol_) -> QRLoginUserFacingError? {
         switch state {
         case .rejected:
             return .init(kind: .signInDenied, phase: .poll, primaryAction: .scanAgain)
@@ -112,8 +113,8 @@ public enum QRLoginErrorMapper {
     }
 
     /// Map a network error from /exchange into a user-facing variant.
-    public static func userFacingError(forExchange error: QRLoginNetworkError,
-                                       protocol_: Protocol_) -> QRLoginUserFacingError {
+    static func userFacingError(forExchange error: QRLoginNetworkError,
+                                protocol_: Protocol_) -> QRLoginUserFacingError {
         switch error {
         case .unauthorized:
             return .init(kind: .codeExpired, phase: .exchange, primaryAction: .scanAgain)

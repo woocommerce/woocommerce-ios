@@ -5,17 +5,15 @@ import Testing
 @Suite(.timeLimit(.minutes(1)))
 struct ProductsListToolTests {
     @Test
-    func test_products_list_definition_documents_top_products_card_flow() {
+    func test_products_list_definition_documents_unified_entity_surface() {
         // Given
         let tool = ProductsListTool.make()
 
         // Then
-        #expect(tool.definition.description.contains("orderby=popularity"))
-        #expect(tool.definition.description.contains("latest/last single-product"))
-        #expect(tool.definition.description.contains("per_page=1"))
-        #expect(tool.definition.description.contains("pass returned ids to"))
-        #expect(tool.definition.description.contains("Terse merchant phrases"))
-        #expect(tool.definition.description.contains("never say no match was found unless the returned count is zero"))
+        #expect(tool.definition.description.contains("parent_id"))
+        #expect(tool.definition.description.contains("kind"))
+        #expect(tool.definition.description.contains("pass returned ids to `show_cards`"))
+        #expect(tool.definition.description.contains("no match was found"))
     }
 
     @Test
@@ -62,54 +60,10 @@ struct ProductsListToolTests {
     }
 
     @Test
-    func test_products_list_summary_when_rows_present_then_products_array_carries_per_row_widened_fields() async throws {
+    func test_products_list_summary_when_row_is_top_level_product_then_target_is_product_kind() async throws {
         // Given
         let body = """
-        [
-            {
-                "id": 101, "name": "Hoodie", "sku": "HOOD-1", "price": "49.00",
-                "stock_status": "instock",
-                "type": "simple", "status": "publish",
-                "regular_price": "59.00", "sale_price": "49.00", "on_sale": true,
-                "manage_stock": false,
-                "categories": [{"id": 1, "name": "Apparel", "slug": "apparel"}],
-                "images": [{"id": 1, "src": "https://example.com/h.jpg"}]
-            }
-        ]
-        """
-        let client = MockWCRESTClient(response: StubResponses.ok(body))
-        let tool = ProductsListTool.make()
-
-        // When
-        let result = await tool.executor(#"{"per_page": 1}"#, client)
-
-        // Then
-        guard case .success(let success) = result,
-              case .object(let fields) = success.structured,
-              case .array(let products) = fields["products"],
-              case .object(let first) = products.first else {
-            Issue.record("expected first product object")
-            return
-        }
-        #expect(first["on_sale"] == .bool(true))
-        #expect(first["manage_stock"] == .bool(false))
-        guard case .object(let image) = first["image"] else {
-            Issue.record("expected first product image object")
-            return
-        }
-        #expect(image["src"] == .string("https://example.com/h.jpg"))
-        guard case .array(let categories) = first["categories"], case .object(let firstCat) = categories.first else {
-            Issue.record("expected categories array")
-            return
-        }
-        #expect(firstCat["slug"] == .string("apparel"))
-    }
-
-    @Test
-    func test_products_list_summary_when_row_has_image_array_then_first_image_is_projected_as_image_field() async throws {
-        // Given
-        let body = """
-        [{"id": 1, "images": [{"id": 9, "src": "first.jpg"}, {"id": 10, "src": "second.jpg"}]}]
+        [{"id": 42, "name": "Hoodie", "type": "simple"}]
         """
         let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = ProductsListTool.make()
@@ -122,32 +76,39 @@ struct ProductsListToolTests {
               case .object(let fields) = success.structured,
               case .array(let products) = fields["products"],
               case .object(let first) = products.first,
-              case .object(let image) = first["image"] else {
-            Issue.record("expected single image field")
+              case .object(let target) = first["target"] else {
+            Issue.record("expected target object on product row")
             return
         }
-        #expect(image["src"] == .string("first.jpg"))
-        #expect(first["images"] == nil)
+        #expect(target["kind"] == .string("product"))
+        #expect(target["id"] == .int(42))
+        #expect(target["parent_id"] == nil)
     }
 
     @Test
-    func test_products_list_summary_when_can_load_more_provided_then_field_is_emitted_in_wrapper() async throws {
-        // Given - 3 rows with per_page=3 means can_load_more=true (rows.count >= per_page)
+    func test_products_list_summary_when_row_is_variation_then_target_carries_parent_id() async throws {
+        // Given
         let body = """
-        [{"id": 1}, {"id": 2}, {"id": 3}]
+        [{"id": 58, "parent_id": 41, "name": "Red / L"}]
         """
         let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = ProductsListTool.make()
 
         // When
-        let result = await tool.executor(#"{"per_page": 3}"#, client)
+        let result = await tool.executor(#"{"parent_id": 41}"#, client)
 
         // Then
-        guard case .success(let success) = result, case .object(let fields) = success.structured else {
-            Issue.record("expected success")
+        guard case .success(let success) = result,
+              case .object(let fields) = success.structured,
+              case .array(let products) = fields["products"],
+              case .object(let first) = products.first,
+              case .object(let target) = first["target"] else {
+            Issue.record("expected target object on variation row")
             return
         }
-        #expect(fields["can_load_more"] == .bool(true))
+        #expect(target["kind"] == .string("variation"))
+        #expect(target["id"] == .int(58))
+        #expect(target["parent_id"] == .int(41))
     }
 
     @Test
@@ -205,6 +166,39 @@ struct ProductsListToolTests {
     }
 
     @Test
+    func test_list_when_page_2_requested_then_query_carries_page_param() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        _ = await tool.executor(#"{"page": 2}"#, client)
+
+        // Then
+        #expect(await client.calls.first?.query["page"] == "2")
+    }
+
+    @Test
+    func test_list_when_results_empty_then_summary_has_zero_count_and_empty_arrays() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor("{}", client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success")
+            return
+        }
+        #expect(fields["count"] == .int(0))
+        #expect(fields["ids"] == .array([]))
+        #expect(fields["products"] == .array([]))
+        #expect(fields["can_load_more"] == .bool(false))
+    }
+
+    @Test
     func test_products_list_when_response_is_403_then_returns_failed_with_auth_kind() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 403))
@@ -222,8 +216,8 @@ struct ProductsListToolTests {
     }
 
     @Test
-    func test_descriptor_when_inspected_then_supported_query_args_match_android_parity() {
-        // Given
+    func test_descriptor_when_inspected_then_matches_consolidated_list_surface() {
+        // Given Android parity lands with its own consolidation; this pins the iOS-leading surface.
         let tool = ProductsListTool.make()
 
         // Then
@@ -234,7 +228,7 @@ struct ProductsListToolTests {
         }
         let keys = Set(properties.keys)
         #expect(keys == [
-            "search", "status", "category", "sku", "include", "stock_status",
+            "search", "status", "category", "sku", "ids", "parent_id", "stock_status",
             "orderby", "order", "page", "per_page"
         ])
     }
@@ -293,13 +287,13 @@ struct ProductsListToolTests {
     }
 
     @Test
-    func test_execute_when_include_is_empty_array_then_invalidToolCall_with_at_least_one_id_message_is_returned() async {
+    func test_execute_when_ids_is_empty_array_then_invalidToolCall_with_at_least_one_id_message_is_returned() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok("[]"))
         let tool = ProductsListTool.make()
 
         // When
-        let result = await tool.executor(#"{"include": []}"#, client)
+        let result = await tool.executor(#"{"ids": []}"#, client)
 
         // Then
         guard case .failed(let failed) = result else {
@@ -312,14 +306,13 @@ struct ProductsListToolTests {
     }
 
     @Test
-    func test_execute_when_include_has_more_than_100_ids_then_invalidToolCall_is_returned() async {
+    func test_execute_when_ids_combined_with_search_then_invalidToolCall_is_returned() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok("[]"))
         let tool = ProductsListTool.make()
-        let ids = (1...101).map(String.init).joined(separator: ", ")
 
         // When
-        let result = await tool.executor(#"{"include": [\#(ids)]}"#, client)
+        let result = await tool.executor(#"{"ids": [1, 2], "search": "scarf"}"#, client)
 
         // Then
         guard case .failed(let failed) = result else {
@@ -327,71 +320,8 @@ struct ProductsListToolTests {
             return
         }
         #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("ids cannot be combined"))
         #expect(await client.calls.isEmpty)
-    }
-
-    @Test
-    func test_execute_when_include_combined_with_search_then_invalidToolCall_is_returned() async {
-        // Given
-        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
-        let tool = ProductsListTool.make()
-
-        // When
-        let result = await tool.executor(#"{"include": [1, 2], "search": "scarf"}"#, client)
-
-        // Then
-        guard case .failed(let failed) = result else {
-            Issue.record("expected failed")
-            return
-        }
-        #expect(failed.kind == .invalidToolCall)
-        #expect(failed.reason.contains("include cannot be combined"))
-        #expect(await client.calls.isEmpty)
-    }
-
-    @Test
-    func test_execute_when_search_combined_with_orderby_then_invalidToolCall_is_returned() async {
-        // Given
-        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
-        let tool = ProductsListTool.make()
-
-        // When
-        let result = await tool.executor(#"{"search": "tee", "orderby": "popularity"}"#, client)
-
-        // Then
-        guard case .failed(let failed) = result else {
-            Issue.record("expected failed")
-            return
-        }
-        #expect(failed.kind == .invalidToolCall)
-        #expect(failed.reason.contains("orderby and order cannot be combined"))
-        #expect(await client.calls.isEmpty)
-    }
-
-    @Test
-    func test_execute_when_stock_status_is_outofstock_then_query_string_carries_stock_status_outofstock() async {
-        // Given
-        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
-        let tool = ProductsListTool.make()
-
-        // When
-        _ = await tool.executor(#"{"stock_status": "outofstock"}"#, client)
-
-        // Then
-        #expect(await client.calls.first?.query["stock_status"] == "outofstock")
-    }
-
-    @Test
-    func test_execute_when_orderby_is_popularity_then_query_string_carries_orderby_popularity() async {
-        // Given
-        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
-        let tool = ProductsListTool.make()
-
-        // When
-        _ = await tool.executor(#"{"orderby": "popularity"}"#, client)
-
-        // Then
-        #expect(await client.calls.first?.query["orderby"] == "popularity")
     }
 
     @Test
@@ -435,36 +365,86 @@ struct ProductsListToolTests {
     }
 
     @Test
-    func test_validateCombinations_when_valid_status_then_passes() async {
+    func test_list_when_parent_id_set_then_routes_to_variations_endpoint() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok("[]"))
         let tool = ProductsListTool.make()
 
         // When
-        let result = await tool.executor(#"{"status": "draft"}"#, client)
+        _ = await tool.executor(#"{"parent_id": 42}"#, client)
 
         // Then
-        guard case .success = result else {
-            Issue.record("expected success")
-            return
-        }
-        #expect(await client.calls.first?.query["status"] == "draft")
+        #expect(await client.calls.first?.path == "wc/v3/products/42/variations")
     }
 
     @Test
-    func test_validateCombinations_when_valid_stock_status_then_passes() async {
+    func test_list_when_ids_set_then_uses_include_filter() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok("[]"))
         let tool = ProductsListTool.make()
 
         // When
-        let result = await tool.executor(#"{"stock_status": "onbackorder"}"#, client)
+        _ = await tool.executor(#"{"ids": [10, 11, 12]}"#, client)
 
         // Then
-        guard case .success = result else {
-            Issue.record("expected success")
+        #expect(await client.calls.first?.query["include"] == "10,11,12")
+        #expect(await client.calls.first?.query["orderby"] == "include")
+    }
+
+    @Test
+    func test_list_response_rows_carry_kind_discriminator() async throws {
+        // Given
+        let body = """
+        [{"id": 101, "name": "Hoodie", "type": "simple"}]
+        """
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor("{}", client)
+
+        // Then
+        guard case .success(let success) = result,
+              case .object(let fields) = success.structured,
+              case .array(let products) = fields["products"],
+              case .object(let first) = products.first else {
+            Issue.record("expected first product object")
             return
         }
-        #expect(await client.calls.first?.query["stock_status"] == "onbackorder")
+        #expect(first["kind"] == .string("product"))
+    }
+
+    @Test
+    func test_list_response_variations_include_parent_id_and_kind() async throws {
+        // Given
+        let body = """
+        [
+            {"id": 201, "parent_id": 99, "sku": "RED-S", "price": "19.00", "stock_status": "instock"},
+            {"id": 202, "parent_id": 99, "sku": "RED-M", "price": "19.00", "stock_status": "outofstock"},
+            {"id": 203, "parent_id": 99, "sku": "BLUE-L", "price": "21.00", "stock_status": "instock"}
+        ]
+        """
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"parent_id": 99}"#, client)
+
+        // Then
+        guard case .success(let success) = result,
+              case .object(let fields) = success.structured,
+              case .array(let rows) = fields["products"] else {
+            Issue.record("expected variation rows")
+            return
+        }
+        #expect(rows.count == 3)
+        for row in rows {
+            guard case .object(let fields) = row else {
+                Issue.record("expected variation row object")
+                return
+            }
+            #expect(fields["kind"] == .string("variation"))
+            #expect(fields["parent_id"] == .int(99))
+        }
     }
 }

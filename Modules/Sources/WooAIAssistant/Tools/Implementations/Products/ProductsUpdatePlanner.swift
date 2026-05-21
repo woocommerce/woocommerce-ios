@@ -84,9 +84,9 @@ struct ProductsUpdatePlanner {
         return EntryPlan(writes: [write])
     }
 
-    /// Variable parents accept name/status/sku on the parent row itself; price and stock must
-    /// target individual variations (fanout is deferred). An entry can produce a parent write
-    /// for the parent-level fields AND a refusal note for the price/stock fields at once.
+    /// Variable parents accept name/status/sku on the parent row itself; price and stock live on
+    /// the variations, so those fields are refused here. An entry can produce a parent write for
+    /// the parent-level fields AND a refusal note for the price/stock fields at once.
     private func planVariableParent(entry: ProductsUpdateTool.Entry) -> EntryPlan {
         var patch: [String: AnyCodableJSON] = [:]
         if let value = entry.name { patch["name"] = .string(value) }

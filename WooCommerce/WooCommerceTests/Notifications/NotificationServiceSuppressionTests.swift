@@ -109,6 +109,12 @@ final class NotificationServiceSuppressionTests: XCTestCase {
         XCTAssertTrue(PushNotificationSharedConstants.isKnownNotificationType(in: userInfo))
     }
 
+    func test_isKnownNotificationType_returns_true_for_store_stock() {
+        let userInfo: [AnyHashable: Any] = ["type": "store_stock", "blog": Int64(42)]
+
+        XCTAssertTrue(PushNotificationSharedConstants.isKnownNotificationType(in: userInfo))
+    }
+
     func test_isKnownNotificationType_returns_true_for_badge_reset() {
         let userInfo: [AnyHashable: Any] = ["type": "badge-reset"]
 

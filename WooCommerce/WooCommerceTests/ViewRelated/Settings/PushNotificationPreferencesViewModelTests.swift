@@ -936,6 +936,83 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.displayed.storeStock?.lowStock == true)
     }
 
+    // MARK: - storeStockDetailText
+
+    @Test func test_storeStockDetailText_when_all_three_subtoggles_on_returns_all_stock_alerts() async {
+        // Given
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeStock: .init(enabled: true,
+                                                                                    lowStock: true,
+                                                                                    outOfStock: true,
+                                                                                    onBackorder: true))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        await sut.load()
+
+        // Then
+        #expect(sut.storeStockDetailText == "All stock alerts")
+    }
+
+    @Test func test_storeStockDetailText_when_no_subtoggle_on_returns_no_alerts() async {
+        // Given
+        let sut = makeSUT(stores: makeStores())
+
+        // Then (no load — sub-toggles default to false)
+        #expect(sut.storeStockDetailText == "No alerts")
+    }
+
+    @Test func test_storeStockDetailText_when_loaded_with_master_on_and_all_subtoggles_off_returns_no_alerts() async {
+        // Given a loaded VM with master on but all three sub-toggles off — the
+        // realistic "No alerts" branch that the user sees on the list row.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeStock: .init(enabled: true,
+                                                                                    lowStock: false,
+                                                                                    outOfStock: false,
+                                                                                    onBackorder: false))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        await sut.load()
+
+        // Then
+        #expect(sut.storeStockDetailText == "No alerts")
+    }
+
+    @Test func test_storeStockDetailText_when_subset_on_returns_joined_localized_names() async {
+        // Given
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeStock: .init(enabled: true,
+                                                                                    lowStock: true,
+                                                                                    outOfStock: true,
+                                                                                    onBackorder: false))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        await sut.load()
+
+        // Then — joined via `ListFormatter`. The exact joiner is locale-dependent,
+        // so assert containment of both names rather than the joiner glyph.
+        let detail = sut.storeStockDetailText
+        #expect(detail.contains("Low stock"))
+        #expect(detail.contains("Out of stock"))
+        #expect(!detail.contains("On backorder"))
+        #expect(detail != "All stock alerts")
+        #expect(detail != "No alerts")
+    }
+
     @Test func test_save_dispatches_only_changed_sections() async {
         // Given a loaded VM with one section edited.
         let stores = makeStores()

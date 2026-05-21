@@ -69,7 +69,7 @@ struct PushNotificationPreferencesView: View {
                     accessibilityHint: Localization.newReviewsAccessibilityHint,
                     action: onNewReviewTapped)
                 row(title: Localization.stockTitle,
-                    detail: viewModel.isStoreStockEnabled ? Localization.stockDetail : Localization.off,
+                    detail: viewModel.isStoreStockEnabled ? viewModel.storeStockDetailText : Localization.off,
                     accessibilityHint: Localization.stockAccessibilityHint,
                     action: onNewStockTapped)
             }
@@ -163,11 +163,6 @@ extension PushNotificationPreferencesView {
             "pushNotificationPreferencesView.stock.accessibilityHint",
             value: "Customize stock notifications",
             comment: "VoiceOver hint announced when focused on the Stock row, describing that it opens a detail screen."
-        )
-        static let stockDetail = NSLocalizedString(
-            "pushNotificationPreferencesView.stock.detail",
-            value: "All stock alerts",
-            comment: "Detail text for the row that toggles stock push notifications."
         )
         static let off = NSLocalizedString(
             "pushNotificationPreferencesView.off",

@@ -17,26 +17,20 @@ struct PushNotificationPreferencesView: View {
 
     var body: some View {
         Group {
-            switch viewModel.loadState {
-            case .loading, .loaded:
-                preferencesList
-                    .disabled(viewModel.loadState == .loading)
-            case .error:
-                EmptyState(title: Localization.errorTitle,
-                           description: Localization.errorMessage,
-                           image: .errorImage,
-                           buttonTitle: Localization.retry,
-                           buttonAction: {
-                    Task { await viewModel.load() }
-                })
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            switch viewModel.notificationsEnabled {
+            case .none:
+                ProgressView().progressViewStyle(.circular)
+            case .some(false):
+                notificationsDisabledView
+            case .some(true):
+                preferencesContent
             }
         }
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if viewModel.loadState == .loading {
+            if viewModel.notificationsEnabled == true && viewModel.loadState == .loading {
                 ToolbarItem(placement: .topBarTrailing) {
                     ProgressView()
                         .progressViewStyle(.circular)
@@ -44,6 +38,7 @@ struct PushNotificationPreferencesView: View {
             }
         }
         .task {
+            await viewModel.checkNotificationPermission()
             if viewModel.loadState == .loading {
                 await viewModel.load()
             }
@@ -51,8 +46,66 @@ struct PushNotificationPreferencesView: View {
         .notice($viewModel.errorNotice)
     }
 
+    @ViewBuilder
+    private var preferencesContent: some View {
+        switch viewModel.loadState {
+        case .loading, .loaded:
+            preferencesList
+        case .error:
+            EmptyState(title: Localization.errorTitle,
+                       description: Localization.errorMessage,
+                       image: .errorImage,
+                       buttonTitle: Localization.retry,
+                       buttonAction: {
+                Task { await viewModel.load() }
+            })
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    private var notificationsDisabledView: some View {
+        VStack(spacing: Layout.emptyStateContentSpacing) {
+            Spacer()
+
+            Image(uiImage: .bellIcon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.emptyStateImageWidth)
+
+            Text(Localization.notificationsDisabled)
+
+            Button(Localization.enableNotificationsCTA) {
+                Task { await openSettingsApp() }
+            }
+            .buttonStyle(PrimaryButtonStyle())
+
+            Spacer()
+        }
+        .scrollVerticallyIfNeeded()
+        .padding(.horizontal)
+    }
+
+    private func openSettingsApp() async {
+        guard let url = URL(string: UIApplication.openNotificationSettingsURLString) else {
+            return
+        }
+        await UIApplication.shared.open(url)
+    }
+
     private var preferencesList: some View {
         List {
+            Section {
+                HStack {
+                    Text(Localization.notificationsEnabled)
+                    Spacer()
+                    Button(Localization.settingsAppCTA) {
+                        Task { await openSettingsApp() }
+                    }
+                }
+            } footer: {
+                Text(Localization.notificationsFooter)
+            }
+
             Section {
                 row(title: Localization.newOrdersTitle,
                     detail: viewModel.isStoreOrderEnabled ? viewModel.storeOrderDetailText : Localization.off,
@@ -63,6 +116,7 @@ struct PushNotificationPreferencesView: View {
                 row(title: Localization.stockTitle,
                     detail: viewModel.isStoreStockEnabled ? Localization.stockDetail : Localization.off)
             }
+            .disabled(viewModel.loadState == .loading)
         }
         .listStyle(.insetGrouped)
     }
@@ -114,6 +168,8 @@ private extension PushNotificationPreferencesView {
     enum Layout {
         static let contentSpacing: CGFloat = 8
         static let titleDetailSpacing: CGFloat = 4
+        static let emptyStateContentSpacing: CGFloat = 16
+        static let emptyStateImageWidth: CGFloat = 120
     }
 }
 
@@ -173,6 +229,31 @@ extension PushNotificationPreferencesView {
             "pushNotificationPreferencesView.retry",
             value: "Retry",
             comment: "Button on the error state to retry loading push notification preferences."
+        )
+        static let notificationsEnabled = NSLocalizedString(
+            "pushNotificationPreferencesView.notificationsEnabled",
+            value: "Notifications enabled",
+            comment: "Label indicating notifications are enabled, shown at the top of the push notification preferences screen."
+        )
+        static let settingsAppCTA = NSLocalizedString(
+            "pushNotificationPreferencesView.settingsAppCTA",
+            value: "Change",
+            comment: "Button on the push notification preferences screen that opens the app's notification settings in the iOS Settings app."
+        )
+        static let notificationsFooter = NSLocalizedString(
+            "pushNotificationPreferencesView.notificationsFooter",
+            value: "Including reminders and remote push notifications.",
+            comment: "Footer of the notifications-enabled section on the push notification preferences screen."
+        )
+        static let notificationsDisabled = NSLocalizedString(
+            "pushNotificationPreferencesView.notificationsDisabled",
+            value: "Notifications are disabled for Woo",
+            comment: "Empty state title shown on the push notification preferences screen when iOS notifications are disabled for Woo."
+        )
+        static let enableNotificationsCTA = NSLocalizedString(
+            "pushNotificationPreferencesView.enableNotificationsCTA",
+            value: "Enable notifications",
+            comment: "Primary button on the push notification preferences empty state that opens the iOS Settings app to enable notifications."
         )
     }
 }

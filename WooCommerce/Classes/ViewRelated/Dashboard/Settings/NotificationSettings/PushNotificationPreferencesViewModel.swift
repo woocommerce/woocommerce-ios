@@ -1,5 +1,7 @@
+import Combine
 import Foundation
 import Observation
+import UIKit
 import Yosemite
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
@@ -19,6 +21,9 @@ final class PushNotificationPreferencesViewModel {
     }
 
     private(set) var loadState: LoadState = .loading
+
+    /// `nil` while the system-level permission status is being read.
+    private(set) var notificationsEnabled: Bool?
 
     private(set) var displayed = PushNotificationPreferences()
     private(set) var lastSaved = PushNotificationPreferences()
@@ -60,14 +65,36 @@ final class PushNotificationPreferencesViewModel {
     private let stores: StoresManager
     private let currencyFormatter: CurrencyFormatter
     private let currencySettings: CurrencySettings
+    private let notificationCenter: UserNotificationsCenterAdapter
+
+    private var appStateSubscription: AnyCancellable?
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current()) {
         self.siteID = siteID
         self.stores = stores
         self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.notificationCenter = notificationCenter
+        observeAppState()
+    }
+
+    func checkNotificationPermission() async {
+        let isEnabled = await withCheckedContinuation { continuation in
+            notificationCenter.loadAuthorizationStatus(queue: .main) { status in
+                switch status {
+                case .authorized:
+                    continuation.resume(returning: true)
+                case .denied, .notDetermined, .provisional, .ephemeral:
+                    continuation.resume(returning: false)
+                @unknown default:
+                    continuation.resume(returning: false)
+                }
+            }
+        }
+        notificationsEnabled = isEnabled
     }
 
     func load() async {
@@ -163,6 +190,17 @@ final class PushNotificationPreferencesViewModel {
 }
 
 private extension PushNotificationPreferencesViewModel {
+    /// Re-checks the system permission whenever the app returns to the
+    /// foreground so toggles flipped in iOS Settings are reflected immediately.
+    func observeAppState() {
+        appStateSubscription = NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                Task { @MainActor in
+                    await self?.checkNotificationPermission()
+                }
+            }
+    }
+
     /// Populates only the sections that differ between `baseline` and `target`.
     /// Whole-section comparison: any change inside a section emits the section
     /// as a complete object, matching the server's section-level merge.

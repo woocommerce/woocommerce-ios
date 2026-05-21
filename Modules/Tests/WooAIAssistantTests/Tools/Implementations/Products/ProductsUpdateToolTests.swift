@@ -1177,6 +1177,148 @@ struct ProductsUpdateToolTests {
         #expect(chunkedGets.isEmpty)
     }
 
+    @Test
+    func test_update_when_per_id_percent_discount_then_uses_each_entitys_own_regular_price() async throws {
+        // Given
+        let probeA = #"{"id": 10, "type": "simple", "regular_price": "50.00"}"#
+        let probeB = #"{"id": 11, "type": "simple", "regular_price": "20.00"}"#
+        let batchResponse = #"{"update": [{"id": 10}, {"id": 11}]}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probeA),\(probeB)]"),
+            "POST wc/v3/products/batch": StubResponses.ok(batchResponse)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"""
+            {"updates": [
+              {"target": {"kind": "product", "id": 10}, "percent_discount": 20},
+              {"target": {"kind": "product", "id": 11}, "percent_discount": 20}
+            ]}
+            """#,
+            client
+        )
+
+        // Then
+        guard case .success = result else {
+            Issue.record("expected success, got \(result)")
+            return
+        }
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.count == 1)
+        let body = try requireBatchBody(posts.first?.body)
+        let entriesByID = batchEntriesByID(body)
+        #expect(entriesByID[10]?["sale_price"] as? String == "40")
+        #expect(entriesByID[11]?["sale_price"] as? String == "16")
+    }
+
+    @Test
+    func test_update_when_percent_discount_and_regular_price_empty_then_appends_failed_reason() async throws {
+        // Given
+        let probe = #"{"id": 10, "type": "simple", "regular_price": ""}"#
+        let client = MockWCRESTClient(response: StubResponses.ok("[\(probe)]"))
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 10}, "percent_discount": 10}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
+            Issue.record("expected failed entry")
+            return
+        }
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("regular_price"))
+        } else {
+            Issue.record("expected reason string")
+        }
+    }
+
+    @Test
+    func test_update_when_percent_discount_and_regular_price_is_zero_then_appends_failed_reason() async throws {
+        // Given
+        let probe = #"{"id": 10, "type": "simple", "regular_price": "0.00"}"#
+        let client = MockWCRESTClient(response: StubResponses.ok("[\(probe)]"))
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 10}, "percent_discount": 10}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
+            Issue.record("expected failed entry")
+            return
+        }
+        #expect(entry["id"] == .int(10))
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("regular_price"))
+        } else {
+            Issue.record("expected reason string")
+        }
+    }
+
+    @Test
+    func test_update_omits_percent_discount_from_outgoing_batch_body() async throws {
+        // Given
+        let probe = #"{"id": 10, "type": "simple", "regular_price": "100.00"}"#
+        let batchResponse = #"{"update": [{"id": 10}]}"#
+        let client = MockWCRESTClient(responses: [StubResponses.ok("[\(probe)]"), StubResponses.ok(batchResponse)])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        _ = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 10}, "percent_discount": 25}]}"#,
+            client
+        )
+
+        // Then
+        let post = try #require(await client.calls.last)
+        let body = try requireBatchBody(post.body)
+        let entriesByID = batchEntriesByID(body)
+        #expect(entriesByID[10]?["percent_discount"] == nil)
+        #expect(entriesByID[10]?["sale_price"] as? String == "75")
+    }
+
+    @Test
+    func test_update_when_variation_target_with_percent_discount_then_fetches_variation_and_routes_to_variations_batch() async throws {
+        // Given
+        let variationProbe = #"{"id": 88, "regular_price": "30.00"}"#
+        let batchResponse = #"{"update": [{"id": 88, "sale_price": "27.00"}]}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products/12/variations/88": StubResponses.ok(variationProbe),
+            "POST wc/v3/products/12/variations/batch": StubResponses.ok(batchResponse)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "variation", "id": 88, "parent_id": 12}, "percent_discount": 10}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let calls = await client.calls
+        let topLevelGets = calls.filter { $0.method == "GET" && $0.path == "wc/v3/products" }
+        // Variation targets must skip the chunked discovery GET on /products entirely.
+        #expect(topLevelGets.isEmpty)
+        let posts = calls.filter { $0.method == "POST" }
+        #expect(posts.first?.path == "wc/v3/products/12/variations/batch")
+        let body = try requireBatchBody(posts.first?.body)
+        let entriesByID = batchEntriesByID(body)
+        #expect(entriesByID[88]?["sale_price"] as? String == "27")
+        #expect(updatedVariationIDs(receipt) == [88])
+    }
+
     // MARK: Helpers
 
     private func requireBatchBody(_ body: Data?) throws -> [[String: Any]] {

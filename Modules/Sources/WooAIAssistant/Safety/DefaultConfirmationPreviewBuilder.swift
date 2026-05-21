@@ -142,7 +142,7 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         guard breakdown.totalEntries > 0 else {
             return ConfirmationPreview(summary: .localized(Strings.productsUpdateFallback))
         }
-        let summary = Self.productsUpdateSummary(breakdown: breakdown)
+        let summary = Self.productsUpdateSummary(breakdown: breakdown, snapshot: snapshot)
         var combinedKeys: [String] = []
         var seenKeys: Set<String> = []
         for entry in updates {
@@ -165,8 +165,9 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
     private struct ProductsUpdateBreakdown {
         var simpleProductCount: Int = 0
         var variationCount: Int = 0
+        var fanoutParentIDs: [Int] = []
         var targetIDs: [Int] = []
-        var totalEntries: Int { simpleProductCount + variationCount }
+        var totalEntries: Int { simpleProductCount + variationCount + fanoutParentIDs.count }
     }
 
     private static func classify(updates: [ProductsUpdateEntry]) -> ProductsUpdateBreakdown {
@@ -176,6 +177,8 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             breakdown.targetIDs.append(id)
             if target.kind == "variation" {
                 breakdown.variationCount += 1
+            } else if target.scope == "all_variations" {
+                breakdown.fanoutParentIDs.append(id)
             } else {
                 breakdown.simpleProductCount += 1
             }
@@ -183,7 +186,49 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         return breakdown
     }
 
-    private static func productsUpdateSummary(breakdown: ProductsUpdateBreakdown) -> ConfirmationPreviewText {
+    private static func productsUpdateSummary(breakdown: ProductsUpdateBreakdown,
+                                              snapshot: ConfirmationSnapshot?) -> ConfirmationPreviewText {
+        let fanoutCount = breakdown.fanoutParentIDs.count
+        let nonFanoutCount = breakdown.simpleProductCount + breakdown.variationCount
+        if fanoutCount == 0 {
+            return nonFanoutSummary(breakdown: breakdown)
+        }
+        if nonFanoutCount == 0 && fanoutCount == 1 {
+            let parentID = breakdown.fanoutParentIDs[0]
+            let parentLabel = parentDisplayLabel(parentID: parentID, snapshot: snapshot)
+            if let variationCount = snapshot?.parentVariationCounts[parentID] {
+                return .localized(Strings.productsUpdateFanoutSingleParentNamed,
+                                  args: [.raw(String(variationCount)), .raw(parentLabel)])
+            }
+            return .localized(Strings.productsUpdateFanoutSingleParentUnknown,
+                              args: [.raw(parentLabel)])
+        }
+        let totalVariations = breakdown.fanoutParentIDs.reduce(0) { partial, parentID in
+            partial + (snapshot?.parentVariationCounts[parentID] ?? 0)
+        }
+        let countsKnown = breakdown.fanoutParentIDs.allSatisfy { snapshot?.parentVariationCounts[$0] != nil }
+        if nonFanoutCount == 0 {
+            if countsKnown {
+                return .localized(Strings.productsUpdateFanoutMultiParentCount,
+                                  args: [.raw(String(totalVariations)), .raw(String(fanoutCount))])
+            }
+            return .localized(Strings.productsUpdateFanoutMultiParentUnknown,
+                              args: [.raw(String(fanoutCount))])
+        }
+        // Mixed: render fanout subject first, then the leftover entries as a tail clause.
+        let leftover = nonFanoutCount
+        if countsKnown {
+            return .localized(Strings.productsUpdateMixedFanoutCount,
+                              args: [.raw(String(totalVariations)),
+                                     .raw(String(fanoutCount)),
+                                     .raw(String(leftover))])
+        }
+        return .localized(Strings.productsUpdateMixedFanoutUnknown,
+                          args: [.raw(String(fanoutCount)),
+                                 .raw(String(leftover))])
+    }
+
+    private static func nonFanoutSummary(breakdown: ProductsUpdateBreakdown) -> ConfirmationPreviewText {
         let products = breakdown.simpleProductCount
         let variations = breakdown.variationCount
         if variations == 0 {
@@ -215,6 +260,13 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
                           args: [productClause, variationClause])
     }
 
+    private static func parentDisplayLabel(parentID: Int, snapshot: ConfirmationSnapshot?) -> String {
+        if let entry = snapshot?.bulkEntries.first(where: { $0.id == parentID }), let name = entry.displayName {
+            return name
+        }
+        return "#\(parentID)"
+    }
+
     private struct ProductsUpdateArgs: Decodable {
         let updates: [ProductsUpdateEntry]?
     }
@@ -238,17 +290,48 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
                                      snapshot: ConfirmationSnapshot?,
                                      isBulk: Bool) -> ConfirmationPreviewField {
         let label = productFieldLabel(for: key)
+        // Pairs each entry's target id with its rendered value when the entry sets `key`. Used by the
+        // per-id breakdown so the card can show #3859 -> 10, #3860 -> 5, etc.
+        let valuesByID = perEntryValueMap(for: key, across: updates)
         let valuesWithEntries = updates.compactMap { entry -> ConfirmationPreviewText? in
             productFieldValue(for: key, entry: entry)
         }
+        // Partial coverage: only entries that set the key contribute, but the card still shows the per-id
+        // breakdown so the merchant sees which entries are affected rather than an opaque "varies".
+        if valuesWithEntries.count < updates.count {
+            let perEntry = valuesByID.isEmpty ? nil : valuesByID
+            return ConfirmationPreviewField(name: key,
+                                            label: label,
+                                            value: .localized(Strings.variesPerItem),
+                                            perEntryValues: perEntry)
+        }
         // Distinct on the flattened text so equivalent renderings (e.g. both "Cleared") collapse.
         let distinct = Set(valuesWithEntries.map { $0.flattened() })
-        if let only = valuesWithEntries.first, distinct.count == 1, valuesWithEntries.count == updates.count {
+        if let only = valuesWithEntries.first, distinct.count == 1 {
             let prior = isBulk ? nil : productPriorValue(for: key, in: snapshot, newValue: only)
             return ConfirmationPreviewField(name: key, label: label, value: only, priorValue: prior)
         }
-        // Divergent or partial coverage: a single placeholder is the most the base card can render.
-        return ConfirmationPreviewField(name: key, label: label, value: .localized(Strings.fieldValueUpdated))
+        if distinct.isEmpty {
+            return ConfirmationPreviewField(name: key, label: label, value: .localized(Strings.fieldValueUpdated))
+        }
+        let perEntry = valuesByID.isEmpty ? nil : valuesByID
+        return ConfirmationPreviewField(name: key,
+                                        label: label,
+                                        value: .localized(Strings.variesPerItem),
+                                        perEntryValues: perEntry)
+    }
+
+    /// Build a `[id: rendered]` map keyed by each entry's target id for the rows that set `key`.
+    /// Entries without a target id are skipped so a malformed payload can't produce a misleading row.
+    private static func perEntryValueMap(for key: String,
+                                         across updates: [ProductsUpdateEntry]) -> [Int: ConfirmationPreviewText] {
+        var result: [Int: ConfirmationPreviewText] = [:]
+        for entry in updates {
+            guard let id = entry.target?.id,
+                  let value = productFieldValue(for: key, entry: entry) else { continue }
+            result[id] = value
+        }
+        return result
     }
 
     private static func productPriorValue(for key: String,
@@ -409,6 +492,30 @@ private enum Strings {
         "ai.assistant.preview.products_update.clause.variation.plural",
         defaultValue: "%@ variations"
     )
+    static let productsUpdateFanoutSingleParentNamed = LocalizedStringResource(
+        "ai.assistant.preview.products_update.summary.fanout.single_parent_named",
+        defaultValue: "Apply changes to all %1$@ variations of %2$@"
+    )
+    static let productsUpdateFanoutSingleParentUnknown = LocalizedStringResource(
+        "ai.assistant.preview.products_update.summary.fanout.single_parent_unknown",
+        defaultValue: "Apply changes to all variations of %@"
+    )
+    static let productsUpdateFanoutMultiParentCount = LocalizedStringResource(
+        "ai.assistant.preview.products_update.summary.fanout.multi_parent_count",
+        defaultValue: "Apply changes to %1$@ variations across %2$@ parents"
+    )
+    static let productsUpdateFanoutMultiParentUnknown = LocalizedStringResource(
+        "ai.assistant.preview.products_update.summary.fanout.multi_parent_unknown",
+        defaultValue: "Apply changes to all variations across %@ parents"
+    )
+    static let productsUpdateMixedFanoutCount = LocalizedStringResource(
+        "ai.assistant.preview.products_update.summary.mixed_fanout.count",
+        defaultValue: "Apply changes to %1$@ variations across %2$@ parents, plus %3$@ other entries"
+    )
+    static let productsUpdateMixedFanoutUnknown = LocalizedStringResource(
+        "ai.assistant.preview.products_update.summary.mixed_fanout.unknown",
+        defaultValue: "Apply changes across %1$@ parents, plus %2$@ other entries"
+    )
 
     static let fieldStatus = LocalizedStringResource(
         "ai.assistant.preview.field.status",
@@ -457,6 +564,10 @@ private enum Strings {
     static let fieldValueCleared = LocalizedStringResource(
         "ai.assistant.preview.field.value.cleared_marker",
         defaultValue: "Cleared"
+    )
+    static let variesPerItem = LocalizedStringResource(
+        "ai.assistant.preview.products_update.field.varies",
+        defaultValue: "varies per item"
     )
     static let percentDiscountFormat = LocalizedStringResource(
         "ai.assistant.preview.field.percent_discount.value",

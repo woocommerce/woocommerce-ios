@@ -70,26 +70,28 @@ struct ConfirmationCard: View {
     }
 
     private var bulkEntriesList: some View {
-        let visible = preview.bulkEntries.prefix(Layout.bulkVisibleLimit)
-        let overflow = preview.bulkEntries.count - visible.count
-        return VStack(alignment: .leading, spacing: AssistantSpacing.xSmall) {
-            ForEach(Array(visible.enumerated()), id: \.offset) { _, entry in
-                // verbatim avoids locale-grouping the entity id (#1 234 vs #1234).
-                Text(verbatim: entry.displayName.map { "#\(entry.id)  \($0)" } ?? "#\(entry.id)")
-                    .font(.assistantBody)
-                    .foregroundStyle(Color.primary)
-                    .fixedSize(horizontal: false, vertical: true)
+        ScrollView(.vertical, showsIndicators: true) {
+            VStack(alignment: .leading, spacing: AssistantSpacing.xSmall) {
+                ForEach(Array(preview.bulkEntries.enumerated()), id: \.offset) { _, entry in
+                    bulkEntryRow(entry, indent: 0)
+                    ForEach(Array(entry.subEntries.enumerated()), id: \.offset) { _, sub in
+                        bulkEntryRow(sub, indent: Layout.subEntryIndent)
+                    }
+                }
             }
-            if overflow > 0 {
-                Text(String(format: NSLocalizedString(
-                    "assistantChat.confirmation.bulkEntries.more",
-                    value: "+%d more",
-                    comment: "Overflow row in the bulk confirmation entity list. %d is the count of additional entities not shown."
-                ), overflow))
-                    .font(.assistantBody)
-                    .foregroundStyle(Color.assistantMuted)
-            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .frame(maxHeight: Layout.bulkListMaxHeight)
+    }
+
+    @ViewBuilder
+    private func bulkEntryRow(_ entry: ConfirmationBulkEntry, indent: CGFloat) -> some View {
+        // verbatim avoids locale-grouping the entity id (#1 234 vs #1234).
+        Text(verbatim: entry.displayName.map { "#\(entry.id)  \($0)" } ?? "#\(entry.id)")
+            .font(.assistantBody)
+            .foregroundStyle(indent > 0 ? Color.assistantMuted : Color.primary)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.leading, indent)
     }
 
     @ViewBuilder
@@ -97,7 +99,9 @@ struct ConfirmationCard: View {
         if !preview.fields.isEmpty {
             VStack(alignment: .leading, spacing: AssistantSpacing.xSmall) {
                 ForEach(Array(preview.fields.enumerated()), id: \.offset) { _, field in
-                    DiffFieldRow(field: field, isBulk: preview.isBulk)
+                    DiffFieldRow(field: field,
+                                 isBulk: preview.isBulk,
+                                 bulkEntries: preview.bulkEntries)
                 }
             }
         } else {
@@ -170,7 +174,9 @@ struct ConfirmationCard: View {
         static let shadowOpacity: Double = 0.06
         static let shadowRadius: CGFloat = 4
         static let shadowYOffset: CGFloat = 1
-        static let bulkVisibleLimit: Int = 5
+        /// Cap so a large fanout list stays scrollable instead of pushing the action buttons offscreen.
+        static let bulkListMaxHeight: CGFloat = 320
+        static let subEntryIndent: CGFloat = 16
     }
 
     private enum Localization {
@@ -211,11 +217,23 @@ private struct DiffFieldRow: View {
 
     let field: ConfirmationPreviewField
     let isBulk: Bool
+    let bulkEntries: [ConfirmationBulkEntry]
 
     var body: some View {
-        composedLine
-            .tint(Color.assistantBubbleAssistantText)
-            .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: AssistantSpacing.xSmall) {
+            composedLine
+                .tint(Color.assistantBubbleAssistantText)
+                .fixedSize(horizontal: false, vertical: true)
+            if let breakdown = orderedPerEntryRows() {
+                ForEach(Array(breakdown.enumerated()), id: \.offset) { _, row in
+                    Text(row)
+                        .font(.assistantBody)
+                        .foregroundStyle(Color.assistantMuted)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.leading, Layout.breakdownIndent)
+                }
+            }
+        }
     }
 
     private var composedLine: Text {
@@ -240,6 +258,28 @@ private struct DiffFieldRow: View {
             .foregroundColor(Color.assistantBubbleAssistantText)
 
         return labelPart + beforePart + Text(" ") + afterPart
+    }
+
+    /// Preserve the merchant's bulkEntries order so the breakdown matches the entry list shown above.
+    /// Falls back to ascending id order for ids missing from bulkEntries.
+    private func orderedPerEntryRows() -> [String]? {
+        guard let perEntry = field.perEntryValues, !perEntry.isEmpty else { return nil }
+        var displayNames: [Int: String] = [:]
+        for entry in bulkEntries {
+            if let name = entry.displayName { displayNames[entry.id] = name }
+        }
+        let preferredIDs = bulkEntries.map(\.id).filter { perEntry[$0] != nil }
+        let leftoverIDs = perEntry.keys.filter { !preferredIDs.contains($0) }.sorted()
+        let orderedIDs = preferredIDs + leftoverIDs
+        return orderedIDs.compactMap { id in
+            guard let value = perEntry[id] else { return nil }
+            let prefix = displayNames[id] ?? "#\(id)"
+            return "\(prefix) -> \(value.flattened())"
+        }
+    }
+
+    private enum Layout {
+        static let breakdownIndent: CGFloat = 12
     }
 }
 

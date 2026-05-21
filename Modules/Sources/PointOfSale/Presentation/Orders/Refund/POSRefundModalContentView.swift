@@ -64,6 +64,7 @@ struct POSRefundModalContentView: View {
     let state: RefundModalState
     @Binding var modalState: RefundModalState?
     @Environment(POSOrderListModel.self) private var orderListModel
+    @Environment(POSRefundSubmissionModel.self) private var refundSubmissionModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -188,6 +189,7 @@ struct POSRefundModalContentView: View {
                 formattedRefundTotal: reviewData.formattedRefundTotal,
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 isProcessing: true,
+                submissionState: refundSubmissionModel.state,
                 onClose: {},
                 onConfirm: {},
                 onBack: {}
@@ -227,12 +229,14 @@ struct POSRefundModalContentView: View {
         do {
             try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingSuccess())
+            refundSubmissionModel.reset()
             modalState = .success(reviewData)
             onRefundSuccess?()
         } catch {
             DDLogError("⛔️ Failed to process POS refund: \(error)")
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingFailed(error: error))
             onRefundFailure?(error)
+            refundSubmissionModel.reset()
             modalState = .error(reviewData)
         }
     }

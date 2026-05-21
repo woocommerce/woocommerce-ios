@@ -184,6 +184,50 @@ struct ProductsUpdateToolTests {
     }
 
     @Test
+    func test_update_when_variable_parent_name_and_price_without_scope_then_refuses_entire_entry() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
+            "POST wc/v3/products/batch": StubResponses.ok(#"{"update": [{"id": 50}]}"#)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"""
+            {"updates": [{
+              "target": {"kind": "product", "id": 50},
+              "name": "Renamed", "regular_price": "19.99"
+            }]}
+            """#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.isEmpty)
+        let nameWrites = posts.compactMap { try? requireBatchBody($0.body) }
+            .flatMap { $0 }
+            .filter { $0["name"] != nil }
+        #expect(nameWrites.isEmpty)
+        #expect(updatedTargets(receipt).isEmpty)
+        guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
+            Issue.record("expected failed entry")
+            return
+        }
+        #expect(failed.count == 1)
+        #expect(entry["id"] == .int(50))
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("target.kind=\"variation\""))
+            #expect(reason.contains("target.scope=\"all_variations\""))
+        } else {
+            Issue.record("expected reason string")
+        }
+    }
+
+    @Test
     func test_update_when_mixed_simple_and_variations_then_routes_each_correctly() async throws {
         // Given
         let simpleProbe = #"{"id": 10, "type": "simple", "regular_price": "50.00"}"#
@@ -1256,6 +1300,94 @@ struct ProductsUpdateToolTests {
         } else {
             Issue.record("expected reason string")
         }
+    }
+
+    @Test
+    func test_update_when_percent_discount_is_zero_then_invalidToolCall() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 10}, "percent_discount": 0}]}"#,
+            client
+        )
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed, got \(result)")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("percent_discount"))
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_update_when_percent_discount_is_100_then_invalidToolCall() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 10}, "percent_discount": 100}]}"#,
+            client
+        )
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed, got \(result)")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("percent_discount"))
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_update_when_percent_discount_is_negative_then_invalidToolCall() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 10}, "percent_discount": -10}]}"#,
+            client
+        )
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed, got \(result)")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("percent_discount"))
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_update_when_percent_discount_exceeds_100_then_invalidToolCall() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 10}, "percent_discount": 150}]}"#,
+            client
+        )
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed, got \(result)")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("percent_discount"))
+        #expect(await client.calls.isEmpty)
     }
 
     @Test

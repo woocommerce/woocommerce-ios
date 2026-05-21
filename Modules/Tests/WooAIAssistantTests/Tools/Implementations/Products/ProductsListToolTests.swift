@@ -802,6 +802,146 @@ struct ProductsListToolTests {
         // Then
         #expect(await client.calls.first?.query["min_price"] == "10.00")
     }
+
+    @Test
+    func test_list_when_low_in_stock_product_enrichment_fails_then_returns_toolFailed() async {
+        // Given
+        let reportBody = """
+        [{"id": 21, "stock_quantity": 4}, {"id": 22, "stock_quantity": 2}]
+        """
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.ok(reportBody),
+            "GET wc/v3/products": StubResponses.failure(statusCode: 503)
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed, got \(result)")
+            return
+        }
+        #expect(failed.kind == .toolFailed)
+    }
+
+    @Test
+    func test_list_when_min_and_max_price_boundary_then_inclusive_at_bounds() async throws {
+        // Given
+        let reportBody = """
+        [{"id": 21, "stock_quantity": 1}, {"id": 22, "stock_quantity": 1}, {"id": 23, "stock_quantity": 1}]
+        """
+        let enrichBody = """
+        [
+            {"id": 21, "name": "AtMin", "price": "10.00"},
+            {"id": 22, "name": "Inside", "price": "55.00"},
+            {"id": 23, "name": "AtMax", "price": "100.00"}
+        ]
+        """
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.ok(reportBody),
+            "GET wc/v3/products": StubResponses.ok(enrichBody)
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true, "min_price": "10.00", "max_price": "100.00"}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["ids"] == .array([.int(21), .int(22), .int(23)]))
+    }
+
+    @Test
+    func test_list_when_low_in_stock_price_filter_uses_regular_price_when_price_blank() async throws {
+        // Given
+        let reportBody = """
+        [{"id": 21, "stock_quantity": 1}, {"id": 22, "stock_quantity": 1}]
+        """
+        let enrichBody = """
+        [
+            {"id": 21, "name": "BlankPrice", "price": "", "regular_price": "20.00"},
+            {"id": 22, "name": "Cheap", "price": "", "regular_price": "5.00"}
+        ]
+        """
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.ok(reportBody),
+            "GET wc/v3/products": StubResponses.ok(enrichBody)
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true, "min_price": "10.00"}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["ids"] == .array([.int(21)]))
+    }
+
+    @Test
+    func test_list_when_low_in_stock_with_status_filter_then_filters_rows() async throws {
+        // Given
+        let reportBody = """
+        [{"id": 21, "stock_quantity": 1}, {"id": 22, "stock_quantity": 1}]
+        """
+        let enrichBody = """
+        [
+            {"id": 21, "name": "Published", "status": "publish"},
+            {"id": 22, "name": "Drafted", "status": "draft"}
+        ]
+        """
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.ok(reportBody),
+            "GET wc/v3/products": StubResponses.ok(enrichBody)
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true, "status": "draft"}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["ids"] == .array([.int(22)]))
+    }
+
+    @Test
+    func test_list_when_low_in_stock_with_stock_status_filter_then_filters_rows() async throws {
+        // Given
+        let reportBody = """
+        [{"id": 21, "stock_quantity": 1}, {"id": 22, "stock_quantity": 1}]
+        """
+        let enrichBody = """
+        [
+            {"id": 21, "name": "InStock", "stock_status": "instock"},
+            {"id": 22, "name": "OnBackorder", "stock_status": "onbackorder"}
+        ]
+        """
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.ok(reportBody),
+            "GET wc/v3/products": StubResponses.ok(enrichBody)
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true, "stock_status": "onbackorder"}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["ids"] == .array([.int(22)]))
+    }
 }
 
 struct LowInStockFilterCase: Sendable {

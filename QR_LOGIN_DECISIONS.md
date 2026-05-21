@@ -176,18 +176,15 @@ intercepting at `AuthenticationManager.authenticationUI()` because:
     `NavigateToEnterSite`, so the user never sees the WPA prologue. Matches
     the spec.
 
-### Sync availability check is backed by a pre-warmed cache
+### Availability gate is a synchronous feature-flag read
 
-`authenticationUI()` is synchronous, so it can't await the remote-flag
-round-trip. `QRLoginAvailability.refreshAvailability()` resolves the async
-prologue / deep-link gates and caches the result; `authenticationUI()` kicks
-that refresh off when it builds the login UI, and the `…Sync` accessors read
-the cache. A debug override is still honoured synchronously and bypasses the
-flag + bucket. Spec §2 ("null / not-yet-loaded → off") still holds: a cold
-cache reports the prologue unavailable until the refresh lands.
-
-(See the Review fixes section — this replaces the earlier debug-override-only
-stopgap.)
+`QRLoginAvailability` reads the `qrCodeLogin` remote flag synchronously:
+dispatching `FeatureFlagAction.isRemoteFeatureFlagEnabled` runs its completion
+inline on a cache hit (and for a debug override), and the app already fetches
+remote flags at launch. A cold cache reads as `false` (spec §2:
+"null / not-yet-loaded → off"). No caching, pre-warming, or async hop is
+needed — and the dispatch stays on the main thread, where the Flux dispatcher
+must run.
 
 ### `QRLoginViewModel` is `@Observable` (Swift 5.9+)
 
@@ -364,11 +361,12 @@ elsewhere in the app.
 
 ### Prologue gate consults the remote flag, not just the override
 
-`QRLoginAvailability` is now a class with a cached resolved availability.
-`refreshAvailability()` runs the async flag/bucket/camera checks;
-`authenticationUI()` kicks it off so the synchronous prologue gate sees the
-real remote flag in production. `deepLinkSyncOverride()` became
-`isAvailableForDeepLinkSync()` and likewise falls back to the cached value.
+`QRLoginAvailability` exposes two synchronous gates — `isAvailableForPrologue()`
+and `isAvailableForDeepLink()` — that read the `qrCodeLogin` remote flag
+inline from the feature-flag store (see "Availability gate is a synchronous
+feature-flag read"). The prologue gate also requires the rollout bucket and a
+camera; the deep-link gate requires neither. A debug override short-circuits
+both. No async, no caching — the earlier debug-override-only stopgap is gone.
 
 ### wp.com `/exchange` no longer routes to the store picker
 

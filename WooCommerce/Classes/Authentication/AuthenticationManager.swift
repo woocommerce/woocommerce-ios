@@ -105,19 +105,12 @@ class AuthenticationManager: Authentication {
     /// site-address flow. The standard prologue stays as the app's first screen (spec §4.1).
     ///
     func authenticationUI() -> UIViewController {
-        // Warm the QR-login availability cache so the synchronous prologue gate
-        // below can see the remote flag value (spec §2.1). `authenticationUI()`
-        // is synchronous, so the async resolution runs ahead of the merchant
-        // reaching the "Log In" CTA.
-        Task { @MainActor [weak self] in
-            await self?.qrLoginAvailability.refreshAvailability()
-        }
         let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
             MainActor.assumeIsolated {
                 guard let self else { return false }
                 // Resets Apple ID at the beginning of the authentication.
                 self.appleUserID = nil
-                guard self.qrLoginAvailability.isAvailableForPrologueSync(),
+                guard self.qrLoginAvailability.isAvailableForPrologue(),
                       let navigationController = self.displayAuthenticatorIfLoggedOut?() else {
                     self.analytics.track(.loginPrologueContinueTapped)
                     return false
@@ -269,12 +262,11 @@ class AuthenticationManager: Authentication {
         // the scene/app delegate); `QRLoginCoordinator` and the availability
         // gate are @MainActor.
         MainActor.assumeIsolated {
-            // Sync availability check is enough: the merchant chose this path
-            // by opening the link, so we just need the flag (or debug override)
-            // to be on. Bucket and camera are bypassed. A cold cache returns
-            // `nil`, so the caller falls through to the standard handlers.
-            guard let isAvailable = qrLoginAvailability.isAvailableForDeepLinkSync(),
-                  isAvailable else {
+            // The merchant chose this path by opening the link, so we just need
+            // the remote flag (or debug override) on — bucket and camera are
+            // bypassed. `false` (flag off, or not loaded yet) falls through to
+            // the standard handlers.
+            guard qrLoginAvailability.isAvailableForDeepLink() else {
                 return nil
             }
 
@@ -313,8 +305,7 @@ class AuthenticationManager: Authentication {
         // URL handling from the scene/app delegate runs on the main thread;
         // the availability gate is @MainActor.
         return MainActor.assumeIsolated {
-            guard let isAvailable = qrLoginAvailability.isAvailableForDeepLinkSync(),
-                  isAvailable else {
+            guard qrLoginAvailability.isAvailableForDeepLink() else {
                 return false
             }
             presentSessionReplaceWarning(for: url, from: rootViewController)

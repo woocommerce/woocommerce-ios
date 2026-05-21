@@ -56,7 +56,14 @@ struct POSTapToPayHeroView: View {
                 Text(Localization.payButton)
                     .font(POSFontStyle.posBodyLargeBold)
             }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            // `isLoading` is gated on `isPayDisabled` rather than the broader
+            // `isPayDisabled || isIndicatorVisible` below, so the in-button
+            // spinner only shows during the "merchant just tapped, waiting for
+            // Apple's TTP modal to open" gap. While the silent pre-connect
+            // indicator is up the button is disabled (greyed) but the spinner
+            // doesn't show — the inline "Preparing Tap to Pay…" text already
+            // explains the wait there.
+            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isPayDisabled))
             .padding(.horizontal, POSPadding.medium)
             // Disabled while preparing only once the indicator becomes visible
             // (after the 700ms grace). Fast pre-connects therefore never flicker

@@ -58,7 +58,19 @@ struct TotalsView: View {
                 VStack(alignment: .center) {
                     Spacer()
 
-                    if useTapToPayHeroLayout {
+                    if shouldPrioritizePaymentViewOverHero {
+                        PaymentViewContent(
+                            paymentState: displayPaymentState,
+                            cardReaderViewLayout: cardReaderViewLayout,
+                            isShowingTotalsFields: isShowingTotalsFields,
+                            backgroundColor: backgroundColor,
+                            orderState: posModel.orderState,
+                            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
+                            connectCardReaderAction: paymentModel.connectCardReader,
+                            cancelReconnectionAction: posModel.cancelReconnection
+                        )
+                    } else if useTapToPayHeroLayout {
                         POSTapToPayHeroView(onPayTapped: handleTapToPayTapped,
                                             isPayDisabled: isStartingPayment,
                                             isPreparing: paymentModel.isPreparingTapToPay)
@@ -647,6 +659,31 @@ private extension TotalsView {
     }
 
     /// True when the merchant should see the Android-style Tap to Pay hero +
+    /// True when the card payment has reached a state that should take over
+    /// the hero immediately: a terminal state (success / error), or the
+    /// `.processingPayment` window between Apple's TTP modal closing and the
+    /// success card rendering. The default hero → PaymentViewContent priority
+    /// order is fine for every other transition; this short-circuits those
+    /// specific cases so the merchant sees the inline "Processing payment" /
+    /// success / error UI immediately rather than the hero fading out + the
+    /// Checkout chrome ghosting through.
+    private var shouldPrioritizePaymentViewOverHero: Bool {
+        switch displayPaymentState.card {
+        case .processingPayment,
+                .cardPaymentSuccessful,
+                .paymentError,
+                .validatingOrderError,
+                .paymentIntentCreationError:
+            return true
+        case .idle,
+                .acceptingCard,
+                .cardInserted,
+                .validatingOrder,
+                .preparingReader:
+            return false
+        }
+    }
+
     /// bottom-strip layout: TTP availability has resolved `.available`, no
     /// payment is currently in progress (idle card + idle cash), and the order
     /// has a real non-zero total to charge. When a TTP payment kicks off,
@@ -656,6 +693,15 @@ private extension TotalsView {
     var useTapToPayHeroLayout: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
         guard displayPaymentState.card == .idle && displayPaymentState.cash == .idle else { return false }
+        // Also gate on scanToPay / markAsPaid being idle. After a successful
+        // payment via either of those the totals view renders their success
+        // UI via `PaymentViewContent` — we don't want the hero showing on
+        // top of (or instead of) that. Critically, without this the merchant
+        // could tap "Pay with Tap to pay" while `paymentState.markAsPaid`
+        // is still `.paymentSuccess`, and the card-state subscription's
+        // `markAsPaid != .idle` guard would silently swallow every Stripe
+        // event — the button disables but nothing happens.
+        guard displayPaymentState.scanToPay == .idle && displayPaymentState.markAsPaid == .idle else { return false }
         // Empty-cart / syncing / reconnecting guards computed directly. We
         // can't reuse `shouldShowCollectCashPaymentButton` here — that helper
         // also requires the reader to be disconnected when card state is idle

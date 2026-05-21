@@ -16,6 +16,15 @@ struct CartViewHelper {
         guard paymentState.card.allowsCartEditing else {
             return true
         }
+        // Cash / Scan to Pay / Mark as Paid block cart editing while their flow
+        // is mid-progress (showing the QR view, confirming, processing) AND
+        // while their success UI is up on the totals view. Without this, the
+        // "back to cart" arrow on the phone Checkout header stays enabled on
+        // top of the success screen, and tapping it would let the merchant
+        // re-edit an order that's already been paid.
+        if paymentState.cash != .idle { return true }
+        if paymentState.scanToPay != .idle { return true }
+        if paymentState.markAsPaid != .idle { return true }
         return orderState.isSyncing
     }
 

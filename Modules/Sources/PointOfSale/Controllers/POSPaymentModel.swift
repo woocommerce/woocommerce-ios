@@ -58,6 +58,17 @@ final class POSPaymentModel {
     /// model-side re-entry guard.
     private(set) var currentPaymentMethod: CardReaderConnectionMethod?
 
+    /// The method of the reader Stripe Terminal currently has connected — or
+    /// nil if no reader is connected. Distinct from `currentPaymentMethod`
+    /// (which tracks an in-flight *payment session*); this one persists
+    /// across `reset()` because the underlying SDK connection persists across
+    /// our payment-model lifecycle too. Used in `connectTapToPayReader` to
+    /// skip the defensive disconnect-first when the reader is already TTP —
+    /// otherwise every checkout re-entry forces an unnecessary
+    /// disconnect-then-reconnect cycle and surfaces the "Preparing Tap to
+    /// Pay…" indicator each time.
+    private(set) var lastConnectedMethod: CardReaderConnectionMethod?
+
     /// True while *any* collection session is active (TTP or BT). Drives
     /// TotalsView's `isStartingPayment` reset — when this transitions back
     /// to false the merchant's flow has wrapped up (success, error, cancel,
@@ -127,6 +138,15 @@ final class POSPaymentModel {
     /// "still loading the URL" from "no URL available".
     private(set) var isPreparingScanToPay: Bool = false
     private var scanToPayPollingTask: Task<Void, Never>?
+
+    /// Coalesces concurrent silent-TTP pre-connect attempts. Without this,
+    /// every call to `connectTapToPayReader` (which can come from
+    /// `startPayment` on checkout entry, `observeReaderReconnection` firing
+    /// on a `.disconnected` event, and re-registrations after back-to-cart
+    /// cycles) kicks off its own `connectReader` Task. Stripe Terminal
+    /// serialises them but the race adds significant latency to the first
+    /// successful connect.
+    private var tapToPayConnectTask: Task<Void, Never>?
 
     init(cardPresentPaymentService: CardPresentPaymentFacade,
          orderProvider: POSPaymentOrderProviding,
@@ -254,7 +274,12 @@ extension POSPaymentModel {
 
         if case .disconnected = cardReaderConnectionStatus {
             Task { @MainActor [weak self] in
-                _ = try? await self?.cardPresentPaymentService.connectReader(using: method)
+                do {
+                    _ = try await self?.cardPresentPaymentService.connectReader(using: method)
+                    self?.lastConnectedMethod = method
+                } catch {
+                    DDLogWarn("🃏 [CardPayment] explicit connect via \(method) failed: \(error)")
+                }
             }
         }
 
@@ -264,19 +289,41 @@ extension POSPaymentModel {
     /// Pre-connects the built-in Tap to Pay reader without starting collection.
     /// Called from `startPayment()` when `preferredConnectionMethod == .tapToPay`,
     /// so the reader is warm by the time the merchant taps the hero CTA.
-    private func connectTapToPayReader() {
-        Task { @MainActor [weak self] in
+    func connectTapToPayReader() {
+        // Coalesce — if a pre-connect Task is already in flight, this is a
+        // no-op. Without this, `startPayment` being called multiple times
+        // during checkout entry (once via `checkOut`, again via
+        // `observeReaderReconnection` firing on the first transient
+        // disconnect) stacks up redundant `connectReader` Tasks that
+        // serialise inside Stripe Terminal and visibly delay the first
+        // successful connect.
+        guard tapToPayConnectTask == nil else { return }
+        tapToPayConnectTask = Task { @MainActor [weak self] in
             guard let self else { return }
-            // Stripe Terminal can only hold one active reader. If an old reader
-            // is still attached when we enter POS (a stale TTP / BT session
-            // carried across app launches, or a BT reader from a previous
-            // mode), connecting on top would fail with "another reader is
-            // already connected" and surface a disruptive failure modal —
-            // for a connect the merchant didn't even ask for. Drop it first.
+            defer { self.tapToPayConnectTask = nil }
+            // Reader already connected via TTP — nothing to do. Re-entering
+            // checkout after a successful payment or after going back to
+            // edit the cart used to force an unnecessary disconnect-then-
+            // reconnect cycle here, surfacing the "Preparing Tap to Pay…"
+            // indicator every time.
+            if case .connected = cardReaderConnectionStatus,
+               lastConnectedMethod == .tapToPay {
+                return
+            }
+            // Stripe Terminal can only hold one active reader. If a *different*
+            // reader is still attached (a stale BT reader from a previous
+            // session, or no record of what method it was), connecting on top
+            // would fail with "another reader is already connected" — for a
+            // connect the merchant didn't even ask for. Drop it first.
             if case .connected = cardReaderConnectionStatus {
                 await cardPresentPaymentService.disconnectReader()
             }
-            _ = try? await cardPresentPaymentService.connectReader(using: .tapToPay)
+            do {
+                _ = try await cardPresentPaymentService.connectReader(using: .tapToPay)
+                lastConnectedMethod = .tapToPay
+            } catch {
+                DDLogWarn("🃏 [CardPayment] silent TTP pre-connect failed: \(error)")
+            }
         }
     }
 
@@ -379,7 +426,12 @@ extension POSPaymentModel {
         guard connectCardReaderTask == nil else { return }
         connectCardReaderTask = Task { @MainActor [weak self] in
             defer { self?.connectCardReaderTask = nil }
-            _ = try? await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
+            do {
+                _ = try await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
+                self?.lastConnectedMethod = .bluetooth
+            } catch {
+                DDLogWarn("🃏 [CardPayment] BT connect failed: \(error)")
+            }
         }
     }
 
@@ -817,6 +869,15 @@ extension POSPaymentModel {
 extension POSPaymentModel {
     func observeReaderReconnection() {
         cardReaderDisconnection = cardPresentPaymentService.readerConnectionStatusPublisher
+            // `removeDuplicates` BEFORE the filter — Stripe Terminal can emit
+            // multiple `.disconnected` values in succession (e.g., during
+            // teardown / re-init), and without dedup the sink fires for each
+            // one. The downstream `startPayment` call kicks off another
+            // pre-connect Task each time, racing every previous one. (The
+            // `tapToPayConnectTask` coalesce on the pre-connect side already
+            // catches most of this, but de-duping here also avoids the
+            // wasted `startPayment` work.)
+            .removeDuplicates()
             .filter({ $0 == .disconnected })
             .sink { [weak self] _ in
                 Task { @MainActor [weak self] in
@@ -847,6 +908,10 @@ private extension POSPaymentModel {
                 guard let self else { return }
                 cardReaderConnectionStatus = connectionStatus
                 if connectionStatus == .disconnected {
+                    // Clear the tracking flag so the next pre-connect can't
+                    // mistakenly think a TTP reader is still attached and
+                    // skip its own connect.
+                    lastConnectedMethod = nil
                     resetTransientCardStateOnDisconnect()
                 }
             })

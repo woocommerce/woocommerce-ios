@@ -217,7 +217,7 @@ struct ProductsListToolTests {
 
     @Test
     func test_descriptor_when_inspected_then_matches_consolidated_list_surface() {
-        // Given Android parity lands with its own consolidation; this pins the iOS-leading surface.
+        // Given
         let tool = ProductsListTool.make()
 
         // Then
@@ -451,7 +451,7 @@ struct ProductsListToolTests {
 
     @Test
     func test_list_when_low_in_stock_then_routes_to_wc_analytics_stock_report() async throws {
-        // Given a stock report returning two ids and a follow-up /products?include= enrichment.
+        // Given
         let reportBody = """
         [{"id": 21, "stock_quantity": 4}, {"id": 22, "stock_quantity": 2}]
         """
@@ -487,8 +487,7 @@ struct ProductsListToolTests {
 
     @Test
     func test_list_when_low_in_stock_then_falls_back_to_heuristic_when_stock_report_fails() async throws {
-        // Given the stock report returns 404 (older WC without WC Analytics installed) and
-        // the heuristic /products scan finds a match on page 1.
+        // Given
         let heuristicBody = """
         [
             {"id": 1, "stock_quantity": 3},
@@ -518,7 +517,7 @@ struct ProductsListToolTests {
 
     @Test
     func test_list_when_low_in_stock_empty_then_returns_empty_without_enrichment() async throws {
-        // Given the stock report returns an empty array - no enrichment call should fire.
+        // Given
         let client = RoutingMockWCRESTClient(routes: [
             "GET wc-analytics/reports/stock": StubResponses.ok("[]"),
             "GET wc/v3/products": StubResponses.ok("[\"should_not_be_used\"]")
@@ -541,8 +540,7 @@ struct ProductsListToolTests {
 
     @Test
     func test_list_when_low_in_stock_heuristic_full_page_then_can_load_more_is_true() async throws {
-        // Given the stock report is unavailable and the /products heuristic returns a full
-        // window of non-matching rows: can_load_more must stay true even though no matches filled.
+        // Given
         let fullPage = (1...20).map { #"{"id": \#($0), "stock_quantity": 50}"# }.joined(separator: ",")
         let client = RoutingMockWCRESTClient(routes: [
             "GET wc-analytics/reports/stock": StubResponses.failure(statusCode: 404),
@@ -658,8 +656,7 @@ struct ProductsListToolTests {
 
     @Test
     func test_list_when_low_in_stock_returns_variation_rows_then_enriches_via_parent_scoped_variations() async throws {
-        // Given a stock report that returns a mix of top-level products (parent_id=0) and
-        // variations (parent_id=42); both kinds should be enriched and projected.
+        // Given
         let reportBody = """
         [
             {"id": 11, "stock_quantity": 2},
@@ -711,7 +708,7 @@ struct ProductsListToolTests {
 
     @Test
     func test_list_when_low_in_stock_variation_enrichment_fails_for_one_parent_then_keeps_rest() async throws {
-        // Given two parents whose variations are needed; one fetch fails with 500.
+        // Given
         let reportBody = """
         [
             {"id": 501, "parent_id": 42, "stock_quantity": 1},
@@ -741,7 +738,7 @@ struct ProductsListToolTests {
 
     @Test
     func test_list_when_low_in_stock_combined_filters_apply_to_both_products_and_variations() async throws {
-        // Given a min_price filter applied to a mixed result set; under-priced rows of either kind drop.
+        // Given
         let reportBody = """
         [
             {"id": 11, "stock_quantity": 1},

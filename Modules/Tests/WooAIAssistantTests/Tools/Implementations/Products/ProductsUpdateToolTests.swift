@@ -670,7 +670,7 @@ struct ProductsUpdateToolTests {
 
     @Test
     func test_update_when_batch_returns_403_then_failure_surfaces_in_failed_array() async throws {
-        // Given a 403 on the batch POST is preserved as a per-entry failure, not a hard tool error.
+        // Given
         let probe = #"{"id": 12, "type": "simple", "regular_price": "20.00"}"#
         let client = RoutingMockWCRESTClient(routes: [
             "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
@@ -828,7 +828,7 @@ struct ProductsUpdateToolTests {
 
     @Test
     func test_update_when_discovery_chunk_returns_429_then_entry_failed_and_no_per_id_probe() async throws {
-        // Given the chunked discovery GET is rate-limited so no per-id fallback should fire.
+        // Given
         let client = RoutingMockWCRESTClient(routes: [
             "GET wc/v3/products": StubResponses.failure(statusCode: 429, body: "slow down"),
             "GET wc/v3/products/12": StubResponses.ok(#"{"id": 12, "type": "simple"}"#),
@@ -863,7 +863,7 @@ struct ProductsUpdateToolTests {
 
     @Test
     func test_update_when_discovery_chunk_succeeds_but_id_absent_then_one_per_id_probe_fires() async throws {
-        // Given a successful chunk that omits the id (variations are absent from products include).
+        // Given
         let client = RoutingMockWCRESTClient(routes: [
             "GET wc/v3/products": StubResponses.ok("[]"),
             "GET wc/v3/products/12": StubResponses.ok(#"{"id": 12, "type": "simple", "regular_price": "20.00"}"#),
@@ -1301,7 +1301,6 @@ struct ProductsUpdateToolTests {
         let receipt = try successReceipt(result)
         let calls = await client.calls
         let topLevelGets = calls.filter { $0.method == "GET" && $0.path == "wc/v3/products" }
-        // Variation targets must skip the chunked discovery GET on /products entirely.
         #expect(topLevelGets.isEmpty)
         let posts = calls.filter { $0.method == "POST" }
         #expect(posts.first?.path == "wc/v3/products/12/variations/batch")
@@ -1345,7 +1344,6 @@ struct ProductsUpdateToolTests {
         let entriesByID = batchEntriesByID(body)
         #expect(entriesByID[101]?[jsonKey] as? String == value)
         #expect(entriesByID[102]?[jsonKey] as? String == value)
-        // Fanned-out variations land in `updated` as variation target objects carrying their parent.
         #expect(updatedVariationIDs(receipt) == [101, 102])
         for target in updatedTargets(receipt) where target.kind == "variation" {
             #expect(target.parentID == 50)
@@ -1481,7 +1479,7 @@ struct ProductsUpdateToolTests {
 
     @Test
     func test_update_when_scope_set_on_simple_product_then_applies_normally_without_fanout() async throws {
-        // Given - scope on a simple product has no variations to fan to; it must update the product itself.
+        // Given
         let probe = #"{"id": 10, "type": "simple", "regular_price": "50.00"}"#
         let batchResponse = #"{"update": [{"id": 10}]}"#
         let client = RoutingMockWCRESTClient(routes: [

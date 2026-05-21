@@ -304,7 +304,6 @@ struct DefaultConfirmationSnapshotResolverTests {
         let client = StubRESTClient()
         await client.setResponse(forPath: "wc/v3/products",
                                  body: #"[{"id":41,"name":"Hoodie"}]"#)
-        // Parent fetch succeeds; per-parent variations fetch returns a different variation id so 99 is missing.
         await client.setResponse(forPath: "wc/v3/products/41/variations",
                                  body: #"[{"id":58,"name":"Hoodie - Red"}]"#)
         let resolver = DefaultConfirmationSnapshotResolver(client: client)

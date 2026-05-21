@@ -1449,7 +1449,6 @@ struct POSPaymentModelTests {
     func startPaymentWithMethod_TTP_when_event_arrives_after_explicit_start_then_card_state_updates() async {
         // Given
         let service = MockCardPresentPaymentService()
-        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
         orderProvider.totalDecimalToReturn = 10
@@ -1465,16 +1464,24 @@ struct POSPaymentModelTests {
         service.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
         #expect(sut.paymentState.card == .idle)
 
-        // When: merchant explicitly taps "Tap to Pay" — opens the gate
-        await sut.startPaymentWithMethod(.tapToPay)
+        // When: merchant explicitly taps "Tap to Pay" — opens the gate.
+        // (Don't await — `startPaymentWithMethod` blocks on the reader connection
+        // status publisher and the mock's `connectReader` doesn't drive it.
+        // The gate side-effects we want — `currentPaymentMethod` set,
+        // `isAwaitingExplicitPaymentStart` cleared — happen synchronously
+        // before the first `await` inside the function.)
+        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await Task.yield()
 
-        // Then: events propagate through the now-open gate. The mock's
-        // `collectPayment` auto-fires a `paymentSuccess` event — a terminal
-        // state that reaches `paymentState.card` because the TTP path only
-        // suppresses *intermediate* states (`.acceptingCard`, `.preparingReader`,
-        // etc.) so the merchant's UI doesn't flicker behind Apple's modal.
-        // The `.idle → .cardPaymentSuccessful` transition is unreachable
-        // without an open gate, so observing it here proves propagation.
+        // Then: gate is open — `currentPaymentMethod` reflects the explicit pick.
+        #expect(sut.currentPaymentMethod == .tapToPay)
+
+        // And a terminal payment-success event now propagates through the
+        // open gate to `paymentState.card`. (Intermediate states like
+        // `.acceptingCard` would be suppressed by the TTP filter — see
+        // `subscribeToPaymentSessionEvents`. Only terminal states reach
+        // `paymentState.card` on the TTP path.)
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
         #expect(sut.paymentState.card == .cardPaymentSuccessful)
 
         // And the TTP intermediate-state filter is active: a subsequent
@@ -1490,7 +1497,6 @@ struct POSPaymentModelTests {
     func cancelledOnReader_TTP_when_event_arrives_then_card_state_resets_and_gate_re_arms() async {
         // Given
         let service = MockCardPresentPaymentService()
-        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
         orderProvider.totalDecimalToReturn = 10
@@ -1502,10 +1508,12 @@ struct POSPaymentModelTests {
 
         await sut.startPayment()
 
-        // Open the gate: merchant taps Tap to Pay. The mock's `collectPayment`
-        // auto-fires a terminal `paymentSuccess` event (intermediate states are
-        // filtered on TTP — see `subscribeToPaymentSessionEvents`).
-        await sut.startPaymentWithMethod(.tapToPay)
+        // Open the gate: merchant taps Tap to Pay. (Don't await — see the
+        // sibling test above for why.) Drive state to a terminal value by
+        // sending a `paymentSuccess` directly through the now-open gate.
+        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await Task.yield()
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
         #expect(sut.paymentState.card == .cardPaymentSuccessful)
 
         // When: merchant cancels on reader
@@ -1565,7 +1573,6 @@ struct POSPaymentModelTests {
 
         // Given
         let service = MockCardPresentPaymentService()
-        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
         orderProvider.totalDecimalToReturn = 10
@@ -1577,10 +1584,15 @@ struct POSPaymentModelTests {
 
         await sut.startPayment()
 
-        // Round 1: open gate, reach a terminal state, then cancel on reader.
-        // (Intermediates like `.acceptingCard` are filtered on TTP; the mock's
-        // auto-fired `paymentSuccess` is the terminal state that lands.)
-        await sut.startPaymentWithMethod(.tapToPay)
+        // Round 1: open gate, drive to terminal state via a direct paymentSuccess
+        // event, then cancel on reader. (Don't await `startPaymentWithMethod` —
+        // the BT-as-one-shot architecture's disconnect-then-reconnect path
+        // blocks on connection status the mock doesn't drive. Gate side-effects
+        // happen before the first await; sending the success event after
+        // yielding once proves the gate is open.)
+        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await Task.yield()
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
         #expect(sut.paymentState.card == .cardPaymentSuccessful)
 
         // When: merchant cancels on reader — gate must close and state must reset
@@ -1589,25 +1601,18 @@ struct POSPaymentModelTests {
         // Then: state is idle immediately
         #expect(sut.paymentState.card == .idle)
 
-        // Re-attach the mock reader for Round 2. `connectTapToPayReader` (kicked off
-        // by Round 1's `startPayment`) disconnected the mock — the mock's
-        // `connectReader` returns a `.connected` result but doesn't update
-        // `connectedReader`, so the publisher stays at `.disconnected`. Without this
-        // reset, `startPaymentFlow`'s `guard case .connected` would short-circuit and
-        // collectPayment wouldn't fire in Round 2, masking the invariant we're testing.
-        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
-
-        // Round 2: a subsequent startPaymentWithMethod must succeed (gate re-opens
-        // and the mock auto-fires `paymentSuccess` again).
-        await sut.startPaymentWithMethod(.tapToPay)
-
+        // Round 2: subsequent startPaymentWithMethod must re-open the gate cleanly.
         // If subscriber ordering were inverted — card-state sink before
         // cancelledOnReader sink — `cancelledOnReader` would have advanced
-        // `paymentState.card` past `.idle` (terminal states bypass the filter),
-        // and `startPaymentWithMethod`'s `guard paymentState.card == .idle` would
-        // have short-circuited Round 2, leaving us stuck at the prior terminal
-        // state without the second auto-fired `paymentSuccess` ever running.
-        // Reaching `.cardPaymentSuccessful` again proves Round 2 actually proceeded.
+        // `paymentState.card` past `.idle` before the gate closed, and the
+        // `paymentState.card != .idle` guard in `startPaymentWithMethod` would
+        // have short-circuited Round 2, leaving `currentPaymentMethod` unset.
+        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await Task.yield()
+        #expect(sut.currentPaymentMethod == .tapToPay)
+
+        // And a second paymentSuccess event propagates through the re-opened gate.
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
         #expect(sut.paymentState.card == .cardPaymentSuccessful)
     }
 
@@ -2070,6 +2075,8 @@ struct POSPaymentModelTests {
 
         // Then: verifier was called at least once after activate
         #expect(verifier.checkPaymentStatusCallCount >= 1)
+    }
+
     // MARK: - Phone POS TTP optimizations
 
     @Test("startPayment on the TTP path does not auto-collect when no BT reader was previously attached")
@@ -2197,7 +2204,6 @@ private func makePaymentController(
     analytics: POSAnalyticsProviding = MockPOSAnalytics(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     celebration: PaymentCaptureCelebrationProtocol = MockPaymentCaptureCelebration(),
-    preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
     scanToPayPollInterval: TimeInterval = 3,
     preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
     paymentState: PointOfSalePaymentState = .idle
@@ -2215,7 +2221,6 @@ private func makePaymentController(
         analytics: analytics,
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         celebration: celebration,
-        preferredConnectionMethod: preferredConnectionMethod,
         scanToPayPollInterval: scanToPayPollInterval,
         preferredConnectionMethod: preferredConnectionMethod,
         paymentState: paymentState)

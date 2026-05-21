@@ -58,11 +58,13 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
         let kind: String?
         let id: Int?
         let parentID: Int?
+        let scope: String?
 
         enum CodingKeys: String, CodingKey {
             case kind
             case id
             case parentID = "parent_id"
+            case scope
         }
     }
 
@@ -76,7 +78,7 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
         guard let parsed = decode(Args.self, from: arguments),
               let updates = parsed.updates else { return nil }
         let targets = updates.compactMap { $0.target }
-        // Parent ids we need product names for: top-level products + variation parents.
+        // Parent ids we need product names for: top-level + fanout parents + variation parents.
         let parentIDs = Self.parentIDsToFetch(targets: targets)
         guard !parentIDs.isEmpty else { return nil }
         let responses = await fetchBulkResponses(ids: parentIDs,
@@ -88,18 +90,125 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
                 return (id, response)
             }
         )
-        let entries = Self.buildBulkEntries(targets: targets, parentByID: resolvedByID)
+        // Skip the missing check when the parents endpoint hit a non-2xx so transport hiccups
+        // degrade to the existing fallback rather than refusing a valid request.
+        if responses != nil,
+           let refusal = Self.missingProductsRefusal(targets: targets, resolvedByID: resolvedByID) {
+            return ConfirmationSnapshot(currentValues: [:], refusalReason: refusal)
+        }
+        let fanoutVariations = await fetchFanoutVariations(targets: targets, parentByID: resolvedByID)
+        let specificVariations = await fetchSpecificVariations(targets: targets, parentByID: resolvedByID)
+        if let refusal = Self.missingVariationsRefusal(targets: targets,
+                                                       parentByID: resolvedByID,
+                                                       specificVariations: specificVariations) {
+            return ConfirmationSnapshot(currentValues: [:], refusalReason: refusal)
+        }
+        let entries = Self.buildBulkEntries(targets: targets,
+                                            parentByID: resolvedByID,
+                                            fanoutVariations: fanoutVariations,
+                                            specificVariations: specificVariations.byID)
+        let parentVariationCounts = fanoutVariations.mapValues { $0.count }
         // Single-target previews still surface prior field values for the diff body.
         if targets.count == 1, let target = targets.first,
-           target.kind == "product",
+           target.kind == "product", target.scope == nil,
            let id = target.id, let response = resolvedByID[id] {
             let values = Self.productCurrentValues(from: response)
             let displayName = response.name?.trimmingCharacters(in: .whitespacesAndNewlines).nonEmptyOrNil
             return ConfirmationSnapshot(currentValues: values,
                                         displayName: displayName,
-                                        bulkEntries: entries)
+                                        bulkEntries: entries,
+                                        parentVariationCounts: parentVariationCounts)
         }
-        return ConfirmationSnapshot(currentValues: [:], bulkEntries: entries)
+        return ConfirmationSnapshot(currentValues: [:],
+                                    bulkEntries: entries,
+                                    parentVariationCounts: parentVariationCounts)
+    }
+
+    /// Refusal text covering top-level products + variation parents that the WC API did not return.
+    /// Returns nil when every targeted product (or parent of a variation) is present in `resolvedByID`.
+    fileprivate static func missingProductsRefusal(targets: [ProductsUpdateTarget],
+                                                   resolvedByID: [Int: ProductSnapshotResponse]) -> String? {
+        var missingProducts: [Int] = []
+        var missingParents: [(variationID: Int, parentID: Int)] = []
+        var seenProducts: Set<Int> = []
+        var seenParents: Set<Int> = []
+        for target in targets {
+            if target.kind == "variation" {
+                guard let parentID = target.parentID else { continue }
+                if resolvedByID[parentID] == nil, seenParents.insert(parentID).inserted, let id = target.id {
+                    missingParents.append((id, parentID))
+                }
+            } else {
+                guard let id = target.id else { continue }
+                if resolvedByID[id] == nil, seenProducts.insert(id).inserted {
+                    missingProducts.append(id)
+                }
+            }
+        }
+        guard !missingProducts.isEmpty || !missingParents.isEmpty else { return nil }
+        return refusalText(missingProducts: missingProducts, missingParents: missingParents)
+    }
+
+    /// Refusal text when a variation target's parent exists but the variation id isn't in the per-parent
+    /// fetch result. Skips parents whose variation endpoint failed so a transport hiccup never refuses.
+    fileprivate static func missingVariationsRefusal(targets: [ProductsUpdateTarget],
+                                                     parentByID: [Int: ProductSnapshotResponse],
+                                                     specificVariations: SpecificVariationFetch) -> String? {
+        var missingPairs: [(variationID: Int, parentID: Int)] = []
+        var seen: Set<Int> = []
+        for target in targets {
+            guard target.kind == "variation",
+                  let id = target.id,
+                  let parentID = target.parentID,
+                  parentByID[parentID] != nil,
+                  specificVariations.fetchedParents.contains(parentID) else { continue }
+            guard specificVariations.byID[id] == nil, seen.insert(id).inserted else { continue }
+            missingPairs.append((id, parentID))
+        }
+        guard !missingPairs.isEmpty else { return nil }
+        return variationOnlyRefusalText(missingPairs: missingPairs)
+    }
+
+    private static func refusalText(missingProducts: [Int],
+                                    missingParents: [(variationID: Int, parentID: Int)]) -> String {
+        if missingParents.isEmpty {
+            if missingProducts.count == 1 {
+                return "I couldn't find product \(missingProducts[0]) in your store. Please verify the ID."
+            }
+            let joined = missingProducts.map(String.init).joined(separator: ", ")
+            return "I couldn't find products \(joined) in your store. Please verify the IDs."
+        }
+        if missingProducts.isEmpty, missingParents.count == 1 {
+            let pair = missingParents[0]
+            return "I couldn't find product \(pair.parentID) " +
+                   "(parent of variation \(pair.variationID)) in your store. Please verify the ID."
+        }
+        var parts: [String] = []
+        if !missingProducts.isEmpty {
+            let label = missingProducts.count == 1 ? "product" : "products"
+            parts.append("\(label) \(missingProducts.map(String.init).joined(separator: ", "))")
+        }
+        if !missingParents.isEmpty {
+            let parentIDs = missingParents.map { String($0.parentID) }
+            let label = parentIDs.count == 1 ? "parent" : "parents"
+            parts.append("\(label) \(parentIDs.joined(separator: ", "))")
+        }
+        return "I couldn't find \(parts.joined(separator: " or ")) in your store. Please verify the IDs."
+    }
+
+    private static func variationOnlyRefusalText(missingPairs: [(variationID: Int, parentID: Int)]) -> String {
+        if missingPairs.count == 1 {
+            let pair = missingPairs[0]
+            return "Product \(pair.parentID) doesn't have a variation with ID \(pair.variationID)."
+        }
+        let pairsByParent = Dictionary(grouping: missingPairs, by: { $0.parentID })
+        let phrases = pairsByParent
+            .sorted(by: { $0.key < $1.key })
+            .map { parentID, pairs -> String in
+                let ids = pairs.map { String($0.variationID) }.joined(separator: ", ")
+                return "\(ids) under product \(parentID)"
+            }
+        return "I couldn't find variations \(phrases.joined(separator: "; ")). Please verify the IDs."
     }
 
     private static func parentIDsToFetch(targets: [ProductsUpdateTarget]) -> [Int] {
@@ -119,18 +228,121 @@ public struct DefaultConfirmationSnapshotResolver: ConfirmationSnapshotResolving
     }
 
     private static func buildBulkEntries(targets: [ProductsUpdateTarget],
-                                         parentByID: [Int: ProductSnapshotResponse]) -> [ConfirmationBulkEntry] {
+                                         parentByID: [Int: ProductSnapshotResponse],
+                                         fanoutVariations: [Int: [VariationSnapshotResponse]],
+                                         specificVariations: [Int: VariationSnapshotResponse]) -> [ConfirmationBulkEntry] {
         targets.compactMap { target -> ConfirmationBulkEntry? in
-            switch target.kind {
-            case "variation":
+            switch (target.kind, target.scope) {
+            case ("variation", _):
                 guard let id = target.id else { return nil }
                 let parentName = target.parentID.flatMap { parentByID[$0]?.name }
-                return ConfirmationBulkEntry(id: id, displayName: parentName)
+                let label = specificVariations[id].flatMap { variationLabel(for: $0, parentName: parentName) }
+                return ConfirmationBulkEntry(id: id, displayName: label)
+            case ("product", "all_variations"?):
+                guard let id = target.id else { return nil }
+                let parentName = parentByID[id]?.name
+                let rows = fanoutVariations[id] ?? []
+                let subs = rows.compactMap { row -> ConfirmationBulkEntry? in
+                    guard let rowID = row.id else { return nil }
+                    return ConfirmationBulkEntry(id: rowID,
+                                                 displayName: variationLabel(for: row, parentName: parentName))
+                }
+                return ConfirmationBulkEntry(id: id, displayName: parentName, subEntries: subs)
             default:
                 guard let id = target.id else { return nil }
                 return ConfirmationBulkEntry(id: id, displayName: parentByID[id]?.name)
             }
         }
+    }
+
+    private func fetchFanoutVariations(targets: [ProductsUpdateTarget],
+                                       parentByID: [Int: ProductSnapshotResponse])
+    async -> [Int: [VariationSnapshotResponse]] {
+        let fanoutIDs = targets.compactMap { target -> Int? in
+            guard target.scope == "all_variations", target.kind == "product", let id = target.id else { return nil }
+            return id
+        }
+        guard !fanoutIDs.isEmpty else { return [:] }
+        var result: [Int: [VariationSnapshotResponse]] = [:]
+        // Sequential keeps request volume bounded; fanout consent is rare per turn.
+        // Omit failed parents so callers degrade to the unknown-count summary.
+        for parentID in fanoutIDs {
+            guard let rows = await fetchVariations(parentID: parentID, include: nil) else { continue }
+            result[parentID] = rows
+        }
+        return result
+    }
+
+    private func fetchSpecificVariations(targets: [ProductsUpdateTarget],
+                                         parentByID: [Int: ProductSnapshotResponse])
+    async -> SpecificVariationFetch {
+        var byParent: [Int: [Int]] = [:]
+        for target in targets {
+            guard target.kind == "variation", let id = target.id, let parentID = target.parentID else { continue }
+            byParent[parentID, default: []].append(id)
+        }
+        guard !byParent.isEmpty else { return SpecificVariationFetch(byID: [:], fetchedParents: []) }
+        var byID: [Int: VariationSnapshotResponse] = [:]
+        var fetchedParents: Set<Int> = []
+        for (parentID, variationIDs) in byParent {
+            guard let rows = await fetchVariations(parentID: parentID, include: variationIDs) else { continue }
+            fetchedParents.insert(parentID)
+            for row in rows {
+                guard let rowID = row.id else { continue }
+                byID[rowID] = row
+            }
+        }
+        return SpecificVariationFetch(byID: byID, fetchedParents: fetchedParents)
+    }
+
+    fileprivate struct SpecificVariationFetch {
+        let byID: [Int: VariationSnapshotResponse]
+        /// Parents whose variation fetch returned a 2xx. Missing-variation refusal only fires under
+        /// these so a transport hiccup never refuses a valid call.
+        let fetchedParents: Set<Int>
+    }
+
+    private func fetchVariations(parentID: Int, include: [Int]?) async -> [VariationSnapshotResponse]? {
+        var query: [String: String] = [
+            "per_page": String(100),
+            "_fields": "id,name,attributes"
+        ]
+        if let include, !include.isEmpty {
+            query["include"] = include.map(String.init).joined(separator: ",")
+        }
+        let response = await client.request(method: "GET",
+                                            path: "wc/v3/products/\(parentID)/variations",
+                                            query: query,
+                                            body: nil)
+        guard (200..<300).contains(response.statusCode) else {
+            DDLogError("DefaultConfirmationSnapshotResolver variations for \(parentID) returned HTTP \(response.statusCode)")
+            return nil
+        }
+        do {
+            return try JSONDecoder().decode([VariationSnapshotResponse].self, from: response.data)
+        } catch {
+            DDLogError("DefaultConfirmationSnapshotResolver variations decode failed for \(parentID): \(error)")
+            return nil
+        }
+    }
+
+    fileprivate static func variationLabel(for row: VariationSnapshotResponse, parentName: String?) -> String? {
+        let trimmedParent = parentName?.trimmingCharacters(in: .whitespacesAndNewlines).nonEmptyOrNil
+        let optionParts = (row.attributes ?? []).compactMap { attribute -> String? in
+            attribute.option?.trimmingCharacters(in: .whitespacesAndNewlines).nonEmptyOrNil
+        }
+        // Always carry the parent name so the merchant can tell a variation row from a simple product.
+        // Prefer attributes over the stored `name`; WC fills `name` inconsistently (bare attrs on some
+        // stores, already parent-prefixed on others), and double-prefixing reads worse than either.
+        if !optionParts.isEmpty {
+            let suffix = optionParts.joined(separator: ", ")
+            return trimmedParent.map { "\($0) - \(suffix)" } ?? suffix
+        }
+        guard let name = row.name?.trimmingCharacters(in: .whitespacesAndNewlines).nonEmptyOrNil else {
+            return trimmedParent
+        }
+        guard let trimmedParent, !name.hasPrefix(trimmedParent) else { return name }
+        return "\(trimmedParent) - \(name)"
     }
 
     private static func productCurrentValues(from response: ProductSnapshotResponse) -> [String: ConfirmationPreviewText] {
@@ -264,6 +476,18 @@ fileprivate struct ProductSnapshotResponse: Decodable {
     let status: String?
     let stock_status: String?
     let sku: String?
+}
+
+fileprivate struct VariationSnapshotResponse: Decodable {
+    let id: Int?
+    let name: String?
+    let attributes: [VariationAttributeSnapshot]?
+}
+
+fileprivate struct VariationAttributeSnapshot: Decodable {
+    let id: Int?
+    let name: String?
+    let option: String?
 }
 
 private extension String {

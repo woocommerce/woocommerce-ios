@@ -9,4 +9,8 @@ public enum SafetyDecision: Equatable, Sendable {
 
     /// Typed preview shown on the confirmation card.
     case requireConfirmation(preview: ConfirmationPreview)
+
+    /// Resolver determined the call can't proceed (e.g. missing entities). The
+    /// orchestrator surfaces this as a synthetic tool failure without showing a card.
+    case refusePreDispatch(reason: String)
 }

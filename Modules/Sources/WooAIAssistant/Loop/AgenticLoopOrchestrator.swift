@@ -462,6 +462,24 @@ public actor AgenticLoopOrchestrator {
             case .execute:
                 approvedIndices.append(index)
 
+            case .refusePreDispatch(let reason):
+                let payload = Self.errorJSON(reason)
+                continuation.yield(.toolCallStarted(id: call.id,
+                                                    name: call.function.name,
+                                                    argumentsJSON: call.function.arguments))
+                continuation.yield(.toolCallCompleted(id: call.id,
+                                                      name: call.function.name,
+                                                      resultJSON: payload))
+                if let telemetryContext {
+                    let canonical = Self.canonicalToolName(call.function.name, toolsByName: toolsByName)
+                    await emitTelemetry(.toolCallCompleted(context: telemetryContext,
+                                                           toolName: canonical,
+                                                           status: .failure,
+                                                           errorKind: .validationError,
+                                                           durationMs: nil))
+                }
+                resolvedResults[index] = payload
+
             case .requireConfirmation(let preview):
                 let proposal = ToolProposal(toolName: call.function.name,
                                             toolCallID: call.id,

@@ -25,15 +25,21 @@ public struct ConfirmationPreviewField: Equatable, Sendable {
     public let label: ConfirmationPreviewText
     public let value: ConfirmationPreviewText
     public let priorValue: ConfirmationPreviewText?
+    /// Per-entity rendered values keyed by target id. Populated when an update sets the same
+    /// field across multiple entries but the value diverges, so the card lists which id gets
+    /// which value instead of hiding it behind a "varies" placeholder.
+    public let perEntryValues: [Int: ConfirmationPreviewText]?
 
     public init(name: String,
                 label: ConfirmationPreviewText,
                 value: ConfirmationPreviewText,
-                priorValue: ConfirmationPreviewText? = nil) {
+                priorValue: ConfirmationPreviewText? = nil,
+                perEntryValues: [Int: ConfirmationPreviewText]? = nil) {
         self.name = name
         self.label = label
         self.value = value
         self.priorValue = priorValue
+        self.perEntryValues = perEntryValues
     }
 }
 

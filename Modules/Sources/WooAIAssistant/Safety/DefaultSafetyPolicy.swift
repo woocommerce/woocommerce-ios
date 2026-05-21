@@ -15,6 +15,10 @@ public struct DefaultSafetyPolicy: SafetyPolicy {
             return .execute
         case .unsafe:
             let snapshot = await snapshotResolver?.resolve(toolName: name, arguments: arguments)
+            // Refusal short-circuits before preview to keep the card off-screen entirely.
+            if let reason = snapshot?.refusalReason {
+                return .refusePreDispatch(reason: reason)
+            }
             let preview = previewBuilder.build(toolName: name,
                                                arguments: arguments,
                                                snapshot: snapshot)

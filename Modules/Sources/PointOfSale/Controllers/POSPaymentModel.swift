@@ -225,7 +225,8 @@ extension POSPaymentModel {
     /// — but threaded through with the explicit method so the eventual collect
     /// targets the reader that's actually coming up.
     func startPaymentWithMethod(_ method: CardReaderConnectionMethod) async {
-        DDLogInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), currentPaymentMethod: \(String(describing: currentPaymentMethod))")
+        DDLogInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), "
+                  + "currentPaymentMethod: \(String(describing: currentPaymentMethod))")
 
         // Same-method re-entry guard. Two different shapes:
         // - BT: card state moves out of `.idle` during collection, so the

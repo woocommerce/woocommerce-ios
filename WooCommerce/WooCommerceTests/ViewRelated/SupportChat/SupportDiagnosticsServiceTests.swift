@@ -181,7 +181,9 @@ struct SupportDiagnosticsServiceTests {
 
     @Test func test_testNotifications_when_jetpack_not_active_then_returns_failure_with_setupJetpack_action() async {
         // Given
-        let sut = makeSUT()
+        let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockUserNotificationCenter.authorizationStatus = .authorized
+        let sut = makeSUT(userNotificationCenter: mockUserNotificationCenter)
         // activeSystemPlugins is empty by default, so Jetpack is not active
 
         // When

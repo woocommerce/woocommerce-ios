@@ -19,9 +19,13 @@ public enum OrdersListTool {
         questions about a specific order's payment method, customer email, \
         etc., call orders_get with the ID. \
         After calling, pass results to `show_cards` to render rather than \
-        re-fetching each order with orders_get. If a search returns no \
-        matches, do not retry with synonyms or broader terms - say no match \
-        was found.
+        re-fetching each order with orders_get. Each line_item carries a \
+        `target` object {kind, id, parent_id?} you can pass directly to \
+        products_update.updates[].target - the target encodes whether the \
+        line is a simple product or a specific variation, so you do not need \
+        to interpret product_id or variation_id yourself. If a search \
+        returns no matches, do not retry with synonyms or broader terms - \
+        say no match was found.
         """,
         parametersSchema: .object([
             "type": .string("object"),

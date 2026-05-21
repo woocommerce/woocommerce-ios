@@ -186,8 +186,7 @@ struct CardFamily: Sendable {
         if let qty = RESTResponseParsing.intField(item, "quantity") { out["quantity"] = .int(qty) }
         if let sku = RESTResponseParsing.stringField(item, "sku") { out["sku"] = .string(sku) }
         if let total = RESTResponseParsing.stringField(item, "total") { out["total"] = .string(total) }
-        if let pid = RESTResponseParsing.intField(item, "product_id") { out["product_id"] = .int(pid) }
-        if let vid = RESTResponseParsing.intField(item, "variation_id") { out["variation_id"] = .int(vid) }
+        if let target = OrderSummary.lineItemTarget(from: item) { out["target"] = target }
         return .object(out)
     }
 

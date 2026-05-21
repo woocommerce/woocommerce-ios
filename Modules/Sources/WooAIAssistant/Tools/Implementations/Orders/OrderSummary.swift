@@ -93,9 +93,29 @@ enum OrderSummary {
         if let qty = RESTResponseParsing.intField(item, "quantity") { out["quantity"] = .int(qty) }
         if let sku = RESTResponseParsing.stringField(item, "sku") { out["sku"] = .string(sku) }
         if let total = RESTResponseParsing.stringField(item, "total") { out["total"] = .string(total) }
-        if let pid = RESTResponseParsing.intField(item, "product_id") { out["product_id"] = .int(pid) }
-        if let vid = RESTResponseParsing.intField(item, "variation_id") { out["variation_id"] = .int(vid) }
+        if let target = lineItemTarget(from: item) { out["target"] = target }
         return .object(out)
+    }
+
+    /// Pre-bakes the products_update target shape so the model never has to interpret
+    /// product_id vs variation_id; copying `target` straight into a write call is unambiguous.
+    static func lineItemTarget(from item: AnyCodableJSON) -> AnyCodableJSON? {
+        let productID = RESTResponseParsing.intField(item, "product_id") ?? 0
+        let variationID = RESTResponseParsing.intField(item, "variation_id") ?? 0
+        if variationID > 0 {
+            return .object([
+                "kind": .string("variation"),
+                "id": .int(variationID),
+                "parent_id": .int(productID)
+            ])
+        }
+        if productID > 0 {
+            return .object([
+                "kind": .string("product"),
+                "id": .int(productID)
+            ])
+        }
+        return nil
     }
 
     private static func compactCouponLine(_ item: AnyCodableJSON) -> AnyCodableJSON {

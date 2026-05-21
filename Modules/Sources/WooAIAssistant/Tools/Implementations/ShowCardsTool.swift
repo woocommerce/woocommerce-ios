@@ -27,8 +27,9 @@ public enum ShowCardsTool {
         is a compact summary only. Model-visible fields per family: order \
         has id, number, status, total, currency, date_created, customer_name, \
         customer_id, payment_method_title, line_items_count, line_items \
-        (each with id, name, quantity, sku, total, product_id, variation_id - \
-        capped at 5 per order); product has id, name, sku, price, stock_status, \
+        (each with id, name, quantity, sku, total, and a `target` object \
+        {kind, id, parent_id?} that can be passed straight to \
+        products_update.updates[].target - capped at 5 per order); product has id, name, sku, price, stock_status, \
         type, manage_stock, on_sale, stock_quantity, variations_count; \
         variation adds parent_id; customer has id, first_name, \
         last_name, email, orders_count. For any other field (full descriptions, \

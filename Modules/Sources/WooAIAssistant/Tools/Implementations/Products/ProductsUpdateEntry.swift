@@ -19,11 +19,13 @@ struct ProductsUpdateEntry: Decodable, Sendable {
         let kind: String?
         let id: Int?
         let parentID: Int?
+        let scope: String?
 
         enum CodingKeys: String, CodingKey {
             case kind
             case id
             case parentID = "parent_id"
+            case scope
         }
     }
 

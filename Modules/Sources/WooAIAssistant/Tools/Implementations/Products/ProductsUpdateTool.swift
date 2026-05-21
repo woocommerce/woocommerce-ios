@@ -8,6 +8,7 @@ public enum ProductsUpdateTool {
     public static let maxBatchSize = 100
 
     static let concurrencyCap = 5
+    static let variationsPerPage = 100
     /// Mirrors the WC REST `per_page` ceiling so a single `?include=` chunk covers up to 100 ids.
     static let discoveryChunkSize = 100
 
@@ -18,22 +19,30 @@ public enum ProductsUpdateTool {
     private static let definition = AITool(
         name: name,
         description: """
-        Update one or more EXISTING product entities (simple products or variations) in a single \
-        call. Each update needs a `target` object identifying what to write, plus at least one \
-        field to change. The target shape mirrors what orders_list/products_list/show_cards emit \
-        on each row, so copy that object verbatim. This tool does NOT create new products or \
-        delete products; for those, point the merchant at the Products tab in the app. \
+        Update one or more EXISTING product entities (simple products, variable products, or \
+        variations) in a single call. Each update needs a `target` object identifying what to \
+        write, plus at least one field to change. The target shape mirrors what \
+        orders_list/products_list/show_cards emit on each row, so copy that object verbatim. \
+        This tool does NOT create new products or delete products; for those, point the merchant \
+        at the Products tab in the app. \
         Target shapes: `{kind: "product", id: N}` for a top-level product (simple or variable \
-        parent); `{kind: "variation", id: V, parent_id: P}` for one specific variation. \
-        Examples: `{target: {kind: "product", id: 42}, sale_price: "9.99"}` discounts simple \
-        product 42; `{target: {kind: "variation", id: 58, parent_id: 41}, sale_price: "9.99"}` \
-        discounts ONE variation - use this with the target object on order line_items. \
+        parent); `{kind: "variation", id: V, parent_id: P}` for one specific variation; \
+        `{kind: "product", id: N, scope: "all_variations"}` to fan price/stock changes out to \
+        every variation of variable parent N. Without `scope`, variable-parent entries only \
+        apply parent-level fields (name, status, sku); price and stock changes are rejected with \
+        a pointer to target specific variations or to set scope=all_variations. Examples: \
+        `{target: {kind: "product", id: 42}, percent_discount: 10}` discounts simple product \
+        42; `{target: {kind: "variation", id: 58, parent_id: 41}, percent_discount: 10}` \
+        discounts ONE variation - use this with the target object on order line_items; \
+        `{target: {kind: "product", id: 821, scope: "all_variations"}, percent_discount: 10}` \
+        discounts ALL variations under variable parent 821. \
         Editable fields: `regular_price`, `sale_price`, `percent_discount`, `stock_quantity`, \
         `status`, `name`, `stock_status`, `sku`. For percentage-off discounts use \
         `percent_discount` per entry and the server computes per-item `sale_price` from the \
-        entity's current regular price. Otherwise set `sale_price` explicitly. On a variable \
-        parent only `name`, `status`, and `sku` apply; price and stock changes are rejected with \
-        a pointer to target specific variations. Variations do not have settable names. \
+        entity's current regular price. Otherwise set `sale_price` explicitly. `stock_quantity` \
+        on a variable parent is rejected even with scope; target specific variations. Variations \
+        do not have settable names. Variable parents with more than 100 variations are refused \
+        entirely when `scope: "all_variations"` is set; target specific variation ids instead. \
         The result has an `updated` array of target objects ({kind:"product", id} or \
         {kind:"variation", id, parent_id}); pass each one to `show_cards` (a variation maps to \
         the combined parent/variation ref) or back into `products_update.updates[].target`.
@@ -69,6 +78,12 @@ public enum ProductsUpdateTool {
                                         "type": .string("integer"),
                                         "description": .string("Required when kind=variation; "
                                             + "must equal the variation's parent product id.")
+                                    ]),
+                                    "scope": .object([
+                                        "type": .string("string"),
+                                        "enum": .array([.string("all_variations")]),
+                                        "description": .string("Only valid on kind=product variable parents. "
+                                            + "Set to \"all_variations\" to fan changes out to every variation.")
                                     ])
                                 ]),
                                 "required": .array([.string("kind"), .string("id")])
@@ -149,11 +164,16 @@ public enum ProductsUpdateTool {
             let kind: Kind
             let id: Int
             let parentID: Int?
+            let scope: Scope?
         }
 
         enum Kind: String, Sendable {
             case product
             case variation
+        }
+
+        enum Scope: String, Sendable {
+            case allVariations = "all_variations"
         }
 
         init(_ raw: ProductsUpdateEntry, target: Target) {
@@ -321,6 +341,15 @@ public enum ProductsUpdateTool {
                                   kind: .invalidToolCall,
                                   reason: "target.id is required and must be a positive integer"))
         }
+        var scope: ValidatedEntry.Scope?
+        if let scopeRaw = raw.scope {
+            guard let resolved = ValidatedEntry.Scope(rawValue: scopeRaw) else {
+                return .invalid(.init(toolName: name,
+                                      kind: .invalidToolCall,
+                                      reason: "target.scope must be \"all_variations\" or omitted"))
+            }
+            scope = resolved
+        }
         switch kind {
         case .product:
             if raw.parentID != nil {
@@ -328,8 +357,13 @@ public enum ProductsUpdateTool {
                                       kind: .invalidToolCall,
                                       reason: "target.parent_id is only valid when kind=\"variation\""))
             }
-            return .valid(.init(kind: .product, id: id, parentID: nil))
+            return .valid(.init(kind: .product, id: id, parentID: nil, scope: scope))
         case .variation:
+            if scope != nil {
+                return .invalid(.init(toolName: name,
+                                      kind: .invalidToolCall,
+                                      reason: "target.scope is not valid when kind=\"variation\""))
+            }
             guard let parentID = raw.parentID, parentID > 0 else {
                 return .invalid(.init(toolName: name,
                                       kind: .invalidToolCall,
@@ -340,7 +374,7 @@ public enum ProductsUpdateTool {
                                       kind: .invalidToolCall,
                                       reason: "target.parent_id must differ from target.id"))
             }
-            return .valid(.init(kind: .variation, id: id, parentID: parentID))
+            return .valid(.init(kind: .variation, id: id, parentID: parentID, scope: nil))
         }
     }
 

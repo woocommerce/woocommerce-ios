@@ -53,7 +53,7 @@ struct ProductsUpdatePlanner {
         let type = RESTResponseParsing.stringField(entity, "type") ?? ""
         switch type {
         case "variable":
-            return planVariableParent(entry: entry)
+            return await planVariableParent(entry: entry)
         case "variation":
             let reason = "Product #\(entry.id) is a variation. Use target.kind=\"variation\" with "
                 + "parent_id and the variation id, not target.kind=\"product\"."
@@ -88,31 +88,127 @@ struct ProductsUpdatePlanner {
     }
 
     /// Variable parents accept name/status/sku on the parent row itself; price and stock live on
-    /// the variations, so those fields are refused here. An entry can produce a parent write for
-    /// the parent-level fields AND a refusal note for the price/stock fields at once.
-    private func planVariableParent(entry: ProductsUpdateTool.Entry) -> EntryPlan {
-        var patch: [String: AnyCodableJSON] = [:]
-        if let value = entry.name { patch["name"] = .string(value) }
-        if let value = entry.status { patch["status"] = .string(value) }
-        if let value = entry.sku { patch["sku"] = .string(value) }
-
-        var failures: [(Int, String)] = []
-        if entry.regularPrice != nil || entry.salePrice != nil
-            || entry.stockStatus != nil || entry.stockQuantity != nil {
-            let reason = "Product #\(entry.id) is a variable product. Price and stock changes must "
-                + "target individual variations (target.kind=\"variation\" with parent_id). Its name, "
-                + "status, and sku can be set on the parent."
-            failures.append((entry.id, reason))
+    /// the variations. Without `scope=all_variations` those variation-level fields are refused so the
+    /// model never silently writes across an entire variation set. With explicit scope they fan out
+    /// to every variation, and parent-only fields still land on the parent in the same entry.
+    private func planVariableParent(entry: ProductsUpdateTool.Entry) async -> EntryPlan {
+        if entry.stockQuantity != nil {
+            let reason = "Cannot set stock_quantity on a variable parent; target specific variations with "
+                + "target.kind=\"variation\" and update each."
+            return EntryPlan(preDispatchFailures: [(entry.id, reason)])
         }
+        var parentPatch: [String: AnyCodableJSON] = [:]
+        if let value = entry.status { parentPatch["status"] = .string(value) }
+        if let value = entry.name { parentPatch["name"] = .string(value) }
+        if let value = entry.sku { parentPatch["sku"] = .string(value) }
 
-        guard !patch.isEmpty else {
-            if failures.isEmpty {
+        let hasExpansionFields = entry.regularPrice != nil || entry.salePrice != nil
+            || entry.percentDiscount != nil || entry.stockStatus != nil
+        let scopedFanout = entry.target.scope == .allVariations
+
+        if hasExpansionFields && !scopedFanout {
+            let reason = "Cannot apply variation-level fields (regular_price, sale_price, "
+                + "percent_discount, stock_status) to variable parent #\(entry.id) without explicit "
+                + "fanout consent. To target a specific variation, use "
+                + "target.kind=\"variation\" with parent_id. To apply the change to ALL variations, "
+                + "set target.scope=\"all_variations\"."
+            return EntryPlan(preDispatchFailures: [(entry.id, reason)])
+        }
+        guard hasExpansionFields else {
+            guard !parentPatch.isEmpty else {
                 return EntryPlan(preDispatchFailures: [(entry.id, "no editable field resolved for this entry")])
             }
-            return EntryPlan(preDispatchFailures: failures)
+            let write = PlannedWrite(targetID: entry.id, expandedParent: nil, patch: parentPatch)
+            return EntryPlan(writes: [write])
         }
-        let write = PlannedWrite(targetID: entry.id, expandedParent: nil, patch: patch)
-        return EntryPlan(preDispatchFailures: failures, writes: [write])
+
+        let expansion = await planVariableParentExpansion(entry: entry, parentID: entry.id)
+        guard !parentPatch.isEmpty else { return expansion }
+        // If the per-variation expansion refused entirely, applying parent-only fields would be a
+        // surprise partial write that contradicts the tool description's "refused entirely" promise.
+        let expansionRefused = expansion.writes.isEmpty && !expansion.preDispatchFailures.isEmpty
+        if expansionRefused {
+            let combinedReason = "Cannot apply parent-only fields (e.g. name/status/sku) and per-variation "
+                + "fields (e.g. price/stock_status) in the same update for product #\(entry.id) because the "
+                + "per-variation expansion was refused. Issue two separate updates: one for the parent-only "
+                + "fields, and one with target.kind=\"variation\" entries for the per-variation fields."
+            return EntryPlan(preDispatchFailures: [(entry.id, combinedReason)])
+        }
+        let parentWrite = PlannedWrite(targetID: entry.id, expandedParent: nil, patch: parentPatch)
+        return EntryPlan(preDispatchFailures: expansion.preDispatchFailures,
+                         writes: [parentWrite] + expansion.writes)
+    }
+
+    private func planVariableParentExpansion(entry: ProductsUpdateTool.Entry,
+                                             parentID: Int) async -> EntryPlan {
+        let response = await client.request(method: "GET",
+                                            path: "wc/v3/products/\(parentID)/variations",
+                                            query: ["per_page": String(ProductsUpdateTool.variationsPerPage)],
+                                            body: nil)
+        guard HTTPStatusClassification.isSuccess(response.statusCode),
+              let payload = RESTResponseParsing.decodeJSON(response.data),
+              let rows = RESTResponseParsing.arrayItems(payload) else {
+            return EntryPlan(preDispatchFailures: [(entry.id, "Could not enumerate variations for parent \(parentID)")])
+        }
+        // Refuse partial application: writing only the first page would leave variations inconsistent.
+        // Also refuse when the page is full and no header info disambiguates, since we can't prove a
+        // second page doesn't exist (covers older adapters or mocks that drop X-WP-TotalPages).
+        let pageCapMet = rows.count >= ProductsUpdateTool.variationsPerPage
+        if Self.totalPagesValue(headers: response.headers) > 1 || pageCapMet {
+            let reason = "Cannot update variable product #\(entry.id): it has more than "
+                + "\(ProductsUpdateTool.variationsPerPage) variations and updating only the first "
+                + "\(ProductsUpdateTool.variationsPerPage) would leave the rest in an inconsistent state. "
+                + "Issue updates with target.kind=\"variation\" for specific variation ids instead."
+            return EntryPlan(preDispatchFailures: [(entry.id, reason)])
+        }
+        var writes: [PlannedWrite] = []
+        var failures: [(Int, String)] = []
+        for row in rows {
+            switch plannedVariationWrite(entry: entry, row: row, parentID: parentID) {
+            case .success(let write): writes.append(write)
+            case .failure(let failure): failures.append(failure)
+            case .none: continue
+            }
+        }
+        return EntryPlan(preDispatchFailures: failures, writes: writes)
+    }
+
+    /// `.none` means the row had no `id` to target; the loop skips it silently.
+    private enum VariationOutcome {
+        case success(PlannedWrite)
+        case failure((Int, String))
+        case none
+    }
+
+    private func plannedVariationWrite(entry: ProductsUpdateTool.Entry,
+                                       row: AnyCodableJSON,
+                                       parentID: Int) -> VariationOutcome {
+        guard let identifier = RESTResponseParsing.intField(row, "id") else { return .none }
+        let variationID = Int(identifier)
+        var patch: [String: AnyCodableJSON] = [:]
+        if let value = entry.regularPrice { patch["regular_price"] = .string(value) }
+        if let value = entry.salePrice { patch["sale_price"] = .string(value) }
+        if let percent = entry.percentDiscount {
+            guard let regular = RESTResponseParsing.decimalField(row, "regular_price"),
+                  let salePrice = Self.computeSalePrice(regular: regular, percent: percent) else {
+                return .failure((variationID, "Cannot compute percent discount: regular_price is empty"))
+            }
+            patch["sale_price"] = .string(salePrice)
+        }
+        if let value = entry.stockStatus { patch["stock_status"] = .string(value) }
+        guard !patch.isEmpty else {
+            return .failure((variationID, "no editable field resolved"))
+        }
+        return .success(PlannedWrite(targetID: variationID,
+                                     expandedParent: parentID,
+                                     patch: patch))
+    }
+
+    private static func totalPagesValue(headers: [String: String]) -> Int {
+        for (key, value) in headers where key.caseInsensitiveCompare("X-WP-TotalPages") == .orderedSame {
+            return Int(value) ?? 0
+        }
+        return 0
     }
 
     private func planVariation(entry: ProductsUpdateTool.Entry,

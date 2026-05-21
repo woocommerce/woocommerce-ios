@@ -13,14 +13,14 @@ import Foundation
 public protocol WPComQRLoginRemoteProtocol {
     func scan(token: String,
               encrypted: String,
-              device: QRLoginScanDevice) async throws -> QRLoginScanResponse
+              device: QRLoginScanDevice) async throws -> WPComQRLoginScanResponse
 
     func pollSessionStatus(sessionID: String,
-                           tokenHash: String) async throws -> QRLoginSessionStatus
+                           tokenHash: String) async throws -> WPComQRLoginSessionStatus
 
     func exchange(token: String,
                   encrypted: String,
-                  exchangeGrant: String) async throws -> QRLoginWPComExchangeResponse
+                  exchangeGrant: String) async throws -> WPComQRLoginExchangeResponse
 }
 
 public final class WPComQRLoginRemote: WPComQRLoginRemoteProtocol {
@@ -37,7 +37,7 @@ public final class WPComQRLoginRemote: WPComQRLoginRemoteProtocol {
 
     public func scan(token: String,
                      encrypted: String,
-                     device: QRLoginScanDevice) async throws -> QRLoginScanResponse {
+                     device: QRLoginScanDevice) async throws -> WPComQRLoginScanResponse {
         let request = try makeJSONRequest(
             method: "POST",
             url: endpoint(Paths.scan),
@@ -54,11 +54,11 @@ public final class WPComQRLoginRemote: WPComQRLoginRemoteProtocol {
         if let error = QRLoginHTTPStatusMapper.error(forStatusCode: statusCode, body: data) {
             throw error
         }
-        return try QRLoginResponseDecoder.scan(data: data, includeUserEmail: true)
+        return try QRLoginResponseBody.decode(WPComQRLoginScanResponse.self, from: data)
     }
 
     public func pollSessionStatus(sessionID: String,
-                                  tokenHash: String) async throws -> QRLoginSessionStatus {
+                                  tokenHash: String) async throws -> WPComQRLoginSessionStatus {
         var components = endpointComponents(Paths.sessionStatus)
         components.queryItems = [
             URLQueryItem(name: "client_id", value: clientID),
@@ -80,16 +80,16 @@ public final class WPComQRLoginRemote: WPComQRLoginRemoteProtocol {
             // (server keeps terminal records ~2 minutes; once evicted the
             // lookup 404s). The UI shows the timeout copy, not a hard error.
             if case .notFound = error {
-                return QRLoginSessionStatus(state: .expired, exchangeGrant: nil)
+                return WPComQRLoginSessionStatus(state: .expired, exchangeGrant: nil)
             }
             throw error
         }
-        return try QRLoginResponseDecoder.sessionStatus(data: data)
+        return try QRLoginResponseBody.decode(WPComQRLoginSessionStatus.self, from: data)
     }
 
     public func exchange(token: String,
                          encrypted: String,
-                         exchangeGrant: String) async throws -> QRLoginWPComExchangeResponse {
+                         exchangeGrant: String) async throws -> WPComQRLoginExchangeResponse {
         let request = try makeJSONRequest(
             method: "POST",
             url: endpoint(Paths.exchange),
@@ -105,7 +105,7 @@ public final class WPComQRLoginRemote: WPComQRLoginRemoteProtocol {
         if let error = QRLoginHTTPStatusMapper.error(forStatusCode: statusCode, body: data) {
             throw error
         }
-        return try QRLoginResponseDecoder.wpComExchange(data: data)
+        return try QRLoginResponseBody.decode(WPComQRLoginExchangeResponse.self, from: data)
     }
 }
 

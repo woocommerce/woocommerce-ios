@@ -11,7 +11,7 @@ struct QRLoginStoreTests {
 
     @Test func selfHostedScan_dispatch_forwards_to_remote_and_returns_response() async {
         // Given
-        let expected = QRLoginScanResponse(sessionID: "s", realNumber: "123", expiresInSeconds: 90, userEmail: nil)
+        let expected = SelfHostedQRLoginScanResponse(sessionID: "s", realNumber: "123", expiresInSeconds: 90)
         let selfHosted = MockSelfHostedQRLoginRemote()
         selfHosted.scanResponse = .success(expected)
         let store = makeStore(selfHosted: selfHosted)
@@ -68,7 +68,7 @@ struct QRLoginStoreTests {
 
     @Test func selfHostedExchange_dispatch_forwards_to_remote() async {
         // Given
-        let expected = QRLoginSelfHostedExchangeResponse(userLogin: "u",
+        let expected = SelfHostedQRLoginExchangeResponse(userLogin: "u",
                                                          siteURL: "https://shop.example",
                                                          applicationPassword: "ap")
         let selfHosted = MockSelfHostedQRLoginRemote()
@@ -96,7 +96,7 @@ struct QRLoginStoreTests {
 
     @Test func wpComScan_dispatch_forwards_to_remote() async {
         // Given
-        let expected = QRLoginScanResponse(sessionID: "s", realNumber: "123", expiresInSeconds: 90, userEmail: "u@e")
+        let expected = WPComQRLoginScanResponse(sessionID: "s", realNumber: "123", expiresInSeconds: 90, userEmail: "u@e")
         let wpCom = MockWPComQRLoginRemote()
         wpCom.scanResponse = .success(expected)
         let store = makeStore(wpCom: wpCom)
@@ -136,7 +136,7 @@ struct QRLoginStoreTests {
 
     @Test func wpComExchange_dispatch_forwards_to_remote() async {
         // Given
-        let expected = QRLoginWPComExchangeResponse(magicLinkURL: URL(string: "https://wordpress.com/wp-login.php?token=x")!)
+        let expected = WPComQRLoginExchangeResponse(magicLinkURL: URL(string: "https://wordpress.com/wp-login.php?token=x")!)
         let wpCom = MockWPComQRLoginRemote()
         wpCom.exchangeResponse = .success(expected)
         let store = makeStore(wpCom: wpCom)
@@ -170,7 +170,7 @@ private extension QRLoginStoreTests {
         QRLoginStore(dispatcher: Dispatcher(), selfHostedRemote: selfHosted, wpComRemote: wpCom)
     }
 
-    func dispatchScanSelfHosted(store: QRLoginStore) async -> Result<QRLoginScanResponse, QRLoginNetworkError> {
+    func dispatchScanSelfHosted(store: QRLoginStore) async -> Result<SelfHostedQRLoginScanResponse, QRLoginNetworkError> {
         await withCheckedContinuation { continuation in
             let action = QRLoginAction.selfHostedScan(
                 siteURL: URL(string: "https://shop.example")!,
@@ -195,21 +195,21 @@ private final class MockSelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol
     var pollCalls: [PollCall] = []
     var exchangeCalls: [ExchangeCall] = []
 
-    var scanResponse: Result<QRLoginScanResponse, QRLoginNetworkError> = .failure(.malformed)
-    var pollResponse: Result<QRLoginSessionStatus, QRLoginNetworkError> = .failure(.malformed)
-    var exchangeResponse: Result<QRLoginSelfHostedExchangeResponse, QRLoginNetworkError> = .failure(.malformed)
+    var scanResponse: Result<SelfHostedQRLoginScanResponse, QRLoginNetworkError> = .failure(.malformed)
+    var pollResponse: Result<SelfHostedQRLoginSessionStatus, QRLoginNetworkError> = .failure(.malformed)
+    var exchangeResponse: Result<SelfHostedQRLoginExchangeResponse, QRLoginNetworkError> = .failure(.malformed)
 
-    func scan(siteURL: URL, token: String, device: QRLoginScanDevice) async throws -> QRLoginScanResponse {
+    func scan(siteURL: URL, token: String, device: QRLoginScanDevice) async throws -> SelfHostedQRLoginScanResponse {
         scanCalls.append(.init(siteURL: siteURL, token: token, device: device))
         return try scanResponse.get()
     }
 
-    func pollSessionStatus(siteURL: URL, sessionID: String, tokenHash: String) async throws -> QRLoginSessionStatus {
+    func pollSessionStatus(siteURL: URL, sessionID: String, tokenHash: String) async throws -> SelfHostedQRLoginSessionStatus {
         pollCalls.append(.init(siteURL: siteURL, sessionID: sessionID, tokenHash: tokenHash))
         return try pollResponse.get()
     }
 
-    func exchange(siteURL: URL, token: String, exchangeGrant: String) async throws -> QRLoginSelfHostedExchangeResponse {
+    func exchange(siteURL: URL, token: String, exchangeGrant: String) async throws -> SelfHostedQRLoginExchangeResponse {
         exchangeCalls.append(.init(siteURL: siteURL, token: token, exchangeGrant: exchangeGrant))
         return try exchangeResponse.get()
     }
@@ -224,21 +224,21 @@ private final class MockWPComQRLoginRemote: WPComQRLoginRemoteProtocol, @uncheck
     var pollCalls: [PollCall] = []
     var exchangeCalls: [ExchangeCall] = []
 
-    var scanResponse: Result<QRLoginScanResponse, QRLoginNetworkError> = .failure(.malformed)
-    var pollResponse: Result<QRLoginSessionStatus, QRLoginNetworkError> = .failure(.malformed)
-    var exchangeResponse: Result<QRLoginWPComExchangeResponse, QRLoginNetworkError> = .failure(.malformed)
+    var scanResponse: Result<WPComQRLoginScanResponse, QRLoginNetworkError> = .failure(.malformed)
+    var pollResponse: Result<WPComQRLoginSessionStatus, QRLoginNetworkError> = .failure(.malformed)
+    var exchangeResponse: Result<WPComQRLoginExchangeResponse, QRLoginNetworkError> = .failure(.malformed)
 
-    func scan(token: String, encrypted: String, device: QRLoginScanDevice) async throws -> QRLoginScanResponse {
+    func scan(token: String, encrypted: String, device: QRLoginScanDevice) async throws -> WPComQRLoginScanResponse {
         scanCalls.append(.init(token: token, encrypted: encrypted, device: device))
         return try scanResponse.get()
     }
 
-    func pollSessionStatus(sessionID: String, tokenHash: String) async throws -> QRLoginSessionStatus {
+    func pollSessionStatus(sessionID: String, tokenHash: String) async throws -> WPComQRLoginSessionStatus {
         pollCalls.append(.init(sessionID: sessionID, tokenHash: tokenHash))
         return try pollResponse.get()
     }
 
-    func exchange(token: String, encrypted: String, exchangeGrant: String) async throws -> QRLoginWPComExchangeResponse {
+    func exchange(token: String, encrypted: String, exchangeGrant: String) async throws -> WPComQRLoginExchangeResponse {
         exchangeCalls.append(.init(token: token, encrypted: encrypted, exchangeGrant: exchangeGrant))
         return try exchangeResponse.get()
     }

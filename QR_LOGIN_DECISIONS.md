@@ -55,16 +55,17 @@ Body parsing uses the WordPress REST envelope (`{ "code": "...", "message":
 
 Per spec §5.2.2 the wp.com poll's 404 is coerced to a `.expired` terminal
 state rather than surfaced as an error. `WPComQRLoginRemote.pollSessionStatus`
-catches `.notFound` and returns a synthetic `QRLoginSessionStatus(state:
+catches `.notFound` and returns a synthetic `WPComQRLoginSessionStatus(state:
 .expired, exchangeGrant: nil)`. The mapper doesn't need to know about it.
 
 ### Polling loop lives in the app target
 
 `QRLoginPollingLoop` lives under `WooCommerce/Classes/Authentication/QRLogin/`.
 It is pure orchestration — it composes an injected `PollAttempt` closure with
-phase + protocol-aware error mapping. It imports `Yosemite` only (for the
-re-exported `QRLoginNetworkError` / `QRLoginSessionStatus`), never `Networking`
-directly. The Networking layer stays focused on raw HTTP shape.
+phase + protocol-aware error mapping. Its `PollAttempt` yields the app-layer
+`QRLoginSessionState`; it imports `Yosemite` only for the re-exported
+`QRLoginNetworkError`, never `Networking` directly. The Networking layer stays
+focused on raw HTTP shape.
 
 ---
 
@@ -347,8 +348,8 @@ Two parts:
    moved to `WooCommerceTests`.
 
 2. The QR-login Networking types that surface through `QRLoginAction`
-   (`QRLoginScanResponse`, `QRLoginSessionStatus`, `QRLoginScanDevice`, the
-   exchange responses, `QRLoginNetworkError`, `QRLoginTokenHash`) are now
+   (the per-endpoint scan and session-status responses, `QRLoginScanDevice`,
+   the exchange responses, `QRLoginNetworkError`, `QRLoginTokenHash`) are now
    re-exported by Yosemite as `public typealias`es in `QRLoginAction.swift` —
    the same pattern `Model.swift` uses for `Order` / `Product`.
    `RemoteFeatureFlagOverrideStore` joined the existing feature-flag
@@ -384,3 +385,27 @@ surface is left for good (success, prologue back-out, deep-link exit,
 fallback-to-site-address, magic-link handoff). `AuthenticationManager`
 clears its `qrLoginCoordinator` reference there, so a later deep link can't
 reuse a stale, dismissed coordinator.
+
+### QR-login data layer split per endpoint
+
+The self-hosted and wp.com endpoints are owned by separate backends, so the
+data layer is now endpoint-shaped: each endpoint's response has its own
+`Decodable` struct rather than a shared one — `SelfHostedQRLoginScanResponse` /
+`WPComQRLoginScanResponse` and `SelfHostedQRLoginSessionStatus` /
+`WPComQRLoginSessionStatus` (the exchange responses were already split). The
+old shared `QRLoginScanResponse` modelled `userEmail` as an optional that was
+really "always present for wp.com, never for self-hosted"; the wp.com struct
+now carries it non-optional. `QRLoginScanDevice` stays shared — it is
+request-side data the client knows about itself, identical regardless of
+endpoint.
+
+The structs decode themselves via `init(from:)`, the way every other Networking
+model does — the private "wire" structs and `QRLoginResponseDecoder` are gone,
+replaced by `QRLoginResponseBody` (a generic decode-or-`.malformed` helper plus
+the error-`code` extractor).
+
+The one concept the two flows genuinely share — a session's state during
+polling — lives in the behaviour layer as `QRLoginSessionState`
+(`WooCommerce/Classes/Authentication/QRLogin/`). Each strategy maps its
+endpoint-specific `*QRLoginSessionStatus` into it, so `QRLoginPollingLoop` and
+`QRLoginErrorMapper` stay protocol-agnostic.

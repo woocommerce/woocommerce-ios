@@ -25,8 +25,9 @@ final class QRLoginPollingLoop {
         case cancelled
     }
 
-    /// A single poll attempt. Implementations call the appropriate Remote.
-    typealias PollAttempt = () async throws -> QRLoginSessionStatus
+    /// A single poll attempt. Implementations call the appropriate Remote and
+    /// map its endpoint-specific session status into the shared `QRLoginSessionState`.
+    typealias PollAttempt = () async throws -> QRLoginSessionState
 
     /// Async sleep — injectable so tests can run the loop instantly.
     typealias Sleeper = (TimeInterval) async throws -> Void
@@ -56,12 +57,12 @@ final class QRLoginPollingLoop {
             if Task.isCancelled { return .cancelled }
 
             do {
-                let status = try await attempt()
+                let state = try await attempt()
                 transientFailures = 0 // any non-error response resets the budget
 
-                switch status.state {
-                case .approved:
-                    if let grant = status.exchangeGrant, grant.isEmpty == false {
+                switch state {
+                case .approved(let grant):
+                    if let grant, grant.isEmpty == false {
                         return .approved(exchangeGrant: grant)
                     }
                     // Fail closed (spec §5.1.2 / §5.2.2).
@@ -71,7 +72,7 @@ final class QRLoginPollingLoop {
                     break // keep polling
 
                 case .rejected, .expired, .consumed, .unknown:
-                    if let mapped = QRLoginErrorMapper.userFacingError(forTerminalState: status.state,
+                    if let mapped = QRLoginErrorMapper.userFacingError(forTerminalState: state,
                                                                        protocol_: protocol_) {
                         return .error(mapped)
                     }

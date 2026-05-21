@@ -9,11 +9,13 @@ import Networking
 // `Networking` directly — the same re-export pattern `Model.swift` uses for
 // `Order`, `Product`, etc. (see the layering rule in AGENTS.md).
 
-public typealias QRLoginScanResponse = Networking.QRLoginScanResponse
-public typealias QRLoginSessionStatus = Networking.QRLoginSessionStatus
+public typealias SelfHostedQRLoginScanResponse = Networking.SelfHostedQRLoginScanResponse
+public typealias WPComQRLoginScanResponse = Networking.WPComQRLoginScanResponse
+public typealias SelfHostedQRLoginSessionStatus = Networking.SelfHostedQRLoginSessionStatus
+public typealias WPComQRLoginSessionStatus = Networking.WPComQRLoginSessionStatus
 public typealias QRLoginScanDevice = Networking.QRLoginScanDevice
-public typealias QRLoginSelfHostedExchangeResponse = Networking.QRLoginSelfHostedExchangeResponse
-public typealias QRLoginWPComExchangeResponse = Networking.QRLoginWPComExchangeResponse
+public typealias SelfHostedQRLoginExchangeResponse = Networking.SelfHostedQRLoginExchangeResponse
+public typealias WPComQRLoginExchangeResponse = Networking.WPComQRLoginExchangeResponse
 public typealias QRLoginNetworkError = Networking.QRLoginNetworkError
 public typealias QRLoginTokenHash = Networking.QRLoginTokenHash
 
@@ -31,31 +33,31 @@ public enum QRLoginAction: Action {
     case selfHostedScan(siteURL: URL,
                         token: String,
                         device: QRLoginScanDevice,
-                        completion: (Result<QRLoginScanResponse, QRLoginNetworkError>) -> Void)
+                        completion: (Result<SelfHostedQRLoginScanResponse, QRLoginNetworkError>) -> Void)
 
     case selfHostedPoll(siteURL: URL,
                         sessionID: String,
                         tokenHash: String,
-                        completion: (Result<QRLoginSessionStatus, QRLoginNetworkError>) -> Void)
+                        completion: (Result<SelfHostedQRLoginSessionStatus, QRLoginNetworkError>) -> Void)
 
     case selfHostedExchange(siteURL: URL,
                             token: String,
                             exchangeGrant: String,
-                            completion: (Result<QRLoginSelfHostedExchangeResponse, QRLoginNetworkError>) -> Void)
+                            completion: (Result<SelfHostedQRLoginExchangeResponse, QRLoginNetworkError>) -> Void)
 
     // MARK: - WP.com (public-api.wordpress.com)
 
     case wpComScan(token: String,
                    encrypted: String,
                    device: QRLoginScanDevice,
-                   completion: (Result<QRLoginScanResponse, QRLoginNetworkError>) -> Void)
+                   completion: (Result<WPComQRLoginScanResponse, QRLoginNetworkError>) -> Void)
 
     case wpComPoll(sessionID: String,
                    tokenHash: String,
-                   completion: (Result<QRLoginSessionStatus, QRLoginNetworkError>) -> Void)
+                   completion: (Result<WPComQRLoginSessionStatus, QRLoginNetworkError>) -> Void)
 
     case wpComExchange(token: String,
                        encrypted: String,
                        exchangeGrant: String,
-                       completion: (Result<QRLoginWPComExchangeResponse, QRLoginNetworkError>) -> Void)
+                       completion: (Result<WPComQRLoginExchangeResponse, QRLoginNetworkError>) -> Void)
 }

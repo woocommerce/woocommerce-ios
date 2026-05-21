@@ -139,7 +139,7 @@ struct QRLoginErrorMapperTests {
 
     @Test func non_terminal_states_return_nil() {
         #expect(QRLoginErrorMapper.userFacingError(forTerminalState: .scanned, protocol_: .selfHosted) == nil)
-        #expect(QRLoginErrorMapper.userFacingError(forTerminalState: .approved, protocol_: .wpCom) == nil)
+        #expect(QRLoginErrorMapper.userFacingError(forTerminalState: .approved(exchangeGrant: "g"), protocol_: .wpCom) == nil)
     }
 
     // MARK: - /exchange

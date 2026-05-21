@@ -16,7 +16,7 @@ enum QRLoginHTTPStatusMapper {
         if (200..<300).contains(statusCode) {
             return nil
         }
-        let code = QRLoginResponseDecoder.errorCode(in: body)
+        let code = QRLoginResponseBody.errorCode(in: body)
         switch statusCode {
         case 400:
             return .badRequest(code: code)

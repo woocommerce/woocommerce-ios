@@ -69,7 +69,7 @@ private extension QRLoginStore {
     func selfHostedScan(siteURL: URL,
                         token: String,
                         device: QRLoginScanDevice,
-                        completion: @escaping (Result<QRLoginScanResponse, QRLoginNetworkError>) -> Void) {
+                        completion: @escaping (Result<SelfHostedQRLoginScanResponse, QRLoginNetworkError>) -> Void) {
         Task {
             do {
                 let response = try await selfHostedRemote.scan(siteURL: siteURL, token: token, device: device)
@@ -83,7 +83,7 @@ private extension QRLoginStore {
     func selfHostedPoll(siteURL: URL,
                         sessionID: String,
                         tokenHash: String,
-                        completion: @escaping (Result<QRLoginSessionStatus, QRLoginNetworkError>) -> Void) {
+                        completion: @escaping (Result<SelfHostedQRLoginSessionStatus, QRLoginNetworkError>) -> Void) {
         Task {
             do {
                 let status = try await selfHostedRemote.pollSessionStatus(siteURL: siteURL,
@@ -99,7 +99,7 @@ private extension QRLoginStore {
     func selfHostedExchange(siteURL: URL,
                             token: String,
                             exchangeGrant: String,
-                            completion: @escaping (Result<QRLoginSelfHostedExchangeResponse, QRLoginNetworkError>) -> Void) {
+                            completion: @escaping (Result<SelfHostedQRLoginExchangeResponse, QRLoginNetworkError>) -> Void) {
         Task {
             do {
                 let response = try await selfHostedRemote.exchange(siteURL: siteURL,
@@ -120,7 +120,7 @@ private extension QRLoginStore {
     func wpComScan(token: String,
                    encrypted: String,
                    device: QRLoginScanDevice,
-                   completion: @escaping (Result<QRLoginScanResponse, QRLoginNetworkError>) -> Void) {
+                   completion: @escaping (Result<WPComQRLoginScanResponse, QRLoginNetworkError>) -> Void) {
         Task {
             do {
                 let response = try await wpComRemote.scan(token: token, encrypted: encrypted, device: device)
@@ -133,7 +133,7 @@ private extension QRLoginStore {
 
     func wpComPoll(sessionID: String,
                    tokenHash: String,
-                   completion: @escaping (Result<QRLoginSessionStatus, QRLoginNetworkError>) -> Void) {
+                   completion: @escaping (Result<WPComQRLoginSessionStatus, QRLoginNetworkError>) -> Void) {
         Task {
             do {
                 let status = try await wpComRemote.pollSessionStatus(sessionID: sessionID, tokenHash: tokenHash)
@@ -147,7 +147,7 @@ private extension QRLoginStore {
     func wpComExchange(token: String,
                        encrypted: String,
                        exchangeGrant: String,
-                       completion: @escaping (Result<QRLoginWPComExchangeResponse, QRLoginNetworkError>) -> Void) {
+                       completion: @escaping (Result<WPComQRLoginExchangeResponse, QRLoginNetworkError>) -> Void) {
         Task {
             do {
                 let response = try await wpComRemote.exchange(token: token,

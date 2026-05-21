@@ -26,7 +26,7 @@ final class WPComQRLoginStrategy: QRLoginStrategy {
 
     private var sessionID: String?
     private var tokenHash: String?
-    private var exchangeResponse: QRLoginWPComExchangeResponse?
+    private var exchangeResponse: WPComQRLoginExchangeResponse?
 
     init(token: String,
          encrypted: String,
@@ -61,7 +61,7 @@ final class WPComQRLoginStrategy: QRLoginStrategy {
                 realNumber: response.realNumber,
                 expiresInSeconds: response.expiresInSeconds,
                 tokenHash: hash,
-                subtitle: .email(response.userEmail ?? "")
+                subtitle: .email(response.userEmail)
             ))
         } catch let error as QRLoginNetworkError {
             return .failure(QRLoginErrorMapper.userFacingError(forScan: error, protocol_: protocol_))
@@ -78,11 +78,12 @@ final class WPComQRLoginStrategy: QRLoginStrategy {
             guard let sessionID, let tokenHash else {
                 throw QRLoginNetworkError.malformed
             }
-            return try await Self.dispatch(stores: stores) { completion in
+            let status = try await Self.dispatch(stores: stores) { completion in
                 QRLoginAction.wpComPoll(sessionID: sessionID,
                                         tokenHash: tokenHash,
                                         completion: completion)
             }
+            return status.sessionState
         }
     }
 

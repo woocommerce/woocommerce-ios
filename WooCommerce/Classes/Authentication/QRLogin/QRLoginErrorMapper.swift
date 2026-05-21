@@ -98,7 +98,7 @@ enum QRLoginErrorMapper {
     }
 
     /// Map a terminal poll *state* into a user-facing variant.
-    static func userFacingError(forTerminalState state: QRLoginSessionStatus.State,
+    static func userFacingError(forTerminalState state: QRLoginSessionState,
                                 protocol_: Protocol_) -> QRLoginUserFacingError? {
         switch state {
         case .rejected:

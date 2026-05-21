@@ -39,10 +39,10 @@ struct WPComQRLoginRemoteTests {
         let response = try await remote.scan(token: compoundToken, encrypted: encrypted, device: device)
 
         // Then
-        #expect(response == QRLoginScanResponse(sessionID: "wpcom-1",
-                                                realNumber: "713",
-                                                expiresInSeconds: 90,
-                                                userEmail: "user@example.com"))
+        #expect(response == WPComQRLoginScanResponse(sessionID: "wpcom-1",
+                                                     realNumber: "713",
+                                                     expiresInSeconds: 90,
+                                                     userEmail: "user@example.com"))
     }
 
     @Test func scan_when_user_email_missing_then_malformed() async {
@@ -123,7 +123,7 @@ struct WPComQRLoginRemoteTests {
         let status = try await remote.pollSessionStatus(sessionID: sessionID, tokenHash: "hash-1")
 
         // Then
-        #expect(status == QRLoginSessionStatus(state: .scanned, exchangeGrant: nil))
+        #expect(status == WPComQRLoginSessionStatus(state: .scanned, exchangeGrant: nil))
         #expect(QRLoginStubURLProtocol.requestCount(for: url) == 1)
     }
 
@@ -141,7 +141,7 @@ struct WPComQRLoginRemoteTests {
         let status = try await remote.pollSessionStatus(sessionID: sessionID, tokenHash: "hash-1")
 
         // Then
-        #expect(status == QRLoginSessionStatus(state: .approved, exchangeGrant: "g"))
+        #expect(status == WPComQRLoginSessionStatus(state: .approved, exchangeGrant: "g"))
     }
 
     @Test func pollSessionStatus_when_consumed_then_returns_consumed_state() async throws {
@@ -176,7 +176,7 @@ struct WPComQRLoginRemoteTests {
         let status = try await remote.pollSessionStatus(sessionID: sessionID, tokenHash: "hash-1")
 
         // Then
-        #expect(status == QRLoginSessionStatus(state: .expired, exchangeGrant: nil))
+        #expect(status == WPComQRLoginSessionStatus(state: .expired, exchangeGrant: nil))
     }
 
     @Test func pollSessionStatus_when_403_then_throws_unauthorized() async {

@@ -31,7 +31,7 @@ import struct NetworkingCore.Secret
 /// a confusing UI state is not.
 @MainActor
 protocol QRLoginPostExchangeServicing {
-    func complete(_ response: QRLoginSelfHostedExchangeResponse) async -> Result<Void, QRLoginUserFacingError>
+    func complete(_ response: SelfHostedQRLoginExchangeResponse) async -> Result<Void, QRLoginUserFacingError>
 }
 
 @MainActor
@@ -57,7 +57,7 @@ final class QRLoginPostExchangeService: QRLoginPostExchangeServicing {
         self.applicationPasswordUseCaseFactory = applicationPasswordUseCaseFactory ?? Self.defaultApplicationPasswordUseCaseFactory
     }
 
-    func complete(_ response: QRLoginSelfHostedExchangeResponse) async -> Result<Void, QRLoginUserFacingError> {
+    func complete(_ response: SelfHostedQRLoginExchangeResponse) async -> Result<Void, QRLoginUserFacingError> {
         let applicationPassword = ApplicationPassword(
             wpOrgUsername: response.userLogin,
             password: Secret(response.applicationPassword),

@@ -24,7 +24,7 @@ final class SelfHostedQRLoginStrategy: QRLoginStrategy {
     /// Retry-after-success short-circuits to a no-op success rather than
     /// minting a fresh AP, in case the user taps "Try again" on a transient
     /// downstream failure.
-    private var exchangeResponse: QRLoginSelfHostedExchangeResponse?
+    private var exchangeResponse: SelfHostedQRLoginExchangeResponse?
     private var postExchangeCompleted = false
 
     init(token: String,
@@ -74,12 +74,13 @@ final class SelfHostedQRLoginStrategy: QRLoginStrategy {
                 // Programming error: poll without prior successful scan.
                 throw QRLoginNetworkError.malformed
             }
-            return try await Self.dispatch(stores: stores) { completion in
+            let status = try await Self.dispatch(stores: stores) { completion in
                 QRLoginAction.selfHostedPoll(siteURL: siteURL,
                                              sessionID: sessionID,
                                              tokenHash: tokenHash,
                                              completion: completion)
             }
+            return status.sessionState
         }
     }
 
@@ -89,7 +90,7 @@ final class SelfHostedQRLoginStrategy: QRLoginStrategy {
             return .success(.authenticated)
         }
 
-        let response: QRLoginSelfHostedExchangeResponse
+        let response: SelfHostedQRLoginExchangeResponse
         if let cached = exchangeResponse {
             // Retry path: exchange already succeeded server-side, but the
             // post-exchange site setup failed. Don't mint a new AP — re-run
@@ -125,7 +126,7 @@ final class SelfHostedQRLoginStrategy: QRLoginStrategy {
 
 private extension SelfHostedQRLoginStrategy {
 
-    func dispatch(scanWith device: QRLoginScanDevice) async -> Result<QRLoginScanResponse, QRLoginNetworkError> {
+    func dispatch(scanWith device: QRLoginScanDevice) async -> Result<SelfHostedQRLoginScanResponse, QRLoginNetworkError> {
         do {
             let response = try await Self.dispatch(stores: stores) { completion in
                 QRLoginAction.selfHostedScan(siteURL: siteURL,

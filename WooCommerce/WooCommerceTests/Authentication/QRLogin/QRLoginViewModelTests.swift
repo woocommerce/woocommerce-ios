@@ -15,8 +15,8 @@ struct QRLoginViewModelTests {
         let strategy = MockQRLoginStrategy()
         strategy.scanResult = .success(makeScanResult())
         strategy.pollResults = [
-            .success(.init(state: .scanned, exchangeGrant: nil)),
-            .success(.init(state: .approved, exchangeGrant: "grant-1"))
+            .success(.scanned),
+            .success(.approved(exchangeGrant: "grant-1"))
         ]
         strategy.exchangeResult = .success(.authenticated)
         let viewModel = QRLoginViewModel(strategy: strategy, analytics: SpyAnalytics(), pollIntervalSeconds: 0)
@@ -35,7 +35,7 @@ struct QRLoginViewModelTests {
         // instead of completing sign-in in-app (spec §10.1).
         let strategy = MockQRLoginStrategy()
         strategy.scanResult = .success(makeScanResult())
-        strategy.pollResults = [.success(.init(state: .approved, exchangeGrant: "grant-1"))]
+        strategy.pollResults = [.success(.approved(exchangeGrant: "grant-1"))]
         strategy.exchangeResult = .success(.magicLinkHandedOff)
         let viewModel = QRLoginViewModel(strategy: strategy, analytics: SpyAnalytics(), pollIntervalSeconds: 0)
 
@@ -55,7 +55,7 @@ struct QRLoginViewModelTests {
         // Given — poll stays in scanned forever; we cancel mid-poll.
         let strategy = MockQRLoginStrategy()
         strategy.scanResult = .success(makeScanResult())
-        strategy.pollResults = Array(repeating: .success(.init(state: .scanned, exchangeGrant: nil)), count: 10)
+        strategy.pollResults = Array(repeating: .success(.scanned), count: 10)
         let viewModel = QRLoginViewModel(strategy: strategy, analytics: SpyAnalytics(), pollIntervalSeconds: 0)
 
         // When
@@ -85,7 +85,7 @@ struct QRLoginViewModelTests {
 
         // When — next scan succeeds, then poll approves, then exchange OK.
         strategy.scanResult = .success(makeScanResult())
-        strategy.pollResults = [.success(.init(state: .approved, exchangeGrant: "g"))]
+        strategy.pollResults = [.success(.approved(exchangeGrant: "g"))]
         strategy.exchangeResult = .success(.authenticated)
         await viewModel.retry()
 
@@ -98,7 +98,7 @@ struct QRLoginViewModelTests {
         // Given — initial flow gets us to exchange, which fails.
         let strategy = MockQRLoginStrategy()
         strategy.scanResult = .success(makeScanResult())
-        strategy.pollResults = [.success(.init(state: .approved, exchangeGrant: "grant-x"))]
+        strategy.pollResults = [.success(.approved(exchangeGrant: "grant-x"))]
         strategy.exchangeResult = .failure(.init(kind: .network, phase: .exchange, primaryAction: .retryFailedPhase))
         let viewModel = QRLoginViewModel(strategy: strategy, analytics: SpyAnalytics(), pollIntervalSeconds: 0)
         await viewModel.start()
@@ -139,7 +139,7 @@ struct QRLoginViewModelTests {
         let scansAtErrorTime = strategy.scanCount
 
         // When
-        strategy.pollResults = [.success(.init(state: .approved, exchangeGrant: "g"))]
+        strategy.pollResults = [.success(.approved(exchangeGrant: "g"))]
         strategy.exchangeResult = .success(.authenticated)
         await viewModel.retry()
 
@@ -154,7 +154,7 @@ struct QRLoginViewModelTests {
         // Given
         let strategy = MockQRLoginStrategy()
         strategy.scanResult = .success(makeScanResult())
-        strategy.pollResults = [.success(.init(state: .approved, exchangeGrant: "g"))]
+        strategy.pollResults = [.success(.approved(exchangeGrant: "g"))]
         strategy.exchangeResult = .success(.authenticated)
         let analytics = SpyAnalytics()
         let viewModel = QRLoginViewModel(strategy: strategy, analytics: analytics, pollIntervalSeconds: 0)
@@ -213,7 +213,7 @@ private final class MockQRLoginStrategy: QRLoginStrategy {
     var scanResult: Result<QRLoginScanResult, QRLoginUserFacingError> = .failure(.init(kind: .unexpected,
                                                                                        phase: .scan,
                                                                                        primaryAction: .retryFailedPhase))
-    var pollResults: [Result<QRLoginSessionStatus, QRLoginNetworkError>] = []
+    var pollResults: [Result<QRLoginSessionState, QRLoginNetworkError>] = []
     var exchangeResult: Result<QRLoginExchangeOutcome, QRLoginUserFacingError> =
         .failure(.init(kind: .unexpected, phase: .exchange, primaryAction: .retryFailedPhase))
 

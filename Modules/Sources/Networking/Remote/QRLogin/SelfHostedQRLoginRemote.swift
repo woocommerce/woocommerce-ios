@@ -13,15 +13,15 @@ import Foundation
 public protocol SelfHostedQRLoginRemoteProtocol {
     func scan(siteURL: URL,
               token: String,
-              device: QRLoginScanDevice) async throws -> QRLoginScanResponse
+              device: QRLoginScanDevice) async throws -> SelfHostedQRLoginScanResponse
 
     func pollSessionStatus(siteURL: URL,
                            sessionID: String,
-                           tokenHash: String) async throws -> QRLoginSessionStatus
+                           tokenHash: String) async throws -> SelfHostedQRLoginSessionStatus
 
     func exchange(siteURL: URL,
                   token: String,
-                  exchangeGrant: String) async throws -> QRLoginSelfHostedExchangeResponse
+                  exchangeGrant: String) async throws -> SelfHostedQRLoginExchangeResponse
 }
 
 public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
@@ -34,7 +34,7 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
 
     public func scan(siteURL: URL,
                      token: String,
-                     device: QRLoginScanDevice) async throws -> QRLoginScanResponse {
+                     device: QRLoginScanDevice) async throws -> SelfHostedQRLoginScanResponse {
         let request = try makeJSONRequest(
             method: "POST",
             url: endpoint(siteURL: siteURL, path: Paths.scan),
@@ -48,12 +48,12 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
         if let error = QRLoginHTTPStatusMapper.error(forStatusCode: statusCode, body: data) {
             throw error
         }
-        return try QRLoginResponseDecoder.scan(data: data, includeUserEmail: false)
+        return try QRLoginResponseBody.decode(SelfHostedQRLoginScanResponse.self, from: data)
     }
 
     public func pollSessionStatus(siteURL: URL,
                                   sessionID: String,
-                                  tokenHash: String) async throws -> QRLoginSessionStatus {
+                                  tokenHash: String) async throws -> SelfHostedQRLoginSessionStatus {
         var components = endpointComponents(siteURL: siteURL, path: Paths.sessionStatus)
         components.queryItems = [
             URLQueryItem(name: "session_id", value: sessionID),
@@ -71,12 +71,12 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
         if let error = QRLoginHTTPStatusMapper.error(forStatusCode: statusCode, body: data) {
             throw error
         }
-        return try QRLoginResponseDecoder.sessionStatus(data: data)
+        return try QRLoginResponseBody.decode(SelfHostedQRLoginSessionStatus.self, from: data)
     }
 
     public func exchange(siteURL: URL,
                          token: String,
-                         exchangeGrant: String) async throws -> QRLoginSelfHostedExchangeResponse {
+                         exchangeGrant: String) async throws -> SelfHostedQRLoginExchangeResponse {
         let request = try makeJSONRequest(
             method: "POST",
             url: endpoint(siteURL: siteURL, path: Paths.exchange),
@@ -89,7 +89,7 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
         if let error = QRLoginHTTPStatusMapper.error(forStatusCode: statusCode, body: data) {
             throw error
         }
-        return try QRLoginResponseDecoder.selfHostedExchange(data: data)
+        return try QRLoginResponseBody.decode(SelfHostedQRLoginExchangeResponse.self, from: data)
     }
 }
 

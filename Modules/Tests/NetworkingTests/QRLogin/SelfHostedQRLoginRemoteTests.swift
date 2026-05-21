@@ -35,10 +35,9 @@ struct SelfHostedQRLoginRemoteTests {
         let response = try await remote.scan(siteURL: siteURL, token: token, device: device)
 
         // Then
-        #expect(response == QRLoginScanResponse(sessionID: "abc",
-                                                realNumber: "428",
-                                                expiresInSeconds: 90,
-                                                userEmail: nil))
+        #expect(response == SelfHostedQRLoginScanResponse(sessionID: "abc",
+                                                          realNumber: "428",
+                                                          expiresInSeconds: 90))
     }
 
     @Test func scan_sends_supports_number_matching_and_device_fields() async throws {
@@ -132,7 +131,7 @@ struct SelfHostedQRLoginRemoteTests {
         let status = try await remote.pollSessionStatus(siteURL: siteURL, sessionID: "session-1", tokenHash: "hash-1")
 
         // Then
-        #expect(status == QRLoginSessionStatus(state: .scanned, exchangeGrant: nil))
+        #expect(status == SelfHostedQRLoginSessionStatus(state: .scanned, exchangeGrant: nil))
         // The Cache-Control header is asserted indirectly via the stub URL
         // matching — request reached the protocol with the configured URL.
         #expect(QRLoginStubURLProtocol.requestCount(for: url) == 1)
@@ -152,7 +151,7 @@ struct SelfHostedQRLoginRemoteTests {
         let status = try await remote.pollSessionStatus(siteURL: siteURL, sessionID: "session-1", tokenHash: "hash-1")
 
         // Then
-        #expect(status == QRLoginSessionStatus(state: .approved, exchangeGrant: "grant-abc"))
+        #expect(status == SelfHostedQRLoginSessionStatus(state: .approved, exchangeGrant: "grant-abc"))
     }
 
     @Test func pollSessionStatus_when_unknown_state_then_maps_to_unknown() async throws {
@@ -212,7 +211,7 @@ struct SelfHostedQRLoginRemoteTests {
         let response = try await remote.exchange(siteURL: siteURL, token: token, exchangeGrant: grant)
 
         // Then
-        #expect(response == QRLoginSelfHostedExchangeResponse(userLogin: "shopkeeper",
+        #expect(response == SelfHostedQRLoginExchangeResponse(userLogin: "shopkeeper",
                                                               siteURL: "https://shop.example",
                                                               applicationPassword: "ap-1234"))
     }

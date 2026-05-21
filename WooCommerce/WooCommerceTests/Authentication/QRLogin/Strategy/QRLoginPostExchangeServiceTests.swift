@@ -12,7 +12,7 @@ import struct NetworkingCore.Secret
 @MainActor
 struct QRLoginPostExchangeServiceTests {
 
-    private let response = QRLoginSelfHostedExchangeResponse(userLogin: "shopkeeper",
+    private let response = SelfHostedQRLoginExchangeResponse(userLogin: "shopkeeper",
                                                              siteURL: "https://shop.example",
                                                              applicationPassword: "ap-secret")
 

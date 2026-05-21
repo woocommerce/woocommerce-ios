@@ -11,7 +11,7 @@ struct QRLoginPollingLoopTests {
     @Test func run_when_approved_with_grant_then_returns_approved() async {
         // Given
         let queue = ResponseQueue(responses: [
-            .success(QRLoginSessionStatus(state: .approved, exchangeGrant: "grant-abc"))
+            .success(.approved(exchangeGrant: "grant-abc"))
         ])
         let loop = makeLoop(queue: queue)
 
@@ -27,7 +27,7 @@ struct QRLoginPollingLoopTests {
     @Test func run_when_approved_with_blank_grant_then_fails_closed_as_signInTimedOut() async {
         // Given — spec §5.1.2 / §5.2.2 fail-closed rule.
         let queue = ResponseQueue(responses: [
-            .success(QRLoginSessionStatus(state: .approved, exchangeGrant: nil))
+            .success(.approved(exchangeGrant: nil))
         ])
         let loop = makeLoop(queue: queue)
 
@@ -45,9 +45,9 @@ struct QRLoginPollingLoopTests {
     @Test func run_keeps_polling_on_scanned_then_returns_on_terminal_state() async {
         // Given
         let queue = ResponseQueue(responses: [
-            .success(QRLoginSessionStatus(state: .scanned, exchangeGrant: nil)),
-            .success(QRLoginSessionStatus(state: .scanned, exchangeGrant: nil)),
-            .success(QRLoginSessionStatus(state: .approved, exchangeGrant: "g"))
+            .success(.scanned),
+            .success(.scanned),
+            .success(.approved(exchangeGrant: "g"))
         ])
         let loop = makeLoop(queue: queue)
 
@@ -63,7 +63,7 @@ struct QRLoginPollingLoopTests {
     @Test func run_when_terminal_rejected_then_returns_signInDenied() async {
         // Given
         let queue = ResponseQueue(responses: [
-            .success(QRLoginSessionStatus(state: .rejected, exchangeGrant: nil))
+            .success(.rejected)
         ])
         let loop = makeLoop(queue: queue)
 
@@ -81,7 +81,7 @@ struct QRLoginPollingLoopTests {
     @Test func run_when_terminal_expired_then_returns_signInTimedOut() async {
         // Given
         let queue = ResponseQueue(responses: [
-            .success(QRLoginSessionStatus(state: .expired, exchangeGrant: nil))
+            .success(.expired)
         ])
         let loop = makeLoop(queue: queue)
 
@@ -99,7 +99,7 @@ struct QRLoginPollingLoopTests {
     @Test func run_when_terminal_consumed_on_wpCom_then_returns_alreadySignedInElsewhere() async {
         // Given
         let queue = ResponseQueue(responses: [
-            .success(QRLoginSessionStatus(state: .consumed, exchangeGrant: nil))
+            .success(.consumed)
         ])
         let loop = makeLoop(queue: queue, protocol_: .wpCom)
 
@@ -117,7 +117,7 @@ struct QRLoginPollingLoopTests {
     @Test func run_when_unknown_state_then_returns_signInTimedOut_defensively() async {
         // Given
         let queue = ResponseQueue(responses: [
-            .success(QRLoginSessionStatus(state: .unknown, exchangeGrant: nil))
+            .success(.unknown)
         ])
         let loop = makeLoop(queue: queue)
 
@@ -140,7 +140,7 @@ struct QRLoginPollingLoopTests {
             .failure(.network),
             .failure(.network),
             .failure(.network),
-            .success(QRLoginSessionStatus(state: .approved, exchangeGrant: "g"))
+            .success(.approved(exchangeGrant: "g"))
         ])
         let loop = makeLoop(queue: queue)
 
@@ -177,9 +177,9 @@ struct QRLoginPollingLoopTests {
         // arrives within 3.
         let queue = ResponseQueue(responses: [
             .failure(.network), .failure(.network), .failure(.network),
-            .success(QRLoginSessionStatus(state: .scanned, exchangeGrant: nil)),
+            .success(.scanned),
             .failure(.network), .failure(.network), .failure(.network),
-            .success(QRLoginSessionStatus(state: .approved, exchangeGrant: "g"))
+            .success(.approved(exchangeGrant: "g"))
         ])
         let loop = makeLoop(queue: queue)
 
@@ -231,7 +231,7 @@ struct QRLoginPollingLoopTests {
     @Test func run_when_task_cancelled_then_returns_cancelled() async {
         // Given — block forever so we can cancel the parent task.
         let queue = ResponseQueue(responses: [
-            .success(QRLoginSessionStatus(state: .scanned, exchangeGrant: nil))
+            .success(.scanned)
         ], hangAfterRunningOut: true)
         let loop = makeLoop(queue: queue)
 
@@ -267,7 +267,7 @@ private extension QRLoginPollingLoopTests {
 /// tests have something to interrupt.
 private final actor ResponseQueue {
     enum Response {
-        case success(QRLoginSessionStatus)
+        case success(QRLoginSessionState)
         case failure(QRLoginNetworkError)
     }
 
@@ -282,7 +282,7 @@ private final actor ResponseQueue {
         self.hangAfterRunningOut = hangAfterRunningOut
     }
 
-    func next() async throws -> QRLoginSessionStatus {
+    func next() async throws -> QRLoginSessionState {
         callCount += 1
         if index < responses.count {
             let response = responses[index]
@@ -296,11 +296,11 @@ private final actor ResponseQueue {
         }
         guard hangAfterRunningOut else {
             // Default: keep producing the last response so we don't infinite-loop.
-            return QRLoginSessionStatus(state: .scanned, exchangeGrant: nil)
+            return .scanned
         }
         // Suspend forever — cancellation tests rely on this.
         try await Task.sleep(nanoseconds: UInt64.max)
-        return QRLoginSessionStatus(state: .scanned, exchangeGrant: nil)
+        return .scanned
     }
 
     func recordSleep() async throws {

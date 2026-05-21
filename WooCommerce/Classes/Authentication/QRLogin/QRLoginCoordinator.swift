@@ -154,8 +154,7 @@ private extension QRLoginCoordinator {
                 let parsed = self.parser.parse(payload)
                 self.handleScanned(payload: parsed)
             },
-            onCancel: { [weak self] in self?.popScanner() },
-            onHelpTapped: { [weak self] in self?.showHelp() }
+            onCancel: { [weak self] in self?.popScanner() }
         )
         // The scanner is full-bleed camera UI with its own in-view chrome, so it
         // keeps the navigation bar hidden and does not use the toolbar Help item.
@@ -204,7 +203,7 @@ private extension QRLoginCoordinator {
             // §10.1: hand the URL to an in-app browser. WP.com redirects to
             // woocommerce://magic-login, picked up by the existing handler.
             openMagicLink(url)
-            finish()
+            finishIfDeepLink()
 
         case let .siteURLOnly(url):
             // §10.2: pre-fill the legacy site-address login screen with the URL
@@ -214,7 +213,7 @@ private extension QRLoginCoordinator {
             loginFields.restrictToWPCom = false
             NavigateToEnterSite(loginFields: loginFields,
                                 autoSubmitsPrefilledSiteAddress: true).execute(from: navigationController)
-            finish()
+            finishIfDeepLink()
 
         case let .appLoginWPCom(siteURL, email):
             // §10.3 / §3.3: pre-fill the WP.com email + password screen.
@@ -223,7 +222,7 @@ private extension QRLoginCoordinator {
             loginFields.restrictToWPCom = true
             loginFields.username = email
             NavigateToEnterWPCOMPassword(loginFields: loginFields).execute(from: navigationController)
-            finish()
+            finishIfDeepLink()
 
         case let .appLoginUsername(siteURL, username):
             // §10.3 / §3.3: pre-fill the wp-org site-credentials screen.
@@ -232,7 +231,7 @@ private extension QRLoginCoordinator {
             loginFields.restrictToWPCom = false
             loginFields.username = username
             NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: navigationController)
-            finish()
+            finishIfDeepLink()
 
         case .installQR:
             // §10.4: the "install QR" is useless here — app is already installed.
@@ -271,9 +270,7 @@ private extension QRLoginCoordinator {
     /// (spec §4.2 / §6.2).
     func handleHostCancelled() {
         navigationController.popViewController(animated: true)
-        if case .deepLink = mode {
-            finish()
-        }
+        finishIfDeepLink()
     }
 
     /// Primary CTA on a non-retryable error ("Scan a new code", spec §6.1). In
@@ -304,11 +301,13 @@ private extension QRLoginCoordinator {
         finish()
     }
 
-    /// Routes the merchant to the legacy site-address login and ends the
-    /// QR-login flow.
+    /// Routes the merchant to the legacy site-address login, pushed *on top* of
+    /// the QR-login surface. The coordinator is deliberately kept alive: the QR
+    /// screen underneath stays on the stack and is reachable by going back, so
+    /// its controls must keep working. It is released later, when the QR screens
+    /// are popped (`handlePrologueBack`) or replaced on a successful sign-in.
     func handleEnterSiteURL() {
         onEnterSiteURL()
-        finish()
     }
 
     /// Self-hosted sign-in completed — hand off to the store picker and end the
@@ -320,11 +319,11 @@ private extension QRLoginCoordinator {
 
     /// The wp.com flow handed the magic link to an in-app browser. Sign-in
     /// completes via the magic-login redirect, so pop the host view (revealing
-    /// the scanner / prologue if the merchant dismisses the browser) and end the
-    /// QR-login flow — without routing to the store picker (spec §10.1).
+    /// the scanner / prologue if the merchant dismisses the browser) without
+    /// routing to the store picker (spec §10.1).
     func handleMagicLinkHandedOff() {
         navigationController.popViewController(animated: false)
-        finish()
+        finishIfDeepLink()
     }
 
     /// Fires `onFinished` exactly once so the owner can release this coordinator.
@@ -332,6 +331,15 @@ private extension QRLoginCoordinator {
         guard didFinish == false else { return }
         didFinish = true
         onFinished()
+    }
+
+    /// Releases the coordinator only in deep-link mode. After a camera-mode
+    /// navigation the scanner and prologue stay on the stack, so the coordinator
+    /// must stay alive to keep driving them when the merchant navigates back.
+    func finishIfDeepLink() {
+        if case .deepLink = mode {
+            finish()
+        }
     }
 
     func showErrorOnly(_ error: QRLoginUserFacingError) {

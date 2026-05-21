@@ -381,10 +381,20 @@ completes through the existing `woocommerce://magic-login` redirect.
 ### Coordinator lifetime scoped to every exit
 
 `QRLoginCoordinator` gained an `onFinished` callback fired once when the QR
-surface is left for good (success, prologue back-out, deep-link exit,
-fallback-to-site-address, magic-link handoff). `AuthenticationManager`
-clears its `qrLoginCoordinator` reference there, so a later deep link can't
-reuse a stale, dismissed coordinator.
+surface is left for good. `AuthenticationManager` clears its
+`qrLoginCoordinator` reference there, so a later deep link can't reuse a
+stale, dismissed coordinator.
+
+`finish()` must only fire when no QR screen is left on the stack. Exits that
+*push* another screen on top of the QR surface — the site-address fallback,
+and the `siteURLOnly` / `appLogin*` / `magicLink` payload routes — leave the
+prologue (camera mode) reachable by going back, so the coordinator has to
+stay alive to keep driving it. Those paths call `finishIfDeepLink()`, which
+finishes only in deep-link mode (no prologue exists there); the site-address
+fallback never finishes (it is also reachable from the host view). Camera-mode
+exits finish when the QR screens themselves are popped (`handlePrologueBack`).
+Calling `finish()` on a push left a dead prologue with non-responsive buttons
+underneath the pushed screen.
 
 ### QR-login data layer split per endpoint
 

@@ -1,5 +1,13 @@
 import Foundation
 
+/// Outcome of the chunked discovery pre-fetch. `captured` holds rows that came back from a
+/// successful chunk; `unreachable` maps each id whose chunk FAILED to that chunk's HTTP status,
+/// so the planner can refuse those ids instead of falling into a per-id probe storm.
+struct DiscoveryResult: Sendable {
+    let captured: [Int: AnyCodableJSON]
+    let unreachable: [Int: Int]
+}
+
 struct PlannedWrite: Sendable {
     let targetID: Int
     let expandedParent: Int?

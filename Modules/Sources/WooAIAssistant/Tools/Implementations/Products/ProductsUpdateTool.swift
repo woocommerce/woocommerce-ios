@@ -29,10 +29,12 @@ public enum ProductsUpdateTool {
         product 42; `{target: {kind: "variation", id: 58, parent_id: 41}, sale_price: "9.99"}` \
         discounts ONE variation - use this with the target object on order line_items. \
         Editable fields: `regular_price`, `sale_price`, `stock_quantity`, `status`, `name`, \
-        `stock_status`, `sku`. `stock_quantity` on a variable parent is rejected with a pointer \
-        to target specific variations. Variations do not have settable names. Variable parents \
-        are not edited at the variation level here; target specific variation ids instead. \
-        After a successful update call `show_cards` with each updated entity's id.
+        `stock_status`, `sku`. On a variable parent only `name`, `status`, and `sku` apply; price \
+        and stock changes are rejected with a pointer to target specific variations. Variations do \
+        not have settable names. \
+        The result has an `updated` array of target objects ({kind:"product", id} or \
+        {kind:"variation", id, parent_id}); pass each one to `show_cards` (a variation maps to \
+        the combined parent/variation ref) or back into `products_update.updates[].target`.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -193,8 +195,8 @@ public enum ProductsUpdateTool {
         case .valid(let value): validated = value
         case .invalid(let failed): return .failed(failed)
         }
-        let captured = await ProductsUpdateDiscovery(client: client).discover(entries: validated)
-        let plans = await ProductsUpdatePlanner(client: client).plan(entries: validated, captured: captured)
+        let discovery = await ProductsUpdateDiscovery(client: client).discover(entries: validated)
+        let plans = await ProductsUpdatePlanner(client: client).plan(entries: validated, discovery: discovery)
         let outcomes = await ProductsUpdateBatchDispatcher(client: client).dispatch(plans: plans)
         let receipt = ProductsUpdateReceiptBuilder.build(plans: plans,
                                                          outcomes: outcomes,

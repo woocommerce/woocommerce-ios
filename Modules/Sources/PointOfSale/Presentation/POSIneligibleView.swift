@@ -127,24 +127,6 @@ struct POSIneligibleView: View {
                                      value: "We were unable to load the WooCommerce plugin info. Please make sure the WooCommerce plugin is installed " +
                                      "and activated from your WordPress admin. If there is still an issue, contact support for assistance.",
                                      comment: "Suggestion for missing WooCommerce plugin: install plugin")
-        case .featureSwitchDisabled:
-            return NSLocalizedString("pos.ineligible.suggestion.featureSwitchDisabled.3",
-                                     value: "Point of Sale must be enabled to proceed. " +
-                                     "Please enable the POS feature below or from your WordPress admin under WooCommerce settings > Advanced > Features " +
-                                     "and try again.",
-                                     comment: "Suggestion for disabled feature switch: enable feature in WooCommerce settings")
-        case let .unsupportedCurrency(countryCode, supportedCurrencies):
-            let currencyList = supportedCurrencies.map { $0.rawValue }
-            let formattedCurrencyList = ListFormatter.localizedString(byJoining: currencyList)
-            let format = NSLocalizedString(
-                "pos.ineligible.suggestion.unsupportedCurrency.1",
-                value: "The POS system is not available for your store’s currency. In %1$@, it currently supports only %2$@. " +
-                "Please check your store currency settings or contact support for assistance.",
-                comment: "Suggestion for unsupported currency with list of supported currencies. " +
-                "%1$@ is a placeholder for the localized country name, " +
-                "and %2$@ is a placeholder for the localized list of supported currency codes."
-            )
-            return String.localizedStringWithFormat(format, countryCode.readableCountry, formattedCurrencyList)
         case .siteSettingsNotAvailable:
             return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable.1",
                                      value: "We were unable to load the site settings info. Please check your internet connection and try again. " +
@@ -176,46 +158,19 @@ private extension POSIneligibleView {
 
 private extension POSIneligibleReason {
     var refreshEligibilityTitle: String {
-        switch self {
-        case .featureSwitchDisabled:
-            return NSLocalizedString(
-                "pos.ineligible.enable.pos.feature.and.refresh.button.title.1",
-                value: "Enable POS feature",
-                comment: "Button title to enable the POS feature switch and refresh POS eligibility check"
-            )
-        case .unsupportedWooCommerceVersion,
-                .siteSettingsNotAvailable,
-                .wooCommercePluginNotFound,
-                .unsupportedCurrency,
-                .selfDeallocated:
-            return NSLocalizedString(
-                "pos.ineligible.refresh.button.title",
-                value: "Retry",
-                comment: "Button title to refresh POS eligibility check"
-            )
-        }
+        NSLocalizedString(
+            "pos.ineligible.refresh.button.title",
+            value: "Retry",
+            comment: "Button title to refresh POS eligibility check"
+        )
     }
 }
 
 #if DEBUG
 
-#Preview("Unsupported currency") {
-    POSIneligibleView(
-        reason: .unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD]),
-        onRefresh: {}
-    )
-}
-
 #Preview("WooCommerce plugin not found") {
     POSIneligibleView(
         reason: .wooCommercePluginNotFound,
-        onRefresh: {}
-    )
-}
-
-#Preview("Feature switch disabled") {
-    POSIneligibleView(
-        reason: .featureSwitchDisabled,
         onRefresh: {}
     )
 }

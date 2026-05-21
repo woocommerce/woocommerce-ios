@@ -160,10 +160,11 @@ final class MainTabBarController: UITabBarController {
     private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
     private var bookingsEligibilityCheckTask: Task<Void, Never>?
 
-    /// Refreshes the per-site IPP country expansion eligibility cache (RSM-637) on phones
-    /// where the POS visibility check is short-circuited and would otherwise not run the
-    /// refresher. iPad goes through `POSTabVisibilityChecker` which refreshes inline before
-    /// reading the cache.
+    /// Refreshes the per-site IPP country expansion eligibility cache (RSM-637) so that
+    /// downstream IPP entry points (`CardPresentConfigurationLoader`) read up-to-date
+    /// flag state. Runs for both iPad and phone — POS visibility no longer gates on this
+    /// cache, so the refresh has to fire here independently for every idiom.
+    /// TODO: Remove once the expansion eligibility cache is removed in 24.9/25.0.
     private lazy var cardPresentExpansionRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher = {
         CardPresentPaymentsCountryExpansionEligibilityRefresher(
             remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
@@ -895,11 +896,11 @@ private extension MainTabBarController {
             }
     }
 
-    /// Refreshes the IPP country expansion eligibility cache for phones, where the
-    /// POS visibility check is skipped. On iPad the visibility checker handles this
-    /// inline before reading the cache, so we no-op to avoid a duplicate dispatch.
+    /// Refreshes the IPP country expansion eligibility cache for both iPad and phone.
+    /// POS visibility no longer gates on this cache (POS is universal now), so the refresh
+    /// has to happen here regardless of idiom for IPP entry points to pick up the latest
+    /// remote-feature-flag state.
     func refreshCardPresentExpansionEligibilityIfNeeded(for site: Site) {
-        guard !isPad else { return }
         cardPresentExpansionRefreshTask?.cancel()
         cardPresentExpansionRefreshTask = Task { @MainActor [weak self] in
             guard let self else { return }

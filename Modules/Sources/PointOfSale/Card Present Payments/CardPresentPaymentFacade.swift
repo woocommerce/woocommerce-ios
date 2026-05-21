@@ -5,6 +5,15 @@ import enum Yosemite.CardReaderSoftwareUpdateState
 import Combine
 
 public protocol CardPresentPaymentFacade {
+    /// Whether card-present payments should be exposed in POS for the merchant's store.
+    ///
+    /// Derived from the underlying `CardPresentPaymentsConfiguration.isPOSCardPaymentEnabled`
+    /// — see that extension for the per-country rules (Canada is currently the only explicit
+    /// override). Views consume this through `POSPaymentModel.isPOSCardPaymentEnabled` to decide
+    /// whether to render the card-reader / TTP UI or fall back to the cash + secondary-method
+    /// promoted layout.
+    var isPOSCardPaymentEnabled: Bool { get }
+
     /// `paymentEventPublisher` provides a stream of events relating to a payment, including their view models,
     /// for subscribers to display to the user. e.g. onboarding screens, connection progress, payment progress, card reader messages.
     /// This is a long lasting stream, and will not finish during the life of the façade, instead it will publish events for each payment attempt.

@@ -104,7 +104,15 @@ struct TotalsView: View {
 
                     Spacer()
 
-                    if useTapToPayHeroLayout {
+                    if !paymentModel.isPOSCardPaymentEnabled && !checkoutPaymentMethods.isEmpty {
+                        // No card-present payments in this country (e.g. JP, MX, …). Render
+                        // the promoted 1 + n layout: Cash filled-primary on top, secondary
+                        // methods (Scan to Pay, Mark order as paid) as outlined peers below.
+                        POSCheckoutPromotedPaymentButtons(
+                            methods: checkoutPaymentMethods,
+                            onSelect: handlePaymentMethodSelection
+                        )
+                    } else if useTapToPayHeroLayout {
                         tapToPayBottomStrip
                     } else if !checkoutPaymentMethods.isEmpty {
                         POSCheckoutPaymentButtonsRow(
@@ -238,6 +246,13 @@ private extension TotalsView {
 
     private var isShowingPaymentView: Bool {
         guard posModel.orderState.isLoaded else {
+            return false
+        }
+
+        // No card-present payments → no card reader / TTP UI to surface in the upper region.
+        // The promoted secondary-method buttons (Cash + Scan-to-Pay + Mark-as-Paid) render
+        // directly under the totals.
+        guard paymentModel.isPOSCardPaymentEnabled else {
             return false
         }
 
@@ -623,28 +638,21 @@ private extension TotalsView {
     /// `.tapToPay`'s action is intentionally a no-op at this stage — wiring it to
     /// the actual collection flow happens in a later, focused commit.
     var checkoutPaymentMethods: [POSCheckoutPaymentMethod] {
-        guard totalsViewHelper.shouldShowCollectCashPaymentButton(
-            orderState: posModel.orderState,
-            paymentState: displayPaymentState,
-            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus
-        ) else {
-            return []
-        }
-        let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
-            readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
-            paymentState: displayPaymentState
+        POSCheckoutPaymentMethodResolver.resolve(
+            isPOSCardPaymentEnabled: paymentModel.isPOSCardPaymentEnabled,
+            isCashButtonVisible: totalsViewHelper.shouldShowCollectCashPaymentButton(
+                orderState: posModel.orderState,
+                paymentState: displayPaymentState,
+                cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus
+            ),
+            isReaderDisconnected: viewHelper.shouldShowDisconnectedMessage(
+                readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                paymentState: displayPaymentState
+            ),
+            isTapToPayAvailable: posModel.tapToPayAvailabilityController?.state.isAvailable == true,
+            isScanToPayEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
+            isMarkOrderAsPaidEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid)
         )
-        let isTapToPayAvailable = posModel.tapToPayAvailabilityController?.state.isAvailable == true
-
-        var methods: [POSCheckoutPaymentMethod] = []
-        if isTapToPayAvailable {
-            methods.append(.tapToPay)
-        }
-        if isReaderDisconnected {
-            methods.append(.cardReader)
-        }
-        methods.append(.cashPayment)
-        return methods
     }
 
     func handlePaymentMethodSelection(_ method: POSCheckoutPaymentMethod) {
@@ -655,6 +663,12 @@ private extension TotalsView {
             paymentModel.connectCardReader()
         case .cashPayment:
             paymentModel.startCashPayment()
+        case .scanToPay:
+            Task { @MainActor in
+                await paymentModel.startScanToPayPayment()
+            }
+        case .markOrderAsPaid:
+            paymentModel.startMarkAsPaidPayment()
         }
     }
 
@@ -691,6 +705,10 @@ private extension TotalsView {
     /// `PaymentViewContent` flow takes over (preparing / accepting /
     /// processing / success / error).
     var useTapToPayHeroLayout: Bool {
+        // Defensive: TTP availability already encodes the per-country card configuration,
+        // but mirror the explicit POS card-payment gate here so the hero is never surfaced
+        // in a no-card country.
+        guard paymentModel.isPOSCardPaymentEnabled else { return false }
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
         guard displayPaymentState.card == .idle && displayPaymentState.cash == .idle else { return false }
         // Also gate on scanToPay / markAsPaid being idle. After a successful

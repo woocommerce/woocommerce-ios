@@ -53,17 +53,34 @@ struct POSCheckoutPaymentButtonsRow: View {
     }
 
     private func title(for method: POSCheckoutPaymentMethod) -> String {
-        switch method {
-        case .tapToPay:
-            return Localization.tapToPay
-        case .cardReader:
-            return Localization.cardReader
-        case .cashPayment:
-            return Localization.cashPayment
-        }
+        POSCheckoutPaymentMethodLocalization.title(for: method)
     }
 
     private func accessibilityIdentifier(for method: POSCheckoutPaymentMethod) -> String {
+        POSCheckoutPaymentMethodLocalization.accessibilityIdentifier(for: method)
+    }
+}
+
+/// Shared title + accessibility-id lookups for `POSCheckoutPaymentMethod`. Consumed by
+/// both `POSCheckoutPaymentButtonsRow` (card-enabled vertical stack) and
+/// `POSCheckoutPromotedPaymentButtons` (no-card 1+2 layout) so the labels stay in sync.
+enum POSCheckoutPaymentMethodLocalization {
+    static func title(for method: POSCheckoutPaymentMethod) -> String {
+        switch method {
+        case .tapToPay:
+            return tapToPay
+        case .cardReader:
+            return cardReader
+        case .cashPayment:
+            return cashPayment
+        case .scanToPay:
+            return scanToPay
+        case .markOrderAsPaid:
+            return markOrderAsPaid
+        }
+    }
+
+    static func accessibilityIdentifier(for method: POSCheckoutPaymentMethod) -> String {
         switch method {
         case .tapToPay:
             return "pos-tap-to-pay-button"
@@ -71,29 +88,39 @@ struct POSCheckoutPaymentButtonsRow: View {
             return "pos-card-reader-button"
         case .cashPayment:
             return "pos-cash-payment-button"
+        case .scanToPay:
+            return "pos-scan-to-pay-button"
+        case .markOrderAsPaid:
+            return "pos-mark-order-as-paid-button"
         }
     }
-}
 
-private extension POSCheckoutPaymentButtonsRow {
-    enum Localization {
-        static let tapToPay = NSLocalizedString(
-            "pos.checkout.paymentMethod.tapToPay",
-            value: "Tap to Pay",
-            comment: "Title for the Tap to Pay button in the POS checkout payment-method row."
-        )
-        static let cardReader = NSLocalizedString(
-            "pos.checkout.paymentMethod.cardReader",
-            value: "Card reader",
-            comment: "Title for the card-reader button in the POS checkout payment-method row. " +
-                "Tapping it starts the connect-reader flow when no reader is connected."
-        )
-        static let cashPayment = NSLocalizedString(
-            "pos.checkout.paymentMethod.cashPayment",
-            value: "Cash payment",
-            comment: "Title for the cash-payment button in the POS checkout payment-method row."
-        )
-    }
+    static let tapToPay = NSLocalizedString(
+        "pos.checkout.paymentMethod.tapToPay",
+        value: "Tap to Pay",
+        comment: "Title for the Tap to Pay button in the POS checkout payment-method row."
+    )
+    static let cardReader = NSLocalizedString(
+        "pos.checkout.paymentMethod.cardReader",
+        value: "Card reader",
+        comment: "Title for the card-reader button in the POS checkout payment-method row. " +
+            "Tapping it starts the connect-reader flow when no reader is connected."
+    )
+    static let cashPayment = NSLocalizedString(
+        "pos.checkout.paymentMethod.cashPayment",
+        value: "Cash payment",
+        comment: "Title for the cash-payment button in the POS checkout payment-method row."
+    )
+    static let scanToPay = NSLocalizedString(
+        "pos.checkout.paymentMethod.scanToPay",
+        value: "Scan to Pay",
+        comment: "Title for the Scan to Pay (QR code) button in the POS checkout payment-method row."
+    )
+    static let markOrderAsPaid = NSLocalizedString(
+        "pos.checkout.paymentMethod.markOrderAsPaid",
+        value: "Mark order as paid",
+        comment: "Title for the Mark-as-paid button in the POS checkout payment-method row."
+    )
 }
 
 #if DEBUG

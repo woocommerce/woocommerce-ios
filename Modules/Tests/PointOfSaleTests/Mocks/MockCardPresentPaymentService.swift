@@ -8,6 +8,8 @@ import enum Yosemite.CardReaderSoftwareUpdateState
 final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     // MARK: - Variables for emitting events in unit tests
 
+    var isPOSCardPaymentEnabled: Bool = true
+
     @Published var paymentEvent: CardPresentPaymentEvent = .idle
     @Published var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
 

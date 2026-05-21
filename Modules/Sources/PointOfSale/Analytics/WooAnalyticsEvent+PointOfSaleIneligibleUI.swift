@@ -24,12 +24,8 @@ extension WooAnalyticsEvent {
 private extension POSIneligibleReason {
     var analyticsValue: String {
         switch self {
-        case .unsupportedCurrency:
-            return "store_currency"
         case .unsupportedWooCommerceVersion:
             return "wc_plugin_version"
-        case .featureSwitchDisabled:
-            return "feature_switch_disabled"
         case .wooCommercePluginNotFound:
             return "unknown_wc_plugin"
         case .siteSettingsNotAvailable,

@@ -17,6 +17,16 @@ final class POSPaymentModel {
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
     private(set) var cardReaderUpdateState: CardReaderSoftwareUpdateState = .none
+
+    /// Whether card-present payments (external readers + Tap to Pay) should be exposed
+    /// in POS for this store. Static for the lifetime of the session — derived from the
+    /// store's country and the IPP configuration. See
+    /// `CardPresentPaymentsConfiguration.isPOSCardPaymentEnabled` for the per-country rules.
+    /// Views read this to decide between the standard checkout layout and the cash +
+    /// secondary-method promoted layout.
+    var isPOSCardPaymentEnabled: Bool {
+        cardPresentPaymentService.isPOSCardPaymentEnabled
+    }
     var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
     var isZeroTotal: Bool {
         guard let total = currentOrder?.total, let decimal = Decimal(string: total) else { return false }

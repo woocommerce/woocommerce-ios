@@ -66,10 +66,8 @@ struct PointOfSaleDashboardViewHelperTests {
 
     @Test(arguments: [
         POSIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "9.6.0"),
-        POSIneligibleReason.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD, .GBP]),
         POSIneligibleReason.siteSettingsNotAvailable,
         POSIneligibleReason.wooCommercePluginNotFound,
-        POSIneligibleReason.featureSwitchDisabled,
         POSIneligibleReason.selfDeallocated
     ])
     func determineViewState_when_ineligible_returns_ineligible(reason: POSIneligibleReason) async throws {
@@ -163,7 +161,7 @@ struct PointOfSaleDashboardViewHelperTests {
 
     @Test func determineViewState_horizontalSizeClass_takes_priority_over_eligibility_state() async throws {
         // Given - compact size class should return unsupportedWidth regardless of eligibility
-        let eligibilityState: POSEligibilityState = .ineligible(reason: .featureSwitchDisabled)
+        let eligibilityState: POSEligibilityState = .ineligible(reason: .wooCommercePluginNotFound)
         let itemsContainerState: ItemsContainerState = .content
         let horizontalSizeClass: UserInterfaceSizeClass = .compact
 
@@ -199,7 +197,7 @@ struct PointOfSaleDashboardViewHelperTests {
 
     @Test func determineViewState_ineligible_state_takes_priority_over_containerState() async throws {
         // Given - ineligible state should return ineligible regardless of container state
-        let eligibilityState: POSEligibilityState = .ineligible(reason: .featureSwitchDisabled)
+        let eligibilityState: POSEligibilityState = .ineligible(reason: .wooCommercePluginNotFound)
         let itemsContainerState: ItemsContainerState = .content
         let horizontalSizeClass: UserInterfaceSizeClass = .regular
 
@@ -212,7 +210,7 @@ struct PointOfSaleDashboardViewHelperTests {
         )
 
         // Then
-        #expect(result == .ineligible(reason: .featureSwitchDisabled))
+        #expect(result == .ineligible(reason: .wooCommercePluginNotFound))
     }
 
     // MARK: - Phone Prototype Flag Tests
@@ -255,7 +253,7 @@ struct PointOfSaleDashboardViewHelperTests {
 
     @Test func determineViewState_when_phonePrototype_flag_enabled_and_ineligible_returns_ineligible() async throws {
         // Given
-        let eligibilityState: POSEligibilityState = .ineligible(reason: .featureSwitchDisabled)
+        let eligibilityState: POSEligibilityState = .ineligible(reason: .wooCommercePluginNotFound)
         let itemsContainerState: ItemsContainerState = .content
         let horizontalSizeClass: UserInterfaceSizeClass = .compact
 
@@ -268,7 +266,7 @@ struct PointOfSaleDashboardViewHelperTests {
         )
 
         // Then
-        #expect(result == .ineligible(reason: .featureSwitchDisabled))
+        #expect(result == .ineligible(reason: .wooCommercePluginNotFound))
     }
 
     @Test func determineViewState_when_phonePrototype_flag_enabled_and_nil_eligibility_returns_loading() async throws {
@@ -326,7 +324,7 @@ struct PointOfSaleDashboardViewHelperTests {
 
     @Test(arguments: [
         (PointOfSaleDashboardView.ViewState.loading(), false),
-        (PointOfSaleDashboardView.ViewState.ineligible(reason: .featureSwitchDisabled), false)
+        (PointOfSaleDashboardView.ViewState.ineligible(reason: .wooCommercePluginNotFound), false)
     ])
     func showsFloatingControl_when_loading_or_ineligible_returns_false(viewState: PointOfSaleDashboardView.ViewState, expected: Bool) async throws {
         // When & Then

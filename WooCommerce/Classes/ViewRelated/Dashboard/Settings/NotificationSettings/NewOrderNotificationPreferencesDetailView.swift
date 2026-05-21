@@ -25,6 +25,7 @@ struct NewOrderNotificationPreferencesDetailView: View {
         }
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
+        .disabled(viewModel.isSaving)
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         // `leftBarButtonItem` set in UIKit doesn't suppress SwiftUI's own back

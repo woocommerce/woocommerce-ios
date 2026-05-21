@@ -105,9 +105,16 @@ struct ProductsUpdateBatchDispatcher {
                 successes.append(targetID)
             }
         }
+        // A requested id with no row in the response is neither confirmed nor refused; treat it as
+        // outcome-unknown so the turn does not retry into a possible double-write.
+        let classified = Set(successes).union(failures.map(\.0))
+        let absent = batch.writes.map(\.targetID).filter { !classified.contains($0) }
+        for id in absent {
+            failures.append((id, "no confirmation row for #\(id) in the batch response"))
+        }
         return BatchOutcome(batch: batch,
                             successes: successes,
                             failures: failures,
-                            outcomeUnknownStatuses: [])
+                            outcomeUnknownStatuses: absent)
     }
 }

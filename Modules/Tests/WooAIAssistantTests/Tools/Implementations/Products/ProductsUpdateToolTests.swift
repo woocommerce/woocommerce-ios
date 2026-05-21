@@ -28,7 +28,7 @@ struct ProductsUpdateToolTests {
         #expect(calls.last?.path == "wc/v3/products/batch")
         let body = try requireBatchBody(calls.last?.body)
         try requireSingleUpdate(body, id: 12, fields: ["regular_price": "19.99"])
-        #expect(receipt["updated_ids"] == .array([.int(12)]))
+        #expect(updatedProductIDs(receipt) == [12])
         #expect(receipt["partial_success"] == .bool(false))
     }
 
@@ -52,11 +52,14 @@ struct ProductsUpdateToolTests {
         #expect(calls.last?.path == "wc/v3/products/12/variations/batch")
         let body = try requireBatchBody(calls.last?.body)
         try requireSingleUpdate(body, id: 88, fields: ["sale_price": "27.00"])
-        #expect(receipt["updated_ids"] == .array([.int(88)]))
+        let variation = try #require(updatedTargets(receipt).first)
+        #expect(variation.kind == "variation")
+        #expect(variation.id == 88)
+        #expect(variation.parentID == 12)
     }
 
     @Test
-    func test_update_when_id_is_variable_parent_then_refuses_with_variation_routing_reason() async throws {
+    func test_update_when_id_is_variable_parent_then_refuses_price_with_variation_routing_reason() async throws {
         // Given
         let probe = #"{"id": 50, "type": "variable"}"#
         let client = MockWCRESTClient(response: StubResponses.ok("[\(probe)]"))
@@ -81,8 +84,111 @@ struct ProductsUpdateToolTests {
         } else {
             Issue.record("expected reason string")
         }
+        #expect(updatedTargets(receipt).isEmpty)
         let calls = await client.calls
         #expect(calls.allSatisfy { $0.method == "GET" })
+    }
+
+    @Test
+    func test_update_when_variable_parent_name_only_then_posts_parent_to_products_batch() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
+            "POST wc/v3/products/batch": StubResponses.ok(#"{"update": [{"id": 50, "name": "New name"}]}"#)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 50}, "name": "New name"}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.count == 1)
+        #expect(posts.first?.path == "wc/v3/products/batch")
+        let body = try requireBatchBody(posts.first?.body)
+        try requireSingleUpdate(body, id: 50, fields: ["name": "New name"])
+        #expect(updatedProductIDs(receipt) == [50])
+        guard case .array(let failed) = receipt["failed"] else {
+            Issue.record("expected failed array")
+            return
+        }
+        #expect(failed.isEmpty)
+    }
+
+    @Test
+    func test_update_when_variable_parent_price_only_then_refused_with_no_write() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
+            "POST wc/v3/products/batch": StubResponses.ok(#"{"update": [{"id": 50}]}"#)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 50}, "regular_price": "19.99"}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.isEmpty)
+        #expect(updatedTargets(receipt).isEmpty)
+        guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
+            Issue.record("expected failed entry")
+            return
+        }
+        #expect(entry["id"] == .int(50))
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("Price and stock"))
+        } else {
+            Issue.record("expected reason string")
+        }
+    }
+
+    @Test
+    func test_update_when_variable_parent_name_and_price_then_parent_write_plus_price_failure() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
+            "POST wc/v3/products/batch": StubResponses.ok(#"{"update": [{"id": 50, "name": "Renamed"}]}"#)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 50}, "name": "Renamed", "regular_price": "19.99"}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.count == 1)
+        #expect(posts.first?.path == "wc/v3/products/batch")
+        let body = try requireBatchBody(posts.first?.body)
+        let entry = try #require(body.first)
+        #expect(entry["name"] as? String == "Renamed")
+        #expect(entry["regular_price"] == nil)
+        #expect(updatedProductIDs(receipt) == [50])
+        guard case .array(let failed) = receipt["failed"], case .object(let failure) = failed.first else {
+            Issue.record("expected failed entry")
+            return
+        }
+        #expect(failure["id"] == .int(50))
+        if case .string(let reason) = failure["reason"] {
+            #expect(reason.contains("Price and stock"))
+        } else {
+            Issue.record("expected reason string")
+        }
     }
 
     @Test
@@ -116,15 +222,10 @@ struct ProductsUpdateToolTests {
             "wc/v3/products/batch",
             "wc/v3/products/12/variations/batch"
         ])
-        if case .array(let updated) = receipt["updated_ids"] {
-            let ids = updated.compactMap { value -> Int64? in
-                if case .int(let n) = value { return n }
-                return nil
-            }
-            #expect(Set(ids) == [10, 88])
-        } else {
-            Issue.record("expected updated_ids array")
-        }
+        #expect(updatedProductIDs(receipt) == [10])
+        #expect(updatedVariationIDs(receipt) == [88])
+        let variation = try #require(updatedTargets(receipt).first { $0.kind == "variation" })
+        #expect(variation.parentID == 12)
     }
 
     @Test
@@ -152,7 +253,7 @@ struct ProductsUpdateToolTests {
 
         // Then
         let receipt = try successReceipt(result)
-        #expect(receipt["updated_ids"] == .array([.int(10)]))
+        #expect(updatedProductIDs(receipt) == [10])
         guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
             Issue.record("expected failed entry")
             return
@@ -176,7 +277,7 @@ struct ProductsUpdateToolTests {
 
         // Then
         let receipt = try successReceipt(result)
-        #expect(receipt["updated_ids"] == .array([]))
+        #expect(updatedTargets(receipt).isEmpty)
         #expect(receipt["partial_success"] == .bool(false))
     }
 
@@ -249,7 +350,7 @@ struct ProductsUpdateToolTests {
         } else {
             Issue.record("expected reason string")
         }
-        #expect(receipt["updated_ids"] == .array([]))
+        #expect(updatedTargets(receipt).isEmpty)
     }
 
     @Test
@@ -274,7 +375,7 @@ struct ProductsUpdateToolTests {
 
         // Then
         let receipt = try successReceipt(result)
-        #expect(receipt["updated_ids"] == .array([]))
+        #expect(updatedTargets(receipt).isEmpty)
         #expect(receipt["partial_success"] == .bool(false))
     }
 
@@ -409,7 +510,7 @@ struct ProductsUpdateToolTests {
 
         // Then
         let receipt = try successReceipt(result)
-        #expect(receipt["updated_ids"] == .array([.int(50)]))
+        #expect(updatedProductIDs(receipt) == [50])
         guard case .array(let failed) = receipt["failed"] else {
             Issue.record("expected failed array")
             return
@@ -459,7 +560,7 @@ struct ProductsUpdateToolTests {
         #expect(calls.last?.path == "wc/v3/products/batch")
         let body = try requireBatchBody(calls.last?.body)
         try requireSingleUpdate(body, id: 12, fields: [jsonKey: value])
-        #expect(receipt["updated_ids"] == .array([.int(12)]))
+        #expect(updatedProductIDs(receipt) == [12])
     }
 
     @Test
@@ -489,7 +590,7 @@ struct ProductsUpdateToolTests {
         }
         let posts = await client.calls.filter { $0.method == "POST" }
         #expect(posts.isEmpty)
-        #expect(receipt["updated_ids"] == .array([]))
+        #expect(updatedTargets(receipt).isEmpty)
     }
 
     @Test
@@ -513,7 +614,7 @@ struct ProductsUpdateToolTests {
         #expect(posts.first?.path == "wc/v3/products/12/variations/batch")
         let body = try requireBatchBody(posts.first?.body)
         try requireSingleUpdate(body, id: 88, fields: ["stock_status": "outofstock"])
-        #expect(receipt["updated_ids"] == .array([.int(88)]))
+        #expect(updatedVariationIDs(receipt) == [88])
     }
 
     @Test
@@ -536,7 +637,7 @@ struct ProductsUpdateToolTests {
         #expect(posts.first?.path == "wc/v3/products/12/variations/batch")
         let body = try requireBatchBody(posts.first?.body)
         try requireSingleUpdate(body, id: 88, fields: ["sku": "TEE-RED-L"])
-        #expect(receipt["updated_ids"] == .array([.int(88)]))
+        #expect(updatedVariationIDs(receipt) == [88])
     }
 
     @Test
@@ -593,7 +694,7 @@ struct ProductsUpdateToolTests {
 
         // Then
         let receipt = try successReceipt(result)
-        #expect(receipt["updated_ids"] == .array([]))
+        #expect(updatedTargets(receipt).isEmpty)
         #expect(receipt["partial_success"] == .bool(false))
         guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
             Issue.record("expected failed entry")
@@ -625,7 +726,7 @@ struct ProductsUpdateToolTests {
 
         // Then
         let receipt = try successReceipt(result)
-        #expect(receipt["updated_ids"] == .array([]))
+        #expect(updatedTargets(receipt).isEmpty)
         guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
             Issue.record("expected failed entry")
             return
@@ -663,15 +764,8 @@ struct ProductsUpdateToolTests {
         #expect(posts.first?.path == "wc/v3/products/12/variations/batch")
         let body = try requireBatchBody(posts.first?.body)
         #expect(Set(body.compactMap { $0["id"] as? Int }) == [88, 89])
-        if case .array(let updated) = receipt["updated_ids"] {
-            let ids = updated.compactMap { value -> Int64? in
-                if case .int(let n) = value { return n }
-                return nil
-            }
-            #expect(Set(ids) == [88, 89])
-        } else {
-            Issue.record("expected updated_ids array")
-        }
+        #expect(updatedVariationIDs(receipt) == [88, 89])
+        #expect(updatedTargets(receipt).allSatisfy { $0.parentID == 12 })
     }
 
     @Test
@@ -741,12 +835,11 @@ struct ProductsUpdateToolTests {
     }
 
     @Test
-    func test_update_when_discovery_chunk_fails_then_falls_back_to_per_id_probe() async throws {
-        // Given the chunked discovery GET fails so the planner probes the id directly.
-        let probe = #"{"id": 12, "type": "simple", "regular_price": "20.00"}"#
+    func test_update_when_discovery_chunk_returns_429_then_entry_failed_and_no_per_id_probe() async throws {
+        // Given the chunked discovery GET is rate-limited so no per-id fallback should fire.
         let client = RoutingMockWCRESTClient(routes: [
-            "GET wc/v3/products": StubResponses.failure(statusCode: 500, body: "boom"),
-            "GET wc/v3/products/12": StubResponses.ok(probe),
+            "GET wc/v3/products": StubResponses.failure(statusCode: 429, body: "slow down"),
+            "GET wc/v3/products/12": StubResponses.ok(#"{"id": 12, "type": "simple"}"#),
             "POST wc/v3/products/batch": StubResponses.ok(#"{"update": [{"id": 12}]}"#)
         ])
         let tool = ProductsUpdateTool.make()
@@ -760,9 +853,45 @@ struct ProductsUpdateToolTests {
         // Then
         let receipt = try successReceipt(result)
         let calls = await client.calls
-        #expect(calls.contains { $0.method == "GET" && $0.path == "wc/v3/products/12" })
+        #expect(!calls.contains { $0.method == "GET" && $0.path == "wc/v3/products/12" })
+        #expect(!calls.contains { $0.method == "POST" })
+        guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
+            Issue.record("expected failed entry")
+            return
+        }
+        #expect(entry["id"] == .int(12))
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("HTTP 429"))
+            #expect(reason.contains("look up"))
+        } else {
+            Issue.record("expected reason string")
+        }
+        #expect(updatedTargets(receipt).isEmpty)
+    }
+
+    @Test
+    func test_update_when_discovery_chunk_succeeds_but_id_absent_then_one_per_id_probe_fires() async throws {
+        // Given a successful chunk that omits the id (variations are absent from products include).
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[]"),
+            "GET wc/v3/products/12": StubResponses.ok(#"{"id": 12, "type": "simple", "regular_price": "20.00"}"#),
+            "POST wc/v3/products/batch": StubResponses.ok(#"{"update": [{"id": 12}]}"#)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 12}, "sale_price": "9.99"}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let calls = await client.calls
+        let perIDProbes = calls.filter { $0.method == "GET" && $0.path == "wc/v3/products/12" }
+        #expect(perIDProbes.count == 1)
         #expect(calls.contains { $0.method == "POST" && $0.path == "wc/v3/products/batch" })
-        #expect(receipt["updated_ids"] == .array([.int(12)]))
+        #expect(updatedProductIDs(receipt) == [12])
     }
 
     @Test
@@ -785,7 +914,7 @@ struct ProductsUpdateToolTests {
         #expect(posts.first?.path == "wc/v3/products/12/variations/batch")
         let body = try requireBatchBody(posts.first?.body)
         try requireSingleUpdate(body, id: 88, fields: ["status": "draft"])
-        #expect(receipt["updated_ids"] == .array([.int(88)]))
+        #expect(updatedVariationIDs(receipt) == [88])
     }
 
     @Test
@@ -808,6 +937,71 @@ struct ProductsUpdateToolTests {
         let entriesByID = batchEntriesByID(body)
         #expect(entriesByID[88]?["stock_quantity"] as? Int == 4)
         #expect(entriesByID[88]?["manage_stock"] as? Bool == true)
+    }
+
+    @Test
+    func test_update_receipt_when_mixed_batch_then_carries_both_product_and_variation_shapes() async throws {
+        // Given
+        let probe = #"{"id": 10, "type": "simple", "regular_price": "50.00"}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
+            "POST wc/v3/products/batch": StubResponses.ok(#"{"update": [{"id": 10}]}"#),
+            "POST wc/v3/products/12/variations/batch": StubResponses.ok(#"{"update": [{"id": 88}]}"#)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"""
+            {"updates": [
+              {"target": {"kind": "product", "id": 10}, "sale_price": "45"},
+              {"target": {"kind": "variation", "id": 88, "parent_id": 12}, "sale_price": "25"}
+            ]}
+            """#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let product = try #require(updatedTargets(receipt).first { $0.kind == "product" })
+        #expect(product.id == 10)
+        #expect(product.parentID == nil)
+        let variation = try #require(updatedTargets(receipt).first { $0.kind == "variation" })
+        #expect(variation.id == 88)
+        #expect(variation.parentID == 12)
+    }
+
+    @Test
+    func test_update_when_batch_response_omits_a_requested_row_then_outcome_unknown() async {
+        // Given
+        let probeA = #"{"id": 10, "type": "simple", "regular_price": "50.00"}"#
+        let probeB = #"{"id": 11, "type": "simple", "regular_price": "20.00"}"#
+        let batchResponse = #"{"update": [{"id": 10, "regular_price": "45.00"}]}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probeA),\(probeB)]"),
+            "POST wc/v3/products/batch": StubResponses.ok(batchResponse)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"""
+            {"updates": [
+              {"target": {"kind": "product", "id": 10}, "sale_price": "45"},
+              {"target": {"kind": "product", "id": 11}, "sale_price": "18"}
+            ]}
+            """#,
+            client
+        )
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected .failed, got \(result)")
+            return
+        }
+        #expect(failed.kind == .outcomeUnknown)
+        #expect(failed.reason.contains("no confirmation row for #11"))
+        #expect(failed.reason.contains("\"kind\":\"product\""))
     }
 
     // MARK: - Target validation
@@ -1009,6 +1203,26 @@ struct ProductsUpdateToolTests {
         for (key, value) in fields {
             #expect(entry[key] as? String == value)
         }
+    }
+
+    private func updatedTargets(_ receipt: [String: AnyCodableJSON]) -> [(kind: String, id: Int64, parentID: Int64?)] {
+        guard case .array(let nodes) = receipt["updated"] else { return [] }
+        return nodes.compactMap { node in
+            guard case .object(let dict) = node,
+                  case .string(let kind)? = dict["kind"],
+                  case .int(let id)? = dict["id"] else { return nil }
+            var parentID: Int64?
+            if case .int(let parent)? = dict["parent_id"] { parentID = parent }
+            return (kind, id, parentID)
+        }
+    }
+
+    private func updatedProductIDs(_ receipt: [String: AnyCodableJSON]) -> Set<Int64> {
+        Set(updatedTargets(receipt).filter { $0.kind == "product" }.map(\.id))
+    }
+
+    private func updatedVariationIDs(_ receipt: [String: AnyCodableJSON]) -> Set<Int64> {
+        Set(updatedTargets(receipt).filter { $0.kind == "variation" }.map(\.id))
     }
 
     private func successReceipt(_ result: ToolResult) throws -> [String: AnyCodableJSON] {

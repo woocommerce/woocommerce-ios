@@ -13,6 +13,9 @@ struct PushNotificationPreferencesView: View {
     /// Set by the hosting controller after `super.init`. Default is a no-op so
     /// previews work without it.
     var onNewReviewTapped: () -> Void = {}
+    /// Set by the hosting controller after `super.init`. Default is a no-op so
+    /// previews work without it.
+    var onNewStockTapped: () -> Void = {}
 
     init(viewModel: PushNotificationPreferencesViewModel) {
         self.viewModel = viewModel
@@ -66,7 +69,9 @@ struct PushNotificationPreferencesView: View {
                     accessibilityHint: Localization.newReviewsAccessibilityHint,
                     action: onNewReviewTapped)
                 row(title: Localization.stockTitle,
-                    detail: viewModel.isStoreStockEnabled ? Localization.stockDetail : Localization.off)
+                    detail: viewModel.isStoreStockEnabled ? Localization.stockDetail : Localization.off,
+                    accessibilityHint: Localization.stockAccessibilityHint,
+                    action: onNewStockTapped)
             }
         }
         .listStyle(.insetGrouped)
@@ -153,6 +158,11 @@ extension PushNotificationPreferencesView {
             "pushNotificationPreferencesView.stock.title",
             value: "Stock",
             comment: "Title of the row that toggles stock push notifications."
+        )
+        static let stockAccessibilityHint = NSLocalizedString(
+            "pushNotificationPreferencesView.stock.accessibilityHint",
+            value: "Customize stock notifications",
+            comment: "VoiceOver hint announced when focused on the Stock row, describing that it opens a detail screen."
         )
         static let stockDetail = NSLocalizedString(
             "pushNotificationPreferencesView.stock.detail",

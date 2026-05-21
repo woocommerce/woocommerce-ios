@@ -15,6 +15,9 @@ final class PushNotificationPreferencesHostingController: UIHostingController<Pu
         rootView.onNewReviewTapped = { [weak self] in
             self?.showNewReviewDetail()
         }
+        rootView.onNewStockTapped = { [weak self] in
+            self?.showNewStockDetail()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -28,6 +31,11 @@ final class PushNotificationPreferencesHostingController: UIHostingController<Pu
 
     private func showNewReviewDetail() {
         let detail = NewReviewNotificationPreferencesHostingController(viewModel: viewModel)
+        navigationController?.pushViewController(detail, animated: true)
+    }
+
+    private func showNewStockDetail() {
+        let detail = NewStockNotificationPreferencesHostingController(viewModel: viewModel)
         navigationController?.pushViewController(detail, animated: true)
     }
 }

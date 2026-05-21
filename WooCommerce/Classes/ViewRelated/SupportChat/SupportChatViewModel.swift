@@ -176,6 +176,10 @@ final class SupportChatViewModel {
     private(set) var hasProceededToChat: Bool = false
     private(set) var isExecutingAction: Bool = false
 
+    var site: Site? {
+        stores.sessionManager.defaultSite
+    }
+
     /// `true` when the view model was seeded with a prior `chatID` — i.e. the merchant
     /// tapped a history row rather than starting fresh. Drives the "Continuing conversation"
     /// header in the chat surface.

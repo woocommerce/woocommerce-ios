@@ -41,7 +41,7 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
     }
 
     private func startJetpackSetup() {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else { return }
+        guard let site = viewModel.site else { return }
         let coordinator = JetpackSetupCoordinator(site: site, rootViewController: self, onCompletion: { [weak self] in
             self?.viewModel.replaceActionWithRetry()
             self?.jetpackSetupCoordinator = nil
@@ -51,7 +51,7 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
     }
 
     private func presentWooCommercePluginUpdate(onDismissed: @escaping () -> Void) {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite,
+        guard let site = viewModel.site,
               let url = URL(string: site.adminURL + WooConstants.wooCommercePluginUpdatePath) else {
             onDismissed()
             return
@@ -63,7 +63,7 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
     }
 
     private func presentPushNotificationPreferences(onDismissed: @escaping () -> Void) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID else {
+        guard let siteID = viewModel.site?.siteID else {
             onDismissed()
             return
         }

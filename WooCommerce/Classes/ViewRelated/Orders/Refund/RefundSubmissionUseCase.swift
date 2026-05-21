@@ -48,8 +48,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Analytics manager.
     private let analytics: Analytics
 
-    /// View controller used to present alerts.
-    private var rootViewController: UIViewController
+    /// View controller presenter used to present alerts.
+    private var rootViewController: ViewControllerPresenting
 
     /// Stores the card reader listener subscription while trying to connect to one.
     private var readerSubscription: AnyCancellable?
@@ -120,7 +120,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     }
 
     init(details: Details,
-         rootViewController: UIViewController,
+         rootViewController: ViewControllerPresenting,
          alerts: OrderDetailsPaymentAlertsProtocol,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
          cardReaderConnectionAlerts: AlertProvider,
@@ -358,7 +358,7 @@ private extension RefundSubmissionUseCase {
         if let cardReaderError = error as? CardReaderServiceError,
            case .refundPayment(_, let shouldRetry) = cardReaderError,
            shouldRetry == false {
-            alerts.nonRetryableError(from: rootViewController, error: error) {
+            alerts.nonRetryableError(from: rootViewController as? UIViewController, error: error) {
                 onCompletion(.failure(error))
             }
         } else {

@@ -3,7 +3,7 @@ import Vision
 
 /// SwiftUI wrapper around `CodeScannerViewController`. Wraps it in a
 /// `UIViewControllerRepresentable` so we can compose it with the QR-login
-/// chrome (URL pill, help button) in SwiftUI.
+/// chrome (URL pill, close button) in SwiftUI.
 ///
 /// `onScannedPayload` fires once per QR result; the coordinator is
 /// responsible for stopping further scans (e.g. by dismissing this view)
@@ -11,7 +11,6 @@ import Vision
 struct QRLoginScannerView: View {
     let onScannedPayload: (String) -> Void
     let onCancel: () -> Void
-    let onHelpTapped: () -> Void
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -31,16 +30,6 @@ struct QRLoginScannerView: View {
                             .accessibilityLabel(Localization.cancelAccessibility)
                     }
                     Spacer()
-                    Button(action: onHelpTapped) {
-                        Image(systemName: "questionmark.circle")
-                            .imageScale(.large)
-                            .padding(12)
-                            .background(
-                                Circle().fill(Color.black.opacity(0.4))
-                            )
-                            .foregroundColor(.white)
-                            .accessibilityLabel(Localization.helpAccessibility)
-                    }
                 }
                 .padding(.horizontal)
                 .padding(.top, 8)
@@ -125,11 +114,6 @@ extension QRLoginScannerView {
             "qrLogin.scanner.cancel.accessibility",
             value: "Cancel",
             comment: "Accessibility label for the cancel button on the QR scanner."
-        )
-        static let helpAccessibility = NSLocalizedString(
-            "qrLogin.scanner.help.accessibility",
-            value: "Help",
-            comment: "Accessibility label for the help button on the QR scanner."
         )
     }
 }

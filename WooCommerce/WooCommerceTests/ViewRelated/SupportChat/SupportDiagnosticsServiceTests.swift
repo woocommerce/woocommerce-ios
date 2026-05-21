@@ -22,7 +22,7 @@ struct SupportDiagnosticsServiceTests {
         let tests = issueType.testsToRun
 
         // Then
-        let expected: [Test] = [.internetConnection, .wpComServers, .site, .siteOrders]
+        let expected: [Test] = [.internetConnection, .site, .siteOrders]
         #expect(tests == expected)
     }
 
@@ -34,7 +34,7 @@ struct SupportDiagnosticsServiceTests {
         let tests = issueType.testsToRun
 
         // Then
-        let expected: [Test] = [.internetConnection, .wpComServers, .site, .loadingProducts]
+        let expected: [Test] = [.internetConnection, .site, .loadingProducts]
         #expect(tests == expected)
     }
 
@@ -46,7 +46,7 @@ struct SupportDiagnosticsServiceTests {
         let tests = issueType.testsToRun
 
         // Then
-        let expected: [Test] = [.internetConnection, .wpComServers, .site, .analyticsSetting]
+        let expected: [Test] = [.internetConnection, .site, .analyticsSetting]
         #expect(tests == expected)
     }
 
@@ -58,7 +58,7 @@ struct SupportDiagnosticsServiceTests {
         let tests = issueType.testsToRun
 
         // Then
-        let expected: [Test] = [.internetConnection, .wpComServers, .site, .notifications]
+        let expected: [Test] = [.internetConnection, .site, .notifications]
         #expect(tests == expected)
     }
 

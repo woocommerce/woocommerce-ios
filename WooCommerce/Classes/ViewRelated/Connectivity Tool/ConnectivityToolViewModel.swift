@@ -156,7 +156,8 @@ final class ConnectivityToolViewModel {
     private func startConnectivityTest(sinceTest: ConnectivityTest = .internetConnection) async {
         let supportedTests: [ConnectivityTest] = {
             if stores.isAuthenticatedWithoutWPCom == false {
-                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting, .notifications]
+                // Push notification diagnostics are temporarily hidden until the check is updated.
+                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             } else {
                 [.internetConnection, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             }

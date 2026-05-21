@@ -11,6 +11,8 @@ public actor AgenticLoopOrchestrator {
     public static let defaultPerToolPerTurnCap = 4
 
     /// Tools that must be batched in a single call per merchant turn rather than fanned out.
+    /// Keep this in sync with `mergeableToolNames`: merging only helps a capped tool, so the two
+    /// lists travel together and a future editor should add a tool to both or neither.
     public static let defaultPerToolCapOverrides: [String: Int] = [
         ProductsUpdateTool.name: 1
     ]
@@ -425,16 +427,14 @@ public actor AgenticLoopOrchestrator {
             let toolName = call.function.name
             let priorToolCount = liveTurnTallies[toolName, default: 0]
             liveTurnTallies[toolName] = priorToolCount + 1
-            let hasOverride = perToolCapOverrides[toolName] != nil
-            let effectiveCap = perToolCapOverrides[toolName] ?? perToolPerTurnCap
-            // Override tools cap on prior successes + this batch's position so failures don't burn the slot.
-            let countAgainstCap = hasOverride
-                ? liveTurnSuccessTallies[toolName, default: 0] + inBatchApprovals[toolName, default: 0]
-                : priorToolCount
-            if countAgainstCap >= effectiveCap {
+            let capCheck = perToolCapCheck(toolName: toolName,
+                                           priorToolCount: priorToolCount,
+                                           successTallies: liveTurnSuccessTallies,
+                                           inBatchApprovals: inBatchApprovals)
+            if capCheck.exceeded {
                 let payload = Self.perToolCapJSON(toolName: toolName,
-                                                  cap: effectiveCap,
-                                                  isBatchingTool: hasOverride)
+                                                  cap: capCheck.cap,
+                                                  isBatchingTool: capCheck.isOverride)
                 continuation.yield(.toolCallStarted(id: call.id,
                                                     name: toolName,
                                                     argumentsJSON: call.function.arguments))
@@ -636,6 +636,27 @@ public actor AgenticLoopOrchestrator {
             }
             return payload
         }
+    }
+
+    private struct PerToolCapCheck {
+        let exceeded: Bool
+        let cap: Int
+        let isOverride: Bool
+    }
+
+    /// Resolves the per-tool cap for one call so the dispatch loop reads as a single guard. Override
+    /// tools count prior successes plus this batch's approvals so a failed write never burns the slot;
+    /// non-override tools count every prior call this turn.
+    private func perToolCapCheck(toolName: String,
+                                 priorToolCount: Int,
+                                 successTallies: [String: Int],
+                                 inBatchApprovals: [String: Int]) -> PerToolCapCheck {
+        let isOverride = perToolCapOverrides[toolName] != nil
+        let cap = perToolCapOverrides[toolName] ?? perToolPerTurnCap
+        let countAgainstCap = isOverride
+            ? successTallies[toolName, default: 0] + inBatchApprovals[toolName, default: 0]
+            : priorToolCount
+        return PerToolCapCheck(exceeded: countAgainstCap >= cap, cap: cap, isOverride: isOverride)
     }
 
     private func handleToolResult(_ result: ToolResult,
@@ -845,8 +866,9 @@ public actor AgenticLoopOrchestrator {
         return #"{"outcome":"unknown"}"#
     }
 
-    /// Tools whose argument shape supports merging multiple calls into one. Keep the merger generic
-    /// so other batched writers can opt in later by adding their name + concat helper here.
+    /// Tools whose argument shape supports merging multiple calls into one. Must list the same tools
+    /// as `defaultPerToolCapOverrides`: merging only makes sense for a tool the cap forces into a
+    /// single batch.
     static let mergeableToolNames: Set<String> = [ProductsUpdateTool.name]
 
     struct IntraBatchMergeOutcome {
@@ -912,6 +934,8 @@ public actor AgenticLoopOrchestrator {
                       let updates = obj["updates"] as? [Any] else {
                     return nil
                 }
+                // Targets are concatenated as-is; the downstream tool rejects "Duplicate target", so we
+                // intentionally do not pre-dedupe here.
                 mergedUpdates.append(contentsOf: updates)
             } catch {
                 DDLogError("AgenticLoopOrchestrator mergeProductsUpdateArgs decode failed: \(error)")
@@ -930,7 +954,9 @@ public actor AgenticLoopOrchestrator {
     }
 
     /// Success-shaped envelope handed back to merged-away calls so the model still gets a result
-    /// for every tool_call_id while learning that the batch was consolidated.
+    /// for every tool_call_id while learning that the batch was consolidated. It classifies as a
+    /// success independent of the leader's dispatch outcome, so a failed merged leader can still leave
+    /// the cap consumed via the secondary's success tally.
     static func mergedIntoCallJSON(leaderCallID: String) -> String {
         let body: [String: Any] = [
             "merged_into_call": leaderCallID,

@@ -35,9 +35,12 @@ struct StoreTrendsEntryTests {
         // Given - a data entry shaped like what the Trends provider hands the rectangular widget:
         // a single chart-backed metric with previous-period value and an interval series.
         let currencySettings = CurrencySettings()
-        let chartSeries = (0..<6).map { index in
-            MetricChartPoint(date: Date(timeIntervalSinceReferenceDate: Double(index * 86_400)),
-                             value: Double(80 + index * 10))
+        // The arithmetic is hoisted into typed locals: inline, the single
+        // expression trips the Swift type-checker's complexity limit.
+        let chartSeries = (0..<6).map { (index: Int) -> MetricChartPoint in
+            let secondsSinceReference = Double(index * 86_400)
+            let value = Double(80 + index * 10)
+            return MetricChartPoint(date: Date(timeIntervalSinceReferenceDate: secondsSinceReference), value: value)
         }
         let metric = StoreInfoMetric(
             type: .revenue,

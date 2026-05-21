@@ -229,6 +229,7 @@ extension Note {
         case newPost = "new_post"
         case post
         case storeOrder = "store_order"
+        case storeStock = "store_stock"
         case user
 
         /// Blaze

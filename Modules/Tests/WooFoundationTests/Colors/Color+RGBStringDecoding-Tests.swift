@@ -14,7 +14,7 @@ final class Color_RGBStringDecoding_Tests: XCTestCase {
     func test_init_with_rgb_string_for_non_opaque_red_creates_expected_color() throws {
         let nonOpaqueRedRGBString = "rgba(255, 0, 0, 0.5)"
         let actualColor = try XCTUnwrap(try? Color(rgbString: nonOpaqueRedRGBString))
-        assertEqual(Color.init(red: 1, green: 0, blue: 0, opacity: 0.5), actualColor)
+        assertEqual(Color(red: 1, green: 0, blue: 0, opacity: 0.5), actualColor)
     }
 
     // N.B. decimals as color input isn't really a valid rgba string, but we can accept them

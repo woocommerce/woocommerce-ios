@@ -39,7 +39,7 @@ class GetMocks {
 
         for index in 0..<updatedData.count {
             let rawStockStatus = updatedData[index].stock_status
-            let humanReadableStockStatus = GetMocks.init().stockStatus[rawStockStatus]!
+            let humanReadableStockStatus = GetMocks().stockStatus[rawStockStatus]!
             updatedData[index].stock_status = humanReadableStockStatus
         }
 
@@ -58,7 +58,7 @@ class GetMocks {
 
         for index in 0..<updatedData.count {
             let productId = updatedData[index].product_id
-            let productName = GetMocks.init().productName[productId]!
+            let productName = GetMocks().productName[productId]!
             updatedData[index].product_name = productName
         }
 

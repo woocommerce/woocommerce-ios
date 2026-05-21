@@ -342,7 +342,7 @@ struct ConnectivityToolCard: View {
                 EmptyView()
             case .error:
                 Image(uiImage: .exclamationFilledImage)
-                    .foregroundColor(Color.init(uiColor: .error))
+                    .foregroundColor(Color(uiColor: .error))
             }
         }
 

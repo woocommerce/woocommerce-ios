@@ -760,6 +760,182 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(PushNotificationPreferencesViewModel.StoreOrderThreshold.formatInput(-5).isEmpty)
     }
 
+    // MARK: - storeStock sub-toggles
+
+    @Test func test_setStoreStockLowStock_mutates_displayed_only_and_preserves_siblings() async {
+        // Given a loaded VM with all stock sub-fields set so we can prove they're preserved.
+        let stores = makeStores()
+        let dispatched = DispatchedChanges()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeStock: .init(enabled: true,
+                                                                                    lowStock: false,
+                                                                                    outOfStock: true,
+                                                                                    onBackorder: false))))
+            }
+            if case let .updatePushNotificationPreferences(_, changes, onCompletion) = action {
+                dispatched.append(changes)
+                onCompletion(.success(changes))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+
+        // When
+        sut.setStoreStockLowStock(true)
+        await Task.yield()
+
+        // Then
+        #expect(sut.isStoreStockLowStock == true)
+        #expect(sut.displayed.storeStock?.enabled == true)
+        #expect(sut.displayed.storeStock?.outOfStock == true)
+        #expect(sut.displayed.storeStock?.onBackorder == false)
+        #expect(sut.hasUnsavedChanges == true)
+        #expect(dispatched.calls.isEmpty)
+    }
+
+    @Test func test_setStoreStockOutOfStock_mutates_displayed_only_and_preserves_siblings() async {
+        // Given
+        let stores = makeStores()
+        let dispatched = DispatchedChanges()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeStock: .init(enabled: true,
+                                                                                    lowStock: true,
+                                                                                    outOfStock: false,
+                                                                                    onBackorder: true))))
+            }
+            if case let .updatePushNotificationPreferences(_, changes, onCompletion) = action {
+                dispatched.append(changes)
+                onCompletion(.success(changes))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+
+        // When
+        sut.setStoreStockOutOfStock(true)
+        await Task.yield()
+
+        // Then
+        #expect(sut.isStoreStockOutOfStock == true)
+        #expect(sut.displayed.storeStock?.enabled == true)
+        #expect(sut.displayed.storeStock?.lowStock == true)
+        #expect(sut.displayed.storeStock?.onBackorder == true)
+        #expect(sut.hasUnsavedChanges == true)
+        #expect(dispatched.calls.isEmpty)
+    }
+
+    @Test func test_setStoreStockOnBackorder_mutates_displayed_only_and_preserves_siblings() async {
+        // Given
+        let stores = makeStores()
+        let dispatched = DispatchedChanges()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeStock: .init(enabled: true,
+                                                                                    lowStock: true,
+                                                                                    outOfStock: false,
+                                                                                    onBackorder: false))))
+            }
+            if case let .updatePushNotificationPreferences(_, changes, onCompletion) = action {
+                dispatched.append(changes)
+                onCompletion(.success(changes))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+
+        // When
+        sut.setStoreStockOnBackorder(true)
+        await Task.yield()
+
+        // Then
+        #expect(sut.isStoreStockOnBackorder == true)
+        #expect(sut.displayed.storeStock?.enabled == true)
+        #expect(sut.displayed.storeStock?.lowStock == true)
+        #expect(sut.displayed.storeStock?.outOfStock == false)
+        #expect(sut.hasUnsavedChanges == true)
+        #expect(dispatched.calls.isEmpty)
+    }
+
+    @Test func test_setStoreStockEnabled_preserves_existing_sub_toggles_in_displayed() async {
+        // Given a loaded VM with sub-toggles set.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeStock: .init(enabled: true,
+                                                                                    lowStock: true,
+                                                                                    outOfStock: true,
+                                                                                    onBackorder: false))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+
+        // When the user flips the master toggle off.
+        sut.setStoreStockEnabled(false)
+
+        // Then `displayed` retains the sub-toggle values so a later save preserves them.
+        #expect(sut.displayed.storeStock?.enabled == false)
+        #expect(sut.displayed.storeStock?.lowStock == true)
+        #expect(sut.displayed.storeStock?.outOfStock == true)
+        #expect(sut.displayed.storeStock?.onBackorder == false)
+    }
+
+    // MARK: - discardStoreStockEdits
+
+    @Test func test_discardStoreStockEdits_reverts_storeStock_to_lastSaved_and_clears_unsaved_flag() async {
+        // Given a loaded VM with sub-toggles the user then edits.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeStock: .init(enabled: true,
+                                                                                    lowStock: true,
+                                                                                    outOfStock: true,
+                                                                                    onBackorder: true))))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+        sut.setStoreStockEnabled(false)
+        sut.setStoreStockLowStock(false)
+        #expect(sut.hasUnsavedChanges == true)
+
+        // When
+        sut.discardStoreStockEdits()
+
+        // Then `displayed.storeStock` matches the server snapshot again.
+        #expect(sut.displayed.storeStock?.enabled == true)
+        #expect(sut.displayed.storeStock?.lowStock == true)
+        #expect(sut.displayed.storeStock?.outOfStock == true)
+        #expect(sut.displayed.storeStock?.onBackorder == true)
+        #expect(sut.hasUnsavedChanges == false)
+    }
+
+    @Test func test_discardStoreStockEdits_leaves_other_sections_untouched() async {
+        // Given a loaded VM where the user edits stock *and* order.
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(
+                    storeOrder: .init(enabled: false),
+                    storeStock: .init(enabled: true, lowStock: true)
+                )))
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        await sut.load()
+        sut.setStoreOrderEnabled(true)
+        sut.setStoreStockLowStock(false)
+
+        // When the user discards the stock edits.
+        sut.discardStoreStockEdits()
+
+        // Then the order edit is preserved — the discard is scoped to the stock section.
+        #expect(sut.displayed.storeOrder?.enabled == true)
+        #expect(sut.displayed.storeStock?.lowStock == true)
+    }
+
     @Test func test_save_dispatches_only_changed_sections() async {
         // Given a loaded VM with one section edited.
         let stores = makeStores()

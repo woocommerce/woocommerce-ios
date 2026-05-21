@@ -30,6 +30,9 @@ final class PushNotificationPreferencesViewModel {
     var isStoreOrderEnabled: Bool { displayed.storeOrder?.enabled ?? false }
     var isStoreReviewEnabled: Bool { displayed.storeReview?.enabled ?? false }
     var isStoreStockEnabled: Bool { displayed.storeStock?.enabled ?? false }
+    var isStoreStockLowStock: Bool { displayed.storeStock?.lowStock ?? false }
+    var isStoreStockOutOfStock: Bool { displayed.storeStock?.outOfStock ?? false }
+    var isStoreStockOnBackorder: Bool { displayed.storeStock?.onBackorder ?? false }
 
     /// `nil` means "all orders".
     var storeOrderMinAmount: Decimal? { displayed.storeOrder?.minAmount }
@@ -202,6 +205,39 @@ final class PushNotificationPreferencesViewModel {
                                                      lowStock: existing?.lowStock,
                                                      outOfStock: existing?.outOfStock,
                                                      onBackorder: existing?.onBackorder))
+    }
+
+    func setStoreStockLowStock(_ newValue: Bool) {
+        let existing = displayed.storeStock
+        displayed = displayed.with(storeStock: .init(enabled: existing?.enabled,
+                                                     lowStock: newValue,
+                                                     outOfStock: existing?.outOfStock,
+                                                     onBackorder: existing?.onBackorder))
+    }
+
+    func setStoreStockOutOfStock(_ newValue: Bool) {
+        let existing = displayed.storeStock
+        displayed = displayed.with(storeStock: .init(enabled: existing?.enabled,
+                                                     lowStock: existing?.lowStock,
+                                                     outOfStock: newValue,
+                                                     onBackorder: existing?.onBackorder))
+    }
+
+    func setStoreStockOnBackorder(_ newValue: Bool) {
+        let existing = displayed.storeStock
+        displayed = displayed.with(storeStock: .init(enabled: existing?.enabled,
+                                                     lowStock: existing?.lowStock,
+                                                     outOfStock: existing?.outOfStock,
+                                                     onBackorder: newValue))
+    }
+
+    /// Reverts only the stock section of `displayed` to `lastSaved`. Other
+    /// sections are left untouched — their detail screens own their own
+    /// discard paths.
+    func discardStoreStockEdits() {
+        displayed = PushNotificationPreferences(storeOrder: displayed.storeOrder,
+                                                storeReview: displayed.storeReview,
+                                                storeStock: lastSaved.storeStock)
     }
 }
 

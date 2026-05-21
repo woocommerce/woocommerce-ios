@@ -92,7 +92,8 @@ private struct CurrentOrderListSyncUseCase {
     ///
     @MainActor
     private func syncOrders(filters: FilterOrderListViewModel.Filters) async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        // swiftlint:disable:next return_value_from_void_function
+        return try await withCheckedThrowingContinuation { continuation in
             let useCase = OrderListSyncActionUseCase(siteID: siteID, filters: filters)
             let action = useCase.actionFor(pageNumber: SyncingCoordinator.Defaults.pageFirstIndex,
                                            pageSize: SyncingCoordinator.Defaults.pageSize,
@@ -107,6 +108,5 @@ private struct CurrentOrderListSyncUseCase {
             })
             stores.dispatch(action)
         }
-        return
     }
 }

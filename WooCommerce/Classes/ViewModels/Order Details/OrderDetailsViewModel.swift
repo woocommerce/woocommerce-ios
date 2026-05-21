@@ -413,7 +413,8 @@ extension OrderDetailsViewModel {
     func syncTrackingsWhenShipmentTrackingIsEnabled() async {
         let orderID = order.orderID
         let siteID = order.siteID
-        await withCheckedContinuation { continuation in
+        // swiftlint:disable:next return_value_from_void_function
+        return await withCheckedContinuation { continuation in
             stores.dispatch(
                 ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
                                                                orderID: orderID) { error in
@@ -429,7 +430,6 @@ extension OrderDetailsViewModel {
                                                                }
             )
         }
-        return
     }
 
     /// Syncs order fulfillments from the fulfillments endpoint.
@@ -437,7 +437,8 @@ extension OrderDetailsViewModel {
     func syncOrderFulfillments() async {
         let orderID = order.orderID
         let siteID = order.siteID
-        await withCheckedContinuation { continuation in
+        // swiftlint:disable:next return_value_from_void_function
+        return await withCheckedContinuation { continuation in
             stores.dispatch(
                 OrderFulfillmentAction.synchronizeOrderFulfillments(
                     siteID: siteID,
@@ -450,7 +451,6 @@ extension OrderDetailsViewModel {
                 }
             )
         }
-        return
     }
 }
 

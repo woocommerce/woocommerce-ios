@@ -80,7 +80,8 @@ struct PushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchro
     ///
     @MainActor
     private func synchronizeNotifications() async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        // swiftlint:disable:next return_value_from_void_function
+        return try await withCheckedThrowingContinuation { continuation in
             let action = NotificationAction.synchronizeNotifications { error in
                 DDLogInfo("📱 Finished Synchronizing Notifications!")
                 if let error {
@@ -93,7 +94,6 @@ struct PushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchro
             DDLogInfo("📱 Synchronizing Notifications...")
             stores.dispatch(action)
         }
-        return
     }
 
     /// Synchronizes an specific order.

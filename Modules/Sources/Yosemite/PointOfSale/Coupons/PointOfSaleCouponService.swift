@@ -75,7 +75,8 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
     @MainActor
     public func enableCoupons() async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        // swiftlint:disable:next return_value_from_void_function
+        return try await withCheckedThrowingContinuation { continuation in
             settingsStoreMethods.enableCouponSetting(siteID: siteID) { result in
                 switch result {
                 case .success:
@@ -85,7 +86,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                 }
             }
         }
-        return
     }
 }
 

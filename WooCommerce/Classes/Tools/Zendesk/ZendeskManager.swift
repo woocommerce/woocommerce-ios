@@ -328,7 +328,8 @@ private extension ZendeskManager {
 
     @MainActor
     func createZendeskIdentity() async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        // swiftlint:disable:next return_value_from_void_function
+        return try await withCheckedThrowingContinuation { continuation in
             createZendeskIdentity { [weak self] success in
                 guard let self, success else {
                     DDLogError("⛔️ Creating Zendesk identity failed.")
@@ -339,7 +340,6 @@ private extension ZendeskManager {
                 continuation.resume(returning: ())
             }
         }
-        return
     }
 
     func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {

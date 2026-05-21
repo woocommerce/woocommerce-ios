@@ -149,7 +149,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
         connectionControllerManager.knownReaderProvider.forgetCardReader()
 
-        await withCheckedContinuation { continuation in
+        // swiftlint:disable:next return_value_from_void_function
+        return await withCheckedContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, Never>? = continuation
 
             let action = CardPresentPaymentAction.disconnect { [weak self] _ in
@@ -163,7 +164,6 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             }
             stores.dispatch(action)
         }
-        return
     }
 
     @MainActor

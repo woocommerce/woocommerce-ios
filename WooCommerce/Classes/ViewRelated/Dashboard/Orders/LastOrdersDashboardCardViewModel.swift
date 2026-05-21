@@ -216,7 +216,8 @@ private extension LastOrdersDashboardCardViewModel {
 
     @MainActor
     func loadOrderStatuses() async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        // swiftlint:disable:next return_value_from_void_function
+        return try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
                 switch result {
                 case .success:
@@ -226,7 +227,6 @@ private extension LastOrdersDashboardCardViewModel {
                 }
             })
         }
-        return
     }
 
     func configureStatusResultsController() {

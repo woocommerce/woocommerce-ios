@@ -95,7 +95,8 @@ private extension CookieNonceAuthenticator {
 
     func handleSiteCredentialLogin(session: Session) async throws {
         let request = authenticatedRequest()
-        try await withCheckedThrowingContinuation { continuation in
+        // swiftlint:disable:next return_value_from_void_function
+        return try await withCheckedThrowingContinuation { continuation in
             session.request(request)
                 .validate()
                 .response { response in
@@ -106,7 +107,6 @@ private extension CookieNonceAuthenticator {
                     }
                 }
         }
-        return
     }
 
     func handleNonceRetrieval(request: URLRequest, session: Session) async throws -> String {

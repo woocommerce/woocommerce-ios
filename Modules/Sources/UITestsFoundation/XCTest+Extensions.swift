@@ -147,7 +147,7 @@ extension XCUIElement {
     func verifyLabelContains(substring firstSubstring: String, and secondSubstring: String) throws -> Bool {
         let firstPredicate = NSPredicate(format: "label CONTAINS[c] %@", firstSubstring)
         let secondPredicate = NSPredicate(format: "label CONTAINS[c] %@", secondSubstring)
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [firstPredicate, secondPredicate])
+        let predicateCompound = NSCompoundPredicate(type: .and, subpredicates: [firstPredicate, secondPredicate])
 
         return XCUIApplication().staticTexts.containing(predicateCompound).count == 1
     }

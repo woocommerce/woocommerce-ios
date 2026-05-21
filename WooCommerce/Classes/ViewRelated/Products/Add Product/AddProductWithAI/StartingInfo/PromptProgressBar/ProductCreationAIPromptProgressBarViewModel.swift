@@ -52,15 +52,15 @@ class ProductCreationAIPromptProgressBarViewModel: ObservableObject {
         var color: Color {
             switch self {
             case .start:
-                return Color.init(uiColor: .gray(.shade50))
+                return Color(uiColor: .gray(.shade50))
             case .inProgress:
-                return Color.init(uiColor: .withColorStudio(.red, shade: .shade50))
+                return Color(uiColor: .withColorStudio(.red, shade: .shade50))
             case .halfway:
-                return Color.init(uiColor: .withColorStudio(.orange, shade: .shade50))
+                return Color(uiColor: .withColorStudio(.orange, shade: .shade50))
             case .almostDone:
-                return Color.init(uiColor: .withColorStudio(.yellow, shade: .shade50))
+                return Color(uiColor: .withColorStudio(.yellow, shade: .shade50))
             case .completed:
-                return Color.init(uiColor: .withColorStudio(.green, shade: .shade50))
+                return Color(uiColor: .withColorStudio(.green, shade: .shade50))
             }
         }
 

@@ -850,6 +850,6 @@ extension ConnectivityTool.Card {
     /// Updates a card state to a new given state.
     ///
     func updatingState(_ newState: ConnectivityToolCard.ConnectivityState) -> ConnectivityTool.Card {
-        Self.init(testCase: testCase, title: title, icon: icon, state: newState)
+        Self(testCase: testCase, title: title, icon: icon, state: newState)
     }
 }

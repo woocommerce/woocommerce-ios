@@ -92,7 +92,7 @@ struct LowInStockReportRunner {
         let variationsByParent: [Int: [Int]]
     }
 
-    static func splitReportRows(_ rows: [AnyCodableJSON]) -> ReportSplit {
+    private static func splitReportRows(_ rows: [AnyCodableJSON]) -> ReportSplit {
         var ordered: [ReportEntry] = []
         var productIDs: [Int] = []
         var variationsByParent: [Int: [Int]] = [:]
@@ -160,7 +160,7 @@ struct LowInStockReportRunner {
         return Self.keyByID(rows: rows)
     }
 
-    static func keyByID(rows: [AnyCodableJSON]) -> [Int: AnyCodableJSON] {
+    private static func keyByID(rows: [AnyCodableJSON]) -> [Int: AnyCodableJSON] {
         var keyed: [Int: AnyCodableJSON] = [:]
         for row in rows {
             guard let identifier = RESTResponseParsing.intField(row, "id") else { continue }

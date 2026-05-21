@@ -278,7 +278,7 @@ struct ProductsUpdatePlanner {
         return nil
     }
 
-    static func computeSalePrice(regular: Decimal, percent: Double) -> String? {
+    private static func computeSalePrice(regular: Decimal, percent: Double) -> String? {
         guard regular > 0 else { return nil }
         let factorString = String(format: "%.6f", (100.0 - percent) / 100.0)
         guard let factor = Decimal(string: factorString) else { return nil }

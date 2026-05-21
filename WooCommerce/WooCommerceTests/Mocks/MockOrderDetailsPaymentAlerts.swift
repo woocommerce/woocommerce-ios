@@ -11,6 +11,8 @@ final class MockOrderDetailsPaymentAlerts {
     var cancelCardInsertedAlert: (() -> Void)?
 
     var cardInsertedWasCalled = false
+    var displayReaderMessageWasCalled = false
+    var processingPaymentWasCalled = false
     var error: Error?
     var retryFromError: (() -> Void)?
     var dismissErrorCompletion: (() -> Void)?
@@ -40,11 +42,11 @@ extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     }
 
     func displayReaderMessage(message: String) {
-        // no-op
+        displayReaderMessageWasCalled = true
     }
 
     func processingPayment(title: String) {
-        // no-op
+        processingPaymentWasCalled = true
     }
 
     func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptAction: @escaping () -> Void) {

@@ -753,7 +753,7 @@ struct DefaultConfirmationPreviewBuilderTests {
     }
 
     @Test
-    func test_build_when_products_update_field_values_diverge_then_renders_updated_marker() throws {
+    func test_build_when_products_update_field_values_diverge_then_renders_varies_per_item() throws {
         // Given
         let builder = DefaultConfirmationPreviewBuilder()
 
@@ -767,7 +767,250 @@ struct DefaultConfirmationPreviewBuilderTests {
         // Then
         let unwrapped = try #require(preview)
         let saleField = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
-        #expect(saleField.value.flattened() == "Updated")
+        #expect(saleField.value.flattened() == "varies per item")
+    }
+
+    @Test
+    func test_build_when_products_update_percent_discount_then_summary_includes_percent() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"target":{"kind":"product","id":12},"percent_discount":10}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "percent_discount" }))
+        #expect(field.value.flattened() == "10% off")
+    }
+
+    @Test
+    func test_build_when_products_update_field_set_by_some_entries_then_renders_varies_per_item() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[
+              {"target":{"kind":"product","id":1},"sale_price":"9.99"},
+              {"target":{"kind":"product","id":2},"name":"Tee"},
+              {"target":{"kind":"product","id":3},"name":"Shirt"}
+            ]}
+            """#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let saleField = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(saleField.value.flattened() == "varies per item")
+    }
+
+    @Test
+    func test_productField_when_values_diverge_then_perEntryValues_populated_per_id() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[
+              {"target":{"kind":"product","id":3859},"stock_quantity":10},
+              {"target":{"kind":"product","id":3860},"stock_quantity":5},
+              {"target":{"kind":"product","id":3861},"stock_quantity":8}
+            ]}
+            """#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "stock_quantity" }))
+        let perEntry = try #require(field.perEntryValues)
+        #expect(perEntry[3859] == .raw("10"))
+        #expect(perEntry[3860] == .raw("5"))
+        #expect(perEntry[3861] == .raw("8"))
+    }
+
+    @Test
+    func test_productField_when_values_uniform_then_perEntryValues_nil() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"target":{"kind":"product","id":1},"sale_price":"10.00"},{"target":{"kind":"product","id":2},"sale_price":"10.00"}]}"#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let field = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(field.perEntryValues == nil)
+    }
+
+    @Test
+    func test_productField_when_some_entries_omit_field_then_still_renders_perEntryValues_only_for_set_entries() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[
+              {"target":{"kind":"product","id":1},"sale_price":"9.99"},
+              {"target":{"kind":"product","id":2},"name":"Tee"},
+              {"target":{"kind":"product","id":3},"name":"Shirt"}
+            ]}
+            """#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let saleField = try #require(unwrapped.fields.first(where: { $0.name == "sale_price" }))
+        #expect(saleField.value.flattened() == "varies per item")
+        let perEntry = try #require(saleField.perEntryValues)
+        #expect(perEntry[1] == .raw("9.99"))
+        #expect(perEntry[2] == nil)
+        #expect(perEntry[3] == nil)
+    }
+
+    @Test
+    func test_build_when_scoped_fanout_with_snapshot_count_then_summary_names_parent_and_count() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(
+            currentValues: [:],
+            bulkEntries: [ConfirmationBulkEntry(id: 821, displayName: "Hoodie")],
+            parentVariationCounts: [821: 12]
+        )
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[{"target":{"kind":"product","id":821,"scope":"all_variations"},"percent_discount":10}]}
+            """#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        #expect(unwrapped.summary.flattened() == "Apply changes to all 12 variations of Hoodie")
+    }
+
+    @Test
+    func test_build_when_scoped_fanout_without_snapshot_count_then_summary_degrades_gracefully() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(
+            currentValues: [:],
+            bulkEntries: [ConfirmationBulkEntry(id: 821, displayName: "Hoodie")]
+        )
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[{"target":{"kind":"product","id":821,"scope":"all_variations"},"percent_discount":10}]}
+            """#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        #expect(unwrapped.summary.flattened() == "Apply changes to all variations of Hoodie")
+    }
+
+    @Test
+    func test_build_when_scoped_fanout_without_snapshot_then_summary_uses_parent_id_token() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[{"target":{"kind":"product","id":821,"scope":"all_variations"},"percent_discount":10}]}
+            """#,
+            snapshot: nil
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        #expect(unwrapped.summary.flattened() == "Apply changes to all variations of #821")
+    }
+
+    @Test
+    func test_build_when_two_scoped_fanouts_with_counts_then_summary_aggregates_across_parents() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(
+            currentValues: [:],
+            bulkEntries: [
+                ConfirmationBulkEntry(id: 821, displayName: "Hoodie"),
+                ConfirmationBulkEntry(id: 822, displayName: "Tee")
+            ],
+            parentVariationCounts: [821: 8, 822: 4]
+        )
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[
+              {"target":{"kind":"product","id":821,"scope":"all_variations"},"percent_discount":10},
+              {"target":{"kind":"product","id":822,"scope":"all_variations"},"percent_discount":10}
+            ]}
+            """#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        #expect(unwrapped.summary.flattened() == "Apply changes to 12 variations across 2 parents")
+    }
+
+    @Test
+    func test_productsUpdate_bulk_entries_use_variation_names_when_available() throws {
+        // Given
+        let builder = DefaultConfirmationPreviewBuilder()
+        let snapshot = ConfirmationSnapshot(
+            currentValues: [:],
+            bulkEntries: [
+                ConfirmationBulkEntry(id: 821, displayName: "Hoodie", subEntries: [
+                    ConfirmationBulkEntry(id: 901, displayName: "Hoodie - Red, Small"),
+                    ConfirmationBulkEntry(id: 902, displayName: "Hoodie - Red, Medium")
+                ])
+            ],
+            parentVariationCounts: [821: 2]
+        )
+
+        // When
+        let preview = builder.build(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[{"target":{"kind":"product","id":821,"scope":"all_variations"},"percent_discount":10}]}
+            """#,
+            snapshot: snapshot
+        )
+
+        // Then
+        let unwrapped = try #require(preview)
+        let parent = try #require(unwrapped.bulkEntries.first)
+        #expect(parent.id == 821)
+        #expect(parent.displayName == "Hoodie")
+        #expect(parent.subEntries.map(\.displayName) == ["Hoodie - Red, Small", "Hoodie - Red, Medium"])
     }
 
     @Test

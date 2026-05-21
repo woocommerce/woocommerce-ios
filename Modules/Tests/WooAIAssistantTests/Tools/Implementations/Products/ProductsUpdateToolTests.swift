@@ -59,7 +59,7 @@ struct ProductsUpdateToolTests {
     }
 
     @Test
-    func test_update_when_id_is_variable_parent_then_refuses_price_with_variation_routing_reason() async throws {
+    func test_update_when_id_is_variable_parent_with_stock_quantity_then_refuses_with_reason() async throws {
         // Given
         let probe = #"{"id": 50, "type": "variable"}"#
         let client = MockWCRESTClient(response: StubResponses.ok("[\(probe)]"))
@@ -79,8 +79,8 @@ struct ProductsUpdateToolTests {
         }
         #expect(entry["id"] == .int(50))
         if case .string(let reason) = entry["reason"] {
-            #expect(reason.contains("variable product"))
-            #expect(reason.contains("target.kind=\"variation\""))
+            #expect(reason.contains("variable parent"))
+            #expect(reason.contains("target specific variations"))
         } else {
             Issue.record("expected reason string")
         }
@@ -147,45 +147,37 @@ struct ProductsUpdateToolTests {
         }
         #expect(entry["id"] == .int(50))
         if case .string(let reason) = entry["reason"] {
-            #expect(reason.contains("Price and stock"))
+            #expect(reason.contains("variation-level"))
+            #expect(reason.contains("all_variations"))
         } else {
             Issue.record("expected reason string")
         }
     }
 
     @Test
-    func test_update_when_variable_parent_name_and_price_then_parent_write_plus_price_failure() async throws {
+    func test_update_when_variable_parent_variation_field_without_scope_then_rejected_with_scope_hint() async throws {
         // Given
         let probe = #"{"id": 50, "type": "variable"}"#
-        let client = RoutingMockWCRESTClient(routes: [
-            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
-            "POST wc/v3/products/batch": StubResponses.ok(#"{"update": [{"id": 50, "name": "Renamed"}]}"#)
-        ])
+        let client = MockWCRESTClient(response: StubResponses.ok("[\(probe)]"))
         let tool = ProductsUpdateTool.make()
 
         // When
         let result = await tool.executor(
-            #"{"updates": [{"target": {"kind": "product", "id": 50}, "name": "Renamed", "regular_price": "19.99"}]}"#,
+            #"{"updates": [{"target": {"kind": "product", "id": 50}, "sale_price": "9"}]}"#,
             client
         )
 
         // Then
         let receipt = try successReceipt(result)
-        let posts = await client.calls.filter { $0.method == "POST" }
-        #expect(posts.count == 1)
-        #expect(posts.first?.path == "wc/v3/products/batch")
-        let body = try requireBatchBody(posts.first?.body)
-        let entry = try #require(body.first)
-        #expect(entry["name"] as? String == "Renamed")
-        #expect(entry["regular_price"] == nil)
-        #expect(updatedProductIDs(receipt) == [50])
-        guard case .array(let failed) = receipt["failed"], case .object(let failure) = failed.first else {
+        guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
             Issue.record("expected failed entry")
             return
         }
-        #expect(failure["id"] == .int(50))
-        if case .string(let reason) = failure["reason"] {
-            #expect(reason.contains("Price and stock"))
+        #expect(entry["id"] == .int(50))
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("all_variations"))
+            #expect(reason.contains("variation-level"))
+            #expect(reason.contains("target.kind=\"variation\""))
         } else {
             Issue.record("expected reason string")
         }
@@ -1317,6 +1309,476 @@ struct ProductsUpdateToolTests {
         let entriesByID = batchEntriesByID(body)
         #expect(entriesByID[88]?["sale_price"] as? String == "27")
         #expect(updatedVariationIDs(receipt) == [88])
+    }
+
+    @Test(arguments: [
+        ("sale_price", "15.00"),
+        ("regular_price", "25.00"),
+        ("stock_status", "outofstock")
+    ])
+    func test_update_when_variable_parent_scoped_fanout_field_set_then_posts_to_variations_batch(jsonKey: String, value: String) async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable", "name": "Tee"}"#
+        let variationsList = """
+        [{"id": 101, "regular_price": "20.00"}, {"id": 102, "regular_price": "30.00"}]
+        """
+        let batchResponse = "{\"update\": [{\"id\": 101, \"\(jsonKey)\": \"\(value)\"}, {\"id\": 102, \"\(jsonKey)\": \"\(value)\"}]}"
+        let client = MockWCRESTClient(responses: [
+            StubResponses.ok("[\(probe)]"),
+            StubResponses.ok(variationsList),
+            StubResponses.ok(batchResponse)
+        ])
+        let tool = ProductsUpdateTool.make()
+        let arguments = "{\"updates\": [{\"target\": {\"kind\": \"product\", \"id\": 50, \"scope\": \"all_variations\"}, \"\(jsonKey)\": \"\(value)\"}]}"
+
+        // When
+        let result = await tool.executor(arguments, client)
+
+        // Then
+        let receipt = try successReceipt(result)
+        let calls = await client.calls
+        let posts = calls.filter { $0.method == "POST" }
+        #expect(posts.count == 1)
+        #expect(posts.first?.path == "wc/v3/products/50/variations/batch")
+        let body = try requireBatchBody(posts.first?.body)
+        #expect(body.count == 2)
+        let entriesByID = batchEntriesByID(body)
+        #expect(entriesByID[101]?[jsonKey] as? String == value)
+        #expect(entriesByID[102]?[jsonKey] as? String == value)
+        // Fanned-out variations land in `updated` as variation target objects carrying their parent.
+        #expect(updatedVariationIDs(receipt) == [101, 102])
+        for target in updatedTargets(receipt) where target.kind == "variation" {
+            #expect(target.parentID == 50)
+        }
+    }
+
+    @Test
+    func test_update_when_variable_parent_scoped_fanout_percent_discount_then_computes_per_variation_sale_price() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let variationsList = """
+        [{"id": 101, "regular_price": "20.00"}, {"id": 102, "regular_price": "30.00"}]
+        """
+        let batchResponse = #"{"update": [{"id": 101}, {"id": 102}]}"#
+        let client = MockWCRESTClient(responses: [
+            StubResponses.ok("[\(probe)]"),
+            StubResponses.ok(variationsList),
+            StubResponses.ok(batchResponse)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 50, "scope": "all_variations"}, "percent_discount": 10}]}"#,
+            client
+        )
+
+        // Then
+        guard case .success = result else {
+            Issue.record("expected success, got \(result)")
+            return
+        }
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.count == 1)
+        #expect(posts.first?.path == "wc/v3/products/50/variations/batch")
+        let body = try requireBatchBody(posts.first?.body)
+        let entriesByID = batchEntriesByID(body)
+        #expect(entriesByID[101]?["sale_price"] as? String == "18")
+        #expect(entriesByID[102]?["sale_price"] as? String == "27")
+        for (_, entry) in entriesByID {
+            #expect(entry["percent_discount"] == nil)
+        }
+    }
+
+    @Test
+    func test_update_when_variable_parent_scoped_fanout_then_updated_lists_each_variation_target() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let variationsList = """
+        [{"id": 101, "regular_price": "20.00"}, {"id": 102, "regular_price": "30.00"}]
+        """
+        let batchResponse = #"{"update": [{"id": 101}, {"id": 102}]}"#
+        let client = MockWCRESTClient(responses: [
+            StubResponses.ok("[\(probe)]"),
+            StubResponses.ok(variationsList),
+            StubResponses.ok(batchResponse)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 50, "scope": "all_variations"}, "sale_price": "9.99"}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let variations = updatedTargets(receipt).filter { $0.kind == "variation" }
+        #expect(Set(variations.map(\.id)) == [101, 102])
+        #expect(variations.allSatisfy { $0.parentID == 50 })
+        #expect(updatedProductIDs(receipt).isEmpty)
+    }
+
+    @Test(arguments: [
+        ("status", "draft"),
+        ("name", "New Tee")
+    ])
+    func test_update_when_variable_parent_only_field_set_then_applied_to_parent_in_products_batch(jsonKey: String, value: String) async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let batchResponse = "{\"update\": [{\"id\": 50, \"\(jsonKey)\": \"\(value)\"}]}"
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
+            "POST wc/v3/products/batch": StubResponses.ok(batchResponse)
+        ])
+        let tool = ProductsUpdateTool.make()
+        let arguments = "{\"updates\": [{\"target\": {\"kind\": \"product\", \"id\": 50}, \"\(jsonKey)\": \"\(value)\"}]}"
+
+        // When
+        let result = await tool.executor(arguments, client)
+
+        // Then
+        let receipt = try successReceipt(result)
+        let calls = await client.calls
+        let posts = calls.filter { $0.method == "POST" }
+        #expect(posts.count == 1)
+        #expect(posts.first?.path == "wc/v3/products/batch")
+        let body = try requireBatchBody(posts.first?.body)
+        try requireSingleUpdate(body, id: 50, fields: [jsonKey: value])
+        #expect(body.first?["stock_status"] == nil)
+        #expect(updatedProductIDs(receipt) == [50])
+    }
+
+    @Test
+    func test_update_when_sku_set_on_variable_parent_then_applied_to_parent_only_not_expanded() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let batchResponse = #"{"update": [{"id": 50, "sku": "TEE-PARENT"}]}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
+            "POST wc/v3/products/batch": StubResponses.ok(batchResponse)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 50}, "sku": "TEE-PARENT"}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let calls = await client.calls
+        let variationGets = calls.filter { $0.method == "GET" && $0.path == "wc/v3/products/50/variations" }
+        #expect(variationGets.isEmpty)
+        let posts = calls.filter { $0.method == "POST" }
+        #expect(posts.count == 1)
+        #expect(posts.first?.path == "wc/v3/products/batch")
+        let body = try requireBatchBody(posts.first?.body)
+        try requireSingleUpdate(body, id: 50, fields: ["sku": "TEE-PARENT"])
+        #expect(updatedProductIDs(receipt) == [50])
+    }
+
+    @Test
+    func test_update_when_scope_set_on_simple_product_then_applies_normally_without_fanout() async throws {
+        // Given - scope on a simple product has no variations to fan to; it must update the product itself.
+        let probe = #"{"id": 10, "type": "simple", "regular_price": "50.00"}"#
+        let batchResponse = #"{"update": [{"id": 10}]}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
+            "POST wc/v3/products/batch": StubResponses.ok(batchResponse)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 10, "scope": "all_variations"}, "sale_price": "45"}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let calls = await client.calls
+        #expect(!calls.contains { $0.path == "wc/v3/products/10/variations" })
+        let posts = calls.filter { $0.method == "POST" }
+        #expect(posts.first?.path == "wc/v3/products/batch")
+        #expect(updatedProductIDs(receipt) == [10])
+    }
+
+    @Test
+    func test_update_when_variable_parent_has_more_than_100_variations_then_refused_with_failed_entry() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let variationsList = """
+        [{"id": 101, "regular_price": "20.00"}, {"id": 102, "regular_price": "30.00"}]
+        """
+        let client = MockWCRESTClient(responses: [
+            StubResponses.ok("[\(probe)]"),
+            StubResponses.ok(variationsList, headers: ["X-WP-TotalPages": "2", "X-WP-Total": "150"])
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 50, "scope": "all_variations"}, "sale_price": "15.00"}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.isEmpty)
+        guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
+            Issue.record("expected failed entry")
+            return
+        }
+        #expect(failed.count == 1)
+        #expect(entry["id"] == .int(50))
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("more than 100 variations"))
+            #expect(reason.contains("inconsistent"))
+            #expect(reason.contains("specific variation ids"))
+        } else {
+            Issue.record("expected reason string")
+        }
+        #expect(updatedTargets(receipt).isEmpty)
+    }
+
+    @Test
+    func test_planVariableParent_when_full_page_and_no_total_pages_header_then_refused_as_unsafe() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let rows = (1...100).map { #"{"id": \#($0), "regular_price": "20.00"}"# }.joined(separator: ",")
+        let variationsList = "[\(rows)]"
+        let client = MockWCRESTClient(responses: [
+            StubResponses.ok("[\(probe)]"),
+            StubResponses.ok(variationsList)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 50, "scope": "all_variations"}, "sale_price": "15.00"}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.isEmpty)
+        guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
+            Issue.record("expected failed entry")
+            return
+        }
+        #expect(entry["id"] == .int(50))
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("more than 100 variations"))
+        } else {
+            Issue.record("expected reason string")
+        }
+    }
+
+    @Test
+    func test_planVariableParent_when_expansion_refused_with_parent_only_field_then_refuses_entire_entry() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let variationsList = """
+        [{"id": 101, "regular_price": "20.00"}, {"id": 102, "regular_price": "30.00"}]
+        """
+        let client = MockWCRESTClient(responses: [
+            StubResponses.ok("[\(probe)]"),
+            StubResponses.ok(variationsList, headers: ["X-WP-TotalPages": "2", "X-WP-Total": "150"])
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"""
+            {"updates": [{
+              "target": {"kind": "product", "id": 50, "scope": "all_variations"},
+              "name": "Renamed", "percent_discount": 10
+            }]}
+            """#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.isEmpty)
+        guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
+            Issue.record("expected failed entry")
+            return
+        }
+        #expect(failed.count == 1)
+        #expect(entry["id"] == .int(50))
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("parent-only fields"))
+            #expect(reason.contains("per-variation"))
+            #expect(reason.contains("two separate updates"))
+        } else {
+            Issue.record("expected reason string")
+        }
+        #expect(updatedTargets(receipt).isEmpty)
+    }
+
+    @Test
+    func test_planVariableParent_when_expansion_refused_with_no_parent_only_field_then_returns_expansion_refusal_only() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let variationsList = """
+        [{"id": 101, "regular_price": "20.00"}]
+        """
+        let client = MockWCRESTClient(responses: [
+            StubResponses.ok("[\(probe)]"),
+            StubResponses.ok(variationsList, headers: ["X-WP-TotalPages": "2"])
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"updates": [{"target": {"kind": "product", "id": 50, "scope": "all_variations"}, "sale_price": "9.99"}]}"#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.isEmpty)
+        guard case .array(let failed) = receipt["failed"], case .object(let entry) = failed.first else {
+            Issue.record("expected failed entry")
+            return
+        }
+        #expect(entry["id"] == .int(50))
+        if case .string(let reason) = entry["reason"] {
+            #expect(reason.contains("more than 100 variations"))
+        } else {
+            Issue.record("expected reason string")
+        }
+        #expect(updatedTargets(receipt).isEmpty)
+    }
+
+    @Test
+    func test_planVariableParent_when_expansion_succeeds_with_parent_only_field_then_dispatches_both() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let variationsList = """
+        [{"id": 101, "regular_price": "20.00"}, {"id": 102, "regular_price": "30.00"}]
+        """
+        let parentBatch = #"{"update": [{"id": 50, "name": "Renamed"}]}"#
+        let variationsBatch = #"{"update": [{"id": 101, "sale_price": "18.00"}, {"id": 102, "sale_price": "27.00"}]}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
+            "GET wc/v3/products/50/variations": StubResponses.ok(variationsList),
+            "POST wc/v3/products/batch": StubResponses.ok(parentBatch),
+            "POST wc/v3/products/50/variations/batch": StubResponses.ok(variationsBatch)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"""
+            {"updates": [{
+              "target": {"kind": "product", "id": 50, "scope": "all_variations"},
+              "name": "Renamed", "percent_discount": 10
+            }]}
+            """#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.count == 2)
+        #expect(updatedProductIDs(receipt) == [50])
+        #expect(updatedVariationIDs(receipt) == [101, 102])
+    }
+
+    @Test
+    func test_update_when_status_combined_with_sale_price_on_variable_parent_then_splits_into_parent_and_variation_writes() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let variationsList = """
+        [{"id": 101, "regular_price": "20.00"}, {"id": 102, "regular_price": "30.00"}]
+        """
+        let parentBatch = #"{"update": [{"id": 50, "status": "draft"}]}"#
+        let variationsBatch = #"{"update": [{"id": 101, "sale_price": "9.99"}, {"id": 102, "sale_price": "9.99"}]}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
+            "GET wc/v3/products/50/variations": StubResponses.ok(variationsList),
+            "POST wc/v3/products/batch": StubResponses.ok(parentBatch),
+            "POST wc/v3/products/50/variations/batch": StubResponses.ok(variationsBatch)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"""
+            {"updates": [{
+              "target": {"kind": "product", "id": 50, "scope": "all_variations"},
+              "status": "draft", "sale_price": "9.99"
+            }]}
+            """#,
+            client
+        )
+
+        // Then
+        let receipt = try successReceipt(result)
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.count == 2)
+        let parentPost = try #require(posts.first { $0.path == "wc/v3/products/batch" })
+        try requireSingleUpdate(try requireBatchBody(parentPost.body), id: 50, fields: ["status": "draft"])
+        let variationsPost = try #require(posts.first { $0.path == "wc/v3/products/50/variations/batch" })
+        let entriesByID = batchEntriesByID(try requireBatchBody(variationsPost.body))
+        #expect(entriesByID[101]?["sale_price"] as? String == "9.99")
+        #expect(entriesByID[102]?["sale_price"] as? String == "9.99")
+        #expect(updatedProductIDs(receipt) == [50])
+        #expect(updatedVariationIDs(receipt) == [101, 102])
+    }
+
+    @Test
+    func test_update_when_sku_and_percent_discount_set_on_variable_parent_then_parent_gets_sku_and_variations_get_computed_sale_price() async throws {
+        // Given
+        let probe = #"{"id": 50, "type": "variable"}"#
+        let variationsList = """
+        [{"id": 101, "regular_price": "20.00"}, {"id": 102, "regular_price": "30.00"}]
+        """
+        let parentBatch = #"{"update": [{"id": 50, "sku": "TEE-PARENT"}]}"#
+        let variationsBatch = #"{"update": [{"id": 101}, {"id": 102}]}"#
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc/v3/products": StubResponses.ok("[\(probe)]"),
+            "GET wc/v3/products/50/variations": StubResponses.ok(variationsList),
+            "POST wc/v3/products/batch": StubResponses.ok(parentBatch),
+            "POST wc/v3/products/50/variations/batch": StubResponses.ok(variationsBatch)
+        ])
+        let tool = ProductsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"""
+            {"updates": [{
+              "target": {"kind": "product", "id": 50, "scope": "all_variations"},
+              "sku": "TEE-PARENT", "percent_discount": 10
+            }]}
+            """#,
+            client
+        )
+
+        // Then
+        guard case .success = result else {
+            Issue.record("expected success, got \(result)")
+            return
+        }
+        let posts = await client.calls.filter { $0.method == "POST" }
+        #expect(posts.count == 2)
+        let parentPost = try #require(posts.first { $0.path == "wc/v3/products/batch" })
+        try requireSingleUpdate(try requireBatchBody(parentPost.body), id: 50, fields: ["sku": "TEE-PARENT"])
+        let variationsPost = try #require(posts.first { $0.path == "wc/v3/products/50/variations/batch" })
+        let entriesByID = batchEntriesByID(try requireBatchBody(variationsPost.body))
+        #expect(entriesByID[101]?["sale_price"] as? String == "18")
+        #expect(entriesByID[102]?["sale_price"] as? String == "27")
+        #expect(entriesByID[101]?["sku"] == nil)
+        #expect(entriesByID[101]?["percent_discount"] == nil)
     }
 
     // MARK: Helpers

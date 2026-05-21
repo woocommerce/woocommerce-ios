@@ -363,6 +363,93 @@ struct DefaultConfirmationSnapshotResolverTests {
     }
 
     @Test
+    func test_resolveProductsUpdate_when_scoped_fanout_then_snapshot_carries_variation_count_from_rows() async throws {
+        // Given
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products",
+                                 body: #"[{"id":50,"name":"Tee"}]"#)
+        let variationsBody = """
+        [{"id":101,"name":"Tee - S"},{"id":102,"name":"Tee - M"},{"id":103,"name":"Tee - L"}]
+        """
+        await client.setResponse(forPath: "wc/v3/products/50/variations", body: variationsBody)
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[{"target":{"kind":"product","id":50,"scope":"all_variations"},"percent_discount":10}]}
+            """#
+        )
+
+        // Then
+        let counts = try #require(snapshot?.parentVariationCounts)
+        #expect(counts[50] == 3)
+        let calls = await client.recordedCalls
+        #expect(calls.contains(where: { $0.path == "wc/v3/products/50/variations" }))
+    }
+
+    @Test
+    func test_resolveProductsUpdate_when_scoped_fanout_and_endpoint_fails_then_count_is_absent() async throws {
+        // Given
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products",
+                                 body: #"[{"id":50,"name":"Tee"}]"#)
+        await client.setResponse(forPath: "wc/v3/products/50/variations",
+                                 body: "[]",
+                                 statusCode: 500)
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[{"target":{"kind":"product","id":50,"scope":"all_variations"},"percent_discount":10}]}
+            """#
+        )
+
+        // Then
+        #expect(snapshot?.parentVariationCounts[50] == nil)
+    }
+
+    @Test
+    func test_resolveProductsUpdate_when_variable_parent_with_scope_then_snapshot_includes_variation_names() async throws {
+        // Given
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products",
+                                 body: #"[{"id":50,"name":"Tee"}]"#)
+        let variationsBody = """
+        [{"id":101,"name":"Tee - Red, S","attributes":[{"id":1,"name":"Color","option":"Red"},\
+        {"id":2,"name":"Size","option":"S"}]},\
+        {"id":102,"name":"Tee - Red, M","attributes":[{"id":1,"name":"Color","option":"Red"},\
+        {"id":2,"name":"Size","option":"M"}]},\
+        {"id":103,"name":"Tee - Blue, S","attributes":[{"id":1,"name":"Color","option":"Blue"},\
+        {"id":2,"name":"Size","option":"S"}]},\
+        {"id":104,"name":"Tee - Blue, M","attributes":[{"id":1,"name":"Color","option":"Blue"},\
+        {"id":2,"name":"Size","option":"M"}]}]
+        """
+        await client.setResponse(forPath: "wc/v3/products/50/variations", body: variationsBody)
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[{"target":{"kind":"product","id":50,"scope":"all_variations"},"percent_discount":10}]}
+            """#
+        )
+
+        // Then
+        let entries = try #require(snapshot?.bulkEntries)
+        let parent = try #require(entries.first)
+        #expect(parent.id == 50)
+        #expect(parent.displayName == "Tee")
+        let subLabels = parent.subEntries.compactMap(\.displayName)
+        #expect(subLabels == ["Tee - Red, S", "Tee - Red, M", "Tee - Blue, S", "Tee - Blue, M"])
+        #expect(snapshot?.parentVariationCounts[50] == 4)
+    }
+
+    @Test
     func test_resolve_when_unknown_tool_then_returns_nil() async {
         // Given
         let client = StubRESTClient()

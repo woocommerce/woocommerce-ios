@@ -51,23 +51,17 @@ struct PushNotificationPreferencesView: View {
         List {
             Section {
                 row(title: Localization.newOrdersTitle,
-                    detail: Localization.newOrdersDetail,
-                    isOn: Binding(get: { viewModel.isStoreOrderEnabled },
-                                  set: { viewModel.setStoreOrderEnabled($0) }))
+                    detail: viewModel.isStoreOrderEnabled ? Localization.newOrdersDetail : Localization.off)
                 row(title: Localization.newReviewsTitle,
-                    detail: Localization.newReviewsDetail,
-                    isOn: Binding(get: { viewModel.isStoreReviewEnabled },
-                                  set: { viewModel.setStoreReviewEnabled($0) }))
+                    detail: viewModel.isStoreReviewEnabled ? Localization.newReviewsDetail : Localization.off)
                 row(title: Localization.stockTitle,
-                    detail: Localization.stockDetail,
-                    isOn: Binding(get: { viewModel.isStoreStockEnabled },
-                                  set: { viewModel.setStoreStockEnabled($0) }))
+                    detail: viewModel.isStoreStockEnabled ? Localization.stockDetail : Localization.off)
             }
         }
         .listStyle(.insetGrouped)
     }
 
-    private func row(title: String, detail: String, isOn: Binding<Bool>) -> some View {
+    private func row(title: String, detail: String) -> some View {
         HStack(spacing: Layout.contentSpacing) {
             VStack(alignment: .leading, spacing: Layout.titleDetailSpacing) {
                 Text(title)
@@ -77,16 +71,14 @@ struct PushNotificationPreferencesView: View {
                     .captionStyle()
             }
             Spacer()
-            Toggle("", isOn: isOn)
-                .labelsHidden()
-                .accessibilityLabel(title)
-                .accessibilityHint(detail)
             Image(systemName: "chevron.forward")
                 .foregroundStyle(Color(.tertiaryLabel))
                 .font(.footnote.weight(.semibold))
                 .accessibilityHidden(true)
         }
         .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -133,6 +125,11 @@ extension PushNotificationPreferencesView {
             "pushNotificationPreferencesView.stock.detail",
             value: "All stock alerts",
             comment: "Detail text for the row that toggles stock push notifications."
+        )
+        static let off = NSLocalizedString(
+            "pushNotificationPreferencesView.off",
+            value: "Off",
+            comment: "Detail text shown on a notification row when notifications are disabled."
         )
         static let errorTitle = NSLocalizedString(
             "pushNotificationPreferencesView.error.title",

@@ -68,14 +68,9 @@ struct NewOrderNotificationPreferencesDetailView: View {
     private var masterToggleSection: some View {
         Section {
             VStack(alignment: .leading, spacing: Layout.titleDetailSpacing) {
-                HStack {
-                    Text(Localization.enableTitle)
-                        .bodyStyle()
-                    Spacer()
-                    Toggle("", isOn: Binding(get: { viewModel.isStoreOrderEnabled },
-                                             set: { viewModel.setStoreOrderEnabled($0) }))
-                        .labelsHidden()
-                }
+                Toggle(Localization.enableTitle,
+                       isOn: Binding(get: { viewModel.isStoreOrderEnabled },
+                                     set: { viewModel.setStoreOrderEnabled($0) }))
                 Text(Localization.enableSubtitle)
                     .foregroundStyle(Color(.secondaryLabel))
                     .captionStyle()

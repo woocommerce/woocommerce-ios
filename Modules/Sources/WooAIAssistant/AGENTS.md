@@ -7,14 +7,14 @@ An in-app conversational agent for WooCommerce merchants. The agentic loop runs 
 The module is built as a flexible foundation so future iterations can extend the surface without rebuilding the loop. Two integration axes stay swappable behind protocol seams:
 
 - **Tool providers.** `ToolRegistry` is a protocol. v1 ships `RESTToolRegistry` for local REST tools. An MCP-backed registry can plug in alongside or in place of REST without touching the orchestrator.
-- **Chat endpoints.** `AIChatService` is a protocol. v1 ships `JetpackAIQueryClient` pointed at the `jetpack-ai-query` endpoint. A different endpoint or transport requires only an alternate `AIChatService` conformance.
+- **Chat endpoints.** `AIChatService` is a protocol. v1 ships `AIApiProxyChatService` pointed at the `woo-mobile-ai/chat/completions` endpoint. A different endpoint or transport requires only an alternate `AIChatService` conformance.
 
 Rich entity cards render through the module and deep-link back into existing app screens via `AssistantExternalNavigationProviding`, so the assistant integrates with the rest of the app without owning navigation state.
 
 ## Locked product and technical decisions
 
 - **Client-side agentic loop.** No server-side agent or middleware orchestrates between the model and the app. Both iOS and Android run the same loop shape so guardrails stay in code.
-- **`jetpack-ai-query` for the v1 chat endpoint.** Inherits Jetpack AI plan billing. An alternative endpoint is considered for the future; both plug into `AIChatService`.
+- **`woo-mobile-ai/chat/completions` for the v1 chat endpoint.** A dedicated WPCOM proxy that authenticates with the user's WPCOM OAuth token, sets the AI feature header server-side, and enforces per-user request quotas. An alternative endpoint plugs into `AIChatService`.
 - **Production uses a model that reliably handles multi-step tool calls and complex queries.** When evaluating a different model for cost or performance, run the `/woo-ai-smoke` suite with scenarios that chain multiple tools across a turn to validate the balance. The current model is set in `AssistantConfiguration`.
 - **REST tools for v1.** `RESTToolRegistry` ships first because REST is faster, more reliable, and avoids context-window bloat. The `ToolRegistry` seam stays open for MCP-backed catalogs.
 - **`show_cards` is the only render path.** The model decides when to surface UI.
@@ -34,7 +34,7 @@ AssistantChatView
       -> AgenticChatBackend                       (long-lived per session)
           -> SlidingWindowHistoryBudgeter
           -> AgenticLoopOrchestrator              (actor, the heart)
-              -> AIChatService                    (SSE chat over Bearer JWT)
+              -> AIChatService                    (SSE chat over WPCOM OAuth bearer)
               -> RESTToolRegistry                 (local REST tools)
               -> SafetyPolicy                     (confirmation gate)
               -> AssistantTelemetryTracker        (per-turn events)
@@ -46,15 +46,15 @@ Each user turn opens an `AsyncThrowingStream<AssistantEvent, Error>`. The contro
 
 | Path | Contents |
 |---|---|
-| `AI/` | OpenAI-compatible wire DTOs (`OpenAIChat.*`). Cross-component vocabulary. |
+| `AI/` | `AIApiProxyChatService` (SSE chat client), its transport and stream-decode support (`AIChatServiceSupport`), and OpenAI-compatible wire DTOs (`OpenAIChat.*`). |
 | `Backend/` | `AssistantBackend` protocol, `AgenticChatBackend`, `HistoryBudgeter`. |
 | `Configuration/` | `AssistantConfiguration` (model name, history window size) and `AssistantSystemPrompt`. |
 | `Headless/` | `WooAssistantHeadless` smoke driver. |
 | `Loop/` | `AgenticLoopOrchestrator`, `AIChatService` protocol, `LoopOutcome`. |
 | `Models/` | `AssistantEvent`, `AssistantSession`, `ChatMessage`, `MessageSegment`. |
-| `Networking/` | `JetpackAIQueryClient` (SSE), `SSEParser`, `WpComJetpackAIJWTProvider`. |
+| `Networking/` | `SSEParser` and the `WPCOMTokenProviding` token-provider seam. |
 | `Presentation/` | SwiftUI surface: chat view, message bubble, card host, confirmation card. |
-| `Protocols/` | Host-facing DI protocols (analytics, JWT, navigation, external view). |
+| `Protocols/` | Host-facing DI protocols (analytics, dependency, navigation, external view). |
 | `Safety/` | `SafetyPolicy` + `DefaultSafetyPolicy`, `ConfirmationPreview`, `ConfirmationSnapshotResolver`. |
 | `State/` | `AssistantController`, `AssistantConversation`. |
 | `Telemetry/` | Constants, event enum, error and outcome mappers, `ShowCardsTelemetryReducer`. |
@@ -88,11 +88,13 @@ Each terminating path emits a typed outcome through a `.terminated` event. The i
 
 ## Chat service
 
-The orchestrator depends on the `AIChatService` protocol. v1 implements it with `JetpackAIQueryClient` (`Networking/`), which streams over SSE with Bearer JWT auth. SSE framing, UTF-8 handling, and tool-call delta assembly live across `SSEParser` and `JetpackAIQueryClient`.
+The orchestrator depends on the `AIChatService` protocol. v1 implements it with `AIApiProxyChatService` (`AI/`), which streams chat completions over SSE from the `woo-mobile-ai/chat/completions` WPCOM proxy. SSE framing, UTF-8 boundary handling, and tool-call delta assembly live across `SSEParser` (`Networking/`) and the transport and stream-decode support in `AIChatServiceSupport`.
 
-JWT minting is brokered by `WpComJetpackAIJWTProvider`, an actor with single-flight caching that prevents concurrent callers from minting redundant tokens. In production, `AIAssistantJWTAdaptor` performs the mint via the WPCOM tunnel.
+Auth is a WPCOM OAuth bearer token supplied through the `WPCOMTokenProviding` seam. Production resolves it from the signed-in account via `AIApiProxyTokenAdaptor`; the smoke harness uses a `ConstantWPCOMTokenProvider`. There is no client-side token minting: the proxy sets the AI feature header and enforces quotas server-side.
 
-Auth and rate-limit retries are event-gated: they only fire before any event has crossed the stream, so partial responses never get replayed.
+Error handling follows the proxy contract. Non-streaming failures arrive as a non-2xx body; streaming failures can arrive as an HTTP 200 carrying an error envelope, or as an HTTP 200 that closes with zero SSE frames. The client decodes the envelope into a typed `AssistantError`, and a stream that ends without ever yielding a decodable chunk surfaces as an upstream failure rather than a silent empty turn.
+
+Retries are event-gated and narrow: they fire only before any event has crossed the stream, and only for generic transient 429s. The proxy's per-user quota error (`woo_mobile_ai_user_rate_limit`) surfaces immediately without retry, since retrying cannot clear a per-user quota and only adds load to the server-side minute limiter.
 
 A different chat service implementation could use a different transport or auth scheme; the seam is the `AIChatService` protocol.
 
@@ -143,7 +145,7 @@ The orchestrator does not re-budget. Budgeter invariants must hold at the messag
 
 The `Headless/` subfolder exists only for offline evaluation through the `/woo-ai-smoke` skill. It is not part of the production runtime; the app never instantiates `WooAssistantHeadless`.
 
-`WooAssistantHeadless` (an `actor`) mirrors the production wiring (same tool catalog, safety policy, and prompt) but talks to the site directly via `HeadlessURLSessionWCRESTClient` and mints the JWT through a Jetpack-local app-password path. Differences from production: a higher iteration cap suited to long evaluation runs, an optional read-only mode that hard-denies all confirmations, and a configurable default confirmation policy. Credentials load from a smoke-harness-staged env file; see the `/woo-ai-smoke` skill for path conventions.
+`WooAssistantHeadless` (an `actor`) mirrors the production wiring (same tool catalog, safety policy, and prompt) but talks to the site directly via `HeadlessURLSessionWCRESTClient` for REST tools and authenticates the chat service with a `ConstantWPCOMTokenProvider` built from a WPCOM access token. Differences from production: a higher iteration cap suited to long evaluation runs, an optional read-only mode that hard-denies all confirmations, and a configurable default confirmation policy. Credentials load from a smoke-harness-staged env file; see the `/woo-ai-smoke` skill for path conventions.
 
 Each turn returns a `ConversationTurnResult` carrying the per-turn assistant output, tool calls, cards, confirmations, and any failure message; cards mirror the SwiftUI dedupe rules so JSONL output matches the chat surface.
 
@@ -159,7 +161,7 @@ The end-to-end evaluation loop is the `/woo-ai-smoke` skill. It drives `WooAssis
 - Do not let full entity payloads enter `structured`. UI-only data goes to `uiStructured`.
 - Do not bypass `HistoryBudgeter`. Orphan-tool-message trim invariants must hold.
 - Any tool that writes or changes data must declare `.unsafe` to gate on the confirmation system. The safety model is intentionally binary: `.safe` for reads, `.unsafe` for writes. No third tier.
-- Do not retry once data has crossed the stream. Auth and rate-limit retries are event-gated.
+- Do not retry once data has crossed the stream, and do not retry the proxy's per-user quota error. Auth and transient-429 retries are event-gated.
 - Do not introduce a second card-render path.
 - Do not bump `promptVersion` or `toolCatalogVersion` unilaterally; both platforms move together.
 - Tests: no `Task.sleep`, `Task.yield`, `NSLock`, `OSAllocatedUnfairLock`, `DispatchSemaphore`, or `@unchecked Sendable`. Mocks are synchronous; tests drive the unit's natural async surface.
@@ -168,4 +170,4 @@ The end-to-end evaluation loop is the `/woo-ai-smoke` skill. It drives `WooAssis
 
 ---
 
-Last reviewed: 2026-05-15.
+Last reviewed: 2026-05-21.

@@ -285,6 +285,7 @@ let package = Package(
             dependencies: [
                 "WooFoundation",
                 "NetworkingCore",
+                "Networking",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ]
         ),

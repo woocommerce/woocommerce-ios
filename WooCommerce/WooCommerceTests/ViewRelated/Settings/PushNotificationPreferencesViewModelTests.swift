@@ -280,6 +280,62 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - Save
 
+    @Test func test_isSaving_is_true_while_save_is_in_flight_and_false_after() async {
+        // Given
+        let stores = makeStores()
+        let saveContinuation = SaveContinuationBox()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .updatePushNotificationPreferences(_, changes, onCompletion) = action {
+                saveContinuation.deliver = { onCompletion(.success(changes)) }
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        sut.setStoreOrderEnabled(true)
+
+        // When
+        async let saveResult = sut.save()
+        // Yield until `save()` reaches its first await so `isSaving` has flipped.
+        await Task.yield()
+
+        // Then
+        #expect(sut.isSaving == true)
+
+        // When
+        saveContinuation.deliver?()
+        _ = await saveResult
+
+        // Then
+        #expect(sut.isSaving == false)
+    }
+
+    @Test func test_save_is_a_noop_while_another_save_is_already_in_flight() async {
+        // Given
+        let stores = makeStores()
+        let saveContinuation = SaveContinuationBox()
+        let dispatched = DispatchedChanges()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .updatePushNotificationPreferences(_, changes, onCompletion) = action {
+                dispatched.append(changes)
+                saveContinuation.deliver = { onCompletion(.success(changes)) }
+            }
+        }
+        let sut = makeSUT(stores: stores)
+        sut.setStoreOrderEnabled(true)
+        async let firstSave = sut.save()
+        await Task.yield()
+        #expect(sut.isSaving == true)
+
+        // When
+        let secondSaveResult = await sut.save()
+
+        // Then
+        #expect(secondSaveResult == false)
+        #expect(dispatched.calls.count == 1)
+
+        saveContinuation.deliver?()
+        _ = await firstSave
+    }
+
     @Test func test_save_when_remote_succeeds_then_lastSaved_updates_and_returns_true() async {
         // Given
         let stores = makeStores()
@@ -550,4 +606,10 @@ private final class DispatchedChanges: @unchecked Sendable {
     func append(_ changes: PushNotificationPreferences) {
         calls.append(changes)
     }
+}
+
+/// Stashed by the mock store so tests can keep `viewModel.save()` suspended
+/// while assertions run, then complete it via `deliver?()`.
+private final class SaveContinuationBox: @unchecked Sendable {
+    var deliver: (() -> Void)?
 }

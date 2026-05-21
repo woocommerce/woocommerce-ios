@@ -25,6 +25,8 @@ final class PushNotificationPreferencesViewModel {
 
     var hasUnsavedChanges: Bool { displayed != lastSaved }
 
+    private(set) var isSaving = false
+
     var isStoreOrderEnabled: Bool { displayed.storeOrder?.enabled ?? false }
     var isStoreReviewEnabled: Bool { displayed.storeReview?.enabled ?? false }
     var isStoreStockEnabled: Bool { displayed.storeStock?.enabled ?? false }
@@ -96,6 +98,9 @@ final class PushNotificationPreferencesViewModel {
     func save() async -> Bool {
         let pendingDiff = makeDiff(from: lastSaved, to: displayed)
         guard !pendingDiff.isEmpty else { return true }
+        guard !isSaving else { return false }
+        isSaving = true
+        defer { isSaving = false }
         do {
             let server = try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(NotificationAction.updatePushNotificationPreferences(siteID: siteID,

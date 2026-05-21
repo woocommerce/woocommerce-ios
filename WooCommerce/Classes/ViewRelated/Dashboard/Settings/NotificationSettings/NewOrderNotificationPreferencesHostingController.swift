@@ -40,10 +40,6 @@ final class NewOrderNotificationPreferencesHostingController: UIHostingControlle
         return UIBarButtonItem(customView: spinner)
     }()
 
-    private var isSaving = false {
-        didSet { refreshRightBarButtonItem() }
-    }
-
     init(viewModel: PushNotificationPreferencesViewModel) {
         self.viewModel = viewModel
         super.init(rootView: NewOrderNotificationPreferencesDetailView(viewModel: viewModel))
@@ -77,10 +73,12 @@ final class NewOrderNotificationPreferencesHostingController: UIHostingControlle
 
 private extension NewOrderNotificationPreferencesHostingController {
     /// `@Observable` tracking fires once and stops, so re-register after each
-    /// change to keep the Save button in sync with `hasUnsavedChanges`.
+    /// change to keep the bar item in sync with `hasUnsavedChanges` and
+    /// `isSaving`.
     func observeUnsavedChanges() {
         withObservationTracking {
             _ = viewModel.hasUnsavedChanges
+            _ = viewModel.isSaving
         } onChange: { [weak self] in
             // `onChange` fires from `willSet`; hop to main before touching UIKit.
             DispatchQueue.main.async {
@@ -91,7 +89,7 @@ private extension NewOrderNotificationPreferencesHostingController {
     }
 
     func refreshRightBarButtonItem() {
-        if isSaving {
+        if viewModel.isSaving {
             navigationItem.rightBarButtonItem = savingActivityItem
         } else {
             saveBarButtonItem.isEnabled = viewModel.hasUnsavedChanges
@@ -108,12 +106,10 @@ private extension NewOrderNotificationPreferencesHostingController {
     }
 
     @objc func handleSaveTapped() {
-        guard !isSaving else { return }
-        isSaving = true
+        guard !viewModel.isSaving else { return }
         Task { @MainActor [weak self] in
             guard let self else { return }
             let success = await viewModel.save()
-            isSaving = false
             if success {
                 navigationController?.popViewController(animated: true)
             }

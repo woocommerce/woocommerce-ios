@@ -203,4 +203,105 @@ struct AgenticLoopOrchestratorTests {
         let outcome = await orchestrator.lastOutcome
         #expect(outcome == .maxIterations(iterations: 3))
     }
+
+    @Test
+    func test_loop_when_snapshot_has_refusal_then_confirmation_card_not_shown_and_tool_result_carries_refusal_text() async throws {
+        // Given
+        let unsafeTool = AITool(name: "orders_update",
+                                description: "Update an order",
+                                parametersSchema: .object([:]),
+                                safetyLevel: .unsafe)
+        let chat = MockAIChatService()
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_1",
+            function: .init(name: "orders_update", arguments: #"{"id":42,"status":"processing"}"#)
+        )
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)],
+            [.textDelta("OK."), .completed(.stop)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([unsafeTool])
+        let policy = ScriptedSafetyPolicy(decision: .refusePreDispatch(reason: "I couldn't find order 42."))
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   safetyPolicy: policy)
+
+        // When
+        var events: [AssistantEvent] = []
+        for try await event in orchestrator.run(prompt: "Update 42") {
+            events.append(event)
+        }
+
+        // Then
+        let confirmationCount = events.filter {
+            if case .confirmationRequired = $0 { return true }
+            return false
+        }.count
+        #expect(confirmationCount == 0)
+        let invocations = await registry.invocationCount(for: "orders_update")
+        #expect(invocations == 0)
+        let completedResult: String? = events.compactMap { event in
+            if case .toolCallCompleted(_, _, let json) = event { return json }
+            return nil
+        }.first
+        let payload = try #require(completedResult)
+        #expect(payload.contains("I couldn't find order 42."))
+    }
+
+    @Test
+    func test_loop_when_snapshot_has_no_refusal_then_confirmation_flow_proceeds_as_before() async throws {
+        // Given
+        let unsafeTool = AITool(name: "orders_update",
+                                description: "Update an order",
+                                parametersSchema: .object([:]),
+                                safetyLevel: .unsafe)
+        let chat = MockAIChatService()
+        let toolCall = OpenAIChat.ToolCall(
+            id: "call_1",
+            function: .init(name: "orders_update", arguments: #"{"id":42,"status":"processing"}"#)
+        )
+        await chat.setScriptedTurns([
+            [.toolCall(toolCall), .completed(.toolCalls)],
+            [.textDelta("Done."), .completed(.stop)]
+        ])
+        let registry = MockToolRegistry()
+        await registry.setAvailableTools([unsafeTool])
+        await registry.setResult(for: "orders_update",
+                                 result: .success(.init(toolName: "orders_update",
+                                                        structured: .object(["id": .int(42)]))))
+        let preview = ConfirmationPreview(summary: .raw("Update order #42"))
+        let policy = ScriptedSafetyPolicy(decision: .requireConfirmation(preview: preview))
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   safetyPolicy: policy)
+
+        // When
+        var events: [AssistantEvent] = []
+        let stream = orchestrator.run(prompt: "Update 42")
+        var pendingConfirmTask: Task<Void, Never>?
+        for try await event in stream {
+            events.append(event)
+            if case .confirmationRequired(let proposal) = event {
+                pendingConfirmTask = Task { await orchestrator.confirm(proposalID: proposal.id) }
+            }
+        }
+        await pendingConfirmTask?.value
+
+        // Then
+        let confirmationCount = events.filter {
+            if case .confirmationRequired = $0 { return true }
+            return false
+        }.count
+        #expect(confirmationCount == 1)
+        let invocations = await registry.invocationCount(for: "orders_update")
+        #expect(invocations == 1)
+    }
+}
+
+private struct ScriptedSafetyPolicy: SafetyPolicy {
+    let decision: SafetyDecision
+    func decision(for name: String, arguments: String, tool: AITool) async -> SafetyDecision {
+        decision
+    }
 }

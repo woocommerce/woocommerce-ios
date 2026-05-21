@@ -71,6 +71,37 @@ struct DefaultSafetyPolicyTests {
         let field = preview.fields.first { $0.name == "status" }
         #expect(field?.priorValue == .raw("Processing"))
     }
+
+    @Test
+    func test_decision_when_snapshot_carries_refusal_then_refusePreDispatch() async {
+        // Given
+        let tool = AITool(name: ProductsUpdateTool.name,
+                          description: "Update products",
+                          parametersSchema: .object([:]),
+                          safetyLevel: .unsafe)
+        let resolver = StaticSnapshotResolver(snapshot: ConfirmationSnapshot(currentValues: [:],
+                                                                              refusalReason: "Missing 99."))
+        let policy = DefaultSafetyPolicy(snapshotResolver: resolver)
+
+        // When
+        let decision = await policy.decision(for: tool.name,
+                                             arguments: "{}",
+                                             tool: tool)
+
+        // Then
+        guard case .refusePreDispatch(let reason) = decision else {
+            Issue.record("expected .refusePreDispatch, got \(decision)")
+            return
+        }
+        #expect(reason == "Missing 99.")
+    }
+}
+
+private struct StaticSnapshotResolver: ConfirmationSnapshotResolving {
+    let snapshot: ConfirmationSnapshot?
+    func resolve(toolName: String, arguments: String) async -> ConfirmationSnapshot? {
+        snapshot
+    }
 }
 
 private actor StubRESTClient: WCRESTClient {

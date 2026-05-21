@@ -148,7 +148,7 @@ struct DefaultConfirmationSnapshotResolverTests {
     }
 
     @Test
-    func test_resolveProductsUpdate_when_variation_target_then_no_variation_endpoint_hit() async {
+    func test_resolveProductsUpdate_when_no_scoped_fanout_then_no_variation_endpoint_hit() async {
         // Given
         let client = StubRESTClient()
         await client.setResponse(forPath: "wc/v3/products",
@@ -158,7 +158,9 @@ struct DefaultConfirmationSnapshotResolverTests {
         // When
         _ = await resolver.resolve(
             toolName: ProductsUpdateTool.name,
-            arguments: #"{"updates":[{"target":{"kind":"variation","id":101,"parent_id":50},"sale_price":"5"}]}"#
+            arguments: #"""
+            {"updates":[{"target":{"kind":"product","id":50},"name":"Renamed"}]}
+            """#
         )
 
         // Then
@@ -167,23 +169,197 @@ struct DefaultConfirmationSnapshotResolverTests {
     }
 
     @Test
-    func test_resolveProductsUpdate_when_variation_target_then_bulk_entry_uses_parent_name() async throws {
+    func test_resolveProductsUpdate_when_variation_targets_then_snapshot_includes_variation_names_by_parent() async throws {
         // Given
         let client = StubRESTClient()
         await client.setResponse(forPath: "wc/v3/products",
-                                 body: #"[{"id":50,"name":"Tee"}]"#)
+                                 body: #"[{"id":41,"name":"Hoodie"}]"#)
+        let variationsBody = """
+        [{"id":58,"name":"Hoodie - Red","attributes":[{"id":1,"name":"Color","option":"Red"}]},\
+        {"id":59,"name":"Hoodie - Blue","attributes":[{"id":1,"name":"Color","option":"Blue"}]}]
+        """
+        await client.setResponse(forPath: "wc/v3/products/41/variations", body: variationsBody)
         let resolver = DefaultConfirmationSnapshotResolver(client: client)
 
         // When
         let snapshot = await resolver.resolve(
             toolName: ProductsUpdateTool.name,
-            arguments: #"{"updates":[{"target":{"kind":"variation","id":101,"parent_id":50},"sale_price":"5"}]}"#
+            arguments: #"""
+            {"updates":[
+              {"target":{"kind":"variation","id":58,"parent_id":41},"sale_price":"5"},
+              {"target":{"kind":"variation","id":59,"parent_id":41},"sale_price":"5"}
+            ]}
+            """#
         )
 
         // Then
         let entries = try #require(snapshot?.bulkEntries)
-        #expect(entries.map(\.id) == [101])
-        #expect(entries.first?.displayName == "Tee")
+        #expect(entries.map(\.id) == [58, 59])
+        #expect(entries.compactMap(\.displayName) == ["Hoodie - Red", "Hoodie - Blue"])
+    }
+
+    @Test
+    func test_resolveProductsUpdate_when_variation_name_is_bare_attributes_then_label_prepends_parent() async throws {
+        // Given
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products",
+                                 body: #"[{"id":820,"name":"Heavyweight Wool Cardigan"}]"#)
+        let variationsBody = """
+        [{"id":840,"name":"L, Gray","attributes":[{"id":1,"name":"Size","option":"L"},\
+        {"id":2,"name":"Color","option":"Gray"}]}]
+        """
+        await client.setResponse(forPath: "wc/v3/products/820/variations", body: variationsBody)
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[{"target":{"kind":"variation","id":840,"parent_id":820},"sale_price":"5"}]}
+            """#
+        )
+
+        // Then
+        let entries = try #require(snapshot?.bulkEntries)
+        #expect(entries.compactMap(\.displayName) == ["Heavyweight Wool Cardigan - L, Gray"])
+    }
+
+    @Test
+    func test_resolveProductsUpdate_when_all_product_ids_missing_then_returns_refusal_with_all_listed() async throws {
+        // Given
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products", body: "[]")
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[
+              {"target":{"kind":"product","id":3859},"regular_price":"25"},
+              {"target":{"kind":"product","id":3860},"regular_price":"25"},
+              {"target":{"kind":"product","id":3861},"regular_price":"25"}
+            ]}
+            """#
+        )
+
+        // Then
+        let reason = try #require(snapshot?.refusalReason)
+        #expect(reason.contains("3859"))
+        #expect(reason.contains("3860"))
+        #expect(reason.contains("3861"))
+        #expect(snapshot?.bulkEntries.isEmpty == true)
+    }
+
+    @Test
+    func test_resolveProductsUpdate_when_one_of_three_ids_missing_then_returns_refusal_naming_just_that_id() async throws {
+        // Given
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products",
+                                 body: #"[{"id":3859,"name":"A"},{"id":3861,"name":"C"}]"#)
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[
+              {"target":{"kind":"product","id":3859},"regular_price":"25"},
+              {"target":{"kind":"product","id":3860},"regular_price":"25"},
+              {"target":{"kind":"product","id":3861},"regular_price":"25"}
+            ]}
+            """#
+        )
+
+        // Then
+        let reason = try #require(snapshot?.refusalReason)
+        #expect(reason.contains("3860"))
+        #expect(!reason.contains("3859"))
+        #expect(!reason.contains("3861"))
+    }
+
+    @Test
+    func test_resolveProductsUpdate_when_variation_target_parent_missing_then_returns_refusal() async throws {
+        // Given
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products", body: "[]")
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[{"target":{"kind":"variation","id":99,"parent_id":41},"sale_price":"5"}]}
+            """#
+        )
+
+        // Then
+        let reason = try #require(snapshot?.refusalReason)
+        #expect(reason.contains("41"))
+    }
+
+    @Test
+    func test_resolveProductsUpdate_when_variation_target_variation_missing_under_parent_then_returns_refusal() async throws {
+        // Given
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products",
+                                 body: #"[{"id":41,"name":"Hoodie"}]"#)
+        // Parent fetch succeeds; per-parent variations fetch returns a different variation id so 99 is missing.
+        await client.setResponse(forPath: "wc/v3/products/41/variations",
+                                 body: #"[{"id":58,"name":"Hoodie - Red"}]"#)
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"""
+            {"updates":[{"target":{"kind":"variation","id":99,"parent_id":41},"sale_price":"5"}]}
+            """#
+        )
+
+        // Then
+        let reason = try #require(snapshot?.refusalReason)
+        #expect(reason.contains("99"))
+        #expect(reason.contains("41"))
+    }
+
+    @Test
+    func test_resolveProductsUpdate_when_all_ids_present_then_no_refusal() async {
+        // Given
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products",
+                                 body: #"[{"id":7,"name":"Cap"},{"id":8,"name":"Hat"}]"#)
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"target":{"kind":"product","id":7},"sale_price":"5"},{"target":{"kind":"product","id":8},"sale_price":"5"}]}"#
+        )
+
+        // Then
+        #expect(snapshot?.refusalReason == nil)
+    }
+
+    @Test
+    func test_resolveProductsUpdate_when_variation_endpoint_fails_then_no_refusal_for_missing_variations() async {
+        // Given
+        let client = StubRESTClient()
+        await client.setResponse(forPath: "wc/v3/products",
+                                 body: #"[{"id":41,"name":"Hoodie"}]"#)
+        await client.setResponse(forPath: "wc/v3/products/41/variations",
+                                 body: "[]",
+                                 statusCode: 500)
+        let resolver = DefaultConfirmationSnapshotResolver(client: client)
+
+        // When
+        let snapshot = await resolver.resolve(
+            toolName: ProductsUpdateTool.name,
+            arguments: #"{"updates":[{"target":{"kind":"variation","id":99,"parent_id":41},"sale_price":"5"}]}"#
+        )
+
+        // Then
+        #expect(snapshot?.refusalReason == nil)
     }
 
     @Test

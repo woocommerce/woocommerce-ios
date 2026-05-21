@@ -8,11 +8,10 @@ final class PushNotificationPreferencesHostingController: UIHostingController<Pu
         let viewModel = PushNotificationPreferencesViewModel(siteID: siteID, stores: stores)
         self.viewModel = viewModel
         super.init(rootView: PushNotificationPreferencesView(viewModel: viewModel))
-        // Re-set the root view after `super.init` so the closure can capture `self` weakly.
-        rootView = PushNotificationPreferencesView(viewModel: viewModel,
-                                                   onNewOrderTapped: { [weak self] in
+        // Set after `super.init` so the closure can capture `self` weakly.
+        rootView.onNewOrderTapped = { [weak self] in
             self?.showNewOrderDetail()
-        })
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {

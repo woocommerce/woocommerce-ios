@@ -7,14 +7,12 @@ struct PushNotificationPreferencesView: View {
 
     @Bindable private var viewModel: PushNotificationPreferencesViewModel
 
-    /// Invoked when the user taps the New orders row. The hosting controller
-    /// performs the push in UIKit.
-    private let onNewOrderTapped: () -> Void
+    /// Set by the hosting controller after `super.init`. Default is a no-op so
+    /// previews work without it.
+    var onNewOrderTapped: () -> Void = {}
 
-    init(viewModel: PushNotificationPreferencesViewModel,
-         onNewOrderTapped: @escaping () -> Void = {}) {
+    init(viewModel: PushNotificationPreferencesViewModel) {
         self.viewModel = viewModel
-        self.onNewOrderTapped = onNewOrderTapped
     }
 
     var body: some View {

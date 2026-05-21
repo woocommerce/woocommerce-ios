@@ -116,8 +116,7 @@ private struct StubExternalViews: AssistantExternalViewProviding {}
 
 private struct StubChatService: AIChatService {
     func streamTurn(messages: [OpenAIChat.Message],
-                    tools: [OpenAIChat.ToolDefinition]?,
-                    toolChoice: OpenAIChat.ToolChoice?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
+                    tools: [OpenAIChat.ToolDefinition]?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
         AsyncThrowingStream { $0.finish() }
     }
 }

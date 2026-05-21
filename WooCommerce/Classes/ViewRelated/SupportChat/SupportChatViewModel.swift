@@ -266,6 +266,7 @@ final class SupportChatViewModel {
     private var didTrackErrorEscalationButtonShown = false
     var onStartJetpackSetup: () -> Void
     var onUpdateWooCommercePlugin: (@escaping () -> Void) -> Void
+    var onOpenPushNotificationPreferences: (@escaping () -> Void) -> Void
     private let diagnosticsService: SupportDiagnosticsServicing
 
     /// Pre-fetched system status report, if available (e.g., from connectivity tool).
@@ -287,7 +288,8 @@ final class SupportChatViewModel {
          systemStatusReport: String? = nil,
          onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: EntryPoint) -> Void,
          onStartJetpackSetup: @escaping () -> Void = {},
-         onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }) {
+         onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() },
+         onOpenPushNotificationPreferences: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
         self.stores = stores
@@ -303,6 +305,7 @@ final class SupportChatViewModel {
         self.onContactHumanSupport = onContactHumanSupport
         self.onStartJetpackSetup = onStartJetpackSetup
         self.onUpdateWooCommercePlugin = onUpdateWooCommercePlugin
+        self.onOpenPushNotificationPreferences = onOpenPushNotificationPreferences
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.entryPointTapped(
             entryPoint: entryPoint,
@@ -435,6 +438,11 @@ final class SupportChatViewModel {
                     await UIApplication.shared.open(selectedURL)
                 }
                 replaceActionWithRetry()
+
+            case .openPushNotificationPreferences:
+                onOpenPushNotificationPreferences { [weak self] in
+                    self?.replaceActionWithRetry()
+                }
 
             case .retryDiagnostics:
                 await rerunAllTests()

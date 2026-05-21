@@ -266,6 +266,13 @@ struct SupportChatView: View {
                     Label(action.title, systemImage: action.systemImage)
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
+
+                if action == .openPushNotificationPreferences {
+                    Button(Localization.continueToChat) {
+                        viewModel.proceedToChat()
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                }
             } else {
                 Button(Localization.continueToChat) {
                     viewModel.proceedToChat()

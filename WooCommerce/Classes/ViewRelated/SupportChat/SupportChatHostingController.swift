@@ -9,6 +9,7 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
 
     /// Retains the Jetpack setup coordinator while the flow is active.
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
+    private var preferencesDismissHandler: PresentationDismissHandler?
 
     init(viewModel: SupportChatViewModel) {
         self.viewModel = viewModel
@@ -23,6 +24,9 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
         }
         viewModel.onUpdateWooCommercePlugin = { [weak self] onDismissed in
             self?.presentWooCommercePluginUpdate(onDismissed: onDismissed)
+        }
+        viewModel.onOpenPushNotificationPreferences = { [weak self] onDismissed in
+            self?.presentPushNotificationPreferences(onDismissed: onDismissed)
         }
     }
 
@@ -56,6 +60,41 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
         let viewController = UIHostingController(rootView: webView)
         viewController.modalPresentationStyle = .formSheet
         present(viewController, animated: true)
+    }
+
+    private func presentPushNotificationPreferences(onDismissed: @escaping () -> Void) {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID else {
+            onDismissed()
+            return
+        }
+
+        let navigationController = WooNavigationController()
+        let viewController = PushNotificationPreferencesHostingController(siteID: siteID)
+        viewController.navigationItem.leftBarButtonItem = UIBarButtonItem(
+            systemItem: .done,
+            primaryAction: UIAction { [weak navigationController] _ in
+                onDismissed()
+                navigationController?.dismiss(animated: true)
+            }
+        )
+        navigationController.viewControllers = [viewController]
+        navigationController.modalPresentationStyle = .formSheet
+        let dismissHandler = PresentationDismissHandler(onDismissed: onDismissed)
+        preferencesDismissHandler = dismissHandler
+        navigationController.presentationController?.delegate = dismissHandler
+        present(navigationController, animated: true)
+    }
+}
+
+private final class PresentationDismissHandler: NSObject, UIAdaptivePresentationControllerDelegate {
+    private let onDismissed: () -> Void
+
+    init(onDismissed: @escaping () -> Void) {
+        self.onDismissed = onDismissed
+    }
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        onDismissed()
     }
 }
 

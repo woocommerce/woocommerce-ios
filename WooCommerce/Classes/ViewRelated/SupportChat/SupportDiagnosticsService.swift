@@ -73,6 +73,7 @@ final class SupportDiagnosticsService {
         case setupJetpack
         case updateWooCommercePlugin
         case openNotificationSettings
+        case openPushNotificationPreferences
         case retryDiagnostics
 
         var title: String {
@@ -89,6 +90,8 @@ final class SupportDiagnosticsService {
                 return Localization.Action.updateWooCommercePlugin
             case .openNotificationSettings:
                 return Localization.Action.openSettings
+            case .openPushNotificationPreferences:
+                return Localization.Action.openPushNotificationPreferences
             case .retryDiagnostics:
                 return Localization.Action.retryDiagnostics
             }
@@ -102,7 +105,7 @@ final class SupportDiagnosticsService {
                 return "bolt.fill"
             case .updateWooCommercePlugin:
                 return "arrow.up.circle"
-            case .openNotificationSettings:
+            case .openNotificationSettings, .openPushNotificationPreferences:
                 return "gear"
             case .retryDiagnostics:
                 return "arrow.clockwise"
@@ -410,6 +413,9 @@ final class SupportDiagnosticsService {
         // Sub-check 3: Self-driven push notifications
         if pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) {
             DDLogInfo("SupportDiagnostics: ✅ Site registered for self-driven push notifications")
+            if let failure = await checkPushNotificationPreferences() {
+                return failure
+            }
             return nil
         } else {
             do {
@@ -436,6 +442,29 @@ final class SupportDiagnosticsService {
                 return Failure(errorMessage: Localization.Error.deviceNotRegistered,
                                suggestedAction: .registerDevice)
             }
+        }
+    }
+
+    private func checkPushNotificationPreferences() async -> Failure? {
+        do {
+            let preferences = try await loadPushNotificationPreferences()
+            if preferences.hasDisabledNotifications {
+                DDLogInfo("SupportDiagnostics: ⚠️ Some push notification preferences are disabled")
+                return Failure(errorMessage: Localization.Error.pushNotificationPreferencesDisabled,
+                               suggestedAction: .openPushNotificationPreferences)
+            }
+        } catch {
+            DDLogError("SupportDiagnostics: ❌ Failed to load push notification preferences\n\(error)")
+        }
+        return nil
+    }
+
+    private func loadPushNotificationPreferences() async throws -> PushNotificationPreferences {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = NotificationAction.loadPushNotificationPreferences(siteID: siteID) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
         }
     }
 
@@ -688,6 +717,11 @@ private extension SupportDiagnosticsService {
                 value: "Open Settings",
                 comment: "Action button to open device notification settings"
             )
+            static let openPushNotificationPreferences = NSLocalizedString(
+                "supportDiagnosticsService.action.openPushNotificationPreferences",
+                value: "Notification Preferences",
+                comment: "Action button to open the store push notification preferences screen"
+            )
             static let retryDiagnostics = NSLocalizedString(
                 "supportDiagnosticsService.action.retryDiagnostics",
                 value: "Retry",
@@ -774,11 +808,25 @@ private extension SupportDiagnosticsService {
                 "Enable them to receive alerts when new orders come in.",
                 comment: "Message when order notifications are disabled"
             )
+            static let pushNotificationPreferencesDisabled = NSLocalizedString(
+                "supportDiagnosticsService.error.pushNotificationPreferencesDisabled",
+                value: "Some push notification preferences are disabled for this store.\n\n" +
+                "Open your preferences to choose which notifications you want to receive.",
+                comment: "Message when some store push notification preferences are disabled"
+            )
             static let notificationConfigCheckFailed = NSLocalizedString(
                 "supportDiagnosticsService.error.notificationConfigCheckFailed",
                 value: "We couldn't check your notification settings.",
                 comment: "Message when the notification config check fails"
             )
         }
+    }
+}
+
+private extension PushNotificationPreferences {
+    var hasDisabledNotifications: Bool {
+        storeOrder?.enabled == false ||
+        storeReview?.enabled == false ||
+        storeStock?.enabled == false
     }
 }

@@ -212,6 +212,12 @@ struct SupportDiagnosticsServiceTests {
 
     @Test func test_testNotifications_when_registered_for_self_driven_PN_then_returns_success() async {
         // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(Self.enabledPushNotificationPreferences()))
+            }
+        }
         let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
         mockUserNotificationCenter.authorizationStatus = .authorized
         let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123])
@@ -219,6 +225,7 @@ struct SupportDiagnosticsServiceTests {
         eligibilityChecker.isEligible = true
         let network = makeNetworkWithJetpackActive()
         let sut = makeSUT(
+            stores: stores,
             userNotificationCenter: mockUserNotificationCenter,
             pushNotesManager: mockPushNotesManager,
             pushNotificationEligibilityChecker: eligibilityChecker,
@@ -232,6 +239,71 @@ struct SupportDiagnosticsServiceTests {
         // Then
         #expect(results.count == 2)
         #expect(results[0].isSuccess == true)
+        #expect(results[1].isSuccess == true)
+    }
+
+    @Test func test_testNotifications_when_registered_for_self_driven_PN_and_some_preferences_disabled_then_returns_failure_with_openPreferences_action() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeOrder: .init(enabled: false),
+                                                                  storeReview: .init(enabled: true),
+                                                                  storeStock: .init(enabled: true))))
+            }
+        }
+        let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockUserNotificationCenter.authorizationStatus = .authorized
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123])
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
+        let network = makeNetworkWithJetpackActive()
+        let sut = makeSUT(
+            stores: stores,
+            userNotificationCenter: mockUserNotificationCenter,
+            pushNotesManager: mockPushNotesManager,
+            pushNotificationEligibilityChecker: eligibilityChecker,
+            network: network,
+            siteID: 123
+        )
+
+        // When
+        let results = await sut.runTests([Test.site, Test.notifications])
+
+        // Then
+        #expect(results.count == 2)
+        #expect(results[1].isSuccess == false)
+        #expect(results[1].suggestedAction == Action.openPushNotificationPreferences)
+    }
+
+    @Test func test_testNotifications_when_registered_for_self_driven_PN_and_preferences_fetch_fails_then_returns_success() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.failure(NSError(domain: "Test", code: 500)))
+            }
+        }
+        let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockUserNotificationCenter.authorizationStatus = .authorized
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123])
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
+        let network = makeNetworkWithJetpackActive()
+        let sut = makeSUT(
+            stores: stores,
+            userNotificationCenter: mockUserNotificationCenter,
+            pushNotesManager: mockPushNotesManager,
+            pushNotificationEligibilityChecker: eligibilityChecker,
+            network: network,
+            siteID: 123
+        )
+
+        // When
+        let results = await sut.runTests([Test.site, Test.notifications])
+
+        // Then
+        #expect(results.count == 2)
         #expect(results[1].isSuccess == true)
     }
 
@@ -461,6 +533,12 @@ struct SupportDiagnosticsServiceTests {
         let network = MockNetwork()
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "system-status-with-jetpack-active")
         return network
+    }
+
+    private static func enabledPushNotificationPreferences() -> PushNotificationPreferences {
+        PushNotificationPreferences(storeOrder: .init(enabled: true),
+                                    storeReview: .init(enabled: true),
+                                    storeStock: .init(enabled: true))
     }
 }
 

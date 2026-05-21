@@ -229,6 +229,7 @@ struct ProductsListToolTests {
         let keys = Set(properties.keys)
         #expect(keys == [
             "search", "status", "category", "sku", "ids", "parent_id", "stock_status",
+            "low_in_stock", "min_price", "max_price",
             "orderby", "order", "page", "per_page"
         ])
     }
@@ -447,4 +448,369 @@ struct ProductsListToolTests {
             #expect(fields["parent_id"] == .int(99))
         }
     }
+
+    @Test
+    func test_list_when_low_in_stock_then_routes_to_wc_analytics_stock_report() async throws {
+        // Given a stock report returning two ids and a follow-up /products?include= enrichment.
+        let reportBody = """
+        [{"id": 21, "stock_quantity": 4}, {"id": 22, "stock_quantity": 2}]
+        """
+        let enrichBody = """
+        [
+            {"id": 21, "name": "Hoodie", "price": "49.00", "stock_status": "instock"},
+            {"id": 22, "name": "Tee", "price": "19.00", "stock_status": "instock"}
+        ]
+        """
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.ok(reportBody),
+            "GET wc/v3/products": StubResponses.ok(enrichBody)
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["ids"] == .array([.int(21), .int(22)]))
+        let calls = await client.calls
+        #expect(calls.count == 2)
+        #expect(calls.first?.path == "wc-analytics/reports/stock")
+        #expect(calls.first?.query["type"] == "lowstock")
+        #expect(calls.last?.path == "wc/v3/products")
+        #expect(calls.last?.query["include"] == "21,22")
+        #expect(calls.last?.query["orderby"] == "include")
+    }
+
+    @Test
+    func test_list_when_low_in_stock_then_falls_back_to_heuristic_when_stock_report_fails() async throws {
+        // Given the stock report returns 404 (older WC without WC Analytics installed) and
+        // the heuristic /products scan finds a match on page 1.
+        let heuristicBody = """
+        [
+            {"id": 1, "stock_quantity": 3},
+            {"id": 2, "stock_quantity": 50},
+            {"id": 3, "stock_quantity": 11}
+        ]
+        """
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.failure(statusCode: 404),
+            "GET wc/v3/products": StubResponses.ok(heuristicBody)
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["ids"] == .array([.int(1)]))
+        let calls = await client.calls
+        #expect(calls.first?.path == "wc-analytics/reports/stock")
+        #expect(calls.dropFirst().allSatisfy { $0.path == "wc/v3/products" })
+    }
+
+    @Test
+    func test_list_when_low_in_stock_empty_then_returns_empty_without_enrichment() async throws {
+        // Given the stock report returns an empty array - no enrichment call should fire.
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.ok("[]"),
+            "GET wc/v3/products": StubResponses.ok("[\"should_not_be_used\"]")
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["ids"] == .array([]))
+        let calls = await client.calls
+        #expect(calls.count == 1)
+        #expect(calls.first?.path == "wc-analytics/reports/stock")
+    }
+
+    @Test
+    func test_list_when_low_in_stock_heuristic_full_page_then_can_load_more_is_true() async throws {
+        // Given the stock report is unavailable and the /products heuristic returns a full
+        // window of non-matching rows: can_load_more must stay true even though no matches filled.
+        let fullPage = (1...20).map { #"{"id": \#($0), "stock_quantity": 50}"# }.joined(separator: ",")
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.failure(statusCode: 404),
+            "GET wc/v3/products": StubResponses.ok("[\(fullPage)]")
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["ids"] == .array([]))
+        #expect(fields["can_load_more"] == .bool(true))
+    }
+
+    @Test(arguments: [
+        LowInStockFilterCase(
+            label: "category",
+            reportBody: """
+            [{"id": 21, "stock_quantity": 1}, {"id": 22, "stock_quantity": 2}, {"id": 23, "stock_quantity": 3}]
+            """,
+            enrichBody: """
+            [
+                {"id": 21, "name": "Hoodie", "categories": [{"id": 7, "name": "Apparel", "slug": "apparel"}]},
+                {"id": 22, "name": "Mug", "categories": [{"id": 9, "name": "Kitchen", "slug": "kitchen"}]},
+                {"id": 23, "name": "Tee", "categories": [{"id": 7, "name": "Apparel", "slug": "apparel"}]}
+            ]
+            """,
+            arguments: #"{"low_in_stock": true, "category": 7}"#,
+            expectedIDs: [21, 23]
+        ),
+        LowInStockFilterCase(
+            label: "sku",
+            reportBody: #"[{"id": 21, "stock_quantity": 1}, {"id": 22, "stock_quantity": 2}]"#,
+            enrichBody: """
+            [
+                {"id": 21, "name": "Hoodie", "sku": "HOOD-1"},
+                {"id": 22, "name": "Tee", "sku": "TEE-1"}
+            ]
+            """,
+            arguments: #"{"low_in_stock": true, "sku": "TEE-1"}"#,
+            expectedIDs: [22]
+        ),
+        LowInStockFilterCase(
+            label: "min_max_price",
+            reportBody: """
+            [{"id": 21, "stock_quantity": 1}, {"id": 22, "stock_quantity": 1}, {"id": 23, "stock_quantity": 1}]
+            """,
+            enrichBody: """
+            [
+                {"id": 21, "name": "Cheap", "price": "5.00"},
+                {"id": 22, "name": "Mid", "price": "20.00"},
+                {"id": 23, "name": "Pricey", "price": "150.00"}
+            ]
+            """,
+            arguments: #"{"low_in_stock": true, "min_price": "10.00", "max_price": "100.00"}"#,
+            expectedIDs: [22]
+        ),
+        LowInStockFilterCase(
+            label: "search",
+            reportBody: """
+            [{"id": 21, "stock_quantity": 1}, {"id": 22, "stock_quantity": 1}, {"id": 23, "stock_quantity": 1}]
+            """,
+            enrichBody: """
+            [
+                {"id": 21, "name": "Hoodie", "sku": "HOOD-1"},
+                {"id": 22, "name": "Tee Shirt", "sku": "TS-1"},
+                {"id": 23, "name": "Mug", "sku": "MUG-TEE-1"}
+            ]
+            """,
+            arguments: #"{"low_in_stock": true, "search": "tee"}"#,
+            expectedIDs: [22, 23]
+        ),
+        LowInStockFilterCase(
+            label: "ids",
+            reportBody: """
+            [{"id": 21, "stock_quantity": 1}, {"id": 22, "stock_quantity": 1}, {"id": 23, "stock_quantity": 1}]
+            """,
+            enrichBody: """
+            [
+                {"id": 21, "name": "A"},
+                {"id": 22, "name": "B"},
+                {"id": 23, "name": "C"}
+            ]
+            """,
+            arguments: #"{"low_in_stock": true, "ids": [22, 23, 999]}"#,
+            expectedIDs: [22, 23]
+        )
+    ])
+    func test_list_when_low_in_stock_with_filter_then_filters_report_rows(testCase: LowInStockFilterCase) async throws {
+        // Given
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.ok(testCase.reportBody),
+            "GET wc/v3/products": StubResponses.ok(testCase.enrichBody)
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(testCase.arguments, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object for \(testCase.label)")
+            return
+        }
+        let expected = AnyCodableJSON.array(testCase.expectedIDs.map { .int(Int64($0)) })
+        #expect(fields["ids"] == expected)
+    }
+
+    @Test
+    func test_list_when_low_in_stock_returns_variation_rows_then_enriches_via_parent_scoped_variations() async throws {
+        // Given a stock report that returns a mix of top-level products (parent_id=0) and
+        // variations (parent_id=42); both kinds should be enriched and projected.
+        let reportBody = """
+        [
+            {"id": 11, "stock_quantity": 2},
+            {"id": 12, "stock_quantity": 1},
+            {"id": 501, "parent_id": 42, "stock_quantity": 1},
+            {"id": 502, "parent_id": 42, "stock_quantity": 2}
+        ]
+        """
+        let productsBody = """
+        [
+            {"id": 11, "name": "Hoodie", "type": "simple"},
+            {"id": 12, "name": "Tee", "type": "simple"}
+        ]
+        """
+        let variationsBody = """
+        [
+            {"id": 501, "parent_id": 42, "sku": "RED-S", "stock_status": "instock"},
+            {"id": 502, "parent_id": 42, "sku": "RED-M", "stock_status": "outofstock"}
+        ]
+        """
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.ok(reportBody),
+            "GET wc/v3/products": StubResponses.ok(productsBody),
+            "GET wc/v3/products/42/variations": StubResponses.ok(variationsBody)
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["ids"] == .array([.int(11), .int(12), .int(501), .int(502)]))
+        guard case .array(let products) = fields["products"] else {
+            Issue.record("expected products array")
+            return
+        }
+        let kinds = products.compactMap { row -> String? in
+            guard case .object(let dict) = row, case .string(let kind) = dict["kind"] else { return nil }
+            return kind
+        }
+        #expect(kinds == ["product", "product", "variation", "variation"])
+        let calls = await client.calls
+        #expect(calls.contains { $0.path == "wc/v3/products/42/variations" })
+    }
+
+    @Test
+    func test_list_when_low_in_stock_variation_enrichment_fails_for_one_parent_then_keeps_rest() async throws {
+        // Given two parents whose variations are needed; one fetch fails with 500.
+        let reportBody = """
+        [
+            {"id": 501, "parent_id": 42, "stock_quantity": 1},
+            {"id": 601, "parent_id": 88, "stock_quantity": 1}
+        ]
+        """
+        let okVariations = """
+        [{"id": 501, "parent_id": 42, "sku": "RED-S", "stock_status": "instock"}]
+        """
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.ok(reportBody),
+            "GET wc/v3/products/42/variations": StubResponses.ok(okVariations),
+            "GET wc/v3/products/88/variations": StubResponses.failure(statusCode: 500)
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["ids"] == .array([.int(501)]))
+    }
+
+    @Test
+    func test_list_when_low_in_stock_combined_filters_apply_to_both_products_and_variations() async throws {
+        // Given a min_price filter applied to a mixed result set; under-priced rows of either kind drop.
+        let reportBody = """
+        [
+            {"id": 11, "stock_quantity": 1},
+            {"id": 12, "stock_quantity": 1},
+            {"id": 501, "parent_id": 42, "stock_quantity": 1},
+            {"id": 502, "parent_id": 42, "stock_quantity": 1}
+        ]
+        """
+        let productsBody = """
+        [
+            {"id": 11, "name": "Cheap Product", "price": "5.00"},
+            {"id": 12, "name": "Pricey Product", "price": "55.00"}
+        ]
+        """
+        let variationsBody = """
+        [
+            {"id": 501, "parent_id": 42, "price": "8.00"},
+            {"id": 502, "parent_id": 42, "price": "60.00"}
+        ]
+        """
+        let client = RoutingMockWCRESTClient(routes: [
+            "GET wc-analytics/reports/stock": StubResponses.ok(reportBody),
+            "GET wc/v3/products": StubResponses.ok(productsBody),
+            "GET wc/v3/products/42/variations": StubResponses.ok(variationsBody)
+        ])
+        let tool = ProductsListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"low_in_stock": true, "min_price": "10.00"}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let fields) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(fields["ids"] == .array([.int(12), .int(502)]))
+    }
+
+    @Test
+    func test_list_when_max_price_set_then_passes_to_rest() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        _ = await tool.executor(#"{"max_price": "49.99"}"#, client)
+
+        // Then
+        #expect(await client.calls.first?.query["max_price"] == "49.99")
+    }
+
+    @Test
+    func test_list_when_min_price_set_then_passes_to_rest() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = ProductsListTool.make()
+
+        // When
+        _ = await tool.executor(#"{"min_price": "10.00"}"#, client)
+
+        // Then
+        #expect(await client.calls.first?.query["min_price"] == "10.00")
+    }
+}
+
+struct LowInStockFilterCase: Sendable {
+    let label: String
+    let reportBody: String
+    let enrichBody: String
+    let arguments: String
+    let expectedIDs: [Int]
 }

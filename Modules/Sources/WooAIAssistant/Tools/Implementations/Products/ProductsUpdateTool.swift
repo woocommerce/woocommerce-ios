@@ -28,10 +28,12 @@ public enum ProductsUpdateTool {
         Examples: `{target: {kind: "product", id: 42}, sale_price: "9.99"}` discounts simple \
         product 42; `{target: {kind: "variation", id: 58, parent_id: 41}, sale_price: "9.99"}` \
         discounts ONE variation - use this with the target object on order line_items. \
-        Editable fields: `regular_price`, `sale_price`, `stock_quantity`, `status`, `name`, \
-        `stock_status`, `sku`. On a variable parent only `name`, `status`, and `sku` apply; price \
-        and stock changes are rejected with a pointer to target specific variations. Variations do \
-        not have settable names. \
+        Editable fields: `regular_price`, `sale_price`, `percent_discount`, `stock_quantity`, \
+        `status`, `name`, `stock_status`, `sku`. For percentage-off discounts use \
+        `percent_discount` per entry and the server computes per-item `sale_price` from the \
+        entity's current regular price. Otherwise set `sale_price` explicitly. On a variable \
+        parent only `name`, `status`, and `sku` apply; price and stock changes are rejected with \
+        a pointer to target specific variations. Variations do not have settable names. \
         The result has an `updated` array of target objects ({kind:"product", id} or \
         {kind:"variation", id, parent_id}); pass each one to `show_cards` (a variation maps to \
         the combined parent/variation ref) or back into `products_update.updates[].target`.
@@ -78,6 +80,10 @@ public enum ProductsUpdateTool {
                             "sale_price": .object([
                                 "type": .string("string"),
                                 "description": .string("Decimal string. Empty string clears the sale price.")
+                            ]),
+                            "percent_discount": .object([
+                                "type": .string("number"),
+                                "description": .string("Percent off (1-99). Computed against the entity's current regular_price.")
                             ]),
                             "stock_quantity": .object([
                                 "type": .string("integer"),
@@ -130,6 +136,7 @@ public enum ProductsUpdateTool {
         let target: Target
         let regularPrice: String?
         let salePrice: String?
+        let percentDiscount: Double?
         let stockQuantity: Int?
         let status: String?
         let name: String?
@@ -153,6 +160,7 @@ public enum ProductsUpdateTool {
             self.target = target
             self.regularPrice = raw.regularPrice
             self.salePrice = raw.salePrice
+            self.percentDiscount = raw.percentDiscount
             self.stockQuantity = raw.stockQuantity
             self.status = raw.status
             self.name = raw.name
@@ -278,6 +286,11 @@ public enum ProductsUpdateTool {
             return .invalid(.init(toolName: name,
                                   kind: .invalidToolCall,
                                   reason: "stock_status must be one of: \(allowedStockStatuses.sorted().joined(separator: ", "))"))
+        }
+        if let percent = entry.percentDiscount, percent <= 0 || percent >= 100 {
+            return .invalid(.init(toolName: name,
+                                  kind: .invalidToolCall,
+                                  reason: "percent_discount must be between 0 and 100 (exclusive)"))
         }
         return .valid(ValidatedEntry(entry, target: target))
     }

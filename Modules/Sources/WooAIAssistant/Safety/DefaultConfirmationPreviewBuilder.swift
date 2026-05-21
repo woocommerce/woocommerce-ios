@@ -223,6 +223,7 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         switch key {
         case "regular_price": return .localized(Strings.fieldRegularPrice)
         case "sale_price": return .localized(Strings.fieldSalePrice)
+        case "percent_discount": return .localized(Strings.fieldPercentDiscount)
         case "stock_quantity": return .localized(Strings.fieldStockQuantity)
         case "status": return .localized(Strings.fieldStatus)
         case "name": return .localized(Strings.fieldName)
@@ -272,6 +273,9 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
             guard let value = entry.salePrice else { return nil }
             if value.isEmpty { return .localized(Strings.fieldValueCleared) }
             return .raw(value)
+        case "percent_discount":
+            guard let value = entry.percentDiscount else { return nil }
+            return .localized(Strings.percentDiscountFormat, args: [.raw(formatPercent(value))])
         case "stock_quantity":
             guard let value = entry.stockQuantity else { return nil }
             return .raw(String(value))
@@ -291,6 +295,11 @@ public struct DefaultConfirmationPreviewBuilder: ConfirmationPreviewBuilding {
         default:
             return nil
         }
+    }
+
+    private static func formatPercent(_ value: Double) -> String {
+        if value.rounded() == value { return String(Int(value)) }
+        return String(format: "%g", value)
     }
 
     // MARK: - Order field helpers
@@ -413,6 +422,10 @@ private enum Strings {
         "ai.assistant.preview.field.sale_price",
         defaultValue: "Sale"
     )
+    static let fieldPercentDiscount = LocalizedStringResource(
+        "ai.assistant.preview.field.percent_discount",
+        defaultValue: "Discount"
+    )
     static let fieldStockQuantity = LocalizedStringResource(
         "ai.assistant.preview.field.stock_quantity",
         defaultValue: "Stock"
@@ -444,6 +457,10 @@ private enum Strings {
     static let fieldValueCleared = LocalizedStringResource(
         "ai.assistant.preview.field.value.cleared_marker",
         defaultValue: "Cleared"
+    )
+    static let percentDiscountFormat = LocalizedStringResource(
+        "ai.assistant.preview.field.percent_discount.value",
+        defaultValue: "%@%% off"
     )
 
     static let statusValueEmailsCustomer = LocalizedStringResource(

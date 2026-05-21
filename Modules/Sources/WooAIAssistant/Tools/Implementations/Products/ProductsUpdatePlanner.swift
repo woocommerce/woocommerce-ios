@@ -19,9 +19,9 @@ struct ProductsUpdatePlanner {
             guard let parentID = entry.target.parentID else {
                 return EntryPlan(preDispatchFailures: [(entry.id, "variation target missing parent_id")])
             }
-            return planVariation(entry: entry,
-                                 parentID: parentID,
-                                 variationID: entry.target.id)
+            return await planVariation(entry: entry,
+                                       parentID: parentID,
+                                       variationID: entry.target.id)
         case .product:
             return await planProductTarget(entry: entry, discovery: discovery)
         }
@@ -59,7 +59,7 @@ struct ProductsUpdatePlanner {
                 + "parent_id and the variation id, not target.kind=\"product\"."
             return EntryPlan(preDispatchFailures: [(entry.id, reason)])
         default:
-            return planProduct(entry: entry)
+            return planProduct(entry: entry, source: entity)
         }
     }
 
@@ -67,9 +67,12 @@ struct ProductsUpdatePlanner {
         statusCode == 404 ? "Product not found" : "Discovery request failed (HTTP \(statusCode))"
     }
 
-    private func planProduct(entry: ProductsUpdateTool.Entry) -> EntryPlan {
+    private func planProduct(entry: ProductsUpdateTool.Entry, source: AnyCodableJSON) -> EntryPlan {
         var patch: [String: AnyCodableJSON] = [:]
         applyExplicitPriceFields(entry: entry, into: &patch)
+        if let failure = applyPercentDiscount(entry: entry, source: source, into: &patch) {
+            return EntryPlan(preDispatchFailures: [(entry.id, failure)])
+        }
         applyCommonFields(entry: entry, into: &patch)
         if let value = entry.name { patch["name"] = .string(value) }
         if let value = entry.stockStatus { patch["stock_status"] = .string(value) }
@@ -114,7 +117,7 @@ struct ProductsUpdatePlanner {
 
     private func planVariation(entry: ProductsUpdateTool.Entry,
                                parentID: Int,
-                               variationID: Int) -> EntryPlan {
+                               variationID: Int) async -> EntryPlan {
         guard parentID > 0 else {
             return EntryPlan(preDispatchFailures: [(entry.id, "variation has no parent_id")])
         }
@@ -125,6 +128,20 @@ struct ProductsUpdatePlanner {
         }
         var patch: [String: AnyCodableJSON] = [:]
         applyExplicitPriceFields(entry: entry, into: &patch)
+        if entry.percentDiscount != nil {
+            // Only fetch the variation when we need its regular_price for percent math.
+            let probe = await client.request(method: "GET",
+                                             path: "wc/v3/products/\(parentID)/variations/\(variationID)",
+                                             query: nil,
+                                             body: nil)
+            guard HTTPStatusClassification.isSuccess(probe.statusCode),
+                  let decoded = RESTResponseParsing.decodeJSON(probe.data) else {
+                return EntryPlan(preDispatchFailures: [(entry.id, discoveryReason(probe.statusCode))])
+            }
+            if let failure = applyPercentDiscount(entry: entry, source: decoded, into: &patch) {
+                return EntryPlan(preDispatchFailures: [(entry.id, failure)])
+            }
+        }
         applyCommonFields(entry: entry, into: &patch)
         if let value = entry.stockStatus { patch["stock_status"] = .string(value) }
         if let value = entry.sku { patch["sku"] = .string(value) }
@@ -151,5 +168,25 @@ struct ProductsUpdatePlanner {
             patch["manage_stock"] = .bool(true)
         }
         if let value = entry.status { patch["status"] = .string(value) }
+    }
+
+    private func applyPercentDiscount(entry: ProductsUpdateTool.Entry,
+                                      source: AnyCodableJSON,
+                                      into patch: inout [String: AnyCodableJSON]) -> String? {
+        guard let percent = entry.percentDiscount else { return nil }
+        guard let regular = RESTResponseParsing.decimalField(source, "regular_price"),
+              let salePrice = Self.computeSalePrice(regular: regular, percent: percent) else {
+            return "Cannot compute percent discount: regular_price is empty"
+        }
+        patch["sale_price"] = .string(salePrice)
+        return nil
+    }
+
+    static func computeSalePrice(regular: Decimal, percent: Double) -> String? {
+        guard regular > 0 else { return nil }
+        let factorString = String(format: "%.6f", (100.0 - percent) / 100.0)
+        guard let factor = Decimal(string: factorString) else { return nil }
+        let computed = regular * factor
+        return RESTResponseParsing.formatDecimal(computed)
     }
 }

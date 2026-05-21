@@ -7,6 +7,7 @@ struct ProductsUpdateEntry: Decodable, Sendable {
     let target: Target?
     let regularPrice: String?
     let salePrice: String?
+    let percentDiscount: Double?
     let stockQuantity: Int?
     let status: String?
     let name: String?
@@ -30,6 +31,7 @@ struct ProductsUpdateEntry: Decodable, Sendable {
         case target
         case regularPrice = "regular_price"
         case salePrice = "sale_price"
+        case percentDiscount = "percent_discount"
         case stockQuantity = "stock_quantity"
         case status
         case name
@@ -38,7 +40,7 @@ struct ProductsUpdateEntry: Decodable, Sendable {
     }
 
     var hasAnyField: Bool {
-        regularPrice != nil || salePrice != nil
+        regularPrice != nil || salePrice != nil || percentDiscount != nil
             || stockQuantity != nil || status != nil
             || name != nil || stockStatus != nil || sku != nil
     }
@@ -47,6 +49,7 @@ struct ProductsUpdateEntry: Decodable, Sendable {
         var keys: [String] = []
         if regularPrice != nil { keys.append("regular_price") }
         if salePrice != nil { keys.append("sale_price") }
+        if percentDiscount != nil { keys.append("percent_discount") }
         if stockQuantity != nil { keys.append("stock_quantity") }
         if status != nil { keys.append("status") }
         if name != nil { keys.append("name") }

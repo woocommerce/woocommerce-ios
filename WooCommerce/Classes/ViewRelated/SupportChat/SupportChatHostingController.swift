@@ -52,7 +52,7 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
 
     private func presentWooCommercePluginUpdate(onDismissed: @escaping () -> Void) {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite,
-              let url = URL(string: site.adminURL + Constants.wooCommercePluginUpdatePath) else {
+              let url = URL(string: site.adminURL + WooConstants.wooCommercePluginUpdatePath) else {
             onDismissed()
             return
         }
@@ -119,10 +119,6 @@ extension SupportChatHostingController {
 // MARK: - Localization
 //
 private extension SupportChatHostingController {
-    enum Constants {
-        static let wooCommercePluginUpdatePath = "plugin-install.php?tab=plugin-information&plugin=woocommerce"
-    }
-
     enum Localization {
         static let title = NSLocalizedString(
             "supportChatHostingController.title",

@@ -89,6 +89,10 @@ public enum WooConstants {
 
     static let wooPaymentsPluginPath = "woocommerce-payments/woocommerce-payments.php"
 
+    /// wp-admin path to the WooCommerce plugin update page.
+    ///
+    static let wooCommercePluginUpdatePath = "plugin-install.php?tab=plugin-information&plugin=woocommerce"
+
     /// Key used to identify track events sent between the phone and the watch.
     ///
     static let watchTracksKey = "watch-tracks-event"

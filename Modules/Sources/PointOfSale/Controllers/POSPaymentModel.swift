@@ -931,14 +931,15 @@ extension POSPaymentModel {
 extension POSPaymentModel {
     func observeReaderReconnection() {
         cardReaderDisconnection = cardPresentPaymentService.readerConnectionStatusPublisher
-            // `removeDuplicates` BEFORE the filter — Stripe Terminal can emit
-            // multiple identical status values in succession (e.g., during
-            // teardown / re-init), and without dedup the sink fires for each
-            // one. The downstream `startPayment` call kicks off another
-            // pre-connect Task each time, racing every previous one. (The
-            // `tapToPayConnectTask` coalesce on the pre-connect side already
-            // catches most of this, but de-duping here also avoids the
-            // wasted `startPayment` work.)
+            // Dedup before the switch — Stripe Terminal can emit multiple
+            // identical status values in succession (e.g., during teardown /
+            // re-init). Without this, a duplicate `.connected` re-kicks
+            // `startPayment` (BT auto-resume branch), and a duplicate
+            // `.disconnected` re-kicks the silent TTP pre-connect. Either
+            // races the previous run. The `tapToPayConnectTask` coalesce on
+            // the pre-connect side catches most of the pre-connect waste, but
+            // de-duping here also short-circuits the redundant `startPayment`
+            // hop entirely.
             .removeDuplicates()
             .sink { [weak self] status in
                 Task { @MainActor [weak self] in

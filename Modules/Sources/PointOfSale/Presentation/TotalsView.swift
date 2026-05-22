@@ -194,15 +194,6 @@ struct TotalsView: View {
                         await paymentModel.startPaymentWithMethod(.bluetooth)
                     }
                 },
-                // One-shot Bluetooth model: Tap to Pay is never offered from the
-                // sheet. On the TTP hero, TTP is already the primary CTA above;
-                // during a BT session, switching to TTP mid-flow is out of scope.
-                // The gate property is always false today — see its docstring
-                // for the policy rationale.
-                isTapToPayAvailable: isTapToPayRowAvailableInOtherMethodsSheet,
-                onTapToPay: {
-                    handleTapToPayTapped()
-                },
                 isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
                 onScanToPay: {
                     // Same double-tap guard the other sheet callbacks use. Without
@@ -841,15 +832,6 @@ private extension TotalsView {
         // reader option reappears there for the next order if they want
         // Bluetooth again.
         paymentModel.currentPaymentMethod != .bluetooth
-    }
-
-    /// One-shot Bluetooth model: TTP is never offered from the Other Payment
-    /// Methods sheet. On the TTP hero, TTP is already the primary CTA at the
-    /// top. During a Bluetooth collection, switching to TTP mid-flow is
-    /// explicitly out of scope — the BT session must finish (or be
-    /// abandoned) before the merchant returns to the TTP hero. Always false.
-    var isTapToPayRowAvailableInOtherMethodsSheet: Bool {
-        false
     }
 
     func handleTapToPayTapped() {

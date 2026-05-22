@@ -7,7 +7,7 @@ struct POSRefundConfirmationView: View {
     var submissionState: POSRefundSubmissionState = .idle
     let onClose: () -> Void
     let onConfirm: () -> Void
-    let onBack: () -> Void
+    let onBack: (() -> Void)?
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -59,7 +59,7 @@ private extension POSRefundConfirmationView {
                 return headerBackAction != nil
             }
         }
-        return true
+        return headerBackAction != nil
     }
 
     var backgroundColor: Color {
@@ -205,7 +205,7 @@ private extension POSRefundConfirmationView {
         case .displayReaderMessage(let message):
             return .displayReaderMessage(.displayReaderMessage(message))
         case .cancelledOnReader:
-            return .cancelledOnReader(.cancelledOnReader(backToRefund: onBack))
+            return .cancelledOnReader(.cancelledOnReader(backToRefund: onBack ?? onClose))
         case .paymentError(let error, let retryApproach, let cancelPayment):
             return .error(.init(error: error,
                                 retryAction: retryAction(for: retryApproach),

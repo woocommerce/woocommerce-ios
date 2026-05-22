@@ -33,9 +33,10 @@ struct POSOrdersView: View {
                     isPresented = false
                 }
                 .environment(orderListModel)
-            } detail: { selection, _ in
+            } detail: { selection, detailNavigationPath in
                 POSOrderDetailsView(
                     order: selection,
+                    detailNavigationPath: detailNavigationPath,
                     onBack: {
                         orderListModel.ordersController.selectOrder(nil)
                     }

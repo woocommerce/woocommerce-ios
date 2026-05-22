@@ -6,11 +6,6 @@ import struct Yosemite.POSOrder
 // MARK: - Refund Modal State
 
 enum RefundModalState: Identifiable, Equatable {
-    case loading
-    case loadingError
-    case preparationError
-    case nothingToRefund
-    case itemSelection
     case review(POSRefundReviewData)
     case confirmation(POSRefundReviewData)
     case readerConnectionRequired(POSRefundReviewData)
@@ -20,11 +15,6 @@ enum RefundModalState: Identifiable, Equatable {
 
     var id: String {
         switch self {
-        case .loading: return "loading"
-        case .loadingError: return "loadingError"
-        case .preparationError: return "preparationError"
-        case .nothingToRefund: return "nothingToRefund"
-        case .itemSelection: return "itemSelection"
         case .review: return "review"
         case .confirmation: return "confirmation"
         case .readerConnectionRequired: return "readerConnectionRequired"
@@ -37,8 +27,6 @@ enum RefundModalState: Identifiable, Equatable {
     /// Returns the analytics step for abort tracking
     var abortStep: WooAnalyticsEvent.PointOfSale.RefundStep? {
         switch self {
-        case .itemSelection:
-            return .selectItems
         case .review:
             return .reviewRefund
         case .confirmation, .readerConnectionRequired:
@@ -95,10 +83,9 @@ struct POSRefundModalContentView: View {
 
     let order: POSOrder
     let onDismiss: () -> Void
-    let onRetryLoading: () -> Void
-    let onRetryPreparation: () -> Void
-    let onEditRefund: (() -> Void)?
-    let showsItemSelection: Bool
+    let onReturnToSelection: () -> Void
+    let initialRefundReason: String?
+    let onRefundReasonChanged: ((String?) -> Void)?
     let onRefundSuccess: (() -> Void)?
     let onRefundFailure: ((Error) -> Void)?
 
@@ -149,6 +136,7 @@ struct POSRefundModalContentView: View {
                         if var reviewData = reasonInputReviewData {
                             reviewData.refundReason = reason
                             currentRefundReason = reason
+                            onRefundReasonChanged?(reason)
                             modalState = .review(reviewData)
                         }
                         isShowingReasonInput = false
@@ -158,6 +146,7 @@ struct POSRefundModalContentView: View {
                 .posHeaderBackButtonIcon(systemName: "xmark")
             }
             .onAppear {
+                currentRefundReason = initialRefundReason
                 updateCardPresentAlertItem()
                 updateCardPresentOnboardingItem()
             }
@@ -172,41 +161,10 @@ struct POSRefundModalContentView: View {
     @ViewBuilder
     private var content: some View {
         switch state {
-        case .loading:
-            POSRefundLoadingView(onBack: { dismissRefundFlow() })
-        case .loadingError:
-            POSRefundErrorView(
-                title: errorStrings.loadTitle,
-                subtitle: errorStrings.loadSubtitle,
-                onRetry: onRetryLoading,
-                onCancel: { dismissRefundFlow() },
-                onClose: { dismissRefundFlow() }
-            )
-        case .preparationError:
-            POSRefundErrorView(
-                title: errorStrings.prepareTitle,
-                subtitle: errorStrings.prepareSubtitle,
-                onRetry: onRetryPreparation,
-                onCancel: { dismissRefundFlow() },
-                onClose: { dismissRefundFlow() }
-            )
-        case .nothingToRefund:
-            POSRefundNothingToRefundView(onClose: { dismissRefundFlow() })
-        case .itemSelection:
-            if showsItemSelection {
-                POSRefundItemsSelectionView(
-                    onClose: {
-                        dismissRefundFlow()
-                    },
-                    onContinue: { navigateToRefundReview() }
-                )
-            } else {
-                EmptyView()
-            }
         case .review(let reviewData):
             POSRefundReviewView(
                 onClose: {
-                    dismissRefundFlow()
+                    onReturnToSelection()
                 },
                 itemsCount: reviewData.itemsCount,
                 formattedItemsSubtotal: reviewData.formattedItemsSubtotal,
@@ -218,8 +176,7 @@ struct POSRefundModalContentView: View {
                     reasonInputReviewData = reviewData
                     isShowingReasonInput = true
                 },
-                onContinue: { modalState = .confirmation(reviewData) },
-                onEditRefund: onEditRefund
+                onContinue: { modalState = .confirmation(reviewData) }
             )
         case .confirmation(let reviewData):
             POSRefundConfirmationView(
@@ -232,7 +189,7 @@ struct POSRefundModalContentView: View {
                 onConfirm: {
                     handleRefundConfirmation(reviewData: reviewData)
                 },
-                onBack: { modalState = .review(reviewData) }
+                onBack: nil
             )
         case .readerConnectionRequired(let reviewData):
             POSRefundReaderDisconnectedView(
@@ -248,7 +205,7 @@ struct POSRefundModalContentView: View {
                 submissionState: refundSubmissionModel.state,
                 onClose: {},
                 onConfirm: {},
-                onBack: {}
+                onBack: nil
             )
         case .success(let reviewData):
             POSRefundSuccessView(
@@ -283,8 +240,7 @@ struct POSRefundModalContentView: View {
                     .submitting, .retryableError, .nonRetryableError, .completed:
                 return .posSurfaceBright
             }
-        case .loading, .loadingError, .preparationError, .nothingToRefund, .itemSelection, .review, .confirmation,
-                .success, .error:
+        case .review, .confirmation, .success, .error:
             return .posSurfaceBright
         }
     }
@@ -311,15 +267,6 @@ struct POSRefundModalContentView: View {
         } else {
             onDismiss()
         }
-    }
-
-    private func navigateToRefundReview() {
-        guard var reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
-            modalState = .preparationError
-            return
-        }
-        reviewData.refundReason = currentRefundReason
-        modalState = .review(reviewData)
     }
 
     private func updateCardPresentAlertItem() {

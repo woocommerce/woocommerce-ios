@@ -8,9 +8,15 @@ import struct Yosemite.POSRefundItem
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
+private enum POSOrderDetailsNavigationDestination: Hashable {
+    case refundSelection
+}
+
 struct POSOrderDetailsView: View {
     let order: POSOrder
     let onBack: () -> Void
+    @Binding private var detailNavigationPath: NavigationPath
+    @Binding private var activeRefundSelectionOrderID: Int64?
     @State var autoStartNextRefundFlow: Bool = false
     var onRefundSuccess: (() -> Void)? = nil
     var onRefundFailure: ((Error) -> Void)? = nil
@@ -22,8 +28,10 @@ struct POSOrderDetailsView: View {
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @State private var isShowingEmailReceiptView = false
+    @State private var refundSelectionState: RefundSelectionState?
     @State private var refundModalState: RefundModalState?
     @State private var refundFlowPreparationID: UUID?
+    @State private var currentRefundReason: String?
     @State private var selectedRefundForDetail: POSOrderRefund?
 
     private var shouldShowBackButton: Bool {
@@ -36,6 +44,24 @@ struct POSOrderDetailsView: View {
 
     private var dateFormatter: DateFormatter {
         DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
+    }
+
+    init(
+        order: POSOrder,
+        detailNavigationPath: Binding<NavigationPath> = .constant(NavigationPath()),
+        activeRefundSelectionOrderID: Binding<Int64?> = .constant(nil),
+        onBack: @escaping () -> Void,
+        autoStartNextRefundFlow: Bool = false,
+        onRefundSuccess: (() -> Void)? = nil,
+        onRefundFailure: ((Error) -> Void)? = nil
+    ) {
+        self.order = order
+        self.onBack = onBack
+        self._detailNavigationPath = detailNavigationPath
+        self._activeRefundSelectionOrderID = activeRefundSelectionOrderID
+        self._autoStartNextRefundFlow = State(initialValue: autoStartNextRefundFlow)
+        self.onRefundSuccess = onRefundSuccess
+        self.onRefundFailure = onRefundFailure
     }
 
     var body: some View {
@@ -110,31 +136,36 @@ struct POSOrderDetailsView: View {
                 onClose: { selectedRefundForDetail = nil }
             )
         }
-        .posFullScreenCover(isPresented: isRefundFlowPresented, onDismiss: {
-            dismissRefundFlow()
-        }) {
+        .navigationDestination(for: POSOrderDetailsNavigationDestination.self) { destination in
+            switch destination {
+            case .refundSelection:
+                if let refundSelectionState {
+                    POSRefundSelectionFlowView(
+                        state: refundSelectionState,
+                        errorStrings: refundErrorStrings,
+                        onDismiss: { dismissRefundFlow() },
+                        onRetryLoading: { initiateRefundFlow() },
+                        onRetryPreparation: {
+                            self.refundSelectionState = .itemSelection
+                        },
+                        onContinue: { navigateToRefundReview() }
+                    )
+                }
+            }
+        }
+        .posFullScreenCover(isPresented: isRefundModalPresented) {
             if let state = refundModalState {
                 POSRefundModalContentView(
                     state: state,
                     modalState: $refundModalState,
                     order: order,
                     onDismiss: { dismissRefundFlow() },
-                    onRetryLoading: { initiateRefundFlow() },
-                    onRetryPreparation: {
-                        refundModalState = .itemSelection
-                    },
-                    onEditRefund: { refundModalState = .itemSelection },
-                    showsItemSelection: true,
+                    onReturnToSelection: { returnToRefundSelection() },
+                    initialRefundReason: currentRefundReason,
+                    onRefundReasonChanged: { currentRefundReason = $0 },
                     onRefundSuccess: onRefundSuccess,
                     onRefundFailure: onRefundFailure,
-                    errorStrings: .init(
-                        loadTitle: Localization.loadRefundErrorTitle,
-                        loadSubtitle: Localization.loadRefundErrorSubtitle,
-                        prepareTitle: Localization.prepareRefundErrorTitle,
-                        prepareSubtitle: Localization.prepareRefundErrorSubtitle,
-                        createTitle: Localization.createRefundErrorTitle,
-                        createSubtitle: Localization.createRefundErrorSubtitle
-                    )
+                    errorStrings: refundErrorStrings
                 )
             }
         }
@@ -552,11 +583,14 @@ private extension POSOrderDetailsView {
 // MARK: - Refund Flow Helpers
 
 private extension POSOrderDetailsView {
-    var isRefundFlowPresented: Binding<Bool> {
+    var isRefundModalPresented: Binding<Bool> {
         Binding(
             get: { refundModalState != nil },
             set: { isPresented in
                 if !isPresented {
+                    if refundModalState == nil, refundSelectionState != nil {
+                        return
+                    }
                     dismissRefundFlow()
                 }
             }
@@ -567,7 +601,9 @@ private extension POSOrderDetailsView {
         analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowStarted())
         let preparationID = UUID()
         refundFlowPreparationID = preparationID
-        refundModalState = .loading
+        refundModalState = nil
+        refundSelectionState = .loading
+        presentRefundSelection()
         Task { @MainActor in
             let result = await orderListModel.ordersController.startRefundFlow()
             guard refundFlowPreparationID == preparationID else {
@@ -576,30 +612,75 @@ private extension POSOrderDetailsView {
             refundFlowPreparationID = nil
             switch result {
             case .hasItemsToRefund:
-                refundModalState = .itemSelection
+                refundSelectionState = .itemSelection
             case .nothingToRefund:
-                refundModalState = .nothingToRefund
+                refundSelectionState = .nothingToRefund
             case .failed:
-                refundModalState = .loadingError
+                refundSelectionState = .loadingError
             }
         }
     }
 
     func navigateToRefundReview() {
-        guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
-            refundModalState = .preparationError
+        guard var reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
+            refundSelectionState = .preparationError
             return
         }
+        reviewData.refundReason = currentRefundReason
         refundModalState = .review(reviewData)
     }
 
+    func returnToRefundSelection() {
+        refundSelectionState = .itemSelection
+        refundModalState = nil
+    }
+
     func dismissRefundFlow() {
-        if let step = refundModalState?.abortStep {
+        let abortStep: WooAnalyticsEvent.PointOfSale.RefundStep?
+        if let refundModalState {
+            abortStep = refundModalState.abortStep
+        } else {
+            abortStep = refundSelectionState?.abortStep
+        }
+
+        if let step = abortStep {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: step))
         }
         refundFlowPreparationID = nil
+        refundSelectionState = nil
         refundModalState = nil
+        currentRefundReason = nil
         orderListModel.ordersController.clearRefundSelection()
+        dismissRefundSelectionIfNeeded()
+    }
+
+    func presentRefundSelection() {
+        guard activeRefundSelectionOrderID != order.id else {
+            return
+        }
+        activeRefundSelectionOrderID = order.id
+        detailNavigationPath.append(POSOrderDetailsNavigationDestination.refundSelection)
+    }
+
+    func dismissRefundSelectionIfNeeded() {
+        guard activeRefundSelectionOrderID == order.id else {
+            return
+        }
+        activeRefundSelectionOrderID = nil
+        if !detailNavigationPath.isEmpty {
+            detailNavigationPath.removeLast()
+        }
+    }
+
+    var refundErrorStrings: POSRefundErrorStrings {
+        .init(
+            loadTitle: Localization.loadRefundErrorTitle,
+            loadSubtitle: Localization.loadRefundErrorSubtitle,
+            prepareTitle: Localization.prepareRefundErrorTitle,
+            prepareSubtitle: Localization.prepareRefundErrorSubtitle,
+            createTitle: Localization.createRefundErrorTitle,
+            createSubtitle: Localization.createRefundErrorSubtitle
+        )
     }
 }
 

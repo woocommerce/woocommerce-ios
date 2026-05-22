@@ -43,7 +43,7 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
 
     private func showSupportChat() {
         var viewModelHolder: SupportChatViewModel?
-        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, siteAddress, entryPoint in
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
             self?.navigationController?.popViewController(animated: true)
             self?.handleContactHumanSupport(chatID: chatID,
                                             transcript: transcript,

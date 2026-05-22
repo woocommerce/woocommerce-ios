@@ -487,15 +487,16 @@ private extension HelpAndSupportViewController {
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
             initialContext: initialContext,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, siteAddress, entryPoint in
-                self?.handleContactHumanSupport(chatID: chatID,
-                                                transcript: transcript,
-                                                supportAreaInfo: supportAreaInfo,
-                                                entryPoint: entryPoint,
-                                                siteAddress: siteAddress ?? self?.loginSiteURL?.absoluteString,
-                                                onTicketCreated: { [weak viewModelHolder] in
-                                                    viewModelHolder?.markChatTicketCreated()
-                                                })
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+                guard let self else { return }
+                handleContactHumanSupport(chatID: chatID,
+                                          transcript: transcript,
+                                          supportAreaInfo: supportAreaInfo,
+                                          entryPoint: entryPoint,
+                                          siteAddress: loginSiteURL?.absoluteString,
+                                          onTicketCreated: { [weak viewModelHolder] in
+                    viewModelHolder?.markChatTicketCreated()
+                })
             }
         )
         viewModelHolder = viewModel
@@ -543,15 +544,15 @@ private extension HelpAndSupportViewController {
             sessionID: summary.sessionID,
             hasCreatedTicket: summary.hasCreatedTicket,
             isChatResolved: summary.isResolved,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, siteAddress, entryPoint in
-                self?.handleContactHumanSupport(chatID: chatID,
-                                                transcript: transcript,
-                                                supportAreaInfo: supportAreaInfo,
-                                                entryPoint: entryPoint,
-                                                siteAddress: siteAddress,
-                                                onTicketCreated: { [weak viewModelHolder] in
-                                                    viewModelHolder?.markChatTicketCreated()
-                                                })
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+                guard let self else { return }
+                handleContactHumanSupport(chatID: chatID,
+                                          transcript: transcript,
+                                          supportAreaInfo: supportAreaInfo,
+                                          entryPoint: entryPoint,
+                                          onTicketCreated: { [weak viewModelHolder] in
+                    viewModelHolder?.markChatTicketCreated()
+                })
             }
         )
         viewModelHolder = chatViewModel

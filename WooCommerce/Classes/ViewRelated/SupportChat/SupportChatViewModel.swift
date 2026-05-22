@@ -247,6 +247,13 @@ final class SupportChatViewModel {
 
     var inputText: String = ""
 
+    typealias ContactHumanSupportCallback = (
+        _ chatID: Int64?,
+        _ transcript: String,
+        _ supportAreaInfo: SupportAreaInfo?,
+        _ entryPoint: EntryPoint
+    ) -> Void
+
     // MARK: - Private Properties
 
     private var chatID: Int64?
@@ -257,13 +264,7 @@ final class SupportChatViewModel {
     private let analytics: Analytics
     private var diagnosticsContext: [String: Any]?
     private let initialContext: [String: Any]?
-    private let onContactHumanSupport: (
-        _ chatID: Int64?,
-        _ transcript: String,
-        _ supportAreaInfo: SupportAreaInfo?,
-        _ siteAddress: String?,
-        _ entryPoint: EntryPoint
-    ) -> Void
+    private let onContactHumanSupport: ContactHumanSupportCallback
     private var latestSupportArea: SupportChatSupportArea?
     private var userMessageCount = 0
     private var didTrackResolutionButtonShown = false
@@ -292,13 +293,7 @@ final class SupportChatViewModel {
          hasCreatedTicket: Bool = false,
          isChatResolved: Bool = false,
          systemStatusReport: String? = nil,
-         onContactHumanSupport: @escaping (
-            _ chatID: Int64?,
-            _ transcript: String,
-            _ supportAreaInfo: SupportAreaInfo?,
-            _ siteAddress: String?,
-            _ entryPoint: EntryPoint
-         ) -> Void,
+         onContactHumanSupport: @escaping ContactHumanSupportCallback,
          onStartJetpackSetup: @escaping () -> Void = {},
          onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() },
          onOpenPushNotificationPreferences: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }) {
@@ -730,7 +725,6 @@ final class SupportChatViewModel {
 
         let transcript = generateTranscript()
         let supportAreaInfo: SupportAreaInfo?
-        let siteAddress = siteAddressForEscalation
         let systemStatusReport = prefetchedSystemStatusReport ?? diagnosticsService.formattedSystemStatusReport
 
         if let supportArea = latestSupportArea {
@@ -747,7 +741,7 @@ final class SupportChatViewModel {
             supportAreaInfo = nil
         }
 
-        onContactHumanSupport(chatID, transcript, supportAreaInfo, siteAddress, entryPoint)
+        onContactHumanSupport(chatID, transcript, supportAreaInfo, entryPoint)
     }
 
     private func generateTranscript() -> String {
@@ -783,18 +777,6 @@ final class SupportChatViewModel {
 
             return "[\(timestamp)] \(roleName): \(contentText)"
         }.joined(separator: "\n\n")
-    }
-
-    private var siteAddressForEscalation: String? {
-        if let siteAddress = stores.sessionManager.defaultSite?.url, siteAddress.isNotEmpty {
-            return siteAddress
-        }
-
-        let siteAddress = (diagnosticsContext?["site_url"] as? String) ?? (initialContext?["site_url"] as? String)
-        guard let siteAddress, siteAddress.isNotEmpty else {
-            return nil
-        }
-        return siteAddress
     }
 
     func dismissError() {

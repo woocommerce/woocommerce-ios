@@ -1,0 +1,38 @@
+{
+  "as_of": "2026-05-22",
+  "status": "ALL_LOCALES_COMPLETE",
+  "summary": "15 new locales fully translated, deduped, gap-filled, and verified. InfoPlist.strings present in all. Xcode knownRegions updated. RELEASE-NOTES entry added. Ready for PR.",
+  "locales_complete": [
+    {"locale": "pl", "entries": 5141, "infoplist": true, "verified": true, "session": "prior"},
+    {"locale": "cs", "entries": 5141, "infoplist": true, "verified": true, "session": "prior"},
+    {"locale": "el", "entries": 5141, "infoplist": true, "verified": true, "session": "prior"},
+    {"locale": "hu", "entries": 5141, "infoplist": true, "verified": true, "session": "prior"},
+    {"locale": "ro", "entries": 5141, "infoplist": true, "verified": true, "session": "prior"},
+    {"locale": "vi", "entries": 5141, "infoplist": true, "verified": true, "session": "prior"},
+    {"locale": "bg", "entries": 5141, "infoplist": true, "verified": true, "session": "2026-05-21"},
+    {"locale": "da", "entries": 5141, "infoplist": true, "verified": true, "session": "2026-05-21"},
+    {"locale": "fi", "entries": 5141, "infoplist": true, "verified": true, "session": "2026-05-21"},
+    {"locale": "nb", "entries": 5141, "infoplist": true, "verified": true, "session": "2026-05-21"},
+    {"locale": "uk", "entries": 5141, "infoplist": true, "verified": true, "session": "2026-05-21"},
+    {"locale": "hi", "entries": 5141, "infoplist": true, "verified": true, "session": "2026-05-22"},
+    {"locale": "ms", "entries": 5141, "infoplist": true, "verified": true, "session": "2026-05-22"},
+    {"locale": "th", "entries": 5141, "infoplist": true, "verified": true, "session": "2026-05-22"},
+    {"locale": "pt-PT", "entries": 5141, "infoplist": true, "verified": true, "session": "2026-05-22"}
+  ],
+  "infrastructure": {
+    "xcode_knownregions_updated": true,
+    "xcode_knownregions_path": "WooCommerce/WooCommerce.xcodeproj/project.pbxproj",
+    "release_notes_entry": true,
+    "release_notes_path": "RELEASE-NOTES.txt",
+    "assembly_script": "fastlane/ai_translation/scripts/assemble_locale.rb",
+    "gap_fill_script": "fastlane/ai_translation/scripts/gap_fill_hi_th.rb"
+  },
+  "lessons_learned": [
+    "Single-agent translation of 1500+ keys is risky: Devanagari/Thai overflow 64K output token limit; agents that try multi-write get killed by the harness.",
+    "Safe per-agent budget: ~500-530 keys for non-Latin scripts, ~1500 keys for Latin scripts when explicitly instructed 'single Write call'.",
+    "Batch boundaries always overlap by 2-3 keys; assembly script must dedupe.",
+    "ios_resources.rb parser is O(n²) on 1MB+ files; use grep-based verification instead (much faster).",
+    "5 keys consistently missing across multiple parallel-agent sessions: 'Enter your store credentials for %@.', 'San Marino', 'watch.orders.error.title', 'localNotification.AbandonedCampaignCreation.{body,title}'. These keys live exactly on sub-batch boundaries — agents trim them inadvertently. Always run gap-fill after assembly."
+  ],
+  "ready_for_pr": true
+}

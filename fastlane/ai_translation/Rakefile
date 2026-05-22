@@ -1,0 +1,124 @@
+# frozen_string_literal: true
+
+# Rake tasks for the AI translation engine.
+#
+# Run from the project root via:
+#   bundle exec rake -f fastlane/ai_translation/Rakefile translate:bootstrap LOCALE=hi
+# or from this directory:
+#   cd fastlane/ai_translation && bundle exec rake translate:incremental LOCALE=hi
+#
+# Env vars:
+#   ANTHROPIC_API_KEY  required for non-offline runs.
+#   LOCALE             target locale code (see SUPPORTED_LOCALES below).
+#   MODEL              override default model (claude-haiku-4-5).
+#   OFFLINE=1          use StubClient (smoke / dry-run).
+
+require 'json'
+
+REPO_ROOT = File.expand_path('../..', __dir__)
+BIN = File.join(__dir__, 'bin', 'translate_locale.rb')
+RESOURCES = File.join(REPO_ROOT, 'WooCommerce/Resources')
+
+SUPPORTED_LOCALES = %w[
+  pl cs el hu ro vi bg da fi nb uk hi ms pt-PT th
+].freeze
+
+def cli_args_from_env
+  args = []
+  args << '--offline' if ENV['OFFLINE'] == '1'
+  args << '--model' << ENV['MODEL'] if ENV['MODEL']
+  args << '--limit' << ENV['LIMIT'] if ENV['LIMIT']
+  args
+end
+
+def run_cli(locale, *extra)
+  args = ['ruby', BIN, locale, *cli_args_from_env, *extra]
+  puts "$ #{args.join(' ')}"
+  ok = system(*args)
+  abort("translate_locale.rb failed for #{locale}") unless ok
+end
+
+def resolve_locales
+  if ENV['LOCALE']
+    [ENV['LOCALE']]
+  else
+    SUPPORTED_LOCALES
+  end
+end
+
+namespace :translate do
+  desc 'Translate every key for a locale from scratch (full bootstrap). LOCALE=xx required.'
+  task :bootstrap do
+    locale = ENV['LOCALE'] or abort('LOCALE=xx required')
+    run_cli(locale)
+  end
+
+  desc 'Translate only missing keys for LOCALE (or all locales). Safe to run on every PR.'
+  task :incremental do
+    resolve_locales.each { |loc| run_cli(loc, '--incremental') }
+  end
+
+  desc 'Verify a locale: key parity vs en.lproj, no API calls. LOCALE=xx or all.'
+  task :verify do
+    require_relative 'lib/woo_ai_translation/ios_resources'
+
+    en = WooAiTranslation::IosResources::Parser
+         .parse_file(File.join(RESOURCES, 'en.lproj/Localizable.strings'))
+    en_keys = en.units.map(&:name).to_set
+
+    failed = []
+    resolve_locales.each do |loc|
+      path = File.join(RESOURCES, "#{loc}.lproj/Localizable.strings")
+      unless File.exist?(path)
+        failed << "#{loc}: file missing (#{path})"
+        next
+      end
+      doc = WooAiTranslation::IosResources::Parser.parse_file(path)
+      keys = doc.units.map(&:name).to_set
+      missing = en_keys - keys
+      extra = keys - en_keys
+      if missing.empty? && extra.empty?
+        puts "#{loc}: OK (#{keys.size} keys)"
+      else
+        failed << "#{loc}: missing=#{missing.size} extra=#{extra.size}"
+      end
+    end
+
+    abort("verify FAILED:\n  #{failed.join("\n  ")}") unless failed.empty?
+  end
+
+  desc 'Print a per-locale health report (Markdown). Useful for release notes / dashboards.'
+  task :report do
+    require_relative 'lib/woo_ai_translation/ios_resources'
+
+    en_path = File.join(RESOURCES, 'en.lproj/Localizable.strings')
+    en = WooAiTranslation::IosResources::Parser.parse_file(en_path)
+    en_keys = en.units.map(&:name).to_set
+
+    puts '# Translation health report'
+    puts ''
+    puts "Source: `#{en_path.sub("#{REPO_ROOT}/", '')}` (#{en_keys.size} keys)"
+    puts ''
+    puts '| Locale | Entries | Missing | Extra | Status |'
+    puts '|--------|---------|---------|-------|--------|'
+
+    SUPPORTED_LOCALES.each do |loc|
+      path = File.join(RESOURCES, "#{loc}.lproj/Localizable.strings")
+      unless File.exist?(path)
+        puts "| #{loc} | — | — | — | ❌ file missing |"
+        next
+      end
+      doc = WooAiTranslation::IosResources::Parser.parse_file(path)
+      keys = doc.units.map(&:name).to_set
+      missing = (en_keys - keys).size
+      extra = (keys - en_keys).size
+      status = (missing.zero? && extra.zero?) ? '✅ OK' : '⚠️ DRIFT'
+      puts "| #{loc} | #{keys.size} | #{missing} | #{extra} | #{status} |"
+    end
+  end
+
+  desc 'Bootstrap all supported locales. Requires ANTHROPIC_API_KEY (or OFFLINE=1).'
+  task :bootstrap_all do
+    SUPPORTED_LOCALES.each { |loc| run_cli(loc) }
+  end
+end

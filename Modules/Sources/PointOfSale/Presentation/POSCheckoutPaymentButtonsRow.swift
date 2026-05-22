@@ -14,47 +14,12 @@ struct POSCheckoutPaymentButtonsRow: View {
     let methods: [POSCheckoutPaymentMethod]
     let onSelect: (POSCheckoutPaymentMethod) -> Void
 
-    /// Optional popover wiring for the `.otherPaymentMethods` button.
-    ///
-    /// When non-nil, the popover is anchored to that specific button — used on iPad where
-    /// routing UI (picking which non-cash, non-card method to use) should attach to its
-    /// trigger rather than take over the screen with a bottom sheet. Phone callers leave
-    /// this nil and present a `POSOtherPaymentMethodsSheet` from the parent instead.
-    ///
-    /// The original iPad popover wiring was added by `024afec9f7` and lost in the phone
-    /// POS Part 2 refactor (`8500620a69`); this restores it without touching the phone path.
-    var otherPaymentMethodsPopover: OtherPaymentMethodsPopoverConfig?
-
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    /// Optional popover configuration for the `.otherPaymentMethods` button slot.
-    /// Holds the presentation binding + the secondary-method action callbacks; the
-    /// popover view itself is rebuilt per render so the gated flags can update.
-    struct OtherPaymentMethodsPopoverConfig {
-        let isPresented: Binding<Bool>
-        let isScanToPayAvailable: Bool
-        let isMarkOrderAsPaidAvailable: Bool
-        let onScanToPay: () -> Void
-        let onMarkOrderAsPaid: () -> Void
-    }
-
     var body: some View {
-        Group {
-            if horizontalSizeClass == .compact {
-                // Phone POS layout: vertical stack with first-as-primary filled CTA.
-                // Driven by Robin's phone POS design — TTP / card reader / cash stacked
-                // vertically with the topmost method emphasized.
-                VStack(spacing: POSSpacing.medium) {
-                    buttonsForRow
-                }
-            } else {
-                // iPad layout: horizontal row, mirroring the original SecondaryPaymentButtons
-                // design before phone POS unified both idioms on a VStack. Restores the
-                // side-by-side button arrangement so the merchant sees Card reader / Cash /
-                // Other payment methods inline.
-                HStack(spacing: POSSpacing.medium) {
-                    buttonsForRow
-                }
+        VStack(spacing: POSSpacing.medium) {
+            ForEach(Array(methods.enumerated()), id: \.element) { index, method in
+                button(for: method, isPrimary: index == 0)
             }
         }
         .padding(.horizontal, POSPadding.medium)
@@ -69,23 +34,12 @@ struct POSCheckoutPaymentButtonsRow: View {
     }
 
     @ViewBuilder
-    private var buttonsForRow: some View {
-        ForEach(Array(methods.enumerated()), id: \.element) { index, method in
-            button(for: method, isPrimary: index == 0)
-        }
-    }
-
-    @ViewBuilder
     private func button(for method: POSCheckoutPaymentMethod, isPrimary: Bool) -> some View {
         Button {
             onSelect(method)
         } label: {
             Text(title(for: method))
                 .font(.posBodyLargeBold)
-                // Stretch the label to the available width so HStack peers distribute
-                // evenly on iPad. No effect in the phone VStack where buttons are already
-                // full-width.
-                .frame(maxWidth: .infinity)
         }
         .layoutPriority(1)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -96,24 +50,6 @@ struct POSCheckoutPaymentButtonsRow: View {
             $0.buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
         .accessibilityIdentifier(accessibilityIdentifier(for: method))
-        .if(shouldAttachOtherPaymentMethodsPopover(to: method)) { button in
-            button.popover(
-                isPresented: otherPaymentMethodsPopover!.isPresented,
-                attachmentAnchor: .point(.top),
-                arrowEdge: .bottom
-            ) {
-                PointOfSaleSecondaryPaymentMethodsPopover(
-                    isScanToPayAvailable: otherPaymentMethodsPopover!.isScanToPayAvailable,
-                    isMarkOrderAsPaidAvailable: otherPaymentMethodsPopover!.isMarkOrderAsPaidAvailable,
-                    onScanToPay: otherPaymentMethodsPopover!.onScanToPay,
-                    onMarkOrderAsPaid: otherPaymentMethodsPopover!.onMarkOrderAsPaid
-                )
-            }
-        }
-    }
-
-    private func shouldAttachOtherPaymentMethodsPopover(to method: POSCheckoutPaymentMethod) -> Bool {
-        method == .otherPaymentMethods && otherPaymentMethodsPopover != nil
     }
 
     private func title(for method: POSCheckoutPaymentMethod) -> String {

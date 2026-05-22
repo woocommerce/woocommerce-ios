@@ -121,11 +121,36 @@ struct TotalsView: View {
                         )
                     } else if useCashAndOtherMethodsBottomStrip {
                         cashAndOtherMethodsBottomStrip
+                    } else if horizontalSizeClass == .regular {
+                        // iPad: literal restoration of the original SecondaryPaymentButtons
+                        // design (Cash + Other side-by-side as outlined peers, popover off
+                        // the Other button anchored to the trigger). Card reader's connect
+                        // CTA lives in the hero region above, so it's not surfaced here.
+                        SecondaryPaymentButtons(
+                            orderState: posModel.orderState,
+                            paymentState: displayPaymentState,
+                            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                            isScanToPayEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
+                            isMarkOrderAsPaidEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
+                            isShowingOtherPaymentMethodsPopover: $isShowingOtherPaymentMethodsPopover,
+                            startCashPaymentAction: { paymentModel.startCashPayment() },
+                            startOtherPaymentMethodsAction: {
+                                analytics.track(.pointOfSaleOtherPaymentMethodsTapped)
+                                isShowingOtherPaymentMethodsPopover = true
+                            },
+                            startScanToPayAction: {
+                                Task { @MainActor in
+                                    await paymentModel.startScanToPayPayment()
+                                }
+                            },
+                            startMarkOrderAsPaidAction: {
+                                paymentModel.startMarkAsPaidPayment()
+                            }
+                        )
                     } else if !checkoutPaymentMethods.isEmpty {
                         POSCheckoutPaymentButtonsRow(
                             methods: checkoutPaymentMethods,
-                            onSelect: handlePaymentMethodSelection,
-                            otherPaymentMethodsPopover: otherPaymentMethodsPopoverConfig
+                            onSelect: handlePaymentMethodSelection
                         )
                     }
                 }
@@ -658,6 +683,84 @@ private struct PaymentViewContent: View {
     }
 }
 
+/// iPad-only checkout buttons row: Cash + Other payment methods side-by-side as outlined
+/// peers, with an anchored popover off the "Other payment methods" button.
+///
+/// Literal restoration of the design from PR #17080 (`024afec9f7`), which Robin's phone POS
+/// Part 2 (`8500620a69`) deleted when it consolidated both idioms onto the array-driven
+/// `POSCheckoutPaymentButtonsRow` VStack. Brought back unchanged so the iPad UX matches
+/// what shipped before the phone POS work landed — `.cardReader` isn't surfaced as a row
+/// button on iPad because the "Connect your reader" CTA lives in the hero region above.
+private struct SecondaryPaymentButtons: View {
+    let orderState: PointOfSaleOrderState
+    let paymentState: PointOfSalePaymentState
+    let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
+    let isScanToPayEnabled: Bool
+    let isMarkOrderAsPaidEnabled: Bool
+    @Binding var isShowingOtherPaymentMethodsPopover: Bool
+    let startCashPaymentAction: () -> Void
+    let startOtherPaymentMethodsAction: () -> Void
+    let startScanToPayAction: () -> Void
+    let startMarkOrderAsPaidAction: () -> Void
+
+    private let viewHelper = TotalsViewHelper()
+
+    private var isAnySecondaryPaymentMethodEnabled: Bool {
+        isScanToPayEnabled || isMarkOrderAsPaidEnabled
+    }
+
+    var body: some View {
+        HStack(spacing: POSSpacing.small) {
+            Button(action: {
+                startCashPaymentAction()
+            }, label: {
+                Text(TotalsView.Localization.cashPaymentButtonTitle)
+                    .font(POSFontStyle.posBodyLargeBold)
+                    .frame(maxWidth: .infinity)
+            })
+            .layoutPriority(1)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .accessibilityIdentifier("pos-cash-payment-button")
+
+            Button(action: {
+                startOtherPaymentMethodsAction()
+            }, label: {
+                Text(TotalsView.Localization.otherPaymentMethodsButtonTitle)
+                    .font(POSFontStyle.posBodyLargeBold)
+                    .frame(maxWidth: .infinity)
+            })
+            .layoutPriority(1)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .accessibilityIdentifier("pos-other-payment-methods-button")
+            .popover(isPresented: $isShowingOtherPaymentMethodsPopover,
+                     attachmentAnchor: .point(.top),
+                     arrowEdge: .bottom) {
+                PointOfSaleSecondaryPaymentMethodsPopover(
+                    isScanToPayAvailable: isScanToPayEnabled,
+                    isMarkOrderAsPaidAvailable: isMarkOrderAsPaidEnabled,
+                    onScanToPay: startScanToPayAction,
+                    onMarkOrderAsPaid: startMarkOrderAsPaidAction
+                )
+            }
+            .renderedIf(isAnySecondaryPaymentMethodEnabled)
+        }
+        .padding(.horizontal, TotalsView.Constants.buttonHorizontalPadding)
+        .safeAreaPadding(.bottom, TotalsView.Constants.cashButtonBottomPadding)
+        // Gate the whole row on the cash visibility envelope. Without this, when the cash
+        // button is hidden (e.g. during card processing) the HStack still applies its
+        // safeAreaPadding(.bottom), reserving space at the bottom of the totals view that
+        // didn't exist before this row was introduced. Other-payment visibility shares the
+        // same envelope, so this single check is enough.
+        .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(
+            orderState: orderState,
+            paymentState: paymentState,
+            cardReaderConnectionStatus: cardReaderConnectionStatus
+        ))
+    }
+}
+
 private extension TotalsView {
     /// Builds the ordered list of payment methods rendered in the bottom buttons row.
     ///
@@ -706,37 +809,11 @@ private extension TotalsView {
         case .markOrderAsPaid:
             paymentModel.startMarkAsPaidPayment()
         case .otherPaymentMethods:
-            // Idiom split: iPad uses an anchored popover (restored from PR #17080);
-            // phone keeps the bottom sheet from the phone-POS work. The button itself
-            // hosts the popover on iPad via `POSCheckoutPaymentButtonsRow.otherPaymentMethodsPopover`;
-            // taps on phone route here and present the existing sheet.
-            if horizontalSizeClass == .regular {
-                isShowingOtherPaymentMethodsPopover = true
-            } else {
-                handleOtherPaymentMethodsTapped()
-            }
+            // Phone-only path: iPad uses the dedicated `SecondaryPaymentButtons` view
+            // which hosts its own anchored popover off the button, so `.otherPaymentMethods`
+            // never reaches the array-driven row on iPad.
+            handleOtherPaymentMethodsTapped()
         }
-    }
-
-    /// Popover config for the `.otherPaymentMethods` button in `POSCheckoutPaymentButtonsRow`.
-    /// Returns nil on phone (compact) so the row leaves the button bare and the parent's
-    /// bottom sheet handles the routing. Returns a config on iPad (regular) wiring the
-    /// existing `PointOfSaleSecondaryPaymentMethodsPopover` to its trigger.
-    private var otherPaymentMethodsPopoverConfig: POSCheckoutPaymentButtonsRow.OtherPaymentMethodsPopoverConfig? {
-        guard horizontalSizeClass == .regular else { return nil }
-        return POSCheckoutPaymentButtonsRow.OtherPaymentMethodsPopoverConfig(
-            isPresented: $isShowingOtherPaymentMethodsPopover,
-            isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
-            isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
-            onScanToPay: {
-                Task { @MainActor in
-                    await paymentModel.startScanToPayPayment()
-                }
-            },
-            onMarkOrderAsPaid: {
-                paymentModel.startMarkAsPaidPayment()
-            }
-        )
     }
 
     /// True when the merchant should see the Android-style Tap to Pay hero +

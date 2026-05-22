@@ -59,6 +59,17 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
         XCTAssertFalse(sut.gatewaySupportsAutomaticRefunds(context: makeContext(order: codOrder, paymentGateway: nil)))
     }
 
+    func test_requiresCardPresentRefund_only_requires_reader_for_interac_present_charges() {
+        let interacDetails = WCPayCardPresentPaymentDetails.fake().copy(brand: .interac, last4: "4242")
+        let visaDetails = WCPayCardPresentPaymentDetails.fake().copy(brand: .visa, last4: "1111")
+        let interacCharge = WCPayCharge.fake().copy(paymentMethodDetails: .interacPresent(details: interacDetails))
+        let visaCharge = WCPayCharge.fake().copy(paymentMethodDetails: .cardPresent(details: visaDetails))
+
+        XCTAssertTrue(sut.requiresCardPresentRefund(context: makeContext(charge: interacCharge)))
+        XCTAssertFalse(sut.requiresCardPresentRefund(context: makeContext(charge: visaCharge)))
+        XCTAssertFalse(sut.requiresCardPresentRefund(context: makeContext(charge: nil)))
+    }
+
     func test_refundComponents_aggregates_selected_product_quantity_and_selected_fees() {
         let item1 = orderItem(itemID: 10, quantity: 3)
         let item2 = orderItem(itemID: 20, quantity: 1)
@@ -125,11 +136,12 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
 
 private extension POSRefundSubmissionMappingTests {
     func makeContext(order: Order = Order.fake(),
+                     charge: WCPayCharge? = nil,
                      paymentGateway: PaymentGateway? = PaymentGateway.fake(),
                      refundableItems: [RefundableOrderItem] = [],
                      refundableFees: [OrderFeeLine] = []) -> POSRefundSubmissionMapping.PreparedRefundContext {
         POSRefundSubmissionMapping.PreparedRefundContext(order: order,
-                                                         charge: nil,
+                                                         charge: charge,
                                                          paymentGateway: paymentGateway,
                                                          paymentGatewayAccount: nil,
                                                          refundableItems: refundableItems,

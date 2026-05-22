@@ -765,6 +765,48 @@ struct SupportChatViewModelTests {
         // Then
         #expect(sut.shouldPromptHumanSupport == false)
         #expect(sut.messages.count == 2)
+        #expect(sut.canEscalateToHumanSupport == true)
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func resumeIfNeeded_when_chat_has_no_persisted_bot_response_then_canEscalateToHumanSupport_is_false() async {
+        // Given
+        let chatID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = SupportChatViewModel(
+            entryPoint: .chatHistory,
+            stores: stores,
+            chatID: chatID,
+            onContactHumanSupport: { _, _, _, _ in }
+        )
+
+        await confirmation { fetchCompleted in
+            stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+                switch action {
+                case let .fetchChat(_, _, _, completion):
+                    let response = SupportChatResponse(
+                        chatID: chatID,
+                        sessionID: "session-1",
+                        botSlug: "test-bot",
+                        botVersion: "1.0",
+                        messages: [
+                            SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil)
+                        ]
+                    )
+                    completion(.success(response))
+                    fetchCompleted()
+                default:
+                    break
+                }
+            }
+
+            // When
+            sut.resumeIfNeeded()
+        }
+
+        // Then
+        #expect(sut.messages.count == 1)
+        #expect(sut.canEscalateToHumanSupport == false)
     }
 
     @Test func contactHumanSupport_passes_chatID_in_callback() async {

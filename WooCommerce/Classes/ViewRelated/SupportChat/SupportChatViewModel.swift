@@ -189,11 +189,6 @@ final class SupportChatViewModel {
     /// When true, the escalation button should be hidden.
     private(set) var hasCreatedTicket: Bool = false
 
-    /// `true` once the merchant has typed and sent at least one message via the input field.
-    /// Distinct from `messages.contains(where: { $0.role == .user })`, which is also flipped
-    /// by issue-picker selections — we want the human-support entry to surface only after the
-    /// merchant has actually described their problem.
-    private(set) var hasSentChatMessage: Bool = false
     private(set) var isChatResolved: Bool = false
 
     /// Flips `hasCreatedTicket` so the chat surface (toolbar icon, inline banner) updates in real time
@@ -216,12 +211,13 @@ final class SupportChatViewModel {
 
     /// Whether the trailing toolbar entry point to human support should be visible.
     /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics)
-    /// AND has typed and sent at least one message, and only while no ticket has been created yet.
+    /// AND the conversation has at least one persisted bot response, and only while no ticket
+    /// has been created yet.
     var canEscalateToHumanSupport: Bool {
         guard shouldShowInputArea, !hasCreatedTicket, !isChatResolved else {
             return false
         }
-        return hasSentChatMessage
+        return hasRemoteBotResponse
     }
 
     var shouldShowResolvedButton: Bool {
@@ -704,7 +700,6 @@ final class SupportChatViewModel {
             sessionID: sessionID,
             context: context
         ) { [weak self] result in
-            self?.hasSentChatMessage = true
             self?.handleSendMessageResult(result,
                                           wasNewChat: wasNewChat,
                                           firstUserMessage: firstUserMessage)
@@ -983,6 +978,10 @@ final class SupportChatViewModel {
 
     private var latestBotResponse: ChatMessage? {
         messages.last { $0.role == .bot && $0.messageID != nil }
+    }
+
+    private var hasRemoteBotResponse: Bool {
+        messages.contains { $0.role == .bot && $0.messageID != nil }
     }
 
     private func trackTroubleshootingCompleted(issueType: SupportIssueType,

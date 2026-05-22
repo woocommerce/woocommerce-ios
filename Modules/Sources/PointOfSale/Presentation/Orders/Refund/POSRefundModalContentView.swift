@@ -120,7 +120,7 @@ struct POSRefundModalContentView: View {
     private var content: some View {
         switch state {
         case .loading:
-            POSRefundLoadingView()
+            POSRefundLoadingView(onBack: { dismissModal?() })
         case .loadingError:
             POSRefundErrorView(
                 title: errorStrings.loadTitle,
@@ -271,6 +271,9 @@ struct POSRefundModalContentView: View {
             return false
         }
 
-        return paymentModel.cardReaderConnectionStatus == .disconnected
+        if case .connected = paymentModel.cardReaderConnectionStatus {
+            return false
+        }
+        return true
     }
 }

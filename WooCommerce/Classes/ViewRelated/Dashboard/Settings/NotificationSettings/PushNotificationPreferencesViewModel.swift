@@ -30,6 +30,26 @@ final class PushNotificationPreferencesViewModel {
     var isStoreOrderEnabled: Bool { displayed.storeOrder?.enabled ?? false }
     var isStoreReviewEnabled: Bool { displayed.storeReview?.enabled ?? false }
     var isStoreStockEnabled: Bool { displayed.storeStock?.enabled ?? false }
+    var isStoreStockLowStock: Bool { displayed.storeStock?.lowStock ?? false }
+    var isStoreStockOutOfStock: Bool { displayed.storeStock?.outOfStock ?? false }
+    var isStoreStockOnBackorder: Bool { displayed.storeStock?.onBackorder ?? false }
+
+    var storeStockDetailText: String {
+        let enabledNames: [String] = [
+            (isStoreStockLowStock, Localization.stockDetailLowStock),
+            (isStoreStockOutOfStock, Localization.stockDetailOutOfStock),
+            (isStoreStockOnBackorder, Localization.stockDetailOnBackorder)
+        ].compactMap { isOn, name in isOn ? name : nil }
+
+        switch enabledNames.count {
+        case 0:
+            return Localization.stockDetailNone
+        case 3:
+            return Localization.stockDetailAll
+        default:
+            return ListFormatter.localizedString(byJoining: enabledNames)
+        }
+    }
 
     /// `nil` means "all orders".
     var storeOrderMinAmount: Decimal? { displayed.storeOrder?.minAmount }
@@ -203,6 +223,39 @@ final class PushNotificationPreferencesViewModel {
                                                      outOfStock: existing?.outOfStock,
                                                      onBackorder: existing?.onBackorder))
     }
+
+    func setStoreStockLowStock(_ newValue: Bool) {
+        let existing = displayed.storeStock
+        displayed = displayed.with(storeStock: .init(enabled: existing?.enabled,
+                                                     lowStock: newValue,
+                                                     outOfStock: existing?.outOfStock,
+                                                     onBackorder: existing?.onBackorder))
+    }
+
+    func setStoreStockOutOfStock(_ newValue: Bool) {
+        let existing = displayed.storeStock
+        displayed = displayed.with(storeStock: .init(enabled: existing?.enabled,
+                                                     lowStock: existing?.lowStock,
+                                                     outOfStock: newValue,
+                                                     onBackorder: existing?.onBackorder))
+    }
+
+    func setStoreStockOnBackorder(_ newValue: Bool) {
+        let existing = displayed.storeStock
+        displayed = displayed.with(storeStock: .init(enabled: existing?.enabled,
+                                                     lowStock: existing?.lowStock,
+                                                     outOfStock: existing?.outOfStock,
+                                                     onBackorder: newValue))
+    }
+
+    /// Reverts only the stock section of `displayed` to `lastSaved`. Other
+    /// sections are left untouched — their detail screens own their own
+    /// discard paths.
+    func discardStoreStockEdits() {
+        displayed = PushNotificationPreferences(storeOrder: displayed.storeOrder,
+                                                storeReview: displayed.storeReview,
+                                                storeStock: lastSaved.storeStock)
+    }
 }
 
 private extension PushNotificationPreferencesViewModel {
@@ -317,6 +370,31 @@ extension PushNotificationPreferencesViewModel {
             "pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.plural",
             value: "%1$@ stars and below",
             comment: "Detail text for the New reviews row when the maximum rating is 2-5. %1$@ is the formatted star count."
+        )
+        static let stockDetailAll = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeStock.detail.all",
+            value: "All stock alerts",
+            comment: "Detail text for the Stock row when all three stock sub-toggles (low, out of stock, on backorder) are enabled."
+        )
+        static let stockDetailNone = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeStock.detail.none",
+            value: "No alerts",
+            comment: "Detail text for the Stock row when the master toggle is on but none of the sub-toggles are enabled."
+        )
+        static let stockDetailLowStock = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeStock.detail.lowStock",
+            value: "Low stock",
+            comment: "Name of the low-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled."
+        )
+        static let stockDetailOutOfStock = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeStock.detail.outOfStock",
+            value: "Out of stock",
+            comment: "Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled."
+        )
+        static let stockDetailOnBackorder = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeStock.detail.onBackorder",
+            value: "On backorder",
+            comment: "Name of the on-backorder alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled."
         )
     }
 }

@@ -59,6 +59,24 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
         XCTAssertFalse(sut.gatewaySupportsAutomaticRefunds(context: makeContext(order: codOrder, paymentGateway: nil)))
     }
 
+    func test_paymentMethodDescription_when_interac_present_charge_then_includes_card_description() {
+        let details = WCPayCardPresentPaymentDetails.fake().copy(brand: .interac, last4: "1234")
+        let charge = WCPayCharge.fake().copy(paymentMethodDetails: .interacPresent(details: details))
+        let order = Order.fake().copy(paymentMethodTitle: "WooPayments")
+
+        let description = sut.paymentMethodDescription(for: order, charge: charge)
+
+        XCTAssertEqual(description, "via WooPayments •••• 1234 (Interac)")
+    }
+
+    func test_paymentMethodDescription_when_payment_method_title_is_empty_then_uses_manual_payment() {
+        let order = Order.fake().copy(paymentMethodTitle: "")
+
+        let description = sut.paymentMethodDescription(for: order, charge: nil)
+
+        XCTAssertEqual(description, "via manual payment")
+    }
+
     func test_refundComponents_aggregates_selected_product_quantity_and_selected_fees() {
         let item1 = orderItem(itemID: 10, quantity: 3)
         let item2 = orderItem(itemID: 20, quantity: 1)

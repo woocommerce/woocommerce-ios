@@ -253,17 +253,30 @@ private extension QRLoginCoordinator {
     /// system prompt on the redirect back. The QR "signing in" screen stays
     /// visible underneath the sheet.
     ///
-    /// On a captured callback the URL runs through the existing
-    /// `WordPressAuthenticator` handler — sign-in then completes and the app
-    /// swaps to the logged-in UI — and the coordinator finishes. If the merchant
-    /// dismisses the sheet instead, `handleMagicLinkCancelled` unwinds the QR
-    /// surface so they can retry.
+    /// On a captured callback the auth sheet is dismissed and the URL then runs
+    /// through the existing `WordPressAuthenticator` handler — sign-in completes
+    /// and the app swaps to the logged-in UI — and the coordinator finishes. If
+    /// the merchant dismisses the sheet instead, `handleMagicLinkCancelled`
+    /// unwinds the QR surface so they can retry.
     func openMagicLink(_ url: URL) {
         let window = navigationController.view.window
         let runner = QRLoginMagicLinkAuthRunner(
             anchor: window,
             onCallback: { [weak self] callbackURL in
-                if let rootViewController = window?.rootViewController {
+                guard let rootViewController = window?.rootViewController else {
+                    self?.finish()
+                    return
+                }
+                // `WordPressAuthenticator.openAuthenticationURL` presents the
+                // magic-link sign-in controller on whatever is topmost. The
+                // ASWebAuthenticationSession sheet is still being torn down when
+                // this callback fires, so handing the URL over right away would
+                // present that controller on the dismissing sheet — it would
+                // never reach the window and its navigation controller would
+                // deallocate before the login epilogue runs, tripping the
+                // `showLoginEpilogue` assertion. Dismiss the sheet first, then
+                // hand off from the now-stable root.
+                rootViewController.dismiss(animated: false) {
                     _ = WordPressAuthenticator.shared.handleWordPressAuthUrl(callbackURL,
                                                                              rootViewController: rootViewController)
                 }

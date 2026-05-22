@@ -120,7 +120,7 @@ struct POSRefundModalContentView: View {
     private var content: some View {
         switch state {
         case .loading:
-            POSRefundLoadingView()
+            POSRefundLoadingView(onBack: { dismissModal?() })
         case .loadingError:
             POSRefundErrorView(
                 title: errorStrings.loadTitle,

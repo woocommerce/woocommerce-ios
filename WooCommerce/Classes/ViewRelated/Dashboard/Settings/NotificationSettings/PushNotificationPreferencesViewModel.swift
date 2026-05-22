@@ -66,18 +66,21 @@ final class PushNotificationPreferencesViewModel {
     private let currencyFormatter: CurrencyFormatter
     private let currencySettings: CurrencySettings
     private let notificationCenter: UserNotificationsCenterAdapter
+    private let appStateNotificationCenter: NotificationCenter
 
     private var appStateSubscription: AnyCancellable?
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current()) {
+         notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
+         appStateNotificationCenter: NotificationCenter = .default) {
         self.siteID = siteID
         self.stores = stores
         self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.notificationCenter = notificationCenter
+        self.appStateNotificationCenter = appStateNotificationCenter
         observeAppState()
     }
 
@@ -193,7 +196,7 @@ private extension PushNotificationPreferencesViewModel {
     /// Re-checks the system permission whenever the app returns to the
     /// foreground so toggles flipped in iOS Settings are reflected immediately.
     func observeAppState() {
-        appStateSubscription = NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+        appStateSubscription = appStateNotificationCenter.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
                 Task { @MainActor in
                     await self?.checkNotificationPermission()

@@ -22,10 +22,14 @@ struct PushNotificationPreferencesViewModelTests {
                          currencySettings: CurrencySettings = Self.testCurrencySettings,
                          notificationCenter: UserNotificationsCenterAdapter = MockUserNotificationsCenterAdapter())
     -> PushNotificationPreferencesViewModel {
+        // Use a fresh `NotificationCenter` so simulator-posted system
+        // notifications don't queue work on the main actor and add contention
+        // to timing-sensitive concurrent-save tests.
         PushNotificationPreferencesViewModel(siteID: siteID,
                                              stores: stores,
                                              currencySettings: currencySettings,
-                                             notificationCenter: notificationCenter)
+                                             notificationCenter: notificationCenter,
+                                             appStateNotificationCenter: NotificationCenter())
     }
 
     private func makeStores() -> MockStoresManager {

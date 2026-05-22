@@ -39,9 +39,22 @@ struct POSCheckoutPaymentButtonsRow: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.medium) {
-            ForEach(Array(methods.enumerated()), id: \.element) { index, method in
-                button(for: method, isPrimary: index == 0)
+        Group {
+            if horizontalSizeClass == .compact {
+                // Phone POS layout: vertical stack with first-as-primary filled CTA.
+                // Driven by Robin's phone POS design — TTP / card reader / cash stacked
+                // vertically with the topmost method emphasized.
+                VStack(spacing: POSSpacing.medium) {
+                    buttonsForRow
+                }
+            } else {
+                // iPad layout: horizontal row, mirroring the original SecondaryPaymentButtons
+                // design before phone POS unified both idioms on a VStack. Restores the
+                // side-by-side button arrangement so the merchant sees Card reader / Cash /
+                // Other payment methods inline.
+                HStack(spacing: POSSpacing.medium) {
+                    buttonsForRow
+                }
             }
         }
         .padding(.horizontal, POSPadding.medium)
@@ -56,12 +69,23 @@ struct POSCheckoutPaymentButtonsRow: View {
     }
 
     @ViewBuilder
+    private var buttonsForRow: some View {
+        ForEach(Array(methods.enumerated()), id: \.element) { index, method in
+            button(for: method, isPrimary: index == 0)
+        }
+    }
+
+    @ViewBuilder
     private func button(for method: POSCheckoutPaymentMethod, isPrimary: Bool) -> some View {
         Button {
             onSelect(method)
         } label: {
             Text(title(for: method))
                 .font(.posBodyLargeBold)
+                // Stretch the label to the available width so HStack peers distribute
+                // evenly on iPad. No effect in the phone VStack where buttons are already
+                // full-width.
+                .frame(maxWidth: .infinity)
         }
         .layoutPriority(1)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)

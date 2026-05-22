@@ -698,8 +698,6 @@ private extension TotalsView {
             }
         case .markOrderAsPaid:
             paymentModel.startMarkAsPaidPayment()
-        case .otherPaymentMethods:
-            handleOtherPaymentMethodsTapped()
         }
     }
 

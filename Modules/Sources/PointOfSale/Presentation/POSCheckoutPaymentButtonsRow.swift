@@ -77,8 +77,6 @@ enum POSCheckoutPaymentMethodLocalization {
             return scanToPay
         case .markOrderAsPaid:
             return markOrderAsPaid
-        case .otherPaymentMethods:
-            return otherPaymentMethods
         }
     }
 
@@ -94,8 +92,6 @@ enum POSCheckoutPaymentMethodLocalization {
             return "pos-scan-to-pay-button"
         case .markOrderAsPaid:
             return "pos-mark-order-as-paid-button"
-        case .otherPaymentMethods:
-            return "pos-other-payment-methods-button"
         }
     }
 
@@ -124,12 +120,6 @@ enum POSCheckoutPaymentMethodLocalization {
         "pos.checkout.paymentMethod.markOrderAsPaid",
         value: "Mark order as paid",
         comment: "Title for the Mark-as-paid button in the POS checkout payment-method row."
-    )
-    static let otherPaymentMethods = NSLocalizedString(
-        "pos.checkout.paymentMethod.otherPaymentMethods",
-        value: "Other payment methods",
-        comment: "Title for the button that opens the Other Payment Methods sheet (Scan to Pay, Mark order as paid) " +
-            "in the POS checkout payment-method row on card-enabled stores."
     )
 }
 

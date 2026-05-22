@@ -10,9 +10,8 @@ import Foundation
 ///
 /// Ordering rules:
 /// - **Card-enabled stores** (`isPOSCardPaymentEnabled == true`): optional `.tapToPay`, optional
-///   `.cardReader`, always `.cashPayment`, then `.otherPaymentMethods` whenever any secondary
-///   method is feature-flagged on. The first slot renders as the primary (filled) button via
-///   `POSCheckoutPaymentButtonsRow`; the rest are outlined.
+///   `.cardReader`, then always `.cashPayment`. The first slot renders as the primary (filled)
+///   button via `POSCheckoutPaymentButtonsRow`; the rest are outlined.
 /// - **No-card stores** (`isPOSCardPaymentEnabled == false`): always `.cashPayment` first
 ///   (the primary CTA), followed by `.scanToPay` and `.markOrderAsPaid` if their feature flags
 ///   are enabled. Rendered by `POSCheckoutPromotedPaymentButtons` as a 1+n layout (Cash filled
@@ -51,15 +50,6 @@ enum POSCheckoutPaymentMethodResolver {
             methods.append(.cardReader)
         }
         methods.append(.cashPayment)
-        // Surface the "Other payment methods" sheet as a row slot whenever there's
-        // anything to put inside it. Without this, iPad merchants in non-TTP
-        // card-supported countries (FR, DE, IE, NL, AT, BE, FI, IT, LU, PT, ES, SG,
-        // NZ, AU, PR) have no way to reach Scan-to-Pay / Mark-as-Paid, since neither
-        // `useCashAndOtherMethodsBottomStrip` (TTP-tied) nor the promoted-no-card
-        // layout (`isPOSCardPaymentEnabled == false`) applies for them.
-        if isScanToPayEnabled || isMarkOrderAsPaidEnabled {
-            methods.append(.otherPaymentMethods)
-        }
         return methods
     }
 }

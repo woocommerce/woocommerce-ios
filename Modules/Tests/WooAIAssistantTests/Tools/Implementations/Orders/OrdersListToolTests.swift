@@ -16,6 +16,16 @@ struct OrdersListToolTests {
     }
 
     @Test
+    func test_orders_list_definition_documents_product_filter() {
+        // Given
+        let tool = OrdersListTool.make()
+
+        // Then
+        #expect(tool.definition.description.contains("prefer the `product` filter over `search`"))
+        #expect(tool.definition.description.contains("resolve the product id"))
+    }
+
+    @Test
     func test_orders_list_when_response_is_array_then_structured_summary_lists_ids_and_total_range() async throws {
         // Given
         let body = """
@@ -212,6 +222,46 @@ struct OrdersListToolTests {
 
         // Then
         #expect(await client.calls.first?.query["status"] == nil)
+    }
+
+    @Test
+    func test_orders_list_when_product_provided_then_query_carries_product_id() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersListTool.make()
+
+        // When
+        _ = await tool.executor(#"{"product": 3903}"#, client)
+
+        // Then
+        #expect(await client.calls.first?.query["product"] == "3903")
+    }
+
+    @Test
+    func test_orders_list_when_product_and_status_provided_then_query_carries_both() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersListTool.make()
+
+        // When
+        _ = await tool.executor(#"{"product": 3903, "status": "completed"}"#, client)
+
+        // Then
+        #expect(await client.calls.first?.query["product"] == "3903")
+        #expect(await client.calls.first?.query["status"] == "completed")
+    }
+
+    @Test
+    func test_orders_list_when_product_omitted_then_query_has_no_product_param() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersListTool.make()
+
+        // When
+        _ = await tool.executor("{}", client)
+
+        // Then
+        #expect(await client.calls.first?.query["product"] == nil)
     }
 
     @Test

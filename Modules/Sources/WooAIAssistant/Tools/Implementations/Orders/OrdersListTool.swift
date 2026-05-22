@@ -11,9 +11,12 @@ public enum OrdersListTool {
     private static let definition = AITool(
         name: name,
         description: """
-        List orders, optionally filtered by status, date range, or customer. \
-        Use to find specific orders, list pending fulfilment, or pull the most \
-        recent N. For latest/last single-order questions, use per_page=1, \
+        List orders, optionally filtered by status, date range, customer, or \
+        product. Use to find specific orders, list pending fulfilment, or pull \
+        the most recent N. For "orders that sold X" / "orders containing product \
+        X", prefer the `product` filter over `search`: resolve the product id \
+        with products_list first, then pass that id as `product`. \
+        For latest/last single-order questions, use per_page=1, \
         orderby=date, order=desc, then pass the result to `show_cards`. \
         For aggregate sales numbers prefer analytics_orders. For prose \
         questions about a specific order's payment method, customer email, \
@@ -45,6 +48,11 @@ public enum OrdersListTool {
                 "customer": .object([
                     "type": .string("integer"),
                     "description": .string("Customer ID; resolve via customers_list first.")
+                ]),
+                "product": .object([
+                    "type": .string("integer"),
+                    "description": .string("Product ID; returns orders containing that product. "
+                        + "Resolve the id via products_list first.")
                 ]),
                 "include": .object([
                     "type": .string("array"),
@@ -87,6 +95,7 @@ public enum OrdersListTool {
         let status: String?
         let search: String?
         let customer: Int?
+        let product: Int?
         let include: [Int]?
         let after: String?
         let before: String?
@@ -96,7 +105,7 @@ public enum OrdersListTool {
         let perPage: Int?
 
         enum CodingKeys: String, CodingKey {
-            case status, search, customer, include, after, before, orderby, order, page
+            case status, search, customer, product, include, after, before, orderby, order, page
             case perPage = "per_page"
         }
     }
@@ -112,6 +121,9 @@ public enum OrdersListTool {
             query["search"] = search
         }
         if let customer = args.customer { query["customer"] = String(customer) }
+        // WC `?product=` accepts a single integer (a comma list 400s) and matches
+        // orders whose line items reference that product or any of its variations.
+        if let product = args.product { query["product"] = String(product) }
         if let include = args.include, !include.isEmpty {
             query["include"] = include.map(String.init).joined(separator: ",")
         }
@@ -138,7 +150,7 @@ public enum OrdersListTool {
     }
 
     private static let allowedArguments: Set<String> = [
-        "status", "search", "customer", "include", "after", "before",
+        "status", "search", "customer", "product", "include", "after", "before",
         "orderby", "order", "page", "per_page"
     ]
 

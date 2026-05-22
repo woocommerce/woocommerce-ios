@@ -15,4 +15,10 @@ enum POSCheckoutPaymentMethod: Hashable {
     case cardReader
     /// Manually entered cash payment.
     case cashPayment
+    /// Opens the "Other payment methods" sheet exposing Scan-to-Pay and Mark-as-Paid
+    /// (whichever are feature-flag-on). Appended to the row whenever at least one
+    /// secondary method is enabled, so the merchant can always reach those flows from
+    /// the iPad-no-TTP card path where neither the TTP-companion strip nor a
+    /// promoted-no-card layout applies.
+    case otherPaymentMethods
 }

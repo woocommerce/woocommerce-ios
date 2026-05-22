@@ -60,6 +60,8 @@ struct POSCheckoutPaymentButtonsRow: View {
             return Localization.cardReader
         case .cashPayment:
             return Localization.cashPayment
+        case .otherPaymentMethods:
+            return Localization.otherPaymentMethods
         }
     }
 
@@ -71,6 +73,8 @@ struct POSCheckoutPaymentButtonsRow: View {
             return "pos-card-reader-button"
         case .cashPayment:
             return "pos-cash-payment-button"
+        case .otherPaymentMethods:
+            return "pos-other-payment-methods-button"
         }
     }
 }
@@ -92,6 +96,12 @@ private extension POSCheckoutPaymentButtonsRow {
             "pos.checkout.paymentMethod.cashPayment",
             value: "Cash payment",
             comment: "Title for the cash-payment button in the POS checkout payment-method row."
+        )
+        static let otherPaymentMethods = NSLocalizedString(
+            "pos.checkout.paymentMethod.otherPaymentMethods",
+            value: "Other payment methods",
+            comment: "Title for the button that opens the Other Payment Methods sheet (Scan to Pay, " +
+                "Mark order as paid) in the POS checkout payment-method row."
         )
     }
 }

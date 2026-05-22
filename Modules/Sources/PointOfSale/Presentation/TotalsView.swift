@@ -671,6 +671,15 @@ private extension TotalsView {
             methods.append(.cardReader)
         }
         methods.append(.cashPayment)
+        // Surface the Other-payment-methods sheet as a row slot whenever there's anything
+        // to put inside it. Without this, iPad merchants in non-TTP card-supported countries
+        // (FR, DE, IE, NL, AT, BE, FI, IT, LU, PT, ES, SG, NZ, AU, PR) have no way to reach
+        // Scan-to-Pay / Mark-as-Paid — `useCashAndOtherMethodsBottomStrip` is TTP-tied and
+        // there's no other entry point in `POSCheckoutPaymentButtonsRow`.
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay)
+            || featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid) {
+            methods.append(.otherPaymentMethods)
+        }
         return methods
     }
 
@@ -682,6 +691,8 @@ private extension TotalsView {
             paymentModel.connectCardReader()
         case .cashPayment:
             paymentModel.startCashPayment()
+        case .otherPaymentMethods:
+            handleOtherPaymentMethodsTapped()
         }
     }
 

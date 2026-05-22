@@ -22,7 +22,13 @@ struct TotalsView: View {
     // _should be_ showing, so that we can animate the change.
     // Default true so totals fields would be included in the view hiearchy on first render and animate with TotalsView
     @State private var isShowingTotalsFields: Bool = true
+    /// Drives the `POSOtherPaymentMethodsSheet` bottom sheet — used on phone (compact
+    /// horizontal size class).
     @State private var isShowingOtherPaymentMethodsSheet: Bool = false
+    /// Drives the `PointOfSaleSecondaryPaymentMethodsPopover` anchored popover — used on
+    /// iPad (regular horizontal size class) where routing UI should attach to its trigger
+    /// rather than take over the screen with a sheet. Restores the design from PR #17080.
+    @State private var isShowingOtherPaymentMethodsPopover: Bool = false
     /// True between the merchant tapping a hero / bottom-strip button and the
     /// payment state machine actually leaving idle. Disables the hero CTA and
     /// the bottom-strip buttons during that brief async window so a quick
@@ -118,7 +124,8 @@ struct TotalsView: View {
                     } else if !checkoutPaymentMethods.isEmpty {
                         POSCheckoutPaymentButtonsRow(
                             methods: checkoutPaymentMethods,
-                            onSelect: handlePaymentMethodSelection
+                            onSelect: handlePaymentMethodSelection,
+                            otherPaymentMethodsPopover: otherPaymentMethodsPopoverConfig
                         )
                     }
                 }
@@ -699,8 +706,37 @@ private extension TotalsView {
         case .markOrderAsPaid:
             paymentModel.startMarkAsPaidPayment()
         case .otherPaymentMethods:
-            handleOtherPaymentMethodsTapped()
+            // Idiom split: iPad uses an anchored popover (restored from PR #17080);
+            // phone keeps the bottom sheet from the phone-POS work. The button itself
+            // hosts the popover on iPad via `POSCheckoutPaymentButtonsRow.otherPaymentMethodsPopover`;
+            // taps on phone route here and present the existing sheet.
+            if horizontalSizeClass == .regular {
+                isShowingOtherPaymentMethodsPopover = true
+            } else {
+                handleOtherPaymentMethodsTapped()
+            }
         }
+    }
+
+    /// Popover config for the `.otherPaymentMethods` button in `POSCheckoutPaymentButtonsRow`.
+    /// Returns nil on phone (compact) so the row leaves the button bare and the parent's
+    /// bottom sheet handles the routing. Returns a config on iPad (regular) wiring the
+    /// existing `PointOfSaleSecondaryPaymentMethodsPopover` to its trigger.
+    private var otherPaymentMethodsPopoverConfig: POSCheckoutPaymentButtonsRow.OtherPaymentMethodsPopoverConfig? {
+        guard horizontalSizeClass == .regular else { return nil }
+        return POSCheckoutPaymentButtonsRow.OtherPaymentMethodsPopoverConfig(
+            isPresented: $isShowingOtherPaymentMethodsPopover,
+            isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
+            isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
+            onScanToPay: {
+                Task { @MainActor in
+                    await paymentModel.startScanToPayPayment()
+                }
+            },
+            onMarkOrderAsPaid: {
+                paymentModel.startMarkAsPaidPayment()
+            }
+        )
     }
 
     /// True when the merchant should see the Android-style Tap to Pay hero +

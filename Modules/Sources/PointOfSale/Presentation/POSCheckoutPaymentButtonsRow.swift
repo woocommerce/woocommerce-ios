@@ -14,7 +14,29 @@ struct POSCheckoutPaymentButtonsRow: View {
     let methods: [POSCheckoutPaymentMethod]
     let onSelect: (POSCheckoutPaymentMethod) -> Void
 
+    /// Optional popover wiring for the `.otherPaymentMethods` button.
+    ///
+    /// When non-nil, the popover is anchored to that specific button — used on iPad where
+    /// routing UI (picking which non-cash, non-card method to use) should attach to its
+    /// trigger rather than take over the screen with a bottom sheet. Phone callers leave
+    /// this nil and present a `POSOtherPaymentMethodsSheet` from the parent instead.
+    ///
+    /// The original iPad popover wiring was added by `024afec9f7` and lost in the phone
+    /// POS Part 2 refactor (`8500620a69`); this restores it without touching the phone path.
+    var otherPaymentMethodsPopover: OtherPaymentMethodsPopoverConfig?
+
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    /// Optional popover configuration for the `.otherPaymentMethods` button slot.
+    /// Holds the presentation binding + the secondary-method action callbacks; the
+    /// popover view itself is rebuilt per render so the gated flags can update.
+    struct OtherPaymentMethodsPopoverConfig {
+        let isPresented: Binding<Bool>
+        let isScanToPayAvailable: Bool
+        let isMarkOrderAsPaidAvailable: Bool
+        let onScanToPay: () -> Void
+        let onMarkOrderAsPaid: () -> Void
+    }
 
     var body: some View {
         VStack(spacing: POSSpacing.medium) {
@@ -50,6 +72,24 @@ struct POSCheckoutPaymentButtonsRow: View {
             $0.buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
         .accessibilityIdentifier(accessibilityIdentifier(for: method))
+        .if(shouldAttachOtherPaymentMethodsPopover(to: method)) { button in
+            button.popover(
+                isPresented: otherPaymentMethodsPopover!.isPresented,
+                attachmentAnchor: .point(.top),
+                arrowEdge: .bottom
+            ) {
+                PointOfSaleSecondaryPaymentMethodsPopover(
+                    isScanToPayAvailable: otherPaymentMethodsPopover!.isScanToPayAvailable,
+                    isMarkOrderAsPaidAvailable: otherPaymentMethodsPopover!.isMarkOrderAsPaidAvailable,
+                    onScanToPay: otherPaymentMethodsPopover!.onScanToPay,
+                    onMarkOrderAsPaid: otherPaymentMethodsPopover!.onMarkOrderAsPaid
+                )
+            }
+        }
+    }
+
+    private func shouldAttachOtherPaymentMethodsPopover(to method: POSCheckoutPaymentMethod) -> Bool {
+        method == .otherPaymentMethods && otherPaymentMethodsPopover != nil
     }
 
     private func title(for method: POSCheckoutPaymentMethod) -> String {

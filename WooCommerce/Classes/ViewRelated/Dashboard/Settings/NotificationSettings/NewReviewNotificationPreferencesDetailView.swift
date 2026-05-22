@@ -28,6 +28,9 @@ struct NewReviewNotificationPreferencesDetailView: View {
         // one routes through the discard handler.
         .navigationBarBackButtonHidden(true)
         .notice($viewModel.errorNotice)
+        .onAppear {
+            viewModel.detailDidAppear(notificationType: .newReview)
+        }
     }
 
     private var masterToggleSection: some View {

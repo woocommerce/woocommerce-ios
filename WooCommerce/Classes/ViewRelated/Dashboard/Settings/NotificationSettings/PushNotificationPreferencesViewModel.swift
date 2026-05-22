@@ -239,6 +239,8 @@ final class PushNotificationPreferencesViewModel {
     func setStoreReviewEnabled(_ newValue: Bool) {
         displayed = displayed.with(storeReview: .init(enabled: newValue,
                                                       maxRating: displayed.storeReview?.maxRating))
+        analytics.track(.notificationsDetailPushToggle(notificationType: .newReview,
+                                                       isEnabled: newValue))
     }
 
     /// Reverts only the new-review section of `displayed` to `lastSaved`.
@@ -251,6 +253,7 @@ final class PushNotificationPreferencesViewModel {
     }
 
     func setStoreReviewMaxRating(_ newValue: Int?) {
+        let previous = displayed.storeReview?.maxRating
         // Clamp any non-nil value to the server-supported `1...5` range; nil
         // stays nil ("all reviews").
         let normalized: Int? = {
@@ -260,6 +263,7 @@ final class PushNotificationPreferencesViewModel {
         rememberLastKnownMaxRating(from: normalized)
         displayed = displayed.with(storeReview: .init(enabled: isStoreReviewEnabled,
                                                       maxRating: normalized))
+        trackStoreReviewMaxRatingTransition(previous: previous, current: normalized)
     }
 
     func setStoreStockEnabled(_ newValue: Bool) {
@@ -353,6 +357,25 @@ private extension PushNotificationPreferencesViewModel {
         case let (oldValue?, newValue?) where oldValue != newValue:
             analytics.track(.notificationsDetailFilterValueChange(notificationType: .newOrder,
                                                                    filterValue: NSDecimalNumber(decimal: newValue).floatValue))
+        default:
+            break
+        }
+    }
+
+    /// Maps a transition on the new-review max rating to the analytics
+    /// event that best describes the user's intent. Mirrors the new-order
+    /// rules; see `trackStoreOrderMinAmountTransition`.
+    func trackStoreReviewMaxRatingTransition(previous: Int?, current: Int?) {
+        switch (previous, current) {
+        case (.some, nil):
+            analytics.track(.notificationsDetailFilterOptionSelect(notificationType: .newReview,
+                                                                    filterOption: .all))
+        case (nil, .some):
+            analytics.track(.notificationsDetailFilterOptionSelect(notificationType: .newReview,
+                                                                    filterOption: .filtered))
+        case let (oldValue?, newValue?) where oldValue != newValue:
+            analytics.track(.notificationsDetailFilterValueChange(notificationType: .newReview,
+                                                                   filterValue: Float(newValue)))
         default:
             break
         }

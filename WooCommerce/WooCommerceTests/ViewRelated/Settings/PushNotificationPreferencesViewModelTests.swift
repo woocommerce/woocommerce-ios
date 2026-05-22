@@ -1238,6 +1238,110 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_value_change"))
         #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_option_select"))
     }
+
+    // MARK: - New-review detail analytics
+
+    @Test func test_detailDidAppear_with_newReview_then_tracks_notifications_detail_view() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.detailDidAppear(notificationType: .newReview)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_view",
+                                            with: ["notification_type": "new_review"]))
+    }
+
+    @Test func test_setStoreReviewEnabled_when_true_then_tracks_push_toggle_with_isEnabled_true() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreReviewEnabled(true)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "new_review",
+                                                   "is_enabled": true]))
+    }
+
+    @Test func test_setStoreReviewEnabled_when_false_then_tracks_push_toggle_with_isEnabled_false() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreReviewEnabled(false)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "new_review",
+                                                   "is_enabled": false]))
+    }
+
+    @Test func test_setStoreReviewMaxRating_from_nil_to_value_then_tracks_filter_option_filtered() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreReviewMaxRating(2)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_option_select",
+                                            with: ["notification_type": "new_review",
+                                                   "filter_option": "filtered"]))
+    }
+
+    @Test func test_setStoreReviewMaxRating_from_value_to_nil_then_tracks_filter_option_all() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreReviewMaxRating(2)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreReviewMaxRating(nil)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_option_select",
+                                            with: ["notification_type": "new_review",
+                                                   "filter_option": "all"]))
+    }
+
+    @Test func test_setStoreReviewMaxRating_from_value_to_different_value_then_tracks_filter_value_change() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreReviewMaxRating(2)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreReviewMaxRating(4)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_value_change",
+                                            with: ["notification_type": "new_review",
+                                                   "filter_value": Float(4)]))
+    }
+
+    @Test func test_setStoreReviewMaxRating_with_same_value_then_does_not_track_filter_event() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreReviewMaxRating(2)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreReviewMaxRating(2)
+
+        // Then
+        #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_value_change"))
+        #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_option_select"))
+    }
 }
 
 /// Reference-typed box for capturing dispatched changes from a closure without

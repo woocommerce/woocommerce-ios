@@ -193,6 +193,18 @@ extension POSPaymentModel {
     func startPayment() async {
         DDLogInfo("🃏 [CardPayment] startPayment called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
 
+        // Card-present payments aren't available in this country (e.g. JP, MX, IN, BR, …)
+        // or are explicitly disabled in POS (CA). Skip everything in this method — both
+        // the TTP pre-connect and the BT auto-collect-on-connect setup go through the
+        // Stripe card-payments stack which triggers onboarding / gateway checks that fail
+        // for these countries. The merchant will check out via Cash / Scan-to-Pay /
+        // Mark-as-Paid only; those flows live in their own handlers and don't need any
+        // payment-session event subscription on the totals view.
+        guard isPOSCardPaymentEnabled else {
+            DDLogInfo("🃏 [CardPayment] startPayment skipped — POS card payments disabled for this store")
+            return
+        }
+
         subscribeToPaymentSessionEvents()
 
         if preferredConnectionMethod == .tapToPay {

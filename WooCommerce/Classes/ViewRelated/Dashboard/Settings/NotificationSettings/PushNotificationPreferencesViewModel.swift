@@ -1,5 +1,7 @@
+import Combine
 import Foundation
 import Observation
+import UIKit
 import Yosemite
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
@@ -20,6 +22,9 @@ final class PushNotificationPreferencesViewModel {
 
     private(set) var loadState: LoadState = .loading
 
+    /// `nil` while the system-level permission status is being read.
+    private(set) var notificationsEnabled: Bool?
+
     private(set) var displayed = PushNotificationPreferences()
     private(set) var lastSaved = PushNotificationPreferences()
 
@@ -30,6 +35,26 @@ final class PushNotificationPreferencesViewModel {
     var isStoreOrderEnabled: Bool { displayed.storeOrder?.enabled ?? false }
     var isStoreReviewEnabled: Bool { displayed.storeReview?.enabled ?? false }
     var isStoreStockEnabled: Bool { displayed.storeStock?.enabled ?? false }
+    var isStoreStockLowStock: Bool { displayed.storeStock?.lowStock ?? false }
+    var isStoreStockOutOfStock: Bool { displayed.storeStock?.outOfStock ?? false }
+    var isStoreStockOnBackorder: Bool { displayed.storeStock?.onBackorder ?? false }
+
+    var storeStockDetailText: String {
+        let enabledNames: [String] = [
+            (isStoreStockLowStock, Localization.stockDetailLowStock),
+            (isStoreStockOutOfStock, Localization.stockDetailOutOfStock),
+            (isStoreStockOnBackorder, Localization.stockDetailOnBackorder)
+        ].compactMap { isOn, name in isOn ? name : nil }
+
+        switch enabledNames.count {
+        case 0:
+            return Localization.stockDetailNone
+        case 3:
+            return Localization.stockDetailAll
+        default:
+            return ListFormatter.localizedString(byJoining: enabledNames)
+        }
+    }
 
     /// `nil` means "all orders".
     var storeOrderMinAmount: Decimal? { displayed.storeOrder?.minAmount }
@@ -54,20 +79,65 @@ final class PushNotificationPreferencesViewModel {
         return String.localizedStringWithFormat(Localization.ordersOverFormat, formatted)
     }
 
+    /// `nil` means "all reviews"; otherwise an in-range value (1...5) is the
+    /// maximum star rating that triggers a notification.
+    var storeReviewMaxRating: Int? { displayed.storeReview?.maxRating }
+
+    /// Last in-range rating seen, used to restore the value when the user
+    /// toggles "Only low-rated reviews" back on after switching to "All new reviews".
+    private(set) var lastKnownStoreReviewMaxRating: Int?
+
+    static let defaultStoreReviewMaxRating: Int = 2
+
+    var storeReviewDetailText: String {
+        guard let maxRating = storeReviewMaxRating, (1...5).contains(maxRating) else {
+            return Localization.allReviews
+        }
+        let format = maxRating == 1 ? Localization.reviewsBelowFormatSingular
+                                    : Localization.reviewsBelowFormatPlural
+        let count = NumberFormatter.localizedString(from: NSNumber(value: maxRating), number: .none)
+        return String.localizedStringWithFormat(format, count)
+    }
+
     var errorNotice: Notice?
 
     private let siteID: Int64
     private let stores: StoresManager
     private let currencyFormatter: CurrencyFormatter
     private let currencySettings: CurrencySettings
+    private let notificationCenter: UserNotificationsCenterAdapter
+    private let appStateNotificationCenter: NotificationCenter
+
+    private var appStateSubscription: AnyCancellable?
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
+         appStateNotificationCenter: NotificationCenter = .default) {
         self.siteID = siteID
         self.stores = stores
         self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.notificationCenter = notificationCenter
+        self.appStateNotificationCenter = appStateNotificationCenter
+        observeAppState()
+    }
+
+    func checkNotificationPermission() async {
+        let isEnabled = await withCheckedContinuation { continuation in
+            notificationCenter.loadAuthorizationStatus(queue: .main) { status in
+                switch status {
+                case .authorized:
+                    continuation.resume(returning: true)
+                case .denied, .notDetermined, .provisional, .ephemeral:
+                    continuation.resume(returning: false)
+                @unknown default:
+                    continuation.resume(returning: false)
+                }
+            }
+        }
+        notificationsEnabled = isEnabled
     }
 
     func load() async {
@@ -85,6 +155,7 @@ final class PushNotificationPreferencesViewModel {
             }
             lastSaved = preferences
             rememberLastKnownMinAmount(from: preferences.storeOrder?.minAmount)
+            rememberLastKnownMaxRating(from: preferences.storeReview?.maxRating)
             loadState = .loaded
         } catch {
             DDLogError("⛔️ Error loading push notification preferences for siteID=\(siteID): \(error)")
@@ -110,6 +181,7 @@ final class PushNotificationPreferencesViewModel {
             }
             lastSaved = server
             rememberLastKnownMinAmount(from: server.storeOrder?.minAmount)
+            rememberLastKnownMaxRating(from: server.storeReview?.maxRating)
             // Adopt the server's view so any clamped field (e.g. negative
             // threshold → nil) shows correctly without re-triggering
             // `hasUnsavedChanges`.
@@ -153,6 +225,27 @@ final class PushNotificationPreferencesViewModel {
                                                       maxRating: displayed.storeReview?.maxRating))
     }
 
+    /// Reverts only the new-review section of `displayed` to `lastSaved`.
+    /// Other sections are left untouched — their detail screens own their
+    /// own discard paths.
+    func discardStoreReviewEdits() {
+        displayed = PushNotificationPreferences(storeOrder: displayed.storeOrder,
+                                                storeReview: lastSaved.storeReview,
+                                                storeStock: displayed.storeStock)
+    }
+
+    func setStoreReviewMaxRating(_ newValue: Int?) {
+        // Clamp any non-nil value to the server-supported `1...5` range; nil
+        // stays nil ("all reviews").
+        let normalized: Int? = {
+            guard let value = newValue else { return nil }
+            return min(max(value, 1), 5)
+        }()
+        rememberLastKnownMaxRating(from: normalized)
+        displayed = displayed.with(storeReview: .init(enabled: isStoreReviewEnabled,
+                                                      maxRating: normalized))
+    }
+
     func setStoreStockEnabled(_ newValue: Bool) {
         let existing = displayed.storeStock
         displayed = displayed.with(storeStock: .init(enabled: newValue,
@@ -160,9 +253,53 @@ final class PushNotificationPreferencesViewModel {
                                                      outOfStock: existing?.outOfStock,
                                                      onBackorder: existing?.onBackorder))
     }
+
+    func setStoreStockLowStock(_ newValue: Bool) {
+        let existing = displayed.storeStock
+        displayed = displayed.with(storeStock: .init(enabled: existing?.enabled,
+                                                     lowStock: newValue,
+                                                     outOfStock: existing?.outOfStock,
+                                                     onBackorder: existing?.onBackorder))
+    }
+
+    func setStoreStockOutOfStock(_ newValue: Bool) {
+        let existing = displayed.storeStock
+        displayed = displayed.with(storeStock: .init(enabled: existing?.enabled,
+                                                     lowStock: existing?.lowStock,
+                                                     outOfStock: newValue,
+                                                     onBackorder: existing?.onBackorder))
+    }
+
+    func setStoreStockOnBackorder(_ newValue: Bool) {
+        let existing = displayed.storeStock
+        displayed = displayed.with(storeStock: .init(enabled: existing?.enabled,
+                                                     lowStock: existing?.lowStock,
+                                                     outOfStock: existing?.outOfStock,
+                                                     onBackorder: newValue))
+    }
+
+    /// Reverts only the stock section of `displayed` to `lastSaved`. Other
+    /// sections are left untouched — their detail screens own their own
+    /// discard paths.
+    func discardStoreStockEdits() {
+        displayed = PushNotificationPreferences(storeOrder: displayed.storeOrder,
+                                                storeReview: displayed.storeReview,
+                                                storeStock: lastSaved.storeStock)
+    }
 }
 
 private extension PushNotificationPreferencesViewModel {
+    /// Re-checks the system permission whenever the app returns to the
+    /// foreground so toggles flipped in iOS Settings are reflected immediately.
+    func observeAppState() {
+        appStateSubscription = appStateNotificationCenter.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                Task { @MainActor in
+                    await self?.checkNotificationPermission()
+                }
+            }
+    }
+
     /// Populates only the sections that differ between `baseline` and `target`.
     /// Whole-section comparison: any change inside a section emits the section
     /// as a complete object, matching the server's section-level merge.
@@ -178,6 +315,11 @@ private extension PushNotificationPreferencesViewModel {
     func rememberLastKnownMinAmount(from value: Decimal?) {
         guard let value, value > 0 else { return }
         lastKnownStoreOrderMinAmount = value
+    }
+
+    func rememberLastKnownMaxRating(from value: Int?) {
+        guard let value, (1...5).contains(value) else { return }
+        lastKnownStoreReviewMaxRating = value
     }
 }
 
@@ -254,6 +396,46 @@ extension PushNotificationPreferencesViewModel {
             "pushNotificationPreferencesViewModel.storeOrder.ordersOverFormat",
             value: "Orders over %1$@",
             comment: "Detail text for the New orders row when a threshold is set. %1$@ is the formatted currency amount, e.g. $500."
+        )
+        static let allReviews = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeReview.allReviews",
+            value: "All reviews",
+            comment: "Detail text for the New reviews row when notifications fire for every review."
+        )
+        static let reviewsBelowFormatSingular = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.singular",
+            value: "%1$@ star and below",
+            comment: "Detail text for the New reviews row when the maximum rating is 1. %1$@ is the formatted star count."
+        )
+        static let reviewsBelowFormatPlural = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.plural",
+            value: "%1$@ stars and below",
+            comment: "Detail text for the New reviews row when the maximum rating is 2-5. %1$@ is the formatted star count."
+        )
+        static let stockDetailAll = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeStock.detail.all",
+            value: "All stock alerts",
+            comment: "Detail text for the Stock row when all three stock sub-toggles (low, out of stock, on backorder) are enabled."
+        )
+        static let stockDetailNone = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeStock.detail.none",
+            value: "No alerts",
+            comment: "Detail text for the Stock row when the master toggle is on but none of the sub-toggles are enabled."
+        )
+        static let stockDetailLowStock = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeStock.detail.lowStock",
+            value: "Low stock",
+            comment: "Name of the low-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled."
+        )
+        static let stockDetailOutOfStock = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeStock.detail.outOfStock",
+            value: "Out of stock",
+            comment: "Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled."
+        )
+        static let stockDetailOnBackorder = NSLocalizedString(
+            "pushNotificationPreferencesViewModel.storeStock.detail.onBackorder",
+            value: "On backorder",
+            comment: "Name of the on-backorder alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled."
         )
     }
 }

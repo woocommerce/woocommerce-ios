@@ -2,18 +2,7 @@ import Foundation
 import CocoaLumberjackSwift
 import NetworkingCore
 
-/// Headless test driver for the WooCommerce AI Assistant. Wires the same
-/// `AgenticChatBackend`, REST tool registry, and safety policy that the
-/// app target ships with, but reads dependencies from caller-supplied
-/// credentials so smoke runs and unit tests can drive real conversations
-/// without `ServiceLocator`, `Networking`, or any SwiftUI surface.
-///
-/// Each harness instance owns one long-lived `AgenticChatBackend`, so successive
-/// `send(_:)` calls share its `TranscriptStore` and accumulate multi-turn memory
-/// just like the in-app chat surface. Each harness instance also owns its own
-/// `WpComJetpackAIJWTProvider`, so two concurrent instances against the same
-/// merchant will each mint a JWT (one extra mint per instance). Smoke runs
-/// typically have one instance.
+/// Headless test driver for the WooCommerce AI Assistant.
 public actor WooAssistantHeadless {
 
     // MARK: - Public types
@@ -23,36 +12,36 @@ public actor WooAssistantHeadless {
         public let siteID: Int64
         public let username: String
         public let appPassword: String
+        public let dotcomAccessToken: String
 
         public init(siteURL: String,
                     siteID: Int64,
                     username: String,
-                    appPassword: String) {
+                    appPassword: String,
+                    dotcomAccessToken: String) {
             self.siteURL = siteURL
             self.siteID = siteID
             self.username = username
             self.appPassword = appPassword
+            self.dotcomAccessToken = dotcomAccessToken
         }
     }
 
-    /// Loads credentials from `/tmp/woo-ai-smoke-store.env`. The smoke skill
-    /// stages this file from `~/.woo-ai-smoke/store.env` (the engineer-owned
-    /// source of truth) at run-start, because the iOS simulator process
-    /// sandboxes `~` to its own container and cannot read the host's home
-    /// directly. The trap cleanup deletes the `/tmp` copy at run-end.
-    /// Returns nil when the file is missing or any required key is absent so
-    /// smoke runs that lack credentials skip without failing the test build.
+    /// Returns nil when credentials are missing or incomplete so smoke runs skip without failing the build.
     public nonisolated static func credentialsFromStoreEnv() -> Credentials? {
         let path = "/tmp/woo-ai-smoke-store.env"
         guard let env = try? parseDotenv(at: URL(fileURLWithPath: path)) else { return nil }
         guard let siteURL = env["WOO_SITE_URL"],
               let siteIDString = env["WOO_SITE_ID"], let siteID = Int64(siteIDString),
               let username = env["WOO_USERNAME"],
-              let appPassword = env["WOO_APP_PASSWORD"] else { return nil }
+              let appPassword = env["WOO_APP_PASSWORD"],
+              let dotcomAccessToken = env["WOO_DOTCOM_ACCESS_TOKEN"],
+              !dotcomAccessToken.isEmpty else { return nil }
         return Credentials(siteURL: siteURL,
                            siteID: siteID,
                            username: username,
-                           appPassword: appPassword)
+                           appPassword: appPassword,
+                           dotcomAccessToken: dotcomAccessToken)
     }
 
     private static func parseDotenv(at url: URL) throws -> [String: String] {
@@ -120,22 +109,8 @@ public actor WooAssistantHeadless {
 
     public typealias ConfirmationResolver = @Sendable (PendingConfirmation) -> ConfirmationDecision
 
-    /// Plain-Swift snapshot of a single headless conversation turn. The harness
-    /// drains the orchestrator's event stream once and folds it into this shape so
-    /// XCTest / Swift Testing assertions can reach the merchant text, every tool
-    /// dispatch, every card payload, and every confirmation decision without
-    /// touching SwiftUI or Combine.
-    ///
-    /// All fields are JSON-serializable values (strings, structs of strings) so
-    /// downstream smoke runners can persist a turn record to disk and replay it
-    /// against stored baselines.
     public struct ConversationTurnResult: Sendable, Equatable {
 
-        /// One tool dispatch as observed by the harness. `argumentsJSON` is the
-        /// raw model-emitted argument string. `resultJSON` is the JSON payload
-        /// the loop fed back to the model on the next turn (or the cached-replay
-        /// envelope for de-duped calls). `errorMessage` carries a typed-error
-        /// reason when the dispatch failed before producing a payload.
         public struct ToolCallRecord: Sendable, Equatable {
             public let name: String
             public let argumentsJSON: String
@@ -153,11 +128,6 @@ public actor WooAssistantHeadless {
             }
         }
 
-        /// One card the orchestrator authorized for render via a `.cardRender`
-        /// event. `kind` and `toolName` carry the orchestrator's synthetic tool
-        /// name (e.g. `show_cards.order`, `analytics_orders`). `payloadJSON` is
-        /// the canonical JSON encoding of the rendered card payload, identical
-        /// to what `MessageCardHost` would receive in the SwiftUI surface.
         public struct CardRecord: Sendable, Equatable {
             public let kind: String
             public let toolName: String
@@ -170,10 +140,6 @@ public actor WooAssistantHeadless {
             }
         }
 
-        /// One safety-policy confirmation as observed by the harness. `decision`
-        /// reflects the resolver's verdict (`approved`, `declined`) or the policy
-        /// fallback when no resolver was supplied (`auto-approved`,
-        /// `auto-declined`).
         public struct ConfirmationRecord: Sendable, Equatable {
             public let toolName: String
             public let classification: String
@@ -191,22 +157,10 @@ public actor WooAssistantHeadless {
             }
         }
 
-        /// Concatenated assistant prose across the whole turn.
         public var assistantText: String
-
-        /// Every tool dispatched by the loop, in call order.
         public var toolCalls: [ToolCallRecord]
-
-        /// Every card the orchestrator authorized for render this turn, in
-        /// emission order, deduped first-wins by `(family, id)` to mirror the
-        /// SwiftUI surface. A turn whose tools never emit `.cardRender` (e.g. a
-        /// bare `orders_list` or `analytics_orders`) yields an empty list here.
         public var cards: [CardRecord]
-
-        /// Every confirmation surfaced and how it resolved.
         public var confirmations: [ConfirmationRecord]
-
-        /// Set when the orchestrator yielded `.failed`. Nil on a clean turn.
         public var failureMessage: String?
 
         public init(assistantText: String = "",
@@ -230,19 +184,14 @@ public actor WooAssistantHeadless {
 
     // MARK: - Init
 
-    /// Production wiring: real URLSession-backed transports talking to
-    /// `jetpack-ai-query` and the merchant's store.
+    /// Production wiring: URLSession-backed real transports for LLM + REST.
     public init(credentials: Credentials,
                 configuration: Configuration = .init()) {
         let normalizedSiteURL = Self.normalizeSiteURL(credentials.siteURL)
         let basicAuthHeader = Self.basicAuthHeader(username: credentials.username, appPassword: credentials.appPassword)
         let session = URLSession.shared
-        let jwtProvider = WpComJetpackAIJWTProvider(blogID: credentials.siteID) { _ in
-            try await Self.mintJetpackAIJWT(siteURL: normalizedSiteURL,
-                                            basicAuthHeader: basicAuthHeader,
-                                            session: session)
-        }
-        let chatService = JetpackAIQueryClient(jwtProvider: jwtProvider)
+        let tokenProvider = ConstantWPCOMTokenProvider(value: credentials.dotcomAccessToken)
+        let chatService = AIApiProxyChatService(tokenProvider: tokenProvider)
         let restClient = HeadlessURLSessionWCRESTClient(siteURL: normalizedSiteURL,
                                                         basicAuthHeader: basicAuthHeader,
                                                         session: session)
@@ -252,7 +201,6 @@ public actor WooAssistantHeadless {
                   restClient: restClient)
     }
 
-    // Internal seam used by the test target to inject a mock chat service and a stub REST client.
     init(credentials: Credentials,
          configuration: Configuration,
          chatService: AIChatService,
@@ -273,19 +221,11 @@ public actor WooAssistantHeadless {
 
     // MARK: - Driving a turn
 
-    /// Send one user prompt through the long-lived `AgenticChatBackend` and collect
-    /// the full turn result. Successive calls share the backend's transcript so
-    /// the harness sees the same multi-turn memory the in-app chat surface does.
-    /// Optionally override confirmation handling via `resolveConfirmation`; when
-    /// nil, `configuration.defaultConfirmationPolicy` applies.
+    /// Drives one turn through the long-lived `AgenticChatBackend` and folds the event stream into a `ConversationTurnResult`.
     public func send(_ message: String,
                      resolveConfirmation: ConfirmationResolver? = nil) async throws -> ConversationTurnResult {
         var result = ConversationTurnResult()
-        // Tool calls land via `.toolCallStarted` before their `.toolCallCompleted`; index by id so
-        // the completed event can attach the result to the same record without rebuilding the array.
         var toolCallIndexByID: [String: Int] = [:]
-        // The orchestrator emits a synthetic `.toolResult` immediately before each `.cardRender`.
-        // Buffer those payloads so the `.cardRender` arm can pick the right one up.
         var pendingCardPayloads: [String: PendingCardPayload] = [:]
         var cardKeysSeen: Set<SyntheticCardKey> = []
         let policy = configuration.defaultConfirmationPolicy
@@ -404,9 +344,7 @@ public actor WooAssistantHeadless {
         let entityID: String
     }
 
-    /// Parses the orchestrator's synthetic toolCallID `<callID>:card:<index>:<family>:<id>`.
-    /// Mirrors `MessageBubble.cardKey(fromSyntheticToolCallID:)` so the harness applies the
-    /// same `(family, id)` dedupe as the SwiftUI surface. Returns nil for any other shape.
+    /// Mirrors `MessageBubble.cardKey(fromSyntheticToolCallID:)` so the harness applies the same `(family, id)` dedupe as the SwiftUI surface.
     private static func parseSyntheticCardID(_ toolCallID: String) -> SyntheticCardKey? {
         let parts = toolCallID.split(separator: ":", omittingEmptySubsequences: false)
         guard let markerIndex = parts.indices.first(where: { parts[$0] == "card" }),
@@ -434,8 +372,7 @@ public actor WooAssistantHeadless {
     }
 
     private static func classificationString(for toolName: String) -> String {
-        // Trunk's safety surface only distinguishes safe vs unsafe; reaching the resolver path
-        // implies unsafe. Keep the string typed so future safety taxonomies plug in cleanly.
+        // Trunk's safety surface only distinguishes safe vs unsafe; reaching the resolver path implies unsafe.
         switch toolName {
         case OrdersBulkUpdateTool.name, ProductsBulkUpdateTool.name:
             return "unsafe-bulk"
@@ -464,48 +401,6 @@ public actor WooAssistantHeadless {
         return "Basic \(encoded)"
     }
 
-    /// POSTs to `<siteURL>/wp-json/jetpack/v4/jetpack-ai-jwt` over Basic auth and
-    /// extracts the minted token. The harness lives outside the Jetpack tunnel,
-    /// so the merchant's app password is the only viable credential.
-    private static func mintJetpackAIJWT(siteURL: URL,
-                                         basicAuthHeader: String,
-                                         session: URLSession) async throws -> String {
-        let endpoint = siteURL.appendingPathComponent("wp-json/jetpack/v4/jetpack-ai-jwt")
-        var request = URLRequest(url: endpoint)
-        request.httpMethod = "POST"
-        request.setValue(basicAuthHeader, forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
-
-        let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse else {
-            throw AssistantError(kind: .network, message: "Headless JWT mint received a non-HTTP response.")
-        }
-        if !(200..<300).contains(http.statusCode) {
-            let snippet = String(data: data.prefix(500), encoding: .utf8) ?? ""
-            throw AssistantError(kind: .auth,
-                                 code: String(http.statusCode),
-                                 message: "Headless JWT mint failed (HTTP \(http.statusCode)): \(snippet)")
-        }
-        struct Envelope: Decodable {
-            let token: String?
-            let jwt: String?
-        }
-        do {
-            let decoded = try JSONDecoder().decode(Envelope.self, from: data)
-            if let token = decoded.token, !token.isEmpty { return token }
-            if let jwt = decoded.jwt, !jwt.isEmpty { return jwt }
-        } catch {
-            DDLogError("WooAssistantHeadless mint envelope decode failed: \(error)")
-        }
-        let snippet = String(data: data.prefix(500), encoding: .utf8) ?? ""
-        throw AssistantError(kind: .auth,
-                             message: "Headless JWT mint expected `token` in response body, got: \(snippet)")
-    }
-
-    /// Production REST tool catalog. Mirrors what the app target wires into its
-    /// `AgenticLoopOrchestrator`. Tests inject a different list when they need
-    /// to simulate a single-tool subset.
     static func allTools() -> [RESTTool] {
         [
             OrdersListTool.make(),
@@ -528,13 +423,7 @@ public actor WooAssistantHeadless {
 
 // MARK: - URLSession-backed REST transport
 
-/// `WCRESTClient` that talks straight to a WooCommerce store's `/wp-json/...`
-/// endpoints using HTTP Basic auth. The harness deliberately avoids the
-/// `Networking` module so it can run outside the Jetpack tunnel.
-///
-/// Non-2xx responses are returned to the caller as `WCRESTResponse(statusCode: ...)`
-/// per the protocol contract, not thrown. The struct is fileprivate to keep the
-/// harness as the only consumer; the chat loop sees it through `WCRESTClient`.
+// Talks to a WooCommerce store's /wp-json/... endpoints using HTTP Basic auth.
 private struct HeadlessURLSessionWCRESTClient: WCRESTClient {
 
     private let siteURL: URL

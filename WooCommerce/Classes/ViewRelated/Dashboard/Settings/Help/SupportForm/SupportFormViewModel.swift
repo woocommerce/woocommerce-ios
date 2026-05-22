@@ -115,6 +115,7 @@ public final class SupportFormViewModel: ObservableObject {
          attachments: [ZendeskAttachment] = [],
          preselectedArea: Area? = nil,
          prefilledSubject: String? = nil,
+         prefilledSiteAddress: String? = nil,
          prefilledDescription: String? = nil,
          onTicketCreated: (() -> Void)? = nil,
          onTicketCreationFailed: ((Error) -> Void)? = nil) {
@@ -133,6 +134,9 @@ public final class SupportFormViewModel: ObservableObject {
         if let prefilledSubject {
             self.subject = prefilledSubject
         }
+        if let prefilledSiteAddress {
+            self.siteAddress = prefilledSiteAddress
+        }
         if let prefilledDescription {
             self.description = prefilledDescription
         }
@@ -145,7 +149,9 @@ public final class SupportFormViewModel: ObservableObject {
         requestZendeskIdentityIfNeeded()
 
         // Populates the site address field if there is any.
-        self.siteAddress = defaultSite?.url ?? ""
+        if siteAddress.isEmpty {
+            self.siteAddress = defaultSite?.url ?? ""
+        }
     }
 
     /// Selects an area.

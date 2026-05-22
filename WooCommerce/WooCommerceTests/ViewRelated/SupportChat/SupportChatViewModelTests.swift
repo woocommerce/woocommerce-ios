@@ -1037,7 +1037,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
-    @Test func canEscalateToHumanSupport_becomes_true_when_sending_message_fails() async {
+    @Test func canEscalateToHumanSupport_remains_false_when_sending_message_fails() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -1052,7 +1052,7 @@ struct SupportChatViewModelTests {
         sut.sendMessage()
 
         // Then
-        #expect(sut.canEscalateToHumanSupport == true)
+        #expect(sut.canEscalateToHumanSupport == false)
     }
 
     @Test func canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_until_proceedToChat() async {

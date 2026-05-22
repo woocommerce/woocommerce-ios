@@ -433,7 +433,6 @@ struct SupportDiagnosticsServiceTests {
 
     @Test func test_testNotifications_when_eligible_for_self_driven_PN_and_plugin_is_outdated_then_returns_failure_with_updatePlugin_action() async {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
         mockUserNotificationCenter.authorizationStatus = .authorized
         let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
@@ -444,12 +443,12 @@ struct SupportDiagnosticsServiceTests {
         let pluginVersionCheckerFactory = MockPluginVersionCheckerFactory(checker: pluginVersionChecker)
         let network = makeNetworkWithJetpackActive()
         let sut = makeSUT(
-            stores: stores,
             userNotificationCenter: mockUserNotificationCenter,
             pushNotesManager: mockPushNotesManager,
             pushNotificationEligibilityChecker: eligibilityChecker,
             pluginVersionCheckerFactory: pluginVersionCheckerFactory,
-            network: network
+            network: network,
+            isWPCom: false
         )
 
         // When
@@ -589,10 +588,11 @@ struct SupportDiagnosticsServiceTests {
         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking? = nil,
         pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil,
         network: MockNetwork? = nil,
+        isWPCom: Bool = true,
         siteID: Int64 = 123
     ) -> SupportDiagnosticsService {
         let site = Site.fake().copy(siteID: siteID)
-        let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
+        let session = SessionManager.makeForTesting(authenticated: true, isWPCom: isWPCom, defaultSite: site)
         return SupportDiagnosticsService(
             session: session,
             stores: stores ?? MockStoresManager(sessionManager: session),

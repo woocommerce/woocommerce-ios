@@ -19,8 +19,10 @@ struct POSRefundReviewView: View {
         VStack(spacing: POSSpacing.none) {
             headerView
             summarySection
+            Spacer(minLength: POSSpacing.large)
             buttonsSection
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
@@ -30,23 +32,9 @@ struct POSRefundReviewView: View {
 
 private extension POSRefundReviewView {
     var headerView: some View {
-        HStack {
-            Text(Localization.title)
-                .font(.posHeadingBold)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .lineLimit(1)
-                .minimumScaleFactor(horizontalSizeClass == .compact ? 0.7 : 1.0)
-            Spacer()
-            Button {
-                onClose()
-            } label: {
-                Text(Image(systemName: "xmark"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
-        }
-        .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        POSRefundNavigationHeader(title: Localization.title,
+                                  backAction: onEditRefund,
+                                  backAccessibilityLabel: Localization.backButtonAccessibilityLabel)
     }
 
     var summarySection: some View {
@@ -60,6 +48,7 @@ private extension POSRefundReviewView {
             refundReasonSection
         }
         .padding(.horizontal, POSPadding.xLarge)
+        .frame(maxWidth: .infinity)
     }
 
     var itemsAndTaxRows: some View {
@@ -121,12 +110,11 @@ private extension POSRefundReviewView {
             Button(Localization.continueButton, action: onContinue)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 
-            if let onEditRefund {
-                Button(Localization.editRefundButton, action: onEditRefund)
-                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-            }
+            Button(Localization.cancelButton, action: onClose)
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
+        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
+                                         maxWidth: .infinity)
     }
 
     func summaryRow(label: String, value: String, labelColor: Color, valueColor: Color) -> some View {
@@ -152,10 +140,10 @@ private extension POSRefundReviewView {
             comment: "Title for the refund review modal"
         )
 
-        static let closeButtonAccessibilityLabel = NSLocalizedString(
-            "pos.refundReviewView.closeButton.accessibilityLabel",
-            value: "Close",
-            comment: "Accessibility label for close button on refund review modal"
+        static let backButtonAccessibilityLabel = NSLocalizedString(
+            "pos.refundReviewView.backButton.accessibilityLabel",
+            value: "Back",
+            comment: "Accessibility label for the back button on the refund review screen"
         )
 
         static let itemsSubtotalFormat = NSLocalizedString(
@@ -218,10 +206,10 @@ private extension POSRefundReviewView {
             comment: "Button to continue with the refund"
         )
 
-        static let editRefundButton = NSLocalizedString(
-            "pos.refundReviewView.editRefundButton",
-            value: "Edit refund",
-            comment: "Button to go back and edit the refund items"
+        static let cancelButton = NSLocalizedString(
+            "pos.refundReviewView.cancelButton",
+            value: "Cancel",
+            comment: "Button to cancel and dismiss the refund review screen"
         )
     }
 }

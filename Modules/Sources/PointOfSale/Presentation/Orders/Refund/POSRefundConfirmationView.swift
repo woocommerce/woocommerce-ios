@@ -14,17 +14,21 @@ struct POSRefundConfirmationView: View {
     @Namespace private var paymentMessageNamespace
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        ZStack(alignment: .topLeading) {
+            VStack(spacing: POSSpacing.none) {
+                if isProcessing {
+                    processingSection
+                } else {
+                    Spacer(minLength: POSSpacing.large)
+                    confirmationMessageView
+                    Spacer(minLength: POSSpacing.large)
+                    buttonsSection
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
             if shouldShowHeader {
                 headerView
-            }
-            if shouldShowMessageView {
-                messageView
-            }
-            if isProcessing {
-                processingSection
-            } else {
-                buttonsSection
             }
         }
         .background(backgroundColor)
@@ -36,29 +40,26 @@ struct POSRefundConfirmationView: View {
 
 private extension POSRefundConfirmationView {
     var headerView: some View {
-        HStack {
-            Text(String(format: isProcessing ? Localization.processingTitleFormat : Localization.titleFormat, formattedRefundTotal))
-                .font(.posHeadingBold)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .lineLimit(1)
-                .minimumScaleFactor(horizontalSizeClass == .compact ? 0.7 : 1.0)
-            Spacer()
-            if let closeAction = headerCloseAction {
-                Button {
-                    closeAction()
-                } label: {
-                    Text(Image(systemName: "xmark"))
-                        .font(.posButtonSymbolLarge)
-                }
-                .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
-            }
-        }
-        .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        POSRefundNavigationHeader(backAction: headerBackAction,
+                                  backAccessibilityLabel: Localization.backButtonAccessibilityLabel)
     }
 
     var shouldShowHeader: Bool {
-        primaryBackgroundCardPresentMessageType == nil
+        guard primaryBackgroundCardPresentMessageType == nil else {
+            return false
+        }
+
+        if isProcessing {
+            switch submissionState {
+            case .retryableError, .nonRetryableError:
+                return false
+            case .idle, .loading, .processingReader, .displayingReaderMessage, .submitting, .submittingCardPresent, .completed:
+                return false
+            case .onboarding, .cardPresentEvent, .preparingReader, .waitingForCard:
+                return headerBackAction != nil
+            }
+        }
+        return true
     }
 
     var backgroundColor: Color {
@@ -79,12 +80,14 @@ private extension POSRefundConfirmationView {
             return .displayReaderMessage(.displayReaderMessage(message))
         case .idle, .loading, .onboarding, .preparingReader, .waitingForCard, .submitting, .retryableError, .nonRetryableError, .completed:
             return nil
+        case .submittingCardPresent:
+            return .processing(.processing)
         }
     }
 
-    var headerCloseAction: (() -> Void)? {
+    var headerBackAction: (() -> Void)? {
         guard isProcessing else {
-            return onClose
+            return onBack
         }
         return processingCancelAction
     }
@@ -98,46 +101,42 @@ private extension POSRefundConfirmationView {
         case .preparingReader(let cancel),
                 .waitingForCard(_, let cancel):
             return cancel
-        case .idle, .loading, .processingReader, .displayingReaderMessage, .submitting, .retryableError, .nonRetryableError, .completed:
+        case .idle, .loading, .processingReader, .displayingReaderMessage, .submitting, .submittingCardPresent,
+                .retryableError, .nonRetryableError, .completed:
             return nil
         }
     }
 
-    var messageView: some View {
-        Text(isProcessing
-             ? Localization.processingMessage
-             : String(format: Localization.confirmationMessageFormat,
-                      formattedRefundTotal,
-                      paymentMethodDescription))
-            .font(.posBodyLargeRegular())
-            .foregroundColor(Color.posOnSurface)
-            .multilineTextAlignment(.leading)
-            .padding(.horizontal, POSPadding.xLarge)
-    }
+    var confirmationMessageView: some View {
+        VStack(spacing: POSSpacing.small) {
+            Text(String(format: Localization.titleFormat, formattedRefundTotal))
+                .font(.posHeadingBold)
+                .foregroundColor(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
 
-    var shouldShowMessageView: Bool {
-        switch submissionState {
-        case .onboarding, .cardPresentEvent, .preparingReader, .waitingForCard, .processingReader, .displayingReaderMessage:
-            return false
-        case .idle, .loading, .submitting, .retryableError, .nonRetryableError, .completed:
-            return true
+            Text(String(format: Localization.confirmationQuestionFormat,
+                        formattedRefundTotal,
+                        paymentMethodDescription))
+                .font(.posBodyLargeRegular())
+                .foregroundColor(Color.posOnSurface)
+
+            Text(Localization.actionCannotBeUndone)
+                .font(.posBodyLargeRegular())
+                .foregroundColor(Color.posOnSurface)
         }
+        .multilineTextAlignment(.center)
+        .padding(.horizontal, POSPadding.xLarge)
+        .frame(maxWidth: POSRefundModalLayout.fullScreenContentMaxWidth)
     }
 
     @ViewBuilder
     var processingSection: some View {
         switch submissionState {
-        case .onboarding(let factory, let onCancel):
-            PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(
-                onboardingViewContainer: factory,
-                onDismissTap: onCancel))
-            .padding(POSPadding.xLarge)
+        case .onboarding:
+            loadingSection
         case .cardPresentEvent(let eventDetails):
             if let messageType = refundMessageType(for: eventDetails) {
                 cardPresentMessageView(messageType)
-            } else if let alertType = cardPresentAlertType(for: eventDetails) {
-                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-                    .padding(POSPadding.xLarge)
             } else {
                 loadingSection
             }
@@ -146,6 +145,7 @@ private extension POSRefundConfirmationView {
                                   message: Localization.preparingReaderMessage,
                                   animation: .init(namespace: paymentMessageNamespace))
             .padding(POSPadding.xLarge)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .waitingForCard(let inputMethods, _):
             cardPresentMessageView(.waitingForCard(.init(inputMethods: inputMethods)))
         case .processingReader:
@@ -164,25 +164,27 @@ private extension POSRefundConfirmationView {
                                onRetry: nil,
                                onCancel: dismiss,
                                onClose: dismiss)
+        case .submittingCardPresent:
+            cardPresentMessageView(.processing(.processing))
         case .idle, .loading, .submitting, .completed:
             loadingSection
         }
     }
 
     var loadingSection: some View {
-        VStack {
-            ProgressView()
-                .progressViewStyle(POSRefundModalLayout.progressViewStyle)
-        }
+        POSPaymentLoadingView(title: String(format: Localization.processingTitleFormat, formattedRefundTotal),
+                              message: Localization.processingMessage,
+                              animation: .init(namespace: paymentMessageNamespace))
         .frame(maxWidth: .infinity)
         .padding(POSPadding.xLarge)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     func cardPresentMessageView(_ messageType: POSRefundCardPresentMessageType) -> some View {
         POSRefundCardPresentMessageView(messageType: messageType,
                                         animation: .init(namespace: paymentMessageNamespace))
         .padding(POSPadding.xLarge)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(messageType.usesPrimaryBackground ? Color.posPrimary : Color.clear)
     }
 
@@ -197,6 +199,8 @@ private extension POSRefundConfirmationView {
         case .cardInserted:
             return .cardInserted(.cardInserted)
         case .processing:
+            return .processing(.processing)
+        case .paymentSuccess:
             return .processing(.processing)
         case .displayReaderMessage(let message):
             return .displayReaderMessage(.displayReaderMessage(message))
@@ -217,7 +221,7 @@ private extension POSRefundConfirmationView {
         case .scanningForReaders, .scanningFailed, .bluetoothRequired, .connectingToReader, .connectingFailed,
                 .connectingFailedNonRetryable, .connectingFailedUpdatePostalCode, .connectingFailedChargeReader,
                 .connectingFailedUpdateAddress, .selectSearchType, .foundReader, .foundMultipleReaders, .updateProgress,
-                .updateFailed, .updateFailedNonRetryable, .updateFailedLowBattery, .connectionSuccess, .paymentSuccess,
+                .updateFailed, .updateFailedNonRetryable, .updateFailedLowBattery, .connectionSuccess,
                 .locationRequestPreAlert, .locationRequired:
             return nil
         }
@@ -233,36 +237,16 @@ private extension POSRefundConfirmationView {
         }
     }
 
-    func cardPresentAlertType(for eventDetails: CardPresentPaymentEventDetails) -> PointOfSaleCardPresentPaymentAlertType? {
-        guard let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyle(
-            for: eventDetails,
-            dependencies: .init(
-                tryPaymentAgainBackToCheckoutAction: onBack,
-                nonRetryableErrorExitAction: onClose,
-                formattedOrderTotalPrice: formattedRefundTotal,
-                paymentCaptureErrorTryAgainAction: onBack,
-                paymentCaptureErrorNewOrderAction: onClose,
-                paymentIntentCreationErrorEditOrderAction: onBack,
-                dismissReaderConnectionModal: {}
-            )) else {
-            return nil
-        }
-
-        guard case .alert(let alertType) = presentationStyle else {
-            return nil
-        }
-        return alertType
-    }
-
     var buttonsSection: some View {
         VStack(spacing: POSSpacing.medium) {
             Button(Localization.confirmButton, action: onConfirm)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 
-            Button(Localization.backButton, action: onBack)
+            Button(Localization.cancelButton, action: onClose)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
+        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
+                                         maxWidth: .infinity)
     }
 }
 
@@ -341,16 +325,22 @@ private extension POSRefundConfirmationView {
             comment: "Title for the refund confirmation modal while processing. %@ is the formatted refund amount."
         )
 
-        static let closeButtonAccessibilityLabel = NSLocalizedString(
-            "pos.refundConfirmationView.closeButton.accessibilityLabel",
-            value: "Close",
-            comment: "Accessibility label for close button on refund confirmation modal"
+        static let backButtonAccessibilityLabel = NSLocalizedString(
+            "pos.refundConfirmationView.backButton.accessibilityLabel",
+            value: "Back",
+            comment: "Accessibility label for the back button on the refund confirmation screen"
         )
 
-        static let confirmationMessageFormat = NSLocalizedString(
-            "pos.refundConfirmationView.confirmationMessageFormat.1",
-            value: "Are you sure you wish to refund %1$@ %2$@? This action cannot be undone.",
-            comment: "Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description."
+        static let confirmationQuestionFormat = NSLocalizedString(
+            "pos.refundConfirmationView.confirmationQuestionFormat",
+            value: "Are you sure you wish to refund %1$@ %2$@?",
+            comment: "Confirmation question for the refund. %1$@ is the formatted amount, %2$@ is the payment method description."
+        )
+
+        static let actionCannotBeUndone = NSLocalizedString(
+            "pos.refundConfirmationView.actionCannotBeUndone",
+            value: "This action cannot be undone.",
+            comment: "Warning shown on the refund confirmation screen."
         )
 
         static let processingMessage = NSLocalizedString(
@@ -383,10 +373,10 @@ private extension POSRefundConfirmationView {
             comment: "Button to confirm and process the refund"
         )
 
-        static let backButton = NSLocalizedString(
-            "pos.refundConfirmationView.backButton",
-            value: "Back",
-            comment: "Button to go back to the previous screen"
+        static let cancelButton = NSLocalizedString(
+            "pos.refundConfirmationView.cancelButton",
+            value: "Cancel",
+            comment: "Button to cancel and dismiss the refund confirmation screen"
         )
     }
 }

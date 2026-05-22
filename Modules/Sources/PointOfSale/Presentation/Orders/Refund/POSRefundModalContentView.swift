@@ -365,7 +365,10 @@ struct POSRefundModalContentView: View {
             return false
         }
 
-        return paymentModel.cardReaderConnectionStatus == .disconnected
+        if case .connected = paymentModel.cardReaderConnectionStatus {
+            return false
+        }
+        return true
     }
 }
 

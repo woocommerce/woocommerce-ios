@@ -66,6 +66,74 @@ struct POSPaymentModelTests {
         #expect(service.collectPaymentWasCalled == true)
     }
 
+    @Test("reset cancels pending card collection while waiting for reader connection")
+    @MainActor
+    func reset_whenWaitingForReaderConnection_cancelsPendingCardCollection() async {
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.isPaymentSessionActive == true)
+
+        sut.reset()
+        #expect(sut.isPaymentSessionActive == false)
+        #expect(sut.paymentState == .idle)
+
+        await fireOnce { fire in
+            withObservationTracking {
+                _ = sut.cardReaderConnectionStatus
+            } onChange: {
+                Task { @MainActor in fire() }
+            }
+            service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        }
+
+        #expect(service.collectPaymentWasCalled == false)
+    }
+
+    @Test("reset invalidates a reader-connected callback already cancelling stale payment")
+    @MainActor
+    func reset_whenReaderConnectedCallbackIsCancelling_stopsCardCollection() async {
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        var releaseCancelPayment: (() -> Void)?
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+
+        await fireOnce { fire in
+            service.onCancelPaymentCalled = {
+                await withCheckedContinuation { continuation in
+                    releaseCancelPayment = {
+                        continuation.resume()
+                    }
+                    fire()
+                }
+            }
+            service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        }
+
+        sut.reset()
+        releaseCancelPayment?()
+        await Task.yield()
+        await Task.yield()
+
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.paymentState == .idle)
+    }
+
     // MARK: - Cash Payment
 
     @Test("startCashPayment transitions to cash immediately and cancels card payment in background")

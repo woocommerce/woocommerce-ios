@@ -247,6 +247,25 @@ struct PointOfSaleDashboardView: View {
                 navigationRouter.pushCash(orderTotal: totals.orderTotal)
             }
         }
+        // Mirror the tablet-side handlers from `tabletContentView` so Scan-to-Pay and
+        // Mark-as-Paid pushed via `POSOtherPaymentMethodsSheet` actually navigate on
+        // phone. Without these, the sheet's row callbacks flip the payment state but
+        // nothing observes the change here — the sheet dismisses and the merchant
+        // sees no follow-up screen.
+        .onChange(of: posModel.paymentState.scanToPay) { oldValue, newValue in
+            if newValue.isShowingQRCode, !oldValue.isShowingQRCode,
+               case .loaded(let totals) = posModel.orderState {
+                navigationRouter.pushScanToPay(orderTotal: totals.orderTotal)
+            }
+        }
+        .onChange(of: posModel.paymentState.markAsPaid) { oldValue, newValue in
+            if newValue == .confirming, oldValue == .idle,
+               case .loaded(let totals) = posModel.orderState {
+                navigationRouter.pushMarkAsPaid(orderTotal: totals.orderTotal)
+            } else if newValue == .paymentSuccess {
+                navigationRouter.popToRoot()
+            }
+        }
         .onChange(of: posModel.orderStage) { _, newStage in
             // Dismiss the cart sheet automatically when checkout starts so the user lands
             // on the totals view rather than seeing cart fading away.

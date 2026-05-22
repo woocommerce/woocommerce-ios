@@ -59,16 +59,15 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
         XCTAssertFalse(sut.gatewaySupportsAutomaticRefunds(context: makeContext(order: codOrder, paymentGateway: nil)))
     }
 
-    func test_requiresCardPresentRefund_when_charge_is_interacPresent_then_returns_true() {
-        let charge = WCPayCharge.fake().copy(paymentMethodDetails: .interacPresent(details: .fake()))
+    func test_requiresCardPresentRefund_only_requires_reader_for_interac_present_charges() {
+        let interacDetails = WCPayCardPresentPaymentDetails.fake().copy(brand: .interac, last4: "4242")
+        let visaDetails = WCPayCardPresentPaymentDetails.fake().copy(brand: .visa, last4: "1111")
+        let interacCharge = WCPayCharge.fake().copy(paymentMethodDetails: .interacPresent(details: interacDetails))
+        let visaCharge = WCPayCharge.fake().copy(paymentMethodDetails: .cardPresent(details: visaDetails))
 
-        XCTAssertTrue(sut.requiresCardPresentRefund(context: makeContext(charge: charge)))
-    }
-
-    func test_requiresCardPresentRefund_when_charge_is_not_interacPresent_then_returns_false() {
-        let charge = WCPayCharge.fake().copy(paymentMethodDetails: .card(details: .fake()))
-
-        XCTAssertFalse(sut.requiresCardPresentRefund(context: makeContext(charge: charge)))
+        XCTAssertTrue(sut.requiresCardPresentRefund(context: makeContext(charge: interacCharge)))
+        XCTAssertFalse(sut.requiresCardPresentRefund(context: makeContext(charge: visaCharge)))
+        XCTAssertFalse(sut.requiresCardPresentRefund(context: makeContext(charge: nil)))
     }
 
     func test_refundComponents_aggregates_selected_product_quantity_and_selected_fees() {

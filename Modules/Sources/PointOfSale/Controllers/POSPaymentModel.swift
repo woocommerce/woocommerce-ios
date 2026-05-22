@@ -34,21 +34,6 @@ final class POSPaymentModel {
         return false
     }
 
-    /// True while the silent Tap to Pay pre-connect is still in flight: the
-    /// merchant is on the TTP path and the reader hasn't moved out of
-    /// `.disconnected` yet. Drives the hero's "Preparing Tap to Pay…"
-    /// affordance so the merchant gets feedback during the (usually short)
-    /// pre-connect window.
-    var isPreparingTapToPay: Bool {
-        guard preferredConnectionMethod == .tapToPay else { return false }
-        // If a non-TTP session is in flight (BT picked via the sheet),
-        // we deliberately disconnected TTP — showing "Preparing Tap to Pay…"
-        // would mislead. The BT path drives its own UI from here.
-        if let currentPaymentMethod, currentPaymentMethod != .tapToPay { return false }
-        if case .disconnected = cardReaderConnectionStatus { return true }
-        return false
-    }
-
     /// The connection method of the currently active payment session, or nil
     /// between sessions. Distinct from `preferredConnectionMethod` (the POS
     /// session's default): the merchant can pick BT via the "Other payment
@@ -201,6 +186,21 @@ extension POSPaymentModel {
         subscribeToPaymentSessionEvents()
 
         if preferredConnectionMethod == .tapToPay {
+            // One-shot Bluetooth cleanup. Each new order on phone POS
+            // returns to the TTP hero — we do **not** auto-resume Bluetooth
+            // across orders, even if the BT reader is still attached from
+            // the previous transaction. If a merchant wants BT for the next
+            // order, they re-pick "Card reader" from the Other payment
+            // methods sheet. This deliberately keeps the state machine
+            // simple: every checkout entry begins from a clean TTP-pre-
+            // connect baseline, eliminating the mid-flow auto-resume and
+            // method-switch surface that produced the foundReader race +
+            // state-drift issues in earlier iterations.
+            if lastConnectedMethod == .bluetooth,
+               case .connected = cardReaderConnectionStatus {
+                DDLogInfo("🃏 [CardPayment] Phone POS one-shot BT: dropping BT reader before TTP pre-connect")
+                await cardPresentPaymentService.disconnectReader()
+            }
             // Awaiting an explicit method tap from the hero / sheet — leave the
             // gate true so transient Stripe events during pre-connect can't
             // advance the state machine. No `currentPaymentMethod` yet — the
@@ -225,26 +225,53 @@ extension POSPaymentModel {
     /// — but threaded through with the explicit method so the eventual collect
     /// targets the reader that's actually coming up.
     func startPaymentWithMethod(_ method: CardReaderConnectionMethod) async {
-        DDLogInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus)")
+        DDLogInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), "
+                  + "currentPaymentMethod: \(String(describing: currentPaymentMethod))")
 
-        // Defensive re-entry guard: only kick a fresh flow off the idle state.
-        // If a payment is already mid-flight (preparing, accepting, processing,
-        // success, error), a second call from a stray closure / restored
-        // subscription / SwiftUI re-render could clobber generation tracking
-        // and confuse the Stripe Terminal state machine. The hero / sheet
-        // buttons in `TotalsView` already double-tap-protect via the
-        // `isStartingPayment` gate; this is the model-side belt to that.
-        guard paymentState.card == .idle else {
-            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — card state is \(paymentState.card)")
+        // Same-method re-entry guard. Two different shapes:
+        // - BT: card state moves out of `.idle` during collection, so the
+        //   currentPaymentMethod check catches re-entry too.
+        // - TTP: we suppress intermediate card states so `paymentState.card`
+        //   stays `.idle` for the whole session — `currentPaymentMethod` is
+        //   the canonical "in flight" check.
+        if currentPaymentMethod == method {
+            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — \(method) session already active")
             return
         }
-        // On TTP we suppress the intermediate card states so `paymentState.card`
-        // stays `.idle` for the entire collection session — the guard above
-        // therefore can't catch re-entry there. `currentPaymentMethod` is the
-        // canonical "in flight" check for TTP.
-        if currentPaymentMethod == .tapToPay {
-            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — TTP session already active")
+        // Block re-entry while non-idle if there's no active method to switch
+        // *from* (stray closure / SwiftUI re-render after a terminal state).
+        if paymentState.card != .idle, currentPaymentMethod == nil {
+            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — non-idle card state with no active method")
             return
+        }
+
+        // Method-switch path: the merchant is switching from one active
+        // method to another (e.g. picking Tap to Pay from the Other Payment
+        // Methods sheet while a BT reader is mid-collection). Cancel the
+        // in-flight collection on the SDK before we tear down the reader —
+        // otherwise the new collect would race with a still-pending one and
+        // Stripe Terminal would reject it.
+        if let active = currentPaymentMethod, active != method {
+            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod switching \(active) -> \(method) — cancelling current payment first")
+            do {
+                try await cardPresentPaymentService.cancelPayment()
+            } catch {
+                DDLogError("🃏 [CardPayment] cancelPayment on method switch failed: \(error)")
+            }
+        }
+
+        // When switching to Bluetooth from a TTP-pre-connect-in-flight state
+        // (merchant tapped Card reader before the silent pre-connect had
+        // settled), **wait** for the pre-connect Task to finish before
+        // starting the BT scan. Crucially this is a wait, not a cancel —
+        // letting the SDK complete its in-flight `connectReader(.tapToPay)`
+        // cleanly avoids the foundReader race where a still-tearing-down
+        // TTP reader briefly appears in the subsequent BT discovery results
+        // (the "Found [hex]" flash we kept hitting). Cost: ~1-2s of perceived
+        // latency if the merchant taps Card reader very early on entry.
+        if method == .bluetooth, let task = tapToPayConnectTask {
+            DDLogInfo("🃏 [CardPayment] BT pick waiting for in-flight TTP pre-connect to finish")
+            _ = await task.value
         }
 
         if method == .tapToPay {
@@ -258,27 +285,43 @@ extension POSPaymentModel {
         currentPaymentMethod = method
         isAwaitingExplicitPaymentStart = false
 
-        // If a reader is connected via the *other* method, drop it before
-        // connecting via the chosen one. Stripe Terminal can only have one
-        // active reader; without the disconnect the new connect would be
-        // rejected. iPad never hits this branch (preferred is always
-        // bluetooth there), so the disconnect is scoped to the phone-with-TTP
-        // method-switch case.
-        if case .connected = cardReaderConnectionStatus {
-            if method == .bluetooth, preferredConnectionMethod == .tapToPay {
-                await cardPresentPaymentService.disconnectReader()
-            } else if method == .tapToPay, preferredConnectionMethod == .bluetooth {
-                await cardPresentPaymentService.disconnectReader()
-            }
+        // If a reader is connected via a *different* method than the one the
+        // merchant just picked, disconnect it first. Stripe Terminal can only
+        // hold one active reader, so the subsequent connect would be rejected
+        // otherwise. `lastConnectedMethod` is the canonical "what method is
+        // currently connected" signal — distinct from `preferredConnectionMethod`
+        // which is the POS-level default and doesn't track what's actually
+        // attached right now. (The previous check used `preferredConnectionMethod`
+        // and missed phone-POS-with-BT-currently-attached cases.)
+        if case .connected = cardReaderConnectionStatus, lastConnectedMethod != method {
+            await cardPresentPaymentService.disconnectReader()
         }
 
         if case .disconnected = cardReaderConnectionStatus {
-            Task { @MainActor [weak self] in
-                do {
-                    _ = try await self?.cardPresentPaymentService.connectReader(using: method)
-                    self?.lastConnectedMethod = method
-                } catch {
-                    DDLogWarn("🃏 [CardPayment] explicit connect via \(method) failed: \(error)")
+            // Skip the explicit connect if the silent TTP pre-connect is
+            // already running — status stays `.disconnected` for the entire
+            // duration of a Stripe Terminal `connectReader` call (there is no
+            // intermediate `.connecting` case), so the only way to know
+            // "connect already in flight" is the `tapToPayConnectTask` guard.
+            // Without this, tapping the hero CTA before pre-connect has
+            // finished fires a *second* concurrent `connectReader(.tapToPay)`,
+            // which the SDK can't reconcile — the connect errors out, status
+            // never reaches `.connected`, and the `startPaymentFlow`
+            // one-shot subscription that's about to be set up never fires.
+            // The merchant sees the CTA spin forever and the TTP modal never
+            // appears. We let the existing pre-connect Task drive the connect;
+            // `startPaymentFlow` will subscribe to `.connected` and collect as
+            // soon as the pre-connect Task completes.
+            if method == .tapToPay, tapToPayConnectTask != nil {
+                DDLogInfo("🃏 [CardPayment] tap during pre-connect — letting existing pre-connect drive the connect")
+            } else {
+                Task { @MainActor [weak self] in
+                    do {
+                        _ = try await self?.cardPresentPaymentService.connectReader(using: method)
+                        self?.lastConnectedMethod = method
+                    } catch {
+                        DDLogWarn("🃏 [CardPayment] explicit connect via \(method) failed: \(error)")
+                    }
                 }
             }
         }
@@ -372,7 +415,11 @@ extension POSPaymentModel {
     /// The generation check after the cancel guards against a newer
     /// `startPayment()` call that may have started during the await.
     private func cancelThenCollectCardPayment(generation: Int, using method: CardReaderConnectionMethod) async {
-        try? await cardPresentPaymentService.cancelPayment()
+        do {
+            try await cardPresentPaymentService.cancelPayment()
+        } catch {
+            DDLogError("🃏 [CardPayment] cancelPayment before collect failed: \(error)")
+        }
         DDLogInfo("🃏 [CardPayment] startPayment cancel completed — card state: \(paymentState.card), cash state: \(paymentState.cash)")
 
         guard startPaymentGeneration == generation else {
@@ -413,7 +460,11 @@ extension POSPaymentModel {
             await cardPresentPaymentService.cancelReconnection()
         }
 
-        try? await cardPresentPaymentService.cancelPayment()
+        do {
+            try await cardPresentPaymentService.cancelPayment()
+        } catch {
+            DDLogError("🃏 [CardPayment] cancelPayment before retry-collect failed: \(error)")
+        }
 
         guard case .connected = cardReaderConnectionStatus else {
             return
@@ -438,6 +489,25 @@ extension POSPaymentModel {
     func cancelReconnection() {
         Task { @MainActor [weak self] in
             await self?.cardPresentPaymentService.cancelReconnection()
+            // Belt-and-suspenders: the SDK's `cancelReconnection` has an
+            // early-return path when its internal `reconnectionCancelable` is
+            // already nil or completed. In that path the Hardware layer sends
+            // `.idle` to the reconnection-state subject but does *not* clear
+            // the connected-readers subject, so `cardReaderConnectionStatus`
+            // can stay at `.reconnecting` and the "Reconnecting reader…"
+            // screen never transitions away. Explicit disconnect forces the
+            // status to `.disconnected` so the UI can fall back to the TTP
+            // hero (or the iPad disconnect message).
+            //
+            // Re-check the status after the cancel `await` — if the reconnect
+            // actually completed during the cancel (a real race on the BT
+            // path, especially on iPad where BT is primary), bail without
+            // disconnecting. Tearing down a connection the merchant didn't
+            // ask to drop would surface as "I tapped Cancel reconnection and
+            // it disconnected my reader" — exactly the iPad regression
+            // samiuelson flagged.
+            guard case .reconnecting = self?.cardReaderConnectionStatus else { return }
+            await self?.cardPresentPaymentService.disconnectReader()
         }
     }
 
@@ -869,28 +939,59 @@ extension POSPaymentModel {
 extension POSPaymentModel {
     func observeReaderReconnection() {
         cardReaderDisconnection = cardPresentPaymentService.readerConnectionStatusPublisher
-            // `removeDuplicates` BEFORE the filter — Stripe Terminal can emit
-            // multiple `.disconnected` values in succession (e.g., during
-            // teardown / re-init), and without dedup the sink fires for each
-            // one. The downstream `startPayment` call kicks off another
-            // pre-connect Task each time, racing every previous one. (The
-            // `tapToPayConnectTask` coalesce on the pre-connect side already
-            // catches most of this, but de-duping here also avoids the
-            // wasted `startPayment` work.)
+            // Dedup before the switch — Stripe Terminal can emit multiple
+            // identical status values in succession (e.g., during teardown /
+            // re-init). Without this, a duplicate `.connected` re-kicks
+            // `startPayment` (BT auto-resume branch), and a duplicate
+            // `.disconnected` re-kicks the silent TTP pre-connect. Either
+            // races the previous run. The `tapToPayConnectTask` coalesce on
+            // the pre-connect side catches most of the pre-connect waste, but
+            // de-duping here also short-circuits the redundant `startPayment`
+            // hop entirely.
             .removeDuplicates()
-            .filter({ $0 == .disconnected })
-            .sink { [weak self] _ in
+            .sink { [weak self] status in
                 Task { @MainActor [weak self] in
                     guard let self else { return }
-                    // The auto-reconnect is for "reader fell off the device"
-                    // scenarios when no payment is in flight. If a session is
-                    // active (e.g. a BT-via-sheet pick on a TTP-default
-                    // device deliberately disconnected TTP first), the
-                    // session manages its own reconnect and we should stay
-                    // out of the way — otherwise we race the session's
-                    // chosen method and confuse the SDK.
+                    // Both branches below are scoped to "no active session" —
+                    // if a session is in flight (e.g. a BT-via-sheet pick on
+                    // a TTP-default device deliberately disconnected TTP
+                    // first), the session manages its own reconnect and we
+                    // should stay out of the way — otherwise we race the
+                    // session's chosen method and confuse the SDK.
                     guard self.currentPaymentMethod == nil else { return }
-                    await self.startPayment()
+                    switch status {
+                    case .disconnected:
+                        // "Reader fell off the device" — re-enter the
+                        // checkout default (silent TTP pre-connect on phone
+                        // POS, BT auto-collect on iPad).
+                        await self.startPayment()
+                    case .connected:
+                        // The reader came back up after a transient drop
+                        // (`.reconnecting -> .connected` or
+                        // `.disconnected -> .connected` via Settings). When
+                        // the merchant had previously committed to BT, kick
+                        // `startPayment` so the auto-resume path can re-run
+                        // collect — otherwise the totals view lands in the
+                        // dead state where `useTapToPayHeroLayout` is
+                        // suppressed (BT connected) but no `PaymentViewContent`
+                        // / bottom strip surfaces either, leaving the
+                        // merchant with no actionable UI.
+                        if self.lastConnectedMethod == .bluetooth {
+                            // Diagnostic: `startPayment` re-subscribes via
+                            // `subscribeToPaymentSessionEvents`'s
+                            // `paymentSessionCancellables.isEmpty` guard. If a
+                            // prior `deactivate()` cleared them and we somehow
+                            // miss the re-subscribe, the resumed collection
+                            // runs blind to events. Log the cancellables count
+                            // here so a "no events firing after reconnect"
+                            // bug is one Bartleby search away from the cause.
+                            DDLogDebug("🃏 [CardPayment] BT auto-resume re-kick — "
+                                       + "paymentSessionCancellables.count: \(self.paymentSessionCancellables.count)")
+                            await self.startPayment()
+                        }
+                    case .cancellingConnection, .disconnecting, .reconnecting:
+                        break
+                    }
                 }
             }
     }
@@ -1075,7 +1176,11 @@ private extension POSPaymentModel {
                 self.paymentState.card = .idle
                 self.cardPresentPaymentInlineMessage = nil
                 Task { @MainActor [weak self] in
-                    try? await self?.cardPresentPaymentService.cancelPayment()
+                    do {
+                        try await self?.cardPresentPaymentService.cancelPayment()
+                    } catch {
+                        DDLogError("🃏 [CardPayment] cancelPayment on cancelledOnReader failed: \(error)")
+                    }
                 }
             }
             .store(in: &paymentSessionCancellables)

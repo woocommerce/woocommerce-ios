@@ -51,7 +51,10 @@ struct POSBarcodeScannerSetup: View {
             flowManager.onDisappear()
         }
         .maximumScreenBrightness()
-        .posModalFullScreen(isCompactWidth)
+        // `.posModalFullScreen(isCompactWidth)` is intentionally not called here —
+        // `POSRootModalViewModifier` auto-detects compact width and OR's it into
+        // its `isFullScreen` check, so the explicit call would be a duplicated
+        // mechanism for the same outcome. See #17067 review feedback.
     }
 
     // MARK: - Computed Properties

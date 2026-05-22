@@ -5,6 +5,7 @@
 - [*] The Store Stats widget is now configurable: choose your size (small / medium / large), metrics, date range, store, and theme. [https://github.com/woocommerce/woocommerce-ios/pull/17170]
 - [*] New Trends widget for the lock screen, with a metric and date-range picker. [https://github.com/woocommerce/woocommerce-ios/pull/17160]
 - [**] Contact support now includes troubleshooting and AI help [https://github.com/woocommerce/woocommerce-ios/pull/17218]
+- [Internal] Phone POS Tap to Pay on iPhone: hero CTA stays tappable during silent pre-connect, Apple-compliant "Tap to Pay on iPhone" wording, Bluetooth as a one-shot opt-in from the Other payment methods sheet. Feature-flagged. [https://github.com/woocommerce/woocommerce-ios/pull/17152]
 
 
 24.8

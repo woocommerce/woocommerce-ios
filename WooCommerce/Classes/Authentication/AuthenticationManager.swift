@@ -1,6 +1,7 @@
 import Foundation
 import SafariServices
 import KeychainAccess
+import SwiftUI
 import WordPressAuthenticator
 import WordPressUI
 import Yosemite
@@ -61,6 +62,12 @@ class AuthenticationManager: Authentication {
     /// Keeps a reference to the use case
     private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
 
+    /// Keeps a reference to the QR-login coordinator while the flow is active.
+    private var qrLoginCoordinator: QRLoginCoordinator?
+
+    /// Availability gate for the QR-login prologue / deep link entry.
+    private let qrLoginAvailability: QRLoginAvailabilityProvider
+
     /// Injected for unit test purposes
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol?
 
@@ -72,7 +79,8 @@ class AuthenticationManager: Authentication {
          analytics: Analytics = ServiceLocator.analytics,
          abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
-         userDefaults: UserDefaults = .standard) {
+         userDefaults: UserDefaults = .standard,
+         qrLoginAvailability: QRLoginAvailabilityProvider = QRLoginAvailability()) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
@@ -80,6 +88,7 @@ class AuthenticationManager: Authentication {
         self.abTestVariationProvider = abTestVariationProvider
         self.switchStoreUseCase = switchStoreUseCase
         self.userDefaults = userDefaults
+        self.qrLoginAvailability = qrLoginAvailability
     }
 
     /// Initializes the WordPress Authenticator.
@@ -91,29 +100,76 @@ class AuthenticationManager: Authentication {
 
     /// Returns the Login Flow view controller.
     ///
+    /// When QR login is available, the primary "Log in" CTA on the standard prologue routes to
+    /// the QR-login prologue — pushed onto the same navigation stack — rather than the standard
+    /// site-address flow. The standard prologue stays as the app's first screen (spec §4.1).
+    ///
     func authenticationUI() -> UIViewController {
-        let loginViewController: UIViewController = {
-            let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
-                guard let self else { return }
-                // Resets Apple ID at the beginning of the authentication.
-                self.appleUserID = nil
-
+        let loginUI = WordPressAuthenticator.loginUI(onPrimaryLoginCTA: { [weak self] in
+            guard let self else { return false }
+            // Resets Apple ID at the beginning of the authentication.
+            self.appleUserID = nil
+            guard self.qrLoginAvailability.isAvailableForPrologue(),
+                  let navigationController = self.displayAuthenticatorIfLoggedOut?() else {
                 self.analytics.track(.loginPrologueContinueTapped)
-            })
-            guard let loginVC = loginUI else {
-                fatalError("Cannot instantiate login UI from WordPressAuthenticator")
+                return false
             }
-            return loginVC
-        }()
-        return loginViewController
+            // Track the click while the active flow is still `prologue`;
+            // the QR coordinator's `start()` switches it to `login_qr`.
+            DefaultQRLoginAnalyticsTracking().trackClick(.loginWithQR)
+            self.makeQRLoginCoordinator(mode: .camera, navigationController: navigationController).start()
+            return true
+        })
+        guard let loginVC = loginUI else {
+            fatalError("Cannot instantiate login UI from WordPressAuthenticator")
+        }
+        return loginVC
+    }
+
+    /// Builds a `QRLoginCoordinator` wired with the shared site-address
+    /// fallback and success handlers, and retains it as `qrLoginCoordinator`.
+    /// Starting it is the caller's responsibility.
+    @MainActor
+    private func makeQRLoginCoordinator(mode: QRLoginCoordinator.Mode,
+                                        navigationController: UINavigationController) -> QRLoginCoordinator {
+        let coordinator = QRLoginCoordinator(
+            mode: mode,
+            navigationController: navigationController,
+            onEnterSiteURL: { [weak navigationController] in
+                guard let navigationController else { return }
+                NavigateToEnterSite().execute(from: navigationController)
+            },
+            onShowHelp: { [weak self, weak navigationController] in
+                guard let self, let navigationController else { return }
+                let presenter = navigationController.topViewController ?? navigationController
+                self.presentSupport(from: presenter, sourceTag: .loginWithQRCode, siteURL: nil)
+            },
+            onSuccess: { [weak self, weak navigationController] in
+                guard let self, let navigationController else { return }
+                self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+            },
+            onFinished: { [weak self] in
+                // Release the coordinator once its UI is left for good, so a
+                // later deep link doesn't reuse a stale, dismissed instance.
+                self?.qrLoginCoordinator = nil
+            }
+        )
+        qrLoginCoordinator = coordinator
+        return coordinator
     }
 
     /// Handles an Authentication URL Callback. Returns *true* on success.
     ///
+    @MainActor
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
         if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
             return WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
                                                                         rootViewController: rootViewController)
+        }
+
+        if isQRLoginUrl(url),
+           let handled = handleQRLoginUrl(url) {
+            return handled
         }
 
         if isAppLoginUrl(url) {
@@ -180,6 +236,110 @@ class AuthenticationManager: Authentication {
     private func isAppLoginUrl(_ url: URL) -> Bool {
         let expectedPrefix = WooConstants.appLoginURLPrefix
         return url.absoluteString.hasPrefix(expectedPrefix)
+    }
+
+    /// Case-insensitive match for `woocommerce://qr-login` deep links
+    /// (spec §3 footer: scheme + host check is case-insensitive). Uses a
+    /// prefix check — matching `isAppLoginUrl` — because `URL.host` is
+    /// unreliable for custom-scheme URLs across Foundation versions.
+    private func isQRLoginUrl(_ url: URL) -> Bool {
+        url.absoluteString.lowercased().hasPrefix(WooConstants.qrLoginURLPrefix)
+    }
+
+    /// Handles an inbound `woocommerce://qr-login?...` URL by driving the QR
+    /// coordinator's deep-link flow.
+    ///
+    /// Returns `nil` when the feature isn't available — the caller falls
+    /// through to the standard handlers so the user lands on the regular
+    /// prologue instead of a no-op (spec §2.2).
+    ///
+    /// Token / grant lifetime is not managed here: clearing the URL from the
+    /// launch state is the OS / scene-delegate's job; this method makes a
+    /// best-effort to not retain the payload anywhere persistent.
+    @MainActor
+    private func handleQRLoginUrl(_ url: URL) -> Bool? {
+        // The merchant chose this path by opening the link, so we just need
+        // the remote flag (or debug override) on — bucket and camera are
+        // bypassed. `false` (flag off, or not loaded yet) falls through to
+        // the standard handlers.
+        guard qrLoginAvailability.isAvailableForDeepLink() else {
+            return nil
+        }
+
+        guard let navigationController = displayAuthenticatorIfLoggedOut?() else {
+            DDLogWarn("QR-login deep link: cannot display authenticator UI.")
+            return false
+        }
+
+        let payload = QRLoginPayloadParser().parse(url)
+        if let qrLoginCoordinator {
+            // Displaying the authenticator already built the QR-login UI
+            // and started a coordinator on the prologue. Reuse it for the
+            // deep-link payload — starting a second coordinator would
+            // orphan the first and leave a dead prologue underneath the
+            // number-match screen.
+            qrLoginCoordinator.presentDeepLink(payload: payload)
+        } else {
+            // The legacy authenticator UI is the root; start a standalone
+            // deep-link coordinator on its navigation stack.
+            makeQRLoginCoordinator(mode: .deepLink(payload: payload),
+                                   navigationController: navigationController).start()
+        }
+        return true
+    }
+
+    /// Handles a `woocommerce://qr-login` deep link that arrived while the
+    /// merchant is already signed in (spec §4.4). Shows a warning; confirming
+    /// signs the merchant out and resumes the QR sign-in, cancelling keeps the
+    /// current session. Returns `true` when the URL was a QR-login deep link
+    /// this method took over, `false` otherwise (the caller then drops it).
+    @MainActor
+    func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) -> Bool {
+        guard isQRLoginUrl(url) else {
+            return false
+        }
+        guard qrLoginAvailability.isAvailableForDeepLink() else {
+            return false
+        }
+        presentSessionReplaceWarning(for: url, from: rootViewController)
+        return true
+    }
+
+    @MainActor
+    private func presentSessionReplaceWarning(for url: URL, from presentingViewController: UIViewController) {
+        let analytics = DefaultQRLoginAnalyticsTracking()
+        analytics.setFlow(.loginQR)
+        analytics.trackStep(.qrSessionReplaceWarning)
+
+        let warningView = QRLoginSessionReplaceView(
+            onConfirm: { [weak self] in
+                analytics.trackClick(.submit)
+                presentingViewController.dismiss(animated: true) {
+                    self?.signOutAndResumeQRLogin(url: url)
+                }
+            },
+            onCancel: {
+                analytics.trackClick(.dismiss)
+                presentingViewController.dismiss(animated: true)
+            }
+        )
+        let hostingController = UIHostingController(rootView: warningView)
+        hostingController.modalPresentationStyle = .fullScreen
+        presentingViewController.present(hostingController, animated: true)
+    }
+
+    /// Signs the merchant out and resumes the QR sign-in. `deauthenticate()` is
+    /// best-effort local teardown that always leaves the app signed out, so the
+    /// QR sign-in can always resume. The deep link is re-handled on a later
+    /// main-actor turn, once `AppCoordinator` has reacted to the deauthentication
+    /// and installed the logged-out login UI — re-handling synchronously would
+    /// race that Combine-driven swap (spec §4.4).
+    @MainActor
+    private func signOutAndResumeQRLogin(url: URL) {
+        ServiceLocator.stores.deauthenticate()
+        Task { @MainActor [weak self] in
+            _ = self?.handleQRLoginUrl(url)
+        }
     }
 
     /// Injects `loggedOutAppSettings`

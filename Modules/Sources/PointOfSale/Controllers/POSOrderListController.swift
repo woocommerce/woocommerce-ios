@@ -28,6 +28,7 @@ protocol POSOrderListControllerProtocol {
     var refundActionAvailability: RefundActionAvailability { get }
     var refundSelectableItems: [POSRefundSelectableItem] { get }
     var currentRefundRequiresCardPresentRefund: Bool { get }
+    var hasModifiedRefundSelection: Bool { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
@@ -69,6 +70,7 @@ enum RefundActionAvailability {
     private(set) var isLoadingOrderRefunds = false
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
+    private(set) var hasModifiedRefundSelection = false
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
@@ -264,6 +266,8 @@ enum RefundActionAvailability {
         selectedOrder = order
         isLoadingOrderRefunds = false
         selectedOrderRefundsState = .idle
+        refundSelectableItems = []
+        hasModifiedRefundSelection = false
     }
 
     @MainActor
@@ -319,6 +323,7 @@ enum RefundActionAvailability {
         }
 
         refundSelectableItems = preparation.selectableItems
+        hasModifiedRefundSelection = false
 
         return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
     }
@@ -328,20 +333,24 @@ enum RefundActionAvailability {
     func toggleRefundItemSelection(at index: Int) {
         guard refundSelectableItems.indices.contains(index) else { return }
         refundSelectableItems[index].isSelected.toggle()
+        hasModifiedRefundSelection = true
     }
 
     @MainActor
     func clearRefundSelection() {
         refundSelectableItems = []
+        hasModifiedRefundSelection = false
     }
 
     @MainActor
     func toggleAllRefundItemsSelection() {
+        guard !refundSelectableItems.isEmpty else { return }
         let allSelected = !refundSelectableItems.isEmpty && refundSelectableItems.allSatisfy { $0.isSelected }
         let newSelectionState = !allSelected
         for index in refundSelectableItems.indices {
             refundSelectableItems[index].isSelected = newSelectionState
         }
+        hasModifiedRefundSelection = true
     }
 
     // MARK: - Refund Review Data Preparation

@@ -13,6 +13,7 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     var refundActionAvailability: RefundActionAvailability = .available
     var refundSelectableItems: [POSRefundSelectableItem] = []
     var currentRefundRequiresCardPresentRefund = false
+    var hasModifiedRefundSelection = false
     var updateOrderCalled = false
     var spyUpdateOrderID: Int64?
     var shouldThrowError = false
@@ -29,6 +30,8 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
+        refundSelectableItems = []
+        hasModifiedRefundSelection = false
     }
 
     func updateOrder(orderID: Int64) async throws {
@@ -51,19 +54,30 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
         refundSelectableItems = order.lineItems.map {
             POSRefundSelectableItem(from: $0, isSelected: true, index: 0)
         }
+        hasModifiedRefundSelection = false
         return stubStartRefundFlowResult
     }
 
     func toggleRefundItemSelection(at index: Int) {
         guard refundSelectableItems.indices.contains(index) else { return }
         refundSelectableItems[index].isSelected.toggle()
+        hasModifiedRefundSelection = true
     }
 
     func clearRefundSelection() {
         refundSelectableItems = []
+        hasModifiedRefundSelection = false
     }
 
-    func toggleAllRefundItemsSelection() {}
+    func toggleAllRefundItemsSelection() {
+        guard !refundSelectableItems.isEmpty else { return }
+        let allSelected = refundSelectableItems.allSatisfy { $0.isSelected }
+        let newSelectionState = !allSelected
+        for index in refundSelectableItems.indices {
+            refundSelectableItems[index].isSelected = newSelectionState
+        }
+        hasModifiedRefundSelection = true
+    }
 
     // MARK: - Refund Review Data
 

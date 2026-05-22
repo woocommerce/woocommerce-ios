@@ -87,6 +87,15 @@ public enum WooConstants {
     static let appLoginURLPrefix = "woocommerce://app-login"
     static let appMagicLoginURLPrefix = "woocommerce://magic-login"
 
+    /// QR login deep link prefix
+    ///
+    static let qrLoginURLPrefix = "woocommerce://qr-login"
+
+    /// Web page the merchant opens on a computer to display a login QR code.
+    /// Surfaced (and copied to the clipboard) from the QR-login prologue.
+    ///
+    static let qrLoginInstructionsURL = "https://woo.com/mobilelogin"
+
     static let wooPaymentsPluginPath = "woocommerce-payments/woocommerce-payments.php"
 
     /// Key used to identify track events sent between the phone and the watch.

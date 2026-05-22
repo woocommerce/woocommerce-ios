@@ -91,7 +91,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(zendesk.latestInvokedTags.isEmpty)
     }
 
-    @Test func handleEscalation_when_transcript_consent_contact_form_selected_then_shows_form_without_prefilled_transcript() {
+    @Test func handleEscalation_when_transcript_consent_contact_form_selected_then_shows_form_without_prefilled_transcript() throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -114,9 +114,9 @@ struct SupportEscalationCoordinatorTests {
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
-        let viewModel = supportFormViewModel(from: navigationController)
-        #expect(viewModel?.description == "")
-        #expect(viewModel?.subject == SupportFormViewModel.subject(for: .mobileApp))
+        let viewModel = try #require(supportFormViewModel(from: navigationController))
+        #expect(viewModel.description.isEmpty)
+        #expect(viewModel.subject == SupportFormViewModel.subject(for: .mobileApp))
     }
 
     @Test func handleEscalation_when_transcript_consent_cancelled_then_takes_no_action() {
@@ -499,7 +499,7 @@ private extension SupportEscalationCoordinatorTests {
                          zendesk: MockZendeskManager,
                          analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider(),
                          stores: StoresManager = MockStoresManager(
-                            sessionManager: .makeForTesting(authenticated: true, defaultSite: SupportEscalationCoordinatorTests.makeSite())
+                            sessionManager: .makeForTesting(authenticated: true, defaultSite: Site.fake().copy(url: "https://example.com"))
                          ),
                          transcriptConsentPresenter: SupportEscalationCoordinator.TranscriptConsentPresenter? =
                             SupportEscalationCoordinatorTests.sendTicketConsentPresenter) -> SupportEscalationCoordinator {

@@ -378,36 +378,12 @@ final class SupportDiagnosticsService {
 
         // Sub-check 2: if not eligible for Woo-driven PN
         if !isEligibleForWooDrivenPushNotifications {
-            // Subcheck 2.1: does device have Jetpack?
+            // Subcheck 1: does device have Jetpack?
             if !isJetpackPluginActive {
                 DDLogError("SupportDiagnostics: ❌ Jetpack not active")
                 return Failure(errorMessage: Localization.Error.jetpackNotActive, suggestedAction: .setupJetpack)
-            } else if pushNotesManager.deviceID == nil { // Subcheck 2.2: registered with WPCom?
-                DDLogError("SupportDiagnostics: ❌ device is not registered")
-                return Failure(errorMessage: Localization.Error.deviceNotRegistered,
-                               suggestedAction: .registerDevice)
-            } else {
-                // Sub-check 2.3: WPCom notification config
-                let configResult = await checkNotificationConfig()
-                switch configResult {
-                case .success:
-                    DDLogInfo("SupportDiagnostics: ✅ Notification settings configured")
-                    return nil
-                case .failure(let configError):
-                    DDLogInfo("SupportDiagnostics: ⚠️ Notification config issue: \(configError)")
-                    switch configError {
-                    case .deviceNotRegistered:
-                        return Failure(errorMessage: Localization.Error.deviceNotRegistered,
-                                       suggestedAction: .registerDevice)
-                    case .orderNotificationsDisabled(let settings):
-                        return Failure(errorMessage: Localization.Error.orderNotificationsDisabled,
-                                       suggestedAction: .enableOrderNotifications(settings: settings))
-                    case .requestFailed(let error):
-                        return Failure(errorMessage: Localization.Error.notificationConfigCheckFailed,
-                                       technicalDetails: error.formattedTechnicalDetails)
-                    }
-                }
             }
+            return await checkWPComPushNotifications()
         }
 
         // Sub-check 3: Self-driven push notifications
@@ -417,7 +393,11 @@ final class SupportDiagnosticsService {
                 return failure
             }
             return nil
+        } else if isJetpackPluginActive, !stores.isAuthenticatedWithoutWPCom {
+            // User has Jetpack and authenticated with WPCom
+            return await checkWPComPushNotifications()
         } else {
+            // Check requirements for Woo PNs
             do {
                 let minimumVersion = WooPluginRequirements.minimumVersion
                 let pluginVersionChecker = pluginVersionCheckerFactory.makeChecker(
@@ -441,6 +421,36 @@ final class SupportDiagnosticsService {
                 DDLogError("SupportDiagnostics: ❌ device is not registered")
                 return Failure(errorMessage: Localization.Error.deviceNotRegistered,
                                suggestedAction: .registerDevice)
+            }
+        }
+    }
+
+    private func checkWPComPushNotifications() async -> Failure? {
+        // Registered with WPCom?
+        if pushNotesManager.deviceID == nil {
+            DDLogError("SupportDiagnostics: ❌ device is not registered")
+            return Failure(errorMessage: Localization.Error.deviceNotRegistered,
+                           suggestedAction: .registerDevice)
+        } else {
+            // WPCom notification config
+            let configResult = await checkNotificationConfig()
+            switch configResult {
+            case .success:
+                DDLogInfo("SupportDiagnostics: ✅ Notification settings configured")
+                return nil
+            case .failure(let configError):
+                DDLogInfo("SupportDiagnostics: ⚠️ Notification config issue: \(configError)")
+                switch configError {
+                case .deviceNotRegistered:
+                    return Failure(errorMessage: Localization.Error.deviceNotRegistered,
+                                   suggestedAction: .registerDevice)
+                case .orderNotificationsDisabled(let settings):
+                    return Failure(errorMessage: Localization.Error.orderNotificationsDisabled,
+                                   suggestedAction: .enableOrderNotifications(settings: settings))
+                case .requestFailed(let error):
+                    return Failure(errorMessage: Localization.Error.notificationConfigCheckFailed,
+                                   technicalDetails: error.formattedTechnicalDetails)
+                }
             }
         }
     }

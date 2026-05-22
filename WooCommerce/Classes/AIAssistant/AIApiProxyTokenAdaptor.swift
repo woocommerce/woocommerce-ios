@@ -4,19 +4,21 @@ import WooAIAssistant
 
 struct AIApiProxyTokenAdaptor: WPCOMTokenProviding {
 
-    private let credentials: Credentials?
+    private let authToken: String?
 
     init(credentials: Credentials?) {
-        self.credentials = credentials
+        if case .wpcom(_, let authToken, _) = credentials {
+            self.authToken = authToken
+        } else {
+            self.authToken = nil
+        }
     }
 
     func token() async throws -> String {
-        switch credentials {
-        case .wpcom(_, let authToken, _):
-            return authToken
-        case .applicationPassword, .wporg, nil:
+        guard let authToken else {
             throw AssistantError(kind: .auth, message: Localization.missingWPCOMCredentials)
         }
+        return authToken
     }
 
     private enum Localization {

@@ -26,7 +26,7 @@ public struct AIApiProxyChatService: AIChatService {
          sleep: @escaping Sleep) {
         self.tokenProvider = tokenProvider
         self.endpoint = endpoint ?? Self.defaultEndpoint()
-        self.streamingTransport = streamingTransport ?? AIChatTransport().stream
+        self.streamingTransport = streamingTransport ?? { try await AIChatTransport().stream($0) }
         self.sleep = sleep
     }
 

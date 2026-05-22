@@ -532,6 +532,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func refreshOrders() async {}
     func selectOrder(_ order: POSOrder?) {}
     func updateOrder(orderID: Int64) async throws {}
+    func preloadRefundDetails() async {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
     func startRefundFlow() async -> StartRefundFlowResult { .hasItemsToRefund }

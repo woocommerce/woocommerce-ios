@@ -43,6 +43,8 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
         }
     }
 
+    func preloadRefundDetails() async {}
+
     func searchOrders(searchTerm: String) async {}
 
     func clearSearchOrders() {}

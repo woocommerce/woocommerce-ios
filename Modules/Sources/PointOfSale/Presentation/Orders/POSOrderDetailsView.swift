@@ -179,6 +179,9 @@ struct POSOrderDetailsView: View {
             guard shouldShowDedicatedRefundsSection else { return }
             await orderListModel.ordersController.loadOrderRefunds()
         }
+        .task {
+            await orderListModel.ordersController.preloadRefundDetails()
+        }
         .onAppear {
             if autoStartNextRefundFlow {
                 autoStartNextRefundFlow = false

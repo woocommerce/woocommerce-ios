@@ -20,7 +20,8 @@ struct PushNotificationPreferencesViewModelTests {
 
     private func makeSUT(stores: MockStoresManager,
                          currencySettings: CurrencySettings = Self.testCurrencySettings,
-                         notificationCenter: UserNotificationsCenterAdapter = MockUserNotificationsCenterAdapter())
+                         notificationCenter: UserNotificationsCenterAdapter = MockUserNotificationsCenterAdapter(),
+                         analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider())
     -> PushNotificationPreferencesViewModel {
         // Use a fresh `NotificationCenter` so simulator-posted system
         // notifications don't queue work on the main actor and add contention
@@ -29,7 +30,8 @@ struct PushNotificationPreferencesViewModelTests {
                                              stores: stores,
                                              currencySettings: currencySettings,
                                              notificationCenter: notificationCenter,
-                                             appStateNotificationCenter: NotificationCenter())
+                                             appStateNotificationCenter: NotificationCenter(),
+                                             analytics: WooAnalytics(analyticsProvider: analyticsProvider))
     }
 
     private func makeStores() -> MockStoresManager {
@@ -80,6 +82,43 @@ struct PushNotificationPreferencesViewModelTests {
 
         // Then
         #expect(sut.loadState == .error)
+    }
+
+    @Test func test_load_when_remote_fails_then_notifications_settings_load_failed_is_tracked() async {
+        // Given
+        struct AnyError: Error {}
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.failure(AnyError()))
+            }
+        }
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: stores, analyticsProvider: analyticsProvider)
+
+        // When
+        await sut.load()
+
+        // Then
+        #expect(analyticsProvider.receivedEvents.contains("notifications_settings_load_failed"))
+    }
+
+    @Test func test_load_when_remote_succeeds_then_notifications_settings_load_failed_is_not_tracked() async {
+        // Given
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences()))
+            }
+        }
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: stores, analyticsProvider: analyticsProvider)
+
+        // When
+        await sut.load()
+
+        // Then
+        #expect(!analyticsProvider.receivedEvents.contains("notifications_settings_load_failed"))
     }
 
     @Test func test_load_when_unsaved_edits_exist_then_response_does_not_stomp_displayed_state() async {

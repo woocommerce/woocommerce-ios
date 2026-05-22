@@ -3,6 +3,8 @@ import Foundation
 import Observation
 import UIKit
 import Yosemite
+import EventHorizonSDK
+import protocol WooFoundation.Analytics
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
@@ -107,6 +109,7 @@ final class PushNotificationPreferencesViewModel {
     private let currencySettings: CurrencySettings
     private let notificationCenter: UserNotificationsCenterAdapter
     private let appStateNotificationCenter: NotificationCenter
+    private let analytics: Analytics
 
     private var appStateSubscription: AnyCancellable?
 
@@ -114,13 +117,15 @@ final class PushNotificationPreferencesViewModel {
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
-         appStateNotificationCenter: NotificationCenter = .default) {
+         appStateNotificationCenter: NotificationCenter = .default,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.notificationCenter = notificationCenter
         self.appStateNotificationCenter = appStateNotificationCenter
+        self.analytics = analytics
         observeAppState()
     }
 
@@ -160,6 +165,7 @@ final class PushNotificationPreferencesViewModel {
         } catch {
             DDLogError("⛔️ Error loading push notification preferences for siteID=\(siteID): \(error)")
             loadState = .error
+            analytics.track(.notificationsSettingsLoadFailed)
         }
     }
 

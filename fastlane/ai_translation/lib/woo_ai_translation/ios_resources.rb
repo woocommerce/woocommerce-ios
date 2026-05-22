@@ -30,7 +30,7 @@ module WooAiTranslation
   # - C-style escapes inside double-quoted strings: \\ \" \n \r \t (the four
   #   common ones produced by `genstrings` and `ios_generate_strings_file_from_code`).
   module IosResources
-    UNIT_SEPARATOR = "␟"
+    UNIT_SEPARATOR = '␟'
 
     # A single translatable resource entry. Always type `:string` for iOS.
     # `entries` is a one-element list to match the Android Unit shape (the
@@ -198,13 +198,13 @@ module WooAiTranslation
           read_unquoted_identifier(text, pos, source_path)
         end
 
-        def identifier_start?(ch)
-          ch =~ /[A-Za-z_]/
+        def identifier_start?(char)
+          char =~ /[A-Za-z_]/
         end
 
         def read_unquoted_identifier(text, pos, source_path)
           start = pos
-          pos += 1 while pos < text.length && text[pos] =~ /[A-Za-z0-9_.\-]/
+          pos += 1 while pos < text.length && text[pos] =~ /[A-Za-z0-9_.-]/
           raise ParseError, error_at(text, pos, source_path, 'empty identifier') if pos == start
 
           [text[start...pos], pos]
@@ -213,7 +213,7 @@ module WooAiTranslation
         def read_block_comment(text, pos, source_path)
           start = pos + 2
           ending = text.index('*/', start)
-          raise ParseError, error_at(text, pos, source_path, "unterminated /* comment") if ending.nil?
+          raise ParseError, error_at(text, pos, source_path, 'unterminated /* comment') if ending.nil?
 
           [text[start...ending], ending + 2]
         end
@@ -258,12 +258,12 @@ module WooAiTranslation
           '\\' => '\\', '"' => '"', "'" => "'"
         }.freeze
 
-        def decode_escape(ch)
+        def decode_escape(char)
           # Lenient: unknown escapes pass through as the literal char (matches
           # Apple CFPropertyList behaviour). `\U` unicode escapes are rare in
           # genstrings output -- omit until needed; an explicit gate will catch
           # any in-the-wild use during validation.
-          ESCAPE_TABLE.fetch(ch, ch)
+          ESCAPE_TABLE.fetch(char, char)
         end
 
         def expect!(text, pos, char, source_path)
@@ -281,6 +281,9 @@ module WooAiTranslation
       end
     end
 
+    # Renders a `Document` (or array of `Unit`s) back into iOS `.strings`
+    # source form. Mirrors the parser's escape decisions so a parse/write
+    # round-trip is idempotent on well-formed input.
     module Writer
       module_function
 
@@ -329,9 +332,7 @@ module WooAiTranslation
       def render_unit(unit)
         entry = unit.entries.first
         out = +''
-        if unit.comment && !unit.comment.empty?
-          out << "/* #{unit.comment} */\n"
-        end
+        out << "/* #{unit.comment} */\n" if unit.comment && !unit.comment.empty?
         out << %("#{escape(unit.name)}" = "#{escape(entry[:value])}";\n)
         out
       end

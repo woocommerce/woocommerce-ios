@@ -38,7 +38,7 @@ class IosResourcesTest < Minitest::Test
     STRINGS
 
     assert_equal %w[a b c], doc.units.map(&:name)
-    assert_equal %w[1 2 3], doc.units.map { |u| u.entries.first[:source] }
+    assert_equal(%w[1 2 3], doc.units.map { |u| u.entries.first[:source] })
   end
 
   # --- Parser: comments ---------------------------------------------------
@@ -219,7 +219,7 @@ class IosResourcesTest < Minitest::Test
   end
 
   def test_writer_unescape_inverse
-    raw = 'a"b\\c' + "\n" + 'd'
+    raw = "a\"b\\c\nd"
     encoded = IosResources::Writer.escape(raw)
     assert_equal raw, IosResources::Writer.unescape(encoded)
   end
@@ -305,7 +305,7 @@ class IosResourcesTest < Minitest::Test
   end
 
   def test_unit_apply_and_fully_translated
-    doc = IosResources::Parser.parse('"a" = "1";' + "\n" + '"b" = "2";')
+    doc = IosResources::Parser.parse("\"a\" = \"1\";\n\"b\" = \"2\";")
     a = doc.find('a')
     a.apply!('a' => 'uno')
     assert_predicate a, :fully_translated?

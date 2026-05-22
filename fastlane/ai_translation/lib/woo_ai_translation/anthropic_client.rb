@@ -26,7 +26,7 @@ module WooAiTranslation
 
     def self.from_env
       new(
-        api_key: ENV['ANTHROPIC_API_KEY'],
+        api_key: ENV.fetch('ANTHROPIC_API_KEY', nil),
         base_url: ENV['WOO_AI_TRANSLATION_BASE_URL'] || DEFAULT_BASE_URL
       )
     end

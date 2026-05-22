@@ -1,10 +1,9 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 # Appends 3 missing Hindi entries and 1 missing Thai entry that the
 # sub-agent batches didn't cover (cross-batch boundary edges).
 #
 # Re-verifies hi and th against EN after appending.
-
-require 'set'
 
 REPO = File.expand_path('.')
 
@@ -40,7 +39,7 @@ GAPS = {
       value: 'Introduz as credenciais da tua loja para %@.'
     }
   ]
-}
+}.freeze
 
 KEY_RE = /\A"([^"\\]*(?:\\.[^"\\]*)*)"\s*=\s*"/
 
@@ -53,7 +52,7 @@ GAPS.each do |loc, entries|
   content = File.read(path, encoding: 'utf-8')
 
   existing = Set.new
-  content.each_line { |l| existing.add($1) if l =~ KEY_RE }
+  content.each_line { |l| existing.add(Regexp.last_match(1)) if l =~ KEY_RE }
 
   appended = entries.reject { |e| existing.include?(e[:key]) }
   if appended.empty?
@@ -75,21 +74,22 @@ GAPS.each do |loc, entries|
   puts "#{loc}: appended #{appended.size} entries"
 end
 
-puts ""
-puts "=== Verification ==="
+puts ''
+puts '=== Verification ==='
 en_content = File.read(File.join(REPO, 'WooCommerce/Resources/en.lproj/Localizable.strings'), encoding: 'utf-8')
 en_keys = Set.new
-en_content.each_line { |l| en_keys.add($1) if l =~ KEY_RE }
+en_content.each_line { |l| en_keys.add(Regexp.last_match(1)) if l =~ KEY_RE }
 
 %w[hi ms th pt-PT].each do |loc|
   path = File.join(REPO, "WooCommerce/Resources/#{loc}.lproj/Localizable.strings")
   next unless File.exist?(path)
+
   keys = []
-  File.read(path, encoding: 'utf-8').each_line { |l| keys << $1 if l =~ KEY_RE }
+  File.read(path, encoding: 'utf-8').each_line { |l| keys << Regexp.last_match(1) if l =~ KEY_RE }
   uniq = keys.to_set
   missing = en_keys - uniq
   extra = uniq - en_keys
   dups = keys.size - uniq.size
-  status = (missing.empty? && extra.empty? && dups == 0) ? 'OK' : 'FAIL'
+  status = missing.empty? && extra.empty? && dups.zero? ? 'OK' : 'FAIL'
   printf("%-3s entries=%d unique=%d missing=%d extra=%d dups=%d %s\n", loc, keys.size, uniq.size, missing.size, extra.size, dups, status)
 end

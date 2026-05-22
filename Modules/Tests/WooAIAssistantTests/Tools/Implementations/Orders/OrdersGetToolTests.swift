@@ -62,6 +62,33 @@ struct OrdersGetToolTests {
     }
 
     @Test
+    func test_orders_get_when_more_than_15_line_items_then_keeps_15() async {
+        // Given
+        let items = (0..<18).map { idx in
+            "{\"id\": \(idx), \"name\": \"Item \(idx)\", \"quantity\": 1, \"product_id\": \(100 + idx)}"
+        }.joined(separator: ", ")
+        let body = """
+        {"id": 3551, "status": "processing", "total": "120.00", "currency": "USD", "line_items": [\(items)]}
+        """
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = OrdersGetTool.make()
+
+        // When
+        let result = await tool.executor(#"{"id": 3551}"#, client)
+
+        // Then
+        guard case .success(let success) = result,
+              case .object(let summary) = success.structured,
+              case .array(let lineItems) = summary["line_items"] else {
+            Issue.record("expected line_items array, got \(result)")
+            return
+        }
+        #expect(lineItems.count == 15)
+        #expect(summary["line_items_count"] == .int(18))
+        #expect(summary["line_items_truncated"] == .bool(true))
+    }
+
+    @Test
     func test_orders_get_when_id_missing_then_returns_failed_with_invalid_tool_call() async {
         // Given
         let client = MockWCRESTClient(response: StubResponses.ok("{}"))

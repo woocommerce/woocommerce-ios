@@ -111,9 +111,9 @@ struct OrdersListToolTests {
     }
 
     @Test
-    func test_orders_list_when_row_line_items_exceed_five_then_line_items_truncated_is_true_for_that_row() async throws {
+    func test_orders_list_when_row_line_items_exceed_list_limit_then_line_items_truncated_is_true_for_that_row() async throws {
         // Given
-        let items = (0..<7).map { idx in
+        let items = (0..<10).map { idx in
             "{\"id\": \(idx), \"name\": \"Item \(idx)\", \"quantity\": 1}"
         }.joined(separator: ", ")
         let body = """
@@ -136,9 +136,51 @@ struct OrdersListToolTests {
             Issue.record("expected line_items in first order")
             return
         }
-        #expect(lineItems.count == 5)
+        #expect(lineItems.count == 7)
         #expect(first["line_items_truncated"] == .bool(true))
-        #expect(first["line_items_count"] == .int(7))
+        #expect(first["line_items_count"] == .int(10))
+    }
+
+    @Test
+    func test_orders_list_when_full_page_of_dense_orders_then_payload_stays_under_llm_cap() async throws {
+        // Given a realistic full window: 50 orders, each with the list line-item cap of rich rows.
+        let orders = (0..<50).map { orderIndex -> String in
+            let lineItems = (0..<OrderSummary.listLineItemLimit).map { itemIndex in
+                """
+                {"id": \(itemIndex), "name": "Merino Wool Crew Neck Sweater \(itemIndex)", \
+                "quantity": 2, "sku": "MWCNS-\(orderIndex)-\(itemIndex)", "total": "129.00", \
+                "product_id": \(1000 + itemIndex), "variation_id": \(5000 + itemIndex)}
+                """
+            }.joined(separator: ", ")
+            return """
+            {"id": \(3000 + orderIndex), "number": "\(3000 + orderIndex)", "status": "processing", \
+            "total": "258.00", "currency": "USD", "date_created": "2026-05-20T10:00:00", \
+            "payment_method_title": "Stripe Credit Card", \
+            "billing": {"first_name": "Firstname", "last_name": "Lastname", "email": "buyer\(orderIndex)@example.com", \
+            "phone": "+1 555 0100", "city": "Portland", "state": "OR", "postcode": "97201", "country": "US"}, \
+            "line_items": [\(lineItems)]}
+            """
+        }.joined(separator: ", ")
+        let client = MockWCRESTClient(response: StubResponses.ok("[\(orders)]"))
+        let tool = OrdersListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"per_page": 50}"#, client)
+
+        // Then
+        guard case .success(let success) = result else {
+            Issue.record("expected success")
+            return
+        }
+        let encoded = try JSONEncoder().encode(success.structured)
+        #expect(encoded.count < LLMPayloadCap.maxBytes)
+        // A truncation marker would prove the cap fired and the real summary was dropped.
+        if case .object(let fields) = success.structured {
+            #expect(fields["truncated"] == nil)
+            #expect(fields["count"] == .int(50))
+        } else {
+            Issue.record("expected object structured")
+        }
     }
 
     @Test

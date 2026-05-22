@@ -177,7 +177,7 @@ struct CardFamily: Sendable {
         checkTrash: true
     )
 
-    private static let showCardsLineItemLimit = 5
+    private static let showCardsLineItemLimit = 7
 
     private static func showCardsLineItem(_ item: AnyCodableJSON) -> AnyCodableJSON {
         var out: [String: AnyCodableJSON] = [:]

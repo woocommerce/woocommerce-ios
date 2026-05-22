@@ -81,9 +81,9 @@ struct OrderFamilyTests {
     }
 
     @Test
-    func test_show_cards_when_order_has_line_items_then_resolved_ref_summary_carries_line_items_capped_at_five() {
+    func test_show_cards_when_order_has_line_items_then_resolved_ref_summary_carries_line_items_capped_at_seven() {
         // Given
-        let items = (1...7).map { idx in
+        let items = (1...10).map { idx in
             AnyCodableJSON.object(["id": .int(Int64(idx)), "name": .string("Item \(idx)"), "quantity": .int(1)])
         }
         let entity: AnyCodableJSON = .object([
@@ -99,8 +99,8 @@ struct OrderFamilyTests {
             Issue.record("expected line_items array")
             return
         }
-        #expect(projected.count == 5)
-        #expect(fields["line_items_count"] == .int(7))
+        #expect(projected.count == 7)
+        #expect(fields["line_items_count"] == .int(10))
     }
 
     @Test

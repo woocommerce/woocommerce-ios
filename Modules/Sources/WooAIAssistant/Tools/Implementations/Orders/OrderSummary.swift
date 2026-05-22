@@ -1,8 +1,10 @@
 import Foundation
 
 enum OrderSummary {
-    static let detailLineItemLimit = 10
-    static let listLineItemLimit = 5
+    static let detailLineItemLimit = 15
+    // Kept modest because the list path multiplies this cap across every order row,
+    // so it weighs far heavier on the payload budget than the single-order detail cap.
+    static let listLineItemLimit = 7
     static let adjustmentLineLimit = 10
     static let customerNoteLimit = 500
 

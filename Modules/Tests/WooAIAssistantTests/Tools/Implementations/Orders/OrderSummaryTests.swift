@@ -84,9 +84,9 @@ struct OrderSummaryTests {
     }
 
     @Test
-    func test_make_when_order_has_more_than_ten_line_items_then_line_items_truncated_is_true() {
+    func test_make_when_order_has_more_than_detail_limit_line_items_then_line_items_truncated_is_true() {
         // Given
-        let items = (0..<12).map { idx in
+        let items = (0..<18).map { idx in
             AnyCodableJSON.object(["id": .int(Int64(idx)), "name": .string("Item \(idx)"), "quantity": .int(1)])
         }
         let entity = AnyCodableJSON.object(["id": .int(7), "line_items": .array(items)])
@@ -100,9 +100,31 @@ struct OrderSummaryTests {
             Issue.record("expected line_items array")
             return
         }
-        #expect(projected.count == 10)
-        #expect(fields["line_items_count"] == .int(12))
+        #expect(projected.count == OrderSummary.detailLineItemLimit)
+        #expect(projected.count == 15)
+        #expect(fields["line_items_count"] == .int(18))
         #expect(fields["line_items_truncated"] == .bool(true))
+    }
+
+    @Test
+    func test_make_when_order_has_exactly_detail_limit_line_items_then_truncated_flag_is_absent() {
+        // Given
+        let items = (0..<OrderSummary.detailLineItemLimit).map { idx in
+            AnyCodableJSON.object(["id": .int(Int64(idx)), "name": .string("Item \(idx)"), "quantity": .int(1)])
+        }
+        let entity = AnyCodableJSON.object(["id": .int(7), "line_items": .array(items)])
+
+        // When
+        let summary = OrderSummary.make(from: entity)
+
+        // Then
+        guard case .object(let fields) = summary,
+              case .array(let projected) = fields["line_items"] else {
+            Issue.record("expected line_items array")
+            return
+        }
+        #expect(projected.count == 15)
+        #expect(fields["line_items_truncated"] == nil)
     }
 
     @Test

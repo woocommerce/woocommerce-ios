@@ -9,6 +9,7 @@ env:
 
 steps:
   - label: Publish Release
+    key: publish-release
     plugins: [$CI_TOOLKIT]
     command: |
       echo '--- :robot_face: Use bot for Git operations'
@@ -29,3 +30,12 @@ steps:
         # If those jobs fail, one should always prefer re-triggering a new build from Releases V2 rather than retrying the individual job from Buildkite
         reason: If release jobs fail, you should always re-trigger the task from Releases V2 rather than retrying the individual job from Buildkite
         allowed: false
+
+  - label: ":bar_chart: Translation Health Report"
+    depends_on: publish-release
+    plugins: [$CI_TOOLKIT]
+    soft_fail: true
+    command: |
+      .buildkite/commands/checkout-release-branch.sh "$RELEASE_VERSION"
+      install_gems
+      .buildkite/commands/post-translation-health-report.sh

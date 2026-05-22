@@ -173,6 +173,40 @@ This is what the CI step calls on every PR that touches `en.lproj`. A typical
 PR adds 1–10 strings, so the incremental call costs cents and finishes in
 seconds.
 
+## CI integration
+
+The engine is wired into Buildkite via two scripts:
+
+### `.buildkite/commands/run-ai-translations.sh`
+
+Runs on every PR build. Skips itself (no failure) when:
+- the build is not a PR (trunk / release branches);
+- no EN strings changed in the PR (`git diff` against the base);
+- the most recent commit is already a translation-bot commit (loop prevention);
+- `ANTHROPIC_API_KEY` is not in the env;
+- the PR is from a fork (no push access).
+
+When it runs, it executes `rake translate:incremental` for every locale and
+commits the resulting changes back to the PR branch as a single
+`Translate: …` commit authored by **WooCommerce Translation Bot**. The
+commit is co-authored so the PR author still owns the merge.
+
+**Human-ack policy**: the bot's commits do NOT auto-merge. The PR author
+still needs the usual 1 reviewer approval and clicks merge themselves.
+
+### `.buildkite/commands/post-translation-health-report.sh`
+
+Runs after a release is published (wired into
+`release-pipelines/publish-release.yml`). Generates the per-locale
+parity report via `rake translate:report` and:
+
+1. Drops it as a Buildkite annotation on the build (visible inline).
+2. Appends it to the GitHub release notes body.
+
+This is **report-only** — it does not block the release. Per the locked
+DoD decision (C13), drift is surfaced for triage rather than gating
+shipping.
+
 ## Adding a new locale
 
 1. Add the locale code to `SUPPORTED_LOCALES` in `Rakefile`.

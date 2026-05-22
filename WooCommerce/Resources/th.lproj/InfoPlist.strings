@@ -1,0 +1,32 @@
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "เพื่อถ่ายภาพหรือวิดีโอเพิ่มลงในสินค้าของคุณ สแกนบาร์โค้ด SKU สินค้า หรือสำหรับคำขอความช่วยเหลือ";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "เพื่อบันทึกภาพจากกล้องเป็นรูปภาพสินค้า หรือเพิ่มภาพหรือวิดีโอลงในสินค้าหรือคำขอความช่วยเหลือ";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "ต้องเข้าถึงตำแหน่งเพื่อรับชำระเงิน";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "ต้องเข้าถึง Bluetooth เพื่อเชื่อมต่อกับเครื่องอ่านบัตรที่รองรับ";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "แอปนี้ใช้ Bluetooth เพื่อเชื่อมต่อกับเครื่องอ่านบัตรที่รองรับ";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "Woo ใช้ไมโครโฟนของคุณเพื่อบันทึกเสียงขณะบันทึกวิดีโอสำหรับคลังสื่อของร้าน";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "เพิ่มสินค้า";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "คำสั่งซื้อใหม่";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "คำสั่งซื้อ";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "การชำระเงิน";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "รับชำระเงิน";

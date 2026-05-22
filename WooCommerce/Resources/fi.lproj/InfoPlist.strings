@@ -1,0 +1,32 @@
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "Ottaaksesi valokuvia tai videoita, jotka voit lisätä tuotteisiisi, skannataksesi tuotteen SKU-viivakoodin tai tukipyyntöjä varten.";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "Tallentaaksesi valokuvia kamerasta tuotekuviksi tai lisätäksesi valokuvia tai videoita tuotteisiisi tai tukipyyntöihin.";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "Sijaintipääsy vaaditaan maksujen vastaanottamiseen.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "Bluetooth-pääsy vaaditaan yhteyden muodostamiseen tuettuihin korttilukijoihin.";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "Tämä sovellus käyttää Bluetoothia yhteyden muodostamiseen tuettuihin korttilukijoihin.";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "Woo käyttää mikrofoniasi tallentaakseen ääntä, kun nauhoitat videoita kauppasi mediakirjastoa varten.";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "Lisää tuote";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "Uusi tilaus";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "Tilaukset";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "Maksut";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "Ota maksu vastaan";

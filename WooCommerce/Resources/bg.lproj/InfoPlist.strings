@@ -1,0 +1,32 @@
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "За да правиш снимки или видеоклипове, които да добавиш към продуктите си, да сканираш баркод за SKU на продукта или за заявки за поддръжка.";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "За запазване на снимки от камерата като изображения на продукти или за добавяне на снимки или видеоклипове към продуктите или заявките за поддръжка.";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "Достъп до местоположението е необходим, за да приемаш плащания.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "Достъпът до Bluetooth е необходим, за да се свържеш с поддържани четци на карти.";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "Това приложение използва Bluetooth, за да се свърже с поддържани четци на карти.";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "Woo използва микрофона ти, за да можеш да заснемаш звук, когато записваш видеоклипове за медийната библиотека на магазина си.";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "Добави продукт";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "Нова поръчка";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "Поръчки";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "Плащания";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "Приеми плащане";

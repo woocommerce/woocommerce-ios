@@ -1,0 +1,32 @@
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "Untuk mengambil foto atau video untuk ditambahkan ke Produk anda, mengimbas kod bar SKU Produk, atau untuk tiket sokongan.";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "Untuk menyimpan foto daripada kamera sebagai imej Produk, atau untuk menambah foto atau video ke Produk anda atau tiket sokongan.";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "Akses lokasi diperlukan untuk menerima pembayaran.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "Akses Bluetooth diperlukan untuk menyambung kepada pembaca kad yang disokong.";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "Aplikasi ini menggunakan Bluetooth untuk menyambung kepada pembaca kad yang disokong.";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "Woo menggunakan mikrofon anda untuk menangkap audio semasa merakam video untuk pustaka media kedai anda.";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "Tambah produk";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "Pesanan Baru";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "Pesanan";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "Pembayaran";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "Kutip Bayaran";

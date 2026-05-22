@@ -1,0 +1,32 @@
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "अपने उत्पादों में जोड़ने के लिए फ़ोटो या वीडियो लेने, उत्पाद SKU के लिए बारकोड स्कैन करने, या सहायता टिकटों के लिए।";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "कैमरे से फ़ोटो को उत्पाद चित्र के रूप में सहेजने, या अपने उत्पादों या सहायता टिकटों में फ़ोटो या वीडियो जोड़ने के लिए।";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "भुगतान स्वीकार करने के लिए स्थान तक पहुंच आवश्यक है।";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "समर्थित कार्ड रीडर से कनेक्ट करने के लिए ब्लूटूथ एक्सेस आवश्यक है।";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "यह ऐप समर्थित कार्ड रीडर से कनेक्ट करने के लिए ब्लूटूथ का उपयोग करता है।";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "Woo आपके स्टोर की मीडिया लाइब्रेरी के लिए वीडियो रिकॉर्ड करते समय ऑडियो कैप्चर करने के लिए आपके माइक्रोफ़ोन का उपयोग करता है।";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "उत्पाद जोड़ें";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "नया ऑर्डर";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "ऑर्डर";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "भुगतान";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "भुगतान लें";

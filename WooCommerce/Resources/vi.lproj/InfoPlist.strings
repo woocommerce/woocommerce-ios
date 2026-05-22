@@ -1,0 +1,32 @@
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "Để chụp ảnh hoặc quay video thêm vào sản phẩm của bạn, quét mã vạch SKU sản phẩm hoặc cho các yêu cầu hỗ trợ.";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "Để lưu ảnh từ máy ảnh làm hình ảnh sản phẩm hoặc thêm ảnh, video vào sản phẩm hoặc các yêu cầu hỗ trợ.";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "Cần truy cập vị trí để chấp nhận thanh toán.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "Cần truy cập Bluetooth để kết nối với các đầu đọc thẻ được hỗ trợ.";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "Ứng dụng này sử dụng Bluetooth để kết nối với các đầu đọc thẻ được hỗ trợ.";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "Woo sử dụng micrô của bạn để ghi âm khi quay video cho thư viện phương tiện của cửa hàng.";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "Thêm sản phẩm";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "Đơn hàng mới";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "Đơn hàng";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "Thanh toán";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "Thu thanh toán";

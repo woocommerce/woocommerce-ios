@@ -1,0 +1,32 @@
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "Para tirar fotografias ou vídeos para adicionares aos teus Produtos, ler códigos de barras SKU de produtos ou para pedidos de suporte.";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "Para guardares fotografias da câmara como imagens de produtos, ou para adicionares fotografias ou vídeos aos teus produtos ou pedidos de suporte.";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "É necessário o acesso à localização para aceitar pagamentos.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "O acesso ao Bluetooth é necessário para te ligares a leitores de cartões suportados.";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "Esta aplicação utiliza o Bluetooth para se ligar a leitores de cartões suportados.";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "O Woo utiliza o teu microfone para capturares áudio quando gravas vídeos para a biblioteca multimédia da tua loja.";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "Adicionar um produto";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "Nova encomenda";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "Encomendas";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "Pagamentos";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "Receber pagamento";

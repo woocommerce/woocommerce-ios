@@ -1,0 +1,39 @@
+/*
+  Generator: Claude inline translation (no API)
+  Prompt-Version: 2026-05-20.ios-pilot.1
+  Language: pl
+  Warning: Machine-translated. Spot-checked, non-blocking review.
+*/
+
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "Aby robić zdjęcia lub filmy do dodawania do produktów, skanować kody kreskowe SKU produktów lub na potrzeby zgłoszeń pomocy.";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "Aby zapisywać zdjęcia z aparatu jako zdjęcia produktów lub dodawać zdjęcia i filmy do produktów lub zgłoszeń pomocy.";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "Dostęp do lokalizacji jest wymagany do przyjmowania płatności.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "Dostęp do Bluetooth jest wymagany do łączenia się z obsługiwanymi czytnikami kart.";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "Ta aplikacja używa Bluetooth do łączenia się z obsługiwanymi czytnikami kart.";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "Woo używa mikrofonu, aby umożliwić nagrywanie dźwięku podczas kręcenia filmów do biblioteki mediów Twojego sklepu.";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "Dodaj produkt";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "Nowe zamówienie";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "Zamówienia";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "Płatności";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "Pobierz płatność";

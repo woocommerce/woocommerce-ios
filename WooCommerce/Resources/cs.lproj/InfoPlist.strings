@@ -1,0 +1,32 @@
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "Pro pořizování fotografií nebo videí pro tvé produkty, skenování čárových kódů SKU produktů nebo pro tickety podpory.";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "Pro ukládání fotografií z fotoaparátu jako obrázků produktů nebo pro přidávání fotografií či videí k produktům nebo ticketům podpory.";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "Pro přijímání plateb je vyžadován přístup k poloze.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "Přístup k Bluetooth je vyžadován pro připojení k podporovaným čtečkám karet.";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "Tato aplikace používá Bluetooth pro připojení k podporovaným čtečkám karet.";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "Woo používá tvůj mikrofon pro zachycení zvuku při nahrávání videí pro mediální knihovnu tvého obchodu.";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "Přidat produkt";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "Nová objednávka";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "Objednávky";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "Platby";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "Přijmout platbu";

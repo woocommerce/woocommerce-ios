@@ -1077,6 +1077,21 @@
 				"pt-BR",
 				"zh-Hans",
 				nl,
+				pl,
+				cs,
+				el,
+				hu,
+				ro,
+				vi,
+				bg,
+				da,
+				fi,
+				nb,
+				uk,
+				hi,
+				ms,
+				"pt-PT",
+				th,
 			);
 			mainGroup = B56DB3BD2049BFAA00D4AA8E;
 			preferredProjectObjectVersion = 74;

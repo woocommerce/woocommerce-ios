@@ -4,6 +4,7 @@
 -----
 - [*] The Store Stats widget is now configurable: choose your size (small / medium / large), metrics, date range, store, and theme. [https://github.com/woocommerce/woocommerce-ios/pull/17170]
 - [*] New Trends widget for the lock screen, with a metric and date-range picker. [https://github.com/woocommerce/woocommerce-ios/pull/17160]
+- [**] Added support for 15 new app languages: Bulgarian, Czech, Danish, Finnish, Greek, Hindi, Hungarian, Malay, Norwegian Bokmål, Polish, Portuguese (Portugal), Romanian, Thai, Ukrainian, and Vietnamese.
 
 
 24.8

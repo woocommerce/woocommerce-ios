@@ -1,0 +1,32 @@
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "Щоб робити фото або відео для додавання до твоїх товарів, сканувати штрих-код для SKU товару або для звернень до підтримки.";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "Щоб зберігати фото з камери як зображення товарів або додавати фото чи відео до товарів або звернень до підтримки.";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "Доступ до геолокації потрібен для приймання платежів.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "Доступ до Bluetooth потрібен для підключення до підтримуваних зчитувачів карток.";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "Цей застосунок використовує Bluetooth для підключення до підтримуваних зчитувачів карток.";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "Woo використовує твій мікрофон, щоб ти міг записувати звук під час зйомки відео для медіатеки магазину.";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "Додати товар";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "Нове замовлення";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "Замовлення";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "Платежі";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "Прийняти платіж";

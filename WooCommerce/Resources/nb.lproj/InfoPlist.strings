@@ -1,0 +1,32 @@
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "For å ta bilder eller videoer som du kan legge til i produktene dine, skanne strekkode for produkt-SKU eller for supportsaker.";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "For å lagre bilder fra kameraet som produktbilder eller for å legge til bilder eller videoer til produktene eller supportsakene dine.";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "Plasseringstilgang er nødvendig for å motta betalinger.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "Bluetooth-tilgang er nødvendig for å koble til støttede kortlesere.";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "Denne appen bruker Bluetooth for å koble til støttede kortlesere.";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "Woo bruker mikrofonen din til å ta opp lyd når du spiller inn videoer for butikkens mediebibliotek.";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "Legg til et produkt";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "Ny bestilling";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "Bestillinger";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "Betalinger";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "Motta betaling";

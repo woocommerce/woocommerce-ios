@@ -1,0 +1,32 @@
+/* A message that tells the user why the app is requesting access to the device's camera. */
+"NSCameraUsageDescription" = "Pentru a face fotografii sau videoclipuri pentru a le adăuga la produsele tale, pentru a scana coduri de bare SKU sau pentru tichetele de asistență.";
+
+/* A message that tells the user why the app is requesting access to the user's photo library. */
+"NSPhotoLibraryUsageDescription" = "Pentru a salva fotografii din cameră ca imagini de produs sau pentru a adăuga fotografii sau videoclipuri la produsele tale sau la tichetele de asistență.";
+
+/* A message that tells the user why the app is requesting access to the user's location information while the app is running in the foreground. */
+"NSLocationWhenInUseUsageDescription" = "Accesul la locație este necesar pentru a accepta plăți.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"NSBluetoothPeripheralUsageDescription" = "Accesul la Bluetooth este necesar pentru conectarea la cititoarele de carduri acceptate.";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"NSBluetoothAlwaysUsageDescription" = "Această aplicație folosește Bluetooth pentru a se conecta la cititoarele de carduri acceptate.";
+
+/* A message that tells the user why the app needs access to Microphone. */
+"NSMicrophoneUsageDescription" = "Woo folosește microfonul pentru a-ți permite să capturezi sunet atunci când înregistrezi videoclipuri pentru biblioteca media a magazinului.";
+
+/* Title for Add Product home screen action */
+"AddProductAction.Title" = "Adaugă un produs";
+
+/* Title for Add Order home screen action */
+"AddOrderAction.Title" = "Comandă nouă";
+
+/* Title for Orders home screen action */
+"OpenOrdersAction.Title" = "Comenzi";
+
+/* Title for Payments home screen action */
+"OpenPaymentsAction.Title" = "Plăți";
+
+/* Title for Payments home screen action */
+"CollectPaymentAction.Title" = "Colectează plata";

@@ -1342,6 +1342,91 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_value_change"))
         #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_option_select"))
     }
+
+    // MARK: - Stock detail analytics
+
+    @Test func test_detailDidAppear_with_stockAlert_then_tracks_notifications_detail_view() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.detailDidAppear(notificationType: .stockAlert)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_view",
+                                            with: ["notification_type": "stock_alert"]))
+    }
+
+    @Test func test_setStoreStockEnabled_when_true_then_tracks_push_toggle_with_isEnabled_true() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreStockEnabled(true)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "stock_alert",
+                                                   "is_enabled": true]))
+    }
+
+    @Test func test_setStoreStockEnabled_when_false_then_tracks_push_toggle_with_isEnabled_false() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreStockEnabled(false)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "stock_alert",
+                                                   "is_enabled": false]))
+    }
+
+    @Test func test_setStoreStockLowStock_then_tracks_stock_option_toggle_with_lowStock() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreStockLowStock(true)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_stock_option_toggle",
+                                            with: ["option": "low_stock",
+                                                   "is_enabled": true]))
+    }
+
+    @Test func test_setStoreStockOutOfStock_then_tracks_stock_option_toggle_with_outOfStock() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreStockOutOfStock(true)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_stock_option_toggle",
+                                            with: ["option": "out_of_stock",
+                                                   "is_enabled": true]))
+    }
+
+    @Test func test_setStoreStockOnBackorder_then_tracks_stock_option_toggle_with_onBackorder() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreStockOnBackorder(false)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_stock_option_toggle",
+                                            with: ["option": "on_backorder",
+                                                   "is_enabled": false]))
+    }
 }
 
 /// Reference-typed box for capturing dispatched changes from a closure without

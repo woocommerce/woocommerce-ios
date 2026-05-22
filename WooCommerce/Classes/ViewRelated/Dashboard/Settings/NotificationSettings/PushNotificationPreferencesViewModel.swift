@@ -272,6 +272,8 @@ final class PushNotificationPreferencesViewModel {
                                                      lowStock: existing?.lowStock,
                                                      outOfStock: existing?.outOfStock,
                                                      onBackorder: existing?.onBackorder))
+        analytics.track(.notificationsDetailPushToggle(notificationType: .stockAlert,
+                                                       isEnabled: newValue))
     }
 
     func setStoreStockLowStock(_ newValue: Bool) {
@@ -280,6 +282,7 @@ final class PushNotificationPreferencesViewModel {
                                                      lowStock: newValue,
                                                      outOfStock: existing?.outOfStock,
                                                      onBackorder: existing?.onBackorder))
+        analytics.track(.notificationsStockOptionToggle(option: .lowStock, isEnabled: newValue))
     }
 
     func setStoreStockOutOfStock(_ newValue: Bool) {
@@ -288,6 +291,7 @@ final class PushNotificationPreferencesViewModel {
                                                      lowStock: existing?.lowStock,
                                                      outOfStock: newValue,
                                                      onBackorder: existing?.onBackorder))
+        analytics.track(.notificationsStockOptionToggle(option: .outOfStock, isEnabled: newValue))
     }
 
     func setStoreStockOnBackorder(_ newValue: Bool) {
@@ -296,6 +300,7 @@ final class PushNotificationPreferencesViewModel {
                                                      lowStock: existing?.lowStock,
                                                      outOfStock: existing?.outOfStock,
                                                      onBackorder: newValue))
+        analytics.track(.notificationsStockOptionToggle(option: .onBackorder, isEnabled: newValue))
     }
 
     /// Reverts only the stock section of `displayed` to `lastSaved`. Other

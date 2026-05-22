@@ -1,0 +1,29 @@
+# Czech (cs) — UI terminology mappings.
+# Register: informal mobile UI; "ty" form.
+
+ui_terms:
+  Cancel: Zrušit
+  Save: Uložit
+  Done: Hotovo
+  OK: OK
+  Close: Zavřít
+  Edit: Upravit
+  Delete: Smazat
+  Refresh: Obnovit
+  Retry: Zkusit znovu
+  Try Again: Zkusit znovu
+  Continue: Pokračovat
+  Loading: Načítání
+
+nouns:
+  Orders: Objednávky
+  Products: Produkty
+  Payments: Platby
+  Customers: Zákazníci
+  Reviews: Recenze
+  Cart: Košík
+  Address: Adresa
+  Shipping: Doprava
+  Refund: Vrácení peněz
+  Stock: Sklad
+  Coupons: Kupóny

@@ -1,0 +1,29 @@
+# Norwegian Bokmål (nb) — UI terminology mappings.
+# Register: informal mobile UI; "du" form.
+
+ui_terms:
+  Cancel: Avbryt
+  Save: Lagre
+  Done: Ferdig
+  OK: OK
+  Close: Lukk
+  Edit: Rediger
+  Delete: Slett
+  Refresh: Oppdater
+  Retry: Prøv igjen
+  Try Again: Prøv igjen
+  Continue: Fortsett
+  Loading: Laster
+
+nouns:
+  Orders: Bestillinger
+  Products: Produkter
+  Payments: Betalinger
+  Customers: Kunder
+  Reviews: Anmeldelser
+  Cart: Handlekurv
+  Address: Adresse
+  Shipping: Frakt
+  Refund: Refusjon
+  Stock: Lager
+  Coupons: Kuponger

@@ -32,6 +32,7 @@ require 'woo_ai_translation/anthropic_client'
 require 'woo_ai_translation/translator'
 require 'woo_ai_translation/byte_sizer'
 require 'woo_ai_translation/manifest'
+require 'woo_ai_translation/validator'
 
 REPO_ROOT = File.expand_path('../../..', __dir__)
 SOURCE_DIR = File.join(REPO_ROOT, 'WooCommerce/Resources/en.lproj')
@@ -150,7 +151,8 @@ def placeholders_match?(source, translation)
 end
 
 def translate_file(input_path:, output_path:, translator:, locale:, model:, limit:, logger:,
-                   incremental: false, manifest: nil, escalation_model: nil, smoke_run: !limit.nil?)
+                   incremental: false, manifest: nil, escalation_model: nil, validator: nil,
+                   smoke_run: !limit.nil?)
   doc = WooAiTranslation::IosResources::Parser.parse_file(input_path)
   all_units = doc.translatable_units
   # Build the Set via Set.new (not Array#to_set): referencing the Set constant
@@ -174,7 +176,9 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
 
   if units_to_translate.empty?
     logger.call("[#{locale}] nothing to translate; output left unchanged")
-    return [0, [], []]
+    # Four-value shape mirrors the success path so callers can always destructure
+    # [translated, missing, placeholder_errors, glossary_errors] safely.
+    return [0, [], [], []]
   end
 
   results = run_translation(translator, locale, units_to_translate, model)
@@ -187,22 +191,32 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
   units_for_write = incremental && File.exist?(output_path) ? merge_with_existing(units, output_path) : units
   by_name = units_for_write.to_h { |u| [u.name, u] }
 
-  translated, failed_missing, failed_validation = apply_results(
-    units_to_translate, results, by_name, manifest: record_manifest, model: model, origin: 'ai'
+  translated, failed_missing, failed_validation, failed_glossary = apply_results(
+    units_to_translate, results, by_name,
+    manifest: record_manifest, model: model, origin: 'ai', validator: validator
   )
 
-  # Opus fallback: retry validator-failed entries with the escalation model.
-  if escalation_model && !failed_validation.empty?
-    logger.call("[#{locale}] escalating #{failed_validation.size} failed entries to #{escalation_model}")
-    retry_units = units_to_translate.select { |u| failed_validation.any? { |f| f[:name] == u.name } }
+  # Opus fallback: retry validator-failed entries (placeholder OR glossary)
+  # with the escalation model. Successful retries are recorded with
+  # origin=ai-opus-retry so the audit trail shows why a stronger model
+  # produced the value.
+  if escalation_model && !(failed_validation.empty? && failed_glossary.empty?)
+    # Set.new (not Array#to_set): referencing the Set constant triggers Ruby 3.2's
+    # `autoload :Set`, whereas `to_set` alone raises NoMethodError on a minimal
+    # load path (CI). Same reason RuboCop flags an explicit `require 'set'`.
+    retry_names = Set.new((failed_validation + failed_glossary).map { |f| f[:name] })
+    retry_units = units_to_translate.select { |u| retry_names.include?(u.name) }
+    logger.call("[#{locale}] escalating #{retry_units.size} failed entries to #{escalation_model}")
     retry_results = run_translation(translator, locale, retry_units, escalation_model)
-    extra_translated, _retry_missing, still_failing = apply_results(
+    extra_translated, _retry_missing, still_failing_v, still_failing_g = apply_results(
       retry_units, retry_results, by_name,
-      manifest: record_manifest, model: escalation_model, origin: 'ai-opus-retry'
+      manifest: record_manifest, model: escalation_model, origin: 'ai-opus-retry', validator: validator
     )
     translated += extra_translated
-    failed_validation = still_failing
-    logger.call("[#{locale}] escalation recovered #{extra_translated} entries; #{still_failing.size} still failing")
+    failed_validation = still_failing_v
+    failed_glossary = still_failing_g
+    logger.call("[#{locale}] escalation recovered #{extra_translated} entries; " \
+                "#{still_failing_v.size} placeholder + #{still_failing_g.size} glossary still failing")
   end
 
   wrote = write_translations!(
@@ -212,8 +226,10 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
   manifest&.save! if wrote
 
   logger.call("[#{locale}] #{wrote ? 'wrote' : 'verified (smoke, not written)'} #{output_path} " \
-              "(#{translated} keys, #{failed_missing.size} missing, #{failed_validation.size} placeholder errors)")
-  [translated, failed_missing, failed_validation]
+              "(#{translated} keys, #{failed_missing.size} missing, " \
+              "#{failed_validation.size} placeholder errors, " \
+              "#{failed_glossary.size} glossary/brand violations)")
+  [translated, failed_missing, failed_validation, failed_glossary]
 end
 
 # Install `units_for_write` at `output_path` without ever leaving a corrupt or
@@ -261,10 +277,11 @@ end
 
 # Walk units_to_translate, apply each result, and report counts. Mutates
 # the corresponding entries inside `by_name` so the caller can write them.
-def apply_results(units_to_translate, results, by_name, manifest:, model:, origin:)
+def apply_results(units_to_translate, results, by_name, manifest:, model:, origin:, validator: nil)
   translated = 0
   failed_missing = []
   failed_validation = []
+  failed_glossary = []
 
   units_to_translate.each do |u|
     src = u.entries.first[:source]
@@ -282,13 +299,22 @@ def apply_results(units_to_translate, results, by_name, manifest:, model:, origi
       next
     end
 
+    if validator
+      glossary_violations = validator.validate(source: src, translation: tx)
+      unless glossary_violations.empty?
+        failed_glossary << { name: u.name, source: src, translation: tx,
+                             violations: glossary_violations }
+        next
+      end
+    end
+
     target_unit = by_name[u.name] or next
     target_unit.entries.first[:value] = tx
     manifest&.record!(key: u.name, source: src, model: model, origin: origin)
     translated += 1
   end
 
-  [translated, failed_missing, failed_validation]
+  [translated, failed_missing, failed_validation, failed_glossary]
 end
 
 # Write-then-parse sanity check: re-read the file we just wrote and make sure
@@ -372,6 +398,13 @@ def main(argv)
   logger.call("manifest #{manifest ? "loaded (#{manifest.size} entries, #{manifest.path})" : 'disabled'}")
   escalation_model = opts[:use_escalation] ? opts[:escalation_model] : nil
 
+  # Load glossary / brand-safety validator if files exist for this locale.
+  validator = begin
+    base = File.expand_path('../glossary', __dir__)
+    WooAiTranslation::Validator.for_locale(locale: locale, base_dir: base) if Dir.exist?(base)
+  end
+  logger.call("validator loaded: brands=#{validator&.brands&.size || 0} terms=#{validator&.terms&.size || 0}") if validator
+
   out_dir = File.join(TARGET_BASE, "#{locale}.lproj")
 
   # A --limit run is a smoke test of the whole locale, not just the first file.
@@ -381,17 +414,19 @@ def main(argv)
 
   # --- Localizable.strings (the main corpus) ----------------------------
   t0 = Time.now
-  trans, missing, errors = translate_file(
+  trans, missing, errors, glossary_errors = translate_file(
     input_path: File.join(SOURCE_DIR, 'Localizable.strings'),
     output_path: File.join(out_dir, 'Localizable.strings'),
     translator: translator, locale: locale, model: opts[:model],
     limit: opts[:limit], logger: logger, incremental: opts[:incremental],
-    manifest: manifest, escalation_model: escalation_model, smoke_run: smoke_run
+    manifest: manifest, escalation_model: escalation_model,
+    validator: validator, smoke_run: smoke_run
   )
   logger.call("Localizable.strings done in #{(Time.now - t0).round(1)}s")
   total_translated = trans
   all_missing = missing
   all_errors = errors
+  all_glossary_errors = glossary_errors
 
   # --- InfoPlist.strings (16 entries, small but important) --------------
   unless opts[:skip_infoplist]
@@ -399,16 +434,18 @@ def main(argv)
     info_in = File.join(SOURCE_DIR, 'InfoPlist.strings')
     info_out = File.join(out_dir, 'InfoPlist.strings')
     if File.exist?(info_in)
-      trans, missing, errors = translate_file(
+      trans, missing, errors, glossary_errors = translate_file(
         input_path: info_in, output_path: info_out,
         translator: translator, locale: locale, model: opts[:model],
         limit: nil, logger: logger, incremental: opts[:incremental],
-        manifest: manifest, escalation_model: escalation_model, smoke_run: smoke_run
+        manifest: manifest, escalation_model: escalation_model,
+        validator: validator, smoke_run: smoke_run
       )
       logger.call("InfoPlist.strings done in #{(Time.now - t0).round(1)}s")
       total_translated += trans
       all_missing.concat(missing)
       all_errors.concat(errors)
+      all_glossary_errors.concat(glossary_errors)
     else
       logger.call("no InfoPlist.strings at #{info_in}; skipping")
     end
@@ -417,12 +454,19 @@ def main(argv)
   # --- Summary ----------------------------------------------------------
   logger.call('===== summary =====')
   logger.call("locale=#{locale} translated=#{total_translated} missing=#{all_missing.size} " \
-              "placeholder_errors=#{all_errors.size}")
+              "placeholder_errors=#{all_errors.size} glossary_violations=#{all_glossary_errors.size}")
   unless all_errors.empty?
     logger.call('---- placeholder errors (first 10) ----')
     all_errors.first(10).each do |e|
       logger.call("  #{e[:name]}: src=#{e[:source].inspect} tx=#{e[:translation].inspect}")
       logger.call("    expected=#{e[:expected]} got=#{e[:got]}")
+    end
+  end
+  unless all_glossary_errors.empty?
+    logger.call('---- glossary/brand violations (first 10) ----')
+    all_glossary_errors.first(10).each do |e|
+      logger.call("  #{e[:name]}: src=#{e[:source].inspect} tx=#{e[:translation].inspect}")
+      e[:violations].each { |v| logger.call("    #{v[:rule]}: term=#{v[:term].inspect} expected=#{v[:expected].inspect}") }
     end
   end
   unless all_missing.empty?
@@ -432,7 +476,8 @@ def main(argv)
 
   logger.call("log written to #{log_path}")
   log_io.close
-  exit(all_errors.empty? && all_missing.empty? ? 0 : 2)
+  exit_code = all_errors.empty? && all_missing.empty? && all_glossary_errors.empty? ? 0 : 2
+  exit(exit_code)
 end
 
 main(ARGV) if $PROGRAM_NAME == __FILE__

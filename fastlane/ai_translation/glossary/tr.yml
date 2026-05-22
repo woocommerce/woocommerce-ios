@@ -1,0 +1,6 @@
+# Turkish (tr) — UI terminology mappings.
+# STUB: existing GlotPress locale, not yet auto-translated by this engine.
+# TODO: derive UI terms by scanning existing WooCommerce/Resources/tr.lproj/.
+
+ui_terms: {}
+nouns: {}

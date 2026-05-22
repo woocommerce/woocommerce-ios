@@ -1,0 +1,29 @@
+# Bulgarian (bg) — UI terminology mappings.
+# Register: informal mobile UI; "ти" form.
+
+ui_terms:
+  Cancel: Отказ
+  Save: Запази
+  Done: Готово
+  OK: OK
+  Close: Затвори
+  Edit: Редактирай
+  Delete: Изтрий
+  Refresh: Опресни
+  Retry: Опитай отново
+  Try Again: Опитай отново
+  Continue: Продължи
+  Loading: Зареждане
+
+nouns:
+  Orders: Поръчки
+  Products: Продукти
+  Payments: Плащания
+  Customers: Клиенти
+  Reviews: Отзиви
+  Cart: Количка
+  Address: Адрес
+  Shipping: Доставка
+  Refund: Възстановяване
+  Stock: Наличност
+  Coupons: Купони

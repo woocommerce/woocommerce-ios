@@ -1,0 +1,30 @@
+# Hindi (hi) — UI terminology mappings (Devanagari).
+# Register: light-formal mobile UI; "आप" form.
+# Numerals: Arabic (1, 2, 3) — NOT Devanagari numerals.
+
+ui_terms:
+  Cancel: रद्द करें
+  Save: सहेजें
+  Done: हो गया
+  OK: ठीक है
+  Close: बंद करें
+  Edit: संपादित करें
+  Delete: हटाएं
+  Refresh: रीफ्रेश करें
+  Retry: पुनः प्रयास करें
+  Try Again: पुनः प्रयास करें
+  Continue: जारी रखें
+  Loading: लोड हो रहा है
+
+nouns:
+  Orders: ऑर्डर
+  Products: उत्पाद
+  Payments: भुगतान
+  Customers: ग्राहक
+  Reviews: समीक्षाएं
+  Cart: कार्ट
+  Address: पता
+  Shipping: शिपिंग
+  Refund: रिफंड
+  Stock: स्टॉक
+  Coupons: कूपन

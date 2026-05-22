@@ -1,0 +1,29 @@
+# Greek (el) — UI terminology mappings.
+# Register: polite-neutral mobile UI.
+
+ui_terms:
+  Cancel: Ακύρωση
+  Save: Αποθήκευση
+  Done: Έγινε
+  OK: OK
+  Close: Κλείσιμο
+  Edit: Επεξεργασία
+  Delete: Διαγραφή
+  Refresh: Ανανέωση
+  Retry: Δοκιμή ξανά
+  Try Again: Δοκιμή ξανά
+  Continue: Συνέχεια
+  Loading: Φόρτωση
+
+nouns:
+  Orders: Παραγγελίες
+  Products: Προϊόντα
+  Payments: Πληρωμές
+  Customers: Πελάτες
+  Reviews: Κριτικές
+  Cart: Καλάθι
+  Address: Διεύθυνση
+  Shipping: Αποστολή
+  Refund: Επιστροφή χρημάτων
+  Stock: Απόθεμα
+  Coupons: Κουπόνια

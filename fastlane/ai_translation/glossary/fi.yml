@@ -1,0 +1,29 @@
+# Finnish (fi) — UI terminology mappings.
+# Register: neutral mobile UI; usually no explicit second-person pronoun.
+
+ui_terms:
+  Cancel: Peruuta
+  Save: Tallenna
+  Done: Valmis
+  OK: OK
+  Close: Sulje
+  Edit: Muokkaa
+  Delete: Poista
+  Refresh: Päivitä
+  Retry: Yritä uudelleen
+  Try Again: Yritä uudelleen
+  Continue: Jatka
+  Loading: Ladataan
+
+nouns:
+  Orders: Tilaukset
+  Products: Tuotteet
+  Payments: Maksut
+  Customers: Asiakkaat
+  Reviews: Arvostelut
+  Cart: Ostoskori
+  Address: Osoite
+  Shipping: Toimitus
+  Refund: Hyvitys
+  Stock: Varasto
+  Coupons: Kupongit

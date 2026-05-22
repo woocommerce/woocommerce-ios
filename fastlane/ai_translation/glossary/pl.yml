@@ -1,0 +1,32 @@
+# Polish (pl) — UI terminology mappings.
+# When the source string is exactly one of these keys (case-insensitive on
+# bare words, exact on phrases), the translation MUST use the mapped value.
+#
+# Register: informal mobile UI; "ty" form.
+
+ui_terms:
+  Cancel: Anuluj
+  Save: Zapisz
+  Done: Gotowe
+  OK: OK
+  Close: Zamknij
+  Edit: Edytuj
+  Delete: Usuń
+  Refresh: Odśwież
+  Retry: Spróbuj ponownie
+  Try Again: Spróbuj ponownie
+  Continue: Kontynuuj
+  Loading: Ładowanie
+
+nouns:
+  Orders: Zamówienia
+  Products: Produkty
+  Payments: Płatności
+  Customers: Klienci
+  Reviews: Recenzje
+  Cart: Koszyk
+  Address: Adres
+  Shipping: Wysyłka
+  Refund: Zwrot
+  Stock: Stan magazynowy
+  Coupons: Kupony

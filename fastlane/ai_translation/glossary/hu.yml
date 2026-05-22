@@ -1,0 +1,29 @@
+# Hungarian (hu) — UI terminology mappings.
+# Register: formal-neutral mobile UI; magázás avoided in favor of imperatives.
+
+ui_terms:
+  Cancel: Mégse
+  Save: Mentés
+  Done: Kész
+  OK: OK
+  Close: Bezárás
+  Edit: Szerkesztés
+  Delete: Törlés
+  Refresh: Frissítés
+  Retry: Újrapróbálkozás
+  Try Again: Próbáld újra
+  Continue: Folytatás
+  Loading: Betöltés
+
+nouns:
+  Orders: Rendelések
+  Products: Termékek
+  Payments: Fizetések
+  Customers: Vásárlók
+  Reviews: Vélemények
+  Cart: Kosár
+  Address: Cím
+  Shipping: Szállítás
+  Refund: Visszatérítés
+  Stock: Készlet
+  Coupons: Kuponok

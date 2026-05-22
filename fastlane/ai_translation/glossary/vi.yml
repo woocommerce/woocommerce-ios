@@ -1,0 +1,29 @@
+# Vietnamese (vi) — UI terminology mappings.
+# Register: polite-neutral mobile UI.
+
+ui_terms:
+  Cancel: Hủy
+  Save: Lưu
+  Done: Xong
+  OK: OK
+  Close: Đóng
+  Edit: Chỉnh sửa
+  Delete: Xóa
+  Refresh: Làm mới
+  Retry: Thử lại
+  Try Again: Thử lại
+  Continue: Tiếp tục
+  Loading: Đang tải
+
+nouns:
+  Orders: Đơn hàng
+  Products: Sản phẩm
+  Payments: Thanh toán
+  Customers: Khách hàng
+  Reviews: Đánh giá
+  Cart: Giỏ hàng
+  Address: Địa chỉ
+  Shipping: Vận chuyển
+  Refund: Hoàn tiền
+  Stock: Tồn kho
+  Coupons: Phiếu giảm giá

@@ -1,0 +1,6 @@
+# Japanese (ja) — UI terminology mappings.
+# STUB: existing GlotPress locale, not yet auto-translated by this engine.
+# TODO: derive UI terms by scanning existing WooCommerce/Resources/ja.lproj/.
+
+ui_terms: {}
+nouns: {}

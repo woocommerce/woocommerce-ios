@@ -142,10 +142,12 @@ struct OrdersListToolTests {
     }
 
     @Test
-    func test_orders_list_when_full_page_of_dense_orders_then_payload_stays_under_llm_cap() async throws {
-        // Given a realistic full window: 50 orders, each with the list line-item cap of rich rows.
+    func test_orders_list_when_typical_full_page_then_summary_stays_under_llm_cap() async throws {
+        // Given a realistic full window of 50 orders carrying the common 1-3 line items each,
+        // which is the everyday shape the raised list cap must keep well under the payload budget.
         let orders = (0..<50).map { orderIndex -> String in
-            let lineItems = (0..<OrderSummary.listLineItemLimit).map { itemIndex in
+            let itemCount = (orderIndex % 3) + 1
+            let lineItems = (0..<itemCount).map { itemIndex in
                 """
                 {"id": \(itemIndex), "name": "Merino Wool Crew Neck Sweater \(itemIndex)", \
                 "quantity": 2, "sku": "MWCNS-\(orderIndex)-\(itemIndex)", "total": "129.00", \
@@ -174,10 +176,51 @@ struct OrdersListToolTests {
         }
         let encoded = try JSONEncoder().encode(success.structured)
         #expect(encoded.count < LLMPayloadCap.maxBytes)
-        // A truncation marker would prove the cap fired and the real summary was dropped.
+        // No truncation marker means the real summary survived rather than being dropped.
         if case .object(let fields) = success.structured {
             #expect(fields["truncated"] == nil)
             #expect(fields["count"] == .int(50))
+        } else {
+            Issue.record("expected object structured")
+        }
+    }
+
+    @Test
+    func test_orders_list_when_pathological_full_page_then_cap_fires_and_nudges_show_cards() async throws {
+        // Given the worst case the raised caps allow: 50 orders each maxed at the list line-item
+        // cap with long names/skus. This exceeds 64KB, so the cap must protect the context window.
+        let orders = (0..<50).map { orderIndex -> String in
+            let lineItems = (0..<OrderSummary.listLineItemLimit).map { itemIndex in
+                """
+                {"id": \(itemIndex), "name": "Merino Wool Crew Neck Sweater Extra Long Title \(itemIndex)", \
+                "quantity": 2, "sku": "MWCNS-LONG-SKU-\(orderIndex)-\(itemIndex)", "total": "129.00", \
+                "product_id": \(1000 + itemIndex), "variation_id": \(5000 + itemIndex)}
+                """
+            }.joined(separator: ", ")
+            return """
+            {"id": \(3000 + orderIndex), "number": "\(3000 + orderIndex)", "status": "processing", \
+            "total": "258.00", "currency": "USD", "date_created": "2026-05-20T10:00:00", \
+            "payment_method_title": "Stripe Credit Card", \
+            "billing": {"first_name": "Firstname", "last_name": "Lastname", "email": "buyer\(orderIndex)@example.com", \
+            "phone": "+1 555 0100", "city": "Portland", "state": "OR", "postcode": "97201", "country": "US"}, \
+            "line_items": [\(lineItems)]}
+            """
+        }.joined(separator: ", ")
+        let client = MockWCRESTClient(response: StubResponses.ok("[\(orders)]"))
+        let tool = OrdersListTool.make()
+
+        // When
+        let result = await tool.executor(#"{"per_page": 50}"#, client)
+
+        // Then
+        guard case .success(let success) = result else {
+            Issue.record("expected success")
+            return
+        }
+        let encoded = try JSONEncoder().encode(success.structured)
+        #expect(encoded.count < LLMPayloadCap.maxBytes)
+        if case .object(let fields) = success.structured {
+            #expect(fields["truncated"] == .bool(true))
         } else {
             Issue.record("expected object structured")
         }

@@ -25,6 +25,26 @@ struct SupportEscalationCoordinatorTests {
         #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController })
     }
 
+    @Test func handleEscalation_when_supportAreaInfo_is_nil_and_siteAddress_is_available_then_prefills_siteAddress() {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk)
+
+        // When
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: nil,
+                                     entryPoint: .preLogin,
+                                     siteAddress: "https://prelogin.example.com")
+
+        // Then
+        let viewModel = supportFormViewModel(from: navigationController)
+        #expect(viewModel?.siteAddress == "https://prelogin.example.com")
+    }
+
     @Test func handleEscalation_when_high_confidence_and_has_identity_then_creates_ticket_directly_after_transcript_consent() {
         // Given
         let zendesk = MockZendeskManager()
@@ -168,6 +188,32 @@ struct SupportEscalationCoordinatorTests {
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
         #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController })
+    }
+
+    @Test func handleEscalation_when_preLogin_has_site_address_then_can_create_ticket_directly_after_transcript_consent() {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(
+            navigationController: navigationController,
+            zendesk: zendesk,
+            stores: stores
+        )
+
+        // When
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
+                                     entryPoint: .preLogin,
+                                     siteAddress: "https://prelogin.example.com")
+
+        // Then
+        #expect(zendesk.latestInvokedTags.contains("in_app_support_escalate"))
+        #expect(zendesk.latestInvokedCustomFields.values.contains("https://prelogin.example.com"))
     }
 
     @Test func handleEscalation_when_medium_confidence_then_shows_support_form() {

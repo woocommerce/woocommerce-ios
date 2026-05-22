@@ -480,14 +480,19 @@ private extension HelpAndSupportViewController {
         let entryPoint: SupportChatViewModel.EntryPoint = ServiceLocator.stores.isAuthenticated
             ? .helpAndSupport
             : .preLogin
+        let initialContext: [String: Any]? = loginSiteURL.map {
+            ["site_url": $0.absoluteString]
+        }
         var viewModelHolder: SupportChatViewModel?
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+            initialContext: initialContext,
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, siteAddress, entryPoint in
                 self?.handleContactHumanSupport(chatID: chatID,
                                                 transcript: transcript,
                                                 supportAreaInfo: supportAreaInfo,
                                                 entryPoint: entryPoint,
+                                                siteAddress: siteAddress ?? self?.loginSiteURL?.absoluteString,
                                                 onTicketCreated: { [weak viewModelHolder] in
                                                     viewModelHolder?.markChatTicketCreated()
                                                 })
@@ -502,10 +507,15 @@ private extension HelpAndSupportViewController {
                                            transcript: String,
                                            supportAreaInfo: SupportAreaInfo?,
                                            entryPoint: SupportChatViewModel.EntryPoint,
+                                           siteAddress: String? = nil,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
                                                                     onTicketCreated: onTicketCreated)
-        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID,
+                                                       transcript: transcript,
+                                                       supportAreaInfo: supportAreaInfo,
+                                                       entryPoint: entryPoint,
+                                                       siteAddress: siteAddress)
     }
 
     /// Chat History action
@@ -533,11 +543,12 @@ private extension HelpAndSupportViewController {
             sessionID: summary.sessionID,
             hasCreatedTicket: summary.hasCreatedTicket,
             isChatResolved: summary.isResolved,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, siteAddress, entryPoint in
                 self?.handleContactHumanSupport(chatID: chatID,
                                                 transcript: transcript,
                                                 supportAreaInfo: supportAreaInfo,
                                                 entryPoint: entryPoint,
+                                                siteAddress: siteAddress,
                                                 onTicketCreated: { [weak viewModelHolder] in
                                                     viewModelHolder?.markChatTicketCreated()
                                                 })

@@ -188,6 +188,7 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
         _ chatID: Int64?,
         _ transcript: String,
         _ supportAreaInfo: SupportAreaInfo?,
+        _ siteAddress: String?,
         _ entryPoint: SupportChatViewModel.EntryPoint
     ) -> Void) -> SupportChatViewModel {
         var context: [String: Any] = [:]

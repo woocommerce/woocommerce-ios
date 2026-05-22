@@ -29,6 +29,7 @@ final class SupportEscalationCoordinator {
 
     /// The chat ID to update when a ticket is created. Set via `handleEscalation`.
     private var chatID: Int64?
+    private var escalationSiteAddress: String?
 
     /// Creates a new coordinator.
     ///
@@ -68,8 +69,14 @@ final class SupportEscalationCoordinator {
     ///   - transcript: The chat transcript.
     ///   - supportAreaInfo: Optional support area information from AI chat.
     ///   - entryPoint: The chat entry point for analytics tracking.
-    func handleEscalation(chatID: Int64?, transcript: String, supportAreaInfo: SupportAreaInfo?, entryPoint: SupportChatViewModel.EntryPoint) {
+    ///   - siteAddress: Optional site address to prefill the form or attach to a direct ticket.
+    func handleEscalation(chatID: Int64?,
+                          transcript: String,
+                          supportAreaInfo: SupportAreaInfo?,
+                          entryPoint: SupportChatViewModel.EntryPoint,
+                          siteAddress: String? = nil) {
         self.chatID = chatID
+        self.escalationSiteAddress = siteAddress
 
         guard let supportAreaInfo else {
             showSupportForm(transcript: transcript, supportAreaInfo: nil, entryPoint: entryPoint)
@@ -108,6 +115,7 @@ final class SupportEscalationCoordinator {
             attachments: attachments,
             preselectedArea: supportAreaInfo?.area,
             prefilledSubject: prefilledSubject,
+            prefilledSiteAddress: self.siteAddress,
             prefilledDescription: prefilledDescription,
             onTicketCreated: { [weak self] in
                 self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
@@ -159,7 +167,7 @@ final class SupportEscalationCoordinator {
         let description = [Localization.transcriptHeader, areaInfo.transcript].joined(separator: "\n\n")
         let attachments = additionalAttachmentsProvider()
 
-        let siteAddress = stores.sessionManager.defaultSite?.url ?? ""
+        let siteAddress = self.siteAddress ?? ""
         let tags = areaInfo.area.datasource.tags + additionalTags(for: areaInfo) + [Tags.sourceTag]
         let request = ZendeskSupportRequest(
             formID: areaInfo.area.datasource.formID,
@@ -227,10 +235,17 @@ final class SupportEscalationCoordinator {
     }
 
     private var hasSiteAddress: Bool {
-        guard let siteAddress = stores.sessionManager.defaultSite?.url else {
-            return false
+        self.siteAddress?.isNotEmpty == true
+    }
+
+    private var siteAddress: String? {
+        if let siteAddress = escalationSiteAddress, siteAddress.isNotEmpty {
+            return siteAddress
         }
-        return siteAddress.isNotEmpty
+        if let siteAddress = stores.sessionManager.defaultSite?.url, siteAddress.isNotEmpty {
+            return siteAddress
+        }
+        return nil
     }
 
     private static func errorType(for error: Error) -> String {

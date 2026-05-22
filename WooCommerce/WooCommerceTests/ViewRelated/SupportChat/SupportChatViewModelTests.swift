@@ -661,7 +661,7 @@ struct SupportChatViewModelTests {
                 entryPoint: .chatHistory,
                 stores: stores,
                 chatID: chatID,
-                onContactHumanSupport: { _, _, _, _ in }
+                onContactHumanSupport: { _, _, _, _, _ in }
             )
 
             // When
@@ -678,7 +678,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -734,7 +734,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -777,7 +777,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -850,7 +850,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .preLogin,
             stores: stores,
-            onContactHumanSupport: { chatID, _, _, _ in
+            onContactHumanSupport: { chatID, _, _, _, _ in
                 receivedChatID = chatID
             }
         )
@@ -908,7 +908,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             systemStatusReport: prefetchedReport,
-            onContactHumanSupport: { _, _, supportAreaInfo, _ in
+            onContactHumanSupport: { _, _, supportAreaInfo, _, _ in
                 receivedSupportAreaInfo = supportAreaInfo
             }
         )
@@ -922,6 +922,58 @@ struct SupportChatViewModelTests {
         // Then
         #expect(receivedSupportAreaInfo?.topic == "woo_mobile_issue_orders")
         #expect(receivedSupportAreaInfo?.systemStatusReport == prefetchedReport)
+    }
+
+    @Test func contactHumanSupport_when_initialContext_has_siteURL_then_passes_siteAddress_separately() async {
+        // Given
+        var receivedSiteAddress: String?
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            switch action {
+            case let .sendMessage(_, _, _, _, _, completion):
+                let response = SupportChatResponse(
+                    chatID: 123,
+                    sessionID: "session-1",
+                    botSlug: "test-bot",
+                    botVersion: "1.0",
+                    messages: [
+                        SupportChatMessage(messageID: 1, role: .user, content: "Hello", context: nil),
+                        SupportChatMessage(
+                            messageID: 2,
+                            role: .bot,
+                            content: "Please contact support.",
+                            context: SupportChatMessageContext(
+                                sources: [],
+                                flags: nil,
+                                supportArea: SupportChatSupportArea(area: .mobileApp, topic: "woo_mobile_issue_orders", confidence: .high)
+                            )
+                        )
+                    ]
+                )
+                completion(.success(response))
+            default:
+                break
+            }
+        }
+
+        let sut = SupportChatViewModel(
+            entryPoint: .preLogin,
+            stores: stores,
+            initialContext: ["site_url": "https://prelogin.example.com"],
+            onContactHumanSupport: { _, _, _, siteAddress, _ in
+                receivedSiteAddress = siteAddress
+            }
+        )
+
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // When
+        sut.contactHumanSupport()
+
+        // Then
+        #expect(receivedSiteAddress == "https://prelogin.example.com")
     }
 
     @Test func contactHumanSupport_tracks_escalationTapped_with_source() {
@@ -1112,7 +1164,7 @@ struct SupportChatViewModelTests {
             entryPoint: .preLogin,
             stores: stores,
             hasCreatedTicket: true,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
 
         // When — append a user message so the only failing condition is hasCreatedTicket
@@ -1567,7 +1619,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
         sut.inputText = "Help"
         sut.sendMessage()
@@ -1615,7 +1667,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1658,7 +1710,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1700,7 +1752,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1743,7 +1795,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1838,7 +1890,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .connectivityTool,
             stores: stores,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
         sut.inputText = "Hello"
 
@@ -1873,7 +1925,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .connectivityTool,
             stores: stores,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
         sut.inputText = "Hello"
 
@@ -1894,7 +1946,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
 
         await confirmation { fetchCompleted in
@@ -1937,7 +1989,7 @@ struct SupportChatViewModelTests {
             stores: stores,
             chatID: chatID,
             sessionID: sessionID,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
         var receivedSessionID: String?
 
@@ -1975,7 +2027,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: { _, _, _, _, _ in }
         )
         var receivedChatID: Int64?
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -2011,7 +2063,7 @@ struct SupportChatViewModelTests {
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
             diagnosticsService: diagnosticsService,
-            onContactHumanSupport: { _, _, _, _ in },
+            onContactHumanSupport: { _, _, _, _, _ in },
             onUpdateWooCommercePlugin: onUpdateWooCommercePlugin,
             onOpenPushNotificationPreferences: onOpenPushNotificationPreferences
         )

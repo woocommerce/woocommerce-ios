@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import UserNotifications
 import Yosemite
 import class WooFoundation.CurrencySettings
 @testable import WooCommerce
@@ -18,10 +19,17 @@ struct PushNotificationPreferencesViewModelTests {
                                                                numberOfDecimals: 0)
 
     private func makeSUT(stores: MockStoresManager,
-                         currencySettings: CurrencySettings = Self.testCurrencySettings) -> PushNotificationPreferencesViewModel {
+                         currencySettings: CurrencySettings = Self.testCurrencySettings,
+                         notificationCenter: UserNotificationsCenterAdapter = MockUserNotificationsCenterAdapter())
+    -> PushNotificationPreferencesViewModel {
+        // Use a fresh `NotificationCenter` so simulator-posted system
+        // notifications don't queue work on the main actor and add contention
+        // to timing-sensitive concurrent-save tests.
         PushNotificationPreferencesViewModel(siteID: siteID,
                                              stores: stores,
-                                             currencySettings: currencySettings)
+                                             currencySettings: currencySettings,
+                                             notificationCenter: notificationCenter,
+                                             appStateNotificationCenter: NotificationCenter())
     }
 
     private func makeStores() -> MockStoresManager {
@@ -1046,6 +1054,46 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.last?.storeOrder?.enabled == true)
         #expect(dispatched.last?.storeReview == nil)
         #expect(dispatched.last?.storeStock == nil)
+    }
+
+    // MARK: - Notification permission
+
+    @Test func test_notificationsEnabled_starts_as_nil_before_check_runs() {
+        // Given / When
+        let sut = makeSUT(stores: makeStores())
+
+        // Then
+        #expect(sut.notificationsEnabled == nil)
+    }
+
+    @Test func test_checkNotificationPermission_when_status_is_authorized_then_notificationsEnabled_is_true() async {
+        // Given
+        let notificationCenter = MockUserNotificationsCenterAdapter()
+        notificationCenter.authorizationStatus = .authorized
+        let sut = makeSUT(stores: makeStores(), notificationCenter: notificationCenter)
+
+        // When
+        await sut.checkNotificationPermission()
+
+        // Then
+        #expect(sut.notificationsEnabled == true)
+    }
+
+    @Test(arguments: [UNAuthorizationStatus.denied,
+                      .notDetermined,
+                      .provisional,
+                      .ephemeral])
+    func test_checkNotificationPermission_when_status_is_non_authorized_then_notificationsEnabled_is_false(status: UNAuthorizationStatus) async {
+        // Given
+        let notificationCenter = MockUserNotificationsCenterAdapter()
+        notificationCenter.authorizationStatus = status
+        let sut = makeSUT(stores: makeStores(), notificationCenter: notificationCenter)
+
+        // When
+        await sut.checkNotificationPermission()
+
+        // Then
+        #expect(sut.notificationsEnabled == false)
     }
 }
 

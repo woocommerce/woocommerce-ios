@@ -331,9 +331,11 @@ struct PushNotificationPreferencesViewModelTests {
         // Given
         let stores = makeStores()
         let saveContinuation = SaveContinuationBox()
+        let (dispatched, dispatchedSignal) = AsyncStream<Void>.makeStream()
         stores.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .updatePushNotificationPreferences(_, changes, onCompletion) = action {
                 saveContinuation.deliver = { onCompletion(.success(changes)) }
+                dispatchedSignal.yield()
             }
         }
         let sut = makeSUT(stores: stores)
@@ -341,8 +343,13 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When
         async let saveResult = sut.save()
-        // Yield until `save()` reaches its first await so `isSaving` has flipped.
-        await Task.yield()
+        // Wait deterministically until `save()` has dispatched: the mock
+        // closure runs synchronously inside the `withCheckedThrowingContinuation`
+        // body, so once we see the signal, `isSaving == true` is guaranteed.
+        // A bare `Task.yield()` is not enough — one cooperative slice can be
+        // too short to reach the continuation under load.
+        var iterator = dispatched.makeAsyncIterator()
+        _ = await iterator.next()
 
         // Then
         #expect(sut.isSaving == true)
@@ -360,16 +367,21 @@ struct PushNotificationPreferencesViewModelTests {
         let stores = makeStores()
         let saveContinuation = SaveContinuationBox()
         let dispatched = DispatchedChanges()
+        let (dispatchedStream, dispatchedSignal) = AsyncStream<Void>.makeStream()
         stores.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .updatePushNotificationPreferences(_, changes, onCompletion) = action {
                 dispatched.append(changes)
                 saveContinuation.deliver = { onCompletion(.success(changes)) }
+                dispatchedSignal.yield()
             }
         }
         let sut = makeSUT(stores: stores)
         sut.setStoreOrderEnabled(true)
         async let firstSave = sut.save()
-        await Task.yield()
+        // Wait deterministically for the first save to dispatch — see the
+        // sibling test for the rationale.
+        var iterator = dispatchedStream.makeAsyncIterator()
+        _ = await iterator.next()
         #expect(sut.isSaving == true)
 
         // When

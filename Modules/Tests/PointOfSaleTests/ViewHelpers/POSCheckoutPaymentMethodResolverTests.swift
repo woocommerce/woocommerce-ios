@@ -82,10 +82,10 @@ struct POSCheckoutPaymentMethodResolverTests {
         #expect(methods == [.cashPayment])
     }
 
-    @Test func card_enabled_ignores_scanToPay_and_markOrderAsPaid_feature_flags() {
-        // When — Scan to Pay and Mark as Paid are surfaced via the "Other payment methods"
-        // sheet on card-enabled stores, NOT inline. The resolver only adds them to the
-        // promoted no-card layout.
+    @Test func card_enabled_appends_otherPaymentMethods_when_any_secondary_flag_is_on() {
+        // When — Scan to Pay and Mark as Paid don't render inline on card-enabled stores;
+        // instead, the resolver appends an `.otherPaymentMethods` slot that opens the
+        // existing POSOtherPaymentMethodsSheet (which is what gates Scan/Mark internally).
         let methods = POSCheckoutPaymentMethodResolver.resolve(
             isPOSCardPaymentEnabled: true,
             isCashButtonVisible: true,
@@ -96,7 +96,53 @@ struct POSCheckoutPaymentMethodResolverTests {
         )
 
         // Then
-        #expect(methods == [.tapToPay, .cardReader, .cashPayment])
+        #expect(methods == [.tapToPay, .cardReader, .cashPayment, .otherPaymentMethods])
+    }
+
+    @Test func card_enabled_appends_otherPaymentMethods_when_only_scanToPay_is_on() {
+        // When
+        let methods = POSCheckoutPaymentMethodResolver.resolve(
+            isPOSCardPaymentEnabled: true,
+            isCashButtonVisible: true,
+            isReaderDisconnected: false,
+            isTapToPayAvailable: false,
+            isScanToPayEnabled: true,
+            isMarkOrderAsPaidEnabled: false
+        )
+
+        // Then — iPad no-TTP card-supported country with a connected reader still surfaces
+        // the Other payment methods entry so Scan-to-Pay is reachable.
+        #expect(methods == [.cashPayment, .otherPaymentMethods])
+    }
+
+    @Test func card_enabled_appends_otherPaymentMethods_when_only_markOrderAsPaid_is_on() {
+        // When
+        let methods = POSCheckoutPaymentMethodResolver.resolve(
+            isPOSCardPaymentEnabled: true,
+            isCashButtonVisible: true,
+            isReaderDisconnected: false,
+            isTapToPayAvailable: false,
+            isScanToPayEnabled: false,
+            isMarkOrderAsPaidEnabled: true
+        )
+
+        // Then
+        #expect(methods == [.cashPayment, .otherPaymentMethods])
+    }
+
+    @Test func card_enabled_omits_otherPaymentMethods_when_no_secondary_flag_is_on() {
+        // When
+        let methods = POSCheckoutPaymentMethodResolver.resolve(
+            isPOSCardPaymentEnabled: true,
+            isCashButtonVisible: true,
+            isReaderDisconnected: true,
+            isTapToPayAvailable: false,
+            isScanToPayEnabled: false,
+            isMarkOrderAsPaidEnabled: false
+        )
+
+        // Then — no Other payment methods slot when there's nothing to put inside the sheet.
+        #expect(methods == [.cardReader, .cashPayment])
     }
 
     // MARK: - No-card (promoted) layout

@@ -398,7 +398,7 @@ struct SupportDiagnosticsServiceTests {
         #expect(didCheckPluginVersion == false)
     }
 
-    @Test func test_testNotifications_when_eligible_for_self_driven_PN_site_not_registered_and_WPCom_order_notifications_disabled_then_returns_failure_with_enable_action() async {
+    @Test func test_testNotifications_when_eligible_for_self_driven_PN_site_not_registered_and_WPCom_order_notifications_disabled_then_returns_failure() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let settings = NotificationSettings(deviceID: 123, enabledSites: [], disabledSites: [123])

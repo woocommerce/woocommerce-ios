@@ -145,7 +145,7 @@ struct POSCheckoutPaymentMethodResolverTests {
         #expect(methods == [.cardReader, .cashPayment])
     }
 
-    // MARK: - No-card (promoted) layout
+    // MARK: - No-card stores
 
     @Test func no_card_with_no_secondary_flags_yields_cash_only() {
         // When
@@ -163,7 +163,7 @@ struct POSCheckoutPaymentMethodResolverTests {
         #expect(methods == [.cashPayment])
     }
 
-    @Test func no_card_with_scanToPay_yields_cash_then_scanToPay() {
+    @Test func no_card_with_scanToPay_yields_cash_then_otherPaymentMethods() {
         // When
         let methods = POSCheckoutPaymentMethodResolver.resolve(
             isPOSCardPaymentEnabled: false,
@@ -174,11 +174,11 @@ struct POSCheckoutPaymentMethodResolverTests {
             isMarkOrderAsPaidEnabled: false
         )
 
-        // Then
-        #expect(methods == [.cashPayment, .scanToPay])
+        // Then — Scan-to-Pay is reachable through the `.otherPaymentMethods` sheet entry.
+        #expect(methods == [.cashPayment, .otherPaymentMethods])
     }
 
-    @Test func no_card_with_markOrderAsPaid_yields_cash_then_markOrderAsPaid() {
+    @Test func no_card_with_markOrderAsPaid_yields_cash_then_otherPaymentMethods() {
         // When
         let methods = POSCheckoutPaymentMethodResolver.resolve(
             isPOSCardPaymentEnabled: false,
@@ -189,11 +189,11 @@ struct POSCheckoutPaymentMethodResolverTests {
             isMarkOrderAsPaidEnabled: true
         )
 
-        // Then
-        #expect(methods == [.cashPayment, .markOrderAsPaid])
+        // Then — Mark-as-Paid is reachable through the `.otherPaymentMethods` sheet entry.
+        #expect(methods == [.cashPayment, .otherPaymentMethods])
     }
 
-    @Test func no_card_with_both_secondary_flags_yields_cash_scanToPay_markOrderAsPaid() {
+    @Test func no_card_with_both_secondary_flags_yields_cash_then_otherPaymentMethods() {
         // When
         let methods = POSCheckoutPaymentMethodResolver.resolve(
             isPOSCardPaymentEnabled: false,
@@ -204,13 +204,14 @@ struct POSCheckoutPaymentMethodResolverTests {
             isMarkOrderAsPaidEnabled: true
         )
 
-        // Then — Cash is the primary CTA; Scan to Pay and Mark as Paid follow as peers.
-        #expect(methods == [.cashPayment, .scanToPay, .markOrderAsPaid])
+        // Then — single `.otherPaymentMethods` entry regardless of how many secondary
+        // flags are on; the sheet that opens lists whichever are enabled.
+        #expect(methods == [.cashPayment, .otherPaymentMethods])
     }
 
     @Test func no_card_ignores_reader_and_TTP_state() {
         // When — even with TTP availability and a disconnected reader, no-card stores
-        // never expose card UI; only Cash + flagged secondaries appear.
+        // never expose card UI; only Cash + (optional) Other payment methods appear.
         let methods = POSCheckoutPaymentMethodResolver.resolve(
             isPOSCardPaymentEnabled: false,
             isCashButtonVisible: true,

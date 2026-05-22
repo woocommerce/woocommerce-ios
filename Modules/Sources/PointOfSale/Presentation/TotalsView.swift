@@ -109,23 +109,15 @@ struct TotalsView: View {
 
                     Spacer()
 
-                    if !paymentModel.isPOSCardPaymentEnabled && !checkoutPaymentMethods.isEmpty {
-                        // No card-present payments in this country (e.g. JP, MX, …). Render
-                        // the promoted 1 + n layout: Cash filled-primary on top, secondary
-                        // methods (Scan to Pay, Mark order as paid) as outlined peers below.
-                        // Short-circuits ahead of `useCashAndOtherMethodsBottomStrip` so we
-                        // never fall into a card-companion strip on a no-card store.
-                        POSCheckoutPromotedPaymentButtons(
-                            methods: checkoutPaymentMethods,
-                            onSelect: handlePaymentMethodSelection
-                        )
-                    } else if useCashAndOtherMethodsBottomStrip {
+                    if useCashAndOtherMethodsBottomStrip {
                         cashAndOtherMethodsBottomStrip
                     } else if horizontalSizeClass == .regular {
-                        // iPad: literal restoration of the original SecondaryPaymentButtons
-                        // design (Cash + Other side-by-side as outlined peers, popover off
-                        // the Other button anchored to the trigger). Card reader's connect
-                        // CTA lives in the hero region above, so it's not surfaced here.
+                        // iPad (card-enabled OR no-card): literal restoration of the original
+                        // SecondaryPaymentButtons design from PR #17080 — Cash + Other side-
+                        // by-side outlined peers, popover off the Other button anchored to
+                        // the trigger. Works uniformly for both: card reader's connect CTA
+                        // lives in the hero region above (which auto-hides for no-card via
+                        // `isShowingPaymentView`).
                         SecondaryPaymentButtons(
                             orderState: posModel.orderState,
                             paymentState: displayPaymentState,
@@ -148,6 +140,12 @@ struct TotalsView: View {
                             }
                         )
                     } else if !checkoutPaymentMethods.isEmpty {
+                        // Phone (card-enabled OR no-card): array-driven VStack. On no-card
+                        // stores the resolver returns [.cashPayment, .otherPaymentMethods?]
+                        // — same shape as card-enabled phones, just without the card-reader
+                        // / TTP slots. Tapping `.otherPaymentMethods` opens the existing
+                        // POSOtherPaymentMethodsSheet bottom sheet which already gates
+                        // Scan-to-Pay / Mark-as-Paid by their own feature flags.
                         POSCheckoutPaymentButtonsRow(
                             methods: checkoutPaymentMethods,
                             onSelect: handlePaymentMethodSelection
@@ -802,16 +800,11 @@ private extension TotalsView {
             paymentModel.connectCardReader()
         case .cashPayment:
             paymentModel.startCashPayment()
-        case .scanToPay:
-            Task { @MainActor in
-                await paymentModel.startScanToPayPayment()
-            }
-        case .markOrderAsPaid:
-            paymentModel.startMarkAsPaidPayment()
         case .otherPaymentMethods:
             // Phone-only path: iPad uses the dedicated `SecondaryPaymentButtons` view
             // which hosts its own anchored popover off the button, so `.otherPaymentMethods`
-            // never reaches the array-driven row on iPad.
+            // never reaches the array-driven row on iPad. Phone presents
+            // `POSOtherPaymentMethodsSheet` as a bottom sheet.
             handleOtherPaymentMethodsTapped()
         }
     }

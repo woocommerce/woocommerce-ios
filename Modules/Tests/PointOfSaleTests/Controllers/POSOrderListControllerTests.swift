@@ -1672,7 +1672,7 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
         return POSRefundPreparation(
             orderID: order.id,
             selectableItems: productSelectables + feeSelectables,
-            paymentMethodDescription: String(format: "Via %@", order.paymentMethodTitle),
+            paymentMethodDescription: String(format: "via %1$@", order.paymentMethodTitle),
             customerEmail: order.customerEmail
         )
     }

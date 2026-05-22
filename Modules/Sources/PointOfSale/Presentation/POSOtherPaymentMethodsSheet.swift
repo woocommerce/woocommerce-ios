@@ -6,22 +6,30 @@ import SwiftUI
 ///
 /// - On the TTP-available + no-reader-connected screen (paired with the TTP hero),
 ///   this lists Card reader, Scan to Pay, and Mark order as paid.
-/// - On the TTP-available + BT-reader-connected screen, this lists Tap to Pay on
-///   iPhone, Scan to Pay, and Mark order as paid — the Card reader row is hidden
-///   because a reader is already connected and offering to "connect a Bluetooth
-///   reader" would contradict that state.
+/// - On the TTP-available + BT-reader-connected screen, this lists only Scan to Pay
+///   and Mark order as paid. The Card reader row is hidden because a reader is
+///   already connected; Tap to Pay is hidden too because the iOS phone POS uses a
+///   one-shot Bluetooth model — the BT session must finish (success / cancel /
+///   abandonment) before the merchant returns to the TTP hero, where Tap to Pay
+///   is the primary CTA again.
 ///
 /// Mirrors the Android phone POS overflow dialog that pairs with the TTP hero
-/// (samiuelson #15842 / #15825).
+/// (samiuelson #15842 / #15825). The iOS layout deliberately diverges in one
+/// respect: Android offers Tap to Pay as a sheet row during a BT session (lets
+/// the merchant switch mid-flow); iOS does not (see commentary on the
+/// `isTapToPayRowAvailableInOtherMethodsSheet` gate in `TotalsView`).
 struct POSOtherPaymentMethodsSheet: View {
     /// True when the Card reader row should appear. Pass false when a reader is
     /// already connected — the "Connect a Bluetooth reader…" subtitle would
     /// mislead the merchant in that case.
     var isCardReaderAvailable: Bool = true
     let onCardReader: () -> Void
-    /// True when the Tap to Pay row should appear. Pass false when the sheet is
-    /// hosted by the TTP hero screen (TTP is already the primary CTA on that
-    /// screen so it shouldn't show up again here) or when TTP isn't available.
+    /// True when the Tap to Pay row should appear. In the current one-shot
+    /// Bluetooth model every caller passes `false`: on the TTP hero screen
+    /// Tap to Pay is already the primary CTA above the sheet, and during a
+    /// Bluetooth collection the iOS phone POS doesn't let the merchant
+    /// switch methods mid-flow. Parameter kept on the API for symmetry with
+    /// the other rows and to leave room if that policy ever changes.
     var isTapToPayAvailable: Bool = false
     var onTapToPay: (() -> Void)?
     var isScanToPayAvailable: Bool = false

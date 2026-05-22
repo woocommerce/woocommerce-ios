@@ -194,10 +194,11 @@ struct TotalsView: View {
                         await paymentModel.startPaymentWithMethod(.bluetooth)
                     }
                 },
-                // Surface Tap to Pay in the sheet only when the merchant has
-                // *already* committed to BT (reader connected). On the TTP-hero
-                // screen TTP is the primary CTA already, so re-listing it in
-                // the sheet would be redundant.
+                // One-shot Bluetooth model: Tap to Pay is never offered from the
+                // sheet. On the TTP hero, TTP is already the primary CTA above;
+                // during a BT session, switching to TTP mid-flow is out of scope.
+                // The gate property is always false today — see its docstring
+                // for the policy rationale.
                 isTapToPayAvailable: isTapToPayRowAvailableInOtherMethodsSheet,
                 onTapToPay: {
                     handleTapToPayTapped()
@@ -792,8 +793,11 @@ private extension TotalsView {
     /// True whenever the bottom of the totals view should render the
     /// `cashAndOtherMethodsBottomStrip` instead of `POSCheckoutPaymentButtonsRow`.
     /// Covers both the TTP-hero case (no reader connected) and the
-    /// TTP-available + BT-reader-connected case where TTP lives in the sheet
-    /// rather than as a primary CTA contradicting the reader-ready screen.
+    /// TTP-available + BT-reader-connected case. In the BT-connected case the
+    /// strip renders Cash + Other payment methods (with Scan to Pay and
+    /// Mark as Paid inside the sheet); the row's TTP-as-primary CTA would
+    /// contradict the reader-ready screen, so it's collapsed into the strip
+    /// shape used by the hero.
     var useCashAndOtherMethodsBottomStrip: Bool {
         if useTapToPayHeroLayout { return true }
         // Reader-connected case: only fold into the strip when TTP would

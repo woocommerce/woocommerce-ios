@@ -1469,7 +1469,12 @@ struct POSPaymentModelTests {
         // status publisher and the mock's `connectReader` doesn't drive it.
         // The gate side-effects we want — `currentPaymentMethod` set,
         // `isAwaitingExplicitPaymentStart` cleared — happen synchronously
-        // before the first `await` inside the function.)
+        // before the first `await` inside the function, so a single
+        // `Task.yield()` is enough to let the spawned Task run that prefix.
+        // If `startPaymentWithMethod` ever grows an `await` before the
+        // `currentPaymentMethod = method` assignment, this assertion would
+        // start asserting the pre-change value and pass incorrectly — replace
+        // the yield with a `withObservationTracking` wait at that point.
         Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
         await Task.yield()
 

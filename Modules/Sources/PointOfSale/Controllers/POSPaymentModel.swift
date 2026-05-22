@@ -34,7 +34,7 @@ final class POSPaymentModel {
         return false
     }
 
-/// The connection method of the currently active payment session, or nil
+    /// The connection method of the currently active payment session, or nil
     /// between sessions. Distinct from `preferredConnectionMethod` (the POS
     /// session's default): the merchant can pick BT via the "Other payment
     /// methods" sheet on a TTP-default device, in which case the active
@@ -1157,7 +1157,11 @@ private extension POSPaymentModel {
                 self.paymentState.card = .idle
                 self.cardPresentPaymentInlineMessage = nil
                 Task { @MainActor [weak self] in
-                    try? await self?.cardPresentPaymentService.cancelPayment()
+                    do {
+                        try await self?.cardPresentPaymentService.cancelPayment()
+                    } catch {
+                        DDLogError("🃏 [CardPayment] cancelPayment on cancelledOnReader failed: \(error)")
+                    }
                 }
             }
             .store(in: &paymentSessionCancellables)

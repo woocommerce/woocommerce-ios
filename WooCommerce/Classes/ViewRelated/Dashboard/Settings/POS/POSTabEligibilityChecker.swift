@@ -56,12 +56,11 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     }
 
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
-        switch ineligibleReason {
-        case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound:
-            return await checkEligibility()
-        case .selfDeallocated:
-            return await checkEligibility()
-        }
+        // All current ineligibility reasons (plugin missing / below min version /
+        // site-settings unavailable / self-deallocated) resolve to re-running the
+        // plugin-eligibility check. Country/currency/feature-switch branches that used to
+        // require their own retry paths are gone now, so no per-case dispatch is needed.
+        return await checkEligibility()
     }
 }
 

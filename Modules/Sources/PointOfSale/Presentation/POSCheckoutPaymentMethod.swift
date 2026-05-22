@@ -16,10 +16,16 @@ enum POSCheckoutPaymentMethod: Hashable {
     /// Manually entered cash payment.
     case cashPayment
     /// Scan-to-Pay (QR code) checkout. Feature-flag-gated via `.pointOfSaleScanToPay`.
-    /// Today surfaced via the "Other payment methods" sheet on card-enabled stores, and
-    /// inline in the promoted-no-card layout on stores without card support.
+    /// Surfaced inline in the promoted-no-card layout, and behind the
+    /// `.otherPaymentMethods` sheet on the card-enabled layout.
     case scanToPay
     /// Mark order as paid (out-of-band payment confirmation). Feature-flag-gated via
     /// `.pointOfSaleMarkOrderAsPaid`. Same surfacing rules as `.scanToPay`.
     case markOrderAsPaid
+    /// Opens the "Other payment methods" sheet exposing Scan-to-Pay and Mark-as-Paid
+    /// (the subset that is feature-flag-on). Appended to the row on card-enabled stores
+    /// whenever at least one secondary method is enabled, so the merchant can always
+    /// reach the secondary methods even on iPad-no-TTP card flows where neither
+    /// `useCashAndOtherMethodsBottomStrip` nor the promoted-no-card layout applies.
+    case otherPaymentMethods
 }

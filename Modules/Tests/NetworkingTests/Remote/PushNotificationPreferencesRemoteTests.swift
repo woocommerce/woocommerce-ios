@@ -98,6 +98,23 @@ struct PushNotificationPreferencesRemoteTests {
         #expect(storeOrder["min_amount"] is NSNull)
     }
 
+    @Test func updatePreferences_when_storeReview_maxRating_is_nil_then_sends_explicit_null() async throws {
+        // Given
+        let remote = PushNotificationPreferencesRemote(network: network)
+        let changes = PushNotificationPreferences(storeReview: .init(enabled: true, maxRating: nil))
+
+        // When
+        _ = try? await remote.updatePreferences(siteID: sampleSiteID, changes: changes)
+
+        // Then — the wire body must include `max_rating` as JSON null so the server clears
+        // the rating cap (the "All new reviews" selection on the detail screen).
+        let parameters = try #require(network.queryParametersDictionary)
+        let storeReview = try #require(parameters["store_review"] as? [String: Any])
+        #expect(storeReview.count == 2)
+        #expect(storeReview["enabled"] as? Bool == true)
+        #expect(storeReview["max_rating"] is NSNull)
+    }
+
     // MARK: - Response decoding
 
     @Test func loadPreferences_then_decodes_full_response() async throws {

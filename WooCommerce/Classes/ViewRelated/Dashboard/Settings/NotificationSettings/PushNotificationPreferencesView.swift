@@ -10,6 +10,9 @@ struct PushNotificationPreferencesView: View {
     /// Set by the hosting controller after `super.init`. Default is a no-op so
     /// previews work without it.
     var onNewOrderTapped: () -> Void = {}
+    /// Set by the hosting controller after `super.init`. Default is a no-op so
+    /// previews work without it.
+    var onNewReviewTapped: () -> Void = {}
 
     init(viewModel: PushNotificationPreferencesViewModel) {
         self.viewModel = viewModel
@@ -59,7 +62,9 @@ struct PushNotificationPreferencesView: View {
                     accessibilityHint: Localization.newOrdersAccessibilityHint,
                     action: onNewOrderTapped)
                 row(title: Localization.newReviewsTitle,
-                    detail: viewModel.isStoreReviewEnabled ? Localization.newReviewsDetail : Localization.off)
+                    detail: viewModel.isStoreReviewEnabled ? viewModel.storeReviewDetailText : Localization.off,
+                    accessibilityHint: Localization.newReviewsAccessibilityHint,
+                    action: onNewReviewTapped)
                 row(title: Localization.stockTitle,
                     detail: viewModel.isStoreStockEnabled ? Localization.stockDetail : Localization.off)
             }
@@ -139,10 +144,10 @@ extension PushNotificationPreferencesView {
             value: "New reviews",
             comment: "Title of the row that toggles new-review push notifications."
         )
-        static let newReviewsDetail = NSLocalizedString(
-            "pushNotificationPreferencesView.newReviews.detail",
-            value: "All reviews",
-            comment: "Detail text for the row that toggles new-review push notifications."
+        static let newReviewsAccessibilityHint = NSLocalizedString(
+            "pushNotificationPreferencesView.newReviews.accessibilityHint",
+            value: "Customize new review notifications",
+            comment: "VoiceOver hint announced when focused on the New reviews row, describing that it opens a detail screen."
         )
         static let stockTitle = NSLocalizedString(
             "pushNotificationPreferencesView.stock.title",

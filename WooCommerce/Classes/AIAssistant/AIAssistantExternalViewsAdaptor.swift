@@ -5,6 +5,7 @@ import Yosemite
 import WooAIAssistant
 import WooFoundation
 
+@MainActor
 struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
 
     private let currencySettings: CurrencySettings

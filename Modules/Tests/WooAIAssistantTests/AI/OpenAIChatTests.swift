@@ -142,10 +142,8 @@ struct OpenAIChatTests {
                                       description: "List orders",
                                       parameters: .object([:])))
             ],
-            toolChoice: .auto,
             model: "gpt-4o-mini",
             stream: true,
-            feature: "woo-ai-assistant",
             maxTokens: 256
         )
 
@@ -154,11 +152,11 @@ struct OpenAIChatTests {
         let json = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
 
         // Then
-        #expect(json["tool_choice"] as? String == "auto")
+        #expect(json["tool_choice"] == nil)
         #expect(json["max_tokens"] as? Int == 256)
         #expect(json["model"] as? String == "gpt-4o-mini")
         #expect(json["stream"] as? Bool == true)
-        #expect(json["feature"] as? String == "woo-ai-assistant")
+        #expect(json["feature"] == nil)
         #expect(json["temperature"] == nil)
         let messages = try #require(json["messages"] as? [[String: Any]])
         #expect(messages.first?["role"] as? String == "user")

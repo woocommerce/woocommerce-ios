@@ -89,7 +89,6 @@ private func makeStubDependencies() -> AIAssistantDependencyAdaptor {
         analytics: StubAnalytics(),
         externalNavigation: StubNavigation(),
         externalViews: StubExternalViews(),
-        jwtProvider: StubJWT(),
         chatService: StubChatService(),
         toolRegistry: StubToolRegistry(),
         safetyPolicy: DefaultSafetyPolicy(),
@@ -115,14 +114,9 @@ private struct StubNavigation: AssistantExternalNavigationProviding {
 
 private struct StubExternalViews: AssistantExternalViewProviding {}
 
-private struct StubJWT: AssistantJWTProviding {
-    func currentJWT() async throws -> String { "stub" }
-}
-
 private struct StubChatService: AIChatService {
     func streamTurn(messages: [OpenAIChat.Message],
-                    tools: [OpenAIChat.ToolDefinition]?,
-                    toolChoice: OpenAIChat.ToolChoice?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
+                    tools: [OpenAIChat.ToolDefinition]?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
         AsyncThrowingStream { $0.finish() }
     }
 }

@@ -51,7 +51,10 @@ struct POSCheckoutPromotedPaymentButtons: View {
         } label: {
             Text(POSCheckoutPaymentMethodLocalization.title(for: method))
                 .font(.posBodyLargeBold)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
                 .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
         }
         .layoutPriority(1)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -65,7 +68,14 @@ struct POSCheckoutPromotedPaymentButtons: View {
         } label: {
             Text(POSCheckoutPaymentMethodLocalization.title(for: method))
                 .font(.posBodyLargeBold)
+                // Keep the row-2 peer buttons on a single line so "Mark order as paid"
+                // doesn't wrap to two lines and push its sibling out of alignment. The
+                // scale factor lets the longer label shrink to fit within its column
+                // instead of clipping or wrapping.
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
                 .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
         }
         .layoutPriority(1)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)

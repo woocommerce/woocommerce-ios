@@ -60,6 +60,25 @@ struct POSRefundErrorStrings {
     let createSubtitle: String
 }
 
+private struct POSRefundCardPresentAlertItem: Identifiable, Equatable {
+    let id: String
+    let alertType: PointOfSaleCardPresentPaymentAlertType
+
+    static func == (lhs: POSRefundCardPresentAlertItem, rhs: POSRefundCardPresentAlertItem) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+private struct POSRefundCardPresentOnboardingItem: Identifiable, Equatable {
+    let id: ObjectIdentifier
+    let factory: CardPresentPaymentOnboardingViewContainer
+    let onCancel: () -> Void
+
+    static func == (lhs: POSRefundCardPresentOnboardingItem, rhs: POSRefundCardPresentOnboardingItem) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 // MARK: - Shared Refund Modal Content
 
 struct POSRefundModalContentView: View {
@@ -69,13 +88,13 @@ struct POSRefundModalContentView: View {
     @Environment(POSPaymentModel.self) private var paymentModel
     @Environment(POSRefundSubmissionModel.self) private var refundSubmissionModel
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    /// Dismisses the modal directly, bypassing the `onChange(of:)` chain in `POSModalViewModifier`
-    /// which can fail to fire when the view is inside a pushed navigation destination.
+    /// Dismisses legacy POS modals directly. The order details refund flow now presents as a
+    /// full-screen cover and uses `onDismiss`; keep this fallback for previews or reused modal contexts.
     @Environment(\.posModalDismissAction) private var dismissModal
 
     let order: POSOrder
+    let onDismiss: () -> Void
     let onRetryLoading: () -> Void
     let onRetryPreparation: () -> Void
     let onEditRefund: (() -> Void)?
@@ -87,12 +106,36 @@ struct POSRefundModalContentView: View {
 
     @State private var isShowingEmailReceiptView = false
     @State private var isShowingReasonInput = false
+    @State private var cardPresentAlertItem: POSRefundCardPresentAlertItem?
+    @State private var cardPresentOnboardingItem: POSRefundCardPresentOnboardingItem?
     @State private var currentRefundReason: String?
     @State private var reasonInputReviewData: POSRefundReviewData?
 
     var body: some View {
-        content
-            .posModalFullScreen(horizontalSizeClass == .compact)
+        ZStack {
+            screenBackgroundColor
+                .ignoresSafeArea()
+
+            content
+                .environment(\.posRefundPresentationStyle, .fullScreen)
+        }
+            .ignoresSafeArea(.container, edges: .bottom)
+            .posModal(item: $cardPresentAlertItem, onDismiss: {
+                cardPresentAlertItem?.alertType.onDismiss?()
+            }) { item in
+                PointOfSaleCardPresentPaymentAlert(alertType: item.alertType)
+                    .posInteractiveDismissDisabled(item.alertType.isDismissDisabled)
+            }
+            .posModal(item: $cardPresentOnboardingItem, onDismiss: {
+                cardPresentOnboardingItem?.onCancel()
+            }) { item in
+                PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(
+                    onboardingViewContainer: item.factory,
+                    onDismissTap: {
+                        item.onCancel()
+                        cardPresentOnboardingItem = nil
+                    }))
+            }
             .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
                 POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
                     try await orderListModel.sendReceipt(order: order, email: email)
@@ -114,36 +157,46 @@ struct POSRefundModalContentView: View {
                 )
                 .posHeaderBackButtonIcon(systemName: "xmark")
             }
+            .onAppear {
+                updateCardPresentAlertItem()
+                updateCardPresentOnboardingItem()
+            }
+            .onChange(of: cardPresentAlertID) { _, _ in
+                updateCardPresentAlertItem()
+            }
+            .onChange(of: cardPresentOnboardingID) { _, _ in
+                updateCardPresentOnboardingItem()
+            }
     }
 
     @ViewBuilder
     private var content: some View {
         switch state {
         case .loading:
-            POSRefundLoadingView()
+            POSRefundLoadingView(onBack: { dismissRefundFlow() })
         case .loadingError:
             POSRefundErrorView(
                 title: errorStrings.loadTitle,
                 subtitle: errorStrings.loadSubtitle,
                 onRetry: onRetryLoading,
-                onCancel: { dismissModal?() },
-                onClose: { dismissModal?() }
+                onCancel: { dismissRefundFlow() },
+                onClose: { dismissRefundFlow() }
             )
         case .preparationError:
             POSRefundErrorView(
                 title: errorStrings.prepareTitle,
                 subtitle: errorStrings.prepareSubtitle,
                 onRetry: onRetryPreparation,
-                onCancel: { dismissModal?() },
-                onClose: { dismissModal?() }
+                onCancel: { dismissRefundFlow() },
+                onClose: { dismissRefundFlow() }
             )
         case .nothingToRefund:
-            POSRefundNothingToRefundView(onClose: { dismissModal?() })
+            POSRefundNothingToRefundView(onClose: { dismissRefundFlow() })
         case .itemSelection:
             if showsItemSelection {
                 POSRefundItemsSelectionView(
                     onClose: {
-                        dismissModal?()
+                        dismissRefundFlow()
                     },
                     onContinue: { navigateToRefundReview() }
                 )
@@ -153,7 +206,7 @@ struct POSRefundModalContentView: View {
         case .review(let reviewData):
             POSRefundReviewView(
                 onClose: {
-                    dismissModal?()
+                    dismissRefundFlow()
                 },
                 itemsCount: reviewData.itemsCount,
                 formattedItemsSubtotal: reviewData.formattedItemsSubtotal,
@@ -174,7 +227,7 @@ struct POSRefundModalContentView: View {
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 isProcessing: false,
                 onClose: {
-                    dismissModal?()
+                    dismissRefundFlow()
                 },
                 onConfirm: {
                     handleRefundConfirmation(reviewData: reviewData)
@@ -202,18 +255,61 @@ struct POSRefundModalContentView: View {
                 formattedRefundTotal: reviewData.formattedRefundTotal,
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 customerEmail: reviewData.customerEmail,
-                onDone: { dismissModal?() },
-                onEmailReceipt: { isShowingEmailReceiptView = true },
-                onClose: { dismissModal?() }
+                onDone: { dismissRefundFlow() },
+                onEmailReceipt: { isShowingEmailReceiptView = true }
             )
         case .error(let reviewData):
             POSRefundErrorView(
                 title: errorStrings.createTitle,
                 subtitle: errorStrings.createSubtitle,
                 onRetry: { modalState = .confirmation(reviewData) },
-                onCancel: { dismissModal?() },
-                onClose: { dismissModal?() }
+                onCancel: { dismissRefundFlow() },
+                onClose: { dismissRefundFlow() }
             )
+        }
+    }
+
+    private var screenBackgroundColor: Color {
+        switch state {
+        case .processing:
+            switch refundSubmissionModel.state {
+            case .processingReader, .displayingReaderMessage:
+                return .posPrimary
+            case .cardPresentEvent(.processing), .cardPresentEvent(.displayReaderMessage), .cardPresentEvent(.paymentSuccess):
+                return .posPrimary
+            case .submittingCardPresent:
+                return .posPrimary
+            case .idle, .loading, .onboarding, .cardPresentEvent, .preparingReader, .waitingForCard,
+                    .submitting, .retryableError, .nonRetryableError, .completed:
+                return .posSurfaceBright
+            }
+        case .loading, .loadingError, .preparationError, .nothingToRefund, .itemSelection, .review, .confirmation,
+                .success, .error:
+            return .posSurfaceBright
+        }
+    }
+
+    private var cardPresentAlertID: String? {
+        guard case .processing = state,
+              case .cardPresentEvent(let eventDetails) = refundSubmissionModel.state else {
+            return nil
+        }
+        return eventDetails.posRefundConnectionAlertID
+    }
+
+    private var cardPresentOnboardingID: ObjectIdentifier? {
+        guard case .processing = state,
+              case .onboarding(let factory, _) = refundSubmissionModel.state else {
+            return nil
+        }
+        return ObjectIdentifier(factory)
+    }
+
+    private func dismissRefundFlow() {
+        if let dismissModal {
+            dismissModal()
+        } else {
+            onDismiss()
         }
     }
 
@@ -226,6 +322,54 @@ struct POSRefundModalContentView: View {
         modalState = .review(reviewData)
     }
 
+    private func updateCardPresentAlertItem() {
+        guard case .processing(let reviewData) = state,
+              case .cardPresentEvent(let eventDetails) = refundSubmissionModel.state,
+              let alertID = eventDetails.posRefundConnectionAlertID,
+              let alertType = cardPresentAlertType(for: eventDetails, reviewData: reviewData) else {
+            cardPresentAlertItem = nil
+            return
+        }
+
+        cardPresentAlertItem = POSRefundCardPresentAlertItem(id: alertID, alertType: alertType)
+    }
+
+    private func updateCardPresentOnboardingItem() {
+        guard case .processing = state,
+              case .onboarding(let factory, let onCancel) = refundSubmissionModel.state else {
+            cardPresentOnboardingItem = nil
+            return
+        }
+
+        cardPresentOnboardingItem = POSRefundCardPresentOnboardingItem(
+            id: ObjectIdentifier(factory),
+            factory: factory,
+            onCancel: onCancel
+        )
+    }
+
+    private func cardPresentAlertType(for eventDetails: CardPresentPaymentEventDetails,
+                                      reviewData: POSRefundReviewData) -> PointOfSaleCardPresentPaymentAlertType? {
+        guard let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyle(
+            for: eventDetails,
+            dependencies: .init(
+                tryPaymentAgainBackToCheckoutAction: { modalState = .confirmation(reviewData) },
+                nonRetryableErrorExitAction: { dismissRefundFlow() },
+                formattedOrderTotalPrice: reviewData.formattedRefundTotal,
+                paymentCaptureErrorTryAgainAction: { modalState = .confirmation(reviewData) },
+                paymentCaptureErrorNewOrderAction: { dismissRefundFlow() },
+                paymentIntentCreationErrorEditOrderAction: { modalState = .review(reviewData) },
+                dismissReaderConnectionModal: { cardPresentAlertItem = nil }
+            )) else {
+            return nil
+        }
+
+        guard case .alert(let alertType) = presentationStyle else {
+            return nil
+        }
+        return alertType
+    }
+
     @MainActor
     private func processRefund(reviewData: POSRefundReviewData) async {
         analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingStarted())
@@ -235,6 +379,9 @@ struct POSRefundModalContentView: View {
             refundSubmissionModel.reset()
             modalState = .success(reviewData)
             onRefundSuccess?()
+        } catch POSRefundSubmissionError.canceledByUser {
+            refundSubmissionModel.reset()
+            modalState = .confirmation(reviewData)
         } catch {
             DDLogError("⛔️ Failed to process POS refund: \(error)")
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingFailed(error: error))
@@ -272,5 +419,54 @@ struct POSRefundModalContentView: View {
         }
 
         return paymentModel.cardReaderConnectionStatus == .disconnected
+    }
+}
+
+private extension CardPresentPaymentEventDetails {
+    var posRefundConnectionAlertID: String? {
+        switch self {
+        case .scanningForReaders:
+            return "scanningForReaders"
+        case .scanningFailed(let error, _):
+            return "scanningFailed-\(error.localizedDescription)"
+        case .bluetoothRequired(let error, _):
+            return "bluetoothRequired-\(error.localizedDescription)"
+        case .connectingToReader:
+            return "connectingToReader"
+        case .connectingFailed(let error, _, _):
+            return "connectingFailed-\(error.localizedDescription)"
+        case .connectingFailedNonRetryable(let error, _):
+            return "connectingFailedNonRetryable-\(error.localizedDescription)"
+        case .connectingFailedUpdatePostalCode:
+            return "connectingFailedUpdatePostalCode"
+        case .connectingFailedChargeReader:
+            return "connectingFailedChargeReader"
+        case .connectingFailedUpdateAddress(let adminURL, _, _, _):
+            return "connectingFailedUpdateAddress-\(adminURL.absoluteString)"
+        case .foundReader(let name, _, _, _):
+            return "foundReader-\(name)"
+        case .foundMultipleReaders(let readerIDs, _):
+            return "foundMultipleReaders-\(readerIDs.joined(separator: ","))"
+        case .updateProgress(let requiredUpdate, let progress, _):
+            return "updateProgress-\(requiredUpdate)-\(progress)"
+        case .updateFailed:
+            return "updateFailed"
+        case .updateFailedNonRetryable:
+            return "updateFailedNonRetryable"
+        case .updateFailedLowBattery(let batteryLevel, _, _):
+            return "updateFailedLowBattery-\(batteryLevel)"
+        case .connectionSuccess:
+            return "connectionSuccess"
+        case .locationRequestPreAlert:
+            return "locationRequestPreAlert"
+        case .locationRequired:
+            return "locationRequired"
+        case .selectSearchType, .validatingOrder, .preparingForPayment,
+                .tapSwipeOrInsertCard, .cardInserted, .processing,
+                .displayReaderMessage, .paymentSuccess, .paymentError,
+                .paymentCaptureError, .paymentIntentCreationError,
+                .cancelledOnReader:
+            return nil
+        }
     }
 }

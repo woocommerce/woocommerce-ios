@@ -23,6 +23,7 @@ struct POSOrderDetailsView: View {
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @State private var isShowingEmailReceiptView = false
     @State private var refundModalState: RefundModalState?
+    @State private var refundFlowPreparationID: UUID?
     @State private var selectedRefundForDetail: POSOrderRefund?
 
     private var shouldShowBackButton: Bool {
@@ -109,33 +110,33 @@ struct POSOrderDetailsView: View {
                 onClose: { selectedRefundForDetail = nil }
             )
         }
-        .posModal(item: $refundModalState, onDismiss: {
-            if let step = refundModalState?.abortStep {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: step))
-            }
-            orderListModel.ordersController.clearRefundSelection()
-        }) { state in
-            POSRefundModalContentView(
-                state: state,
-                modalState: $refundModalState,
-                order: order,
-                onRetryLoading: { initiateRefundFlow() },
-                onRetryPreparation: {
-                    refundModalState = .itemSelection
-                },
-                onEditRefund: { refundModalState = .itemSelection },
-                showsItemSelection: true,
-                onRefundSuccess: onRefundSuccess,
-                onRefundFailure: onRefundFailure,
-                errorStrings: .init(
-                    loadTitle: Localization.loadRefundErrorTitle,
-                    loadSubtitle: Localization.loadRefundErrorSubtitle,
-                    prepareTitle: Localization.prepareRefundErrorTitle,
-                    prepareSubtitle: Localization.prepareRefundErrorSubtitle,
-                    createTitle: Localization.createRefundErrorTitle,
-                    createSubtitle: Localization.createRefundErrorSubtitle
+        .posFullScreenCover(isPresented: isRefundFlowPresented, onDismiss: {
+            dismissRefundFlow()
+        }) {
+            if let state = refundModalState {
+                POSRefundModalContentView(
+                    state: state,
+                    modalState: $refundModalState,
+                    order: order,
+                    onDismiss: { dismissRefundFlow() },
+                    onRetryLoading: { initiateRefundFlow() },
+                    onRetryPreparation: {
+                        refundModalState = .itemSelection
+                    },
+                    onEditRefund: { refundModalState = .itemSelection },
+                    showsItemSelection: true,
+                    onRefundSuccess: onRefundSuccess,
+                    onRefundFailure: onRefundFailure,
+                    errorStrings: .init(
+                        loadTitle: Localization.loadRefundErrorTitle,
+                        loadSubtitle: Localization.loadRefundErrorSubtitle,
+                        prepareTitle: Localization.prepareRefundErrorTitle,
+                        prepareSubtitle: Localization.prepareRefundErrorSubtitle,
+                        createTitle: Localization.createRefundErrorTitle,
+                        createSubtitle: Localization.createRefundErrorSubtitle
+                    )
                 )
-            )
+            }
         }
         .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
             POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
@@ -551,11 +552,28 @@ private extension POSOrderDetailsView {
 // MARK: - Refund Flow Helpers
 
 private extension POSOrderDetailsView {
+    var isRefundFlowPresented: Binding<Bool> {
+        Binding(
+            get: { refundModalState != nil },
+            set: { isPresented in
+                if !isPresented {
+                    dismissRefundFlow()
+                }
+            }
+        )
+    }
+
     func initiateRefundFlow() {
         analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowStarted())
+        let preparationID = UUID()
+        refundFlowPreparationID = preparationID
         refundModalState = .loading
         Task { @MainActor in
             let result = await orderListModel.ordersController.startRefundFlow()
+            guard refundFlowPreparationID == preparationID else {
+                return
+            }
+            refundFlowPreparationID = nil
             switch result {
             case .hasItemsToRefund:
                 refundModalState = .itemSelection
@@ -573,6 +591,15 @@ private extension POSOrderDetailsView {
             return
         }
         refundModalState = .review(reviewData)
+    }
+
+    func dismissRefundFlow() {
+        if let step = refundModalState?.abortStep {
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: step))
+        }
+        refundFlowPreparationID = nil
+        refundModalState = nil
+        orderListModel.ordersController.clearRefundSelection()
     }
 }
 

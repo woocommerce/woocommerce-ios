@@ -12,6 +12,7 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     var displayedCustomAmounts: [POSOrderCustomAmount] = []
     var refundActionAvailability: RefundActionAvailability = .available
     var refundSelectableItems: [POSRefundSelectableItem] = []
+    var currentRefundRequiresCardPresentRefund = false
     var updateOrderCalled = false
     var spyUpdateOrderID: Int64?
     var shouldThrowError = false

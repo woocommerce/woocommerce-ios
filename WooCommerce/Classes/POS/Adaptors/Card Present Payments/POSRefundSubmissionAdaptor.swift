@@ -66,7 +66,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
         return POSRefundPreparation(orderID: fullOrder.orderID,
                                     selectableItems: selectableItems,
                                     paymentMethodDescription: refundMapping.paymentMethodDescription(for: fullOrder, charge: charge),
-                                    customerEmail: fullOrder.billingAddress?.email)
+                                    customerEmail: fullOrder.billingAddress?.email,
+                                    requiresCardPresentRefund: refundMapping.requiresCardPresentRefund(context: context))
     }
 
     func prepareReviewData(for order: POSOrder,

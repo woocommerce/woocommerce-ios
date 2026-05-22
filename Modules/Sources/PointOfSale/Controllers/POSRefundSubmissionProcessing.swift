@@ -8,15 +8,18 @@ public struct POSRefundPreparation: Equatable {
     public let selectableItems: [POSRefundSelectableItem]
     public let paymentMethodDescription: String
     public let customerEmail: String?
+    public let requiresCardPresentRefund: Bool
 
     public init(orderID: Int64,
                 selectableItems: [POSRefundSelectableItem],
                 paymentMethodDescription: String,
-                customerEmail: String?) {
+                customerEmail: String?,
+                requiresCardPresentRefund: Bool = false) {
         self.orderID = orderID
         self.selectableItems = selectableItems
         self.paymentMethodDescription = paymentMethodDescription
         self.customerEmail = customerEmail
+        self.requiresCardPresentRefund = requiresCardPresentRefund
     }
 }
 
@@ -71,7 +74,8 @@ public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessi
         POSRefundPreparation(orderID: order.id,
                              selectableItems: [],
                              paymentMethodDescription: String(format: Localization.viaPaymentMethodFormat, order.paymentMethodTitle),
-                             customerEmail: order.customerEmail)
+                             customerEmail: order.customerEmail,
+                             requiresCardPresentRefund: false)
     }
 
     public func prepareReviewData(for order: POSOrder,

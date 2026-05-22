@@ -27,6 +27,7 @@ protocol POSOrderListControllerProtocol {
     var displayedCustomAmounts: [POSOrderCustomAmount] { get }
     var refundActionAvailability: RefundActionAvailability { get }
     var refundSelectableItems: [POSRefundSelectableItem] { get }
+    var currentRefundRequiresCardPresentRefund: Bool { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
@@ -102,6 +103,14 @@ enum RefundActionAvailability {
             return .unavailable
         }
         return .available
+    }
+
+    @MainActor
+    var currentRefundRequiresCardPresentRefund: Bool {
+        guard case .loaded(let preparation) = selectedOrderRefundsState else {
+            return false
+        }
+        return preparation.requiresCardPresentRefund
     }
 
     @MainActor

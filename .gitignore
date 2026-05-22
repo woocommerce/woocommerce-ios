@@ -11,6 +11,11 @@ DerivedData/
 # entry catches stray copies that may end up elsewhere in the tree.
 ApiCredentials.swift
 
+# Files generated into WooCommerce/DerivedSources by build phases
+# (e.g. InfoPlist.h, bash_secrets). Only README.md is tracked.
+WooCommerce/DerivedSources/*
+!WooCommerce/DerivedSources/README.md
+
 ## Various settings
 *.pbxuser
 !default.pbxuser

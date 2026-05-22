@@ -6,6 +6,16 @@ import Testing
 struct WooAssistantHeadlessTests {
 
     @Test
+    func test_allTools_registers_the_analytics_products_tool() {
+        // When
+        let names = WooAssistantHeadless.allTools().map { $0.definition.name }
+
+        // Then
+        #expect(names.contains(AnalyticsProductsTool.name))
+        #expect(names.contains(AnalyticsOrdersTool.name))
+    }
+
+    @Test
     func test_send_when_text_only_response_then_assistantText_populated_and_no_cards() async throws {
         // Given
         let chat = MockAIChatService()

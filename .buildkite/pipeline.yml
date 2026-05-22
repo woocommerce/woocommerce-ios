@@ -10,6 +10,28 @@ env:
 # This is the default pipeline – it will build and test the app
 steps:
   #################
+  # AI Translation (PR-time only; commits new translations back to the PR)
+  #
+  # Hybrid CI gate (per DoD C13):
+  #   - Same-repo PRs: strict; validator failures block the PR.
+  #   - Fork PRs: soft; the script exits 0 with an annotation so external
+  #     contributors aren't blocked by missing secrets. The release-time
+  #     health report is the backstop for any drift.
+  #
+  # The script handles the same-repo vs fork distinction itself; the step
+  # does NOT use soft_fail so genuine same-repo failures show as required-
+  # status failures.
+  #################
+  - label: ":globe_with_meridians: AI Translation"
+    key: ai-translation
+    if: build.pull_request.id != null
+    command: .buildkite/commands/run-ai-translations.sh
+    plugins: [$CI_TOOLKIT]
+    notify:
+      - github_commit_status:
+          context: AI Translation
+
+  #################
   # Build the app
   #################
   - label: ":pipeline: Build"

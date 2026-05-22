@@ -59,6 +59,18 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
         XCTAssertFalse(sut.gatewaySupportsAutomaticRefunds(context: makeContext(order: codOrder, paymentGateway: nil)))
     }
 
+    func test_requiresCardPresentRefund_when_charge_is_interacPresent_then_returns_true() {
+        let charge = WCPayCharge.fake().copy(paymentMethodDetails: .interacPresent(details: .fake()))
+
+        XCTAssertTrue(sut.requiresCardPresentRefund(context: makeContext(charge: charge)))
+    }
+
+    func test_requiresCardPresentRefund_when_charge_is_not_interacPresent_then_returns_false() {
+        let charge = WCPayCharge.fake().copy(paymentMethodDetails: .card(details: .fake()))
+
+        XCTAssertFalse(sut.requiresCardPresentRefund(context: makeContext(charge: charge)))
+    }
+
     func test_refundComponents_aggregates_selected_product_quantity_and_selected_fees() {
         let item1 = orderItem(itemID: 10, quantity: 3)
         let item2 = orderItem(itemID: 20, quantity: 1)
@@ -125,11 +137,12 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
 
 private extension POSRefundSubmissionMappingTests {
     func makeContext(order: Order = Order.fake(),
+                     charge: WCPayCharge? = nil,
                      paymentGateway: PaymentGateway? = PaymentGateway.fake(),
                      refundableItems: [RefundableOrderItem] = [],
                      refundableFees: [OrderFeeLine] = []) -> POSRefundSubmissionMapping.PreparedRefundContext {
         POSRefundSubmissionMapping.PreparedRefundContext(order: order,
-                                                         charge: nil,
+                                                         charge: charge,
                                                          paymentGateway: paymentGateway,
                                                          paymentGatewayAccount: nil,
                                                          refundableItems: refundableItems,

@@ -122,6 +122,15 @@ struct POSRefundSubmissionMapping {
         return context.order.paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
     }
 
+    func requiresCardPresentRefund(context: PreparedRefundContext) -> Bool {
+        switch context.charge?.paymentMethodDetails {
+        case .some(.interacPresent):
+            return true
+        default:
+            return false
+        }
+    }
+
     func paymentMethodDescription(for order: Order, charge: WCPayCharge?) -> String {
         let paymentMethod = order.paymentMethodTitle.isEmpty ? Localization.manualPaymentMethod : order.paymentMethodTitle
         switch charge?.paymentMethodDetails {

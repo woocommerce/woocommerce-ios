@@ -110,19 +110,26 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                                            currencyFormatter: currencyFormatter)
             .createRefund()
 
-        stateModel.state = .submitting
+        let requiresCardPresentRefund = refundMapping.requiresCardPresentRefund(context: context)
+        let submittingState: POSRefundSubmissionState = requiresCardPresentRefund ? .submittingCardPresent : .submitting
+        stateModel.state = submittingState
+        let cancellationState = POSRefundCancellationState()
 
         let onboardingPresenter = CardPresentPaymentsOnboardingPresenterAdaptor(stores: stores)
-        observe(onboardingPresenter: onboardingPresenter)
+        observe(onboardingPresenter: onboardingPresenter,
+                submittingState: submittingState,
+                cancellationState: cancellationState)
 
-        let alertPresenter = POSRefundCardPresentPaymentAlertsPresenter(stateModel: stateModel)
+        let alertPresenter = POSRefundCardPresentPaymentAlertsPresenter(stateModel: stateModel,
+                                                                        onCancelRequested: cancellationState.markCancelled)
         let submissionUseCase = RefundSubmissionUseCase(
             details: .init(order: context.order,
                            charge: context.charge,
                            amount: amount,
                            paymentGatewayAccount: context.paymentGatewayAccount),
             rootViewController: NullViewControllerPresenting(),
-            alerts: POSRefundOrderDetailsPaymentAlerts(stateModel: stateModel),
+            alerts: POSRefundOrderDetailsPaymentAlerts(stateModel: stateModel,
+                                                       onCancelRequested: cancellationState.markCancelled),
             cardPresentConfiguration: CardPresentConfigurationLoader(stores: stores).configuration,
             cardReaderConnectionAlerts: CardPresentPaymentBluetoothReaderConnectionAlertsProvider(),
             alertPresenter: alertPresenter,
@@ -139,19 +146,27 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
             self.onboardingSubscription = nil
         }
 
-        try await withCheckedThrowingContinuation { continuation in
-            var continuation: CheckedContinuation<Void, Error>? = continuation
-            submissionUseCase.submitRefund(refund, showInProgressUI: { [weak self] in
-                Task { @MainActor in
-                    self?.stateModel.state = .submitting
-                }
-            }, onCompletion: { result in
-                continuation?.resume(with: result)
-                continuation = nil
-            })
+        do {
+            try await withCheckedThrowingContinuation { continuation in
+                var continuation: CheckedContinuation<Void, Error>? = continuation
+                submissionUseCase.submitRefund(refund, showInProgressUI: { [weak self] in
+                    Task { @MainActor in
+                        self?.stateModel.state = submittingState
+                    }
+                }, onCompletion: { result in
+                    continuation?.resume(with: result)
+                    continuation = nil
+                })
+            }
+        } catch {
+            if cancellationState.wasCancelledByMerchant || error.isRefundSubmissionCancellation {
+                stateModel.reset()
+                throw POSRefundSubmissionError.canceledByUser
+            }
+            throw error
         }
 
-        stateModel.state = .completed
+        stateModel.state = requiresCardPresentRefund ? .submittingCardPresent : .completed
     }
 }
 
@@ -241,18 +256,37 @@ private extension POSRefundSubmissionAdaptor {
             .first { $0.isCardPresentEligible && $0.gatewayID == WCPayAccount.gatewayID }
     }
 
-    func observe(onboardingPresenter: CardPresentPaymentsOnboardingPresenterAdaptor) {
+    func observe(onboardingPresenter: CardPresentPaymentsOnboardingPresenterAdaptor,
+                 submittingState: POSRefundSubmissionState,
+                 cancellationState: POSRefundCancellationState) {
         onboardingSubscription = onboardingPresenter.onboardingScreenViewModelPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] event in
                 guard let self else { return }
                 switch event {
                 case .showOnboarding(let factory, let onCancel):
-                    self.stateModel.state = .onboarding(factory: factory, onCancel: onCancel)
+                    self.stateModel.state = .onboarding(factory: factory, onCancel: {
+                        cancellationState.markCancelled()
+                        onCancel()
+                    })
                 case .onboardingComplete:
-                    self.stateModel.state = .submitting
+                    self.stateModel.state = submittingState
                 }
             }
+    }
+}
+
+private final class POSRefundCancellationState {
+    private(set) var wasCancelledByMerchant = false
+
+    func markCancelled() {
+        wasCancelledByMerchant = true
+    }
+}
+
+private extension Error {
+    var isRefundSubmissionCancellation: Bool {
+        (self as? RefundSubmissionUseCaseSubmissionError) == .canceledByUser
     }
 }
 

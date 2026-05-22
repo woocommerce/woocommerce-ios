@@ -33,9 +33,14 @@ public enum POSRefundSubmissionState {
     case processingReader
     case displayingReaderMessage(String)
     case submitting
+    case submittingCardPresent
     case retryableError(error: any Error, retry: () -> Void, cancel: () -> Void)
     case nonRetryableError(error: any Error, dismiss: () -> Void)
     case completed
+}
+
+public enum POSRefundSubmissionError: Error, Equatable {
+    case canceledByUser
 }
 
 @Observable public final class POSRefundSubmissionModel {

@@ -1,5 +1,6 @@
 import Testing
 import UIKit
+import Fakes
 import Yosemite
 @testable import WooCommerce
 
@@ -24,7 +25,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController })
     }
 
-    @Test func handleEscalation_when_high_confidence_and_has_identity_then_creates_ticket_directly() {
+    @Test func handleEscalation_when_high_confidence_and_has_identity_then_creates_ticket_directly_after_transcript_consent() {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -43,6 +44,87 @@ struct SupportEscalationCoordinatorTests {
         #expect(zendesk.latestInvokedTags.contains("woo_mobile_issue_orders"))
     }
 
+    @Test func handleEscalation_when_high_confidence_and_has_identity_then_asks_for_transcript_consent_before_creating_ticket() {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+
+        var didAskForConsent = false
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(
+            navigationController: navigationController,
+            zendesk: zendesk,
+            transcriptConsentPresenter: { _, _, _ in
+                didAskForConsent = true
+            }
+        )
+
+        // When
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
+                                     entryPoint: .helpAndSupport)
+
+        // Then
+        #expect(didAskForConsent)
+        #expect(zendesk.latestInvokedTags.isEmpty)
+    }
+
+    @Test func handleEscalation_when_transcript_consent_contact_form_selected_then_shows_form_without_prefilled_transcript() {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(
+            navigationController: navigationController,
+            zendesk: zendesk,
+            transcriptConsentPresenter: { _, _, showContactForm in
+                showContactForm()
+            }
+        )
+
+        // When
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
+                                     entryPoint: .helpAndSupport)
+
+        // Then
+        #expect(zendesk.latestInvokedTags.isEmpty)
+        let viewModel = supportFormViewModel(from: navigationController)
+        #expect(viewModel?.description == "")
+        #expect(viewModel?.subject == SupportFormViewModel.subject(for: .mobileApp))
+    }
+
+    @Test func handleEscalation_when_transcript_consent_cancelled_then_takes_no_action() {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(
+            navigationController: navigationController,
+            zendesk: zendesk,
+            transcriptConsentPresenter: { _, _, _ in
+                // Simulate tapping the alert's Cancel action.
+            }
+        )
+
+        // When
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
+                                     entryPoint: .helpAndSupport)
+
+        // Then
+        #expect(zendesk.latestInvokedTags.isEmpty)
+        #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController } == false)
+    }
+
     @Test func handleEscalation_when_high_confidence_but_no_identity_then_shows_support_form() {
         // Given
         let zendesk = MockZendeskManager()
@@ -54,6 +136,34 @@ struct SupportEscalationCoordinatorTests {
 
         // When
         coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
+
+        // Then
+        #expect(zendesk.latestInvokedTags.isEmpty)
+        #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController })
+    }
+
+    @Test func handleEscalation_when_high_confidence_but_no_site_address_then_shows_support_form() {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(
+            navigationController: navigationController,
+            zendesk: zendesk,
+            stores: stores,
+            transcriptConsentPresenter: { _, _, _ in
+                Issue.record("Expected missing site address to route directly to the contact form")
+            }
+        )
+
+        // When
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
+                                     entryPoint: .preLogin)
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -103,7 +213,7 @@ struct SupportEscalationCoordinatorTests {
         zendesk.whenCreateSupportRequest(thenReturn: .success(()))
 
         var dispatchedChatID: Int64?
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: Self.makeSite()))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
             if case let .markTicketCreated(chatID, onCompletion) = action {
                 dispatchedChatID = chatID
@@ -115,7 +225,8 @@ struct SupportEscalationCoordinatorTests {
         let coordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
             zendeskProvider: zendesk,
-            stores: stores
+            stores: stores,
+            transcriptConsentPresenter: Self.sendTicketConsentPresenter
         )
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
@@ -133,7 +244,7 @@ struct SupportEscalationCoordinatorTests {
         zendesk.whenCreateSupportRequest(thenReturn: .success(()))
 
         var markTicketCreatedCalled = false
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: Self.makeSite()))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
             if case .markTicketCreated = action {
                 markTicketCreatedCalled = true
@@ -144,7 +255,8 @@ struct SupportEscalationCoordinatorTests {
         let coordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
             zendeskProvider: zendesk,
-            stores: stores
+            stores: stores,
+            transcriptConsentPresenter: Self.sendTicketConsentPresenter
         )
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
@@ -162,7 +274,7 @@ struct SupportEscalationCoordinatorTests {
         zendesk.whenCreateSupportRequest(thenReturn: .failure(NSError(domain: "Test", code: 500)))
 
         var markTicketCreatedCalled = false
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: Self.makeSite()))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
             if case .markTicketCreated = action {
                 markTicketCreatedCalled = true
@@ -173,7 +285,8 @@ struct SupportEscalationCoordinatorTests {
         let coordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
             zendeskProvider: zendesk,
-            stores: stores
+            stores: stores,
+            transcriptConsentPresenter: Self.sendTicketConsentPresenter
         )
         let areaInfo = makeHighConfidenceSupportAreaInfo()
 
@@ -338,12 +451,29 @@ struct SupportEscalationCoordinatorTests {
 private extension SupportEscalationCoordinatorTests {
     func makeCoordinator(navigationController: UINavigationController? = nil,
                          zendesk: MockZendeskManager,
-                         analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider()) -> SupportEscalationCoordinator {
+                         analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider(),
+                         stores: StoresManager = MockStoresManager(
+                            sessionManager: .makeForTesting(authenticated: true, defaultSite: SupportEscalationCoordinatorTests.makeSite())
+                         ),
+                         transcriptConsentPresenter: SupportEscalationCoordinator.TranscriptConsentPresenter? =
+                            SupportEscalationCoordinatorTests.sendTicketConsentPresenter) -> SupportEscalationCoordinator {
         SupportEscalationCoordinator(
             navigationController: navigationController,
             zendeskProvider: zendesk,
-            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider),
+            stores: stores,
+            transcriptConsentPresenter: transcriptConsentPresenter
         )
+    }
+
+    static func sendTicketConsentPresenter(presentingViewController: UIViewController,
+                                           onSendTicket: @escaping () -> Void,
+                                           onShowContactForm: @escaping () -> Void) {
+        onSendTicket()
+    }
+
+    static func makeSite(url: String = "https://example.com") -> Site {
+        Site.fake().copy(url: url)
     }
 
     func supportFormViewModel(from navigationController: UINavigationController) -> SupportFormViewModel? {

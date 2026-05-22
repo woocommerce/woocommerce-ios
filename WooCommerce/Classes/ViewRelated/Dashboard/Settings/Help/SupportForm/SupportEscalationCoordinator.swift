@@ -8,6 +8,9 @@ import protocol WooFoundation.Analytics
 /// direct ticket creation, and success/failure UI feedback.
 ///
 final class SupportEscalationCoordinator {
+    typealias TranscriptConsentPresenter = (_ presentingViewController: UIViewController,
+                                             _ onSendTicket: @escaping () -> Void,
+                                             _ onShowContactForm: @escaping () -> Void) -> Void
 
     /// Tags used for AI chat escalation tickets.
     ///
@@ -22,6 +25,7 @@ final class SupportEscalationCoordinator {
     private let analytics: Analytics
     private let stores: StoresManager
     private let onTicketCreated: (() -> Void)?
+    private let transcriptConsentPresenter: TranscriptConsentPresenter
 
     /// The chat ID to update when a ticket is created. Set via `handleEscalation`.
     private var chatID: Int64?
@@ -42,13 +46,15 @@ final class SupportEscalationCoordinator {
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
-         onTicketCreated: (() -> Void)? = nil) {
+         onTicketCreated: (() -> Void)? = nil,
+         transcriptConsentPresenter: TranscriptConsentPresenter? = nil) {
         self.navigationController = navigationController
         self.additionalAttachmentsProvider = additionalAttachmentsProvider
         self.zendeskProvider = zendeskProvider
         self.analytics = analytics
         self.stores = stores
         self.onTicketCreated = onTicketCreated
+        self.transcriptConsentPresenter = transcriptConsentPresenter ?? Self.presentTranscriptConsentAlert
     }
 
     /// Handles the escalation from AI chat to human support.
@@ -70,10 +76,10 @@ final class SupportEscalationCoordinator {
             return
         }
 
-        // Only create ticket directly if high confidence AND user identity exists.
-        // Without identity, Zendesk can't send email responses to the user.
-        if supportAreaInfo.isHighConfidence && zendeskProvider.haveUserIdentity {
-            createTicketDirectly(with: supportAreaInfo, entryPoint: entryPoint)
+        // Only offer direct ticket creation if high confidence, user identity exists, and
+        // a site URL is available. Otherwise the form lets users provide missing details.
+        if supportAreaInfo.isHighConfidence && zendeskProvider.haveUserIdentity && hasSiteAddress {
+            confirmTranscriptConsent(for: supportAreaInfo, entryPoint: entryPoint)
         } else {
             showSupportForm(transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
         }
@@ -89,7 +95,7 @@ final class SupportEscalationCoordinator {
 
         if let supportAreaInfo {
             prefilledSubject = SupportFormViewModel.subject(for: supportAreaInfo.areaType)
-            prefilledDescription = [Localization.transcriptHeader, transcript].joined(separator: "\n\n")
+            prefilledDescription = nil
         } else {
             prefilledSubject = nil
             prefilledDescription = nil
@@ -126,6 +132,20 @@ final class SupportEscalationCoordinator {
         if let navigationController {
             viewController.show(from: navigationController)
         }
+    }
+
+    private func confirmTranscriptConsent(for areaInfo: SupportAreaInfo, entryPoint: SupportChatViewModel.EntryPoint) {
+        guard let presentingVC = navigationController?.topViewController else { return }
+
+        transcriptConsentPresenter(
+            presentingVC,
+            { [weak self] in
+                self?.createTicketDirectly(with: areaInfo, entryPoint: entryPoint)
+            },
+            { [weak self] in
+                self?.showSupportForm(transcript: areaInfo.transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
+            }
+        )
     }
 
     private func createTicketDirectly(with areaInfo: SupportAreaInfo, entryPoint: SupportChatViewModel.EntryPoint) {
@@ -206,6 +226,13 @@ final class SupportEscalationCoordinator {
         return tags
     }
 
+    private var hasSiteAddress: Bool {
+        guard let siteAddress = stores.sessionManager.defaultSite?.url else {
+            return false
+        }
+        return siteAddress.isNotEmpty
+    }
+
     private static func errorType(for error: Error) -> String {
         switch error {
         case ZendeskError.failedToCreateIdentity:
@@ -213,6 +240,24 @@ final class SupportEscalationCoordinator {
         default:
             return "zendesk_request_failed"
         }
+    }
+
+    private static func presentTranscriptConsentAlert(from presentingViewController: UIViewController,
+                                                      onSendTicket: @escaping () -> Void,
+                                                      onShowContactForm: @escaping () -> Void) {
+        let alert = UIAlertController(
+            title: Localization.transcriptConsentTitle,
+            message: Localization.transcriptConsentMessage,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: Localization.sendTicket, style: .default) { _ in
+            onSendTicket()
+        })
+        alert.addAction(UIAlertAction(title: Localization.contactForm, style: .default) { _ in
+            onShowContactForm()
+        })
+        alert.addAction(UIAlertAction(title: Localization.cancel, style: .cancel))
+        presentingViewController.present(alert, animated: true)
     }
 }
 
@@ -239,6 +284,31 @@ private extension SupportEscalationCoordinator {
             "supportEscalationCoordinator.gotIt",
             value: "Got it",
             comment: "Button on the ticket created alert"
+        )
+        static let transcriptConsentTitle = NSLocalizedString(
+            "supportEscalationCoordinator.transcriptConsentTitle",
+            value: "Send this chat to support?",
+            comment: "Title for the alert asking consent to send an AI chat transcript to support"
+        )
+        static let transcriptConsentMessage = NSLocalizedString(
+            "supportEscalationCoordinator.transcriptConsentMessage",
+            value: "We can create a support request using this chat transcript, or you can open the contact form and enter the details yourself.",
+            comment: "Message for the alert asking consent to send an AI chat transcript to support"
+        )
+        static let contactForm = NSLocalizedString(
+            "supportEscalationCoordinator.contactForm",
+            value: "Contact Form",
+            comment: "Button on the transcript consent alert that opens the support contact form"
+        )
+        static let sendTicket = NSLocalizedString(
+            "supportEscalationCoordinator.sendTicket",
+            value: "Send Request",
+            comment: "Button on the transcript consent alert that sends the chat transcript as a support request"
+        )
+        static let cancel = NSLocalizedString(
+            "supportEscalationCoordinator.cancel",
+            value: "Cancel",
+            comment: "Button on the transcript consent alert that dismisses without taking action"
         )
         static let transcriptHeader = NSLocalizedString(
             "supportEscalationCoordinator.transcriptHeader",

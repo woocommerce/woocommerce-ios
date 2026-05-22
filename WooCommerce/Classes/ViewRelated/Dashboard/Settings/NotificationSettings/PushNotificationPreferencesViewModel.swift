@@ -202,9 +202,17 @@ final class PushNotificationPreferencesViewModel {
         }
     }
 
+    /// Fires `notificationsDetailView` for the given screen. Called by the
+    /// detail views from `.onAppear`.
+    func detailDidAppear(notificationType: NotificationTypeValue) {
+        analytics.track(.notificationsDetailView(notificationType: notificationType))
+    }
+
     func setStoreOrderEnabled(_ newValue: Bool) {
         displayed = displayed.with(storeOrder: .init(enabled: newValue,
                                                      minAmount: displayed.storeOrder?.minAmount))
+        analytics.track(.notificationsDetailPushToggle(notificationType: .newOrder,
+                                                       isEnabled: newValue))
     }
 
     /// Reverts only the new-order section of `displayed` to `lastSaved`.
@@ -217,6 +225,7 @@ final class PushNotificationPreferencesViewModel {
     }
 
     func setStoreOrderMinAmount(_ newValue: Decimal?) {
+        let previous = displayed.storeOrder?.minAmount
         let normalized: Decimal? = {
             guard let value = newValue, value > 0 else { return nil }
             return value
@@ -224,6 +233,7 @@ final class PushNotificationPreferencesViewModel {
         rememberLastKnownMinAmount(from: normalized)
         displayed = displayed.with(storeOrder: .init(enabled: isStoreOrderEnabled,
                                                      minAmount: normalized))
+        trackStoreOrderMinAmountTransition(previous: previous, current: normalized)
     }
 
     func setStoreReviewEnabled(_ newValue: Bool) {
@@ -326,6 +336,26 @@ private extension PushNotificationPreferencesViewModel {
     func rememberLastKnownMaxRating(from value: Int?) {
         guard let value, (1...5).contains(value) else { return }
         lastKnownStoreReviewMaxRating = value
+    }
+
+    /// Maps a transition on the new-order threshold to the analytics event
+    /// that best describes the user's intent: nil ↔ non-nil is a radio
+    /// switch between "All" and "High-value"; non-nil → non-nil is a
+    /// threshold edit. Same-value transitions and nil-to-nil are no-ops.
+    func trackStoreOrderMinAmountTransition(previous: Decimal?, current: Decimal?) {
+        switch (previous, current) {
+        case (.some, nil):
+            analytics.track(.notificationsDetailFilterOptionSelect(notificationType: .newOrder,
+                                                                    filterOption: .all))
+        case (nil, .some):
+            analytics.track(.notificationsDetailFilterOptionSelect(notificationType: .newOrder,
+                                                                    filterOption: .filtered))
+        case let (oldValue?, newValue?) where oldValue != newValue:
+            analytics.track(.notificationsDetailFilterValueChange(notificationType: .newOrder,
+                                                                   filterValue: NSDecimalNumber(decimal: newValue).floatValue))
+        default:
+            break
+        }
     }
 }
 

@@ -33,6 +33,9 @@ struct NewOrderNotificationPreferencesDetailView: View {
         // one routes through the discard handler.
         .navigationBarBackButtonHidden(true)
         .notice($viewModel.errorNotice)
+        .onAppear {
+            viewModel.detailDidAppear(notificationType: .newOrder)
+        }
         .onChange(of: thresholdInput) { oldValue, newValue in
             // Reject any input that isn't a positive integer (no "0", leading
             // zeros, decimals, or non-digits). Reverting through the binding

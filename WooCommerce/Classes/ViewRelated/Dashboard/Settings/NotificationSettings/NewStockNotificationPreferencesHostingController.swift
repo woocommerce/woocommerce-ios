@@ -10,6 +10,7 @@ final class NewStockNotificationPreferencesHostingController:
     init(viewModel: PushNotificationPreferencesViewModel) {
         super.init(viewModel: viewModel,
                    rootView: NewStockNotificationPreferencesDetailView(viewModel: viewModel),
+                   notificationType: .stockAlert,
                    onDiscard: { [weak viewModel] in viewModel?.discardStoreStockEdits() })
     }
 

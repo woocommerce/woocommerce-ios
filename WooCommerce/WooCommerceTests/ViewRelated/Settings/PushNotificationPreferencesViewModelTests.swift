@@ -1134,6 +1134,110 @@ struct PushNotificationPreferencesViewModelTests {
         // Then
         #expect(sut.notificationsEnabled == false)
     }
+
+    // MARK: - New-order detail analytics
+
+    @Test func test_detailDidAppear_with_newOrder_then_tracks_notifications_detail_view() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.detailDidAppear(notificationType: .newOrder)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_view",
+                                            with: ["notification_type": "new_order"]))
+    }
+
+    @Test func test_setStoreOrderEnabled_when_true_then_tracks_push_toggle_with_isEnabled_true() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreOrderEnabled(true)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "new_order",
+                                                   "is_enabled": true]))
+    }
+
+    @Test func test_setStoreOrderEnabled_when_false_then_tracks_push_toggle_with_isEnabled_false() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreOrderEnabled(false)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "new_order",
+                                                   "is_enabled": false]))
+    }
+
+    @Test func test_setStoreOrderMinAmount_from_nil_to_value_then_tracks_filter_option_filtered() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreOrderMinAmount(100)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_option_select",
+                                            with: ["notification_type": "new_order",
+                                                   "filter_option": "filtered"]))
+    }
+
+    @Test func test_setStoreOrderMinAmount_from_value_to_nil_then_tracks_filter_option_all() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreOrderMinAmount(100)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreOrderMinAmount(nil)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_option_select",
+                                            with: ["notification_type": "new_order",
+                                                   "filter_option": "all"]))
+    }
+
+    @Test func test_setStoreOrderMinAmount_from_value_to_different_value_then_tracks_filter_value_change() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreOrderMinAmount(100)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreOrderMinAmount(250)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_value_change",
+                                            with: ["notification_type": "new_order",
+                                                   "filter_value": Float(250)]))
+    }
+
+    @Test func test_setStoreOrderMinAmount_with_same_value_then_does_not_track_filter_event() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreOrderMinAmount(100)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreOrderMinAmount(100)
+
+        // Then
+        #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_value_change"))
+        #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_option_select"))
+    }
 }
 
 /// Reference-typed box for capturing dispatched changes from a closure without

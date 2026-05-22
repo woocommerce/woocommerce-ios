@@ -115,7 +115,7 @@ final class SupportEscalationCoordinator {
             attachments: attachments,
             preselectedArea: supportAreaInfo?.area,
             prefilledSubject: prefilledSubject,
-            prefilledSiteAddress: self.siteAddress,
+            prefilledSiteAddress: siteAddress,
             prefilledDescription: prefilledDescription,
             onTicketCreated: { [weak self] in
                 self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
@@ -167,7 +167,7 @@ final class SupportEscalationCoordinator {
         let description = [Localization.transcriptHeader, areaInfo.transcript].joined(separator: "\n\n")
         let attachments = additionalAttachmentsProvider()
 
-        let siteAddress = self.siteAddress ?? ""
+        let siteAddress = siteAddress ?? ""
         let tags = areaInfo.area.datasource.tags + additionalTags(for: areaInfo) + [Tags.sourceTag]
         let request = ZendeskSupportRequest(
             formID: areaInfo.area.datasource.formID,
@@ -235,7 +235,7 @@ final class SupportEscalationCoordinator {
     }
 
     private var hasSiteAddress: Bool {
-        self.siteAddress?.isNotEmpty == true
+        siteAddress?.isNotEmpty == true
     }
 
     private var siteAddress: String? {

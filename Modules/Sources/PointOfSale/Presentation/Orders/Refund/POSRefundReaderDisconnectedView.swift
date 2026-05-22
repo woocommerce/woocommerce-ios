@@ -59,8 +59,8 @@ private extension POSRefundReaderDisconnectedView {
             Button(Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
-                                         maxWidth: .infinity)
+        .frame(maxWidth: .infinity)
+        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

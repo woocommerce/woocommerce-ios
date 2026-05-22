@@ -71,7 +71,11 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
             },
             onTicketCreated: onTicketCreated
         )
-        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID,
+                                                       transcript: transcript,
+                                                       supportAreaInfo: supportAreaInfo,
+                                                       entryPoint: entryPoint,
+                                                       siteAddress: viewModel.siteURL.absoluteString)
     }
 
     private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {

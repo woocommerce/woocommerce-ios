@@ -120,16 +120,22 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                 submittingState: submittingState,
                 cancellationState: cancellationState)
 
-        let alertPresenter = POSRefundCardPresentPaymentAlertsPresenter(stateModel: stateModel,
-                                                                        onCancelRequested: cancellationState.markCancelled)
+        let alertPresenter = POSRefundCardPresentPaymentAlertsPresenter(
+            stateModel: stateModel,
+            onCancelRequested: cancellationState.markCancelled,
+            isPresentationAllowed: { !cancellationState.wasCancelledByMerchant }
+        )
         let submissionUseCase = RefundSubmissionUseCase(
             details: .init(order: context.order,
                            charge: context.charge,
                            amount: amount,
                            paymentGatewayAccount: context.paymentGatewayAccount),
             rootViewController: NullViewControllerPresenting(),
-            alerts: POSRefundOrderDetailsPaymentAlerts(stateModel: stateModel,
-                                                       onCancelRequested: cancellationState.markCancelled),
+            alerts: POSRefundOrderDetailsPaymentAlerts(
+                stateModel: stateModel,
+                onCancelRequested: cancellationState.markCancelled,
+                isPresentationAllowed: { !cancellationState.wasCancelledByMerchant }
+            ),
             cardPresentConfiguration: CardPresentConfigurationLoader(stores: stores).configuration,
             cardReaderConnectionAlerts: CardPresentPaymentBluetoothReaderConnectionAlertsProvider(),
             alertPresenter: alertPresenter,
@@ -263,6 +269,7 @@ private extension POSRefundSubmissionAdaptor {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] event in
                 guard let self else { return }
+                guard !cancellationState.wasCancelledByMerchant else { return }
                 switch event {
                 case .showOnboarding(let factory, let onCancel):
                     self.stateModel.state = .onboarding(factory: factory, onCancel: {

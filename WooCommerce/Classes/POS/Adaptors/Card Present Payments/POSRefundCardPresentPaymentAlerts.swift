@@ -6,12 +6,15 @@ import Yosemite
 final class POSRefundOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     private let stateModel: POSRefundSubmissionModel
     private let onCancelRequested: () -> Void
+    private let isPresentationAllowed: () -> Bool
     private let alertsProvider = CardPresentPaymentsTransactionAlertsProvider()
 
     init(stateModel: POSRefundSubmissionModel,
-         onCancelRequested: @escaping () -> Void = {}) {
+         onCancelRequested: @escaping () -> Void = {},
+         isPresentationAllowed: @escaping () -> Bool = { true }) {
         self.stateModel = stateModel
         self.onCancelRequested = onCancelRequested
+        self.isPresentationAllowed = isPresentationAllowed
     }
 
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {
@@ -53,7 +56,8 @@ final class POSRefundOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtoco
 
     private func present(_ eventDetails: CardPresentPaymentEventDetails) {
         let eventDetails = eventDetails.markingPOSCancellation(onCancelRequested)
-        onMainQueue { [stateModel] in
+        onMainQueue { [stateModel, isPresentationAllowed] in
+            guard isPresentationAllowed() else { return }
             stateModel.state = .cardPresentEvent(eventDetails)
         }
     }
@@ -64,12 +68,15 @@ final class POSRefundCardPresentPaymentAlertsPresenter: CardPresentPaymentAlerts
 
     private let stateModel: POSRefundSubmissionModel
     private let onCancelRequested: () -> Void
+    private let isPresentationAllowed: () -> Bool
     private var latestReaderConnectionHandler: ((String?) -> Void)?
 
     init(stateModel: POSRefundSubmissionModel,
-         onCancelRequested: @escaping () -> Void = {}) {
+         onCancelRequested: @escaping () -> Void = {},
+         isPresentationAllowed: @escaping () -> Bool = { true }) {
         self.stateModel = stateModel
         self.onCancelRequested = onCancelRequested
+        self.isPresentationAllowed = isPresentationAllowed
     }
 
     func present(viewModel eventDetails: CardPresentPaymentEventDetails) {
@@ -153,7 +160,8 @@ final class POSRefundCardPresentPaymentAlertsPresenter: CardPresentPaymentAlerts
 
     private func present(_ eventDetails: CardPresentPaymentEventDetails) {
         let eventDetails = eventDetails.markingPOSCancellation(onCancelRequested)
-        onMainQueue { [stateModel] in
+        onMainQueue { [stateModel, isPresentationAllowed] in
+            guard isPresentationAllowed() else { return }
             stateModel.state = .cardPresentEvent(eventDetails)
         }
     }

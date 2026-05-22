@@ -203,8 +203,7 @@ struct POSRefundModalContentView: View {
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 customerEmail: reviewData.customerEmail,
                 onDone: { dismissModal?() },
-                onEmailReceipt: { isShowingEmailReceiptView = true },
-                onClose: { dismissModal?() }
+                onEmailReceipt: { isShowingEmailReceiptView = true }
             )
         case .error(let reviewData):
             POSRefundErrorView(

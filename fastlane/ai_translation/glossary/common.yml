@@ -1,0 +1,81 @@
+# Brand and product names that MUST appear verbatim in every translation,
+# regardless of target locale. The validator treats any source string
+# containing one of these names as requiring the same name to appear,
+# untranslated, in the translation.
+#
+# Adding to this list is a hard constraint: translators (human or AI) cannot
+# transliterate or localize these terms. Remove only with stakeholder review.
+
+# Top-level brands
+brands:
+  - WooCommerce
+  - Woo
+  - WordPress
+  - WordPress.com
+  - Automattic
+  - Jetpack
+
+# Payment partners and product names
+payments:
+  - Stripe
+  - PayPal
+  - Apple Pay
+  - Tap to Pay
+  - Tap to Pay on iPhone
+  - Scan to Pay
+  - WooPayments
+
+# Marketing / feature names
+features:
+  - Blaze
+  - Spark
+  - Point of Sale
+  - POS
+
+# Hardware / network technologies (treated as proper nouns in UI)
+tech:
+  - Bluetooth
+  - Wi-Fi
+  - NFC
+  - HID
+
+# Apple ecosystem (always English in third-party app UI)
+apple:
+  - Apple ID
+  - iCloud
+  - iPhone
+  - iPad
+  - iOS
+  - Safari
+  - Mail
+  - Apple Maps
+
+# Other third-party services that appear verbatim
+external:
+  - Google
+  - X
+  - Yahoo Mail
+  - Microsoft Outlook
+  - DHL
+  - UPS
+  - USPS
+  - DudaMobile
+
+# Identifiers / standards — never translated
+standards:
+  - SKU
+  - URL
+  - URI
+  - PIN
+  - QR
+  - GTIN
+  - UPC
+  - EAN
+  - ISBN
+  - HTML
+  - SMS
+  - HAZMAT
+  - AES
+  - REST API
+  - WP-Admin
+  - Application Passwords

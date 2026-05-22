@@ -1,0 +1,29 @@
+# Ukrainian (uk) — UI terminology mappings.
+# Register: informal mobile UI; "ти" form.
+
+ui_terms:
+  Cancel: Скасувати
+  Save: Зберегти
+  Done: Готово
+  OK: OK
+  Close: Закрити
+  Edit: Редагувати
+  Delete: Видалити
+  Refresh: Оновити
+  Retry: Спробувати знову
+  Try Again: Спробуй ще раз
+  Continue: Продовжити
+  Loading: Завантаження
+
+nouns:
+  Orders: Замовлення
+  Products: Товари
+  Payments: Платежі
+  Customers: Клієнти
+  Reviews: Відгуки
+  Cart: Кошик
+  Address: Адреса
+  Shipping: Доставка
+  Refund: Повернення коштів
+  Stock: Запас
+  Coupons: Купони

@@ -1,0 +1,29 @@
+# Danish (da) — UI terminology mappings.
+# Register: informal mobile UI; "du" form.
+
+ui_terms:
+  Cancel: Annuller
+  Save: Gem
+  Done: Færdig
+  OK: OK
+  Close: Luk
+  Edit: Rediger
+  Delete: Slet
+  Refresh: Opdater
+  Retry: Prøv igen
+  Try Again: Prøv igen
+  Continue: Fortsæt
+  Loading: Indlæser
+
+nouns:
+  Orders: Ordrer
+  Products: Produkter
+  Payments: Betalinger
+  Customers: Kunder
+  Reviews: Anmeldelser
+  Cart: Kurv
+  Address: Adresse
+  Shipping: Forsendelse
+  Refund: Refusion
+  Stock: Lager
+  Coupons: Kuponer

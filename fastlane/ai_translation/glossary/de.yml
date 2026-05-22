@@ -1,0 +1,7 @@
+# German (de) — UI terminology mappings.
+# STUB: existing GlotPress locale, not yet auto-translated by this engine.
+# TODO: derive UI terms by scanning existing WooCommerce/Resources/de.lproj/.
+# Brand-safety from common.yml applies until this is filled in.
+
+ui_terms: {}
+nouns: {}

@@ -51,12 +51,46 @@ fastlane/ai_translation/
 │   ├── byte_sizer.rb             # Script-aware batch sizing
 │   ├── constants.rb              # Version, model IDs, prompt version
 │   ├── ios_resources.rb          # .strings parser + writer
-│   └── translator.rb             # Batched JSON-in/JSON-out translator with split-retry
+│   ├── translator.rb             # Batched JSON-in/JSON-out translator with split-retry
+│   └── validator.rb              # Brand-safety + glossary enforcement
+├── glossary/
+│   ├── common.yml                # Brand names — never translate (hard validator)
+│   └── <locale>.yml × 31         # Per-locale UI term + noun mappings
+├── style/
+│   ├── default.md                # Fallback style guide
+│   └── <locale>.md               # Per-locale register / quirks (when applicable)
 ├── spec/                         # Minitest specs
 ├── scripts/                      # One-off bootstrap utilities (assemble, gap-fill)
 ├── Rakefile                      # Rake task wrappers
 └── translate-progress.json       # Audit checkpoint for the original bootstrap run
 ```
+
+### Glossaries and brand-safety
+
+`glossary/common.yml` lists the brand and product names that must appear
+verbatim in every translation regardless of target locale (WooCommerce,
+Woo, Stripe, Apple Pay, Tap to Pay, Blaze, Bluetooth, etc.). The
+`Validator` enforces this as a hard rule: if a source string contains a
+listed brand, the translation must contain the same brand unchanged. The
+violation is reported and the entry is rejected (counted in the
+`glossary_violations` summary line).
+
+`glossary/<locale>.yml` adds per-locale UI-term and noun mappings. When
+the source string is *exactly* one of those keys, the translation must
+match the mapped value. This pins terminology like "Cancel" → "Anuluj"
+(Polish) or "Orders" → "ऑर्डर" (Hindi) so terminology can't drift
+across PRs.
+
+The 15 new locales bootstrapped in PR #17220 ship with rich
+`<locale>.yml` files (seeded from the sub-agent translation prompts). The
+16 existing GlotPress locales (de, es, fr, …) ship with stub files that
+inherit only the brand-safety rules; future work will derive their UI
+terms from the existing translations.
+
+Style guides at `style/<locale>.md` are loaded as additional system-prompt
+context when translating that locale. They cover register choices,
+numerals, quotation conventions, and locale-specific pitfalls (e.g.,
+pt-PT vs pt-BR distinctions, Bahasa Malaysia vs Bahasa Indonesia).
 
 ### Why a separate `byte_sizer`
 

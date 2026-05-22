@@ -1,0 +1,31 @@
+# European Portuguese (pt-PT) — UI terminology mappings.
+# Register: informal mobile UI; "tu" form.
+# Note: NOT Brazilian Portuguese. Use "ecrã" not "tela", "ficheiro" not
+# "arquivo", "telemóvel" not "celular", "encomenda" preferred for "order".
+
+ui_terms:
+  Cancel: Cancelar
+  Save: Guardar
+  Done: Concluído
+  OK: OK
+  Close: Fechar
+  Edit: Editar
+  Delete: Eliminar
+  Refresh: Atualizar
+  Retry: Tentar novamente
+  Try Again: Tentar novamente
+  Continue: Continuar
+  Loading: A carregar
+
+nouns:
+  Orders: Encomendas
+  Products: Produtos
+  Payments: Pagamentos
+  Customers: Clientes
+  Reviews: Avaliações
+  Cart: Carrinho
+  Address: Endereço
+  Shipping: Envio
+  Refund: Reembolso
+  Stock: Stock
+  Coupons: Cupões

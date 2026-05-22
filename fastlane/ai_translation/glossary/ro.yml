@@ -1,0 +1,29 @@
+# Romanian (ro) — UI terminology mappings.
+# Register: informal mobile UI; "tu" form.
+
+ui_terms:
+  Cancel: Anulează
+  Save: Salvează
+  Done: Gata
+  OK: OK
+  Close: Închide
+  Edit: Editează
+  Delete: Șterge
+  Refresh: Reîmprospătează
+  Retry: Încearcă din nou
+  Try Again: Încearcă din nou
+  Continue: Continuă
+  Loading: Se încarcă
+
+nouns:
+  Orders: Comenzi
+  Products: Produse
+  Payments: Plăți
+  Customers: Clienți
+  Reviews: Recenzii
+  Cart: Coș
+  Address: Adresă
+  Shipping: Livrare
+  Refund: Rambursare
+  Stock: Stoc
+  Coupons: Cupoane

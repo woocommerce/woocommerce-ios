@@ -1,0 +1,7 @@
+# Brazilian Portuguese (pt-BR) — UI terminology mappings.
+# STUB: existing GlotPress locale, not yet auto-translated by this engine.
+# TODO: derive UI terms by scanning existing WooCommerce/Resources/pt-BR.lproj/.
+# Note: NOT European Portuguese — distinct locale, see pt-PT.yml.
+
+ui_terms: {}
+nouns: {}

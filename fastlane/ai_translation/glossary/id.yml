@@ -1,0 +1,7 @@
+# Indonesian (id) — UI terminology mappings.
+# STUB: existing GlotPress locale, not yet auto-translated by this engine.
+# TODO: derive UI terms by scanning existing WooCommerce/Resources/id.lproj/.
+# Note: Bahasa Indonesia — distinct from Malay (ms.yml).
+
+ui_terms: {}
+nouns: {}

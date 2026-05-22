@@ -1,0 +1,30 @@
+# Thai (th) — UI terminology mappings.
+# Register: neutral polite mobile UI. No ครับ/ค่ะ at end of UI strings.
+# Numerals: Arabic (1, 2, 3) — not Thai numerals.
+
+ui_terms:
+  Cancel: ยกเลิก
+  Save: บันทึก
+  Done: เสร็จสิ้น
+  OK: ตกลง
+  Close: ปิด
+  Edit: แก้ไข
+  Delete: ลบ
+  Refresh: รีเฟรช
+  Retry: ลองอีกครั้ง
+  Try Again: ลองอีกครั้ง
+  Continue: ดำเนินการต่อ
+  Loading: กำลังโหลด
+
+nouns:
+  Orders: คำสั่งซื้อ
+  Products: สินค้า
+  Payments: การชำระเงิน
+  Customers: ลูกค้า
+  Reviews: รีวิว
+  Cart: ตะกร้า
+  Address: ที่อยู่
+  Shipping: การจัดส่ง
+  Refund: การคืนเงิน
+  Stock: สต๊อก
+  Coupons: คูปอง

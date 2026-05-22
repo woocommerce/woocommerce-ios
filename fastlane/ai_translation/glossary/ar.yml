@@ -1,0 +1,7 @@
+# Arabic (ar) — UI terminology mappings.
+# STUB: existing GlotPress locale, not yet auto-translated by this engine.
+# TODO: derive UI terms by scanning existing WooCommerce/Resources/ar.lproj/.
+# Note: RTL script; .right alignments need natural-alignment treatment (see swift-style.md).
+
+ui_terms: {}
+nouns: {}

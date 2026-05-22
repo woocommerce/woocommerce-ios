@@ -1,0 +1,30 @@
+# Malay (ms / Bahasa Malaysia) — UI terminology mappings.
+# Register: neutral; "anda" form.
+# Note: Bahasa Malaysia, NOT Bahasa Indonesia.
+
+ui_terms:
+  Cancel: Batal
+  Save: Simpan
+  Done: Selesai
+  OK: OK
+  Close: Tutup
+  Edit: Edit
+  Delete: Padam
+  Refresh: Muat semula
+  Retry: Cuba lagi
+  Try Again: Cuba lagi
+  Continue: Teruskan
+  Loading: Memuatkan
+
+nouns:
+  Orders: Pesanan
+  Products: Produk
+  Payments: Pembayaran
+  Customers: Pelanggan
+  Reviews: Ulasan
+  Cart: Troli
+  Address: Alamat
+  Shipping: Penghantaran
+  Refund: Bayaran Balik
+  Stock: Stok
+  Coupons: Kupon

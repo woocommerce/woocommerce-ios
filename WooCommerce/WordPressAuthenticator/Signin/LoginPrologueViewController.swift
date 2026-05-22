@@ -19,9 +19,13 @@ class LoginPrologueViewController: LoginViewController {
     @IBOutlet private weak var buttonViewTrailingConstraint: NSLayoutConstraint?
     private var defaultButtonViewMargin: CGFloat = 0
 
-    /// Called when the primary login CTA on the prologue is tapped. Return `true` when the host
-    /// app has taken over navigation, so the prologue skips its default login action.
-    var onLoginButtonTapped: (() -> Bool)?
+    // Called when login button is tapped
+    var onLoginButtonTapped: (() -> Void)?
+
+    /// WooCommerce addition. Called when the primary login CTA on the prologue is tapped. Return
+    /// `true` when the host app has taken over navigation, so the prologue skips its default login
+    /// action (used to route into the QR-login flow).
+    var onPrimaryLoginCTA: (@MainActor () -> Bool)?
 
     private let configuration = WordPressAuthenticator.shared.configuration
     private let style = WordPressAuthenticator.shared.style
@@ -181,9 +185,10 @@ class LoginPrologueViewController: LoginViewController {
         let createTitle = NSLocalizedString("Sign up for WordPress.com", comment: "Button title. Tapping begins the process of creating a WordPress.com account.")
 
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: false, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
-            guard self?.onLoginButtonTapped?() != true else {
+            guard self?.onPrimaryLoginCTA?() != true else {
                 return
             }
+            self?.onLoginButtonTapped?()
             self?.loginTapped()
         }
 
@@ -347,11 +352,11 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     /// Wraps a prologue button's default action so the host app can intercept the primary login
-    /// CTA via `onLoginButtonTapped` — returning `true` to take over navigation and skip
+    /// CTA via `onPrimaryLoginCTA` — returning `true` to take over navigation and skip
     /// `defaultAction` (e.g. routing to QR login).
     private func primaryLoginCallback(default defaultAction: @escaping NUXButtonViewController.CallBackType) -> NUXButtonViewController.CallBackType {
         return { [weak self] in
-            guard self?.onLoginButtonTapped?() != true else {
+            guard self?.onPrimaryLoginCTA?() != true else {
                 return
             }
             defaultAction()

@@ -1,4 +1,5 @@
 import Foundation
+import NetworkingCore
 
 /// Talks to the WordPress.com QR-login endpoints at
 /// `public-api.wordpress.com/wpcom/v2/auth/qr-code-app/...`.
@@ -25,11 +26,11 @@ public protocol WPComQRLoginRemoteProtocol {
 
 public final class WPComQRLoginRemote: WPComQRLoginRemoteProtocol {
 
-    private let session: URLSession
+    private let session: URLSessionProtocol
     private let clientID: String
     private let clientSecret: String
 
-    public init(clientID: String, clientSecret: String, session: URLSession = .shared) {
+    public init(clientID: String, clientSecret: String, session: URLSessionProtocol = URLSession.shared) {
         self.session = session
         self.clientID = clientID
         self.clientSecret = clientSecret

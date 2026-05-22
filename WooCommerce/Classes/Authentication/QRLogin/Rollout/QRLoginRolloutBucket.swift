@@ -6,6 +6,10 @@ import Foundation
 /// is stable across restarts. The currently-enabled range (`1...1`) maps to a
 /// 10% rollout. Debug overrides bypass the bucket check entirely — they're not
 /// the bucket's concern; see `QRLoginAvailability`.
+///
+/// This is a self-contained local bucket rather than an `Experiments` / ExPlat
+/// A/B assignment because QR-login is gated entirely in the unauthenticated
+/// (logged-out) flow, before any account context exists.
 struct QRLoginRolloutBucket {
 
     private static let bucketKey = "qr_login_rollout_bucket"

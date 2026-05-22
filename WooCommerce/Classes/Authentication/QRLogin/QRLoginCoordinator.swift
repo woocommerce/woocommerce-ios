@@ -1,4 +1,5 @@
 import AVFoundation
+import AuthenticationServices
 import SwiftUI
 import UIKit
 import WordPressAuthenticator
@@ -200,10 +201,10 @@ private extension QRLoginCoordinator {
             showHostView(with: strategy)
 
         case let .magicLink(url):
-            // §10.1: hand the URL to an in-app browser. WP.com redirects to
-            // woocommerce://magic-login, picked up by the existing handler.
+            // §10.1: hand the URL to the in-app auth session. WP.com redirects
+            // to woocommerce://magic-login, captured by the session. Finishing
+            // is handled per outcome inside `openMagicLink`.
             openMagicLink(url)
-            finishIfDeepLink()
 
         case let .siteURLOnly(url):
             // §10.2: pre-fill the legacy site-address login screen with the URL
@@ -244,11 +245,37 @@ private extension QRLoginCoordinator {
         }
     }
 
-    /// Opens a magic-link URL in an in-app browser. Presented from the
-    /// navigation controller itself (not its top view controller) so the
-    /// QR-login screen underneath can be safely popped after the handoff.
+    /// Hands a magic-link URL to an `ASWebAuthenticationSession`.
+    ///
+    /// The session runs the wp.com page in an in-app Safari sheet and captures
+    /// the `woocommerce://magic-login` callback itself — the merchant never
+    /// leaves Woo for the external browser, and there is no "Open in app?"
+    /// system prompt on the redirect back. The QR "signing in" screen stays
+    /// visible underneath the sheet.
+    ///
+    /// On a captured callback the URL runs through the existing
+    /// `WordPressAuthenticator` handler — sign-in then completes and the app
+    /// swaps to the logged-in UI — and the coordinator finishes. If the merchant
+    /// dismisses the sheet instead, `handleMagicLinkCancelled` unwinds the QR
+    /// surface so they can retry.
     func openMagicLink(_ url: URL) {
-        WebviewHelper.launch(url, with: navigationController)
+        let window = navigationController.view.window
+        let runner = QRLoginMagicLinkAuthRunner(
+            anchor: window,
+            onCallback: { [weak self] callbackURL in
+                if let rootViewController = window?.rootViewController {
+                    _ = WordPressAuthenticator.shared.handleWordPressAuthUrl(callbackURL,
+                                                                             rootViewController: rootViewController)
+                }
+                // Sign-in proceeds through WordPressAuthenticator from here —
+                // release the coordinator; the login UI is about to be replaced.
+                self?.finish()
+            },
+            onCancel: { [weak self] in
+                self?.handleMagicLinkCancelled()
+            }
+        )
+        runner.start(url: url, callbackURLScheme: Bundle.main.dotcomAuthScheme)
     }
 
     func showHostView(with strategy: QRLoginStrategy) {
@@ -256,7 +283,6 @@ private extension QRLoginCoordinator {
         let host = QRLoginHostView(
             viewModel: viewModel,
             onDone: { [weak self] in self?.handleSuccess() },
-            onMagicLinkHandedOff: { [weak self] in self?.handleMagicLinkHandedOff() },
             onCancel: { [weak self] in self?.handleHostCancelled() },
             onScanAgain: { [weak self] in self?.handleScanAgain() },
             onEnterSiteURLTapped: { [weak self] in self?.handleEnterSiteURL() }
@@ -317,12 +343,20 @@ private extension QRLoginCoordinator {
         finish()
     }
 
-    /// The wp.com flow handed the magic link to an in-app browser. Sign-in
-    /// completes via the magic-login redirect, so pop the host view (revealing
-    /// the scanner / prologue if the merchant dismisses the browser) without
-    /// routing to the store picker (spec §10.1).
-    func handleMagicLinkHandedOff() {
-        navigationController.popViewController(animated: false)
+    /// The merchant dismissed the magic-link auth sheet without finishing
+    /// sign-in. Unwind the QR surface so they can retry.
+    ///
+    /// In camera mode this unwinds to the prologue rather than the scanner: the
+    /// scanner keeps the camera live (the merchant may still be pointing at a
+    /// QR code, so it could capture another) and landing there re-enters the
+    /// scan step. Deep-link mode has no prologue, so it pops the host view and
+    /// exits the QR surface.
+    func handleMagicLinkCancelled() {
+        if let prologueViewController {
+            navigationController.popToViewController(prologueViewController, animated: false)
+        } else {
+            navigationController.popViewController(animated: false)
+        }
         finishIfDeepLink()
     }
 
@@ -462,5 +496,71 @@ private extension QRLoginCoordinator {
             value: "Open Permissions Settings",
             comment: "Primary action on the permanently-denied camera-permission alert."
         )
+    }
+}
+
+// MARK: - Magic-link auth session
+
+/// Runs the wp.com QR magic-link handoff inside an `ASWebAuthenticationSession`.
+///
+/// `ASWebAuthenticationSession` opens the magic link in an in-app Safari sheet
+/// and captures the `woocommerce://magic-login` callback itself — no external
+/// browser, and no "Open in app?" system prompt on the redirect back.
+///
+/// The runner retains itself for the lifetime of the session and releases once
+/// it ends — delivering the captured callback URL (`onCallback`), or signalling
+/// cancellation (`onCancel`) if the merchant dismissed the sheet. The self-retain
+/// decouples the session's lifetime from the `QRLoginCoordinator`.
+@MainActor
+private final class QRLoginMagicLinkAuthRunner: NSObject, ASWebAuthenticationPresentationContextProviding {
+
+    private let anchor: ASPresentationAnchor?
+    private let onCallback: @MainActor (URL) -> Void
+    private let onCancel: @MainActor () -> Void
+    private var session: ASWebAuthenticationSession?
+    private var retainedSelf: QRLoginMagicLinkAuthRunner?
+
+    init(anchor: ASPresentationAnchor?,
+         onCallback: @escaping @MainActor (URL) -> Void,
+         onCancel: @escaping @MainActor () -> Void) {
+        self.anchor = anchor
+        self.onCallback = onCallback
+        self.onCancel = onCancel
+    }
+
+    /// Opens `url` in the auth session. `callbackURLScheme` is the custom scheme
+    /// the wp.com page redirects to — the session ends the moment it sees it.
+    func start(url: URL, callbackURLScheme: String) {
+        retainedSelf = self
+        let session = ASWebAuthenticationSession(url: url,
+                                                 callbackURLScheme: callbackURLScheme) { [weak self] callbackURL, _ in
+            Task { @MainActor in
+                // Hold a strong reference before clearing the self-retain:
+                // releasing `retainedSelf` first would deallocate the runner
+                // mid-closure and the callbacks below would be dropped.
+                guard let self else { return }
+                self.retainedSelf = nil
+                if let callbackURL {
+                    self.onCallback(callbackURL)
+                } else {
+                    // A nil callbackURL means the merchant dismissed the sheet
+                    // (or it failed) — hand back so the QR surface can recover.
+                    self.onCancel()
+                }
+            }
+        }
+        // A magic link is self-authenticating, so the session needs no shared
+        // Safari cookies — an ephemeral session also avoids the data-sharing
+        // consent prompt.
+        session.prefersEphemeralWebBrowserSession = true
+        session.presentationContextProvider = self
+        self.session = session
+        session.start()
+    }
+
+    nonisolated func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        MainActor.assumeIsolated {
+            anchor ?? ASPresentationAnchor()
+        }
     }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import NetworkingCore
 
 /// Talks to the self-hosted QR-login endpoints exposed by the merchant's
 /// WooCommerce plugin under `{siteUrl}/wp-json/wc-admin/mobile-app/qr-login-*`.
@@ -26,9 +27,9 @@ public protocol SelfHostedQRLoginRemoteProtocol {
 
 public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
 
-    private let session: URLSession
+    private let session: URLSessionProtocol
 
-    public init(session: URLSession = .shared) {
+    public init(session: URLSessionProtocol = URLSession.shared) {
         self.session = session
     }
 

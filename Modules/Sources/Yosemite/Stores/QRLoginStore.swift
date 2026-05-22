@@ -70,7 +70,7 @@ private extension QRLoginStore {
                         token: String,
                         device: QRLoginScanDevice,
                         completion: @escaping (Result<SelfHostedQRLoginScanResponse, QRLoginNetworkError>) -> Void) {
-        Task {
+        Task { @MainActor in
             do {
                 let response = try await selfHostedRemote.scan(siteURL: siteURL, token: token, device: device)
                 completion(.success(response))
@@ -84,7 +84,7 @@ private extension QRLoginStore {
                         sessionID: String,
                         tokenHash: String,
                         completion: @escaping (Result<SelfHostedQRLoginSessionStatus, QRLoginNetworkError>) -> Void) {
-        Task {
+        Task { @MainActor in
             do {
                 let status = try await selfHostedRemote.pollSessionStatus(siteURL: siteURL,
                                                                           sessionID: sessionID,
@@ -100,7 +100,7 @@ private extension QRLoginStore {
                             token: String,
                             exchangeGrant: String,
                             completion: @escaping (Result<SelfHostedQRLoginExchangeResponse, QRLoginNetworkError>) -> Void) {
-        Task {
+        Task { @MainActor in
             do {
                 let response = try await selfHostedRemote.exchange(siteURL: siteURL,
                                                                    token: token,
@@ -121,7 +121,7 @@ private extension QRLoginStore {
                    encrypted: String,
                    device: QRLoginScanDevice,
                    completion: @escaping (Result<WPComQRLoginScanResponse, QRLoginNetworkError>) -> Void) {
-        Task {
+        Task { @MainActor in
             do {
                 let response = try await wpComRemote.scan(token: token, encrypted: encrypted, device: device)
                 completion(.success(response))
@@ -134,7 +134,7 @@ private extension QRLoginStore {
     func wpComPoll(sessionID: String,
                    tokenHash: String,
                    completion: @escaping (Result<WPComQRLoginSessionStatus, QRLoginNetworkError>) -> Void) {
-        Task {
+        Task { @MainActor in
             do {
                 let status = try await wpComRemote.pollSessionStatus(sessionID: sessionID, tokenHash: tokenHash)
                 completion(.success(status))
@@ -148,7 +148,7 @@ private extension QRLoginStore {
                        encrypted: String,
                        exchangeGrant: String,
                        completion: @escaping (Result<WPComQRLoginExchangeResponse, QRLoginNetworkError>) -> Void) {
-        Task {
+        Task { @MainActor in
             do {
                 let response = try await wpComRemote.exchange(token: token,
                                                               encrypted: encrypted,

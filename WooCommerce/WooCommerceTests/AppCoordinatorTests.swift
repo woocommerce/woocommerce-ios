@@ -346,6 +346,7 @@ final class AppCoordinatorTests: XCTestCase {
         _ = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginOnboardingShown.rawValue}))
     }
 
+    @MainActor
     func test_authenticationManager_handleAuthenticationUrl_with_login_url_updates_root_to_LoginNavigationController_when_onboarding_is_shown() throws {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
@@ -369,6 +370,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertEqual(loginNavigationController.viewControllers.count, 2)
     }
 
+    @MainActor
     func test_authenticationManager_handleAuthenticationUrl_with_login_url_pushes_a_view_controller_when_onboarding_is_not_shown() throws {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
@@ -391,6 +393,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertEqual(loginNavigationController.viewControllers.count, 2)
     }
 
+    @MainActor
     func test_authenticationManager_handleAuthenticationUrl_with_login_url_dismisses_modal_and_pushes_view_controller_when_modal_is_shown() throws {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,

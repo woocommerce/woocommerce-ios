@@ -66,14 +66,10 @@ struct QRLoginNumberMatchView: View {
 
             Spacer()
 
-            Button(role: .cancel, action: onCancel) {
-                Text(Localization.cancel)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
-            .padding(.horizontal, 24)
-            .padding(.bottom, 24)
+            Button(Localization.cancel, action: onCancel)
+                .buttonStyle(SecondaryButtonStyle())
+                .padding(.horizontal, 24)
+                .padding(.bottom, 24)
         }
         .onReceive(timer) { now = $0 }
     }

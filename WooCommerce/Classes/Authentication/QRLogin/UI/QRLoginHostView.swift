@@ -12,11 +12,6 @@ struct QRLoginHostView: View {
     @State var viewModel: QRLoginViewModel
     /// Called when the merchant is signed in (state reaches `.done`).
     let onDone: () -> Void
-    /// Called when the wp.com flow hands the magic link to an in-app browser
-    /// (state reaches `.handedOff`). Sign-in then completes via the magic-login
-    /// redirect, so the coordinator just dismisses the QR-login surface — it
-    /// must NOT route to the store picker (spec §10.1).
-    let onMagicLinkHandedOff: () -> Void
     /// Called when the merchant cancels from the number-match screen — the
     /// coordinator pops back to the scanner (camera mode) or exits (deep-link
     /// mode). Wired directly to the cancel action rather than observed off the
@@ -49,8 +44,10 @@ struct QRLoginHostView: View {
                 QRLoginAuthenticatingView()
                     .task { onDone() }
             case .handedOff:
+                // The magic link opened in the in-app auth session; sign-in
+                // completes there. Keep showing "signing in" underneath until
+                // the app swaps to the logged-in UI.
                 QRLoginAuthenticatingView()
-                    .task { onMagicLinkHandedOff() }
             case let .error(error):
                 QRLoginErrorView(
                     error: error,

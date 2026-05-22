@@ -40,20 +40,11 @@ struct QRLoginSessionReplaceView: View {
             }
 
             VStack(spacing: 12) {
-                Button(action: onConfirm) {
-                    Text(Localization.confirm)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .tint(Color(uiColor: .accent))
+                Button(Localization.confirm, action: onConfirm)
+                    .buttonStyle(PrimaryButtonStyle())
 
-                Button(action: onCancel) {
-                    Text(Localization.cancel)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
+                Button(Localization.cancel, action: onCancel)
+                    .buttonStyle(SecondaryButtonStyle())
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 24)

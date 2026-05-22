@@ -36,20 +36,11 @@ struct QRLoginErrorView: View {
             Spacer(minLength: 24)
 
             VStack(spacing: 12) {
-                Button(action: onPrimaryTapped) {
-                    Text(primaryCTA)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .tint(Color(uiColor: .accent))
+                Button(primaryCTA, action: onPrimaryTapped)
+                    .buttonStyle(PrimaryButtonStyle())
 
-                Button(action: onEnterSiteURLTapped) {
-                    Text(Localization.enterSiteURL)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
+                Button(Localization.enterSiteURL, action: onEnterSiteURLTapped)
+                    .buttonStyle(SecondaryButtonStyle())
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 24)

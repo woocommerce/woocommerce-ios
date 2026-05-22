@@ -215,14 +215,57 @@ tint controls.
 
 ## Layer 6 — WP.com magic-link, non-protocol payloads, deep link
 
-### Magic-link handoff via `WebviewHelper.launch`
+### Magic-link handoff via `ASWebAuthenticationSession`
 
-`WPComQRLoginStrategy` injects a `QRLoginMagicLinkOpener` closure provided
-by `QRLoginCoordinator.openMagicLink`. The opener uses
-`WebviewHelper.launch(url, with: topVC)` — same `SFSafariViewController`
-plumbing the existing magic-link UI uses. WP.com 3xx-redirects to
-`woocommerce://magic-login`, picked up by the existing handler in
-`AuthenticationManager.handleAuthenticationUrl`.
+`WPComQRLoginStrategy` injects a `QRLoginMagicLinkOpener` closure provided by
+`QRLoginCoordinator.openMagicLink`. The opener runs the magic link in an
+`ASWebAuthenticationSession` (`QRLoginMagicLinkAuthRunner`): the wp.com page
+completes sign-in and redirects to `woocommerce://magic-login`, and the
+session captures that custom-scheme callback itself — no external browser, and
+no "Open in app?" system prompt on the redirect back. The captured callback
+URL is the same one the email magic-link login receives, so it is handed
+straight to `WordPressAuthenticator.handleWordPressAuthUrl` — the existing
+magic-link handler, unchanged.
+
+Two earlier approaches were dropped: an in-app `SFSafariViewController`
+(`WebviewHelper.launch`) does not reliably deliver custom-scheme redirects
+back to the app (the flow stalled on the wp.com page); `UIApplication.shared.open`
+works but routes through the external Safari app, which prompts the merchant
+for permission to switch back to Woo.
+
+`prefersEphemeralWebBrowserSession` is `true`: a magic link is
+self-authenticating, so the session needs no shared Safari cookies, and an
+ephemeral session also avoids the data-sharing consent prompt.
+
+`QRLoginMagicLinkAuthRunner` retains itself for the lifetime of the session and
+releases once it ends — delivering the captured callback URL (`onCallback`) or,
+if the merchant dismissed the sheet, signalling cancellation (`onCancel`). The
+self-retain decouples the session's lifetime from the coordinator.
+
+The QR "signing in" screen (`.handedOff` → `QRLoginAuthenticatingView`) stays
+visible underneath the auth sheet: on a captured callback `openMagicLink` runs
+the URL through `handleWordPressAuthUrl` and finishes the coordinator, and the
+app swaps straight to the logged-in UI — so the merchant sees signing-in →
+browser → store picker. Only if they dismiss the sheet without finishing does
+`handleMagicLinkCancelled` unwind — to the prologue in camera mode, not the
+scanner (whose live camera could capture another code and which re-enters the
+scan step).
+
+### Magic-login callback `flow` fallback
+
+`WordPressAuthenticator.openAuthenticationURL` (the handler reached via
+`isWordPressAuthUrl`) required a `flow` query parameter (`login` / `signup`)
+and silently rejected the callback without one. The email magic-link login
+always carries it — the `auth/send-login-email` request injects
+`flow=login`. The wp.com QR `/exchange` endpoint mints its magic link without
+that parameter, so the `woocommerce://magic-login` callback arrived with no
+`flow` and sign-in failed ("Magic link error: we couldn't retrieve the flow").
+
+`openAuthenticationURL` now defaults a missing `flow` to `login` — a
+magic-login is a login unless the callback explicitly says `signup`. A
+genuine email callback always carries `flow`, so this only affects the QR
+path. `flow` does not drive authentication (`syncAndContinue` signs in from
+the `authToken` alone); it only selects the login-vs-signup analytics funnel.
 
 ### Non-protocol payloads land at the coordinator's payload handler
 

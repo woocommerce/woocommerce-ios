@@ -796,7 +796,6 @@ private extension TotalsView {
         // isn't available we don't need the sheet at all — the row already
         // does the right thing (just Cash).
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
-        let viewHelper = POSPaymentViewHelper()
         let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
             readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
             paymentState: displayPaymentState

@@ -2114,6 +2114,57 @@ struct POSPaymentModelTests {
         #expect(service.connectReaderCallCount == 1)
     }
 
+    @Test("startPayment on the TTP path disconnects a previously-attached BT reader before pre-connecting TTP")
+    @MainActor
+    func test_startPayment_when_TTP_preferred_and_prior_BT_attached_then_disconnects_before_TTP_preconnect() async {
+        // Given — phone POS path (preferred = .tapToPay) with a BT reader
+        // attached from a prior session (`lastConnectedMethod == .bluetooth`).
+        // We can't poke `lastConnectedMethod` directly (it's `private(set)`),
+        // so drive it through the model's own machinery: call
+        // `connectCardReader()` which sets `lastConnectedMethod = .bluetooth`
+        // after a successful BT connect.
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = .init(name: "BT Reader", batteryLevel: 0.85)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay)
+
+        // Establish `lastConnectedMethod == .bluetooth`. `connectCardReader`
+        // spawns its own Task; wait for the SDK-level `connectReader` to
+        // be called so the post-connect `lastConnectedMethod` assignment
+        // has landed before we proceed.
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = { continuation.resume() }
+            sut.connectCardReader()
+        }
+        #expect(sut.lastConnectedMethod == .bluetooth)
+        let connectCountAfterBT = service.connectReaderCallCount
+
+        // When — the merchant returns to the TTP hero for a new order.
+        // `startPayment` sees the BT cleanup conditions (TTP preferred +
+        // `lastConnectedMethod == .bluetooth` + reader still connected) and
+        // disconnects before kicking the silent TTP pre-connect.
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = { continuation.resume() }
+            Task { @MainActor in await sut.startPayment() }
+        }
+
+        // Then — the stale BT reader was dropped and the silent TTP
+        // pre-connect ran. The disconnect on the BT side is the headline
+        // one-shot-Bluetooth cleanup; the second `connectReader` call is
+        // `connectTapToPayReader` doing its pre-connect.
+        #expect(service.disconnectReaderCallCount >= 1)
+        #expect(service.connectReaderCallCount > connectCountAfterBT)
+        // No collect on either side — TTP is gated behind an explicit hero
+        // tap, BT was just torn down without being re-collected.
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.currentPaymentMethod == nil)
+    }
+
     @Test("startPaymentWithMethod ignores re-entry of the same method during an active session")
     @MainActor
     func test_startPaymentWithMethod_when_called_again_with_same_method_then_ignored() async {
@@ -2135,15 +2186,19 @@ struct POSPaymentModelTests {
         }
         let connectCountAfterFirst = service.connectReaderCallCount
         service.collectPaymentWasCalled = false
+        service.cancelPaymentCalled = false
 
         // When — re-entering with the same method (e.g. stray closure / SwiftUI
         // re-render after the session is established).
         await sut.startPaymentWithMethod(.bluetooth)
 
-        // Then — second call is a no-op: no new connect, no new collect, the
-        // active method is unchanged.
+        // Then — second call is a no-op: no new connect, no new collect, no
+        // cancel (the early-return path at `POSPaymentModel.startPaymentWithMethod`
+        // bails before the method-switch cancel runs), and the active method
+        // is unchanged.
         #expect(service.connectReaderCallCount == connectCountAfterFirst)
         #expect(service.collectPaymentWasCalled == false)
+        #expect(service.cancelPaymentCalled == false)
         #expect(sut.currentPaymentMethod == .bluetooth)
     }
 
@@ -2167,25 +2222,17 @@ struct POSPaymentModelTests {
         service.cancelPaymentCalled = false
 
         // When — merchant picks Tap to Pay from the Other payment methods sheet
-        // while BT is mid-collection. Wait until the SUT has finished the
-        // cancel + active-method-flip portion of `startPaymentWithMethod` by
-        // observing `currentPaymentMethod` flipping to `.tapToPay` (which
-        // happens *after* `cancelPayment` has been awaited). The TTP connect
-        // that follows isn't observable through the mock (it doesn't
-        // propagate connect results into the connection-status publisher),
-        // so we stop here and assert on the switch step alone.
-        await withCheckedContinuation { continuation in
-            withObservationTracking {
-                _ = sut.currentPaymentMethod
-            } onChange: {
-                Task { @MainActor in
-                    if sut.currentPaymentMethod == .tapToPay {
-                        continuation.resume()
-                    }
-                }
-            }
-            Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
-        }
+        // while BT is mid-collection. `await task.value` is the most robust
+        // wait we have here — `startPaymentWithMethod` returns deterministically
+        // in the test environment (cancel → disconnect-then-reconnect → kick
+        // a fire-and-forget connectReader Task → set up the
+        // startPaymentOnCardReaderConnection one-shot subscription → return).
+        // Better than `withObservationTracking { _ = sut.currentPaymentMethod }`,
+        // which would hang to the test-suite timeout if a future change ever
+        // emitted an intermediate `currentPaymentMethod` value before
+        // `.tapToPay` and the observation missed the final flip.
+        let task = Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await task.value
 
         // Then — the BT collect was cancelled and the active method flipped.
         #expect(service.cancelPaymentCalled == true)

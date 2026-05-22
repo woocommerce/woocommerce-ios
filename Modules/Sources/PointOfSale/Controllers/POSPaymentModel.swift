@@ -497,8 +497,16 @@ extension POSPaymentModel {
             // can stay at `.reconnecting` and the "Reconnecting reader…"
             // screen never transitions away. Explicit disconnect forces the
             // status to `.disconnected` so the UI can fall back to the TTP
-            // hero (or the iPad disconnect message). Disconnect on an
-            // already-disconnected reader is a no-op at the SDK level.
+            // hero (or the iPad disconnect message).
+            //
+            // Re-check the status after the cancel `await` — if the reconnect
+            // actually completed during the cancel (a real race on the BT
+            // path, especially on iPad where BT is primary), bail without
+            // disconnecting. Tearing down a connection the merchant didn't
+            // ask to drop would surface as "I tapped Cancel reconnection and
+            // it disconnected my reader" — exactly the iPad regression
+            // samiuelson flagged.
+            guard case .reconnecting = self?.cardReaderConnectionStatus else { return }
             await self?.cardPresentPaymentService.disconnectReader()
         }
     }
@@ -969,6 +977,16 @@ extension POSPaymentModel {
                         // / bottom strip surfaces either, leaving the
                         // merchant with no actionable UI.
                         if self.lastConnectedMethod == .bluetooth {
+                            // Diagnostic: `startPayment` re-subscribes via
+                            // `subscribeToPaymentSessionEvents`'s
+                            // `paymentSessionCancellables.isEmpty` guard. If a
+                            // prior `deactivate()` cleared them and we somehow
+                            // miss the re-subscribe, the resumed collection
+                            // runs blind to events. Log the cancellables count
+                            // here so a "no events firing after reconnect"
+                            // bug is one Bartleby search away from the cause.
+                            DDLogDebug("🃏 [CardPayment] BT auto-resume re-kick — "
+                                       + "paymentSessionCancellables.count: \(self.paymentSessionCancellables.count)")
                             await self.startPayment()
                         }
                     case .cancellingConnection, .disconnecting, .reconnecting:

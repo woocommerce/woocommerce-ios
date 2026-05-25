@@ -266,12 +266,12 @@ struct SupportChatView: View {
                     Label(action.title, systemImage: action.systemImage)
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
-            } else {
-                Button(Localization.continueToChat) {
-                    viewModel.proceedToChat()
-                }
-                .buttonStyle(SecondaryButtonStyle())
             }
+
+            Button(Localization.continueToChat) {
+                viewModel.proceedToChat()
+            }
+            .buttonStyle(SecondaryButtonStyle())
         }
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)

@@ -238,7 +238,8 @@ struct WooAssistantHeadlessTests {
             siteURL: "https://store.example.com",
             siteID: 12345,
             username: "merchant",
-            appPassword: "abcd efgh ijkl mnop"
+            appPassword: "abcd efgh ijkl mnop",
+            dotcomAccessToken: "test-bearer-token"
         )
     }
 }

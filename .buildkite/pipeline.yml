@@ -70,6 +70,16 @@ steps:
           context: WordPressAuthenticator Unit Tests
 
   #################
+  # Ruby Automation Tests (Fastlane helpers)
+  #################
+  - label: ":ruby: Ruby Automation Tests"
+    command: .buildkite/commands/run-ruby-automation-tests.sh
+    plugins: [$CI_TOOLKIT]
+    notify:
+      - github_commit_status:
+          context: Ruby Automation Tests
+
+  #################
   # Linters
   #################
   - group: Linters

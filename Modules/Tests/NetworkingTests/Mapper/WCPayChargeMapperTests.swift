@@ -33,7 +33,7 @@ class WCPayChargeMapperTests: XCTestCase {
     func test_WCPayCharge_map_parses_all_fields_in_result_for_card_present() throws {
         let wcpayCharge = try mapRetrieveWCPayChargeResponse(responseName: .cardPresent)
 
-        let expectedCreatedDate = Date.init(timeIntervalSince1970: 1643280767) //2022-01-27 10:52:47 UTC
+        let expectedCreatedDate = Date(timeIntervalSince1970: 1643280767) //2022-01-27 10:52:47 UTC
 
         let expectedPaymentMethodDetails = WCPayPaymentMethodDetails.cardPresent(
             details: .init(brand: .visa,
@@ -66,7 +66,7 @@ class WCPayChargeMapperTests: XCTestCase {
     func test_WCPayCharge_map_parses_all_fields_in_result_for_interac_present() throws {
         let wcpayCharge = try mapRetrieveWCPayChargeResponse(responseName: .interacPresent)
 
-        let expectedCreatedDate = Date.init(timeIntervalSince1970: 1647257154) //2022-03-14 11:25:54 UTC
+        let expectedCreatedDate = Date(timeIntervalSince1970: 1647257154) //2022-03-14 11:25:54 UTC
 
         let expectedPaymentMethodDetails = WCPayPaymentMethodDetails.interacPresent(
             details: .init(brand: .visa,
@@ -132,7 +132,7 @@ class WCPayChargeMapperTests: XCTestCase {
         """.utf8)
         let wcpayCharge = try WCPayChargeMapper(siteID: dummySiteID).map(response: response)
 
-        let expectedCreatedDate = Date.init(timeIntervalSince1970: 1778598369)
+        let expectedCreatedDate = Date(timeIntervalSince1970: 1778598369)
 
         let expectedPaymentMethodDetails = WCPayPaymentMethodDetails.cardPresent(
             details: .init(brand: .eftposAu,
@@ -171,7 +171,7 @@ class WCPayChargeMapperTests: XCTestCase {
     func test_WCPayCharge_map_parses_all_fields_in_result_for_card_present_with_nulls() throws {
         let wcpayCharge = try mapRetrieveWCPayChargeResponse(responseName: .cardPresentMinimal)
 
-        let expectedCreatedDate = Date.init(timeIntervalSince1970: 1643799478) //2022-02-02 10:57:58 UTC
+        let expectedCreatedDate = Date(timeIntervalSince1970: 1643799478) //2022-02-02 10:57:58 UTC
 
         let expectedPaymentMethodDetails = WCPayPaymentMethodDetails.cardPresent(
             details: .init(brand: .visa,
@@ -204,7 +204,7 @@ class WCPayChargeMapperTests: XCTestCase {
     func test_WCPayCharge_map_parses_all_fields_in_result_for_card() throws {
         let wcpayCharge = try mapRetrieveWCPayChargeResponse(responseName: .card)
 
-        let expectedCreatedDate = Date.init(timeIntervalSince1970: 1643378348) //2022-01-28 13:59:08 UTC
+        let expectedCreatedDate = Date(timeIntervalSince1970: 1643378348) //2022-01-28 13:59:08 UTC
 
         let expectedPaymentMethodDetails = WCPayPaymentMethodDetails.card(
             details: .init(brand: .amex, last4: "1111", funding: .credit))

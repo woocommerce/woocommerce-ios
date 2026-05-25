@@ -15,13 +15,13 @@ enum SupportIssueType: String, CaseIterable {
     var testsToRun: [SupportDiagnosticsService.Test]? {
         switch self {
         case .loadingOrders:
-            return [.internetConnection, .wpComServers, .site, .siteOrders]
+            return [.internetConnection, .site, .siteOrders]
         case .loadingProducts:
-            return [.internetConnection, .wpComServers, .site, .loadingProducts]
+            return [.internetConnection, .site, .loadingProducts]
         case .loadingAnalytics:
-            return [.internetConnection, .wpComServers, .site, .analyticsSetting]
+            return [.internetConnection, .site, .analyticsSetting]
         case .receivingNotifications:
-            return [.internetConnection, .wpComServers, .site, .notifications]
+            return [.internetConnection, .site, .notifications]
         case .other:
             return nil
         }

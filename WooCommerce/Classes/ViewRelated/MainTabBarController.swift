@@ -562,6 +562,8 @@ extension MainTabBarController {
             }
         case .blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote:
            navigateToBlazeCampaignDetails(using: notification)
+        case .storeStock:
+            navigateToProductDetails(using: notification)
         default:
             break
         }
@@ -646,6 +648,30 @@ extension MainTabBarController {
                 }
             }
         })
+    }
+
+    static func navigateToProductDetails(using notification: PushNotification) {
+        guard let productID = notification.meta?.identifier(forKey: .product) else {
+            DDLogError("## Notification with [\(String(describing: notification.noteID))] lacks its product ID!")
+            return
+        }
+
+        switchToProductsTab {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
+                presentProductDetails(productID: Int64(productID), siteID: notification.siteID)
+            }
+        }
+    }
+
+    private static func presentProductDetails(productID: Int64, siteID: Int64) {
+        guard let tabBar = AppDelegate.shared.tabBarController else {
+            return
+        }
+
+        let model: ProductLoaderViewController.Model = .product(productID: productID)
+        let productViewController = ProductLoaderViewController(model: model, siteID: siteID, forceReadOnly: false)
+        let productNavController = WooNavigationController(rootViewController: productViewController)
+        tabBar.rootTabViewController(tab: .products).present(productNavController, animated: true)
     }
 
     static func navigateToBlazeCampaignCreation(for siteID: Int64) {

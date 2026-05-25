@@ -88,7 +88,8 @@ struct POSRefundModalContentView: View {
 
     var body: some View {
         content
-            .posModalFullScreen(horizontalSizeClass == .compact)
+            // `.posModalFullScreen(horizontalSizeClass == .compact)` removed —
+            // `POSRootModalViewModifier` auto-detects compact width. See #17067 review.
             .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
                 POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
                     try await orderListModel.sendReceipt(order: order, email: email)

@@ -43,14 +43,33 @@ BOT_NAME="WooCommerce Translation Bot"
 BOT_EMAIL="translation-bot@noreply.woocommerce.com"
 COMMIT_PREFIX="Translate:"
 
+# Normalizes a git URL to its `owner/repo` form so that ssh and https
+# forms of the same repo compare equal. BUILDKITE_REPO is typically
+# `git@github.com:org/repo.git` while BUILDKITE_PULL_REQUEST_REPO comes
+# from GitHub as `https://github.com/org/repo.git`; without normalizing
+# the fork-detection branch below misfires on every same-repo PR.
+normalize_repo_url() {
+  local url="${1:-}"
+  url="${url#git@github.com:}"
+  url="${url#https://github.com/}"
+  url="${url#git://github.com/}"
+  url="${url%.git}"
+  printf '%s' "$url"
+}
+
 echo "--- :globe_with_meridians: AI Translation"
+echo "PR repo: ${BUILDKITE_PULL_REQUEST_REPO:-<unset>}"
+echo "Main repo: ${BUILDKITE_REPO:-<unset>}"
 
 if [[ "${BUILDKITE_PULL_REQUEST:-false}" == "false" ]]; then
   echo "Skipping: not a pull request build."
   exit 0
 fi
 
-if [[ "${BUILDKITE_PULL_REQUEST_REPO:-}" != "" && "${BUILDKITE_PULL_REQUEST_REPO}" != "${BUILDKITE_REPO}" ]]; then
+PR_REPO_PATH=$(normalize_repo_url "${BUILDKITE_PULL_REQUEST_REPO:-}")
+MAIN_REPO_PATH=$(normalize_repo_url "${BUILDKITE_REPO:-}")
+
+if [[ -n "${PR_REPO_PATH}" && "${PR_REPO_PATH}" != "${MAIN_REPO_PATH}" ]]; then
   echo "Skipping: PR is from a fork (${BUILDKITE_PULL_REQUEST_REPO})."
   echo "Translation bot cannot push back to forks; the release-time sweep will pick up missing translations."
   buildkite-agent annotate --style 'info' --context ai-translation-fork \

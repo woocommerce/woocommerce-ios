@@ -196,8 +196,6 @@ private extension POSTabCoordinator {
                                               selectedSite: defaultSitePublisher,
                                               appPasswordSupportState: isAppPasswordSupported)
 
-<<<<<<< HEAD
-=======
             let sunsetWarningChecker = POSSunsetWarningChecker(
                 systemStatusService: POSSystemStatusService(
                     network: posNetwork,
@@ -205,7 +203,6 @@ private extension POSTabCoordinator {
                 )
             )
 
->>>>>>> 96f17de334 (Route all POS services through shared posNetwork)
             let serviceAdaptor = POSServiceLocatorAdaptor(posNetwork: posNetwork)
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
 
@@ -246,13 +243,6 @@ private extension POSTabCoordinator {
                 network: posNetwork,
                 storage: storageManager
             )
-            let posBookingListFetchStrategyFactory = POSBookingListFetchStrategyFactory(
-                siteID: siteID,
-                network: posNetwork,
-                currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
-                siteSettings: ServiceLocator.selectedSiteSettings.siteSettings
-            )
-
             let refundsService = POSRefundsService(siteID: siteID,
                                                    network: posNetwork,
                                                    currencySettings: currencySettings)
@@ -270,8 +260,19 @@ private extension POSTabCoordinator {
                 itemProvider = PointOfSaleItemServiceScreenshotMock()
             }
 
-            let isBookingsEligible = storesManager.sessionManager.defaultSite
-                .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
+            // Resolve TTP eligibility once, up front, so we can hand the right
+            // preferred method down to POSPaymentModel.
+            let tapToPayAvailabilityChecker = POSTapToPayAvailabilityChecker(
+                siteID: siteID,
+                eligibilityService: POSEligibilityService()
+            )
+            let preferredConnectionMethod: CardReaderConnectionMethod
+            switch await tapToPayAvailabilityChecker.checkAvailability() {
+            case .available:
+                preferredConnectionMethod = .tapToPay
+            case .unknown, .unavailable:
+                preferredConnectionMethod = .bluetooth
+            }
 
             var staffSettingsMode = self.createStaffSettingsMode(
                 siteID: siteID,
@@ -299,8 +300,6 @@ private extension POSTabCoordinator {
                     currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
                     analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
                 ),
-                bookingListFetchStrategyFactory: posBookingListFetchStrategyFactory,
-                isBookingsEligible: isBookingsEligible,
                 orderService: orderService,
                 refundsService: refundsService,
                 onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
@@ -320,6 +319,9 @@ private extension POSTabCoordinator {
                 grdbManager: grdbManager,
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 isLocalCatalogEligible: isLocalCatalogEligible,
+                sunsetWarningChecker: sunsetWarningChecker,
+                tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
+                preferredConnectionMethod: preferredConnectionMethod,
                 services: serviceAdaptor,
                 itemProvider: itemProvider,
                 staffSettingsMode: staffSettingsMode

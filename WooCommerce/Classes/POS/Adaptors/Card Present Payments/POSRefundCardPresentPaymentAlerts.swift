@@ -23,6 +23,10 @@ final class POSRefundOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtoco
         present(alertsProvider.tapOrInsertCard(title: title, amount: amount, inputMethods: inputMethods, onCancel: onCancel))
     }
 
+    func cardInserted(title: String, amount: String, onCancel: @escaping () -> Void) {
+        present(alertsProvider.cardInserted(title: title, amount: amount, onCancel: onCancel))
+    }
+
     func displayReaderMessage(message: String) {
         present(alertsProvider.displayReaderMessage(message: message))
     }

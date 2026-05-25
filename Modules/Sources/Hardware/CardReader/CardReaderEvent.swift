@@ -9,6 +9,9 @@ public enum CardReaderEvent: Equatable {
     /// the app should instruct the user to present the card again by swiping it.
     case displayMessage(String)
 
+    /// The reader has accepted cardholder input and the card can be removed.
+    case removeCardRequested(String)
+
     /// A card was inserted.
     case cardInserted
 

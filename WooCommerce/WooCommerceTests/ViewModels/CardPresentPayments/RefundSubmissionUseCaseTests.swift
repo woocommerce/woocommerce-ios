@@ -9,6 +9,7 @@ import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 
 private typealias Dependencies = RefundSubmissionUseCase<MockCardReaderSettingsAlerts, MockCardPresentPaymentAlertsPresenter>.Dependencies
+private typealias RefundDetails = RefundSubmissionUseCase<MockCardReaderSettingsAlerts, MockCardPresentPaymentAlertsPresenter>.Details
 
 final class RefundSubmissionUseCaseTests: XCTestCase {
     private var stores: MockStoresManager!
@@ -88,6 +89,43 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(stores.receivedActions.contains(where: { $0 is CardPresentPaymentAction }))
+    }
+
+    func test_submitRefund_with_cardInserted_reader_event_shows_cardInserted_alert() {
+        // Given
+        let useCase = createUseCase(details: interacRefundDetails())
+        mockCardPresentPaymentActions(returnCardReaderMessage: .cardInserted)
+        mockServerSideRefund(result: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertTrue(alerts.cardInsertedWasCalled)
+    }
+
+    func test_submitRefund_with_removeCardRequested_reader_event_shows_processing_alert() {
+        // Given
+        let useCase = createUseCase(details: interacRefundDetails())
+        mockCardPresentPaymentActions(returnCardReaderMessage: .removeCardRequested("Remove card"))
+        mockServerSideRefund(result: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertTrue(alerts.processingPaymentWasCalled)
+        XCTAssertFalse(alerts.displayReaderMessageWasCalled)
     }
 
     func test_submitRefund_with_non_interac_payment_method_does_not_call_showOnboardingIfRequired() throws {
@@ -393,6 +431,19 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 }
 
 private extension RefundSubmissionUseCaseTests {
+    func interacRefundDetails(siteID: Int64 = Mocks.siteID) -> RefundDetails {
+        .init(order: .fake().copy(siteID: siteID, total: "2.28"),
+              charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                details: .init(brand: .visa,
+                               last4: "9969",
+                               funding: .credit,
+                               receipt: .init(accountType: .credit,
+                                              applicationPreferredName: "Stripe Credit",
+                                              dedicatedFileName: "A000000003101001")))),
+              amount: "2.28",
+              paymentGatewayAccount: createPaymentGatewayAccount(siteID: siteID))
+    }
+
     func mockServerSideRefund(result: Result<Void, Error>) {
         stores.whenReceivingAction(ofType: RefundAction.self) { action in
             if case let .createRefund(_, _, _, completion) = action {

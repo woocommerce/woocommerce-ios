@@ -321,6 +321,13 @@ private extension RefundSubmissionUseCase {
                                         onCancel: { [weak self] in
                 self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
             })
+        }, onCardInserted: { [weak self] in
+            guard let self else { return }
+            self.alerts.cardInserted(title: RefundSubmissionUseCaseDefinitions.Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
+                                     amount: self.formattedAmount,
+                                     onCancel: { [weak self] in
+                self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
+            })
         }, onProcessingMessage: { [weak self] in
             // Shows waiting message.
             self?.alerts.processingPayment(

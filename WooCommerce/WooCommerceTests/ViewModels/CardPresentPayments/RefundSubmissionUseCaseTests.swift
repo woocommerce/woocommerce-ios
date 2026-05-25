@@ -153,6 +153,31 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertFalse(onboardingPresenter.spyShowOnboardingWasCalled)
     }
 
+    func test_submitRefund_with_missing_server_side_refund_response_returns_failure() throws {
+        // Given
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .cardPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockServerSideRefund(refund: nil, error: nil)
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCaseSubmissionError, .missingCreatedRefund)
+    }
+
     func test_submitRefund_with_interac_payment_method_calls_showOnboardingIfRequired() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -445,14 +470,23 @@ private extension RefundSubmissionUseCaseTests {
     }
 
     func mockServerSideRefund(result: Result<Void, Error>) {
+        let refund: Refund?
+        let error: Error?
+        switch result {
+        case .success:
+            refund = .fake()
+            error = nil
+        case .failure(let failure):
+            refund = nil
+            error = failure
+        }
+        mockServerSideRefund(refund: refund, error: error)
+    }
+
+    func mockServerSideRefund(refund: Refund?, error: Error?) {
         stores.whenReceivingAction(ofType: RefundAction.self) { action in
             if case let .createRefund(_, _, _, completion) = action {
-                switch result {
-                case .success:
-                    completion(.fake(), nil)
-                case .failure(let error):
-                    completion(nil, error)
-                }
+                completion(refund, error)
             }
         }
     }

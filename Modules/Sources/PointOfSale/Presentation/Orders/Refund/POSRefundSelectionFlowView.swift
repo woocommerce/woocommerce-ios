@@ -42,6 +42,7 @@ struct POSRefundSelectionFlowView: View {
             .toolbar(.hidden, for: .navigationBar)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.posSurfaceBright)
+            .ignoresSafeArea(.container, edges: .bottom)
             .posHidesFloatingControl()
     }
 

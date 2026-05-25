@@ -5,10 +5,16 @@ import Yosemite
 
 final class POSRefundOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     private let stateModel: POSRefundSubmissionModel
+    private let onCancelRequested: () -> Void
+    private let isPresentationAllowed: () -> Bool
     private let alertsProvider = CardPresentPaymentsTransactionAlertsProvider()
 
-    init(stateModel: POSRefundSubmissionModel) {
+    init(stateModel: POSRefundSubmissionModel,
+         onCancelRequested: @escaping () -> Void = {},
+         isPresentationAllowed: @escaping () -> Bool = { true }) {
         self.stateModel = stateModel
+        self.onCancelRequested = onCancelRequested
+        self.isPresentationAllowed = isPresentationAllowed
     }
 
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {
@@ -49,7 +55,9 @@ final class POSRefundOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtoco
     }
 
     private func present(_ eventDetails: CardPresentPaymentEventDetails) {
-        onMainQueue { [stateModel] in
+        let eventDetails = eventDetails.markingPOSCancellation(onCancelRequested)
+        onMainQueue { [stateModel, isPresentationAllowed] in
+            guard isPresentationAllowed() else { return }
             stateModel.state = .cardPresentEvent(eventDetails)
         }
     }
@@ -59,10 +67,16 @@ final class POSRefundCardPresentPaymentAlertsPresenter: CardPresentPaymentAlerts
     typealias AlertDetails = CardPresentPaymentEventDetails
 
     private let stateModel: POSRefundSubmissionModel
+    private let onCancelRequested: () -> Void
+    private let isPresentationAllowed: () -> Bool
     private var latestReaderConnectionHandler: ((String?) -> Void)?
 
-    init(stateModel: POSRefundSubmissionModel) {
+    init(stateModel: POSRefundSubmissionModel,
+         onCancelRequested: @escaping () -> Void = {},
+         isPresentationAllowed: @escaping () -> Bool = { true }) {
         self.stateModel = stateModel
+        self.onCancelRequested = onCancelRequested
+        self.isPresentationAllowed = isPresentationAllowed
     }
 
     func present(viewModel eventDetails: CardPresentPaymentEventDetails) {
@@ -145,8 +159,100 @@ final class POSRefundCardPresentPaymentAlertsPresenter: CardPresentPaymentAlerts
     }
 
     private func present(_ eventDetails: CardPresentPaymentEventDetails) {
-        onMainQueue { [stateModel] in
+        let eventDetails = eventDetails.markingPOSCancellation(onCancelRequested)
+        onMainQueue { [stateModel, isPresentationAllowed] in
+            guard isPresentationAllowed() else { return }
             stateModel.state = .cardPresentEvent(eventDetails)
+        }
+    }
+}
+
+private extension CardPresentPaymentEventDetails {
+    func markingPOSCancellation(_ markCancelled: @escaping () -> Void) -> Self {
+        let markAndRun: (@escaping () -> Void) -> () -> Void = { action in
+            {
+                markCancelled()
+                action()
+            }
+        }
+
+        switch self {
+        case .scanningForReaders(let endSearch):
+            return .scanningForReaders(endSearch: markAndRun(endSearch))
+        case .scanningFailed(let error, let endSearch):
+            return .scanningFailed(error: error, endSearch: markAndRun(endSearch))
+        case .bluetoothRequired(let error, let endSearch):
+            return .bluetoothRequired(error: error, endSearch: markAndRun(endSearch))
+        case .connectingFailed(let error, let retrySearch, let endSearch):
+            return .connectingFailed(error: error,
+                                     retrySearch: retrySearch,
+                                     endSearch: markAndRun(endSearch))
+        case .connectingFailedNonRetryable(let error, let endSearch):
+            return .connectingFailedNonRetryable(error: error,
+                                                 endSearch: markAndRun(endSearch))
+        case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch):
+            return .connectingFailedUpdatePostalCode(retrySearch: retrySearch,
+                                                     endSearch: markAndRun(endSearch))
+        case .connectingFailedChargeReader(let retrySearch, let endSearch):
+            return .connectingFailedChargeReader(retrySearch: retrySearch,
+                                                 endSearch: markAndRun(endSearch))
+        case .connectingFailedUpdateAddress(let adminURL, let showsInAuthenticatedWebView, let retrySearch, let endSearch):
+            return .connectingFailedUpdateAddress(wcSettingsAdminURL: adminURL,
+                                                  showsInAuthenticatedWebView: showsInAuthenticatedWebView,
+                                                  retrySearch: retrySearch,
+                                                  endSearch: markAndRun(endSearch))
+        case .preparingForPayment(let cancelPayment):
+            return .preparingForPayment(cancelPayment: markAndRun(cancelPayment))
+        case .selectSearchType(let tapToPay, let bluetooth, let endSearch):
+            return .selectSearchType(tapToPay: tapToPay,
+                                     bluetooth: bluetooth,
+                                     endSearch: markAndRun(endSearch))
+        case .foundReader(let name, let connect, let continueSearch, let endSearch):
+            return .foundReader(name: name,
+                                connect: connect,
+                                continueSearch: continueSearch,
+                                endSearch: markAndRun(endSearch))
+        case .foundMultipleReaders(let readerIDs, let selectionHandler):
+            return .foundMultipleReaders(readerIDs: readerIDs) { readerID in
+                if readerID == nil {
+                    markCancelled()
+                }
+                selectionHandler(readerID)
+            }
+        case .updateProgress(let requiredUpdate, let progress, let cancelUpdate):
+            return .updateProgress(requiredUpdate: requiredUpdate,
+                                   progress: progress,
+                                   cancelUpdate: cancelUpdate.map(markAndRun))
+        case .updateFailed(let tryAgain, let cancelUpdate):
+            return .updateFailed(tryAgain: tryAgain,
+                                 cancelUpdate: markAndRun(cancelUpdate))
+        case .updateFailedNonRetryable(let cancelUpdate):
+            return .updateFailedNonRetryable(cancelUpdate: markAndRun(cancelUpdate))
+        case .updateFailedLowBattery(let batteryLevel, let retrySearch, let cancelUpdate):
+            return .updateFailedLowBattery(batteryLevel: batteryLevel,
+                                           retrySearch: retrySearch,
+                                           cancelUpdate: markAndRun(cancelUpdate))
+        case .tapSwipeOrInsertCard(let inputMethods, let cancelPayment):
+            return .tapSwipeOrInsertCard(inputMethods: inputMethods,
+                                         cancelPayment: markAndRun(cancelPayment))
+        case .cardInserted(let cancelPayment):
+            return .cardInserted(cancelPayment: markAndRun(cancelPayment))
+        case .paymentError(let error, let retryApproach, let cancelPayment):
+            return .paymentError(error: error,
+                                 retryApproach: retryApproach,
+                                 cancelPayment: markAndRun(cancelPayment))
+        case .paymentCaptureError(let cancelPayment):
+            return .paymentCaptureError(cancelPayment: markAndRun(cancelPayment))
+        case .paymentIntentCreationError(let error, let cancelPayment):
+            return .paymentIntentCreationError(error: error,
+                                               cancelPayment: markAndRun(cancelPayment))
+        case .validatingOrder(let cancelPayment):
+            return .validatingOrder(cancelPayment: markAndRun(cancelPayment))
+        case .locationRequired(let cancel):
+            return .locationRequired(cancel: markAndRun(cancel))
+        case .connectingToReader, .connectionSuccess, .paymentSuccess, .processing,
+                .displayReaderMessage, .cancelledOnReader, .locationRequestPreAlert:
+            return self
         }
     }
 }

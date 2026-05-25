@@ -39,6 +39,10 @@ public enum POSRefundSubmissionState {
     case completed
 }
 
+public enum POSRefundSubmissionError: Error, Equatable {
+    case canceledByUser
+}
+
 @Observable public final class POSRefundSubmissionModel {
     public var state: POSRefundSubmissionState = .idle
 
@@ -52,6 +56,8 @@ public enum POSRefundSubmissionState {
 @MainActor
 public protocol POSRefundSubmissionProcessing: AnyObject {
     var stateModel: POSRefundSubmissionModel { get }
+
+    func preloadRefund(for order: POSOrder) async
 
     func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation
 
@@ -70,6 +76,8 @@ public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessi
     public let stateModel = POSRefundSubmissionModel()
 
     public nonisolated init() {}
+
+    public func preloadRefund(for order: POSOrder) async {}
 
     public func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {
         POSRefundPreparation(orderID: order.id,

@@ -102,7 +102,7 @@ class AuthenticationManager: Authentication {
     ///
     /// When QR login is available, the primary "Log in" CTA on the standard prologue routes to
     /// the QR-login prologue — pushed onto the same navigation stack — rather than the standard
-    /// site-address flow. The standard prologue stays as the app's first screen (spec §4.1).
+    /// site-address flow. The standard prologue stays as the app's first screen.
     ///
     func authenticationUI() -> UIViewController {
         let loginUI = WordPressAuthenticator.loginUI(onPrimaryLoginCTA: { [weak self] in
@@ -239,7 +239,7 @@ class AuthenticationManager: Authentication {
     }
 
     /// Case-insensitive match for `woocommerce://qr-login` deep links
-    /// (spec §3 footer: scheme + host check is case-insensitive). Uses a
+    /// (scheme + host check is case-insensitive). Uses a
     /// prefix check — matching `isAppLoginUrl` — because `URL.host` is
     /// unreliable for custom-scheme URLs across Foundation versions.
     private func isQRLoginUrl(_ url: URL) -> Bool {
@@ -251,7 +251,7 @@ class AuthenticationManager: Authentication {
     ///
     /// Returns `nil` when the feature isn't available — the caller falls
     /// through to the standard handlers so the user lands on the regular
-    /// prologue instead of a no-op (spec §2.2).
+    /// prologue instead of a no-op.
     ///
     /// Token / grant lifetime is not managed here: clearing the URL from the
     /// launch state is the OS / scene-delegate's job; this method makes a
@@ -289,7 +289,7 @@ class AuthenticationManager: Authentication {
     }
 
     /// Handles a `woocommerce://qr-login` deep link that arrived while the
-    /// merchant is already signed in (spec §4.4). Shows a warning; confirming
+    /// merchant is already signed in. Shows a warning; confirming
     /// signs the merchant out and resumes the QR sign-in, cancelling keeps the
     /// current session. Returns `true` when the URL was a QR-login deep link
     /// this method took over, `false` otherwise (the caller then drops it).
@@ -333,7 +333,7 @@ class AuthenticationManager: Authentication {
     /// QR sign-in can always resume. The deep link is re-handled on a later
     /// main-actor turn, once `AppCoordinator` has reacted to the deauthentication
     /// and installed the logged-out login UI — re-handling synchronously would
-    /// race that Combine-driven swap (spec §4.4).
+    /// race that Combine-driven swap.
     @MainActor
     private func signOutAndResumeQRLogin(url: URL) {
         ServiceLocator.stores.deauthenticate()

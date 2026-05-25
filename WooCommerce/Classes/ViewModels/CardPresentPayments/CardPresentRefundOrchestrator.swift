@@ -46,8 +46,8 @@ final class CardPresentRefundOrchestrator {
                 onWaitingForInput(inputMethods)
             case .displayMessage(let message):
                 onDisplayMessage(message)
-            case .removeCardRequested:
-                onProcessingMessage()
+            case .removeCardRequested(let message):
+                onDisplayMessage(message)
             case .cardInserted:
                 onCardInserted()
             case .cardDetailsCollected:

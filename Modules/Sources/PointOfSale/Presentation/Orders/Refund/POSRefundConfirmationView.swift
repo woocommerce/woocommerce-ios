@@ -8,6 +8,8 @@ struct POSRefundConfirmationView: View {
     let onClose: () -> Void
     let onConfirm: () -> Void
     let onBack: (() -> Void)?
+    var shouldUseCardPresentCompletionStyle = false
+    var onPaymentCaptureErrorCancel: ((@escaping () -> Void) -> Void)?
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -82,6 +84,8 @@ private extension POSRefundConfirmationView {
             return .processing(.processing)
         case .displayingReaderMessage(let message):
             return .displayReaderMessage(.displayReaderMessage(message))
+        case .completed where shouldUseCardPresentCompletionStyle:
+            return .processing(.processing)
         case .idle, .loading, .onboarding, .preparingReader, .waitingForCard, .submitting, .retryableError, .nonRetryableError, .completed:
             return nil
         case .submittingCardPresent:
@@ -177,6 +181,8 @@ private extension POSRefundConfirmationView {
                                onClose: dismiss)
         case .submittingCardPresent:
             cardPresentMessageView(.processing(.processing))
+        case .completed where shouldUseCardPresentCompletionStyle:
+            cardPresentMessageView(.processing(.processing))
         case .idle, .loading, .submitting, .completed:
             loadingSection
         }
@@ -224,7 +230,7 @@ private extension POSRefundConfirmationView {
         case .paymentCaptureError(let cancelPayment):
             return .error(.init(error: POSRefundCardPresentPresentationError.unableToConfirmRefund,
                                 retryAction: nil,
-                                cancelAction: cancelAndReturnToConfirmation(cancelPayment)))
+                                cancelAction: paymentCaptureErrorCancelAction(cancelPayment)))
         case .paymentIntentCreationError(let error, let cancelPayment):
             return .error(.init(error: error,
                                 retryAction: nil,
@@ -245,6 +251,15 @@ private extension POSRefundConfirmationView {
             return retryAction
         case .dontRetry:
             return nil
+        }
+    }
+
+    func paymentCaptureErrorCancelAction(_ cancelPayment: @escaping () -> Void) -> () -> Void {
+        guard let onPaymentCaptureErrorCancel else {
+            return cancelAndReturnToConfirmation(cancelPayment)
+        }
+        return {
+            onPaymentCaptureErrorCancel(cancelPayment)
         }
     }
 

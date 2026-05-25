@@ -7,7 +7,7 @@ import class NetworkingCore.OneTimeApplicationPasswordUseCase
 import enum NetworkingCore.Credentials
 import struct NetworkingCore.Secret
 
-/// Runs the self-hosted post-exchange sequence from spec §5.1.4 once the QR
+/// Runs the self-hosted post-exchange sequence once the QR
 /// `/exchange` call has minted an Application Password:
 ///
 ///   1. Build `Credentials.applicationPassword` and authenticate the stores
@@ -121,7 +121,7 @@ private extension QRLoginPostExchangeService {
 
     func fail(_ kind: QRLoginUserFacingError.Kind,
               useCase: ApplicationPasswordUseCase) async -> Result<Void, QRLoginUserFacingError> {
-        // Best-effort revoke. We swallow errors here: spec §5.1.4 says the AP
+        // Best-effort revoke. We swallow errors here: the AP
         // must be revoked, but if the revoke fails we still need to surface
         // the original user-facing error rather than masking it with a
         // network failure on revoke.

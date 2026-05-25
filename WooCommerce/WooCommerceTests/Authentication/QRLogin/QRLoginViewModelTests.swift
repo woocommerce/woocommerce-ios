@@ -32,7 +32,7 @@ struct QRLoginViewModelTests {
 
     @Test func start_when_exchange_hands_off_magic_link_then_state_is_handedOff() async {
         // Given — the wp.com exchange opens a magic link in an in-app browser
-        // instead of completing sign-in in-app (spec §10.1).
+        // instead of completing sign-in in-app.
         let strategy = MockQRLoginStrategy()
         strategy.scanResult = .success(makeScanResult())
         strategy.pollResults = [.success(.approved(exchangeGrant: "grant-1"))]
@@ -49,7 +49,7 @@ struct QRLoginViewModelTests {
         #expect(strategy.exchangeCalls == ["grant-1"])
     }
 
-    // MARK: - Cancel from number-match (spec §6.2)
+    // MARK: - Cancel from number-match
 
     @Test func cancelFromNumberMatch_when_polling_then_state_returns_to_idle_without_server_call() async {
         // Given — poll stays in scanned forever; we cancel mid-poll.
@@ -73,7 +73,7 @@ struct QRLoginViewModelTests {
         #expect(strategy.exchangeCalls.isEmpty)
     }
 
-    // MARK: - Retry semantics (spec §6.1)
+    // MARK: - Retry semantics
 
     @Test func retry_when_scan_failed_then_runs_scan_again() async {
         // Given
@@ -123,7 +123,7 @@ struct QRLoginViewModelTests {
 
     @Test func retry_when_poll_transient_storm_then_resumes_polling_without_rerunning_scan() async {
         // Given — 4 transient failures trips the threshold, then we retry and
-        // the poll succeeds. Spec §6.1: "Poll retry resumes polling with the
+        // the poll succeeds. "Poll retry resumes polling with the
         // same session_id and token_hash — /qr-login-scan is NOT re-run."
         let strategy = MockQRLoginStrategy()
         strategy.scanResult = .success(makeScanResult())

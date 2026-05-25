@@ -7,7 +7,7 @@ import protocol Networking.RemoteFeatureFlagOverrideStore
 @MainActor
 struct QRLoginAvailabilityTests {
 
-    // MARK: - Prologue gating (§2.1)
+    // MARK: - Prologue gating
 
     @Test func isAvailableForPrologue_when_flag_on_and_bucket_enabled_and_camera_available_then_true() {
         // Given
@@ -75,7 +75,7 @@ struct QRLoginAvailabilityTests {
         #expect(availability.isAvailableForPrologue() == false)
     }
 
-    // MARK: - Deep-link gating (§2.2)
+    // MARK: - Deep-link gating
 
     @Test func isAvailableForDeepLink_when_flag_on_then_true_even_if_bucket_disabled_and_camera_unavailable() {
         // Given — deep-link bypasses the bucket and skips the camera check.

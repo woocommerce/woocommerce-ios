@@ -6,7 +6,7 @@ struct QRLoginPayloadParserTests {
 
     private let parser = QRLoginPayloadParser()
 
-    // MARK: - Magic-link (§3.1)
+    // MARK: - Magic-link
 
     @Test func parse_when_magic_link_with_scheme_woocommerce_then_returns_magicLink() {
         // Given
@@ -52,7 +52,7 @@ struct QRLoginPayloadParserTests {
         #expect(payload == .invalid)
     }
 
-    // MARK: - Install QR (§3.2)
+    // MARK: - Install QR
 
     @Test func parse_when_install_qr_then_returns_installQR() {
         // Given
@@ -76,7 +76,7 @@ struct QRLoginPayloadParserTests {
         #expect(payload == .invalid)
     }
 
-    // MARK: - Legacy app-login (§3.3 / §10.3)
+    // MARK: - Legacy app-login
 
     @Test func parse_when_app_login_with_wpcom_email_then_takes_precedence_over_username() {
         // Given — `wpcomEmail` takes precedence over `username`.
@@ -96,7 +96,7 @@ struct QRLoginPayloadParserTests {
         // When
         let payload = parser.parse(input)
 
-        // Then — http acceptable for legacy app-login per §10.3.
+        // Then — http acceptable for legacy app-login.
         #expect(payload == .appLoginUsername(siteURL: "http://example.com", username: "user"))
     }
 
@@ -122,7 +122,7 @@ struct QRLoginPayloadParserTests {
         #expect(payload == .invalid)
     }
 
-    // MARK: - Self-hosted QR (§3.4)
+    // MARK: - Self-hosted QR
 
     @Test func parse_when_self_hosted_qr_with_valid_token_then_returns_selfHosted() {
         // Given
@@ -150,7 +150,7 @@ struct QRLoginPayloadParserTests {
 
     @Test func parse_when_self_hosted_qr_with_http_siteUrl_then_rejected_in_release_only() {
         // Given — http siteUrl. Release builds reject it (the /scan token and
-        // /exchange Application Password must not travel in cleartext, §3.4);
+        // /exchange Application Password must not travel in cleartext);
         // DEBUG builds accept it so the flow can be tested against a local server.
         let token = String(repeating: "a", count: 64)
         let input = "woocommerce://qr-login?token=\(token)&siteUrl=http://example.com"
@@ -194,7 +194,7 @@ struct QRLoginPayloadParserTests {
         #expect(siteURL.absoluteString == "https://example.com")
     }
 
-    // MARK: - Site-URL-only QR (§3.5)
+    // MARK: - Site-URL-only QR
 
     @Test func parse_when_qr_login_without_token_then_returns_siteURLOnly() {
         // Given
@@ -218,7 +218,7 @@ struct QRLoginPayloadParserTests {
         #expect(payload == .siteURLOnly(siteURL: URL(string: "https://example.com")!))
     }
 
-    // MARK: - WP.com QR (§3.6)
+    // MARK: - WP.com QR
 
     @Test func parse_when_wpcom_qr_with_valid_compound_token_and_encrypted_then_returns_wpCom() {
         // Given
@@ -272,7 +272,7 @@ struct QRLoginPayloadParserTests {
         #expect(payload == .invalid)
     }
 
-    // MARK: - Custom-scheme case insensitivity (§3 footer)
+    // MARK: - Custom-scheme case insensitivity
 
     @Test func parse_when_scheme_and_host_are_uppercase_then_still_matches() {
         // Given

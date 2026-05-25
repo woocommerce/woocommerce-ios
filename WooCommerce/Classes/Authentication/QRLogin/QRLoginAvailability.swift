@@ -8,18 +8,18 @@ import Yosemite
 /// store: the app fetches remote flags at launch, and dispatching
 /// `FeatureFlagAction.isRemoteFeatureFlagEnabled` runs its completion
 /// synchronously on a cache hit (and for a debug override). A cold cache reads
-/// as `false`, per spec §2 ("a not-yet-loaded remote value is treated as off").
+/// as `false` ("a not-yet-loaded remote value is treated as off").
 ///
 /// Both gates are `@MainActor` because the Flux dispatcher must be called on
 /// the main thread. (The requirements are isolated individually rather than
 /// the whole protocol, so the conforming type's initializer stays non-isolated
 /// and usable as a default argument.)
 protocol QRLoginAvailabilityProvider {
-    /// Prologue gate (spec §2.1): remote flag on, install in the enabled
+    /// Prologue gate: remote flag on, install in the enabled
     /// rollout bucket, and a camera present on the device.
     @MainActor func isAvailableForPrologue() -> Bool
 
-    /// Deep-link gate (spec §2.2): remote flag on. The rollout bucket and the
+    /// Deep-link gate: remote flag on. The rollout bucket and the
     /// camera are bypassed — the merchant opted in by opening a `qr-login` URL.
     @MainActor func isAvailableForDeepLink() -> Bool
 }

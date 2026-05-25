@@ -2,7 +2,7 @@ import Foundation
 
 /// Parses a scanner / deep-link input string into a `QRLoginPayload`.
 ///
-/// The matching is order-sensitive per spec §3 — the first matching variant
+/// The matching is order-sensitive — the first matching variant
 /// wins. This type has no dependencies and is fully unit-testable.
 struct QRLoginPayloadParser {
 
@@ -20,19 +20,19 @@ struct QRLoginPayloadParser {
     /// Parses a pre-built `URL` into a payload. Useful when the caller already
     /// has a `URL` (e.g. an inbound deep-link `URL` from the OS).
     func parse(_ url: URL) -> QRLoginPayload {
-        // §3.1 — magic-link is matched on full URL first so a wrong host/path
+        // magic-link is matched on full URL first so a wrong host/path
         // can fall through to the other branches cleanly.
         if let payload = matchMagicLink(url) { return payload }
 
-        // §3.2 — install QR (woocommerce.com/mobile/*).
+        // install QR (woocommerce.com/mobile/*).
         if matchesInstallQR(url) { return .installQR }
 
-        // §3.3 — legacy `woocommerce://app-login`.
+        // legacy `woocommerce://app-login`.
         if isCustomScheme(url, host: Constants.appLoginHost) {
             return parseAppLogin(url)
         }
 
-        // §3.4 / §3.5 / §3.6 — `woocommerce://qr-login` family.
+        // `woocommerce://qr-login` family.
         if isCustomScheme(url, host: Constants.qrLoginHost) {
             return parseQRLogin(url)
         }
@@ -83,7 +83,7 @@ private extension QRLoginPayloadParser {
               isValidAppLoginSiteURL(siteURL) else {
             return .invalid
         }
-        // `wpcomEmail` takes precedence over `username` per §3.3.
+        // `wpcomEmail` takes precedence over `username`.
         if let email = params["wpcomEmail"], email.isEmpty == false {
             return .appLoginWPCom(siteURL: siteURL, email: email)
         }
@@ -93,7 +93,7 @@ private extension QRLoginPayloadParser {
         return .invalid
     }
 
-    /// Legacy app-login accepts http or https (§10.3). No userinfo, query, or
+    /// Legacy app-login accepts http or https. No userinfo, query, or
     /// fragment allowed.
     func isValidAppLoginSiteURL(_ raw: String) -> Bool {
         guard let url = URL(string: raw),
@@ -120,7 +120,7 @@ private extension QRLoginPayloadParser {
         let token = params["token"]
         let encrypted = params["encrypted"]
 
-        // Self-hosted branch is gated on `siteUrl` being present (§3.4 / §3.5),
+        // Self-hosted branch is gated on `siteUrl` being present,
         // so a wp.com payload that happens to carry `siteUrl` is never silently
         // rerouted to wp.com.
         if hasSiteURL {
@@ -144,7 +144,7 @@ private extension QRLoginPayloadParser {
         return .wpCom(token: token, encrypted: encrypted)
     }
 
-    /// §3.4 — self-hosted `siteUrl` rejects userinfo/query/fragment, lowercases
+    /// self-hosted `siteUrl` rejects userinfo/query/fragment, lowercases
     /// the host, and strips a trailing slash.
     ///
     /// Release builds are https-only: the `/scan` token and the `/exchange`

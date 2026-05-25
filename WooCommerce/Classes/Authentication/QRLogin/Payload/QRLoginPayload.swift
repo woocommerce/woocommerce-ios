@@ -2,7 +2,7 @@ import Foundation
 
 /// Parsed result of a QR-login input string (camera scan or inbound deep link).
 ///
-/// The variants and their precedence are defined in the QR-login spec §3 — the matching
+/// The variants and their precedence are defined in the QR-login spec — the matching
 /// is order-sensitive and the first matching variant wins.
 enum QRLoginPayload: Equatable {
     /// `https://wordpress.com/wp-login.php?action=magic-login&scheme=woocommerce&token=...`

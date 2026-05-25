@@ -58,8 +58,8 @@ extension StatsTimeRangeV4: RawRepresentable, Hashable {
     }
 
     private enum CustomRangeFormatter {
-        static private let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
-        static private let separator = "_"
+        private static let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
+        private static let separator = "_"
 
         static func rangeFrom(from: Date, to: Date) -> String {
             [Value.custom,

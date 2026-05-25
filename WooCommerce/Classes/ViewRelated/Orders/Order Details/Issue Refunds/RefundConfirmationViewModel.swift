@@ -33,7 +33,7 @@ final class RefundConfirmationViewModel {
 
     /// The sections and rows to display in the `UITableView`.
     ///
-    lazy private(set) var sections: [Section] = [
+    private(set) lazy var sections: [Section] = [
         Section(
             title: nil,
             rows: [

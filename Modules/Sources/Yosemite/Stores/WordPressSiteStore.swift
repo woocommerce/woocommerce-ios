@@ -17,13 +17,13 @@ public final class WordPressSiteStore: DeauthenticatedStore {
         self.init(remote: remote, dispatcher: dispatcher)
     }
 
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: WordPressSiteAction.self)
     }
 
     /// Called whenever a given Action is dispatched.
     ///
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? WordPressSiteAction else {
             assertionFailure("WordPressSiteStore received an unsupported action: \(action)")
             return

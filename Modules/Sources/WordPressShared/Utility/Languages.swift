@@ -22,7 +22,7 @@ public class WordPressComLanguageDatabase: NSObject {
 
     /// Designated Initializer: will load the languages contained within the `Languages.json` file.
     ///
-    public override init() {
+    override public init() {
         // Parse the json file
         let path = Bundle.wordPressSharedBundle.path(forResource: filename, ofType: "json")
         let raw = try! Data(contentsOf: URL(fileURLWithPath: path!))

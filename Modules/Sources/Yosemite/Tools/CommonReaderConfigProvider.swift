@@ -10,7 +10,7 @@ public protocol CardReaderRemoteConfigLoading {
 public protocol CommonReaderConfigProviding: CardReaderRemoteConfigLoading & CardReaderConfigProvider {}
 
 
-final public class CommonReaderConfigProvider: CommonReaderConfigProviding {
+public final class CommonReaderConfigProvider: CommonReaderConfigProviding {
     var siteID: Int64?
     var readerConfigRemote: CardReaderCapableRemote?
 

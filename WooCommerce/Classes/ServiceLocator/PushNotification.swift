@@ -79,7 +79,7 @@ extension PushNotification {
 
     /// Optional `String` passed parameter holds (base64 encoded and zlib compressed) data for the note.
     /// That data is used to create `Note` object which is returned
-    static private func noteFromCompressedData(_ noteFulldata: String?) -> Note? {
+    private static func noteFromCompressedData(_ noteFulldata: String?) -> Note? {
         guard let content = noteContent(from: noteFulldata),
               let note = try? Note.createdFrom(content) else {
             return nil
@@ -87,7 +87,7 @@ extension PushNotification {
         return note
     }
 
-    static private func metaDataFromCompressedData(_ noteFullData: String?) -> MetaContainer? {
+    private static func metaDataFromCompressedData(_ noteFullData: String?) -> MetaContainer? {
         guard let content = noteContent(from: noteFullData),
                 let metaDict = content["meta"] as? [String: Any] else {
             return nil
@@ -96,7 +96,7 @@ extension PushNotification {
         return MetaContainer(payload: anyCodableDict)
     }
 
-    static private func noteContent(from noteFullData: String?) -> [String: Any]? {
+    private static func noteContent(from noteFullData: String?) -> [String: Any]? {
         guard let noteFullData,
                 !noteFullData.isEmpty,
                 var data = Data(base64Encoded: noteFullData) else {

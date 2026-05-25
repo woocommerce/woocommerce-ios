@@ -30,7 +30,8 @@ struct POSTabVisibilityCheckerTests {
     @Test(arguments: [
         (country: Country.us, currency: CurrencyCode.USD),
         (country: Country.pr, currency: CurrencyCode.USD),
-        (country: Country.gb, currency: CurrencyCode.GBP)
+        (country: Country.gb, currency: CurrencyCode.GBP),
+        (country: Country.ca, currency: CurrencyCode.CAD)
     ])
     fileprivate func is_visible_when_all_conditions_satisfied(country: Country, currency: CurrencyCode) async throws {
         // Given
@@ -51,7 +52,6 @@ struct POSTabVisibilityCheckerTests {
     }
 
     @Test(arguments: [
-        (country: Country.ca, currency: CurrencyCode.CAD),
         (country: Country.es, currency: CurrencyCode.EUR),
         (country: Country.au, currency: CurrencyCode.AUD)
     ])
@@ -78,7 +78,8 @@ struct POSTabVisibilityCheckerTests {
         (country: Country.us, currency: CurrencyCode.GBP),
         (country: Country.us, currency: CurrencyCode.CAD),
         (country: Country.gb, currency: CurrencyCode.EUR),
-        (country: Country.gb, currency: CurrencyCode.USD)
+        (country: Country.gb, currency: CurrencyCode.USD),
+        (country: Country.ca, currency: CurrencyCode.USD)
     ])
     fileprivate func is_visible_when_currency_is_not_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
@@ -224,10 +225,10 @@ struct POSTabVisibilityCheckerTests {
             mockCountrySetting(country: .us),
             mockCurrencySetting(currency: .USD)
         ]
-        // New settings - makes site ineligible (Canada).
+        // New settings - makes site ineligible (unsupported expansion country).
         let newSettings = [
-            mockCountrySetting(country: .ca),
-            mockCurrencySetting(currency: .USD)
+            mockCountrySetting(country: .es),
+            mockCurrencySetting(currency: .EUR)
         ]
         siteSettings.mockSettingsStream = [
             // Emits cached settings first (should be skipped).
@@ -246,7 +247,7 @@ struct POSTabVisibilityCheckerTests {
         // When
         let result = await checker.checkVisibility()
 
-        // Then - Should be invisible because fresh settings show CA (not cached US)
+        // Then - Should be invisible because fresh settings show unsupported ES (not cached US)
         #expect(result == false)
     }
 

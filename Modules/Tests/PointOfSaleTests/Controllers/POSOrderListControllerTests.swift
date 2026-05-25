@@ -438,6 +438,39 @@ final class POSOrderListControllerTests {
     // MARK: - Refund Item Selection Tests
 
     @MainActor
+    @Test func preloadRefundDetails_when_refund_is_available_then_preloads_without_opening_refund_flow() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = makeOrder(id: 1, status: .completed)
+        sut.selectOrder(order)
+
+        // When
+        await sut.preloadRefundDetails()
+
+        // Then
+        #expect(refundSubmissionProcessor.preloadedOrderIDs == [order.id])
+        #expect(sut.refundSelectableItems.isEmpty)
+        guard case .idle = sut.selectedOrderRefundsState else {
+            Issue.record("Preloading should not move the visible refund flow state.")
+            return
+        }
+    }
+
+    @MainActor
+    @Test func preloadRefundDetails_when_refund_is_unavailable_then_does_not_preload() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = makeOrder(id: 1, status: .processing)
+        sut.selectOrder(order)
+
+        // When
+        await sut.preloadRefundDetails()
+
+        // Then
+        #expect(refundSubmissionProcessor.preloadedOrderIDs.isEmpty)
+    }
+
+    @MainActor
     @Test func startRefundFlow_when_product_has_multiple_quantities_then_creates_one_row_per_unit() async throws {
         // Given
         let order = makeOrder(lineItems: [
@@ -1739,6 +1772,12 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
                      currencyFormatter: CurrencyFormatter) {
         self.refundsService = refundsService
         self.currencyFormatter = currencyFormatter
+    }
+
+    private(set) var preloadedOrderIDs: [Int64] = []
+
+    func preloadRefund(for order: POSOrder) async {
+        preloadedOrderIDs.append(order.id)
     }
 
     func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {

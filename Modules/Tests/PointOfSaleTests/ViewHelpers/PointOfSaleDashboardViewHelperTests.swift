@@ -66,9 +66,7 @@ struct PointOfSaleDashboardViewHelperTests {
 
     @Test(arguments: [
         POSIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "9.6.0"),
-        POSIneligibleReason.siteSettingsNotAvailable,
-        POSIneligibleReason.wooCommercePluginNotFound,
-        POSIneligibleReason.selfDeallocated
+        POSIneligibleReason.wooCommercePluginNotFound
     ])
     func determineViewState_when_ineligible_returns_ineligible(reason: POSIneligibleReason) async throws {
         // Given

@@ -86,18 +86,6 @@ struct POSTabEligibilityCheckerTests {
 
     // MARK: - `refreshEligibility`
 
-    @Test func refreshEligibility_for_selfDeallocated_rechecks_eligibility() async throws {
-        // Given
-        setupWooCommerceVersion("9.6.0")
-        let checker = makeChecker()
-
-        // When
-        let result = try await checker.refreshEligibility(ineligibleReason: .selfDeallocated)
-
-        // Then
-        #expect(result == .eligible)
-    }
-
     @Test(arguments: [
         POSIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta"),
         POSIneligibleReason.wooCommercePluginNotFound

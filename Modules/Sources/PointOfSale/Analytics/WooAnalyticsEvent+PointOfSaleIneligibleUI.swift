@@ -28,9 +28,6 @@ private extension POSIneligibleReason {
             return "wc_plugin_version"
         case .wooCommercePluginNotFound:
             return "unknown_wc_plugin"
-        case .siteSettingsNotAvailable,
-             .selfDeallocated:
-            return "other"
         }
     }
 }

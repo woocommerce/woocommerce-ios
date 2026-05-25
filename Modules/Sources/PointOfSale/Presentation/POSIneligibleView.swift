@@ -127,15 +127,6 @@ struct POSIneligibleView: View {
                                      value: "We were unable to load the WooCommerce plugin info. Please make sure the WooCommerce plugin is installed " +
                                      "and activated from your WordPress admin. If there is still an issue, contact support for assistance.",
                                      comment: "Suggestion for missing WooCommerce plugin: install plugin")
-        case .siteSettingsNotAvailable:
-            return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable.1",
-                                     value: "We were unable to load the site settings info. Please check your internet connection and try again. " +
-                                     "If the issue persists, contact support for assistance.",
-                                     comment: "Suggestion for site settings unavailable: check connection or contact support")
-        case .selfDeallocated:
-            return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",
-                                     value: "Try relaunching the app to resolve this issue.",
-                                     comment: "Suggestion for self deallocated: relaunch")
         }
     }
 }
@@ -171,13 +162,6 @@ private extension POSIneligibleReason {
 #Preview("WooCommerce plugin not found") {
     POSIneligibleView(
         reason: .wooCommercePluginNotFound,
-        onRefresh: {}
-    )
-}
-
-#Preview("Site settings unavailable") {
-    POSIneligibleView(
-        reason: .siteSettingsNotAvailable,
         onRefresh: {}
     )
 }

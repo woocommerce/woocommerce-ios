@@ -2238,6 +2238,84 @@ struct POSPaymentModelTests {
         #expect(service.cancelPaymentCalled == true)
         #expect(sut.currentPaymentMethod == .tapToPay)
     }
+
+    // MARK: - isPOSCardPaymentEnabled gating
+
+    @Test("startPayment short-circuits when isPOSCardPaymentEnabled is false")
+    @MainActor
+    func test_startPayment_when_card_payments_disabled_then_short_circuits() async {
+        // Given — a no-card store (CA / JP / MX / IN / BR …) with a BT
+        // reader already attached so a regression that *didn't* short-circuit
+        // would advance straight to the collect path.
+        let service = MockCardPresentPaymentService()
+        service.isPOSCardPaymentEnabled = false
+        service.connectedReader = .init(name: "Stale Reader", batteryLevel: 0.85)
+        let sut = makePaymentController(cardPresentPaymentService: service)
+
+        // When
+        await sut.startPayment()
+
+        // Then — no card-payment side effects ran.
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(service.connectReaderCallCount == 0)
+        #expect(sut.currentPaymentMethod == nil)
+    }
+
+    @Test("startPaymentWithMethod short-circuits when isPOSCardPaymentEnabled is false")
+    @MainActor
+    func test_startPaymentWithMethod_when_card_payments_disabled_then_short_circuits() async {
+        // Given — no-card store; merchant somehow lands a tap on a CTA
+        // (stale closure / SwiftUI re-render).
+        let service = MockCardPresentPaymentService()
+        service.isPOSCardPaymentEnabled = false
+        let sut = makePaymentController(cardPresentPaymentService: service)
+
+        // When
+        await sut.startPaymentWithMethod(.tapToPay)
+        await sut.startPaymentWithMethod(.bluetooth)
+
+        // Then — neither method advanced past the gate.
+        #expect(service.connectReaderCallCount == 0)
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(service.cancelPaymentCalled == false)
+        #expect(sut.currentPaymentMethod == nil)
+    }
+
+    @Test("connectCardReader short-circuits when isPOSCardPaymentEnabled is false")
+    @MainActor
+    func test_connectCardReader_when_card_payments_disabled_then_short_circuits() async {
+        // Given — no-card store; phone array row's `.cardReader` case
+        // dispatches `connectCardReader()` directly (bypasses startPayment).
+        let service = MockCardPresentPaymentService()
+        service.isPOSCardPaymentEnabled = false
+        let sut = makePaymentController(cardPresentPaymentService: service)
+
+        // When
+        sut.connectCardReader()
+        // Yield so any fire-and-forget Task would have been scheduled.
+        await Task.yield()
+
+        // Then — no SDK-level connect was attempted.
+        #expect(service.connectReaderCallCount == 0)
+    }
+
+    @Test("cancelThenCollectPayment short-circuits when isPOSCardPaymentEnabled is false")
+    @MainActor
+    func test_cancelThenCollectPayment_when_card_payments_disabled_then_short_circuits() async {
+        // Given — no-card store. Retry CTAs in error states could in theory
+        // fire this; defense-in-depth says guard.
+        let service = MockCardPresentPaymentService()
+        service.isPOSCardPaymentEnabled = false
+        service.connectedReader = .init(name: "Stale Reader", batteryLevel: 0.85)
+        let sut = makePaymentController(cardPresentPaymentService: service)
+
+        // When
+        await sut.cancelThenCollectPayment()
+
+        // Then — neither cancel nor collect ran.
+        #expect(service.cancelPaymentCalled == false)
+        #expect(service.collectPaymentWasCalled == false)
+    }
 }
 
 // MARK: - Factory

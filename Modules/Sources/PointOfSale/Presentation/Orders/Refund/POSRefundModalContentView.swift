@@ -221,12 +221,21 @@ struct POSRefundModalContentView: View {
                 onEmailReceipt: { isShowingEmailReceiptView = true }
             )
         case .error(let reviewData):
+            let isCardPresentRefundError = orderListModel.ordersController.currentRefundRequiresCardPresentRefund
+            let dismissError = {
+                if isCardPresentRefundError {
+                    dismissRefundFlowAndRefreshOrder()
+                } else {
+                    dismissRefundFlow()
+                }
+            }
             POSRefundErrorView(
-                title: errorStrings.createTitle,
-                subtitle: errorStrings.createSubtitle,
-                onRetry: { modalState = .confirmation(reviewData) },
-                onCancel: { dismissRefundFlow() },
-                onClose: { dismissRefundFlow() }
+                title: isCardPresentRefundError ? Localization.cardPresentCreateErrorTitle : errorStrings.createTitle,
+                subtitle: isCardPresentRefundError ? Localization.cardPresentCreateErrorSubtitle : errorStrings.createSubtitle,
+                onRetry: isCardPresentRefundError ? nil : { modalState = .confirmation(reviewData) },
+                cancelButtonTitle: isCardPresentRefundError ? Localization.backToOrderButton : nil,
+                onCancel: dismissError,
+                onClose: dismissError
             )
         }
     }
@@ -272,6 +281,12 @@ struct POSRefundModalContentView: View {
         } else {
             onDismiss()
         }
+    }
+
+    @MainActor
+    private func dismissRefundFlowAndRefreshOrder() {
+        dismissRefundFlow()
+        refreshOrderAfterPotentialCardPresentRefund()
     }
 
     private func updateCardPresentAlertItem() {
@@ -403,15 +418,18 @@ struct POSRefundModalContentView: View {
         cardPresentOnboardingItem = nil
         refundSubmissionModel.reset()
         cancelPayment()
-        dismissRefundFlow()
+        dismissRefundFlowAndRefreshOrder()
 
         // The submission task may still report cancellation/failure after dismissing; isDismissingAfterAmbiguousRefund
         // keeps that late callback from reopening the modal or tracking a normal refund failure.
+    }
+
+    private func refreshOrderAfterPotentialCardPresentRefund() {
         Task { @MainActor in
             do {
                 try await orderListModel.ordersController.updateOrder(orderID: order.id)
             } catch {
-                DDLogError("⛔️ Failed to refresh POS order after ambiguous refund outcome: \(error)")
+                DDLogError("⛔️ Failed to refresh POS order after card-present refund outcome: \(error)")
             }
             await orderListModel.ordersController.loadOrderRefunds()
         }
@@ -433,6 +451,30 @@ struct POSRefundModalContentView: View {
             return false
         }
         return true
+    }
+}
+
+// MARK: - Localization
+
+private extension POSRefundModalContentView {
+    enum Localization {
+        static let cardPresentCreateErrorTitle = NSLocalizedString(
+            "pos.refundModalContentView.cardPresentCreateError.title",
+            value: "Couldn't confirm refund",
+            comment: "Title shown when POS cannot confirm whether a card-present refund was recorded successfully."
+        )
+
+        static let cardPresentCreateErrorSubtitle = NSLocalizedString(
+            "pos.refundModalContentView.cardPresentCreateError.subtitle",
+            value: "Go back to the order and check it before trying again.",
+            comment: "Subtitle shown when POS cannot confirm whether a card-present refund was recorded successfully."
+        )
+
+        static let backToOrderButton = NSLocalizedString(
+            "pos.refundModalContentView.cardPresentCreateError.backToOrderButton",
+            value: "Back to order",
+            comment: "Button to leave the card-present refund error screen and return to the order."
+        )
     }
 }
 

@@ -4,11 +4,26 @@ struct POSRefundErrorView: View {
     let title: String
     let subtitle: String
     let onRetry: (() -> Void)?
+    let cancelButtonTitle: String?
     let onCancel: () -> Void
     let onClose: () -> Void
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    init(title: String,
+         subtitle: String,
+         onRetry: (() -> Void)?,
+         cancelButtonTitle: String? = nil,
+         onCancel: @escaping () -> Void,
+         onClose: @escaping () -> Void) {
+        self.title = title
+        self.subtitle = subtitle
+        self.onRetry = onRetry
+        self.cancelButtonTitle = cancelButtonTitle
+        self.onCancel = onCancel
+        self.onClose = onClose
+    }
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -59,7 +74,7 @@ private extension POSRefundErrorView {
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
 
-            Button(Localization.cancelButton, action: onCancel)
+            Button(cancelButtonTitle ?? Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
         .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)

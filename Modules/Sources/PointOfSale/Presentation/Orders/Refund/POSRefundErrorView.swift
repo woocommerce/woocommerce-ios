@@ -60,6 +60,8 @@ private extension POSRefundErrorView {
                 Text(subtitle)
                     .font(.posBodyLargeRegular())
                     .foregroundColor(Color.posOnSurface)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .multilineTextAlignment(.center)
         }

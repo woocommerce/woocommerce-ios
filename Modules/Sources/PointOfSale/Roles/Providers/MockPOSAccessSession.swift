@@ -9,13 +9,9 @@ final class MockPOSAccessSession: POSAccessSession {
     var isLocked: Bool
     var hasAnyPINs: Bool
     var signInResult: Result<POSOperator, POSAuthError>
-    var managerApprovalResult: Result<Void, POSAuthError>
     var refreshedPINStatus: Bool
     var signInPINs: [String] = []
-    var managerApprovalPINs: [String] = []
-    var approvedCapabilities: [POSCapability] = []
     var onSignIn: (() -> Void)?
-    var onRefreshPINStatus: (() -> Void)?
 
     init(currentOperator: POSOperator? = nil,
          isLocked: Bool = false,
@@ -23,13 +19,11 @@ final class MockPOSAccessSession: POSAccessSession {
          signInResult: Result<POSOperator, POSAuthError> = .success(
             POSOperator(displayName: "Maya", role: "Manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
          ),
-         managerApprovalResult: Result<Void, POSAuthError> = .success(()),
          refreshedPINStatus: Bool = true) {
         self.currentOperator = currentOperator
         self.isLocked = isLocked
         self.hasAnyPINs = hasAnyPINs
         self.signInResult = signInResult
-        self.managerApprovalResult = managerApprovalResult
         self.refreshedPINStatus = refreshedPINStatus
     }
 
@@ -50,17 +44,7 @@ final class MockPOSAccessSession: POSAccessSession {
         }
     }
 
-    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {
-        managerApprovalPINs.append(pin)
-        approvedCapabilities.append(capability)
-
-        switch managerApprovalResult {
-        case .success:
-            return
-        case .failure(let error):
-            throw error
-        }
-    }
+    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {}
 
     func lock() {
         isLocked = true
@@ -68,7 +52,6 @@ final class MockPOSAccessSession: POSAccessSession {
 
     func refreshPINStatus() async {
         hasAnyPINs = refreshedPINStatus
-        onRefreshPINStatus?()
     }
 }
 

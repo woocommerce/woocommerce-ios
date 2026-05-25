@@ -122,35 +122,16 @@ private extension POSLockScreenView {
 
 #if DEBUG
 #Preview("Locked") {
-    POSLockScreenView(
-        session: MockPOSAccessSession(
-            currentOperator: nil,
-            isLocked: true,
-            hasAnyPINs: true
-        )
-    )
+    POSLockScreenView(session: MockPOSAccessSession(isLocked: true))
 }
 
 #Preview("Invalid PIN") {
-    let session = MockPOSAccessSession(
-        currentOperator: nil,
-        isLocked: true,
-        hasAnyPINs: true,
-        signInResult: .failure(.invalidPIN)
-    )
-    let model = POSLockScreenModel(session: session)
+    let model = POSLockScreenModel(session: MockPOSAccessSession(isLocked: true, signInResult: .failure(.invalidPIN)))
     model.pinEntryState = .error(message: "Incorrect PIN. Try again.")
-
     return POSLockScreenView(model: model)
 }
 
 #Preview("No PINs") {
-    POSLockScreenView(
-        session: MockPOSAccessSession(
-            currentOperator: nil,
-            isLocked: true,
-            hasAnyPINs: false
-        )
-    )
+    POSLockScreenView(session: MockPOSAccessSession(isLocked: true, hasAnyPINs: false, refreshedPINStatus: false))
 }
 #endif

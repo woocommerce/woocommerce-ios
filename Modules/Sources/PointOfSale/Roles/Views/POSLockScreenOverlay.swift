@@ -44,38 +44,8 @@ private enum POSLockScreenOverlayConstants {
 }
 
 #if DEBUG
-#Preview("Overlay locked") {
-    POSLockScreenOverlay(
-        session: MockPOSAccessSession(
-            currentOperator: nil,
-            isLocked: true,
-            hasAnyPINs: true
-        )
-    ) {
-        Color.posSurface
-    }
-}
-
-#Preview("Overlay unlocked") {
-    POSLockScreenOverlay(
-        session: MockPOSAccessSession(
-            currentOperator: POSOperator(displayName: "Maya", role: "Manager", capabilities: Set(POSCapability.allCases.map(\.rawValue))),
-            isLocked: false,
-            hasAnyPINs: true
-        )
-    ) {
-        Color.posSurface
-    }
-}
-
 #Preview("Interactive unlock") {
-    POSLockScreenOverlay(
-        session: MockPOSAccessSession(
-            currentOperator: nil,
-            isLocked: true,
-            hasAnyPINs: true
-        )
-    ) {
+    POSLockScreenOverlay(session: MockPOSAccessSession(isLocked: true)) {
         Text("Unlocked POS content")
             .font(.posHeadingBold)
             .foregroundStyle(Color.posOnSurface)

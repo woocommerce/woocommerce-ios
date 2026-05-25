@@ -130,6 +130,79 @@ struct POSTapToPayAvailabilityCheckerTests {
         #expect(result == .unavailable(reason: .siteNotEligible))
     }
 
+    // MARK: - Country Gate
+
+    @Test func checkAvailability_when_country_does_not_support_TTP_then_returns_siteNotEligible() async {
+        // Given — Spain (.ES) is a POS-supported country with IPP coming via
+        // external readers only; `supportedReaders` does not include `.tapToPay`.
+        let featureFlags = makeEnabledFeatureFlags()
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let eligibilityService = MockPOSEligibilityService()
+        eligibilityService.cachedTabVisibility[siteID] = true
+        let sut = makeSUT(
+            featureFlagService: featureFlags,
+            stores: stores,
+            eligibilityService: eligibilityService,
+            configurationLoader: { CardPresentPaymentsConfiguration(country: .ES) }
+        )
+
+        // When
+        let result = await sut.checkAvailability()
+
+        // Then — country gate fails fast before the device-support / site-eligibility checks.
+        #expect(result == .unavailable(reason: .siteNotEligible))
+    }
+
+    @Test func checkAvailability_when_country_supports_TTP_then_continues_to_other_gates() async {
+        // Given — US is a TTP-supported country; if all other gates pass we
+        // should reach `.available`. Confirms the loader override doesn't
+        // accidentally short-circuit the happy path.
+        let featureFlags = makeEnabledFeatureFlags()
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case .checkDeviceSupport(_, _, _, _, let completion) = action {
+                completion(true)
+            }
+        }
+        let eligibilityService = MockPOSEligibilityService()
+        eligibilityService.cachedTabVisibility[siteID] = true
+        let sut = makeSUT(
+            featureFlagService: featureFlags,
+            stores: stores,
+            eligibilityService: eligibilityService,
+            configurationLoader: { CardPresentPaymentsConfiguration(country: .US) }
+        )
+
+        // When
+        let result = await sut.checkAvailability()
+
+        // Then
+        #expect(result == .available)
+    }
+
+    @Test func checkAvailability_when_configuration_loader_returns_nil_then_fails_closed() async {
+        // Given — fail-closed contract: no payment configuration loaded yet
+        // (unknown country / expansion-flag-gated pre-refresh). The checker
+        // must treat this as ineligible — never surface a TTP CTA we can't
+        // honestly back.
+        let featureFlags = makeEnabledFeatureFlags()
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let eligibilityService = MockPOSEligibilityService()
+        eligibilityService.cachedTabVisibility[siteID] = true
+        let sut = makeSUT(
+            featureFlagService: featureFlags,
+            stores: stores,
+            eligibilityService: eligibilityService,
+            configurationLoader: { nil }
+        )
+
+        // When
+        let result = await sut.checkAvailability()
+
+        // Then
+        #expect(result == .unavailable(reason: .siteNotEligible))
+    }
+
     // MARK: - All Gates Pass
 
     @Test func checkAvailability_when_all_gates_pass_then_returns_available() async {
@@ -165,13 +238,17 @@ private extension POSTapToPayAvailabilityCheckerTests {
     func makeSUT(
         featureFlagService: MockFeatureFlagService = MockFeatureFlagService(),
         stores: MockStoresManager = MockStoresManager(sessionManager: .makeForTesting()),
-        eligibilityService: MockPOSEligibilityService = MockPOSEligibilityService()
+        eligibilityService: MockPOSEligibilityService = MockPOSEligibilityService(),
+        configurationLoader: @escaping () -> CardPresentPaymentsConfiguration? = {
+            CardPresentPaymentsConfiguration(country: .US)
+        }
     ) -> POSTapToPayAvailabilityChecker {
         POSTapToPayAvailabilityChecker(
             siteID: siteID,
             stores: stores,
             featureFlagService: featureFlagService,
-            eligibilityService: eligibilityService
+            eligibilityService: eligibilityService,
+            configurationLoader: configurationLoader
         )
     }
 }

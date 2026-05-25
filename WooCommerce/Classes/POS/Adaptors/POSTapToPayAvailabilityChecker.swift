@@ -28,13 +28,27 @@ final class POSTapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let eligibilityService: POSEligibilityServiceProtocol
-    private let configurationLoader: () -> CardPresentPaymentsConfiguration
+    /// Returns `nil` when no card-payments configuration has been resolved yet for
+    /// the merchant — either an unknown country or an expansion-flag-gated country
+    /// (Spain / FR / DE / AU / NZ / SG …) whose remote-feature-flag check hasn't
+    /// completed. The TTP availability check fails closed on `nil` so we never
+    /// silently render TTP UI for a not-yet-known configuration.
+    private let configurationLoader: () -> CardPresentPaymentsConfiguration?
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          eligibilityService: POSEligibilityServiceProtocol,
-         configurationLoader: @escaping () -> CardPresentPaymentsConfiguration = { CardPresentConfigurationLoader().configuration }) {
+         configurationLoader: @escaping () -> CardPresentPaymentsConfiguration? = {
+             // Treat the loader's `.unknown` fallback as "no configuration loaded"
+             // so we fail closed instead of silently returning an empty
+             // `supportedReaders` array that would have to be sniffed for-zero by
+             // every caller. `.unknown` shows up when SiteAddress hasn't been
+             // populated yet (early bootstrap) or when the expansion-flag-gated
+             // eligibility cache hasn't been refreshed for the merchant's country.
+             let configuration = CardPresentConfigurationLoader().configuration
+             return configuration.countryCode == .unknown ? nil : configuration
+         }) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlagService
@@ -67,8 +81,13 @@ private extension POSTapToPayAvailabilityChecker {
     /// either has external readers only (CA, PR, EEA, SG, NZ, AU) or no card support at all
     /// (BR, JP, MX, IN, …). Without this gate the TTP hero would render on iPhone in any
     /// country that has POS visibility cached, including non-TTP countries like Spain.
+    ///
+    /// Fails closed when `configurationLoader` returns nil — there's no payment
+    /// configuration to read supported readers from, so we cannot honestly claim
+    /// TTP support, period.
     func countrySupportsTapToPay() -> Bool {
-        configurationLoader().supportedReaders.contains(.tapToPay)
+        guard let configuration = configurationLoader() else { return false }
+        return configuration.supportedReaders.contains(.tapToPay)
     }
 
     func deviceSupportsTapToPay() async -> Bool {

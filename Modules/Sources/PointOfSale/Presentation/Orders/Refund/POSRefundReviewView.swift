@@ -10,7 +10,6 @@ struct POSRefundReviewView: View {
     let refundReason: String?
     let onAddReason: () -> Void
     let onContinue: () -> Void
-    let onEditRefund: (() -> Void)?
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -33,7 +32,7 @@ struct POSRefundReviewView: View {
 private extension POSRefundReviewView {
     var headerView: some View {
         POSRefundNavigationHeader(title: Localization.title,
-                                  backAction: onEditRefund,
+                                  backAction: nil,
                                   backAccessibilityLabel: Localization.backButtonAccessibilityLabel)
     }
 
@@ -110,7 +109,7 @@ private extension POSRefundReviewView {
             Button(Localization.continueButton, action: onContinue)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 
-            Button(Localization.cancelButton, action: onClose)
+            Button(Localization.backButton, action: onClose)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
         .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
@@ -206,10 +205,10 @@ private extension POSRefundReviewView {
             comment: "Button to continue with the refund"
         )
 
-        static let cancelButton = NSLocalizedString(
-            "pos.refundReviewView.cancelButton",
-            value: "Cancel",
-            comment: "Button to cancel and dismiss the refund review screen"
+        static let backButton = NSLocalizedString(
+            "pos.refundReviewView.backButton",
+            value: "Back",
+            comment: "Button to go back from the refund review screen to refund item selection"
         )
     }
 }
@@ -225,8 +224,7 @@ private extension POSRefundReviewView {
         paymentMethodDescription: "Via payment card ••••1456",
         refundReason: nil,
         onAddReason: {},
-        onContinue: {},
-        onEditRefund: {}
+        onContinue: {}
     )
     .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
 }
@@ -241,8 +239,7 @@ private extension POSRefundReviewView {
         paymentMethodDescription: "Via cash",
         refundReason: "Customer changed their mind",
         onAddReason: {},
-        onContinue: {},
-        onEditRefund: {}
+        onContinue: {}
     )
     .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
 }

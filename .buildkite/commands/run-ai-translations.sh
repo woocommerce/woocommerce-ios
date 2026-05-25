@@ -113,6 +113,13 @@ if [[ "${LAST_AUTHOR}" == "${BOT_NAME}" ]] || [[ "${LAST_SUBJECT}" == ${COMMIT_P
   exit 0
 fi
 
+# Install gems before invoking bundler-managed tools. `install_gems` is
+# provided by the a8c-ci-toolkit Buildkite plugin (loaded into the env
+# by its hook on this step). We only run it past the early-exit checks
+# so skipped jobs stay snappy.
+echo "--- :rubygems: Installing gems"
+install_gems
+
 # Run the incremental translation across every supported locale.
 echo "--- :rocket: Running incremental translation"
 bundle exec rake -f fastlane/ai_translation/Rakefile translate:incremental
@@ -132,7 +139,7 @@ git config user.email "${BOT_EMAIL}"
 git add WooCommerce/Resources/*.lproj/Localizable.strings
 git add WooCommerce/Resources/*.lproj/InfoPlist.strings
 
-SUMMARY=$(rake -f fastlane/ai_translation/Rakefile translate:report 2>/dev/null | tail -n +5 || true)
+SUMMARY=$(bundle exec rake -f fastlane/ai_translation/Rakefile translate:report 2>/dev/null | tail -n +5 || true)
 
 git commit -m "${COMMIT_PREFIX} apply AI translations for new/changed strings
 

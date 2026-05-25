@@ -70,6 +70,10 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
 
     @Published private var customsForm: ShippingLabelCustomsForm?
 
+    private var customsFormIfRequired: ShippingLabelCustomsForm? {
+        customsFormRequired ? customsForm : nil
+    }
+
     lazy private(set) var customsFormViewModel: WooShippingCustomsFormViewModel = {
         return WooShippingCustomsFormViewModel(
             order: order,
@@ -126,7 +130,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
                                     weight: Double(shipmentWeight) ?? 0,
                                     shipmentID: shipment.index.description,
                                     hazmatCategory: hazmatCategory,
-                                    customsForm: customsForm)
+                                    customsForm: customsFormIfRequired)
     }
 
     var refundViewModel: WooShippingRefundViewModel? {
@@ -241,7 +245,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
                                                 weight: Double(shipmentWeight) ?? 0,
                                                 shipmentID: shipment.index.description,
                                                 hazmatCategory: hazmatCategory,
-                                                customsForm: customsForm)
+                                                customsForm: customsFormIfRequired)
 
         guard let shippingService else {
             throw WooShippingLabelPurchaseError.failedToRefreshSelectedRate
@@ -392,7 +396,7 @@ private extension WooShippingShipmentDetailsViewModel {
                                                    weight: Double(weight) ?? 0,
                                                    shipmentID: shipment.index.description,
                                                    hazmatCategory: hazmatCategory,
-                                                   customsForm: customsForm)
+                                                   customsForm: customsFormIfRequired)
                 shippingService.loadLabelRates(for: package)
             }
             .store(in: &subscriptions)

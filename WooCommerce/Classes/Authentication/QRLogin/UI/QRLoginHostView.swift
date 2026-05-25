@@ -55,7 +55,7 @@ struct QRLoginHostView: View {
                         // The primary CTA's meaning depends on the error: a
                         // retryable error re-runs the failed phase, a
                         // non-retryable one ("Scan a new code") hands back to
-                        // the coordinator to start a fresh scan (spec §6.1).
+                        // the coordinator to start a fresh scan.
                         switch error.primaryAction {
                         case .retryFailedPhase:
                             Task { await viewModel.retry() }

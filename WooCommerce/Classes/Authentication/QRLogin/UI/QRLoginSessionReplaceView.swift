@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Warning shown when a `woocommerce://qr-login` deep link arrives while the
-/// merchant is already signed in (spec §4.4). Confirming signs the merchant out
+/// merchant is already signed in. Confirming signs the merchant out
 /// and resumes the QR sign-in; cancelling keeps the current session.
 struct QRLoginSessionReplaceView: View {
     /// Called when the merchant chooses to sign out and continue.

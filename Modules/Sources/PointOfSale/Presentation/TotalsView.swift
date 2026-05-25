@@ -125,19 +125,15 @@ struct TotalsView: View {
                             isScanToPayEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
                             isMarkOrderAsPaidEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
                             isShowingOtherPaymentMethodsPopover: $isShowingOtherPaymentMethodsPopover,
-                            startCashPaymentAction: { paymentModel.startCashPayment() },
-                            startOtherPaymentMethodsAction: {
-                                analytics.track(.pointOfSaleOtherPaymentMethodsTapped)
-                                isShowingOtherPaymentMethodsPopover = true
-                            },
-                            startScanToPayAction: {
-                                Task { @MainActor in
-                                    await paymentModel.startScanToPayPayment()
-                                }
-                            },
-                            startMarkOrderAsPaidAction: {
-                                paymentModel.startMarkAsPaidPayment()
-                            }
+                            // All four callbacks route through the shared `handleXxxTapped`
+                            // helpers so iPad mirrors the phone-path double-tap guard and
+                            // analytics tracking. Without `isStartingPayment` a quick second
+                            // tap fires the start-payment action twice before the payment-state
+                            // onChange resets the gate.
+                            startCashPaymentAction: handleCashPaymentTapped,
+                            startOtherPaymentMethodsAction: handleOtherPaymentMethodsTapped,
+                            startScanToPayAction: handleScanToPayTapped,
+                            startMarkOrderAsPaidAction: handleMarkAsPaidTapped
                         )
                     } else if !checkoutPaymentMethods.isEmpty {
                         // Phone (card-enabled OR no-card): array-driven VStack. On no-card
@@ -975,8 +971,33 @@ private extension TotalsView {
         paymentModel.startCashPayment()
     }
 
+    func handleScanToPayTapped() {
+        guard !isStartingPayment else { return }
+        isStartingPayment = true
+        Task { @MainActor in
+            await paymentModel.startScanToPayPayment()
+        }
+    }
+
+    func handleMarkAsPaidTapped() {
+        guard !isStartingPayment else { return }
+        isStartingPayment = true
+        paymentModel.startMarkAsPaidPayment()
+    }
+
+    /// Single entry point for "Other payment methods" presentation across both
+    /// idioms. iPad anchors a popover to the trigger button; phone presents the
+    /// `POSOtherPaymentMethodsSheet` as a bottom sheet. Tracking lives here so
+    /// every caller (phone array row, iPad SecondaryPaymentButtons, both-idiom
+    /// `cashAndOtherMethodsBottomStrip`) fires the analytics event without
+    /// duplicating it at the call sites.
     func handleOtherPaymentMethodsTapped() {
-        isShowingOtherPaymentMethodsSheet = true
+        analytics.track(.pointOfSaleOtherPaymentMethodsTapped)
+        if horizontalSizeClass == .regular {
+            isShowingOtherPaymentMethodsPopover = true
+        } else {
+            isShowingOtherPaymentMethodsSheet = true
+        }
     }
 }
 

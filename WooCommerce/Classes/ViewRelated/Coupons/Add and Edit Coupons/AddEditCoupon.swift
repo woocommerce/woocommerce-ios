@@ -28,7 +28,7 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -84,7 +84,7 @@ struct AddEditCoupon: View {
 
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
+            GeometryReader { _ in
                 ScrollView {
                     VStack (alignment: .leading, spacing: 0) {
                         Group {

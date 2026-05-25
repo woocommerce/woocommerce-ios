@@ -638,7 +638,7 @@ class BookingListViewModelTests {
         let booking = createBooking(id: 1, startDate: testDate, status: .confirmed)
         insertBookings([booking])
 
-        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+        stores.whenReceivingAction(ofType: BookingAction.self) { _ in
             // Don't complete the sync — keep it in progress
         }
 

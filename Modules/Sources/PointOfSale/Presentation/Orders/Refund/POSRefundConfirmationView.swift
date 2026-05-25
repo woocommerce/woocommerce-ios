@@ -383,7 +383,7 @@ private extension POSRefundConfirmationView {
 
         static let preparingReaderMessage = NSLocalizedString(
             "pos.refundConfirmationView.preparingReaderMessage",
-            value: "Keep this screen open while the card reader gets ready.",
+            value: "Preparing reader for refund",
             comment: "Message shown while preparing a card reader for an in-person refund."
         )
 

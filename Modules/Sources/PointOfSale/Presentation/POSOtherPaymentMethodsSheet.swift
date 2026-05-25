@@ -1,13 +1,26 @@
 import SwiftUI
 
 /// Bottom sheet shown when the merchant taps "Other payment methods" on the phone
-/// POS checkout (TTP-available layout). Lists the non-TTP payment methods available
-/// to the merchant: Card reader, Scan to Pay (when enabled), and Mark order as paid
-/// (when enabled).
+/// POS checkout. Lists the non-primary payment methods available to the merchant
+/// for the current screen state:
 ///
-/// Mirrors the Android phone POS overflow dialog that pairs with the TTP hero
-/// (samiuelson #15842 / #15825).
+/// - On the TTP-available + no-reader-connected screen (paired with the TTP hero),
+///   this lists Card reader, Scan to Pay, and Mark order as paid.
+/// - On the TTP-available + BT-reader-connected screen, this lists only Scan to Pay
+///   and Mark order as paid. The Card reader row is hidden because a reader is
+///   already connected.
+///
+/// The iOS phone POS uses a one-shot Bluetooth model: the BT session must finish
+/// (success / cancel / abandonment) before the merchant returns to the TTP hero
+/// where Tap to Pay is the primary CTA again. Tap to Pay is therefore never
+/// surfaced as a sheet row — deliberately diverging from Android (samiuelson
+/// #15842 / #15825), which offers Tap to Pay as a sheet row during a BT session
+/// to let the merchant switch mid-flow.
 struct POSOtherPaymentMethodsSheet: View {
+    /// True when the Card reader row should appear. Pass false when a reader is
+    /// already connected — the "Connect a Bluetooth reader…" subtitle would
+    /// mislead the merchant in that case.
+    var isCardReaderAvailable: Bool = true
     let onCardReader: () -> Void
     var isScanToPayAvailable: Bool = false
     var onScanToPay: (() -> Void)?
@@ -25,12 +38,14 @@ struct POSOtherPaymentMethodsSheet: View {
                 .padding(.top, POSPadding.large)
                 .padding(.bottom, POSPadding.medium)
 
-            row(systemImage: "creditcard",
-                title: Localization.cardReaderTitle,
-                subtitle: Localization.cardReaderSubtitle,
-                accessibilityIdentifier: "pos-other-payments-card-reader") {
-                dismiss()
-                onCardReader()
+            if isCardReaderAvailable {
+                row(systemImage: "creditcard",
+                    title: Localization.cardReaderTitle,
+                    subtitle: Localization.cardReaderSubtitle,
+                    accessibilityIdentifier: "pos-other-payments-card-reader") {
+                    dismiss()
+                    onCardReader()
+                }
             }
 
             if isScanToPayAvailable, let onScanToPay {

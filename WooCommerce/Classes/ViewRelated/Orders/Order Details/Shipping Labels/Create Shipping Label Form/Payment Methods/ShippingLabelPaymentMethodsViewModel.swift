@@ -25,7 +25,7 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     ///
     var paymentMethods: [ShippingLabelPaymentMethod] {
         /// sort methods to display the selected one on the top
-        accountSettings.paymentMethods.sorted { lhs, rhs in
+        accountSettings.paymentMethods.sorted { lhs, _ in
             if lhs.paymentMethodID == accountSettings.selectedPaymentMethodID {
                 return true
             }

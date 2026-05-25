@@ -28,7 +28,7 @@ public actor WooAssistantHeadless {
     }
 
     /// Returns nil when credentials are missing or incomplete so smoke runs skip without failing the build.
-    public nonisolated static func credentialsFromStoreEnv() -> Credentials? {
+    nonisolated public static func credentialsFromStoreEnv() -> Credentials? {
         let path = "/tmp/woo-ai-smoke-store.env"
         guard let env = try? parseDotenv(at: URL(fileURLWithPath: path)) else { return nil }
         guard let siteURL = env["WOO_SITE_URL"],

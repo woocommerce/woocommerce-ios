@@ -846,7 +846,7 @@ extension ShippingLabelFormViewModel {
             return
         }
 
-        let packages = selectedPackages.enumerated().compactMap { (index, package) -> ShippingLabelPackagePurchase? in
+        let packages = selectedPackages.enumerated().compactMap { (_, package) -> ShippingLabelPackagePurchase? in
             guard let selectedRate = selectedRates.first(where: { $0.packageID == package.id }),
                   let details = selectedPackagesDetails.first(where: { $0.id == package.id }) else {
                 return nil

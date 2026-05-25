@@ -984,7 +984,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // Then
-        #expect(sut.preparePOSRefundReviewData()?.paymentMethodDescription == "Via WooCommerce In-Person Payments")
+        #expect(sut.preparePOSRefundReviewData()?.paymentMethodDescription == "via WooCommerce In-Person Payments")
     }
 
     @MainActor
@@ -1894,7 +1894,7 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
         return POSRefundPreparation(
             orderID: order.id,
             selectableItems: productSelectables + feeSelectables,
-            paymentMethodDescription: String(format: "Via %@", order.paymentMethodTitle),
+            paymentMethodDescription: String(format: "via %1$@", order.paymentMethodTitle),
             customerEmail: order.customerEmail,
             requiresCardPresentRefund: requiresCardPresentRefund
         )

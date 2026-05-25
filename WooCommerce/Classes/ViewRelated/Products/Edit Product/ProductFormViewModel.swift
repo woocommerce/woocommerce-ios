@@ -251,7 +251,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: product.siteID)
 
-        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
+        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] _ in
             guard let self else { return }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }

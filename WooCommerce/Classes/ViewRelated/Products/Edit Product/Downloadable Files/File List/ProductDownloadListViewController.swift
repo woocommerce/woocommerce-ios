@@ -85,7 +85,7 @@ final class ProductDownloadListViewController: UIViewController {
         onWPLibraryPickerCompletion = { [weak self] mediaItems in
             self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
         }
-        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
+        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] _, result in
             switch result {
             case let .success(productImage):
                 ServiceLocator.analytics.track(.productDownloadableFileUploadingSuccess)
@@ -287,7 +287,7 @@ private extension ProductDownloadListViewController {
         let menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         menuAlert.view.tintColor = .text
 
-        let downloadSettingsAction = UIAlertAction(title: Localization.downloadSettingsAction, style: .default) { [weak self] (action) in
+        let downloadSettingsAction = UIAlertAction(title: Localization.downloadSettingsAction, style: .default) { [weak self] (_) in
             self?.showDownloadableFilesSettings()
         }
         menuAlert.addAction(downloadSettingsAction)

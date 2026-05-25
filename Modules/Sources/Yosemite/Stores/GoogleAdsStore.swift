@@ -21,7 +21,7 @@ public final class GoogleAdsStore: Store {
     ///   - storageManager: The storage layer used to store and retrieve persisted data.
     ///   - network: The network layer used to fetch data from the remote
     ///
-    public override convenience init(dispatcher: Dispatcher,
+    override public convenience init(dispatcher: Dispatcher,
                                      storageManager: StorageManagerType,
                                      network: Network) {
         self.init(dispatcher: dispatcher,

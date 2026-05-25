@@ -53,7 +53,7 @@ extension WooShippingPackagesResponse: Decodable {
             // key is a carrier id, for example "usps"
             if let provider: [String: Any]? = try? value.toDictionary() {
                 var providerOptions: [WooShippingPredefinedOption] = []
-                provider?.forEach({ (providerKey, providerValue) in
+                provider?.forEach({ (_, providerValue) in
                     // providerKey is package group id, for example "pri_flat_boxes"
                     let providerValueDict = providerValue as? [String: Any]
                     let title: String = providerValueDict?["title"] as? String ?? ""

@@ -111,7 +111,7 @@ struct PointOfSaleOrderControllerTests {
 
         // When
         await sut.syncOrder(for: Cart(purchasableItems: [cartItem,
-                                                          makeItem(quantity: 5, orderItemsToMatch: [futureOrderItem])]),
+                                                         makeItem(quantity: 5, orderItemsToMatch: [futureOrderItem])]),
                             retryHandler: {})
 
         // Then

@@ -10,7 +10,7 @@ extension URLSession: URLSessionProtocol {}
 /// Use case to save application password generated from web view;
 /// The password will not be re-generated because no cookie authentication is available.
 ///
-final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase {
+public final class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase {
     public let applicationPassword: ApplicationPassword?
 
     /// Whether the use case is capable of re-generating password

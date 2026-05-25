@@ -235,7 +235,6 @@ private struct NoteSection: View {
                 }
 
                 noteContent()
-
             }
             .padding()
             .padding(.horizontal, insets: safeAreaInsets)
@@ -252,7 +251,6 @@ private struct NoteSection: View {
 
             Text(viewModel.noteContent)
                 .bodyStyle()
-
         } else {
 
             Button(action: {
@@ -292,7 +290,6 @@ private struct TakePaymentSection: View {
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
             .padding()
             .accessibilityIdentifier(SimplePaymentsSummary.Accessibility.takePaymentButton)
-
         }
         .background(Color(.listForeground(modal: false)).ignoresSafeArea())
     }

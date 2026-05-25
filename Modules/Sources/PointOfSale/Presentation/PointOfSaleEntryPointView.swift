@@ -51,6 +51,8 @@ public struct PointOfSaleEntryPointView: View {
     private let cartProductObserver: POSCartProductObserving?
     private let isLocalCatalogEligible: Bool
     private let sunsetWarningChecker: POSSunsetWarningChecking?
+    private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
+    private let preferredConnectionMethod: CardReaderConnectionMethod
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -77,6 +79,8 @@ public struct PointOfSaleEntryPointView: View {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
+         tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -162,6 +166,8 @@ public struct PointOfSaleEntryPointView: View {
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
         self.sunsetWarningChecker = sunsetWarningChecker
+        self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
+        self.preferredConnectionMethod = preferredConnectionMethod
     }
 
     public var body: some View {
@@ -197,7 +203,12 @@ public struct PointOfSaleEntryPointView: View {
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 cartProductObserver: cartProductObserver,
                 isLocalCatalogEligible: isLocalCatalogEligible,
-                sunsetWarningChecker: sunsetWarningChecker)
+                sunsetWarningChecker: sunsetWarningChecker,
+                tapToPayAvailabilityController: tapToPayAvailabilityChecker.map { checker in
+                    POSTapToPayAvailabilityController(availabilityChecker: checker,
+                                                      analytics: services.analytics)
+                },
+                preferredConnectionMethod: preferredConnectionMethod)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)
@@ -210,6 +221,7 @@ public struct PointOfSaleEntryPointView: View {
         .environmentObject(posCoverManager)
         .environment(orderListModel)
         .environment(\.siteTimezone, siteTimezone)
+        .environment(\.posLayoutScale, horizontalSizeClass == .compact ? .phone : .tablet)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

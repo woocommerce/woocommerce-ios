@@ -12,5 +12,4 @@ extension ProductDefaultAttribute {
     @NSManaged public var name: String?
     @NSManaged public var option: String?
     @NSManaged public var product: Product?
-
 }

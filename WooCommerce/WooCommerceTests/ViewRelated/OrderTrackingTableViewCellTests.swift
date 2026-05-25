@@ -14,7 +14,6 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
                                                trackingProvider: "HK POST",
                                                trackingURL: "http://automattic.com",
                                                dateShipped: Date(timeIntervalSince1970: 0))
-
     }
 
     override func setUp() {

@@ -762,7 +762,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         guard let task = backgroundFTSRebuildTasks[siteID] else { return }
         await task.value
     }
-
 }
 
 // MARK: - Syncing State

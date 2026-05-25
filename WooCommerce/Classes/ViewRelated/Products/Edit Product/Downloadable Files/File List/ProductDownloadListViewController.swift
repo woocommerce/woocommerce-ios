@@ -241,7 +241,6 @@ private extension ProductDownloadListViewController {
         }
 
         navigationController?.pushViewController(viewController, animated: true)
-
     }
 
     func onAddEditDownloadableFileCompletion(fileName: String?,

@@ -77,6 +77,5 @@ private extension ProductsTopBannerFactory {
             NSLocalizedString("Give feedback",
                               comment: "The title of the button to give feedback about products beta features on the banner on the products tab")
         static let dismiss = NSLocalizedString("Dismiss", comment: "The title of the button to dismiss the banner on the products tab")
-
     }
 }

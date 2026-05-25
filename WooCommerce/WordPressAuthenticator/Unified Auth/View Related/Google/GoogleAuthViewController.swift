@@ -54,7 +54,6 @@ class GoogleAuthViewController: LoginViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
-
 }
 
 // MARK: - Private Methods
@@ -95,7 +94,6 @@ private extension GoogleAuthViewController {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-
 }
 
 // MARK: - GoogleAuthenticatorDelegate
@@ -162,5 +160,4 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
     func googleSignupFailed(error: Error, loginFields: LoginFields) {
         // Here for protocol compliance.
     }
-
 }

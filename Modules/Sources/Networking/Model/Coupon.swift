@@ -209,7 +209,6 @@ public struct Coupon {
         couponDecoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         return couponDecoder
     }()
-
 }
 
 // MARK: - Codable Conformance

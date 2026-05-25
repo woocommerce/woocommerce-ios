@@ -511,7 +511,6 @@ private extension DashboardView {
                 comment: "Label of the button to add sections"
             )
         }
-
     }
 }
 

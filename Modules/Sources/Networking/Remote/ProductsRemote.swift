@@ -107,7 +107,6 @@ extension ProductsRemoteProtocol {
                                pageNumber: ProductsRemote.Default.pageNumber,
                                pageSize: ProductsRemote.Default.pageSize)
     }
-
 }
 
 /// Product: Remote Endpoints

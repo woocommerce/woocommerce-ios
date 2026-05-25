@@ -8,6 +8,7 @@ struct POSRefundItemsSelectionView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var refundSelectableItems: [POSRefundSelectableItem] {
         orderListModel.ordersController.refundSelectableItems
@@ -28,20 +29,22 @@ struct POSRefundItemsSelectionView: View {
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
-            headerView
-            itemsHeaderView
+            VStack(spacing: POSSpacing.none) {
+                headerView
+                itemsHeaderView
 
-            Divider()
-                .overlay(Color.posOutlineVariant.opacity(0.5))
+                Divider()
+                    .overlay(Color.posOutlineVariant.opacity(0.5))
 
-            itemsList
+                itemsList
+            }
+            .padding(POSPadding.xLarge)
 
             continueButton
+                .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
         }
-        .padding(POSPadding.xLarge)
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -54,6 +57,7 @@ private extension POSRefundItemsSelectionView {
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .lineLimit(1)
+                .minimumScaleFactor(horizontalSizeClass == .compact ? 0.7 : 1.0)
             Spacer()
             Button {
                 onClose()
@@ -124,7 +128,6 @@ private extension POSRefundItemsSelectionView {
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .disabled(!hasSelectedItems)
-        .padding(.top, POSPadding.medium)
     }
 }
 

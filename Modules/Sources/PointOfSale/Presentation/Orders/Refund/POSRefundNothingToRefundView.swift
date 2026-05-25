@@ -4,6 +4,7 @@ struct POSRefundNothingToRefundView: View {
     let onClose: () -> Void
 
     @Environment(\.posModalParentSize) private var parentSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -12,8 +13,7 @@ struct POSRefundNothingToRefundView: View {
             buttonsSection
         }
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -51,7 +51,7 @@ private extension POSRefundNothingToRefundView {
     var buttonsSection: some View {
         Button(Localization.doneButton, action: onClose)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .padding(POSPadding.xLarge)
+            .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

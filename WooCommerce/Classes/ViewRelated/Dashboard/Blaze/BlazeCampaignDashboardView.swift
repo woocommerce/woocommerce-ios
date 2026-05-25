@@ -130,7 +130,6 @@ struct BlazeCampaignDashboardView: View {
                     .padding(.horizontal, Layout.padding)
             }
             .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
-
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -176,7 +175,6 @@ private extension BlazeCampaignDashboardView {
                 .subheadlineStyle()
                 .renderedIf(viewModel.shouldShowSubtitle)
         }
-
     }
 
     var createCampaignButton: some View {

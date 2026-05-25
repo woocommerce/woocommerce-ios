@@ -17,7 +17,6 @@ struct AssistantCardTelemetryDispatcher: Sendable {
 }
 
 private struct AssistantCardTelemetryKey: EnvironmentKey {
-    @MainActor
     static let defaultValue: AssistantCardTelemetryDispatcher = .init(
         tracker: NoopAssistantTelemetryTracker(),
         contextLookup: { _ in nil }

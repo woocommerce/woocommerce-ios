@@ -46,7 +46,6 @@ final class CardPresentModalUpdateFailedLowBattery: CardPresentPaymentsModalView
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
-
 }
 
 private extension CardPresentModalUpdateFailedLowBattery {

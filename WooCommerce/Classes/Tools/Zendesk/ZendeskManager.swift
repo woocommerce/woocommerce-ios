@@ -238,7 +238,6 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
                     onCompletion(.success(()))
                 }
             }
-
         }
     }
 

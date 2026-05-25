@@ -631,7 +631,6 @@ extension LoginPrologueViewController {
         configureViewLoading(false)
         socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
     }
-
 }
 
 // MARK: - AppleAuthenticatorDelegate
@@ -657,7 +656,6 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
     func authFailedWithError(message: String) {
         displayErrorAlert(message, sourceTag: .loginApple)
     }
-
 }
 
 // MARK: - GoogleAuthenticatorLoginDelegate
@@ -709,7 +707,6 @@ extension LoginPrologueViewController: GoogleAuthenticatorLoginDelegate {
         socialErrorVC.modalPresentationStyle = .fullScreen
         present(socialErrorNav, animated: true)
     }
-
 }
 
 // MARK: - Button View Sizing
@@ -746,5 +743,4 @@ private extension LoginPrologueViewController {
         static let ipadPortrait: CGFloat = 0.1667
         static let ipadLandscape: CGFloat = 0.25
     }
-
 }

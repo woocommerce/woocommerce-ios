@@ -168,7 +168,11 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
             },
             onTicketCreated: onTicketCreated
         )
-        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID,
+                                                       transcript: transcript,
+                                                       supportAreaInfo: supportAreaInfo,
+                                                       entryPoint: entryPoint,
+                                                       siteAddress: viewModel.siteURL)
     }
 
     private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {
@@ -342,7 +346,7 @@ struct ConnectivityToolCard: View {
                 EmptyView()
             case .error:
                 Image(uiImage: .exclamationFilledImage)
-                    .foregroundColor(Color.init(uiColor: .error))
+                    .foregroundColor(Color(uiColor: .error))
             }
         }
 

@@ -1824,6 +1824,96 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         XCTAssertFalse(registrationAttempted, "Should not attempt registration when feature is disabled")
     }
+
+    // MARK: - Unknown Notification Type Gate (RSM-3048)
+
+    func test_handleRemoteNotificationInTheBackground_when_type_is_unknown_then_returns_noData_and_emits_nothing() async {
+        // Given
+        application.applicationState = .background
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        manager = makeManager(analytics: analytics)
+
+        var emittedBackgroundNotifications: [WooCommerce.PushNotification] = []
+        manager.backgroundNotifications.sink { emittedBackgroundNotifications.append($0) }.store(in: &subscriptions)
+
+        let payload = unknownTypeNotificationPayload()
+
+        // When
+        let result = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
+
+        // Then
+        XCTAssertEqual(result, .noData)
+        XCTAssertTrue(emittedBackgroundNotifications.isEmpty)
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("push_notification_received"))
+    }
+
+    func test_handleNotificationInTheForeground_when_type_is_unknown_then_does_not_display_inApp_and_emits_nothing() async throws {
+        // Given
+        application.applicationState = .active
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        manager = makeManager(analytics: analytics)
+
+        var emittedForegroundNotifications: [WooCommerce.PushNotification] = []
+        manager.foregroundNotifications.sink { emittedForegroundNotifications.append($0) }.store(in: &subscriptions)
+
+        let payload = unknownTypeNotificationPayload()
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+
+        // When
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        XCTAssertTrue(application.presentInAppMessages.isEmpty)
+        XCTAssertTrue(emittedForegroundNotifications.isEmpty)
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("push_notification_received"))
+    }
+
+    func test_handleUserResponseToNotification_when_type_is_unknown_then_does_not_present_details_or_emit_inactive() async throws {
+        // Given
+        application.applicationState = .inactive
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        manager = makeManager(analytics: analytics)
+
+        var emittedInactiveNotifications: [WooCommerce.PushNotification] = []
+        manager.inactiveNotifications.sink { emittedInactiveNotifications.append($0) }.store(in: &subscriptions)
+
+        var emittedLocalResponses: [UNNotificationResponse] = []
+        manager.localNotificationUserResponses.sink { emittedLocalResponses.append($0) }.store(in: &subscriptions)
+
+        let payload = unknownTypeNotificationPayload()
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertTrue(application.presentDetailsNoteIDs.isEmpty)
+        XCTAssertTrue(emittedInactiveNotifications.isEmpty)
+        XCTAssertTrue(emittedLocalResponses.isEmpty,
+                      "Unknown remote types must not leak into the local-notification response stream")
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("pushNotificationAlertPressed"))
+    }
+
+    func test_handleRemoteNotificationInTheBackground_when_type_is_known_then_emits_notification() async throws {
+        // Given
+        application.applicationState = .background
+        manager = makeManager()
+
+        var emittedBackgroundNotifications: [WooCommerce.PushNotification] = []
+        manager.backgroundNotifications.sink { emittedBackgroundNotifications.append($0) }.store(in: &subscriptions)
+
+        let payload = notificationPayload(noteID: 9_981, type: .storeOrder, title: Sample.defaultTitle)
+
+        // When
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
+
+        // Then
+        XCTAssertEqual(emittedBackgroundNotifications.count, 1)
+        XCTAssertEqual(emittedBackgroundNotifications.first?.kind, .storeOrder)
+    }
 }
 
 
@@ -1855,6 +1945,34 @@ private extension PushNotificationsManagerTests {
                                         pluginVersionCheckerFactory: pluginVersionCheckerFactory ?? MockPluginVersionCheckerFactory())
     }
 
+
+    /// Returns a Notification Payload whose `type` is not in the app's known set.
+    /// Mirrors `notificationPayload(...)` but uses a raw string `type` so the helper can
+    /// bypass `Note.Kind`-typed call sites.
+    func unknownTypeNotificationPayload(badgeCount: Int = 0,
+                                        noteID: Int64? = 1234,
+                                        type: String = "unknown_future_type",
+                                        siteID: Int64 = 134,
+                                        title: String = Sample.defaultTitle,
+                                        subtitle: String? = nil,
+                                        message: String? = nil) -> [String: Any] {
+        var payload: [String: Any] = [
+            "aps": [
+                "badge": badgeCount,
+                "alert": [
+                    "title": title,
+                    "subtitle": subtitle,
+                    "body": message
+                ]
+            ] as [String: Any],
+            "type": type,
+            "blog": siteID
+        ]
+        if let noteID {
+            payload["note_id"] = noteID
+        }
+        return payload
+    }
 
     /// Returns a Sample Notification Payload
     ///

@@ -1084,7 +1084,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "$2.50")
-
     }
 
     // MARK: - hasChanges Tests
@@ -3253,7 +3252,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChanges)
         XCTAssertTrue(viewModel.customerDataViewModel.isDataAvailable)
         XCTAssertEqual(viewModel.customerDataViewModel.fullName, expectedFullName, "Customer details have been added to the order")
-
     }
 
     func test_when_saveInFlightOrderNotes_is_invoked_then_customer_note_is_updated() {

@@ -249,7 +249,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             let updatedProduct = remoteProduct.copy(images: images)
             analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
             onProductCreated(updatedProduct)
-
         } catch {
             DDLogError("⛔️ Error saving product with AI: \(error)")
             analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))

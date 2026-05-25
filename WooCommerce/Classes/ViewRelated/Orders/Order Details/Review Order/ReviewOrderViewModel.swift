@@ -161,7 +161,6 @@ final class ReviewOrderViewModel {
 
                                                                     ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
                                                                     onCompletion(nil)
-
         }
 
         stores.dispatch(deleteTrackingAction)
@@ -304,7 +303,6 @@ private extension ReviewOrderViewModel {
             guard !orderTracking.isEmpty else { return [] }
 
             return Array(repeating: .tracking, count: orderTracking.count)
-
         }()
 
         let trackingAddRow: Row? = {

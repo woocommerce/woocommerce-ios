@@ -431,7 +431,6 @@ private extension ProductInventorySettingsViewController {
         if shouldBringUpKeyboard {
             getTitleAndTextFieldCell(from: .globalUniqueIdentifier)?.textFieldBecomeFirstResponder()
         }
-
     }
 }
 
@@ -448,7 +447,6 @@ private extension ProductInventorySettingsViewController {
             return nil
         }
         return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
-
     }
 }
 

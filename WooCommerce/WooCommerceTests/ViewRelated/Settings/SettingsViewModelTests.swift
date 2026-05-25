@@ -295,6 +295,67 @@ final class SettingsViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_sections_contains_pushNotificationPreferences_row_when_site_is_registered_and_flag_is_on() async {
+        // Given
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123], hasStoredSiteIDsRegisteredForWooPNs: true)
+        let featureFlagService = MockFeatureFlagService(smarterNotifications: true)
+        let viewModel = SettingsViewModel(stores: stores,
+                                          featureFlagService: featureFlagService,
+                                          defaults: defaults,
+                                          pushNotesManager: pushNotesManager)
+
+        // When
+        viewModel.onViewDidLoad()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.pushNotificationPreferences) })
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
+    }
+
+    @MainActor
+    func test_sections_does_not_contain_pushNotificationPreferences_row_when_flag_is_off() async {
+        // Given
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123], hasStoredSiteIDsRegisteredForWooPNs: true)
+        let featureFlagService = MockFeatureFlagService(smarterNotifications: false)
+        let viewModel = SettingsViewModel(stores: stores,
+                                          featureFlagService: featureFlagService,
+                                          defaults: defaults,
+                                          pushNotesManager: pushNotesManager)
+
+        // When
+        viewModel.onViewDidLoad()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.pushNotificationPreferences) })
+    }
+
+    @MainActor
+    func test_sections_does_not_contain_pushNotificationPreferences_row_when_site_is_not_registered() async {
+        // Given
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [], hasStoredSiteIDsRegisteredForWooPNs: false)
+        let featureFlagService = MockFeatureFlagService(smarterNotifications: true)
+        let viewModel = SettingsViewModel(stores: stores,
+                                          featureFlagService: featureFlagService,
+                                          defaults: defaults,
+                                          pushNotesManager: pushNotesManager)
+
+        // When
+        viewModel.onViewDidLoad()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.pushNotificationPreferences) })
+    }
+
+    @MainActor
     func test_sections_contains_enable_push_notifications_row_for_app_password_users_when_eligible() async {
         // Given
         let eligibilityChecker = MockWooPushNotificationEligibilityChecker()

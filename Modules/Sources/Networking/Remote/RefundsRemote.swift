@@ -121,7 +121,6 @@ public final class RefundsRemote: Remote {
             DDLogError("Unable to serialize data for refunds: \(error)")
         }
     }
-
 }
 
 // MARK: - Constants
@@ -154,7 +153,6 @@ extension RefundsRemote: POSRefundsRemoteProtocol {
                     continuation.resume(throwing: error)
                 } else {
                     continuation.resume(returning: refunds ?? [])
-
                 }
             }
         }

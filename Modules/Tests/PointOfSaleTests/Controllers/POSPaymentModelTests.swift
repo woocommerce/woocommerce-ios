@@ -1415,6 +1415,212 @@ struct POSPaymentModelTests {
         #expect(service.connectReaderCallCount == 2)
     }
 
+    // MARK: - TTP Explicit Payment Start Gate
+
+    @Test("TTP: events before startPaymentWithMethod are suppressed by the gate")
+    @MainActor
+    func startPaymentWithMethod_TTP_when_event_arrives_before_explicit_start_then_card_state_stays_idle() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay)
+
+        // When: startPayment pre-connects but does NOT open the gate
+        await sut.startPayment()
+
+        // Then: a payment event arriving before the merchant taps a method is suppressed
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+
+        #expect(sut.paymentState.card == .idle)
+        #expect(sut.cardPresentPaymentInlineMessage == nil)
+    }
+
+    @Test("TTP: events after startPaymentWithMethod(.tapToPay) are propagated")
+    @MainActor
+    func startPaymentWithMethod_TTP_when_event_arrives_after_explicit_start_then_card_state_updates() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay)
+
+        await sut.startPayment()
+
+        // Confirm gate is closed: event before explicit start is suppressed
+        service.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
+        #expect(sut.paymentState.card == .idle)
+
+        // When: merchant explicitly taps "Tap to Pay" — opens the gate.
+        // (Don't await — `startPaymentWithMethod` blocks on the reader connection
+        // status publisher and the mock's `connectReader` doesn't drive it.
+        // The gate side-effects we want — `currentPaymentMethod` set,
+        // `isAwaitingExplicitPaymentStart` cleared — happen synchronously
+        // before the first `await` inside the function, so a single
+        // `Task.yield()` is enough to let the spawned Task run that prefix.
+        // If `startPaymentWithMethod` ever grows an `await` before the
+        // `currentPaymentMethod = method` assignment, this assertion would
+        // start asserting the pre-change value and pass incorrectly — replace
+        // the yield with a `withObservationTracking` wait at that point.
+        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await Task.yield()
+
+        // Then: gate is open — `currentPaymentMethod` reflects the explicit pick.
+        #expect(sut.currentPaymentMethod == .tapToPay)
+
+        // And a terminal payment-success event now propagates through the
+        // open gate to `paymentState.card`. (Intermediate states like
+        // `.acceptingCard` would be suppressed by the TTP filter — see
+        // `subscribeToPaymentSessionEvents`. Only terminal states reach
+        // `paymentState.card` on the TTP path.)
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+
+        // And the TTP intermediate-state filter is active: a subsequent
+        // `acceptingCard` event does not roll state backward.
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+    }
+
+    @Test("TTP: cancelledOnReader resets card state to idle and re-arms the gate")
+    @MainActor
+    func cancelledOnReader_TTP_when_event_arrives_then_card_state_resets_and_gate_re_arms() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay)
+
+        await sut.startPayment()
+
+        // Open the gate: merchant taps Tap to Pay. (Don't await — see the
+        // sibling test above for why.) Drive state to a terminal value by
+        // sending a `paymentSuccess` directly through the now-open gate.
+        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await Task.yield()
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+
+        // When: merchant cancels on reader
+        service.paymentEvent = .show(eventDetails: .cancelledOnReader)
+
+        // Then: card state resets to idle AND inline message is cleared.
+        // The cancelledOnReader sink runs unconditionally on the TTP path
+        // (no gate check), so cancellation resets even a terminal state.
+        #expect(sut.paymentState.card == .idle)
+        #expect(sut.cardPresentPaymentInlineMessage == nil)
+
+        // And the gate is re-armed: events are suppressed again until next explicit tap
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+        #expect(sut.paymentState.card == .idle)
+    }
+
+    @Test("BT: events are always propagated without waiting for startPaymentWithMethod")
+    @MainActor
+    func startPayment_BT_when_event_arrives_then_card_state_updates_without_explicit_start() async {
+        // Given: Bluetooth path — gate is never applied
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .bluetooth)
+
+        // When: start payment (BT path opens gate immediately)
+        await sut.startPayment()
+
+        // Then: events propagate without needing startPaymentWithMethod
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+
+        #expect(sut.paymentState.card == .acceptingCard)
+    }
+
+    // MARK: - Subscriber Ordering Regression
+
+    @Test("TTP: after cancelledOnReader a subsequent startPaymentWithMethod opens the gate cleanly")
+    @MainActor
+    func cancelledOnReader_TTP_when_subsequent_startPaymentWithMethod_then_gate_is_open_not_stale() async {
+        // This test is a regression guard for the subscriber-ordering invariant in
+        // subscribeToPaymentSessionEvents: the cancelledOnReader sink MUST close the
+        // gate (isAwaitingExplicitPaymentStart = true) before the card-state sink
+        // evaluates shouldPropagatePaymentEvent. If the two sinks are ever reordered,
+        // the card-state sink would run first and the cancelledOnReader event would
+        // advance paymentState.card to a non-idle state before the gate closes,
+        // causing the subsequent startPaymentWithMethod to see a stale (open) gate.
+
+        // Given
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay)
+
+        await sut.startPayment()
+
+        // Round 1: open gate, drive to terminal state via a direct paymentSuccess
+        // event, then cancel on reader. (Don't await `startPaymentWithMethod` —
+        // the BT-as-one-shot architecture's disconnect-then-reconnect path
+        // blocks on connection status the mock doesn't drive. Gate side-effects
+        // happen before the first await; sending the success event after
+        // yielding once proves the gate is open.)
+        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await Task.yield()
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+
+        // When: merchant cancels on reader — gate must close and state must reset
+        service.paymentEvent = .show(eventDetails: .cancelledOnReader)
+
+        // Then: state is idle immediately
+        #expect(sut.paymentState.card == .idle)
+
+        // Round 2: subsequent startPaymentWithMethod must re-open the gate cleanly.
+        // If subscriber ordering were inverted — card-state sink before
+        // cancelledOnReader sink — `cancelledOnReader` would have advanced
+        // `paymentState.card` past `.idle` before the gate closed, and the
+        // `paymentState.card != .idle` guard in `startPaymentWithMethod` would
+        // have short-circuited Round 2, leaving `currentPaymentMethod` unset.
+        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await Task.yield()
+        #expect(sut.currentPaymentMethod == .tapToPay)
+
+        // And a second paymentSuccess event propagates through the re-opened gate.
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+    }
+
     @Test("connectCardReader skips a second call while the first is in flight")
     @MainActor
     func test_connectCardReader_when_called_again_while_in_flight_then_skips_second() async {
@@ -1450,6 +1656,588 @@ struct POSPaymentModelTests {
         }
         #expect(service.connectReaderCallCount == 1)
     }
+
+    // MARK: - Scan to Pay
+
+    @Test("startScanToPayPayment transitions scanToPay to showingQRCode")
+    @MainActor
+    func startScanToPayPayment_when_idle_then_transitions_to_showingQRCode() async {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(orderProvider: orderProvider)
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Then
+        #expect(sut.paymentState.scanToPay.isShowingQRCode == true)
+    }
+
+    @Test("startScanToPayPayment populates scanToPayURL after order is provided")
+    @MainActor
+    func startScanToPayPayment_when_orderProvided_then_scanToPayURL_is_set() async {
+        // Given
+        let expectedURL = URL(string: "https://example.com/pay/42")!
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = expectedURL
+
+        let sut = makePaymentController(orderProvider: orderProvider)
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Then
+        #expect(sut.scanToPayURL == expectedURL)
+    }
+
+    @Test("startScanToPayPayment tracks checkout scan-to-pay tapped analytics")
+    @MainActor
+    func startScanToPayPayment_tracks_analytics() async {
+        // Given
+        let analytics = MockPOSAnalytics()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+
+        let sut = makePaymentController(orderProvider: orderProvider, analytics: analytics)
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Then
+        #expect(analytics.events.contains {
+            $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutScanToPayPaymentTapped.rawValue
+        })
+    }
+
+    @Test("startScanToPayPayment is a no-op when already in scan-to-pay flow")
+    @MainActor
+    func startScanToPayPayment_when_alreadyShowingQRCode_then_noOp() async {
+        // Given
+        let analytics = MockPOSAnalytics()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            analytics: analytics,
+            paymentState: PointOfSalePaymentState(card: .idle, cash: .idle, scanToPay: .showingQRCode(verification: .waiting)))
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Then: no extra analytics fired and state unchanged
+        #expect(analytics.events.contains {
+            $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutScanToPayPaymentTapped.rawValue
+        } == false)
+        #expect(sut.paymentState.scanToPay == .showingQRCode(verification: .waiting))
+    }
+
+    @Test("cancelScanToPayPayment resets scanToPay state to idle")
+    @MainActor
+    func cancelScanToPayPayment_when_showingQRCode_then_resets_to_idle() async {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(orderProvider: orderProvider)
+
+        await sut.startScanToPayPayment()
+        #expect(sut.paymentState.scanToPay.isShowingQRCode == true)
+
+        // When
+        await sut.cancelScanToPayPayment()
+
+        // Then
+        #expect(sut.paymentState.scanToPay == .idle)
+    }
+
+    @Test("cancelScanToPayPayment clears scanToPayURL")
+    @MainActor
+    func cancelScanToPayPayment_clears_scanToPayURL() async {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(orderProvider: orderProvider)
+
+        await sut.startScanToPayPayment()
+        #expect(sut.scanToPayURL != nil)
+
+        // When
+        await sut.cancelScanToPayPayment()
+
+        // Then
+        #expect(sut.scanToPayURL == nil)
+    }
+
+    @Test("cancelScanToPayPayment tracks back-to-checkout analytics")
+    @MainActor
+    func cancelScanToPayPayment_tracks_analytics() async {
+        // Given
+        let analytics = MockPOSAnalytics()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+
+        let sut = makePaymentController(orderProvider: orderProvider, analytics: analytics)
+
+        await sut.startScanToPayPayment()
+
+        // When
+        await sut.cancelScanToPayPayment()
+
+        // Then
+        #expect(analytics.events.contains {
+            $0.eventName == WooAnalyticsStat.pointOfSaleBackToCheckoutFromScanToPayTapped.rawValue
+        })
+    }
+
+    @Test("completeScanToPayPayment calls handler and transitions to paymentSuccess")
+    @MainActor
+    func completeScanToPayPayment_calls_handler_and_transitions_to_success() async throws {
+        // Given
+        let handler = MockPOSScanToPayHandler()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        let order = Order.fake().copy(orderID: 55, total: "20.00")
+        orderProvider.orderToReturn = order
+        let celebration = MockPaymentCaptureCelebration()
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayHandler: handler,
+            celebration: celebration)
+
+        // When
+        try await sut.completeScanToPayPayment()
+
+        // Then
+        #expect(handler.completeScanToPayPaymentCalled == true)
+        #expect(handler.completeScanToPayPaymentReceivedOrder?.orderID == order.orderID)
+        #expect(sut.paymentState.scanToPay == .paymentSuccess)
+        #expect(celebration.celebrationWasCalled == true)
+    }
+
+    @Test("completeScanToPayPayment runs post-payment step on success")
+    @MainActor
+    func completeScanToPayPayment_runs_postPaymentStep() async throws {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake()
+        var postPaymentStepCalled = false
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            postPaymentStep: { postPaymentStepCalled = true })
+
+        // When
+        try await sut.completeScanToPayPayment()
+
+        // Then
+        #expect(postPaymentStepCalled == true)
+    }
+
+    @Test("completeScanToPayPayment tracks successful scan-to-pay analytics")
+    @MainActor
+    func completeScanToPayPayment_tracks_successAnalytics() async throws {
+        // Given
+        let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake()
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            collectOrderPaymentAnalyticsTracker: tracker)
+
+        // When
+        try await sut.completeScanToPayPayment()
+
+        // Then
+        #expect(tracker.didCallTrackSuccessfulScanToPayPayment == true)
+    }
+
+    @Test("completeScanToPayPayment reuses cached order when available")
+    @MainActor
+    func completeScanToPayPayment_when_currentOrderCached_then_doesNotCallProvideOrder() async throws {
+        // Given: prime the cache via startScanToPayPayment which populates currentOrder.
+        let cachedOrder = Order.fake().copy(orderID: 77, total: "15.00")
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = cachedOrder
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+        let handler = MockPOSScanToPayHandler()
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayHandler: handler)
+
+        // Start scan-to-pay to populate currentOrder from the provider
+        await sut.startScanToPayPayment()
+
+        // When
+        try await sut.completeScanToPayPayment()
+
+        // Then: provideOrder was NOT called (cached order was reused)
+        #expect(orderProvider.provideOrderCallCount == 0)
+        #expect(handler.completeScanToPayPaymentReceivedOrder?.orderID == cachedOrder.orderID)
+    }
+
+    // MARK: - Scan to Pay Polling
+
+    @Test("startScanToPayPolling calls verifier at least once after flow begins")
+    @MainActor
+    func startScanToPayPayment_with_verifier_calls_verifier_at_least_once() async {
+        // Given: verifier stays on .pending so the loop runs continuously.
+        // poll interval is 0 for fast test execution.
+        let verifier = MockPOSScanToPayVerifier()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            scanToPayPollInterval: 0)
+
+        // When: kick off the flow and wait for the polling task to deterministically
+        // fire `checkPaymentStatus` at least once. The previous `Task.yield()` ×3 form
+        // was sensitive to scheduler timing — the polling task's `Task.sleep` + nested
+        // `MainActor.run` hops aren't guaranteed to complete inside three yields, which
+        // is exactly the case the `onCheckPaymentStatusCalled` mock hook exists for.
+        await fireOnce { fire in
+            verifier.onCheckPaymentStatusCalled = { fire() }
+            Task { @MainActor in await sut.startScanToPayPayment() }
+        }
+
+        // Then
+        #expect(verifier.checkPaymentStatusCallCount >= 1)
+    }
+
+    @Test("startScanToPayPolling transitions to paymentSuccess when verifier returns paid")
+    @MainActor
+    func startScanToPayPayment_when_verifierReturnsPaid_then_transitions_to_success() async {
+        // Given
+        let verifier = MockPOSScanToPayVerifier()
+        verifier.resultQueue = [.success(.paid)]
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+        let celebration = MockPaymentCaptureCelebration()
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            celebration: celebration,
+            scanToPayPollInterval: 0)
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Wait for the polling task to process the .paid result and call scanToPayPaymentSuccess.
+        await fireOnce { fire in
+            withObservationTracking {
+                _ = sut.paymentState.scanToPay
+            } onChange: {
+                Task { @MainActor in fire() }
+            }
+        }
+
+        // Then
+        #expect(sut.paymentState.scanToPay == .paymentSuccess)
+        #expect(celebration.celebrationWasCalled == true)
+    }
+
+    @Test("startScanToPayPolling sets verification error state when verifier throws")
+    @MainActor
+    func startScanToPayPayment_when_verifierThrows_then_verification_state_is_error() async {
+        // Given
+        struct PollingError: Error {}
+        let verifier = MockPOSScanToPayVerifier()
+        verifier.resultQueue = [.failure(PollingError())]
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            scanToPayPollInterval: 0)
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Wait for the polling task to write .error into the state
+        await fireOnce { fire in
+            withObservationTracking {
+                _ = sut.paymentState.scanToPay
+            } onChange: {
+                Task { @MainActor in fire() }
+            }
+        }
+
+        // Then
+        #expect(sut.paymentState.scanToPay == .showingQRCode(verification: .error))
+    }
+
+    @Test("cancelScanToPayPayment stops polling — verifier no longer called after cancel")
+    @MainActor
+    func cancelScanToPayPayment_stops_polling() async {
+        // Given: verifier is always .pending so polling would continue indefinitely without cancel.
+        let verifier = MockPOSScanToPayVerifier()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            scanToPayPollInterval: 0)
+
+        await sut.startScanToPayPayment()
+
+        // Let at least one poll fire
+        await Task.yield()
+        await Task.yield()
+
+        let callCountAtCancel = verifier.checkPaymentStatusCallCount
+
+        // When
+        await sut.cancelScanToPayPayment()
+
+        // Give any in-flight task a chance to complete before sampling
+        await Task.yield()
+        await Task.yield()
+
+        let callCountAfterCancel = verifier.checkPaymentStatusCallCount
+
+        // Then: poll count should not grow meaningfully after cancel (allow at most 1 in-flight call)
+        #expect(callCountAfterCancel <= callCountAtCancel + 1)
+        #expect(sut.paymentState.scanToPay == .idle)
+    }
+
+    @Test("deactivate stops scan-to-pay polling")
+    @MainActor
+    func deactivate_stops_scanToPay_polling() async {
+        // Given
+        let verifier = MockPOSScanToPayVerifier()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            scanToPayPollInterval: 0)
+
+        await sut.startScanToPayPayment()
+
+        // Let at least one poll fire
+        await Task.yield()
+        await Task.yield()
+
+        let callCountAtDeactivate = verifier.checkPaymentStatusCallCount
+
+        // When
+        sut.deactivate()
+
+        await Task.yield()
+        await Task.yield()
+
+        let callCountAfterDeactivate = verifier.checkPaymentStatusCallCount
+
+        // Then: polling stopped — allow at most 1 in-flight call during the cancel window
+        #expect(callCountAfterDeactivate <= callCountAtDeactivate + 1)
+        // State is preserved (deactivate does NOT reset state)
+        #expect(sut.paymentState.scanToPay.isShowingQRCode == true)
+    }
+
+    @Test("activate resumes polling when QR code is on screen")
+    @MainActor
+    func activate_when_scanToPayShowing_resumes_polling() async {
+        // Given: start the flow, then immediately deactivate to stop polling.
+        let verifier = MockPOSScanToPayVerifier()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            scanToPayVerifier: verifier,
+            scanToPayPollInterval: 0)
+
+        await sut.startScanToPayPayment()
+        sut.deactivate()
+
+        // When: reactivate while QR is still showing, then wait for the poll loop to fire.
+        // The verifier exposes `onCheckPaymentStatusCalled` to avoid polling yield-count guessing.
+        await fireOnce { fire in
+            verifier.onCheckPaymentStatusCalled = { fire() }
+            Task { @MainActor in await sut.activate() }
+        }
+
+        // Then: verifier was called at least once after activate
+        #expect(verifier.checkPaymentStatusCallCount >= 1)
+    }
+
+    // MARK: - Phone POS TTP optimizations
+
+    @Test("startPayment on the TTP path does not auto-collect when no BT reader was previously attached")
+    @MainActor
+    func test_startPayment_when_TTP_preferred_and_no_prior_BT_then_does_not_auto_collect() async {
+        // Given — phone POS path (preferred = .tapToPay), no reader attached.
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay)
+
+        // When — `startPayment` fires the silent TTP pre-connect inside a Task,
+        // so wait for the SDK-level `connectReader` to be called before
+        // asserting. Without this the Task hasn't been scheduled yet by the
+        // time the test continues.
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = { continuation.resume() }
+            Task { @MainActor in await sut.startPayment() }
+        }
+
+        // Then — silent TTP pre-connect kicked off, no collect started, no
+        // active session is set on the model. Collection is gated behind an
+        // explicit method tap from the hero / sheet.
+        #expect(sut.currentPaymentMethod == nil)
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(service.connectReaderCallCount == 1)
+    }
+
+    @Test("startPayment on the TTP path disconnects a previously-attached BT reader before pre-connecting TTP")
+    @MainActor
+    func test_startPayment_when_TTP_preferred_and_prior_BT_attached_then_disconnects_before_TTP_preconnect() async {
+        // Given — phone POS path (preferred = .tapToPay) with a BT reader
+        // attached from a prior session (`lastConnectedMethod == .bluetooth`).
+        // We can't poke `lastConnectedMethod` directly (it's `private(set)`),
+        // so drive it through the model's own machinery: call
+        // `connectCardReader()` which sets `lastConnectedMethod = .bluetooth`
+        // after a successful BT connect.
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = .init(name: "BT Reader", batteryLevel: 0.85)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay)
+
+        // Establish `lastConnectedMethod == .bluetooth`. `connectCardReader`
+        // spawns its own Task; wait for the SDK-level `connectReader` to
+        // be called so the post-connect `lastConnectedMethod` assignment
+        // has landed before we proceed.
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = { continuation.resume() }
+            sut.connectCardReader()
+        }
+        #expect(sut.lastConnectedMethod == .bluetooth)
+        let connectCountAfterBT = service.connectReaderCallCount
+
+        // When — the merchant returns to the TTP hero for a new order.
+        // `startPayment` sees the BT cleanup conditions (TTP preferred +
+        // `lastConnectedMethod == .bluetooth` + reader still connected) and
+        // disconnects before kicking the silent TTP pre-connect.
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = { continuation.resume() }
+            Task { @MainActor in await sut.startPayment() }
+        }
+
+        // Then — the stale BT reader was dropped and the silent TTP
+        // pre-connect ran. The disconnect on the BT side is the headline
+        // one-shot-Bluetooth cleanup; the second `connectReader` call is
+        // `connectTapToPayReader` doing its pre-connect.
+        #expect(service.disconnectReaderCallCount >= 1)
+        #expect(service.connectReaderCallCount > connectCountAfterBT)
+        // No collect on either side — TTP is gated behind an explicit hero
+        // tap, BT was just torn down without being re-collected.
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.currentPaymentMethod == nil)
+    }
+
+    @Test("startPaymentWithMethod ignores re-entry of the same method during an active session")
+    @MainActor
+    func test_startPaymentWithMethod_when_called_again_with_same_method_then_ignored() async {
+        // Given — an active BT session (set up via the iPad-style auto-collect
+        // path so the mock doesn't have to simulate the SDK's disconnect /
+        // reconnect status propagation that the TTP-preferred path requires).
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        service.connectedReader = .init(name: "BT Reader", batteryLevel: 0.85)
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .bluetooth)
+        await withCheckedContinuation { continuation in
+            service.onCollectPaymentCalled = { continuation.resume() }
+            Task { @MainActor in await sut.startPayment() }
+        }
+        let connectCountAfterFirst = service.connectReaderCallCount
+        service.collectPaymentWasCalled = false
+        service.cancelPaymentCalled = false
+
+        // When — re-entering with the same method (e.g. stray closure / SwiftUI
+        // re-render after the session is established).
+        await sut.startPaymentWithMethod(.bluetooth)
+
+        // Then — second call is a no-op: no new connect, no new collect, no
+        // cancel (the early-return path at `POSPaymentModel.startPaymentWithMethod`
+        // bails before the method-switch cancel runs), and the active method
+        // is unchanged.
+        #expect(service.connectReaderCallCount == connectCountAfterFirst)
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(service.cancelPaymentCalled == false)
+        #expect(sut.currentPaymentMethod == .bluetooth)
+    }
+
+    @Test("startPaymentWithMethod cancels the current payment when switching to a different method")
+    @MainActor
+    func test_startPaymentWithMethod_when_switching_methods_then_cancels_current_payment() async {
+        // Given — an active BT session.
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        service.connectedReader = .init(name: "BT Reader", batteryLevel: 0.85)
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .bluetooth)
+        await withCheckedContinuation { continuation in
+            service.onCollectPaymentCalled = { continuation.resume() }
+            Task { @MainActor in await sut.startPayment() }
+        }
+        service.cancelPaymentCalled = false
+
+        // When — merchant picks Tap to Pay from the Other payment methods sheet
+        // while BT is mid-collection. `await task.value` is the most robust
+        // wait we have here — `startPaymentWithMethod` returns deterministically
+        // in the test environment (cancel → disconnect-then-reconnect → kick
+        // a fire-and-forget connectReader Task → set up the
+        // startPaymentOnCardReaderConnection one-shot subscription → return).
+        // Better than `withObservationTracking { _ = sut.currentPaymentMethod }`,
+        // which would hang to the test-suite timeout if a future change ever
+        // emitted an intermediate `currentPaymentMethod` value before
+        // `.tapToPay` and the observation missed the final flip.
+        let task = Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await task.value
+
+        // Then — the BT collect was cancelled and the active method flipped.
+        #expect(service.cancelPaymentCalled == true)
+        #expect(sut.currentPaymentMethod == .tapToPay)
+    }
 }
 
 // MARK: - Factory
@@ -1469,6 +2257,7 @@ private func makePaymentController(
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     celebration: PaymentCaptureCelebrationProtocol = MockPaymentCaptureCelebration(),
     scanToPayPollInterval: TimeInterval = 3,
+    preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
     paymentState: PointOfSalePaymentState = .idle
 ) -> POSPaymentModel {
     POSPaymentModel(
@@ -1485,5 +2274,6 @@ private func makePaymentController(
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         celebration: celebration,
         scanToPayPollInterval: scanToPayPollInterval,
+        preferredConnectionMethod: preferredConnectionMethod,
         paymentState: paymentState)
 }

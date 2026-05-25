@@ -580,7 +580,6 @@ private extension ManualTrackingViewController {
         }
 
         ServiceLocator.stores.dispatch(action)
-
     }
     func displayDismissConfirmationAlert() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self,
@@ -591,7 +590,6 @@ private extension ManualTrackingViewController {
     func dismiss() {
         dismiss(animated: true, completion: nil)
     }
-
 }
 
 // MARK: - Keyboard management

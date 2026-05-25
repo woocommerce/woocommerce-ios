@@ -644,7 +644,7 @@ private extension AnalyticsHubViewModel {
                                                                                 usageTracksEventEmitter: usageTracksEventEmitter)
 
                 // Update data on range selection change
-                Task.init {
+                Task {
                     await self.updateData()
                 }
             }.store(in: &subscriptions)

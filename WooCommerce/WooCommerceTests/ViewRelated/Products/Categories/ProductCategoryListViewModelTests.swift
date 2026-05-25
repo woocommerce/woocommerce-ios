@@ -70,7 +70,6 @@ final class ProductCategoryListViewModelTests: XCTestCase {
             })
 
             viewModel.addAndSelectNewCategory(category: productCategory)
-
         }
 
         XCTAssertEqual(passedCategory, productCategory)

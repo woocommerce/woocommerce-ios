@@ -153,5 +153,4 @@ final class ClientSideBannerProvider {
             return []
         }
     }
-
 }

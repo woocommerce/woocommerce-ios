@@ -52,7 +52,6 @@ final class ProductDetailNavigator {
             viewController = coordinator.viewController(product: product) {
                 onDismissWeb?()
             }
-
         } else {
             let coordinator = coordinatorFactory.nativeCoordinator()
             viewController = coordinator.viewController(product: product,

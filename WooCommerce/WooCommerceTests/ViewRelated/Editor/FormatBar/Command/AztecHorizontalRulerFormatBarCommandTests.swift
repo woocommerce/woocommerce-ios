@@ -36,5 +36,4 @@ final class AztecHorizontalRulerFormatBarCommandTests: XCTestCase {
                              formatBar: formatBar)
         XCTAssertEqual(editorView.getHTML(), formattedHTML)
     }
-
 }

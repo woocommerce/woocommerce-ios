@@ -254,7 +254,6 @@ private extension CouponListViewController {
         }
 
         emptyStateViewController.configure(configuration)
-
     }
 
 

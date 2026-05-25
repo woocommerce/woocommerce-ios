@@ -450,7 +450,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                         self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: false, onCompletion: onCompletion)
                         ServiceLocator.analytics.track(event: .ConnectivityTool.automaticTimeoutRetry())
-
                     } else {
                         self.viewModel.dataLoadingError = error
                     }

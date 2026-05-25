@@ -63,5 +63,4 @@ import Foundation
         success: @escaping (_ authToken: String) -> Void,
         failure: @escaping (_ error: Error) -> Void
     )
-
 }

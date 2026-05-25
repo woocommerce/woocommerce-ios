@@ -116,5 +116,4 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
         // Then
         XCTAssertFalse(sut.isReconnecting)
     }
-
 }

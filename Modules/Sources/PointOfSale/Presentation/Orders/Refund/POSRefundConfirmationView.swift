@@ -9,6 +9,7 @@ struct POSRefundConfirmationView: View {
     let onBack: () -> Void
 
     @Environment(\.posModalParentSize) private var parentSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -21,8 +22,7 @@ struct POSRefundConfirmationView: View {
             }
         }
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -35,6 +35,7 @@ private extension POSRefundConfirmationView {
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .lineLimit(1)
+                .minimumScaleFactor(horizontalSizeClass == .compact ? 0.7 : 1.0)
             Spacer()
             Button {
                 onClose()
@@ -79,7 +80,7 @@ private extension POSRefundConfirmationView {
             Button(Localization.backButton, action: onBack)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .padding(POSPadding.xLarge)
+        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

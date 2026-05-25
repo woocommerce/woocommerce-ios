@@ -290,7 +290,6 @@ struct SingleAddressForm: View {
                     .autocapitalization(.none)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
-
             }
 
             if showPhoneCountryCodeField {

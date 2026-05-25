@@ -95,7 +95,6 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
                 readerService.cancelDiscovery()
                     .fulfillOnCompletion(expectation: connectedToReader)
             }.store(in: &self.cancellables)
-
         }.store(in: &cancellables)
 
         // Test also that connectedReaders is updated

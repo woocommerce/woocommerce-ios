@@ -206,6 +206,5 @@ struct ExpandableBottomSheet_Previews: PreviewProvider {
         } expandableContent: {
             Text("Can be hidden")
         }
-
     }
 }

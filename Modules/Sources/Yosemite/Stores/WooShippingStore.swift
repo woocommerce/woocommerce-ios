@@ -725,7 +725,6 @@ private extension WooShippingStore {
             storageShipment?.shippingLabel = storageShippingLabel
 
             return storageShippingLabel.toReadOnly()
-
         }, completion: { result in
             switch result {
             case .success(let label):

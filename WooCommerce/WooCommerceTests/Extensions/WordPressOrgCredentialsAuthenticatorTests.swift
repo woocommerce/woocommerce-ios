@@ -39,5 +39,4 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         // Then
         XCTAssertNotNil(configuration)
     }
-
 }

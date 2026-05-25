@@ -54,7 +54,6 @@ final class ProductPurchaseNoteViewController: UIViewController {
 
         configureTextViewFirstResponder()
     }
-
 }
 
 // MARK: - View Configuration

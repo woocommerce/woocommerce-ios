@@ -477,7 +477,6 @@ open class WordPressComRestApi: NSObject {
             session: uploadURLSession
         )
     }
-
 }
 
 // MARK: - Error processing

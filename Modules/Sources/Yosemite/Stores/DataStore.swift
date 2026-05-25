@@ -56,7 +56,6 @@ private extension DataStore {
             }
         }
     }
-
 }
 
 private extension DataStore {

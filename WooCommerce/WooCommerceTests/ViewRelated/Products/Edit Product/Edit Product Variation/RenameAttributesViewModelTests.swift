@@ -52,5 +52,4 @@ class RenameAttributesViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.attributeName, "New Color")
     }
-
 }

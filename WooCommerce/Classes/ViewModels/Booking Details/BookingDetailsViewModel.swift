@@ -647,6 +647,5 @@ private extension BookingDetailsViewModel {
             value: "Retry",
             comment: "Retry Action"
         )
-
     }
 }

@@ -340,7 +340,6 @@ struct OrderForm: View {
                                 case .taxSelector:
                                     shouldShowNewTaxRateSelector = true
                                 }
-
                             }
                             .sheet(isPresented: $shouldShowNewTaxRateSelector) {
                                 NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
@@ -409,7 +408,6 @@ struct OrderForm: View {
                             Text(viewModel.orderTotal)
                                 .redacted(reason: isLoading ? .placeholder : [])
                                 .shimmering(active: isLoading)
-
                         }
                         .font(.headline)
                         .padding([.bottom, .horizontal])

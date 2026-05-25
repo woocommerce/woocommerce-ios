@@ -201,5 +201,4 @@ private extension CoreDataIterativeMigrator {
         DDLogInfo("Source model \(sourceVersion.name) found in available versions. Will use iterative migration.")
         return false
     }
-
 }

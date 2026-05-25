@@ -89,6 +89,11 @@ protocol PointOfSaleAggregateModelProtocol {
     /// Checker for whether the store needs a POS sunset warning (WC < 10.5)
     private let sunsetWarningChecker: POSSunsetWarningChecking?
 
+    /// Resolves whether Tap to Pay is available for the current device + site. Optional
+    /// so existing callers (previews, tests) keep working — when nil the rest of POS
+    /// behaves as if TTP is not available.
+    private(set) var tapToPayAvailabilityController: POSTapToPayAvailabilityController?
+
     private var cancellables: Set<AnyCancellable> = []
 
     // Private storage of the concrete coordinator
@@ -139,7 +144,9 @@ protocol PointOfSaleAggregateModelProtocol {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
          cartProductObserver: POSCartProductObserving? = nil,
          isLocalCatalogEligible: Bool = false,
-         sunsetWarningChecker: POSSunsetWarningChecking? = nil) {
+         sunsetWarningChecker: POSSunsetWarningChecking? = nil,
+         tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil,
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -159,6 +166,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.cartProductObserver = cartProductObserver
         self.isLocalCatalogEligible = isLocalCatalogEligible
         self.sunsetWarningChecker = sunsetWarningChecker
+        self.tapToPayAvailabilityController = tapToPayAvailabilityController
 
         // Payment controller is created with cart-specific dependencies.
         // The weak self captures below are safe because paymentModel is owned by self.
@@ -180,6 +188,7 @@ protocol PointOfSaleAggregateModelProtocol {
                 }),
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+            preferredConnectionMethod: preferredConnectionMethod,
             paymentState: paymentState)
         weakSelf = self
 

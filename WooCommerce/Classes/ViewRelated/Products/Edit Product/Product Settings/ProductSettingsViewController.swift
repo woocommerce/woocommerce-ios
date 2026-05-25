@@ -51,7 +51,6 @@ final class ProductSettingsViewController: UIViewController {
             self?.onPasswordCompletion(passwordRetrieved)
         }
     }
-
 }
 
 // MARK: - View Configuration

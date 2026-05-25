@@ -1,4 +1,3 @@
-import ARKit
 import Combine
 import Experiments
 import Foundation
@@ -14,6 +13,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let storage: StorageManagerType
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
+    private let arParcelFittingEligibilityChecker: ARParcelFittingEligibilityChecking
     private let shippingSettingsService: ShippingSettingsService
 
     private let starAnimation: Animation = .spring(duration: 0.2)
@@ -29,12 +29,14 @@ final class WooShippingAddPackageViewModel: ObservableObject {
          storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         arParcelFittingEligibilityChecker: ARParcelFittingEligibilityChecking = ARParcelFittingEligibilityChecker(),
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
         self.siteID = siteID
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.arParcelFittingEligibilityChecker = arParcelFittingEligibilityChecker
         self.shippingSettingsService = shippingSettingsService
         self.starToggleService = PackageStarToggleService(siteID: siteID, stores: stores, analytics: analytics)
 
@@ -54,6 +56,14 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         configureResultsController()
         analytics.track(event: .WooShipping.packageSelectionStep(state: .started))
         starToggleSubscription = starToggleService.$notice.assign(to: \.notice, on: self)
+        refreshARParcelFittingEligibility()
+    }
+
+    private func refreshARParcelFittingEligibility() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.isARParcelFittingAvailable = await self.arParcelFittingEligibilityChecker.isEligible()
+        }
     }
 
     @Published private(set) var isLoadingPackages: Bool = false
@@ -128,10 +138,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     // MARK: - AR Parcel Fitting
 
-    var isARParcelFittingAvailable: Bool {
-        featureFlagService.isFeatureFlagEnabled(.arParcelFitting)
-        && ARWorldTrackingConfiguration.isSupported
-    }
+    @Published private(set) var isARParcelFittingAvailable: Bool = false
 
     var arDimensionUnit: UnitLength {
         .fromStoreUnit(shippingSettingsService.dimensionUnit ?? "in")

@@ -1,1 +1,0 @@
-Få djupare insikter med ett uppgraderat prestandakort. Växla snabbt mellan bruttointäkter, nettointäkter och totala intäkter och välj vilket beställningsdatum (betalt, gjort eller slutfört) som driver dina totalsummor. Vi har också förbättrat fraktetikettflödena med FedEx TOS-hantering, uppdaterat tomma POS-delstater och utökat POS-tillgänglighet till Puerto Rico.

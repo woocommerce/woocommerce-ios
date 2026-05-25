@@ -286,7 +286,6 @@ final class PaymentMethodsViewModel: ObservableObject {
                     onFailure()
                     return
                 }
-
             },
             onCancel: {
                 // No tracking required because the flow remains on screen to choose other payment methods.

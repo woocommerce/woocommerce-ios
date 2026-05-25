@@ -140,7 +140,6 @@ private extension ProductTagStore {
             storage.deleteProductTags(siteID: siteID, ids: ids)
         }, completion: onCompletion, on: .main)
     }
-
 }
 
 private extension ProductTagStore {

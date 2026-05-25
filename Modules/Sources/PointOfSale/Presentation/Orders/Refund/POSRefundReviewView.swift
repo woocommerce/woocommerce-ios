@@ -13,6 +13,7 @@ struct POSRefundReviewView: View {
     let onEditRefund: (() -> Void)?
 
     @Environment(\.posModalParentSize) private var parentSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -21,8 +22,7 @@ struct POSRefundReviewView: View {
             buttonsSection
         }
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -35,6 +35,7 @@ private extension POSRefundReviewView {
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .lineLimit(1)
+                .minimumScaleFactor(horizontalSizeClass == .compact ? 0.7 : 1.0)
             Spacer()
             Button {
                 onClose()
@@ -125,7 +126,7 @@ private extension POSRefundReviewView {
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
         }
-        .padding(POSPadding.xLarge)
+        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 
     func summaryRow(label: String, value: String, labelColor: Color, valueColor: Color) -> some View {

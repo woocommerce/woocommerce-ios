@@ -163,6 +163,24 @@ struct WidgetSiteListSyncManagerTests {
         #expect(context.widgetSiteListStore.sites().isEmpty)
     }
 
+    @Test func logOut_event_when_received_then_clears_currency_cache() async throws {
+        // Given
+        let context = makeTestContext()
+        context.widgetSiteCurrencyCache.save(Self.makeCurrencySettings(currencyCode: .EUR), forSiteID: 1)
+        await context.insert(sites: [
+            Self.makeSite(siteID: 1, name: "Alpha", isWooCommerceActive: true)
+        ])
+        context.sut.start()
+        #expect(context.widgetSiteCurrencyCache.currencySettings(forSiteID: 1) != nil)
+
+        // When
+        context.notificationCenter.post(name: .logOutEventReceived, object: nil)
+        try await Task.sleep(for: .milliseconds(50))
+
+        // Then
+        #expect(context.widgetSiteCurrencyCache.currencySettings(forSiteID: 1) == nil)
+    }
+
     @Test func stop_when_called_after_start_then_clears_list() async {
         // Given
         let context = makeTestContext()
@@ -177,6 +195,43 @@ struct WidgetSiteListSyncManagerTests {
 
         // Then
         #expect(context.widgetSiteListStore.sites().isEmpty)
+    }
+
+    @Test func stop_when_called_after_start_then_clears_currency_cache() async {
+        // Given
+        let context = makeTestContext()
+        context.widgetSiteCurrencyCache.save(Self.makeCurrencySettings(currencyCode: .EUR), forSiteID: 1)
+        await context.insert(sites: [
+            Self.makeSite(siteID: 1, name: "Alpha", isWooCommerceActive: true)
+        ])
+        context.sut.start()
+        #expect(context.widgetSiteCurrencyCache.currencySettings(forSiteID: 1) != nil)
+
+        // When
+        context.sut.stop()
+
+        // Then
+        #expect(context.widgetSiteCurrencyCache.currencySettings(forSiteID: 1) == nil)
+    }
+
+    @Test func start_when_general_site_settings_present_then_removes_cached_currency_for_that_site() async {
+        // Given
+        let context = makeTestContext()
+        let cachedSecondSiteSettings = Self.makeCurrencySettings(currencyCode: .GBP)
+        context.widgetSiteCurrencyCache.save(Self.makeCurrencySettings(currencyCode: .EUR), forSiteID: 1)
+        context.widgetSiteCurrencyCache.save(cachedSecondSiteSettings, forSiteID: 2)
+        await context.insert(sites: [
+            Self.makeSite(siteID: 1, name: "Alpha", isWooCommerceActive: true),
+            Self.makeSite(siteID: 2, name: "Beta", isWooCommerceActive: true)
+        ])
+        await context.insert(siteSettings: Self.makeFullCurrencySiteSettings(siteID: 1, currencyCode: "USD"))
+
+        // When
+        context.sut.start()
+
+        // Then
+        #expect(context.widgetSiteCurrencyCache.currencySettings(forSiteID: 1) == nil)
+        #expect(context.widgetSiteCurrencyCache.currencySettings(forSiteID: 2) == cachedSecondSiteSettings)
     }
 
     @Test func start_when_called_twice_then_does_not_throw_or_duplicate_writes() async {
@@ -205,6 +260,7 @@ private extension WidgetSiteListSyncManagerTests {
         let stores: MockStoresManager
         let userDefaults: UserDefaults
         let widgetSiteListStore: WidgetSiteListStore
+        let widgetSiteCurrencyCache: WidgetSiteCurrencyCache
         let notificationCenter: NotificationCenter
         let sut: WidgetSiteListSyncManager
 
@@ -213,6 +269,7 @@ private extension WidgetSiteListSyncManagerTests {
              stores: MockStoresManager,
              userDefaults: UserDefaults,
              widgetSiteListStore: WidgetSiteListStore,
+             widgetSiteCurrencyCache: WidgetSiteCurrencyCache,
              notificationCenter: NotificationCenter,
              sut: WidgetSiteListSyncManager) {
             self.storageManager = storageManager
@@ -220,6 +277,7 @@ private extension WidgetSiteListSyncManagerTests {
             self.stores = stores
             self.userDefaults = userDefaults
             self.widgetSiteListStore = widgetSiteListStore
+            self.widgetSiteCurrencyCache = widgetSiteCurrencyCache
             self.notificationCenter = notificationCenter
             self.sut = sut
         }
@@ -269,11 +327,13 @@ private extension WidgetSiteListSyncManagerTests {
         userDefaults.removePersistentDomain(forName: suiteName)
 
         let widgetSiteListStore = WidgetSiteListStore(userDefaults: userDefaults)
+        let widgetSiteCurrencyCache = WidgetSiteCurrencyCache(userDefaults: userDefaults)
         let notificationCenter = NotificationCenter()
 
         let sut = WidgetSiteListSyncManager(stores: stores,
                                             storageManager: storageManager,
                                             widgetSiteListStore: widgetSiteListStore,
+                                            widgetSiteCurrencyCache: widgetSiteCurrencyCache,
                                             userDefaults: userDefaults,
                                             notificationCenter: notificationCenter)
 
@@ -282,6 +342,7 @@ private extension WidgetSiteListSyncManagerTests {
                            stores: stores,
                            userDefaults: userDefaults,
                            widgetSiteListStore: widgetSiteListStore,
+                           widgetSiteCurrencyCache: widgetSiteCurrencyCache,
                            notificationCenter: notificationCenter,
                            sut: sut)
     }
@@ -324,5 +385,13 @@ private extension WidgetSiteListSyncManagerTests {
         ].map { (settingID, value) in
             makeSiteSetting(siteID: siteID, settingID: settingID, value: value, settingGroupKey: settingGroupKey)
         }
+    }
+
+    static func makeCurrencySettings(currencyCode: CurrencyCode) -> CurrencySettings {
+        CurrencySettings(currencyCode: currencyCode,
+                         currencyPosition: .left,
+                         thousandSeparator: ",",
+                         decimalSeparator: ".",
+                         numberOfDecimals: 2)
     }
 }

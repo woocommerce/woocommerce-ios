@@ -169,7 +169,6 @@ extension ProductImagesGalleryViewController: UICollectionViewDataSource {
         configureRemoteImageCell(cell, productImage: image)
         return cell
     }
-
 }
 
 extension ProductImagesGalleryViewController: UICollectionViewDelegateFlowLayout {

@@ -397,7 +397,6 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
-
     }
 
     /// Loads the current Order Add-Ons beta feature switch state from `GeneralAppSettings`
@@ -457,7 +456,6 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
-
     }
 
     /// Loads the EU Shipping Notice dismissal state from `GeneralAppSettings`
@@ -610,7 +608,6 @@ private extension AppSettingsStore {
                     providerName: providerName,
                     fileURL: selectedProvidersURL,
                     onCompletion: onCompletion)
-
     }
 
     func addCustomTrackingProvider(siteID: Int64,

@@ -423,5 +423,4 @@ private extension OrderNoteStoreTests {
                        phone: "333-333-3333",
                        email: "scrambled@scrambled.com")
     }
-
 }

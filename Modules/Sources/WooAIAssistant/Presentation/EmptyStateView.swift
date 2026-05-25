@@ -100,9 +100,9 @@ struct EmptyStateView: View {
             comment: "Suggested prompt chip asking the assistant to list recent orders"
         )
         static let suggestionNewCustomers = NSLocalizedString(
-            "assistantChat.empty.suggestion.newCustomers.v2",
-            value: "Who's new this week?",
-            comment: "Suggested prompt chip asking the assistant to list the most recently registered customers"
+            "assistantChat.empty.suggestion.newestCustomers.v1",
+            value: "Who are my newest customers?",
+            comment: "Suggested prompt chip asking the assistant to list the newest customers"
         )
         static let promptRevenueWeek = NSLocalizedString(
             "assistantChat.empty.prompt.revenueWeek",
@@ -120,9 +120,9 @@ struct EmptyStateView: View {
             comment: "Full prompt sent to the assistant when the recent-orders suggestion chip is tapped"
         )
         static let promptNewCustomers = NSLocalizedString(
-            "assistantChat.empty.prompt.newCustomers",
-            value: "Who's new this week? List the customers who registered or placed their first order recently.",
-            comment: "Full prompt sent to the assistant when the new-customers suggestion chip is tapped"
+            "assistantChat.empty.prompt.newestCustomers.v1",
+            value: "Show my newest customers. List up to 10 customers sorted by registration date, newest first.",
+            comment: "Full prompt sent to the assistant when the newest-customers suggestion chip is tapped"
         )
     }
 }

@@ -105,7 +105,6 @@ final class ProductShippingClassRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-
 }
 
 private extension ProductShippingClassRemoteTests {

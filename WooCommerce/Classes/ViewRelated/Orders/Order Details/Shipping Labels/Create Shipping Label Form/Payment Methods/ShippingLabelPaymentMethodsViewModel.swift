@@ -232,5 +232,4 @@ extension ShippingLabelPaymentMethodsViewModel {
 
         return [paymentMethod1, paymentMethod2]
     }
-
 }

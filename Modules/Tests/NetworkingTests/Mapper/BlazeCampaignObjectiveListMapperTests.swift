@@ -36,7 +36,6 @@ final class BlazeCampaignObjectiveListMapperTests: XCTestCase {
         // Then
         XCTAssertEqual(objectives, expectedObjectives)
     }
-
 }
 
 private extension BlazeCampaignObjectiveListMapperTests {

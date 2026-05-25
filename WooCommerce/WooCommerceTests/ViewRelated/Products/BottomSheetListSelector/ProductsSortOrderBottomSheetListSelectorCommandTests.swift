@@ -46,5 +46,4 @@ final class ProductsSortOrderBottomSheetListSelectorCommandTests: XCTestCase {
         // Assert
         XCTAssertFalse(isSelected)
     }
-
 }

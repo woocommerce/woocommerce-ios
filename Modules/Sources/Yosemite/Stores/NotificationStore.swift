@@ -8,6 +8,7 @@ import Storage
 public class NotificationStore: Store {
     private let remote: NotificationsRemote
     private let devicesRemote: DevicesRemote
+    private let pushNotificationPreferencesRemote: PushNotificationPreferencesRemoteProtocol
 
     /// Shared private StorageType for use during then entire notification sync process
     ///
@@ -16,6 +17,7 @@ public class NotificationStore: Store {
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = NotificationsRemote(network: network)
         self.devicesRemote = DevicesRemote(network: network)
+        self.pushNotificationPreferencesRemote = PushNotificationPreferencesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -71,6 +73,10 @@ public class NotificationStore: Store {
                                                       tokenID: tokenID,
                                                       availableAsRESTRequest: availableAsRESTRequest,
                                                       onCompletion: onCompletion)
+        case let .loadPushNotificationPreferences(siteID, onCompletion):
+            loadPushNotificationPreferences(siteID: siteID, onCompletion: onCompletion)
+        case let .updatePushNotificationPreferences(siteID, changes, onCompletion):
+            updatePushNotificationPreferences(siteID: siteID, changes: changes, onCompletion: onCompletion)
         }
     }
 }
@@ -138,6 +144,37 @@ private extension NotificationStore {
                     availableAsRESTRequest: availableAsRESTRequest
                 )
                 onCompletion(.success(()))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Loads the current user's push notification preferences for a site.
+    ///
+    func loadPushNotificationPreferences(siteID: Int64,
+                                         onCompletion: @escaping (Result<PushNotificationPreferences, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let preferences = try await pushNotificationPreferencesRemote.loadPreferences(siteID: siteID)
+                onCompletion(.success(preferences))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Sends a partial update to the current user's push notification preferences and returns the
+    /// full, server-merged result.
+    ///
+    func updatePushNotificationPreferences(siteID: Int64,
+                                           changes: PushNotificationPreferences,
+                                           onCompletion: @escaping (Result<PushNotificationPreferences, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let preferences = try await pushNotificationPreferencesRemote.updatePreferences(siteID: siteID,
+                                                                                                changes: changes)
+                onCompletion(.success(preferences))
             } catch {
                 onCompletion(.failure(error))
             }

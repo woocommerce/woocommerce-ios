@@ -105,11 +105,13 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleMarkOrderAsPaid:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleTapToPay:
+            // Behind the flag while the TTP integration lands. localDeveloper-only so
+            // alpha and beta keep showing only Cash + Card reader for now.
+            return buildConfig == .localDeveloper
         case .selfDrivenPushToken:
             return false
         case .clientSideDashboardBanner:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .configurableStoreStatsWidgets:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
             return false
@@ -118,11 +120,13 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
         case .aiSupportChat:
-            return !buildConfig.isProduction
+            return true
         case .wooAIAssistant:
             return true
         case .arParcelFitting:
-            return false
+            return true
+        case .smarterNotifications:
+            return !buildConfig.isProduction
         default:
             return true
         }

@@ -189,7 +189,6 @@ public final class CoreDataManager: StorageManagerType {
                                                                                 ofType: storeDescription.type,
                                                                                 options: nil)
                 NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
-
             } catch {
                 persistentStoreRemovalError = error
             }
@@ -411,6 +410,5 @@ extension CoreDataManager {
                 self?.state = .isFinished
             }
         }
-
     }
 }

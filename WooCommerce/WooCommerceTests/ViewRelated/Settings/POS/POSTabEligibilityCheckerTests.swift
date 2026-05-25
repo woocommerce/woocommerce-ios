@@ -526,7 +526,6 @@ struct POSTabEligibilityCheckerTests {
         // Then
         #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: .DE, supportedCurrencies: [.EUR])))
     }
-
 }
 
 // MARK: - Test Helper

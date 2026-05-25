@@ -235,7 +235,6 @@ extension PasswordViewController: UITextFieldDelegate {
         }
         return true
     }
-
 }
 
 // MARK: - UITableViewDataSource
@@ -252,7 +251,6 @@ extension PasswordViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
         return cell
     }
-
 }
 
 // MARK: - Keyboard Notifications
@@ -266,7 +264,6 @@ extension PasswordViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
-
 }
 
 // MARK: - Magic Link

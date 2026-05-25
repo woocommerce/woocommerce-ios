@@ -23,7 +23,6 @@ public protocol PaymentRemoteProtocol {
     ///   - productID: The ID of the product to be added to the site.
     /// - Returns: The remote response from creating a cart.
     func createCart(siteID: Int64, productID: Int64) async throws
-
 }
 
 /// WPCOM Payment Endpoints

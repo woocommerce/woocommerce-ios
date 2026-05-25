@@ -64,7 +64,6 @@ struct WooShippingCustomsItem: View {
                         } else {
                             Text("\(viewModel.currencySymbol)\(viewModel.valuePerUnit)")
                         }
-
                     }
                 }.renderedIf(isCollapsed)
                     .foregroundColor(.primary)
@@ -84,7 +83,6 @@ struct WooShippingCustomsItem: View {
                     } label: {
                         Image(systemName: "info.circle")
                             .foregroundColor(Color(.wooCommercePurple(.shade60)))
-
                     }
                 }
                 .padding(.top, Layout.descriptionTopPadding)
@@ -198,7 +196,6 @@ struct WooShippingCustomsItem: View {
                     } label: {
                         Image(systemName: "info.circle")
                             .foregroundColor(Color(.wooCommercePurple(.shade60)))
-
                     }
                 }
                     .subheadlineStyle()

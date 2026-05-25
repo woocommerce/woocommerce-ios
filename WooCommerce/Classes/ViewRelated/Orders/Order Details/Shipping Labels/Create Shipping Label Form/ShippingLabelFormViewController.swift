@@ -604,7 +604,6 @@ private extension ShippingLabelFormViewController {
                 } else {
                     self.hideTopBannerView()
                 }
-
             }.store(in: &viewModel.subscriptions)
     }
 

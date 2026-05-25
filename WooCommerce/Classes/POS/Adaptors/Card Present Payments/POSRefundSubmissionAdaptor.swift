@@ -112,6 +112,10 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
                       reason: String?) async throws {
+        guard submissionUseCase == nil else {
+            throw POSRefundSubmissionAdaptorError.refundAlreadyInProgress
+        }
+
         guard let context = preparedContexts[preparation.orderID] else {
             throw POSRefundSubmissionAdaptorError.missingPreparedRefund
         }
@@ -190,7 +194,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
             throw error
         }
 
-        stateModel.state = requiresCardPresentRefund ? .submittingCardPresent : .completed
+        stateModel.state = .completed
         removePreloadedRefund(for: preparation.orderID)
     }
 }
@@ -369,6 +373,7 @@ private extension Error {
 
 private enum POSRefundSubmissionAdaptorError: LocalizedError {
     case missingPreparedRefund
+    case refundAlreadyInProgress
 
     var errorDescription: String? {
         switch self {
@@ -377,6 +382,12 @@ private enum POSRefundSubmissionAdaptorError: LocalizedError {
                 "pos.refundSubmissionAdaptor.error.missingPreparedRefund",
                 value: "The refund could not be prepared. Please try again.",
                 comment: "Error shown when POS tries to submit a refund without prepared refund data."
+            )
+        case .refundAlreadyInProgress:
+            return NSLocalizedString(
+                "pos.refundSubmissionAdaptor.error.refundAlreadyInProgress",
+                value: "A refund is already in progress. Please wait for it to finish.",
+                comment: "Error shown when POS tries to submit a second refund while another refund is in progress."
             )
         }
     }

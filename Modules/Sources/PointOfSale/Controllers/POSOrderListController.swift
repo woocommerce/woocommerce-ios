@@ -62,6 +62,36 @@ enum RefundActionAvailability {
     case unavailable
 }
 
+enum POSRefundProcessingError: LocalizedError, Equatable {
+    case missingSelectedOrder
+    case missingRefundPreparation
+    case emptySelection
+    case refundAlreadyInProgress
+
+    var errorDescription: String? {
+        switch self {
+        case .missingSelectedOrder, .missingRefundPreparation:
+            return NSLocalizedString(
+                "pos.refund.processing.error.missingPreparation",
+                value: "The refund could not be prepared. Please try again.",
+                comment: "Error shown when POS tries to process a refund without prepared order refund data."
+            )
+        case .emptySelection:
+            return NSLocalizedString(
+                "pos.refund.processing.error.emptySelection",
+                value: "Select at least one item to refund.",
+                comment: "Error shown when POS tries to process a refund without selected refund items."
+            )
+        case .refundAlreadyInProgress:
+            return NSLocalizedString(
+                "pos.refund.processing.error.alreadyInProgress",
+                value: "A refund is already in progress. Please wait for it to finish.",
+                comment: "Error shown when POS tries to process a second refund while another refund is in progress."
+            )
+        }
+    }
+}
+
 @Observable final class POSOrderListController: POSSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState
     private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
@@ -76,6 +106,7 @@ enum RefundActionAvailability {
     private let refundsService: POSRefundsServiceProtocol
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
     private let featureFlags: POSFeatureFlagProviding
+    private var isProcessingRefund = false
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -385,20 +416,26 @@ enum RefundActionAvailability {
 
     @MainActor
     func processRefund(reason: String?) async throws {
+        guard !isProcessingRefund else {
+            throw POSRefundProcessingError.refundAlreadyInProgress
+        }
+
+        isProcessingRefund = true
+        defer {
+            isProcessingRefund = false
+        }
+
         guard let order = selectedOrder else {
-            assertionFailure("processRefund called without selected order")
-            return
+            throw POSRefundProcessingError.missingSelectedOrder
         }
 
         guard case .loaded(let preparation) = selectedOrderRefundsState else {
-            assertionFailure("processRefund called without loaded refunds state")
-            return
+            throw POSRefundProcessingError.missingRefundPreparation
         }
 
         let selectedItems = refundSelectableItems.filter { $0.isSelected }
         guard !selectedItems.isEmpty else {
-            assertionFailure("processRefund called without selected items")
-            return
+            throw POSRefundProcessingError.emptySelection
         }
 
         try await refundSubmissionProcessor.submitRefund(

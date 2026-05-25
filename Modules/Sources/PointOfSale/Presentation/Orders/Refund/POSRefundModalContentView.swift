@@ -97,6 +97,7 @@ struct POSRefundModalContentView: View {
     @State private var cardPresentOnboardingItem: POSRefundCardPresentOnboardingItem?
     @State private var currentRefundReason: String?
     @State private var reasonInputReviewData: POSRefundReviewData?
+    @State private var isDismissingAfterAmbiguousRefund = false
 
     var body: some View {
         ZStack {
@@ -205,7 +206,11 @@ struct POSRefundModalContentView: View {
                 submissionState: refundSubmissionModel.state,
                 onClose: {},
                 onConfirm: {},
-                onBack: { returnToRefundConfirmation(reviewData: reviewData) }
+                onBack: { returnToRefundConfirmation(reviewData: reviewData) },
+                shouldUseCardPresentCompletionStyle: orderListModel.ordersController.currentRefundRequiresCardPresentRefund,
+                onPaymentCaptureErrorCancel: { cancelPayment in
+                    handleAmbiguousCardPresentRefund(cancelPayment: cancelPayment)
+                }
             )
         case .success(let reviewData):
             POSRefundSuccessView(
@@ -339,8 +344,14 @@ struct POSRefundModalContentView: View {
             modalState = .success(reviewData)
             onRefundSuccess?()
         } catch POSRefundSubmissionError.canceledByUser {
+            guard !isDismissingAfterAmbiguousRefund else {
+                return
+            }
             returnToRefundConfirmation(reviewData: reviewData)
         } catch {
+            guard !isDismissingAfterAmbiguousRefund else {
+                return
+            }
             DDLogError("⛔️ Failed to process POS refund: \(error)")
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingFailed(error: error))
             onRefundFailure?(error)
@@ -379,6 +390,25 @@ struct POSRefundModalContentView: View {
             cardPresentOnboardingItem = nil
             refundSubmissionModel.reset()
             modalState = .confirmation(reviewData)
+        }
+    }
+
+    @MainActor
+    private func handleAmbiguousCardPresentRefund(cancelPayment: @escaping () -> Void) {
+        isDismissingAfterAmbiguousRefund = true
+        cardPresentAlertItem = nil
+        cardPresentOnboardingItem = nil
+        refundSubmissionModel.reset()
+        cancelPayment()
+        dismissRefundFlow()
+
+        Task { @MainActor in
+            do {
+                try await orderListModel.ordersController.updateOrder(orderID: order.id)
+            } catch {
+                DDLogError("⛔️ Failed to refresh POS order after ambiguous refund outcome: \(error)")
+            }
+            await orderListModel.ordersController.loadOrderRefunds()
         }
     }
 

@@ -109,7 +109,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertTrue(alerts.cardInsertedWasCalled)
     }
 
-    func test_submitRefund_with_removeCardRequested_reader_event_shows_processing_alert() {
+    func test_submitRefund_with_removeCardRequested_reader_event_shows_reader_message() {
         // Given
         let useCase = createUseCase(details: interacRefundDetails())
         mockCardPresentPaymentActions(returnCardReaderMessage: .removeCardRequested("Remove card"))
@@ -124,8 +124,8 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertTrue(alerts.processingPaymentWasCalled)
-        XCTAssertFalse(alerts.displayReaderMessageWasCalled)
+        XCTAssertTrue(alerts.displayReaderMessageWasCalled)
+        XCTAssertEqual(alerts.spyDisplayReaderMessage, "Remove card")
     }
 
     func test_submitRefund_with_non_interac_payment_method_does_not_call_showOnboardingIfRequired() throws {

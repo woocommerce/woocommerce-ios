@@ -19,14 +19,17 @@ only_rules:
   # Prefer `Array(xs)` over `xs.map { $0 }`.
   - array_init
 
+  # All elements in a collection literal should be vertically aligned.
+  - collection_alignment
+
   # Colons should be next to the identifier when specifying a type.
   - colon
 
   # There should be no space before and one after any comma.
   - comma
 
-  # All elements in a collection literal should be vertically aligned.
-  - collection_alignment
+  # There should be a space after the comma in inheritance lists.
+  - comma_inheritance
 
   # Prefer `contains` over `filter(where:).count`.
   - contains_over_filter_count

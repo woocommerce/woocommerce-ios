@@ -7,7 +7,7 @@ public protocol CardReaderRemoteConfigLoading {
     func resetContext()
 }
 
-public protocol CommonReaderConfigProviding: CardReaderRemoteConfigLoading & CardReaderConfigProvider {}
+public protocol CommonReaderConfigProviding: CardReaderRemoteConfigLoading, CardReaderConfigProvider {}
 
 
 public final class CommonReaderConfigProvider: CommonReaderConfigProviding {

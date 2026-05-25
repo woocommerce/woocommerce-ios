@@ -12,6 +12,7 @@ final class MockOrderDetailsPaymentAlerts {
 
     var cardInsertedWasCalled = false
     var displayReaderMessageWasCalled = false
+    var spyDisplayReaderMessage: String?
     var processingPaymentWasCalled = false
     var error: Error?
     var retryFromError: (() -> Void)?
@@ -43,6 +44,7 @@ extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
 
     func displayReaderMessage(message: String) {
         displayReaderMessageWasCalled = true
+        spyDisplayReaderMessage = message
     }
 
     func processingPayment(title: String) {

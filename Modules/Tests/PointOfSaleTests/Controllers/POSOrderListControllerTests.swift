@@ -438,6 +438,39 @@ final class POSOrderListControllerTests {
     // MARK: - Refund Item Selection Tests
 
     @MainActor
+    @Test func preloadRefundDetails_when_refund_is_available_then_preloads_without_opening_refund_flow() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = makeOrder(id: 1, status: .completed)
+        sut.selectOrder(order)
+
+        // When
+        await sut.preloadRefundDetails()
+
+        // Then
+        #expect(refundSubmissionProcessor.preloadedOrderIDs == [order.id])
+        #expect(sut.refundSelectableItems.isEmpty)
+        guard case .idle = sut.selectedOrderRefundsState else {
+            Issue.record("Preloading should not move the visible refund flow state.")
+            return
+        }
+    }
+
+    @MainActor
+    @Test func preloadRefundDetails_when_refund_is_unavailable_then_does_not_preload() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = makeOrder(id: 1, status: .processing)
+        sut.selectOrder(order)
+
+        // When
+        await sut.preloadRefundDetails()
+
+        // Then
+        #expect(refundSubmissionProcessor.preloadedOrderIDs.isEmpty)
+    }
+
+    @MainActor
     @Test func startRefundFlow_when_product_has_multiple_quantities_then_creates_one_row_per_unit() async throws {
         // Given
         let order = makeOrder(lineItems: [
@@ -670,6 +703,24 @@ final class POSOrderListControllerTests {
         #expect(isSelectedAfterToggle == false)
     }
 
+    @MainActor
+    @Test func toggleRefundItemSelection_then_marks_refund_selection_as_modified() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, formattedPrice: "$10.00", formattedTotal: "$10.00")
+        ])
+
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        #expect(sut.hasModifiedRefundSelection == false)
+
+        // When
+        sut.toggleRefundItemSelection(at: 0)
+
+        // Then
+        #expect(sut.hasModifiedRefundSelection == true)
+    }
+
     @Test func toggleRefundItemSelection_when_index_out_of_bounds_then_does_not_crash() async throws {
         // When
         let items = await MainActor.run {
@@ -700,6 +751,25 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func clearRefundSelection_then_resets_modified_refund_selection() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, formattedPrice: "$10.00", formattedTotal: "$10.00")
+        ])
+
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 0)
+        try #require(sut.hasModifiedRefundSelection == true)
+
+        // When
+        sut.clearRefundSelection()
+
+        // Then
+        #expect(sut.hasModifiedRefundSelection == false)
+    }
+
+    @MainActor
     @Test func toggleAllRefundItemsSelection_when_all_selected_then_deselects_all() async throws {
         // Given
         let order = makeOrder(lineItems: [
@@ -716,6 +786,24 @@ final class POSOrderListControllerTests {
         for item in sut.refundSelectableItems {
             #expect(item.isSelected == false)
         }
+    }
+
+    @MainActor
+    @Test func toggleAllRefundItemsSelection_then_marks_refund_selection_as_modified() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
+        ])
+
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        #expect(sut.hasModifiedRefundSelection == false)
+
+        // When
+        sut.toggleAllRefundItemsSelection()
+
+        // Then
+        #expect(sut.hasModifiedRefundSelection == true)
     }
 
     @MainActor
@@ -756,6 +844,27 @@ final class POSOrderListControllerTests {
         for item in sut.refundSelectableItems {
             #expect(item.isSelected == true)
         }
+    }
+
+    @MainActor
+    @Test func selectOrder_then_clears_refund_selection_state() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, formattedPrice: "$10.00", formattedTotal: "$10.00")
+        ])
+
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 0)
+        try #require(sut.hasModifiedRefundSelection == true)
+        try #require(sut.refundSelectableItems.isNotEmpty)
+
+        // When
+        sut.selectOrder(makeOrder(id: order.id + 1))
+
+        // Then
+        #expect(sut.refundSelectableItems.isEmpty)
+        #expect(sut.hasModifiedRefundSelection == false)
     }
 
     // MARK: - Prepare Refund Review Data Tests
@@ -1145,6 +1254,93 @@ final class POSOrderListControllerTests {
         }
 
         #expect(thrownError is TestError)
+    }
+
+    @MainActor
+    @Test func processRefund_when_no_selected_order_then_throws_missingSelectedOrder() async throws {
+        await #expect(performing: {
+            try await sut.processRefund(reason: .none)
+        }, throws: { error in
+            (error as? POSRefundProcessingError) == .missingSelectedOrder
+        })
+    }
+
+    @MainActor
+    @Test func processRefund_when_refund_is_not_prepared_then_throws_missingRefundPreparation() async throws {
+        // Given
+        sut.selectOrder(makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ]))
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.processRefund(reason: .none)
+        }, throws: { error in
+            (error as? POSRefundProcessingError) == .missingRefundPreparation
+        })
+    }
+
+    @MainActor
+    @Test func processRefund_when_no_items_are_selected_then_throws_emptySelection() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleAllRefundItemsSelection()
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.processRefund(reason: .none)
+        }, throws: { error in
+            (error as? POSRefundProcessingError) == .emptySelection
+        })
+    }
+
+    @MainActor
+    @Test func processRefund_when_refund_is_already_in_progress_then_throws_refundAlreadyInProgress() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        refundSubmissionProcessor.shouldSuspendSubmitRefund = true
+
+        var firstRefundTask: Task<Void, Error>?
+        await fireOnce { fire in
+            refundSubmissionProcessor.onSubmitRefundStarted = {
+                fire()
+            }
+            firstRefundTask = Task { @MainActor in
+                try await sut.processRefund(reason: .none)
+            }
+        }
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.processRefund(reason: .none)
+        }, throws: { error in
+            (error as? POSRefundProcessingError) == .refundAlreadyInProgress
+        })
+
+        refundSubmissionProcessor.resumeSubmitRefund()
+        try await firstRefundTask?.value
     }
 
     @MainActor
@@ -1658,11 +1854,20 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
     nonisolated(unsafe) private let currencyFormatter: CurrencyFormatter
     private var refundResultsByOrderID: [Int64: POSRefundsResult] = [:]
     var requiresCardPresentRefund = false
+    var shouldSuspendSubmitRefund = false
+    var onSubmitRefundStarted: (() -> Void)?
+    private var submitRefundContinuation: CheckedContinuation<Void, Never>?
 
     nonisolated init(refundsService: MockPOSRefundsService,
                      currencyFormatter: CurrencyFormatter) {
         self.refundsService = refundsService
         self.currencyFormatter = currencyFormatter
+    }
+
+    private(set) var preloadedOrderIDs: [Int64] = []
+
+    func preloadRefund(for order: POSOrder) async {
+        preloadedOrderIDs.append(order.id)
     }
 
     func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {
@@ -1732,6 +1937,13 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
                       reason: String?) async throws {
+        onSubmitRefundStarted?()
+        if shouldSuspendSubmitRefund {
+            await withCheckedContinuation { continuation in
+                submitRefundContinuation = continuation
+            }
+        }
+
         let refundableItems = selectedItems.map { item in
             POSRefundableItem(
                 itemID: item.itemID,
@@ -1749,5 +1961,11 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
             isAutomaticRefund: refundResultsByOrderID[preparation.orderID]?.supportsAutomaticRefund ?? true
         )
         stateModel.state = .completed
+    }
+
+    func resumeSubmitRefund() {
+        shouldSuspendSubmitRefund = false
+        submitRefundContinuation?.resume()
+        submitRefundContinuation = nil
     }
 }

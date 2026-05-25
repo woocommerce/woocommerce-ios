@@ -4,12 +4,26 @@ struct POSRefundErrorView: View {
     let title: String
     let subtitle: String
     let onRetry: (() -> Void)?
+    let cancelButtonTitle: String?
     let onCancel: () -> Void
     let onClose: () -> Void
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var isViewLoaded: Bool = false
+
+    init(title: String,
+         subtitle: String,
+         onRetry: (() -> Void)?,
+         cancelButtonTitle: String? = nil,
+         onCancel: @escaping () -> Void,
+         onClose: @escaping () -> Void) {
+        self.title = title
+        self.subtitle = subtitle
+        self.onRetry = onRetry
+        self.cancelButtonTitle = cancelButtonTitle
+        self.onCancel = onCancel
+        self.onClose = onClose
+    }
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -22,11 +36,6 @@ struct POSRefundErrorView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
-        .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                isViewLoaded = true
-            }
-        }
     }
 }
 
@@ -41,22 +50,18 @@ private extension POSRefundErrorView {
     var contentView: some View {
         VStack(spacing: POSSpacing.xLarge) {
             POSErrorXMark()
-                .scaleEffect(isViewLoaded ? 1 : 0)
-                .opacity(isViewLoaded ? 1 : 0)
 
             VStack(spacing: POSSpacing.small) {
                 Text(title)
                     .font(.posHeadingBold)
                     .foregroundColor(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
-                    .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
-                    .opacity(isViewLoaded ? 1 : 0)
 
                 Text(subtitle)
                     .font(.posBodyLargeRegular())
                     .foregroundColor(Color.posOnSurface)
-                    .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
-                    .opacity(isViewLoaded ? 1 : 0)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .multilineTextAlignment(.center)
         }
@@ -71,20 +76,10 @@ private extension POSRefundErrorView {
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
 
-            Button(Localization.cancelButton, action: onCancel)
+            Button(cancelButtonTitle ?? Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
         .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
-        .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
-        .opacity(isViewLoaded ? 1 : 0)
-    }
-}
-
-// MARK: - Constants
-
-private extension POSRefundErrorView {
-    enum Constants {
-        static let animationOffset: CGFloat = 100
     }
 }
 

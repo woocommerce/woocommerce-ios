@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 import Experiments
+import WooFoundation
 import Yosemite
 @testable import WooCommerce
 

@@ -319,7 +319,7 @@ public class AuthenticatorAnalyticsTracker {
         self.track = track
     }
 
-    /// Resets the flow and step to the defaults. The source is left untouched, and should only be set explicitely.
+    /// Resets the flow and step to the defaults. The source is left untouched, and should only be set explicitly.
     ///
     func resetState() {
         set(flow: Self.defaultFlow)

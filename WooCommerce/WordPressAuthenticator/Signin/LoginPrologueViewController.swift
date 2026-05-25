@@ -31,7 +31,7 @@ class LoginPrologueViewController: LoginViewController {
     })
 
     /// We can't rely on `isMovingToParent` to know if we need to track the `.prologue` step
-    /// because for the root view in an App, it's always `false`. We're relying this variiable
+    /// because for the root view in an App, it's always `false`. We're relying on this variable
     /// instead, since the `.prologue` step only needs to be tracked once.
     ///
     private var prologueFlowTracked = false

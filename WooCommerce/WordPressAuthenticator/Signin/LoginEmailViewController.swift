@@ -325,7 +325,12 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     ///
     /// - Parameters:
     ///     - immediately: True if the newly loaded controller should immedately attempt
-    ///                        to authenticate the user with the available credentails. Default is `false`.
+/// Displays the wpcom sign in form, optionally telling it to immediately make
+/// the call to authenticate with the available credentials.
+///
+/// - Parameters:
+///     - immediately: True if the newly loaded controller should immediately attempt
+    ///                        to authenticate the user with the available credentials. Default is `false`.
     ///
     func loginWithUsernamePassword(immediately: Bool = false) {
         if immediately {

@@ -9,7 +9,6 @@ struct POSRefundErrorView: View {
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var isViewLoaded: Bool = false
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -22,11 +21,6 @@ struct POSRefundErrorView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
-        .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                isViewLoaded = true
-            }
-        }
     }
 }
 
@@ -41,22 +35,16 @@ private extension POSRefundErrorView {
     var contentView: some View {
         VStack(spacing: POSSpacing.xLarge) {
             POSErrorXMark()
-                .scaleEffect(isViewLoaded ? 1 : 0)
-                .opacity(isViewLoaded ? 1 : 0)
 
             VStack(spacing: POSSpacing.small) {
                 Text(title)
                     .font(.posHeadingBold)
                     .foregroundColor(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
-                    .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
-                    .opacity(isViewLoaded ? 1 : 0)
 
                 Text(subtitle)
                     .font(.posBodyLargeRegular())
                     .foregroundColor(Color.posOnSurface)
-                    .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
-                    .opacity(isViewLoaded ? 1 : 0)
             }
             .multilineTextAlignment(.center)
         }
@@ -75,16 +63,6 @@ private extension POSRefundErrorView {
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
         .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
-        .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
-        .opacity(isViewLoaded ? 1 : 0)
-    }
-}
-
-// MARK: - Constants
-
-private extension POSRefundErrorView {
-    enum Constants {
-        static let animationOffset: CGFloat = 100
     }
 }
 

@@ -1,5 +1,7 @@
 @MainActor
 final class UnrestrictedPOSAccessSession: POSAccessSession {
+    nonisolated init() {}
+
     var currentStaff: POSStaff? { nil }
     var isLocked: Bool { false }
     var hasAnyPINs: Bool { false }

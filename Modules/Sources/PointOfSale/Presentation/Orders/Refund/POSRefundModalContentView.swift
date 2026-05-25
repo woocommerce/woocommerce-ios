@@ -13,6 +13,7 @@ enum RefundModalState: Identifiable, Equatable {
     case itemSelection
     case review(POSRefundReviewData)
     case confirmation(POSRefundReviewData)
+    case readerConnectionRequired(POSRefundReviewData)
     case processing(POSRefundReviewData)
     case success(POSRefundReviewData)
     case error(POSRefundReviewData)
@@ -26,6 +27,7 @@ enum RefundModalState: Identifiable, Equatable {
         case .itemSelection: return "itemSelection"
         case .review: return "review"
         case .confirmation: return "confirmation"
+        case .readerConnectionRequired: return "readerConnectionRequired"
         case .processing: return "processing"
         case .success: return "success"
         case .error: return "error"
@@ -39,7 +41,7 @@ enum RefundModalState: Identifiable, Equatable {
             return .selectItems
         case .review:
             return .reviewRefund
-        case .confirmation:
+        case .confirmation, .readerConnectionRequired:
             return .confirmRefund
         default:
             return nil
@@ -64,6 +66,7 @@ struct POSRefundModalContentView: View {
     let state: RefundModalState
     @Binding var modalState: RefundModalState?
     @Environment(POSOrderListModel.self) private var orderListModel
+    @Environment(POSPaymentModel.self) private var paymentModel
     @Environment(POSRefundSubmissionModel.self) private var refundSubmissionModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -175,15 +178,15 @@ struct POSRefundModalContentView: View {
                     dismissModal?()
                 },
                 onConfirm: {
-                    let refundType = reviewData.isFullRefund ? "full" : "partial"
-                    let hasReason = reviewData.refundReason?.isEmpty == false
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.refundConfirmTapped(refundType: refundType, hasReason: hasReason))
-                    modalState = .processing(reviewData)
-                    Task { @MainActor in
-                        await processRefund(reviewData: reviewData)
-                    }
+                    handleRefundConfirmation(reviewData: reviewData)
                 },
                 onBack: { modalState = .review(reviewData) }
+            )
+        case .readerConnectionRequired(let reviewData):
+            POSRefundReaderDisconnectedView(
+                onConnect: { startProcessingRefund(reviewData: reviewData) },
+                onCancel: { dismissModal?() },
+                onBack: { modalState = .confirmation(reviewData) }
             )
         case .processing(let reviewData):
             POSRefundConfirmationView(
@@ -240,5 +243,38 @@ struct POSRefundModalContentView: View {
             refundSubmissionModel.reset()
             modalState = .error(reviewData)
         }
+    }
+
+    @MainActor
+    private func handleRefundConfirmation(reviewData: POSRefundReviewData) {
+        let refundType = reviewData.isFullRefund ? "full" : "partial"
+        let hasReason = reviewData.refundReason?.isEmpty == false
+        analytics.track(event: WooAnalyticsEvent.PointOfSale.refundConfirmTapped(refundType: refundType, hasReason: hasReason))
+
+        if shouldRequireReaderConnection() {
+            modalState = .readerConnectionRequired(reviewData)
+            return
+        }
+
+        startProcessingRefund(reviewData: reviewData)
+    }
+
+    @MainActor
+    private func startProcessingRefund(reviewData: POSRefundReviewData) {
+        modalState = .processing(reviewData)
+        Task { @MainActor in
+            await processRefund(reviewData: reviewData)
+        }
+    }
+
+    private func shouldRequireReaderConnection() -> Bool {
+        guard orderListModel.ordersController.currentRefundRequiresCardPresentRefund else {
+            return false
+        }
+
+        if case .connected = paymentModel.cardReaderConnectionStatus {
+            return false
+        }
+        return true
     }
 }

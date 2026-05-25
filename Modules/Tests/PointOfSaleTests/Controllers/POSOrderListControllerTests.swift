@@ -893,6 +893,22 @@ final class POSOrderListControllerTests {
         #expect(sut.preparePOSRefundReviewData()?.refundReason == nil)
     }
 
+    @MainActor
+    @Test func currentRefundRequiresCardPresentRefund_when_preparation_requires_card_present_refund_then_returns_true() async throws {
+        // Given
+        refundSubmissionProcessor.requiresCardPresentRefund = true
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        // When
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+
+        // Then
+        #expect(sut.currentRefundRequiresCardPresentRefund == true)
+    }
+
     // MARK: - Currency Formatting Tests
 
     @MainActor
@@ -1641,6 +1657,7 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
     nonisolated(unsafe) private let refundsService: MockPOSRefundsService
     nonisolated(unsafe) private let currencyFormatter: CurrencyFormatter
     private var refundResultsByOrderID: [Int64: POSRefundsResult] = [:]
+    var requiresCardPresentRefund = false
 
     nonisolated init(refundsService: MockPOSRefundsService,
                      currencyFormatter: CurrencyFormatter) {
@@ -1673,7 +1690,8 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
             orderID: order.id,
             selectableItems: productSelectables + feeSelectables,
             paymentMethodDescription: String(format: "via %1$@", order.paymentMethodTitle),
-            customerEmail: order.customerEmail
+            customerEmail: order.customerEmail,
+            requiresCardPresentRefund: requiresCardPresentRefund
         )
     }
 

@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import UIKit
 import Experiments
 import Yosemite
 @testable import WooCommerce

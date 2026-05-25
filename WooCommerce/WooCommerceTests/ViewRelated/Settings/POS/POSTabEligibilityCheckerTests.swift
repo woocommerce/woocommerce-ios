@@ -7,7 +7,6 @@ import Yosemite
 @MainActor
 struct POSTabEligibilityCheckerTests {
     private var stores: MockStoresManager!
-    private var storageManager: MockStorageManager!
     private var mockSystemStatusService: MockPOSSystemStatusService!
     private var mockSiteSettingService: MockPOSSiteSettingService!
     private let site = Site.fake().copy(siteID: 2)
@@ -16,7 +15,6 @@ struct POSTabEligibilityCheckerTests {
     init() async throws {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.updateDefaultStore(storeID: siteID)
-        storageManager = MockStorageManager()
         mockSystemStatusService = MockPOSSystemStatusService()
         mockSiteSettingService = MockPOSSiteSettingService()
         setupWooCommerceVersion()

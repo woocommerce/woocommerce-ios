@@ -34,7 +34,7 @@ open class MockStorageManager: StorageManagerType {
         let container = NSPersistentContainer(name: name, managedObjectModel: managedModel)
         container.persistentStoreDescriptions = [storeDescription]
 
-        container.loadPersistentStores { (storeDescription, error) in
+        container.loadPersistentStores { (_, error) in
             if let error = error as NSError? {
                 fatalError("CoreData Fatal Error: \(error) [\(error.userInfo)]")
             }

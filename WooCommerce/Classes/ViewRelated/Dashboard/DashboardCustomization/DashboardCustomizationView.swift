@@ -16,7 +16,7 @@ struct DashboardCustomizationView: View {
                                           contentKeyPath: \.type.name,
                                           selectedItems: $viewModel.selectedCards,
                                           inactiveItems: viewModel.inactiveCards,
-                                          inactiveAccessoryView: { card in
+                                          inactiveAccessoryView: { _ in
                 BadgeView(text: Localization.unavailable,
                           customizations: BadgeView.Customizations(textColor: .white,
                                                                    backgroundColor: .gray)

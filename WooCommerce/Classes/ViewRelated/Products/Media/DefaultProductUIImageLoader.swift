@@ -100,7 +100,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         }
 
         if let downloadedImage = await withCheckedContinuation({ continuation in
-            _ = imageService.downloadImage(with: url, shouldCacheImage: true) { (image, error) in
+            _ = imageService.downloadImage(with: url, shouldCacheImage: true) { (image, _) in
                 if let image {
                     continuation.resume(returning: image)
                 } else {
@@ -147,7 +147,7 @@ private extension DefaultProductUIImageLoader {
             phAssetImageLoader.requestImage(for: asset,
                                             targetSize: PHImageManagerMaximumSize,
                                             contentMode: .aspectFit,
-                                            options: nil) { [weak self] (image, info) in
+                                            options: nil) { [weak self] (image, _) in
                 guard let image, let self else {
                     return
                 }

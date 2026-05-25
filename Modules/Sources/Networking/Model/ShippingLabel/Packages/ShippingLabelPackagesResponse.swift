@@ -57,7 +57,7 @@ extension ShippingLabelPackagesResponse: Decodable {
         rawPredefinedFormSchema.forEach { (key, value) in
 
             let provider: [String: Any]? = try? value.toDictionary()
-            provider?.forEach({ (providerKey, providerValue) in
+            provider?.forEach({ (_, providerValue) in
 
                 let providerValueDict = providerValue as? [String: Any]
                 let packages = ShippingLabelPackagesResponse.getAllPredefinedPackages(packageDefinitions: providerValueDict)

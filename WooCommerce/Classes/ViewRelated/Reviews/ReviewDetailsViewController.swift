@@ -152,7 +152,7 @@ private extension ReviewDetailsViewController {
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
     func synchronizeReview(reviewID: Int64, onCompletion: @escaping () -> Void) {
-        let action = ProductReviewAction.retrieveProductReview(siteID: siteID, reviewID: reviewID) { (productReview, error) in
+        let action = ProductReviewAction.retrieveProductReview(siteID: siteID, reviewID: reviewID) { (_, error) in
             if let error {
                 DDLogError("⛔️ Error synchronizing product review [\(reviewID)]: \(error)")
                 ServiceLocator.analytics.track(.reviewLoadFailed,

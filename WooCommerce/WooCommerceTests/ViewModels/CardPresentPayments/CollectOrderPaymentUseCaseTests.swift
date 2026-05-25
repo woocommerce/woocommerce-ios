@@ -716,11 +716,11 @@ private extension CollectOrderPaymentUseCaseTests {
     }
 
     func mockSuccessfulCardPresentPaymentActions(intent: PaymentIntent, capturedPaymentData: CardPresentCapturedPaymentData) {
-        mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
-                                                              onWaitingForInput,
-                                                              onProcessingMessage,
-                                                              onCardInserted,
-                                                              onDisplayMessage,
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { _,
+                                                              _,
+                                                              _,
+                                                              _,
+                                                              _,
                                                               onProcessingCompletion,
                                                               onCompletion in
             onProcessingCompletion(intent)
@@ -729,11 +729,11 @@ private extension CollectOrderPaymentUseCaseTests {
     }
 
     func mockFailedCardPresentPaymentActions(intent: PaymentIntent, error: any Error) {
-        mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
-                                                              onWaitingForInput,
-                                                              onProcessingMessage,
-                                                              onCardInserted,
-                                                              onDisplayMessage,
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { _,
+                                                              _,
+                                                              _,
+                                                              _,
+                                                              _,
                                                               onProcessingCompletion,
                                                               onCompletion in
             onProcessingCompletion(intent)

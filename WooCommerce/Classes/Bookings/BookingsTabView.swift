@@ -64,7 +64,7 @@ struct BookingsTabView: View {
                     .frame(height: OfflineBannerView.height)
             }
         }
-        .onChange(of: selectedBooking) { _, newValue in
+        .onChange(of: selectedBooking) { _, _ in
             bookingListContainerViewModel.selectedBookingChanged()
         }
     }

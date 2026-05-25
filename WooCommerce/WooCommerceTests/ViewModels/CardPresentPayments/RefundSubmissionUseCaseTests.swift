@@ -61,7 +61,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
                 promise(())
             }
         }
@@ -106,7 +106,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
                 promise(())
             }
         }

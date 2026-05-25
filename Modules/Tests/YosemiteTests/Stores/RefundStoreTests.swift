@@ -233,7 +233,7 @@ class RefundStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(refundID)", filename: "generic_error")
         let action = RefundAction.retrieveRefund(siteID: sampleSiteID,
                                                  orderID: sampleOrderID,
-                                                 refundID: refundID) { (refund, error) in
+                                                 refundID: refundID) { (_, error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -250,7 +250,7 @@ class RefundStoreTests: XCTestCase {
 
         let action = RefundAction.retrieveRefund(siteID: sampleSiteID,
                                                  orderID: sampleOrderID,
-                                                 refundID: refundID) { (refund, error) in
+                                                 refundID: refundID) { (_, error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -386,7 +386,7 @@ class RefundStoreTests: XCTestCase {
 
         // Track Events: Upsert == 1 / Delete == 0
         var numberOfUpsertEvents = 0
-        entityListener.onUpsert = { upserted in
+        entityListener.onUpsert = { _ in
             numberOfUpsertEvents += 1
         }
 

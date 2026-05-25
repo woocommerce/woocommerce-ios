@@ -793,7 +793,7 @@ private extension OrderListViewController {
             image: .magnifyingGlassNotFound,
             details: "",
             buttonTitle: Localization.clearButton,
-            onTap: { [weak self] button in
+            onTap: { [weak self] _ in
                 self?.delegate?.clearFilters()
             },
             onPullToRefresh: { [weak self] refreshControl in

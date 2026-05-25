@@ -216,7 +216,7 @@ class DefaultStoresManager: StoresManager {
     func listenToWPCOMInvalidWPCOMTokenNotification() {
         invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
                                                                                object: nil,
-                                                                               queue: .main) { [weak self] note in
+                                                                               queue: .main) { [weak self] _ in
             _ = self?.deauthenticate()
         }
     }

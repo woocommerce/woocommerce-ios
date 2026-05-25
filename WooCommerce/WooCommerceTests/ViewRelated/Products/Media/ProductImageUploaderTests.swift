@@ -204,14 +204,14 @@ final class ProductImageUploaderTests: XCTestCase {
         imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key:
                 .init(siteID: self.siteID,
                       productOrVariationID: self.productID,
-                      isLocalID: false)) { result in
+                      isLocalID: false)) { _ in
             XCTFail("The product save callback should not be triggered after another save request.")
         }
 
         // Adds a remote image.
         actionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: [.fake().copy(mediaID: 606)])
         waitFor { promise in
-            actionHandler.addUpdateObserver(self) { statuses in
+            actionHandler.addUpdateObserver(self) { _ in
                 promise(())
             }
         }
@@ -333,7 +333,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
         imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: siteID,
                                                                                  productOrVariationID: productID,
-                                                                                 isLocalID: false)) { result in }
+                                                                                 isLocalID: false)) { _ in }
 
         // Then
         waitUntil {
@@ -400,13 +400,13 @@ final class ProductImageUploaderTests: XCTestCase {
         let asset = PHAsset()
         actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         waitFor { promise in
-            actionHandler.addUpdateObserver(self) { statuses in
+            actionHandler.addUpdateObserver(self) { _ in
                 promise(())
             }
         }
         imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: siteID,
                                                                                  productOrVariationID: productID,
-                                                                                 isLocalID: false)) { result in }
+                                                                                 isLocalID: false)) { _ in }
         var errors: [ProductImageUploadErrorInfo] = []
         let _: Void = waitFor { promise in
             self.errorsSubscription = imageUploader.errors.sink { error in

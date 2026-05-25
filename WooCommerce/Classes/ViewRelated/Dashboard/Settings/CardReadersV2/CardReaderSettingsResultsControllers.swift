@@ -35,7 +35,7 @@ final class CardReaderSettingsResultsControllers {
             onReload()
         }
 
-        paymentGatewayAccountResultsController.onDidChangeObject = { (object, indexPath, type, newIndexPath) in
+        paymentGatewayAccountResultsController.onDidChangeObject = { (_, _, _, _) in
             onReload()
         }
 

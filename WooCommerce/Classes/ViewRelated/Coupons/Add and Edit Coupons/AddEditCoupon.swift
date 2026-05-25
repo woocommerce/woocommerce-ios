@@ -84,7 +84,7 @@ struct AddEditCoupon: View {
 
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
+            GeometryReader { _ in
                 ScrollView {
                     VStack (alignment: .leading, spacing: 0) {
                         Group {

@@ -11,7 +11,7 @@ struct CouponExpiryDateView: View {
     let onCompletion: (Date?) -> Void
 
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader { _ in
             ScrollView {
                 VStack {
                     DatePicker("Date picker", selection: $date, displayedComponents: .date)

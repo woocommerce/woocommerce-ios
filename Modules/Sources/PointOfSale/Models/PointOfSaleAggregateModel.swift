@@ -32,6 +32,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
 @Observable final class PointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     private(set) var orderStage: PointOfSaleOrderStage = .building
+    private var checkoutGeneration = 0
 
     let paymentModel: POSPaymentModel
 
@@ -250,6 +251,11 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
+    func cancelInFlightCheckout() {
+        setStateForEditing()
+    }
+
+    @MainActor
     func startNewCart() {
         removeAllItemsFromCart()
         orderController.clearOrder()
@@ -259,6 +265,7 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     private func setStateForEditing() {
+        checkoutGeneration += 1
         orderStage = .building
         paymentModel.reset()
     }
@@ -529,13 +536,26 @@ extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     @MainActor
     func checkOut() async {
+        checkoutGeneration += 1
+        let currentCheckoutGeneration = checkoutGeneration
+
         collectOrderPaymentAnalyticsTracker.trackCheckoutTapped()
         orderStage = .finalizing
         let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
             await self?.checkOut()
         })
+
+        guard checkoutGeneration == currentCheckoutGeneration else {
+            return
+        }
+
         trackOrderSyncState(syncOrderResult)
         await removeMissingProductsFromCatalogAfterSync()
+
+        guard checkoutGeneration == currentCheckoutGeneration else {
+            return
+        }
+
         triggerIncrementalSyncIfPriceChanged()
         await paymentModel.startPayment()
     }

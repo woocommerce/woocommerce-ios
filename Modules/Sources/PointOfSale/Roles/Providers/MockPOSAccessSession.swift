@@ -9,7 +9,6 @@ final class MockPOSAccessSession: POSAccessSession {
     var isLocked: Bool
     var hasAnyPINs: Bool
     var signInResult: Result<POSOperator, POSAuthError>
-    var refreshedPINStatus: Bool
     var signInPINs: [String] = []
     var onSignIn: (() -> Void)?
 
@@ -18,13 +17,11 @@ final class MockPOSAccessSession: POSAccessSession {
          hasAnyPINs: Bool = true,
          signInResult: Result<POSOperator, POSAuthError> = .success(
             POSOperator(displayName: "Maya", role: "Manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
-         ),
-         refreshedPINStatus: Bool = true) {
+         )) {
         self.currentOperator = currentOperator
         self.isLocked = isLocked
         self.hasAnyPINs = hasAnyPINs
         self.signInResult = signInResult
-        self.refreshedPINStatus = refreshedPINStatus
     }
 
     func allows(_ capability: POSCapability) -> Bool {
@@ -50,9 +47,7 @@ final class MockPOSAccessSession: POSAccessSession {
         isLocked = true
     }
 
-    func refreshPINStatus() async {
-        hasAnyPINs = refreshedPINStatus
-    }
+    func refreshPINStatus() async {}
 }
 
 #endif

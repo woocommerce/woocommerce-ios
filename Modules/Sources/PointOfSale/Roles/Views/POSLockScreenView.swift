@@ -19,22 +19,15 @@ struct POSLockScreenView: View {
             VStack(spacing: POSSpacing.xxLarge) {
                 header
 
-                if model.hasAnyPINs {
-                    POSPINEntryView(state: model.pinEntryState) { pin in
-                        Task {
-                            await model.signIn(withPIN: pin)
-                        }
+                POSPINEntryView(state: model.pinEntryState) { pin in
+                    Task {
+                        await model.signIn(withPIN: pin)
                     }
-                    .frame(height: Constants.pinEntryHeight)
-                } else {
-                    noPINsMessage
                 }
+                .frame(height: Constants.pinEntryHeight)
             }
             .frame(maxWidth: Constants.contentWidth)
             .padding(POSPadding.xxLarge)
-        }
-        .task {
-            await model.refreshPINStatus()
         }
     }
 }
@@ -58,36 +51,10 @@ private extension POSLockScreenView {
 
                 Text(Localization.subtitle)
                     .font(.posBodyLargeRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                    .multilineTextAlignment(.center)
-            }
-        }
-    }
-
-    var noPINsMessage: some View {
-        VStack(spacing: POSSpacing.small) {
-            Text(Localization.noPINsTitle)
-                .font(.posBodyLargeBold)
-                .foregroundStyle(Color.posOnSurface)
-                .multilineTextAlignment(.center)
-
-            Text(Localization.noPINsMessage)
-                .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .multilineTextAlignment(.center)
+            }
         }
-        .padding(POSPadding.large)
-        .background(Color.posSurface)
-        .cornerRadius(POSCornerRadiusStyle.medium.value)
-    }
-}
-
-// MARK: - Constants
-
-private extension POSLockScreenView {
-    enum Constants {
-        static let contentWidth: CGFloat = 420
-        static let pinEntryHeight: CGFloat = 430
     }
 }
 
@@ -105,16 +72,15 @@ private extension POSLockScreenView {
             value: "Unlock POS to continue.",
             comment: "Subtitle shown on the POS lock screen."
         )
-        static let noPINsTitle = NSLocalizedString(
-            "pos.lockScreen.noPINs.title",
-            value: "Staff PINs are not set up",
-            comment: "Title shown on the POS lock screen when no staff PINs are available."
-        )
-        static let noPINsMessage = NSLocalizedString(
-            "pos.lockScreen.noPINs.message",
-            value: "Ask a store manager to set up staff PINs before locking POS.",
-            comment: "Message shown on the POS lock screen when no staff PINs are available."
-        )
+    }
+}
+
+// MARK: - Constants
+
+private extension POSLockScreenView {
+    enum Constants {
+        static let contentWidth: CGFloat = 420
+        static let pinEntryHeight: CGFloat = 430
     }
 }
 
@@ -129,9 +95,5 @@ private extension POSLockScreenView {
     let model = POSLockScreenModel(session: MockPOSAccessSession(isLocked: true, signInResult: .failure(.invalidPIN)))
     model.pinEntryState = .error(message: "Incorrect PIN. Try again.")
     return POSLockScreenView(model: model)
-}
-
-#Preview("No PINs") {
-    POSLockScreenView(session: MockPOSAccessSession(isLocked: true, hasAnyPINs: false, refreshedPINStatus: false))
 }
 #endif

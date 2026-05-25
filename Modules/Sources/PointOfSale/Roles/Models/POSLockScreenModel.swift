@@ -12,16 +12,8 @@ final class POSLockScreenModel {
         session.isLocked
     }
 
-    var hasAnyPINs: Bool {
-        session.hasAnyPINs
-    }
-
     init(session: POSAccessSession) {
         self.session = session
-    }
-
-    func refreshPINStatus() async {
-        await session.refreshPINStatus()
     }
 
     func signIn(withPIN pin: String) async {

@@ -7,33 +7,19 @@ import Observation
 struct POSLockScreenModelTests {
     @Test func test_init_when_session_is_locked_then_copies_session_state() {
         // Given
-        let session = MockPOSAccessSession(isLocked: true, hasAnyPINs: true)
+        let session = MockPOSAccessSession(isLocked: true)
 
         // When
         let sut = POSLockScreenModel(session: session)
 
         // Then
         #expect(sut.isLocked == true)
-        #expect(sut.hasAnyPINs == true)
         #expect(sut.pinEntryState == .idle)
-    }
-
-    @Test func test_refreshPINStatus_when_session_status_changes_then_updates_pin_availability() async {
-        // Given
-        let session = MockPOSAccessSession(isLocked: true, hasAnyPINs: true, refreshedPINStatus: false)
-        let sut = POSLockScreenModel(session: session)
-
-        // When
-        await sut.refreshPINStatus()
-
-        // Then
-        #expect(sut.hasAnyPINs == false)
-        #expect(sut.isLocked == true)
     }
 
     @Test func test_sessionState_when_session_locks_then_model_updates() async {
         // Given
-        let session = MockPOSAccessSession(isLocked: false, hasAnyPINs: true)
+        let session = MockPOSAccessSession(isLocked: false)
         let sut = POSLockScreenModel(session: session)
 
         await withCheckedContinuation { continuation in
@@ -57,7 +43,7 @@ struct POSLockScreenModelTests {
 
     @Test func test_signIn_when_started_then_sets_loading_state() async {
         // Given
-        let session = MockPOSAccessSession(isLocked: true, hasAnyPINs: true)
+        let session = MockPOSAccessSession(isLocked: true)
         let sut = POSLockScreenModel(session: session)
         session.onSignIn = {
             #expect(sut.pinEntryState == .loading)
@@ -76,7 +62,6 @@ struct POSLockScreenModelTests {
         let session = MockPOSAccessSession(
             currentOperator: nil,
             isLocked: true,
-            hasAnyPINs: true,
             signInResult: .success(signedInOperator)
         )
         let sut = POSLockScreenModel(session: session)
@@ -92,7 +77,7 @@ struct POSLockScreenModelTests {
 
     @Test func test_signIn_when_pin_is_invalid_then_shows_invalid_pin_error() async {
         // Given
-        let session = MockPOSAccessSession(isLocked: true, hasAnyPINs: true, signInResult: .failure(.invalidPIN))
+        let session = MockPOSAccessSession(isLocked: true, signInResult: .failure(.invalidPIN))
         let sut = POSLockScreenModel(session: session)
 
         // When
@@ -105,7 +90,7 @@ struct POSLockScreenModelTests {
 
     @Test func test_signIn_when_error_is_unknown_then_shows_generic_error() async {
         // Given
-        let session = MockPOSAccessSession(isLocked: true, hasAnyPINs: true, signInResult: .failure(.unknown))
+        let session = MockPOSAccessSession(isLocked: true, signInResult: .failure(.unknown))
         let sut = POSLockScreenModel(session: session)
 
         // When

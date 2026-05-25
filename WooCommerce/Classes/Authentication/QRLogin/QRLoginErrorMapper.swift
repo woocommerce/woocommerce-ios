@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 /// Maps `QRLoginNetworkError`s and other Remote-level outcomes into the
-/// user-facing variants from spec §8.
+/// user-facing variants.
 ///
 /// Encodes the protocol + phase rules:
 ///   - Self-hosted 404 / 426 on scan → "This store can't complete QR login".

@@ -1,13 +1,12 @@
 import Foundation
 
-/// All the user-facing failure variants the QR-login flow can surface, drawn
-/// from spec §8.
+/// All the user-facing failure variants the QR-login flow can surface.
 ///
 /// Each variant encodes:
 ///   - the *kind* (drives the title / body / illustration choice in the UI)
 ///   - the *primary CTA action* (retry-the-failed-phase vs. scan-a-new-code)
 ///   - the *phase* the failure originated in (used for analytics and to
-///     know which Remote method to re-run on retry — §6.1).
+///     know which Remote method to re-run on retry).
 ///
 /// The user-facing copy (title / body / button labels) lives in the UI layer
 /// (`QRLoginErrorView`); this type only carries the structured kind / phase /
@@ -70,7 +69,7 @@ struct QRLoginUserFacingError: Error, Equatable {
 
     enum PrimaryAction: Equatable {
         /// "Try again" — re-runs the failed step (`scan`, `poll`, or
-        /// `exchange`) per spec §6.1.
+        /// `exchange`).
         case retryFailedPhase
         /// "Scan a new code" — returns to the scanner. In deep-link mode the
         /// caller exits the QR-login surface instead.

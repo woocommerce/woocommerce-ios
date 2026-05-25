@@ -1,7 +1,7 @@
 import Foundation
 
 /// Formats the `failure` property of a `UNIFIED_LOGIN_FAILURE` event for the
-/// QR-login flow, per spec §9.3.
+/// QR-login flow.
 ///
 /// The common shape is `<reason>:<phase>`. Payload / scanner failures (raised
 /// before any flow starts) emit the reason alone, and session-replace logout
@@ -45,10 +45,10 @@ struct QRLoginAnalyticsFailure {
     static let scanner = "Scanner"
     static let installQrCode = "InstallQrCode"
 
-    /// Session-replace logout failure (§9.3 exception).
+    /// Session-replace logout failure.
     static let sessionReplaceLogoutFailed = "Network:session_replace_logout_failed"
 
-    /// Maps a user-facing error to the §9.3 failure string. Centralised so the
+    /// Maps a user-facing error to the failure string. Centralised so the
     /// iOS and Android emissions stay byte-identical.
     static func failureString(for error: QRLoginUserFacingError) -> String {
         let phase: Phase

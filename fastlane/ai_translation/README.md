@@ -87,6 +87,43 @@ don't repeat the trial-and-error.
    translation is rejected.
 6. **Write** the assembled `.strings` file with header + unit comments.
 
+### Manifest cache (source-only invalidation)
+
+Each locale has a `manifest/<locale>.json` file recording, per key:
+
+- `src_sha` — first 12 hex chars of `sha256(source)`. The only thing that
+  triggers re-translation. Bumping the model or prompt version does NOT
+  auto-invalidate; that's intentional stability.
+- `model`, `pv`, `origin`, `at` — audit metadata: which model produced
+  the translation, under which prompt version, with what provenance tag
+  (e.g. `bootstrap-2026-05-21`, `ai`, `ai-opus-retry`, `human-glotpress`),
+  and when.
+
+`--incremental` mode consults the manifest first. Disable the manifest
+entirely with `--no-manifest` to fall back to the heuristic ("missing,
+empty, or equal-to-EN" detection).
+
+To seed the manifest for already-shipped locales:
+
+```bash
+rake -f fastlane/ai_translation/Rakefile translate:backfill_manifest
+# All 15 locales, ORIGIN=bootstrap-2026-05-21, MODEL=chat-tier-subagent
+```
+
+### Validator escalation (Opus fallback)
+
+When the placeholder or glossary validator rejects an entry from the
+primary pass (default model: Haiku), the engine retries that subset with
+the escalation model (default: Opus 4.7). Successful retries are written
+with `origin: ai-opus-retry`. Disable with `--no-escalation`.
+
+### Write-then-parse round-trip check
+
+After writing the `.strings` file, the engine re-parses it and verifies
+key parity. Any drift (lost keys, extra keys) raises immediately and
+fails the run. This is the lightweight resource gate that catches the
+class of bugs where the writer emits output the parser cannot consume.
+
 ### `--incremental` mode
 
 `bin/translate_locale.rb --incremental` (and `rake translate:incremental`)
@@ -133,9 +170,8 @@ These are tracked for follow-up PRs:
   take ~150 s on the full 5141-key Polish file. `--incremental` is unaffected
   (small slices). For `translate:verify` over all locales this manifests as
   multi-minute waits. Replace the char-by-char scanner with `StringScanner`.
-- **No manifest cache**. Each run re-translates the full payload; resuming
-  a partial run isn't supported. Manifests would also enable content-hash
-  detection of which source keys changed.
+- **Parser performance fix.** Replace the char-by-char scanner in
+  `ios_resources.rb` with `StringScanner` for 100x+ speedup on full files.
 - **No glossary validator yet**. Brand-name and terminology rules are
   inlined in the system prompt. PR 3 will add `glossary/<locale>.yml` files
   and a hard validator.

@@ -29,6 +29,7 @@ require 'woo_ai_translation/ios_resources'
 require 'woo_ai_translation/anthropic_client'
 require 'woo_ai_translation/translator'
 require 'woo_ai_translation/byte_sizer'
+require 'woo_ai_translation/manifest'
 
 REPO_ROOT = File.expand_path('../../..', __dir__)
 SOURCE_DIR = File.join(REPO_ROOT, 'WooCommerce/Resources/en.lproj')
@@ -75,8 +76,11 @@ def parse_args(argv)
     skip_infoplist: false,
     limit: nil,
     model: WooAiTranslation::DEFAULT_MODEL,
+    escalation_model: WooAiTranslation::ESCALATION_MODEL,
     incremental: false,
-    max_output_tokens: 8192
+    max_output_tokens: 8192,
+    use_manifest: true,
+    use_escalation: true
   }
   parser = OptionParser.new do |p|
     p.banner = 'Usage: translate_locale.rb <locale> [options]'
@@ -85,7 +89,10 @@ def parse_args(argv)
     p.on('--limit N', Integer, 'Translate only the first N keys (smoke test)') { |v| opts[:limit] = v }
     p.on('--skip-infoplist', 'Skip InfoPlist.strings') { opts[:skip_infoplist] = true }
     p.on('--model NAME', "Override model (default: #{opts[:model]})") { |v| opts[:model] = v }
+    p.on('--escalation-model NAME', "Retry failed entries with this model (default: #{opts[:escalation_model]})") { |v| opts[:escalation_model] = v }
+    p.on('--no-escalation', 'Disable Opus fallback on validator failures') { opts[:use_escalation] = false }
     p.on('--incremental', 'Only translate keys missing in the target locale (PR-time mode)') { opts[:incremental] = true }
+    p.on('--no-manifest', 'Bypass the source-only manifest cache') { opts[:use_manifest] = false }
     p.on('--max-output-tokens N', Integer, "Output budget for auto batch sizing (default: #{opts[:max_output_tokens]})") { |v| opts[:max_output_tokens] = v }
   end
   parser.permute!(argv)
@@ -94,24 +101,38 @@ def parse_args(argv)
   opts
 end
 
-# Returns the subset of EN units that are missing from (or empty in) the
-# target locale file. Used by --incremental mode.
-def filter_missing_units(en_units, target_path, logger:)
-  return en_units unless File.exist?(target_path)
+# Returns the subset of EN units that need translation.
+#
+# When a manifest is provided, source-only invalidation drives the decision:
+# an entry needs translation iff its source value differs from the recorded
+# `src_sha`. Falls back to the heuristic check ("present in target with a
+# non-EN value") when no manifest entry exists, which lets us bootstrap a
+# manifest from the existing locale files in PR #17220.
+def filter_missing_units(en_units, target_path, logger:, manifest: nil)
+  existing_by_name = if File.exist?(target_path)
+                       WooAiTranslation::IosResources::Parser.parse_file(target_path)
+                                                             .units.to_h { |u| [u.name, u] }
+                     else
+                       {}
+                     end
 
-  existing = WooAiTranslation::IosResources::Parser.parse_file(target_path)
-  existing_by_name = existing.units.to_h { |u| [u.name, u] }
+  needs = en_units.reject do |u|
+    src = u.entries.first[:source].to_s
+    if manifest&.entry(u.name)
+      # Source-only manifest invalidation — the canonical path going forward.
+      !manifest.needs_translation?(key: u.name, source: src)
+    else
+      existing_unit = existing_by_name[u.name]
+      next false unless existing_unit
 
-  en_units.reject do |u|
-    existing_unit = existing_by_name[u.name]
-    next false unless existing_unit
-
-    existing_value = existing_unit.entries.first[:value].to_s
-    en_value = u.entries.first[:source].to_s
-    !existing_value.empty? && existing_value != en_value
-  end.tap do |missing|
-    logger.call("[--incremental] #{en_units.size} EN keys, #{missing.size} need translation (others present)")
+      existing_value = existing_unit.entries.first[:value].to_s
+      !existing_value.empty? && existing_value != src
+    end
   end
+
+  logger.call("[--incremental] #{en_units.size} EN keys, #{needs.size} need translation " \
+              "(manifest=#{manifest ? manifest.size : 'off'})")
+  needs
 end
 
 def placeholder_counts(text)
@@ -122,30 +143,22 @@ def placeholders_match?(source, translation)
   placeholder_counts(source) == placeholder_counts(translation)
 end
 
-def translate_file(input_path:, output_path:, translator:, locale:, model:, limit:, logger:, incremental: false)
+def translate_file(input_path:, output_path:, translator:, locale:, model:, limit:, logger:,
+                   incremental: false, manifest: nil, escalation_model: nil)
   doc = WooAiTranslation::IosResources::Parser.parse_file(input_path)
   units = doc.translatable_units
   units = units.first(limit) if limit
   logger.call("[#{locale}] parsed #{units.size} keys from #{File.basename(input_path)}")
 
-  # Incremental: skip keys already translated in the target file.
-  units_to_translate = incremental ? filter_missing_units(units, output_path, logger: logger) : units
+  units_to_translate = incremental ? filter_missing_units(units, output_path, logger: logger, manifest: manifest) : units
 
   if units_to_translate.empty?
     logger.call("[#{locale}] nothing to translate; output left unchanged")
     return [0, [], []]
   end
 
-  items = units_to_translate.map do |u|
-    { id: u.name, source: u.entries.first[:source], context: u.comment }
-  end
-
-  results = translator.translate(locale: locale, items: items, model: model)
-  logger.call("[#{locale}] translator returned #{results.size} translations")
-
-  translated = 0
-  failed_missing = []
-  failed_validation = []
+  results = run_translation(translator, locale, units_to_translate, model)
+  logger.call("[#{locale}] primary pass returned #{results.size} translations (model=#{model})")
 
   # In incremental mode we preserve existing values for unchanged keys by
   # starting from the existing target document and only overlaying the new
@@ -154,28 +167,89 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
   units_for_write = incremental && File.exist?(output_path) ? merge_with_existing(units, output_path) : units
   by_name = units_for_write.to_h { |u| [u.name, u] }
 
+  translated, failed_missing, failed_validation = apply_results(
+    units_to_translate, results, by_name, manifest: manifest, model: model, origin: 'ai'
+  )
+
+  # Opus fallback: retry validator-failed entries with the escalation model.
+  if escalation_model && !failed_validation.empty?
+    logger.call("[#{locale}] escalating #{failed_validation.size} failed entries to #{escalation_model}")
+    retry_units = units_to_translate.select { |u| failed_validation.any? { |f| f[:name] == u.name } }
+    retry_results = run_translation(translator, locale, retry_units, escalation_model)
+    extra_translated, _retry_missing, still_failing = apply_results(
+      retry_units, retry_results, by_name,
+      manifest: manifest, model: escalation_model, origin: 'ai-opus-retry'
+    )
+    translated += extra_translated
+    failed_validation = still_failing
+    logger.call("[#{locale}] escalation recovered #{extra_translated} entries; #{still_failing.size} still failing")
+  end
+
+  WooAiTranslation::IosResources::Writer.write(output_path, units_for_write, locale)
+  verify_round_trip!(output_path, units_for_write, logger: logger, locale: locale)
+  manifest&.save!
+
+  logger.call("[#{locale}] wrote #{output_path} (#{translated} keys, " \
+              "#{failed_missing.size} missing, #{failed_validation.size} placeholder errors)")
+  [translated, failed_missing, failed_validation]
+end
+
+def run_translation(translator, locale, units, model)
+  items = units.map { |u| { id: u.name, source: u.entries.first[:source], context: u.comment } }
+  translator.translate(locale: locale, items: items, model: model)
+end
+
+# Walk units_to_translate, apply each result, and report counts. Mutates
+# the corresponding entries inside `by_name` so the caller can write them.
+def apply_results(units_to_translate, results, by_name, manifest:, model:, origin:)
+  translated = 0
+  failed_missing = []
+  failed_validation = []
+
   units_to_translate.each do |u|
     src = u.entries.first[:source]
     tx = results[u.name]
+
     if tx.nil? || tx.to_s.empty?
       failed_missing << u.name
       next
     end
+
     unless placeholders_match?(src, tx)
       failed_validation << { name: u.name, source: src, translation: tx,
                              expected: placeholder_counts(src),
                              got: placeholder_counts(tx) }
       next
     end
+
     target_unit = by_name[u.name] or next
     target_unit.entries.first[:value] = tx
+    manifest&.record!(key: u.name, source: src, model: model, origin: origin)
     translated += 1
   end
 
-  WooAiTranslation::IosResources::Writer.write(output_path, units_for_write, locale)
-  logger.call("[#{locale}] wrote #{output_path} (#{translated} keys, " \
-              "#{failed_missing.size} missing, #{failed_validation.size} placeholder errors)")
   [translated, failed_missing, failed_validation]
+end
+
+# Write-then-parse sanity check: re-read the file we just wrote and make sure
+# the parser sees the same unit names. Catches cases where the writer emits
+# output the parser cannot consume (escape mismatches, lost terminators).
+def verify_round_trip!(output_path, units_for_write, logger:, locale:)
+  reparsed = WooAiTranslation::IosResources::Parser.parse_file(output_path)
+  written = units_for_write.to_set(&:name)
+  reread = reparsed.units.to_set(&:name)
+  missing = written - reread
+  extra = reread - written
+  return if missing.empty? && extra.empty?
+
+  raise(
+    "Round-trip failure for #{locale} at #{output_path}: " \
+    "missing #{missing.size} (#{missing.first(5).to_a.inspect}), " \
+    "extra #{extra.size} (#{extra.first(5).to_a.inspect})"
+  )
+rescue StandardError => e
+  logger.call("[#{locale}] ROUND-TRIP FAILED: #{e.message}")
+  raise
 end
 
 # Reload current target doc and project the existing values onto a fresh
@@ -229,6 +303,10 @@ def main(argv)
     logger: logger
   )
 
+  manifest = opts[:use_manifest] ? WooAiTranslation::Manifest.new(locale: locale) : nil
+  logger.call("manifest #{manifest ? "loaded (#{manifest.size} entries, #{manifest.path})" : 'disabled'}")
+  escalation_model = opts[:use_escalation] ? opts[:escalation_model] : nil
+
   out_dir = File.join(TARGET_BASE, "#{locale}.lproj")
 
   # --- Localizable.strings (the main corpus) ----------------------------
@@ -237,7 +315,8 @@ def main(argv)
     input_path: File.join(SOURCE_DIR, 'Localizable.strings'),
     output_path: File.join(out_dir, 'Localizable.strings'),
     translator: translator, locale: locale, model: opts[:model],
-    limit: opts[:limit], logger: logger, incremental: opts[:incremental]
+    limit: opts[:limit], logger: logger, incremental: opts[:incremental],
+    manifest: manifest, escalation_model: escalation_model
   )
   logger.call("Localizable.strings done in #{(Time.now - t0).round(1)}s")
   total_translated = trans
@@ -253,7 +332,8 @@ def main(argv)
       trans, missing, errors = translate_file(
         input_path: info_in, output_path: info_out,
         translator: translator, locale: locale, model: opts[:model],
-        limit: nil, logger: logger, incremental: opts[:incremental]
+        limit: nil, logger: logger, incremental: opts[:incremental],
+        manifest: manifest, escalation_model: escalation_model
       )
       logger.call("InfoPlist.strings done in #{(Time.now - t0).round(1)}s")
       total_translated += trans

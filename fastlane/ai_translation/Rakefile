@@ -121,4 +121,39 @@ namespace :translate do
   task :bootstrap_all do
     SUPPORTED_LOCALES.each { |loc| run_cli(loc) }
   end
+
+  desc 'Backfill manifest entries for already-shipped locales (no API calls).'
+  task :backfill_manifest do
+    require_relative 'lib/woo_ai_translation/ios_resources'
+    require_relative 'lib/woo_ai_translation/manifest'
+
+    origin = ENV.fetch('ORIGIN', 'bootstrap-2026-05-21')
+    model = ENV.fetch('MODEL', 'chat-tier-subagent')
+
+    en_doc = WooAiTranslation::IosResources::Parser
+             .parse_file(File.join(RESOURCES, 'en.lproj/Localizable.strings'))
+    en_by_name = en_doc.units.to_h { |u| [u.name, u] }
+
+    resolve_locales.each do |loc|
+      path = File.join(RESOURCES, "#{loc}.lproj/Localizable.strings")
+      unless File.exist?(path)
+        puts "#{loc}: SKIP (no file at #{path})"
+        next
+      end
+
+      doc = WooAiTranslation::IosResources::Parser.parse_file(path)
+      manifest = WooAiTranslation::Manifest.new(locale: loc)
+      recorded = 0
+      doc.units.each do |u|
+        en_unit = en_by_name[u.name]
+        next unless en_unit
+
+        src = en_unit.entries.first[:source]
+        manifest.record!(key: u.name, source: src, model: model, origin: origin)
+        recorded += 1
+      end
+      manifest.save!
+      puts "#{loc}: backfilled #{recorded} entries -> #{manifest.path}"
+    end
+  end
 end

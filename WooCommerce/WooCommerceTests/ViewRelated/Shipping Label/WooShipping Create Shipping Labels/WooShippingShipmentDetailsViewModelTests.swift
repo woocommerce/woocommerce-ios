@@ -597,6 +597,54 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowCustomsForm)
     }
 
+    func test_shouldShowCustomsForm_when_destination_is_unnormalized_US_territory_then_returns_true() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "PR"))
+
+        // When
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowCustomsForm)
+    }
+
+    func test_shouldShowCustomsForm_when_origin_and_destination_are_same_unnormalized_US_territory_then_returns_false() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "PR"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "PR"))
+
+        // When
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowCustomsForm)
+    }
+
+    func test_shouldShowCustomsForm_when_origin_and_destination_are_same_territory_with_mixed_encoding_then_returns_false() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "PR", state: ""))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "PR"))
+
+        // When
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowCustomsForm)
+    }
+
     func test_shouldShowCustomsForm_when_origin_address_is_US_military_then_returns_true() {
         // Given
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "AA"))

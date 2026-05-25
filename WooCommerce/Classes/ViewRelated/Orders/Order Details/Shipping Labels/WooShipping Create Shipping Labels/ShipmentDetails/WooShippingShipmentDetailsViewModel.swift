@@ -80,6 +80,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
             shipment: shipment,
             originCountryCode: originCountryCodePublisher(),
             isHSTariffNumberRequired: isHSTariffNumberRequiredPublisher(),
+            isDescriptionLengthLimitRequired: isUSPSDomesticMailShipmentPublisher(),
             storageManager: storageManager
         ) { [weak self] form in
             self?.customsForm = form
@@ -566,6 +567,21 @@ private extension WooShippingShipmentDetailsViewModel {
                 }
 
                 return Country.countriesFollowingEUCustoms.contains(address.country)
+            }
+            .eraseToAnyPublisher()
+    }
+
+    func isUSPSDomesticMailShipmentPublisher() -> AnyPublisher<Bool, Never> {
+        $originAddress.combineLatest($destinationAddress)
+            .map { originAddress, destinationAddress in
+                guard let originAddress, let destinationAddress else {
+                    return false
+                }
+
+                return WooShippingCustomsRequirements.isUSPSDomesticMailShipment(originCountry: originAddress.country,
+                                                                                 originState: originAddress.state,
+                                                                                 destinationCountry: destinationAddress.country,
+                                                                                 destinationState: destinationAddress.state)
             }
             .eraseToAnyPublisher()
     }

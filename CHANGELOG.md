@@ -1,6 +1,12 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.8
+Managing your store is now even more convenient. With our new AI Assistant, selected stores can take action and run store tasks right from their pocket. Plus, we fixed issues in the customer form on iPad, making it smoother to add new customers. Enjoy these enhancements as you continue to grow your business.
+
+## 24.7
+Get deeper insights with a revamped Performance card. Quickly switch between Gross, Net, and Total revenue, and choose which order date (paid, placed, or completed) drives your totals. We’ve also improved shipping label flows with FedEx TOS handling, refreshed POS empty states, and expanded POS availability to Puerto Rico.
+
 ## 24.6
 This update enhances Point of Sale reliability with clearer card reader status during reconnections, automatic price updates at checkout, and visual refinements for iOS 26. We've also added a login troubleshooting tool to help diagnose connection issues faster, plus a handy clear button in search fields for quicker navigation.
 

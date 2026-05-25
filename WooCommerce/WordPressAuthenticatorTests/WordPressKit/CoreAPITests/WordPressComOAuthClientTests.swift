@@ -321,7 +321,6 @@ class WordPressComOAuthClientTests: XCTestCase {
         }, failure: { (_) in
             expect.fulfill()
             XCTFail("This call should be successful")
-
         })
         waitForExpectations(timeout: 2, handler: nil)
     }
@@ -344,7 +343,6 @@ class WordPressComOAuthClientTests: XCTestCase {
         }, failure: { (_, _) in
             expect.fulfill()
             XCTFail("This call should be successful")
-
         })
         waitForExpectations(timeout: 2, handler: nil)
     }
@@ -378,7 +376,6 @@ class WordPressComOAuthClientTests: XCTestCase {
             failure: { (_) in
                 expect.fulfill()
                 XCTFail("This call should be successful")
-
             }
         )
         waitForExpectations(timeout: 2, handler: nil)
@@ -414,7 +411,6 @@ class WordPressComOAuthClientTests: XCTestCase {
             failure: { (_) in
                 expect.fulfill()
                 XCTFail("This call should need multifactor")
-
             }
         )
         waitForExpectations(timeout: 2, handler: nil)
@@ -448,7 +444,6 @@ class WordPressComOAuthClientTests: XCTestCase {
             failure: { (_) in
                 expect.fulfill()
                 XCTFail("This call should invoke user needs connection")
-
             }
         )
         waitForExpectations(timeout: 2, handler: nil)
@@ -472,7 +467,6 @@ class WordPressComOAuthClientTests: XCTestCase {
         }, failure: { (_) in
             expect.fulfill()
             XCTFail("This call should be successful")
-
         })
         waitForExpectations(timeout: 2, handler: nil)
     }

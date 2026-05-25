@@ -56,7 +56,7 @@ struct WatchCrashLoggingStack: CrashLoggingStack {
     }
 
     static func tracksUserFrom(_ account: Account?) -> TracksUser? {
-        guard let account = account else {
+        guard let account else {
             return nil
         }
         return TracksUser(userID: "\(account.userID)", email: account.email, username: account.username)

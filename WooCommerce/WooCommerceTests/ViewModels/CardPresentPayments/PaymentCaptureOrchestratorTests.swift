@@ -1,5 +1,6 @@
 import XCTest
 import Yosemite
+import WooFoundation
 @testable import WooCommerce
 
 final class PaymentCaptureOrchestratorTests: XCTestCase {
@@ -34,7 +35,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         // When
         let paymentSiteID = waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-                if case let .collectPayment(siteID, _, _, _, _, _) = action {
+                if case let .collectPayment(siteID, _, _, _, _, _, _, _) = action {
                     promise(siteID)
                 }
             }
@@ -45,6 +46,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .US,
+                terminalPaymentPreparationEnabled: false,
                 channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
@@ -67,7 +70,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         // When
         let paymentOrderID = waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-                if case let .collectPayment(_, orderID, _, _, _, _) = action {
+                if case let .collectPayment(_, orderID, _, _, _, _, _, _) = action {
                     promise(orderID)
                 }
             }
@@ -78,6 +81,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .US,
+                terminalPaymentPreparationEnabled: false,
                 channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
@@ -90,6 +95,146 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
 
         // Then
         assertEqual(9283, paymentOrderID)
+    }
+
+    func test_collect_payment_passes_configured_country_to_payment_action() {
+        // Given
+        let order = Order.fake()
+        let orderTotal: NSDecimalNumber = 150
+
+        // When
+        let countryCode = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                if case let .collectPayment(_, _, _, countryCode, _, _, _, _) = action {
+                    promise(countryCode)
+                }
+            }
+
+            self.sut.collectPayment(
+                for: order,
+                orderTotal: orderTotal,
+                paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                paymentMethodTypes: [.cardPresent],
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .AU,
+                terminalPaymentPreparationEnabled: false,
+                channel: .storeManagement,
+                onPreparingReader: {},
+                onWaitingForInput: { _ in },
+                onCardInserted: {},
+                onProcessingMessage: {},
+                onDisplayMessage: { _ in },
+                onProcessingCompletion: { _ in },
+                onCompletion: { _ in })
+        }
+
+        // Then
+        assertEqual(.AU, countryCode)
+    }
+
+    func test_collect_payment_passes_terminal_payment_preparation_setting_to_payment_action() {
+        // Given
+        let order = Order.fake()
+        let orderTotal: NSDecimalNumber = 150
+
+        // When
+        let terminalPaymentPreparationEnabled = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                if case let .collectPayment(_, _, _, _, terminalPaymentPreparationEnabled, _, _, _) = action {
+                    promise(terminalPaymentPreparationEnabled)
+                }
+            }
+
+            self.sut.collectPayment(
+                for: order,
+                orderTotal: orderTotal,
+                paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                paymentMethodTypes: [.cardPresent],
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .AU,
+                terminalPaymentPreparationEnabled: true,
+                channel: .storeManagement,
+                onPreparingReader: {},
+                onWaitingForInput: { _ in },
+                onCardInserted: {},
+                onProcessingMessage: {},
+                onDisplayMessage: { _ in },
+                onProcessingCompletion: { _ in },
+                onCompletion: { _ in })
+        }
+
+        // Then
+        XCTAssertTrue(terminalPaymentPreparationEnabled)
+    }
+
+    func test_collect_payment_for_AU_sets_manual_preferred_card_present_capture_method() {
+        // Given
+        let order = Order.fake()
+        let orderTotal: NSDecimalNumber = 150
+
+        // When
+        let paymentParameters = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                if case let .collectPayment(_, _, parameters, _, _, _, _, _) = action {
+                    promise(parameters)
+                }
+            }
+
+            self.sut.collectPayment(
+                for: order,
+                orderTotal: orderTotal,
+                paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                paymentMethodTypes: [.cardPresent],
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .AU,
+                terminalPaymentPreparationEnabled: false,
+                channel: .storeManagement,
+                onPreparingReader: {},
+                onWaitingForInput: { _ in },
+                onCardInserted: {},
+                onProcessingMessage: {},
+                onDisplayMessage: { _ in },
+                onProcessingCompletion: { _ in },
+                onCompletion: { _ in })
+        }
+
+        // Then
+        XCTAssertEqual(paymentParameters.cardPresentCaptureMethod, .manualPreferred)
+    }
+
+    func test_collect_payment_for_CA_sets_manual_preferred_card_present_capture_method() {
+        // Given
+        let order = Order.fake()
+        let orderTotal: NSDecimalNumber = 150
+
+        // When
+        let paymentParameters = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                if case let .collectPayment(_, _, parameters, _, _, _, _, _) = action {
+                    promise(parameters)
+                }
+            }
+
+            self.sut.collectPayment(
+                for: order,
+                orderTotal: orderTotal,
+                paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                paymentMethodTypes: [.cardPresent, .interacPresent],
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .CA,
+                terminalPaymentPreparationEnabled: false,
+                channel: .storeManagement,
+                onPreparingReader: {},
+                onWaitingForInput: { _ in },
+                onCardInserted: {},
+                onProcessingMessage: {},
+                onDisplayMessage: { _ in },
+                onProcessingCompletion: { _ in },
+                onCompletion: { _ in })
+        }
+
+        // Then
+        XCTAssertEqual(paymentParameters.cardPresentCaptureMethod, .manualPreferred)
     }
 
     func test_collect_payment_starts_payment_with_valid_parameters() {
@@ -108,7 +253,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         // When
         let paymentParameters = waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-                if case let .collectPayment(_, _, parameters, _, _, _) = action {
+                if case let .collectPayment(_, _, parameters, _, _, _, _, _) = action {
                     promise(parameters)
                 }
             }
@@ -119,6 +264,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .US,
+                terminalPaymentPreparationEnabled: false,
                 channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
@@ -150,7 +297,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         assertEqual(expectedParameters, paymentParameters)
     }
 
-    func test_collectPayment_for_a_payment_to_a_US_gateway_account_does_not_include_applicationFee_in_the_payment_intent() throws {
+    func test_collectPayment_for_US_configuration_does_not_include_applicationFee_in_the_payment_intent() throws {
         // Given
         let account = PaymentGatewayAccount.fake().copy(siteID: sampleSiteID,
                                                         defaultCurrency: "USD",
@@ -163,7 +310,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         // When
         let parameters: PaymentParameters = waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-                if case let .collectPayment(_, _, parameters, _, _, _) = action {
+                if case let .collectPayment(_, _, parameters, _, _, _, _, _) = action {
                     promise(parameters)
                 }
             }
@@ -174,6 +321,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: account,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .US,
+                terminalPaymentPreparationEnabled: false,
                 channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
@@ -188,7 +337,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         XCTAssertNil(parameters.applicationFee)
     }
 
-    func test_collectPayment_for_a_payment_to_a_CA_gateway_account_includes_15cents_applicationFee_in_the_payment_intent() throws {
+    func test_collectPayment_for_CA_configuration_includes_15cents_applicationFee_in_the_payment_intent() throws {
         // Given
         let account = PaymentGatewayAccount.fake().copy(siteID: sampleSiteID,
                                                         defaultCurrency: "CAD",
@@ -201,7 +350,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         // When
         let parameters: PaymentParameters = waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-                if case let .collectPayment(_, _, parameters, _, _, _) = action {
+                if case let .collectPayment(_, _, parameters, _, _, _, _, _) = action {
                     promise(parameters)
                 }
             }
@@ -212,6 +361,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: account,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .CA,
+                terminalPaymentPreparationEnabled: false,
                 channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
@@ -224,6 +375,47 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
 
         // Then
         let expectedFee = NSDecimalNumber(string: "0.15").decimalValue
+        assertEqual(expectedFee, parameters.applicationFee)
+    }
+
+    func test_collectPayment_for_a_payment_to_an_AU_gateway_account_includes_applicationFee_in_the_payment_intent() throws {
+        // Given
+        let account = PaymentGatewayAccount.fake().copy(siteID: sampleSiteID,
+                                                        defaultCurrency: "AUD",
+                                                        supportedCurrencies: ["AUD"],
+                                                        country: "AU",
+                                                        isCardPresentEligible: true)
+        let order = Order.fake().copy(siteID: sampleSiteID, currency: "AUD")
+        let orderTotal: NSDecimalNumber = 150
+
+        // When
+        let parameters: PaymentParameters = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                if case let .collectPayment(_, _, parameters, _, _, _, _, _) = action {
+                    promise(parameters)
+                }
+            }
+
+            self.sut.collectPayment(
+                for: order,
+                orderTotal: orderTotal,
+                paymentGatewayAccount: account,
+                paymentMethodTypes: [.cardPresent],
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                countryCode: .AU,
+                terminalPaymentPreparationEnabled: true,
+                channel: .storeManagement,
+                onPreparingReader: {},
+                onWaitingForInput: { _ in },
+                onCardInserted: {},
+                onProcessingMessage: {},
+                onDisplayMessage: { _ in },
+                onProcessingCompletion: { _ in },
+                onCompletion: { _ in })
+        }
+
+        // Then
+        let expectedFee = NSDecimalNumber(string: "2.65").decimalValue
         assertEqual(expectedFee, parameters.applicationFee)
     }
 }

@@ -59,7 +59,7 @@ private extension SurveyCoordinatingController {
         analytics.track(event: .surveyScreen(context: survey.feedbackContextForEvents, action: .opened))
 
         let surveyViewController = viewControllersFactory.makeSurveyViewController(survey: survey) { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -76,7 +76,7 @@ private extension SurveyCoordinatingController {
     ///
     func navigateToSurveySubmitted() {
         let completionViewController = viewControllersFactory.makeSurveySubmittedViewController(onContactUsAction: { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             let supportForm = SupportFormHostingController(viewModel: .init())

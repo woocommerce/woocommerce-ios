@@ -19,7 +19,6 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
 
         sut = BarcodeScannerItemFinder(stores: stores, analytics: analytics)
-
     }
 
     override func tearDown() {

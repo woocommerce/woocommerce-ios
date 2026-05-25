@@ -62,7 +62,6 @@ final class TitleAndTextFieldWithImageTableViewCell: UITableViewCell {
         rightImageViewIsHidden = viewModel.image == nil
         onTextChange = viewModel.onTextChange
     }
-
 }
 
 private extension TitleAndTextFieldWithImageTableViewCell {

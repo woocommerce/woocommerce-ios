@@ -12,7 +12,7 @@ class AppleAuthenticator: NSObject {
 
     // MARK: - Properties
 
-    static var sharedInstance: AppleAuthenticator = AppleAuthenticator()
+    static var sharedInstance = AppleAuthenticator()
     private var showFromViewController: UIViewController?
     private let loginFields = LoginFields()
     weak var delegate: AppleAuthenticatorDelegate?
@@ -172,7 +172,6 @@ private extension AppleAuthenticator {
         loginFields.emailAddress = email
         loginFields.username = email
     }
-
 }
 
 extension AppleAuthenticator: ASAuthorizationControllerDelegate {
@@ -280,7 +279,6 @@ extension AppleAuthenticator {
                         self?.loginSuccessful(with: credentials)
                     }
                 }
-
             },
             failure: { [weak self] error in
                 SVProgressHUD.dismiss()

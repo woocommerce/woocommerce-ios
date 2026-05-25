@@ -29,7 +29,7 @@ final class SelectableShipmentItemRowViewModel: ObservableObject, Identifiable {
     }
 
     func handleTap() {
-        selected = !selected
+        selected.toggle()
         if let onSelectedChange {
             onSelectedChange(self)
         }

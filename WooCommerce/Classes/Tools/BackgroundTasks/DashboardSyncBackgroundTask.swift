@@ -36,7 +36,7 @@ struct DashboardSyncBackgroundTask {
                 case .blaze, .coupons, .googleAds, .inbox, .lastOrders, .onboarding, .reviews, .stock:
                     DDLogInfo("⚠️ Synchronizing \(card.type.name) card in the background is not yet supported...")
                     return
-                case .inAppFeedback, .shareStore, .newCardsNotice, .connectWPCom:
+                case .inAppFeedback, .shareStore, .newCardsNotice, .connectWPCom, .aiAssistant:
                     // no syncing needed
                     return
                 }

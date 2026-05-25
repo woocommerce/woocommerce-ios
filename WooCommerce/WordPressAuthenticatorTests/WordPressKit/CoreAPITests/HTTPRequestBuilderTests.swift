@@ -380,7 +380,6 @@ class HTTPRequestBuilderTests: XCTestCase {
                 .absoluteString,
             "https://wordpress.org/foo%2Fbar/test/new-path?arg=value"
         )
-
     }
 
     func testAppendingURLString() {
@@ -423,5 +422,4 @@ class HTTPRequestBuilderTests: XCTestCase {
         let filePart = "<base64>" + fileContentBase64 + "</base64>"
         XCTAssertTrue(xmlrpcContent.contains(filePart))
     }
-
 }

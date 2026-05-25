@@ -33,7 +33,6 @@ struct ProductCreationAIPromptProgressBar: View {
             viewModel.updateText(to: newText)
         }
     }
-
 }
 
 private extension ProductCreationAIPromptProgressBar {

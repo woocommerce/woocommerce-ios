@@ -88,7 +88,7 @@ struct OptionalBinding<Value>: DynamicProperty {
     }
 
     init(_ binding: Binding<Value>?, default defaultValue: Value) {
-        if let binding = binding {
+        if let binding {
             self.external = binding
             self._internalValue = State(initialValue: binding.wrappedValue)
         } else {

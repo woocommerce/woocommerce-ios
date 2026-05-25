@@ -188,7 +188,7 @@ final class MockProductsRemote {
 extension MockProductsRemote: ProductsRemoteProtocol {
     func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -202,7 +202,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
     func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -218,7 +218,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                      productID: Int64,
                      completion: @escaping (Result<Product, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -352,7 +352,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID, productIDs: [productID])
             if let result = self.updateProductImagesResultsBySiteID[key] {

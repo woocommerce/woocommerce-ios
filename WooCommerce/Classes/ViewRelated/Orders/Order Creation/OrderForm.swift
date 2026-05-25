@@ -42,7 +42,7 @@ final class OrderFormHostingController: UIHostingController<OrderFormPresentatio
         super.viewDidLoad()
 
         // Set presentation delegate to track the user dismiss flow event
-        if let navigationController = navigationController {
+        if let navigationController {
             navigationController.presentationController?.delegate = self
         } else {
             presentationController?.delegate = self
@@ -340,7 +340,6 @@ struct OrderForm: View {
                                 case .taxSelector:
                                     shouldShowNewTaxRateSelector = true
                                 }
-
                             }
                             .sheet(isPresented: $shouldShowNewTaxRateSelector) {
                                 NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
@@ -409,7 +408,6 @@ struct OrderForm: View {
                             Text(viewModel.orderTotal)
                                 .redacted(reason: isLoading ? .placeholder : [])
                                 .shimmering(active: isLoading)
-
                         }
                         .font(.headline)
                         .padding([.bottom, .horizontal])

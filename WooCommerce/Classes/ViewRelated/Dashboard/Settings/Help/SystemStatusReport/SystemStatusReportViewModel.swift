@@ -28,10 +28,10 @@ final class SystemStatusReportViewModel: ObservableObject {
     func fetchReport() {
         errorFetchingReport = false
         let action = SystemStatusAction.fetchSystemStatusReport(siteID: siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let status):
-                self.statusReport = self.formatReport(with: status)
+                self.statusReport = Self.formatReport(with: status)
             case .failure:
                 self.errorFetchingReport = true
             }
@@ -40,11 +40,11 @@ final class SystemStatusReportViewModel: ObservableObject {
     }
 }
 
-private extension SystemStatusReportViewModel {
+extension SystemStatusReportViewModel {
     /// Format system status to match with Core's report.
     /// Not localizing content and keep English by default.
     ///
-    func formatReport(with systemStatus: SystemStatusReport) -> String {
+    static func formatReport(with systemStatus: SystemStatusReport) -> String {
         var lines = ["### System Status Report generated via the WooCommerce iOS app ###"]
 
         // Environment

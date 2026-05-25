@@ -151,7 +151,7 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
                     return
                 }
 
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 
@@ -162,7 +162,7 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
             }
             completion(available)
         }, failure: { error in
-            guard let error = error else {
+            guard let error else {
                 self.displayError(message: ErrorMessage.availabilityCheckFail.description())
                 completion(false)
                 return
@@ -194,7 +194,6 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
                                   success: { [weak self] in
                                     self?.didRequestSignupLink()
                                     self?.configureSubmitButton(animating: false)
-
             }, failure: { [weak self] (_: Error) in
                 WPAuthenticatorLogError("Request for signup link email failed.")
                 WordPressAuthenticator.track(.signupMagicLinkFailed)
@@ -236,5 +235,4 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
 }

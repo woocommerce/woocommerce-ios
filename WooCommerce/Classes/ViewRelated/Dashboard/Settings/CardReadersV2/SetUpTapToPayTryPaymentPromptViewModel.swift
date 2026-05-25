@@ -78,7 +78,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     private func beginConnectedReaderObservation() {
         // This completion should be called repeatedly as the list of connected readers changes
         let connectedAction = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.connectedReader = readers.isNotEmpty ? .isTrue : .isFalse
@@ -102,7 +102,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                                                            status: .pending,
                                                            amount: trialPaymentAmount,
                                                            taxable: false) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.loading = false
 
             switch result {
@@ -151,7 +151,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                 let refundAction = RefundAction.createRefund(siteID: siteID,
                                                              orderID: summaryViewModel.orderID,
                                                              refund: refund) { [weak self] refund, error in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     defer {
                         self.refundInProgress = false
                     }

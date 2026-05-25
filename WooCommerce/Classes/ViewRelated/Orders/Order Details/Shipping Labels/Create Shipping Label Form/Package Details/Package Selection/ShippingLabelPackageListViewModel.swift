@@ -37,7 +37,7 @@ final class ShippingLabelPackageListViewModel: ObservableObject {
     lazy var addNewPackageViewModel = ShippingLabelAddNewPackageViewModel(siteID: siteID,
                                                                           packagesResponse: packagesResponse,
                                                                           onCompletion: { [weak self] (customPackage, predefinedOption, packagesResponse) in
-                                                                            guard let self = self else { return }
+                                                                            guard let self else { return }
                                                                             self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
                                                                           })
 
@@ -64,21 +64,21 @@ extension ShippingLabelPackageListViewModel {
 
     func confirmPackageSelection() {
         let newPackageID: String? = {
-            if let selectedCustomPackage = selectedCustomPackage {
+            if let selectedCustomPackage {
                 return selectedCustomPackage.title
-            } else if let selectedPredefinedPackage = selectedPredefinedPackage {
+            } else if let selectedPredefinedPackage {
                 return selectedPredefinedPackage.id
             }
             return nil
         }()
-        guard let newPackageID = newPackageID else {
+        guard let newPackageID else {
             return
         }
         delegate?.didSelectPackage(id: newPackageID)
     }
 
     private func selectCustomPackage(_ id: String) {
-        guard let packagesResponse = packagesResponse else {
+        guard let packagesResponse else {
             return
         }
 
@@ -92,7 +92,7 @@ extension ShippingLabelPackageListViewModel {
     }
 
     private func selectPredefinedPackage(_ id: String) {
-        guard let packagesResponse = packagesResponse else {
+        guard let packagesResponse else {
             return
         }
 
@@ -112,7 +112,7 @@ extension ShippingLabelPackageListViewModel {
     private func handleNewPackage(_ customPackage: ShippingLabelCustomPackage?,
                           _ servicePackage: ShippingLabelPredefinedPackage?,
                           _ packagesResponse: ShippingLabelPackagesResponse?) {
-        guard let packagesResponse = packagesResponse else {
+        guard let packagesResponse else {
             return
         }
         let shouldNotifyDelegate = !hasCustomOrPredefinedPackages
@@ -122,16 +122,16 @@ extension ShippingLabelPackageListViewModel {
         addNewPackageViewModel = .init(siteID: siteID,
                                        packagesResponse: packagesResponse,
                                        onCompletion: { [weak self] (customPackage, predefinedOption, packagesResponse) in
-                                         guard let self = self else { return }
+                                         guard let self else { return }
                                          self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
                                        })
 
-        if let customPackage = customPackage {
+        if let customPackage {
             selectCustomPackage(customPackage.title)
             if shouldNotifyDelegate {
                 delegate?.didSelectPackage(id: customPackage.title)
             }
-        } else if let servicePackage = servicePackage {
+        } else if let servicePackage {
             selectPredefinedPackage(servicePackage.id)
             if shouldNotifyDelegate {
                 delegate?.didSelectPackage(id: servicePackage.id)

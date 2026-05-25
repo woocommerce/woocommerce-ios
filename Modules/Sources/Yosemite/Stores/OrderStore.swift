@@ -280,7 +280,7 @@ private extension OrderStore {
     ///
     private func loadOrderFromRemote(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
         remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
-            guard let order = order else {
+            guard let order else {
                 if case NetworkError.notFound? = error {
                     self?.deleteStoredOrder(siteID: siteID, orderID: orderID) {
                         onCompletion(nil, error)

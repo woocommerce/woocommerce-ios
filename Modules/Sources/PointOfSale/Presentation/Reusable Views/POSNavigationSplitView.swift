@@ -43,7 +43,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
 
                 NavigationStack(path: $detailNavigationPath) {
                     VStack {
-                        if let selection = selection {
+                        if let selection {
                             detail(selection, $detailNavigationPath)
                                 .frame(maxWidth: .infinity)
                                 .transition(.opacity)

@@ -43,7 +43,7 @@ final class CardPresentModalTapToPayReaderCheckingDeviceSupport: CardPresentPaym
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
-        guard let viewController = viewController else {
+        guard let viewController else {
             return
         }
         WebviewHelper.launch(Constants.learnMoreURL.asURL(), with: viewController)

@@ -29,7 +29,7 @@ struct DefaultShippingValueLocalizer: ShippingValueLocalizer {
     /// Because, API does not support having thousand separators in shipping values like weight and package dimensions.
     ///
     func localized(shippingValue: String?) -> String? {
-        guard let shippingValue = shippingValue else {
+        guard let shippingValue else {
             return nil
         }
         return localizedString(using: shippingValue, from: apiLocale, to: deviceLocale)
@@ -42,7 +42,7 @@ struct DefaultShippingValueLocalizer: ShippingValueLocalizer {
     /// Because, API does not support having thousand separators in shipping values like weight and package dimensions.
     ///
     func unLocalized(shippingValue: String?) -> String? {
-        guard let shippingValue = shippingValue else {
+        guard let shippingValue else {
             return nil
         }
         return localizedString(using: shippingValue, from: deviceLocale, to: apiLocale)

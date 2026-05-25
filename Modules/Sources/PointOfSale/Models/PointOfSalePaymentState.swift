@@ -3,19 +3,32 @@ import Foundation
 struct PointOfSalePaymentState: Equatable {
     var card: PointOfSaleCardPaymentState
     var cash: PointOfSaleCashPaymentState
+    var scanToPay: PointOfSaleScanToPayState
+    var markAsPaid: PointOfSaleMarkAsPaidState
 
-    init(card: PointOfSaleCardPaymentState, cash: PointOfSaleCashPaymentState) {
+    init(card: PointOfSaleCardPaymentState,
+         cash: PointOfSaleCashPaymentState,
+         scanToPay: PointOfSaleScanToPayState = .idle,
+         markAsPaid: PointOfSaleMarkAsPaidState = .idle) {
         self.card = card
         self.cash = cash
+        self.scanToPay = scanToPay
+        self.markAsPaid = markAsPaid
     }
 
     static var idle: PointOfSalePaymentState {
-        .init(card: .idle, cash: .idle)
+        .init(card: .idle, cash: .idle, scanToPay: .idle, markAsPaid: .idle)
     }
 
     var activePaymentMethod: PointOfSalePaymentMethod {
         if cash != .idle {
             return .cash
+        }
+        if scanToPay != .idle {
+            return .scanToPay
+        }
+        if markAsPaid != .idle {
+            return .markAsPaid
         }
         return .card
     }
@@ -24,23 +37,27 @@ struct PointOfSalePaymentState: Equatable {
         switch activePaymentMethod {
         case .cash:
             return cash.shownFullScreen
+        case .scanToPay:
+            return scanToPay.shownFullScreen
+        case .markAsPaid:
+            return markAsPaid.shownFullScreen
         case .card:
             return card.shownFullScreen
         }
     }
 
     var isSuccess: Bool {
-        switch (card, cash) {
-        case (.cardPaymentSuccessful, _):
-            return true
-        case (_, .paymentSuccess):
-            return true
-        default:
-            return false
-        }
+        if case .cardPaymentSuccessful = card { return true }
+        if cash == .paymentSuccess { return true }
+        if case .paymentSuccess = scanToPay { return true }
+        if markAsPaid == .paymentSuccess { return true }
+        return false
     }
 
-    var allowsCashPayment: Bool {
+    /// Whether secondary payment methods can take over the in-flight card flow without
+    /// yanking the rug out of an active reader transaction. Shared between cash, scan-to-pay,
+    /// and mark-as-paid so any future secondary method can plug in here.
+    var allowsSecondaryPaymentMethod: Bool {
         switch card {
         case .idle, .validatingOrderError, .paymentIntentCreationError, .acceptingCard:
             return true
@@ -48,6 +65,21 @@ struct PointOfSalePaymentState: Equatable {
              .paymentError, .cardPaymentSuccessful:
             return false
         }
+    }
+
+    var allowsCashPayment: Bool {
+        guard scanToPay == .idle, markAsPaid == .idle else { return false }
+        return allowsSecondaryPaymentMethod
+    }
+
+    var allowsScanToPayPayment: Bool {
+        guard cash == .idle, markAsPaid == .idle else { return false }
+        return allowsSecondaryPaymentMethod
+    }
+
+    var allowsMarkAsPaidPayment: Bool {
+        guard cash == .idle, scanToPay == .idle else { return false }
+        return allowsSecondaryPaymentMethod
     }
 }
 
@@ -67,6 +99,38 @@ enum PointOfSaleCardPaymentState: Equatable {
 enum PointOfSaleCashPaymentState: Equatable {
     case idle
     case collectingCash
+    case paymentSuccess
+}
+
+/// Stages of the QR-based scan-to-pay flow.
+/// `.showingQRCode(verification:)` carries the polling state so the view can render the
+/// "waiting / detected / errored" status indicator under the QR without separate state.
+enum PointOfSaleScanToPayState: Equatable {
+    case idle
+    case showingQRCode(verification: ScanToPayVerificationStatus)
+    case paymentSuccess
+}
+
+/// Polling state of the gateway-side scan-to-pay payment.
+enum ScanToPayVerificationStatus: Equatable {
+    /// Polling in progress, no payment detected yet.
+    case waiting
+    /// Last polling cycle errored (e.g. transient network failure). The view keeps the QR
+    /// visible while retries continue.
+    case error
+    /// Backend confirmed the payment; the view briefly shows a confirmation indicator before
+    /// the model transitions to `.paymentSuccess`.
+    case confirming
+}
+
+/// Stages of the manual "mark as paid" flow. The `confirming` and `processing` stages stay
+/// inline (alert + spinner over the existing UI); only `paymentSuccess` takes over full-screen.
+enum PointOfSaleMarkAsPaidState: Equatable {
+    case idle
+    /// Confirmation alert is shown to the merchant.
+    case confirming
+    /// Network call in flight (status update sent, awaiting response).
+    case processing
     case paymentSuccess
 }
 
@@ -152,6 +216,36 @@ extension PointOfSaleCashPaymentState {
         case .idle:
             return false
         case .collectingCash, .paymentSuccess:
+            return true
+        }
+    }
+}
+
+extension PointOfSaleScanToPayState {
+    var shownFullScreen: Bool {
+        switch self {
+        case .idle:
+            return false
+        case .showingQRCode, .paymentSuccess:
+            return true
+        }
+    }
+
+    /// Convenience: are we currently presenting the QR code, regardless of verification status.
+    var isShowingQRCode: Bool {
+        if case .showingQRCode = self { return true }
+        return false
+    }
+}
+
+extension PointOfSaleMarkAsPaidState {
+    /// Confirmation alert and processing spinner stay inline (modal over the totals view);
+    /// only `paymentSuccess` takes over full-screen.
+    var shownFullScreen: Bool {
+        switch self {
+        case .idle, .confirming, .processing:
+            return false
+        case .paymentSuccess:
             return true
         }
     }

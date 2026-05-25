@@ -61,5 +61,4 @@ final class BookingViewTests: XCTestCase {
         // When / Then
         XCTAssertEqual(booking.paymentStatusBadge, .unpaid)
     }
-
 }

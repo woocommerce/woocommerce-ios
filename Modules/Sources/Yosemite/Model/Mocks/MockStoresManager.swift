@@ -43,6 +43,7 @@ public class MockStoresManager: StoresManager {
     private let justInTimeMessageActionHandler: MockJustInTimeMessageActionHandler
     private let shippingMethodActionHandler: MockShippingMethodActionHandler
     private let couponActionHandler: MockCouponActionHandler
+    private let supportChatActionHandler: MockSupportChatActionHandler
 
 
 
@@ -79,6 +80,7 @@ public class MockStoresManager: StoresManager {
         justInTimeMessageActionHandler = MockJustInTimeMessageActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shippingMethodActionHandler = MockShippingMethodActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         couponActionHandler = MockCouponActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        supportChatActionHandler = MockSupportChatActionHandler(objectGraph: objectGraph, storageManager: storageManager)
     }
 
     /// Accessor for whether the user is logged in (spoiler: they always will be when mocking)
@@ -163,6 +165,8 @@ public class MockStoresManager: StoresManager {
             shippingMethodActionHandler.handle(action: action)
         case let action as CouponAction:
             couponActionHandler.handle(action: action)
+        case let action as SupportChatAction:
+            supportChatActionHandler.handle(action: action)
         case let action as FeatureFlagAction:
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):

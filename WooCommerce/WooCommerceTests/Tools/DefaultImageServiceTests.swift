@@ -225,7 +225,7 @@ final class DefaultImageServiceTests: XCTestCase {
             XCTAssertNil(error)
 
             // Verify image size
-            if let image = image {
+            if let image {
                 XCTAssertLessThanOrEqual(image.size.width, targetSize.width)
                 XCTAssertLessThanOrEqual(image.size.height, targetSize.height)
                 // Check aspect ratio is maintained (with some floating point tolerance)

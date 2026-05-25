@@ -131,7 +131,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     }
 
     func deleteButtonPressed() {
-        guard let feeID = feeID else {
+        guard let feeID else {
             DDLogError("Failed attempt to delete feeID \(String(describing: feeID))")
             return
         }
@@ -157,7 +157,7 @@ private extension AddCustomAmountViewModel {
 
     func listenToAmountChanges() {
         inputTypeViewModelAdapter.amountPublisher?.map { [weak self] value in
-            guard let self = self else { return false }
+            guard let self else { return false }
 
             return self.amountIsValid(amount: value)
         }.assign(to: &$shouldEnableDoneButton)

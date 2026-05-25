@@ -122,6 +122,7 @@ extension Storage.GeneralStoreSettings {
         analyticsHubCards: NullableCopiableProp<[AnalyticsCard]> = .copy,
         dashboardCards: NullableCopiableProp<[DashboardCard]> = .copy,
         lastSelectedPerformanceTimeRange: CopiableProp<String> = .copy,
+        lastSelectedDashboardRevenueStatsType: CopiableProp<String> = .copy,
         lastSelectedTopPerformersTimeRange: CopiableProp<String> = .copy,
         lastSelectedMostActiveCouponsTimeRange: CopiableProp<String> = .copy,
         lastSelectedStockType: NullableCopiableProp<String> = .copy,
@@ -132,7 +133,8 @@ extension Storage.GeneralStoreSettings {
         lastPOSOpenedDate: NullableCopiableProp<Date> = .copy,
         firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy,
         syncPOSCatalogOverCellular: CopiableProp<Bool> = .copy,
-        lastSunsetWarningDismissedDate: NullableCopiableProp<Date> = .copy
+        lastSunsetWarningDismissedDate: NullableCopiableProp<Date> = .copy,
+        isCardPresentPaymentsCountryExpansionEligible: NullableCopiableProp<Bool> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -147,6 +149,7 @@ extension Storage.GeneralStoreSettings {
         let analyticsHubCards = analyticsHubCards ?? self.analyticsHubCards
         let dashboardCards = dashboardCards ?? self.dashboardCards
         let lastSelectedPerformanceTimeRange = lastSelectedPerformanceTimeRange ?? self.lastSelectedPerformanceTimeRange
+        let lastSelectedDashboardRevenueStatsType = lastSelectedDashboardRevenueStatsType ?? self.lastSelectedDashboardRevenueStatsType
         let lastSelectedTopPerformersTimeRange = lastSelectedTopPerformersTimeRange ?? self.lastSelectedTopPerformersTimeRange
         let lastSelectedMostActiveCouponsTimeRange = lastSelectedMostActiveCouponsTimeRange ?? self.lastSelectedMostActiveCouponsTimeRange
         let lastSelectedStockType = lastSelectedStockType ?? self.lastSelectedStockType
@@ -158,6 +161,7 @@ extension Storage.GeneralStoreSettings {
         let firstPOSCatalogSyncDate = firstPOSCatalogSyncDate ?? self.firstPOSCatalogSyncDate
         let syncPOSCatalogOverCellular = syncPOSCatalogOverCellular ?? self.syncPOSCatalogOverCellular
         let lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate ?? self.lastSunsetWarningDismissedDate
+        let isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible ?? self.isCardPresentPaymentsCountryExpansionEligible
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -173,6 +177,7 @@ extension Storage.GeneralStoreSettings {
             analyticsHubCards: analyticsHubCards,
             dashboardCards: dashboardCards,
             lastSelectedPerformanceTimeRange: lastSelectedPerformanceTimeRange,
+            lastSelectedDashboardRevenueStatsType: lastSelectedDashboardRevenueStatsType,
             lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange,
             lastSelectedMostActiveCouponsTimeRange: lastSelectedMostActiveCouponsTimeRange,
             lastSelectedStockType: lastSelectedStockType,
@@ -183,7 +188,8 @@ extension Storage.GeneralStoreSettings {
             lastPOSOpenedDate: lastPOSOpenedDate,
             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
             syncPOSCatalogOverCellular: syncPOSCatalogOverCellular,
-            lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate
+            lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
+            isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible
         )
     }
 }

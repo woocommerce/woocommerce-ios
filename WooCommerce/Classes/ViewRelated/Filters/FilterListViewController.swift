@@ -196,7 +196,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     //
     @objc private func filterActionButtonTapped() {
         dismiss(animated: true) { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             let criteria = self.viewModel.criteria
@@ -270,7 +270,7 @@ private extension FilterListViewController {
 
     func observeListSelectorCommandItemSelection() {
         selectedFilterTypeSubscription = listSelectorCommand.onItemSelected.sink { [weak self] selected in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

@@ -141,7 +141,7 @@ private extension ProductSlugViewController {
         let placeholder = NSLocalizedString("Slug", comment: "Placeholder in the Product Slug row on Edit Product Slug screen.")
 
         let viewModel = TextFieldTableViewCell.ViewModel(text: productSettings.slug, placeholder: placeholder, onTextChange: { [weak self] newName in
-            if let newName = newName {
+            if let newName {
                 self?.productSettings.slug = newName
             }
             }, onTextDidBeginEditing: {

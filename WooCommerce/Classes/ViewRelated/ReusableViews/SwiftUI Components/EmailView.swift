@@ -35,7 +35,6 @@ struct EmailView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: MFMailComposeViewController,
                                 context: UIViewControllerRepresentableContext<EmailView>) {
-
     }
 
     /// Returns a Boolean that indicates whether the current device is able to send email.

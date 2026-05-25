@@ -8,7 +8,6 @@ protocol InfoDictionaryObjectProvider {
 }
 
 extension Bundle: InfoDictionaryObjectProvider {
-
 }
 
 /// Provides a simpler interface to the `Bundle` (`Info.plist`) settings under the
@@ -49,7 +48,7 @@ struct AppTransportSecuritySettings {
             return !allowsInsecureHTTPLoads
         }
 
-        guard let settings = settings else {
+        guard let settings else {
             return true
         }
 

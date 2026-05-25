@@ -57,7 +57,7 @@ public final class SitePluginStore: Store {
 private extension SitePluginStore {
     func synchronizeSitePlugins(siteID: Int64, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         remote.loadPlugins(for: siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let plugins):
                 self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: plugins, completionHandler: completionHandler)
@@ -69,7 +69,7 @@ private extension SitePluginStore {
 
     func installSitePlugin(siteID: Int64, slug: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.installPlugin(for: siteID, slug: slug) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let plugin):
                 self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: [plugin], completionHandler: onCompletion)
@@ -81,7 +81,7 @@ private extension SitePluginStore {
 
     func activateSitePlugin(siteID: Int64, pluginName: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.activatePlugin(for: siteID, pluginName: pluginName) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let plugin):
                 guard plugin.status == .active else {
@@ -97,7 +97,7 @@ private extension SitePluginStore {
 
     func getPluginDetails(siteID: Int64, pluginName: String, onCompletion: @escaping (Result<SitePlugin, Error>) -> Void) {
         remote.getPluginDetails(for: siteID, pluginName: pluginName) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let plugin):
                 self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: [plugin]) { result in

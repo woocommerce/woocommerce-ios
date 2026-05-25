@@ -115,7 +115,7 @@ private extension EnhancedCouponListViewController {
             self?.couponListViewController?.refreshCouponList()
         })
         let addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.dismiss(animated: true)
         })
         present(addEditHostingController, animated: true)
@@ -125,7 +125,7 @@ private extension EnhancedCouponListViewController {
         ServiceLocator.analytics.track(.couponsListCreateTapped)
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: Localization.createCouponAction)
         let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedType in
-            guard let self = self else { return }
+            guard let self else { return }
             self.presentedViewController?.dismiss(animated: true, completion: nil)
             self.startCouponCreation(discountType: selectedType)
         }
@@ -137,10 +137,10 @@ private extension EnhancedCouponListViewController {
 
     func showDetails(from coupon: Coupon) {
         let detailsViewModel = CouponDetailsViewModel(coupon: coupon, onUpdate: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.couponListViewController?.refreshCouponList()
         }, onDeletion: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.navigationController?.popViewController(animated: true)
             let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
             self.noticePresenter.enqueue(notice: notice)

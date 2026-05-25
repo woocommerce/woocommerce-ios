@@ -131,7 +131,7 @@ private extension RefundedProductsDataSource {
 //
 private extension RefundedProductsDataSource {
     func lookUpProduct(by productID: Int64) -> OrderDetailsProduct? {
-        return products.filter({ $0.productID == productID }).first
+        return products.first(where: { $0.productID == productID })
     }
 }
 

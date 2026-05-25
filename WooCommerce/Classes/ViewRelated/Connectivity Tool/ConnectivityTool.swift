@@ -17,6 +17,9 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     ///
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
+    /// Retains the support escalation coordinator while the flow is active.
+    ///
+    private var supportEscalationCoordinator: SupportEscalationCoordinator?
 
     init() {
         viewModel = ConnectivityToolViewModel()
@@ -28,9 +31,22 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         // Bind cards to view
         viewModel.$cards.sink { [weak self] cards in
             self?.rootView.cards = cards
+        }
+        .store(in: &subscriptions)
+
+        // Bind chat button visibility
+        viewModel.$showChatButton.sink { [weak self] show in
+            self?.rootView.showChatButton = show
+        }
+        .store(in: &subscriptions)
+
+        // Bind contact support button visibility
+        viewModel.$showContactSupportButton.sink { [weak self] show in
+            self?.rootView.showContactSupportButton = show
         }
         .store(in: &subscriptions)
 
@@ -65,6 +81,11 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         rootView.onContactSupportTapped = { [weak self] in
             self?.showContactSupportForm()
         }
+
+        // Listen to the chat with support button
+        rootView.onChatWithSupportTapped = { [weak self] in
+            self?.showSupportChat()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -81,22 +102,89 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         coordinator.startSetup()
     }
 
-    private func showContactSupportForm() {
-        let attachments: [ZendeskAttachment] = {
-            guard let troubleshootingDescription = self.viewModel.troubleshootingDescription(),
-                  let data = troubleshootingDescription.data(using: .utf8) else { return [] }
-            return [
-                ZendeskAttachment(
-                    data: data,
-                    filename: "connectivitytest_log.txt",
-                    contentType: "text/plain"
-                )
-            ]
-        }()
-        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(attachments: attachments))
+    private func showContactSupportForm(sourceTag: String? = nil,
+                                        additionalTags: [String] = [],
+                                        chatTranscript: String? = nil,
+                                        preselectedArea: SupportFormViewModel.Area? = nil) {
+        var attachments: [ZendeskAttachment] = []
+
+        if let troubleshootingDescription = viewModel.troubleshootingDescription(),
+           let data = troubleshootingDescription.data(using: .utf8) {
+            attachments.append(ZendeskAttachment(
+                data: data,
+                filename: "connectivitytest_log.txt",
+                contentType: "text/plain"
+            ))
+        }
+
+        if let transcript = chatTranscript,
+           !transcript.isEmpty,
+           let data = transcript.data(using: .utf8) {
+            attachments.append(ZendeskAttachment(
+                data: data,
+                filename: "support_chat_transcript.txt",
+                contentType: "text/plain"
+            ))
+        }
+
+        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(
+            sourceTag: sourceTag,
+            additionalTags: additionalTags,
+            attachments: attachments,
+            preselectedArea: preselectedArea
+        ))
         supportController.show(from: self)
 
         ServiceLocator.analytics.track(event: .ConnectivityTool.contactSupportTapped())
+    }
+
+    private func showSupportChat() {
+        var viewModelHolder: SupportChatViewModel?
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+            self?.navigationController?.popViewController(animated: true)
+            self?.handleContactHumanSupport(chatID: chatID,
+                                            transcript: transcript,
+                                            supportAreaInfo: supportAreaInfo,
+                                            entryPoint: entryPoint,
+                                            onTicketCreated: { [weak viewModelHolder] in
+                                                viewModelHolder?.markChatTicketCreated()
+                                            })
+        }
+        viewModelHolder = chatViewModel
+
+        let chatController = SupportChatHostingController(viewModel: chatViewModel)
+        chatController.show(from: self)
+    }
+
+    private func handleContactHumanSupport(chatID: Int64?,
+                                           transcript: String,
+                                           supportAreaInfo: SupportAreaInfo?,
+                                           entryPoint: SupportChatViewModel.EntryPoint,
+                                           onTicketCreated: @escaping () -> Void) {
+        supportEscalationCoordinator = SupportEscalationCoordinator(
+            navigationController: navigationController,
+            additionalAttachmentsProvider: { [weak self] in
+                self?.buildTroubleshootingAttachment() ?? []
+            },
+            onTicketCreated: onTicketCreated
+        )
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID,
+                                                       transcript: transcript,
+                                                       supportAreaInfo: supportAreaInfo,
+                                                       entryPoint: entryPoint,
+                                                       siteAddress: viewModel.siteURL)
+    }
+
+    private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {
+        guard let troubleshootingDescription = viewModel.troubleshootingDescription(),
+              let data = troubleshootingDescription.data(using: .utf8) else {
+            return []
+        }
+        return [ZendeskAttachment(
+            data: data,
+            filename: "connectivitytest_log.txt",
+            contentType: "text/plain"
+        )]
     }
 }
 
@@ -131,6 +219,18 @@ struct ConnectivityTool: View {
     ///
     var onContactSupportTapped: (() -> ())?
 
+    /// Closure to be invoked when the "Chat with Support" button is tapped.
+    ///
+    var onChatWithSupportTapped: (() -> ())?
+
+    /// Whether the chat button should be shown.
+    ///
+    var showChatButton: Bool = false
+
+    /// Whether the contact support button should be shown.
+    ///
+    var showContactSupportButton: Bool = false
+
     /// Internal layout values
     ///
     private static let dividerVerticalSpacing = 8.0
@@ -159,11 +259,19 @@ struct ConnectivityTool: View {
 
             Divider().ignoresSafeArea()
 
-            Button(Localization.contactSupport) {
-                onContactSupportTapped?()
+            if showChatButton {
+                Button(Localization.chatWithSupport) {
+                    onChatWithSupportTapped?()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding()
+            } else if showContactSupportButton {
+                Button(Localization.contactSupport) {
+                    onContactSupportTapped?()
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .padding()
             }
-            .buttonStyle(SecondaryButtonStyle())
-            .padding()
         }
         .background(Color(uiColor: .listBackground))
         .navigationTitle(Localization.title)
@@ -177,6 +285,11 @@ private extension ConnectivityTool {
                                                 comment: "Subtitle on the connectivity tool screen")
         static let contactSupport = NSLocalizedString("Contact Support",
                                                       comment: "Contact support button in the connectivity tool screen")
+        static let chatWithSupport = NSLocalizedString(
+            "connectivityTool.chatWithSupport",
+            value: "Chat with Support",
+            comment: "Button to open AI chat support in the connectivity tool screen"
+        )
         static let title = NSLocalizedString(
             "connectivityTool.title",
             value: "Troubleshoot Connection",
@@ -233,7 +346,7 @@ struct ConnectivityToolCard: View {
                 EmptyView()
             case .error:
                 Image(uiImage: .exclamationFilledImage)
-                    .foregroundColor(Color.init(uiColor: .error))
+                    .foregroundColor(Color(uiColor: .error))
             }
         }
 

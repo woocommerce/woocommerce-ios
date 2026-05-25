@@ -47,14 +47,25 @@ private extension POSOrderPriceChangeDetector {
         default:
             priceString = nil
         }
-        guard let priceString else { return nil }
-        return NSDecimalNumber(string: priceString)
+        // `Decimal(string:)` returns nil for empty/invalid input. `NSDecimalNumber(string:)`
+        // returns `.notANumber`, which raises on subsequent arithmetic — the source of
+        // the production overflow crash this helper has hit.
+        guard let priceString,
+              let decimal = Decimal(string: priceString) else { return nil }
+        return NSDecimalNumber(decimal: decimal)
     }
 
     func priceMatches(_ cartUnitPrice: NSDecimalNumber, orderItem: OrderItem) -> Bool {
         let expectedLineTotal = cartUnitPrice.multiplying(by: NSDecimalNumber(decimal: orderItem.quantity))
-        let exTaxSubtotal = NSDecimalNumber(string: orderItem.subtotal)
-        let taxInclusiveSubtotal = exTaxSubtotal.adding(NSDecimalNumber(string: orderItem.subtotalTax))
+        // If the order's subtotal can't be parsed there's nothing to compare against —
+        // trust the server and don't flag a price change so we don't block checkout.
+        guard let subtotalDecimal = Decimal(string: orderItem.subtotal) else { return true }
+        let exTaxSubtotal = NSDecimalNumber(decimal: subtotalDecimal)
+        // `subtotalTax` is empty for tax-exempt items, fees, or zero-tax jurisdictions.
+        // Treat unparseable / empty as zero rather than letting `.notANumber` propagate
+        // and raise on the `.adding(...)` below.
+        let taxDecimal = Decimal(string: orderItem.subtotalTax) ?? 0
+        let taxInclusiveSubtotal = exTaxSubtotal.adding(NSDecimalNumber(decimal: taxDecimal))
 
         return approximatelyEqual(expectedLineTotal, exTaxSubtotal)
             || approximatelyEqual(expectedLineTotal, taxInclusiveSubtotal)

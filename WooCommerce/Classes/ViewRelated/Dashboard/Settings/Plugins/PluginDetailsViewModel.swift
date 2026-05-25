@@ -46,7 +46,7 @@ final class PluginDetailsViewModel: ObservableObject {
     let updatePluginTitle: String
 
     var updateAvailable: Bool {
-        guard let plugin = plugin else {
+        guard let plugin else {
             return false
         }
         return !VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: plugin.versionLatest)
@@ -118,7 +118,7 @@ private extension PluginDetailsViewModel {
     }
 
     private func updateAvailable(for plugin: SystemPlugin?) -> Bool {
-        guard let plugin = plugin else {
+        guard let plugin else {
             return false
         }
         return !VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: plugin.versionLatest)

@@ -12,5 +12,4 @@ public enum WooConstants {
 
     /// Slug of the free plan
     public static let freePlanSlug = "free_plan"
-
 }

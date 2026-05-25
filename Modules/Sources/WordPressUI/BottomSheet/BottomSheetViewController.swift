@@ -15,17 +15,17 @@ public class BottomSheetViewController: UIViewController {
 
         enum Header {
             static let spacing: CGFloat = 16
-            static let insets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 18)
+            static let insets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 18)
         }
 
         enum Button {
             static let height: CGFloat = 54
-            static let contentInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 35)
-            static let titleInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
+            static let contentInsets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 35)
+            static let titleInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
         }
 
         enum Stack {
-            static let insets: UIEdgeInsets = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)
+            static let insets = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)
         }
     }
 
@@ -80,7 +80,7 @@ public class BottomSheetViewController: UIViewController {
             } else {
                 modalPresentationStyle = .popover
 
-                if let sourceBarButtonItem = sourceBarButtonItem {
+                if let sourceBarButtonItem {
                     popoverPresentationController?.barButtonItem = sourceBarButtonItem
                 } else {
                     popoverPresentationController?.permittedArrowDirections = arrowDirections
@@ -91,7 +91,6 @@ public class BottomSheetViewController: UIViewController {
                 popoverPresentationController?.delegate = self
                 popoverPresentationController?.backgroundColor = view.backgroundColor
             }
-
         } else {
             transitioningDelegate = self
             modalPresentationStyle = .custom
@@ -145,7 +144,7 @@ public class BottomSheetViewController: UIViewController {
             gripButton.heightAnchor.constraint(equalToConstant: Constants.gripHeight)
         ])
 
-        guard let childViewController = childViewController else {
+        guard let childViewController else {
             return
         }
 
@@ -293,7 +292,7 @@ extension BottomSheetViewController: DrawerPresentable {
     }
 
     public func handleDismiss() {
-        if let childViewController = childViewController {
+        if let childViewController {
             childViewController.handleDismiss()
         }
     }

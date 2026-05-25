@@ -224,7 +224,6 @@ private extension BillingInformationViewController {
         ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
                                                                              "status": order.status.rawValue,
                                                                              "type": "call"])
-
     }
 
     /// Initiate communication with a customer via message
@@ -577,7 +576,7 @@ private extension BillingInformationViewController {
     ///   - includeTrailingNewline: It true, insert a trailing newline; defaults to true
     ///
     func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
-        guard var text = text, text.isEmpty == false else {
+        guard var text, text.isEmpty == false else {
             return
         }
         if includeTrailingNewline {

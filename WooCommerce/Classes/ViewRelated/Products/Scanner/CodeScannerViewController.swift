@@ -40,7 +40,7 @@ final class CodeScannerViewController: UIViewController {
     private var rotationCoordinator: AVCaptureDevice.RotationCoordinator?
     private var cancellables = Set<AnyCancellable>()
 
-    private lazy var throttler: Throttler = Throttler(seconds: 0.1)
+    private lazy var throttler = Throttler(seconds: 0.1)
 
     private let instructionText: String
     private let format: ScannedCodeFormat
@@ -104,7 +104,7 @@ extension CodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegat
         throttler.throttle { [weak self] in
             // Access of view frame is required on the main thread.
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 let orientation = self.imageOrientationFromDeviceOrientation()
                 guard let ciImage = self.imageForBarcodeDetection(from: sampleBuffer, orientation: orientation) else {
@@ -112,7 +112,7 @@ extension CodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegat
                 }
 
                 DispatchQueue.global().async { [weak self] in
-                    guard let self = self else { return }
+                    guard let self else { return }
 
                     // Configures options for `VNImageRequestHandler`.
                     var requestOptions: [VNImageOption: Any] = [:]
@@ -192,7 +192,7 @@ private extension CodeScannerViewController {
 
         rotationCoordinator?.publisher(for: \.videoRotationAngleForHorizonLevelPreview)
             .sink { [weak self] angle in
-                guard let self = self,
+                guard let self,
                       let connection = self.previewLayer?.connection else { return }
                 connection.videoRotationAngle = angle
             }
@@ -241,7 +241,7 @@ private extension CodeScannerViewController {
         }.uniqued()
 
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             guard self.session.isRunning, barcodes.isNotEmpty else {
                 return
             }
@@ -392,7 +392,7 @@ private extension CodeScannerViewController {
         var deviceInput: AVCaptureDeviceInput!
         do {
             deviceInput = try AVCaptureDeviceInput(device: validDevice)
-        } catch let error {
+        } catch {
             DDLogError("Error creating device input: \(error)")
             return
         }

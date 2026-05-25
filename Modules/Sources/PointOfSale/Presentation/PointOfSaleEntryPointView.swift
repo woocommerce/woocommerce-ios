@@ -5,7 +5,6 @@ import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCartProductObserving
 import class Yosemite.POSCartProductObserver
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
-import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
@@ -29,7 +28,6 @@ public struct PointOfSaleEntryPointView: View {
     @StateObject private var posSheetManager = POSSheetManager()
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var orderListModel: POSOrderListModel
-    @State private var bookingsModel: POSBookingsModel?
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -52,8 +50,9 @@ public struct PointOfSaleEntryPointView: View {
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
     private let cartProductObserver: POSCartProductObserving?
     private let isLocalCatalogEligible: Bool
-    private let isBookingsEligible: Bool
     private let sunsetWarningChecker: POSSunsetWarningChecking?
+    private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
+    private let preferredConnectionMethod: CardReaderConnectionMethod
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -62,8 +61,6 @@ public struct PointOfSaleEntryPointView: View {
          couponProvider: PointOfSaleCouponServiceProtocol,
          couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol,
          orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
-         bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol,
-         isBookingsEligible: Bool,
          orderService: POSOrderServiceProtocol,
          refundsService: POSRefundsServiceProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
@@ -82,6 +79,8 @@ public struct PointOfSaleEntryPointView: View {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
+         tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -90,7 +89,7 @@ public struct PointOfSaleEntryPointView: View {
 
         // Use observable controller with GRDB if local catalog is eligible,
         // otherwise fall back to standard controller.
-        if isLocalCatalogEligible, let grdbManager = grdbManager, let catalogSyncCoordinator {
+        if isLocalCatalogEligible, let grdbManager, let catalogSyncCoordinator {
             self.itemsController = PointOfSaleObservableItemsController(
                 siteID: siteID,
                 grdbManager: grdbManager,
@@ -152,17 +151,6 @@ public struct PointOfSaleEntryPointView: View {
                                                       currencySettingsProvider: services.currency,
                                                       currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
-        if isBookingsEligible && services.featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) {
-            let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory)
-            self.bookingsModel = POSBookingsModel(
-                bookingsController: bookingsController,
-                cardPresentPaymentService: cardPresentPaymentService,
-                orderService: orderService,
-                receiptSender: receiptSender,
-                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-        } else {
-            self.bookingsModel = nil
-        }
         if isLocalCatalogEligible, let grdbManager {
             self.cartProductObserver = POSCartProductObserver(
                 siteID: siteID,
@@ -177,8 +165,9 @@ public struct PointOfSaleEntryPointView: View {
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
-        self.isBookingsEligible = isBookingsEligible
         self.sunsetWarningChecker = sunsetWarningChecker
+        self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
+        self.preferredConnectionMethod = preferredConnectionMethod
     }
 
     public var body: some View {
@@ -214,7 +203,12 @@ public struct PointOfSaleEntryPointView: View {
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 cartProductObserver: cartProductObserver,
                 isLocalCatalogEligible: isLocalCatalogEligible,
-                sunsetWarningChecker: sunsetWarningChecker)
+                sunsetWarningChecker: sunsetWarningChecker,
+                tapToPayAvailabilityController: tapToPayAvailabilityChecker.map { checker in
+                    POSTapToPayAvailabilityController(availabilityChecker: checker,
+                                                      analytics: services.analytics)
+                },
+                preferredConnectionMethod: preferredConnectionMethod)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)
@@ -222,15 +216,12 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posConnectivityProvider, services.connectivity)
         .environment(\.posExternalNavigation, services.externalNavigation)
         .environment(\.posExternalViews, services.externalViews)
-        .environment(\.posBookingsEligible, isBookingsEligible)
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
         .environment(orderListModel)
-        .if(bookingsModel != nil) { view in
-            view.environment(bookingsModel!)
-        }
         .environment(\.siteTimezone, siteTimezone)
+        .environment(\.posLayoutScale, horizontalSizeClass == .compact ? .phone : .tablet)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -252,8 +243,6 @@ public struct PointOfSaleEntryPointView: View {
         couponProvider: PointOfSaleCouponServicePreview(),
         couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryPreview(),
         orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryPreview(),
-        bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryPreview(),
-        isBookingsEligible: true,
         orderService: POSOrderServicePreview(),
         refundsService: POSRefundsServicePreview(),
         onPointOfSaleModeActiveStateChange: { _ in },

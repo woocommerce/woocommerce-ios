@@ -21,7 +21,7 @@ final class ProductImagePickerViewController: UIHostingController<ProductImagePi
         super.viewDidLoad()
 
         // Set presentation delegate to track the user dismiss flow event
-        if let navigationController = navigationController {
+        if let navigationController {
             navigationController.presentationController?.delegate = self
         } else {
             presentationController?.delegate = self

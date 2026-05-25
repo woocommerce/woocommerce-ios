@@ -58,7 +58,7 @@ final class MediaFileManager {
     func createLocalMediaURL(filename: String, fileExtension: String?) throws -> URL {
         let baseURL = try createDirectoryURL()
         let url: URL
-        if let fileExtension = fileExtension {
+        if let fileExtension {
             let basename = (filename as NSString).deletingPathExtension.lowercased()
             url = baseURL.appendingPathComponent(basename, isDirectory: false)
                 .appendingPathExtension(fileExtension)

@@ -725,7 +725,6 @@ private extension WooShippingStore {
             storageShipment?.shippingLabel = storageShippingLabel
 
             return storageShippingLabel.toReadOnly()
-
         }, completion: { result in
             switch result {
             case .success(let label):
@@ -869,7 +868,7 @@ private extension WooShippingStore {
 
         // Now, remove any objects that exist in storageShipment.items but not in readOnlyShipment.items
         storageItemsArray.forEach { storageItem in
-            if readOnlyShipment.items.first(where: { $0.id == storageItem.id } ) == nil {
+            if !readOnlyShipment.items.contains(where: { $0.id == storageItem.id }) {
                 storageShipment.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
             }

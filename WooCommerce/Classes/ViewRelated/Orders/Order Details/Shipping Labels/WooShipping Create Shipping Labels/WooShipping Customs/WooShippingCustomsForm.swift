@@ -199,7 +199,6 @@ struct WooShippingCustomsForm: View {
                     .padding(Constants.bottomButtonPadding)
                 }
             }
-
         }
     }
 }
@@ -251,9 +250,7 @@ extension WooShippingCustomsForm {
         static let valueRequiredWarning = NSLocalizedString("wooShipping.customs.valueRequiredWarning",
                                                    value: "Value required",
                                                    comment: "Footnote when a required value is missing")
-
     }
-
 }
 
 extension WooShippingCustomsForm {

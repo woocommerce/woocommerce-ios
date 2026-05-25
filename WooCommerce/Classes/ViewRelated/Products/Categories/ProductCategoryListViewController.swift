@@ -111,7 +111,7 @@ private extension ProductCategoryListViewController {
 
         viewModel.$selectedCategories.combineLatest(viewModel.$categoryViewModels)
             .map { [weak self] selectedItems, models -> Bool in
-                guard let self = self, self.configuration.clearSelectionEnabled else {
+                guard let self, self.configuration.clearSelectionEnabled else {
                     return true
                 }
                 return selectedItems.isEmpty || models.isEmpty
@@ -143,7 +143,7 @@ private extension ProductCategoryListViewController {
 
         viewModel.$syncCategoriesState.combineLatest(viewModel.$categoryViewModels)
             .sink { [weak self] syncState, models in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.emptyStateViewController.view.isHidden = true
                 self.tableView.isHidden = false
                 switch syncState {

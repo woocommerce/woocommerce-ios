@@ -27,7 +27,7 @@ public extension Publishers {
 
 private extension Notification {
     var keyboardFrame: CGRect {
-        guard let userInfo = userInfo,
+        guard let userInfo,
               let keyboardFrameValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {
             return .zero
         }

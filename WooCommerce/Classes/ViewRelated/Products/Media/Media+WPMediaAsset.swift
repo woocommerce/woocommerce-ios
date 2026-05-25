@@ -14,7 +14,7 @@ extension CancellableMedia: WPMediaAsset {
         // extension.
         let imageService = ServiceLocator.imageService
         imageService.retrieveImageFromCache(with: url) { [weak self] (image) in
-            if let image = image {
+            if let image {
                 completionHandler(image, nil)
                 return
             }

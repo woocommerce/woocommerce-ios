@@ -60,12 +60,12 @@ private extension ProductCategoryStore {
     func synchronizeAllProductCategories(siteID: Int64, fromPageNumber: Int, onCompletion: @escaping (ProductCategoryActionError?) -> Void) {
         // Start fetching the provided initial page
         synchronizeProductCategories(siteID: siteID, pageNumber: fromPageNumber, pageSize: Constants.defaultMaxPageSize) { [weak self] categories, error in
-            guard let self = self  else {
+            guard let self  else {
                 return
             }
 
             // If there is an error, end the recursion and call `onCompletion` with an `error`
-            if let error = error {
+            if let error {
                 let synchronizationError = ProductCategoryActionError.categoriesSynchronization(pageNumber: fromPageNumber, rawError: error)
                 onCompletion(synchronizationError)
                 return
@@ -78,7 +78,7 @@ private extension ProductCategoryStore {
             }
 
             // If categories is empty, end the recursion and call `onCompletion`
-            if let categories = categories, categories.isEmpty {
+            if let categories, categories.isEmpty {
                 onCompletion(nil)
                 return
             }
@@ -92,7 +92,7 @@ private extension ProductCategoryStore {
     ///
     func synchronizeProductCategories(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping ([ProductCategory]?, Error?) -> Void) {
         remote.loadAllProductCategories(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (productCategories, error) in
-            guard let productCategories = productCategories else {
+            guard let productCategories else {
                 onCompletion(nil, error)
                 return
             }

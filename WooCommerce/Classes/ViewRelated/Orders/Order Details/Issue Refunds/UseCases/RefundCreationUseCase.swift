@@ -60,7 +60,7 @@ struct RefundCreationUseCase {
                             total: calculateTotal(of: refundable))
         }
 
-        if let shippingLine = shippingLine {
+        if let shippingLine {
             refundItems.append(createShippingItem(from: shippingLine))
         }
 
@@ -89,7 +89,6 @@ struct RefundCreationUseCase {
                             taxes: createTaxes(from: feeLine),
                             total: feeLine.total)
         }
-
     }
 
     /// Creates an array of `OrderItemTaxRefund` from the tax lines in the provided `RefundableOrderItem`

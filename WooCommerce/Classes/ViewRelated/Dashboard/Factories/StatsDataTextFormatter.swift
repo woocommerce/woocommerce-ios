@@ -21,6 +21,22 @@ struct StatsDataTextFormatter {
                             numberOfFractionDigits: numberOfFractionDigits)
     }
 
+    /// Creates the text to display for revenue using the selected metric (Gross / Net / Total).
+    ///
+    /// "Total" preserves the existing card behavior (API's `total_sales`). "Gross" and "Net" surface
+    /// the corresponding fields. Falls back to the placeholder when the value is missing.
+    static func createRevenueText(orderStats: OrderStatsV4?,
+                                  selectedIntervalIndex: Int?,
+                                  revenueType: DashboardRevenueStatsType,
+                                  currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                                  currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                                  numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
+        return formatAmount(revenue(for: revenueType, at: selectedIntervalIndex, orderStats: orderStats),
+                            currencyFormatter: currencyFormatter,
+                            currencyCode: currencyCode,
+                            numberOfFractionDigits: numberOfFractionDigits)
+    }
+
     /// Creates the text to display for the net revenue (totals only, no interval support).
     ///
     static func createNetRevenueText(orderStats: OrderStatsV4?,
@@ -341,6 +357,34 @@ private extension StatsDataTextFormatter {
             return orderStats.subtotals.grossRevenue
         } else if let orderStats {
             return orderStats.totals.grossRevenue
+        } else {
+            return nil
+        }
+    }
+
+    /// Retrieves the revenue value for the given metric, optionally at a specific interval.
+    ///
+    static func revenue(for revenueType: DashboardRevenueStatsType,
+                        at selectedIndex: Int?,
+                        orderStats: OrderStatsV4?) -> Decimal? {
+        switch revenueType {
+        case .total:
+            return totalRevenue(at: selectedIndex, orderStats: orderStats)
+        case .gross:
+            return grossSales(at: selectedIndex, orderStats: orderStats)
+        case .net:
+            return netRevenue(at: selectedIndex, orderStats: orderStats)
+        }
+    }
+
+    /// Retrieves the gross sales (`gross_sales`) from the provided order stats and, optionally, a specific interval.
+    ///
+    static func grossSales(at selectedIndex: Int?, orderStats: OrderStatsV4?) -> Decimal? {
+        let orderStatsIntervals = StatsIntervalDataParser.sortStatsIntervals(from: orderStats)
+        if let selectedIndex, selectedIndex < orderStatsIntervals.count {
+            return orderStatsIntervals[selectedIndex].subtotals.grossSales
+        } else if let orderStats {
+            return orderStats.totals.grossSales
         } else {
             return nil
         }

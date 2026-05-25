@@ -386,7 +386,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         ))
         mockItemMapper.mockMappedVariations = [expectedItem]
 
-        let parentProduct = POSVariableParentProduct.init(id: POSItemIdentifier(underlyingType: .product, itemID: 1),
+        let parentProduct = POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1),
                                                           name: "Test Variable Product",
                                                           productImageSource: nil,
                                                           productID: 1)

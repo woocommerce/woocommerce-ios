@@ -157,7 +157,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return false
         }
 
-        guard let headerSection = headerSection,
+        guard let headerSection,
               case let .header(headerContent) = headerSection.content else {
             XCTFail("Header section not found")
             return
@@ -202,7 +202,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return false
         }
 
-        guard let customerSection = customerSection,
+        guard let customerSection,
               case let .customer(customerContent) = customerSection.content else {
             XCTFail("Customer section not found")
             return
@@ -249,7 +249,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return false
         }
 
-        guard let customerSection = customerSection,
+        guard let customerSection,
               case let .customer(customerContent) = customerSection.content else {
             XCTFail("Customer section not found")
             return
@@ -352,7 +352,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return false
         }
 
-        guard let headerSection = headerSection,
+        guard let headerSection,
               case let .header(headerContent) = headerSection.content else {
             XCTFail("Header section not found")
             return
@@ -423,7 +423,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return false
         }
 
-        guard let paymentSection = paymentSection,
+        guard let paymentSection,
               case let .payment(paymentContent) = paymentSection.content else {
             XCTFail("Payment section not found")
             return
@@ -465,7 +465,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return false
         }
 
-        guard let appointmentSection = appointmentSection,
+        guard let appointmentSection,
               case let .appointmentDetails(content) = appointmentSection.content else {
             XCTFail("Appointment details section not found")
             return

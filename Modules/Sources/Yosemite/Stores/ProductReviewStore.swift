@@ -99,7 +99,7 @@ private extension ProductReviewStore {
     ///
     func retrieveProductReview(siteID: Int64, reviewID: Int64, onCompletion: @escaping (Networking.ProductReview?, Error?) -> Void) {
         remote.loadProductReview(for: siteID, reviewID: reviewID) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

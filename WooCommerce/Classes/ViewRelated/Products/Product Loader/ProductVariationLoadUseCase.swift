@@ -47,7 +47,7 @@ final class ProductVariationLoadUseCase {
         stores.dispatch(productAction)
 
         group.notify(queue: .main) {
-            guard let parentProductResult = parentProductResult, let productVariationResult = productVariationResult else {
+            guard let parentProductResult, let productVariationResult else {
                 assertionFailure("Unexpected nil result after updating product and password remotely")
                 onCompletion(.failure(.init(ProductVariationLoadError.unexpected)))
                 return

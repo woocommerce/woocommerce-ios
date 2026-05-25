@@ -127,14 +127,13 @@ extension Storage.Order: ReadOnlyConvertible {
                      shippingLabels: orderShippingLabels,
                      fulfillments: orderFulfillments,
                      createdVia: createdVia)
-
     }
 
 
     // MARK: - Private Helpers
 
     private func createReadOnlyBillingAddress() -> Yosemite.Address? {
-        guard let billingCountry = billingCountry else {
+        guard let billingCountry else {
             return nil
         }
 
@@ -152,7 +151,7 @@ extension Storage.Order: ReadOnlyConvertible {
     }
 
     private func createReadOnlyShippingAddress() -> Yosemite.Address? {
-        guard let shippingCountry = shippingCountry else {
+        guard let shippingCountry else {
             return nil
         }
 

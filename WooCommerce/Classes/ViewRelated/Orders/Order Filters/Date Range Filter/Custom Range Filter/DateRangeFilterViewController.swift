@@ -130,7 +130,7 @@ extension DateRangeFilterViewController: UITableViewDelegate {
         guard startDateExpanded, startDate == nil else { return }
 
         let today = Date()
-        if let endDate = endDate {
+        if let endDate {
             startDate = today <= endDate ? today : endDate
         } else {
             startDate = today
@@ -145,7 +145,7 @@ extension DateRangeFilterViewController: UITableViewDelegate {
         guard endDateExpanded, endDate == nil else { return }
 
         let today = Date()
-        if let startDate = startDate {
+        if let startDate {
             endDate = today >= startDate ? today : startDate
         } else {
             endDate = today
@@ -188,13 +188,13 @@ private extension DateRangeFilterViewController {
     }
 
     func configureStartDatePicker(cell: DatePickerTableViewCell) {
-        if let startDate = startDate {
+        if let startDate {
             cell.getPicker().setDate(startDate, animated: false)
         }
         cell.getPicker().maximumDate = endDate
         cell.getPicker().preferredDatePickerStyle = .inline
         cell.onDateSelected = { [weak self] date in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.startDate = date
@@ -210,13 +210,13 @@ private extension DateRangeFilterViewController {
     }
 
     func configureEndDatePicker(cell: DatePickerTableViewCell) {
-        if let endDate = endDate {
+        if let endDate {
             cell.getPicker().setDate(endDate, animated: false)
         }
         cell.getPicker().minimumDate = startDate
         cell.getPicker().preferredDatePickerStyle = .inline
         cell.onDateSelected = { [weak self] date in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.endDate = date

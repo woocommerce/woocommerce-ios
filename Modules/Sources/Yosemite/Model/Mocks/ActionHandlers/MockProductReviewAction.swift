@@ -25,7 +25,7 @@ struct MockProductReviewActionHandler: MockActionHandler {
         storage.deleteAllObjects(ofType: StorageProductReview.self)
 
         save(mocks: reviews, as: StorageProductReview.self) { error in
-            if let error = error {
+            if let error {
                 onCompletion(.failure(error))
             } else {
                 onCompletion(.success(reviews))

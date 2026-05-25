@@ -457,7 +457,8 @@ final class NotificationStoreTests: XCTestCase {
                 device: self.sampleAPNSDevice(),
                 applicationID: self.sampleApplicationID,
                 deviceLocale: "en_US",
-                appVersion: "1.0.0"
+                appVersion: "1.0.0",
+                availableAsRESTRequest: false
             ) { result in
                 promise(result)
             }
@@ -488,7 +489,8 @@ final class NotificationStoreTests: XCTestCase {
                 device: self.sampleAPNSDevice(),
                 applicationID: self.sampleApplicationID,
                 deviceLocale: "en_US",
-                appVersion: "1.0.0"
+                appVersion: "1.0.0",
+                availableAsRESTRequest: false
             ) { result in
                 promise(result)
             }
@@ -519,7 +521,8 @@ final class NotificationStoreTests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = NotificationAction.unregisterFromSelfDrivenPushNotifications(
                 siteID: self.sampleSiteID,
-                tokenID: self.sampleTokenID
+                tokenID: self.sampleTokenID,
+                availableAsRESTRequest: true
             ) { result in
                 promise(result)
             }
@@ -548,8 +551,123 @@ final class NotificationStoreTests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = NotificationAction.unregisterFromSelfDrivenPushNotifications(
                 siteID: self.sampleSiteID,
-                tokenID: self.sampleTokenID
+                tokenID: self.sampleTokenID,
+                availableAsRESTRequest: true
             ) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success:
+            XCTFail("Expected failure but got success")
+        case .failure(let error):
+            XCTAssertNotNil(error)
+        }
+    }
+
+
+    // MARK: - NotificationAction.loadPushNotificationPreferences
+
+    /// Verifies that `loadPushNotificationPreferences` returns the decoded preferences on success.
+    ///
+    func test_loadPushNotificationPreferences_handles_successful_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/preferences",
+                                 filename: "push-notification-preferences")
+
+        // When
+        let result: Result<PushNotificationPreferences, Error> = waitFor { promise in
+            let action = NotificationAction.loadPushNotificationPreferences(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success(let preferences):
+            XCTAssertEqual(preferences.storeOrder?.enabled, true)
+            XCTAssertEqual(preferences.storeReview?.enabled, true)
+            XCTAssertEqual(preferences.storeReview?.maxRating, 5)
+            XCTAssertEqual(preferences.storeStock?.enabled, true)
+            XCTAssertEqual(preferences.storeStock?.onBackorder, false)
+        case .failure(let error):
+            XCTFail("Expected success but got error: \(error)")
+        }
+    }
+
+    /// Verifies that `loadPushNotificationPreferences` surfaces an error when the backend returns an error.
+    ///
+    func test_loadPushNotificationPreferences_handles_failure_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/preferences", filename: "generic_error")
+
+        // When
+        let result: Result<PushNotificationPreferences, Error> = waitFor { promise in
+            let action = NotificationAction.loadPushNotificationPreferences(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success:
+            XCTFail("Expected failure but got success")
+        case .failure(let error):
+            XCTAssertNotNil(error)
+        }
+    }
+
+
+    // MARK: - NotificationAction.updatePushNotificationPreferences
+
+    /// Verifies that `updatePushNotificationPreferences` returns the server-merged preferences on success.
+    ///
+    func test_updatePushNotificationPreferences_handles_successful_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/preferences",
+                                 filename: "push-notification-preferences")
+        let changes = PushNotificationPreferences(storeStock: .init(onBackorder: false))
+
+        // When
+        let result: Result<PushNotificationPreferences, Error> = waitFor { promise in
+            let action = NotificationAction.updatePushNotificationPreferences(siteID: self.sampleSiteID,
+                                                                              changes: changes) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success(let preferences):
+            XCTAssertEqual(preferences.storeOrder?.enabled, true)
+            XCTAssertEqual(preferences.storeReview?.maxRating, 5)
+            XCTAssertEqual(preferences.storeStock?.onBackorder, false)
+        case .failure(let error):
+            XCTFail("Expected success but got error: \(error)")
+        }
+    }
+
+    /// Verifies that `updatePushNotificationPreferences` surfaces an error when the backend returns an error.
+    ///
+    func test_updatePushNotificationPreferences_handles_failure_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/preferences", filename: "generic_error")
+        let changes = PushNotificationPreferences(storeOrder: .init(enabled: false))
+
+        // When
+        let result: Result<PushNotificationPreferences, Error> = waitFor { promise in
+            let action = NotificationAction.updatePushNotificationPreferences(siteID: self.sampleSiteID,
+                                                                              changes: changes) { result in
                 promise(result)
             }
             noteStore.onAction(action)
@@ -589,7 +707,6 @@ final class NotificationStoreTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-
 }
 
 // MARK: - Private Methods

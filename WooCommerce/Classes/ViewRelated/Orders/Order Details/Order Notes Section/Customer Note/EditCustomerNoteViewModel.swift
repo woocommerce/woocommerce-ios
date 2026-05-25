@@ -126,7 +126,7 @@ private extension EditCustomerNoteViewModel {
         let modifiedOrder = order.copy(customerNote: customerNote)
 
         let updateAction = makeUpdateAction(order: modifiedOrder) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

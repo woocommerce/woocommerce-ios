@@ -51,7 +51,6 @@ private extension IssueRefundCoordinatingController {
             self?.navigateToItemQuantitySelection(using: command) { selectedQuantity in
                 issueRefundViewController?.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: command.itemIndex)
             }
-
         }
 
         // Next action
@@ -67,7 +66,7 @@ private extension IssueRefundCoordinatingController {
     ///
     func navigateToItemQuantitySelection(using command: RefundItemQuantityListSelectorCommand, onCompletion: @escaping (Int) -> Void) {
         let selectorViewController = ListSelectorViewController(command: command, tableViewStyle: .plain) { selectedQuantity in
-            guard let selectedQuantity = selectedQuantity else {
+            guard let selectedQuantity else {
                 return
             }
             onCompletion(selectedQuantity)

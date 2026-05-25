@@ -6,7 +6,7 @@ struct TaxRateRow: View {
 
     var body: some View {
         HStack {
-            if let onSelect = onSelect {
+            if let onSelect {
                 Button(action: onSelect) {
                     content
                 }

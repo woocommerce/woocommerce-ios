@@ -76,7 +76,7 @@ extension UIImageView {
     ///   This method uses deprecated types. Please check the deprecation warning in `GravatarRatings`. Also check out the UIImageView extension from the Gravatar iOS SDK as an alternative to download images. See: https://github.com/Automattic/Gravatar-SDK-iOS.
     @available(*, deprecated, message: "Usage of the deprecated type: Gravatar.")
     public func downloadGravatar(_ gravatar: Gravatar?, placeholder: UIImage, animate: Bool, failure: ((Error?) -> Void)? = nil) {
-        guard let gravatar = gravatar else {
+        guard let gravatar else {
             self.image = placeholder
             return
         }
@@ -113,7 +113,7 @@ extension UIImageView {
     ///   - email: associated email of the new gravatar
     @objc public func updateGravatar(image: UIImage, email: String?) {
         self.image = image
-        guard let email = email else {
+        guard let email else {
             return
         }
         NotificationCenter.default.post(name: .GravatarImageUpdateNotification, object: self, userInfo: [Defaults.emailKey: email, Defaults.imageKey: image])

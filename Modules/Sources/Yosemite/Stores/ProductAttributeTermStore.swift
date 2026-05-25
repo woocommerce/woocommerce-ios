@@ -28,7 +28,7 @@ public final class ProductAttributeTermStore: Store {
         case let .synchronizeProductAttributeTerms(siteID, attributeID, onCompletion):
             synchronizeAllProductAttributeTerms(siteID: siteID, attributeID: attributeID, fromPageNumber: Store.Default.firstPageNumber) { error in
                 let result: Result<Void, ProductAttributeTermActionError> = {
-                    if let error = error {
+                    if let error {
                         return .failure(error)
                     }
                     return .success(())
@@ -108,7 +108,7 @@ private extension ProductAttributeTermStore {
                                     name: String,
                                     onCompletion: @escaping (Result<ProductAttributeTerm, Error>) -> Void) {
         remote.createProductAttributeTerm(for: siteID, attributeID: attributeID, name: name) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case let .success(term):
                 self.upsertStoredProductAttributeTermsInBackground([term], siteID: siteID, attributeID: attributeID) {

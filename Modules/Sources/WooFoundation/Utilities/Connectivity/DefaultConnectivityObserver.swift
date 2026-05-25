@@ -22,7 +22,7 @@ public final class DefaultConnectivityObserver: ConnectivityObserver {
         self.networkMonitor = networkMonitor
         startObserving()
         networkMonitor.networkUpdateHandler = { [weak self] path in
-            guard let self = self else { return }
+            guard let self else { return }
             DispatchQueue.main.async {
                 self.currentStatus = self.connectivityStatus(from: path)
             }

@@ -10,7 +10,7 @@ public struct WooCommerceComUTMProvider: UTMParametersProviding {
                 content: String?,
                 siteID: Int64?) {
         let siteIDString: String?
-        if let siteID = siteID {
+        if let siteID {
             siteIDString = String(siteID)
         } else {
             siteIDString = nil

@@ -92,11 +92,11 @@ private extension ResultsController {
 
             switch fixedType {
             case .delete:
-                if let indexPath = indexPath {
+                if let indexPath {
                     tableView.deleteRows(at: [indexPath], with: animations.delete)
                 }
             case .insert:
-                if let newIndexPath = newIndexPath {
+                if let newIndexPath {
                     tableView.insertRows(at: [newIndexPath], with: animations.insert)
                 }
             case .move:
@@ -104,11 +104,11 @@ private extension ResultsController {
                     tableView.deleteRows(at: [oldIndexPath], with: animations.move)
                 }
 
-                if let newIndexPath = newIndexPath {
+                if let newIndexPath {
                     tableView.insertRows(at: [newIndexPath], with: animations.move)
                 }
             case .update:
-                if let indexPath = indexPath {
+                if let indexPath {
                     tableView.reloadRows(at: [indexPath], with: animations.update)
                 }
             @unknown default:

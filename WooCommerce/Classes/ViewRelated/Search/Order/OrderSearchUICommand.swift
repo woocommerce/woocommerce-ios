@@ -78,7 +78,7 @@ final class OrderSearchUICommand: SearchUICommand {
     ///
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
         let action = OrderAction.searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { error in
-            if let error = error {
+            if let error {
                 DDLogError("☠️ Order Search Failure! \(error)")
             }
 

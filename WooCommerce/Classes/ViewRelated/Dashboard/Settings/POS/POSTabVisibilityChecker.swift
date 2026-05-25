@@ -11,9 +11,10 @@ import protocol Yosemite.StoresManager
 import class Yosemite.POSEligibilityService
 import enum Yosemite.FeatureFlagAction
 import class Yosemite.SiteAddress
-import protocol Yosemite.CIABEligibilityCheckerProtocol
-import class Yosemite.CIABEligibilityChecker
 import enum Yosemite.POSCountryCurrencyValidator
+import protocol Yosemite.CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
+import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityService
+import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityRefresher
 
 final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let site: Site
@@ -22,7 +23,8 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
+    private let expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher
 
     init(site: Site,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -30,14 +32,19 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService(),
+         expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher? = nil) {
         self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
+        self.expansionEligibilityService = expansionEligibilityService
+        self.expansionEligibilityRefresher = expansionEligibilityRefresher ?? CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            eligibilityService: expansionEligibilityService,
+            remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
+        )
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
@@ -45,7 +52,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
     }
 
-    /// Checks the initial visibility without the `POSTabVisibilityChecker` instsance
+    /// Checks the initial visibility without the `POSTabVisibilityChecker` instance
     /// Used for the initial state check when a site instance hasn't been loaded but a `siteID` is available
     static func checkInitialVisibility(
         for siteID: Int64,
@@ -56,11 +63,8 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
-        guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
-            return false
-        }
-
-        guard userInterfaceIdiom == .pad else {
+        let phonePrototypeEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+        guard userInterfaceIdiom == .pad || phonePrototypeEnabled else {
             return false
         }
 
@@ -103,6 +107,11 @@ private extension POSTabVisibilityChecker {
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
         let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
 
+        // Refresh the per-site IPP country expansion eligibility cache (RSM-637) before
+        // validating, so the country/currency check reflects the latest remote feature
+        // flag rather than a stale or empty cache on first launch.
+        await expansionEligibilityRefresher.refresh(siteID: site.siteID, countryCode: countryCode)
+
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
     }
 
@@ -118,7 +127,12 @@ private extension POSTabVisibilityChecker {
     }
 
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> SiteSettingsEligibilityState {
-        let validationResult = POSCountryCurrencyValidator.validate(countryCode: countryCode, currencyCode: currencyCode)
+        let validationResult = POSCountryCurrencyValidator.validate(
+            countryCode: countryCode,
+            currencyCode: currencyCode,
+            siteID: site.siteID,
+            eligibilityService: expansionEligibilityService
+        )
 
         switch validationResult {
         case .eligible:

@@ -56,13 +56,14 @@ struct UniversalLinkRouter {
     ///
     static func defaultRoutes(navigator: DeepLinkNavigator?) -> [Route] {
         let routes: [Route] = [OrderDetailsRoute(), MyStoreRoute()]
-        guard let navigator = navigator else {
+        guard let navigator else {
             DDLogWarn("⛔️ Unable to create tab bar dependent Universal Link routes, some links will not be handled")
             return routes
         }
         return routes + [PaymentsRoute(deepLinkNavigator: navigator),
                          OrdersRoute(deepLinkNavigator: navigator),
-                         POSRoute(deepLinkNavigator: navigator)]
+                         POSRoute(deepLinkNavigator: navigator),
+                         ReportsRoute(deepLinkNavigator: navigator)]
     }
 
     func handle(url: URL) {

@@ -16,7 +16,7 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
 }
 
 @Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
-    var itemsViewState: ItemsViewState = ItemsViewState(containerState: .content,
+    var itemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))
     private let paginationTracker: AsyncPaginationTracker

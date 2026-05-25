@@ -5,9 +5,11 @@ import Observation
 
 import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
+import struct Yosemite.POSCustomAmount
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
 import protocol Yosemite.POSSearchHistoryProviding
@@ -53,6 +55,12 @@ protocol PointOfSaleAggregateModelProtocol {
         didSet { rebuildCartProductObservation() }
     }
 
+    /// The custom amount currently being edited via the cart pencil button.
+    /// Setting this to a non-`nil` value presents the edit modal; assigning `nil` dismisses it.
+    /// Adding a new custom amount (entry row in the products list) is handled separately
+    /// by the items list view as a navigation push and doesn't go through this state.
+    var editingCustomAmount: POSCustomAmount?
+
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
 
     let entryPointController: POSEntryPointController
@@ -80,6 +88,11 @@ protocol PointOfSaleAggregateModelProtocol {
 
     /// Checker for whether the store needs a POS sunset warning (WC < 10.5)
     private let sunsetWarningChecker: POSSunsetWarningChecking?
+
+    /// Resolves whether Tap to Pay is available for the current device + site. Optional
+    /// so existing callers (previews, tests) keep working — when nil the rest of POS
+    /// behaves as if TTP is not available.
+    private(set) var tapToPayAvailabilityController: POSTapToPayAvailabilityController?
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -131,7 +144,9 @@ protocol PointOfSaleAggregateModelProtocol {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
          cartProductObserver: POSCartProductObserving? = nil,
          isLocalCatalogEligible: Bool = false,
-         sunsetWarningChecker: POSSunsetWarningChecking? = nil) {
+         sunsetWarningChecker: POSSunsetWarningChecking? = nil,
+         tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil,
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -151,6 +166,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.cartProductObserver = cartProductObserver
         self.isLocalCatalogEligible = isLocalCatalogEligible
         self.sunsetWarningChecker = sunsetWarningChecker
+        self.tapToPayAvailabilityController = tapToPayAvailabilityController
 
         // Payment controller is created with cart-specific dependencies.
         // The weak self captures below are safe because paymentModel is owned by self.
@@ -159,6 +175,9 @@ protocol PointOfSaleAggregateModelProtocol {
             cardPresentPaymentService: cardPresentPaymentService,
             orderProvider: POSCartPaymentOrderProvider(orderController: orderController),
             cashPaymentHandler: POSCartCashPaymentHandler(orderController: orderController),
+            scanToPayHandler: POSCartScanToPayHandler(orderController: orderController),
+            scanToPayVerifier: POSCartScanToPayVerifier(orderController: orderController),
+            markAsPaidHandler: POSCartMarkAsPaidHandler(orderController: orderController),
             receiptSender: receiptSender,
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
@@ -169,6 +188,7 @@ protocol PointOfSaleAggregateModelProtocol {
                 }),
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+            preferredConnectionMethod: preferredConnectionMethod,
             paymentState: paymentState)
         weakSelf = self
 
@@ -192,6 +212,8 @@ extension PointOfSaleAggregateModel {
             cart.purchasableItems.removeAll { $0.id == cartItem.id }
         case .coupon:
             cart.coupons.removeAll { $0.id == cartItem.id }
+        case .customAmount:
+            cart.removeCustomAmount(id: cartItem.id)
         }
     }
 
@@ -206,8 +228,20 @@ extension PointOfSaleAggregateModel {
                 cart.purchasableItems.removeAll()
             case .coupon:
                 cart.coupons.removeAll()
+            case .customAmount:
+                cart.customAmounts.removeAll()
             }
         }
+    }
+
+    func upsertCustomAmount(_ customAmount: POSCustomAmount, mode: WooAnalyticsEvent.PointOfSale.CustomAmountMode) {
+        analytics.track(event: .PointOfSale.customAmountSubmitted(mode: mode, isTaxable: customAmount.isTaxable))
+        trackCustomerInteractionStarted()
+        cart.upsertCustomAmount(customAmount)
+    }
+
+    func removeCustomAmount(id: UUID) {
+        cart.removeCustomAmount(id: id)
     }
 
     @MainActor
@@ -417,6 +451,36 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func collectCashPayment(changeDueAmount: String?) async throws {
         try await paymentModel.collectCashPayment(changeDueAmount: changeDueAmount)
+    }
+
+    @MainActor
+    func startScanToPayPayment() async {
+        await paymentModel.startScanToPayPayment()
+    }
+
+    @MainActor
+    func cancelScanToPayPayment() async {
+        await paymentModel.cancelScanToPayPayment()
+    }
+
+    @MainActor
+    func completeScanToPayPayment() async throws {
+        try await paymentModel.completeScanToPayPayment()
+    }
+
+    @MainActor
+    func startMarkAsPaidPayment() {
+        paymentModel.startMarkAsPaidPayment()
+    }
+
+    @MainActor
+    func cancelMarkAsPaidPayment() async {
+        await paymentModel.cancelMarkAsPaidPayment()
+    }
+
+    @MainActor
+    func confirmMarkAsPaidPayment() async throws {
+        try await paymentModel.confirmMarkAsPaidPayment()
     }
 
     @MainActor

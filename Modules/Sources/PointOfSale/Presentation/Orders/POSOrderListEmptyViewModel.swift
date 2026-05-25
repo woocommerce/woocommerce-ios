@@ -29,15 +29,15 @@ private enum Localization {
     )
 
     static let emptyOrdersSubtitle = NSLocalizedString(
-        "pos.orderListView.emptyOrdersSubtitle2",
-        value: "Explore how you can increase your store sales.",
+        "pos.orderListView.emptyOrdersSubtitle.3",
+        value: "Orders will appear here once you start processing sales on the POS.",
         comment: "Subtitle appearing when there are no orders to display."
     )
 
     static let emptyOrdersButtonTitle = NSLocalizedString(
-        "pos.orderListView.emptyOrdersButtonTitle2",
-        value: "Learn more",
-        comment: "Button text for opening an information view when orders when list is empty."
+        "pos.orderListView.emptyOrdersButtonTitle.3",
+        value: "Refresh",
+        comment: "Button text for reloading the orders list when it's empty."
     )
 
     static let emptyOrdersSearchTitle = NSLocalizedString(

@@ -61,7 +61,6 @@ final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
         let remotePlugin = await fetchPluginFromRemote(siteID: siteID)
         return checkIfGoogleAdsIsSupported(plugin: remotePlugin)
     }
-
 }
 
 private extension DefaultGoogleAdsEligibilityChecker {
@@ -81,7 +80,7 @@ private extension DefaultGoogleAdsEligibilityChecker {
     }
 
     func checkIfGoogleAdsIsSupported(plugin: SystemPlugin?) -> Bool {
-        guard let plugin = plugin, plugin.active else {
+        guard let plugin, plugin.active else {
             return false
         }
         return VersionHelpers.isVersionSupported(version: plugin.version,

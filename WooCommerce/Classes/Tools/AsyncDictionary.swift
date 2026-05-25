@@ -28,7 +28,7 @@ final class AsyncDictionary<Key, Value> where Key: Hashable {
         DispatchQueue.global().async {
             let value = operation()
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else {
+                guard let self else {
                     onCompletion(nil)
                     return
                 }

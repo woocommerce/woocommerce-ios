@@ -233,7 +233,8 @@ extension NetworkingCore.OrderFeeLine {
             total: .fake(),
             totalTax: .fake(),
             taxes: .fake(),
-            attributes: .fake()
+            attributes: .fake(),
+            refundedItemID: .fake()
         )
     }
 }
@@ -242,6 +243,25 @@ extension NetworkingCore.OrderFeeTaxStatus {
     ///
     public static func fake() -> NetworkingCore.OrderFeeTaxStatus {
         .taxable
+    }
+}
+extension NetworkingCore.OrderFulfillment {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.OrderFulfillment {
+        .init(
+            siteID: .fake(),
+            orderID: .fake(),
+            fulfillmentID: .fake(),
+            status: .fake(),
+            isFulfilled: .fake(),
+            dateUpdated: .fake(),
+            dateFulfilled: .fake(),
+            trackingNumber: .fake(),
+            shipmentProvider: .fake(),
+            providerName: .fake(),
+            trackingURL: .fake()
+        )
     }
 }
 extension NetworkingCore.OrderFulfillmentStatus {
@@ -424,6 +444,7 @@ extension NetworkingCore.OrderStatsV4Totals {
             totalOrders: .fake(),
             totalItemsSold: .fake(),
             grossRevenue: .fake(),
+            grossSales: .fake(),
             netRevenue: .fake(),
             averageOrderValue: .fake()
         )
@@ -491,7 +512,8 @@ extension NetworkingCore.Refund {
             isAutomated: .fake(),
             createAutomated: .fake(),
             items: .fake(),
-            shippingLines: .fake()
+            shippingLines: .fake(),
+            feeLines: .fake()
         )
     }
 }

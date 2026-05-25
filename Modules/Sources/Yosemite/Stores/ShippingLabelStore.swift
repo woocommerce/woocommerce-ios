@@ -89,7 +89,7 @@ public final class ShippingLabelStore: Store {
 private extension ShippingLabelStore {
     func synchronizeShippingLabels(siteID: Int64, orderID: Int64, completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
         remote.loadShippingLabels(siteID: siteID, orderID: orderID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .failure(let error):
@@ -117,7 +117,7 @@ private extension ShippingLabelStore {
         remote.refundShippingLabel(siteID: shippingLabel.siteID,
                                    orderID: shippingLabel.orderID,
                                    shippingLabelID: shippingLabel.shippingLabelID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .failure(let error):
@@ -202,7 +202,7 @@ private extension ShippingLabelStore {
     func synchronizeShippingLabelAccountSettings(siteID: Int64,
                                                  completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void) {
         remote.loadShippingLabelAccountSettings(siteID: siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .failure(let error):
@@ -219,7 +219,7 @@ private extension ShippingLabelStore {
                                             settings: ShippingLabelAccountSettings,
                                             completion: @escaping (Result<Bool, Error>) -> Void) {
         remote.updateShippingLabelAccountSettings(siteID: siteID, settings: settings) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success(let success):
@@ -260,7 +260,7 @@ private extension ShippingLabelStore {
 
                 // Wait to give the backend time to process the purchase
                 DispatchQueue.main.asyncAfter(deadline: .now() + backendProcessingDelay) { [weak self] in
-                    guard let self = self else { return }
+                    guard let self else { return }
 
                     // Poll the status of the label purchases from the response above
                     self.pollLabelStatus(withDelayInSeconds: pollingDelay,
@@ -291,7 +291,7 @@ private extension ShippingLabelStore {
         }
 
         storageManager.performAndSave ({ [weak self] storage in
-            guard let self = self else { return }
+            guard let self else { return }
             guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
                 return
             }
@@ -306,7 +306,7 @@ private extension ShippingLabelStore {
                                                refund: ShippingLabelRefund,
                                                onCompletion: @escaping () -> Void) {
         storageManager.performAndSave ({ [weak self] storage in
-            guard let self = self else { return }
+            guard let self else { return }
             // If a shipping label does not exist in storage, skip upserting the refund in storage.
             guard let shippingLabel = storage.loadShippingLabel(siteID: shippingLabel.siteID,
                                                                 orderID: shippingLabel.orderID,
@@ -352,7 +352,7 @@ private extension ShippingLabelStore {
     }
 
     func update(shippingLabel storageShippingLabel: StorageShippingLabel, withRefund refund: ShippingLabelRefund?, using storage: StorageType) {
-        if let refund = refund {
+        if let refund {
             let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
             storageRefund.update(with: refund)
             storageShippingLabel.refund = storageRefund

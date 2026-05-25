@@ -23,6 +23,8 @@ final class WooAnalytics: Analytics {
     ///
     private var applicationOpenedTime: Date?
 
+    private lazy var widgetSetupChangeTracker = WidgetSetupChangeTracker()
+
     /// Check user opt-in for analytics
     ///
     var userHasOptedIn: Bool {
@@ -183,42 +185,40 @@ extension Analytics {
     }
 }
 
-// MARK: - EventHorizon Trackable Bridge
+// MARK: - EventHorizon Event Bridge
 
 extension Analytics {
-    /// Track a codegen'd Trackable event through the existing analytics pipeline.
-    func track(_ event: some Trackable) {
-        let properties = event.analyticsProperties as [AnyHashable: Any]
+    func track(_ event: Event) {
+        let properties = event.properties as [AnyHashable: Any]
         let enrichedProperties = appendSiteProperties(to: properties)
-        track(event.analyticsName, properties: enrichedProperties, error: nil)
+        track(event.name, properties: enrichedProperties, error: nil)
+    }
+
+    func track(_ eventName: String, withEventProperties properties: [String: any CustomStringConvertible]) {
+        let enrichedProperties = appendSiteProperties(to: properties as [AnyHashable: Any])
+        track(eventName, properties: enrichedProperties, error: nil)
     }
 }
 
 // MARK: - Site Property Enrichment
 
 fileprivate extension Analytics {
-    /// Appends site properties (blog_id, is_wpcom_store, etc.) to the given properties dictionary.
+    /// Appends site properties (blog_id, is_wpcom_store, etc.) to the given properties dictionary,
+    /// using the currently selected site from the session. Delegates the per-site property mapping
+    /// to `Site.analyticsProperties` so per-target-site event factories can share the same logic.
     func appendSiteProperties(to properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
         guard ServiceLocator.stores.isAuthenticated else {
             return properties
         }
 
         var updatedProperties = properties ?? [:]
-        let site = ServiceLocator.stores.sessionManager.defaultSite
-        updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
-        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
-        updatedProperties[PropertyKeys.siteURL] = site?.url
-        updatedProperties[PropertyKeys.isJetpackInstalled] = site?.isJetpackThePluginInstalled
-        updatedProperties[PropertyKeys.isJetpackConnected] = site?.isJetpackConnected
-        updatedProperties[PropertyKeys.isJetpackCPConnected] = site?.isJetpackCPConnected
-        updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
-        updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion
-        if let site {
-            updatedProperties[PropertyKeys.isCIAB] = ServiceLocator.ciabEligibilityChecker.isSiteCIAB(site)
-            if let gardenPartner = site.gardenPartner {
-                updatedProperties[PropertyKeys.gardenPartner] = gardenPartner
+        if let site = ServiceLocator.stores.sessionManager.defaultSite {
+            for (key, value) in site.analyticsProperties {
+                updatedProperties[key] = value
             }
         }
+        updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
+        updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion
         return updatedProperties
     }
 }
@@ -235,7 +235,7 @@ private extension Analytics {
         let properties: [AnyHashable: Any]?
         let errorProperties = errorProperties(from: error)
 
-        if let passedProperties = passedProperties {
+        if let passedProperties {
             properties = passedProperties.merging(errorProperties ?? [:], uniquingKeysWith: { current, _ in
                 current
             })
@@ -246,40 +246,13 @@ private extension Analytics {
     }
 
     func errorProperties(from error: Error?) -> [AnyHashable: Any]? {
-        guard let error = error else {
+        guard let error else {
             return nil
         }
-
-        let nsError = error as NSError
-        let errorCode: String = {
-            if let networkError = error as? NetworkError, let code = networkError.responseCode {
-                return code.description
-            } else if let afError = error as? AFError {
-                if let responseCode = afError.responseCode {
-                    return responseCode.description
-                } else if let underlyingError = afError.underlyingError as? NSError {
-                    return underlyingError.code.description
-                }
-            } else if let loginError = error as? SiteCredentialLoginError {
-                return loginError.underlyingError.code.description
-            }
-            return nsError.code.description
-        }()
-
-        let errorDomain: String = {
-            if let networkError = error as? AFError,
-               let underlyingError = networkError.underlyingError as? NSError {
-                return underlyingError.domain
-            }
-            return nsError.domain
-        }()
-
-        let errorDescription = nsError.description
-
         return [
-            Constants.errorKeyCode: errorCode,
-            Constants.errorKeyDomain: errorDomain,
-            Constants.errorKeyDescription: errorDescription
+            Constants.errorKeyCode: error.errorCode.description,
+            Constants.errorKeyDomain: error.errorDomain,
+            Constants.errorKeyDescription: (error as NSError).description
         ]
     }
 }
@@ -306,8 +279,21 @@ private extension WooAnalytics {
 
     @objc func trackApplicationOpened() {
         WidgetCenter.shared.getCurrentConfigurations { [weak self] configurationResult in
-            guard let self = self else { return }
-            self.track(.applicationOpened, withProperties: self.applicationOpenedProperties(configurationResult))
+            guard let self else { return }
+
+            let applicationProperties = self.applicationOpenedProperties(configurationResult)
+
+            guard let infos = try? configurationResult.get() else {
+                self.track(.applicationOpened, withProperties: applicationProperties)
+                return
+            }
+
+            let snapshot = WidgetSnapshot(from: infos)
+            var properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
+            if let diff = self.widgetSetupChangeTracker.evaluate(currentSnapshot: snapshot) {
+                properties.merge(diff.analyticsProperties) { _, new in new }
+            }
+            self.track(.applicationOpened, withProperties: properties)
         }
         applicationOpenedTime = Date()
     }
@@ -318,7 +304,7 @@ private extension WooAnalytics {
     }
 
     func applicationClosedProperties() -> [String: Any]? {
-        guard let applicationOpenedTime = applicationOpenedTime else {
+        guard let applicationOpenedTime else {
             return nil
         }
 
@@ -338,6 +324,8 @@ private extension WooAnalytics {
             switch widgetInfo.kind {
             case WooConstants.storeInfoWidgetKind:
                 return "\(WooAnalyticsEvent.Widgets.Name.todayStats.rawValue)-\(widgetInfo.family)"
+            case WooConstants.storeTrendsWidgetKind:
+                return "\(WooAnalyticsEvent.Widgets.Name.trends.rawValue)-\(widgetInfo.family)"
             case WooConstants.appLinkWidgetKind:
                 return WooAnalyticsEvent.Widgets.Name.appLink.rawValue
             default:
@@ -361,14 +349,6 @@ private enum Constants {
 
 private enum PropertyKeys {
     static let propertyKeyTimeInApp = "time_in_app"
-    static let blogIDKey            = "blog_id"
-    static let wpcomStoreKey        = "is_wpcom_store"
-    static let siteURL              = "site_url"
     static let storeID              = "store_id"
     static let cachedWooCommerceVersionKey = "cached_woo_core_version"
-    static let isCIAB               = "is_ciab"
-    static let gardenPartner        = "garden_partner"
-    static let isJetpackInstalled   = "is_jetpack_installed"
-    static let isJetpackConnected   = "is_jetpack_connected"
-    static let isJetpackCPConnected = "is_jetpack_cp_connected"
 }

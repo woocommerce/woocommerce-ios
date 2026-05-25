@@ -99,14 +99,14 @@ final class PaginationTracker {
 private extension PaginationTracker {
     /// Syncs a given page number.
     func sync(pageNumber: Int, reason: String? = nil, onCompletion: (() -> Void)? = nil) {
-        guard let delegate = delegate else {
+        guard let delegate else {
             fatalError()
         }
 
         markAsBeingSynced(pageNumber: pageNumber)
 
         delegate.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

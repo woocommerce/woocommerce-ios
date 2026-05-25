@@ -155,7 +155,7 @@ extension EditAttributesViewController {
     private func navigateToAddAttributeViewController() {
         let addAttributeVM = AddAttributeViewModel(product: viewModel.product)
         let addAttributeViewController = AddAttributeViewController(viewModel: addAttributeVM) { [weak self] updatedProduct in
-            guard let self = self else { return }
+            guard let self else { return }
             self.viewModel.updateProduct(updatedProduct)
             self.onAttributesUpdate?(updatedProduct)
             self.tableView.reloadData()
@@ -169,7 +169,7 @@ extension EditAttributesViewController {
     private func navigateToEditAttribute(_ attribute: ProductAttribute) {
         let editViewModel = AddAttributeOptionsViewModel(product: viewModel.product, attribute: .existing(attribute: attribute), allowsEditing: true)
         let editViewController = AddAttributeOptionsViewController(viewModel: editViewModel) { [weak self] updatedProduct in
-            guard let self = self else { return }
+            guard let self else { return }
             self.viewModel.updateProduct(updatedProduct)
             self.onAttributesUpdate?(updatedProduct)
             self.tableView.reloadData()

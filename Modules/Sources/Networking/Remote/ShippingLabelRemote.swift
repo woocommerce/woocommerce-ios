@@ -165,10 +165,10 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
             var customPackageList: [[String: Any]] = []
             var predefinedOptionDictionary: [String: [String]] = [:]
 
-            if let customPackage = customPackage {
+            if let customPackage {
                 let customPackageDictionary = try customPackage.toDictionary()
                 customPackageList = [customPackageDictionary]
-            } else if let predefinedOption = predefinedOption {
+            } else if let predefinedOption {
                 let packageIDs = predefinedOption.predefinedPackages.map({ $0.id })
                 predefinedOptionDictionary = [predefinedOption.providerID: packageIDs]
             } else {

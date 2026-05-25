@@ -10,7 +10,7 @@ final class ModalHostingPresentationController: FancyAlertPresentationController
     ///
     override func containerViewWillLayoutSubviews() {
         super.containerViewWillLayoutSubviews()
-        guard let presentedView = presentedView, let containerView = containerView else {
+        guard let presentedView, let containerView else {
             return
         }
 

@@ -132,7 +132,7 @@ private extension SyncingCoordinator {
     /// Synchronizes a given Page Number
     ///
     func synchronize(pageNumber: Int, reason: String? = nil, onCompletion: (() -> Void)? = nil) {
-        guard let delegate = delegate else {
+        guard let delegate else {
             fatalError()
         }
 

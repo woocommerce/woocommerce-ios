@@ -129,7 +129,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     @MainActor
     private func checkForConnectedReader(connectionAttemptID: Int) async {
-        if let connectedReader = connectedReader,
+        if let connectedReader,
            let paymentGatewayAccount = await selectedPaymentGateway() {
             // The reader was already connected when the analyticsTracker was created,
             //`so we need to pass it along for properties to be correct
@@ -167,7 +167,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
     private func checkOnboarding(connectionAttemptID: Int) {
         // Can't currently make this async without leaking the continuation.
         onboardingPresenter.showOnboardingIfRequired(from: rootViewController) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             Task { @MainActor in
                 guard self.isCurrentConnectionAttempt(connectionAttemptID) else { return }
                 await self.continuePreflight(connectionAttemptID: connectionAttemptID)
@@ -229,7 +229,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     private func adoptReconnection(using paymentGatewayAccount: PaymentGatewayAccount, connectionAttemptID: Int) {
         tapToPayReconnectionController.showAlertsForReconnection(from: alertsPresenter) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             guard self.isCurrentConnectionAttempt(connectionAttemptID) else { return }
             switch self.discoveryMethod {
             case .bluetoothScan:
@@ -248,7 +248,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         analytics.track(event: .InPersonPayments.cardReaderSelectTypeShown(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                            countryCode: configuration.countryCode))
         alertsPresenter.present(viewModel: tapToPayAlertProvider.selectSearchType(tapToPay: {[weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeTapToPayTapped(
                 forGatewayID: paymentGatewayAccount.gatewayID,
                 countryCode: self.configuration.countryCode))
@@ -256,7 +256,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
         }, bluetooth: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBluetoothTapped(
                 forGatewayID: paymentGatewayAccount.gatewayID,
                 countryCode: self.configuration.countryCode))
@@ -264,7 +264,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
         }, cancel: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.alertsPresenter.dismiss()
             self.handleConnectionResult(.success(.canceled(.selectReaderType)),
                                         paymentGatewayAccount: paymentGatewayAccount)

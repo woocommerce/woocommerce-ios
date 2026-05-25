@@ -6,7 +6,7 @@ import protocol WooFoundation.AnalyticsProvider
 import WooFoundationCore
 
 public class TracksProvider: NSObject, AnalyticsProvider {
-    private static let contextManager: TracksContextManager = TracksContextManager()
+    private static let contextManager = TracksContextManager()
 
     private static let tracksService: TracksService = {
         let tracksService = TracksService(contextManager: contextManager)!
@@ -202,24 +202,6 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedScreenShown,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped,
-
-            // Bookings
-            WooAnalyticsStat.pointOfSaleBookingsMenuItemTapped,
-            WooAnalyticsStat.pointOfSaleBookingsListSearchButtonTapped,
-            WooAnalyticsStat.pointOfSaleBookingsListBookingTapped,
-            WooAnalyticsStat.pointOfSaleBookingCancelled,
-            WooAnalyticsStat.pointOfSaleBookingAddNoteTapped,
-            WooAnalyticsStat.pointOfSaleBookingIssueRefundTapped,
-            WooAnalyticsStat.pointOfSaleBookingViewOrderTapped,
-            WooAnalyticsStat.pointOfSaleBookingAttendanceChanged,
-            WooAnalyticsStat.pointOfSaleBookingNoteAdded,
-            WooAnalyticsStat.pointOfSaleBookingCancelFailed,
-            WooAnalyticsStat.pointOfSaleBookingAttendanceChangeFailed,
-            WooAnalyticsStat.pointOfSaleBookingNoteAddFailed,
-            WooAnalyticsStat.pointOfSaleBookingRefundFailed,
-            WooAnalyticsStat.pointOfSaleBookingDatePreviousTapped,
-            WooAnalyticsStat.pointOfSaleBookingDateNextTapped,
-            WooAnalyticsStat.pointOfSaleBookingDateCalendarSelected,
 
             // Order
             WooAnalyticsStat.ordersListLoaded,

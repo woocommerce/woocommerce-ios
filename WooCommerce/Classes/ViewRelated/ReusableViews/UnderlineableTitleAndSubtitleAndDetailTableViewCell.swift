@@ -67,7 +67,7 @@ private extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
     }
 
     func setupTitleLabelText(with viewModel: ViewModel) {
-        let titleAndDetail: NSMutableAttributedString = NSMutableAttributedString(attributedString: titleAttributedString(from: viewModel))
+        let titleAndDetail = NSMutableAttributedString(attributedString: titleAttributedString(from: viewModel))
         titleAndDetail.append(detailAttributedString(from: viewModel))
 
         titleLabel.attributedText = titleAndDetail

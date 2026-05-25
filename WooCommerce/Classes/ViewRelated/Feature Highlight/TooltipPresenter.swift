@@ -190,7 +190,7 @@ final class TooltipPresenter {
     ///  states too. The sizing won't be affected in these cases so no need to reset the tooltip. Here we filter out changes
     ///  to and from `faceUp` & `faceDown`.
     @objc private func didDeviceOrientationChange() {
-        guard let previousDeviceOrientation = previousDeviceOrientation else {
+        guard let previousDeviceOrientation else {
             return
         }
 

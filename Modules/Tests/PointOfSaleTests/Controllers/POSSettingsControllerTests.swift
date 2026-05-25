@@ -96,7 +96,7 @@ private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServicePr
 
 final class MockPOSSettingsController: POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? = nil
-    var storeViewModel: POSSettingsStoreViewModel = POSSettingsStoreViewModel(siteID: 123,
+    var storeViewModel = POSSettingsStoreViewModel(siteID: 123,
                                                                               settingsService: MockPointOfSaleSettingsService(),
                                                                               pluginsService: MockPluginsService(),
                                                                               defaultSiteName: "Sample Store",

@@ -115,7 +115,7 @@ extension ShippingLabelPaymentMethodsViewModel {
     func syncShippingLabelAccountSettings() {
         isUpdating = true
         let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: accountSettings.siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.isUpdating = false
             switch result {
@@ -232,5 +232,4 @@ extension ShippingLabelPaymentMethodsViewModel {
 
         return [paymentMethod1, paymentMethod2]
     }
-
 }

@@ -15,5 +15,4 @@ extension BookingCustomerInfo {
     @NSManaged public var billingState: String?
     @NSManaged public var note: String?
     @NSManaged public var orderInfo: BookingOrderInfo?
-
 }

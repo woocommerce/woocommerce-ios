@@ -173,7 +173,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.shouldShowInitialLoadingIndicator)
-
     }
 
     func test_shouldShowInitialLoadingIndicator_turns_off_correctly_when_retrieveJetpackPluginDetails_is_success_then_returns_false() {
@@ -195,7 +194,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.shouldShowInitialLoadingIndicator)
-
     }
 
     func test_shouldShowSetupSteps_when_startSetup_then_returns_false() {
@@ -208,7 +206,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.shouldShowSetupSteps)
-
     }
 
     func test_shouldShowSetupSteps_when_retrieveJetpackPluginDetails_is_success_then_returns_true() {

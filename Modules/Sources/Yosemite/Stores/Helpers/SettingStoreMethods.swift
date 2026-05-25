@@ -17,6 +17,8 @@ internal protocol SettingStoreMethodsProtocol {
     func enableAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void)
     func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping (Result<TaxBasedOnSetting, Error>) -> Void)
     func isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature) async throws -> Bool
+    func retrieveAnalyticsOrderDateType(siteID: Int64) async throws -> AnalyticsOrderDateType
+    func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws
 }
 
 internal class SettingStoreMethods: SettingStoreMethodsProtocol {
@@ -36,7 +38,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
         siteSettingsRemote.loadGeneralSettings(for: siteID) { [weak self] (settings, error) in
-            guard let settings = settings else {
+            guard let settings else {
                 onCompletion(error)
                 return
             }
@@ -51,7 +53,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
         siteSettingsRemote.loadProductSettings(for: siteID) { [weak self] (settings, error) in
-            guard let settings = settings else {
+            guard let settings else {
                 onCompletion(error)
                 return
             }
@@ -80,7 +82,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         siteSettingsRemote.loadSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -97,7 +99,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         siteSettingsRemote.updateSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons, value: SettingValue.yes) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -113,7 +115,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         siteSettingsRemote.loadSetting(for: siteID, settingGroup: .advanced, settingID: SettingKeys.analytics) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -133,7 +135,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
                                             settingGroup: .advanced,
                                             settingID: SettingKeys.analytics,
                                             value: SettingValue.yes) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -149,7 +151,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping (Result<TaxBasedOnSetting, Error>) -> Void) {
         siteSettingsRemote.loadSetting(for: siteID, settingGroup: .custom("tax"), settingID: SettingKeys.taxBasedOn) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -170,6 +172,34 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature) async throws -> Bool {
         try await siteSettingsRemote.isFeatureEnabled(for: siteID, feature: feature)
+    }
+
+    /// Retrieves the WooCommerce Analytics order date-type setting (`woocommerce_date_type`).
+    ///
+    /// Throws `SettingError.parseError` if the response value cannot be mapped to a known type.
+    ///
+    func retrieveAnalyticsOrderDateType(siteID: Int64) async throws -> AnalyticsOrderDateType {
+        let setting = try await siteSettingsRemote.loadAnalyticsOrderDateType(for: siteID)
+        return try await parseAndCacheAnalyticsOrderDateType(setting, siteID: siteID)
+    }
+
+    /// Updates the WooCommerce Analytics order date-type setting (`woocommerce_date_type`).
+    ///
+    /// Throws `SettingError.parseError` if the response value cannot be mapped to a known type.
+    ///
+    func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws {
+        let setting = try await siteSettingsRemote.updateAnalyticsOrderDateType(for: siteID, value: value.rawValue)
+        _ = try await parseAndCacheAnalyticsOrderDateType(setting, siteID: siteID)
+    }
+
+    /// Parses the response value into `AnalyticsOrderDateType` and, only on success, caches the SiteSetting locally.
+    /// Throws `SettingError.parseError` (without writing to cache) when the value can't be mapped to a known case.
+    private func parseAndCacheAnalyticsOrderDateType(_ setting: Networking.SiteSetting, siteID: Int64) async throws -> AnalyticsOrderDateType {
+        guard let dateType = AnalyticsOrderDateType(rawValue: setting.value) else {
+            throw SettingError.parseError
+        }
+        await upsertSingleStoredSetting(siteID: siteID, readOnlySiteSetting: setting)
+        return dateType
     }
 }
 
@@ -219,7 +249,7 @@ private extension SettingStoreMethods {
         // Now, remove any objects that exist in storageSiteSettings but not in readOnlySiteSettings
         if let storageSiteSettings {
             storageSiteSettings.forEach({ storageItem in
-                if readOnlySiteSettings.first(where: { $0.settingID == storageItem.settingID } ) == nil {
+                if !readOnlySiteSettings.contains(where: { $0.settingID == storageItem.settingID }) {
                     storage.deleteObject(storageItem)
                 }
             })
@@ -235,6 +265,14 @@ private extension SettingStoreMethods {
         storageManager.performAndSave({ [weak self] storage in
             self?.upsertSingleSetting(readOnlySiteSetting, in: storage, siteID: siteID)
         }, completion: onCompletion, on: .main)
+    }
+
+    func upsertSingleStoredSetting(siteID: Int64, readOnlySiteSetting: Networking.SiteSetting) async {
+        await withCheckedContinuation { continuation in
+            upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: readOnlySiteSetting) {
+                continuation.resume()
+            }
+        }
     }
 
     func upsertSingleSetting(_ readOnlySiteSetting: SiteSetting, in storage: StorageType, siteID: Int64) {

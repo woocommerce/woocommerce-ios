@@ -35,8 +35,6 @@ private extension POSIneligibleReason {
         case .siteSettingsNotAvailable,
              .selfDeallocated:
             return "other"
-        case .ciabPlanUpgradeRequired:
-            return "ciab_plan_upgrade_required"
         }
     }
 }

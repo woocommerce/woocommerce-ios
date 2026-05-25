@@ -4,7 +4,6 @@ import Yosemite
 import MessageUI
 import WordPressUI
 import WooFoundation
-import protocol Storage.StorageManagerType
 //TODO: Move to alertprovider (and ideally, remove from this target or translate through Yosemite)
 import enum Hardware.CardReaderServiceError
 import enum Hardware.UnderlyingError
@@ -147,7 +146,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                         onPaymentCompletion: @escaping () -> Void,
                         onCompleted: @escaping () -> Void) {
         preflightController.readerConnection.sink { [weak self] connectionResult in
-            guard let self = self else { return }
+            guard let self else { return }
             self.analyticsTracker.preflightResultReceived(connectionResult)
             switch connectionResult {
             case .completed(let reader, let paymentGatewayAccount):
@@ -156,7 +155,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                     paymentGatewayAccount: paymentGatewayAccount,
                                     channel: channel,
                                     onCompletion: { [weak self] result in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     // Inform about the collect payment state
                     switch result {
                     case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
@@ -170,7 +169,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
 
                         self.receiptEligibilityUseCase.isEligibleForBackendReceipts { [weak self] isEligible in
-                            guard let self = self else { return }
+                            guard let self else { return }
                             switch isEligible {
                             case true:
                                 self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
@@ -228,7 +227,7 @@ private extension CollectOrderPaymentUseCase {
     /// Checks whether the amount to be collected is valid: (not nil, convertible to decimal, higher than minimum amount ...)
     ///
     func isTotalAmountValid() -> Bool {
-        guard let orderTotal = orderTotal else {
+        guard let orderTotal else {
             return false
         }
 
@@ -274,7 +273,7 @@ private extension CollectOrderPaymentUseCase {
         }))
 
         let action = OrderAction.retrieveOrderRemotely(siteID: order.siteID, orderID: order.orderID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success(let order):
@@ -311,7 +310,7 @@ private extension CollectOrderPaymentUseCase {
                         channel: PaymentChannel,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .failure(let error):
                 return self.checkThenHandlePaymentFailureAndRetryPayment(error,
@@ -320,88 +319,152 @@ private extension CollectOrderPaymentUseCase {
                                                                          channel: channel,
                                                                          onCompletion: onCompletion)
             case .success:
-                guard let orderTotal = self.orderTotal else {
-                    onCompletion(.failure(CollectOrderPaymentUseCaseNotValidAmountError.other))
-                    return
+                self.terminalPaymentPreparationEnabled(paymentGatewayAccount: paymentGatewayAccount) { [weak self] terminalPaymentPreparationEnabled in
+                    guard let self else { return }
+                    self.collectPayment(alertProvider: paymentAlerts,
+                                        paymentGatewayAccount: paymentGatewayAccount,
+                                        terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled,
+                                        channel: channel,
+                                        onCompletion: onCompletion)
                 }
-
-                // Start collect payment process
-                self.paymentOrchestrator.collectPayment(
-                    for: self.order,
-                    orderTotal: orderTotal,
-                    paymentGatewayAccount: paymentGatewayAccount,
-                    paymentMethodTypes: self.configuration.paymentMethods,
-                    stripeSmallestCurrencyUnitMultiplier: self.configuration.stripeSmallestCurrencyUnitMultiplier,
-                    channel: channel,
-                    onPreparingReader: { [weak self] in
-                        self?.alertsPresenter.present(viewModel: paymentAlerts.preparingReader(onCancel: {
-                            self?.cancelPayment(from: .paymentPreparingReader) {
-                                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-                            }
-                        }))
-                    },
-                    onWaitingForInput: { [weak self] inputMethods in
-                        guard let self = self else { return }
-                        self.alertsPresenter.present(
-                            viewModel: paymentAlerts.tapOrInsertCard(
-                                title: CollectOrderPaymentUseCaseDefinitions.Localization.collectPaymentTitle(
-                                    username: self.order.billingAddress?.firstName),
-                                amount: self.formattedAmount,
-                                inputMethods: inputMethods,
-                                onCancel: { [weak self] in
-                                    self?.cancelPayment(from: .paymentWaitingForInput) {
-                                        onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-                                    }
-                                })
-                        )
-                    }, onCardInserted: { [weak self] in
-                        guard let self = self else { return }
-                        self.alertsPresenter.present(viewModel: paymentAlerts.cardInserted(
-                            title: CollectOrderPaymentUseCaseDefinitions.Localization.collectPaymentTitle(
-                                username: self.order.billingAddress?.firstName),
-                            amount: self.formattedAmount,
-                            onCancel: { [weak self] in
-                                self?.cancelPayment(from: .paymentWaitingForInput) {
-                                    onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-                                }
-                            })
-                        )
-                    }, onProcessingMessage: { [weak self] in
-                        guard let self = self else { return }
-                        // Waiting message
-                        self.alertsPresenter.present(
-                            viewModel: paymentAlerts.processingTransaction(
-                                title: CollectOrderPaymentUseCaseDefinitions.Localization.processingPaymentTitle(
-                                    username: self.order.billingAddress?.firstName)))
-                    }, onDisplayMessage: { [weak self] message in
-                        guard let self = self else { return }
-                        // Reader messages. EG: Remove Card
-                        self.alertsPresenter.present(viewModel: paymentAlerts.displayReaderMessage(message: message))
-                    }, onProcessingCompletion: { [weak self] intent in
-                        self?.analyticsTracker.trackProcessingCompletion(intent: intent)
-                        self?.markOrderAsPaidIfNeeded(intent: intent)
-                    }, onCompletion: { [weak self] result in
-                        switch result {
-                        case .success(let capturedPaymentData):
-                            self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
-                            onCompletion(.success(capturedPaymentData))
-                        case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
-                            switch cancellationSource {
-                            case .reader:
-                                self?.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
-                            default:
-                                self?.handlePaymentCancellation(from: .other)
-                            }
-                        case .failure(let error):
-                            self?.checkThenHandlePaymentFailureAndRetryPayment(error,
-                                                                               alertProvider: paymentAlerts,
-                                                                               paymentGatewayAccount: paymentGatewayAccount,
-                                                                               channel: channel,
-                                                                               onCompletion: onCompletion)
-                        }
-                    })
             }
         }
+    }
+
+    func collectPayment(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
+                        paymentGatewayAccount: PaymentGatewayAccount,
+                        terminalPaymentPreparationEnabled: Bool,
+                        channel: PaymentChannel,
+                        onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        guard let orderTotal else {
+            onCompletion(.failure(CollectOrderPaymentUseCaseNotValidAmountError.other))
+            return
+        }
+
+        // Start collect payment process
+        paymentOrchestrator.collectPayment(
+            for: order,
+            orderTotal: orderTotal,
+            paymentGatewayAccount: paymentGatewayAccount,
+            paymentMethodTypes: configuration.paymentMethods,
+            stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
+            countryCode: configuration.countryCode,
+            terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled,
+            channel: channel,
+            onPreparingReader: { [weak self] in
+                self?.alertsPresenter.present(viewModel: paymentAlerts.preparingReader(onCancel: {
+                    self?.cancelPayment(from: .paymentPreparingReader) {
+                        onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+                    }
+                }))
+            },
+            onWaitingForInput: { [weak self] inputMethods in
+                guard let self else { return }
+                self.alertsPresenter.present(
+                    viewModel: paymentAlerts.tapOrInsertCard(
+                        title: CollectOrderPaymentUseCaseDefinitions.Localization.collectPaymentTitle(
+                            username: self.order.billingAddress?.firstName),
+                        amount: self.formattedAmount,
+                        inputMethods: inputMethods,
+                        onCancel: { [weak self] in
+                            self?.cancelPayment(from: .paymentWaitingForInput) {
+                                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+                            }
+                        })
+                )
+            }, onCardInserted: { [weak self] in
+                guard let self else { return }
+                self.alertsPresenter.present(viewModel: paymentAlerts.cardInserted(
+                    title: CollectOrderPaymentUseCaseDefinitions.Localization.collectPaymentTitle(
+                        username: self.order.billingAddress?.firstName),
+                    amount: self.formattedAmount,
+                    onCancel: { [weak self] in
+                        self?.cancelPayment(from: .paymentWaitingForInput) {
+                            onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+                        }
+                    })
+                )
+            }, onProcessingMessage: { [weak self] in
+                guard let self else { return }
+                // Waiting message
+                self.alertsPresenter.present(
+                    viewModel: paymentAlerts.processingTransaction(
+                        title: CollectOrderPaymentUseCaseDefinitions.Localization.processingPaymentTitle(
+                            username: self.order.billingAddress?.firstName)))
+            }, onDisplayMessage: { [weak self] message in
+                guard let self else { return }
+                // Reader messages. EG: Remove Card
+                self.alertsPresenter.present(viewModel: paymentAlerts.displayReaderMessage(message: message))
+            }, onProcessingCompletion: { [weak self] intent in
+                self?.analyticsTracker.trackProcessingCompletion(intent: intent)
+                self?.markOrderAsPaidIfNeeded(intent: intent)
+            }, onCompletion: { [weak self] result in
+                switch result {
+                case .success(let capturedPaymentData):
+                    self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+                    onCompletion(.success(capturedPaymentData))
+                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
+                    switch cancellationSource {
+                    case .reader:
+                        self?.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
+                    default:
+                        self?.handlePaymentCancellation(from: .other)
+                    }
+                case .failure(let error):
+                    self?.checkThenHandlePaymentFailureAndRetryPayment(error,
+                                                                       alertProvider: paymentAlerts,
+                                                                       paymentGatewayAccount: paymentGatewayAccount,
+                                                                       channel: channel,
+                                                                       onCompletion: onCompletion)
+                }
+            })
+    }
+
+    func terminalPaymentPreparationEnabled(paymentGatewayAccount: PaymentGatewayAccount,
+                                           completion: @escaping (Bool) -> Void) {
+        guard paymentGatewayAccount.gatewayID == WCPayAccount.gatewayID,
+              terminalPaymentPreparationAvailableForConfiguration else {
+            completion(false)
+            return
+        }
+
+        terminalPaymentPreparationSupportedBySite(completion: completion)
+    }
+
+    var terminalPaymentPreparationAvailableForConfiguration: Bool {
+        switch configuration.countryCode {
+        case .AU, .CA:
+            return true
+        default:
+            return false
+        }
+    }
+
+    func terminalPaymentPreparationSupportedBySite(completion: @escaping (Bool) -> Void) {
+        switch configuration.countryCode {
+        case .AU:
+            completion(true)
+        case .CA:
+            // Canada already supports in-person payments on older WCPay versions, so check for the
+            // terminal preparation endpoint before using it. Once WCPay 10.8 has enough adoption in
+            // Canada, consider raising the minimum WCPay version and removing this compatibility check.
+            checkTerminalPaymentPreparationRoute(completion: completion)
+        default:
+            completion(false)
+        }
+    }
+
+    func checkTerminalPaymentPreparationRoute(completion: @escaping (Bool) -> Void) {
+        let action = SettingAction.retrieveSiteAPI(siteID: siteID) { result in
+            switch result {
+            case .success(let siteAPI):
+                completion(siteAPI.hasTerminalPaymentPreparationRoute)
+            case .failure(let error):
+                DDLogInfo("💳 Skipping terminal payment preparation because the WCPay endpoint could not be verified: \(error)")
+                completion(false)
+            }
+        }
+        stores.dispatch(action)
     }
 
     /// Tracks the successful payments
@@ -520,7 +583,7 @@ private extension CollectOrderPaymentUseCase {
                                            tryAgain: { [weak self] in
                                                // Cancel current payment
                                                self?.paymentOrchestrator.cancelPayment() { [weak self] result in
-                                                   guard let self = self else { return }
+                                                   guard let self else { return }
 
                                                    switch result {
                                                    case .success, .failure(CardReaderServiceError.paymentCancellation(.noActivePaymentIntent)):
@@ -538,8 +601,11 @@ private extension CollectOrderPaymentUseCase {
                                                                                                    })
                                                    }
                                                }
-                                           }, dismissCompletion: {
-                                               onCompletion(.failure(error))
+                                           }, dismissCompletion: { [weak self] in
+                                               guard let self else {
+                                                   return onCompletion(.failure(error))
+                                               }
+                                               self.completeAfterErrorDismissal(error, onCompletion: onCompletion)
                                            })
         )
     }
@@ -555,7 +621,7 @@ private extension CollectOrderPaymentUseCase {
                 error: error,
                 receiptState: receiptState,
                 tryAgain: { [weak self] in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { result in
                         switch result {
                         case .failure(let error):
@@ -566,7 +632,7 @@ private extension CollectOrderPaymentUseCase {
                                                                                      onCompletion: onCompletion)
                         case .success:
                             self.paymentOrchestrator.retryPayment(for: self.order) { [weak self] result in
-                                guard let self = self else { return }
+                                guard let self else { return }
                                 switch result {
                                 case .success(let capturedPaymentData):
                                     self.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
@@ -588,8 +654,11 @@ private extension CollectOrderPaymentUseCase {
                             }
                         }
                     }
-                }, dismissCompletion: {
-                    onCompletion(.failure(error))
+                }, dismissCompletion: { [weak self] in
+                    guard let self else {
+                        return onCompletion(.failure(error))
+                    }
+                    self.completeAfterErrorDismissal(error, onCompletion: onCompletion)
                 })
         )
     }
@@ -598,11 +667,16 @@ private extension CollectOrderPaymentUseCase {
                                           paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                           receiptState: CardReaderTransactionFailureAlertReceiptState,
                                           onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        let dismissCompletion: () -> Void = { [weak self] in
+            guard let self else {
+                return onCompletion(.failure(error))
+            }
+            self.completeAfterErrorDismissal(error, onCompletion: onCompletion)
+        }
+
         alertsPresenter.present(viewModel: paymentAlerts.nonRetryableError(error: error,
                                                                            receiptState: receiptState,
-                                                                           dismissCompletion: {
-            onCompletion(.failure(error))
-        }))
+                                                                           dismissCompletion: dismissCompletion))
     }
 
     /// Cancels payment and record analytics.
@@ -614,6 +688,37 @@ private extension CollectOrderPaymentUseCase {
             onCompleted()
         }
     }
+
+    private func cancelPaymentAndComplete(with error: Error,
+                                          onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        paymentOrchestrator.cancelPayment { result in
+            if case .failure(let cancellationError) = result {
+                DDLogWarn("💳 Failed to cancel payment after payment error dismissal: \(cancellationError)")
+            }
+            onCompletion(.failure(error))
+        }
+    }
+
+    private func completeAfterErrorDismissal(_ error: Error,
+                                             onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        guard shouldCancelPaymentAfterDismissing(error) else {
+            return onCompletion(.failure(error))
+        }
+
+        cancelPaymentAndComplete(with: error, onCompletion: onCompletion)
+    }
+
+    private func shouldCancelPaymentAfterDismissing(_ error: Error) -> Bool {
+        switch error {
+        case ServerSidePaymentCaptureError.terminalPaymentPreparation:
+            return true
+        case let cardReaderError as CardReaderServiceError:
+            return cardReaderError.shouldCancelPaymentAfterDismissal
+        default:
+            return false
+        }
+    }
+
     /// Allow merchants to print or email backend-generated receipts.
     /// The alerts presenter can be simplified once we remove legacy receipts: https://github.com/woocommerce/woocommerce-ios/issues/11897
     ///
@@ -653,7 +758,7 @@ private extension CollectOrderPaymentUseCase {
                              onCompleted: @escaping () -> ()) {
         // Present receipt alert
         alertsPresenter.present(viewModel: paymentAlerts.success(receiptState: .init(printReceipt: { [order, configuration, weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             guard let receiptParameters else {
                 return self.presentReceiptFailedNotice(
@@ -673,7 +778,7 @@ private extension CollectOrderPaymentUseCase {
                 onCompleted()
             }
         }, emailReceipt: { [order, analyticsTracker, paymentOrchestrator, weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             alertsPresenter.dismiss()
 
@@ -777,7 +882,7 @@ private extension CollectOrderPaymentUseCase {
                                                          emailReceiptAction: { [weak self] in
                     guard let self else { return }
                     self.presentSendReceiptAfterPayment { order in
-                        if let order  = order, let email = order.billingAddress?.email, email.isNotEmpty {
+                        if let order, let email = order.billingAddress?.email, email.isNotEmpty {
                             self.order = order
                             completion(.paymentSuccessEmailSent(email: email,
                                                                 printReceiptAction: presentBackendReceiptAction,
@@ -877,7 +982,7 @@ private enum CollectOrderPaymentUseCaseDefinitions {
         private static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",
                                                                     comment: "Subject of email sent with a card present payment receipt")
         static func emailSubject(storeName: String?) -> String {
-            guard let storeName = storeName, storeName.isNotEmpty else {
+            guard let storeName, storeName.isNotEmpty else {
                 return emailSubjectWithoutStoreName
             }
             return .localizedStringWithFormat(emailSubjectWithStoreName, storeName)
@@ -888,7 +993,7 @@ private enum CollectOrderPaymentUseCaseDefinitions {
         private static let collectPaymentWithName = NSLocalizedString("Collect payment from %1$@",
                                                                  comment: "Alert title when starting the collect payment flow with a user name.")
         static func collectPaymentTitle(username: String?) -> String {
-            guard let username = username, username.isNotEmpty else {
+            guard let username, username.isNotEmpty else {
                 return collectPaymentWithoutName
             }
             return .localizedStringWithFormat(collectPaymentWithName, username)
@@ -901,7 +1006,7 @@ private enum CollectOrderPaymentUseCaseDefinitions {
             "Processing payment from %1$@",
             comment: "Alert title when processing a payment with a user name.")
         static func processingPaymentTitle(username: String?) -> String {
-            guard let username = username, username.isNotEmpty else {
+            guard let username, username.isNotEmpty else {
                 return processingPaymentWithoutName
             }
             return .localizedStringWithFormat(processingPaymentWithName, username)
@@ -920,7 +1025,30 @@ protocol CardPaymentErrorProtocol: Error {
     var requiresFallbackPaymentMethod: Bool { get }
 }
 
+private extension SiteAPI {
+    var hasTerminalPaymentPreparationRoute: Bool {
+        routes.contains { route in
+            route.hasPrefix(Constants.prepareTerminalPaymentRoutePrefix) &&
+            route.hasSuffix(Constants.prepareTerminalPaymentRouteSuffix)
+        }
+    }
+
+    enum Constants {
+        static let prepareTerminalPaymentRoutePrefix = "/wc/v3/payments/orders/"
+        static let prepareTerminalPaymentRouteSuffix = "/prepare_terminal_payment"
+    }
+}
+
 extension CardReaderServiceError: CardPaymentErrorProtocol {
+    var shouldCancelPaymentAfterDismissal: Bool {
+        switch self {
+        case .paymentMethodCollection(let underlyingError), .paymentCapture(let underlyingError), .paymentCaptureWithPaymentMethod(let underlyingError, _):
+            return canRetryPayment(underlyingError: underlyingError)
+        default:
+            return false
+        }
+    }
+
     var retryApproach: CardPaymentRetryApproach {
         switch self {
         case .paymentMethodCollection(let underlyingError), .paymentCapture(let underlyingError), .paymentCaptureWithPaymentMethod(let underlyingError, _):
@@ -972,6 +1100,21 @@ extension CollectOrderPaymentUseCaseError: CardPaymentErrorProtocol {
             return .restart
         case .couldNotRefreshOrder:
             return .reuseIntent
+        }
+    }
+
+    var requiresFallbackPaymentMethod: Bool {
+        false
+    }
+}
+
+extension ServerSidePaymentCaptureError: CardPaymentErrorProtocol {
+    var retryApproach: CardPaymentRetryApproach {
+        switch self {
+        case .terminalPaymentPreparation:
+            return .reuseIntent
+        case .paymentGateway, .paymentIntentNotSuccessful:
+            return .dontRetry
         }
     }
 

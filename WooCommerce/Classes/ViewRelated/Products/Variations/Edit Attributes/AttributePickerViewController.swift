@@ -125,7 +125,7 @@ extension AttributePickerViewController: UITableViewDelegate {
 //
 private extension AttributePickerViewController {
     func configureAttribute(cell: TitleAndValueTableViewCell, attribute: ProductAttribute?) {
-        guard let attribute = attribute else {
+        guard let attribute else {
             return
         }
 
@@ -164,7 +164,7 @@ private extension AttributePickerViewController {
     }
 
     func presentAttributeOptions(for existingAttribute: ProductAttribute?) {
-        guard let existingAttribute = existingAttribute else {
+        guard let existingAttribute else {
             return
         }
 

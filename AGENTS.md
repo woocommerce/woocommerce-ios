@@ -211,6 +211,10 @@ Modules/Tests/PointOfSaleTests/  # POS unit tests
 WooCommerce/Classes/POS/         # App-target POS integration (POSTabCoordinator, adaptors)
 ```
 
+## WooAIAssistant Module
+
+The WooAIAssistant module (`Modules/Sources/WooAIAssistant/`) is a self-contained feature module that ships an in-app conversational agent for merchants. The architecture is designed to be flexible: it can integrate REST tools, MCP tools, or both, and the chat endpoint is swappable without touching the agentic loop. The module renders rich entity cards that integrate with existing app views and screens. See `Modules/Sources/WooAIAssistant/AGENTS.md` for architecture, decisions, and anti-patterns. Live evaluation runs through the `/woo-ai-smoke` skill.
+
 ## Git Conventions
 
 - **Main branch**: `trunk`

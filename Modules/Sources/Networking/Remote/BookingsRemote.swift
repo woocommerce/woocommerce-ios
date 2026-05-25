@@ -179,7 +179,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
             }
         }
 
-        if let searchQuery = searchQuery, !searchQuery.isEmpty {
+        if let searchQuery, !searchQuery.isEmpty {
             parameters[ParameterKey.search] = searchQuery
         }
 

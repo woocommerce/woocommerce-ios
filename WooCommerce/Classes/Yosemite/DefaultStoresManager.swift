@@ -411,7 +411,7 @@ private extension DefaultStoresManager {
     ///
     func restoreSessionAccount(with accountID: Int64) {
         let action = AccountAction.loadAccount(userID: accountID) { [weak self] account in
-            guard let `self` = self, let account = account else {
+            guard let `self` = self, let account else {
                 return
             }
             self.replaceTempCredentialsIfNecessary(account: account)
@@ -427,7 +427,7 @@ private extension DefaultStoresManager {
         let action = AccountAction.synchronizeAccount { [weak self] result in
             switch result {
             case .success(let account):
-                if let self = self, self.isAuthenticated {
+                if let self, self.isAuthenticated {
                     self.sessionManager.defaultAccount = account
                     ServiceLocator.analytics.refreshUserData()
                 }
@@ -451,7 +451,7 @@ private extension DefaultStoresManager {
         let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] result in
             switch result {
             case .success(let accountSettings):
-                if let self = self, self.isAuthenticated {
+                if let self, self.isAuthenticated {
                     // Save the user's preference
                     ServiceLocator.analytics.setUserHasOptedOut(accountSettings.tracksOptOut)
                 }
@@ -509,7 +509,7 @@ private extension DefaultStoresManager {
         group.enter()
         let generalSettingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
             ServiceLocator.selectedSiteSettings.refresh()
-            if let error = error {
+            if let error {
                 errors.append(error)
             }
             group.leave()
@@ -518,7 +518,7 @@ private extension DefaultStoresManager {
 
         group.enter()
         let productSettingsAction = SettingAction.synchronizeProductSiteSettings(siteID: siteID) { error in
-            if let error = error {
+            if let error {
                 errors.append(error)
             }
             group.leave()
@@ -701,7 +701,7 @@ private extension DefaultStoresManager {
     ///
     func sendTelemetryIfNeeded(siteID: Int64) {
         let checkAvailabilityAction = AppSettingsAction.getTelemetryInfo(siteID: siteID) { [weak self] isAvailable, telemetryLastReportedTime in
-            guard let self = self else { return }
+            guard let self else { return }
 
             if isAvailable {
                 self.sendTelemetry(siteID: siteID,
@@ -719,7 +719,7 @@ private extension DefaultStoresManager {
                                                    versionString: UserAgent.bundleShortVersion,
                                                    telemetryLastReportedTime: telemetryLastReportedTime,
                                                    installationDate: installationDate) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success:

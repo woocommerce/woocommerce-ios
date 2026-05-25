@@ -5,7 +5,7 @@ final class MapsHelper {
     /// The method accept a string of the address info you already have, and open Apple Maps on that address if found.
     ///
     static func openAppleMaps(address: String?, completion: @escaping (Result<Void, MapsHelperError>) -> Void) {
-        guard let address = address else {
+        guard let address else {
             completion(.failure(.locationNotFound))
             return
         }

@@ -64,7 +64,7 @@ final class ReviewReplyViewModel: ObservableObject {
         }
 
         let action = CommentAction.replyToComment(siteID: siteID, commentID: reviewID, productID: productID, content: newReply) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.performingNetworkRequest.send(false)
 

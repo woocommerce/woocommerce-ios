@@ -21,7 +21,6 @@ enum PointOfSaleAssets: CaseIterable {
     case netum1228BCPairBarcode
     case testEan13Barcode
     case noOrders
-    case noBookings
 
     var image: Image {
         Image(imageName, bundle: .module)
@@ -71,8 +70,6 @@ enum PointOfSaleAssets: CaseIterable {
             "netum-1228bc-pair-barcode"
         case .noOrders:
             "pos-no-orders"
-        case .noBookings:
-            "pos-no-bookings"
         }
     }
 }

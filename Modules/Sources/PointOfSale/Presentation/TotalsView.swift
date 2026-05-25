@@ -1,9 +1,14 @@
+import CocoaLumberjackSwift
 import SwiftUI
 import WooFoundation
+import Experiments
 
 struct TotalsView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(POSPaymentModel.self) private var paymentModel
+    @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let viewHelper = POSPaymentViewHelper()
     private let totalsViewHelper = TotalsViewHelper()
 
@@ -17,13 +22,29 @@ struct TotalsView: View {
     // _should be_ showing, so that we can animate the change.
     // Default true so totals fields would be included in the view hiearchy on first render and animate with TotalsView
     @State private var isShowingTotalsFields: Bool = true
+    @State private var isShowingOtherPaymentMethodsSheet: Bool = false
+    /// True between the merchant tapping a hero / bottom-strip button and the
+    /// payment state machine actually leaving idle. Disables the hero CTA and
+    /// the bottom-strip buttons during that brief async window so a quick
+    /// double-tap can't kick off two payment flows.
+    @State private var isStartingPayment: Bool = false
 
-    /// Payment state with cash collection neutralized. Only `.collectingCash` is handled
-    /// by NavigationStack push. Success and idle are visible to TotalsView.
-    /// TODO: Consider removing cash state entirely - it no longer drives the cash view.
+    /// Payment state with in-progress secondary methods neutralized.
+    /// `.collectingCash` (cash), `.showingQRCode` (scan-to-pay), and `.confirming`/`.processing`
+    /// (mark-as-paid) all live in their own modal/navigation push, so we hide them from TotalsView.
+    /// Only success and idle remain visible.
     private var displayPaymentState: PointOfSalePaymentState {
-        let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash ? .idle : paymentModel.paymentState.cash
-        return PointOfSalePaymentState(card: paymentModel.paymentState.card, cash: cash)
+        let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash
+            ? .idle : paymentModel.paymentState.cash
+        let scanToPay: PointOfSaleScanToPayState = paymentModel.paymentState.scanToPay.isShowingQRCode
+            ? .idle : paymentModel.paymentState.scanToPay
+        let markAsPaid: PointOfSaleMarkAsPaidState = paymentModel.paymentState.markAsPaid == .confirming
+            || paymentModel.paymentState.markAsPaid == .processing
+            ? .idle : paymentModel.paymentState.markAsPaid
+        return PointOfSalePaymentState(card: paymentModel.paymentState.card,
+                                       cash: cash,
+                                       scanToPay: scanToPay,
+                                       markAsPaid: markAsPaid)
     }
 
     private var shouldShowTotalsFields: Bool {
@@ -37,7 +58,22 @@ struct TotalsView: View {
                 VStack(alignment: .center) {
                     Spacer()
 
-                    if isShowingPaymentView {
+                    if shouldPrioritizePaymentViewOverHero {
+                        PaymentViewContent(
+                            paymentState: displayPaymentState,
+                            cardReaderViewLayout: cardReaderViewLayout,
+                            isShowingTotalsFields: isShowingTotalsFields,
+                            backgroundColor: backgroundColor,
+                            orderState: posModel.orderState,
+                            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
+                            connectCardReaderAction: paymentModel.connectCardReader,
+                            cancelReconnectionAction: posModel.cancelReconnection
+                        )
+                    } else if useTapToPayHeroLayout {
+                        POSTapToPayHeroView(onPayTapped: handleTapToPayTapped,
+                                            isPayDisabled: isStartingPayment)
+                    } else if isShowingPaymentView {
                         PaymentViewContent(
                             paymentState: displayPaymentState,
                             cardReaderViewLayout: cardReaderViewLayout,
@@ -51,7 +87,7 @@ struct TotalsView: View {
                         )
                     }
 
-                    if isShowingPaymentView && isShowingTotalsFields {
+                    if (useTapToPayHeroLayout || isShowingPaymentView) && isShowingTotalsFields {
                         Spacer()
                     }
 
@@ -67,15 +103,19 @@ struct TotalsView: View {
 
                     Spacer()
 
-                    CashPaymentButton(
-                        orderState: posModel.orderState,
-                        paymentState: displayPaymentState,
-                        cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                        startCashPaymentAction: { paymentModel.startCashPayment() }
-                    )
+                    if useCashAndOtherMethodsBottomStrip {
+                        cashAndOtherMethodsBottomStrip
+                    } else if !checkoutPaymentMethods.isEmpty {
+                        POSCheckoutPaymentButtonsRow(
+                            methods: checkoutPaymentMethods,
+                            onSelect: handlePaymentMethodSelection
+                        )
+                    }
                 }
                 .scrollVerticallyIfNeeded()
                 .animation(.default, value: isShowingPaymentView)
+                .animation(.default, value: useTapToPayHeroLayout)
+                .animation(.default, value: useCashAndOtherMethodsBottomStrip)
             case .error(.other(let message), let handler):
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
@@ -95,6 +135,89 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields) {
             hideTotalsFieldsWithDelay(shouldShowTotalsFields)
+        }
+        .onChange(of: paymentModel.paymentState.card) {
+            // Any card state change means the payment state machine has reacted
+            // to the merchant's tap (preparingReader, error, idle after cancel,
+            // etc.). Release the double-tap gate so the buttons become
+            // tappable again whenever the layout decides to show them.
+            isStartingPayment = false
+        }
+        .onChange(of: paymentModel.paymentState.cash) {
+            isStartingPayment = false
+        }
+        .onChange(of: paymentModel.paymentState.scanToPay) {
+            // Scan to Pay transitions out of `.idle` when the QR flow starts —
+            // release the gate so the merchant can interact with the next state.
+            isStartingPayment = false
+        }
+        .onChange(of: paymentModel.paymentState.markAsPaid) {
+            // Mark as Paid transitions out of `.idle` when the confirmation push
+            // happens — release the gate so the merchant can interact with the
+            // next state.
+            isStartingPayment = false
+        }
+        .onChange(of: paymentModel.isPaymentSessionActive) { _, isActive in
+            // The card-state onChange above doesn't always fire when a flow
+            // wraps up — TTP filters intermediate states (idle → idle on
+            // cancel is a no-op). When the gate closes after a TTP
+            // cancel-on-reader, this signals "session ended" — release the
+            // double-tap lock so the merchant can tap the hero CTA again.
+            if !isActive {
+                isStartingPayment = false
+            }
+        }
+        .onChange(of: paymentModel.cardPresentPaymentAlertViewModel == nil) { _, becameNil in
+            // BT scan cancel doesn't trigger any of the signals above:
+            // `currentPaymentMethod` stays `.bluetooth` (we deliberately stopped
+            // auto-clearing on `.idle` to avoid racing the reader-reconnection
+            // observer), and `paymentState.card` was never non-idle to begin
+            // with. The reliable signal there is the scan alert dismissing —
+            // when the alert goes from non-nil to nil while card is idle the
+            // merchant has stepped out of a connect flow that never reached
+            // collect.
+            if becameNil && paymentModel.paymentState.card == .idle {
+                isStartingPayment = false
+            }
+        }
+        .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
+            POSOtherPaymentMethodsSheet(
+                // Hide the Card reader row when a reader is already connected — its
+                // "Connect a Bluetooth reader…" subtitle would contradict the BT
+                // reader status the merchant is already looking at. In the
+                // TTP-hero scenario (no reader connected) the row remains visible.
+                isCardReaderAvailable: isCardReaderRowAvailableInOtherMethodsSheet,
+                onCardReader: {
+                    guard !isStartingPayment else { return }
+                    isStartingPayment = true
+                    Task { @MainActor in
+                        await paymentModel.startPaymentWithMethod(.bluetooth)
+                    }
+                },
+                isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
+                onScanToPay: {
+                    // Same double-tap guard the other sheet callbacks use. Without
+                    // this, a quick double-tap in the brief window between the merchant
+                    // tapping Scan to Pay and `paymentState.scanToPay` transitioning
+                    // out of `.idle` could fire `startScanToPayPayment()` twice.
+                    guard !isStartingPayment else { return }
+                    isStartingPayment = true
+                    Task { @MainActor in
+                        await paymentModel.startScanToPayPayment()
+                    }
+                },
+                isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
+                onMarkOrderAsPaid: {
+                    // Same double-tap guard as the other sheet callbacks. Mark as Paid
+                    // dispatches into a push that the merchant could otherwise re-trigger
+                    // by tapping the row a second time during the same render frame.
+                    guard !isStartingPayment else { return }
+                    isStartingPayment = true
+                    paymentModel.startMarkAsPaidPayment()
+                }
+            )
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
         }
     }
 
@@ -150,7 +273,7 @@ private extension TotalsView {
             return true
         case .connected, .disconnecting, .cancellingConnection, .reconnecting:
             switch displayPaymentState.activePaymentMethod {
-            case .cash:
+            case .cash, .scanToPay, .markAsPaid:
                 return true
             case .card:
                 return paymentModel.cardPresentPaymentInlineMessage != nil ||
@@ -166,7 +289,7 @@ private extension TotalsView {
         }
 
         switch displayPaymentState.activePaymentMethod {
-        case .cash:
+        case .cash, .scanToPay, .markAsPaid:
             return PaymentViewLayout(topPadding: POSPadding.none,
                                      bottomPadding: POSPadding.none,
                                      sidePadding: POSPadding.none)
@@ -195,7 +318,13 @@ private extension TotalsView {
                 }
                 if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                                           paymentState: displayPaymentState) {
-                    return .primary
+                    // On phone, drop the sidePadding (POSPadding.small) so the connect-reader
+                    // button can anchor to the same POSPadding.medium screen-edge insets as
+                    // the cash button below (which uses .padding(.horizontal, POSPadding.medium)
+                    // directly off the screen).
+                    return horizontalSizeClass == .compact
+                        ? PaymentViewLayout(topPadding: nil, bottomPadding: POSPadding.small, sidePadding: POSPadding.none)
+                        : .primary
                 }
             }
         }
@@ -245,7 +374,7 @@ private extension TotalsView {
         static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular()
         static let totalTitleFont: POSFontStyle = .posHeadingBold
         static let totalAmountFont: POSFontStyle = .posHeadingBold
-        static let separatorColor: Color = Color.posOutlineVariant
+        static let separatorColor = Color.posOutlineVariant
 
         static let shimmeringCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let shimmeringWidth: CGFloat = 342
@@ -276,6 +405,11 @@ private extension TotalsView {
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
             comment: "Title for the cash payment button title")
+        static let otherPaymentMethodsButtonTitle = NSLocalizedString(
+            "pos.totalsView.otherPaymentMethods.button.title",
+            value: "Other payment methods",
+            comment: "Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. "
+                + "Tapping it opens a sheet with non-TTP options (currently Card reader).")
     }
 }
 
@@ -353,6 +487,7 @@ private struct SubtotalFieldView: View {
     let title: String
     let formattedPrice: String?
     let shimmeringActive: Bool
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         content
@@ -364,7 +499,7 @@ private struct SubtotalFieldView: View {
     private var content: some View {
         if shimmeringActive {
             ShimmeringLineView(
-                width: TotalsView.Constants.shimmeringWidth,
+                width: horizontalSizeClass == .compact ? nil : TotalsView.Constants.shimmeringWidth,
                 height: TotalsView.Constants.subtotalsShimmeringHeight
             )
         } else {
@@ -384,6 +519,7 @@ private struct SubtotalFieldView: View {
 private struct TotalFieldView: View {
     let formattedPrice: String?
     let shimmeringActive: Bool
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         content
@@ -395,7 +531,7 @@ private struct TotalFieldView: View {
     private var content: some View {
         if shimmeringActive {
             ShimmeringLineView(
-                width: TotalsView.Constants.shimmeringWidth,
+                width: horizontalSizeClass == .compact ? nil : TotalsView.Constants.shimmeringWidth,
                 height: TotalsView.Constants.totalShimmeringHeight
             )
         } else {
@@ -416,15 +552,26 @@ private struct TotalFieldView: View {
 }
 
 private struct ShimmeringLineView: View {
-    let width: CGFloat
+    /// When nil, the bar stretches to the available container width (used on phone, where the
+    /// fixed iPad-tuned width would render asymmetrically inside a centered HStack).
+    let width: CGFloat?
     let height: CGFloat
 
     var body: some View {
-        Color.posOnSurfaceVariantLowest
-            .frame(width: width, height: height)
-            .fixedSize(horizontal: true, vertical: true)
-            .shimmering(active: true)
-            .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
+        if let width {
+            Color.posOnSurfaceVariantLowest
+                .frame(width: width, height: height)
+                .fixedSize(horizontal: true, vertical: true)
+                .shimmering(active: true)
+                .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
+        } else {
+            Color.posOnSurfaceVariantLowest
+                .frame(maxWidth: .infinity)
+                .frame(height: height)
+                .shimmering(active: true)
+                .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
+                .padding(.horizontal, POSPadding.medium)
+        }
     }
 }
 
@@ -463,6 +610,19 @@ private struct PaymentViewContent: View {
                     viewModel: .init(formattedOrderTotal: total.orderTotal,
                                      paymentMethod: .cash)),
                 animation: .init(namespace: paymentMessageNamespace))
+        } else if case .paymentSuccess = paymentState.scanToPay,
+                  case .loaded(let total) = orderState {
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                     paymentMethod: .scanToPay)),
+                animation: .init(namespace: paymentMessageNamespace))
+        } else if paymentState.markAsPaid == .paymentSuccess, case .loaded(let total) = orderState {
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                     paymentMethod: .markAsPaid)),
+                animation: .init(namespace: paymentMessageNamespace))
         } else {
             POSCardPaymentContentView(
                 cardReaderConnectionStatus: cardReaderConnectionStatus,
@@ -474,32 +634,221 @@ private struct PaymentViewContent: View {
     }
 }
 
-private struct CashPaymentButton: View {
-    let orderState: PointOfSaleOrderState
-    let paymentState: PointOfSalePaymentState
-    let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
-    let startCashPaymentAction: () -> Void
+private extension TotalsView {
+    /// Builds the ordered list of payment methods rendered in the bottom buttons row.
+    ///
+    /// When the cash button visibility checks fail (syncing, reconnecting, zero total)
+    /// the row is hidden entirely. Otherwise the row is composed from:
+    ///
+    /// - `.tapToPay` — prepended when the availability controller has resolved
+    ///   `.available` (device + site eligibility passed and the feature flag is on).
+    ///   First slot, so it renders as the primary (filled) button on phone.
+    /// - `.cardReader` — included when no reader is connected. Tapping it starts the
+    ///   connect flow the in-pane "Connect your reader" CTA used to drive.
+    /// - `.cashPayment` — always last, always present when the row is visible.
+    ///
+    /// `.tapToPay`'s action is intentionally a no-op at this stage — wiring it to
+    /// the actual collection flow happens in a later, focused commit.
+    var checkoutPaymentMethods: [POSCheckoutPaymentMethod] {
+        guard totalsViewHelper.shouldShowCollectCashPaymentButton(
+            orderState: posModel.orderState,
+            paymentState: displayPaymentState,
+            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus
+        ) else {
+            return []
+        }
+        let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
+            readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+            paymentState: displayPaymentState
+        )
+        let isTapToPayAvailable = posModel.tapToPayAvailabilityController?.state.isAvailable == true
 
-    private let viewHelper = TotalsViewHelper()
+        var methods: [POSCheckoutPaymentMethod] = []
+        if isTapToPayAvailable {
+            methods.append(.tapToPay)
+        }
+        if isReaderDisconnected {
+            methods.append(.cardReader)
+        }
+        methods.append(.cashPayment)
+        return methods
+    }
 
-    var body: some View {
-        Button(action: {
-            startCashPaymentAction()
-        }, label: {
-            Text(TotalsView.Localization.cashPaymentButtonTitle)
-                .font(POSFontStyle.posBodyLargeBold)
-        })
-        .layoutPriority(1)
-        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-        .accessibilityIdentifier("pos-cash-payment-button")
-        .padding(.horizontal, TotalsView.Constants.buttonHorizontalPadding)
-        .safeAreaPadding(.bottom, TotalsView.Constants.cashButtonBottomPadding)
-        .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(
-            orderState: orderState,
-            paymentState: paymentState,
-            cardReaderConnectionStatus: cardReaderConnectionStatus
-        ))
+    func handlePaymentMethodSelection(_ method: POSCheckoutPaymentMethod) {
+        switch method {
+        case .tapToPay:
+            handleTapToPayTapped()
+        case .cardReader:
+            paymentModel.connectCardReader()
+        case .cashPayment:
+            paymentModel.startCashPayment()
+        }
+    }
+
+    /// True when the merchant should see the Android-style Tap to Pay hero +
+    /// True when the card payment has reached a state that should take over
+    /// the hero immediately: a terminal state (success / error), or the
+    /// `.processingPayment` window between Apple's TTP modal closing and the
+    /// success card rendering. The default hero → PaymentViewContent priority
+    /// order is fine for every other transition; this short-circuits those
+    /// specific cases so the merchant sees the inline "Processing payment" /
+    /// success / error UI immediately rather than the hero fading out + the
+    /// Checkout chrome ghosting through.
+    private var shouldPrioritizePaymentViewOverHero: Bool {
+        switch displayPaymentState.card {
+        case .processingPayment,
+                .cardPaymentSuccessful,
+                .paymentError,
+                .validatingOrderError,
+                .paymentIntentCreationError:
+            return true
+        case .idle,
+                .acceptingCard,
+                .cardInserted,
+                .validatingOrder,
+                .preparingReader:
+            return false
+        }
+    }
+
+    /// bottom-strip layout: TTP availability has resolved `.available`, no
+    /// payment is currently in progress (idle card + idle cash), and the order
+    /// has a real non-zero total to charge. When a TTP payment kicks off,
+    /// `paymentState.card` transitions out of `.idle` and the existing
+    /// `PaymentViewContent` flow takes over (preparing / accepting /
+    /// processing / success / error).
+    var useTapToPayHeroLayout: Bool {
+        guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
+        // Idle-state gates — same as before. After a successful payment via
+        // any non-card method the totals view renders that method's success
+        // UI via `PaymentViewContent`; the hero must not show on top of it.
+        guard displayPaymentState.card == .idle && displayPaymentState.cash == .idle else { return false }
+        guard displayPaymentState.scanToPay == .idle && displayPaymentState.markAsPaid == .idle else { return false }
+        guard case .loaded(let totals) = posModel.orderState else { return false }
+        guard !totals.orderTotalDecimal.isZero else { return false }
+        // Suppress the TTP hero only when **BT is currently `.connected`**.
+        // That covers the BT-ready / BT-collecting scenarios where the
+        // merchant has explicitly picked Card reader from the sheet and we
+        // want the BT screen (`PaymentViewContent`) on top, not the TTP
+        // hero. In every other reader state — `.disconnected`, `.reconnecting`,
+        // `.disconnecting`, `.cancellingConnection` — BT is unreachable and
+        // the merchant should see the TTP hero.
+        //
+        // The one-shot BT model relies on this: a BT drop mid-flow (status
+        // → `.reconnecting` or `.disconnected`) naturally exposes the TTP
+        // hero as the alternative path. When the merchant taps Done after a
+        // BT success, the next `startPayment()` invocation disconnects the
+        // BT reader and pre-connects TTP, returning the merchant to the TTP
+        // hero for the next order.
+        if case .connected = paymentModel.cardReaderConnectionStatus,
+           paymentModel.currentPaymentMethod == .bluetooth || paymentModel.lastConnectedMethod == .bluetooth {
+            return false
+        }
+        return true
+    }
+
+    /// Cash + Other payment methods stacked outlined buttons rendered below the
+    /// totals. Used in two scenarios:
+    ///
+    /// - **TTP hero layout**: TTP is the primary CTA at the top, the strip
+    ///   carries Cash and the "Other payment methods" sheet (Card reader,
+    ///   Scan to Pay, Mark as Paid). Mirrors samiuelson #15825.
+    /// - **TTP-available + BT reader connected**: the BT reader is the active
+    ///   path showing "Ready for payment" up top, and the strip lets the
+    ///   merchant either take cash or step out via the sheet (which now
+    ///   includes Tap to Pay on iPhone since reader-is-connected means the
+    ///   sheet's Card reader row is hidden).
+    @ViewBuilder
+    var cashAndOtherMethodsBottomStrip: some View {
+        VStack(spacing: POSSpacing.medium) {
+            Button(action: handleCashPaymentTapped) {
+                Text(Localization.cashPaymentButtonTitle)
+                    .font(POSFontStyle.posBodyLargeBold)
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .disabled(isStartingPayment)
+            .accessibilityIdentifier("pos-cash-payment-button")
+
+            Button(action: handleOtherPaymentMethodsTapped) {
+                Text(Localization.otherPaymentMethodsButtonTitle)
+                    .font(POSFontStyle.posBodyLargeBold)
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .disabled(isStartingPayment)
+            .accessibilityIdentifier("pos-other-payment-methods-button")
+        }
+        .padding(.horizontal, POSPadding.medium)
+        .padding(.bottom, POSPadding.xxLarge)
+    }
+
+    /// True whenever the bottom of the totals view should render the
+    /// `cashAndOtherMethodsBottomStrip` instead of `POSCheckoutPaymentButtonsRow`.
+    /// Covers both the TTP-hero case (no reader connected) and the
+    /// TTP-available + BT-reader-connected case. In the BT-connected case the
+    /// strip renders Cash + Other payment methods (with Scan to Pay and
+    /// Mark as Paid inside the sheet); the row's TTP-as-primary CTA would
+    /// contradict the reader-ready screen, so it's collapsed into the strip
+    /// shape used by the hero.
+    var useCashAndOtherMethodsBottomStrip: Bool {
+        if useTapToPayHeroLayout { return true }
+        // Reader-connected case: only fold into the strip when TTP would
+        // otherwise have crowded the row as a redundant primary CTA. If TTP
+        // isn't available we don't need the sheet at all — the row already
+        // does the right thing (just Cash).
+        guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
+        let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
+            readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+            paymentState: displayPaymentState
+        )
+        guard !isReaderDisconnected else { return false }
+        return totalsViewHelper.shouldShowCollectCashPaymentButton(
+            orderState: posModel.orderState,
+            paymentState: displayPaymentState,
+            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus
+        )
+    }
+
+    /// True when the Card reader row should appear inside the Other Payment
+    /// Methods sheet. Hidden only when the merchant is currently using BT —
+    /// re-listing it there would be a no-op contradiction. Visible everywhere
+    /// else, including during a TTP collection (lets the merchant switch back
+    /// to a BT reader mid-flow).
+    ///
+    /// Uses `currentPaymentMethod` instead of `cardReaderConnectionStatus`
+    /// because the silent TTP pre-connect also reports the reader as
+    /// `.connected` — only `currentPaymentMethod` distinguishes
+    /// "merchant committed to BT" from "TTP reader is warm."
+    var isCardReaderRowAvailableInOtherMethodsSheet: Bool {
+        // One-shot Bluetooth re-introduction model:
+        //   - From the TTP hero (no active session): Card reader is offered as
+        //     an explicit opt-in.
+        //   - During a Bluetooth collection (`currentPaymentMethod == .bluetooth`):
+        //     Card reader is hidden (no re-pick mid-flow, no method-switch
+        //     state-machine complexity).
+        // After a Bluetooth session ends (success or abandonment), the next
+        // `startPayment()` invocation disconnects the BT reader and pre-
+        // connects TTP, returning the merchant to the TTP hero. The Card
+        // reader option reappears there for the next order if they want
+        // Bluetooth again.
+        paymentModel.currentPaymentMethod != .bluetooth
+    }
+
+    func handleTapToPayTapped() {
+        guard !isStartingPayment else { return }
+        isStartingPayment = true
+        Task { @MainActor in
+            await paymentModel.startPaymentWithMethod(.tapToPay)
+        }
+    }
+
+    func handleCashPaymentTapped() {
+        guard !isStartingPayment else { return }
+        isStartingPayment = true
+        paymentModel.startCashPayment()
+    }
+
+    func handleOtherPaymentMethodsTapped() {
+        isShowingOtherPaymentMethodsSheet = true
     }
 }
 

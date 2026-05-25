@@ -168,7 +168,7 @@ class WebKitViewController: UIViewController {
     }
 
     @objc func loadWebViewRequest() {
-        guard let url = url else {
+        guard let url else {
             return
         }
 
@@ -285,9 +285,9 @@ class WebKitViewController: UIViewController {
     /// - Parameter width: The width value to set the webView to
     /// - Parameter viewWidth: The view width the webView must fit within, used to manage view transitions, e.g. orientation change
     func setWidth(_ width: CGFloat?, viewWidth: CGFloat? = nil) {
-        if let width = width {
+        if let width {
             let horizontalViewBound: CGFloat
-            if let viewWidth = viewWidth {
+            if let viewWidth {
                 horizontalViewBound = viewWidth
             } else if let superViewWidth = view.superview?.frame.width {
                 horizontalViewBound = superViewWidth
@@ -357,7 +357,7 @@ class WebKitViewController: UIViewController {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         guard let object = object as? WKWebView,
             object == webView,
-            let keyPath = keyPath else {
+            let keyPath else {
                 return
         }
 

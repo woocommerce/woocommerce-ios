@@ -68,7 +68,6 @@ final class ProductFormActionsFactory_ProductCreationTests: XCTestCase {
         // Then
         XCTAssertFalse(actions.contains(.customFields))
         XCTAssertFalse(bottomSheetActions.contains(.editCustomFields))
-
     }
 }
 

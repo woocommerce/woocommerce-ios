@@ -126,7 +126,7 @@ extension TitleAndValueRow {
         /// Returns `.content` if content is provided. Returns `.placeholder` otherwise.
         ///
         init (placeHolder: String, content: String?) {
-            if let content = content, content.isNotEmpty {
+            if let content, content.isNotEmpty {
                 self = .content(content)
             } else {
                 self = .placeholder(placeHolder)

@@ -39,7 +39,6 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.itemsRows.count, 0)
-
     }
 
     func test_itemsRows_returns_expected_values() {

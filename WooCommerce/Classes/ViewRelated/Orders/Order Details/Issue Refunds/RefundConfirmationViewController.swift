@@ -119,7 +119,7 @@ private extension RefundConfirmationViewController {
 
     func configureButtonTableFooterView() {
         tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.onRefundButtonAction?()
             self.viewModel.trackSummaryButtonTapped()
         }
@@ -183,7 +183,6 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             cell.update(title: row.paymentGateway,
                         cardDescription: row.paymentMethodDescription,
                         cardIcon: row.cardIcon,
-                        iconAspectHorizontal: row.cardIconAspectHorizontal,
                         accessibilityDescription: row.accessibilityDescription)
             return cell
         default:

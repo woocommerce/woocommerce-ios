@@ -199,7 +199,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         }
 
         // Used mostly in previews
-        if let noteContent = noteContent {
+        if let noteContent {
             noteViewModel = SimplePaymentsNoteViewModel(originalNote: noteContent)
         }
 
@@ -264,7 +264,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                                                            taxable: enableTaxes,
                                                            orderNote: noteContent,
                                                            email: email.isEmpty ? nil : email) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.showLoadingIndicator = false
 
             switch result {
@@ -345,6 +345,5 @@ private extension SimplePaymentsSummaryViewModel {
         static let invalidEmail = NSLocalizedString("Please enter a valid email address.", comment: "Notice text when the merchant enters an invalid email")
         static let tax = NSLocalizedString("Tax",
                                              comment: "Tax label for the tax detail row.")
-
     }
 }

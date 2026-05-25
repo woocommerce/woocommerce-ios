@@ -149,7 +149,7 @@ private extension BlazeCampaignCreationCoordinator {
     /// For native Blaze campaign creation, determine destination based existence of productID, or if not then
     /// based on number of eligible products.
     func determineDestination() -> CreateCampaignDestination {
-        if let productID = productID {
+        if let productID {
             return .campaignForm(productID: productID)
         } else {
             let fetchedObjects = productResultsController.fetchedObjects

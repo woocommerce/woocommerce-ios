@@ -77,7 +77,7 @@ class LoginLinkRequestViewController: LoginViewController {
     }
 
     private func configureUsePasswordButton() {
-        guard let usePasswordButton = usePasswordButton else {
+        guard let usePasswordButton else {
             return
         }
         WPStyleGuide.configureTextButton(usePasswordButton)
@@ -110,7 +110,6 @@ class LoginLinkRequestViewController: LoginViewController {
                                           success: { [weak self] in
                                             self?.didRequestAuthenticationLink()
                                             self?.configureLoading(false)
-
             }, failure: { [weak self] (error: Error) in
                 WordPressAuthenticator.track(.loginMagicLinkFailed)
                 WordPressAuthenticator.track(.loginFailed, error: error)

@@ -62,7 +62,7 @@ final class TopBannerWrapperView: UIView {
     /// Returns the preferred size of the view using on a fixed width.
     ///
     override var intrinsicContentSize: CGSize {
-        guard let bannerView = bannerView else {
+        guard let bannerView else {
             return .zero
         }
 

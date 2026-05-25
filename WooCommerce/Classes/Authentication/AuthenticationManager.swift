@@ -94,7 +94,7 @@ class AuthenticationManager: Authentication {
     func authenticationUI() -> UIViewController {
         let loginViewController: UIViewController = {
             let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 // Resets Apple ID at the beginning of the authentication.
                 self.appleUserID = nil
 
@@ -330,7 +330,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                                          isJetpackActive: siteInfo?.isJetpackActive ?? false,
                                                          isJetpackConnected: siteInfo?.isJetpackConnected ?? false))
 
-        guard let site = siteInfo, let navigationController = navigationController else {
+        guard let site = siteInfo, let navigationController else {
             navigationController?.show(noWPUI, sender: nil)
             return
         }
@@ -562,7 +562,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
 
         // If Apple ID is previously set, saves it to Keychain now that authentication is complete.
-        if let appleUserID = appleUserID {
+        if let appleUserID {
             keychain.wooAppleID = appleUserID
         }
         appleUserID = nil
@@ -661,7 +661,7 @@ private extension AuthenticationManager {
         let viewModel = JetpackErrorViewModel(siteURL: siteURL,
                                               siteCredentials: credentials.wporg,
                                               onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
-            guard let self = self else { return }
+            guard let self else { return }
             // Resets the referenced site since the setup completed now.
             self.currentSelfHostedSite = nil
             guard credentials.wpcom != nil else {
@@ -692,7 +692,7 @@ private extension AuthenticationManager {
                                                         config: config,
                                                         switchStoreUseCase: switchStoreUseCase)
         storePickerCoordinator?.onDismiss = onDismiss
-        if let siteID = siteID {
+        if let siteID {
             storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)
         } else {
             storePickerCoordinator?.start()
@@ -736,7 +736,7 @@ private extension AuthenticationManager {
             site: site,
             showsConnectedStores: matcher.hasConnectedStores,
             onSetupCompletion: { [weak self] siteID in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)
         })
         let noWooUI = ULErrorViewController(viewModel: viewModel)

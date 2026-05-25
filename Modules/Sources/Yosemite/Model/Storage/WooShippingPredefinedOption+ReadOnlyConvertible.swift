@@ -9,7 +9,6 @@ extension Storage.WooShippingPredefinedOption: ReadOnlyConvertible {
     public func update(with option: Yosemite.WooShippingPredefinedOption) {
         self.title = option.title
         self.providerID = option.providerID
-
     }
 
     /// Returns a ReadOnly version of the receiver.

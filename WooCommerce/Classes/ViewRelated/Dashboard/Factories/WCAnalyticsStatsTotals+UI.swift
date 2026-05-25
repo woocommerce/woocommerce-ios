@@ -18,6 +18,7 @@ extension OrderStatsV4Totals: ParsableStatsTotals {
         case totalOrders
         case totalItemsSold
         case grossRevenue
+        case grossSales
         case netRevenue
         case averageOrderValue
     }
@@ -30,6 +31,8 @@ extension OrderStatsV4Totals: ParsableStatsTotals {
             return Double(totalItemsSold)
         case .grossRevenue:
             return (grossRevenue as NSNumber).doubleValue
+        case .grossSales:
+            return (grossSales as NSNumber).doubleValue
         case .netRevenue:
             return (netRevenue as NSNumber).doubleValue
         case .averageOrderValue:

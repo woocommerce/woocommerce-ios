@@ -58,7 +58,7 @@ private extension TaxStore {
     ///
     func retrieveTaxClasses(siteID: Int64, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
         remote.loadAllTaxClasses(for: siteID) { [weak self] (taxClasses, error) in
-            guard let taxClasses = taxClasses else {
+            guard let taxClasses else {
                 onCompletion(nil, error)
                 return
             }
@@ -85,7 +85,7 @@ private extension TaxStore {
         }
         else {
             remote.loadAllTaxClasses(for: taxClassRequestable.siteID) { [weak self] (taxClasses, error) in
-                guard let taxClasses = taxClasses else {
+                guard let taxClasses else {
                     onCompletion(nil, error)
                     return
                 }
@@ -171,7 +171,7 @@ private extension TaxStore {
                                           shouldDeleteExistingTaxRates: Bool,
                                           onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
-            guard let self = self else { return }
+            guard let self else { return }
 
             if shouldDeleteExistingTaxRates {
                 storage.deleteTaxRates(siteID: siteID)

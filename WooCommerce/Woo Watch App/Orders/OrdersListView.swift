@@ -83,7 +83,6 @@ struct OrdersListView: View {
                     .font(.footnote)
 
                 Spacer()
-
             }
             .multilineTextAlignment(.center)
 
@@ -107,7 +106,6 @@ struct OrdersListView: View {
                 .resizable()
                 .frame(maxWidth: Layout.cartSize, maxHeight: Layout.cartSize)
             Spacer()
-
         }
     }
 

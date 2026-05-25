@@ -99,7 +99,7 @@ struct PointOfSaleCollectCashView: View {
                                     .foregroundColor(.posOnSurfaceVariantLowest)
                             }
 
-                            if let errorMessage = errorMessage {
+                            if let errorMessage {
                                 Text(errorMessage)
                                     .font(.posBodySmallRegular())
                                     .foregroundColor(.posError)
@@ -114,6 +114,8 @@ struct PointOfSaleCollectCashView: View {
                             }
                         }, label: {
                             Text(Localization.markPaymentCompletedButtonTitle)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
                         })
                         .measureFrame {
                             buttonFrame = $0

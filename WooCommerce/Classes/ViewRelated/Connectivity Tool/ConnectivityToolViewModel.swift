@@ -12,6 +12,7 @@ import class Networking.ProductsRemote
 import class Networking.UserAgent
 import struct Networking.SystemPlugin
 import protocol WooFoundation.Analytics
+import protocol Experiments.FeatureFlagService
 
 final class ConnectivityToolViewModel {
 
@@ -26,6 +27,32 @@ final class ConnectivityToolViewModel {
     /// Set to `true` when the user taps "Setup Jetpack" to signal the view layer to start the Jetpack setup flow.
     ///
     @Published var shouldStartJetpackSetup = false
+
+    /// Whether all connectivity tests have completed (with success or failure).
+    ///
+    private(set) var allTestsCompleted = false {
+        didSet {
+            updateShowChatButton()
+        }
+    }
+
+    /// Whether the AI support chat button should be shown.
+    /// True when bot chat is supported and all tests have completed.
+    ///
+    @Published private(set) var showChatButton = false
+
+    /// Whether the contact support button should be shown.
+    /// True when bot chat is NOT supported and all tests have completed.
+    ///
+    @Published private(set) var showContactSupportButton = false
+
+    /// Whether the AI support chat is supported.
+    /// Only available when the feature flag is enabled and user is authenticated with WPCom
+    /// (not application password), since the chatbot requires WPCom authentication.
+    ///
+    var isBotChatSupported: Bool {
+        featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
+    }
 
     /// Remote used to check the connection to WPCom servers.
     ///
@@ -51,6 +78,10 @@ final class ConnectivityToolViewModel {
     ///
     private let analytics: Analytics
 
+    /// Feature flag service for checking AI support chat availability.
+    ///
+    private let featureFlagService: FeatureFlagService
+
     /// Adapter for checking notification authorization status.
     ///
     let userNotificationCenter: UserNotificationsCenterAdapter
@@ -72,6 +103,10 @@ final class ConnectivityToolViewModel {
     ///
     private var activeSystemPlugins: [SystemPlugin] = []
 
+    /// Formatted system status report, cached after the site connectivity test.
+    ///
+    private(set) var formattedSystemStatusReport: String?
+
     /// Whether Jetpack is among the active plugins from the system status report.
     /// Populated after the site connectivity test. Internal for testability.
     ///
@@ -86,6 +121,7 @@ final class ConnectivityToolViewModel {
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          userNotificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          network: Network? = nil) {
@@ -98,6 +134,7 @@ final class ConnectivityToolViewModel {
         self.productsRemote = ProductsRemote(network: network)
         self.stores = stores
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.userNotificationCenter = userNotificationCenter
         self.pushNotesManager = pushNotesManager
         self.siteURL = session.defaultSite?.url
@@ -108,13 +145,19 @@ final class ConnectivityToolViewModel {
         }
     }
 
+    private func updateShowChatButton() {
+        showChatButton = allTestsCompleted && isBotChatSupported
+        showContactSupportButton = allTestsCompleted && !isBotChatSupported
+    }
+
     /// Sequentially runs all connectivity tests defined in `ConnectivityTest`.
     /// Provide a `sinceTest` parameter to omit test cases before it..
     ///
     private func startConnectivityTest(sinceTest: ConnectivityTest = .internetConnection) async {
         let supportedTests: [ConnectivityTest] = {
             if stores.isAuthenticatedWithoutWPCom == false {
-                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting, .notifications]
+                // Push notification diagnostics are temporarily hidden until the check is updated.
+                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             } else {
                 [.internetConnection, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             }
@@ -148,12 +191,14 @@ final class ConnectivityToolViewModel {
 
             // Only continue with another test if the current test was successful.
             if !testResult.isSuccess {
+                allTestsCompleted = true
                 return // Exit connectivity test.
             }
         }
 
         // Add no connections issues card if all tests are successful.
         cards.append(noConnectionsIssueState())
+        allTestsCompleted = true
     }
 
     /// This is not a user facing text but will be part of the Zendesk submission for troubleshooting.
@@ -165,6 +210,29 @@ final class ConnectivityToolViewModel {
         return latestTestResult.enumerated().map { index, result in
             "## \(index + 1). " + result.description()
         }.joined()
+    }
+
+    /// Creates a SupportChatViewModel with the current troubleshooting context.
+    ///
+    @MainActor
+    func makeSupportChatViewModel(onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback) -> SupportChatViewModel {
+        var context: [String: Any] = [:]
+
+        if let troubleshootingDescription = troubleshootingDescription() {
+            context["troubleshootingResults"] = troubleshootingDescription
+        }
+
+        if let site = stores.sessionManager.defaultSite {
+            context["selectedSiteID"] = site.siteID
+            context["site_url"] = site.url
+        }
+
+        return SupportChatViewModel(
+            entryPoint: .connectivityTool,
+            initialContext: context,
+            systemStatusReport: formattedSystemStatusReport,
+            onContactHumanSupport: onContactHumanSupport
+        )
     }
 
     /// Perform the test for a provided test case.
@@ -198,6 +266,8 @@ final class ConnectivityToolViewModel {
         if !cards.isEmpty {
             cards.removeLast()
         }
+
+        allTestsCompleted = false
 
         // Run tests again from the failed one.
         Task {
@@ -260,6 +330,7 @@ final class ConnectivityToolViewModel {
                 case .success(let report):
                     DDLogInfo("Connectivity Tool: ✅ Site connection")
                     self.activeSystemPlugins = report.activePlugins
+                    self.formattedSystemStatusReport = SystemStatusReportViewModel.formatReport(with: report)
                 case .failure(let error):
                     DDLogError("Connectivity Tool: ❌ Site connection\n\(error)")
                 }
@@ -322,7 +393,7 @@ final class ConnectivityToolViewModel {
                     }
                 case .failure(let error):
                     DDLogError("Connectivity Tool: ❌ Analytics setting check failed\n\(error)")
-                    let technicalDetails = String(describing: error)
+                    let technicalDetails = error.formattedTechnicalDetails
                     let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
                         title: Localization.Action.viewDetails,
                         systemImage: SystemImages.viewDetails.rawValue,
@@ -430,7 +501,7 @@ final class ConnectivityToolViewModel {
 
         case (let error, _):
             message = Localization.ErrorMessage.generic
-            let technicalDetails = String(describing: error)
+            let technicalDetails = error.formattedTechnicalDetails
             let viewDetailsTitle = Localization.Action.viewDetails
             let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
                 title: viewDetailsTitle,
@@ -775,6 +846,6 @@ extension ConnectivityTool.Card {
     /// Updates a card state to a new given state.
     ///
     func updatingState(_ newState: ConnectivityToolCard.ConnectivityState) -> ConnectivityTool.Card {
-        Self.init(testCase: testCase, title: title, icon: icon, state: newState)
+        Self(testCase: testCase, title: title, icon: icon, state: newState)
     }
 }

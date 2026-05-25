@@ -60,12 +60,12 @@ final class StoreStatsUsageTracksEventEmitter {
 
     func interacted(at interactionTime: Date = Date()) {
         // Check if they were idle for some time.
-        if let lastInteractionTime = lastInteractionTime,
+        if let lastInteractionTime,
            interactionTime.timeIntervalSince(lastInteractionTime) >= idleTimeThreshold {
             reset()
         }
 
-        guard let firstInteractionTime = firstInteractionTime else {
+        guard let firstInteractionTime else {
             interactions = 1
             self.firstInteractionTime = interactionTime
             self.lastInteractionTime = interactionTime

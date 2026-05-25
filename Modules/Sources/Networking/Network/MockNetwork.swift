@@ -180,8 +180,7 @@ private extension MockNetwork {
         } else {
             if let filename = responseMap.filter({ searchPath.hasSuffix($0.key) })
                 // In cases where a suffix is a substring of another suffix, the longer suffix is preferred in matched results.
-                .sorted(by: { $0.key.count > $1.key.count })
-                .first?.value {
+                .max(by: { $0.key.count < $1.key.count })?.value {
                 return filename
             }
         }

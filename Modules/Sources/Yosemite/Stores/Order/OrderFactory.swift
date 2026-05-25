@@ -112,7 +112,6 @@ public enum OrderFactory {
     public static func newOrder(currency: CurrencyCode) -> Order {
         return Order.empty.copy(currency: currency.rawValue)
     }
-
 }
 
 public extension OrderFeeLine {

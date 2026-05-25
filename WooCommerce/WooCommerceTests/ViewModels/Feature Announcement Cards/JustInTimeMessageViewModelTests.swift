@@ -33,7 +33,7 @@ final class JustInTimeMessageViewModelTests: XCTestCase {
 
         sut.$showWebViewSheet
             .sink { [weak self] webViewSheetViewModel in
-                if let webViewSheetViewModel = webViewSheetViewModel {
+                if let webViewSheetViewModel {
                     self?.webviewPublishes.append(webViewSheetViewModel)
                 }
             }

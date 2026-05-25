@@ -30,10 +30,12 @@ extension UserDefaults {
         case siteIDsWithSnapshotTracked
         case hasSavedPrivacyBannerSettings
         case usedProductDescriptionAI
+        case lastWidgetSnapshot
 
         // Tooltip
         case hasDismissedWriteWithAITooltip
         case numberOfTimesWriteWithAITooltipIsShown
+        case hasDismissedWooAIAssistantEarlyAccessTooltip
 
         // Store profiler answers
         case storeProfilerAnswers
@@ -83,6 +85,12 @@ extension UserDefaults {
 
         /// Debug override for the minimum WooCommerce plugin version required for WPCom connection setup
         case debugMinWooVersionForSelfDrivenPushNotifications
+
+        /// Sites available for selection in the configurable store stats widget picker
+        case widgetSelectableSites
+
+        /// Per-site currency settings fetched lazily by the Store Stats widget extension
+        case widgetSiteCurrencySettingsCache
     }
 }
 
@@ -91,7 +99,6 @@ extension UserDefaults {
     ///
     static let group = UserDefaults(suiteName: WooConstants.sharedUserDefaultsSuiteName)
 }
-
 
 // MARK: - Convenience Methods
 //

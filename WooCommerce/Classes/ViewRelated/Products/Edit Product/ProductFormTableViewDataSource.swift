@@ -232,7 +232,7 @@ private extension ProductFormTableViewDataSource {
     }
 
     func configureDescription(cell: UITableViewCell, description: String?, isEditable: Bool, isAIEnabled: Bool) {
-        if let description = description, description.isEmpty == false {
+        if let description, description.isEmpty == false {
             guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
                 fatalError()
             }

@@ -130,7 +130,7 @@ final class OrderPaymentDetailsViewModel {
     /// Example: Oct 28, 2019 via Credit Card (Stripe)
     ///
     var refundSummary: String? {
-        guard let refund = refund else {
+        guard let refund else {
             return nil
         }
 
@@ -164,7 +164,7 @@ final class OrderPaymentDetailsViewModel {
             return nil
         }
 
-        let refundLookUp = order.refunds.filter { $0.refundID == fullRefund.refundID }.first
+        let refundLookUp = order.refunds.first(where: { $0.refundID == fullRefund.refundID })
         guard let condensedRefund = refundLookUp else {
             return nil
         }

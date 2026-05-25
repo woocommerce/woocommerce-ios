@@ -38,7 +38,6 @@ public struct WatchDependencies: Codable, Equatable {
         self.applicationPassword = applicationPassword
         self.enablesCrashReports = enablesCrashReports
         self.account = account
-
     }
 
     /// Uses the stored application password

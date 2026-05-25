@@ -115,7 +115,7 @@ extension Storage.Product: ReadOnlyConvertible {
         let productCustomFields = customFields?.map { $0.toReadOnly() } ?? [Yosemite.MetaData]()
 
         var quantity: Decimal?
-        if let stockQuantity = stockQuantity {
+        if let stockQuantity {
             quantity = Decimal(string: stockQuantity)
         }
         var productBundleStockStatus: ProductStockStatus?
@@ -209,7 +209,7 @@ extension Storage.Product: ReadOnlyConvertible {
     // MARK: - Private Helpers
 
     private func createReadOnlyDimensions() -> Yosemite.ProductDimensions {
-        guard let dimensions = dimensions else {
+        guard let dimensions else {
             return ProductDimensions(length: "", width: "", height: "")
         }
 
@@ -217,7 +217,7 @@ extension Storage.Product: ReadOnlyConvertible {
     }
 
     private func convertIDArray(_ array: [Int64]? ) -> [Int64] {
-        guard let array = array else {
+        guard let array else {
             return [Int64]()
         }
 

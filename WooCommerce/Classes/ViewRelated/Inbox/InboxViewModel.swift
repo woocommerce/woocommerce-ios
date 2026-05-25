@@ -115,7 +115,7 @@ extension InboxViewModel: PaginationTrackerDelegate {
                                                         pageSize: pageSize,
                                                         type: Self.noteTypes,
                                                         status: Self.noteStatuses) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let notes):
                 ServiceLocator.analytics.track(.inboxNotesLoaded,
@@ -171,7 +171,7 @@ private extension InboxViewModel {
     func configureFirstPageLoad() {
         onLoadTrigger
             .sink { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.syncFirstPage()
             }
             .store(in: &subscriptions)

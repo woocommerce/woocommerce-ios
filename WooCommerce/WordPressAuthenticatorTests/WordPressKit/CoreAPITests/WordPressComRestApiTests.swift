@@ -330,7 +330,6 @@ class WordPressComRestApiTests: XCTestCase {
         progress1?.cancel()
         api.multipartPOST(wordPressMediaNewEndpointPath, parameters: nil, fileParts: [filePart], success: { (_: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
-
             }, failure: { (_, _) in
                 expect.fulfill()
                 XCTFail("This call should succesful")
@@ -341,7 +340,7 @@ class WordPressComRestApiTests: XCTestCase {
 
     func testCancelationOfRequest() {
         stub(condition: isRestAPIMediaNewRequest()) { _ in
-            return HTTPStubsResponse.init(error: NSError(domain: NSURLErrorDomain, code: NSURLErrorCancelled, userInfo: nil))
+            return HTTPStubsResponse(error: NSError(domain: NSURLErrorDomain, code: NSURLErrorCancelled, userInfo: nil))
         }
         let expect = self.expectation(description: "One callback should be invoked")
         let api = WordPressComRestApi(oAuthToken: "fakeToken")

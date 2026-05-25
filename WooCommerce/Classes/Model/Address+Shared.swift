@@ -61,7 +61,7 @@ private extension Address {
     /// Per US Post Office standardized rules for address lines. Ref. https://pe.usps.com/text/pub28/28c2_001.htm
     ///
     var combinedAddress: String {
-        guard let address2 = address2, address2.isEmpty == false else {
+        guard let address2, address2.isEmpty == false else {
             return address1
         }
 

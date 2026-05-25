@@ -141,7 +141,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         let formattedTrialDetails = {
             // If trial period is missing, we can skip formatting the rest
-            guard let trialPeriod = trialPeriod else { return "" }
+            guard let trialPeriod else { return "" }
             switch trialLength {
             case "", "0":
                 // The API allows empty and 0 as values for trial length, with a non-nil trial period.
@@ -192,7 +192,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Formatted price label for an individual product
     ///
     var priceLabel: String? {
-        guard let price = price else {
+        guard let price else {
             return nil
         }
         return currencyFormatter.formatAmount(price)
@@ -202,14 +202,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// e.g: If price is $5 and discount is $1, outputs "$5.00 - $1.00"
     ///
     var priceAndDiscountsLabel: String? {
-        guard let price = price else {
+        guard let price else {
             return nil
         }
         let productSubtotal = quantity * (currencyFormatter.convertToDecimal(price)?.decimalValue ?? Decimal.zero)
         let priceLabelComponent = currencyFormatter.formatAmount(productSubtotal)
 
         guard let priceLabelComponent = currencyFormatter.formatAmount(productSubtotal),
-              let discount = discount,
+              let discount,
               let discountLabelComponent = currencyFormatter.formatAmount(discount) else {
             return priceLabelComponent
         }
@@ -276,7 +276,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing product SKU
     ///
     private(set) lazy var skuLabel: String = {
-        guard let sku = sku, sku.isNotEmpty else {
+        guard let sku, sku.isNotEmpty else {
             return ""
         }
         return String.localizedStringWithFormat(Localization.skuFormat, sku)
@@ -508,7 +508,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     private func createStockText() -> String {
         switch stockStatus {
         case .inStock:
-            if let stockQuantity = stockQuantity, manageStock {
+            if let stockQuantity, manageStock {
                 let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
                 return String.localizedStringWithFormat(Localization.stockFormat, localizedStockQuantity)
             } else {
@@ -524,7 +524,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     private func createStockQuantityText() -> String {
         switch stockStatus {
         case .inStock:
-            if let stockQuantity = stockQuantity, manageStock {
+            if let stockQuantity, manageStock {
                 let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
                 return String.localizedStringWithFormat(Localization.stockFormat, localizedStockQuantity)
             } else {

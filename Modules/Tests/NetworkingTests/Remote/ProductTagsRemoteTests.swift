@@ -160,5 +160,4 @@ final class ProductTagsRemoteTests: XCTestCase {
         XCTAssertNil(try? result?.get())
         XCTAssertNotNil(result?.failure)
     }
-
 }

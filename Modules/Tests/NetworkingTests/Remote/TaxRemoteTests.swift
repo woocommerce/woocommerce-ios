@@ -31,7 +31,7 @@ final class TaxRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
 
         remote.loadAllTaxClasses(for: sampleSiteID) { [weak self] (taxClasses, error) in
-            guard let self = self else {
+            guard let self else {
                 expectation.fulfill()
                 return
             }

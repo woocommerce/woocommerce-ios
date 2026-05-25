@@ -214,7 +214,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                              completion: @escaping (Result<Coupon, Error>) -> Void) {
         do {
             let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-            if let siteTimezone = siteTimezone {
+            if let siteTimezone {
                 dateFormatter.timeZone = siteTimezone
             }
 
@@ -250,7 +250,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                              completion: @escaping (Result<Coupon, Error>) -> Void) {
         do {
             let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-            if let siteTimezone = siteTimezone {
+            if let siteTimezone {
                 dateFormatter.timeZone = siteTimezone
             }
 

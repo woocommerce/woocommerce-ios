@@ -18,7 +18,7 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
         // Set manually the edit coupon button click event to present
         // the AddEditCoupon view on top of the Coupon details
         rootView.onEditCoupon = { [weak self] addEditCouponViewModel in
-            guard let self = self else { return }
+            guard let self else { return }
             let addEditHostingController = AddEditCouponHostingController(
                 viewModel: addEditCouponViewModel,
                 onDisappear: {

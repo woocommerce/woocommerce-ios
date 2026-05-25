@@ -76,5 +76,4 @@ final class SitePostStoreTests: XCTestCase {
         // Assert
         XCTAssertEqual(try XCTUnwrap(result?.get()), newPassword)
     }
-
 }

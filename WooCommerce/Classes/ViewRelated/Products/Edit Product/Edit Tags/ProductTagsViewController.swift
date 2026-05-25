@@ -38,7 +38,7 @@ final class ProductTagsViewController: UIViewController, GhostableViewController
 
     /// Keyboard management
     ///
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
@@ -217,7 +217,7 @@ private extension ProductTagsViewController {
         }
 
         let action = ProductTagAction.synchronizeAllProductTags(siteID: product.siteID) { [weak self] error in
-            if let error = error {
+            if let error {
                 ServiceLocator.analytics.track(.productTagListLoadFailed, withError: error)
                 self?.tagsFailedLoading()
                 return
@@ -257,7 +257,7 @@ private extension ProductTagsViewController {
         configureRightBarButtonItemAsSpinner()
 
         let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] (result) in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.configureRightBarButtonItemAsSave()
@@ -271,7 +271,6 @@ private extension ProductTagsViewController {
         }
         ServiceLocator.stores.dispatch(action)
     }
-
 }
 
 // MARK: Error handling

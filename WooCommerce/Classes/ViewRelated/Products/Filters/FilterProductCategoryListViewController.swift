@@ -18,7 +18,7 @@ final class FilterProductCategoryListViewController: UIViewController {
         self.viewModel = FilterProductCategoryListViewModel(anyCategoryIsSelected: selectedCategory == nil)
 
         var selectedCategories: [ProductCategory] = []
-        if let selectedCategory = selectedCategory {
+        if let selectedCategory {
             selectedCategories.append(selectedCategory)
         }
 

@@ -233,15 +233,14 @@ private extension ProductsSplitViewCoordinator {
 
     func autoSelectProductOnInitialDataLoad() {
         Publishers.CombineLatest(selectedProduct, productsViewController.onDataReloaded)
-            .filter { [weak self] selectedProduct, onDataReloaded in
+            .first(where: { [weak self] selectedProduct, onDataReloaded in
                 guard let self else {
                     return false
                 }
                 return selectedProduct == nil &&
                     !splitViewController.isCollapsed &&
                     splitViewController.traitCollection.horizontalSizeClass == .regular
-            }
-            .first()
+            })
             .sink { [weak self] selectedProduct, onDataReloaded in
                 self?.productsViewController.selectFirstProductIfAvailable()
             }

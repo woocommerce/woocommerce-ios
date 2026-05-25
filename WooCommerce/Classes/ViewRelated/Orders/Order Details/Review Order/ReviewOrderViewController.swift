@@ -280,7 +280,7 @@ private extension ReviewOrderViewController {
 
         let addOns = viewModel.addOns(for: item)
         cell.onViewAddOnsTouchUp = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.itemAddOnsButtonTapped(addOns: addOns)
         }
     }

@@ -1,0 +1,77 @@
+import Foundation
+
+/// Maps write responses, classifying transport drops and timeouts as `outcomeUnknown`.
+/// The write may still have applied server-side, so retrying risks a duplicate update.
+enum WriteResultMapper {
+    static func mapEntity(_ response: WCRESTResponse,
+                          toolName: String,
+                          summarize: (AnyCodableJSON) -> AnyCodableJSON) -> ToolResult {
+        if let unknown = unknownOutcomeFailure(response: response, toolName: toolName) {
+            return .failed(unknown)
+        }
+        guard HTTPStatusClassification.isSuccess(response.statusCode) else {
+            return .failed(RESTToolDispatch.failed(from: response, toolName: toolName))
+        }
+        guard let entity = RESTResponseParsing.decodeJSON(response.data) else {
+            return .failed(.init(toolName: toolName,
+                                 kind: .toolFailed,
+                                 reason: "expected JSON object"))
+        }
+        let pruned = RESTPayloadPruning.prune(entity)
+        let summary = summarize(pruned)
+        return .success(.init(toolName: toolName,
+                              structured: LLMPayloadCap.capped(summary, toolName: toolName),
+                              uiStructured: nil))
+    }
+
+    /// WC's batch endpoint returns 200 even when individual entries fail, so the summary
+    /// counts and surfaces per-entry errors rather than trusting the envelope status.
+    static func mapBatch(_ response: WCRESTResponse,
+                         toolName: String,
+                         requestedCount: Int,
+                         patchKeys: [String]) -> ToolResult {
+        if let unknown = unknownOutcomeFailure(response: response, toolName: toolName) {
+            return .failed(unknown)
+        }
+        guard HTTPStatusClassification.isSuccess(response.statusCode) else {
+            return .failed(RESTToolDispatch.failed(from: response, toolName: toolName))
+        }
+        guard let entity = RESTResponseParsing.decodeJSON(response.data),
+              let updates = RESTResponseParsing.objectField(entity, "update").flatMap(RESTResponseParsing.arrayItems) else {
+            return .failed(.init(toolName: toolName,
+                                 kind: .toolFailed,
+                                 reason: "expected {\"update\":[...]} batch payload"))
+        }
+        var updatedIDs: [Int64] = []
+        var failedEntries: [AnyCodableJSON] = []
+        for item in updates {
+            if RESTResponseParsing.objectField(item, "error") != nil {
+                failedEntries.append(item)
+            } else if let identifier = RESTResponseParsing.intField(item, "id") {
+                updatedIDs.append(identifier)
+            }
+        }
+        let partialSuccess = !updatedIDs.isEmpty && !failedEntries.isEmpty
+        let summary: [String: AnyCodableJSON] = [
+            "tool": .string(toolName),
+            "requested_count": .int(Int64(requestedCount)),
+            "updated_count": .int(Int64(updatedIDs.count)),
+            "failed_count": .int(Int64(failedEntries.count)),
+            "partial_success": .bool(partialSuccess),
+            "patch_keys": .array(patchKeys.map { .string($0) }),
+            "updated_ids": .array(updatedIDs.map { .int($0) }),
+            "failed": .array(failedEntries)
+        ]
+        return .success(.init(toolName: toolName,
+                              structured: LLMPayloadCap.capped(.object(summary), toolName: toolName),
+                              uiStructured: nil))
+    }
+
+    private static func unknownOutcomeFailure(response: WCRESTResponse,
+                                              toolName: String) -> ToolResult.Failed? {
+        guard HTTPStatusClassification.isOutcomeUnknownStatus(response.statusCode) else { return nil }
+        return .init(toolName: toolName,
+                     kind: .outcomeUnknown,
+                     reason: "Write request did not get a confirmed response. The change may or may not have applied; verify on the store before retrying.")
+    }
+}

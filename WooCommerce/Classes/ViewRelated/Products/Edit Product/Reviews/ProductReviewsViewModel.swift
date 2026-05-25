@@ -22,7 +22,8 @@ final class ProductReviewsViewModel {
 
     private let siteID: Int64
 
-    init(siteID: Int64, data: ReviewsDataSourceProtocol) {
+    init(siteID: Int64,
+         data: ReviewsDataSourceProtocol) {
         self.siteID = siteID
         self.data = data
     }

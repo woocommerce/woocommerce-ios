@@ -55,7 +55,7 @@ final class MockCardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboard
 
         /// Assign the publisher if provided
         ///
-        if let publisher = publisher {
+        if let publisher {
             publisher.assign(to: &$state)
         }
     }

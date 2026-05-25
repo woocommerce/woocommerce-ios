@@ -57,10 +57,10 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                 ParameterKeys.fields: ParameterValues.fieldValues,
             ]
 
-            if let after = after {
+            if let after {
                 parameters[ParameterKeys.after] = utcDateFormatter.string(from: after)
             }
-            if let before = before {
+            if let before {
                 parameters[ParameterKeys.before] = utcDateFormatter.string(from: before)
             }
             if let modifiedAfter {
@@ -489,6 +489,21 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                     continuation.resume(returning: order)
                 case let .failure(error):
                     continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
+    public func addPOSOrderNote(siteID: Int64,
+                                orderID: Int64,
+                                isCustomerNote: Bool,
+                                note: String) async throws -> OrderNote {
+        try await withCheckedThrowingContinuation { continuation in
+            addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { orderNote, error in
+                if let orderNote {
+                    continuation.resume(returning: orderNote)
+                } else {
+                    continuation.resume(throwing: error ?? POSOrdersRemoteError.addOrderNoteFailed)
                 }
             }
         }

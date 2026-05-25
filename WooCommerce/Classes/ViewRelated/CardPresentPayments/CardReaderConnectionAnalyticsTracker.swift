@@ -184,10 +184,10 @@ private extension CardReaderConnectionAnalyticsTracker {
 
     func observeSoftwareUpdateState() {
         let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
-            guard let self = self else { return }
+            guard let self else { return }
             self.softwareUpdateCancelable = softwareUpdateEvents
                 .sink { [weak self] state in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     switch state {
                     case .started:
                         self.analytics.track(

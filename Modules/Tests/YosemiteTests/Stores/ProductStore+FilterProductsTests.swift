@@ -55,7 +55,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let _: Bool = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 XCTFail()
                 return
             }
@@ -84,7 +84,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let _: Bool = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 XCTFail()
                 return
             }
@@ -113,7 +113,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let _: Bool = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 XCTFail()
                 return
             }
@@ -142,7 +142,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let _: Bool = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 XCTFail()
                 return
             }
@@ -159,7 +159,6 @@ final class ProductStore_FilterProductsTests: XCTestCase {
             }
 
             productStore.onAction(action)
-
         }
 
         self.assertParamValues(stockStatusValue: nil,
@@ -173,7 +172,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let _: Bool = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 XCTFail()
                 return
             }
@@ -190,7 +189,6 @@ final class ProductStore_FilterProductsTests: XCTestCase {
             }
 
             productStore.onAction(action)
-
         }
 
         self.assertParamValues(stockStatusValue: nil,
@@ -326,7 +324,7 @@ private extension ProductStore_FilterProductsTests {
         }
 
         let stockStatusParameter = "stock_status"
-        if let stockStatusValue = stockStatusValue {
+        if let stockStatusValue {
             let expectedParam = "\(stockStatusParameter)=\(stockStatusValue)"
             XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
         } else {
@@ -334,7 +332,7 @@ private extension ProductStore_FilterProductsTests {
         }
 
         let productStatusParameter = "status"
-        if let productStatusValue = productStatusValue {
+        if let productStatusValue {
             let expectedParam = "\(productStatusParameter)=\(productStatusValue)"
             XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
         } else {
@@ -342,7 +340,7 @@ private extension ProductStore_FilterProductsTests {
         }
 
         let productTypeParameter = "type"
-        if let productTypeValue = productTypeValue {
+        if let productTypeValue {
             let expectedParam = "\(productTypeParameter)=\(productTypeValue)"
             XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
         } else {
@@ -350,7 +348,7 @@ private extension ProductStore_FilterProductsTests {
         }
 
         let productCategoryParameter = "category"
-        if let productCategoryValue = productCategoryValue {
+        if let productCategoryValue {
             let expectedParam = "\(productCategoryParameter)=\(productCategoryValue)"
             XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
         } else {

@@ -205,7 +205,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var storedTaxRateViewModel: TaxRateViewModel? {
-        guard let storedTaxRate = storedTaxRate else { return nil }
+        guard let storedTaxRate else { return nil }
 
         return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
@@ -861,7 +861,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addTaxRateAddressToOrder(taxRate: TaxRate) {
-        guard let taxBasedOnSetting = taxBasedOnSetting else {
+        guard let taxBasedOnSetting else {
             return
         }
 
@@ -920,7 +920,7 @@ final class EditableOrderViewModel: ObservableObject {
         performingNetworkRequest = true
 
         orderSynchronizer.commitAllChanges { [weak self] result, usesGiftCard in
-            guard let self = self else { return }
+            guard let self else { return }
             self.performingNetworkRequest = false
 
             switch result {
@@ -1081,7 +1081,7 @@ final class EditableOrderViewModel: ObservableObject {
         },
                                                  onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
             let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none
-            if let feeID = feeID {
+            if let feeID {
                 self?.updateFee(with: feeID, total: amount, name: name, taxStatus: taxStatus)
             } else {
                 self?.addFee(with: amount, name: name, taxStatus: taxStatus)
@@ -1425,7 +1425,7 @@ private extension EditableOrderViewModel {
     func configureSyncErrors() {
         orderSynchronizer.statePublisher
             .map { [weak self] state in
-                guard let self = self else { return nil }
+                guard let self else { return nil }
                 switch state {
                 case let .error(error, usesGiftCard):
                     DDLogError("⛔️ Error syncing order remotely: \(error)")
@@ -1524,7 +1524,6 @@ private extension EditableOrderViewModel {
         }
 
         return inputsToBeRemoved
-
     }
 
     /// Adds, or removes multiple products from an Order
@@ -1604,7 +1603,7 @@ private extension EditableOrderViewModel {
             .map { $0.items }
             .removeDuplicates()
             .map { [weak self] items -> [CollapsibleProductCardViewModel] in
-                guard let self = self else { return [] }
+                guard let self else { return [] }
                 return self.createProductRows(items: items)
             }
             .assign(to: &$productRows)
@@ -1616,7 +1615,7 @@ private extension EditableOrderViewModel {
             .map { $0.fees }
             .removeDuplicates()
             .map { [weak self] fees -> [CustomAmountRowViewModel] in
-                guard let self = self else { return [] }
+                guard let self else { return [] }
                 return fees.compactMap { fee in
                     guard !fee.isDeleted else { return nil }
 
@@ -1776,7 +1775,7 @@ private extension EditableOrderViewModel {
                 let taxBasedOnSetting = combinedPublisher.3
                 let giftCardToApply = giftCardPublisher.0
                 let isGiftCardEnabled = giftCardPublisher.1
-                guard let self = self else {
+                guard let self else {
                     return PaymentDataViewModel()
                 }
 
@@ -1900,7 +1899,7 @@ private extension EditableOrderViewModel {
 
         stores.dispatch(SettingAction.retrieveTaxBasedOnSetting(siteID: siteID,
                                                                 onCompletion: { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
                 case .success(let setting):
@@ -1951,8 +1950,7 @@ private extension EditableOrderViewModel {
     }
 
     func observeGiftCardStatesForAnalytics() {
-        $paymentDataViewModel.filter { $0.isGiftCardEnabled && $0.isAddGiftCardActionEnabled }
-            .first()
+        $paymentDataViewModel.first(where: { $0.isGiftCardEnabled && $0.isAddGiftCardActionEnabled })
             .sink { [weak self] _ in
                 guard let self else { return }
                 self.analytics.track(event: .Orders.orderFormAddGiftCardCTAShown(flow: self.flow.analyticsFlow))
@@ -2140,8 +2138,8 @@ private extension EditableOrderViewModel {
     /// Creates an `OrderSyncAddressesInput` type if the given data exists, otherwise returns nil
     ///
     static func createAddressesInputIfPossible(billingAddress: Address?, shippingAddress: Address?)  -> OrderSyncAddressesInput? {
-        guard let billingAddress = billingAddress,
-                let shippingAddress = shippingAddress else {
+        guard let billingAddress,
+                let shippingAddress else {
             return nil
         }
 
@@ -2179,7 +2177,7 @@ private extension EditableOrderViewModel {
             addedDiscount: currentDiscount(on: orderItem),
             baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
             onSave: { [weak self] discount in
-                guard let discount = discount else {
+                guard let discount else {
                     self?.addDiscountToOrderItem(item: orderItem, discount: 0)
                     return
                 }
@@ -2318,7 +2316,6 @@ private extension EditableOrderViewModel {
                                 detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
                                                                              siteID: siteID,
                                                                              didSelectSave: saveCouponLine))
-
         }
     }
 
@@ -2414,7 +2411,7 @@ extension EditableOrderViewModel {
     func addScannedProductToOrder(barcode: ScannedBarcode, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
         analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .orderCreation))
         mapScannedBarcodetoBaseItem(barcode: barcode) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case let .success(result):
                 Task { @MainActor in

@@ -25,7 +25,7 @@ extension View {
     ///
     @ViewBuilder
     public func safariSheet(isPresented: Binding<Bool>, url: URL?, onDismiss: (() -> Void)? = nil) -> some View {
-        if let url = url {
+        if let url {
             sheet(isPresented: isPresented, onDismiss: onDismiss) {
                 SafariSheetView(url: url)
                     .ignoresSafeArea()

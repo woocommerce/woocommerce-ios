@@ -75,7 +75,7 @@ final class AppCoordinator {
     func start() {
         authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
             .sink {  [weak self] isLoggedIn, needsDefaultStore in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
                 switch (isLoggedIn, needsDefaultStore) {
@@ -121,7 +121,7 @@ private extension AppCoordinator {
     func updateSitePropertiesIfNeeded() {
         if let siteID = stores.sessionManager.defaultSite?.siteID {
             let action = SiteAction.syncSite(siteID: siteID, completion: { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case .success(let site):
                     self.stores.updateDefaultStore(site)
@@ -192,7 +192,7 @@ private extension AppCoordinator {
     ///
     func synchronizeAndShowWhatsNew() {
         stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let announcement):
                 DDLogInfo("📣 Announcements Synced! AppVersion: \(announcement.appVersionName) | AnnouncementVersion: \(announcement.announcementVersion)")
@@ -211,7 +211,7 @@ private extension AppCoordinator {
     ///
     func showWhatsNewIfNeeded() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             guard let (announcement, displayed) = try? result.get(), !displayed else {
                 return DDLogInfo("📣 There are no announcements to show!")
             }
@@ -231,7 +231,7 @@ private extension AppCoordinator {
             // at the end of app launch.
             setWindowRootViewControllerAndAnimateIfNeeded(.init())
             presentLoginOnboarding { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 // Only displays the authenticator when dismissing onboarding to allow time for A/B test setup.
                 self.displayAuthenticator()
             }
@@ -262,7 +262,7 @@ private extension AppCoordinator {
     func displayAuthenticator() -> UIViewController {
         let authenticationUI = authenticationManager.authenticationUI()
         setWindowRootViewControllerAndAnimateIfNeeded(authenticationUI) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.tabBarController.removeViewControllers()
         }
         ServiceLocator.analytics.track(.openedLogin)
@@ -287,7 +287,7 @@ private extension AppCoordinator {
     /// - Parameter onDismiss: invoked when the onboarding is dismissed.
     func presentLoginOnboarding(onDismiss: @escaping () -> Void) {
         let onboardingViewController = LoginOnboardingViewController { [weak self] action in
-            guard let self = self else { return }
+            guard let self else { return }
             onDismiss()
             self.loggedOutAppSettings.setHasFinishedOnboarding(true)
             self.window.rootViewController?.dismiss(animated: true)
@@ -354,7 +354,7 @@ private extension AppCoordinator {
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
         storePickerCoordinator?.start()
         storePickerCoordinator?.onDismiss = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             if self.isLoggedIn == false {
                 self.displayAuthenticatorWithOnboardingIfNeeded()
             }
@@ -394,7 +394,7 @@ private extension AppCoordinator {
         }
 
         let action = AppSettingsAction.loadEligibilityErrorInfo { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             // if the previous role check indicates that the user is ineligible, let's show the error message.
             if let errorInfo = try? result.get() {

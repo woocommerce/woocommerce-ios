@@ -57,7 +57,7 @@ class WooBasicTableViewCell: UITableViewCell {
     /// Add the accessoryView image, if any
     ///
     func configureAccessoryView() {
-        guard let accessoryImage = accessoryImage else {
+        guard let accessoryImage else {
             accessoryView = nil
             return
         }

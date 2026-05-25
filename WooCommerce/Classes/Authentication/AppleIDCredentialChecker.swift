@@ -83,7 +83,7 @@ private extension AppleIDCredentialChecker {
             default:
                 // An error exists only for the notFound state.
                 // notFound is a valid state when logging in with an Apple account for the first time.
-                if let error = error {
+                if let error {
                     DDLogDebug("checkAppleIDCredentialState: Apple ID state not found: \(error.localizedDescription)")
                 }
                 break
@@ -95,7 +95,7 @@ private extension AppleIDCredentialChecker {
 private extension AppleIDCredentialChecker {
     func startObservingAppleIDCredentialRevoked() {
         authenticator.startObservingAppleIDCredentialRevoked { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             // The user could have SIWA'ed earlier then changed to authenticate with another method, and thus the app still receives notifications on

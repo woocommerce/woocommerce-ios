@@ -86,7 +86,7 @@ struct TitleAndTextFieldRow: View {
                     .keyboardType(keyboardType)
                     .disabled(!editable)
                     .textInputAutocapitalization(autocapitalization)
-                if let symbol = symbol {
+                if let symbol {
                     Text(symbol)
                         .bodyStyle()
                         .font(valueFont)
@@ -99,7 +99,7 @@ struct TitleAndTextFieldRow: View {
     }
 
     private func formatText(_ newValue: String) -> String {
-        guard let inputFormatter = inputFormatter else {
+        guard let inputFormatter else {
             return newValue
         }
         return inputFormatter.format(input: newValue)

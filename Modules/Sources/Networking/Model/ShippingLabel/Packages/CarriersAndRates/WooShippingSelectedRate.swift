@@ -38,9 +38,9 @@ public struct WooShippingSelectedRate: Equatable, GeneratedFakeable {
 
 public extension WooShippingSelectedRate {
     var purchaseRate: ShippingLabelCarrierRate {
-        if let signatureRate = signatureRate {
+        if let signatureRate {
             return signatureRate
-        } else if let adultSignatureRate = adultSignatureRate {
+        } else if let adultSignatureRate {
             return adultSignatureRate
         }
         return rate

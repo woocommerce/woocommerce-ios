@@ -38,7 +38,7 @@ final class MainTabViewModel {
 
     private var cancellables = Set<AnyCancellable>()
 
-    private(set) lazy var tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker()
+    private(set) lazy var tapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker()
 
     init(storesManager: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
@@ -148,7 +148,7 @@ private extension MainTabViewModel {
     ///
     func processBadgeCount(_ ordersStatus: OrderStatus?) {
         // Exit early if there is not data, or the count is zero
-        guard let ordersStatus = ordersStatus,
+        guard let ordersStatus,
               ordersStatus.slug == OrderStatusEnum.processing.rawValue,
               ordersStatus.total > 0 else {
             onOrdersBadgeReload?(nil)

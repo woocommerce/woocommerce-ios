@@ -129,6 +129,8 @@ extension WooAnalyticsEvent {
         case orderCreation = "order_creation"
         /// Shown in the order form after adding a shipping line
         case orderFormShippingLines = "order_form_shipping_lines"
+        /// Shown in the AI Assistant beta notice.
+        case aiAssistant = "ai_assistant"
     }
 
     /// The action performed on the survey screen.
@@ -1382,7 +1384,7 @@ extension WooAnalyticsEvent {
                                                                        Keys.paymentMethod: method.rawValue,
                                                                        Keys.orderID: orderID]
 
-            if let cardReaderType = cardReaderType {
+            if let cardReaderType {
                 properties[Keys.cardReaderType] = cardReaderType.rawValue
             }
 
@@ -1421,7 +1423,7 @@ extension WooAnalyticsEvent {
                 Keys.currency: currency
             ]
 
-            if let cardReaderType = cardReaderType {
+            if let cardReaderType {
                 properties[Keys.cardReaderType] = cardReaderType.rawValue
             }
 
@@ -1630,7 +1632,7 @@ extension WooAnalyticsEvent {
                 Keys.connectionType: connectionType
             ]
 
-            if let batteryLevel = batteryLevel {
+            if let batteryLevel {
                 properties[Keys.batteryLevel] = String(format: "%.2f", batteryLevel)
             }
 
@@ -2382,7 +2384,6 @@ extension WooAnalyticsEvent {
             case tapToPaySummary
             case manageCardReader
             case aboutTapToPay
-            case ciabUpgrade
 
             var trackingValue: String {
                 switch self {
@@ -2396,8 +2397,6 @@ extension WooAnalyticsEvent {
                     return "manage_card_reader"
                 case .aboutTapToPay:
                     return "about_tap_to_pay"
-                case .ciabUpgrade:
-                    return "ciab_upgrade"
                 }
             }
         }
@@ -2677,6 +2676,7 @@ extension WooAnalyticsEvent {
 
         enum Name: String {
             case todayStats = "today-stats"
+            case trends = "trends"
             case appLink = "app-link"
         }
 
@@ -2690,6 +2690,29 @@ extension WooAnalyticsEvent {
                 properties = [Key.name.rawValue: name.rawValue]
             }
             return WooAnalyticsEvent(statName: .widgetTapped, properties: properties)
+        }
+
+        /// Event fired when a Store Stats widget metric cell deep link reaches the host app
+        /// and the URL's `source` parameter identifies the Store Stats widget as the producer.
+        ///
+        /// `metric` / `range` carry the raw query values straight from the URL — including
+        /// unknown values — so we can observe widget→app contract drift without losing the
+        /// tap event when one side ships a value the other hasn't learned yet.
+        ///
+        static func storeStatsWidgetMetricTapped(metric: String?, range: String?) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [:]
+            if let metric {
+                properties[StoreStatsWidgetKey.metric.rawValue] = metric
+            }
+            if let range {
+                properties[StoreStatsWidgetKey.range.rawValue] = range
+            }
+            return WooAnalyticsEvent(statName: .storeStatsWidgetMetricTapped, properties: properties)
+        }
+
+        enum StoreStatsWidgetKey: String {
+            case metric
+            case range
         }
     }
 }
@@ -2972,7 +2995,6 @@ extension WooAnalyticsEvent {
         static func loginDismissed() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordLoginDismissed, properties: [:])
         }
-
     }
 }
 
@@ -3118,7 +3140,7 @@ extension WooAnalyticsEvent {
         static func productSearchViaSKUSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {
             var properties = [Keys.source: source]
 
-            if let stockManaged = stockManaged {
+            if let stockManaged {
                 properties["stock_managed"] = "\(stockManaged)"
             }
             return WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: properties)
@@ -3127,7 +3149,7 @@ extension WooAnalyticsEvent {
         static func productSearchViaGlobalUniqueIDSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {
             var properties = [Keys.source: source]
 
-            if let stockManaged = stockManaged {
+            if let stockManaged {
                 properties["stock_managed"] = "\(stockManaged)"
             }
             return WooAnalyticsEvent(statName: .orderProductSearchViaGlobalUniqueIdentifierSuccess, properties: properties)
@@ -3140,7 +3162,7 @@ extension WooAnalyticsEvent {
             var properties = [Keys.source: source,
                               Keys.reason: reason]
 
-            if let symbology = symbology {
+            if let symbology {
                 properties[Keys.barcodeFormat] = symbology.rawValue
             }
 

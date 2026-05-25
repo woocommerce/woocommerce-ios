@@ -75,7 +75,7 @@ private extension PermanentNoticePresenter {
     }
 
     func animateDismiss() {
-        guard let hostingController = hostingController else {
+        guard let hostingController else {
             return
         }
 

@@ -7,11 +7,9 @@ import Yosemite
 final class MockPushNotificationsManager: PushNotesManager {
 
     func disableInAppNotifications() {
-
     }
 
     func enableInAppNotifications() {
-
     }
 
     var foregroundNotifications: AnyPublisher<WooCommerce.PushNotification, Never> {
@@ -43,8 +41,10 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     private let mockedDeviceID: String?
-    let siteIDsRegisteredForWooPNs: [Int64]
+    let wooPushNotificationToken: String?
+    private(set) var siteIDsRegisteredForWooPNs: [Int64]
     let hasStoredSiteIDsRegisteredForWooPNs: Bool
+    private(set) var unmarkedSiteIDs: [Int64] = []
     var siteIDsRegisteredForWooPNsPublisher: AnyPublisher<[Int64], Never> {
         siteIDsRegisteredForWooPNsSubject.eraseToAnyPublisher()
     }
@@ -68,14 +68,23 @@ final class MockPushNotificationsManager: PushNotesManager {
     private var authorizationCompletion: ((Bool) -> Void)?
     var onRequestLocalNotificationCalled: (() -> Void)?
     var registerDeviceAndWaitForTokenAcceptanceResult: Result<Int64, Error> = .success(1)
+    var registerSiteForSelfDrivenPushNotificationsResult: Result<Void, Error> = .success(())
+    private(set) var registeredSiteIDsForSelfDrivenPushNotifications: [Int64] = []
 
     init(mockedDeviceID: String? = nil,
+         wooPushNotificationToken: String? = nil,
          siteIDsRegisteredForWooPNs: [Int64] = [],
          hasStoredSiteIDsRegisteredForWooPNs: Bool? = nil) {
         self.mockedDeviceID = mockedDeviceID
+        self.wooPushNotificationToken = wooPushNotificationToken
         self.siteIDsRegisteredForWooPNs = siteIDsRegisteredForWooPNs
         self.hasStoredSiteIDsRegisteredForWooPNs = hasStoredSiteIDsRegisteredForWooPNs ?? !siteIDsRegisteredForWooPNs.isEmpty
         self.siteIDsRegisteredForWooPNsSubject = CurrentValueSubject(siteIDsRegisteredForWooPNs)
+    }
+
+    func unmarkSiteAsRegisteredForWooPNs(_ siteID: Int64) {
+        unmarkedSiteIDs.append(siteID)
+        siteIDsRegisteredForWooPNs.removeAll { $0 == siteID }
     }
 
     func resetBadgeCount(type: Note.Kind) {
@@ -83,11 +92,9 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
-
     }
 
     func reloadBadgeCount() {
-
     }
 
     @MainActor
@@ -97,12 +104,20 @@ final class MockPushNotificationsManager: PushNotesManager {
         return try registerDeviceAndWaitForTokenAcceptanceResult.get()
     }
 
+    @MainActor
+    func registerSiteForSelfDrivenPushNotifications(_ siteID: Int64) async throws {
+        registeredSiteIDsForSelfDrivenPushNotifications.append(siteID)
+        try registerSiteForSelfDrivenPushNotificationsResult.get()
+        if !siteIDsRegisteredForWooPNs.contains(siteID) {
+            siteIDsRegisteredForWooPNs.append(siteID)
+        }
+    }
+
     func registerForRemoteNotifications() {
         registerForRemoteNotificationsCallCount += 1
     }
 
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
-
     }
 
     func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool, onCompletion: ((Bool) -> ())?) {
@@ -112,11 +127,9 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     func registrationDidFail(with error: Error) {
-
     }
 
     func registerDeviceToken(with tokenData: Data) {
-
     }
 
     func handleRemoteNotificationInTheBackground(userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
@@ -124,7 +137,6 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     func handleUserResponseToNotification(_ response: UNNotificationResponse) async {
-
     }
 
     func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions {

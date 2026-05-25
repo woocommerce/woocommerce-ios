@@ -24,7 +24,7 @@ public struct Email<Value: StringProtocol> {
         }
     }
     private func validate(email: Value?) -> Bool {
-        guard let email = email else { return false }
+        guard let email else { return false }
         // https://emailregex.com
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format: "SELF MATCHES %@", emailRegEx)

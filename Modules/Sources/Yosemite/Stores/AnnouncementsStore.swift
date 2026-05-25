@@ -81,7 +81,7 @@ private extension AnnouncementsStore {
                                  locale: Locale.current.identifier) { [weak self] result in
             switch result {
             case .success(let announcements):
-                guard let self = self, let announcement = announcements.first else {
+                guard let self, let announcement = announcements.first else {
                     return onCompletion(.failure(AnnouncementsError.announcementNotFound))
                 }
                 do {
@@ -140,7 +140,7 @@ private extension AnnouncementsStore {
                                  locale: Locale.current.identifier) { [weak self] result in
             switch result {
             case .success(let announcements):
-                guard let self = self, let announcement = announcements.first else {
+                guard let self, let announcement = announcements.first else {
                     return onCompletion(.failure(AnnouncementsError.announcementNotFound))
                 }
                 do {

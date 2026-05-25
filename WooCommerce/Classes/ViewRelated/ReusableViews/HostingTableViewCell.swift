@@ -7,7 +7,7 @@ class HostingTableViewCell<Content: View>: UITableViewCell {
     private weak var controller: UIHostingController<Content>?
 
     func host(_ view: Content, parent: UIViewController) {
-        if let controller = controller {
+        if let controller {
             controller.rootView = view
             controller.view.layoutIfNeeded()
         } else {

@@ -19,6 +19,9 @@ public struct CardPresentTransactionDetails: Codable, Equatable, GeneratedFakeab
     /// The issuing brand of the card.
     public let brand: CardBrand
 
+    /// Card networks available to process the payment, when the reader provides them after collection.
+    public let availableNetworks: [CardBrand]?
+
     /// ID of a card PaymentMethod that may be attached to a Customer for future transactions.
     /// Only present if it was possible to generate a card PaymentMethod.
     public let generatedCard: String?
@@ -42,6 +45,7 @@ public struct CardPresentTransactionDetails: Codable, Equatable, GeneratedFakeab
                 expYear: Int,
                 cardholderName: String?,
                 brand: CardBrand,
+                availableNetworks: [CardBrand]? = nil,
                 generatedCard: String?,
                 receipt: ReceiptDetails?,
                 emvAuthData: String?,
@@ -52,6 +56,7 @@ public struct CardPresentTransactionDetails: Codable, Equatable, GeneratedFakeab
         self.expYear = expYear
         self.cardholderName = cardholderName
         self.brand = brand
+        self.availableNetworks = availableNetworks
         self.generatedCard = generatedCard
         self.receipt = receipt
         self.emvAuthData = emvAuthData
@@ -74,6 +79,7 @@ extension CardPresentTransactionDetails {
         case expYear = "exp_year"
         case cardholderName = "cardholder_name"
         case brand = "brand"
+        case availableNetworks = "available_networks"
         case generatedCard = "generated_card"
         case receipt = "receipt"
         case emvAuthData = "emv_auth_data"

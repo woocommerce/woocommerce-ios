@@ -42,21 +42,21 @@ struct NoticeModifier: ViewModifier {
     }
 
     private enum Constants {
-        static let titleFont: Font = Font(UIFont.boldSystemFont(ofSize: 14.0))
-        static let titleColor: Color = Color(.text)
-        static let subtitleFont: Font = Font(UIFont.boldSystemFont(ofSize: 14.0))
-        static let subtitleColor: Color = Color(.text)
-        static let messageFont: Font = Font(UIFont.systemFont(ofSize: 14.0))
-        static let messageColor: Color = Color(.text)
-        static let actionButtonFont: Font = Font(UIFont.systemFont(ofSize: 14.0))
-        static let actionButtonColor: Color = Color(.primaryButtonBackground)
-        static let actionButtonBackgroundColor: Color = Color(UIColor.systemColor(.secondarySystemGroupedBackground))
+        static let titleFont = Font(UIFont.boldSystemFont(ofSize: 14.0))
+        static let titleColor = Color(.text)
+        static let subtitleFont = Font(UIFont.boldSystemFont(ofSize: 14.0))
+        static let subtitleColor = Color(.text)
+        static let messageFont = Font(UIFont.systemFont(ofSize: 14.0))
+        static let messageColor = Color(.text)
+        static let actionButtonFont = Font(UIFont.systemFont(ofSize: 14.0))
+        static let actionButtonColor = Color(.primaryButtonBackground)
+        static let actionButtonBackgroundColor = Color(UIColor.systemColor(.secondarySystemGroupedBackground))
     }
 
     /// Builds a notice view at the bottom of the screen.
     ///
     @ViewBuilder private func buildNoticeStack() -> some View {
-        if let notice = notice {
+        if let notice {
             // Geometry reader to provide the correct view width.
             GeometryReader { geometry in
                 // VStack with spacer to push content to the bottom
@@ -163,7 +163,7 @@ struct NoticeModifier: ViewModifier {
     /// Sends haptic feedback if required.
     ///
     private func provideHapticFeedbackIfNecessary(_ feedbackType: UINotificationFeedbackGenerator.FeedbackType?) {
-        if let feedbackType = feedbackType {
+        if let feedbackType {
             feedbackGenerator.notificationOccurred(feedbackType)
         }
     }
@@ -200,7 +200,7 @@ extension UIHostingController {
             parent?.isBeingDismissed ?? false   // when it's parent is being dismissed as modal (EG: inside a navigation controller)
         }()
 
-        if let notice = notice, isBeingRemoved {
+        if let notice, isBeingRemoved {
             noticePresenter.enqueue(notice: notice)
         }
     }

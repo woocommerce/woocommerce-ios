@@ -31,7 +31,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     let bottomSubtitle: String? = nil
 
     var accessibilityLabel: String? {
-        guard let bottomTitle = bottomTitle else {
+        guard let bottomTitle else {
             return topTitle
         }
         return topTitle + bottomTitle

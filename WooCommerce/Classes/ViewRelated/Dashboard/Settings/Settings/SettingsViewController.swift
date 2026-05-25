@@ -18,7 +18,7 @@ final class SettingsViewController: UIViewController {
 
     private let viewModel: ViewModel
 
-    private lazy var woocommercePluginViewModel: PluginDetailsViewModel = PluginDetailsViewModel(
+    private lazy var woocommercePluginViewModel = PluginDetailsViewModel(
         siteID: stores.sessionManager.defaultStoreID ?? 0,
         pluginName: "WooCommerce")
 
@@ -30,9 +30,9 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    private lazy var closeAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        guard let self else { throw CloseAccountError.presenterDeallocated }
         try await self.closeAccount()
     } onRemoveSuccess: { [weak self] in
         self?.logOutUser()
@@ -108,7 +108,7 @@ private extension SettingsViewController {
         // Hence the container view with a defined frame.
         //
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
-        let footerView = TableFooterView.instantiateFromNib() as TableFooterView
+        let footerView = TableFooterView.instantiateFromNib()
         footerView.iconImage = .heartOutlineImage
         footerView.footnote.attributedText = hiringAttributedText
         footerView.iconColor = .primary
@@ -157,6 +157,8 @@ private extension SettingsViewController {
             configureSendFeedback(cell: cell)
         case let cell as BasicTableViewCell where row == .notifications:
             configureNotificationSettings(cell: cell)
+        case let cell as BasicTableViewCell where row == .pushNotificationPreferences:
+            configurePushNotificationPreferences(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
@@ -195,7 +197,7 @@ private extension SettingsViewController {
     }
 
     func configureWooCommmerceDetails(cell: HostingTableViewCell<PluginDetailsRowContent>) {
-        let view = PluginDetailsRowContent.init(viewModel: woocommercePluginViewModel)
+        let view = PluginDetailsRowContent(viewModel: woocommercePluginViewModel)
         cell.host(view, parent: self)
         let hasUpdates = woocommercePluginViewModel.updateURL != nil
         cell.accessoryType = hasUpdates ? .disclosureIndicator : .none
@@ -242,6 +244,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.notificationSettings
+    }
+
+    func configurePushNotificationPreferences(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.pushNotifications
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -333,7 +341,7 @@ private extension SettingsViewController {
 
     func closeAccount() async throws {
         try await withCheckedThrowingContinuation { [weak self] continuation in
-            guard let self = self else { return }
+            guard let self else { return }
             let action = AccountAction.closeAccount { result in
                 continuation.resume(with: result)
             }
@@ -365,11 +373,11 @@ private extension SettingsViewController {
 
     func switchStoreWasPressed() {
         ServiceLocator.analytics.track(.settingsSelectedStoreTapped)
-        if let navigationController = navigationController {
+        if let navigationController {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
             storePickerCoordinator?.onDismiss = { [weak self] in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
                 self.viewModel.onStorePickerDismiss()
@@ -503,6 +511,14 @@ private extension SettingsViewController {
     func showNotificationSettings() {
         ServiceLocator.analytics.track(.settingsNotificationSettingsTapped)
         let controller = NotificationSettingsHostingController()
+        show(controller, sender: self)
+    }
+
+    func showPushNotificationPreferences() {
+        guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+            return
+        }
+        let controller = PushNotificationPreferencesHostingController(siteID: siteID, stores: stores)
         show(controller, sender: self)
     }
 
@@ -659,6 +675,8 @@ extension SettingsViewController: UITableViewDelegate {
             showThemeSettings()
         case .notifications:
             showNotificationSettings()
+        case .pushNotificationPreferences:
+            showPushNotificationPreferences()
         case .connectivity:
             showConnectivityTool()
         default:
@@ -729,6 +747,7 @@ extension SettingsViewController {
 
         // App Settings
         case notifications
+        case pushNotificationPreferences
         case privacy
 
         // About the App
@@ -773,7 +792,7 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .logout, .accountSettings:
                 return BasicTableViewCell.self
-            case .privacy, .notifications:
+            case .privacy, .notifications, .pushNotificationPreferences:
                 return BasicTableViewCell.self
             case .enablePushNotifications:
                 return BasicTableViewCell.self
@@ -879,6 +898,12 @@ private extension SettingsViewController {
             "settingsViewController.notificationSettings",
             value: "Notification Settings",
             comment: "Navigates to the Notification Settings screen"
+        )
+
+        static let pushNotifications = NSLocalizedString(
+            "settingsViewController.pushNotifications",
+            value: "Push Notifications",
+            comment: "Navigates to the Push Notifications preferences screen"
         )
 
         static let experimentalFeatures = NSLocalizedString(

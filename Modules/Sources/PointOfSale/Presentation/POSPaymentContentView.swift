@@ -18,13 +18,22 @@ struct POSPaymentContentView: View {
     private let viewHelper = POSPaymentViewHelper()
     @Namespace private var paymentMessageNamespace
 
-    /// Payment state with cash collection neutralized. Only `.collectingCash` is handled
-    /// by NavigationStack push. Success and idle are visible to this view.
-    /// TODO: Consider removing cash state entirely - it no longer drives the cash view.
+    /// Payment state with in-progress secondary methods neutralized.
+    /// `.collectingCash` (cash), `.showingQRCode` (scan-to-pay), and `.confirming`/`.processing`
+    /// (mark-as-paid) all live in their own modal/navigation push. Only success and idle remain
+    /// visible here.
     private var displayPaymentState: PointOfSalePaymentState {
         let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash
             ? .idle : paymentModel.paymentState.cash
-        return PointOfSalePaymentState(card: paymentModel.paymentState.card, cash: cash)
+        let scanToPay: PointOfSaleScanToPayState = paymentModel.paymentState.scanToPay.isShowingQRCode
+            ? .idle : paymentModel.paymentState.scanToPay
+        let markAsPaid: PointOfSaleMarkAsPaidState = paymentModel.paymentState.markAsPaid == .confirming
+            || paymentModel.paymentState.markAsPaid == .processing
+            ? .idle : paymentModel.paymentState.markAsPaid
+        return PointOfSalePaymentState(card: paymentModel.paymentState.card,
+                                       cash: cash,
+                                       scanToPay: scanToPay,
+                                       markAsPaid: markAsPaid)
     }
 
     var body: some View {
@@ -98,6 +107,18 @@ struct POSPaymentContentView: View {
                 messageType: .paymentSuccess(
                     viewModel: .init(formattedOrderTotal: formattedTotal,
                                      paymentMethod: .cash)),
+                animation: .init(namespace: paymentMessageNamespace))
+        case .scanToPay:
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: formattedTotal,
+                                     paymentMethod: .scanToPay)),
+                animation: .init(namespace: paymentMessageNamespace))
+        case .markAsPaid:
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: formattedTotal,
+                                     paymentMethod: .markAsPaid)),
                 animation: .init(namespace: paymentMessageNamespace))
         case .card:
             POSCardPaymentContentView(
@@ -256,9 +277,7 @@ struct POSCardPaymentContentView: View {
             }
         } else if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: cardReaderConnectionStatus,
                                                     paymentState: paymentState) {
-            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(animation: paymentMessageAnimation) {
-                connectCardReaderAction()
-            }
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(animation: paymentMessageAnimation)
         } else if let spinnerMessage = activeSpinnerMessage {
             POSPaymentLoadingView(title: spinnerMessage.title,
                                   message: spinnerMessage.message,

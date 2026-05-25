@@ -67,7 +67,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
     func skipTapped() {
         trackSkipTapped()
 
-        guard let siteID = siteID else {
+        guard let siteID else {
             return completion()
         }
 
@@ -79,14 +79,14 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
     func enableTapped() {
         trackEnableTapped()
 
-        guard let siteID = siteID else {
+        guard let siteID else {
             return completion()
         }
 
         awaitingResponse = true
 
         let action = PaymentGatewayAction.updatePaymentGateway(PaymentGateway.defaultPayInPersonGateway(siteID: siteID)) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             guard result.isSuccess else {
                 DDLogError("💰 Could not update Payment Gateway: \(String(describing: result.failure))")
                 self.awaitingResponse = false

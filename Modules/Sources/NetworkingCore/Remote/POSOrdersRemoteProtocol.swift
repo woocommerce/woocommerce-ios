@@ -31,4 +31,16 @@ public protocol POSOrdersRemoteProtocol {
                          searchTerm: String,
                          pageNumber: Int,
                          pageSize: Int) async throws -> PagedItems<Order>
+
+    /// Adds a note to a POS order. Used by the Scan to Pay flow to record that a customer
+    /// paid via QR (the actual payment-status flip happens via the gateway webhook; this
+    /// note is just an audit trail visible in WP-Admin).
+    func addPOSOrderNote(siteID: Int64,
+                         orderID: Int64,
+                         isCustomerNote: Bool,
+                         note: String) async throws -> OrderNote
+}
+
+public enum POSOrdersRemoteError: Error {
+    case addOrderNoteFailed
 }

@@ -12,9 +12,7 @@ extension OrderGiftCard {
     @NSManaged public var code: String?
     @NSManaged public var amount: Double
     @NSManaged public var order: Order?
-
 }
 
 extension OrderGiftCard: Identifiable {
-
 }

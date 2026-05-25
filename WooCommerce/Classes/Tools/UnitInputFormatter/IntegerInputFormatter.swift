@@ -25,7 +25,7 @@ struct IntegerInputFormatter: UnitInputFormatter {
     }
 
     func format(input text: String?) -> String {
-        guard let text = text, text.isEmpty == false else {
+        guard let text, text.isEmpty == false else {
             return defaultValue
         }
 

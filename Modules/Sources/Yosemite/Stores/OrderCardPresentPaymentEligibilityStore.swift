@@ -26,7 +26,6 @@ public final class OrderCardPresentPaymentEligibilityStore: Store {
                                              onCompletion: onCompletion)
         }
     }
-
 }
 
 private extension OrderCardPresentPaymentEligibilityStore {
@@ -50,6 +49,5 @@ private extension OrderCardPresentPaymentEligibilityStore {
 extension OrderCardPresentPaymentEligibilityStore {
     enum OrderIsEligibleForCardPresentPaymentError: Error {
         case orderNotFoundInStorage
-        case cardReaderPaymentOptionIsNotSupportedForCIABSites
     }
 }

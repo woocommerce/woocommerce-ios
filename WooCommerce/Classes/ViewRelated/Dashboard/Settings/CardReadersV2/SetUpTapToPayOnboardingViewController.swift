@@ -16,13 +16,13 @@ final class SetUpTapToPayOnboardingViewController: UIHostingController<SetUpTapT
         }
 
         viewModel.showSupport = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             let supportForm = SupportFormHostingController(viewModel: .init())
             supportForm.show(from: self)
         }
 
         viewModel.showURL = { [weak self] url in
-            guard let self = self else { return }
+            guard let self else { return }
             WebviewHelper.launch(url, with: self)
         }
     }

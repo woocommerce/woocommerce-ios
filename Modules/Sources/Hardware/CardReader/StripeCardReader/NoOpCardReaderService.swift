@@ -44,7 +44,7 @@ public struct NoOpCardReaderService: CardReaderService {
     /// Cancels the discovery process.
     public func cancelDiscovery() -> Future <Void, Error> {
         return Future() { promise in
-            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+            promise(.failure(NSError(domain: "noopcardreader", code: 0, userInfo: nil)))
         }
     }
 
@@ -52,14 +52,14 @@ public struct NoOpCardReaderService: CardReaderService {
     /// - Parameter reader: The card reader we want to connect to.
     public func connect(_ reader: CardReader, options: CardReaderConnectionOptions?) -> AnyPublisher <CardReader, Error> {
         return Future() { promise in
-            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+            promise(.failure(NSError(domain: "noopcardreader", code: 0, userInfo: nil)))
         }.eraseToAnyPublisher()
     }
 
     /// Disconnects from the currently connected reader
     public func disconnect() -> Future <Void, Error> {
         return Future() { promise in
-            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+            promise(.failure(NSError(domain: "noopcardreader", code: 0, userInfo: nil)))
         }
     }
 
@@ -75,36 +75,39 @@ public struct NoOpCardReaderService: CardReaderService {
         // no-op
     }
 
-    /// Captures a payment after collecting a payment method succeeds.
-    /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
-    public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
+    public func capturePayment(
+        _ parameters: PaymentIntentParameters,
+        beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
+    ) -> AnyPublisher<PaymentIntent, Error> {
         return Future() { promise in
-            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+            promise(.failure(NSError(domain: "noopcardreader", code: 0, userInfo: nil)))
         }.eraseToAnyPublisher()
     }
 
     /// Cancels a PaymentIntent
     public func cancelPaymentIntent() -> Future<Void, Error> {
         return Future() { promise in
-            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+            promise(.failure(NSError(domain: "noopcardreader", code: 0, userInfo: nil)))
         }
     }
 
     public func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error> {
         return Future() { promise in
-            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+            promise(.failure(NSError(domain: "noopcardreader", code: 0, userInfo: nil)))
         }.eraseToAnyPublisher()
     }
 
     public func cancelRefund() -> AnyPublisher<Void, Error> {
         return Future() { promise in
-            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+            promise(.failure(NSError(domain: "noopcardreader", code: 0, userInfo: nil)))
         }.eraseToAnyPublisher()
     }
 
-    public func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error> {
+    public func retryActivePaymentIntent(
+        beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
+    ) -> AnyPublisher<PaymentIntent, Error> {
         return Future() { promise in
-            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+            promise(.failure(NSError(domain: "noopcardreader", code: 0, userInfo: nil)))
         }.eraseToAnyPublisher()
     }
 

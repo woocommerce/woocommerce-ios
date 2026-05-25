@@ -166,7 +166,7 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     /// as this could cause unexpected behavior.
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         // Forward UIPress events to UIKit observer if active
-        if let uiKitObserver = uiKitObserver {
+        if let uiKitObserver {
             uiKitObserver.processUIPress(presses)
         } else {
             super.pressesEnded(presses, with: event)
@@ -185,7 +185,7 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     /// It makes sense to clear the buffer when this happens.
     /// We call super in case other presses are handled elsewhere in the responder chain.
     override func pressesCancelled(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        if let uiKitObserver = uiKitObserver {
+        if let uiKitObserver {
             uiKitObserver.barcodeParser?.cancel()
         }
         super.pressesCancelled(presses, with: event)

@@ -233,7 +233,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                                   orderID: Int64,
                                   completion: @escaping (Result<Networking.ShippingLabelCreationEligibilityResponse, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.checkEligibilityResults[key] {
@@ -249,7 +249,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                        predefinedOption: Networking.WooShippingPredefinedSavedOption?,
                        completion: @escaping (Result<Networking.WooShippingCreatePackageResponse, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.createPackageResults[key] {
@@ -265,7 +265,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                        packageType: WooShippingPackageType,
                        completion: @escaping (Result<Networking.WooShippingCreatePackageResponse, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.deletePackageResults[key] {
@@ -283,7 +283,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                         packages: [ShippingLabelPackageSelected],
                         completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.loadLabelRatesResults[key] {
@@ -297,7 +297,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     func loadPackages(siteID: Int64,
                       completion: @escaping (Result<Networking.WooShippingPackagesResponse, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.loadPackagesResults[key] {
@@ -311,7 +311,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     func loadAccountSettings(siteID: Int64,
                              completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.loadAccountSettingsResults[key] {
@@ -333,7 +333,6 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")
             }
-
         }
     }
 
@@ -345,7 +344,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                                markOrderComplete: Bool?,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.purchaseShippingLabelResults[key] {
@@ -362,7 +361,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                           labelID: Int64,
                           completion: @escaping (Result<ShippingLabelStatusPollingResponse, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.checkLabelStatus[key] {
@@ -379,7 +378,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                     paperSize: Networking.ShippingLabelPaperSize,
                     completion: @escaping (Result<Networking.ShippingLabelPrintData, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.printLabel[key] {
@@ -393,7 +392,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     func loadOriginAddresses(siteID: Int64,
                              completion: @escaping (Result<[Networking.WooShippingOriginAddress], any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.loadOriginAddresses[key] {
@@ -408,7 +407,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                            address: WooShippingAddress,
                            completion: @escaping (Result<WooShippingAddressValidationSuccess, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.addressValidation[key] {
@@ -424,7 +423,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                              isVerified: Bool,
                              completion: @escaping (Result<WooShippingOriginAddressUpdate, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.updateOriginAddress[key] {
@@ -439,7 +438,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                                   orderID: Int64,
                                   completion: @escaping (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.verifyDestinationAddress[key] {
@@ -456,7 +455,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                                   isVerified: Bool,
                                   completion: @escaping (Result<WooShippingDestinationAddressUpdate, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.updateDestinationAddress[key] {
@@ -471,7 +470,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                     orderID: Int64,
                     completion: @escaping (Result<WooShippingConfig, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.loadConfig[key] {
@@ -487,7 +486,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                         shipmentToUpdate: WooShippingUpdateShipment,
                         completion: @escaping (Result<WooShippingShipments, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
             if let result = self.updateShipment[key] {

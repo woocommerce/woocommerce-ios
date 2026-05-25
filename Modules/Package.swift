@@ -83,6 +83,14 @@ let package = Package(
             name: "PointOfSale",
             targets: ["PointOfSale"]
         ),
+        .library(
+            name: "WooAIAssistant",
+            targets: ["WooAIAssistant"]
+        ),
+        .library(
+            name: "ParcelFittingCheck",
+            targets: ["ParcelFittingCheck"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -255,6 +263,12 @@ let package = Package(
             dependencies: ["Yosemite"]
         ),
         .target(
+            name: "ParcelFittingCheck",
+            dependencies: [
+                "EventHorizonSDK",
+            ]
+        ),
+        .target(
             name: "PointOfSale",
             dependencies: [
                 "Experiments",
@@ -265,6 +279,14 @@ let package = Package(
                 .product(name: "Kingfisher", package: "Kingfisher"),
             ],
             resources: [.process("Resources")]
+        ),
+        .target(
+            name: "WooAIAssistant",
+            dependencies: [
+                "WooFoundation",
+                "NetworkingCore",
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
+            ]
         ),
         .target(
             name: "NetworkingTestsResponsesFixtures",
@@ -348,10 +370,23 @@ let package = Package(
                 "WooFoundation"
             ]
         ),
+        .testTarget(
+            name: "WooAIAssistantTests",
+            dependencies: [
+                .target(name: "WooAIAssistant"),
+            ]
+        ),
+        .testTarget(
+            name: "ParcelFittingCheckTests",
+            dependencies: [
+                .target(name: "ParcelFittingCheck"),
+                "EventHorizonSDK",
+            ]
+        ),
         .binaryTarget(
             name: "EventHorizonSDK",
-            url: "https://a8c-libs.s3.amazonaws.com/ios/EventHorizon/woocommerce-2026-04-09-13-24-36/EventHorizon-woocommerce-2026-04-09-13-24-36.xcframework.zip",
-            checksum: "d70ad147c6ea3e5f874cddb3adb320dca76f8c409d350eae2bcd8846b58d32a3"
+            url: "https://a8c-libs.s3.amazonaws.com/ios/EventHorizon/woocommerce-2026-05-18-07-24-01/EventHorizon-woocommerce-2026-05-18-07-24-01.xcframework.zip",
+            checksum: "6102a42bb973ff8be2b8b2aa7aa4089d7fd1ed43d3df2aed87955a0e62abce69"
         ),
     ]
 )
@@ -438,7 +473,9 @@ enum XcodeSupport {
                     "WordPressUI",
                     "WPMediaPicker",
                     "Yosemite",
+                    "ParcelFittingCheck",
                     "PointOfSale",
+                    "WooAIAssistant",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Algorithms", package: "swift-algorithms"),
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),

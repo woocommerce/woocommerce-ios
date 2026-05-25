@@ -33,11 +33,6 @@ struct POSFeatureFlagsKey: EnvironmentKey {
     static let defaultValue: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
 }
 
-/// Environment key for POS bookings eligibility (true if the site supports bookings)
-struct POSBookingsEligibilityKey: EnvironmentKey {
-    static let defaultValue: Bool = false
-}
-
 /// Environment key for POS connectivity
 struct POSConnectivityKey: EnvironmentKey {
     static let defaultValue: POSConnectivityProviding = EmptyPOSConnectivityProvider()
@@ -55,7 +50,7 @@ struct POSExternalViewKey: EnvironmentKey {
 
 /// Environment key for POS payment navigation router
 struct POSNavigationRouterKey: EnvironmentKey {
-    static let defaultValue: POSNavigationRouter = POSNavigationRouter(navigationPath: .constant([]))
+    static let defaultValue = POSNavigationRouter(navigationPath: .constant([]))
 }
 
 /// Environment key for POS search text field unfocused border color
@@ -77,11 +72,6 @@ extension EnvironmentValues {
     var posFeatureFlags: POSFeatureFlagProviding {
         get { self[POSFeatureFlagsKey.self] }
         set { self[POSFeatureFlagsKey.self] = newValue }
-    }
-
-    var posBookingsEligible: Bool {
-        get { self[POSBookingsEligibilityKey.self] }
-        set { self[POSBookingsEligibilityKey.self] = newValue }
     }
 
     var posConnectivityProvider: POSConnectivityProviding {

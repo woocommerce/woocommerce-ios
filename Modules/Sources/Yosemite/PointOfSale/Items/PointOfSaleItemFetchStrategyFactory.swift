@@ -54,7 +54,7 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
                                analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
         // Use local search if local catalog is enabled and dependencies are available
         // The strategy will use FTS when enabled, or fall back to LIKE-based queries
-        if isLocalCatalogEnabled, let grdbManager = grdbManager, let itemMapper = itemMapper {
+        if isLocalCatalogEnabled, let grdbManager, let itemMapper {
             return PointOfSaleLocalSearchPurchasableItemFetchStrategy(siteID: siteID,
                                                                       searchTerm: searchTerm,
                                                                       grdbManager: grdbManager,

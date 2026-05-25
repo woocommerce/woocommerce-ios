@@ -65,6 +65,5 @@ private extension GenerateVariationsSelectorCommand {
         static let allTitle = NSLocalizedString("Generate all variations", comment: "Title for the option to generate all possible variations")
         static let allDescription = NSLocalizedString("Creates variations for all combinations of your attributes.",
                                                       comment: "Description for the option to generate all possible variations")
-
     }
 }

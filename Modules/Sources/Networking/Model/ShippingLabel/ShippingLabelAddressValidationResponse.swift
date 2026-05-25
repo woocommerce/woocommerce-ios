@@ -10,10 +10,10 @@ internal struct ShippingLabelAddressValidationResponse: Equatable {
     let result: Result<ShippingLabelAddressValidationSuccess, ShippingLabelAddressValidationError>
 
     init(address: ShippingLabelAddress?, errors: ShippingLabelAddressValidationError?, isTrivialNormalization: Bool?) {
-        if let errors = errors {
+        if let errors {
             result = .failure(errors)
-        } else if let address = address,
-                  let isTrivialNormalization = isTrivialNormalization {
+        } else if let address,
+                  let isTrivialNormalization {
             result = .success(.init(address: address, isTrivialNormalization: isTrivialNormalization))
         } else {
             // This case should never happen, but that's not guaranteed.

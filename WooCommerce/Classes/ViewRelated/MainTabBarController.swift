@@ -160,6 +160,17 @@ final class MainTabBarController: UITabBarController {
     private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
     private var bookingsEligibilityCheckTask: Task<Void, Never>?
 
+    /// Refreshes the per-site IPP country expansion eligibility cache (RSM-637) on phones
+    /// where the POS visibility check is short-circuited and would otherwise not run the
+    /// refresher. iPad goes through `POSTabVisibilityChecker` which refreshes inline before
+    /// reading the cache.
+    private lazy var cardPresentExpansionRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher = {
+        CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
+        )
+    }()
+    private var cardPresentExpansionRefreshTask: Task<Void, Never>?
+
     private var isPOSTabVisible: Bool = false
     private var isBookingsTabVisible: Bool = false
     private var isBookingsFeatureAvailable: Bool = false
@@ -219,6 +230,7 @@ final class MainTabBarController: UITabBarController {
         cancellableSiteID?.cancel()
         posEligibilityCheckTask?.cancel()
         bookingsEligibilityCheckTask?.cancel()
+        cardPresentExpansionRefreshTask?.cancel()
     }
 
     // MARK: - Overridden Methods
@@ -433,7 +445,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            ServiceLocator.analytics.track(MainTabBookingsSelectEvent())
+            ServiceLocator.analytics.track(Event.mainTabBookingsSelect())
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
         case .pointOfSale:
@@ -454,7 +466,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            ServiceLocator.analytics.track(MainTabBookingsReselectEvent())
+            ServiceLocator.analytics.track(Event.mainTabBookingsReselect())
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break
@@ -550,6 +562,8 @@ extension MainTabBarController {
             }
         case .blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote:
            navigateToBlazeCampaignDetails(using: notification)
+        case .storeStock:
+            navigateToProductDetails(using: notification)
         default:
             break
         }
@@ -636,6 +650,30 @@ extension MainTabBarController {
         })
     }
 
+    static func navigateToProductDetails(using notification: PushNotification) {
+        guard let productID = notification.meta?.identifier(forKey: .product) else {
+            DDLogError("## Notification with [\(String(describing: notification.noteID))] lacks its product ID!")
+            return
+        }
+
+        switchToProductsTab {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
+                presentProductDetails(productID: Int64(productID), siteID: notification.siteID)
+            }
+        }
+    }
+
+    private static func presentProductDetails(productID: Int64, siteID: Int64) {
+        guard let tabBar = AppDelegate.shared.tabBarController else {
+            return
+        }
+
+        let model: ProductLoaderViewController.Model = .product(productID: productID)
+        let productViewController = ProductLoaderViewController(model: model, siteID: siteID, forceReadOnly: false)
+        let productNavController = WooNavigationController(rootViewController: productViewController)
+        tabBar.rootTabViewController(tab: .products).present(productNavController, animated: true)
+    }
+
     static func navigateToBlazeCampaignCreation(for siteID: Int64) {
         showStore(with: Int64(siteID), onCompletion: { storeIsShown in
             // It failed to show the campaign's store.
@@ -711,11 +749,37 @@ extension MainTabBarController: DeepLinkNavigator {
             navigateTo(.orders) {
                 Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
             }
+        case let analyticsDestination as AnalyticsHubDestination:
+            navigateTo(.myStore) { [weak self] in
+                self?.presentAnalyticsHub(for: analyticsDestination)
+            }
         case is POSPromotionDestination:
             presentPOSPromotionModal()
         default:
             return
         }
+    }
+
+    private func presentAnalyticsHub(for destination: AnalyticsHubDestination) {
+        let analyticsHubVC: AnalyticsHubHostingViewController
+        switch destination {
+        case .focusedCard(let card, let range):
+            analyticsHubVC = AnalyticsHubHostingViewController(
+                siteID: stores.sessionManager.defaultStoreID ?? 0,
+                timeZone: .siteTimezone,
+                selectionType: range,
+                focusedCard: card,
+                usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()
+            )
+        case .defaultHub:
+            analyticsHubVC = AnalyticsHubHostingViewController(
+                siteID: stores.sessionManager.defaultStoreID ?? 0,
+                timeZone: .siteTimezone,
+                timeRange: .today,
+                usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()
+            )
+        }
+        dashboardNavigationController.pushViewController(analyticsHubVC, animated: true)
     }
 
     private func presentPOSPromotionModal() {
@@ -827,12 +891,42 @@ private extension MainTabBarController {
 
                 observePOSEligibilityForPOSTabVisibility(site: site)
                 observeBookingsEligibilityForBookingsTabVisibility(site: site)
+                refreshCardPresentExpansionEligibilityIfNeeded(for: site)
             }
+    }
+
+    /// Refreshes the IPP country expansion eligibility cache for phones, where the
+    /// POS visibility check is skipped. On iPad the visibility checker handles this
+    /// inline before reading the cache, so we no-op to avoid a duplicate dispatch.
+    func refreshCardPresentExpansionEligibilityIfNeeded(for site: Site) {
+        guard !isPad else { return }
+        cardPresentExpansionRefreshTask?.cancel()
+        cardPresentExpansionRefreshTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            let siteSettings = await waitForSiteSettings(siteID: site.siteID)
+            guard !Task.isCancelled else { return }
+            let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
+            await cardPresentExpansionRefresher.refresh(siteID: site.siteID, countryCode: countryCode)
+        }
+    }
+
+    /// Waits for the first non-empty site settings event matching the given site ID.
+    /// Mirrors `POSTabVisibilityChecker.waitForSiteSettingsRefresh()`.
+    private func waitForSiteSettings(siteID: Int64) async -> [SiteSetting] {
+        for await event in ServiceLocator.selectedSiteSettings.settingsStream.values {
+            guard event.siteID == siteID,
+                  event.settings.isNotEmpty,
+                  event.source != .initialLoad else {
+                continue
+            }
+            return event.settings
+        }
+        return []
     }
 
     func observeSiteIDForViewControllers() {
         cancellableSiteID = stores.siteID.sink { [weak self] siteID in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.updateViewControllers(siteID: siteID)
@@ -996,7 +1090,7 @@ private extension MainTabBarController {
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {
         viewModel.onOrdersBadgeReload = { [weak self] countReadableString in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -1019,7 +1113,7 @@ private extension MainTabBarController {
 private extension MainTabBarController {
     func observeProductImageUploadStatusUpdates() {
         productImageUploadErrorsSubscription = productImageUploader.errors.sink { [weak self] error in
-            guard let self = self else { return }
+            guard let self else { return }
             switch error.error {
             case .failedSavingProductAfterImageUpload:
                 self.handleErrorSavingProductAfterImageUpload(error)
@@ -1045,9 +1139,9 @@ private extension MainTabBarController {
                             notificationInfo: nil,
                             actionTitle: Localization.imageUploadFailureNoticeActionTitle,
                             actionHandler: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             Task { @MainActor [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 await self.showProductDetails(for: error)
                 self.analytics.track(event: .ImageUpload
                     .failureSavingProductAfterImageUploadNoticeTapped(productOrVariation: error.productOrVariationEventProperty))
@@ -1068,9 +1162,9 @@ private extension MainTabBarController {
                             notificationInfo: nil,
                             actionTitle: Localization.imageUploadFailureNoticeActionTitle,
                             actionHandler: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             Task { @MainActor [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 await self.showProductDetails(for: error)
                 self.analytics.track(event: .ImageUpload
                     .failureUploadingImageNoticeTapped(productOrVariation: error.productOrVariationEventProperty))

@@ -1,1 +1,0 @@
-Sorun giderme aracı artık analiz ve bildirim ayarlarınızı kontrol ederek mağazanızdaki sorunları tanılamayı kolaylaştırır.

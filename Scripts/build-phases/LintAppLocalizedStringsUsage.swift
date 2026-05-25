@@ -78,7 +78,7 @@ extension Xcodeproj {
             return object.path.map { groupURL.appendingPathComponent($0) } ?? groupURL
         case .projectRoot:
             return object.path.map { URL(fileURLWithPath: $0, relativeTo: projectDirectory) } ?? projectDirectory
-        case .buildProductsDir, .devDir, .sdkDir:
+        case .buildProductsDir, .devDir, .sdkDir, .derivedFileDir:
             print("\(self.projectURL.path): warning: Reference \(objectUUID) is relative to \(object.sourceTree.rawValue) which is not supported by the linter")
             return nil
         }
@@ -208,6 +208,7 @@ extension Xcodeproj {
         case buildProductsDir = "BUILT_PRODUCTS_DIR"
         case devDir = "DEVELOPER_DIR"
         case sdkDir = "SDKROOT"
+        case derivedFileDir = "DERIVED_FILE_DIR"
         var description: String { rawValue }
     }
 

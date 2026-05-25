@@ -76,8 +76,12 @@ final class HelpAndSupportViewController: UIViewController {
         isMacCatalyst: isMacCatalyst,
         hasLoginSiteURL: loginSiteURL != nil,
         developerFFPanelEnabled: !ServiceLocator.stores.isAuthenticated
-            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel)
+            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel),
+        isAIChatEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
     )
+
+    /// Retains the support escalation coordinator while the flow is active.
+    private var supportEscalationCoordinator: SupportEscalationCoordinator?
 
     private var isMacCatalyst: Bool {
         #if targetEnvironment(macCatalyst)
@@ -234,6 +238,10 @@ private extension HelpAndSupportViewController {
             configureSiteCompatibility(cell: cell)
         case let cell as ValueOneTableViewCell where row == .featureFlags:
             configureFeatureFlags(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .aiSupportChat:
+            configureAISupportChat(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .chatHistory:
+            configureChatHistory(cell: cell)
         default:
             fatalError()
         }
@@ -319,6 +327,40 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = "Toggle local feature flags"
     }
 
+    /// AI Support Chat cell
+    ///
+    func configureAISupportChat(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString(
+            "helpAndSupport.aiSupportChat.title",
+            value: "Chat with Support",
+            comment: "Title for the AI support chat row on the Help screen"
+        )
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "helpAndSupport.aiSupportChat.subtitle",
+            value: "Get help from our AI assistant",
+            comment: "Subtitle for the AI support chat row on the Help screen"
+        )
+    }
+
+    /// Chat History cell
+    ///
+    func configureChatHistory(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString(
+            "helpAndSupport.chatHistory.title",
+            value: "Chat History",
+            comment: "Title for the support chat history row on the Help screen"
+        )
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "helpAndSupport.chatHistory.subtitle",
+            value: "Revisit past support conversations",
+            comment: "Subtitle for the support chat history row on the Help screen"
+        )
+    }
+
     func refreshViewContent() {
         configureSections()
         tableView.reloadData()
@@ -350,7 +392,7 @@ private extension HelpAndSupportViewController {
     /// Help Center action
     ///
     func helpCenterWasPressed() {
-        if let customHelpCenterContent = customHelpCenterContent {
+        if let customHelpCenterContent {
             launchCustomHelpCenterWebPage(customHelpCenterContent)
         } else {
             ZendeskProvider.shared.showHelpCenter(from: self)
@@ -376,7 +418,7 @@ private extension HelpAndSupportViewController {
                 return
             }
 
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -429,6 +471,92 @@ private extension HelpAndSupportViewController {
     ///
     func featureFlagsWasPressed() {
         let controller = UIHostingController(rootView: OverrideFeatureFlagsView(loadsRemoteValues: false))
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    /// AI Support Chat action
+    ///
+    func aiSupportChatWasPressed() {
+        let entryPoint: SupportChatViewModel.EntryPoint = ServiceLocator.stores.isAuthenticated
+            ? .helpAndSupport
+            : .preLogin
+        let initialContext: [String: Any]? = loginSiteURL.map {
+            ["site_url": $0.absoluteString]
+        }
+        var viewModelHolder: SupportChatViewModel?
+        let viewModel = SupportChatViewModel(
+            entryPoint: entryPoint,
+            initialContext: initialContext,
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+                guard let self else { return }
+                handleContactHumanSupport(chatID: chatID,
+                                          transcript: transcript,
+                                          supportAreaInfo: supportAreaInfo,
+                                          entryPoint: entryPoint,
+                                          siteAddress: loginSiteURL?.absoluteString,
+                                          onTicketCreated: { [weak viewModelHolder] in
+                    viewModelHolder?.markChatTicketCreated()
+                })
+            }
+        )
+        viewModelHolder = viewModel
+        let controller = SupportChatHostingController(viewModel: viewModel)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func handleContactHumanSupport(chatID: Int64?,
+                                           transcript: String,
+                                           supportAreaInfo: SupportAreaInfo?,
+                                           entryPoint: SupportChatViewModel.EntryPoint,
+                                           siteAddress: String? = nil,
+                                           onTicketCreated: @escaping () -> Void) {
+        supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
+                                                                    onTicketCreated: onTicketCreated)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID,
+                                                       transcript: transcript,
+                                                       supportAreaInfo: supportAreaInfo,
+                                                       entryPoint: entryPoint,
+                                                       siteAddress: siteAddress)
+    }
+
+    /// Chat History action
+    ///
+    func chatHistoryWasPressed() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        let historyViewModel = SupportChatHistoryViewModel(siteID: siteID)
+        let rootView = SupportChatHistoryView(viewModel: historyViewModel) { [weak self] summary in
+            self?.resumeChat(for: summary)
+        }
+        let controller = UIHostingController(rootView: rootView)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    /// Pushes the support chat UI seeded with a prior `chatID` so the conversation
+    /// continues on the assistant's side when the merchant sends the next message.
+    private func resumeChat(for summary: SupportChatSummary) {
+        var viewModelHolder: SupportChatViewModel?
+        let chatViewModel = SupportChatViewModel(
+            botSlug: summary.botSlug,
+            entryPoint: .chatHistory,
+            chatID: summary.chatID,
+            sessionID: summary.sessionID,
+            hasCreatedTicket: summary.hasCreatedTicket,
+            isChatResolved: summary.isResolved,
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+                guard let self else { return }
+                handleContactHumanSupport(chatID: chatID,
+                                          transcript: transcript,
+                                          supportAreaInfo: supportAreaInfo,
+                                          entryPoint: entryPoint,
+                                          onTicketCreated: { [weak viewModelHolder] in
+                    viewModelHolder?.markChatTicketCreated()
+                })
+            }
+        )
+        viewModelHolder = chatViewModel
+        let controller = SupportChatHostingController(viewModel: chatViewModel)
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -488,6 +616,10 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             siteCompatibilityWasPressed()
         case .featureFlags:
             featureFlagsWasPressed()
+        case .aiSupportChat:
+            aiSupportChatWasPressed()
+        case .chatHistory:
+            chatHistoryWasPressed()
         }
     }
 }
@@ -509,15 +641,18 @@ private struct Section {
 enum HelpAndSupportRow: CaseIterable {
     case helpCenter
     case contactSupport
+    case aiSupportChat
     case contactEmail
     case applicationLog
     case systemStatusReport
     case siteCompatibility
     case featureFlags
+    case chatHistory
 
     var type: UITableViewCell.Type {
         switch self {
-        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .siteCompatibility, .featureFlags:
+        case .helpCenter, .contactSupport, .aiSupportChat, .contactEmail, .applicationLog,
+             .systemStatusReport, .siteCompatibility, .featureFlags, .chatHistory:
             return ValueOneTableViewCell.self
         }
     }

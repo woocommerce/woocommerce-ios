@@ -16,7 +16,6 @@ public final class NullNetwork: Network {
 
     public func responseData(for request: URLRequestConvertible,
                              completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-
     }
 
     public func responseDataAndHeaders(for request: any URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {

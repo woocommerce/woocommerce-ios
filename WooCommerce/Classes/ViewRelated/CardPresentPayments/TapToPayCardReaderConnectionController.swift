@@ -180,7 +180,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 private extension TapToPayCardReaderConnectionController {
     func configureResultsControllers() {
         dataSource.configureResultsControllers(onReload: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.gatewayID = self.dataSource.cardPresentPaymentGatewayID()
         })
         // Sets gateway ID from initial fetch.
@@ -265,7 +265,7 @@ private extension TapToPayCardReaderConnectionController {
             siteID: siteID,
             discoveryMethod: .tapToPay,
             onReaderDiscovered: { [weak self] cardReaders in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 
@@ -289,7 +289,7 @@ private extension TapToPayCardReaderConnectionController {
                 }
             },
             onError: { [weak self] error in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 self.analyticsTracker.discoveryFailed(error: error)
                 self.state = .discoveryFailed(error)
@@ -323,7 +323,7 @@ private extension TapToPayCardReaderConnectionController {
     func onUpdateProgress(progress: Float) {
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.state = .cancel(.searchingForReader)
                 self.analyticsTracker.cardReaderSoftwareUpdateCancelTapped()
                 cancelable.cancel { [weak self] result in
@@ -400,19 +400,19 @@ private extension TapToPayCardReaderConnectionController {
     /// Connect to the candidate card reader
     ///
     func onConnectToReader() {
-        guard let candidateReader = candidateReader else {
+        guard let candidateReader else {
             return
         }
 
         analyticsTracker.setCandidateReader(candidateReader)
 
         let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
-            guard let self = self else { return }
+            guard let self else { return }
 
             softwareUpdateEvents
                 .subscribe(on: DispatchQueue.main)
                 .sink { [weak self] event in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 switch event {
                 case .started(cancelable: let cancelable):
@@ -465,7 +465,7 @@ private extension TapToPayCardReaderConnectionController {
             tapToPayOptions: TapToPayCardReaderConnectionOptions(termsOfServiceAcceptancePermitted: allowTermsOfServiceAcceptance))
 
         let action = CardPresentPaymentAction.connect(reader: candidateReader, options: options) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.analyticsTracker.setCandidateReader(nil)
 
@@ -608,7 +608,7 @@ private extension TapToPayCardReaderConnectionController {
 
     private func openWCSettingsAction(adminUrl: URL?,
                                       retrySearch: @escaping () -> Void) -> (() -> Void)? {
-        if let adminUrl = adminUrl {
+        if let adminUrl {
             if isWPCOMStore() {
                 return { [weak self] in
                     self?.alertsPresenter.presentWCSettingsWebView(adminURL: adminUrl, completion: retrySearch)

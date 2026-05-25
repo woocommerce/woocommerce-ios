@@ -11,7 +11,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel: 
         self.cancelButtonViewModel = .init(title: Localization.cancel, actionHandler: cancelUpdateAction)
         self.retrySearchButtonViewModel = .init(title: Localization.retry, actionHandler: retrySearchAction)
         self.batteryLevelInfo = {
-            if let batteryLevel = batteryLevel {
+            if let batteryLevel {
                 return String(format: Localization.message, 100 * batteryLevel)
             } else {
                 return Localization.messageNoBatteryLevel

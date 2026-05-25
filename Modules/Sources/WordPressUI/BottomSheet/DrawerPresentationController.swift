@@ -498,7 +498,6 @@ private extension DrawerPresentationController {
 
             /// Halts scrolling when scrolling down from expanded or up from compact
             haltScrolling(scrollView)
-
         } else if scrollView.isScrolling {
 
             if isPresentedViewAnchored {
@@ -508,7 +507,6 @@ private extension DrawerPresentationController {
                 /// Halts scrolling when panning down from expanded
                 haltScrolling(scrollView)
             }
-
         } else {
             /// Allow normal scrolling (with tracking)
             trackScrolling(scrollView)
@@ -550,8 +548,8 @@ extension DrawerPresentationController: UIGestureRecognizerDelegate {
 
         /// Shouldn't happen; should always have container & presented view when tapped
         guard
-            let containerView = containerView,
-            let presentedView = presentedView,
+            let containerView,
+            let presentedView,
             currentPosition != .hidden
         else {
             return false

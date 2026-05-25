@@ -67,7 +67,7 @@ class NewNoteViewController: UIViewController {
                                                   orderID: viewModel.orderID,
                                                   isCustomerNote: isCustomerNote,
                                                   note: noteText) { [weak self] (orderNote, error) in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
                 self?.viewModel.track(.orderNoteAddFailed, withError: error)
 
@@ -76,7 +76,7 @@ class NewNoteViewController: UIViewController {
                 return
             }
 
-            if let orderNote = orderNote {
+            if let orderNote {
                 self?.viewModel.onDidFinishEditing?(orderNote)
             }
 

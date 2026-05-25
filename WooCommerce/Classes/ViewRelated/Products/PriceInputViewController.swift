@@ -4,7 +4,7 @@ import Combine
 
 final class PriceInputViewController: UIViewController {
 
-    let tableView: UITableView = UITableView(frame: .zero, style: .grouped)
+    let tableView = UITableView(frame: .zero, style: .grouped)
 
     private var viewModel: PriceInputViewModel
     private var subscriptions = Set<AnyCancellable>()
@@ -57,7 +57,7 @@ private extension PriceInputViewController {
             }.store(in: &subscriptions)
 
         viewModel.$inputValidationError.sink { [weak self] error in
-            guard let error = error else {
+            guard let error else {
                 return
             }
             self?.displayNoticeForError(error)

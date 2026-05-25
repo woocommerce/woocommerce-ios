@@ -70,7 +70,6 @@ enum ProductSettingsRows {
                                                                             onCompletion(self.settings)
             }
             sourceViewController.navigationController?.pushViewController(listSelectorViewController, animated: true)
-
         }
 
         let reuseIdentifier: String = TitleAndValueTableViewCell.reuseIdentifier

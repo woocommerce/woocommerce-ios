@@ -182,7 +182,7 @@ struct MockCardPresentPaymentsModalViewModel: CardPresentPaymentsModalViewModel 
 
     var topSubtitle: String? = nil
 
-    var image: UIImage = UIImage(systemName: "circle")!
+    var image = UIImage(systemName: "circle")!
 
     var primaryButtonTitle: String? = nil
 

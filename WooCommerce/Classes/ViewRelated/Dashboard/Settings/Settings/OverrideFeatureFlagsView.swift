@@ -139,8 +139,8 @@ fileprivate struct FeatureFlagRow: View {
     }
 
     private func resetValue() {
-            overrideValue = nil
-            ServiceLocator.featureFlagOverrideStore.setOverrideValue(nil, for: featureFlag)
+        overrideValue = nil
+        ServiceLocator.featureFlagOverrideStore.setOverrideValue(nil, for: featureFlag)
     }
 }
 

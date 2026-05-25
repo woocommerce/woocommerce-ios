@@ -100,7 +100,7 @@ private extension HubMenuViewController {
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
     ///
     func presentSwitchStore() {
-        if let navigationController = navigationController {
+        if let navigationController {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
         }

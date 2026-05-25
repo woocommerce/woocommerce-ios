@@ -272,4 +272,70 @@ final class SiteSettingsRemoteTests: XCTestCase {
             XCTAssertEqual(error as? NetworkError, .unacceptableStatusCode(statusCode: 500))
         }
     }
+
+    // MARK: - `loadAnalyticsOrderDateType`
+
+    func test_loadAnalyticsOrderDateType_returns_parsed_setting() async throws {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
+                                 filename: "setting-analytics-date-type-paid")
+
+        // When
+        let setting = try await remote.loadAnalyticsOrderDateType(for: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(setting.settingID, "woocommerce_date_type")
+        XCTAssertEqual(setting.value, "date_paid")
+        XCTAssertEqual(setting.settingGroupKey, "wc_admin")
+    }
+
+    func test_loadAnalyticsOrderDateType_throws_error_when_network_fails() async {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
+                              error: error)
+
+        // When/Then
+        do {
+            _ = try await remote.loadAnalyticsOrderDateType(for: sampleSiteID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? NetworkError, .unacceptableStatusCode(statusCode: 500))
+        }
+    }
+
+    // MARK: - `updateAnalyticsOrderDateType`
+
+    func test_updateAnalyticsOrderDateType_returns_parsed_setting() async throws {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
+                                 filename: "setting-analytics-date-type-completed")
+
+        // When
+        let setting = try await remote.updateAnalyticsOrderDateType(for: sampleSiteID, value: "date_completed")
+
+        // Then
+        XCTAssertEqual(setting.settingID, "woocommerce_date_type")
+        XCTAssertEqual(setting.value, "date_completed")
+        XCTAssertEqual(setting.settingGroupKey, "wc_admin")
+    }
+
+    func test_updateAnalyticsOrderDateType_throws_error_when_network_fails() async {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
+                              error: error)
+
+        // When/Then
+        do {
+            _ = try await remote.updateAnalyticsOrderDateType(for: sampleSiteID, value: "date_paid")
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? NetworkError, .unacceptableStatusCode(statusCode: 500))
+        }
+    }
 }

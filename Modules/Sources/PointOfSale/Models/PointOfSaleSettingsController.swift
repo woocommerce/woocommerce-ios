@@ -79,7 +79,7 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
         softwareVersion: "2.0.1.23"
     )
 
-    var storeViewModel: POSSettingsStoreViewModel = POSSettingsStoreViewModel(siteID: 123,
+    var storeViewModel = POSSettingsStoreViewModel(siteID: 123,
                                                                               settingsService: MockPointOfSaleSettingsService(),
                                                                               pluginsService: PluginsServicePreview(),
                                                                               defaultSiteName: "Sample Store",

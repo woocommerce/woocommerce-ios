@@ -89,5 +89,4 @@ final class CollapsibleProductCardPriceSummaryViewModelTests: XCTestCase {
         // Then
         assertEqual("$0.00", viewModel.priceBeforeDiscountsLabel)
     }
-
 }

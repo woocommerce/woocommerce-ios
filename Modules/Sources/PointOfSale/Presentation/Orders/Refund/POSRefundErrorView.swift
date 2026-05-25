@@ -3,7 +3,7 @@ import SwiftUI
 struct POSRefundErrorView: View {
     let title: String
     let subtitle: String
-    let onRetry: () -> Void
+    let onRetry: (() -> Void)?
     let onCancel: () -> Void
     let onClose: () -> Void
 
@@ -73,8 +73,10 @@ private extension POSRefundErrorView {
 
     var buttonsSection: some View {
         VStack(spacing: POSSpacing.medium) {
-            Button(Localization.retryButton, action: onRetry)
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
+            if let onRetry {
+                Button(Localization.retryButton, action: onRetry)
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
+            }
 
             Button(Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))

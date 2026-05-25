@@ -240,7 +240,7 @@ struct POSRefundModalContentView: View {
                     .submitting, .retryableError, .nonRetryableError, .completed:
                 return .posSurfaceBright
             }
-        case .review, .confirmation, .success, .error:
+        case .review, .confirmation, .readerConnectionRequired, .success, .error:
             return .posSurfaceBright
         }
     }

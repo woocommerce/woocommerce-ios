@@ -284,7 +284,7 @@ struct POSRefundModalContentView: View {
                 return .posSurfaceBright
             }
         case .loading, .loadingError, .preparationError, .nothingToRefund, .itemSelection, .review, .confirmation,
-                .success, .error:
+                .readerConnectionRequired, .success, .error:
             return .posSurfaceBright
         }
     }

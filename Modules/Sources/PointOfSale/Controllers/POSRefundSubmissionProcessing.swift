@@ -57,6 +57,8 @@ public enum POSRefundSubmissionError: Error, Equatable {
 public protocol POSRefundSubmissionProcessing: AnyObject {
     var stateModel: POSRefundSubmissionModel { get }
 
+    func preloadRefund(for order: POSOrder) async
+
     func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation
 
     func prepareReviewData(for order: POSOrder,
@@ -74,6 +76,8 @@ public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessi
     public let stateModel = POSRefundSubmissionModel()
 
     public nonisolated init() {}
+
+    public func preloadRefund(for order: POSOrder) async {}
 
     public func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {
         POSRefundPreparation(orderID: order.id,

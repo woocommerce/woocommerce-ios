@@ -438,6 +438,39 @@ final class POSOrderListControllerTests {
     // MARK: - Refund Item Selection Tests
 
     @MainActor
+    @Test func preloadRefundDetails_when_refund_is_available_then_preloads_without_opening_refund_flow() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = makeOrder(id: 1, status: .completed)
+        sut.selectOrder(order)
+
+        // When
+        await sut.preloadRefundDetails()
+
+        // Then
+        #expect(refundSubmissionProcessor.preloadedOrderIDs == [order.id])
+        #expect(sut.refundSelectableItems.isEmpty)
+        guard case .idle = sut.selectedOrderRefundsState else {
+            Issue.record("Preloading should not move the visible refund flow state.")
+            return
+        }
+    }
+
+    @MainActor
+    @Test func preloadRefundDetails_when_refund_is_unavailable_then_does_not_preload() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = makeOrder(id: 1, status: .processing)
+        sut.selectOrder(order)
+
+        // When
+        await sut.preloadRefundDetails()
+
+        // Then
+        #expect(refundSubmissionProcessor.preloadedOrderIDs.isEmpty)
+    }
+
+    @MainActor
     @Test func startRefundFlow_when_product_has_multiple_quantities_then_creates_one_row_per_unit() async throws {
         // Given
         let order = makeOrder(lineItems: [
@@ -670,6 +703,24 @@ final class POSOrderListControllerTests {
         #expect(isSelectedAfterToggle == false)
     }
 
+    @MainActor
+    @Test func toggleRefundItemSelection_then_marks_refund_selection_as_modified() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, formattedPrice: "$10.00", formattedTotal: "$10.00")
+        ])
+
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        #expect(sut.hasModifiedRefundSelection == false)
+
+        // When
+        sut.toggleRefundItemSelection(at: 0)
+
+        // Then
+        #expect(sut.hasModifiedRefundSelection == true)
+    }
+
     @Test func toggleRefundItemSelection_when_index_out_of_bounds_then_does_not_crash() async throws {
         // When
         let items = await MainActor.run {
@@ -700,6 +751,25 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func clearRefundSelection_then_resets_modified_refund_selection() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, formattedPrice: "$10.00", formattedTotal: "$10.00")
+        ])
+
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 0)
+        try #require(sut.hasModifiedRefundSelection == true)
+
+        // When
+        sut.clearRefundSelection()
+
+        // Then
+        #expect(sut.hasModifiedRefundSelection == false)
+    }
+
+    @MainActor
     @Test func toggleAllRefundItemsSelection_when_all_selected_then_deselects_all() async throws {
         // Given
         let order = makeOrder(lineItems: [
@@ -716,6 +786,24 @@ final class POSOrderListControllerTests {
         for item in sut.refundSelectableItems {
             #expect(item.isSelected == false)
         }
+    }
+
+    @MainActor
+    @Test func toggleAllRefundItemsSelection_then_marks_refund_selection_as_modified() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
+        ])
+
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        #expect(sut.hasModifiedRefundSelection == false)
+
+        // When
+        sut.toggleAllRefundItemsSelection()
+
+        // Then
+        #expect(sut.hasModifiedRefundSelection == true)
     }
 
     @MainActor
@@ -756,6 +844,27 @@ final class POSOrderListControllerTests {
         for item in sut.refundSelectableItems {
             #expect(item.isSelected == true)
         }
+    }
+
+    @MainActor
+    @Test func selectOrder_then_clears_refund_selection_state() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, formattedPrice: "$10.00", formattedTotal: "$10.00")
+        ])
+
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 0)
+        try #require(sut.hasModifiedRefundSelection == true)
+        try #require(sut.refundSelectableItems.isNotEmpty)
+
+        // When
+        sut.selectOrder(makeOrder(id: order.id + 1))
+
+        // Then
+        #expect(sut.refundSelectableItems.isEmpty)
+        #expect(sut.hasModifiedRefundSelection == false)
     }
 
     // MARK: - Prepare Refund Review Data Tests
@@ -1663,6 +1772,12 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
                      currencyFormatter: CurrencyFormatter) {
         self.refundsService = refundsService
         self.currencyFormatter = currencyFormatter
+    }
+
+    private(set) var preloadedOrderIDs: [Int64] = []
+
+    func preloadRefund(for order: POSOrder) async {
+        preloadedOrderIDs.append(order.id)
     }
 
     func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {

@@ -7,7 +7,7 @@ struct POSRefundConfirmationView: View {
     var submissionState: POSRefundSubmissionState = .idle
     let onClose: () -> Void
     let onConfirm: () -> Void
-    let onBack: () -> Void
+    let onBack: (() -> Void)?
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -59,11 +59,15 @@ private extension POSRefundConfirmationView {
                 return headerBackAction != nil
             }
         }
-        return true
+        return headerBackAction != nil
     }
 
     var backgroundColor: Color {
-        primaryBackgroundCardPresentMessageType == nil ? .posSurfaceBright : .posPrimary
+        guard isProcessing else {
+            return .posSurfaceBright
+        }
+
+        return primaryBackgroundCardPresentMessageType == nil ? Color.posSurfaceBright : Color.posPrimary
     }
 
     var primaryBackgroundCardPresentMessageType: POSRefundCardPresentMessageType? {
@@ -95,15 +99,22 @@ private extension POSRefundConfirmationView {
     var processingCancelAction: (() -> Void)? {
         switch submissionState {
         case .onboarding(_, let onCancel):
-            return onCancel
+            return cancelAndReturnToConfirmation(onCancel)
         case .cardPresentEvent(let eventDetails):
-            return eventDetails.posRefundCancelAction
+            return eventDetails.posRefundCancelAction.map(cancelAndReturnToConfirmation)
         case .preparingReader(let cancel),
                 .waitingForCard(_, let cancel):
-            return cancel
+            return cancelAndReturnToConfirmation(cancel)
         case .idle, .loading, .processingReader, .displayingReaderMessage, .submitting, .submittingCardPresent,
                 .retryableError, .nonRetryableError, .completed:
             return nil
+        }
+    }
+
+    func cancelAndReturnToConfirmation(_ cancel: @escaping () -> Void) -> () -> Void {
+        {
+            onBack?()
+            cancel()
         }
     }
 
@@ -205,19 +216,19 @@ private extension POSRefundConfirmationView {
         case .displayReaderMessage(let message):
             return .displayReaderMessage(.displayReaderMessage(message))
         case .cancelledOnReader:
-            return .cancelledOnReader(.cancelledOnReader(backToRefund: onBack))
+            return .cancelledOnReader(.cancelledOnReader(backToRefund: onBack ?? onClose))
         case .paymentError(let error, let retryApproach, let cancelPayment):
             return .error(.init(error: error,
                                 retryAction: retryAction(for: retryApproach),
-                                cancelAction: cancelPayment))
+                                cancelAction: cancelAndReturnToConfirmation(cancelPayment)))
         case .paymentCaptureError(let cancelPayment):
             return .error(.init(error: POSRefundCardPresentPresentationError.unableToConfirmRefund,
                                 retryAction: nil,
-                                cancelAction: cancelPayment))
+                                cancelAction: cancelAndReturnToConfirmation(cancelPayment)))
         case .paymentIntentCreationError(let error, let cancelPayment):
             return .error(.init(error: error,
                                 retryAction: nil,
-                                cancelAction: cancelPayment))
+                                cancelAction: cancelAndReturnToConfirmation(cancelPayment)))
         case .scanningForReaders, .scanningFailed, .bluetoothRequired, .connectingToReader, .connectingFailed,
                 .connectingFailedNonRetryable, .connectingFailedUpdatePostalCode, .connectingFailedChargeReader,
                 .connectingFailedUpdateAddress, .selectSearchType, .foundReader, .foundMultipleReaders, .updateProgress,
@@ -265,7 +276,7 @@ private enum POSRefundCardPresentPresentationError: LocalizedError {
     }
 }
 
-private extension CardPresentPaymentEventDetails {
+extension CardPresentPaymentEventDetails {
     var posRefundCancelAction: (() -> Void)? {
         switch self {
         case .scanningForReaders(let endSearch),

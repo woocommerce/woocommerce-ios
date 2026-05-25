@@ -10,6 +10,7 @@ final class NewReviewNotificationPreferencesHostingController:
     init(viewModel: PushNotificationPreferencesViewModel) {
         super.init(viewModel: viewModel,
                    rootView: NewReviewNotificationPreferencesDetailView(viewModel: viewModel),
+                   notificationType: .newReview,
                    onDiscard: { [weak viewModel] in viewModel?.discardStoreReviewEdits() })
     }
 

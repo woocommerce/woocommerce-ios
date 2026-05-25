@@ -34,6 +34,7 @@ protocol POSOrderListControllerProtocol {
     func loadNextOrders() async
     func selectOrder(_ order: POSOrder?)
     func updateOrder(orderID: Int64) async throws
+    func preloadRefundDetails() async
     func startRefundFlow() async -> StartRefundFlowResult
     func toggleRefundItemSelection(at index: Int)
     func clearRefundSelection()
@@ -308,6 +309,15 @@ enum RefundActionAvailability {
     }
 
     // MARK: - Refund Item Selection
+
+    @MainActor
+    func preloadRefundDetails() async {
+        guard refundActionAvailability == .available,
+              let order = selectedOrder else {
+            return
+        }
+        await refundSubmissionProcessor.preloadRefund(for: order)
+    }
 
     @MainActor
     func startRefundFlow() async -> StartRefundFlowResult {

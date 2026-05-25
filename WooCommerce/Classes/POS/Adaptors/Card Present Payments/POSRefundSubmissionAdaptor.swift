@@ -10,6 +10,11 @@ import WooFoundation
 final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     let stateModel = POSRefundSubmissionModel()
 
+    private struct PreparedRefundSnapshot {
+        let preparation: POSRefundPreparation
+        let context: POSRefundSubmissionMapping.PreparedRefundContext
+    }
+
     private let orderService: POSOrderServiceProtocol
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -19,6 +24,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     private let analytics: Analytics
     private let refundOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
 
+    private var preloadedRefundSnapshots: [Int64: PreparedRefundSnapshot] = [:]
+    private var preloadTasks: [Int64: (id: UUID, task: Task<PreparedRefundSnapshot, Error>)] = [:]
     private var preparedContexts: [Int64: POSRefundSubmissionMapping.PreparedRefundContext] = [:]
     private var submissionUseCase: RefundSubmissionUseCase<CardPresentPaymentBluetoothReaderConnectionAlertsProvider, POSRefundCardPresentPaymentAlertsPresenter>?
     private var onboardingSubscription: AnyCancellable?
@@ -40,34 +47,45 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
         self.refundOptionsDeterminer = refundOptionsDeterminer
     }
 
+    func preloadRefund(for order: POSOrder) async {
+        removePreloadedRefunds(except: order.id)
+
+        guard preloadedRefundSnapshots[order.id] == nil,
+              preloadTasks[order.id] == nil else {
+            return
+        }
+
+        let preloadID = UUID()
+        let preloadTask = Task { @MainActor in
+            try await loadPreparedRefundSnapshot(for: order)
+        }
+        preloadTasks[order.id] = (id: preloadID, task: preloadTask)
+
+        do {
+            let snapshot = try await preloadTask.value
+            guard preloadTasks[order.id]?.id == preloadID else {
+                return
+            }
+            preloadedRefundSnapshots[order.id] = snapshot
+            preloadTasks[order.id] = nil
+        } catch {
+            guard preloadTasks[order.id]?.id == preloadID else {
+                return
+            }
+            preloadTasks[order.id] = nil
+        }
+    }
+
     func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {
         stateModel.state = .loading
+        defer {
+            stateModel.reset()
+        }
 
-        let fullOrder = try await orderService.loadOrder(orderID: order.id)
-        let refunds = try await loadDetailedRefunds(for: fullOrder)
-        let fetchedCharge = try await fetchChargeIfNeeded(for: fullOrder)
-        let charge = fetchedCharge.map { refundMapping.normalizedForPOSInteracRefund(charge: $0) }
-        let paymentGateway = loadPaymentGateway(for: fullOrder)
-        let paymentGatewayAccount = await loadSelectedOrStoredPaymentGatewayAccount(for: fullOrder)
-        let refundableItems = refundOptionsDeterminer.determineRefundableOrderItems(from: fullOrder, with: refunds)
-        let refundableFees = refundMapping.determineRefundableFees(from: fullOrder, with: refunds)
-        let selectableItems = refundMapping.makeSelectableItems(refundableItems: refundableItems,
-                                                                fees: refundableFees,
-                                                                currency: fullOrder.currency)
-        let context = POSRefundSubmissionMapping.PreparedRefundContext(order: fullOrder,
-                                                                       charge: charge,
-                                                                       paymentGateway: paymentGateway,
-                                                                       paymentGatewayAccount: paymentGatewayAccount,
-                                                                       refundableItems: refundableItems,
-                                                                       refundableFees: refundableFees)
-        preparedContexts[fullOrder.orderID] = context
-        stateModel.reset()
+        let snapshot = try await preparedRefundSnapshot(for: order)
+        preparedContexts[snapshot.preparation.orderID] = snapshot.context
 
-        return POSRefundPreparation(orderID: fullOrder.orderID,
-                                    selectableItems: selectableItems,
-                                    paymentMethodDescription: refundMapping.paymentMethodDescription(for: fullOrder, charge: charge),
-                                    customerEmail: fullOrder.billingAddress?.email,
-                                    requiresCardPresentRefund: refundMapping.requiresCardPresentRefund(context: context))
+        return snapshot.preparation
     }
 
     func prepareReviewData(for order: POSOrder,
@@ -120,16 +138,22 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                 submittingState: submittingState,
                 cancellationState: cancellationState)
 
-        let alertPresenter = POSRefundCardPresentPaymentAlertsPresenter(stateModel: stateModel,
-                                                                        onCancelRequested: cancellationState.markCancelled)
+        let alertPresenter = POSRefundCardPresentPaymentAlertsPresenter(
+            stateModel: stateModel,
+            onCancelRequested: cancellationState.markCancelled,
+            isPresentationAllowed: { !cancellationState.wasCancelledByMerchant }
+        )
         let submissionUseCase = RefundSubmissionUseCase(
             details: .init(order: context.order,
                            charge: context.charge,
                            amount: amount,
                            paymentGatewayAccount: context.paymentGatewayAccount),
             rootViewController: NullViewControllerPresenting(),
-            alerts: POSRefundOrderDetailsPaymentAlerts(stateModel: stateModel,
-                                                       onCancelRequested: cancellationState.markCancelled),
+            alerts: POSRefundOrderDetailsPaymentAlerts(
+                stateModel: stateModel,
+                onCancelRequested: cancellationState.markCancelled,
+                isPresentationAllowed: { !cancellationState.wasCancelledByMerchant }
+            ),
             cardPresentConfiguration: CardPresentConfigurationLoader(stores: stores).configuration,
             cardReaderConnectionAlerts: CardPresentPaymentBluetoothReaderConnectionAlertsProvider(),
             alertPresenter: alertPresenter,
@@ -167,10 +191,62 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
         }
 
         stateModel.state = requiresCardPresentRefund ? .submittingCardPresent : .completed
+        removePreloadedRefund(for: preparation.orderID)
     }
 }
 
 private extension POSRefundSubmissionAdaptor {
+    func removePreloadedRefund(for orderID: Int64) {
+        preloadedRefundSnapshots[orderID] = nil
+        preloadTasks[orderID]?.task.cancel()
+        preloadTasks[orderID] = nil
+    }
+
+    func removePreloadedRefunds(except orderID: Int64) {
+        preloadedRefundSnapshots = preloadedRefundSnapshots.filter { $0.key == orderID }
+        for preloadedOrderID in Array(preloadTasks.keys) where preloadedOrderID != orderID {
+            removePreloadedRefund(for: preloadedOrderID)
+        }
+    }
+
+    private func preparedRefundSnapshot(for order: POSOrder) async throws -> PreparedRefundSnapshot {
+        if let snapshot = preloadedRefundSnapshots.removeValue(forKey: order.id) {
+            return snapshot
+        }
+
+        if let preloadTask = preloadTasks.removeValue(forKey: order.id) {
+            return try await preloadTask.task.value
+        }
+
+        return try await loadPreparedRefundSnapshot(for: order)
+    }
+
+    private func loadPreparedRefundSnapshot(for order: POSOrder) async throws -> PreparedRefundSnapshot {
+        let fullOrder = try await orderService.loadOrder(orderID: order.id)
+        let refunds = try await loadDetailedRefunds(for: fullOrder)
+        let fetchedCharge = try await fetchChargeIfNeeded(for: fullOrder)
+        let charge = fetchedCharge.map { refundMapping.normalizedForPOSInteracRefund(charge: $0) }
+        let paymentGateway = loadPaymentGateway(for: fullOrder)
+        let paymentGatewayAccount = await loadSelectedOrStoredPaymentGatewayAccount(for: fullOrder)
+        let refundableItems = refundOptionsDeterminer.determineRefundableOrderItems(from: fullOrder, with: refunds)
+        let refundableFees = refundMapping.determineRefundableFees(from: fullOrder, with: refunds)
+        let selectableItems = refundMapping.makeSelectableItems(refundableItems: refundableItems,
+                                                                fees: refundableFees,
+                                                                currency: fullOrder.currency)
+        let context = POSRefundSubmissionMapping.PreparedRefundContext(order: fullOrder,
+                                                                       charge: charge,
+                                                                       paymentGateway: paymentGateway,
+                                                                       paymentGatewayAccount: paymentGatewayAccount,
+                                                                       refundableItems: refundableItems,
+                                                                       refundableFees: refundableFees)
+        let preparation = POSRefundPreparation(orderID: fullOrder.orderID,
+                                               selectableItems: selectableItems,
+                                               paymentMethodDescription: refundMapping.paymentMethodDescription(for: fullOrder, charge: charge),
+                                               customerEmail: fullOrder.billingAddress?.email,
+                                               requiresCardPresentRefund: refundMapping.requiresCardPresentRefund(context: context))
+        return PreparedRefundSnapshot(preparation: preparation, context: context)
+    }
+
     func loadDetailedRefunds(for order: Order) async throws -> [Refund] {
         let refundIDs = order.refunds.map(\.refundID)
         if refundIDs.isNotEmpty {
@@ -263,6 +339,7 @@ private extension POSRefundSubmissionAdaptor {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] event in
                 guard let self else { return }
+                guard !cancellationState.wasCancelledByMerchant else { return }
                 switch event {
                 case .showOnboarding(let factory, let onCancel):
                     self.stateModel.state = .onboarding(factory: factory, onCancel: {

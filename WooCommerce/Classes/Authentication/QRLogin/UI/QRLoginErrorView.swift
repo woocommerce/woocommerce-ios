@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Fullscreen error variant for any failure surfaced by the QR-login flow.
 /// Title / body / primary CTA come from the user-facing error variant; the
-/// secondary CTA is always "Enter site URL instead" (spec §4.6).
+/// secondary CTA is always "Enter site URL instead".
 struct QRLoginErrorView: View {
     let error: QRLoginUserFacingError
     let onPrimaryTapped: () -> Void

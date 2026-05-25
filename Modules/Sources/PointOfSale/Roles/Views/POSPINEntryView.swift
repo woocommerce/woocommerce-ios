@@ -3,23 +3,19 @@ import SwiftUI
 struct POSPINEntryView: View {
     private let state: POSPINEntryState
     private let pinLength: Int
-    private let maxContentWidth: CGFloat?
     private let onComplete: (String) -> Void
 
     @State private var enteredPIN = ""
     @State private var shakeAmount: CGFloat = 0
-    @State private var loadingWave = false
 
     private let helper = POSPINEntryViewHelper()
     private let haptics = POSPINHapticFeedback()
 
     init(state: POSPINEntryState,
          pinLength: Int = 4,
-         maxContentWidth: CGFloat? = nil,
          onComplete: @escaping (String) -> Void) {
         self.state = state
         self.pinLength = pinLength
-        self.maxContentWidth = maxContentWidth
         self.onComplete = onComplete
     }
 
@@ -31,7 +27,7 @@ struct POSPINEntryView: View {
             }
             numpad
         }
-        .frame(maxWidth: maxContentWidth ?? .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear { handleStateChange(state) }
         .onChange(of: state) { _, newState in
             handleStateChange(newState)
@@ -54,18 +50,21 @@ private extension POSPINEntryView {
     }
 
     var dotsRow: some View {
-        HStack(spacing: POSSpacing.medium) {
-            ForEach(0..<pinLength, id: \.self) { index in
-                dot(filled: isLoading || index < enteredPIN.count, index: index)
+        TimelineView(.animation(paused: !isLoading)) { context in
+            HStack(spacing: POSSpacing.medium) {
+                ForEach(0..<pinLength, id: \.self) { index in
+                    dot(filled: isLoading || index < enteredPIN.count,
+                        yOffset: waveOffset(index: index, date: context.date))
+                }
             }
+            .modifier(ShakeEffect(animatableData: shakeAmount))
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Localization.dotsAccessibilityLabel)
+            .accessibilityValue(Localization.dotsAccessibilityValue(entered: enteredPIN.count, total: pinLength))
         }
-        .modifier(ShakeEffect(animatableData: shakeAmount))
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Localization.dotsAccessibilityLabel)
-        .accessibilityValue(Localization.dotsAccessibilityValue(entered: enteredPIN.count, total: pinLength))
     }
 
-    func dot(filled: Bool, index: Int) -> some View {
+    func dot(filled: Bool, yOffset: CGFloat) -> some View {
         Circle()
             .fill(filled ? Color.posPrimary : Color.clear)
             .overlay(
@@ -73,17 +72,15 @@ private extension POSPINEntryView {
                                       lineWidth: Constants.dotBorderWidth)
             )
             .frame(width: Constants.dotSize, height: Constants.dotSize)
-            .offset(y: isLoading ? (loadingWave ? -Constants.waveHeight : Constants.waveHeight) : 0)
-            .animation(waveAnimation(for: index), value: loadingWave)
+            .offset(y: yOffset)
     }
 
-    func waveAnimation(for index: Int) -> Animation? {
+    func waveOffset(index: Int, date: Date) -> CGFloat {
         guard isLoading else {
-            return .default
+            return 0
         }
-        return .easeInOut(duration: Constants.waveDuration)
-            .repeatForever(autoreverses: true)
-            .delay(Double(index) * Constants.waveStagger)
+        let time = date.timeIntervalSinceReferenceDate
+        return sin(time * Constants.waveSpeed + Double(index) * Constants.wavePhase) * Constants.waveHeight
     }
 
     @ViewBuilder
@@ -197,9 +194,7 @@ private extension POSPINEntryView {
             }
         case .idle:
             enteredPIN = ""
-        case .loading:
-            loadingWave.toggle()
-        case .lockout:
+        case .loading, .lockout:
             break
         }
     }
@@ -232,8 +227,8 @@ private extension POSPINEntryView {
         static let disabledOpacity: Double = 0.4
         static let shakeDuration: TimeInterval = 0.4
         static let waveHeight: CGFloat = 6
-        static let waveDuration: TimeInterval = 0.5
-        static let waveStagger: TimeInterval = 0.1
+        static let waveSpeed: Double = 5.0
+        static let wavePhase: Double = 0.7
         static let emptyKey = ""
         static let deleteKey = "delete"
         static let rows: [[String]] = [
@@ -297,11 +292,6 @@ private extension POSPINEntryView {
         .background(Color.posSurfaceContainerLow)
 }
 
-#Preview("Modal width") {
-    POSPINEntryView(state: .idle, maxContentWidth: 320, onComplete: { _ in })
-        .padding()
-        .background(Color.posSurfaceContainerLow)
-}
 
 #Preview("Interactive (wrong PIN)") {
     @Previewable @State var state: POSPINEntryState = .idle

@@ -33,5 +33,31 @@ public final class CardPresentPaymentsCountryExpansionEligibilityService: CardPr
 
     public func cacheEligibility(siteID: Int64, isEligible: Bool) {
         siteSpecificAppSettingsStoreMethods.saveCardPresentPaymentsCountryExpansionEligibility(siteID: siteID, isEligible: isEligible)
+        // Broadcast so live consumers (POS card-payment gate, IPP entry points)
+        // re-evaluate their cached read of `CardPresentConfigurationLoader` — the
+        // loader's `configuration` accessor calls back into `isEligible(siteID:)`
+        // synchronously, so refreshing on this notification picks up the new value.
+        // Cold-start race fix for expansion-flag-gated countries (Spain / FR / DE /
+        // AU / NZ / SG …) whose configuration arrives after the POS tab first renders.
+        NotificationCenter.default.post(
+            name: .cardPresentPaymentsCountryExpansionEligibilityDidChange,
+            object: nil,
+            userInfo: [Self.siteIDKey: siteID]
+        )
     }
+
+    /// `userInfo` key whose value is the `Int64` siteID whose eligibility was updated.
+    public static let siteIDKey = "siteID"
+}
+
+public extension Notification.Name {
+    /// Posted on `NotificationCenter.default` after
+    /// ``CardPresentPaymentsCountryExpansionEligibilityServiceProtocol/cacheEligibility(siteID:isEligible:)``
+    /// writes a new value. `userInfo[CardPresentPaymentsCountryExpansionEligibilityService.siteIDKey]`
+    /// carries the affected siteID as `Int64`. Consumers should re-read whatever
+    /// they derive from `CardPresentConfigurationLoader` (POS card-payment gate,
+    /// IPP entry-point gates) when this fires.
+    static let cardPresentPaymentsCountryExpansionEligibilityDidChange = Notification.Name(
+        rawValue: "com.woocommerce.ios.cardPresentPaymentsCountryExpansionEligibilityDidChange"
+    )
 }

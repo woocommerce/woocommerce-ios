@@ -14,6 +14,14 @@ public protocol CardPresentPaymentFacade {
     /// promoted layout.
     var isPOSCardPaymentEnabled: Bool { get }
 
+    /// Emits the current value of `isPOSCardPaymentEnabled` immediately on subscribe
+    /// and again whenever the underlying configuration changes — e.g. an expansion-
+    /// flag-gated country (Spain / FR / DE / AU / NZ / SG …) whose eligibility cache
+    /// is refreshed in the background after the POS tab first renders. `POSPaymentModel`
+    /// uses this to keep its observable mirror in sync, so SwiftUI views re-render
+    /// when card payments unlock mid-session.
+    var isPOSCardPaymentEnabledPublisher: AnyPublisher<Bool, Never> { get }
+
     /// `paymentEventPublisher` provides a stream of events relating to a payment, including their view models,
     /// for subscribers to display to the user. e.g. onboarding screens, connection progress, payment progress, card reader messages.
     /// This is a long lasting stream, and will not finish during the life of the façade, instead it will publish events for each payment attempt.

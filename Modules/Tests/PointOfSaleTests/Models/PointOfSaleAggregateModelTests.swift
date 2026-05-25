@@ -929,7 +929,7 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
             let configuration = MockOnboardingViewContainerConfiguration()
             configuration.state = .pluginNotActivated(plugin: .stripe)
-            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
+            let factory = CardPresentPaymentOnboardingViewContainer(configuration: configuration)
             cardPresentPaymentService.paymentEvent = .idle
             try #require(sut.cardPresentPaymentOnboardingViewContainer == nil)
 
@@ -1053,7 +1053,7 @@ struct PointOfSaleAggregateModelTests {
 
             let configuration = MockOnboardingViewContainerConfiguration()
             configuration.state = .noConnectionError
-            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
+            let factory = CardPresentPaymentOnboardingViewContainer(configuration: configuration)
 
             cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 

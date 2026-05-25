@@ -1,11 +1,6 @@
 import Foundation
 
-/// OpenAI-compatible chat-completion wire types.
-///
-/// Both `jetpack-ai-query` and `ai-api-proxy/v1/chat/completions` accept this
-/// shape verbatim, so a single set of types covers today's backend and the
-/// expected future swap. Tool calling follows the OpenAI spec
-/// (`finish_reason: "tool_calls"`, `tool_calls[i].function.{name,arguments}`).
+/// OpenAI-compatible chat-completion wire types accepted by the wpcom AI proxy.
 public enum OpenAIChat {
 
     public enum Role: String, Codable, Sendable {
@@ -45,13 +40,8 @@ public enum OpenAIChat {
             case toolCallID = "tool_call_id"
         }
 
-        /// Custom encoder so an assistant turn carrying `tool_calls` still
-        /// emits a present, non-null `content` field. jetpack-ai-query's
-        /// pre-filter rejects `"content": null` AND an omitted `content`
-        /// key with `jetpack_ai_error: Invalid message format`; it accepts
-        /// an empty string. OpenAI's downstream model ignores `content`
-        /// when `tool_calls` is set, so the empty string is cosmetic but
-        /// required to satisfy the proxy's validator.
+        /// Some upstream validators reject `"content": null` or an omitted `content` key
+        /// on assistant turns that carry `tool_calls`; emit an empty string instead.
         public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(role, forKey: .role)
@@ -65,9 +55,6 @@ public enum OpenAIChat {
         }
     }
 
-    /// `arguments` is a JSON string the caller must parse against the tool's
-    /// declared schema; OpenAI sends arguments as a serialised string rather
-    /// than an inline object.
     public struct ToolCall: Codable, Sendable, Equatable {
         public let id: String
         public let type: String
@@ -90,9 +77,7 @@ public enum OpenAIChat {
         }
     }
 
-    /// `parameters` is a JSON Schema object describing the function's
-    /// argument shape. Stored as `AnyCodableJSON` so any valid schema
-    /// round-trips without bespoke decoding per tool.
+    /// `parameters` is stored as `AnyCodableJSON` so any valid JSON Schema round-trips without bespoke decoding per tool.
     public struct ToolDefinition: Codable, Sendable, Equatable {
         public let type: String
         public let function: FunctionDefinition
@@ -115,66 +100,41 @@ public enum OpenAIChat {
         }
     }
 
-    /// Encoded-only; `jetpack-ai-query` never returns `tool_choice`.
-    public enum ToolChoice: Encodable, Sendable, Equatable {
-        case auto
-        case required
-        case function(name: String)
-
-        public func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            switch self {
-            case .auto:
-                try container.encode("auto")
-            case .required:
-                try container.encode("required")
-            case .function(let name):
-                try container.encode(SpecificFunctionChoice(
-                    type: "function",
-                    function: .init(name: name)
-                ))
-            }
-        }
-
-        private struct SpecificFunctionChoice: Encodable {
-            let type: String
-            let function: FunctionName
-            struct FunctionName: Encodable { let name: String }
-        }
-    }
-
     struct Request: Encodable, Sendable {
         let messages: [Message]
         let tools: [ToolDefinition]?
-        let toolChoice: ToolChoice?
         let model: String?
         let stream: Bool
-        let feature: String
         let temperature: Double?
         let maxTokens: Int?
 
         init(messages: [Message],
              tools: [ToolDefinition]? = nil,
-             toolChoice: ToolChoice? = nil,
              model: String? = nil,
              stream: Bool = false,
-             feature: String,
              temperature: Double? = nil,
              maxTokens: Int? = nil) {
             self.messages = messages
             self.tools = tools
-            self.toolChoice = toolChoice
             self.model = model
             self.stream = stream
-            self.feature = feature
             self.temperature = temperature
             self.maxTokens = maxTokens
         }
 
         enum CodingKeys: String, CodingKey {
-            case messages, tools, model, stream, feature, temperature
-            case toolChoice = "tool_choice"
+            case messages, tools, model, stream, temperature
             case maxTokens = "max_tokens"
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(messages, forKey: .messages)
+            try container.encodeIfPresent(tools, forKey: .tools)
+            try container.encodeIfPresent(model, forKey: .model)
+            try container.encode(stream, forKey: .stream)
+            try container.encodeIfPresent(temperature, forKey: .temperature)
+            try container.encodeIfPresent(maxTokens, forKey: .maxTokens)
         }
     }
 
@@ -222,8 +182,7 @@ public enum OpenAIChat {
         }
     }
 
-    /// Multiple chunks build up a single response; tool-call arguments arrive
-    /// as fragments and must be concatenated by index across chunks.
+    // Tool-call arguments arrive as fragments; concatenate by index across chunks.
     struct Chunk: Decodable, Sendable, Equatable {
         let id: String?
         let model: String?

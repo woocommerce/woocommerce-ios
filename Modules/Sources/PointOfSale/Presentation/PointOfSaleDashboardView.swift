@@ -301,13 +301,22 @@ struct PointOfSaleDashboardView: View {
     /// system nav bar back button.
     private var phoneTotalsContainer: some View {
         VStack(spacing: 0) {
-            POSPageHeaderView(
-                title: Localization.phoneCheckoutTitle,
-                backButtonConfiguration: .init(
-                    state: canExitFinalizingOnPhone ? .enabled : .disabled,
-                    action: { posModel.addMoreToCart() }
+            if !posModel.paymentState.shownFullScreen {
+                // Hide the Checkout header on the in-pane states that take
+                // over the totals area: card `processingPayment` /
+                // `paymentError` / `cardPaymentSuccessful`, plus the
+                // success state of cash / scan-to-pay / mark-as-paid. In all
+                // those the merchant is on a focused payment view and the
+                // back-to-cart arrow is already disabled (the cart can't be
+                // edited mid-flow or post-success) — the header is noise.
+                POSPageHeaderView(
+                    title: Localization.phoneCheckoutTitle,
+                    backButtonConfiguration: .init(
+                        state: canExitFinalizingOnPhone ? .enabled : .disabled,
+                        action: { posModel.addMoreToCart() }
+                    )
                 )
-            )
+            }
             TotalsView()
         }
         .background(Color.posSurface)

@@ -709,7 +709,7 @@ private struct ProductsSection: View {
                         .default(Text(OrderForm.Localization.permissionsOpenSettings), action: {
                             openSettingsAction()
                          }),
-                         .cancel()
+                        .cancel()
                      ]
                  )
             })

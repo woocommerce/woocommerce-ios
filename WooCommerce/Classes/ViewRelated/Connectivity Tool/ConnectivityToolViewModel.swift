@@ -156,7 +156,8 @@ final class ConnectivityToolViewModel {
     private func startConnectivityTest(sinceTest: ConnectivityTest = .internetConnection) async {
         let supportedTests: [ConnectivityTest] = {
             if stores.isAuthenticatedWithoutWPCom == false {
-                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting, .notifications]
+                // Push notification diagnostics are temporarily hidden until the check is updated.
+                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             } else {
                 [.internetConnection, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             }
@@ -214,12 +215,7 @@ final class ConnectivityToolViewModel {
     /// Creates a SupportChatViewModel with the current troubleshooting context.
     ///
     @MainActor
-    func makeSupportChatViewModel(onContactHumanSupport: @escaping (
-        _ chatID: Int64?,
-        _ transcript: String,
-        _ supportAreaInfo: SupportAreaInfo?,
-        _ entryPoint: SupportChatViewModel.EntryPoint
-    ) -> Void) -> SupportChatViewModel {
+    func makeSupportChatViewModel(onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback) -> SupportChatViewModel {
         var context: [String: Any] = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {
@@ -850,6 +846,6 @@ extension ConnectivityTool.Card {
     /// Updates a card state to a new given state.
     ///
     func updatingState(_ newState: ConnectivityToolCard.ConnectivityState) -> ConnectivityTool.Card {
-        Self.init(testCase: testCase, title: title, icon: icon, state: newState)
+        Self(testCase: testCase, title: title, icon: icon, state: newState)
     }
 }

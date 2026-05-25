@@ -13,12 +13,13 @@ public enum OrdersGetTool {
         description: """
         Fetch a single order with full detail (line items, billing/shipping, \
         status, customer_id). Use when the merchant references a specific \
-        order by ID. The customer_id can chain into customers_list for \
-        follow-up questions about the buyer. Do not call this tool to \
-        render a card after `orders_list` — `show_cards` re-fetches order \
-        detail itself when given a reference. Use bounded fanout: only call \
-        after a list/card when the merchant asks for fields the list summary \
-        or card doesn't show, and limit to the specific entity referenced.
+        order by ID, including by position from a prior turn ("the first \
+        one", "that order"). Required when the merchant asks about line \
+        items / products / contents of an order - the rendered order card \
+        does not surface them. The customer_id can chain into customers_list \
+        for follow-up questions about the buyer. Don't redundantly call this \
+        to re-render an existing card; only fetch when the merchant asks \
+        for fields the card doesn't show.
         """,
         parametersSchema: .object([
             "type": .string("object"),

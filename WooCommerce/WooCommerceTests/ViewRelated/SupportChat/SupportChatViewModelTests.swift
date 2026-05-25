@@ -6,6 +6,7 @@ import enum Networking.NetworkError
 
 @MainActor
 struct SupportChatViewModelTests {
+    private static let noopContactHumanSupport: SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _ in }
 
     // MARK: - Greeting Tests
 
@@ -549,6 +550,72 @@ struct SupportChatViewModelTests {
         #expect(sut.isExecutingAction == false)
     }
 
+    @Test func executeAction_updateWooCommercePlugin_calls_handler_and_replaces_action_with_retry() async {
+        // Given
+        let diagnosticsService = MockSupportDiagnosticsService { tests in
+            tests.map { test in
+                .failure(
+                    test: test,
+                    failure: .init(errorMessage: "Update required", suggestedAction: .updateWooCommercePlugin)
+                )
+            }
+        }
+        var handlerCalled = false
+        let sut = makeSUT(
+            diagnosticsService: diagnosticsService,
+            onUpdateWooCommercePlugin: { onDismissed in
+                handlerCalled = true
+                onDismissed()
+            }
+        )
+        await sut.selectIssue(.receivingNotifications)
+
+        // When
+        await sut.executeAction(.updateWooCommercePlugin)
+
+        // Then
+        #expect(handlerCalled == true)
+        #expect(sut.isExecutingAction == false)
+        guard case .diagnosticsFailure(let result) = sut.messages.last?.content else {
+            Issue.record("Expected diagnostics failure message after update plugin action")
+            return
+        }
+        #expect(result.suggestedAction == .retryDiagnostics)
+    }
+
+    @Test func executeAction_openPushNotificationPreferences_calls_handler_and_replaces_action_with_retry() async {
+        // Given
+        let diagnosticsService = MockSupportDiagnosticsService { tests in
+            tests.map { test in
+                .failure(
+                    test: test,
+                    failure: .init(errorMessage: "Preferences disabled", suggestedAction: .openPushNotificationPreferences)
+                )
+            }
+        }
+        var handlerCalled = false
+        let sut = makeSUT(
+            diagnosticsService: diagnosticsService,
+            onOpenPushNotificationPreferences: { onDismissed in
+                handlerCalled = true
+                onDismissed()
+            }
+        )
+        await sut.selectIssue(.receivingNotifications)
+
+        // When
+        await sut.executeAction(.openPushNotificationPreferences)
+
+        // Then
+        #expect(handlerCalled == true)
+        #expect(sut.isExecutingAction == false)
+        guard case .diagnosticsFailure(let result) = sut.messages.last?.content else {
+            Issue.record("Expected diagnostics failure message after open preferences action")
+            return
+        }
+        #expect(result.suggestedAction == .retryDiagnostics)
+    }
+
     // MARK: - Resume Chat Tests
 
     @Test(.timeLimit(.minutes(1)))
@@ -595,7 +662,7 @@ struct SupportChatViewModelTests {
                 entryPoint: .chatHistory,
                 stores: stores,
                 chatID: chatID,
-                onContactHumanSupport: { _, _, _, _ in }
+                onContactHumanSupport: Self.noopContactHumanSupport
             )
 
             // When
@@ -612,7 +679,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
 
         await confirmation { fetchCompleted in
@@ -668,7 +735,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
 
         await confirmation { fetchCompleted in
@@ -699,6 +766,48 @@ struct SupportChatViewModelTests {
         // Then
         #expect(sut.shouldPromptHumanSupport == false)
         #expect(sut.messages.count == 2)
+        #expect(sut.canEscalateToHumanSupport == true)
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func resumeIfNeeded_when_chat_has_no_persisted_bot_response_then_canEscalateToHumanSupport_is_false() async {
+        // Given
+        let chatID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = SupportChatViewModel(
+            entryPoint: .chatHistory,
+            stores: stores,
+            chatID: chatID,
+            onContactHumanSupport: Self.noopContactHumanSupport
+        )
+
+        await confirmation { fetchCompleted in
+            stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+                switch action {
+                case let .fetchChat(_, _, _, completion):
+                    let response = SupportChatResponse(
+                        chatID: chatID,
+                        sessionID: "session-1",
+                        botSlug: "test-bot",
+                        botVersion: "1.0",
+                        messages: [
+                            SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil)
+                        ]
+                    )
+                    completion(.success(response))
+                    fetchCompleted()
+                default:
+                    break
+                }
+            }
+
+            // When
+            sut.resumeIfNeeded()
+        }
+
+        // Then
+        #expect(sut.messages.count == 1)
+        #expect(sut.canEscalateToHumanSupport == false)
     }
 
     @Test func contactHumanSupport_passes_chatID_in_callback() async {
@@ -877,7 +986,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
-    @Test func canEscalateToHumanSupport_becomes_true_when_sending_message_fails() async {
+    @Test func canEscalateToHumanSupport_remains_false_when_sending_message_fails() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -892,7 +1001,7 @@ struct SupportChatViewModelTests {
         sut.sendMessage()
 
         // Then
-        #expect(sut.canEscalateToHumanSupport == true)
+        #expect(sut.canEscalateToHumanSupport == false)
     }
 
     @Test func canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_until_proceedToChat() async {
@@ -1004,7 +1113,7 @@ struct SupportChatViewModelTests {
             entryPoint: .preLogin,
             stores: stores,
             hasCreatedTicket: true,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
 
         // When — append a user message so the only failing condition is hasCreatedTicket
@@ -1459,7 +1568,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Help"
         sut.sendMessage()
@@ -1507,7 +1616,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1550,7 +1659,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1592,7 +1701,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1635,7 +1744,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Hello"
         sut.sendMessage()
@@ -1730,7 +1839,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .connectivityTool,
             stores: stores,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Hello"
 
@@ -1765,7 +1874,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .connectivityTool,
             stores: stores,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Hello"
 
@@ -1786,7 +1895,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
 
         await confirmation { fetchCompleted in
@@ -1829,7 +1938,7 @@ struct SupportChatViewModelTests {
             stores: stores,
             chatID: chatID,
             sessionID: sessionID,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
         var receivedSessionID: String?
 
@@ -1867,7 +1976,7 @@ struct SupportChatViewModelTests {
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport
         )
         var receivedChatID: Int64?
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -1893,7 +2002,9 @@ struct SupportChatViewModelTests {
         stores: StoresManager? = nil,
         diagnosticsService: SupportDiagnosticsServicing? = nil,
         analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider(),
-        onStartJetpackSetup: @escaping () -> Void = {}
+        onStartJetpackSetup: @escaping () -> Void = {},
+        onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() },
+        onOpenPushNotificationPreferences: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }
     ) -> SupportChatViewModel {
         let stores = stores ?? MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let viewModel = SupportChatViewModel(
@@ -1901,7 +2012,9 @@ struct SupportChatViewModelTests {
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
             diagnosticsService: diagnosticsService,
-            onContactHumanSupport: { _, _, _, _ in }
+            onContactHumanSupport: Self.noopContactHumanSupport,
+            onUpdateWooCommercePlugin: onUpdateWooCommercePlugin,
+            onOpenPushNotificationPreferences: onOpenPushNotificationPreferences
         )
         viewModel.onStartJetpackSetup = onStartJetpackSetup
         return viewModel

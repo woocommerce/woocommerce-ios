@@ -9,6 +9,7 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
 
     /// Retains the Jetpack setup coordinator while the flow is active.
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
+    private var preferencesDismissHandler: PresentationDismissHandler?
 
     init(viewModel: SupportChatViewModel) {
         self.viewModel = viewModel
@@ -20,6 +21,12 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
 
         viewModel.onStartJetpackSetup = { [weak self] in
             self?.startJetpackSetup()
+        }
+        viewModel.onUpdateWooCommercePlugin = { [weak self] onDismissed in
+            self?.presentWooCommercePluginUpdate(onDismissed: onDismissed)
+        }
+        viewModel.onOpenPushNotificationPreferences = { [weak self] onDismissed in
+            self?.presentPushNotificationPreferences(onDismissed: onDismissed)
         }
     }
 
@@ -34,13 +41,60 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
     }
 
     private func startJetpackSetup() {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else { return }
+        guard let site = viewModel.site else { return }
         let coordinator = JetpackSetupCoordinator(site: site, rootViewController: self, onCompletion: { [weak self] in
             self?.viewModel.replaceActionWithRetry()
             self?.jetpackSetupCoordinator = nil
         })
         jetpackSetupCoordinator = coordinator
         coordinator.startSetup()
+    }
+
+    private func presentWooCommercePluginUpdate(onDismissed: @escaping () -> Void) {
+        guard let site = viewModel.site,
+              let url = URL(string: site.adminURL + WooConstants.wooCommercePluginUpdatePath) else {
+            onDismissed()
+            return
+        }
+        let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce, onDismiss: onDismissed)
+        let viewController = UIHostingController(rootView: webView)
+        viewController.modalPresentationStyle = .formSheet
+        present(viewController, animated: true)
+    }
+
+    private func presentPushNotificationPreferences(onDismissed: @escaping () -> Void) {
+        guard let siteID = viewModel.site?.siteID else {
+            onDismissed()
+            return
+        }
+
+        let navigationController = WooNavigationController()
+        let viewController = PushNotificationPreferencesHostingController(siteID: siteID)
+        viewController.navigationItem.leftBarButtonItem = UIBarButtonItem(
+            systemItem: .done,
+            primaryAction: UIAction { [weak navigationController] _ in
+                onDismissed()
+                navigationController?.dismiss(animated: true)
+            }
+        )
+        navigationController.viewControllers = [viewController]
+        navigationController.modalPresentationStyle = .formSheet
+        let dismissHandler = PresentationDismissHandler(onDismissed: onDismissed)
+        preferencesDismissHandler = dismissHandler
+        navigationController.presentationController?.delegate = dismissHandler
+        present(navigationController, animated: true)
+    }
+}
+
+private final class PresentationDismissHandler: NSObject, UIAdaptivePresentationControllerDelegate {
+    private let onDismissed: () -> Void
+
+    init(onDismissed: @escaping () -> Void) {
+        self.onDismissed = onDismissed
+    }
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        onDismissed()
     }
 }
 
@@ -70,6 +124,11 @@ private extension SupportChatHostingController {
             "supportChatHostingController.title",
             value: "Chat with Support",
             comment: "Navigation title for the AI support chat screen"
+        )
+        static let updateWooCommerce = NSLocalizedString(
+            "supportChatHostingController.updateWooCommerce",
+            value: "Update WooCommerce",
+            comment: "Title of the web view to update WooCommerce plugin from support chat"
         )
     }
 }

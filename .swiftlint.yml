@@ -19,6 +19,9 @@ only_rules:
   # Prefer `Array(xs)` over `xs.map { $0 }`.
   - array_init
 
+  # All elements in a collection literal should be vertically aligned.
+  - collection_alignment
+
   # Colons should be next to the identifier when specifying a type.
   - colon
 
@@ -59,6 +62,10 @@ only_rules:
 
   # Prefer checking `isEmpty` over comparing `string` to `""`.
   - empty_string
+
+  # Prefer implicit initializer calls over explicit `.init(...)` when the
+  # type can be inferred.
+  - explicit_init
 
   # Prefer `first(where:)` over `filter { }.first`.
   - first_where
@@ -107,6 +114,8 @@ only_rules:
 
   # Lines should not have trailing whitespace.
   - trailing_whitespace
+
+  - untyped_error_in_catch
 
   - vertical_whitespace
 

@@ -305,8 +305,7 @@ public actor AgenticLoopOrchestrator {
         var finishReason: OpenAIChat.FinishReason?
 
         let stream = chatService.streamTurn(messages: messages,
-                                            tools: tools,
-                                            toolChoice: nil)
+                                            tools: tools)
         for try await event in stream {
             try Task.checkCancellation()
             switch event {

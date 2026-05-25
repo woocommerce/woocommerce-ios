@@ -229,7 +229,7 @@ private extension ApplicationLogViewController {
         for logFileInfo in logFiles {
             do {
                 try FileManager.default.removeItem(atPath: logFileInfo.filePath)
-            } catch let error {
+            } catch {
                 DDLogError("⚠️ Error deleting log files \(error)")
             }
         }

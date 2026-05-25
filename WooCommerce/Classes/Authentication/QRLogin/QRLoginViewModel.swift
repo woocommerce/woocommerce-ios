@@ -16,7 +16,7 @@ import WordPressAuthenticator
 /// fully signed in) or `handedOff` for wp.com (the magic link was opened in an
 /// in-app browser; sign-in completes via the magic-login redirect, not here).
 ///
-/// Retry semantics (spec §6.1):
+/// Retry semantics:
 ///   - error during scan   → retry runs scan again.
 ///   - error during poll   → retry resumes polling (same session_id + token_hash).
 ///   - error during exchange → retry runs exchange again with the retained grant.
@@ -35,7 +35,7 @@ final class QRLoginViewModel {
         case done
         /// wp.com magic link handed to an in-app browser — sign-in completes
         /// asynchronously via the magic-login redirect, so the QR-login surface
-        /// must not route to the store picker itself (spec §10.1).
+        /// must not route to the store picker itself.
         case handedOff
         case error(QRLoginUserFacingError)
     }
@@ -56,7 +56,7 @@ final class QRLoginViewModel {
     private let pollIntervalSeconds: TimeInterval
 
     /// Tracks the live polling task so cancel from number-match can interrupt
-    /// it without making a server call (spec §6.2).
+    /// it without making a server call.
     private var pollingTask: Task<Void, Never>?
 
     /// Last successful scan; held so a poll-retry resumes against the same
@@ -89,7 +89,7 @@ final class QRLoginViewModel {
         await runScan()
     }
 
-    /// Re-runs the failed phase per spec §6.1.
+    /// Re-runs the failed phase.
     func retry() async {
         guard case .error(let error) = state else { return }
         analytics.trackClick(.qrRetry)
@@ -112,7 +112,7 @@ final class QRLoginViewModel {
         }
     }
 
-    /// Cancel from number-match (spec §6.2). Stops client-side polling and
+    /// Cancel from number-match. Stops client-side polling and
     /// returns to idle — **no server call**. The server keeps the session in
     /// `scanned` until its 90-second window elapses; the matching browser
     /// polls itself into the "denied" terminal state.

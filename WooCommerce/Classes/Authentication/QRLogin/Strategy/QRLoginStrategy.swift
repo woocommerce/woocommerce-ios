@@ -1,6 +1,6 @@
 import Foundation
 
-/// Subtitle to display on the number-match screen. Per spec §4.3, the
+/// Subtitle to display on the number-match screen. The
 /// self-hosted flow shows the site host and the wp.com flow shows the user's
 /// wp.com email returned by `/scan`.
 enum QRLoginNumberMatchSubtitle: Equatable {
@@ -29,7 +29,7 @@ struct QRLoginScanResult: Equatable {
 ///   - `magicLinkHandedOff`: the wp.com flow has handed a magic link to an
 ///     in-app browser. Sign-in completes asynchronously via the existing
 ///     `woocommerce://magic-login` redirect handler, NOT here — so the QR-login
-///     surface must not route to the store picker itself (spec §10.1).
+///     surface must not route to the store picker itself.
 enum QRLoginExchangeOutcome: Equatable {
     case authenticated
     case magicLinkHandedOff

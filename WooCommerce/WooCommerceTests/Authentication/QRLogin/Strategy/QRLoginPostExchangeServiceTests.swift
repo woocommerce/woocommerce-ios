@@ -41,7 +41,7 @@ struct QRLoginPostExchangeServiceTests {
         #expect(appPasswordUseCase.deletePasswordCallCount == 0)
     }
 
-    // MARK: - Failure paths (spec §5.1.4)
+    // MARK: - Failure paths
 
     @Test func complete_when_fetchSiteInfo_fails_then_revokes_ap_and_returns_siteAuthFailure() async {
         // Given

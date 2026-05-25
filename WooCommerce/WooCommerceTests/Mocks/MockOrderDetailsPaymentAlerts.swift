@@ -8,7 +8,9 @@ final class MockOrderDetailsPaymentAlerts {
     var cancelPreparingReaderAlert: (() -> Void)?
 
     var cancelTapOrInsertCardAlert: (() -> Void)?
+    var cancelCardInsertedAlert: (() -> Void)?
 
+    var cardInsertedWasCalled = false
     var error: Error?
     var retryFromError: (() -> Void)?
     var dismissErrorCompletion: (() -> Void)?
@@ -30,6 +32,11 @@ extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
 
     func tapOrInsertCard(title: String, amount: String, inputMethods: Yosemite.CardReaderInput, onCancel: @escaping () -> Void) {
         cancelTapOrInsertCardAlert = onCancel
+    }
+
+    func cardInserted(title: String, amount: String, onCancel: @escaping () -> Void) {
+        cardInsertedWasCalled = true
+        cancelCardInsertedAlert = onCancel
     }
 
     func displayReaderMessage(message: String) {

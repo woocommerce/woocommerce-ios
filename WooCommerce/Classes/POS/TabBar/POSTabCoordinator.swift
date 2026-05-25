@@ -304,6 +304,7 @@ private extension POSTabCoordinator {
                     ),
                     orderService: orderService,
                     refundsService: refundsService,
+                    refundSubmissionProcessor: POSNoOpRefundSubmissionProcessor(),
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
                         self?.updateDefaultConfigurationForPointOfSale(isEnabled)
                     },

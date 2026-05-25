@@ -44,13 +44,13 @@ private enum POSLockScreenOverlayConstants {
 }
 
 #if DEBUG
-#Preview("Interactive unlock") {
-    POSLockScreenOverlay(session: MockPOSAccessSession(isLocked: true)) {
-        Text("Unlocked POS content")
-            .font(.posHeadingBold)
-            .foregroundStyle(Color.posOnSurface)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.posSurface)
+#Preview("Modifier over dashboard") {
+    NavigationStack {
+        PointOfSaleDashboardView()
+            .environment(POSPreviewHelpers.makePreviewAggregateModel())
+            .environmentObject(POSModalManager())
+            .posLockScreenOverlay()
     }
+    .environment(\.posAccessSession, MockPOSAccessSession(isLocked: true))
 }
 #endif

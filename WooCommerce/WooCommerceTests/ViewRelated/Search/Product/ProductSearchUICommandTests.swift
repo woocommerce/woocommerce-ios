@@ -105,7 +105,7 @@ final class ProductSearchUICommandTests: XCTestCase {
         // When
         // Syncing models for the first time for the first page.
         waitFor { promise in
-            command.synchronizeModels(siteID: self.sampleSiteID, keyword: "Melon", pageNumber: 1, pageSize: 10) { success in
+            command.synchronizeModels(siteID: self.sampleSiteID, keyword: "Melon", pageNumber: 1, pageSize: 10) { _ in
                 promise(())
             }
         }
@@ -113,7 +113,7 @@ final class ProductSearchUICommandTests: XCTestCase {
 
         // Syncing models for the same keyword for the second time for the first page.
         waitFor { promise in
-            command.synchronizeModels(siteID: self.sampleSiteID, keyword: "Melon", pageNumber: 1, pageSize: 10) { success in
+            command.synchronizeModels(siteID: self.sampleSiteID, keyword: "Melon", pageNumber: 1, pageSize: 10) { _ in
                 promise(())
             }
         }
@@ -121,7 +121,7 @@ final class ProductSearchUICommandTests: XCTestCase {
 
         // Syncing models for the same keyword for the third time, but for the second page.
         waitFor { promise in
-            command.synchronizeModels(siteID: self.sampleSiteID, keyword: "Melon", pageNumber: 2, pageSize: 10) { success in
+            command.synchronizeModels(siteID: self.sampleSiteID, keyword: "Melon", pageNumber: 2, pageSize: 10) { _ in
                 promise(())
             }
         }

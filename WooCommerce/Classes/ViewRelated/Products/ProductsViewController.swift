@@ -1030,7 +1030,7 @@ private extension ProductsViewController {
 
     func listenToSelectedProductToAutoScrollWhenProductChanges(product: Product) {
         selectedProductListener = .init(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
-        selectedProductListener?.onUpsert = { [weak self] product in
+        selectedProductListener?.onUpsert = { [weak self] _ in
             guard let self,
                   let selectedIndexPath = tableView.indexPathForSelectedRow,
                   !isIndexPathVisible(selectedIndexPath) else {
@@ -1475,7 +1475,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                                               productStatusFilter: filters.productStatus,
                                                               productTypeFilter: filters.promotableProductType?.productType,
                                                               productCategoryFilter: filters.productCategory,
-                                                              favoriteProduct: filters.favoriteProduct != nil) { (error) in
+                                                              favoriteProduct: filters.favoriteProduct != nil) { (_) in
         }
         ServiceLocator.stores.dispatch(action)
     }

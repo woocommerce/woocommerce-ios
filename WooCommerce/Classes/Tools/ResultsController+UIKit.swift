@@ -74,7 +74,7 @@ private extension ResultsController {
     /// Sets up all of the Object Events from the inner FRC over to the specified TableView.
     ///
     func startForwardingObjectEvents(to tableView: UITableView, with animations: ResultsTableAnimations) {
-        onDidChangeObject = { [weak tableView] (object, indexPath, type, newIndexPath) in
+        onDidChangeObject = { [weak tableView] (_, indexPath, type, newIndexPath) in
             guard let `tableView` = tableView else {
                 return
             }
@@ -120,7 +120,7 @@ private extension ResultsController {
     /// Sets up all of the Section Events from the inner FRC over to the specified TableView.
     ///
     func startForwardingSectionEvents(to tableView: UITableView, with animations: ResultsTableAnimations) {
-        onDidChangeSection = { [weak tableView] (sectionInfo, sectionIndex, type) in
+        onDidChangeSection = { [weak tableView] (_, sectionIndex, type) in
             guard let `tableView` = tableView else {
                 return
             }

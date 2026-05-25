@@ -102,14 +102,14 @@ final class NotificationStoreTests: XCTestCase {
         /// This call is expected to just request the Hashes, and not to perform a 4th network call (because everything
         /// will be up to date. Supposedly.)
         ///
-        let nestedSyncAction = NotificationAction.synchronizeNotifications() { (error) in
+        let nestedSyncAction = NotificationAction.synchronizeNotifications() { (_) in
             XCTAssertEqual(self.network.requestsForResponseData.count, 3)
             expectation.fulfill()
         }
 
         /// Initial Sync
         ///
-        let initialSyncAction = NotificationAction.synchronizeNotifications() { (error) in
+        let initialSyncAction = NotificationAction.synchronizeNotifications() { (_) in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), MockNetwork.notificationLoadAllJSONCount)
             notificationStore.onAction(nestedSyncAction)
         }

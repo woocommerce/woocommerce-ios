@@ -72,7 +72,7 @@ extension ProductDownloadFileViewController {
         menuAlert.view.tintColor = .text
 
         let deleteTitle = Localization.actionSheetDeleteTitle
-        let deleteAction = UIAlertAction(title: deleteTitle, style: .destructive) { [weak self] (action) in
+        let deleteAction = UIAlertAction(title: deleteTitle, style: .destructive) { [weak self] (_) in
             ServiceLocator.analytics.track(.productsDownloadableFile, withProperties: ["action": "deleted"])
             self?.onDeletion()
         }

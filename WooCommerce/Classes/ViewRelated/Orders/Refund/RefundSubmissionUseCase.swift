@@ -403,15 +403,20 @@ private extension RefundSubmissionUseCase {
 
             guard let self else { return }
 
-            if let refundData {
-                // Workaround for https://github.com/woocommerce/woocommerce/issues/33389. This can be removed when the related API issue is fixed
-                self.retrieveUpdatedRefundData(refund: refundData)
-            }
             if let error {
                 DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")
                 self.trackCreateRefundRequestFailed(error: error)
                 return onCompletion(.failure(error))
             }
+
+            guard let refundData else {
+                DDLogError("Error creating refund: \(refund)\nWith Error: missing created refund response")
+                self.trackCreateRefundRequestFailed(error: RefundSubmissionUseCaseSubmissionError.missingCreatedRefund)
+                return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.missingCreatedRefund))
+            }
+
+            // Workaround for https://github.com/woocommerce/woocommerce/issues/33389. This can be removed when the related API issue is fixed
+            self.retrieveUpdatedRefundData(refund: refundData)
             onCompletion(.success(()))
             self.trackCreateRefundRequestSuccess()
         }
@@ -517,6 +522,7 @@ enum RefundSubmissionUseCaseSubmissionError: Error, Equatable {
     case invalidRefundAmount
     case unknownPaymentGatewayAccount
     case canceledByUser
+    case missingCreatedRefund
 }
 
 private enum RefundSubmissionUseCaseDefinitions {

@@ -9,7 +9,6 @@ struct POSRefundSuccessView: View {
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var isViewLoaded: Bool = false
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -25,11 +24,6 @@ struct POSRefundSuccessView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
-        .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                isViewLoaded = true
-            }
-        }
     }
 }
 
@@ -39,29 +33,21 @@ private extension POSRefundSuccessView {
     var contentView: some View {
         VStack(spacing: POSSpacing.xLarge) {
             POSSuccessIcon()
-                .scaleEffect(isViewLoaded ? 1 : 0)
-                .opacity(isViewLoaded ? 1 : 0)
 
             VStack(spacing: POSSpacing.small) {
                 Text(Localization.title)
                     .font(.posHeadingBold)
                     .foregroundColor(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
-                    .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
-                    .opacity(isViewLoaded ? 1 : 0)
 
                 Text(String(format: Localization.messageFormat, formattedRefundTotal, paymentMethodDescription))
                     .font(.posBodyLargeRegular())
                     .foregroundColor(Color.posOnSurface)
-                    .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
-                    .opacity(isViewLoaded ? 1 : 0)
 
                 if let customerEmail, customerEmail.isNotEmpty {
                     Text(String(format: Localization.receiptSentFormat, customerEmail))
                         .font(.posBodyLargeRegular())
                         .foregroundColor(Color.posOnSurface)
-                        .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
-                        .opacity(isViewLoaded ? 1 : 0)
                 }
             }
             .multilineTextAlignment(.center)
@@ -81,17 +67,6 @@ private extension POSRefundSuccessView {
         }
         .padding(.horizontal, POSPadding.large)
         .frame(maxWidth: POSRefundModalLayout.fullScreenCompletionActionMaxWidth)
-        .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
-        .opacity(isViewLoaded ? 1 : 0)
-    }
-}
-
-
-// MARK: - Constants
-
-private extension POSRefundSuccessView {
-    enum Constants {
-        static let animationOffset: CGFloat = 100
     }
 }
 

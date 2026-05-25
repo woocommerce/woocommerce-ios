@@ -3,8 +3,8 @@ import Testing
 import NetworkingCore
 @testable import Networking
 
-/// Tests every row of spec §5.1.1, §5.1.2, §5.1.3 against the self-hosted
-/// QR-login Remote, plus the request-shape assertions that the spec calls out
+/// Tests the self-hosted QR-login Remote against every documented response,
+/// plus the request-shape assertions that the spec calls out
 /// explicitly (Cache-Control on poll, no `device.*` on exchange).
 struct SelfHostedQRLoginRemoteTests {
 
@@ -18,7 +18,7 @@ struct SelfHostedQRLoginRemoteTests {
                                            brand: "Apple",
                                            appVersion: "23.6")
 
-    // MARK: - /scan (§5.1.1)
+    // MARK: - /scan
 
     @Test func scan_when_200_then_decodes_response() async throws {
         // Given
@@ -118,7 +118,7 @@ struct SelfHostedQRLoginRemoteTests {
         }
     }
 
-    // MARK: - /session-status (§5.1.2)
+    // MARK: - /session-status
 
     @Test func pollSessionStatus_sends_session_id_and_token_hash_and_no_cache_header() async throws {
         // Given
@@ -193,7 +193,7 @@ struct SelfHostedQRLoginRemoteTests {
         }
     }
 
-    // MARK: - /exchange (§5.1.3)
+    // MARK: - /exchange
 
     @Test func exchange_when_200_then_decodes_response() async throws {
         // Given
@@ -216,7 +216,7 @@ struct SelfHostedQRLoginRemoteTests {
     }
 
     @Test func exchange_does_not_send_device_metadata() async throws {
-        // Given — spec §5.1.3 explicitly: "The exchange request does not carry
+        // Given — the spec is explicit: "The exchange request does not carry
         // `device.*` metadata; that lives only on `/scan`."
         let url = makeURL(path: "/qr-login-exchange")
         let session = MockURLSession()

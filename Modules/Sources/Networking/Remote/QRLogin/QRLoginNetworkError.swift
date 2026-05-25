@@ -1,7 +1,7 @@
 import Foundation
 
 /// Errors emitted by the QR-login `Remote`s. Captures just enough HTTP detail
-/// to drive the user-facing error mapping in spec §5.1 / §5.2 / §8.
+/// to drive the user-facing error mapping.
 ///
 /// The user-facing variant lives one layer up (`QRLoginErrorMapper`); this
 /// type is intentionally protocol-agnostic so the same value works for both

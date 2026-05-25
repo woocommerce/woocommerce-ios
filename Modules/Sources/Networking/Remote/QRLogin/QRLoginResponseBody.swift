@@ -10,7 +10,7 @@ enum QRLoginResponseBody {
 
     /// Decodes `data` as `T`, translating *any* decoding failure — malformed
     /// JSON, missing keys, blank required fields — into
-    /// `QRLoginNetworkError.malformed`. Spec §5.1.1 / §5.2.1: "all fields are
+    /// `QRLoginNetworkError.malformed`. The spec is explicit: "all fields are
     /// required; if any is missing or blank, the response is treated as
     /// malformed."
     static func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {

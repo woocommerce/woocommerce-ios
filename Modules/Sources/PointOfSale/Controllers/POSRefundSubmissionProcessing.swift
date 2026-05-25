@@ -97,8 +97,8 @@ private extension POSNoOpRefundSubmissionProcessor {
     enum Localization {
         static let viaPaymentMethodFormat = NSLocalizedString(
             "pointOfSale.refunds.paymentMethodDescription.viaPaymentMethod",
-            value: "via %@",
-            comment: "Payment method description for POS refunds. %@ is the payment method title."
+            value: "via %1$@",
+            comment: "Payment method description for POS refunds. %1$@ is the payment method title."
         )
     }
 }

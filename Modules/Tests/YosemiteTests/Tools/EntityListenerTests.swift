@@ -71,7 +71,7 @@ class EntityListenerTests: XCTestCase {
         let listener = EntityListener(viewContext: viewContext, readOnlyEntity: storageAccount.toReadOnly())
         let expectation = self.expectation(description: "onDelete")
 
-        listener.onUpsert = { updated in
+        listener.onUpsert = { _ in
             XCTFail()
         }
 
@@ -100,7 +100,7 @@ class EntityListenerTests: XCTestCase {
         let listener = EntityListener(viewContext: viewContext, readOnlyEntity: storageAccount.toReadOnly())
         let expectation = self.expectation(description: "onUpsert")
 
-        listener.onUpsert = { updated in
+        listener.onUpsert = { _ in
             expectation.fulfill()
         }
 
@@ -130,7 +130,7 @@ class EntityListenerTests: XCTestCase {
         let listener = EntityListener(viewContext: viewContext, readOnlyEntity: storageAccount.toReadOnly())
         let expectation = self.expectation(description: "onUpsert")
 
-        listener.onUpsert = { updated in
+        listener.onUpsert = { _ in
             expectation.fulfill()
         }
 

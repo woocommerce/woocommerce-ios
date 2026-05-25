@@ -553,7 +553,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
             // Assert
             XCTAssertEqual(finalRegularPrice, regularPrice)
             XCTAssertEqual(finalSalePrice, salePrice)
-        }, onError: { error in
+        }, onError: { _ in
             XCTFail("Completion block should not be called")
         })
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)

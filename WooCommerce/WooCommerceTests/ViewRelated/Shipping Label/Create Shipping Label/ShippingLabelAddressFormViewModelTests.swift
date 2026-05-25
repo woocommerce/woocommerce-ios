@@ -436,7 +436,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: [])
-        viewModel.validateAddress(onlyLocally: false) { (result) in
+        viewModel.validateAddress(onlyLocally: false) { (_) in
         }
 
         // Then
@@ -475,7 +475,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: [])
-        viewModel.validateAddress(onlyLocally: false) { (result) in
+        viewModel.validateAddress(onlyLocally: false) { (_) in
         }
 
         // Then
@@ -514,7 +514,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: [])
-        viewModel.validateAddress(onlyLocally: false) { (result) in
+        viewModel.validateAddress(onlyLocally: false) { (_) in
         }
 
         // Then
@@ -557,7 +557,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: [])
-        viewModel.validateAddress(onlyLocally: false) { (result) in
+        viewModel.validateAddress(onlyLocally: false) { (_) in
         }
 
         // Then

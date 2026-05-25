@@ -325,7 +325,12 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     ///
     /// - Parameters:
     ///     - immediately: True if the newly loaded controller should immedately attempt
-    ///                        to authenticate the user with the available credentails.  Default is `false`.
+/// Displays the wpcom sign in form, optionally telling it to immediately make
+/// the call to authenticate with the available credentials.
+///
+/// - Parameters:
+///     - immediately: True if the newly loaded controller should immediately attempt
+    ///                        to authenticate the user with the available credentials. Default is `false`.
     ///
     func loginWithUsernamePassword(immediately: Bool = false) {
         if immediately {
@@ -397,7 +402,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
                                             strongSelf.displayError(message: msg)
                                         } else if errorCode == "email_login_not_allowed" {
                                                 // If we get this error, we know we have a WordPress.com user but their
-                                                // email address is flagged as suspicious.  They need to login via their
+                                                // email address is flagged as suspicious. They need to login via their
                                                 // username instead.
                                                 strongSelf.showSelfHostedUsernamePasswordAndError(error)
                                         } else {

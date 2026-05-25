@@ -384,7 +384,7 @@ private extension ProductFormRemoteActionUseCase {
             let createAction = ProductVariationAction.createProductVariation(
                 siteID: parent.siteID,
                 productID: parent.productID,
-                newVariation: newVariation) { result in
+                newVariation: newVariation) { _ in
                 continuation.resume(returning: ())
             }
             DispatchQueue.main.async { [weak self] in

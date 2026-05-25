@@ -110,7 +110,7 @@ final class AggregateDataHelper {
             return item.itemID
         }
 
-        let unsortedResult: [AggregateOrderItem] = grouped.compactMap { (key, items) in
+        let unsortedResult: [AggregateOrderItem] = grouped.compactMap { (_, items) in
             // Here we iterate over each group's items
 
             // All items should be equal except for quantity and price, so we pick the first

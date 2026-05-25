@@ -680,10 +680,10 @@ private extension OrderDetailsViewController {
                                                 message: Localization.Alert.orderTrashConfirmationMessage,
                                                 preferredStyle: .alert)
         let cancel = UIAlertAction(title: Localization.Alert.orderTrashConfirmationCancelButton,
-                                   style: .cancel) { (action) in
+                                   style: .cancel) { (_) in
         }
         let confirm = UIAlertAction(title: Localization.Alert.orderTrashConfirmationConfirmButton,
-                                    style: .default) { [weak self] (action) in
+                                    style: .default) { [weak self] (_) in
             self?.trashOrderAction()
         }
         alertController.addAction(cancel)
@@ -782,7 +782,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
         }
 
         let copyActionTitle = NSLocalizedString("Copy", comment: "Copy address text button title — should be one word and as short as possible.")
-        let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
+        let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (_, _, success) in
             self?.viewModel.dataSource.copyText(at: indexPath)
             success(true)
         }

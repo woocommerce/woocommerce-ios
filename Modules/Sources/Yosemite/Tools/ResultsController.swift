@@ -333,7 +333,7 @@ public extension GenericResultsController {
 
         /// Returns the array of transformed objects in the section.
         ///
-        private(set) public lazy var objects: [Output] = {
+        public private(set) lazy var objects: [Output] = {
             guard let objects = mutableSectionInfo.objects else {
                 return []
             }

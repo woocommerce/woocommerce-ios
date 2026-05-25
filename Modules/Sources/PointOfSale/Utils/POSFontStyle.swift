@@ -127,7 +127,7 @@ extension POSFontStyle {
     }
 
     /// Returns the effective font size (post-scaling, post-floor) for a given layout scale and
-    /// Dynamic Type content size category.  Exposed as `internal` so PointOfSaleTests can assert
+    /// Dynamic Type content size category. Exposed as `internal` so PointOfSaleTests can assert
     /// on the numeric result without having to inspect a `Font` value.
     func effectiveFontSize(for scale: POSLayoutScale, contentSizeCategory: UIContentSizeCategory) -> CGFloat {
         let base = baseSize(for: scale)

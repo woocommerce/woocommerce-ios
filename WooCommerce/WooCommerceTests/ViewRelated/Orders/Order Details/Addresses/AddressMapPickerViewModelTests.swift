@@ -115,9 +115,9 @@ struct AddressMapPickerViewModelTests {
 
 // MARK: - Mock Classes
 
-final private class MockMKLocalSearchCompletion: MKLocalSearchCompletion {}
+private final class MockMKLocalSearchCompletion: MKLocalSearchCompletion {}
 
-final private class MockAddressMapLocalSearchProvider: AddressMapLocalSearchProviding {
+private final class MockAddressMapLocalSearchProvider: AddressMapLocalSearchProviding {
     private let mockPlacemark: MKPlacemark
 
     init(mockPlacemark: MKPlacemark) {
@@ -131,7 +131,7 @@ final private class MockAddressMapLocalSearchProvider: AddressMapLocalSearchProv
     }
 }
 
-final private class MockMKLocalSearchResponse: MKLocalSearch.Response {
+private final class MockMKLocalSearchResponse: MKLocalSearch.Response {
     private let _mapItems: [MKMapItem]
 
     init(mapItems: [MKMapItem]) {

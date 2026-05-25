@@ -319,7 +319,7 @@ final class ProductCategoryStoreTests: XCTestCase {
                 return
             }
 
-            let action = ProductCategoryAction.synchronizeProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { result in
+            let action = ProductCategoryAction.synchronizeProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { _ in
                 promise(self.viewStorage.loadProductCategory(siteID: self.sampleSiteID, categoryID: 104))
             }
 

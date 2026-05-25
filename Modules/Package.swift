@@ -385,8 +385,8 @@ let package = Package(
         ),
         .binaryTarget(
             name: "EventHorizonSDK",
-            url: "https://a8c-libs.s3.amazonaws.com/ios/EventHorizon/woocommerce-2026-05-18-07-24-01/EventHorizon-woocommerce-2026-05-18-07-24-01.xcframework.zip",
-            checksum: "6102a42bb973ff8be2b8b2aa7aa4089d7fd1ed43d3df2aed87955a0e62abce69"
+            url: "https://a8c-libs.s3.amazonaws.com/ios/EventHorizon/woocommerce-2026-05-22-09-23-44/EventHorizon-woocommerce-2026-05-22-09-23-44.xcframework.zip",
+            checksum: "f200c7ad8d807b48e333cefbde40500d83c798a6b592af6fa3f166c528bad083"
         ),
     ]
 )

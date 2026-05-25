@@ -250,14 +250,14 @@ struct BlazePaymentMethodsView_Previews: PreviewProvider {
 
         let viewModel = BlazePaymentMethodsViewModel(siteID: 123,
                                                      selectedPaymentMethodID: nil,
-                                                     completion: { newPaymentID in
+                                                     completion: { _ in
         })
 
         BlazePaymentMethodsView(viewModel: viewModel)
 
         let emptyPaymentsViewModel = BlazePaymentMethodsViewModel(siteID: 123,
                                                      selectedPaymentMethodID: nil,
-                                                     completion: { newPaymentID in
+                                                     completion: { _ in
         })
 
         BlazePaymentMethodsView(viewModel: emptyPaymentsViewModel)

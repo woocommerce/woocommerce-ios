@@ -54,7 +54,7 @@ struct POSOrdersView: View {
                     orderListModel.ordersController.selectOrder(firstOrder)
                 }
             }
-            .onChange(of: orderListModel.ordersController.ordersViewState.orders) { oldOrders, newOrders in
+            .onChange(of: orderListModel.ordersController.ordersViewState.orders) { _, newOrders in
                 guard horizontalSizeClass == .regular else { return }
 
                 guard let firstOrder = newOrders.first else {

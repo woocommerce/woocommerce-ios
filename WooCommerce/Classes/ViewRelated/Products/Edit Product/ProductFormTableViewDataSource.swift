@@ -175,7 +175,7 @@ private extension ProductFormTableViewDataSource {
         else {
             cell.configure(with: productImageStatuses, config: .extendedAddImages(isVariation: isVariation), productUIImageLoader: productUIImageLoader)
         }
-        cell.onImageSelected = { [weak self] (productImage, indexPath) in
+        cell.onImageSelected = { [weak self] (_, _) in
             self?.onAddImage?()
         }
         cell.onAddImage = { [weak self] in

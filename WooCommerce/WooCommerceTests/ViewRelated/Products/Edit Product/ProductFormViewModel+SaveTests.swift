@@ -79,7 +79,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
 
         // When
         waitForExpectation { expectation in
-            viewModel.saveProductRemotely(status: .pending) { result in
+            viewModel.saveProductRemotely(status: .pending) { _ in
                 expectation.fulfill()
             }
         }
@@ -100,7 +100,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
 
         // When
         waitForExpectation { expectation in
-            viewModel.saveProductRemotely(status: .pending) { result in
+            viewModel.saveProductRemotely(status: .pending) { _ in
                 expectation.fulfill()
             }
         }
@@ -227,7 +227,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
 
         // When
         waitForExpectation { expectation in
-            viewModel.saveProductRemotely(status: .published) { result in
+            viewModel.saveProductRemotely(status: .published) { _ in
                 expectation.fulfill()
             }
         }

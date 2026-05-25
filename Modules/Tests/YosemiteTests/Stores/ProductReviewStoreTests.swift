@@ -342,7 +342,7 @@ final class ProductReviewStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve single product review error response")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews/173", filename: "generic_error")
-        let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (product, error) in
+        let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (_, error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }

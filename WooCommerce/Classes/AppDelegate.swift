@@ -455,7 +455,7 @@ extension AppDelegate {
                 return handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
             case .none:
                 // A woocommerce://qr-login deep link can arrive while signed in —
-                // offer to sign out and start the QR sign-in (spec §4.4).
+                // offer to sign out and start the QR sign-in.
                 let handled = ServiceLocator.authenticationManager.handleSignedInQRLoginDeepLink(url, rootViewController: rootViewController)
                 if handled == false {
                     DDLogWarn("⚠️ Authentication URL received while signed in was not handled: \(url.scheme ?? "")://\(url.host ?? "")")

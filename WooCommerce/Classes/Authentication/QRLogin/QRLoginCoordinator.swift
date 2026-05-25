@@ -13,7 +13,7 @@ import WordPressAuthenticator
 ///     payload straight into the live flow. Used when a `woocommerce://qr-login`
 ///     URL arrives (Layer 6).
 ///
-/// Cancel / scan-again behaviour differs by mode (spec §4.2): camera mode
+/// Cancel / scan-again behaviour differs by mode: camera mode
 /// returns to the scanner; deep-link mode dismisses the QR-login UI entirely
 /// so the merchant lands back where the deep link was opened from.
 @MainActor
@@ -121,7 +121,7 @@ private extension QRLoginCoordinator {
     /// Checks camera permission — requesting it when undetermined — and either
     /// presents the scanner or the appropriate denial alert. Shared by the
     /// prologue "Scan QR code" CTA and the error "Scan a new code" CTA so both
-    /// honour the permission gate (spec §4.1.1) rather than pushing a scanner
+    /// honour the permission gate rather than pushing a scanner
     /// that has no camera access.
     func presentScannerAfterCameraPermissionCheck() {
         Task { @MainActor in
@@ -201,13 +201,13 @@ private extension QRLoginCoordinator {
             showHostView(with: strategy)
 
         case let .magicLink(url):
-            // §10.1: hand the URL to the in-app auth session. WP.com redirects
+            // hand the URL to the in-app auth session. WP.com redirects
             // to woocommerce://magic-login, captured by the session. Finishing
             // is handled per outcome inside `openMagicLink`.
             openMagicLink(url)
 
         case let .siteURLOnly(url):
-            // §10.2: pre-fill the legacy site-address login screen with the URL
+            // pre-fill the legacy site-address login screen with the URL
             // and auto-submit on entry so the merchant skips manual typing.
             let loginFields = LoginFields()
             loginFields.siteAddress = url.absoluteString
@@ -217,7 +217,7 @@ private extension QRLoginCoordinator {
             finishIfDeepLink()
 
         case let .appLoginWPCom(siteURL, email):
-            // §10.3 / §3.3: pre-fill the WP.com email + password screen.
+            // pre-fill the WP.com email + password screen.
             let loginFields = LoginFields()
             loginFields.siteAddress = siteURL
             loginFields.restrictToWPCom = true
@@ -226,7 +226,7 @@ private extension QRLoginCoordinator {
             finishIfDeepLink()
 
         case let .appLoginUsername(siteURL, username):
-            // §10.3 / §3.3: pre-fill the wp-org site-credentials screen.
+            // pre-fill the wp-org site-credentials screen.
             let loginFields = LoginFields()
             loginFields.siteAddress = siteURL
             loginFields.restrictToWPCom = false
@@ -235,7 +235,7 @@ private extension QRLoginCoordinator {
             finishIfDeepLink()
 
         case .installQR:
-            // §10.4: the "install QR" is useless here — app is already installed.
+            // the "install QR" is useless here — app is already installed.
             let error = QRLoginUserFacingError(kind: .installQR, phase: .prelude, primaryAction: .scanAgain)
             showErrorOnly(error)
 
@@ -305,19 +305,17 @@ private extension QRLoginCoordinator {
 
     /// Merchant cancelled from the number-match screen. In camera mode the
     /// merchant gets the scanner back; in deep-link mode there's no scanner to
-    /// fall back to, so popping the host view exits the QR-login surface
-    /// (spec §4.2 / §6.2).
+    /// fall back to, so popping the host view exits the QR-login surface.
     func handleHostCancelled() {
         navigationController.popViewController(animated: true)
         finishIfDeepLink()
     }
 
-    /// Primary CTA on a non-retryable error ("Scan a new code", spec §6.1). In
+    /// Primary CTA on a non-retryable error ("Scan a new code"). In
     /// camera mode this returns the merchant to a *fresh* scanner — the
     /// previous scanner already consumed its payload and can't deliver again,
     /// so it is dropped from the stack rather than reused. In deep-link mode
-    /// there's no scanner to return to, so the QR-login surface is dismissed
-    /// (spec §4.2).
+    /// there's no scanner to return to, so the QR-login surface is dismissed.
     func handleScanAgain() {
         analytics.trackClick(.qrStartOver)
         switch mode {
@@ -428,7 +426,7 @@ private extension QRLoginCoordinator {
     }
 }
 
-// MARK: - Camera permission alerts (spec §4.1.1)
+// MARK: - Camera permission alerts
 
 private extension QRLoginCoordinator {
 

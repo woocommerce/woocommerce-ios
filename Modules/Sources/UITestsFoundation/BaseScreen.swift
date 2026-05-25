@@ -19,7 +19,7 @@ open class BaseScreen {
 
     @discardableResult
     func waitForPage() throws -> BaseScreen {
-        XCTContext.runActivity(named: "Confirm page \(self) is loaded") { (activity) in
+        XCTContext.runActivity(named: "Confirm page \(self) is loaded") { (_) in
             let result = waitFor(element: expectedElement, predicate: "isEnabled == true", timeout: 20)
             XCTAssert(result, "Page \(self) is not loaded.")
         }

@@ -611,10 +611,10 @@ extension ShippingLabelPackagesFormViewModel {
                                                                   title: "Small Flat Rate Box",
                                                                   isLetter: false,
                                                                   dimensions: "21.91 x 13.65 x 4.13"),
-                                  ShippingLabelPredefinedPackage(id: "medium_flat_box_top",
-                                                                 title: "Medium Flat Rate Box 1, Top Loading",
-                                                                 isLetter: false,
-                                                                 dimensions: "28.57 x 22.22 x 15.24")]
+                                   ShippingLabelPredefinedPackage(id: "medium_flat_box_top",
+                                                                  title: "Medium Flat Rate Box 1, Top Loading",
+                                                                  isLetter: false,
+                                                                  dimensions: "28.57 x 22.22 x 15.24")]
         let predefinedOption1 = ShippingLabelPredefinedOption(title: "USPS Priority Mail Flat Rate Boxes",
                                                               providerID: "USPS",
                                                               predefinedPackages: predefinedPackages1)

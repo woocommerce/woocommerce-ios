@@ -205,7 +205,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         let error = RequestAuthenticatorError.applicationPasswordNotAvailable
         waitFor { promise in
-            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+            self.sut.retry(request, for: session, dueTo: error) { _ in
                 promise(())
             }
         }
@@ -223,7 +223,7 @@ final class RequestProcessorTests: XCTestCase {
         mockRequestAuthenticator.mockedShouldRetryValue = false
         waitFor { promise in
             let error = RequestAuthenticatorError.applicationPasswordNotAvailable
-            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+            self.sut.retry(request, for: session, dueTo: error) { _ in
                 promise(())
             }
         }
@@ -242,7 +242,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         let error = RequestAuthenticatorError.applicationPasswordNotAvailable
         waitFor { promise in
-            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+            self.sut.retry(request, for: session, dueTo: error) { _ in
                 promise(())
             }
         }
@@ -262,7 +262,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         let error = RequestAuthenticatorError.applicationPasswordNotAvailable
         waitFor { promise in
-            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+            self.sut.retry(request, for: session, dueTo: error) { _ in
                 promise(())
             }
         }
@@ -283,7 +283,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         let error = RequestAuthenticatorError.applicationPasswordNotAvailable
         waitFor { promise in
-            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+            self.sut.retry(request, for: session, dueTo: error) { _ in
                 promise(())
             }
         }

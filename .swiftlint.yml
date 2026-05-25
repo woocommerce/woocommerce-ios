@@ -19,11 +19,17 @@ only_rules:
   # Prefer `Array(xs)` over `xs.map { $0 }`.
   - array_init
 
+  # All elements in a collection literal should be vertically aligned.
+  - collection_alignment
+
   # Colons should be next to the identifier when specifying a type.
   - colon
 
   # There should be no space before and one after any comma.
   - comma
+
+  # There should be a space after the comma in inheritance lists.
+  - comma_inheritance
 
   # Prefer `contains` over `filter(where:).count`.
   - contains_over_filter_count
@@ -79,14 +85,23 @@ only_rules:
   # MARK comment should be in valid format.
   - mark
 
+  # Modifiers should follow a canonical order.
+  - modifier_order
+
   # Opening braces should be preceded by a single space and on the same line as
   # the declaration.
   - opening_brace
 
   - overridden_super_call
 
+  # No whitespace should follow a period.
+  - period_spacing
+
   # Prefer `0` over explicit type initializers like `CGFloat(0)`.
   - prefer_zero_over_explicit_init
+
+  # Prefer `reduce(into:_:)` over `reduce(_:_:)` for non-trivial accumulator types.
+  - reduce_into
 
   # Type annotations are redundant when the type can be inferred.
   - redundant_type_annotation
@@ -108,6 +123,9 @@ only_rules:
 
   # Lines should not have trailing whitespace.
   - trailing_whitespace
+
+  # Unused parameters in a closure should be replaced with `_`.
+  - unused_closure_parameter
 
   - untyped_error_in_catch
 

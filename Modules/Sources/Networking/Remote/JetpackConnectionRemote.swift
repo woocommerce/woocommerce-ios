@@ -70,7 +70,7 @@ public final class JetpackConnectionRemote: Remote {
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
         do {
             let request = try URLRequest(url: url, method: .get)
-            let task = session.dataTask(with: request) { [weak self] data, response, error in
+            let task = session.dataTask(with: request) { [weak self] _, _, error in
                 if let result = self?.accountConnectionURL {
                     DispatchQueue.main.async {
                         completion(.success(result))

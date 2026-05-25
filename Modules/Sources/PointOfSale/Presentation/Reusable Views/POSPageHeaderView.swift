@@ -126,12 +126,25 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                                 Button(action: {
                                     items[index].action?()
                                 }) {
-                                    Text(items[index].title)
-                                        .font(.posHeadingBold)
-                                        .lineLimit(1)
-                                        .fixedSize(horizontal: true, vertical: false)
-                                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                        .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                                    Group {
+                                        // Phone: items live inside a horizontal ScrollView, so
+                                        // `.fixedSize` lets long titles take their natural width
+                                        // and swipe rather than squeeze. iPad: items render
+                                        // inline (no ScrollView), so we keep the pre-#17092
+                                        // `.minimumScaleFactor(0.5)` shrinking behaviour to
+                                        // avoid overflowing in narrow split-view.
+                                        if layoutScale == .phone {
+                                            Text(items[index].title)
+                                                .fixedSize(horizontal: true, vertical: false)
+                                        } else {
+                                            Text(items[index].title)
+                                                .minimumScaleFactor(0.5)
+                                        }
+                                    }
+                                    .font(.posHeadingBold)
+                                    .lineLimit(1)
+                                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                    .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
                                 }
                                 .disabled(items[index].isSelected)
                                 .accessibilityElement()

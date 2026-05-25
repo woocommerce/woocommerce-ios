@@ -52,7 +52,11 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
         return connectReaderResult
     }
 
+    var disconnectReaderCallCount = 0
+    var onDisconnectReaderCalled: (() -> Void)?
     func disconnectReader() async {
+        disconnectReaderCallCount += 1
+        onDisconnectReaderCalled?()
         connectedReader = nil
     }
 

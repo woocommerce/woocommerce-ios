@@ -806,7 +806,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let _: Void = waitFor { promise in
-            let action = AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true) { result in
+            let action = AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true) { _ in
                 promise(())
             }
             accountStore.onAction(action)
@@ -830,7 +830,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let _: Void = waitFor { promise in
-            let action = AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true) { result in
+            let action = AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true) { _ in
                 promise(())
             }
             accountStore.onAction(action)

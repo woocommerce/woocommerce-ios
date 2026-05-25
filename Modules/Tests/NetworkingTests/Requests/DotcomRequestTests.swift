@@ -213,9 +213,9 @@ private extension DotcomRequestTests {
     /// Encodes the specified collection of Parameters for the URLRequest's httpBody
     ///
     func encodeAsBodyString(parameters: [String: String]) -> String {
-        return parameters.reduce("") { (output, parameter) in
+        return parameters.reduce(into: "") { output, parameter in
             let prefix = output.isEmpty ? "" : "&"
-            return output + prefix + parameter.key + "=" + parameter.value
+            output += prefix + parameter.key + "=" + parameter.value
         }
     }
 }

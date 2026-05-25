@@ -1,5 +1,7 @@
 import SwiftUI
 import UIKit
+import EventHorizonSDK
+import protocol WooFoundation.Analytics
 
 /// Generic base for per-section push-notification preference detail screens.
 /// Owns navigation chrome — Save bar button, custom back button, spinner
@@ -19,6 +21,8 @@ class NotificationDetailHostingController<Content: View>: UIHostingController<Co
 
     let viewModel: PushNotificationPreferencesViewModel
     private let onDiscard: () -> Void
+    private let notificationType: NotificationTypeValue
+    private let analytics: Analytics
 
     private lazy var saveBarButtonItem: UIBarButtonItem = {
         let item = UIBarButtonItem(title: NotificationDetailHostingControllerStrings.save,
@@ -47,13 +51,17 @@ class NotificationDetailHostingController<Content: View>: UIHostingController<Co
 
     init(viewModel: PushNotificationPreferencesViewModel,
          rootView: Content,
-         onDiscard: @escaping () -> Void) {
+         notificationType: NotificationTypeValue,
+         onDiscard: @escaping () -> Void,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.viewModel = viewModel
         self.onDiscard = onDiscard
+        self.notificationType = notificationType
+        self.analytics = analytics
         super.init(rootView: rootView)
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -93,11 +101,15 @@ class NotificationDetailHostingController<Content: View>: UIHostingController<Co
 
     @objc private func handleSaveTapped() {
         guard !viewModel.isSaving else { return }
+        analytics.track(.notificationsSettingsUpdateStarted(notificationType: notificationType))
         Task { @MainActor [weak self] in
             guard let self else { return }
             let success = await viewModel.save()
             if success {
+                analytics.track(.notificationsSettingsUpdateSuccess(notificationType: notificationType))
                 navigationController?.popViewController(animated: true)
+            } else {
+                analytics.track(.notificationsSettingsUpdateFailed(notificationType: notificationType))
             }
         }
     }
@@ -130,8 +142,16 @@ class NotificationDetailHostingController<Content: View>: UIHostingController<Co
     private func presentBackNavigationActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self,
                                                            onDiscard: { [weak self] in
-            self?.onDiscard()
-            self?.navigationController?.popViewController(animated: true)
+            guard let self else { return }
+            analytics.track(.notificationsDetailDismissUnsavedChangesResolved(notificationType: notificationType,
+                                                                               outcome: .discard))
+            onDiscard()
+            navigationController?.popViewController(animated: true)
+        },
+                                                           onCancel: { [weak self] in
+            guard let self else { return }
+            analytics.track(.notificationsDetailDismissUnsavedChangesResolved(notificationType: notificationType,
+                                                                               outcome: .cancel))
         })
     }
 }

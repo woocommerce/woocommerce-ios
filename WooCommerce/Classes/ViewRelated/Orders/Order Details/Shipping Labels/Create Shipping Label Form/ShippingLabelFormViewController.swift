@@ -390,24 +390,24 @@ private extension ShippingLabelFormViewController {
         } onButtonTouchUp: { [weak self] in
             guard let self else { return }
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_initiated",
-                 "amount": self.viewModel.totalAmount,
-                "fulfill_order": self.shouldMarkOrderComplete])
+                                                                                        "amount": self.viewModel.totalAmount,
+                                                                                        "fulfill_order": self.shouldMarkOrderComplete])
             self.displayPurchaseProgressView()
             self.viewModel.purchaseLabel { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let totalDuration):
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_succeeded",
-                                         "amount": self.viewModel.totalAmount,
-                                         "fulfill_order": self.shouldMarkOrderComplete,
-                                         "total_duration": Double(totalDuration)])
+                                                                                                "amount": self.viewModel.totalAmount,
+                                                                                                "fulfill_order": self.shouldMarkOrderComplete,
+                                                                                                "total_duration": Double(totalDuration)])
                     self.onLabelPurchase?(self.shouldMarkOrderComplete)
                     self.dismiss(animated: true)
                     self.displayPrintShippingLabelVC()
                 case .failure:
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_failed",
-                                         "amount": self.viewModel.totalAmount,
-                                         "fulfill_order": self.shouldMarkOrderComplete])
+                                                                                                "amount": self.viewModel.totalAmount,
+                                                                                                "fulfill_order": self.shouldMarkOrderComplete])
                     self.dismiss(animated: true)
                     self.displayLabelPurchaseErrorNotice()
                 }

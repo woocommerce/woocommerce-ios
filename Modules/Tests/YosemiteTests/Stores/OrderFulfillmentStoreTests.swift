@@ -147,7 +147,7 @@ final class OrderFulfillmentStoreTests: XCTestCase {
 
         // When
         await withCheckedContinuation { continuation in
-            let action = OrderFulfillmentAction.synchronizeOrderFulfillments(siteID: sampleSiteID, orderID: sampleOrderID) { error in
+            let action = OrderFulfillmentAction.synchronizeOrderFulfillments(siteID: sampleSiteID, orderID: sampleOrderID) { _ in
                 continuation.resume(returning: ())
             }
             store.onAction(action)

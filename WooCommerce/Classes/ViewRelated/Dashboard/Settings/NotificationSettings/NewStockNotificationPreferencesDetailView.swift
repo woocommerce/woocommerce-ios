@@ -28,6 +28,9 @@ struct NewStockNotificationPreferencesDetailView: View {
         // one routes through the discard handler.
         .navigationBarBackButtonHidden(true)
         .notice($viewModel.errorNotice)
+        .onAppear {
+            viewModel.detailDidAppear(notificationType: .stockAlert)
+        }
     }
 
     private var masterToggleSection: some View {

@@ -88,7 +88,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -168,7 +168,11 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
             },
             onTicketCreated: onTicketCreated
         )
-        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID,
+                                                       transcript: transcript,
+                                                       supportAreaInfo: supportAreaInfo,
+                                                       entryPoint: entryPoint,
+                                                       siteAddress: viewModel.siteURL)
     }
 
     private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {

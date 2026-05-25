@@ -43,7 +43,7 @@ public func || (p1: TypedPredicate, p2: TypedPredicate) -> CompoundPredicate {
 
 // MARK: - Comparison Operators Overloads
 
-/// Overloads for comparison  operators.  Each operator takes a `KeyPath` and a `Value`
+/// Overloads for comparison  operators. Each operator takes a `KeyPath` and a `Value`
 /// That will be mapped to `NSExpressions` instances  for then constructing a `ComparisonPredicate` with the correct comparison rule.
 /// These overloads make use of `Generics` because need to know at compile time that the `KeyPath.ResultingType` has the same type as the `Value`.
 /// As well as making sure that those values are `Equatable`.

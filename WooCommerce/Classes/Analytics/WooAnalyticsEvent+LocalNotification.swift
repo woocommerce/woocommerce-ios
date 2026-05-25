@@ -35,7 +35,7 @@ extension WooAnalyticsEvent {
 
         /// Helper method to build properties dictionary
         ///
-        static private func getTracksProperties(type: String, userInfo: [AnyHashable: Any]) -> [String: WooAnalyticsEventPropertyType] {
+        private static func getTracksProperties(type: String, userInfo: [AnyHashable: Any]) -> [String: WooAnalyticsEventPropertyType] {
             var properties: [String: WooAnalyticsEventPropertyType] = [Key.type: type]
             if let isIapAvailable = userInfo[Key.isIAPAvailable] as? Bool {
                 properties[Key.isIAPAvailable] = isIapAvailable

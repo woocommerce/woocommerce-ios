@@ -68,7 +68,7 @@ public protocol POSRefundSubmissionProcessing: AnyObject {
 public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessing {
     public let stateModel = POSRefundSubmissionModel()
 
-    public nonisolated init() {}
+    nonisolated public init() {}
 
     public func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {
         POSRefundPreparation(orderID: order.id,
@@ -97,8 +97,8 @@ private extension POSNoOpRefundSubmissionProcessor {
     enum Localization {
         static let viaPaymentMethodFormat = NSLocalizedString(
             "pointOfSale.refunds.paymentMethodDescription.viaPaymentMethod",
-            value: "via %@",
-            comment: "Payment method description for POS refunds. %@ is the payment method title."
+            value: "via %1$@",
+            comment: "Payment method description for POS refunds. %1$@ is the payment method title."
         )
     }
 }

@@ -9,7 +9,7 @@ public class AccountStore: Store {
     private let remote: AccountRemoteProtocol
     private var cancellables = Set<AnyCancellable>()
 
-    public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = AccountRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
@@ -110,7 +110,7 @@ private extension AccountStore {
         if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly(), !forcedUpdate {
             onCompletion(.success(site))
         } else {
-            synchronizeSites(selectedSiteID: siteID) { [weak self] result in
+            synchronizeSites(selectedSiteID: siteID) { [weak self] _ in
                 guard let self else { return }
                 guard let site = self.storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
                     return onCompletion(.failure(SynchronizeSiteError.unknownSite))

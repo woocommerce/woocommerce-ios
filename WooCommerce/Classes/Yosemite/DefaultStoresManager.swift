@@ -216,7 +216,7 @@ class DefaultStoresManager: StoresManager {
     func listenToWPCOMInvalidWPCOMTokenNotification() {
         invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
                                                                                object: nil,
-                                                                               queue: .main) { [weak self] note in
+                                                                               queue: .main) { [weak self] _ in
             _ = self?.deauthenticate()
         }
     }
@@ -465,7 +465,7 @@ private extension DefaultStoresManager {
     }
 
     /// Replaces the temporary UUID username in default credentials with the
-    /// actual username from the passed account.  This *shouldn't* be necessary
+    /// actual username from the passed account. This *shouldn't* be necessary
     /// under normal conditions but is a safety net in case there is an error
     /// preventing the temp username from being updated during login.
     ///

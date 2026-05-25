@@ -1,7 +1,14 @@
 import Combine
 import PointOfSale
 import Foundation
-import Yosemite
+import struct Yosemite.Order
+import struct Yosemite.CardPresentPaymentsConfiguration
+import struct Yosemite.CardReader
+import enum Yosemite.CardPresentPaymentAction
+import enum Yosemite.PaymentChannel
+import enum Yosemite.CardReaderSoftwareUpdateState
+import enum Yosemite.CardReaderReconnectionState
+import protocol Yosemite.StoresManager
 
 final class CardPresentPaymentService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
@@ -31,22 +38,9 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         CardPresentConfigurationLoader().configuration
     }
 
-    /// Backing storage for `isPOSCardPaymentEnabled` and its publisher. Seeded
-    /// with the loader's value at init, then re-read whenever the country expansion
-    /// eligibility cache changes (see notification subscription in init). The
-    /// `CurrentValueSubject` shape lets new subscribers receive the latest value
-    /// immediately on subscribe.
-    private let isPOSCardPaymentEnabledSubject: CurrentValueSubject<Bool, Never>
-
     var isPOSCardPaymentEnabled: Bool {
-        isPOSCardPaymentEnabledSubject.value
+        cardPresentPaymentsConfiguration.isPOSCardPaymentEnabled
     }
-
-    var isPOSCardPaymentEnabledPublisher: AnyPublisher<Bool, Never> {
-        isPOSCardPaymentEnabledSubject.removeDuplicates().eraseToAnyPublisher()
-    }
-
-    private var cancellables: Set<AnyCancellable> = []
 
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
     private var connectReaderTask: Task<CardPresentPaymentReaderConnectionResult, Error>?
@@ -61,30 +55,10 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         self.stores = stores
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
 
-        // Seed with the loader's current value. For expansion-flag-gated countries
-        // this is `false` until `CardPresentPaymentsCountryExpansionEligibilityRefresher`
-        // refreshes; the notification subscription below pushes the updated value as
-        // soon as the cache write completes.
-        self.isPOSCardPaymentEnabledSubject = CurrentValueSubject(
-            CardPresentConfigurationLoader().configuration.isPOSCardPaymentEnabled
-        )
-
         connectionControllerManager = CardPresentPaymentsConnectionControllerManager(
             siteID: siteID,
             configuration: CardPresentConfigurationLoader().configuration,
             alertsPresenter: paymentAlertsPresenterAdaptor)
-
-        NotificationCenter.default.publisher(for: .cardPresentPaymentsCountryExpansionEligibilityDidChange)
-            .sink { [weak self] _ in
-                guard let self else { return }
-                // The loader reads back through the (now-updated) eligibility service
-                // synchronously, so re-deriving here picks up the new value without any
-                // additional plumbing.
-                self.isPOSCardPaymentEnabledSubject.send(
-                    CardPresentConfigurationLoader().configuration.isPOSCardPaymentEnabled
-                )
-            }
-            .store(in: &cancellables)
 
         paymentEventPublisher = onboardingAdaptor.onboardingScreenViewModelPublisher
             .map { onboardingEvent -> CardPresentPaymentEvent in

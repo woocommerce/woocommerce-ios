@@ -19,14 +19,14 @@ final class POSPaymentModel {
     private(set) var cardReaderUpdateState: CardReaderSoftwareUpdateState = .none
 
     /// Whether card-present payments (external readers + Tap to Pay) should be exposed
-    /// in POS for this store. Mirrors `CardPresentPaymentFacade.isPOSCardPaymentEnabled`
-    /// — observable + dynamically refreshed via `isPOSCardPaymentEnabledPublisher`,
-    /// so it can flip from `false` to `true` mid-session for merchants in expansion-
-    /// flag-gated countries whose configuration arrives after the POS tab first
-    /// renders. Views observe this to decide between the standard checkout layout
-    /// and the cash + secondary-method promoted layout, and re-render automatically
-    /// when the value changes.
-    private(set) var isPOSCardPaymentEnabled: Bool
+    /// in POS for this store. Static for the lifetime of the session — derived from the
+    /// store's country and the IPP configuration. See
+    /// `CardPresentPaymentsConfiguration.isPOSCardPaymentEnabled` for the per-country rules.
+    /// Views read this to decide between the standard checkout layout and the cash +
+    /// secondary-method promoted layout.
+    var isPOSCardPaymentEnabled: Bool {
+        cardPresentPaymentService.isPOSCardPaymentEnabled
+    }
     var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
     var isZeroTotal: Bool {
         guard let total = currentOrder?.total, let decimal = Decimal(string: total) else { return false }
@@ -173,11 +173,9 @@ final class POSPaymentModel {
         self.scanToPayPollInterval = scanToPayPollInterval
         self.preferredConnectionMethod = preferredConnectionMethod
         self.paymentState = paymentState
-        self.isPOSCardPaymentEnabled = cardPresentPaymentService.isPOSCardPaymentEnabled
 
         publishCardReaderConnectionStatus()
         publishCardReaderUpdateState()
-        publishPOSCardPaymentEnabled()
         subscribeToAlwaysOnPaymentEvents()
     }
 }
@@ -251,18 +249,6 @@ extension POSPaymentModel {
     func startPaymentWithMethod(_ method: CardReaderConnectionMethod) async {
         DDLogInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), "
                   + "currentPaymentMethod: \(String(describing: currentPaymentMethod))")
-
-        // Belt-and-suspenders: TotalsView already hides every CTA that would dispatch
-        // here when `isPOSCardPaymentEnabled` is false, but the value can flip mid-
-        // session as the per-country configuration loads (expansion-flag-gated
-        // markets where settings arrive after the POS tab first renders) and we
-        // never want a stale closure / SwiftUI re-render to spin up a Stripe-card
-        // session for a no-card store. Bail early before any subscribe / connect /
-        // collect work.
-        guard isPOSCardPaymentEnabled else {
-            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod skipped — POS card payments disabled for this store")
-            return
-        }
 
         // Same-method re-entry guard. Two different shapes:
         // - BT: card state moves out of `.idle` during collection, so the
@@ -492,14 +478,6 @@ extension POSPaymentModel {
     }
 
     func cancelThenCollectPayment() async {
-        // Defense-in-depth: the retry CTAs that dispatch here only render from
-        // card-payment error states, which themselves require
-        // `isPOSCardPaymentEnabled == true`. Guard anyway so the helper is safe
-        // to call from any future caller without re-asserting the gate.
-        guard isPOSCardPaymentEnabled else {
-            DDLogInfo("🃏 [CardPayment] cancelThenCollectPayment skipped — POS card payments disabled for this store")
-            return
-        }
         if case .reconnecting = cardReaderConnectionStatus {
             await cardPresentPaymentService.cancelReconnection()
         }
@@ -517,15 +495,6 @@ extension POSPaymentModel {
     }
 
     func connectCardReader() {
-        // Mirror the guard in `startPaymentWithMethod` — the phone array-driven
-        // row's `.cardReader` case dispatches straight here, bypassing
-        // `startPayment`. Without this, a tap on Card reader in a no-card
-        // store would kick a `connectReader(.bluetooth)` into Stripe Terminal
-        // for a configuration that doesn't support card-present payments.
-        guard isPOSCardPaymentEnabled else {
-            DDLogInfo("🃏 [CardPayment] connectCardReader skipped — POS card payments disabled for this store")
-            return
-        }
         analytics.track(.pointOfSaleCardReaderConnectionTapped)
         guard connectCardReaderTask == nil else { return }
         connectCardReaderTask = Task { @MainActor [weak self] in
@@ -1086,22 +1055,6 @@ private extension POSPaymentModel {
             .store(in: &cancellables)
     }
 
-    /// Mirrors the facade's dynamic `isPOSCardPaymentEnabled` into an observable
-    /// stored property so SwiftUI re-renders when an expansion-flag-gated country's
-    /// configuration arrives after the POS tab first renders. The facade's
-    /// publisher already dedupes via `removeDuplicates`, so this only fires when
-    /// the underlying value actually changes.
-    func publishPOSCardPaymentEnabled() {
-        cardPresentPaymentService.isPOSCardPaymentEnabledPublisher
-            .sink { [weak self] enabled in
-                guard let self else { return }
-                guard isPOSCardPaymentEnabled != enabled else { return }
-                DDLogInfo("🃏 [CardPayment] isPOSCardPaymentEnabled changed: \(enabled)")
-                isPOSCardPaymentEnabled = enabled
-            }
-            .store(in: &cancellables)
-    }
-
     /// Always-on subscriptions for reader connection alerts and onboarding.
     /// These are needed regardless of whether a payment session is active.
     func subscribeToAlwaysOnPaymentEvents() {
@@ -1202,16 +1155,6 @@ private extension POSPaymentModel {
     /// Only active during a payment session (between startPayment() and reset()/tearDown()).
     /// This prevents payment events from one flow (e.g. bookings) corrupting another (e.g. cart).
     func subscribeToPaymentSessionEvents() {
-        // Belt-and-suspenders: every caller (`startPayment`, `startPaymentWithMethod`)
-        // is itself guarded by `isPOSCardPaymentEnabled`, but spin-up of the
-        // session subscriptions is the last point at which we can stop card-
-        // payment side effects (inline messages, cancel-on-reader handler,
-        // celebration sounds) from observing the event stream in a no-card
-        // store. Keep the gate here as a stop-the-line check.
-        guard isPOSCardPaymentEnabled else {
-            DDLogInfo("🃏 [CardPayment] subscribeToPaymentSessionEvents skipped — POS card payments disabled for this store")
-            return
-        }
         guard paymentSessionCancellables.isEmpty else { return }
 
         // Payment events -> inline message (payment status in the totals view)

@@ -8,19 +8,7 @@ import enum Yosemite.CardReaderSoftwareUpdateState
 final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     // MARK: - Variables for emitting events in unit tests
 
-    /// Mirror of the live facade's publisher. Tests that exercise the cold-start
-    /// race for expansion-flag-gated countries can flip this subject to drive
-    /// `POSPaymentModel` through a `false -> true` transition.
-    let isPOSCardPaymentEnabledSubject = CurrentValueSubject<Bool, Never>(true)
-
-    var isPOSCardPaymentEnabled: Bool {
-        get { isPOSCardPaymentEnabledSubject.value }
-        set { isPOSCardPaymentEnabledSubject.send(newValue) }
-    }
-
-    var isPOSCardPaymentEnabledPublisher: AnyPublisher<Bool, Never> {
-        isPOSCardPaymentEnabledSubject.removeDuplicates().eraseToAnyPublisher()
-    }
+    var isPOSCardPaymentEnabled: Bool = true
 
     @Published var paymentEvent: CardPresentPaymentEvent = .idle
     @Published var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected

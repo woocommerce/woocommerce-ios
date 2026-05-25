@@ -16104,6 +16104,27 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Products successfully refunded";
 
+/* Dummy translation-pipeline test string. Very short ecommerce label for a product stock keeping unit field. */
+"ai_translation_test_product_short_sku" = "SKU";
+
+/* Dummy translation-pipeline test string. Badge text shown beside a product that has limited inventory. */
+"ai_translation_test_product_medium_low_stock_badge" = "Low stock product";
+
+/* Dummy translation-pipeline test string. Message shown after saving an inventory threshold for a product variation. Keep product, SKU and unit-count placeholders intact. */
+"ai_translation_test_product_placeholder_inventory" = "Saved %1$@ with SKU %2$@ and %3$d units in stock.";
+
+/* Dummy translation-pipeline test string. Explains a scheduled promotion for a product catalog item. Keep currency, percent, and date placeholders intact. */
+"ai_translation_test_product_placeholder_sale_window" = "Sale price %1$@ is %2$d%% lower than the regular price and runs from %3$@ to %4$@.";
+
+/* Dummy translation-pipeline test string. Marketing copy containing literal percent signs (escaped as %% so NSString format keeps them as a literal '%' character). */
+"ai_translation_test_product_formatted_false_discount" = "Save 20%% on bundled products and keep 100%% of your SKU formatting.";
+
+/* Dummy translation-pipeline test string. Product editor helper text with inline HTML link formatting that must remain valid. */
+"ai_translation_test_product_html_link" = "Review <a href=\"inventory-threshold\"><u>inventory thresholds</u></a> before enabling backorders.";
+
+/* Dummy translation-pipeline test string. Multiline product availability warning shown in a dialog. Keep the newline and placeholders intact. */
+"ai_translation_test_product_multiline_backorder" = "Product %1$@ is out of stock.\nRestock %2$d units or mark it as backordered.";
+
 
 /* MARK: - InfoPlist.strings */
 

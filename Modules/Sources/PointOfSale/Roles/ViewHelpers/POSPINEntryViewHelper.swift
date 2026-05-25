@@ -38,8 +38,8 @@ private extension POSPINEntryViewHelper {
     enum Localization {
         static let lockoutFormat = NSLocalizedString(
             "pos.pinEntry.lockout.countdown",
-            value: "Too many attempts. Try again in %1$d seconds.",
-            comment: "Lock-out message on the POS PIN numpad. %1$d is the seconds remaining."
+            value: "Too many attempts. Try again in %1$ds.",
+            comment: "Lock-out message on the POS PIN numpad. %1$d is the seconds remaining; 's' abbreviates seconds (localize if needed)."
         )
     }
 }

@@ -288,6 +288,11 @@ private extension POSTabCoordinator {
                     preferredConnectionMethod = .bluetooth
                 }
 
+                let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
+                                                                           stores: storesManager,
+                                                                           storageManager: storageManager,
+                                                                           currencySettings: currencySettings)
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -304,7 +309,7 @@ private extension POSTabCoordinator {
                     ),
                     orderService: orderService,
                     refundsService: refundsService,
-                    refundSubmissionProcessor: POSNoOpRefundSubmissionProcessor(),
+                    refundSubmissionProcessor: refundSubmissionProcessor,
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
                         self?.updateDefaultConfigurationForPointOfSale(isEnabled)
                     },

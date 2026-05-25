@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Number-matching overlay. Shown after `/scan` returns successfully (spec §4.3).
+/// Number-matching overlay. Shown after `/scan` returns successfully.
 ///
 /// Drives a one-second countdown clamped at zero — purely a UI hint;
 /// termination is owned by the polling loop, not the timer.

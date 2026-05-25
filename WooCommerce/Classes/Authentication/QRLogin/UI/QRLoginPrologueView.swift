@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 /// QR-login prologue. Pushed onto the login navigation stack when the user taps
-/// the primary "Log in" CTA and QR login is available (spec §4.1).
+/// the primary "Log in" CTA and QR login is available.
 ///
 /// Two actions reach the coordinator via the callbacks:
 ///   - Primary "Scan QR code" → coordinator requests camera permission and,

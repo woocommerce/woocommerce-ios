@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Fullscreen "Signing you in…" + spinner shown during the three logical
-/// authenticating phases (scan, exchange, complete) per spec §4.5.
+/// authenticating phases (scan, exchange, complete).
 struct QRLoginAuthenticatingView: View {
     var body: some View {
         VStack(spacing: 24) {

@@ -68,7 +68,7 @@ public protocol POSRefundSubmissionProcessing: AnyObject {
 public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessing {
     public let stateModel = POSRefundSubmissionModel()
 
-    public nonisolated init() {}
+    nonisolated public init() {}
 
     public func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {
         POSRefundPreparation(orderID: order.id,

@@ -53,10 +53,16 @@ module WooAiTranslation
     def complete(model:, system_blocks:, user_content:, max_tokens: 8192)
       raise Error, 'ANTHROPIC_API_KEY is not set' unless available?
 
+      # Older Anthropic models accepted `temperature: 0` for strict
+      # determinism, but Haiku 4.5 / Opus 4.7 (our current default +
+      # escalation models) reject the parameter with HTTP 400. Rather
+      # than maintain a per-model allowlist, we omit it entirely and let
+      # the API pick its default. We get mild non-determinism in
+      # exchange; the manifest cache deduplicates across runs and the
+      # validator catches any meaningful drift on individual entries.
       body = {
         model: model,
         max_tokens: max_tokens,
-        temperature: 0,
         system: cacheable_system(system_blocks),
         messages: [{ role: 'user', content: user_content }]
       }

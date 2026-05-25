@@ -395,6 +395,9 @@ struct POSRefundModalContentView: View {
 
     @MainActor
     private func handleAmbiguousCardPresentRefund(cancelPayment: @escaping () -> Void) {
+        // At this point the card-present refund may already have reached the gateway, but the app could not
+        // confirm the final result. Returning to confirmation would leave a live submit button that could create
+        // a duplicate refund, so exit the flow and refresh the order/refunds instead.
         isDismissingAfterAmbiguousRefund = true
         cardPresentAlertItem = nil
         cardPresentOnboardingItem = nil
@@ -402,6 +405,8 @@ struct POSRefundModalContentView: View {
         cancelPayment()
         dismissRefundFlow()
 
+        // The submission task may still report cancellation/failure after dismissing; isDismissingAfterAmbiguousRefund
+        // keeps that late callback from reopening the modal or tracking a normal refund failure.
         Task { @MainActor in
             do {
                 try await orderListModel.ordersController.updateOrder(orderID: order.id)

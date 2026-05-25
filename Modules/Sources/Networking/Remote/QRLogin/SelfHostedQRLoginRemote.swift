@@ -10,7 +10,7 @@ import NetworkingCore
 /// `SiteCredentialLoginUseCase` and `OneTimeApplicationPasswordUseCase`. Going
 /// through `AlamofireNetwork` is not an option for these endpoints because
 /// that abstraction doesn't expose `HTTPURLResponse.statusCode` to the caller,
-/// and the QR-login error tables (spec §5.1) branch on status code.
+/// and the QR-login error tables branch on status code.
 public protocol SelfHostedQRLoginRemoteProtocol {
     func scan(siteURL: URL,
               token: String,

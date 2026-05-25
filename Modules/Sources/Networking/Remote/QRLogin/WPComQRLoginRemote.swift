@@ -77,7 +77,7 @@ public final class WPComQRLoginRemote: WPComQRLoginRemoteProtocol {
 
         let (data, statusCode) = try await perform(request)
         if let error = QRLoginHTTPStatusMapper.error(forStatusCode: statusCode, body: data) {
-            // Spec §5.2.2: wp.com poll 404 is coerced to the `expired` terminal
+            // wp.com poll 404 is coerced to the `expired` terminal
             // (server keeps terminal records ~2 minutes; once evicted the
             // lookup 404s). The UI shows the timeout copy, not a hard error.
             if case .notFound = error {

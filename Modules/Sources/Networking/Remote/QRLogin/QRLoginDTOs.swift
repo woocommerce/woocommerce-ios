@@ -11,7 +11,7 @@ import Foundation
 
 // MARK: - Self-hosted responses
 
-/// Response of `POST {siteURL}/wp-json/wc-admin/mobile-app/qr-login-scan` (spec §5.1.1).
+/// Response of `POST {siteURL}/wp-json/wc-admin/mobile-app/qr-login-scan`.
 ///
 /// All fields are required; a missing or blank value makes the whole response
 /// malformed. The self-hosted scan carries no user identity — unlike wp.com,
@@ -28,7 +28,7 @@ public struct SelfHostedQRLoginScanResponse: Equatable {
     }
 }
 
-/// Response of `GET {siteURL}/wp-json/wc-admin/mobile-app/qr-login-session-status` (spec §5.1.2).
+/// Response of `GET {siteURL}/wp-json/wc-admin/mobile-app/qr-login-session-status`.
 public struct SelfHostedQRLoginSessionStatus: Equatable {
     /// The states the self-hosted endpoint can report. It has no `consumed`
     /// state — that "already signed in elsewhere" terminal is wp.com-only.
@@ -44,7 +44,7 @@ public struct SelfHostedQRLoginSessionStatus: Equatable {
 
     /// Only populated when `state == .approved`. A blank/missing value while
     /// `state == .approved` MUST be treated as `expired` ("fail closed") by the
-    /// consumer (spec §5.1.2).
+    /// consumer.
     public let exchangeGrant: String?
 
     public init(state: State, exchangeGrant: String?) {
@@ -53,7 +53,7 @@ public struct SelfHostedQRLoginSessionStatus: Equatable {
     }
 }
 
-/// Response of `POST {siteURL}/wp-json/wc-admin/mobile-app/qr-login-exchange` (spec §5.1.3).
+/// Response of `POST {siteURL}/wp-json/wc-admin/mobile-app/qr-login-exchange`.
 ///
 /// Carries the freshly minted Application Password. All fields are required.
 public struct SelfHostedQRLoginExchangeResponse: Equatable {
@@ -70,7 +70,7 @@ public struct SelfHostedQRLoginExchangeResponse: Equatable {
 
 // MARK: - WP.com responses
 
-/// Response of `POST /wpcom/v2/auth/qr-code-app/scan` (spec §5.2.1).
+/// Response of `POST /wpcom/v2/auth/qr-code-app/scan`.
 ///
 /// Unlike the self-hosted scan, the wp.com endpoint also returns the signed-in
 /// user's wp.com email for the number-match screen. All fields are required.
@@ -88,7 +88,7 @@ public struct WPComQRLoginScanResponse: Equatable {
     }
 }
 
-/// Response of `GET /wpcom/v2/auth/qr-code-app/session-status` (spec §5.2.2).
+/// Response of `GET /wpcom/v2/auth/qr-code-app/session-status`.
 public struct WPComQRLoginSessionStatus: Equatable {
     /// The states the wp.com endpoint can report. `consumed` ("already signed
     /// in elsewhere") is wp.com-only.
@@ -105,7 +105,7 @@ public struct WPComQRLoginSessionStatus: Equatable {
 
     /// Only populated when `state == .approved`. A blank/missing value while
     /// `state == .approved` MUST be treated as `expired` ("fail closed") by the
-    /// consumer (spec §5.2.2).
+    /// consumer.
     public let exchangeGrant: String?
 
     public init(state: State, exchangeGrant: String?) {
@@ -114,7 +114,7 @@ public struct WPComQRLoginSessionStatus: Equatable {
     }
 }
 
-/// Response of `POST /wpcom/v2/auth/qr-code-app/exchange` (spec §5.2.3).
+/// Response of `POST /wpcom/v2/auth/qr-code-app/exchange`.
 ///
 /// Carries a magic-link URL the app opens to finish wp.com sign-in.
 public struct WPComQRLoginExchangeResponse: Equatable {
@@ -127,7 +127,7 @@ public struct WPComQRLoginExchangeResponse: Equatable {
 
 // MARK: - Shared request payload
 
-/// Device metadata sent on both `/scan` requests (spec §5.1.1 / §5.2.1).
+/// Device metadata sent on both `/scan` requests.
 ///
 /// This is the one QR-login data type genuinely shared by both protocols: it is
 /// request-side data the client knows about itself, so it carries the same
@@ -163,7 +163,7 @@ public struct QRLoginScanDevice: Equatable {
 //
 // Each response type decodes itself, the way every other Networking model does.
 // Validation lives in `init(from:)`: the QR-login spec treats a blank required
-// field as a malformed response (§5.1.1 / §5.2.1), so a blank value fails
+// field as a malformed response, so a blank value fails
 // decoding. The Remotes funnel every decoding failure into
 // `QRLoginNetworkError.malformed` via `QRLoginResponseBody.decode`.
 
@@ -234,7 +234,7 @@ extension WPComQRLoginScanResponse: Decodable {
 extension WPComQRLoginSessionStatus: Decodable {
     private enum CodingKeys: String, CodingKey {
         case state
-        case status // wp.com legacy alias for `state` (spec §5.2.2)
+        case status // wp.com legacy alias for `state`
         case exchangeGrant = "exchange_grant"
     }
 

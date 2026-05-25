@@ -3,7 +3,7 @@ import Testing
 import NetworkingCore
 @testable import Networking
 
-/// Covers every row of spec §5.2.1 / §5.2.2 / §5.2.3 against the WP.com
+/// Covers the WP.com QR-login Remote against every documented response,
 /// QR-login Remote, plus the protocol-specific behaviours called out in the
 /// spec: `client_id` / `client_secret` on every request, poll 404 coerced to
 /// `expired`, and the legacy `status` field name accepted in place of `state`.
@@ -21,7 +21,7 @@ struct WPComQRLoginRemoteTests {
                                            brand: "Apple",
                                            appVersion: "23.6")
 
-    // MARK: - /scan (§5.2.1)
+    // MARK: - /scan
 
     @Test func scan_when_200_then_decodes_response_with_user_email() async throws {
         // Given
@@ -107,7 +107,7 @@ struct WPComQRLoginRemoteTests {
         await expectScanError(statusCode: 429, body: Data(), expected: .rateLimited)
     }
 
-    // MARK: - /session-status (§5.2.2)
+    // MARK: - /session-status
 
     @Test func pollSessionStatus_sends_client_credentials_session_id_and_token_hash() async throws {
         // Given
@@ -128,7 +128,7 @@ struct WPComQRLoginRemoteTests {
     }
 
     @Test func pollSessionStatus_when_status_field_used_in_place_of_state_then_still_decodes() async throws {
-        // Given — wp.com legacy alias (§5.2.2).
+        // Given — wp.com legacy alias.
         let url = makeURL(
             path: "/session-status",
             query: "client_id=\(clientID)&client_secret=\(clientSecret)&session_id=\(sessionID)&token_hash=hash-1"
@@ -162,7 +162,7 @@ struct WPComQRLoginRemoteTests {
     }
 
     @Test func pollSessionStatus_when_404_then_coerced_to_expired_terminal() async throws {
-        // Given — spec §5.2.2: wp.com poll 404 → expired terminal, not surfaced
+        // Given — wp.com poll 404 → expired terminal, not surfaced
         // as a hard error.
         let url = makeURL(
             path: "/session-status",
@@ -195,7 +195,7 @@ struct WPComQRLoginRemoteTests {
         }
     }
 
-    // MARK: - /exchange (§5.2.3)
+    // MARK: - /exchange
 
     @Test func exchange_when_200_then_decodes_magic_link_url() async throws {
         // Given

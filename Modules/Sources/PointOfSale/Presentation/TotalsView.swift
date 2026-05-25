@@ -815,6 +815,16 @@ private extension TotalsView {
     /// success / error UI immediately rather than the hero fading out + the
     /// Checkout chrome ghosting through.
     private var shouldPrioritizePaymentViewOverHero: Bool {
+        // Non-card success states must also take over the upper region. Without
+        // this branch, on no-card-enabled stores (`isPOSCardPaymentEnabled == false`)
+        // both `useTapToPayHeroLayout` and `isShowingPaymentView` return false,
+        // so `PaymentViewContent` never renders and the merchant lands on an
+        // empty screen after cash / scan-to-pay / mark-as-paid succeeds.
+        if displayPaymentState.cash == .paymentSuccess
+            || displayPaymentState.scanToPay == .paymentSuccess
+            || displayPaymentState.markAsPaid == .paymentSuccess {
+            return true
+        }
         switch displayPaymentState.card {
         case .processingPayment,
                 .cardPaymentSuccessful,

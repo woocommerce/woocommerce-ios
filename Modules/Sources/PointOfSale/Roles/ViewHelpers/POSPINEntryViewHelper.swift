@@ -30,16 +30,25 @@ struct POSPINEntryViewHelper {
     }
 
     func lockoutMessage(remainingSeconds: Int) -> String {
-        String.localizedStringWithFormat(Localization.lockoutFormat, remainingSeconds)
+        let duration = Self.durationFormatter.string(from: TimeInterval(max(0, remainingSeconds))) ?? ""
+        return String.localizedStringWithFormat(Localization.lockoutFormat, duration)
     }
+
+    private static let durationFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.unitsStyle = .abbreviated
+        formatter.zeroFormattingBehavior = .dropLeading
+        return formatter
+    }()
 }
 
 private extension POSPINEntryViewHelper {
     enum Localization {
         static let lockoutFormat = NSLocalizedString(
             "pos.pinEntry.lockout.countdown",
-            value: "Too many attempts. Try again in %1$ds.",
-            comment: "Lock-out message on the POS PIN numpad. %1$d is the seconds remaining; 's' abbreviates seconds (localize if needed)."
+            value: "Too many attempts. Try again in %1$@.",
+            comment: "Lock-out message on the POS PIN numpad. %1$@ is a localized duration such as 30s or 1m 30s."
         )
     }
 }

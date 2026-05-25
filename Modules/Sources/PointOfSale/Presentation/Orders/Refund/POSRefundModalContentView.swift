@@ -121,7 +121,7 @@ struct POSRefundModalContentView: View {
     private var content: some View {
         switch state {
         case .loading:
-            POSRefundLoadingView()
+            POSRefundLoadingView(onBack: { dismissModal?() })
         case .loadingError:
             POSRefundErrorView(
                 title: errorStrings.loadTitle,
@@ -204,8 +204,7 @@ struct POSRefundModalContentView: View {
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 customerEmail: reviewData.customerEmail,
                 onDone: { dismissModal?() },
-                onEmailReceipt: { isShowingEmailReceiptView = true },
-                onClose: { dismissModal?() }
+                onEmailReceipt: { isShowingEmailReceiptView = true }
             )
         case .error(let reviewData):
             POSRefundErrorView(

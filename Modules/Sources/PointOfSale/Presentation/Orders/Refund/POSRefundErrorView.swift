@@ -14,9 +14,12 @@ struct POSRefundErrorView: View {
     var body: some View {
         VStack(spacing: POSSpacing.none) {
             headerView
+            Spacer(minLength: POSSpacing.large)
             contentView
+            Spacer(minLength: POSSpacing.large)
             buttonsSection
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
         .onAppear {
@@ -31,18 +34,8 @@ struct POSRefundErrorView: View {
 
 private extension POSRefundErrorView {
     var headerView: some View {
-        HStack {
-            Spacer()
-            Button {
-                onClose()
-            } label: {
-                Text(Image(systemName: "xmark"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
-        }
-        .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        POSRefundNavigationHeader(backAction: onClose,
+                                  backAccessibilityLabel: Localization.backButtonAccessibilityLabel)
     }
 
     var contentView: some View {
@@ -68,7 +61,7 @@ private extension POSRefundErrorView {
             .multilineTextAlignment(.center)
         }
         .padding(.horizontal, POSPadding.xLarge)
-        .padding(.bottom, POSSpacing.xLarge)
+        .frame(maxWidth: POSRefundModalLayout.fullScreenContentMaxWidth)
     }
 
     var buttonsSection: some View {
@@ -99,10 +92,10 @@ private extension POSRefundErrorView {
 
 private extension POSRefundErrorView {
     enum Localization {
-        static let closeButtonAccessibilityLabel = NSLocalizedString(
-            "pos.refundErrorView.closeButton.accessibilityLabel",
-            value: "Close",
-            comment: "Accessibility label for close button on refund error screen"
+        static let backButtonAccessibilityLabel = NSLocalizedString(
+            "pos.refundErrorView.backButton.accessibilityLabel",
+            value: "Back",
+            comment: "Accessibility label for the back button on the refund error screen"
         )
 
         static let retryButton = NSLocalizedString(

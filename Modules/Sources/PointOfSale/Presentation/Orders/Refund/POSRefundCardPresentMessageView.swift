@@ -127,6 +127,7 @@ private struct POSRefundCardPresentActionContent: View {
     let secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel?
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var width: CGFloat = 0
 
     var body: some View {
@@ -157,7 +158,6 @@ private struct POSRefundCardPresentActionContent: View {
             .dynamicWidthScaling(containerWidth: width)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
 
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
                 if let primaryButtonViewModel {
@@ -172,9 +172,7 @@ private struct POSRefundCardPresentActionContent: View {
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
             }
-            .dynamicWidthScaling(containerWidth: width)
-
-            Spacer()
+            .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
         }
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

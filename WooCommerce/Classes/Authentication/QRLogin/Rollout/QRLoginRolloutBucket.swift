@@ -2,7 +2,7 @@ import Foundation
 
 /// Per-install, persisted random bucket in `1...10` for QR-login rollout.
 ///
-/// Spec §2.1: each install is assigned a number on first read so the decision
+/// Each install is assigned a number on first read so the decision
 /// is stable across restarts. The currently-enabled range (`1...1`) maps to a
 /// 10% rollout. Debug overrides bypass the bucket check entirely — they're not
 /// the bucket's concern; see `QRLoginAvailability`.

@@ -36,7 +36,7 @@ class FancyAnimatedButton: FancyButton {
         addSubview(activityIndicator)
     }
 
-    /// Toggles the visibility of the activity indicator.  When visible the button
+    /// Toggles the visibility of the activity indicator. When visible the button
     /// title is hidden.
     ///
     /// - Parameter show: True to show the spinner. False hides it.

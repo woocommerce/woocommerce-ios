@@ -17,7 +17,11 @@ struct POSLockScreenView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: POSSpacing.xxLarge) {
-                header
+                Text(Localization.title)
+                    .font(.posHeadingBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
 
                 POSPINEntryView(state: model.pinEntryState) { pin in
                     Task {
@@ -32,45 +36,14 @@ struct POSLockScreenView: View {
     }
 }
 
-// MARK: - Subviews
-
-private extension POSLockScreenView {
-    var header: some View {
-        VStack(spacing: POSSpacing.medium) {
-            Image(systemName: "lock.fill")
-                .font(.posHeadingBold)
-                .foregroundColor(.posPrimary)
-                .accessibilityHidden(true)
-
-            VStack(spacing: POSSpacing.xSmall) {
-                Text(Localization.title)
-                    .font(.posHeadingBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
-
-                Text(Localization.subtitle)
-                    .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .multilineTextAlignment(.center)
-            }
-        }
-    }
-}
-
 // MARK: - Localization
 
 private extension POSLockScreenView {
     enum Localization {
         static let title = NSLocalizedString(
-            "pos.lockScreen.title",
-            value: "Enter staff PIN",
+            "pos.lockScreen.enterYourPIN.title",
+            value: "Enter your PIN",
             comment: "Title shown on the POS lock screen."
-        )
-        static let subtitle = NSLocalizedString(
-            "pos.lockScreen.subtitle",
-            value: "Unlock POS to continue.",
-            comment: "Subtitle shown on the POS lock screen."
         )
     }
 }

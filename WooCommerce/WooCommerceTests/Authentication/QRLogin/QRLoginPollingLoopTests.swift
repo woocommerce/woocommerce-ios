@@ -25,7 +25,7 @@ struct QRLoginPollingLoopTests {
     }
 
     @Test func run_when_approved_with_blank_grant_then_fails_closed_as_signInTimedOut() async {
-        // Given — spec §5.1.2 / §5.2.2 fail-closed rule.
+        // Given — spec fail-closed rule.
         let queue = ResponseQueue(responses: [
             .success(.approved(exchangeGrant: nil))
         ])
@@ -132,7 +132,7 @@ struct QRLoginPollingLoopTests {
         #expect(error.kind == .signInTimedOut)
     }
 
-    // MARK: - Transient-error budget (spec §5.1.2)
+    // MARK: - Transient-error budget
 
     @Test func run_when_three_transient_errors_followed_by_success_then_budget_resets() async {
         // Given — three transient errors are absorbed, the 4th would surface.

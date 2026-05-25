@@ -4,8 +4,7 @@ import Yosemite
 /// Drives the `GET /qr-login-session-status` poll until a terminal outcome is
 /// reached.
 ///
-/// Behaviour from spec §5.3 / §6.1:
-///   - Cadence: 2 seconds between attempts. The first tick is *immediate* —
+/// Behaviour from ///   - Cadence: 2 seconds between attempts. The first tick is *immediate* —
 ///     no leading delay.
 ///   - Transient-error budget: up to 3 consecutive transient errors are
 ///     tolerated; the 4th consecutive failure surfaces. Any non-error
@@ -65,7 +64,7 @@ final class QRLoginPollingLoop {
                     if let grant, grant.isEmpty == false {
                         return .approved(exchangeGrant: grant)
                     }
-                    // Fail closed (spec §5.1.2 / §5.2.2).
+                    // Fail closed.
                     return .error(.init(kind: .signInTimedOut, phase: .poll, primaryAction: .scanAgain))
 
                 case .scanned:

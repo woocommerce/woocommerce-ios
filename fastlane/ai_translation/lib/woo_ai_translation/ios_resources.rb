@@ -158,8 +158,20 @@ module WooAiTranslation
       end
 
       def parse(text, source_path: '<string>')
+        # Force byte-level indexing. Ruby String#[] is O(n) on UTF-8 (it has
+        # to scan from the start to find the n-th character), so the original
+        # parse-by-character loop was effectively O(n²) on a 1MB .strings
+        # file (~40s for en.lproj). With ASCII_8BIT the same loop is O(1) per
+        # access, taking ~1s.
+        #
+        # All branch conditions compare against ASCII literals ('/', '"',
+        # '\\', '=', ';') which are single-byte and match identically under
+        # ASCII_8BIT. UTF-8 multi-byte sequences inside string literals are
+        # appended byte-by-byte to the output buffer, producing valid UTF-8
+        # by construction; we re-tag the final strings as UTF-8 below.
+        text = text.dup.force_encoding(Encoding::ASCII_8BIT) if text.encoding != Encoding::ASCII_8BIT
         pos = 0
-        len = text.length
+        len = text.bytesize
         units = []
         last_comment = ''
 
@@ -198,6 +210,23 @@ module WooAiTranslation
           end
 
           raise ParseError, error_at(text, pos, source_path, "unexpected character #{text[pos].inspect}")
+        end
+
+        # Re-tag everything the parser collected from byte-level reads back to
+        # UTF-8 so downstream code (Hash keys, comparisons, regex) sees the
+        # canonical encoding. The bytes are already valid UTF-8 because the
+        # input started as UTF-8 and we only sliced/copied through it.
+        units.each do |u|
+          u.comment = u.comment.dup.force_encoding(Encoding::UTF_8) if u.comment
+          # Rebuild attributes Hash with UTF-8 keys/values (currently empty
+          # for .strings but cheap to handle).
+          u.entries = u.entries.map do |e|
+            {
+              id: e[:id]&.dup&.force_encoding(Encoding::UTF_8),
+              source: e[:source]&.dup&.force_encoding(Encoding::UTF_8),
+              value: e[:value]
+            }
+          end
         end
 
         Document.new(units)

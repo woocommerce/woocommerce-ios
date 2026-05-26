@@ -160,8 +160,7 @@ private extension AccountStore {
                             let wcAvailabilityPublisher = self.remote.checkIfWooCommerceIsActive(for: site.siteID)
                             let wpSiteSettingsPublisher = self.remote.fetchWordPressSiteSettings(for: site.siteID)
                             return Publishers.Zip3(sitePublisher, wcAvailabilityPublisher, wpSiteSettingsPublisher)
-                                .map {
-                                    (site, isWooCommerceActiveResult, wpSiteSettingsResult) -> Site in
+                                .map {site, isWooCommerceActiveResult, wpSiteSettingsResult -> Site in
                                     var site = site
                                     guard case let .success(isWooCommerceActive) = isWooCommerceActiveResult,
                                           case let .success(wpSiteSettings) = wpSiteSettingsResult else {

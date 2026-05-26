@@ -29,7 +29,7 @@ final class DevicesRemoteTests: XCTestCase {
 
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion) { (settings, error) in
+                              applicationVersion: Parameters.applicationVersion) { settings, error in
 
             XCTAssertNil(error)
             XCTAssertNotNil(settings)
@@ -50,7 +50,7 @@ final class DevicesRemoteTests: XCTestCase {
 
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion) { (settings, error) in
+                              applicationVersion: Parameters.applicationVersion) { settings, error in
 
             XCTAssertNotNil(error)
             XCTAssertNil(settings)

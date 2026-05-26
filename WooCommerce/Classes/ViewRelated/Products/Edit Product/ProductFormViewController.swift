@@ -950,7 +950,7 @@ private extension ProductFormViewController {
         }, onAddImage: { [weak self] in
             self?.eventLogger.logImageTapped()
             self?.showProductImages()
-        }, onFailedImageUpload: { [weak self] (asset, error) in
+        }, onFailedImageUpload: { [weak self] asset, error in
             self?.displayImageUploadErrorAlert(error: error, for: asset)
         })
     }
@@ -1235,12 +1235,12 @@ private extension ProductFormViewController {
         let viewController = ProductSettingsViewController(product: product.product,
                                                            password: password,
                                                            formType: viewModel.formType,
-                                                           completion: { [weak self] (productSettings) in
+                                                           completion: { [weak self] productSettings in
             guard let self else {
                 return
             }
             self.viewModel.updateProductSettings(productSettings)
-        }, onPasswordRetrieved: { [weak self] (originalPassword) in
+        }, onPasswordRetrieved: { [weak self] originalPassword in
             self?.viewModel.resetPassword(originalPassword)
         })
         navigationController?.pushViewController(viewController, animated: true)
@@ -1632,7 +1632,7 @@ private extension ProductFormViewController {
             source: .editForm(selected: productType),
             subscriptionProductsEligibilityChecker: subscriptionProductsEligibilityChecker,
             siteCIABEligibilityChecker: siteCIABEligibilityChecker
-        ) { [weak self] (selectedProductType) in
+        ) { [weak self] selectedProductType in
             self?.dismiss(animated: true, completion: nil)
 
             guard let originalProductType = self?.product.productType else {
@@ -1644,7 +1644,7 @@ private extension ProductFormViewController {
                 "to": selectedProductType.productType.rawValue
             ])
 
-            self?.presentProductTypeChangeAlert(for: originalProductType, completion: { (change) in
+            self?.presentProductTypeChangeAlert(for: originalProductType, completion: { change in
                 guard change == true else {
                     return
                 }
@@ -1661,7 +1661,7 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editShippingSettings() {
         let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) {
-            [weak self] (weight, dimensions, oneTimeShipping, shippingClass, shippingClassID, hasUnsavedChanges) in
+            [weak self] weight, dimensions, oneTimeShipping, shippingClass, shippingClassID, hasUnsavedChanges in
             self?.onEditShippingSettingsCompletion(weight: weight,
                                                    dimensions: dimensions,
                                                    oneTimeShipping: oneTimeShipping,
@@ -1759,7 +1759,7 @@ private extension ProductFormViewController {
             return
         }
 
-        let categoryListViewController = EditProductCategoryListViewController(product: product.product) { [weak self] (categories) in
+        let categoryListViewController = EditProductCategoryListViewController(product: product.product) { [weak self] categories in
             self?.onEditCategoriesCompletion(categories: categories)
         }
         show(categoryListViewController, sender: self)
@@ -1790,7 +1790,7 @@ private extension ProductFormViewController {
             return
         }
 
-        let tagsViewController = ProductTagsViewController(product: product.product) { [weak self] (tags) in
+        let tagsViewController = ProductTagsViewController(product: product.product) { [weak self] tags in
             self?.onEditTagsCompletion(tags: tags)
         }
         show(tagsViewController, sender: self)
@@ -1843,7 +1843,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editLinkedProducts() {
-        let linkedProductsViewController = LinkedProductsViewController(product: product) { [weak self] (upsellIDs, crossSellIDs, hasUnsavedChanges) in
+        let linkedProductsViewController = LinkedProductsViewController(product: product) { [weak self] upsellIDs, crossSellIDs, hasUnsavedChanges in
             self?.onEditLinkedProductsCompletion(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs, hasUnsavedChanges: hasUnsavedChanges)
         }
         navigationController?.pushViewController(linkedProductsViewController, animated: true)
@@ -1946,7 +1946,7 @@ private extension ProductFormViewController {
             return
         }
 
-        let downloadFileListViewController = ProductDownloadListViewController(product: product) { [weak self] (data, hasUnsavedChanges) in
+        let downloadFileListViewController = ProductDownloadListViewController(product: product) { [weak self] data, hasUnsavedChanges in
             self?.onAddEditDownloadsCompletion(data: data, hasUnsavedChanges: hasUnsavedChanges)
         }
         navigationController?.pushViewController(downloadFileListViewController, animated: true)
@@ -2002,7 +2002,7 @@ private extension ProductFormViewController {
             return
         }
 
-        let attributePickerViewController = AttributePickerViewController(variationModel: productVariationModel) { [weak self] (attributes) in
+        let attributePickerViewController = AttributePickerViewController(variationModel: productVariationModel) { [weak self] attributes in
             self?.onEditVariationAttributesCompletion(attributes: attributes)
         }
         show(attributePickerViewController, sender: self)

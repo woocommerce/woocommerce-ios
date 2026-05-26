@@ -145,7 +145,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         var isSKUValid: Bool?
         var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleSKUChange(sku) { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleSKUChange(sku) { isValid, shouldBringUpKeyboardValue in
                 isSKUValid = isValid
                 shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
@@ -181,7 +181,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         var isSKUValid: Bool?
         var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleSKUChange(sku) { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleSKUChange(sku) { isValid, shouldBringUpKeyboardValue in
                 isSKUValid = isValid
                 shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()

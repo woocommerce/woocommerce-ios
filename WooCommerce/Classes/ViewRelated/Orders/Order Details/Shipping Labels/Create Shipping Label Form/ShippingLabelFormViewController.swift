@@ -266,7 +266,7 @@ private extension ShippingLabelFormViewController {
                originAddress.phone.isEmpty {
                 return self.displayEditAddressFormVC(address: originAddress, email: nil, validationError: nil, type: .origin)
             }
-            self.viewModel.validateAddress(type: .origin) { [weak self] (validationState, response) in
+            self.viewModel.validateAddress(type: .origin) { [weak self] validationState, response in
                 guard let self else { return }
                 let shippingLabelAddress = self.viewModel.originAddress
                 switch validationState {
@@ -305,7 +305,7 @@ private extension ShippingLabelFormViewController {
                                                      type: .destination)
             }
 
-            self.viewModel.validateAddress(type: .destination) { [weak self] (validationState, response) in
+            self.viewModel.validateAddress(type: .destination) { [weak self] validationState, response in
                 guard let self else { return }
                 let shippingLabelAddress = self.viewModel.destinationAddress
                 switch validationState {
@@ -385,7 +385,7 @@ private extension ShippingLabelFormViewController {
             let discountInfoVC = ShippingLabelDiscountInfoViewController()
             let bottomSheet = BottomSheetViewController(childViewController: discountInfoVC)
             bottomSheet.show(from: self, sourceView: cell)
-        } onSwitchChange: { [weak self] (switchIsOn) in
+        } onSwitchChange: { [weak self] switchIsOn in
             self?.shouldMarkOrderComplete = switchIsOn
         } onButtonTouchUp: { [weak self] in
             guard let self else { return }
@@ -443,7 +443,7 @@ private extension ShippingLabelFormViewController {
             needsPhoneNumberValidation: viewModel.customsFormRequired,
             validationError: validationError,
             countries: viewModel.filteredCountries(for: type),
-            completion: { [weak self] (newShippingLabelAddress) in
+            completion: { [weak self] newShippingLabelAddress in
                 guard let self else { return }
                 switch type {
                 case .origin:
@@ -470,7 +470,7 @@ private extension ShippingLabelFormViewController {
                                                              type: type,
                                                              address: address,
                                                              suggestedAddress: suggestedAddress, email: email,
-                                                             countries: viewModel.countries) { [weak self] (newShippingLabelAddress) in
+                                                             countries: viewModel.countries) { [weak self] newShippingLabelAddress in
             switch type {
             case .origin:
                 self?.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
@@ -490,7 +490,7 @@ private extension ShippingLabelFormViewController {
                                                     onSelectionCompletion: { [weak self] selectedPackages in
                                                         self?.viewModel.handlePackageDetailsValueChanges(details: selectedPackages)
                                                     },
-                                                    onPackageSyncCompletion: { [weak self] (packagesResponse) in
+                                                    onPackageSyncCompletion: { [weak self] packagesResponse in
                                                       self?.viewModel.handleNewPackagesResponse(packagesResponse: packagesResponse)
                                                     })
         let packagesForm = ShippingLabelPackagesForm(viewModel: vm)
@@ -528,7 +528,7 @@ private extension ShippingLabelFormViewController {
                                                 packages: viewModel.selectedPackages,
                                                 selectedRates: selectedRates)
 
-        let carriersView = ShippingLabelCarriers(viewModel: vm) { [weak self] (selectedRates) in
+        let carriersView = ShippingLabelCarriers(viewModel: vm) { [weak self] selectedRates in
             self?.viewModel.handleCarrierAndRatesValueChanges(selectedRates: selectedRates,
                                                               editable: true)
         }

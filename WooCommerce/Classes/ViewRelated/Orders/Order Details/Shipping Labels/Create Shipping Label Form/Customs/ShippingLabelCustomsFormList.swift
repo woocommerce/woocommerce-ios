@@ -63,7 +63,7 @@ struct ShippingLabelCustomsFormList: View {
                         .highlight(on: $isShippingNoticeBannerHighlighted, color: Color(.accent))
                         .id(shippingNoticeBannerID)
 
-                    ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
+                    ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { index, item in
                         ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
                                                       packageNumber: index + 1,
                                                       safeAreaInsets: geometry.safeAreaInsets,

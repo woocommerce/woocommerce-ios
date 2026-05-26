@@ -428,7 +428,7 @@ private extension RefundSubmissionUseCase {
     /// - Parameters:
     ///   - refund: the refund to retrieve details from.
     private func retrieveUpdatedRefundData(refund: Refund) {
-        let action = RefundAction.retrieveRefund(siteID: details.order.siteID, orderID: details.order.orderID, refundID: refund.refundID) { (_, error) in
+        let action = RefundAction.retrieveRefund(siteID: details.order.siteID, orderID: details.order.orderID, refundID: refund.refundID) { _, error in
                 if let error {
                     DDLogError("Error retrieving refund: \(String(describing: refund))\nWith Error: \(error)")
                 }

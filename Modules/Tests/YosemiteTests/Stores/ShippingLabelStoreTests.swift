@@ -551,7 +551,7 @@ final class ShippingLabelStoreTests: XCTestCase {
                                                                   orderID: self.sampleOrderID,
                                                                   originAddress: ShippingLabelAddress.fake(),
                                                                   destinationAddress: ShippingLabelAddress.fake(),
-                                                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                                                                  packages: [ShippingLabelPackageSelected.fake()]) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -574,7 +574,7 @@ final class ShippingLabelStoreTests: XCTestCase {
                                                                   orderID: self.sampleOrderID,
                                                                   originAddress: ShippingLabelAddress.fake(),
                                                                   destinationAddress: ShippingLabelAddress.fake(),
-                                                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                                                                  packages: [ShippingLabelPackageSelected.fake()]) { result in
                 promise(result)
             }
             store.onAction(action)

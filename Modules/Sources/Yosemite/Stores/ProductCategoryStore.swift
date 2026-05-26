@@ -91,7 +91,7 @@ private extension ProductCategoryStore {
     /// Synchronizes product categories associated with a given Site ID.
     ///
     func synchronizeProductCategories(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping ([ProductCategory]?, Error?) -> Void) {
-        remote.loadAllProductCategories(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (productCategories, error) in
+        remote.loadAllProductCategories(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] productCategories, error in
             guard let productCategories else {
                 onCompletion(nil, error)
                 return

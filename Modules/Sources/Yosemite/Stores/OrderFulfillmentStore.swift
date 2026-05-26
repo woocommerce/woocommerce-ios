@@ -40,7 +40,7 @@ public class OrderFulfillmentStore: Store {
 private extension OrderFulfillmentStore {
 
     func synchronizeOrderFulfillments(siteID: Int64, orderID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadOrderFulfillments(for: siteID, orderID: orderID) { [weak self] (fulfillments, error) in
+        remote.loadOrderFulfillments(for: siteID, orderID: orderID) { [weak self] fulfillments, error in
             guard let readOnlyFulfillments = fulfillments else {
                 onCompletion(error)
                 return

@@ -475,7 +475,7 @@ private extension ProductStore {
     /// Delete an existing product.
     ///
     func deleteProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
-        remote.deleteProduct(for: siteID, productID: productID) { (result) in
+        remote.deleteProduct(for: siteID, productID: productID) { result in
             switch result {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))

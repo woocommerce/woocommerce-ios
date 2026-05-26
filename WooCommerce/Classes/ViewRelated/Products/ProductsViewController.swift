@@ -947,7 +947,7 @@ private extension ProductsViewController {
     /// If no info are stored (so there is a failure), we resynchronize the syncingCoordinator for updating the screen using the default sort/filters.
     ///
     func syncProductsSettings() {
-        syncLocalProductsSettings { [weak self] (result) in
+        syncLocalProductsSettings { [weak self] result in
             guard let self else { return }
 
             if result.isFailure {
@@ -1475,7 +1475,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                                               productStatusFilter: filters.productStatus,
                                                               productTypeFilter: filters.promotableProductType?.productType,
                                                               productCategoryFilter: filters.productCategory,
-                                                              favoriteProduct: filters.favoriteProduct != nil) { (_) in
+                                                              favoriteProduct: filters.favoriteProduct != nil) { _ in
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -1483,7 +1483,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
     /// Fetch local Products Settings (eg. sort order or filters stored in Products settings)
     ///
     private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings.Setting, Error>) -> Void) {
-        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
+        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] result in
             switch result {
             case .success(let settings):
                 self?.syncProductCategoryFilterRemotely(from: settings) { [weak self] settings in

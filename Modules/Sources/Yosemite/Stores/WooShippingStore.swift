@@ -446,7 +446,7 @@ private extension WooShippingStore {
             guard let self, let contents = try? result.get() else {
                 return completion(result)
             }
-            let shipments = contents.map { (index, items) in
+            let shipments = contents.map { index, items in
                 WooShippingShipment(siteID: siteID,
                                     orderID: orderID,
                                     index: index,

@@ -185,7 +185,7 @@ private extension NotificationStore {
     /// Retrieves the latest notifications (if any!).
     ///
     func synchronizeNotifications(onCompletion: @escaping (Error?) -> Void) {
-        remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] (hashes, error) in
+        remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] hashes, error in
             guard let hashes else {
                 onCompletion(error)
                 return
@@ -242,7 +242,7 @@ private extension NotificationStore {
     /// Updates the last seen notification
     ///
     func updateLastSeen(timestamp: String, onCompletion: @escaping (Error?) -> Void) {
-        remote.updateLastSeen(timestamp) { (error) in
+        remote.updateLastSeen(timestamp) { error in
             onCompletion(error)
         }
     }

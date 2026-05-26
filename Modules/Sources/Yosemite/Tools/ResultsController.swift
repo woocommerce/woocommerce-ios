@@ -260,7 +260,7 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
             self?.onDidChangeContent?()
         }
 
-        internalDelegate.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
+        internalDelegate.onDidChangeObject = { [weak self] object, indexPath, type, newIndexPath in
             guard let `self` = self, let object = object as? T else {
                 return
             }
@@ -269,7 +269,7 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
             self.onDidChangeObject?(transformedObject, indexPath, type, newIndexPath)
         }
 
-        internalDelegate.onDidChangeSection = { [weak self] (mutableSection, sectionIndex, type) in
+        internalDelegate.onDidChangeSection = { [weak self] mutableSection, sectionIndex, type in
             guard let `self` = self else {
                 return
             }

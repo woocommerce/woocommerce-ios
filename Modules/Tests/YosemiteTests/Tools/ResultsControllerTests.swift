@@ -53,7 +53,7 @@ final class ResultsControllerTests: XCTestCase {
     }
 
 
-    /// Verifies that ResultsController does pick up pre-existant entities, right after performFetch runs.
+    /// Verifies that ResultsController does pick up pre-existent entities, right after performFetch runs.
     ///
     func testResultsControllerPicksUpEntitiesAvailablePriorToInstantiation() {
         storageManager.insertSampleAccount()
@@ -261,7 +261,7 @@ final class ResultsControllerTests: XCTestCase {
     }
 
 
-    /// Verifies that `objectIndex(from indexPath:)` returns a plain Integer that can be used to retrive the target Object
+    /// Verifies that `objectIndex(from indexPath:)` returns a plain Integer that can be used to retrieve the target Object
     /// from the `fetchedObjects` collection.
     ///
     func testObjectIndexFromIndexPathReturnsAPlainIndexThatLetsYouMapTheProperObject() {

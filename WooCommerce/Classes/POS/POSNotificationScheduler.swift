@@ -60,6 +60,8 @@ final class POSNotificationScheduler: POSNotificationScheduling {
     }
 
     func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async {
+        guard stores.isAuthenticated else { return }
+
         let isScheduled = await isNotificationAlreadyScheduled(for: merchantType)
         guard !isScheduled else { return }
         guard isCountryEligible() else { return }

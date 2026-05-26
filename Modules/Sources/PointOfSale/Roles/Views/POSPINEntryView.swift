@@ -264,6 +264,13 @@ private extension POSPINEntryView {
     }
 }
 
+extension POSPINEntryView {
+    enum Layout {
+        static let contentWidth: CGFloat = 420
+        static let preferredHeight: CGFloat = 430
+    }
+}
+
 // MARK: - Preview
 
 #if DEBUG

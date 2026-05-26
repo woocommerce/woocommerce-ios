@@ -15,17 +15,17 @@ struct POSManagerOverrideView: View {
                     await handler.submit(pin: pin)
                 }
             }
-            .layoutPriority(1)
+            .frame(height: POSPINEntryView.Layout.preferredHeight)
 
             Button(Localization.cancel) {
                 handler.cancel()
             }
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: POSPINEntryView.Layout.contentWidth)
         .padding(.horizontal, isCompactWidth ? POSPadding.medium : POSPadding.none)
-        .padding(.top, isCompactWidth ? POSPadding.large : POSPadding.none)
-        .padding(.bottom, isCompactWidth ? POSPadding.xxLarge : POSPadding.none)
+        .padding(.vertical, isCompactWidth ? POSPadding.xxLarge : POSPadding.none)
+        .frame(maxWidth: .infinity, maxHeight: isCompactWidth ? .infinity : nil)
     }
 }
 

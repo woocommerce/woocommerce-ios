@@ -28,9 +28,9 @@ struct POSLockScreenView: View {
                         await model.signIn(withPIN: pin)
                     }
                 }
-                .frame(height: Constants.pinEntryHeight)
+                .frame(height: POSPINEntryView.Layout.preferredHeight)
             }
-            .frame(maxWidth: Constants.contentWidth)
+            .frame(maxWidth: POSPINEntryView.Layout.contentWidth)
             .padding(POSPadding.xxLarge)
         }
     }
@@ -45,15 +45,6 @@ private extension POSLockScreenView {
             value: "Enter your PIN",
             comment: "Title shown on the POS lock screen."
         )
-    }
-}
-
-// MARK: - Constants
-
-private extension POSLockScreenView {
-    enum Constants {
-        static let contentWidth: CGFloat = 420
-        static let pinEntryHeight: CGFloat = 430
     }
 }
 

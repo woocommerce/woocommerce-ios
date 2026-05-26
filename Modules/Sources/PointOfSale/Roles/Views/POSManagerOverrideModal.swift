@@ -2,7 +2,6 @@ import SwiftUI
 
 private struct POSManagerOverrideModalModifier: ViewModifier {
     @Environment(\.posAccessSession) private var session
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let handler: POSManagerOverrideHandler
 
@@ -24,12 +23,8 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
 private extension POSManagerOverrideModalModifier {
     @ViewBuilder
     func modalContent(for request: POSManagerOverrideRequest) -> some View {
-        if horizontalSizeClass == .compact {
-            POSManagerOverrideView(handler: handler, request: request)
-        } else {
-            POSManagerOverrideView(handler: handler, request: request)
-                .posModalSizing()
-        }
+        POSManagerOverrideView(handler: handler, request: request)
+            .posManagerOverrideModalSizing()
     }
 }
 
@@ -39,46 +34,98 @@ extension View {
     }
 }
 
-#if DEBUG
-#Preview("Dashboard") {
-    @Previewable @StateObject var modalManager = POSModalManager()
-    @Previewable @StateObject var coverManager = POSFullScreenCoverManager()
-    @Previewable @State var handler = POSManagerOverrideHandler(session: MockPOSAccessSession())
+private extension View {
+    func posManagerOverrideModalSizing() -> some View {
+        modifier(POSManagerOverrideModalSizing())
+    }
+}
 
-    NavigationStack {
-        PointOfSaleDashboardView()
-            .environment(POSPreviewHelpers.makePreviewAggregateModel())
+private struct POSManagerOverrideModalSizing: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posModalParentSize) private var parentSize
+
+    func body(content: Content) -> some View {
+        content
+            .padding(.horizontal, horizontalPadding)
+            .padding(.vertical, verticalPadding)
+            .frame(width: frameWidth)
+    }
+}
+
+private extension POSManagerOverrideModalSizing {
+    var isCompactWidth: Bool {
+        horizontalSizeClass == .compact
+    }
+
+    var horizontalPadding: CGFloat {
+        isCompactWidth ? POSPadding.none : POSPadding.xxLarge
+    }
+
+    var verticalPadding: CGFloat {
+        isCompactWidth ? POSPadding.none : POSPadding.large
+    }
+
+    var frameWidth: CGFloat? {
+        guard !isCompactWidth else {
+            return nil
+        }
+        return min(parentSize.width, POSPINEntryView.Layout.contentWidth + POSPadding.xxLarge * 2)
+    }
+}
+
+#if DEBUG
+#Preview("Sample order") {
+    POSManagerOverridePreview(
+        session: MockPOSAccessSession(),
+        capability: .refundShopOrders,
+        reason: "Issue a refund for Order #1043"
+    )
+}
+
+#Preview("Sample order - Invalid PIN") {
+    POSManagerOverridePreview(
+        session: MockPOSAccessSession(managerApprovalResult: .failure(.invalidPIN)),
+        capability: .publishShopCoupons,
+        reason: "Creating coupons requires manager approval.",
+        pinEntryState: .error(message: "Incorrect PIN. Try again.")
+    )
+}
+
+private struct POSManagerOverridePreview: View {
+    @StateObject private var modalManager = POSModalManager()
+    @StateObject private var coverManager = POSFullScreenCoverManager()
+    @State private var handler: POSManagerOverrideHandler
+
+    private let session: MockPOSAccessSession
+    private let capability: POSCapability
+    private let reason: String
+    private let pinEntryState: POSPINEntryState
+
+    init(session: MockPOSAccessSession,
+         capability: POSCapability,
+         reason: String,
+         pinEntryState: POSPINEntryState = .idle) {
+        self.session = session
+        self.capability = capability
+        self.reason = reason
+        self.pinEntryState = pinEntryState
+        self._handler = State(initialValue: POSManagerOverrideHandler(session: session))
+    }
+
+    var body: some View {
+        POSManagerOverridePreviewSurface()
             .posManagerOverrideModal(handler: handler)
             .posRootModal()
             .environmentObject(modalManager)
             .environmentObject(coverManager)
+            .environment(\.posAccessSession, session)
             .onAppear {
                 handler.requestApproval(
-                    for: .refundShopOrders,
-                    reason: "Refunding orders requires manager approval."
+                    for: capability,
+                    reason: reason
                 )
+                handler.pinEntryState = pinEntryState
             }
-    }
-    .environment(\.posAccessSession, MockPOSAccessSession())
-}
-
-#Preview("Sample order - Invalid PIN") {
-    @Previewable @StateObject var modalManager = POSModalManager()
-    @Previewable @StateObject var coverManager = POSFullScreenCoverManager()
-    @Previewable @State var handler = POSManagerOverrideHandler(session: MockPOSAccessSession(managerApprovalResult: .failure(.invalidPIN)))
-
-    POSManagerOverridePreviewSurface()
-        .posManagerOverrideModal(handler: handler)
-        .posRootModal()
-        .environmentObject(modalManager)
-        .environmentObject(coverManager)
-        .environment(\.posAccessSession, MockPOSAccessSession(managerApprovalResult: .failure(.invalidPIN)))
-        .onAppear {
-            handler.requestApproval(
-                for: .publishShopCoupons,
-                reason: "Creating coupons requires manager approval."
-            )
-            handler.pinEntryState = .error(message: "Incorrect PIN. Try again.")
         }
 }
 

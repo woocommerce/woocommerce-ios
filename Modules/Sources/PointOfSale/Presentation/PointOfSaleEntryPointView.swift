@@ -28,6 +28,7 @@ public struct PointOfSaleEntryPointView: View {
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var orderListModel: POSOrderListModel
     @State private var posEntryPointController: POSEntryPointController
+    @State private var accessSession: POSAccessSession
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -86,6 +87,7 @@ public struct PointOfSaleEntryPointView: View {
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
+        self._accessSession = State(initialValue: services.makeAccessSession(siteID: siteID))
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
 
@@ -236,6 +238,11 @@ public struct PointOfSaleEntryPointView: View {
             onPointOfSaleModeActiveStateChange(false)
             posModalManager.onDisappear()
             posModel?.pointOfSaleClosed()
+        }
+        .posLockScreenOverlay()
+        .environment(\.posAccessSession, accessSession)
+        .task {
+            await accessSession.refreshPINStatus()
         }
     }
 }

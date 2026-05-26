@@ -209,8 +209,20 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
                 "#{still_failing_v.size} placeholder + #{still_failing_g.size} glossary still failing")
   end
 
-  WooAiTranslation::IosResources::Writer.write(output_path, units_for_write, locale)
-  verify_round_trip!(output_path, units_for_write, logger: logger, locale: locale)
+  # In incremental mode, splice the freshly-translated entries into the
+  # existing target file in place so the bot's `Translate: ...` commit
+  # touches only the keys that actually changed. Bootstrap mode (no
+  # existing target file, or first locale ever) still emits a full file.
+  if incremental && File.exist?(output_path)
+    fresh_names = (units_to_translate.map(&:name) - failed_missing).to_set
+    fresh_units = units_for_write.select { |u| fresh_names.include?(u.name) }
+    WooAiTranslation::IosResources::Writer.write_incremental(output_path, fresh_units, locale)
+    # Round-trip verifies the whole file is still parseable + complete.
+    verify_round_trip!(output_path, units_for_write, logger: logger, locale: locale)
+  else
+    WooAiTranslation::IosResources::Writer.write(output_path, units_for_write, locale)
+    verify_round_trip!(output_path, units_for_write, logger: logger, locale: locale)
+  end
   manifest&.save!
 
   logger.call("[#{locale}] wrote #{output_path} (#{translated} keys, " \

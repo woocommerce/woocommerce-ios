@@ -25,9 +25,7 @@ private extension POSManagerOverrideView {
 
     var modalContent: some View {
         VStack(spacing: POSPINEntryView.titleToPINSpacing) {
-            header(titleFont: .posHeadingBold,
-                   reasonFont: .posBodyMediumRegular(),
-                   spacing: POSSpacing.medium)
+            header(spacing: POSSpacing.medium)
 
             pinEntry
                 .frame(height: POSPINEntryView.preferredHeight)
@@ -40,9 +38,7 @@ private extension POSManagerOverrideView {
 
     var compactContent: some View {
         VStack(spacing: POSPINEntryView.titleToPINSpacing) {
-            header(titleFont: .posHeadingBold,
-                   reasonFont: .posBodyMediumRegular(),
-                   spacing: POSSpacing.small)
+            header(spacing: POSSpacing.small)
 
             pinEntry
                 .frame(height: POSPINEntryView.preferredHeight)
@@ -54,18 +50,16 @@ private extension POSManagerOverrideView {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    func header(titleFont: POSFontStyle,
-                reasonFont: POSFontStyle,
-                spacing: CGFloat) -> some View {
+    func header(spacing: CGFloat) -> some View {
         VStack(spacing: spacing) {
-            title(font: titleFont)
-            reason(font: reasonFont)
+            title
+            reason
         }
     }
 
-    func title(font: POSFontStyle) -> some View {
+    var title: some View {
         Text(Localization.title)
-            .font(font)
+            .font(.posHeadingBold)
             .foregroundStyle(Color.posOnSurface)
             .multilineTextAlignment(.center)
             .lineLimit(1)
@@ -74,9 +68,9 @@ private extension POSManagerOverrideView {
             .accessibilityAddTraits(.isHeader)
     }
 
-    func reason(font: POSFontStyle) -> some View {
+    var reason: some View {
         Text(request.reason)
-            .font(font)
+            .font(.posBodyMediumRegular())
             .foregroundStyle(Color.posOnSurfaceVariantHighest)
             .multilineTextAlignment(.center)
             .lineLimit(2)

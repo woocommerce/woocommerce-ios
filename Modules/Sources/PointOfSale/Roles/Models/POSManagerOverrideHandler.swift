@@ -7,12 +7,22 @@ final class POSManagerOverrideHandler {
     @ObservationIgnored private var session: POSAccessSession?
     @ObservationIgnored private var onApproved: (() -> Void)?
 
-    var request: POSManagerOverrideRequest?
-    var pinEntryState: POSPINEntryState = .idle
+    private(set) var request: POSManagerOverrideRequest?
+    private(set) var pinEntryState: POSPINEntryState = .idle
 
     init(session: POSAccessSession? = nil) {
         self.session = session
     }
+
+    #if DEBUG
+    convenience init(session: POSAccessSession?,
+                     initialRequest: POSManagerOverrideRequest? = nil,
+                     initialPINEntryState: POSPINEntryState = .idle) {
+        self.init(session: session)
+        self.request = initialRequest
+        self.pinEntryState = initialPINEntryState
+    }
+    #endif
 
     func configure(session: POSAccessSession) {
         self.session = session
@@ -26,7 +36,7 @@ final class POSManagerOverrideHandler {
 
     func submit(pin: String) async {
         guard let request, let session else {
-            pinEntryState = .error(message: Localization.unknownError)
+            pinEntryState = .error(kind: .generic)
             return
         }
 
@@ -38,7 +48,7 @@ final class POSManagerOverrideHandler {
             dismiss()
             approvedAction?()
         } catch {
-            pinEntryState = .error(message: message(for: error))
+            pinEntryState = .error(kind: errorKind(for: error))
         }
     }
 
@@ -54,25 +64,10 @@ private extension POSManagerOverrideHandler {
         onApproved = nil
     }
 
-    func message(for error: POSAuthError) -> String {
+    func errorKind(for error: POSAuthError) -> POSPINErrorKind {
         switch error {
-        case .invalidPIN:
-            Localization.invalidPIN
-        case .unknown:
-            Localization.unknownError
+        case .invalidPIN: .invalidPIN
+        case .unknown: .generic
         }
-    }
-
-    enum Localization {
-        static let invalidPIN = NSLocalizedString(
-            "pos.managerOverride.invalidPIN",
-            value: "Incorrect PIN. Try again.",
-            comment: "Error shown on the POS manager approval modal when the entered PIN is invalid."
-        )
-        static let unknownError = NSLocalizedString(
-            "pos.managerOverride.unknownError",
-            value: "Something went wrong. Try again.",
-            comment: "Error shown on the POS manager approval modal when approval fails for an unknown reason."
-        )
     }
 }

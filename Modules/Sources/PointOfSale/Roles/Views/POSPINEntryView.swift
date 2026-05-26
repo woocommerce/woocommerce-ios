@@ -185,12 +185,13 @@ private extension POSPINEntryView {
     // Parent drives state per attempt (e.g. via .loading) so a repeated failure re-animates, and exits .lockout once the deadline passes.
     func handleStateChange(_ newState: POSPINEntryState) {
         switch newState {
-        case .error:
+        case .error(let kind):
             enteredPIN = ""
             haptics.attemptFailed()
             withAnimation(.linear(duration: Constants.shakeDuration)) {
                 shakeAmount += 1
             }
+            AccessibilityNotification.Announcement(Localization.message(for: kind)).post()
         case .idle:
             enteredPIN = ""
         case .loading, .lockout:
@@ -263,6 +264,22 @@ private extension POSPINEntryView {
         static func dotsAccessibilityValue(entered: Int, total: Int) -> String {
             String.localizedStringWithFormat(dotsAccessibilityValueFormat, entered, total)
         }
+        static let invalidPINMessage = NSLocalizedString(
+            "pos.pinEntry.error.invalidPIN",
+            value: "Incorrect PIN. Try again.",
+            comment: "VoiceOver announcement when an entered POS PIN is incorrect."
+        )
+        static let genericErrorMessage = NSLocalizedString(
+            "pos.pinEntry.error.generic",
+            value: "Something went wrong. Try again.",
+            comment: "VoiceOver announcement when validating the entered POS PIN fails unexpectedly."
+        )
+        static func message(for kind: POSPINErrorKind) -> String {
+            switch kind {
+            case .invalidPIN: invalidPINMessage
+            case .generic: genericErrorMessage
+            }
+        }
     }
 }
 
@@ -286,7 +303,7 @@ extension POSPINEntryView {
 }
 
 #Preview("Error") {
-    POSPINEntryView(state: .error(message: "Incorrect PIN. Try again."), onComplete: { _ in })
+    POSPINEntryView(state: .error(kind: .invalidPIN), onComplete: { _ in })
         .padding()
         .background(Color.posSurfaceContainerLow)
 }
@@ -303,13 +320,12 @@ extension POSPINEntryView {
         .background(Color.posSurfaceContainerLow)
 }
 
-
 #Preview("Interactive (wrong PIN)") {
     @Previewable @State var state: POSPINEntryState = .idle
     POSPINEntryView(state: state, onComplete: { _ in
         state = .loading
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            state = .error(message: "Incorrect PIN. Try again.")
+            state = .error(kind: .invalidPIN)
         }
     })
     .padding()

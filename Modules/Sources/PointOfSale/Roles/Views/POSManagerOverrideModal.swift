@@ -6,17 +6,24 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
     let handler: POSManagerOverrideHandler
 
     func body(content: Content) -> some View {
-        @Bindable var handler = handler
-
         content
             .onAppear {
                 handler.configure(session: session)
             }
-            .posModal(item: $handler.request, onDismiss: {
-                handler.cancel()
-            }) { request in
+            .posModal(item: requestBinding) { request in
                 modalContent(for: request)
             }
+    }
+
+    private var requestBinding: Binding<POSManagerOverrideRequest?> {
+        Binding(
+            get: { handler.request },
+            set: { newValue in
+                if newValue == nil {
+                    handler.cancel()
+                }
+            }
+        )
     }
 }
 
@@ -87,7 +94,7 @@ private extension POSManagerOverrideModalSizing {
         session: MockPOSAccessSession(managerApprovalResult: .failure(.invalidPIN)),
         capability: .publishShopCoupons,
         reason: "Creating coupons requires manager approval",
-        pinEntryState: .error(message: "Incorrect PIN. Try again.")
+        pinEntryState: .error(kind: .invalidPIN)
     )
 }
 
@@ -99,7 +106,6 @@ private struct POSManagerOverridePreview: View {
     private let session: MockPOSAccessSession
     private let capability: POSCapability
     private let reason: String
-    private let pinEntryState: POSPINEntryState
 
     init(session: MockPOSAccessSession,
          capability: POSCapability,
@@ -108,8 +114,11 @@ private struct POSManagerOverridePreview: View {
         self.session = session
         self.capability = capability
         self.reason = reason
-        self.pinEntryState = pinEntryState
-        self._handler = State(initialValue: POSManagerOverrideHandler(session: session))
+        self._handler = State(initialValue: POSManagerOverrideHandler(
+            session: session,
+            initialRequest: POSManagerOverrideRequest(capability: capability, reason: reason),
+            initialPINEntryState: pinEntryState
+        ))
     }
 
     var body: some View {
@@ -119,14 +128,7 @@ private struct POSManagerOverridePreview: View {
             .environmentObject(modalManager)
             .environmentObject(coverManager)
             .environment(\.posAccessSession, session)
-            .onAppear {
-                handler.requestApproval(
-                    for: capability,
-                    reason: reason
-                )
-                handler.pinEntryState = pinEntryState
-            }
-        }
+    }
 }
 
 private struct POSManagerOverridePreviewSurface: View {

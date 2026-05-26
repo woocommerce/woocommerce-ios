@@ -58,7 +58,7 @@ private extension POSLockScreenView {
 #Preview("Invalid PIN") {
     let model = POSLockScreenModel(
         session: MockPOSAccessSession(isLocked: true, signInResult: .failure(.invalidPIN)),
-        initialPinEntryState: .error(message: "Incorrect PIN. Try again.")
+        initialPinEntryState: .error(kind: .invalidPIN)
     )
     return POSLockScreenView(model: model)
 }

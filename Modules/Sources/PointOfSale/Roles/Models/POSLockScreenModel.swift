@@ -30,31 +30,16 @@ final class POSLockScreenModel {
             try await session.signIn(withPIN: pin)
             pinEntryState = .idle
         } catch {
-            pinEntryState = .error(message: message(for: error))
+            pinEntryState = .error(kind: errorKind(for: error))
         }
     }
 }
 
 private extension POSLockScreenModel {
-    func message(for error: POSAuthError) -> String {
+    func errorKind(for error: POSAuthError) -> POSPINErrorKind {
         switch error {
-        case .invalidPIN:
-            Localization.invalidPIN
-        case .unknown:
-            Localization.unknownError
+        case .invalidPIN: .invalidPIN
+        case .unknown: .generic
         }
-    }
-
-    enum Localization {
-        static let invalidPIN = NSLocalizedString(
-            "pos.lockScreen.invalidPIN",
-            value: "Incorrect PIN. Try again.",
-            comment: "Error shown on the POS lock screen when the entered PIN is invalid."
-        )
-        static let unknownError = NSLocalizedString(
-            "pos.lockScreen.unknownError",
-            value: "Something went wrong. Try again.",
-            comment: "Error shown on the POS lock screen when unlocking fails for an unknown reason."
-        )
     }
 }

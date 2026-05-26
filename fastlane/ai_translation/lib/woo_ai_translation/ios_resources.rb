@@ -2,6 +2,7 @@
 
 require 'digest'
 require 'fileutils'
+require 'tmpdir'
 
 module WooAiTranslation
   # Order-preserving reader/writer for iOS `Localizable.strings` resources.
@@ -113,11 +114,47 @@ module WooAiTranslation
 
       ParseError = Class.new(StandardError)
 
+      # In-process memoization keyed by content digest. Survives within a
+      # single process; identical-content files (e.g. en.lproj re-parsed
+      # by filter and round-trip) share one parsed Document.
+      CACHE = {}
+
       # Read a `.strings` file, transparently decoding UTF-16 (BE/LE) if the
       # source still uses Apple's legacy encoding. Modern Xcode emits UTF-8.
+      #
+      # The parser is O(n²) on large files (known limitation noted in
+      # MIGRATIONS / README); on a 1MB en.lproj this is ~40s. We aggressively
+      # cache to avoid paying that cost repeatedly:
+      #   - In-process: same content within one process => one parse.
+      #   - On-disk: cross-process Marshal cache at /tmp/wai_parse_<sha>.bin.
+      #     The CI run spawns 15 translate_locale.rb processes that each see
+      #     the same en.lproj; without the disk cache they'd each pay ~40s.
+      # Cache key is sha256(file content), so any edit invalidates cleanly
+      # without mtime games. The disk cache is best-effort: a load/save
+      # failure (corrupt file, /tmp full, etc.) falls through to re-parse
+      # rather than aborting.
       def parse_file(path)
         bytes = File.binread(path)
-        parse(decode(bytes), source_path: path)
+        key = Digest::SHA256.hexdigest(bytes)
+        CACHE[key] ||= load_cached_or_parse(path, bytes, key)
+      end
+
+      def load_cached_or_parse(path, bytes, key)
+        disk = File.join(Dir.tmpdir, "wai_parse_#{key[0, 16]}.bin")
+        if File.exist?(disk)
+          begin
+            return Marshal.load(File.binread(disk))
+          rescue StandardError
+            # corrupt cache — fall through to re-parse + rewrite
+          end
+        end
+        doc = parse(decode(bytes), source_path: path)
+        begin
+          File.binwrite(disk, Marshal.dump(doc))
+        rescue StandardError
+          # disk full / read-only fs / etc. — caching is best-effort
+        end
+        doc
       end
 
       def parse(text, source_path: '<string>')

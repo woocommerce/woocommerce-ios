@@ -503,7 +503,7 @@ private extension AppSettingsStore {
 
     /// Loads the most recently remembered card reader, if any (i.e. to reconnect to automatically)
     /// NOTE: We now only persist one card reader maximum.
-    /// E.g.  "CHB204909005931"
+    /// E.g. "CHB204909005931"
     ///
     func loadCardReader(onCompletion: (Result<String?, Error>) -> Void) {
         /// NOTE: We now only persist one card reader maximum, although for backwards compatibility

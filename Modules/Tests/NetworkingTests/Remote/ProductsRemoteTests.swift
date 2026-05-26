@@ -771,7 +771,7 @@ final class ProductsRemoteTests: XCTestCase {
 
         // When
         waitForExpectation { expectation in
-            remote.loadProductIDs(for: sampleSiteID) { result in
+            remote.loadProductIDs(for: sampleSiteID) { _ in
                 expectation.fulfill()
             }
         }

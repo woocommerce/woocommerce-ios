@@ -98,7 +98,7 @@ private struct CurrentOrderListSyncUseCase {
                                            pageSize: SyncingCoordinator.Defaults.pageSize,
                                            reason: .backgroundFetch,
                                            lastFullSyncTimestamp: OrderListSyncBackgroundTask.latestSyncDate,
-                                           completionHandler: { timeInterval, error in
+                                           completionHandler: { _, error in
                 if let error {
                     continuation.resume(throwing: error)
                 } else {

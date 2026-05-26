@@ -7,7 +7,7 @@ import Storage
 public final class ProductShippingClassStore: Store {
     private let remote: ProductShippingClassRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductShippingClassRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

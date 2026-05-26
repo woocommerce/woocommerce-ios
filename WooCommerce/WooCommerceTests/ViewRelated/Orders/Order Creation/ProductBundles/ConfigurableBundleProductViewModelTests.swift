@@ -277,7 +277,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            // The bundle is not new when there are non-empty child items.
                                                            childItems: [.fake()],
                                                            stores: stores,
-                                                           onConfigure: { configurations in
+                                                           onConfigure: { _ in
             // Then
             XCTFail("The configure closure should not be invoked")
         })

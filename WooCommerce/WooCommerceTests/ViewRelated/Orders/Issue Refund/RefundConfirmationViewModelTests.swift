@@ -540,7 +540,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher, analytics: analytics)
         waitForExpectation { exp in
             viewModel.submit(rootViewController: .init(),
-                             showInProgressUI: {}) { result in
+                             showInProgressUI: {}) { _ in
                 exp.fulfill()
             }
         }

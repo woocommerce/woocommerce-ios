@@ -53,7 +53,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         api.callMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (responseObject: AnyObject, _: HTTPURLResponse?) in
+            success: { (_: AnyObject, _: HTTPURLResponse?) in
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
@@ -78,7 +78,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         api.callMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (responseObject: AnyObject, _: HTTPURLResponse?) in
+            success: { (_: AnyObject, _: HTTPURLResponse?) in
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
@@ -105,7 +105,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         api.callMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (responseObject: AnyObject, _: HTTPURLResponse?) in
+            success: { (_: AnyObject, _: HTTPURLResponse?) in
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
@@ -132,7 +132,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         api.callMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (responseObject: AnyObject, _: HTTPURLResponse?) in
+            success: { (_: AnyObject, _: HTTPURLResponse?) in
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
@@ -158,7 +158,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         api.callMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (responseObject: AnyObject, _: HTTPURLResponse?) in
+            success: { (_: AnyObject, _: HTTPURLResponse?) in
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
@@ -186,7 +186,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         api.callMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (responseObject: AnyObject, _: HTTPURLResponse?) in
+            success: { (_: AnyObject, _: HTTPURLResponse?) in
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
@@ -217,7 +217,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         api.callMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (responseObject: AnyObject, _: HTTPURLResponse?) in
+            success: { (_: AnyObject, _: HTTPURLResponse?) in
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
@@ -243,7 +243,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         api.callMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (responseObject: AnyObject, _: HTTPURLResponse?) in
+            success: { (_: AnyObject, _: HTTPURLResponse?) in
                 expect.fulfill()
                 XCTFail("This call should fail")
             },

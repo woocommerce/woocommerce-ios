@@ -48,8 +48,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Analytics manager.
     private let analytics: Analytics
 
-    /// View controller used to present alerts.
-    private var rootViewController: UIViewController
+    /// View controller presenter used to present alerts.
+    private var rootViewController: ViewControllerPresenting
 
     /// Stores the card reader listener subscription while trying to connect to one.
     private var readerSubscription: AnyCancellable?
@@ -120,7 +120,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     }
 
     init(details: Details,
-         rootViewController: UIViewController,
+         rootViewController: ViewControllerPresenting,
          alerts: OrderDetailsPaymentAlertsProtocol,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
          cardReaderConnectionAlerts: AlertProvider,
@@ -321,6 +321,13 @@ private extension RefundSubmissionUseCase {
                                         onCancel: { [weak self] in
                 self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
             })
+        }, onCardInserted: { [weak self] in
+            guard let self else { return }
+            self.alerts.cardInserted(title: RefundSubmissionUseCaseDefinitions.Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
+                                     amount: self.formattedAmount,
+                                     onCancel: { [weak self] in
+                self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
+            })
         }, onProcessingMessage: { [weak self] in
             // Shows waiting message.
             self?.alerts.processingPayment(
@@ -358,7 +365,7 @@ private extension RefundSubmissionUseCase {
         if let cardReaderError = error as? CardReaderServiceError,
            case .refundPayment(_, let shouldRetry) = cardReaderError,
            shouldRetry == false {
-            alerts.nonRetryableError(from: rootViewController, error: error) {
+            alerts.nonRetryableError(from: rootViewController as? UIViewController, error: error) {
                 onCompletion(.failure(error))
             }
         } else {
@@ -396,15 +403,20 @@ private extension RefundSubmissionUseCase {
 
             guard let self else { return }
 
-            if let refundData {
-                // Workaround for https://github.com/woocommerce/woocommerce/issues/33389. This can be removed when the related API issue is fixed
-                self.retrieveUpdatedRefundData(refund: refundData)
-            }
             if let error {
                 DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")
                 self.trackCreateRefundRequestFailed(error: error)
                 return onCompletion(.failure(error))
             }
+
+            guard let refundData else {
+                DDLogError("Error creating refund: \(refund)\nWith Error: missing created refund response")
+                self.trackCreateRefundRequestFailed(error: RefundSubmissionUseCaseSubmissionError.missingCreatedRefund)
+                return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.missingCreatedRefund))
+            }
+
+            // Workaround for https://github.com/woocommerce/woocommerce/issues/33389. This can be removed when the related API issue is fixed
+            self.retrieveUpdatedRefundData(refund: refundData)
             onCompletion(.success(()))
             self.trackCreateRefundRequestSuccess()
         }
@@ -510,6 +522,7 @@ enum RefundSubmissionUseCaseSubmissionError: Error, Equatable {
     case invalidRefundAmount
     case unknownPaymentGatewayAccount
     case canceledByUser
+    case missingCreatedRefund
 }
 
 private enum RefundSubmissionUseCaseDefinitions {

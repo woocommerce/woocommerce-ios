@@ -14,7 +14,7 @@ public class NotificationStore: Store {
     ///
     private static var privateStorage: StorageType!
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = NotificationsRemote(network: network)
         self.devicesRemote = DevicesRemote(network: network)
         self.pushNotificationPreferencesRemote = PushNotificationPreferencesRemote(network: network)

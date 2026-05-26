@@ -343,7 +343,7 @@ final class OrderStoreTests: XCTestCase {
         let firstAction = OrderAction.searchOrders(siteID: sampleSiteID,
                                                    keyword: defaultSearchKeyword,
                                                    pageNumber: defaultPageNumber,
-                                                   pageSize: defaultPageSize) { error in
+                                                   pageSize: defaultPageSize) { _ in
             orderStore.onAction(nestedAction)
         }
 
@@ -416,7 +416,7 @@ final class OrderStoreTests: XCTestCase {
         let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)?.toReadOnly()
 
         let fetchedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, error) in
+            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, _) in
                 promise(order)
             }
 
@@ -438,7 +438,7 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let fetchedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, error) in
+            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, _) in
                 promise(order)
             }
 
@@ -978,7 +978,7 @@ final class OrderStoreTests: XCTestCase {
 
         // Track Events: Upsert == 1 / Delete == 0
         var numberOfUpsertEvents = 0
-        entityListener.onUpsert = { upserted in
+        entityListener.onUpsert = { _ in
             numberOfUpsertEvents += 1
         }
 

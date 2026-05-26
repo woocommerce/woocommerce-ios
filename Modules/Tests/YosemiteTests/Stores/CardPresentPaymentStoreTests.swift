@@ -173,7 +173,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     }
 
     func test_cancel_discovery_action_hits_cancel_in_service() {
-        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { result in
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { _ in
             //
         }
 
@@ -242,7 +242,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     }
 
     func test_disconnect_action_hits_disconnect_in_service() {
-        let action = CardPresentPaymentAction.disconnect(onCompletion: { result in
+        let action = CardPresentPaymentAction.disconnect(onCompletion: { _ in
             //
         })
 
@@ -606,7 +606,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher())
-        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { _ in
             // Card is not removed.
         })
 
@@ -617,10 +617,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                 orderID: sampleOrderID,
                                 parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
                                 countryCode: .US,
-                                terminalPaymentPreparationEnabled: false) { cardReaderEvent in
+                                terminalPaymentPreparationEnabled: false) { _ in
                 } onProcessingCompletion: { intent in
                     promise(intent)
-                } onCompletion: { result in
+                } onCompletion: { _ in
                     XCTFail("Payment collection is not complete until the card removal step completes.")
                 }
             cardPresentStore.onAction(action)
@@ -653,8 +653,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                 orderID: sampleOrderID,
                                 parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
                                 countryCode: .US,
-                                terminalPaymentPreparationEnabled: false) { cardReaderEvent in
-                } onProcessingCompletion: { intent in
+                                terminalPaymentPreparationEnabled: false) { _ in
+                } onProcessingCompletion: { _ in
                 } onCompletion: { result in
                     promise(result)
                 }
@@ -693,8 +693,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                 orderID: sampleOrderID,
                                 parameters: .init(amount: 2.5, currency: "AUD", stripeSmallestCurrencyUnitMultiplier: 100),
                                 countryCode: .AU,
-                                terminalPaymentPreparationEnabled: true) { cardReaderEvent in
-                } onProcessingCompletion: { intent in
+                                terminalPaymentPreparationEnabled: true) { _ in
+                } onProcessingCompletion: { _ in
                 } onCompletion: { result in
                     promise(result)
                 }
@@ -734,8 +734,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                 orderID: sampleOrderID,
                                 parameters: .init(amount: 2.5, currency: "AUD", stripeSmallestCurrencyUnitMultiplier: 100),
                                 countryCode: .AU,
-                                terminalPaymentPreparationEnabled: true) { cardReaderEvent in
-                } onProcessingCompletion: { intent in
+                                terminalPaymentPreparationEnabled: true) { _ in
+                } onProcessingCompletion: { _ in
                 } onCompletion: { result in
                     promise(result)
                 }
@@ -773,8 +773,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                 orderID: sampleOrderID,
                                 parameters: .init(amount: 2.5, currency: "AUD", stripeSmallestCurrencyUnitMultiplier: 100),
                                 countryCode: .AU,
-                                terminalPaymentPreparationEnabled: true) { cardReaderEvent in
-                } onProcessingCompletion: { intent in
+                                terminalPaymentPreparationEnabled: true) { _ in
+                } onProcessingCompletion: { _ in
                 } onCompletion: { result in
                     promise(result)
                 }
@@ -810,8 +810,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                 orderID: sampleOrderID,
                                 parameters: .init(amount: 2.5, currency: "CAD", stripeSmallestCurrencyUnitMultiplier: 100),
                                 countryCode: .CA,
-                                terminalPaymentPreparationEnabled: false) { cardReaderEvent in
-                } onProcessingCompletion: { intent in
+                                terminalPaymentPreparationEnabled: false) { _ in
+                } onProcessingCompletion: { _ in
                 } onCompletion: { result in
                     promise(result)
                 }
@@ -852,8 +852,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                 orderID: sampleOrderID,
                                 parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
                                 countryCode: .US,
-                                terminalPaymentPreparationEnabled: false) { cardReaderEvent in
-                } onProcessingCompletion: { intent in
+                                terminalPaymentPreparationEnabled: false) { _ in
+                } onProcessingCompletion: { _ in
                 } onCompletion: { result in
                     promise(result)
                 }
@@ -886,8 +886,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                 orderID: sampleOrderID,
                                 parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
                                 countryCode: .CA,
-                                terminalPaymentPreparationEnabled: true) { cardReaderEvent in
-                } onProcessingCompletion: { intent in
+                                terminalPaymentPreparationEnabled: true) { _ in
+                } onProcessingCompletion: { _ in
                     XCTFail("`onProcessingCompletion` should only be called after the payment intent is prepared and confirmed.")
                 } onCompletion: { result in
                     promise(result)
@@ -932,8 +932,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                     if cardReaderEvent == .cardRemovedAfterClientSidePaymentCapture {
                         promise(())
                     }
-                } onProcessingCompletion: { intent in
-                } onCompletion: { result in
+                } onProcessingCompletion: { _ in
+                } onCompletion: { _ in
                 }
             self.cardPresentStore.onAction(action)
         }
@@ -952,7 +952,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let error = UnderlyingError.readerBusy
         mockCardReaderService.whenCapturingPayment(thenReturn: Fail<PaymentIntent, Error>(error: error)
             .eraseToAnyPublisher())
-        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { _ in
             // Card is not removed.
         })
 
@@ -963,8 +963,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                 orderID: sampleOrderID,
                                 parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
                                 countryCode: .US,
-                                terminalPaymentPreparationEnabled: false) { cardReaderEvent in
-                } onProcessingCompletion: { intent in
+                                terminalPaymentPreparationEnabled: false) { _ in
+                } onProcessingCompletion: { _ in
                     XCTFail("`onProcessingCompletion` should only be called when payment capture succeeds.")
                 } onCompletion: { result in
                     promise(result)

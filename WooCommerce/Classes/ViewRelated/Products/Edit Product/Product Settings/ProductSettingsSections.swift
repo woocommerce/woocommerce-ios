@@ -40,9 +40,9 @@ enum ProductSettingsSections {
 
         init(_ settings: ProductSettings) {
             rows = [ProductSettingsRows.ReviewsAllowed(settings),
-            ProductSettingsRows.Slug(settings),
-            ProductSettingsRows.PurchaseNote(settings),
-            ProductSettingsRows.MenuOrder(settings)]
+                    ProductSettingsRows.Slug(settings),
+                    ProductSettingsRows.PurchaseNote(settings),
+                    ProductSettingsRows.MenuOrder(settings)]
         }
     }
 }

@@ -30,7 +30,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // When
         let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
-            network.responseData(for: request) { data, error in
+            network.responseData(for: request) { _, error in
                 promise(error)
             }
         }
@@ -52,7 +52,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // When
         let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
-            network.responseData(for: request) { data, error in
+            network.responseData(for: request) { _, error in
                 promise(error)
             }
         }
@@ -74,7 +74,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // When
         let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
-            network.responseData(for: request) { data, error in
+            network.responseData(for: request) { _, error in
                 promise(error)
             }
         }

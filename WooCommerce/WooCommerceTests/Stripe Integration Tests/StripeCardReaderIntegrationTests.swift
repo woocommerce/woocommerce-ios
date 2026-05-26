@@ -22,7 +22,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
         let readerService = ServiceLocator.cardReaderService
 
-        readerService.discoveredReaders.sink { completion in
+        readerService.discoveredReaders.sink { _ in
             readerService.cancelDiscovery()
                 .fulfillOnCompletion(expectation: receivedReaders)
         } receiveValue: { readers in
@@ -45,7 +45,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
         let readerService = ServiceLocator.cardReaderService
 
-        readerService.discoveredReaders.sink { completion in
+        readerService.discoveredReaders.sink { _ in
             readerService.cancelDiscovery()
                 .fulfillOnCompletion(expectation: discoveredReaders)
         } receiveValue: { readers in
@@ -79,7 +79,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
         let readerService = ServiceLocator.cardReaderService
 
-        readerService.discoveredReaders.dropFirst(1).sink { completion in
+        readerService.discoveredReaders.dropFirst(1).sink { _ in
             readerService.cancelDiscovery()
                 .fulfillOnCompletion(expectation: discoveredReaders)
         } receiveValue: { readers in
@@ -89,7 +89,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             }
             discoveredReaders.fulfill()
             readerService.cancelDiscovery().discard()
-            readerService.connect(firstReader, options: nil).sink { completion in
+            readerService.connect(firstReader, options: nil).sink { _ in
                 readerService.cancelDiscovery().discard()
             } receiveValue: { _ in
                 readerService.cancelDiscovery()

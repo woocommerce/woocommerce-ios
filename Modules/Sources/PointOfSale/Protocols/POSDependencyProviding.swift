@@ -69,4 +69,20 @@ public protocol POSDependencyProviding {
     var connectivity: POSConnectivityProviding { get }
     var externalNavigation: POSExternalNavigationProviding { get }
     var externalViews: POSExternalViewProviding { get }
+
+    @MainActor
+    func makeAccessSession(siteID: Int64) -> POSAccessSession
+}
+
+public extension POSDependencyProviding {
+    @MainActor
+    func makeAccessSession(siteID: Int64) -> POSAccessSession {
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) else {
+            return UnrestrictedPOSAccessSession()
+        }
+        return DefaultPOSAccessSession(
+            authenticator: DefaultPOSPINAuthenticator(),
+            rateLimiter: POSLocalRateLimiter(siteID: siteID)
+        )
+    }
 }

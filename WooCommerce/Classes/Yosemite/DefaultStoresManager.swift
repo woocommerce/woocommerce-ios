@@ -296,12 +296,9 @@ class DefaultStoresManager: StoresManager {
             dispatch(resetAction)
         }
 
-        // Stop any ongoing catalog sync tasks before resetting session
-        if let siteID = sessionManager.defaultStoreID {
-            Task {
-                await posCatalogSyncCoordinator?.stopOngoingSyncs(for: siteID)
-            }
-        }
+        let siteIDForSync = sessionManager.defaultStoreID
+        let syncCoordinator = posCatalogSyncCoordinator
+        let grdbManager = ServiceLocator.initializedGRDBManager
 
         sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()
@@ -311,13 +308,18 @@ class DefaultStoresManager: StoresManager {
         ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
 
-        // Reset GRDB on a background thread to avoid blocking logout
-        // when there's a large catalog to delete
-        Task.detached(priority: .userInitiated) {
-            do {
-                try ServiceLocator.grdbManager.reset()
-            } catch {
-                DDLogError("Could not reset GRDB database: \(error)")
+        // Reset GRDB on a background thread to avoid blocking logout when there's a large catalog to delete.
+        // Capture the authenticated-session dependencies before resetting state so cleanup is not lost.
+        if let grdbManager {
+            Task.detached(priority: .userInitiated) {
+                if let siteID = siteIDForSync {
+                    await syncCoordinator?.stopOngoingSyncs(for: siteID)
+                }
+                do {
+                    try grdbManager.reset()
+                } catch {
+                    DDLogError("Could not reset GRDB database: \(error)")
+                }
             }
         }
 

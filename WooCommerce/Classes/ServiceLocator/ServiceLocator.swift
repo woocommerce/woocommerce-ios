@@ -91,6 +91,7 @@ final class ServiceLocator {
     /// GRDB Manager for local catalog persistence
     ///
     private static var _grdbManager: GRDBManagerProtocol?
+    private static let grdbManagerLock = NSLock()
 
     /// Cocoalumberjack DDLog
     ///
@@ -264,25 +265,43 @@ final class ServiceLocator {
     /// - Returns: An instance of GRDBManagerProtocol
     /// - Throws: Fatal error if GRDBManager initialization fails
     static var grdbManager: GRDBManagerProtocol {
-        guard let grdbManager = _grdbManager else {
-            do {
-                guard let documentsPath = FileManager.default.urls(
-                    for: .documentDirectory,
-                    in: .userDomainMask).first else {
-                    fatalError("Failed to get the path to the documents directory.")
+        withGRDBManagerLock {
+            guard let grdbManager = _grdbManager else {
+                do {
+                    guard let documentsPath = FileManager.default.urls(
+                        for: .documentDirectory,
+                        in: .userDomainMask).first else {
+                        fatalError("Failed to get the path to the documents directory.")
+                    }
+
+                    let databasePath = documentsPath.appendingPathComponent(WooConstants.localSQLiteDatabaseName).path
+                    let manager = try GRDBManager(databasePath: databasePath)
+                    DDLogInfo("Started GRDBManager with database path: \(databasePath)")
+                    _grdbManager = manager
+                    return manager
+                } catch {
+                    fatalError("Failed to initialize GRDBManager: \(error)")
                 }
-
-                let databasePath = documentsPath.appendingPathComponent(WooConstants.localSQLiteDatabaseName).path
-                let manager = try GRDBManager(databasePath: databasePath)
-                DDLogInfo("Started GRDBManager with database path: \(databasePath)")
-                _grdbManager = manager
-                return manager
-            } catch {
-                fatalError("Failed to initialize GRDBManager: \(error)")
             }
-        }
 
-        return grdbManager
+            return grdbManager
+        }
+    }
+
+    /// The already initialized GRDB manager, if any.
+    /// This intentionally does not create the database.
+    static var initializedGRDBManager: GRDBManagerProtocol? {
+        withGRDBManagerLock {
+            _grdbManager
+        }
+    }
+
+    private static func withGRDBManagerLock<T>(_ block: () -> T) -> T {
+        grdbManagerLock.lock()
+        defer {
+            grdbManagerLock.unlock()
+        }
+        return block()
     }
 
     /// Provides the access point to the FileLogger.
@@ -548,12 +567,14 @@ extension ServiceLocator {
     }
 
     /// periphery:ignore - for use in future tests.
-    static func setGRDBManager(_ testInstance: GRDBManagerProtocol) {
+    static func setGRDBManager(_ testInstance: GRDBManagerProtocol?) {
         guard isRunningTests() else {
             return
         }
 
-        _grdbManager = testInstance
+        withGRDBManagerLock {
+            _grdbManager = testInstance
+        }
     }
 }
 

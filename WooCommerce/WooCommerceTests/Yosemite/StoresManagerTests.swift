@@ -2,6 +2,7 @@ import Codegen
 import Combine
 import XCTest
 import Networking
+import Storage
 @testable import WooCommerce
 import Yosemite
 
@@ -179,6 +180,51 @@ final class StoresManagerTests: XCTestCase {
         // Assert - verify deauthentication completed successfully
         XCTAssertFalse(manager.isAuthenticated, "Manager should be deauthenticated")
         XCTAssertNil(sessionManager.defaultStoreID, "Default store ID should be cleared after deauthentication")
+    }
+
+    @MainActor
+    func test_deauthenticate_does_not_initialize_grdb_manager_when_it_was_not_initialized() async {
+        // Arrange
+        let sessionManager = SessionManager.testingInstance
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        manager.updateDefaultStore(storeID: 123)
+        ServiceLocator.setGRDBManager(nil)
+        defer {
+            ServiceLocator.setGRDBManager(nil)
+        }
+
+        // Action
+        manager.deauthenticate()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+
+        // Assert
+        XCTAssertNil(ServiceLocator.initializedGRDBManager)
+    }
+
+    @MainActor
+    func test_deauthenticate_resets_existing_grdb_manager() async {
+        // Arrange
+        let sessionManager = SessionManager.testingInstance
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        manager.updateDefaultStore(storeID: 123)
+
+        let resetExpectation = expectation(description: "GRDB reset is called")
+        ServiceLocator.setGRDBManager(MockGRDBManager {
+            resetExpectation.fulfill()
+        })
+        defer {
+            ServiceLocator.setGRDBManager(nil)
+        }
+
+        // Action
+        manager.deauthenticate()
+
+        // Assert
+        await fulfillment(of: [resetExpectation], timeout: 1)
     }
 
     /// Verifies that `authenticate(username: authToken:)` persists the Credentials in the Keychain Storage.
@@ -512,6 +558,22 @@ final class MockAuthenticationManager: AuthenticationManager {
     override func authenticationUI() -> UIViewController {
         authenticationUIInvoked = true
         return UIViewController()
+    }
+}
+
+private final class MockGRDBManager: GRDBManagerProtocol {
+    private let onReset: () -> Void
+
+    var databaseConnection: GRDBDatabaseConnection {
+        fatalError("MockGRDBManager.databaseConnection should not be accessed by these tests.")
+    }
+
+    init(onReset: @escaping () -> Void) {
+        self.onReset = onReset
+    }
+
+    func reset() throws {
+        onReset()
     }
 }
 

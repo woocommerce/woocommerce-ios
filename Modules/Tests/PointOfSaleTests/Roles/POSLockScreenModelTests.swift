@@ -58,11 +58,11 @@ struct POSLockScreenModelTests {
 
     @Test func test_signIn_when_pin_is_valid_then_unlocks_and_resets_pin_state() async {
         // Given
-        let signedInOperator = makeOperator()
+        let signedInStaff = makeStaff()
         let session = MockPOSAccessSession(
-            currentOperator: nil,
+            currentStaff: nil,
             isLocked: true,
-            signInResult: .success(signedInOperator)
+            signInResult: .success(signedInStaff)
         )
         let sut = POSLockScreenModel(session: session)
 
@@ -72,7 +72,7 @@ struct POSLockScreenModelTests {
         // Then
         #expect(sut.isLocked == false)
         #expect(sut.pinEntryState == .idle)
-        #expect(session.currentOperator == signedInOperator)
+        #expect(session.currentStaff == signedInStaff)
     }
 
     @Test func test_signIn_when_pin_is_invalid_then_shows_invalid_pin_error() async {
@@ -101,8 +101,8 @@ struct POSLockScreenModelTests {
         #expect(sut.pinEntryState == .error(message: "Something went wrong. Try again."))
     }
 
-    private func makeOperator() -> POSOperator {
-        POSOperator(
+    private func makeStaff() -> POSStaff {
+        POSStaff(
             displayName: "Maya",
             role: "Manager",
             capabilities: Set(POSCapability.allCases.map(\.rawValue))

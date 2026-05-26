@@ -5,27 +5,27 @@ import Observation
 @Observable
 @MainActor
 final class MockPOSAccessSession: POSAccessSession {
-    var currentOperator: POSOperator?
+    var currentStaff: POSStaff?
     var isLocked: Bool
     var hasAnyPINs: Bool
-    var signInResult: Result<POSOperator, POSAuthError>
+    var signInResult: Result<POSStaff, POSAuthError>
     var signInPINs: [String] = []
     var onSignIn: (() -> Void)?
 
-    init(currentOperator: POSOperator? = nil,
+    init(currentStaff: POSStaff? = nil,
          isLocked: Bool = false,
          hasAnyPINs: Bool = true,
-         signInResult: Result<POSOperator, POSAuthError> = .success(
-            POSOperator(displayName: "Maya", role: "Manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+         signInResult: Result<POSStaff, POSAuthError> = .success(
+            POSStaff(displayName: "Maya", role: "Manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
          )) {
-        self.currentOperator = currentOperator
+        self.currentStaff = currentStaff
         self.isLocked = isLocked
         self.hasAnyPINs = hasAnyPINs
         self.signInResult = signInResult
     }
 
     func allows(_ capability: POSCapability) -> Bool {
-        currentOperator?.hasCapability(capability) == true
+        currentStaff?.hasCapability(capability) == true
     }
 
     func signIn(withPIN pin: String) async throws(POSAuthError) {
@@ -33,8 +33,8 @@ final class MockPOSAccessSession: POSAccessSession {
         onSignIn?()
 
         switch signInResult {
-        case .success(let signedInOperator):
-            currentOperator = signedInOperator
+        case .success(let signedInStaff):
+            currentStaff = signedInStaff
             isLocked = false
         case .failure(let error):
             throw error

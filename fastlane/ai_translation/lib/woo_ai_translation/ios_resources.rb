@@ -140,7 +140,12 @@ module WooAiTranslation
       end
 
       def load_cached_or_parse(path, bytes, key)
-        disk = File.join(Dir.tmpdir, "wai_parse_#{key[0, 16]}.bin")
+        # The version prefix lets us invalidate previously-cached Marshal
+        # blobs whenever the schema of the parsed Document changes (e.g.
+        # the encoding-retag fix that flipped u.name from ASCII_8BIT to
+        # UTF-8 — a v1 blob would deserialize with a binary-tagged name
+        # and silently break verify_round_trip!). Bump on any schema change.
+        disk = File.join(Dir.tmpdir, "wai_parse_v2_#{key[0, 16]}.bin")
         if File.exist?(disk)
           begin
             return Marshal.load(File.binread(disk))
@@ -216,16 +221,26 @@ module WooAiTranslation
         # UTF-8 so downstream code (Hash keys, comparisons, regex) sees the
         # canonical encoding. The bytes are already valid UTF-8 because the
         # input started as UTF-8 and we only sliced/copied through it.
+        #
+        # CRITICAL: use force_encoding in-place, NOT `.dup.force_encoding`.
+        # In the parse loop above we built `Unit.new(name: key, ...)` and
+        # `unit.entries = [{ id: key, ... }]` — so `u.name` and
+        # `u.entries.first[:id]` are the *same* String object (sharing
+        # identity, not just content). force_encoding flips the encoding
+        # tag of the receiver, so tagging e[:id] also tags u.name. A
+        # `.dup` would create a new string for e[:id] and leave u.name
+        # stuck on ASCII_8BIT, which silently breaks any set membership /
+        # hash comparison that compares u.name (binary) against a UTF-8
+        # string read off disk — that bug ate build #37965, where every
+        # non-ASCII key (e.g. `"%1$@ · %2$@"`) failed verify_round_trip!.
         units.each do |u|
-          u.comment = u.comment.dup.force_encoding(Encoding::UTF_8) if u.comment
-          # Rebuild attributes Hash with UTF-8 keys/values (currently empty
-          # for .strings but cheap to handle).
-          u.entries = u.entries.map do |e|
-            {
-              id: e[:id]&.dup&.force_encoding(Encoding::UTF_8),
-              source: e[:source]&.dup&.force_encoding(Encoding::UTF_8),
-              value: e[:value]
-            }
+          u.comment&.force_encoding(Encoding::UTF_8)
+          u.entries.each do |e|
+            e[:id]&.force_encoding(Encoding::UTF_8)
+            e[:source]&.force_encoding(Encoding::UTF_8)
+            # :value is nil immediately after parse; populated later by
+            # apply_results or merge_with_existing using already-UTF-8
+            # strings.
           end
         end
 

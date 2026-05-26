@@ -35,7 +35,7 @@ struct ProductDetailsCellViewModel {
 
     let addOns: AddOnsViewModel
 
-    /// Wether the item has add-ons associated to it.
+    /// Whether the item has add-ons associated to it.
     ///
     let hasAddOns: Bool
 

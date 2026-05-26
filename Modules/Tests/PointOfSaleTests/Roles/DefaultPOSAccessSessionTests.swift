@@ -121,7 +121,6 @@ struct DefaultPOSAccessSessionTests {
             try await sut.session.signIn(withPIN: "0000")
         }
 
-        // And: limiter counter did NOT advance — a follow-up valid-PIN attempt isn't punished.
         try sut.limiter.checkAllowed()
     }
 

@@ -28,9 +28,6 @@ final class POSLocalRateLimiter {
         if let until = lockoutUntil, until > now() {
             throw .rateLimited(until: until)
         }
-        if lockoutUntil != nil {
-            lockoutUntil = nil
-        }
     }
 
     func recordFailure() {

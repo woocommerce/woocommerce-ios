@@ -37,6 +37,7 @@ final class POSLockScreenModel {
 
 private extension POSLockScreenModel {
     func errorKind(for error: POSAuthError) -> POSPINErrorKind {
+        // TODO: route .rateLimited(until:) to the lock screen's lockout state when the session is wired in.
         switch error {
         case .invalidPIN: .invalidPIN
         case .rateLimited, .permanentlyLocked, .unknown: .generic

@@ -190,7 +190,7 @@ struct POSLocalRateLimiterTests {
             siteA.recordFailure()
         }
 
-        // Then: site A is locked, site B remains allowed
+        // Then
         #expect(throws: POSAuthError.self) {
             try siteA.checkAllowed()
         }

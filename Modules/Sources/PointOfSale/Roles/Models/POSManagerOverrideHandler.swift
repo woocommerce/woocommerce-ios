@@ -69,6 +69,7 @@ private extension POSManagerOverrideHandler {
     }
 
     func errorKind(for error: POSAuthError) -> POSPINErrorKind {
+        // TODO: route .rateLimited(until:) to a lockout state when the manager override flow is wired in.
         switch error {
         case .invalidPIN: .invalidPIN
         case .rateLimited, .permanentlyLocked, .unknown: .generic

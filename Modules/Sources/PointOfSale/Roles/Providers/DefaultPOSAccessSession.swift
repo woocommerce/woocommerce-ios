@@ -41,6 +41,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
     }
 
     func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {
+        // TODO: implement when the manager override flow is wired in.
         throw .unknown
     }
 

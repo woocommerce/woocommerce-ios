@@ -86,8 +86,8 @@ final class ShippingLabelCarrierRowViewModelTests: XCTestCase {
                                                          rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33),
                                                          signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
                                                          adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33),
-                                                         currencySettings: CurrencySettings()) { _, 
-                                                                                                                                    _, 
+                                                         currencySettings: CurrencySettings()) { _,
+                                                                                                                                    _,
                                                                                                                                     adultSignatureRate in
             promise(adultSignatureRate)
         }

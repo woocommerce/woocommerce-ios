@@ -101,32 +101,32 @@ final class POSNotificationScheduler: POSNotificationScheduling {
     }
 
     private func checkIfScheduled(for merchantType: MerchantType) async -> Bool {
-        await withCheckedContinuation { continuation in
+        await MainActor.run {
+            var isScheduled = false
             let action: AppSettingsAction
             switch merchantType {
             case .potentialMerchant:
-                action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { isScheduled in
-                    continuation.resume(returning: isScheduled)
+                action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { scheduled in
+                    isScheduled = scheduled
                 }
             case .currentMerchant:
-                action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { isScheduled in
-                    continuation.resume(returning: isScheduled)
+                action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { scheduled in
+                    isScheduled = scheduled
                 }
             }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
+            stores.dispatch(action)
+            return isScheduled
         }
     }
 
     private func hasOpenedPOSAtLeastOnce() async -> Bool {
-        await withCheckedContinuation { continuation in
+        await MainActor.run {
+            var hasOpenedPOS = false
             let action = AppSettingsAction.getHasPOSBeenOpenedAtLeastOnce { hasOpened in
-                continuation.resume(returning: hasOpened)
+                hasOpenedPOS = hasOpened
             }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
+            stores.dispatch(action)
+            return hasOpenedPOS
         }
     }
 
@@ -148,21 +148,15 @@ final class POSNotificationScheduler: POSNotificationScheduling {
 
         await pushNotificationsManager.requestLocalNotification(notification, trigger: trigger)
 
-        await withCheckedContinuation { continuation in
+        await MainActor.run {
             let action: AppSettingsAction
             switch merchantType {
             case .potentialMerchant:
-                action = AppSettingsAction.setPOSSurveyPotentialMerchantNotificationScheduled { _ in
-                    continuation.resume()
-                }
+                action = AppSettingsAction.setPOSSurveyPotentialMerchantNotificationScheduled { _ in }
             case .currentMerchant:
-                action = AppSettingsAction.setPOSSurveyCurrentMerchantNotificationScheduled { _ in
-                    continuation.resume()
-                }
+                action = AppSettingsAction.setPOSSurveyCurrentMerchantNotificationScheduled { _ in }
             }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
+            stores.dispatch(action)
         }
     }
 }

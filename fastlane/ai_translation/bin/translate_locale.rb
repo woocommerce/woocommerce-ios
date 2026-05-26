@@ -106,9 +106,14 @@ end
 #
 # When a manifest is provided, source-only invalidation drives the decision:
 # an entry needs translation iff its source value differs from the recorded
-# `src_sha`. Falls back to the heuristic check ("present in target with a
-# non-EN value") when no manifest entry exists, which lets us bootstrap a
-# manifest from the existing locale files in PR #17220.
+# `src_sha`. Without a manifest entry, we fall back to the simplest rule
+# that matches how PR #17220 bootstrapped the new locales: if the EN key has
+# any non-empty value in the target file, trust it. We don't try to re-detect
+# bare-scaffold mistakes (e.g. `cp en.lproj xx.lproj`) here because PR #17220
+# wasn't built that way, and the engine's `translate:bootstrap` task is the
+# supported entry point for new locales. Re-translating entries where the
+# existing value happens to equal EN (placeholders, brand names) just burns
+# API time and risks unparseable/validator failures with no improvement.
 def filter_missing_units(en_units, target_path, logger:, manifest: nil)
   existing_by_name = if File.exist?(target_path)
                        WooAiTranslation::IosResources::Parser.parse_file(target_path)
@@ -127,13 +132,11 @@ def filter_missing_units(en_units, target_path, logger:, manifest: nil)
       next false unless existing_unit
 
       # The parser stores the right-hand side of `"key" = "value";` in :source
-      # and leaves :value as nil (see IosResources::Parser, ios_resources.rb).
-      # For a *target* locale file that's the existing translation — exactly
-      # what we want to compare against the EN source here. Reading :value
-      # used to mask every existing translation as missing and re-translated
-      # the entire locale on a first PR-time run.
-      existing_translation = existing_unit.entries.first[:source].to_s
-      !existing_translation.empty? && existing_translation != src
+      # and leaves :value nil (see IosResources::Parser, ios_resources.rb).
+      # For a target-locale file that's the existing translation. Trust any
+      # non-empty value — including one that happens to equal EN, which is the
+      # correct outcome for placeholders ("%1$@") and brand names ("WooCommerce").
+      !existing_unit.entries.first[:source].to_s.empty?
     end
   end
 

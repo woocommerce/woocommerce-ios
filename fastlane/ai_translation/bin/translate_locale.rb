@@ -71,7 +71,7 @@ PLACEHOLDER_RE = /
 
 def parse_args(argv)
   opts = {
-    locale: nil,
+    locales: [],
     offline: false,
     batch: nil, # nil => auto-size via ByteSizer
     skip_infoplist: false,
@@ -84,7 +84,7 @@ def parse_args(argv)
     use_escalation: true
   }
   parser = OptionParser.new do |p|
-    p.banner = 'Usage: translate_locale.rb <locale> [options]'
+    p.banner = 'Usage: translate_locale.rb <locale> [<locale> ...] [options]'
     p.on('--offline', 'Use StubClient (no API call, deterministic)') { opts[:offline] = true }
     p.on('--batch N', Integer, 'Override auto-sized batch (default: ByteSizer)') { |v| opts[:batch] = v }
     p.on('--limit N', Integer, 'Translate only the first N keys (smoke test)') { |v| opts[:limit] = v }
@@ -97,8 +97,11 @@ def parse_args(argv)
     p.on('--max-output-tokens N', Integer, "Output budget for auto batch sizing (default: #{opts[:max_output_tokens]})") { |v| opts[:max_output_tokens] = v }
   end
   parser.permute!(argv)
-  opts[:locale] = argv.shift or abort(parser.help)
-  abort("unknown locale '#{opts[:locale]}' (expand LOCALE_NAMES in the script)") unless LOCALE_NAMES.key?(opts[:locale])
+  opts[:locales] = argv.dup
+  abort(parser.help) if opts[:locales].empty?
+  opts[:locales].each do |loc|
+    abort("unknown locale '#{loc}' (expand LOCALE_NAMES in the script)") unless LOCALE_NAMES.key?(loc)
+  end
   opts
 end
 
@@ -333,8 +336,8 @@ end
 
 def main(argv)
   opts = parse_args(argv)
-  locale = opts[:locale]
-  log_path = "/tmp/translate_locale_#{locale}.log"
+  locales = opts[:locales]
+  log_path = '/tmp/translate_locale.log'
   log_io = File.open(log_path, 'w')
   logger = lambda do |msg|
     line = "[#{Time.now.utc.iso8601}] #{msg}"
@@ -343,14 +346,33 @@ def main(argv)
     log_io.flush
   end
 
-  logger.call("start locale=#{locale} model=#{opts[:model]} batch=#{opts[:batch]} " \
-              "offline=#{opts[:offline]} limit=#{opts[:limit] || '∞'}")
-
   client = opts[:offline] ? WooAiTranslation::StubClient.new : WooAiTranslation::AnthropicClient.from_env
   unless client.available?
     logger.call('ANTHROPIC_API_KEY is not set; use --offline for a dry run')
     exit 1
   end
+
+  # Run every locale in this one Ruby process. We pay the Ruby + bundler boot
+  # cost once instead of 15× (previous design re-launched the CLI per locale
+  # via the Rakefile), and IosResources::Parser::CACHE persists across all
+  # locales so en.lproj is parsed once and reused. Per-locale validators and
+  # manifests are still loaded independently because the data is locale-
+  # specific.
+  any_failures = false
+  locales.each_with_index do |locale, i|
+    logger.call("===== [#{i + 1}/#{locales.size}] locale=#{locale} =====")
+    ok = process_locale(locale, opts, client, logger)
+    any_failures = true unless ok
+  end
+
+  logger.call("log written to #{log_path}")
+  log_io.close
+  exit(any_failures ? 2 : 0)
+end
+
+def process_locale(locale, opts, client, logger)
+  logger.call("start locale=#{locale} model=#{opts[:model]} batch=#{opts[:batch]} " \
+              "offline=#{opts[:offline]} limit=#{opts[:limit] || '∞'}")
 
   # Auto-size the batch when not explicitly overridden, so non-Latin scripts
   # don't overflow the output token budget.
@@ -361,11 +383,11 @@ def main(argv)
     auto
   end
 
-  # Load glossary / brand-safety validator first so we can lift its brand
-  # list into the translator's system prompt. Without this, the model
-  # translates terms like "SKU" into the target language (e.g. Bulgarian
-  # "Артикулен №") and the validator catches it post-hoc, wasting an Opus
-  # escalation and still failing the run.
+  # Load glossary / brand-safety validator so we can lift its brand list
+  # into the translator's system prompt. Without this, the model translates
+  # terms like "SKU" into the target language (e.g. Bulgarian "Артикулен №")
+  # and the validator catches it post-hoc, wasting an Opus escalation and
+  # still failing the run.
   validator = begin
     base = File.expand_path('../glossary', __dir__)
     WooAiTranslation::Validator.for_locale(locale: locale, base_dir: base) if Dir.exist?(base)
@@ -423,7 +445,7 @@ def main(argv)
   end
 
   # --- Summary ----------------------------------------------------------
-  logger.call('===== summary =====')
+  logger.call("---- summary [#{locale}] ----")
   logger.call("locale=#{locale} translated=#{total_translated} missing=#{all_missing.size} " \
               "placeholder_errors=#{all_errors.size} glossary_violations=#{all_glossary_errors.size}")
   unless all_errors.empty?
@@ -445,10 +467,11 @@ def main(argv)
     all_missing.first(10).each { |n| logger.call("  #{n}") }
   end
 
-  logger.call("log written to #{log_path}")
-  log_io.close
-  exit_code = all_errors.empty? && all_missing.empty? && all_glossary_errors.empty? ? 0 : 2
-  exit(exit_code)
+  all_errors.empty? && all_missing.empty? && all_glossary_errors.empty?
+rescue StandardError => e
+  logger.call("[#{locale}] FAILED: #{e.class}: #{e.message}")
+  e.backtrace&.first(5)&.each { |bt| logger.call("  #{bt}") }
+  false
 end
 
 main(ARGV) if $PROGRAM_NAME == __FILE__

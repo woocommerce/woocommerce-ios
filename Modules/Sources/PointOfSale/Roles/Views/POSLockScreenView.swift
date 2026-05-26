@@ -16,7 +16,7 @@ struct POSLockScreenView: View {
             Color.posSurfaceContainerLow
                 .ignoresSafeArea()
 
-            VStack(spacing: POSSpacing.xxLarge) {
+            VStack(spacing: POSPINEntryView.titleToPINSpacing) {
                 Text(Localization.title)
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -28,9 +28,9 @@ struct POSLockScreenView: View {
                         await model.signIn(withPIN: pin)
                     }
                 }
-                .frame(height: POSPINEntryView.Layout.preferredHeight)
+                .frame(height: POSPINEntryView.preferredHeight)
             }
-            .frame(maxWidth: POSPINEntryView.Layout.contentWidth)
+            .frame(maxWidth: POSPINEntryView.contentWidth)
             .padding(POSPadding.xxLarge)
         }
     }

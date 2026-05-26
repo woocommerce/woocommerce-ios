@@ -12,12 +12,12 @@ struct POSManagerOverrideHandlerTests {
         // When
         sut.requestApproval(
             for: .refundShopOrders,
-            reason: "Refunding orders requires manager approval."
+            reason: "Refunding orders requires manager approval"
         )
 
         // Then
         #expect(sut.request?.capability == .refundShopOrders)
-        #expect(sut.request?.reason == "Refunding orders requires manager approval.")
+        #expect(sut.request?.reason == "Refunding orders requires manager approval")
         #expect(sut.pinEntryState == .idle)
     }
 
@@ -25,7 +25,7 @@ struct POSManagerOverrideHandlerTests {
         // Given
         let session = MockPOSAccessSession()
         let sut = POSManagerOverrideHandler(session: session)
-        sut.requestApproval(for: .publishShopCoupons, reason: "Creating coupons requires manager approval.")
+        sut.requestApproval(for: .publishShopCoupons, reason: "Creating coupons requires manager approval")
         session.onManagerApproval = {
             #expect(sut.pinEntryState == .loading)
         }
@@ -44,7 +44,7 @@ struct POSManagerOverrideHandlerTests {
         let sut = POSManagerOverrideHandler(session: session)
         sut.requestApproval(
             for: .viewPOSSettings,
-            reason: "Viewing settings requires manager approval.",
+            reason: "Viewing settings requires manager approval",
             onApproved: {
                 completionWasCalled = true
             }
@@ -65,7 +65,7 @@ struct POSManagerOverrideHandlerTests {
         // Given
         let session = MockPOSAccessSession(managerApprovalResult: .failure(.invalidPIN))
         let sut = POSManagerOverrideHandler(session: session)
-        sut.requestApproval(for: .refundShopOrders, reason: "Refunding orders requires manager approval.")
+        sut.requestApproval(for: .refundShopOrders, reason: "Refunding orders requires manager approval")
 
         // When
         await sut.submit(pin: "9999")
@@ -81,7 +81,7 @@ struct POSManagerOverrideHandlerTests {
         // Given
         let session = MockPOSAccessSession(managerApprovalResult: .failure(.unknown))
         let sut = POSManagerOverrideHandler(session: session)
-        sut.requestApproval(for: .publishShopCoupons, reason: "Creating coupons requires manager approval.")
+        sut.requestApproval(for: .publishShopCoupons, reason: "Creating coupons requires manager approval")
 
         // When
         await sut.submit(pin: "1234")
@@ -96,7 +96,7 @@ struct POSManagerOverrideHandlerTests {
         // Given
         let session = MockPOSAccessSession()
         let sut = POSManagerOverrideHandler(session: session)
-        sut.requestApproval(for: .editPOSSettings, reason: "Editing settings requires manager approval.")
+        sut.requestApproval(for: .editPOSSettings, reason: "Editing settings requires manager approval")
         sut.pinEntryState = .error(message: "Incorrect PIN. Try again.")
 
         // When
@@ -112,7 +112,7 @@ struct POSManagerOverrideHandlerTests {
     @Test func test_submit_when_session_is_missing_then_shows_generic_error() async {
         // Given
         let sut = POSManagerOverrideHandler()
-        sut.requestApproval(for: .refundShopOrders, reason: "Refunding orders requires manager approval.")
+        sut.requestApproval(for: .refundShopOrders, reason: "Refunding orders requires manager approval")
 
         // When
         await sut.submit(pin: "1234")

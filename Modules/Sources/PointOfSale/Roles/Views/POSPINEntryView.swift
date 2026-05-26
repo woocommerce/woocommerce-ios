@@ -20,14 +20,7 @@ struct POSPINEntryView: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.xLarge) {
-            VStack(spacing: POSSpacing.medium) {
-                dotsRow
-                messageArea
-            }
-            numpad
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        content
         .onAppear { handleStateChange(state) }
         .onChange(of: state) { _, newState in
             handleStateChange(newState)
@@ -49,6 +42,26 @@ private extension POSPINEntryView {
         return false
     }
 
+    var content: some View {
+        VStack(spacing: Self.contentSpacing) {
+            statusRow
+                .frame(maxWidth: .infinity, alignment: .center)
+            numpad
+                .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    var statusRow: some View {
+        switch state {
+        case .lockout(let until):
+            lockoutCountdown(until: until)
+        case .idle, .loading, .error:
+            dotsRow
+        }
+    }
+
     var dotsRow: some View {
         TimelineView(.animation(paused: !isLoading)) { context in
             HStack(spacing: POSSpacing.medium) {
@@ -62,6 +75,7 @@ private extension POSPINEntryView {
             .accessibilityLabel(Localization.dotsAccessibilityLabel)
             .accessibilityValue(Localization.dotsAccessibilityValue(entered: enteredPIN.count, total: pinLength))
         }
+        .frame(height: Constants.statusRowHeight)
     }
 
     func dot(filled: Bool, yOffset: CGFloat) -> some View {
@@ -83,39 +97,25 @@ private extension POSPINEntryView {
         return sin(time * Constants.waveSpeed + Double(index) * Constants.wavePhase) * Constants.waveHeight
     }
 
-    @ViewBuilder
-    var messageArea: some View {
-        Group {
-            switch state {
-            case .idle, .loading:
-                Color.clear
-            case .error(let message):
-                statusMessage(message)
-            case .lockout(let until):
-                lockoutCountdown(until: until)
-            }
-        }
-        .frame(minHeight: Constants.messageAreaHeight)
-        .fixedSize(horizontal: false, vertical: true)
-    }
-
-    func statusMessage(_ text: String) -> some View {
+    func lockoutMessage(_ text: String) -> some View {
         Text(text)
             .font(.posBodyMediumRegular())
             .foregroundColor(.posError)
             .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(minHeight: Constants.statusRowHeight)
     }
 
     func lockoutCountdown(until date: Date) -> some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
-            statusMessage(helper.lockoutMessage(remainingSeconds: helper.remainingLockoutSeconds(until: date, now: context.date)))
+            lockoutMessage(helper.lockoutMessage(remainingSeconds: helper.remainingLockoutSeconds(until: date, now: context.date)))
         }
     }
 
     var numpad: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: Constants.keySpacing) {
             ForEach(Constants.rows, id: \.self) { row in
-                HStack(spacing: POSSpacing.medium) {
+                HStack(spacing: Constants.keySpacing) {
                     ForEach(row, id: \.self) { key in
                         keyButton(for: key)
                     }
@@ -220,9 +220,11 @@ private struct ShakeEffect: GeometryEffect {
 private extension POSPINEntryView {
     enum Constants {
         static let dotSize: CGFloat = 22
+        static let statusRowHeight = dotSize
         static let dotBorderWidth: CGFloat = 2
         static let keySize: CGFloat = 72
-        static let messageAreaHeight: CGFloat = 40
+        static let keySpacing: CGFloat = POSSpacing.medium
+        static let keypadHeight = keySize * CGFloat(rows.count) + keySpacing * CGFloat(rows.count - 1)
         static let disabledOpacity: Double = 0.4
         static let shakeDuration: TimeInterval = 0.4
         static let waveHeight: CGFloat = 6
@@ -265,9 +267,12 @@ private extension POSPINEntryView {
 }
 
 extension POSPINEntryView {
-    enum Layout {
-        static let contentWidth: CGFloat = 420
-        static let preferredHeight: CGFloat = 430
+    static let contentWidth: CGFloat = 420
+    static let contentSpacing: CGFloat = POSSpacing.xLarge
+    static let titleToPINSpacing: CGFloat = POSSpacing.large
+
+    static var preferredHeight: CGFloat {
+        Constants.statusRowHeight + contentSpacing + Constants.keypadHeight
     }
 }
 

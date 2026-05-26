@@ -62,14 +62,14 @@ private extension POSManagerOverrideModalSizing {
     }
 
     var verticalPadding: CGFloat {
-        isCompactWidth ? POSPadding.none : POSPadding.large
+        isCompactWidth ? POSPadding.none : POSPadding.xxLarge
     }
 
     var frameWidth: CGFloat? {
         guard !isCompactWidth else {
             return nil
         }
-        return min(parentSize.width, POSPINEntryView.Layout.contentWidth + POSPadding.xxLarge * 2)
+        return min(parentSize.width, POSPINEntryView.contentWidth + POSPadding.xxLarge * 2)
     }
 }
 
@@ -86,7 +86,7 @@ private extension POSManagerOverrideModalSizing {
     POSManagerOverridePreview(
         session: MockPOSAccessSession(managerApprovalResult: .failure(.invalidPIN)),
         capability: .publishShopCoupons,
-        reason: "Creating coupons requires manager approval.",
+        reason: "Creating coupons requires manager approval",
         pinEntryState: .error(message: "Incorrect PIN. Try again.")
     )
 }

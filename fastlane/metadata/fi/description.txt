@@ -1,0 +1,29 @@
+Hallinnoi liiketoimintaasi liikkeellä WooCommercen mobiilisovelluksella. Lisää tuotteita, luo tilauksia, ota vastaan nopeita maksuja ja pidä silmällä uutta myyntiä ja keskeisiä tilastoja reaaliajassa.
+
+Lisää ja muokkaa tuotteita yhdellä kosketuksella
+Pääset alkuun sekunneissa! Luo, ryhmittele ja julkaise tuotteita suoraan iPhonella tai iPadilla. Tartu luovuuteen heti sen iskiessä – muuta ideat välittömästi tuotteiksi tai tallenna ne luonnoksiksi myöhempää varten.
+
+Luo tilauksia lennossa
+Kun sinulla on tuotteita, kaikki on yksinkertaista. Valitse kohteet luettelosta, lisää toimitus ja täydennä asiakastiedot luodaksesi nopeasti tilauksen, joka synkronoituu varastosi kanssa.
+
+Ota maksuja vastaan kasvotusten
+Kerää fyysiset maksut käyttäen WooCommerce In-Person Payments -palvelua ja kortinlukijaa (saatavilla USA:ssa, Isossa-Britanniassa ja Kanadassa), Tap to Pay iPhonessa -toimintoa tai digitaalista lompakkoa, kuten Apple Pay. Aloita uusi tilaus – tai etsi olemassa oleva maksua odottava tilaus – ja ota maksu vastaan saumattomasti.
+
+Klikkauksista kivijalkaan
+Muuta mikä tahansa tabletti tehokkaaksi kassapisteeksi WooCommerce POS:lla. Hae tuotteita, skannaa viivakoodeja, käytä kuponkeja ja lähetä kuitit sähköpostitse – kaikki verkko- ja fyysiset myynnit synkronoituvat reaaliajassa. Saatavilla USA:ssa ja Isossa-Britanniassa.
+
+Saa ilmoitus jokaisesta myynnistä
+Nyt kun myyt aktiivisesti, et koskaan menetä yhtäkään tilausta tai arvostelua. Pysy kärryillä ottamalla käyttöön reaaliaikaiset ilmoitukset – ja kuuntele sitä koukuttavaa „cha-ching"-ääntä, joka soi jokaisen uuden myynnin yhteydessä!
+
+Seuraa myyntiä ja myydyimpiä tuotteita
+Näe yhdellä silmäyksellä, mitkä tuotteet pärjäävät parhaiten. Pidä kirjaa kokonaisliikevaihdosta, tilausmääristä ja kävijätiedoista viikoittain, kuukausittain ja vuosittain. Tieto = valta.
+
+WooCommerce on maailman muokattavin open source -eCommerce-alusta. Olitpa sitten käynnistämässä liiketoimintaa, siirtämässä kivijalkamyyntiä verkkoon tai kehittämässä sivustoja asiakkaille, valitse WooCommerce ja saat kaupan, joka yhdistää sisällön ja kaupankäynnin tehokkaasti.
+
+Vaatimukset: WooCommerce v3.5+.
+
+Lue käyttöehdot osoitteessa https://wordpress.com/tos/
+
+Lue tietosuojakäytäntö osoitteessa https://automattic.com/privacy/
+
+Lue Kalifornian käyttäjien tietosuojailmoitus osoitteessa https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

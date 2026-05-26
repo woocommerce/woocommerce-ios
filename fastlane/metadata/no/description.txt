@@ -1,0 +1,29 @@
+Styr virksomheten din på farten med WooCommerce-mobilappen. Legg til produkter, opprett ordrer, ta imot raske betalinger og hold øye med nye salg og viktige nøkkeltall i sanntid.
+
+Legg til og rediger produkter med ett trykk
+Kom i gang på sekunder! Opprett, grupper og publiser produkter direkte fra din iPhone eller iPad. Fang kreativiteten i det øyeblikket den slår til – gjør ideer om til produkter med en gang, eller lagre dem som utkast til senere.
+
+Opprett ordrer på sparket
+Når du har noen produkter på plass, er det enkelt. Velg varer fra katalogen, legg til frakt, og fyll inn kundedetaljer for å raskt opprette en ordre som synkroniseres med lageret ditt.
+
+Ta imot betalinger fysisk
+Motta fysiske betalinger med WooCommerce In-Person Payments og en kortleser (tilgjengelig i USA, Storbritannia og Canada), Tap to Pay på iPhone, eller en digital lommebok som Apple Pay. Start en ny ordre – eller finn en eksisterende som venter på betaling – og ta imot betalingen sømløst.
+
+Fra klikk til murstein
+Forvandle ethvert nettbrett til et kraftig salgssted med WooCommerce POS. Søk etter produkter, skann strekkoder, bruk kuponger og send kvitteringer på e-post, mens alle dine online- og fysiske salg synkroniseres i sanntid. Tilgjengelig i USA og Storbritannia.
+
+Få varsel om hvert salg
+Nå som du selger aktivt, skal du aldri gå glipp av en ordre eller anmeldelse. Hold deg oppdatert ved å aktivere sanntidsvarsler – og lytt etter den vanedannende „cha-ching"-lyden som følger med hvert nytt salg!
+
+Følg med på salg og bestselgere
+Se med ett blikk hvilke produkter som vinner. Hold styr på samlet omsetning, antall ordrer og besøksdata per uke, måned og år. Kunnskap = makt.
+
+WooCommerce er verdens mest tilpassbare open source eCommerce-plattform. Enten du starter en virksomhet, flytter den fysiske butikken din på nett, eller utvikler nettsteder for kunder – bruk WooCommerce for en butikk som forener innhold og handel på en kraftfull måte.
+
+Krav: WooCommerce v3.5+.
+
+Se Brukervilkår på https://wordpress.com/tos/
+
+Se Personvernerklæring på https://automattic.com/privacy/
+
+Se Personvernerklæring for brukere i California på https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

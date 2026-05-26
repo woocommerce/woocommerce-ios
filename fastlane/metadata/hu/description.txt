@@ -1,0 +1,29 @@
+Vezesse vállalkozását útközben a WooCommerce mobilalkalmazással. Adjon hozzá termékeket, hozzon létre rendeléseket, fogadjon gyors fizetéseket, és tartsa szemmel az új eladásokat és a kulcsfontosságú statisztikákat valós időben.
+
+Termékek hozzáadása és szerkesztése egyetlen érintéssel
+Vágjon bele másodpercek alatt! Hozzon létre, csoportosítson és tegyen közzé termékeket közvetlenül iPhone-járól vagy iPad-jéről. Ragadja meg a kreativitást, amikor csak felüti a fejét – ötleteit váltsa azonnal termékké, vagy mentse el vázlatként későbbre.
+
+Rendelések létrehozása menet közben
+Ha már vannak termékei, gyerekjáték az egész. Válasszon ki tételeket a katalógusból, adjon hozzá szállítást, töltse ki az ügyféladatokat, és pillanatok alatt hozzon létre egy rendelést, amely szinkronizálódik a készletével.
+
+Fogadjon fizetéseket személyesen
+Fogadjon fizikai fizetéseket a WooCommerce In-Person Payments és egy kártyaolvasó segítségével (elérhető az USA-ban, az Egyesült Királyságban és Kanadában), Tap to Pay iPhone-on, vagy digitális tárcán, például az Apple Payen keresztül. Indítson új rendelést – vagy keressen egy meglévőt, amely fizetésre vár –, majd akadálytalanul fogadja a fizetést.
+
+A kattintásoktól a téglafalakig
+A WooCommerce POS bármilyen táblagépet erőteljes értékesítési ponttá alakít. Keressen termékeket, olvasson le vonalkódokat, alkalmazzon kuponokat és küldjön e-mailes nyugtákat – online és fizikai értékesítései valós időben szinkronban maradnak. Elérhető az USA-ban és az Egyesült Királyságban.
+
+Értesüljön minden eladásról
+Most, hogy aktívan értékesít, soha ne maradjon le egy rendelésről vagy értékelésről. Maradjon a képben a valós idejű riasztások bekapcsolásával – és hallgassa azt a függőséget okozó „cha-ching" hangot, amely minden új eladást kísér!
+
+Kövesse nyomon az eladásokat és a legkelendőbb termékeket
+Egyetlen pillantással lássa, mely termékek nyerők. Tartsa szemmel az összes bevételét, rendelésszámát és látogatói adatait heti, havi és éves bontásban. Tudás = hatalom.
+
+A WooCommerce a világ legtestreszabhatóbb open-source eCommerce platformja. Akár vállalkozást indít, akár fizikai üzletét viszi át online térbe, akár weboldalakat fejleszt ügyfeleknek, a WooCommerce-szel olyan boltot kap, amely látványosan ötvözi a tartalmat és a kereskedelmet.
+
+Követelmények: WooCommerce v3.5+.
+
+Tekintse meg a Szolgáltatási feltételeket a következő címen: https://wordpress.com/tos/
+
+Tekintse meg az Adatvédelmi szabályzatot a következő címen: https://automattic.com/privacy/
+
+Tekintse meg a kaliforniai felhasználókra vonatkozó Adatvédelmi tájékoztatót a következő címen: https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

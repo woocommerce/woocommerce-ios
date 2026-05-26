@@ -1,0 +1,29 @@
+Gira o seu negócio em qualquer lugar com a aplicação móvel WooCommerce. Adicione produtos, crie encomendas, receba pagamentos rápidos e fique atento a novas vendas e a estatísticas-chave em tempo real.
+
+Adicione e edite produtos com um toque
+Comece em segundos! Crie, agrupe e publique produtos diretamente a partir do seu iPhone ou iPad. Capture a criatividade no momento em que surge – transforme as suas ideias em produtos de imediato, ou guarde-as como rascunhos para mais tarde.
+
+Crie encomendas em movimento
+Assim que tiver alguns produtos criados, é simples. Escolha artigos do seu catálogo, adicione o envio e preencha os dados do cliente para criar rapidamente uma encomenda que sincroniza com o seu inventário.
+
+Aceite pagamentos presencialmente
+Cobre pagamentos físicos com o WooCommerce In-Person Payments e um leitor de cartões (disponível nos EUA, Reino Unido e Canadá), Tap to Pay no iPhone, ou uma carteira digital, como o Apple Pay. Inicie uma nova encomenda – ou encontre uma já existente que aguarda pagamento – e aceite o pagamento sem problemas.
+
+Dos cliques às lojas físicas
+Transforme qualquer tablet num poderoso ponto de venda com o WooCommerce POS. Pesquise produtos, leia códigos de barras, aplique cupões e envie recibos por email, com todas as suas vendas online e físicas sincronizadas em tempo real. Disponível nos EUA e no Reino Unido.
+
+Seja notificado de cada venda
+Agora que está a vender ativamente, nunca perca uma encomenda ou uma avaliação. Mantenha-se a par ativando alertas em tempo real – e fique atento àquele som viciante de „cha-ching" que acompanha cada nova venda!
+
+Acompanhe vendas e produtos mais vendidos
+Veja num relance quais os produtos a brilhar. Controle a sua receita total, o número de encomendas e os dados de visitantes por semana, mês e ano. Conhecimento = poder.
+
+O WooCommerce é a plataforma de eCommerce open-source mais personalizável do mundo. Quer esteja a lançar um negócio, a passar o seu retalho físico para o online ou a desenvolver sites para clientes, escolha o WooCommerce para uma loja que combina conteúdo e comércio de forma poderosa.
+
+Requisitos: WooCommerce v3.5+.
+
+Consulte os Termos de Serviço em https://wordpress.com/tos/
+
+Consulte a Política de Privacidade em https://automattic.com/privacy/
+
+Consulte o Aviso de Privacidade para utilizadores da Califórnia em https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

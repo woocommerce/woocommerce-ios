@@ -1,0 +1,29 @@
+Spravujte své podnikání na cestách s mobilní aplikací WooCommerce. Přidávejte produkty, vytvářejte objednávky, rychle přijímejte platby a sledujte nové prodeje i klíčové statistiky v reálném čase.
+
+Přidávejte a upravujte produkty jedním dotykem
+Začněte během pár sekund! Vytvářejte, seskupujte a publikujte produkty přímo z iPhonu nebo iPadu. Zachyťte svou kreativitu ve chvíli, kdy přijde – proměňte nápady okamžitě v produkty, nebo si je uložte jako koncepty na později.
+
+Vytvářejte objednávky za pochodu
+Jakmile máte produkty, je to hračka. Vyberte položky z katalogu, přidejte dopravu, doplňte údaje zákazníka a rychle vytvořte objednávku synchronizovanou se skladem.
+
+Přijímejte platby osobně
+Vybírejte fyzické platby přes WooCommerce In-Person Payments a čtečku karet (dostupné v USA, Spojeném království a Kanadě), Tap to Pay na iPhonu nebo digitální peněženku, jako je Apple Pay. Spusťte novou objednávku – nebo najděte stávající čekající na úhradu – a bez zádrhelu přijměte platbu.
+
+Z online světa do kamenného obchodu
+Proměňte jakýkoli tablet ve výkonný pokladní systém díky WooCommerce POS. Vyhledávejte produkty, skenujte čárové kódy, uplatňujte kupóny a posílejte účtenky e-mailem – online a fyzické prodeje se přitom synchronizují v reálném čase. Dostupné v USA a Spojeném království.
+
+Dostávejte upozornění na každý prodej
+Když už aktivně prodáváte, nepropásněte žádnou objednávku ani recenzi. Mějte přehled díky upozorněním v reálném čase – a naslouchejte tomu návykovému zvuku „cha-ching" doprovázejícímu každý nový prodej!
+
+Sledujte prodeje a nejprodávanější produkty
+Uvidíte na první pohled, které produkty vyhrávají. Mějte přehled o celkových tržbách, počtu objednávek a datech o návštěvnících po týdnech, měsících i letech. Znalost = síla.
+
+WooCommerce je nejflexibilnější open-source eCommerce platforma na světě. Ať už rozjíždíte podnikání, převádíte kamenný obchod online, nebo vyvíjíte weby pro klienty, vsaďte na WooCommerce a získejte obchod, který skvěle propojí obsah a prodej.
+
+Požadavky: WooCommerce v3.5+.
+
+Podmínky služby najdete na https://wordpress.com/tos/
+
+Zásady ochrany osobních údajů najdete na https://automattic.com/privacy/
+
+Oznámení o ochraně osobních údajů pro uživatele z Kalifornie najdete na https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

@@ -1,0 +1,29 @@
+Quản lý doanh nghiệp mọi lúc mọi nơi với ứng dụng di động WooCommerce. Thêm sản phẩm, tạo đơn hàng, nhận thanh toán nhanh và theo dõi doanh số mới cùng các số liệu quan trọng trong thời gian thực.
+
+Thêm và chỉnh sửa sản phẩm chỉ với một chạm
+Bắt đầu chỉ trong vài giây! Tạo, nhóm và đăng sản phẩm trực tiếp từ iPhone hoặc iPad của bạn. Nắm bắt sự sáng tạo ngay khi nó xuất hiện – biến ý tưởng thành sản phẩm ngay lập tức, hoặc lưu chúng dưới dạng bản nháp để dùng sau.
+
+Tạo đơn hàng ngay tại chỗ
+Một khi đã có sẵn vài sản phẩm, mọi thứ trở nên đơn giản. Chọn mặt hàng từ danh mục, thêm vận chuyển, điền thông tin khách hàng và nhanh chóng tạo một đơn hàng đồng bộ với kho hàng của bạn.
+
+Nhận thanh toán trực tiếp
+Thu thanh toán trực tiếp bằng WooCommerce In-Person Payments cùng đầu đọc thẻ (có sẵn tại Hoa Kỳ, Vương quốc Anh và Canada), Tap to Pay trên iPhone hoặc ví điện tử như Apple Pay. Bắt đầu một đơn hàng mới – hoặc tìm một đơn đang chờ thanh toán – rồi nhận thanh toán mượt mà.
+
+Từ trực tuyến đến cửa hàng truyền thống
+Biến bất kỳ máy tính bảng nào thành điểm bán hàng mạnh mẽ với WooCommerce POS. Tìm sản phẩm, quét mã vạch, áp dụng phiếu giảm giá và gửi biên lai qua email, với toàn bộ doanh số trực tuyến và tại cửa hàng được đồng bộ trong thời gian thực. Hiện có tại Hoa Kỳ và Vương quốc Anh.
+
+Nhận thông báo cho mọi đơn hàng
+Khi bạn đã bán hàng tích cực, đừng bỏ lỡ bất kỳ đơn hàng hay đánh giá nào. Luôn cập nhật bằng cách bật cảnh báo theo thời gian thực – và lắng nghe âm thanh "cha-ching" gây nghiện ấy đi kèm với mỗi đơn hàng mới!
+
+Theo dõi doanh số và sản phẩm bán chạy
+Nhìn trong nháy mắt biết sản phẩm nào đang thắng. Theo dõi tổng doanh thu, số lượng đơn hàng và dữ liệu khách truy cập theo tuần, tháng và năm. Kiến thức = sức mạnh.
+
+WooCommerce là nền tảng eCommerce mã nguồn mở dễ tùy biến nhất thế giới. Dù bạn đang khởi nghiệp, đưa cửa hàng truyền thống lên trực tuyến, hay phát triển website cho khách hàng, hãy chọn WooCommerce để có một cửa hàng kết hợp mạnh mẽ giữa nội dung và thương mại.
+
+Yêu cầu: WooCommerce v3.5+.
+
+Xem Điều khoản dịch vụ tại https://wordpress.com/tos/
+
+Xem Chính sách bảo mật tại https://automattic.com/privacy/
+
+Xem Thông báo bảo mật cho người dùng California tại https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

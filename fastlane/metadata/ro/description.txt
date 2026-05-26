@@ -1,0 +1,29 @@
+Gestionează-ți afacerea din mers cu aplicația mobilă WooCommerce. Adaugă produse, creează comenzi, încasează plăți rapid și urmărește vânzările noi și statisticile esențiale în timp real.
+
+Adaugă și editează produse cu o atingere
+Începe în câteva secunde! Creează, grupează și publică produse direct de pe iPhone sau iPad. Prinde creativitatea în clipa în care apare – transformă-ți ideile imediat în produse, sau salvează-le ca ciorne pentru mai târziu.
+
+Creează comenzi din mers
+Odată ce ai câteva produse create, totul devine simplu. Alege articole din catalog, adaugă livrarea, completează datele clientului și creează rapid o comandă care se sincronizează cu inventarul tău.
+
+Încasează plăți în persoană
+Acceptă plăți fizice prin WooCommerce In-Person Payments și un cititor de carduri (disponibil în SUA, Marea Britanie și Canada), Tap to Pay pe iPhone sau un portofel digital, precum Apple Pay. Începe o comandă nouă – sau găsește una existentă în așteptare de plată – apoi acceptă plata fără bătăi de cap.
+
+De la clicuri la magazin fizic
+Transformă orice tabletă într-un punct de vânzare puternic cu WooCommerce POS. Caută produse, scanează coduri de bare, aplică cupoane și trimite bonuri pe email, în timp ce toate vânzările online și fizice se sincronizează în timp real. Disponibil în SUA și Marea Britanie.
+
+Primește notificări la fiecare vânzare
+Acum că vinzi activ, nu pierde nicio comandă sau recenzie. Rămâi la curent activând alertele în timp real – și ascultă acel sunet captivant „cha-ching" care însoțește fiecare vânzare nouă!
+
+Urmărește vânzările și produsele cele mai bine vândute
+Vezi dintr-o privire care produse câștigă. Ține evidența veniturilor totale, a numărului de comenzi și a datelor despre vizitatori pe săptămână, lună și an. Cunoaștere = putere.
+
+WooCommerce este cea mai personalizabilă platformă eCommerce open-source din lume. Fie că pornești o afacere, îți muți magazinul fizic online, sau dezvolți site-uri pentru clienți, alege WooCommerce pentru un magazin care îmbină puternic conținutul și comerțul.
+
+Cerințe: WooCommerce v3.5+.
+
+Consultă Termenii și condițiile la https://wordpress.com/tos/
+
+Consultă Politica de confidențialitate la https://automattic.com/privacy/
+
+Consultă Notificarea de confidențialitate pentru utilizatorii din California la https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

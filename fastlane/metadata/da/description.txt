@@ -1,0 +1,29 @@
+Styr din virksomhed på farten med WooCommerce-mobilappen. Tilføj produkter, opret ordrer, modtag hurtige betalinger og hold øje med nyt salg og vigtige statistikker i realtid.
+
+Tilføj og rediger produkter med en finger
+Kom i gang på få sekunder! Opret, gruppér og udgiv produkter direkte fra din iPhone eller iPad. Fang kreativiteten i det øjeblik, den slår til – forvandl idéer til produkter med det samme, eller gem dem som kladder til senere.
+
+Opret ordrer i farten
+Når du først har nogle produkter, er det enkelt. Vælg varer fra dit katalog, tilføj forsendelse, og udfyld kundeoplysninger for hurtigt at oprette en ordre, der synkroniseres med dit lager.
+
+Tag imod betalinger fysisk
+Modtag fysiske betalinger med WooCommerce In-Person Payments og en kortlæser (tilgængelig i USA, Storbritannien og Canada), Tap to Pay på iPhone eller en digital tegnebog som Apple Pay. Start en ny ordre – eller find en eksisterende, der venter på betaling – og modtag betaling problemfrit.
+
+Fra klik til mursten
+Forvandl enhver tablet til et stærkt salgssted med WooCommerce POS. Søg efter produkter, scan stregkoder, anvend rabatkuponer og send kvitteringer på e-mail, mens alle dine online- og fysiske salg synkroniseres i realtid. Tilgængelig i USA og Storbritannien.
+
+Få besked om hvert salg
+Nu hvor du sælger aktivt, skal du aldrig gå glip af en ordre eller anmeldelse. Hold dig opdateret ved at aktivere realtidsmeddelelser – og lyt efter den vanedannende „cha-ching"-lyd, der følger med hvert nyt salg!
+
+Følg salg og bestsellere
+Se på et øjeblik, hvilke produkter der vinder. Hold styr på din samlede omsætning, antal ordrer og besøgsdata pr. uge, måned og år. Viden = magt.
+
+WooCommerce er verdens mest tilpasselige open source eCommerce-platform. Uanset om du starter en virksomhed, flytter din fysiske butik online eller udvikler hjemmesider for kunder, så brug WooCommerce og få en butik, der effektivt forener indhold og handel.
+
+Krav: WooCommerce v3.5+.
+
+Se Servicevilkår på https://wordpress.com/tos/
+
+Se Privatlivspolitik på https://automattic.com/privacy/
+
+Se Privatlivsmeddelelse for brugere i Californien på https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

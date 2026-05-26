@@ -1,0 +1,29 @@
+Zarządzaj swoim biznesem w drodze dzięki aplikacji mobilnej WooCommerce. Dodawaj produkty, twórz zamówienia, błyskawicznie przyjmuj płatności i miej oko na nową sprzedaż oraz kluczowe statystyki w czasie rzeczywistym.
+
+Dodawaj i edytuj produkty jednym dotknięciem
+Zacznij w kilka sekund! Twórz, grupuj i publikuj produkty bezpośrednio z iPhone'a lub iPada. Uchwyć kreatywność w chwili, gdy Cię nachodzi – natychmiast zamieniaj pomysły w produkty albo zapisuj je jako wersje robocze na później.
+
+Twórz zamówienia w locie
+Gdy już masz utworzone produkty, dalej idzie z górki. Wybierz pozycje z katalogu, dodaj wysyłkę, uzupełnij dane klienta i błyskawicznie złóż zamówienie zsynchronizowane z Twoim magazynem.
+
+Przyjmuj płatności osobiście
+Pobieraj płatności fizyczne dzięki WooCommerce In-Person Payments i czytnikowi kart (dostępnemu w USA, Wielkiej Brytanii i Kanadzie), funkcji Tap to Pay na iPhonie lub portfelowi cyfrowemu, takiemu jak Apple Pay. Rozpocznij nowe zamówienie – albo znajdź istniejące, oczekujące na płatność – i bez problemu zainkasuj należność.
+
+Z online do stacjonarnego
+Zamień dowolny tablet w potężny punkt sprzedaży dzięki WooCommerce POS. Wyszukuj produkty, skanuj kody kreskowe, stosuj kupony i wysyłaj paragony e-mailem, a cała sprzedaż online i stacjonarna synchronizuje się w czasie rzeczywistym. Dostępne w USA i Wielkiej Brytanii.
+
+Otrzymuj powiadomienia o każdej sprzedaży
+Skoro już aktywnie sprzedajesz, nie przegap żadnego zamówienia ani recenzji. Bądź na bieżąco, włączając powiadomienia w czasie rzeczywistym – i wsłuchaj się w to uzależniające „cha-ching", które towarzyszy każdej nowej sprzedaży!
+
+Śledź sprzedaż i bestsellery
+Zobacz w mgnieniu oka, które produkty wygrywają. Miej kontrolę nad łącznymi przychodami, liczbą zamówień i danymi o odwiedzających w ujęciu tygodniowym, miesięcznym i rocznym. Wiedza = potęga.
+
+WooCommerce to najbardziej elastyczna platforma eCommerce open-source na świecie. Niezależnie od tego, czy zakładasz biznes, przenosisz sklep stacjonarny do sieci, czy tworzysz strony dla klientów, postaw na WooCommerce i zyskaj sklep, który po mistrzowsku łączy treść z handlem.
+
+Wymagania: WooCommerce v3.5+.
+
+Zapoznaj się z Warunkami świadczenia usług pod adresem https://wordpress.com/tos/
+
+Zapoznaj się z Polityką prywatności pod adresem https://automattic.com/privacy/
+
+Zapoznaj się z Informacją o prywatności dla użytkowników z Kalifornii pod adresem https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

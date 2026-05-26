@@ -438,17 +438,11 @@ def main(argv)
     auto
   end
 
-  translator = WooAiTranslation::Translator.new(
-    client: client,
-    batch_size: batch_size,
-    logger: logger
-  )
-
-  manifest = opts[:use_manifest] ? WooAiTranslation::Manifest.new(locale: locale) : nil
-  logger.call("manifest #{manifest ? "loaded (#{manifest.size} entries, #{manifest.path})" : 'disabled'}")
-  escalation_model = opts[:use_escalation] ? opts[:escalation_model] : nil
-
-  # Load glossary / brand-safety validator if files exist for this locale.
+  # Load glossary / brand-safety validator first so we can lift its brand
+  # list into the translator's system prompt. Without this, the model
+  # translates terms like "SKU" into the target language (e.g. Bulgarian
+  # "Артикулен №") and the validator catches it post-hoc, wasting an Opus
+  # escalation and still failing the run.
   validator = begin
     base = File.expand_path('../glossary', __dir__)
     WooAiTranslation::Validator.for_locale(locale: locale, base_dir: base) if Dir.exist?(base)
@@ -459,6 +453,17 @@ def main(argv)
   # translator's system prompt so register/numeral/locale guidance is applied.
   style_path, style = load_style_guide(locale)
   logger.call(style ? "style guide loaded from #{File.basename(style_path)} (#{style.length} chars)" : 'no style guide; using built-in default')
+
+  translator = WooAiTranslation::Translator.new(
+    client: client,
+    batch_size: batch_size,
+    logger: logger,
+    brand_terms: validator&.brands
+  )
+
+  manifest = opts[:use_manifest] ? WooAiTranslation::Manifest.new(locale: locale) : nil
+  logger.call("manifest #{manifest ? "loaded (#{manifest.size} entries, #{manifest.path})" : 'disabled'}")
+  escalation_model = opts[:use_escalation] ? opts[:escalation_model] : nil
 
   out_dir = File.join(TARGET_BASE, "#{locale}.lproj")
 

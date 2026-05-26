@@ -3,7 +3,7 @@ import Foundation
 enum WooShippingShipmentIDFormatter {
     /// Turns numeric shipment ID into formatted as `shipment_<id>`
     /// - Parameter shipmentID: numeric shipment id
-    /// - Returns: formated id string
+    /// - Returns: formatted id string
     static func formattedShipmentID(_ shipmentID: String) -> String {
         return isArgumentIDValid(shipmentID) ?
         Values.shipmentIDPrefix + shipmentID :

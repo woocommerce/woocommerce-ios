@@ -31,11 +31,11 @@ def cli_args_from_env
   args
 end
 
-def run_cli(locale, *extra)
-  args = ['ruby', BIN, locale, *cli_args_from_env, *extra]
+def run_cli(locales, *extra)
+  args = ['ruby', BIN, *Array(locales), *cli_args_from_env, *extra]
   puts "$ #{args.join(' ')}"
   ok = system(*args)
-  abort("translate_locale.rb failed for #{locale}") unless ok
+  abort("translate_locale.rb failed (locales=#{Array(locales).join(',')})") unless ok
 end
 
 def resolve_locales
@@ -55,7 +55,11 @@ namespace :translate do
 
   desc 'Translate only missing keys for LOCALE (or all locales). Safe to run on every PR.'
   task :incremental do
-    resolve_locales.each { |loc| run_cli(loc, '--incremental') }
+    # Single Ruby process, all locales. Pays Ruby/bundler/Parser-cache boot
+    # cost once instead of 15×; on a 15-locale incremental with ~7 new keys
+    # per locale this is the difference between ~12 min and ~1 min total.
+    # See translate_locale.rb main() / process_locale().
+    run_cli(resolve_locales, '--incremental')
   end
 
   desc 'Verify a locale: key parity vs en.lproj, no API calls. LOCALE=xx or all.'

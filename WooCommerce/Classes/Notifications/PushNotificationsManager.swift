@@ -403,7 +403,7 @@ extension PushNotificationsManager {
         func registerForWPComPushNotificationsIfPossible() {
             if stores.isAuthenticatedWithoutWPCom { return }
             // Register in the Dotcom's Infrastructure
-            registerDotcomDevice(with: newToken) { (device, error) in
+            registerDotcomDevice(with: newToken) { device, error in
                 guard let deviceID = device?.deviceID else {
                     DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
                     return

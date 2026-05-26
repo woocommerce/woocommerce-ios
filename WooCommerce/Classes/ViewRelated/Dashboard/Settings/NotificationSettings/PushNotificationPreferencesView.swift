@@ -1,4 +1,6 @@
 import SwiftUI
+import EventHorizonSDK
+import protocol WooFoundation.Analytics
 
 /// Settings screen showing per-site Woo-driven push notification preferences:
 /// new orders, new reviews and stock alerts.
@@ -6,6 +8,7 @@ import SwiftUI
 struct PushNotificationPreferencesView: View {
 
     @Bindable private var viewModel: PushNotificationPreferencesViewModel
+    private let analytics: Analytics
 
     /// Set by the hosting controller after `super.init`. Default is a no-op so
     /// previews work without it.
@@ -17,8 +20,10 @@ struct PushNotificationPreferencesView: View {
     /// previews work without it.
     var onNewStockTapped: () -> Void = {}
 
-    init(viewModel: PushNotificationPreferencesViewModel) {
+    init(viewModel: PushNotificationPreferencesViewModel,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.viewModel = viewModel
+        self.analytics = analytics
     }
 
     var body: some View {
@@ -49,6 +54,9 @@ struct PushNotificationPreferencesView: View {
                 await viewModel.load()
             }
         }
+        .onAppear {
+            analytics.track(.notificationsSettingsView)
+        }
         .notice($viewModel.errorNotice)
     }
 
@@ -63,6 +71,7 @@ struct PushNotificationPreferencesView: View {
                        image: .errorImage,
                        buttonTitle: Localization.retry,
                        buttonAction: {
+                analytics.track(.notificationsSettingsLoadRetryTapped)
                 Task { await viewModel.load() }
             })
             .frame(maxWidth: .infinity, maxHeight: .infinity)

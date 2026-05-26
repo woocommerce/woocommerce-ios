@@ -88,7 +88,7 @@ private extension DefaultNoticePresenter {
         let content = UNMutableNotificationContent(notice: notice)
         let request = UNNotificationRequest(identifier: notificationInfo.identifier, content: content, trigger: nil)
 
-        UNUserNotificationCenter.current().add(request) { error in
+        UNUserNotificationCenter.current().add(request) { _ in
             DispatchQueue.main.async {
                 self.dismiss()
             }

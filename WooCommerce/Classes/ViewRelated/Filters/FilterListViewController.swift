@@ -614,7 +614,7 @@ private extension FilterListViewController {
             configuration.buttonSize = .mini
             configuration.title = NSLocalizedString("Explore", comment: "Button title to explore an extension that isn't installed")
 
-            let action = UIAction { [weak self] action in
+            let action = UIAction { [weak self] _ in
                 self?.launchPromoteWebview(for: promotableType)
             }
 

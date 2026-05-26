@@ -385,7 +385,7 @@ extension OrderDetailsViewModel {
     }
 
     func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
-        syncOrder { [weak self] (order, error) in
+        syncOrder { [weak self] order, error in
             guard let self, let order else {
                 onCompletion?(error)
                 return
@@ -660,7 +660,7 @@ extension OrderDetailsViewModel {
     }
 
     func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {
-        let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { order, error in
             guard let _ = order else {
                 DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
                 onCompletion?(nil, error)
@@ -674,7 +674,7 @@ extension OrderDetailsViewModel {
     }
 
     func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: order.siteID, orderID: order.orderID) { [weak self] (orderNotes, error) in
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: order.siteID, orderID: order.orderID) { [weak self] orderNotes, error in
             guard let orderNotes else {
                 DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
                 self?.orderNotes = []
@@ -692,7 +692,7 @@ extension OrderDetailsViewModel {
     }
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ProductAction.requestMissingProducts(for: order) { (error) in
+        let action = ProductAction.requestMissingProducts(for: order) { error in
             if let error {
                 DDLogError("⛔️ Error synchronizing Products: \(error)")
                 onCompletion?(error)
@@ -727,7 +727,7 @@ extension OrderDetailsViewModel {
             return
         }
 
-        let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs, deleteStaleRefunds: true) { (error) in
+        let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs, deleteStaleRefunds: true) { error in
             if let error {
                 DDLogError("⛔️ Error synchronizing detailed Refunds: \(error)")
                 onCompletion?(error)

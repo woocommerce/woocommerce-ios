@@ -5,8 +5,8 @@ import Yosemite
 /// Provides all necessary configuration for fetching, displaying, and syncing list items.
 protocol ListSyncable {
     associatedtype StorageType: ResultsControllerMutableType
-    associatedtype ModelType: Equatable & Hashable where ModelType == StorageType.ReadOnlyType
-    associatedtype ListFilterType: FilterType & Equatable
+    associatedtype ModelType: Equatable, Hashable where ModelType == StorageType.ReadOnlyType
+    associatedtype ListFilterType: FilterType, Equatable
 
     var title: String { get }
     var emptyStateMessage: String { get }

@@ -17,7 +17,7 @@ extension ProductVariation: TaxClassRequestable {}
 public class TaxStore: Store {
     private let remote: TaxRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = TaxRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -57,7 +57,7 @@ private extension TaxStore {
     /// Retrieve and synchronizes the Tax Classes associated with a given Site ID (if any!).
     ///
     func retrieveTaxClasses(siteID: Int64, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
-        remote.loadAllTaxClasses(for: siteID) { [weak self] (taxClasses, error) in
+        remote.loadAllTaxClasses(for: siteID) { [weak self] taxClasses, error in
             guard let taxClasses else {
                 onCompletion(nil, error)
                 return
@@ -84,7 +84,7 @@ private extension TaxStore {
             return
         }
         else {
-            remote.loadAllTaxClasses(for: taxClassRequestable.siteID) { [weak self] (taxClasses, error) in
+            remote.loadAllTaxClasses(for: taxClassRequestable.siteID) { [weak self] taxClasses, error in
                 guard let taxClasses else {
                     onCompletion(nil, error)
                     return

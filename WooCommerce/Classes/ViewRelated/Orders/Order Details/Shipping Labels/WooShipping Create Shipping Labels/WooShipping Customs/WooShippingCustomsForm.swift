@@ -68,9 +68,9 @@ struct WooShippingCustomsForm: View {
 
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
+            GeometryReader { _ in
                 VStack {
-                    ScrollViewReader { proxy in
+                    ScrollViewReader { _ in
                         ScrollView {
                             VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
                                 Text(Localization.contentType)

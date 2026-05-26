@@ -221,7 +221,7 @@ final class OrdersRemoteTests: XCTestCase {
 
         // When
         let order: Order = waitFor { promise in
-            remote.loadOrder(for: self.sampleSiteID, orderID: self.sampleOrderID) { order, error in
+            remote.loadOrder(for: self.sampleSiteID, orderID: self.sampleOrderID) { order, _ in
                 if let order {
                     promise(order)
                 }
@@ -309,7 +309,7 @@ final class OrdersRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)", filename: "order")
 
-        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: .pending) { (order, error) in
+        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: .pending) { order, error in
             XCTAssertNil(error)
             XCTAssertNotNil(order)
             expectation.fulfill()
@@ -324,7 +324,7 @@ final class OrdersRemoteTests: XCTestCase {
         let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Update Order")
 
-        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: .pending) { (order, error) in
+        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: .pending) { order, error in
             XCTAssertNil(order)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -338,7 +338,7 @@ final class OrdersRemoteTests: XCTestCase {
         let remote = OrdersRemote(network: network)
 
         // When
-        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: .pending) { (order, error) in }
+        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: .pending) { _, _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -353,7 +353,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(shippingLines: [shipping])
 
         // When
-        remote.updateOrder(from: 123, order: order, giftCard: nil, fields: [.shippingLines]) { result in }
+        remote.updateOrder(from: 123, order: order, giftCard: nil, fields: [.shippingLines]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -374,7 +374,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(fees: [fee])
 
         // When
-        remote.updateOrder(from: 123, order: order, giftCard: nil, fields: [.fees]) { result in }
+        remote.updateOrder(from: 123, order: order, giftCard: nil, fields: [.fees]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -397,7 +397,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(orderID: sampleOrderID, status: status)
 
         // When
-        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.status]) { result in }
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.status]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -413,7 +413,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(items: [orderItem])
 
         // When
-        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.items]) { result in }
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.items]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -445,7 +445,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(items: [orderItem])
 
         // When
-        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.items]) { result in }
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.items]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -482,7 +482,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(coupons: [coupon])
 
         // When
-        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.couponLines]) { result in }
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.couponLines]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -499,7 +499,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake()
 
         // When
-        remote.updateOrder(from: sampleSiteID, order: order, giftCard: "ABAE-DCCA", fields: []) { result in }
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: "ABAE-DCCA", fields: []) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -514,7 +514,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(paymentMethodID: "cod", paymentMethodTitle: "Pay in Person")
 
         // When
-        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.paymentMethodID, .paymentMethodTitle]) { result in }
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.paymentMethodID, .paymentMethodTitle]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -530,7 +530,7 @@ final class OrdersRemoteTests: XCTestCase {
         let cashPaymentChangeDueAmount = "$6.00"
 
         // When
-        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, cashPaymentChangeDueAmount: cashPaymentChangeDueAmount, fields: []) { result in }
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, cashPaymentChangeDueAmount: cashPaymentChangeDueAmount, fields: []) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -547,7 +547,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake()
 
         // When
-        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: []) { result in }
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: []) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -560,7 +560,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake()
 
         // When
-        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.customerNote]) { result in }
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.customerNote]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -612,7 +612,7 @@ final class OrdersRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes", filename: "new-order-note")
 
-        remote.addOrderNote(for: sampleSiteID, orderID: sampleOrderID, isCustomerNote: true, with: noteData) { (orderNote, error) in
+        remote.addOrderNote(for: sampleSiteID, orderID: sampleOrderID, isCustomerNote: true, with: noteData) { orderNote, error in
             XCTAssertNil(error)
             XCTAssertNotNil(orderNote)
             expectation.fulfill()
@@ -629,7 +629,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(coupons: [coupon])
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.couponLines]) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.couponLines]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -647,7 +647,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(fees: [fee])
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.feeLines]) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.feeLines]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -669,7 +669,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(fees: [fee])
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.feeLines]) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.feeLines]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -692,7 +692,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(status: status)
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.status]) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.status]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -708,7 +708,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(status: status)
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.status]) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.status]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -724,7 +724,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(items: [orderItem])
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.items]) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.items]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -745,7 +745,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(billingAddress: address1, shippingAddress: address2)
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.billingAddress, .shippingAddress]) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.billingAddress, .shippingAddress]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -784,7 +784,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake().copy(shippingLines: [shipping])
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.shippingLines]) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.shippingLines]) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -804,7 +804,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake()
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: "ABAE-DCCA", fields: []) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: "ABAE-DCCA", fields: []) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -819,7 +819,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake()
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: []) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: []) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -850,7 +850,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake()
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: []) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: []) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -863,7 +863,7 @@ final class OrdersRemoteTests: XCTestCase {
         let order = Order.fake()
 
         // When
-        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: []) { result in }
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: []) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -911,7 +911,7 @@ final class OrdersRemoteTests: XCTestCase {
         let remote = OrdersRemote(network: network)
 
         // When
-        remote.deleteOrder(for: sampleSiteID, orderID: sampleOrderID, force: true) { result in }
+        remote.deleteOrder(for: sampleSiteID, orderID: sampleOrderID, force: true) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)

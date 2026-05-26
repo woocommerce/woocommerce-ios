@@ -37,7 +37,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Synchronizes the general site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadGeneralSettings(for: siteID) { [weak self] (settings, error) in
+        siteSettingsRemote.loadGeneralSettings(for: siteID) { [weak self] settings, error in
             guard let settings else {
                 onCompletion(error)
                 return
@@ -52,7 +52,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Synchronizes the product site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadProductSettings(for: siteID) { [weak self] (settings, error) in
+        siteSettingsRemote.loadProductSettings(for: siteID) { [weak self] settings, error in
             guard let settings else {
                 onCompletion(error)
                 return

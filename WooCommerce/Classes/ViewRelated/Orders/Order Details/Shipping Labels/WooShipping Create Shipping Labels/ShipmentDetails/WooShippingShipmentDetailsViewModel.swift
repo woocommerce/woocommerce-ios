@@ -70,7 +70,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
 
     @Published private var customsForm: ShippingLabelCustomsForm?
 
-    lazy private(set) var customsFormViewModel: WooShippingCustomsFormViewModel = {
+    private(set) lazy var customsFormViewModel: WooShippingCustomsFormViewModel = {
         return WooShippingCustomsFormViewModel(
             order: order,
             shipment: shipment,
@@ -353,7 +353,7 @@ private extension WooShippingShipmentDetailsViewModel {
             .assign(to: &$shippingService)
 
         $originAddress.combineLatest($destinationAddress)
-            .map { (originAddress, destinationAddress) -> Bool in
+            .map { originAddress, destinationAddress -> Bool in
                 guard let originAddress, let destinationAddress else {
                     return false
                 }
@@ -406,7 +406,7 @@ private extension WooShippingShipmentDetailsViewModel {
                                  newValue: ShippingLabelHazmatCategory?) in
                 return (current: newValue, previous: previous.current)
             }
-            .map { [weak self] (newValue, oldValue) in
+            .map { [weak self] newValue, oldValue in
                 let noticeTitle = newValue != nil ? Localization.hazmatSet : Localization.hazmatRemoved
                 return Notice(title: noticeTitle, actionTitle: Localization.undo, actionHandler: {
                     self?.hazmatCategory = oldValue
@@ -417,7 +417,7 @@ private extension WooShippingShipmentDetailsViewModel {
 
     func observeCustomsForm() {
         customsFormViewModel.$isMissingITN.combineLatest($customsFormRequired)
-            .map { (isMissingITN, customsFormRequired) -> String? in
+            .map { isMissingITN, customsFormRequired -> String? in
                 if customsFormRequired, isMissingITN {
                     return Localization.itnMissing
                 }
@@ -426,7 +426,7 @@ private extension WooShippingShipmentDetailsViewModel {
             .assign(to: &$itnMissingNoticeLabel)
 
         customsFormViewModel.$requiredInformationIsEntered.combineLatest($customsFormRequired)
-            .map { (requiredInfoIsEntered, customsFormRequired) -> Bool in
+            .map { requiredInfoIsEntered, customsFormRequired -> Bool in
                 requiredInfoIsEntered && customsFormRequired
             }
             .assign(to: &$customsInformationIsCompleted)

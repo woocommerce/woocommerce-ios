@@ -22,7 +22,7 @@ public final class AirPrintReceiptPrinterService: NSObject, PrinterService {
         renderer.configureFormatterForPrinting()
         printController.printPageRenderer = renderer
 
-        printController.present(animated: true) { (controller, completed, error) in
+        printController.present(animated: true) { _, completed, error in
             switch (completed, error) {
             case (_, .some(let error)):
                 // Printing failed

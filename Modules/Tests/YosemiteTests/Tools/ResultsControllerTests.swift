@@ -134,7 +134,7 @@ final class ResultsControllerTests: XCTestCase {
             XCTAssertFalse(didChangeObjectWasCalled)
             expectation.fulfill()
         }
-        resultsController.onDidChangeObject = { (_, _, _, _) in
+        resultsController.onDidChangeObject = { _, _, _, _ in
             didChangeObjectWasCalled = true
         }
 
@@ -152,7 +152,7 @@ final class ResultsControllerTests: XCTestCase {
         let expectation = self.expectation(description: "OnDidChange")
         var didChangeObjectWasCalled = false
 
-        resultsController.onDidChangeObject = { (_, _, _, _) in
+        resultsController.onDidChangeObject = { _, _, _, _ in
             didChangeObjectWasCalled = true
         }
         resultsController.onDidChangeContent = {
@@ -173,7 +173,7 @@ final class ResultsControllerTests: XCTestCase {
         try? resultsController.performFetch()
 
         let expectation = self.expectation(description: "OnDidChange")
-        resultsController.onDidChangeObject = { (object, indexPath, type, newIndexPath) in
+        resultsController.onDidChangeObject = { _, _, type, newIndexPath in
             let expectedIndexPath = IndexPath(row: 0, section: 0)
 
             XCTAssertEqual(type, .insert)
@@ -197,7 +197,7 @@ final class ResultsControllerTests: XCTestCase {
         try? resultsController.performFetch()
 
         let expectation = self.expectation(description: "OnDidChange")
-        resultsController.onDidChangeSection = { (sectionInfo, index, type) in
+        resultsController.onDidChangeSection = { _, _, type in
             XCTAssertEqual(type, .insert)
             expectation.fulfill()
         }

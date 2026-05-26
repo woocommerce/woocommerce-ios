@@ -176,7 +176,7 @@ private extension EditableOrderShippingLineViewModel {
             .map { $0.shippingLines }
             .removeDuplicates()
             .combineLatest($shouldShowNonEditableIndicators)
-            .map { [weak self] (shippingLines, isNonEditable) -> [ShippingLineRowViewModel] in
+            .map { [weak self] shippingLines, isNonEditable -> [ShippingLineRowViewModel] in
                 guard let self else { return [] }
                 return shippingLines.compactMap { shippingLine in
                     guard !shippingLine.isDeleted else { return nil }
@@ -184,7 +184,7 @@ private extension EditableOrderShippingLineViewModel {
                     return ShippingLineRowViewModel(shippingLine: shippingLine,
                                                     shippingMethods: self.allShippingMethods,
                                                     editable: !isNonEditable,
-                                                    onEditShippingLine: { [weak self] shippingID in
+                                                    onEditShippingLine: { [weak self] _ in
                         guard let self else {
                             return
                         }

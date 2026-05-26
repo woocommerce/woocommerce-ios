@@ -72,7 +72,7 @@ public final class NotificationsRemote: Remote, NotificationsRemoteProtocol {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.read, parameters: parameters)
         let mapper = SuccessResultMapper()
 
-        enqueue(request, mapper: mapper) { (success, error) in
+        enqueue(request, mapper: mapper) { success, error in
             guard success == true else {
                 completion(error ?? DotcomError.empty())
                 return
@@ -97,7 +97,7 @@ public final class NotificationsRemote: Remote, NotificationsRemoteProtocol {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.seen, parameters: parameters)
         let mapper = SuccessResultMapper()
 
-        enqueue(request, mapper: mapper) { (success, error) in
+        enqueue(request, mapper: mapper) { success, error in
             guard success == true else {
                 completion(error ?? DotcomError.empty())
                 return

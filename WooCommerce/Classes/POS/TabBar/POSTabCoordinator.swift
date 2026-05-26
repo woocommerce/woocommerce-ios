@@ -271,6 +271,8 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
+                let receiptSettingsAdminURL = storesManager.sessionManager.defaultSite?.receiptSettingsAdminURL ?? ""
+
                 // Resolve TTP eligibility once, up front, so we can hand the right
                 // preferred method down to POSPaymentModel. The same checker is also
                 // passed in for the availability controller that drives the buttons /
@@ -288,6 +290,11 @@ private extension POSTabCoordinator {
                     preferredConnectionMethod = .bluetooth
                 }
 
+                let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
+                                                                           stores: storesManager,
+                                                                           storageManager: storageManager,
+                                                                           currencySettings: currencySettings)
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -304,6 +311,7 @@ private extension POSTabCoordinator {
                     ),
                     orderService: orderService,
                     refundsService: refundsService,
+                    refundSubmissionProcessor: refundSubmissionProcessor,
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
                         self?.updateDefaultConfigurationForPointOfSale(isEnabled)
                     },
@@ -321,6 +329,7 @@ private extension POSTabCoordinator {
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
+                    receiptSettingsAdminURL: receiptSettingsAdminURL,
                     sunsetWarningChecker: sunsetWarningChecker,
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
@@ -335,6 +344,7 @@ private extension POSTabCoordinator {
         }
     }
 }
+
 
 private extension POSTabCoordinator {
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {

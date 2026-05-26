@@ -197,7 +197,7 @@ private extension ULErrorViewController {
 
         // We need to wait until view did appear to make sure the indicator stays at the correct position
         primaryButtonSubscription = viewModel.isPrimaryButtonLoading.combineLatest(viewDidAppearSubject.prefix(1))
-            .sink { [weak self] (isLoading, _) in
+            .sink { [weak self] isLoading, _ in
                 guard let self else { return }
                 self.primaryButton.isEnabled = !isLoading
                 if isLoading {

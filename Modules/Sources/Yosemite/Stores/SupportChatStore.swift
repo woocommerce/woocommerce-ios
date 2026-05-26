@@ -8,7 +8,7 @@ import Storage
 public final class SupportChatStore: Store {
     private let remote: SupportChatRemoteProtocol
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = SupportChatRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -22,11 +22,11 @@ public final class SupportChatStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: SupportChatAction.self)
     }
 
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? SupportChatAction else {
             assertionFailure("SupportChatStore received an unsupported action")
             return

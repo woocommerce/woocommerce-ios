@@ -95,6 +95,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleRefundsi1:
             return true
+        case .pointOfSaleRoles:
+            return buildConfig == .localDeveloper
         case .pointOfSaleCustomAmounts:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSalePhonePrototype:
@@ -110,7 +112,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // alpha and beta keep showing only Cash + Card reader for now.
             return buildConfig == .localDeveloper
         case .selfDrivenPushToken:
-            return false
+            return true
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:

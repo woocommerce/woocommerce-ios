@@ -3,8 +3,8 @@ import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderItem
 import typealias Yosemite.OrderItemAttribute
 
-struct POSRefundSelectableItem: Identifiable, Equatable {
-    let itemID: Int64
+public struct POSRefundSelectableItem: Identifiable, Equatable {
+    public let itemID: Int64
     let name: String
     let imageSrc: String?
     let lineItemTotal: Decimal
@@ -14,23 +14,23 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
     let attributes: [OrderItemAttribute]
     /// `true` when this row represents a lump-sum line such as a custom amount / fee.
     /// Lump-sum rows have no quantity / unit-level breakdown — they refund as a single line.
-    let isLumpSum: Bool
+    public let isLumpSum: Bool
     var isSelected: Bool
 
     /// Unique identifier for the selectable item (combines itemID and index for multiple units)
-    let id: String
+    public let id: String
 
-    init(itemID: Int64,
-         name: String,
-         imageSrc: String?,
-         lineItemTotal: Decimal,
-         totalTax: Decimal,
-         originalQuantity: Decimal,
-         formattedPrice: String,
-         attributes: [OrderItemAttribute],
-         isLumpSum: Bool = false,
-         isSelected: Bool,
-         index: Int) {
+    public init(itemID: Int64,
+                name: String,
+                imageSrc: String?,
+                lineItemTotal: Decimal,
+                totalTax: Decimal,
+                originalQuantity: Decimal,
+                formattedPrice: String,
+                attributes: [OrderItemAttribute],
+                isLumpSum: Bool = false,
+                isSelected: Bool,
+                index: Int) {
         self.itemID = itemID
         self.name = name
         self.imageSrc = imageSrc

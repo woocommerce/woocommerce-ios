@@ -119,6 +119,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                     onWaitingForInput(inputMethods)
                 case .displayMessage(let message):
                     onDisplayMessage(message)
+                case .removeCardRequested(let message):
+                    onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     onProcessingMessage()
                 case .cardInserted:
@@ -161,6 +163,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                 case .waitingForInput(let inputMethods):
                     handlers.onWaitingForInput(inputMethods)
                 case .displayMessage(let message):
+                    handlers.onDisplayMessage(message)
+                case .removeCardRequested(let message):
                     handlers.onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     handlers.onProcessingMessage()

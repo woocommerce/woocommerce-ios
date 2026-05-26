@@ -54,10 +54,10 @@ extension ShippingLabelPackagesResponse: Decodable {
 
         // Iterate around keys of `formSchema` and `formData` for creating the predefined options available for this website.
         //
-        rawPredefinedFormSchema.forEach { (key, value) in
+        rawPredefinedFormSchema.forEach { key, value in
 
             let provider: [String: Any]? = try? value.toDictionary()
-            provider?.forEach({ (providerKey, providerValue) in
+            provider?.forEach({ _, providerValue in
 
                 let providerValueDict = providerValue as? [String: Any]
                 let packages = ShippingLabelPackagesResponse.getAllPredefinedPackages(packageDefinitions: providerValueDict)
@@ -109,8 +109,8 @@ private extension ShippingLabelPackagesResponse {
     static func getPredefinedPackages(withIDs packageIDs: [Any?], in packages: [ShippingLabelPredefinedPackage]) -> [ShippingLabelPredefinedPackage] {
         var predefinedPackages: [ShippingLabelPredefinedPackage] = []
 
-        packageIDs.compactMap { $0 }.forEach { (packageID) in
-            packages.forEach { (package) in
+        packageIDs.compactMap { $0 }.forEach { packageID in
+            packages.forEach { package in
                 if packageID as? String == package.id {
                     predefinedPackages.append(package)
                 }

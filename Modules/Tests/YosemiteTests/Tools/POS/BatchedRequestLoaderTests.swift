@@ -87,7 +87,7 @@ struct BatchedRequestLoaderTests {
         )
 
         let attemptCount = Counter()
-        let makeRequest: (Int) async throws -> PagedItems<String> = { pageNumber in
+        let makeRequest: (Int) async throws -> PagedItems<String> = { _ in
             await attemptCount.increment()
             throw NetworkError.unacceptableStatusCode(statusCode: 401, response: nil)
         }
@@ -111,7 +111,7 @@ struct BatchedRequestLoaderTests {
 
         let attemptCount = Counter()
         let expectedError = URLError(.networkConnectionLost)
-        let makeRequest: (Int) async throws -> PagedItems<String> = { pageNumber in
+        let makeRequest: (Int) async throws -> PagedItems<String> = { _ in
             await attemptCount.increment()
             throw expectedError
         }

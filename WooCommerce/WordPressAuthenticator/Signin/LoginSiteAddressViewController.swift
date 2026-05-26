@@ -152,7 +152,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         configureViewLoading(true)
 
         let facade = WordPressXMLRPCAPIFacade()
-        facade.guessXMLRPCURL(forSite: loginFields.siteAddress, success: { [weak self] (url) in
+        facade.guessXMLRPCURL(forSite: loginFields.siteAddress, success: { [weak self] url in
             // Success! We now know that we have a valid XML-RPC endpoint.
             // At this point, we do NOT know if this is a WP.com site or a self-hosted site.
             if let url {
@@ -160,7 +160,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             }
             // Let's try to grab site info in preparation for the next screen.
             self?.fetchSiteInfo()
-        }, failure: { [weak self] (error) in
+        }, failure: { [weak self] error in
             guard let error, let self else {
                 return
             }
@@ -211,7 +211,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     }
 
     func presentNextControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
-        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (result) in
+        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { result in
             switch result {
             case let .error(error):
                 self.displayError(message: error.localizedDescription)
@@ -291,7 +291,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     /// Does a local / quick Site Address validation and refreshes the UI with an error
     /// if necessary.
     ///
-    /// - Returns: `true` if the Site Address contains a valid URL.  `false` otherwise.
+    /// - Returns: `true` if the Site Address contains a valid URL. `false` otherwise.
     ///
     private func refreshSiteAddressError(immediate: Bool) {
         let showError = !loginFields.siteAddress.isEmpty && !loginFields.validateSiteForSignin()

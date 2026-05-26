@@ -7,7 +7,7 @@ import Storage
 public final class SystemStatusStore: Store {
     private let remote: SystemStatusRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = SystemStatusRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -20,7 +20,7 @@ public final class SystemStatusStore: Store {
 
     /// Receives and executes Actions.
     ///
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? SystemStatusAction else {
             assertionFailure("SystemPluginStore receives an unsupported action!")
             return

@@ -141,7 +141,7 @@ final class CouponsRemoteTests: XCTestCase {
         let result = waitFor { promise in
             remote.deleteCoupon(for: self.sampleSiteID,
                                 couponID: sampleCouponID,
-                                completion: { (result) in
+                                completion: { result in
                 promise(result)
             })
         }
@@ -187,7 +187,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.updateCoupon(coupon) { (result) in
+            remote.updateCoupon(coupon) { result in
                 promise(result)
             }
         }
@@ -233,7 +233,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.createCoupon(coupon) { (result) in
+            remote.createCoupon(coupon) { result in
                 promise(result)
             }
         }
@@ -255,7 +255,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571, from: Date()) { (result) in
+            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571, from: Date()) { result in
                 promise(result)
             }
         }
@@ -278,7 +278,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571, from: Date()) { (result) in
+            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571, from: Date()) { result in
                 promise(result)
             }
         }
@@ -304,7 +304,7 @@ final class CouponsRemoteTests: XCTestCase {
                                          numberOfCouponsToLoad: 3,
                                          from: Date(),
                                          to: Date()
-            ) { (result) in
+            ) { result in
                 promise(result)
             }
         }
@@ -331,7 +331,7 @@ final class CouponsRemoteTests: XCTestCase {
                                          numberOfCouponsToLoad: 3,
                                          from: Date(),
                                          to: Date()
-            ) { (result) in
+            ) { result in
                 promise(result)
             }
         }
@@ -434,7 +434,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.retrieveCoupon(for: self.sampleSiteID, couponID: sampleCouponID) { (result) in
+            remote.retrieveCoupon(for: self.sampleSiteID, couponID: sampleCouponID) { result in
                 promise(result)
             }
         }
@@ -457,7 +457,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.retrieveCoupon(for: self.sampleSiteID, couponID: sampleCouponID) { (result) in
+            remote.retrieveCoupon(for: self.sampleSiteID, couponID: sampleCouponID) { result in
                 promise(result)
             }
         }

@@ -10,7 +10,7 @@ final class WooShippingCreateLabelsViewHostingController: UIHostingController<Wo
         super.init(rootView: WooShippingCreateLabelsView(viewModel: viewModel))
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -151,7 +151,7 @@ struct WooShippingCreateLabelsView: View {
 
 private extension WooShippingCreateLabelsView {
     var tabs: [TopTabItem<EmptyView>] {
-        viewModel.shipments.enumerated().map { (index, shipment) in
+        viewModel.shipments.enumerated().map { index, shipment in
             TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
                        icon: shipment.isPurchased ? Layout.purchasedIcon : nil,
                        customAccessibilityValue: shipment.isPurchased ?

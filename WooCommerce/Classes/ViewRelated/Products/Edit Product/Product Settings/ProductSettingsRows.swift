@@ -114,7 +114,7 @@ enum ProductSettingsRows {
             let viewController = ProductVisibilityViewController(
                 settings: settings,
                 showsPasswordProtectedVisibility: passwordProtectedAvailable
-            ) { (productSettings) in
+            ) { productSettings in
                 self.settings.password = productSettings.password
                 self.settings.status = productSettings.status
                 onCompletion(self.settings)
@@ -147,7 +147,7 @@ enum ProductSettingsRows {
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
             ServiceLocator.analytics.track(.productSettingsCatalogVisibilityTapped)
-            let viewController = ProductCatalogVisibilityViewController(settings: settings) { (productSettings) in
+            let viewController = ProductCatalogVisibilityViewController(settings: settings) { productSettings in
                 self.settings.featured = productSettings.featured
                 self.settings.catalogVisibility = productSettings.catalogVisibility
                 onCompletion(self.settings)
@@ -288,7 +288,7 @@ enum ProductSettingsRows {
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
             ServiceLocator.analytics.track(.productSettingsSlugTapped)
-            let viewController = ProductSlugViewController(settings: settings) { (productSettings) in
+            let viewController = ProductSlugViewController(settings: settings) { productSettings in
                 self.settings.slug = productSettings.slug
                 onCompletion(self.settings)
             }
@@ -319,7 +319,7 @@ enum ProductSettingsRows {
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
             ServiceLocator.analytics.track(.productSettingsPurchaseNoteTapped)
-            let viewController = ProductPurchaseNoteViewController(settings: settings) { (productSettings) in
+            let viewController = ProductPurchaseNoteViewController(settings: settings) { productSettings in
                 self.settings.purchaseNote = productSettings.purchaseNote
                 onCompletion(self.settings)
             }
@@ -350,7 +350,7 @@ enum ProductSettingsRows {
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
             ServiceLocator.analytics.track(.productSettingsMenuOrderTapped)
-            let viewController = ProductMenuOrderViewController(settings: settings) { (productSettings) in
+            let viewController = ProductMenuOrderViewController(settings: settings) { productSettings in
                 self.settings.menuOrder = productSettings.menuOrder
                 onCompletion(self.settings)
             }

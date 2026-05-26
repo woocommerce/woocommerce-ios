@@ -8,12 +8,14 @@ import SwiftUI
 /// This view used to host its own "Connect your reader" CTA, but moving it into
 /// the row keeps method selection in one place and avoids two competing CTAs.
 struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
-    private let viewModel = PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel()
+    private let viewModel: PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel
     private let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(animation: POSCardPresentPaymentInLineMessageAnimation) {
+    init(viewModel: PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel = .init(),
+         animation: POSCardPresentPaymentInLineMessageAnimation) {
+        self.viewModel = viewModel
         self.animation = animation
     }
 

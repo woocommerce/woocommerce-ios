@@ -13,13 +13,13 @@ extension CancellableMedia: WPMediaAsset {
         // TODO-2073: move image fetching to `WordPressMediaLibraryPickerDataSource` instead of having to use the `ServiceLocator` singleton on a `Media`
         // extension.
         let imageService = ServiceLocator.imageService
-        imageService.retrieveImageFromCache(with: url) { [weak self] (image) in
+        imageService.retrieveImageFromCache(with: url) { [weak self] image in
             if let image {
                 completionHandler(image, nil)
                 return
             }
 
-            self?.cancellableTask = imageService.downloadImage(with: url, shouldCacheImage: true) { (image, error) in
+            self?.cancellableTask = imageService.downloadImage(with: url, shouldCacheImage: true) { image, error in
                 completionHandler(image, error)
             }
         }

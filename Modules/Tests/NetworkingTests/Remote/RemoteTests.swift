@@ -32,7 +32,7 @@ final class RemoteTests: XCTestCase {
         let remote = Remote(network: network)
         let expectation = self.expectation(description: "Enqueue with Mapper")
 
-        remote.enqueue(request, mapper: mapper) { (payload, error) in
+        remote.enqueue(request, mapper: mapper) { payload, _ in
             guard let receivedRequest = network.requestsForResponseData.first as? JetpackRequest else {
                 XCTFail()
                 return
@@ -114,7 +114,7 @@ final class RemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
-        remote.enqueue(request, mapper: mapper) { (payload, error) in
+        remote.enqueue(request, mapper: mapper) { _, _ in
             XCTAssertEqual(mapper.input, Loader.contentsOf("order"))
             XCTAssertNotNil(mapper.input)
             expectation.fulfill()
@@ -200,7 +200,7 @@ final class RemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "something", filename: "timeout_error")
 
-        remote.enqueue(request, mapper: mapper) { (payload, error) in
+        remote.enqueue(request, mapper: mapper) { payload, error in
             XCTAssertNil(payload)
             XCTAssert(error is DotcomError)
             expectationForRequest.fulfill()

@@ -133,7 +133,8 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
     public func createRefund(orderID: Int64,
                              items: [POSRefundableItem],
                              reason: String?,
-                             isAutomaticRefund: Bool) async throws {
+                             isAutomaticRefund: Bool,
+                             staffUserID: Int64?) async throws {
         let numberOfDecimals = currencySettings.fractionDigits
         let request = refundCalculator.buildRefundRequest(
             orderID: orderID,
@@ -142,7 +143,11 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
             numberOfDecimals: numberOfDecimals
         )
         let refund = buildRefund(from: request, createAutomated: isAutomaticRefund, numberOfDecimals: numberOfDecimals)
-        _ = try await refundsRemote.createRefund(for: siteID, by: orderID, refund: refund)
+        let additionalMetadata = Self.makeAttributionMetadata(staffUserID: staffUserID)
+        _ = try await refundsRemote.createRefund(for: siteID,
+                                                 by: orderID,
+                                                 refund: refund,
+                                                 additionalMetadata: additionalMetadata)
     }
 
     private func buildRefund(from request: POSRefundRequest, createAutomated: Bool, numberOfDecimals: Int) -> Refund {
@@ -214,5 +219,17 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         return orderedQuantities.allSatisfy { id, orderedQty in
             (refundedQuantities[id] ?? 0) >= orderedQty
         }
+    }
+}
+
+private extension POSRefundsService {
+    /// Builds the `_pos_attribution` meta entry per the M1 plan
+    /// (https://peacockp2.wordpress.com/?p=34760). Returns an empty array when no staff
+    /// user is signed in so the server-side `pre_insert_shop_order_refund_object` validation
+    /// won't reject pre-roll-out clients.
+    static func makeAttributionMetadata(staffUserID: Int64?) -> [MetaData] {
+        guard let staffUserID else { return [] }
+        let value = "{\"staff_user_id\":\(staffUserID)}"
+        return [MetaData(metadataID: 0, key: "_pos_attribution", value: value)]
     }
 }

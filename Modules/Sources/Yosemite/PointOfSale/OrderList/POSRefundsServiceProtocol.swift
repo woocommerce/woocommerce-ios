@@ -43,6 +43,11 @@ public struct POSRefundRequestItem {
 public protocol POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: POSOrder) async throws -> POSRefundsResult
     func calculateRefundAmounts(for items: [POSRefundableItem]) -> POSRefundAmounts
-    func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws
+    /// Creates a refund for the order.
+    /// - Parameter staffUserID: When non-nil, written to the refund's `meta_data` as
+    ///   `_pos_attribution` so the server's `pre_insert_shop_order_refund_object` hook can
+    ///   attribute the refund timeline note to the current operator (mirrors order-side
+    ///   attribution from the M1 plan).
+    func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?, isAutomaticRefund: Bool, staffUserID: Int64?) async throws
     func loadOrderRefunds(for order: POSOrder) async throws -> [POSOrderRefund]
 }

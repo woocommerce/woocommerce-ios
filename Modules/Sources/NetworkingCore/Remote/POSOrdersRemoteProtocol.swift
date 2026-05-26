@@ -9,7 +9,8 @@ public protocol POSOrdersRemoteProtocol {
     func updatePOSOrder(siteID: Int64,
                         order: Order,
                         cashPaymentChangeDueAmount: String?,
-                        fields: [OrdersRemote.UpdateOrderField]) async throws -> Order
+                        fields: [OrdersRemote.UpdateOrderField],
+                        additionalMetadata: [MetaData]) async throws -> Order
 
     func updatePOSOrderEmail(siteID: Int64,
                              orderID: Int64,

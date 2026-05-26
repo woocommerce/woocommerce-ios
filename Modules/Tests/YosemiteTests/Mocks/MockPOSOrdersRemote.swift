@@ -5,15 +5,18 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
     var spyUpdatePOSOrder: Order?
     var spyUpdatePOSOrderFields: [OrdersRemote.UpdateOrderField]?
     var spyUpdatePOSOrderCashPaymentChangeDueAmount: String?
+    var spyUpdatePOSOrderAdditionalMetadata: [MetaData]?
     var updatePOSOrderResult: Result<Order, Error> = .success(Order.fake())
     func updatePOSOrder(siteID: Int64,
                         order: Order,
                         cashPaymentChangeDueAmount: String?,
-                        fields: [OrdersRemote.UpdateOrderField]) async throws -> Order {
+                        fields: [OrdersRemote.UpdateOrderField],
+                        additionalMetadata: [MetaData]) async throws -> Order {
         updatePOSOrderCalled = true
         spyUpdatePOSOrder = order
         spyUpdatePOSOrderFields = fields
         spyUpdatePOSOrderCashPaymentChangeDueAmount = cashPaymentChangeDueAmount
+        spyUpdatePOSOrderAdditionalMetadata = additionalMetadata
         switch updatePOSOrderResult {
         case .success(let updatedOrder):
             return updatedOrder

@@ -233,7 +233,7 @@ struct POSOrderServiceTests {
         let order = OrderFactory.newOrder(currency: .USD)
 
         // When
-        try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: nil)
+        try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: nil, staffUserID: nil)
 
         // Then
         let updatedOrder = try #require(mockOrdersRemote.spyUpdatePOSOrder)
@@ -253,7 +253,7 @@ struct POSOrderServiceTests {
         let order = OrderFactory.newOrder(currency: .USD)
 
         // When
-        try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: "$6.02")
+        try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: "$6.02", staffUserID: nil)
 
         // Then
         let changeDueAmount = try #require(mockOrdersRemote.spyUpdatePOSOrderCashPaymentChangeDueAmount)
@@ -268,7 +268,7 @@ struct POSOrderServiceTests {
 
         // When/Then
         await #expect(performing: {
-            try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: nil)
+            try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: nil, staffUserID: nil)
         }, throws: { _ in
             // The actual error `POSOrderServiceError.updateOrderFailed` is private, thus we cannot check against the exact error.
             return true

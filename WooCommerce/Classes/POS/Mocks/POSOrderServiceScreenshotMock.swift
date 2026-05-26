@@ -111,11 +111,11 @@ final class POSOrderServiceScreenshotMock: POSOrderServiceProtocol {
 
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
-    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws {}
+    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?, staffUserID: Int64?) async throws {}
 
-    func markOrderAsCompletedManually(order: Order) async throws {}
+    func markOrderAsCompletedManually(order: Order, staffUserID: Int64?) async throws {}
 
-    func promoteOrderToPending(order: Order) async throws -> Order { order }
+    func promoteOrderToPending(order: Order, staffUserID: Int64?) async throws -> Order { order }
 
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {}
 }

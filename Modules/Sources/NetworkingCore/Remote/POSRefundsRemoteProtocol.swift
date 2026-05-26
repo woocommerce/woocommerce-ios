@@ -5,5 +5,8 @@ public protocol POSRefundsRemoteProtocol {
 
     /// Creates a refund for the specified order.
     /// - Note: Values should be sent as positive. The WooCommerce API (wc_create_refund) negates them internally.
-    func createRefund(for siteID: Int64, by orderID: Int64, refund: Refund) async throws -> Refund
+    func createRefund(for siteID: Int64,
+                      by orderID: Int64,
+                      refund: Refund,
+                      additionalMetadata: [MetaData]) async throws -> Refund
 }

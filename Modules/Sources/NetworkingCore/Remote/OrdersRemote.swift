@@ -336,6 +336,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                             giftCard: String?,
                             cashPaymentChangeDueAmount: String? = nil,
                             fields: [UpdateOrderField],
+                            additionalMetadata: [MetaData] = [],
                             completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = "\(Constants.ordersPath)/\(order.orderID)"
@@ -378,10 +379,18 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                     params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
                 }
 
+                // Merge cash-change meta (when present) with any caller-supplied meta
+                // (e.g. POS `_pos_attribution`). WC's REST update merges by key, so callers
+                // can rely on existing meta with other keys being preserved server-side.
+                var metadataEntries: [MetaData] = []
                 if let cashPaymentChangeDueAmount {
-                    params[Order.CodingKeys.metadata.rawValue] = try [MetaData(metadataID: 0,
-                                                                               key: NestedFieldKeys.cashPaymentChangeDueAmount,
-                                                                               value: cashPaymentChangeDueAmount).toDictionary()]
+                    metadataEntries.append(MetaData(metadataID: 0,
+                                                    key: NestedFieldKeys.cashPaymentChangeDueAmount,
+                                                    value: cashPaymentChangeDueAmount))
+                }
+                metadataEntries.append(contentsOf: additionalMetadata)
+                if !metadataEntries.isEmpty {
+                    params[Order.CodingKeys.metadata.rawValue] = try metadataEntries.map { try $0.toDictionary() }
                 }
 
                 // Add decimal places parameter for better precision
@@ -497,9 +506,18 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
         }
     }
 
-    public func updatePOSOrder(siteID: Int64, order: Order, cashPaymentChangeDueAmount: String? = nil, fields: [UpdateOrderField]) async throws -> Order {
+    public func updatePOSOrder(siteID: Int64,
+                               order: Order,
+                               cashPaymentChangeDueAmount: String? = nil,
+                               fields: [UpdateOrderField],
+                               additionalMetadata: [MetaData] = []) async throws -> Order {
         return try await withCheckedThrowingContinuation { continuation in
-            updateOrder(from: siteID, order: order, giftCard: nil, cashPaymentChangeDueAmount: cashPaymentChangeDueAmount, fields: fields) { result in
+            updateOrder(from: siteID,
+                        order: order,
+                        giftCard: nil,
+                        cashPaymentChangeDueAmount: cashPaymentChangeDueAmount,
+                        fields: fields,
+                        additionalMetadata: additionalMetadata) { result in
                 switch result {
                 case let .success(order):
                     continuation.resume(returning: order)

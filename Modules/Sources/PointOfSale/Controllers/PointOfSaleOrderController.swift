@@ -148,7 +148,9 @@ protocol PointOfSaleOrderControllerProtocol {
         }
 
         do {
-            try await orderService.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: changeDueAmount)
+            try await orderService.markOrderAsCompletedWithCashPayment(order: order,
+                                                                       changeDueAmount: changeDueAmount,
+                                                                       staffUserID: staffUserIDProvider())
         } catch {
             analytics.track(.pointOfSaleCashPaymentFailed)
             throw error
@@ -164,7 +166,7 @@ protocol PointOfSaleOrderControllerProtocol {
         // Failure analytics is fired from `POSPaymentModel.confirmMarkAsPaidPayment()` so all
         // mark-as-paid failure paths (this call, plus `orderProvider.provideOrder()`) funnel
         // through a single event. Re-throw so the model can roll back state.
-        try await orderService.markOrderAsCompletedManually(order: order)
+        try await orderService.markOrderAsCompletedManually(order: order, staffUserID: staffUserIDProvider())
 
         // Order note attaches separately from completion. We only attempt it if the merchant
         // supplied content; the order completion is the critical path, and a stale note can
@@ -206,7 +208,7 @@ protocol PointOfSaleOrderControllerProtocol {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
-        let promoted = try await orderService.promoteOrderToPending(order: order)
+        let promoted = try await orderService.promoteOrderToPending(order: order, staffUserID: staffUserIDProvider())
         self.order = promoted
         // Keep the loaded totals in sync; the order is the same, only its status changed.
         if case let .loaded(totals, _) = orderState {

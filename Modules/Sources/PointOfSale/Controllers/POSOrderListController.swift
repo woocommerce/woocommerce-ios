@@ -95,7 +95,8 @@ enum RefundActionAvailability {
          featureFlags: POSFeatureFlagProviding,
          currencySettingsProvider: POSCurrencySettingsProviding,
          currencyFormatter: CurrencyFormatter,
-         initialState: POSOrderListState = .loading([])) {
+         initialState: POSOrderListState = .loading([]),
+         staffUserIDProvider: @escaping () -> Int64? = { nil }) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
@@ -103,7 +104,12 @@ enum RefundActionAvailability {
         self.featureFlags = featureFlags
         self.currencySettingsProvider = currencySettingsProvider
         self.currencyFormatter = currencyFormatter
+        self.staffUserIDProvider = staffUserIDProvider
     }
+
+    /// Provides the current staff member's user ID, threaded into refund creation as
+    /// `_pos_attribution` metadata. Returns nil when no operator is signed in (e.g. tests).
+    private let staffUserIDProvider: () -> Int64?
 
     @MainActor
     var refundActionAvailability: RefundActionAvailability {
@@ -450,7 +456,8 @@ enum RefundActionAvailability {
             orderID: order.id,
             items: refundableItems,
             reason: reason,
-            isAutomaticRefund: refundsResult.supportsAutomaticRefund
+            isAutomaticRefund: refundsResult.supportsAutomaticRefund,
+            staffUserID: staffUserIDProvider()
         )
 
         clearRefundSelection()

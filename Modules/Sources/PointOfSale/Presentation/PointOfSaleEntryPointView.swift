@@ -158,7 +158,10 @@ public struct PointOfSaleEntryPointView: View {
                                                       refundsService: refundsService,
                                                       featureFlags: services.featureFlags,
                                                       currencySettingsProvider: services.currency,
-                                                      currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
+                                                      currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings),
+                                                      staffUserIDProvider: { [weak permissions] in
+                                                          permissions?.currentOperator?.userID
+                                                      })
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         if isLocalCatalogEligible, let grdbManager {
             self.cartProductObserver = POSCartProductObserver(

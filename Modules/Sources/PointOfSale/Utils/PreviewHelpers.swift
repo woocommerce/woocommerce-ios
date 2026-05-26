@@ -580,17 +580,15 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
         .empty
     }
 
+    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?, staffUserID: Int64?) async throws {}
+    func markOrderAsCompletedManually(order: Order, staffUserID: Int64?) async throws {}
+    func promoteOrderToPending(order: Order, staffUserID: Int64?) async throws -> Order { order }
+
     func loadOrder(orderID: Int64) async throws -> Order {
         .empty
     }
 
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
-
-    func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
-
-    func markOrderAsCompletedManually(order: Yosemite.Order) async throws {}
-
-    func promoteOrderToPending(order: Yosemite.Order) async throws -> Yosemite.Order { order }
 
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {}
 }
@@ -609,7 +607,8 @@ final class POSRefundsServicePreview: POSRefundsServiceProtocol {
     func createRefund(orderID: Int64,
                       items: [Yosemite.POSRefundableItem],
                       reason: String?,
-                      isAutomaticRefund: Bool) async throws {}
+                      isAutomaticRefund: Bool,
+                      staffUserID: Int64?) async throws {}
 
     func loadOrderRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSOrderRefund] { [] }
 }

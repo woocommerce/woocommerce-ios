@@ -9,10 +9,15 @@ final class POSLocalRateLimiter {
     private static let lockoutUntilKey = "com.woocommerce.pos.rateLimiter.lockoutUntil"
     private static let permanentlyLockedKey = "com.woocommerce.pos.rateLimiter.permanentlyLocked"
 
-    private static let lockoutThresholds: [(attempts: Int, duration: TimeInterval?)] = [
-        (5, 30),
-        (10, 300),
-        (15, nil)
+    private struct LockoutThreshold {
+        let attempts: Int
+        let duration: TimeInterval?
+    }
+
+    private static let lockoutThresholds: [LockoutThreshold] = [
+        LockoutThreshold(attempts: 5, duration: 30),
+        LockoutThreshold(attempts: 10, duration: 300),
+        LockoutThreshold(attempts: 15, duration: nil)
     ]
 
     init(siteID: Int64, userDefaults: UserDefaults = .standard, now: @escaping () -> Date = Date.init) {

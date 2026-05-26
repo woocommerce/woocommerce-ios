@@ -167,12 +167,11 @@ private extension POSPINEntryView {
         guard isInputEnabled, let digit = key.first else {
             return
         }
-        var pin = helper.isComplete(enteredPIN, length: pinLength) ? "" : enteredPIN
-        pin = helper.appending(digit, to: pin, length: pinLength)
-        enteredPIN = pin
+        let result = helper.acceptingDigit(digit, currentPIN: enteredPIN, length: pinLength)
+        enteredPIN = result.pin
         haptics.digitEntered()
-        if helper.isComplete(pin, length: pinLength) {
-            onComplete(pin)
+        if result.shouldSubmit {
+            onComplete(result.pin)
         }
     }
 

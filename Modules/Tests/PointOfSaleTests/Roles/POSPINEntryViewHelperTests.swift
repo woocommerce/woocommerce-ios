@@ -82,6 +82,42 @@ struct POSPINEntryViewHelperTests {
         #expect(complete == false)
     }
 
+    @Test func test_acceptingDigit_when_below_length_then_appends_without_submitting() {
+        // Given
+        let pin = "12"
+
+        // When
+        let result = helper.acceptingDigit("3", currentPIN: pin, length: 4)
+
+        // Then
+        #expect(result.pin == "123")
+        #expect(result.shouldSubmit == false)
+    }
+
+    @Test func test_acceptingDigit_when_completing_then_submits() {
+        // Given
+        let pin = "123"
+
+        // When
+        let result = helper.acceptingDigit("4", currentPIN: pin, length: 4)
+
+        // Then
+        #expect(result.pin == "1234")
+        #expect(result.shouldSubmit == true)
+    }
+
+    @Test func test_acceptingDigit_when_currentPIN_is_complete_then_starts_fresh_attempt() {
+        // Given
+        let pin = "1234"
+
+        // When
+        let result = helper.acceptingDigit("5", currentPIN: pin, length: 4)
+
+        // Then
+        #expect(result.pin == "5")
+        #expect(result.shouldSubmit == false)
+    }
+
     @Test func test_isInputEnabled_when_idle_or_error_then_true() {
         // Given / When / Then
         #expect(helper.isInputEnabled(for: .idle) == true)

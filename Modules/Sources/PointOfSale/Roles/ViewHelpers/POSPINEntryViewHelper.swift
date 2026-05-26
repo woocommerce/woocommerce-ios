@@ -16,6 +16,12 @@ struct POSPINEntryViewHelper {
         pin.count == length
     }
 
+    func acceptingDigit(_ digit: Character, currentPIN: String, length: Int) -> (pin: String, shouldSubmit: Bool) {
+        let basePIN = isComplete(currentPIN, length: length) ? "" : currentPIN
+        let newPIN = appending(digit, to: basePIN, length: length)
+        return (newPIN, isComplete(newPIN, length: length))
+    }
+
     func isInputEnabled(for state: POSPINEntryState) -> Bool {
         switch state {
         case .idle, .error:

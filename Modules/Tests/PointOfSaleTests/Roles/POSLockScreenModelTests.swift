@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 import Observation
 @testable import PointOfSale
@@ -95,6 +96,39 @@ struct POSLockScreenModelTests {
 
         // When
         await sut.signIn(withPIN: "1234")
+
+        // Then
+        #expect(sut.isLocked == true)
+        #expect(sut.pinEntryState == .error(kind: .generic))
+    }
+
+    @Test func test_signIn_when_rate_limited_then_shows_lockout_state() async {
+        // Given
+        let lockoutUntil = Date(timeIntervalSinceReferenceDate: 5000)
+        let session = MockPOSAccessSession(
+            isLocked: true,
+            signInResult: .failure(.rateLimited(until: lockoutUntil))
+        )
+        let sut = POSLockScreenModel(session: session)
+
+        // When
+        await sut.signIn(withPIN: "9999")
+
+        // Then
+        #expect(sut.isLocked == true)
+        #expect(sut.pinEntryState == .lockout(until: lockoutUntil))
+    }
+
+    @Test func test_signIn_when_permanently_locked_then_shows_generic_error() async {
+        // Given
+        let session = MockPOSAccessSession(
+            isLocked: true,
+            signInResult: .failure(.permanentlyLocked)
+        )
+        let sut = POSLockScreenModel(session: session)
+
+        // When
+        await sut.signIn(withPIN: "9999")
 
         // Then
         #expect(sut.isLocked == true)

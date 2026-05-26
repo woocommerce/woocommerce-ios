@@ -158,17 +158,14 @@ struct POSLocalRateLimiterTests {
 
     @Test func test_state_when_new_limiter_uses_same_defaults_then_persists() throws {
         // Given
-        let suiteName = "test.\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suiteName)!
-        defer { defaults.removePersistentDomain(forName: suiteName) }
-
-        let firstLimiter = POSLocalRateLimiter(siteID: 123, userDefaults: defaults, now: { Date(timeIntervalSinceReferenceDate: 1000) })
+        let scope = UserDefaultsTestScope()
+        let firstLimiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: { Date(timeIntervalSinceReferenceDate: 1000) })
         for _ in 0..<5 {
             firstLimiter.recordFailure()
         }
 
         // When
-        let secondLimiter = POSLocalRateLimiter(siteID: 123, userDefaults: defaults, now: { Date(timeIntervalSinceReferenceDate: 1000) })
+        let secondLimiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: { Date(timeIntervalSinceReferenceDate: 1000) })
 
         // Then
         #expect(throws: POSAuthError.self) {
@@ -178,12 +175,9 @@ struct POSLocalRateLimiterTests {
 
     @Test func test_state_when_different_sites_then_independent() throws {
         // Given
-        let suiteName = "test.\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suiteName)!
-        defer { defaults.removePersistentDomain(forName: suiteName) }
-
-        let siteA = POSLocalRateLimiter(siteID: 111, userDefaults: defaults, now: { Date(timeIntervalSinceReferenceDate: 1000) })
-        let siteB = POSLocalRateLimiter(siteID: 222, userDefaults: defaults, now: { Date(timeIntervalSinceReferenceDate: 1000) })
+        let scope = UserDefaultsTestScope()
+        let siteA = POSLocalRateLimiter(siteID: 111, userDefaults: scope.defaults, now: { Date(timeIntervalSinceReferenceDate: 1000) })
+        let siteB = POSLocalRateLimiter(siteID: 222, userDefaults: scope.defaults, now: { Date(timeIntervalSinceReferenceDate: 1000) })
 
         // When
         for _ in 0..<5 {
@@ -201,14 +195,26 @@ struct POSLocalRateLimiterTests {
 private extension POSLocalRateLimiterTests {
     struct SUT {
         let limiter: POSLocalRateLimiter
-        let defaults: UserDefaults
-        let suiteName: String
+        let scope: UserDefaultsTestScope
     }
 
     func makeSUT(siteID: Int64 = 123, now: @escaping () -> Date = { Date() }) -> SUT {
-        let suiteName = "test.\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suiteName)!
-        let limiter = POSLocalRateLimiter(siteID: siteID, userDefaults: defaults, now: now)
-        return SUT(limiter: limiter, defaults: defaults, suiteName: suiteName)
+        let scope = UserDefaultsTestScope()
+        let limiter = POSLocalRateLimiter(siteID: siteID, userDefaults: scope.defaults, now: now)
+        return SUT(limiter: limiter, scope: scope)
+    }
+}
+
+private final class UserDefaultsTestScope {
+    let defaults: UserDefaults
+    private let suiteName: String
+
+    init() {
+        suiteName = "test.\(UUID().uuidString)"
+        defaults = UserDefaults(suiteName: suiteName)!
+    }
+
+    deinit {
+        defaults.removePersistentDomain(forName: suiteName)
     }
 }

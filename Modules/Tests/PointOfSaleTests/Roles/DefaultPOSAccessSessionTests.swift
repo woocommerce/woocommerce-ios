@@ -212,14 +212,29 @@ private extension DefaultPOSAccessSessionTests {
     struct SUT {
         let session: DefaultPOSAccessSession
         let limiter: POSLocalRateLimiter
+        let scope: UserDefaultsTestScope
     }
 
     func makeSUT(authenticator: POSPINAuthenticating,
                  now: @escaping () -> Date = { Date() }) -> SUT {
-        let suiteName = "test.\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suiteName)!
-        let limiter = POSLocalRateLimiter(siteID: 123, userDefaults: defaults, now: now)
+        let scope = UserDefaultsTestScope()
+        let limiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: now)
         let session = DefaultPOSAccessSession(authenticator: authenticator, rateLimiter: limiter)
-        return SUT(session: session, limiter: limiter)
+        return SUT(session: session, limiter: limiter, scope: scope)
+    }
+}
+
+@MainActor
+private final class UserDefaultsTestScope {
+    let defaults: UserDefaults
+    private let suiteName: String
+
+    init() {
+        suiteName = "test.\(UUID().uuidString)"
+        defaults = UserDefaults(suiteName: suiteName)!
+    }
+
+    deinit {
+        defaults.removePersistentDomain(forName: suiteName)
     }
 }

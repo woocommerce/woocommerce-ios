@@ -30,17 +30,17 @@ final class POSLockScreenModel {
             try await session.signIn(withPIN: pin)
             pinEntryState = .idle
         } catch {
-            pinEntryState = .error(kind: errorKind(for: error))
+            pinEntryState = state(for: error)
         }
     }
 }
 
 private extension POSLockScreenModel {
-    func errorKind(for error: POSAuthError) -> POSPINErrorKind {
-        // TODO: route .rateLimited(until:) to the lock screen's lockout state when the session is wired in.
+    func state(for error: POSAuthError) -> POSPINEntryState {
         switch error {
-        case .invalidPIN: .invalidPIN
-        case .rateLimited, .permanentlyLocked, .unknown: .generic
+        case .invalidPIN: .error(kind: .invalidPIN)
+        case .rateLimited(let until): .lockout(until: until)
+        case .permanentlyLocked, .unknown: .error(kind: .generic)
         }
     }
 }

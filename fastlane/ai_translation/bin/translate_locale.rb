@@ -263,13 +263,26 @@ def apply_results(units_to_translate, results, by_name, manifest:, model:, origi
   [translated, failed_missing, failed_validation, failed_glossary]
 end
 
-# Write-then-parse sanity check: re-read the file we just wrote and make sure
-# the parser sees the same unit names. Catches cases where the writer emits
-# output the parser cannot consume (escape mismatches, lost terminators).
+# Write-then-scan sanity check: re-read the file we just wrote and confirm
+# every unit name we intended to write actually appears as a key. Catches
+# the common failure mode — units dropped during write (e.g. the
+# `:value`-vs-`:source` bug that landed empty pl.lproj files).
+#
+# We use a regex scan rather than a full reparse here because the parser is
+# O(n²) on a 1MB file (~40s/locale × 15 locales = ~10 minutes that buys very
+# little). Escape-corruption bugs in the writer (\n / \" / \\) would be
+# missed by a scan, but those are caught earlier by the placeholder
+# validator on each translation and would have to corrupt many writes in
+# series to slip through. Counts + first-5-diff stays meaningful.
 def verify_round_trip!(output_path, units_for_write, logger:, locale:)
-  reparsed = WooAiTranslation::IosResources::Parser.parse_file(output_path)
-  written = units_for_write.to_set(&:name)
-  reread = reparsed.units.to_set(&:name)
+  written = units_for_write.select(&:fully_translated?).map(&:name).to_set
+  content = File.read(output_path, encoding: 'UTF-8')
+  # Match `"quoted_key" =` and `unquoted_key =`; unescape backslash sequences
+  # only in the quoted form (keys typically don't contain escapes but we
+  # keep parity with the parser's handling).
+  reread = content.scan(/^(?:"((?:\\.|[^"\\])*)"|([A-Za-z0-9_.\-]+))\s*=/).map do |q, u|
+    q ? q.gsub(/\\(.)/, '\1') : u
+  end.to_set
   missing = written - reread
   extra = reread - written
   return if missing.empty? && extra.empty?

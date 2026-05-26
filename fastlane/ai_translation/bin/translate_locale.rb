@@ -227,10 +227,36 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
                 "#{still_failing_v.size} placeholder + #{still_failing_g.size} glossary still failing")
   end
 
-  wrote = write_translations!(
-    output_path: output_path, units_for_write: units_for_write,
-    expected_names: expected_names, locale: locale, logger: logger, smoke_run: smoke_run
-  )
+  # Two write paths, both guarded so a smoke run (`--limit`) never mutates the
+  # tracked file or persists the manifest:
+  #   - Incremental PR-time runs splice only the freshly-translated entries into
+  #     the existing target file in place, so the bot's `Translate: ...` commit
+  #     touches only the keys that actually changed (preserved-line writer,
+  #     woocommerce-android#15972). The full-file round-trip still runs, so a
+  #     dropped/extra key is still caught.
+  #   - Bootstrap (no existing target, or first locale ever) goes through the
+  #     guarded atomic writer: temp render -> round-trip verify -> shrink-guard
+  #     (refuse to drop source keys) -> atomic rename.
+  if incremental && File.exist?(output_path)
+    if smoke_run
+      logger.call("[#{locale}] smoke run: skipping incremental splice; leaving #{output_path} unchanged")
+      wrote = false
+    else
+      # Set.new (not Array#to_set): referencing the Set constant triggers Ruby
+      # 3.2's `autoload :Set`, whereas `to_set` alone raises NoMethodError on a
+      # minimal load path (CI).
+      fresh_names = Set.new(units_to_translate.map(&:name) - failed_missing)
+      fresh_units = units_for_write.select { |u| fresh_names.include?(u.name) }
+      WooAiTranslation::IosResources::Writer.write_incremental(output_path, fresh_units, locale)
+      verify_round_trip!(output_path, units_for_write, logger: logger, locale: locale)
+      wrote = true
+    end
+  else
+    wrote = write_translations!(
+      output_path: output_path, units_for_write: units_for_write,
+      expected_names: expected_names, locale: locale, logger: logger, smoke_run: smoke_run
+    )
+  end
   manifest&.save! if wrote
 
   logger.call("[#{locale}] #{wrote ? 'wrote' : 'verified (smoke, not written)'} #{output_path} " \

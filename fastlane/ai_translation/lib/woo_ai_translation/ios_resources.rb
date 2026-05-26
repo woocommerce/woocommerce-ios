@@ -411,6 +411,59 @@ module WooAiTranslation
         FileUtils.mkdir_p(File.dirname(path))
         File.write(path, "#{header(locale)}#{body}")
       end
+
+      # Preserved-line writer for incremental PR-time runs. Reads the existing
+      # target file as text, replaces the value of each `"key" = "value";`
+      # entry whose key appears in `fresh_units` with the unit's new
+      # translation, and appends any genuinely-new keys (not present in the
+      # original file) at the end. Every other byte stays exactly as it was —
+      # comments, ordering, whitespace, the file header from PR #17220, etc.
+      #
+      # Why: the previous writer re-rendered the entire file from EN-derived
+      # units on every run, which propagated EN comment drift (curly-quote
+      # vs straight-quote, comment edits) into every target locale and
+      # produced 5000-line diffs on the bot's `Translate: ...` commit even
+      # when only ~7 keys changed. Aligning with the Android engine's
+      # "preserved-line writer" (see android #15972) keeps bot commits
+      # reviewable and decouples comment-sync from translation.
+      #
+      # Falls back to `#write` when the target file is missing (e.g. brand-new
+      # locale bootstrap mode).
+      def write_incremental(path, fresh_units, locale)
+        fresh_units = fresh_units.select(&:fully_translated?)
+        fresh_by_name = fresh_units.to_h { |u| [u.name, u] }
+        return write(path, fresh_units, locale) unless File.exist?(path) && !fresh_by_name.empty?
+
+        content = File.binread(path).force_encoding(Encoding::UTF_8)
+        replaced = []
+
+        # Capture `"key" = "value";` (or unquoted-key form) with the equals
+        # punctuation and trailing semicolon preserved verbatim. Only the
+        # value content (inside the second pair of quotes) is rewritten.
+        pattern = /^(?<key>"(?:\\.|[^"\\])*"|[A-Za-z0-9_.\-]+)(?<eq>[\t ]*=[\t ]*)"(?<val>(?:\\.|[^"\\])*)"(?<tail>[\t ]*;)/
+        new_content = content.gsub(pattern) do
+          md = ::Regexp.last_match
+          raw_key = md[:key]
+          decoded_key = raw_key.start_with?('"') ? unescape(raw_key[1..-2]) : raw_key
+          if (u = fresh_by_name[decoded_key])
+            replaced << decoded_key
+            new_value = escape(u.entries.first[:value])
+            %(#{raw_key}#{md[:eq]}"#{new_value}"#{md[:tail]})
+          else
+            md[0]
+          end
+        end
+
+        # Append any fresh entries that weren't present in the original file.
+        appended_keys = fresh_by_name.keys - replaced
+        unless appended_keys.empty?
+          appended = appended_keys.map { |k| render_unit(fresh_by_name[k]) }.join("\n")
+          sep = new_content.end_with?("\n\n") ? '' : (new_content.end_with?("\n") ? "\n" : "\n\n")
+          new_content = "#{new_content}#{sep}#{appended}"
+        end
+
+        File.write(path, new_content)
+      end
     end
   end
 end

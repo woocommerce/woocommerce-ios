@@ -109,7 +109,7 @@ struct POSSettingsStoreDetailView: View {
                     } label: {
                         Image(systemName: "square.and.pencil")
                             .font(.posBodyLargeBold)
-                            .foregroundStyle(Color.posPrimary)
+                            .foregroundStyle(Color.posOnSurface)
                     }
                     .disabled(isLoading)
                 }

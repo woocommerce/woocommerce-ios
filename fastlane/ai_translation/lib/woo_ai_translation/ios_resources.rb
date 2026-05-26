@@ -78,6 +78,19 @@ module WooAiTranslation
         copy.entries = @entries.map { |e| e.dup.tap { |x| x[:value] = nil } }
         copy
       end
+
+      # Same content, fresh containers. Used by Parser.parse_file to return an
+      # independent Document tree to each caller so mutations from one locale
+      # (e.g. apply_results setting entry[:value]) don't leak into the cached
+      # Document that the next locale receives. The string fields (name, id,
+      # source) are shared with the original — they're never mutated, only
+      # the entry Hash itself ever gets `e[:value] = ...` written to it, so
+      # dup'ing each Hash is enough to isolate writers.
+      def deep_clone
+        copy = Unit.new(type: @type, name: @name, attributes: @attributes, comment: @comment)
+        copy.entries = @entries.map(&:dup)
+        copy
+      end
     end
 
     # Parsed document; keeps every unit in source order.
@@ -86,6 +99,14 @@ module WooAiTranslation
 
       def initialize(units)
         @units = units
+      end
+
+      # Independent copy with the same source/key content but fresh entry
+      # Hashes per Unit. Lets parse_file hand each caller a tree it can
+      # safely mutate (apply_results assigns to entry[:value]) without
+      # affecting either the cached document or other concurrent callers.
+      def deep_clone
+        Document.new(@units.map(&:deep_clone))
       end
 
       def translatable_units
@@ -137,6 +158,14 @@ module WooAiTranslation
         bytes = File.binread(path)
         key = Digest::SHA256.hexdigest(bytes)
         CACHE[key] ||= load_cached_or_parse(path, bytes, key)
+        # Return an independent tree so the caller can mutate entry[:value]
+        # (via apply_results / merge_with_existing) without those mutations
+        # bleeding into the next caller. Before this clone, a single-process
+        # multi-locale run had locale N+1 inheriting locale N's translations
+        # in the cached Document — reproducible cross-locale leak. Cloning
+        # is O(units) and cheap (~5ms on en.lproj's 5141 entries); the parse
+        # itself is what we wanted to avoid amortizing.
+        CACHE[key].deep_clone
       end
 
       def load_cached_or_parse(path, bytes, key)
@@ -458,9 +487,33 @@ module WooAiTranslation
       def write_incremental(path, fresh_units, locale)
         fresh_units = fresh_units.select(&:fully_translated?)
         fresh_by_name = fresh_units.to_h { |u| [u.name, u] }
-        return write(path, fresh_units, locale) unless File.exist?(path) && !fresh_by_name.empty?
+
+        # No fresh translations + a real target file = nothing to do. Don't
+        # fall through to `#write` here: that would rebuild the file from
+        # only `fresh_units` (an empty list), producing a header-plus-nothing
+        # file and clobbering every existing translation. Reachable when
+        # every requested key comes back missing after split-retry (every
+        # name lands in failed_missing, fresh_names ends up empty in
+        # translate_locale.rb).
+        return if fresh_by_name.empty? && File.exist?(path)
+        return write(path, fresh_units, locale) unless File.exist?(path)
 
         content = File.binread(path).force_encoding(Encoding::UTF_8)
+        # Skip regex matches that fall inside `/* ... */` comment blocks.
+        # The line-anchored pattern below would otherwise match against
+        # `"example.key" = "value";` example syntax embedded in a comment
+        # and rewrite the comment text (or, worse, "consume" a fresh-units
+        # key as already-handled if it only appears inside a comment).
+        comment_ranges = []
+        scan_pos = 0
+        while (start = content.index('/*', scan_pos))
+          finish = content.index('*/', start + 2)
+          break unless finish
+          comment_ranges << (start..(finish + 1))
+          scan_pos = finish + 2
+        end
+        in_comment = ->(offset) { comment_ranges.any? { |r| r.include?(offset) } }
+
         replaced = []
 
         # Capture `"key" = "value";` (or unquoted-key form) with the equals
@@ -469,6 +522,8 @@ module WooAiTranslation
         pattern = /^(?<key>"(?:\\.|[^"\\])*"|[A-Za-z0-9_.\-]+)(?<eq>[\t ]*=[\t ]*)"(?<val>(?:\\.|[^"\\])*)"(?<tail>[\t ]*;)/
         new_content = content.gsub(pattern) do
           md = ::Regexp.last_match
+          next md[0] if in_comment.call(md.begin(0))
+
           raw_key = md[:key]
           decoded_key = raw_key.start_with?('"') ? unescape(raw_key[1..-2]) : raw_key
           if (u = fresh_by_name[decoded_key])

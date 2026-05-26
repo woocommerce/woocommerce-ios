@@ -234,8 +234,19 @@ module WooAiTranslation
         # string read off disk — that bug ate build #37965, where every
         # non-ASCII key (e.g. `"%1$@ · %2$@"`) failed verify_round_trip!.
         units.each do |u|
-          u.comment&.force_encoding(Encoding::UTF_8)
+          # The comment may be the frozen `last_comment = ''` literal when a
+          # unit had no preceding /* */ — force_encoding mutates in place,
+          # which raises FrozenError under `frozen_string_literal: true`. Dup
+          # to get a mutable receiver. Spec failure caught this on PR head
+          # 82f37ec3b0: 14 errors in ios_resources_test.rb, all originating
+          # at the comment-retag line for keys without a comment.
+          u.comment = u.comment.dup.force_encoding(Encoding::UTF_8) if u.comment
           u.entries.each do |e|
+            # No dup here: u.name and entries.first[:id] are the same String
+            # object (Unit.new received `key` for both), so an in-place
+            # force_encoding flips them both. The values returned from
+            # read_quoted_string / read_unquoted_identifier are always
+            # mutable (+'' inside the parser), so no frozen-string risk.
             e[:id]&.force_encoding(Encoding::UTF_8)
             e[:source]&.force_encoding(Encoding::UTF_8)
             # :value is nil immediately after parse; populated later by

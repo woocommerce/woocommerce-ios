@@ -16077,3 +16077,24 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for Payments home screen action */
 "infoplist.CollectPaymentAction.Title" = "Zbierz płatność";
+
+/* Dummy translation-pipeline test string. Very short ecommerce label for a product stock keeping unit field. */
+"ai_translation_test_product_short_sku" = "SKU";
+
+/* Dummy translation-pipeline test string. Badge text shown beside a product that has limited inventory. */
+"ai_translation_test_product_medium_low_stock_badge" = "Niski stan magazynowy";
+
+/* Dummy translation-pipeline test string. Message shown after saving an inventory threshold for a product variation. Keep product, SKU and unit-count placeholders intact. */
+"ai_translation_test_product_placeholder_inventory" = "Zapisano %1$@ z kodem SKU %2$@ i %3$d jednostkami na magazynie.";
+
+/* Dummy translation-pipeline test string. Explains a scheduled promotion for a product catalog item. Keep currency, percent, and date placeholders intact. */
+"ai_translation_test_product_placeholder_sale_window" = "Cena promocyjna %1$@ jest o %2$d%% niższa niż cena regularna i obowiązuje od %3$@ do %4$@.";
+
+/* Dummy translation-pipeline test string. Marketing copy containing literal percent signs (escaped as %% so NSString format keeps them as a literal '%' character). */
+"ai_translation_test_product_formatted_false_discount" = "Zaoszczędź 20%% na produktach bundlowanych i zachowaj 100%% formatowania SKU.";
+
+/* Dummy translation-pipeline test string. Product editor helper text with inline HTML link formatting that must remain valid. */
+"ai_translation_test_product_html_link" = "Sprawdź <a href=\"inventory-threshold\"><u>progi magazynowania</u></a> przed włączeniem zamówień do realizacji.";
+
+/* Dummy translation-pipeline test string. Multiline product availability warning shown in a dialog. Keep the newline and placeholders intact. */
+"ai_translation_test_product_multiline_backorder" = "Produkt %1$@ jest niedostępny.\nUzupełnij zapas o %2$d jednostek lub oznacz jako dostępny do zamówienia.";

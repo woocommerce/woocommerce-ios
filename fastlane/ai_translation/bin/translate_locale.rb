@@ -161,7 +161,11 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
 
   if units_to_translate.empty?
     logger.call("[#{locale}] nothing to translate; output left unchanged")
-    return [0, [], []]
+    # Tuple must stay in sync with the normal return at the bottom of this
+    # function: [translated, failed_missing, failed_validation, failed_glossary].
+    # Caller destructures four values; returning three leaves `glossary_errors`
+    # nil and crashes the InfoPlist follow-up at all_glossary_errors.concat.
+    return [0, [], [], []]
   end
 
   results = run_translation(translator, locale, units_to_translate, model)

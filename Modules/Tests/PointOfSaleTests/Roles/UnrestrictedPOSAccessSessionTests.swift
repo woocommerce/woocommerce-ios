@@ -20,7 +20,7 @@ struct UnrestrictedPOSAccessSessionTests {
         // When / Then
         #expect(sut.isLocked == false)
         #expect(sut.hasAnyPINs == false)
-        #expect(sut.currentOperator == nil)
+        #expect(sut.currentStaff == nil)
     }
 
     @Test func test_actions_when_flag_off_then_stay_unlocked_and_do_not_throw() async throws {
@@ -35,7 +35,7 @@ struct UnrestrictedPOSAccessSessionTests {
 
         // Then
         #expect(sut.isLocked == false)
-        #expect(sut.currentOperator == nil)
+        #expect(sut.currentStaff == nil)
         #expect(sut.allows(.refundShopOrders))
     }
 }

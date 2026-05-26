@@ -1,4 +1,4 @@
-struct POSOperator: Equatable, Sendable {
+struct POSStaff: Equatable, Sendable {
     let displayName: String
     let role: String
     let capabilities: Set<String>

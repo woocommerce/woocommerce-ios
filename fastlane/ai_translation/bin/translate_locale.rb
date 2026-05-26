@@ -286,7 +286,14 @@ def merge_with_existing(en_units, target_path)
   en_units.each do |u|
     next unless (e = existing_by_name[u.name])
 
-    existing_val = e.entries.first[:value].to_s
+    # As in filter_missing_units, the parsed value sits in :source (the
+    # parser leaves :value nil — it's reserved for newly-applied API
+    # results). Without reading :source here, existing translations stay
+    # nil on the en_units after the merge, fail the writer's
+    # `fully_translated?` gate in ios_resources.rb, and the emitted file
+    # contains only the just-translated keys — dropping every other
+    # existing translation.
+    existing_val = e.entries.first[:source].to_s
     u.entries.first[:value] = existing_val unless existing_val.empty?
   end
   en_units

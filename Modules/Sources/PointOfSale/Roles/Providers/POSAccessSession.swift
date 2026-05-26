@@ -1,5 +1,5 @@
 @MainActor
-public protocol POSAccessSession: AnyObject {
+protocol POSAccessSession: AnyObject {
     var currentStaff: POSStaff? { get }
     var isLocked: Bool { get }
     var hasAnyPINs: Bool { get }

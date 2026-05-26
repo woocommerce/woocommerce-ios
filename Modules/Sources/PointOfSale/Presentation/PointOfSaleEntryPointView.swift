@@ -87,7 +87,10 @@ public struct PointOfSaleEntryPointView: View {
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
-        self._accessSession = State(initialValue: services.makeAccessSession(siteID: siteID))
+        self._accessSession = State(initialValue: POSAccessSessionFactory.make(
+            siteID: siteID,
+            featureFlags: services.featureFlags
+        ))
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
 

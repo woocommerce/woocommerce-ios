@@ -11,7 +11,7 @@ extension UnitInputViewModel {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let currencyCode = currencySettings.currencyCode
         let unit = currencySettings.symbol(from: currencyCode)
-        /// Depending on the currency settings we might have different decimal seperator or number of digits
+        /// Depending on the currency settings we might have different decimal separator or number of digits
         let formattedPlaceholder = currencyFormatter.localize(Decimal.zero,
                                                               decimalSeparator: currencySettings.decimalSeparator,
                                                               fractionDigits: currencySettings.fractionDigits,

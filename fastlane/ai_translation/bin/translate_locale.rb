@@ -126,8 +126,14 @@ def filter_missing_units(en_units, target_path, logger:, manifest: nil)
       existing_unit = existing_by_name[u.name]
       next false unless existing_unit
 
-      existing_value = existing_unit.entries.first[:value].to_s
-      !existing_value.empty? && existing_value != src
+      # The parser stores the right-hand side of `"key" = "value";` in :source
+      # and leaves :value as nil (see IosResources::Parser, ios_resources.rb).
+      # For a *target* locale file that's the existing translation — exactly
+      # what we want to compare against the EN source here. Reading :value
+      # used to mask every existing translation as missing and re-translated
+      # the entire locale on a first PR-time run.
+      existing_translation = existing_unit.entries.first[:source].to_s
+      !existing_translation.empty? && existing_translation != src
     end
   end
 

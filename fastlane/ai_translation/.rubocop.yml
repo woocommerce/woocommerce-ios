@@ -97,3 +97,23 @@ Lint/UselessConstantScoping:
   Exclude:
     - 'lib/woo_ai_translation/validator.rb'
     - 'lib/woo_ai_translation/ios_resources.rb'
+
+Security/MarshalLoad:
+  # The IosResources parser caches the parsed Document tree on disk at
+  # /tmp/wai_parse_v2_<sha>.bin. The blob is written by the same code that
+  # reads it, with a content-addressed (sha256) filename derived from the
+  # source bytes. Any deserialization failure falls through to a re-parse
+  # rather than aborting, so corrupt or tampered cache files are
+  # self-healing rather than dangerous. The standard "untrusted Marshal"
+  # threat model (deserializing data from a remote / unprivileged source)
+  # does not apply.
+  Exclude:
+    - 'lib/woo_ai_translation/ios_resources.rb'
+
+Style/MutableConstant:
+  # Parser::CACHE is intentionally a mutable in-process memoization
+  # keyed by sha256(content). Freezing it would defeat the purpose
+  # (CACHE[key] ||= ...). The encapsulation intent is clear: it lives
+  # under Parser and is only touched by parse_file.
+  Exclude:
+    - 'lib/woo_ai_translation/ios_resources.rb'

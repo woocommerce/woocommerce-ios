@@ -509,6 +509,7 @@ module WooAiTranslation
         while (start = content.index('/*', scan_pos))
           finish = content.index('*/', start + 2)
           break unless finish
+
           comment_ranges << (start..(finish + 1))
           scan_pos = finish + 2
         end
@@ -519,7 +520,7 @@ module WooAiTranslation
         # Capture `"key" = "value";` (or unquoted-key form) with the equals
         # punctuation and trailing semicolon preserved verbatim. Only the
         # value content (inside the second pair of quotes) is rewritten.
-        pattern = /^(?<key>"(?:\\.|[^"\\])*"|[A-Za-z0-9_.\-]+)(?<eq>[\t ]*=[\t ]*)"(?<val>(?:\\.|[^"\\])*)"(?<tail>[\t ]*;)/
+        pattern = /^(?<key>"(?:\\.|[^"\\])*"|[A-Za-z0-9_.-]+)(?<eq>[\t ]*=[\t ]*)"(?<val>(?:\\.|[^"\\])*)"(?<tail>[\t ]*;)/
         new_content = content.gsub(pattern) do
           md = ::Regexp.last_match
           next md[0] if in_comment.call(md.begin(0))
@@ -539,7 +540,14 @@ module WooAiTranslation
         appended_keys = fresh_by_name.keys - replaced
         unless appended_keys.empty?
           appended = appended_keys.map { |k| render_unit(fresh_by_name[k]) }.join("\n")
-          sep = new_content.end_with?("\n\n") ? '' : (new_content.end_with?("\n") ? "\n" : "\n\n")
+          sep =
+            if new_content.end_with?("\n\n")
+              ''
+            elsif new_content.end_with?("\n")
+              "\n"
+            else
+              "\n\n"
+            end
           new_content = "#{new_content}#{sep}#{appended}"
         end
 

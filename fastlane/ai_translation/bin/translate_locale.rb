@@ -372,16 +372,16 @@ def verify_round_trip!(output_path, units_for_write, logger:, locale:)
   # in-memory `unit.name` is post-decode, so a key like `"a\nb"` on disk
   # is `"a<LF>b"` in memory. A naive `\\(.)` → `\1` here strips the
   # backslash and the keys mismatch on every entry containing \n / \" / \\.
-  keys = content.scan(/^(?:"((?:\\.|[^"\\])*)"|([A-Za-z0-9_.\-]+))\s*=/).map do |q, u|
+  keys = content.scan(/^(?:"((?:\\.|[^"\\])*)"|([A-Za-z0-9_.-]+))\s*=/).map do |q, u|
     next u unless q
 
     q.gsub(/\\(.)/) do
-      case ::Regexp.last_match(1)
+      case Regexp.last_match(1)
       when 'n' then "\n"
       when 'r' then "\r"
       when 't' then "\t"
       when '0' then "\0"
-      else ::Regexp.last_match(1) # \" \\ \' or lenient passthrough
+      else Regexp.last_match(1) # \" \\ \' or lenient passthrough
       end
     end
   end

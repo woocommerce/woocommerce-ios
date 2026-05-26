@@ -2,6 +2,7 @@ import SwiftUI
 
 private struct POSManagerOverrideModalModifier: ViewModifier {
     @Environment(\.posAccessSession) private var session
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let handler: POSManagerOverrideHandler
 
@@ -15,9 +16,20 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
             .posModal(item: $handler.request, onDismiss: {
                 handler.cancel()
             }) { request in
-                POSManagerOverrideView(handler: handler, request: request)
-                    .posModalSizing()
+                modalContent(for: request)
             }
+    }
+}
+
+private extension POSManagerOverrideModalModifier {
+    @ViewBuilder
+    func modalContent(for request: POSManagerOverrideRequest) -> some View {
+        if horizontalSizeClass == .compact {
+            POSManagerOverrideView(handler: handler, request: request)
+        } else {
+            POSManagerOverrideView(handler: handler, request: request)
+                .posModalSizing()
+        }
     }
 }
 
@@ -48,5 +60,29 @@ extension View {
             }
     }
     .environment(\.posAccessSession, MockPOSAccessSession())
+}
+
+#Preview("Modifier over dashboard - Phone") {
+    @Previewable @StateObject var modalManager = POSModalManager()
+    @Previewable @StateObject var coverManager = POSFullScreenCoverManager()
+    @Previewable @State var handler = POSManagerOverrideHandler(session: MockPOSAccessSession())
+
+    NavigationStack {
+        PointOfSaleDashboardView()
+            .environment(POSPreviewHelpers.makePreviewAggregateModel())
+            .posManagerOverrideModal(handler: handler)
+            .posRootModal()
+            .environmentObject(modalManager)
+            .environmentObject(coverManager)
+            .onAppear {
+                handler.requestApproval(
+                    for: .refundShopOrders,
+                    reason: "Refunding orders requires manager approval."
+                )
+            }
+    }
+    .environment(\.horizontalSizeClass, .compact)
+    .environment(\.posAccessSession, MockPOSAccessSession())
+    .previewDevice(PreviewDevice(rawValue: "iPhone 16 Pro"))
 }
 #endif

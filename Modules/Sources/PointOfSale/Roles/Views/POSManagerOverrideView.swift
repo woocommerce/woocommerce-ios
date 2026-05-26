@@ -1,42 +1,54 @@
 import SwiftUI
 
 struct POSManagerOverrideView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     let handler: POSManagerOverrideHandler
     let request: POSManagerOverrideRequest
 
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
-            VStack(spacing: POSSpacing.medium) {
-                Text(Localization.title)
-                    .font(.posHeadingBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
-
-                Text(request.reason)
-                    .font(.posBodyLargeRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                    .multilineTextAlignment(.center)
-            }
+            header
 
             POSPINEntryView(state: handler.pinEntryState) { pin in
                 Task {
                     await handler.submit(pin: pin)
                 }
             }
-            .frame(height: Constants.pinEntryHeight)
+            .layoutPriority(1)
 
             Button(Localization.cancel) {
                 handler.cancel()
             }
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .frame(maxWidth: Constants.contentWidth)
-        .padding(Constants.padding)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, isCompactWidth ? POSPadding.medium : POSPadding.none)
+        .padding(.top, isCompactWidth ? POSPadding.large : POSPadding.none)
+        .padding(.bottom, isCompactWidth ? POSPadding.xxLarge : POSPadding.none)
     }
 }
 
 private extension POSManagerOverrideView {
+    var isCompactWidth: Bool {
+        horizontalSizeClass == .compact
+    }
+
+    var header: some View {
+        VStack(spacing: POSSpacing.medium) {
+            Text(Localization.title)
+                .font(.posHeadingBold)
+                .foregroundStyle(Color.posOnSurface)
+                .multilineTextAlignment(.center)
+                .accessibilityAddTraits(.isHeader)
+
+            Text(request.reason)
+                .font(.posBodyLargeRegular())
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                .multilineTextAlignment(.center)
+        }
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "pos.managerOverride.title",
@@ -48,12 +60,6 @@ private extension POSManagerOverrideView {
             value: "Cancel",
             comment: "Button title for dismissing the POS manager approval modal."
         )
-    }
-
-    enum Constants {
-        static let contentWidth: CGFloat = 420
-        static let pinEntryHeight: CGFloat = 430
-        static let padding: CGFloat = POSPadding.medium
     }
 }
 
@@ -67,6 +73,7 @@ private extension POSManagerOverrideView {
     handler.requestApproval(for: request.capability, reason: request.reason)
 
     return POSManagerOverrideView(handler: handler, request: request)
+        .posModalSizing()
         .background(Color.posSurfaceBright)
 }
 
@@ -80,6 +87,21 @@ private extension POSManagerOverrideView {
     handler.pinEntryState = .error(message: "Incorrect PIN. Try again.")
 
     return POSManagerOverrideView(handler: handler, request: request)
+        .posModalSizing()
         .background(Color.posSurfaceBright)
+}
+
+#Preview("Phone") {
+    let handler = POSManagerOverrideHandler(session: MockPOSAccessSession())
+    let request = POSManagerOverrideRequest(
+        capability: .refundShopOrders,
+        reason: "Refunding orders requires manager approval."
+    )
+    handler.requestApproval(for: request.capability, reason: request.reason)
+
+    return POSManagerOverrideView(handler: handler, request: request)
+        .background(Color.posSurfaceBright)
+        .environment(\.horizontalSizeClass, .compact)
+        .previewDevice(PreviewDevice(rawValue: "iPhone 16 Pro"))
 }
 #endif

@@ -132,6 +132,21 @@ fi
 
 echo "--- :git: Committing and pushing translations"
 
+# The Buildkite default clone uses a read-only deploy key (Automattic
+# security policy: deploy keys never get write access). `use-bot-for-git`
+# is the established pattern for any step that pushes back — it exports
+# GIT_SSH_COMMAND pointing at wpmobilebot's SSH key on the trusted agent
+# and sets a default bot identity. Every iOS release-pipeline step under
+# .buildkite/release-pipelines/ uses it (plus every other Automattic
+# mobile repo). Source is at:
+#   Automattic/buildkite-ci:src/agents/mac-metal/resources/use-bot-for-git.sh
+echo "--- :robot_face: Use bot for Git operations"
+source use-bot-for-git
+
+# `use-bot-for-git` set a global identity ("Automattic Release Bot"). Pin
+# the translation-bot identity locally so the commit's author makes the
+# loop-prevention check above pattern-match on later runs and so a human
+# reviewer can tell translation bot commits apart from release bot ones.
 git config user.name "${BOT_NAME}"
 git config user.email "${BOT_EMAIL}"
 

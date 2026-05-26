@@ -489,6 +489,32 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.customFields.first?.value.stringValue, "10")
     }
 
+    /// Test that booking product fields are properly parsed.
+    ///
+    func test_booking_product_fields_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapProduct(from: "product-booking"))
+
+        // Then
+        XCTAssertEqual(product.bookingDuration, 60)
+        XCTAssertEqual(product.bookingDurationUnit, "minute")
+        XCTAssertEqual(product.bookingResourceIDs, [107, 219])
+    }
+
+    /// Test that booking fields are nil when parsing a non-booking product.
+    ///
+    func test_booking_fields_are_nil_for_non_booking_product() throws {
+        // Given
+        let productsToTest = try mapLoadProductResponse()
+
+        // Then
+        for product in productsToTest {
+            XCTAssertNil(product.bookingDuration)
+            XCTAssertNil(product.bookingDurationUnit)
+            XCTAssertNil(product.bookingResourceIDs)
+        }
+    }
+
     /// Test that only subscription details are encoded for metadata.
     ///
     func test_metadata_and_subscription_are_properly_encoded() throws {

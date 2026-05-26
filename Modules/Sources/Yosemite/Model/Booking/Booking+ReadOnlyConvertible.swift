@@ -13,6 +13,7 @@ extension Storage.Booking: ReadOnlyConvertible {
         allDay = booking.allDay
         cost = booking.cost
         customerID = booking.customerID
+        userID = booking.userID
 
         /// Falling to back to existing values in case if new values are absent
         /// Booking returned when sending a `PUT` request to `bookings/{booking_id}`
@@ -43,6 +44,7 @@ extension Storage.Booking: ReadOnlyConvertible {
                 allDay: allDay,
                 cost: cost ?? "",
                 customerID: customerID,
+                userID: userID,
                 dateCreated: dateCreated ?? Date(),
                 dateModified: dateModified ?? Date(),
                 endDate: endDate ?? Date(),

@@ -38,7 +38,7 @@ private extension BetaFeaturesConfigurationViewModel {
             case .applicationPasswords:
                 return appPasswordsExperimentAvailabilityChecker.isAvailable
             case .posLocalCatalog:
-                return isIPad && featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+                return isIPad && featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
         }
     }
 
@@ -69,7 +69,7 @@ private extension BetaFeaturesConfigurationViewModel {
                     results.append(feature)
                 }
             case .posLocalCatalog:
-                if isIPad && featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
+                if isIPad && featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) {
                     results.append(feature)
                 }
             }

@@ -75,4 +75,8 @@ final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {
     func cancelPayment() async throws {
         // No-op for screenshots
     }
+
+    func cancelReconnection() async {
+        // No-op for screenshots
+    }
 }

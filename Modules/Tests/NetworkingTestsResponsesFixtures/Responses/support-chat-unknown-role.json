@@ -1,0 +1,13 @@
+{
+    "chat_id": 1001,
+    "session_id": "8c1e24b8-7d67-4f1f-92b2-f45d53136fd4",
+    "bot_slug": "woo-chat-allusers",
+    "bot_version": "1.4.3",
+    "messages": [
+        {
+            "message_id": 3005,
+            "content": "Message from a role we don't recognize.",
+            "role": "some_future_role"
+        }
+    ]
+}

@@ -113,7 +113,7 @@ final class UniversalLinkRouterTests: XCTestCase {
         // Given
         let subPath = "/test/path"
 
-        let route = MockRoute(handledSubpaths: [subPath], performAction: { _, parameters in
+        let route = MockRoute(handledSubpaths: [subPath], performAction: { _, _ in
             return true
         })
 
@@ -169,13 +169,14 @@ final class UniversalLinkRouterTests: XCTestCase {
         let routes = UniversalLinkRouter.defaultRoutes(navigator: mockNavigator)
 
         // Then
-        assertEqual(5, routes.count)
+        assertEqual(6, routes.count)
 
         XCTAssert(routes.contains { $0 is OrderDetailsRoute })
         XCTAssert(routes.contains { $0 is MyStoreRoute })
         XCTAssert(routes.contains { $0 is PaymentsRoute })
         XCTAssert(routes.contains { $0 is OrdersRoute })
         XCTAssert(routes.contains { $0 is POSRoute })
+        XCTAssert(routes.contains { $0 is ReportsRoute })
     }
 
     func test_canHandle_returns_false_for_magic_link_url() throws {
@@ -212,7 +213,7 @@ private extension UniversalLinkRouterTests {
         } else {
             components.path = subPath
         }
-        if let queryItem = queryItem {
+        if let queryItem {
             components.queryItems = [
                 queryItem
             ]

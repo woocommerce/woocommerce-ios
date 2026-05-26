@@ -79,7 +79,6 @@ final class POSSettingsStoreViewModel: ObservableObject {
                                                             minimumRequired: minimumVersion)
         return isSupported
     }
-
 }
 
 private extension POSSettingsStoreViewModel {

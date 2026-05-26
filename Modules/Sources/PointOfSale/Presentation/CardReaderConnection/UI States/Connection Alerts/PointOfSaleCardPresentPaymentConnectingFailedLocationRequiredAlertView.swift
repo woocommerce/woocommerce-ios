@@ -4,6 +4,7 @@ import WooFoundation
 struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: View {
     let viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel
     let animation: POSCardPresentPaymentAlertAnimation
+    @AccessibilityFocusState private var isTitleFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
@@ -16,6 +17,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: V
                         .font(POSFontStyle.posHeadingBold)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($isTitleFocused)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                     Text(viewModel.subtitle)
@@ -39,6 +41,9 @@ struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: V
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
+        .onAppear {
+            isTitleFocused = true
+        }
     }
 }
 

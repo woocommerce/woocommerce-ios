@@ -343,7 +343,7 @@ final class OrderStoreTests: XCTestCase {
         let firstAction = OrderAction.searchOrders(siteID: sampleSiteID,
                                                    keyword: defaultSearchKeyword,
                                                    pageNumber: defaultPageNumber,
-                                                   pageSize: defaultPageSize) { error in
+                                                   pageSize: defaultPageSize) { _ in
             orderStore.onAction(nestedAction)
         }
 
@@ -416,7 +416,7 @@ final class OrderStoreTests: XCTestCase {
         let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)?.toReadOnly()
 
         let fetchedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, error) in
+            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, _) in
                 promise(order)
             }
 
@@ -438,7 +438,7 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let fetchedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, error) in
+            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, _) in
                 promise(order)
             }
 
@@ -552,7 +552,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
@@ -978,7 +978,7 @@ final class OrderStoreTests: XCTestCase {
 
         // Track Events: Upsert == 1 / Delete == 0
         var numberOfUpsertEvents = 0
-        entityListener.onUpsert = { upserted in
+        entityListener.onUpsert = { _ in
             numberOfUpsertEvents += 1
         }
 
@@ -1737,13 +1737,15 @@ private extension OrderStoreTests {
                                  paymentMethodID: "stripe",
                                  paymentMethodTitle: "Credit Card (Stripe)",
                                  paymentURL: URL(string: "http://www.automattic.com"),
+                                 fulfillmentStatus: .unknown,
                                  items: sampleItems(),
                                  billingAddress: sampleAddress(),
                                  shippingAddress: sampleAddress(),
                                  shippingLines: sampleShippingLines(),
                                  coupons: sampleCoupons(),
+                                 fees: sampleFeeLines(),
                                  taxes: sampleOrderTaxLines(),
-                                 customFields: sampleCustomFields())
+                                 customFields: [])
     }
 
     func sampleOrderMutated() -> Networking.Order {
@@ -1813,12 +1815,26 @@ private extension OrderStoreTests {
         return [coupon1, coupon2]
     }
 
+    func sampleFeeLines() -> [Networking.OrderFeeLine] {
+        let fee = OrderFeeLine(feeID: 60,
+                               name: "$125.50 fee",
+                               taxClass: "",
+                               taxStatus: .taxable,
+                               total: "125.50",
+                               totalTax: "0.00",
+                               taxes: [],
+                               attributes: [])
+        return [fee]
+    }
+
     func sampleOrderTaxLine() -> Networking.OrderTaxLine {
         OrderTaxLine.fake().copy(taxID: 1330,
                                  rateCode: "US-NY-STATE-2",
                                  rateID: 6,
                                  label: "State",
+                                 isCompoundTaxRate: true,
                                  totalTax: "7.71",
+                                 totalShippingTax: "0.00",
                                  ratePercent: 4.5)
     }
 

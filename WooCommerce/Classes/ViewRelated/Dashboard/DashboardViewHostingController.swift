@@ -58,7 +58,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     }
 
     @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -275,13 +275,13 @@ private extension DashboardViewHostingController {
             guard let self else { return }
             let detailsViewModel = CouponDetailsViewModel(coupon: coupon,
                                                           onUpdate: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 Task { @MainActor in
                     await self.viewModel.mostActiveCouponsViewModel.reloadData()
                 }
             },
                                                           onDeletion: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 Task { @MainActor in
                     await self.viewModel.mostActiveCouponsViewModel.reloadData()
                 }

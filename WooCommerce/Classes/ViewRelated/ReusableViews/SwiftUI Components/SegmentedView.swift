@@ -50,7 +50,6 @@ struct SegmentedView<Content: View>: View {
                 selectionState = index
             }
     }
-
 }
 
 struct SegmentedView_Previews: PreviewProvider {

@@ -6,7 +6,8 @@ extension NSPredicate {
 
         let productIDsPredicate = filters.productIDs.isNotEmpty ? NSPredicate(format: "productID IN %@", filters.productIDs) : nil
 
-        let customerIDsPredicate = filters.customerIDs.isNotEmpty ? NSPredicate(format: "customerID IN %@", filters.customerIDs) : nil
+        // Note: `customerIDs` filter matches against `userID` (WordPress User ID), not `customerID` (WooCommerce Customer ID).
+        let customerIDsPredicate = filters.customerIDs.isNotEmpty ? NSPredicate(format: "userID IN %@", filters.customerIDs) : nil
 
         let resourceIDsPredicate = filters.resourceIDs.isNotEmpty ? NSPredicate(format: "resourceID IN %@", filters.resourceIDs) : nil
 

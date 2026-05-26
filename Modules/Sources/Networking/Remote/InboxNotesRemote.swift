@@ -63,11 +63,11 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
             ParameterKey.fields: ParameterValue.noteFields
         ] as [String: Any]
 
-        if let type = type {
+        if let type {
             let stringOfTypes = type.map { $0.rawValue }
             parameters[ParameterKey.type] = stringOfTypes.joined(separator: ",")
         }
-        if let status = status {
+        if let status {
             let stringOfStatuses = status.map { $0.rawValue }
             parameters[ParameterKey.status] = stringOfStatuses.joined(separator: ",")
         }
@@ -137,11 +137,11 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
             ParameterKey.fields: ParameterValue.noteFields
         ] as [String: Any]
 
-        if let type = type {
+        if let type {
             let stringOfTypes = type.map { $0.rawValue }
             parameters[ParameterKey.type] = stringOfTypes.joined(separator: ",")
         }
-        if let status = status {
+        if let status {
             let stringOfStatuses = status.map { $0.rawValue }
             parameters[ParameterKey.status] = stringOfStatuses.joined(separator: ",")
         }

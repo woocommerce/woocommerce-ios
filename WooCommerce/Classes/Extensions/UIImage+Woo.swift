@@ -893,7 +893,7 @@ extension UIImage {
         return UIImage(named: "stripe-payments-plugin")!
     }
 
-    /// WooCommerce Payments plugin
+    /// WooPayments plugin
     ///
     static var wcPayPlugin: UIImage {
         return UIImage(named: "woo-payments-plugin")!
@@ -1205,7 +1205,7 @@ extension UIImage {
         let rect = CGRect(origin: .zero, size: size)
         let vectorImage = UIImage(named: "woo-logo")!
         let renderer = UIGraphicsImageRenderer(size: size)
-        let im2 = renderer.image { ctx in
+        let im2 = renderer.image { _ in
             vectorImage.draw(in: rect)
         }
 

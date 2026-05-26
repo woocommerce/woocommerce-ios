@@ -1,6 +1,7 @@
 import Foundation
 import Testing
 @testable import PointOfSale
+import struct Yosemite.POSCustomAmount
 import struct Yosemite.POSItemIdentifier
 
 struct CartViewHelperTests {
@@ -211,6 +212,14 @@ struct CartViewHelperTests {
     @Test func shouldShowCheckout_when_building_stage_and_cart_has_purchasable_items_returns_true() async throws {
         // Given
         let cart = Cart(purchasableItems: [makeItem()])
+
+        // When, Then
+        #expect(sut.shouldShowCheckout(orderStage: .building, cart: cart) == true)
+    }
+
+    @Test func shouldShowCheckout_when_building_stage_and_cart_has_only_custom_amounts_returns_true() async throws {
+        // Given
+        let cart = Cart(customAmounts: [POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)])
 
         // When, Then
         #expect(sut.shouldShowCheckout(orderStage: .building, cart: cart) == true)

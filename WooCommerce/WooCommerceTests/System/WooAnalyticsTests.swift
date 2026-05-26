@@ -1,3 +1,4 @@
+import EventHorizonSDK
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
@@ -161,7 +162,7 @@ class WooAnalyticsTests: XCTestCase {
 
     func test_events_when_logged_in_include_site_properties() {
         // Given
-        guard let testingProvider = testingProvider else {
+        guard let testingProvider else {
             return XCTFail("Testing provider not available")
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
@@ -203,7 +204,7 @@ class WooAnalyticsTests: XCTestCase {
 
     func test_events_when_logged_out_do_not_include_site_properties() {
         // Given
-        guard let testingProvider = testingProvider else {
+        guard let testingProvider else {
             return XCTFail("Testing provider not available")
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false,
@@ -235,6 +236,53 @@ class WooAnalyticsTests: XCTestCase {
         for property in expectedToBeAbsentProperties {
             XCTAssertNil(receivedProperties[property])
         }
+    }
+
+    // MARK: - Event Bridge
+
+    func test_track_Event_when_authenticated_then_includes_site_properties() {
+        // Given
+        guard let testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                   defaultSite: Site.fake().copy(
+                                                                    siteID: sampleSiteID,
+                                                                    url: sampleSiteURL)))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider)
+
+        // When
+        analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
+
+        // Then
+        XCTAssertEqual(testingProvider.receivedEvents.first, "booking_detail_attendance_status_update")
+        guard let receivedProperties = testingProvider.receivedProperties.first else {
+            return XCTFail("No properties found")
+        }
+        XCTAssertEqual(receivedProperties["booking_status"] as? String, "attended")
+        XCTAssertEqual(receivedProperties["blog_id"] as? Int64, sampleSiteID)
+    }
+
+    func test_track_Event_when_not_authenticated_then_skips_site_properties() {
+        // Given
+        guard let testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider)
+
+        // When
+        analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
+
+        // Then
+        XCTAssertEqual(testingProvider.receivedEvents.first, "booking_detail_attendance_status_update")
+        guard let receivedProperties = testingProvider.receivedProperties.first else {
+            return XCTFail("No properties found")
+        }
+        XCTAssertEqual(receivedProperties["booking_status"] as? String, "attended")
+        XCTAssertNil(receivedProperties["blog_id"])
     }
 }
 

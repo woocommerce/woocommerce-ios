@@ -67,7 +67,7 @@ private enum Localization {
      static let message = NSLocalizedString(
          "You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments.",
          comment: """
-                  Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements
+                  Error message when WooPayments is not supported because the Stripe account has overdue requirements
                   The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
                   If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
                   """

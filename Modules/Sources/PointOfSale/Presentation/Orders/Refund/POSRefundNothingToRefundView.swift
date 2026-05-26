@@ -4,16 +4,19 @@ struct POSRefundNothingToRefundView: View {
     let onClose: () -> Void
 
     @Environment(\.posModalParentSize) private var parentSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
             headerView
+            Spacer(minLength: POSSpacing.large)
             contentView
+            Spacer(minLength: POSSpacing.large)
             buttonsSection
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -21,37 +24,30 @@ struct POSRefundNothingToRefundView: View {
 
 private extension POSRefundNothingToRefundView {
     var headerView: some View {
-        HStack {
-            Text(Localization.title)
-                .font(.posHeadingBold)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .lineLimit(1)
-            Spacer()
-            Button {
-                onClose()
-            } label: {
-                Text(Image(systemName: "xmark"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
-        }
-        .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        POSRefundNavigationHeader(backAction: onClose,
+                                  backAccessibilityLabel: Localization.backButtonAccessibilityLabel)
     }
 
     var contentView: some View {
-        Text(Localization.message)
-            .font(.posBodyLargeRegular())
-            .foregroundColor(Color.posOnSurface)
-            .multilineTextAlignment(.leading)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, POSPadding.xLarge)
+        VStack(spacing: POSSpacing.small) {
+            Text(Localization.title)
+                .font(.posHeadingBold)
+                .foregroundColor(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+
+            Text(Localization.message)
+                .font(.posBodyLargeRegular())
+                .foregroundColor(Color.posOnSurface)
+        }
+        .multilineTextAlignment(.center)
+        .padding(.horizontal, POSPadding.xLarge)
+        .frame(maxWidth: POSRefundModalLayout.fullScreenContentMaxWidth)
     }
 
     var buttonsSection: some View {
         Button(Localization.doneButton, action: onClose)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .padding(POSPadding.xLarge)
+            .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -65,10 +61,10 @@ private extension POSRefundNothingToRefundView {
             comment: "Title shown when there are no items available to refund"
         )
 
-        static let closeButtonAccessibilityLabel = NSLocalizedString(
-            "pos.refundNothingToRefundView.closeButton.accessibilityLabel",
-            value: "Close",
-            comment: "Accessibility label for close button on nothing to refund modal"
+        static let backButtonAccessibilityLabel = NSLocalizedString(
+            "pos.refundNothingToRefundView.backButton.accessibilityLabel",
+            value: "Back",
+            comment: "Accessibility label for the back button on the nothing to refund screen"
         )
 
         static let message = NSLocalizedString(

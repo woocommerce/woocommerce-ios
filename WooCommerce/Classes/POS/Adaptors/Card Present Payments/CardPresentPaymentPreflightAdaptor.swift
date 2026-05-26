@@ -7,50 +7,39 @@ protocol CardPresentPaymentPreflightControllerFacade {
 }
 
 final class CardPresentPaymentPreflightAdaptor: CardPresentPaymentPreflightControllerFacade {
-    private let preflightController: CardPresentPaymentPreflightController<CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
-                                                                           CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
-                                                                           CardPresentPaymentsAlertPresenterAdaptor>
+    private let preflightController: any CardPresentPaymentPreflightControllerProtocol
 
-    init(preflightController: CardPresentPaymentPreflightController<CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
-         CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
-         CardPresentPaymentsAlertPresenterAdaptor>) {
+    init(preflightController: any CardPresentPaymentPreflightControllerProtocol) {
         self.preflightController = preflightController
     }
 
     @MainActor
     func attemptConnection(discoveryMethod: CardReaderDiscoveryMethod) async throws -> CardReaderPreflightResult {
-        async let preflightResult: CardReaderPreflightResult = try preflightController.readerConnection
-            .compactMap { $0 }
-            .eraseToAnyPublisher()
-            .async()
+        return try await withTaskCancellationHandler {
+            async let preflightResult = firstPreflightResult(
+                from: preflightController.readerConnection
+                    .compactMap { $0 }
+                    .values
+            )
 
-        // This isn't a great async method... it would be better if it returned its result,
-        // but it actually returns before connection is finished.
-        // To get around this, we use the subscription above.
-        await preflightController.start(discoveryMethod: discoveryMethod)
+            // This isn't a great async method... it would be better if it returned its result,
+            // but it actually returns before connection is finished.
+            // To get around this, we use the subscription above.
+            await preflightController.start(discoveryMethod: discoveryMethod)
 
-        return try await preflightResult
-    }
-}
-
-// From https://medium.com/geekculture/from-combine-to-async-await-c08bf1d15b77
-fileprivate extension AnyPublisher {
-    func async() async throws -> Output {
-        try await withCheckedThrowingContinuation { continuation in
-            var cancellable: AnyCancellable?
-
-            cancellable = first()
-                .sink { result in
-                    switch result {
-                    case .finished:
-                        break
-                    case let .failure(error):
-                        continuation.resume(throwing: error)
-                    }
-                    cancellable?.cancel()
-                } receiveValue: { value in
-                    continuation.resume(with: .success(value))
-                }
+            return try await preflightResult
+        } onCancel: {
+            preflightController.cancelConnectionAttempt()
         }
+    }
+
+    private func firstPreflightResult<Results: AsyncSequence>(
+        from results: Results
+    ) async throws -> CardReaderPreflightResult where Results.Element == CardReaderPreflightResult {
+        for try await result in results {
+            return result
+        }
+
+        throw CancellationError()
     }
 }

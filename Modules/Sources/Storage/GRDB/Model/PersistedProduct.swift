@@ -151,6 +151,12 @@ public extension PersistedProduct {
             .replacingOccurrences(of: "_", with: "\\_")
     }
 
+    /// Returns a request for POS-supported products matching specific IDs
+    static func posProductsByIDs(_ productIDs: Set<Int64>, siteID: Int64) -> QueryInterfaceRequest<PersistedProduct> {
+        baseQuery(siteID: siteID)
+            .filter(productIDs.contains(Columns.id))
+    }
+
     private static func baseQuery(siteID: Int64) -> QueryInterfaceRequest<PersistedProduct> {
         let excludedStatuses = [
             "trash",

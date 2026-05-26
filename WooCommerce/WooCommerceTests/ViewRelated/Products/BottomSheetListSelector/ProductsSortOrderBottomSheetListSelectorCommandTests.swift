@@ -19,7 +19,7 @@ final class ProductsSortOrderBottomSheetListSelectorCommandTests: XCTestCase {
     func test_selected_value_after_change() {
         // Arrange
         let selected = ProductsSortOrder.nameAscending
-        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: selected) { (selected) in
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: selected) { (_) in
             // noop
         }
         // Assert
@@ -28,7 +28,7 @@ final class ProductsSortOrderBottomSheetListSelectorCommandTests: XCTestCase {
 
     func test_isSelected_returns_true_if_given_the_initial_value() {
         // Arrange
-        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: .nameAscending) { (selected) in
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: .nameAscending) { (_) in
             // noop
         }
         // Action
@@ -38,7 +38,7 @@ final class ProductsSortOrderBottomSheetListSelectorCommandTests: XCTestCase {
     }
     func test_isSelected_returns_false_if_given_a_different_value() {
         // Arrange
-        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: .nameAscending) { (selected) in
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: .nameAscending) { (_) in
             // noop
         }
         // Action
@@ -46,5 +46,4 @@ final class ProductsSortOrderBottomSheetListSelectorCommandTests: XCTestCase {
         // Assert
         XCTAssertFalse(isSelected)
     }
-
 }

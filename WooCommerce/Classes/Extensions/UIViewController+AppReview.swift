@@ -31,7 +31,7 @@ private extension UIViewController {
             return window.windowScene
         }
 
-        if let parent = parent {
+        if let parent {
             return parent.currentScene
         }
 

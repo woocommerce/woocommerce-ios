@@ -28,7 +28,7 @@ struct MockPaymentActionHandler: MockActionHandler {
             completion(.success(mockPlan))
 
         default:
-            break
+            unimplementedAction(action: action)
         }
     }
 }

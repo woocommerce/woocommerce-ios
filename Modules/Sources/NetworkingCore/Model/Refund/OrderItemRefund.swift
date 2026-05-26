@@ -28,19 +28,19 @@ public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedC
     /// OrderItemRefund struct initializer.
     ///
     public init(itemID: Int64,
-                name: String,
-                productID: Int64,
-                variationID: Int64,
-                refundedItemID: String?,
+                name: String = "",
+                productID: Int64 = 0,
+                variationID: Int64 = 0,
+                refundedItemID: String? = nil,
                 quantity: Decimal,
-                price: NSDecimalNumber,
-                sku: String?,
-                subtotal: String,
-                subtotalTax: String,
-                taxClass: String,
+                price: NSDecimalNumber = .zero,
+                sku: String? = nil,
+                subtotal: String = "",
+                subtotalTax: String = "",
+                taxClass: String = "",
                 taxes: [OrderItemTaxRefund],
                 total: String,
-                totalTax: String) {
+                totalTax: String = "") {
         self.itemID = itemID
         self.name = name
         self.productID = productID

@@ -21,6 +21,14 @@ public protocol SiteSpecificAppSettingsStoreMethodsProtocol {
     // POS local catalog cellular data
     func setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool)
     func getPOSLocalCatalogCellularDataAllowed(siteID: Int64) -> Bool
+
+    // POS sunset warning
+    func getSunsetWarningLastDismissedDate(siteID: Int64) -> Date?
+    func setSunsetWarningLastDismissedDate(siteID: Int64, date: Date)
+
+    // Card-present payments country expansion eligibility (RSM-637)
+    func loadCardPresentPaymentsCountryExpansionEligibility(siteID: Int64) -> Bool?
+    func saveCardPresentPaymentsCountryExpansionEligibility(siteID: Int64, isEligible: Bool)
 }
 
 /// Methods for managing site-specific app settings
@@ -141,6 +149,31 @@ extension SiteSpecificAppSettingsStoreMethods {
 
     public func getPOSLocalCatalogCellularDataAllowed(siteID: Int64) -> Bool {
         getStoreSettings(for: siteID).syncPOSCatalogOverCellular
+    }
+}
+
+extension SiteSpecificAppSettingsStoreMethods {
+    public func getSunsetWarningLastDismissedDate(siteID: Int64) -> Date? {
+        getStoreSettings(for: siteID).lastSunsetWarningDismissedDate
+    }
+
+    public func setSunsetWarningLastDismissedDate(siteID: Int64, date: Date) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSunsetWarningDismissedDate: date)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+}
+
+// MARK: - Card-present payments country expansion eligibility (RSM-637)
+extension SiteSpecificAppSettingsStoreMethods {
+    public func loadCardPresentPaymentsCountryExpansionEligibility(siteID: Int64) -> Bool? {
+        getStoreSettings(for: siteID).isCardPresentPaymentsCountryExpansionEligible
+    }
+
+    public func saveCardPresentPaymentsCountryExpansionEligibility(siteID: Int64, isEligible: Bool) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(isCardPresentPaymentsCountryExpansionEligible: isEligible)
+        setStoreSettings(settings: updatedSettings, for: siteID)
     }
 }
 

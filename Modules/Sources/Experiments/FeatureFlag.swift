@@ -183,13 +183,7 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleHistoricalOrdersi1
 
-    /// Enables Local Catalog i1 in Point of Sale.
-    /// It syncs products and variations to local storage and display them in POS for quick access.
-    ///
-    case pointOfSaleLocalCatalogi1
-
     /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
-    /// Only has effect when pointOfSaleLocalCatalogi1 is also enabled.
     ///
     case pointOfSaleFTSSearch
 
@@ -205,21 +199,37 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleRefundsi1
 
-    /// Enables the bookings functionality within POS
+    /// Enables adding custom amounts to the cart in Point of Sale
     ///
-    case pointOfSaleBookings
+    case pointOfSaleCustomAmounts
 
-    /// Enables self driven push token registration for users authenticated with WPCom
+    /// Enables Point of Sale on iPhone (prototype).
+    /// When enabled, the iPad-only gate in `POSTabVisibilityChecker` is lifted and POS layouts
+    /// adapt to compact horizontal size class. Mirrors the Android `POS_ON_PHONES` flag.
     ///
-    case selfDrivenPushTokenWPCom
+    case pointOfSalePhonePrototype
 
-    /// Enables self driven push token registration for users authenticated with app passwords
+    /// Enables Scan to Pay as a secondary payment method in Point of Sale.
+    /// When enabled, the merchant can have the customer pay by scanning a QR code that
+    /// opens the order's gateway-hosted payment page on their phone.
     ///
-    case selfDrivenPushTokenAppPasswords
+    case pointOfSaleScanToPay
 
-    /// Enables POS-only products filtering
+    /// Enables "Mark order as paid" as a secondary payment method in Point of Sale.
+    /// Used when the merchant has collected payment out-of-band (external reader, gift card,
+    /// account credit, etc.) and just needs the order marked as completed.
     ///
-    case pointOfSaleOnlyProducts
+    case pointOfSaleMarkOrderAsPaid
+
+    /// Enables Tap to Pay as a payment method in Point of Sale on phone.
+    /// When enabled and the device + site support TTP, the totals view promotes "Tap to Pay"
+    /// as the primary payment method. Mirrors the Android `WOO_POS_TAP_TO_PAY` flag.
+    ///
+    case pointOfSaleTapToPay
+
+    /// Enables self driven push token registration
+    ///
+    case selfDrivenPushToken
 
     /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
     ///
@@ -229,4 +239,28 @@ public enum FeatureFlag: Int, CaseIterable {
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
+
+    /// Enables the reschedule booking entry point in booking details
+    ///
+    case ciabBookingReschedule
+
+    /// Enables the feature flag override panel in the Help screen during the login flow
+    ///
+    case loggedOutFFPanel
+
+    /// Enables the AI-powered support chat
+    ///
+    case aiSupportChat
+
+    /// Enables the WooAI Assistant.
+    ///
+    case wooAIAssistant
+
+    /// Enables AR parcel fitting for shipping
+    ///
+    case arParcelFitting
+
+    /// Enables smarter (AI-powered) push notifications.
+    ///
+    case smarterNotifications
 }

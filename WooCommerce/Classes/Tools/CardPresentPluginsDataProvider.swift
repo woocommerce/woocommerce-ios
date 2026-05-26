@@ -91,7 +91,7 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     }
 
     private func getSystemPlugin(from configuration: CardPresentPaymentsPlugin) -> Yosemite.SystemPlugin? {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return nil
         }
         return storageManager.viewStorage

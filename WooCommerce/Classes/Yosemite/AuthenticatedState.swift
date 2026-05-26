@@ -90,6 +90,7 @@ class AuthenticatedState: StoresManagerState {
                 storageManager: storageManager,
                 network: network,
             ),
+            OrderFulfillmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -117,6 +118,7 @@ class AuthenticatedState: StoresManagerState {
                       network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SubscriptionStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            SupportChatStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TaxStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -181,15 +183,12 @@ class AuthenticatedState: StoresManagerState {
             appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
             grdbManager: ServiceLocator.grdbManager
            ) {
-            let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
-
             // Create eligibility service
             let eligibilityService = POSLocalCatalogEligibilityService(
                 catalogSizeChecker: POSCatalogSizeChecker(
                     credentials: credentials,
                     selectedSite: site,
-                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
-                    posProductsOnlyEnabled: posProductsOnlyEnabled
+                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
                 ),
                 systemStatusService: POSSystemStatusService(
                     credentials: credentials,
@@ -198,6 +197,7 @@ class AuthenticatedState: StoresManagerState {
                     storageManager: ServiceLocator.storageManager
                 ),
                 isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
+                isCatalogAPIFeatureFlagEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI),
                 remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher),
                 betaFeatureToggleProvider: {
                     await MainActor.run {
@@ -215,7 +215,7 @@ class AuthenticatedState: StoresManagerState {
                 catalogEligibilityChecker: eligibilityService,
                 analytics: ServiceLocator.analytics,
                 connectivityObserver: ServiceLocator.connectivityObserver,
-                posProductsOnlyEnabled: posProductsOnlyEnabled
+                usesCatalogAPI: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
             )
 
             // Note: POS eligibility will be set later by POSTabCoordinator.updatePOSEligibility
@@ -236,7 +236,7 @@ class AuthenticatedState: StoresManagerState {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
-        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
         self.init(credentials: credentials,
                   sessionManager: sessionManager,
                   isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)

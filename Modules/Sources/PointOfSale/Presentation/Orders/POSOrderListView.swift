@@ -7,6 +7,7 @@ import enum Yosemite.SearchDebounceStrategy
 struct POSOrderListView: View {
     @Binding var isSearching: Bool
     @Binding var searchTerm: String
+    let onOrderSelected: (POSOrder) -> Void
     let onClose: () -> Void
 
     @Environment(POSOrderListModel.self) private var orderListModel
@@ -16,6 +17,18 @@ struct POSOrderListView: View {
 
     private var ordersViewState: POSOrderListState {
         orderListModel.ordersController.ordersViewState
+    }
+
+    init(
+        isSearching: Binding<Bool>,
+        searchTerm: Binding<String>,
+        onOrderSelected: @escaping (POSOrder) -> Void = { _ in },
+        onClose: @escaping () -> Void
+    ) {
+        self._isSearching = isSearching
+        self._searchTerm = searchTerm
+        self.onOrderSelected = onOrderSelected
+        self.onClose = onClose
     }
 
     var body: some View {
@@ -140,7 +153,7 @@ struct POSOrderListView: View {
                                 orderCreatedDate: order.dateCreated,
                                 siteTimezone: siteTimezone
                             ))
-                            orderListModel.ordersController.selectOrder(order)
+                            onOrderSelected(order)
                         }) {
                             POSOrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
                         }
@@ -193,9 +206,16 @@ private struct POSOrderRowView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var minHeight: CGFloat {
         min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
+    }
+
+    /// Suppress the selection border on compact widths — there is no adjacent detail pane on phone,
+    /// so the border indicates nothing useful and looks like a stray visual artifact.
+    private var showsSelectionBorder: Bool {
+        isSelected && horizontalSizeClass == .regular
     }
 
     var body: some View {
@@ -211,7 +231,7 @@ private struct POSOrderRowView: View {
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .overlay {
-            if isSelected {
+            if showsSelectionBorder {
                 RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
                     .stroke(Color.posOnSurface, lineWidth: 2)
             }
@@ -432,7 +452,7 @@ extension POSOrderListView {
             )
             var label = String(format: baseFormat, orderNumber, total, date, status)
 
-            if let email = email, email.isNotEmpty {
+            if let email, email.isNotEmpty {
                 let emailFormat = NSLocalizedString(
                     "pos.orderListView.orderRow.accessibilityLabel.email",
                     value: "Email: %1$@",

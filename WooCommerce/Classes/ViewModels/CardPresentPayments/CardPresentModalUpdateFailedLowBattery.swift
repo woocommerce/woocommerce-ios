@@ -30,7 +30,7 @@ final class CardPresentModalUpdateFailedLowBattery: CardPresentPaymentsModalView
     init(batteryLevel: Double?, retrySearch: @escaping () -> Void, close: @escaping () -> Void) {
         self.retrySearch = retrySearch
         self.close = close
-        if let batteryLevel = batteryLevel {
+        if let batteryLevel {
             bottomTitle = String(format: Localization.message, 100 * batteryLevel)
         } else {
             bottomTitle = Localization.messageNoBatteryLevel
@@ -46,7 +46,6 @@ final class CardPresentModalUpdateFailedLowBattery: CardPresentPaymentsModalView
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
-
 }
 
 private extension CardPresentModalUpdateFailedLowBattery {

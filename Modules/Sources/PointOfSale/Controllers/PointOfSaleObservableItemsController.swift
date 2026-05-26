@@ -20,7 +20,7 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
     private let siteID: Int64
 
     // Track loading and refresh for products and variations
-    private var loadingState: LoadingState = LoadingState()
+    private var loadingState = LoadingState()
     private var refreshState: RefreshState = .idle
 
     // Track current parent for variation state mapping
@@ -104,7 +104,7 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
         }
         loadingState = .init()
 
-        try? await catalogSyncCoordinator.performSmartSync(for: siteID)
+        try? await catalogSyncCoordinator.performSmartSync(for: siteID, isBackgroundSync: false)
     }
 
     func refreshItems(base: ItemListBaseItem) async {
@@ -274,7 +274,7 @@ private extension PointOfSaleObservableItemsController {
         }
 
         // Error state for data source observation
-        if let error = error, items.isEmpty {
+        if let error, items.isEmpty {
             return .error(errorType(error))
         }
 

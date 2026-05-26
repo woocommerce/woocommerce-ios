@@ -11,7 +11,7 @@ struct BottomButtonView<Style>: View where Style: ButtonStyle {
             Divider()
             Button(action: { onButtonTapped() }) {
                 HStack {
-                    if let image = image {
+                    if let image {
                         Image(uiImage: image)
                     }
                     Text(title)

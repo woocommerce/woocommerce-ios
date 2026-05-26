@@ -81,7 +81,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
     /// Decimal (non-integer) stock quantities currently aren't accepted by the Core API.
     /// Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494
     private var hasIntegerStockQuantity: Bool {
-        guard let stockQuantity = stockQuantity else {
+        guard let stockQuantity else {
             return true
         }
 

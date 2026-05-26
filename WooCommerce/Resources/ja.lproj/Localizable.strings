@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-10 09:56:01+0000 */
+/* Translation-Revision-Date: 2026-05-14 11:56:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -296,9 +296,6 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
 "Accept the Terms of Service during set up." = "設定中に利用規約に同意します。";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "配送料金を割引価格でご利用いただけます。 現在は DHL と USPS で適用されますが、今後さらに追加される予定です。";
-
 /* My Store > Settings > Account Settings section
    Navigates to the Account Settings screen
    Title of the Account Settings screen */
@@ -365,9 +362,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "ダウンロード可能なファイルを追加";
-
-/* Button in the CTA View for installing WCShip extension */
-"Add Extension To Store" = "ストアに拡張機能を追加";
 
 /* Title for the Fee screen during order creation */
 "Add Fee" = "手数料を追加";
@@ -977,9 +971,6 @@ which should be translated separately and considered part of this sentence. */
 /* Location row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.locationRow.title" = "場所";
 
-/* Price row title in appointment details section in booking details view. */
-"BookingDetailsView.appointmentDetails.priceRow.title" = "価格";
-
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "時刻";
 
@@ -1082,6 +1073,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice message shown when a phone call cannot be initiated. */
 "BookingDetailsView.phoneNumberOptions.error" = "この番号に電話をかけられませんでした。";
 
+/* 'Reschedule' button title in appointment details section in booking details view. */
+"BookingDetailsView.rescheduleBookingButton.title" = "予約を変更";
+
 /* Retry Action */
 "BookingDetailsView.retry.action" = "再試行";
 
@@ -1154,9 +1148,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "商品を購入";
-
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Buy postage when you need it" = "送料は必要なときに購入";
 
 /* Terms of service format on the account creation form. */
 "By continuing, you agree to our %1$@." = "続行すると、%1$@に同意したことになります。";
@@ -1327,9 +1318,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "商品を複製できません";
-
-/* Error message when no URL to WP-Admin page is found during Jetpack install flow */
-"Cannot find information about your site's WP-Admin. Please try again." = "サイトの WP 管理画面に関する情報が見つかりません。 再度お試しください。";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -1557,8 +1545,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form
-   Title of the Close action on the Jetpack Install view */
+   Text for the close button in the Edit Address Form */
 "Close" = "閉じる";
 
 /* Button to close account on the Account Settings screen */
@@ -1744,7 +1731,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when establishing a connection to the card reader times out. */
 "Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "カードリーダーとの接続がタイムアウトしました。充電されたカードリーダーが近くにあることを確認し、もう一度お試しください。";
 
-/* Title when checking if WooCommerce Payments is supported */
+/* Title when checking if WooPayments is supported */
 "Connecting to your account" = "アカウントへの接続";
 
 /* Name of the step to connect the store to Jetpack */
@@ -1759,8 +1746,7 @@ which should be translated separately and considered part of this sentence. */
 /* Contact Email title */
 "Contact Email" = "連絡先メールアドレス";
 
-/* Action button to contact support when Jetpack install fails
-   Button to contact support for login
+/* Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
    Contact Support button in the application password tutorial screen
    Contact support button in the connectivity tool screen
@@ -2196,9 +2182,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "割引注文";
 
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Discounted rates" = "割引価格";
-
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "割引不可";
 
@@ -2299,7 +2282,6 @@ which should be translated separately and considered part of this sentence. */
    Button to submit the product selector without any product selected.
    Dismiss button title in Woo Payments setup celebration screen.
    Done button on the Allowed Emails screen
-   Done button on the Jetpack Install Progress screen.
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2314,7 +2296,6 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
-   The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet */
 "Done" = "完了";
 
@@ -2995,9 +2976,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "購入から履行まで - アプリから注文処理全体を管理します。";
 
-/* Title of the CTA view for installing WCShip extension */
-"Fulfill your orders with WooCommerce Shipping" = "WooCommerce Shipping で注文を処理";
-
 /* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "資金は%1$d日間保留された後に利用可能になります。";
 
@@ -3043,12 +3021,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "ドイツ";
 
-/* Title of install action in the Jetpack Install view.
-   View title for initial auth views. */
+/* View title for initial auth views. */
 "Get Started" = "今すぐ始める";
-
-/* Action of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Get WooCommerce Shipping" = "WooCommerce Shipping を入手";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
 "Get a login link by email" = "ログインリンクをメールで取得";
@@ -3443,9 +3417,7 @@ which should be translated separately and considered part of this sentence. */
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
    Title for the WPCom email login screen when Jetpack is not installed yet
-   Title of install action in the Jetpack benefits view.
-   Title of the Install Jetpack intro view
-   Title of the Install Jetpack view */
+   Title of install action in the Jetpack benefits view. */
 "Install Jetpack" = "Jetpack をインストール";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
@@ -3453,15 +3425,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button for installing WooCommerce.Presented when logging in with a site address that does not have WooCommerce */
 "Install WooCommerce" = "WooCommerce をインストール";
-
-/* Title for the error screen when WooCommerce Payments is not installed */
-"Install WooCommerce Payments" = "WooCommerce Payments をインストールする";
-
-/* Accessibility label for the Install WCShip banner in the Order Detail */
-"Install the WCShip extension." = "WCShip 拡張機能をインストールします。";
-
-/* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "無料の Jetpack プラグインを %1$@ にインストールすると、最高のモバイル環境をご利用いただけます。";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "無料の Jetpack プラグインをインストールすると、最高のモバイル環境をご利用いただけます。";
@@ -4219,9 +4182,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Nauru" = "ナウル";
 
-/* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Need a shipping label?" = "配送ラベルが必要な場合";
-
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
 "Need help finding the required email?" = "必要なメールアドレスをお忘れですか ?";
 
@@ -4388,9 +4348,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Placeholder when there's no customer name in the list */
 "No name" = "名前なし";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"No need to wonder where that stampbook went" = "切手がどこにいったのか探す必要はありません";
-
 /* Placeholder when there are no component options to show in the Component Settings view */
 "No options selected" = "オプションが選択されていません";
 
@@ -4460,7 +4417,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Not grouped" = "未グループ化";
 
 /* Action title to dismiss enabling Analytics for a store
-   Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "後で";
 
@@ -4565,9 +4521,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for the Menu button */
 "Open menu" = "「開く」メニュー";
-
-/* VoiceOver accessibility label for the Install WCShip banner in the Order Detail */
-"Open the flow for installing the WCShip extension." = "WCShip 拡張機能をインストールしましょう。";
 
 /* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
 "Open wp-admin" = "WP 管理画面を開く";
@@ -4927,9 +4880,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "連携するストアを選択";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"Pick up an order, then just pay, print, package, and post." = "注文を選んだら、支払いし、印刷、梱包、そして投函するだけです。";
-
 /* Country option for a site address. */
 "Pitcairn" = "ピトケアン諸島";
 
@@ -4938,9 +4888,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "リーダーを充電してください";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "お使いのスマートフォンが次の要件を満たしていることを確認してください: iOS 16.7以降対応の iPhone XS 以降。 対応の端末でこのエラーが表示される場合は、サポートにお問い合わせください。";
 
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "ギフトカードの残高を確認してください。";
@@ -5078,16 +5025,13 @@ If your translation of that term also happens to contains a hyphen, please be su
    Message of in-progress modal when requesting shipping label document for printing
    Message of the in-progress UI while purchasing a shipping label
    Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress
-   Message when checking if WooCommerce Payments is supported
+   Message when checking if WooPayments is supported
    Text on the loading view of the survey screen indicating the user to wait
    VoiceOver Accessibility label for the instruction */
 "Please wait" = "しばらくお待ちください";
 
 /* Subtitle on the connectivity tool screen */
 "Please wait while we attempt to identify your connection issue." = "接続の問題を特定する間しばらくお待ちください。";
-
-/* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "サイト %1$@ を Jetpack に接続する間、しばらくお待ちください";
 
 /* Message on the Jetpack setup screen. The %1$@ is the site address. */
 "Please wait while we connect your store %1$@ with Jetpack." = "ストア %1$@ を Jetpack と連携する間、しばらくお待ちください。";
@@ -5241,12 +5185,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation bar title of shipping label printing instructions screen */
 "Print from your mobile device" = "モバイルデバイスを使って印刷する";
-
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Print from your phone" = "スマートフォンから印刷";
-
-/* Body of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Print labels from your phone, with WooCommerce Shipping." = "WooCommerce Shipping を使用してスマートフォンからラベルを印刷します。";
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "レシートを印刷";
@@ -5554,9 +5492,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the refund detail cell when the refund was done manually. */
 "Refunded manually" = "手動で返金済み";
 
-/* It reads, 'Refunded manually via <payment method>' */
-"Refunded manually via %@" = "%@ 経由で手動で返金済み";
-
 /* It reads, 'Refunded via <payment method>' */
 "Refunded via %@" = "%@ 経由で返金済み";
 
@@ -5660,6 +5595,9 @@ If your translation of that term also happens to contains a hyphen, please be su
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "必須";
+
+/* Navigation bar title for the reschedule booking screen. */
+"RescheduleBookingView.title" = "予約を変更";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "アクティビティログをリセット";
@@ -5852,9 +5790,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected
    Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected */
 "Save receipt and continue" = "レシピを保存して続行";
-
-/* Title of the CTA view for installing WCShip extension */
-"Save time and money" = "時間とお金を節約";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "商品を保存しています...";
@@ -6065,9 +6000,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "任意の割引率を設定します。";
-
-/* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
-"Set up %1$@" = "%1$@を設定";
 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Jetpack のセットアップ";
@@ -6360,9 +6292,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "Sorry, site addresses must have letters too!" = "サイトアドレスには半角英字を含める必要があります。";
-
-/* Error title when Jetpack install fails */
-"Sorry, something went wrong during install" = "インストール中にエラーが発生しました";
 
 /* Error shown when there is a problem retrieving the dates for the selected date range. */
 "Sorry, something went wrong. We can't load analytics for the selected date range." = "エラーが発生しました。 選択した期間の分析を読み込めません。";
@@ -8239,9 +8168,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "WooCommerce サービスの割引はどのくらいですか ?";
 
-/* Button in the CTA View about what is the WCShip extension */
-"What is WooCommerce Shipping?" = "WooCommerce Shipping とは";
-
 /* Navigates to page with details about What is WordPress.com. */
 "What is WordPress.com?" = "WordPress.com とは何ですか ?";
 
@@ -8288,14 +8214,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce モバイルアプリで、どこからでもストアを運営";
 
-/* Title of the WooCommerce Payments support area option */
-"WooCommerce Payments" = "WooCommerce Payments";
-
 /* Title of the WooCommerce Plugin support area option */
 "WooCommerce Plugin" = "WooCommerce プラグイン";
-
-/* Navigation title of the webview which used by the merchant to update their store address */
-"WooCommerce Settings" = "WooCommerce 設定";
 
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "WooCommerce › 設定ウィザード";
@@ -8405,7 +8325,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "新しい注文があります。🎉";
 
-/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements
+/* Error message when WooPayments is not supported because the Stripe account has overdue requirements
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments." = "ご使用のアカウントに期限切れの要件があります。 オフラインでの支払いを再開するには、この要件を処理してください。";
@@ -8493,11 +8413,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "お試し期間が終了しました。";
-
-/* Error message when WooCommerce Payments is not installed
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
-"You’ll need to install the free WooCommerce Payments extension on your store to accept In‑Person Payments." = "オフラインでの支払いを受け取るには、無料の WooCommerce Payments 拡張機能をストアにインストールする必要があります。";
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name.
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -9699,6 +9614,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking list view */
 "bookingListView.view.title" = "予約";
 
+/* Badge label for a booking where the payment authorization has been voided. */
+"bookingPaymentStatus.authorizationVoided" = "認証が無効化されました";
+
+/* Badge label for a booking with an authorized but not yet captured payment. */
+"bookingPaymentStatus.authorized" = "認証済み";
+
 /* Badge label for a booking with a failed payment. */
 "bookingPaymentStatus.failed" = "失敗";
 
@@ -9862,6 +9783,9 @@ which should be translated separately and considered part of this sentence. */
 /* A title explaining the requirement of location services for making a payment */
 "cardPresentPayment.locationRequired.title" = "端末設定で位置情報サービスを有効にして、支払いを許可します。";
 
+/* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
+"cardPresentPayment.settingsWebView.title" = "WooCommerce 設定";
+
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "注文に戻る";
 
@@ -9895,6 +9819,36 @@ which should be translated separately and considered part of this sentence. */
 /* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.saveReceiptAndContinue" = "領収書を保存して続行";
 
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
+"cardReader.error.unsupportedMobileDeviceConfiguration.message" = "お使いのスマートフォンが次の要件を満たしていることを確認してください: iOS 18.0.1以降対応の iPhone XS 以降。 対応の端末でこのエラーが表示される場合は、サポートにお問い合わせください。";
+
+/* Settings > Manage Card Reader > Connected Reader > A button to cancel the reconnection attempt */
+"cardReaderSettingsConnectedViewController.cancelReconnectionButtonTitle.v2" = "再接続をキャンセル";
+
+/* Settings > Manage Card Reader > Connected Reader > Button title shown while cancellation is in progress */
+"cardReaderSettingsConnectedViewController.cancellingReconnectionButtonTitle" = "キャンセル中...";
+
+/* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
+"cardReaderSettingsConnectedViewController.reconnectingText" = "カードリーダーに再接続中…";
+
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "キャンセル";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "確認して続行";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "承認の確認中に予期しないエラーが発生しました。 もう一度お試しください。";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "承認の確認中にエラーが発生しました";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "再試行";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "発送元";
+
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "トランザクションの詳細を注文メモに記録する";
 
@@ -9912,6 +9866,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "支払い (%1$@) を受け取る";
+
+/* Display label for the CIAB 'Open' order status, which groups pending, processing, on-hold, and failed orders. */
+"ciabOrderStatusMapper.open" = "開く";
 
 /* Title of the button to add address in the order form customer card. */
 "collapsibleCustomerCard.addAddress.title" = "お客様のアドレスを追加";
@@ -10042,23 +9999,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "新規注文を見逃さない";
 
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "サポートとチャット";
+
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "接続のトラブルシューティング";
+
+/* Action button to enable WooCommerce Analytics in the connectivity tool */
+"connectivityToolViewModel.action.enableAnalytics" = "アナリティクスを有効化";
+
+/* Action button to enable order notifications in the connectivity tool */
+"connectivityToolViewModel.action.enableOrderNotifications" = "注文通知を有効化";
+
+/* Action button to open device notification settings in the connectivity tool */
+"connectivityToolViewModel.action.openSettings" = "設定を開く";
 
 /* Action button title for an error on the connectivity tool */
 "connectivityToolViewModel.action.readMore" = "続きを読む";
 
+/* Action button to register the device for push notifications in the connectivity tool */
+"connectivityToolViewModel.action.registerDevice" = "端末を登録";
+
 /* Retry test button in the connectivity tool screen */
 "connectivityToolViewModel.action.retry" = "テストを再試行";
 
+/* Action button to start the Jetpack setup flow in the connectivity tool */
+"connectivityToolViewModel.action.setupJetpack" = "Jetpack を設定";
+
 /* Button to view technical error details in the connectivity tool */
 "connectivityToolViewModel.action.viewTechnicalDetails" = "技術詳細を表示";
+
+/* Title for the analytics setting check in the connectivity tool */
+"connectivityToolViewModel.connectivityTest.analyticsSetting" = "アナリティクス設定を確認しています";
 
 /* Title for the internet connection connectivity tool card */
 "connectivityToolViewModel.connectivityTest.internetConnection" = "インターネット接続";
 
 /* Title for the test to load products in connectivity tool */
 "connectivityToolViewModel.connectivityTest.loadingProducts" = "ストアで商品を取得中";
+
+/* Title for the notification settings check in the connectivity tool */
+"connectivityToolViewModel.connectivityTest.notifications" = "通知設定を確認しています";
 
 /* Title for the Your Site connectivity tool card */
 "connectivityToolViewModel.connectivityTest.site" = "サイトに接続しています";
@@ -10069,23 +10050,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the WPCom servers connectivity tool card */
 "connectivityToolViewModel.connectivityTest.wpComServers" = "WordPress.com サーバーに接続しています";
 
+/* Message when the analytics setting check fails in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsCheckFailed" = "アナリティクスの設定を確認できませんでした。\n\nヘルプが必要な場合はサポートチームにご連絡ください。";
+
+/* Message when WooCommerce Analytics is disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsDisabled" = "ストアで WooCommerce Analytics が有効になっていません。\n\n有効にされるまで、収益や注文統計などのアナリティクスデータは利用できません。";
+
 /* Message when we there is a decoding error in the recovery tool */
 "connectivityToolViewModel.errorMessage.decodingError" = "サイトの応答が正常に機能していません。\n\n技術詳細を以下で表示してください。またはサポートチームにお気軽にご相談ください。";
 
 /* Message when we there is a generic error in the recovery tool */
 "connectivityToolViewModel.errorMessage.default" = "サイトに問題があるようです。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
 
+/* Message when the device is not registered for push notifications in the connectivity tool */
+"connectivityToolViewModel.errorMessage.deviceNotRegisteredForPN" = "お使いの端末ではプッシュ通知が登録されていないようです。";
+
 /* Message when we there is a jetpack error in the recovery tool */
 "connectivityToolViewModel.errorMessage.jetpackNotConnected" = "Jetpack 連携で問題が発生しています。\n\n詳細についてご確認ください。またはサポートチームにお気軽にご相談ください。";
 
+/* Message when Jetpack plugin is not active in the connectivity tool */
+"connectivityToolViewModel.errorMessage.jetpackPluginNotActive" = "Jetpack プラグインがサイトで有効になっていないようです。\n\nプッシュ通知には有効な Jetpack 連携が必要です。";
+
 /* Message when there is no internet connection in the recovery tool */
 "connectivityToolViewModel.errorMessage.noInternet" = "インターネットに接続されていないようです。\n\nWi-Fi がオンになっていることをご確認ください。 モバイルデータを使用している場合、デバイスの設定で有効になっていることを確認してください。 ";
+
+/* Message when the notification config check fails in the connectivity tool */
+"connectivityToolViewModel.errorMessage.notificationConfigCheckFailed" = "通知設定を確認できませんでした。\n\nヘルプが必要な場合はサポートチームにご連絡ください。";
+
+/* Message when iOS notification permission is denied in the connectivity tool */
+"connectivityToolViewModel.errorMessage.notificationsNotAuthorized" = "このアプリではプッシュ通知が許可されていません。\n\nお使いの端末の設定で有効にすると、注文通知を受け取ることができます。";
+
+/* Message when order notifications are disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.orderNotificationsDisabled" = "このストアでは注文通知が有効になっていません。\n\n有効にすると、新規注文が入った際にアラートを受け取ることができます。";
 
 /* Message when we there is a timeout error in the recovery tool */
 "connectivityToolViewModel.errorMessage.timeout" = "サイトの応答に時間がかかっています。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
 
 /* Message when we can't reach WPCom in the recovery tool */
 "connectivityToolViewModel.errorMessage.wpcomConnection" = "現在 WordPress.com に接続できません。\n\n数分後にもう一度お試しください。またはサポートチームにお気軽にご相談ください。";
+
+/* Message shown after successfully enabling analytics in the connectivity tool */
+"connectivityToolViewModel.message.analyticsEnabledRelaunch" = "アナリティクスを有効化しました。 アナリティクスデータを利用するには、アプリを再起動してください。";
 
 /* Title for when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssues" = "接続の問題なし";
@@ -10601,6 +10606,18 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "このコンテンツを非表示";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "%1$@ に同意します。";
+
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "FedEx の配送ラベルを購入するには、次の規約に同意する必要があります。";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "FedEx 利用規約";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "FedEx 利用規約";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "適用";
 
@@ -10835,6 +10852,24 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "検出により返されたリーダーには IP アドレスがないため、接続できません。";
 
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "AI アシスタントのサポートを受ける";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "サポートとチャット";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "過去のサポート会話に再アクセス";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "チャットの履歴";
+
+/* Subtitle for the site compatibility check row on the Help screen */
+"helpAndSupport.siteCompatibility.subtitle" = "サイトでアプリが機能するかをテストします";
+
+/* Title for the site compatibility check row on the Help screen */
+"helpAndSupport.siteCompatibility.title" = "サイトの互換性を確認";
+
 /* Title of the Bookings menu in the hub menu */
 "hubMenu.bookings" = "予約";
 
@@ -10879,6 +10914,14 @@ which should be translated separately and considered part of this sentence. */
 
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "inPersonPayments.cardPresent.cardInserted.title" = "カードを挿入しました";
+
+/* Error message when WooPayments is not installed
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"inPersonPaymentsPluginNotInstalled.message" = "オフラインでの支払いを受け取るには、無料の WooPayments 拡張機能をストアにインストールする必要があります。";
+
+/* Title for the error screen when WooPayments is not installed */
+"inPersonPaymentsPluginNotInstalled.title" = "WooPayments をインストール";
 
 /* Button to dismiss the confirmation alert on the Inbox screen. */
 "inbox.alert.cancel" = "キャンセル";
@@ -11507,6 +11550,15 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "配送";
 
+/* Fulfillment status badge text shown on CIAB order rows when the order has been fulfilled. */
+"orderFulfillmentStatus.badge.fulfilled" = "処理済み";
+
+/* Fulfillment status badge text with date, shown on the CIAB order details screen. %1$@ is the formatted date. */
+"orderFulfillmentStatus.badge.fulfilledWithDate" = "%1$@に処理済み";
+
+/* Fulfillment status badge text shown on CIAB order rows when the order has not been fulfilled. */
+"orderFulfillmentStatus.badge.unfulfilled" = "未処理";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "クーポン";
 
@@ -11636,6 +11688,36 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "編集";
 
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "完了としてマークされた日付に注文をカウントします。";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "完了した注文";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "選択した時間範囲のパフォーマンスメトリクスに含める注文を選択します。";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "これはストア全体の設定であり、WooCommerce の管理分析設定の「日付タイプ」オプションも制御します。";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "注文が支払われた日付に注文をカウントします。";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "支払い済み注文";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "注文が行われた日付または作成された日付に注文をカウントします。";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "注文済み注文";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "注文日のタイプ";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "注文のタイプを更新できませんでした。 もう一度お試しください。";
+
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "%1$@を更新";
 
@@ -11674,6 +11756,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A placeholder name when we can't determine the name of a variation for an error message */
 "pointOfSale.barcodeScanning.unresolved.variation.name" = "不明";
+
+/* Button to cancel card reader reconnection, shown on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelReconnection.button.title" = "再接続をキャンセル";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.canceledOnReader.title" = "リーダーで支払いがキャンセルされました";
@@ -11776,6 +11861,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
 "pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "この支払いを処理するには、リーダーを接続するか現金を選択してください。";
+
+/* Title shown on the Point of Sale Checkout when the card reader is reconnecting */
+"pointOfSale.cardPresent.reconnecting.title" = "リーダーを再接続中…";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "注文を確認中";
@@ -12026,14 +12114,17 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "クーポンが適用されませんでした";
 
-/* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "予約";
+/* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
+"pointOfSale.floatingButtons.cancelReconnection.button.title" = "再接続をキャンセル";
 
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "しばらくお待ちください";
 
+/* The title of the floating button to indicate that the reader reconnection is being cancelled. */
+"pointOfSale.floatingButtons.cancellingReconnection.title" = "キャンセル中...";
+
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
-"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Reader の接続を解除";
+"pointOfSale.floatingButtons.disconnectCardReader.button.title.2" = "リーダーの接続を解除";
 
 /* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "POS を終了";
@@ -12049,6 +12140,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "接続を切断中";
+
+/* The title of the floating button to indicate that the reader is attempting to reconnect. */
+"pointOfSale.floatingButtons.readerReconnecting.title" = "再接続中…";
 
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "設定";
@@ -12128,12 +12222,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error when trying to send a receipt before an order has been loaded in the Point of Sale */
 "pointOfSale.paymentError.noOrder" = "まだ注文が読み込まれていません。 領収書を送信する前に支払いを開始してください。";
 
-/* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "予約に戻る";
-
-/* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "完了";
-
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "注文を編集";
 
@@ -12181,6 +12269,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text displayed on Point of Sale settings when card reader battery is unknown. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "不明";
+
+/* Menu option to cancel card reader reconnection in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.cancelReconnectionTitle" = "再接続をキャンセル";
+
+/* Button title shown when card reader reconnection is being cancelled in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.cancellingReconnectionTitle" = "キャンセル中...";
 
 /* Subtitle for card reader connect button when no reader is connected. */
 "pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "カードリーダーを接続し、支払いの受け取りを開始します";
@@ -12232,6 +12326,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text displayed on Point of Sale settings pointing to the card reader model. */
 "pointOfSaleSettingsHardwareDetailView.readerModelTitle.1" = "デバイス名";
+
+/* Button title shown when card reader is reconnecting in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.reconnectingButtonTitle" = "再接続中…";
 
 /* Subtitle describing barcode scanner documentation in Point of Sale settings. */
 "pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "POS のバーコードスキャンについてさらに詳しく";
@@ -12319,6 +12416,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "ストア";
+
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "カスタム金額を追加";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "金額";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "税金を請求";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "カスタム金額";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "名前";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "カスタム金額";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "カスタム金額";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "バーコードスキャン";
@@ -12488,218 +12606,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "スキャナーをテスト";
 
-/* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
-"pos.booking.durationHours" = "%d時間";
-
-/* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
-"pos.booking.durationHoursAndMinutes" = "%1$d時間%2$d分";
-
-/* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
-"pos.booking.durationMinutes" = "%d分";
-
-/* POS booking attendance status label when the customer attended. */
-"pos.bookingAttendanceDisplay.attended" = "出席";
-
-/* POS booking attendance status label when the customer has not attended. */
-"pos.bookingAttendanceDisplay.unattended" = "欠席";
-
-/* Accessibility label for the next day button in the bookings date bar. */
-"pos.bookingDateBar.nextDay" = "翌日";
-
-/* Accessibility label for the previous day button in the bookings date bar. */
-"pos.bookingDateBar.previousDay" = "前日";
-
-/* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
-"pos.bookingDateBar.selectedDate" = "%1$@、タップしてカレンダーを開く";
-
-/* Button to add a private note to a booking. */
-"pos.bookingDetailView.addNoteButton" = "メモを追加";
-
-/* Section title for the attendance status in booking details. */
-"pos.bookingDetailView.attendanceStatusTitle" = "出席ステータス";
-
-/* Subtitle text below the attendance section explaining why marking attendance matters. */
-"pos.bookingDetailView.attendanceSubtitle" = "出席をマークしてレポートの正確性を維持し、予約の傾向を把握します。";
-
-/* Error message shown below attendance section when updating attendance status fails. */
-"pos.bookingDetailView.attendanceUpdateError" = "出席の更新に失敗しました。 もう一度お試しください。";
-
-/* Label for the attended pill button in booking attendance section. */
-"pos.bookingDetailView.attendedPill" = "出席";
-
-/* Section title for booking details showing the booking ID number. %lld is the booking ID. */
-"pos.bookingDetailView.bookingIdTitle" = "予約 #%lld";
-
-/* Label for the private booking note section in booking details. */
-"pos.bookingDetailView.bookingNoteLabel" = "予約メモ";
-
-/* Subtitle text below the booking note section explaining the note is private. */
-"pos.bookingDetailView.bookingNoteSubtitle" = "これは非公開のメモです。 お客様と共有されることはありません。";
-
-/* Menu action to cancel a booking from the POS booking detail view. */
-"pos.bookingDetailView.cancelBookingAction" = "予約をキャンセル";
-
-/* Subtitle shown when cancelling a booking from POS has failed. */
-"pos.bookingDetailView.cancelBookingError.subtitle" = "もう一度お試しください。";
-
-/* Title shown when cancelling a booking from POS has failed. */
-"pos.bookingDetailView.cancelBookingError.title" = "予約をキャンセルできませんでした";
-
-/* Button to initiate payment collection for a booking. */
-"pos.bookingDetailView.collectPaymentButton" = "支払いを受け取る";
-
-/* Accessibility label for the copy email button in booking details. */
-"pos.bookingDetailView.copyEmail.accessibilityLabel" = "メールアドレスをコピー";
-
-/* Accessibility label for the copy phone button in booking details. */
-"pos.bookingDetailView.copyPhone.accessibilityLabel" = "電話番号をコピー";
-
-/* Section title for the customer details in booking details. */
-"pos.bookingDetailView.customerTitle" = "顧客";
-
-/* Label for the duration in booking details. */
-"pos.bookingDetailView.durationLabel" = "期間";
-
-/* Button to edit an existing private note on a booking. */
-"pos.bookingDetailView.editNoteButton" = "メモを編集";
-
-/* Accessibility label for customer email row in booking details. %1$@ is the email address. */
-"pos.bookingDetailView.email.accessibilityLabel" = "メールアドレス: %1$@";
-
-/* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
-"pos.bookingDetailView.guestBadge" = "ゲスト";
-
-/* Menu action to issue a full refund for a booking. */
-"pos.bookingDetailView.issueRefundAction" = "返金を実行";
-
-/* Label for the location in booking details. */
-"pos.bookingDetailView.locationLabel" = "場所";
-
-/* Accessibility label for the overflow actions menu button in booking details. */
-"pos.bookingDetailView.moreActions.accessibilityLabel" = "その他の操作";
-
-/* Label for the customer note in booking details. */
-"pos.bookingDetailView.noteLabel" = "メモ";
-
-/* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
-"pos.bookingDetailView.phone.accessibilityLabel" = "電話番号: %1$@";
-
-/* Label for the team member / staff resource in booking details. */
-"pos.bookingDetailView.teamMemberLabel" = "チームメンバー";
-
-/* Label for the unattended pill button in booking attendance section. */
-"pos.bookingDetailView.unattendedPill" = "欠席";
-
-/* Button to view the linked order from the booking detail header. */
-"pos.bookingDetailView.viewOrderAction" = "注文を表示";
-
-/* Text appearing in the booking details pane when no booking is selected. */
-"pos.bookingDetailsEmptyView.description" = "予約をタップして詳細を表示";
-
-/* POS booking lifecycle status label for active bookings. */
-"pos.bookingLifecycleStatus.booked" = "予約済み";
-
-/* POS booking lifecycle status label for canceled bookings. */
-"pos.bookingLifecycleStatus.canceled" = "キャンセル済み";
-
-/* POS booking lifecycle status label for completed bookings. */
-"pos.bookingLifecycleStatus.completed" = "完了";
-
-/* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
-"pos.bookingList.failedToLoadBookingsNextPageTitle" = "これ以上の予約を読み込めません";
-
-/* Text appearing on the booking list screen when there's an error loading bookings. */
-"pos.bookingList.failedToLoadBookingsTitle" = "予約を読み込めません";
-
-/* Title at the header for the Bookings view. */
-"pos.bookingListView.bookingsTitle" = "予約";
-
-/* Subtitle appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchSubtitle" = "検索に一致する予約が見つかりませんでした。 検索キーワードを調整してみてください。";
-
-/* Title appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchTitle" = "予約はありません";
-
-/* Subtitle appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsSubtitle.2" = "この日付に予定されている予約はすべてこちらに表示されます。";
-
-/* Title appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsTitle.2" = "この日の予約はありません";
-
-/* Accessibility label for the search button in bookings list. */
-"pos.bookingListView.searchButton.accessibilityLabel" = "予約を検索";
-
-/* Placeholder for a search field in the Bookings view. */
-"pos.bookingListView.searchFieldPlaceholder" = "予約を検索";
-
-/* Button label shown when no changes have been made to the booking note yet. */
-"pos.bookingNoteView.addButton" = "追加";
-
-/* Title shown at the top of the booking note editor screen when adding a new note. */
-"pos.bookingNoteView.addTitle" = "メモを追加";
-
-/* Title shown at the top of the booking note editor screen when editing an existing note. */
-"pos.bookingNoteView.editTitle" = "メモを編集";
-
-/* Placeholder text shown in the booking note text field when empty. */
-"pos.bookingNoteView.placeholder" = "メモを入力";
-
-/* Button to save the booking note. */
-"pos.bookingNoteView.saveButton" = "保存";
-
-/* Error message shown when saving a booking note fails. */
-"pos.bookingNoteView.saveError" = "メモの保存に失敗しました。 もう一度お試しください。";
-
-/* POS booking payment status label when the booking order payment failed. */
-"pos.bookingPaymentStatus.failed" = "失敗";
-
-/* POS booking payment status label when the booking is paid. */
-"pos.bookingPaymentStatus.paid" = "支払い済み";
-
-/* POS booking payment status label when the booking order has been refunded. */
-"pos.bookingPaymentStatus.refunded" = "返金済み";
-
-/* POS booking payment status label when the booking is unpaid. */
-"pos.bookingPaymentStatus.unpaid" = "未払い";
-
-/* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessage" = "%2$@ の予約 #%1$@ (%3$@)  はキャンセルされます。";
-
-/* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "%2$@ の予約 #%1$@ (%3$@、%4$@)  はキャンセルされます。";
-
-/* Title shown while a booking cancellation is being processed in POS. */
-"pos.cancelBookingConfirmation.canceling.processingTitle" = "予約をキャンセル中…";
-
-/* Accessibility label for close button on cancel booking confirmation modal. */
-"pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "閉じる";
-
-/* Button to confirm and proceed with booking cancellation. */
-"pos.cancelBookingConfirmation.confirmButton" = "はい、予約をキャンセルします";
-
-/* Secondary message informing that the customer will receive an email notification about the cancellation. */
-"pos.cancelBookingConfirmation.customerNotificationMessage" = "お客様にはメールで通知が届きます。";
-
-/* Button to dismiss the cancel booking confirmation and keep the booking. */
-"pos.cancelBookingConfirmation.keepButton" = "いいえ、このままにしておきます";
-
-/* Message shown while the booking cancellation is being processed. */
-"pos.cancelBookingConfirmation.processingMessage" = "予約をキャンセルする間、しばらくお待ちください。";
-
-/* Title for the cancel booking confirmation modal in POS. */
-"pos.cancelBookingConfirmation.title" = "この予約をキャンセルしますか ?";
-
-/* Message shown after a booking is successfully canceled in POS. */
-"pos.cancelBookingSuccess.canceled.message" = "予約は正常にキャンセルされました。";
-
-/* Title shown when a booking has been successfully canceled in POS. */
-"pos.cancelBookingSuccess.canceled.title" = "予約をキャンセルしました";
-
-/* Accessibility label for close button on cancel booking success screen. */
-"pos.cancelBookingSuccess.closeButton.accessibilityLabel" = "閉じる";
-
-/* Button to dismiss the cancel booking success screen in POS. */
-"pos.cancelBookingSuccess.doneButton" = "完了";
+/* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
+"pos.cardReader.updateAddress.webview.title" = "WooCommerce 設定";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "商品をタップして\n お買い物カゴに追加するか ";
@@ -12839,7 +12747,13 @@ which should be translated separately and considered part of this sentence. */
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "カタログを更新";
 
-/* Title at the top of the Point of Sale product selector screen. */
+/* Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
+"pos.itemlistview.sunsetWarning.description" = "8月1日以降、販売時点管理では WooCommerce 10.5.0以降が必須となります。 中断なく利用を継続するには、更新してください。";
+
+/* Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
+"pos.itemlistview.sunsetWarning.title" = "WooCommerce を更新してください";
+
+/* Title at the top of the point of sale product selector screen. */
 "pos.itemlistview.title" = "商品";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
@@ -12865,9 +12779,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "注文";
-
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "商品";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "合計";
@@ -12914,17 +12825,17 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "数量: %1$@ (各%2$@、合計%3$@)";
 
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "商品";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "商品";
-
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
+/* Title for refund detail dialog header. %1$d is the refund number. */
+"pos.orderDetailsView.refundTitle" = "返金 #%1$d";
+
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "合計";
+
+/* Payment method description shown in refund detail dialog. %1$@ is the payment method name. */
+"pos.orderDetailsView.viaPaymentMethod" = "%1$@経由";
 
 /* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
 "pos.orderList.failedToLoadOrdersNextPageTitle" = "追加の注文を読み込めません";
@@ -12935,8 +12846,8 @@ which should be translated separately and considered part of this sentence. */
 /* Description for refund via a specific payment method. %@ is the payment method name */
 "pos.orderListController.refund.viaPaymentMethodFormat" = "%@経由";
 
-/* Button text for opening an information view when orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle2" = "さらに詳しく";
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "再読み込み";
 
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "その名前の注文は見つかりませんでした。 検索キーワードを調整してみてください。";
@@ -12945,7 +12856,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.orderListView.emptyOrdersSearchTitle" = "注文がありません";
 
 /* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle2" = "ストアの売り上げを伸ばす方法を見つけましょう。";
+"pos.orderListView.emptyOrdersSubtitle.3" = "POS で売上の処理を開始すると、注文がここに表示されます。";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "注文はまだありません";
@@ -13040,6 +12951,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "%@を返金";
 
+/* Accessibility label for close button on refund detail dialog */
+"pos.refundDetailView.closeButton.accessibilityLabel" = "閉じる";
+
+/* Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items. */
+"pos.refundDetailView.itemsSubtotalFormat.plural" = "商品小計 (%1$d個)";
+
+/* Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items. */
+"pos.refundDetailView.itemsSubtotalFormat.singular" = "商品小計 (%1$d個)";
+
+/* Label for refund total row in refund detail */
+"pos.refundDetailView.refundTotalLabel" = "払戻総額";
+
+/* Label for tax row in refund detail */
+"pos.refundDetailView.taxLabel" = "税";
+
 /* Button to cancel and dismiss the refund error screen */
 "pos.refundErrorView.cancelButton" = "キャンセル";
 
@@ -13104,12 +13030,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "追加";
 
-/* Accessibility label for back button on refund reason screen */
-"pos.refundReasonView.backButton.accessibilityLabel" = "戻る";
-
-/* Accessibility label for close button on refund reason screen */
-"pos.refundReasonView.closeButton.accessibilityLabel" = "閉じる";
-
 /* Placeholder text for the refund reason text field */
 "pos.refundReasonView.placeholder" = "注文返金の理由";
 
@@ -13173,6 +13093,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when a refund has been successfully processed */
 "pos.refundSuccessView.title" = "返金完了";
 
+/* Accessibility label for refunded product row. %1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total. */
+"pos.refundedProductRow.accessibilityLabel" = "%1$@、数量: %2$@ (各%3$@)、返金済み%4$@";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.refundedProductRow.quantityLabel" = "%1$d × %2$@";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "検索をクリア";
 
@@ -13206,9 +13132,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
 "pos.totalsSectionView.netPayment.accessibilityLabel" = "支払額 (正味): %1$@";
 
-/* Label for net payment amount after refunds. */
-"pos.totalsSectionView.netPaymentLabel" = "支払額 (正味)";
-
 /* Accessibility label for total paid. %1$@ is the paid amount. */
 "pos.totalsSectionView.paid.accessibilityLabel" = "支払い合計: %1$@";
 
@@ -13218,17 +13141,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the paid amount in the totals breakdown. */
 "pos.totalsSectionView.paidLabel" = "支払い合計";
 
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.totalsSectionView.reasonLabel" = "理由: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.totalsSectionView.refund.accessibilityLabel" = "返金済み: %1$@";
-
 /* Reason portion of refund accessibility label. %1$@ is the refund reason. */
 "pos.totalsSectionView.refund.accessibilityLabel.reason" = "理由: %1$@";
 
-/* Label for a refund entry in the totals breakdown. */
-"pos.totalsSectionView.refundLabel" = "返金済み";
+/* Accessibility label for refund entry. %1$d is the refund number, %2$@ is the refund amount. */
+"pos.totalsSectionView.refund.accessibilityLabel.v2" = "返金番号%1$d: %2$@";
+
+/* Title for a refund entry in the totals breakdown. %1$d is the refund number. */
+"pos.totalsSectionView.refundTitle" = "返金 #%1$d";
 
 /* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
 "pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
@@ -13238,6 +13158,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total amount in the totals breakdown. */
 "pos.totalsSectionView.totalLabel" = "合計";
+
+/* Label for net payment amount after refunds. */
+"pos.totalsSectionView.totalNetPaymentLabel" = "純合計";
+
+/* Link label to view refund details in the totals breakdown. */
+"pos.totalsSectionView.viewDetailsLabel" = "詳細を表示";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "領収書をメールで送信";
@@ -13340,6 +13266,84 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "更新日を利用できません";
+
+/* Error message when REST API discovery fails in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.apiDiscoveryFailed" = "REST API エンドポイントが見つかりません。";
+
+/* Error message when application passwords are disabled in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.appPasswordsDisabled" = "アプリケーションパスワードが無効です。";
+
+/* Error message when application passwords are not available in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.appPasswordsUnavailable" = "アプリケーションパスワードが利用できません。";
+
+/* Error message when REST API is unavailable in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.noRESTAPI" = "お使いのサイトでは WordPress REST API にアクセスできません。";
+
+/* Error message when WooCommerce is not active in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.noWooCommerce" = "お使いのサイトでは WooCommerce API にアクセスできません。";
+
+/* Error message when site info lookup fails in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.siteInfoFailed" = "サイト情報を取得できませんでした。";
+
+/* Site info line shown when the site is an eCommerce Garden (CIAB) site */
+"preLoginConnectivityTool.siteInfo.commerceGarden" = "eCommerce Garden サイトです。";
+
+/* Site info line shown when Jetpack is active but not connected */
+"preLoginConnectivityTool.siteInfo.jetpackActiveNotConnected" = "Jetpack がインストールされ有効になっていますが、連携されていません。";
+
+/* Site info line shown when Jetpack is installed and connected */
+"preLoginConnectivityTool.siteInfo.jetpackConnected" = "Jetpack がインストールおよび連携されています。";
+
+/* Site info line shown when Jetpack is installed but not active */
+"preLoginConnectivityTool.siteInfo.jetpackInstalledNotActive" = "Jetpack がインストールされていますが、有効になっていません。";
+
+/* Site info line shown when Jetpack is not installed */
+"preLoginConnectivityTool.siteInfo.jetpackNotInstalled" = "Jetpack がインストールされていません。";
+
+/* Site info line shown when the site is a WordPress site */
+"preLoginConnectivityTool.siteInfo.wordPressDetected" = "WordPress サイトが検出されました。";
+
+/* Site info line shown when the site is not a WordPress site */
+"preLoginConnectivityTool.siteInfo.wordPressNotDetected" = "このサイトでは WordPress が検出されませんでした。";
+
+/* Success info when REST API discovery succeeds in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.apiDiscovered" = "REST API エンドポイントが検出されました。";
+
+/* Success info when application passwords are likely available in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.applicationPasswordsLikelyAvailable" = "アプリケーションパスワードがサポートされているようです。";
+
+/* Success info when REST API check passes in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.restAPIAvailable" = "WordPress REST API が利用可能です。";
+
+/* Success info when WooCommerce check passes in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.wooCommerceActive" = "サイトで WooCommerce が有効になっています。";
+
+/* Title for the REST API discovery test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.apiDiscovery" = "API 検出";
+
+/* Title for the application passwords test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.applicationPasswords" = "アプリケーションパスワード";
+
+/* Title for the site info test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.siteInfo" = "サイト情報";
+
+/* Title for the WooCommerce API test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.wooCommerceAPI" = "WooCommerce プラグイン";
+
+/* Title for the WordPress REST API test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.wordPressRESTAPI" = "WordPress REST API";
+
+/* Contact support button in the pre-login connectivity tool */
+"preLoginConnectivityToolView.contactSupport" = "サポートに連絡";
+
+/* Subtitle on the pre-login connectivity tool screen. The placeholder is the site address */
+"preLoginConnectivityToolView.subtitle" = "サイト %1$@ の WooCommerce アプリとの互換性を確認しています。";
+
+/* Navigation title for the pre-login connectivity tool */
+"preLoginConnectivityToolView.title" = "サイトの互換性";
+
+/* Button to view technical diagnostic details for a failed connectivity check */
+"preLoginConnectivityToolView.viewDetails" = "詳細を表示";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "閉じる";
@@ -13758,6 +13762,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "カスタム金額を返金";
 
+/* Primary learn more button in the What's New screen */
+"reportList.learnMore.link" = "さらに詳しく";
+
+/* Secondary not now button in the What's New screen */
+"reportList.notNow.button" = "後で";
+
 /* Menu item to dismiss the Reviews card on the Dashboard screen */
 "reviewsDashboardCard.hideCard" = "レビューを非表示";
 
@@ -13802,6 +13812,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
 "salesChannelFilter.row.wpAdmin.description" = "WP 管理画面";
+
+/* Accessibility label for the clear button in the search header */
+"searchHeader.clearButton.accessibilityLabel" = "消去";
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "キャンセル";
@@ -13894,6 +13907,27 @@ which should be translated separately and considered part of this sentence. */
 /* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
 "shipping_item_row.quantity.format" = "%2$@ の%1$d個のアイテム";
 
+/* PermissionKit description shown when the app age rating changes.ratingCode: %1$d is the new rating code. */
+"significantChangeConsent.ageRatingChange.description" = "アプリの年齢評価が%1$dに変更されました。";
+
+/* PermissionKit description shown for a manual significant change.manualChangeID: %1$@ is a short description. */
+"significantChangeConsent.manual.description" = "アプリの大幅な更新:  %1$@。";
+
+/* Error message shown when the site info check and API discovery both fail. */
+"siteAddress.siteConnectionError" = "このサイトとの接続中に問題が発生しました。 サイトのアドレスを確認して、もう一度お試しください。";
+
+/* Button title to dismiss the site info failure alert. */
+"siteAddress.siteInfoFailed.alert.cancel" = "キャンセル";
+
+/* Button title to proceed to site credentials login when site info check fails. */
+"siteAddress.siteInfoFailed.alert.loginWithSiteCredentials" = "サイトのログイン情報でログイン";
+
+/* Message for the alert shown when the site info check fails but API discovery finds a WordPress REST API. */
+"siteAddress.siteInfoFailed.alert.message" = "サイトの詳細を確認できませんでした。 代わりに、サイトのログイン情報でログインしてみてください。";
+
+/* Title for the alert shown when the site info check fails but the site appears to be a WordPress site. */
+"siteAddress.siteInfoFailed.alert.title" = "接続の問題";
+
 /* Error message explaining login failure due to an unexpected authentication challenge. */
 "siteCredentialLoginError.failedAuthenticationChallenge.message" = "ストアで予期しないセキュリティ対策が行われたため、ログインできません。 トラブルシューティングについて、サポートにお問い合わせください。";
 
@@ -13939,6 +13973,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "%1$d件のタスクをすべて表示";
 
+/* Header text format on the store onboarding WooPayments/payments setup screen. %1$@ can be 'WooPayments' when available, or 'Payment Methods.' */
+"storeOnboardingPaymentsSetup.headerFormat" = "%1$@ を設定";
+
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "コンバージョン";
 
@@ -13951,11 +13988,23 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "選択した日付には収益がありません";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "下部のシートを開き、どの注文をパフォーマンス合計に含めるかを変更します。";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "注文";
 
-/* Revenue stat label on dashboard. */
-"storePerformanceView.revenue" = "収益";
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "収益の種類";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "総額";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "純額";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "合計";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "ストアのパフォーマンスを表示できません";
@@ -13971,6 +14020,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit the items to be displayed on the store picker */
 "storePicker.editList" = "編集";
+
+/* Body text for the store picker error screen when the permission check fails */
+"storePickerError.permissionErrorBody" = "パーミッションの検証中に問題が発生しました。 再度お試しいただくか、サポートをご依頼ください。";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "既存のストアを連携";
@@ -13988,7 +14040,7 @@ which should be translated separately and considered part of this sentence. */
 "storeStatsChart.ySelectedValue" = "選択した収益";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen */
-"storeStatsChart.yValue" = "収益";
+"storeStatsChart.yValueTotalSales" = "合計売上高";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
 "storeStatsChart.zeroRevenue" = "収益なし";
@@ -14002,17 +14054,17 @@ which should be translated separately and considered part of this sentence. */
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "マイショップ";
 
-/* Range title for the today store info widget */
-"storeWidgets.infoProvider.today" = "今日";
-
-/* Conversion title label for the store info widget */
+/* Conversion rate metric title for the store info widget.
+   Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "コンバージョン";
 
-/* Orders title label for the store info widget */
+/* Orders metric title for the store info widget.
+   Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "注文";
 
-/* Revenue title label for the store info widget */
-"storeWidgets.infoView.revenue" = "収益";
+/* Revenue metric title — gross revenue including taxes and shipping.
+   Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+"storeWidgets.infoView.totalSales" = "合計売上高";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "%1$@時点";
@@ -14020,8 +14072,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
 "storeWidgets.infoView.viewMore" = "詳細を表示";
 
-/* Visitors title label for the store info widget */
+/* Visitors metric title for the store info widget.
+   Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "訪問者";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "販売済み商品";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "純売上高";
 
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "ログイン";
@@ -14038,8 +14097,8 @@ which should be translated separately and considered part of this sentence. */
 /* Label when the widget can't fetch data. */
 "storeWidgets.storeInfoRectangularWidget.noData" = "⚠データがありません";
 
-/* Revenue title label for the store info widget */
-"storeWidgets.storeInfoRectangularWidget.revenue" = "収益";
+/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+"storeWidgets.storeInfoRectangularWidget.totalSales" = "合計売上高";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "今日の統計情報を取得できません";
@@ -14081,6 +14140,135 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "無料お試し";
 
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "無題のチャット";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "まだサポートとチャットしていません。";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "チャットの履歴";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "サポートとチャット";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "すべてのチェックが問題なく完了しました。";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "サポートに連絡";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "チャットに進む";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "診断が完了しました";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "エラー";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "追加のサポートが必要なようです。 サポートチームへの問い合わせを希望しますか ?";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "こんにちは。 Woo モバイルサポートボットです。 今日は何にお困りですか ?";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "メッセージを入力…";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "以前の会話の継続";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "診断を実行中…";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "サポートとチャット";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "こんにちは。 Woo モバイルサポートボットです。 今日は何かお手伝いできることはありますか ?";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "お手伝いできるよう、問題をより詳しく説明してください。";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "分析を有効化";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "注文通知を有効化";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "設定を開く";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "端末を登録";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "再試行";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "Jetpack を設定";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "分析設定を確認できませんでした。";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "ストアで WooCommerce Analytics が有効になっていません。\n\n有効にされるまで、収益や注文統計などの分析データは利用できません。";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "サイトの応答が正常に機能していません。";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "お使いの端末はプッシュ通知に登録されていないようです。";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "サイトに問題があるようです。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "Jetpack プラグインがサイトで有効になっていないようです。\n\nプッシュ通知には有効な Jetpack 連携が必要です。";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "インターネットに接続されていないようです。\n\nWi-Fi がオンになっていることをご確認ください。 モバイルデータを使用している場合、端末の設定で有効になっていることを確認してください。 ";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "Jetpack 連携で問題が発生しています。";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "通知設定を確認できませんでした。";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "このアプリではプッシュ通知が許可されていません。\n\nお使いの端末の設定で有効にすると、注文通知を受け取ることができます。";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "このストアでは注文通知が有効になっていません。\n\n有効にすると、新規注文が入った際にアラートを受け取ることができます。";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "サイトの応答に時間がかかっています。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "現在 WordPress.com に接続できません。\n\n数分後にもう一度お試しください。";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "分析設定の確認";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "インターネット接続";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "ストアでの商品の取得";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "通知設定の確認";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "サイトへの接続";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "サイトの注文の取得";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "WordPress.com サーバーへの接続";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "了解";
 
@@ -14113,6 +14301,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "申し訳ありません。現在、サポートリクエストを作成できません。しばらくしてからもう一度お試しください。";
+
+/* Title of the WooPayments support area option */
+"supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "分析の読み込み";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "注文の読み込み";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "商品の読み込み";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "その他";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "プッシュ通知の受信";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "システムステータスレポート";
@@ -14363,9 +14569,6 @@ which should be translated separately and considered part of this sentence. */
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "商品情報を表示";
 
-/* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.cancel" = "キャンセル";
-
 /* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
 "upsTermsView.checkbox1" = "%1$@ に同意します。";
 
@@ -14375,26 +14578,11 @@ which should be translated separately and considered part of this sentence. */
 /* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
 "upsTermsView.checkbox3" = "%1$@ にも同意します。";
 
-/* Button to confirm all agreements on the UPS Terms and Conditions view */
-"upsTermsView.confirmButton" = "確認して続行";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorMessage" = "承認の確認中に予期しないエラーが発生しました。 もう一度お試しください。";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorTitle" = "承認の確認中にエラーが発生しました";
-
 /* Message on the UPS Terms and Conditions view */
 "upsTermsView.message" = "この住所から UPS® を利用して発送を開始するには、以下の利用規約に同意する必要があります。";
 
 /* Link to the prohibited items on the UPS Terms and Conditions view */
 "upsTermsView.prohibitedItems" = "禁止品目";
-
-/* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.retry" = "再試行";
-
-/* Title label for the origin address on the UPS Terms and Conditions view */
-"upsTermsView.shippingFrom" = "発送元";
 
 /* Link to the technology agreement on the UPS Terms and Conditions view */
 "upsTermsView.technologyAgreement" = "UPS® テクノロジー契約条項";
@@ -14435,14 +14623,14 @@ which should be translated separately and considered part of this sentence. */
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "再試行";
 
-/* Revenue title on the watch store stats screen. */
-"watch.mystore.revenue.title" = "収益";
-
 /* Format of the updated time in the watch store stats screen. */
 "watch.mystore.time.format" = "%@ の時点で";
 
 /* Today title on the watch store stats screen. */
 "watch.mystore.today.title" = "今日";
+
+/* Total sales title on the watch store stats screen. */
+"watch.mystore.totalSales.title" = "合計売上高";
 
 /* Title when there is an error loading an order notification on the watch app */
 "watch.notification.order.error" = "通知の読み込み時にエラーが発生しました。";
@@ -14470,6 +14658,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the watch orders list screen. */
 "watch.orders.title" = "注文";
+
+/* Button title to dismiss the authenticated web view */
+"wcAuthenticatedWebView.done.button.title" = "完了";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "削除";
@@ -14882,6 +15073,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when loading shipping label rates failed on the shipping label creation screen */
 "wooShipping.createLabels.rates.failedLoadingDataError" = "配送料金を読み込めません";
 
+/* Error message when shipping rates fail to load because the destination address name is invalid. */
+"wooShipping.createLabels.rates.invalidDestinationNameError" = "配送料金を読み込めませんでした。 配送先の住所に姓と名を追加して、もう一度お試しください。";
+
 /* Message displayed when no destination address is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noDestinationAddressMessage" = "利用可能な配送料金を表示するには、この荷物の配送先を入力する必要があります。";
 
@@ -15176,14 +15370,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "分割配送";
 
-/* Message on a notice when removing a package fails in the shipping creation flow */
+/* Message on a notice when removing a saved package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.removingPackageFailure" = "荷物を削除できません";
 
-/* Button to retry saving/removing a package in the shipping creation flow */
+/* Button to retry removing a saved package in the shipping creation flow */
 "wooShippingAddPackageViewModel.retry" = "再試行";
-
-/* Message on a notice when saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageFailure" = "荷物を保存できません";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "有効な ITN を AES X12345678901234 または NOEEI 30.37(a) の形式で入力してください。";
@@ -15550,6 +15741,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Main description text of the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsViewModel.mainDescription" = "ストアを WordPress.com に連携すると、新しい注文やレビューなどのプッシュ通知を利用できます。";
+
+/* Description text on the Push Notifications Benefits View when the site is connected and plugin is up to date */
+"wpcomPushNotificationsBenefitsViewModel.setupDescription" = "新規注文やレビューなどの通知を受け取るまで、あと一歩です。";
 
 /* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.shareDetails" = "詳細情報を共有";

@@ -35,12 +35,12 @@ final class CardReaderSettingsResultsControllers {
             onReload()
         }
 
-        paymentGatewayAccountResultsController.onDidChangeObject = { (object, indexPath, type, newIndexPath) in
+        paymentGatewayAccountResultsController.onDidChangeObject = { (_, _, _, _) in
             onReload()
         }
 
         paymentGatewayAccountResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.refetchAllResultsControllers()
             onReload()
         }

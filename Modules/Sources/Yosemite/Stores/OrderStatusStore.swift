@@ -8,7 +8,7 @@ import Storage
 public class OrderStatusStore: Store {
     private let remote: ReportRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ReportRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -88,7 +88,7 @@ extension OrderStatusStore {
             // Now, remove any objects that exist in storage but not in readOnlyOrderStatuses
             if let storageStatuses {
                 storageStatuses.forEach({ storageStatus in
-                    if readOnlyOrderStatuses.first(where: { $0.slug == storageStatus.slug } ) == nil {
+                    if !readOnlyOrderStatuses.contains(where: { $0.slug == storageStatus.slug }) {
                         storage.deleteObject(storageStatus)
                     }
                 })

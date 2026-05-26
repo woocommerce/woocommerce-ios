@@ -22,7 +22,7 @@ import WordPressUI
     /// Shared Instance.
     ///
     @objc public static var shared: WordPressAuthenticator {
-        guard let privateInstance = privateInstance else {
+        guard let privateInstance else {
             fatalError("WordPressAuthenticator wasn't initialized")
         }
 
@@ -186,7 +186,7 @@ import WordPressUI
         let controller = SiteCredentialsViewController.instantiate(from: .siteAddress) { coder in
             SiteCredentialsViewController(coder: coder, isDismissible: true, onCompletion: onCompletion)
         }
-        guard let controller = controller else {
+        guard let controller else {
             WPAuthenticatorLogError("Failed to navigate from GetStartedViewController to SiteCredentialsViewController")
             return
         }
@@ -228,7 +228,7 @@ import WordPressUI
         controller.loginFields.restrictToWPCom = true
         controller.loginFields.username = connectedEmail ?? String()
         controller.loginFields.meta.jetpackLogin = jetpackLogin
-        if let siteURL = siteURL {
+        if let siteURL {
             controller.loginFields.siteAddress = siteURL
         }
 
@@ -246,7 +246,7 @@ import WordPressUI
 
         controller.loginFields.restrictToWPCom = true
         controller.loginFields.meta.jetpackLogin = jetpackLogin
-        if let siteURL = siteURL {
+        if let siteURL {
             controller.loginFields.siteAddress = siteURL
         }
 
@@ -324,8 +324,8 @@ import WordPressUI
     ///
     /// - Parameters:
     ///     - url: The authentication URL
-    ///     - rootViewController: The view controller to act as the presenter for the signin view controller.  By convention this is the app's root vc.
-    ///     - automatedTesting: for calling this method for automated testing.  It won't sync the account or load any other VCs.
+    ///     - rootViewController: The view controller to act as the presenter for the signin view controller. By convention this is the app's root vc.
+    ///     - automatedTesting: for calling this method for automated testing. It won't sync the account or load any other VCs.
     ///
     @objc public class func openAuthenticationURL(
         _ url: URL,
@@ -354,7 +354,7 @@ import WordPressUI
         }
 
         // We could just use the flow, but since `MagicLinkFlow` is an ObjC enum, it always
-        // allows a `default` value.  By mapping the ObjC enum to a Swift enum we can avoid that afterwards.
+        // allows a `default` value. By mapping the ObjC enum to a Swift enum we can avoid that afterwards.
         let flow: NUXLinkAuthViewController.Flow
 
         switch MagicLinkFlow(rawValue: flowRawValue) {
@@ -428,7 +428,7 @@ import WordPressUI
 
         if isSiteURLSchemeEmpty {
             path = "https://\(path)"
-        } else if path.isWordPressComPath() && path.range(of: "http://") != nil {
+        } else if path.isWordPressComPath() && path.contains("http://") {
             path = path.replacingOccurrences(of: "http://", with: "https://")
         }
 

@@ -1,4 +1,5 @@
 import Charts
+import Combine
 import SwiftUI
 
 /// Chart for store performance built with Swift Charts.
@@ -12,9 +13,15 @@ struct StoreStatsChart: View {
     @State private var selectedRevenue: Double?
     @State private var selectedIndex: Int?
 
+    /// Fires from the parent when the highlighted point should drop (revenue switch, PTR,
+    /// order type save). Lets the chart's local state stay in sync without lifting it up.
+    private let resetSignal: AnyPublisher<Void, Never>
+
     init(viewModel: StoreStatsChartViewModel,
+         resetSignal: AnyPublisher<Void, Never>,
          onIntervalSelected: @escaping (Int?) -> Void) {
         self.viewModel = viewModel
+        self.resetSignal = resetSignal
         self.onIntervalSelected = onIntervalSelected
     }
 
@@ -40,11 +47,11 @@ struct StoreStatsChart: View {
                                              endPoint: .bottom))
 
             // Vertical line for a selected point
-            if let selectedDate = selectedDate, viewModel.hasRevenue {
+            if let selectedDate, viewModel.hasRevenue {
                 RuleMark(x: .value(Localization.xSelectedValue, selectedDate))
                     .foregroundStyle(Constants.chartHighlightLineColor)
 
-                if let selectedRevenue = selectedRevenue {
+                if let selectedRevenue {
                     PointMark(x: .value(Localization.xSelectedValue, selectedDate),
                               y: .value(Localization.ySelectedValue, selectedRevenue))
                     .foregroundStyle(Constants.chartHighlightLineColor)
@@ -94,6 +101,11 @@ struct StoreStatsChart: View {
             }
         }
         .padding(Constants.chartPadding)
+        .onReceive(resetSignal) {
+            selectedIndex = nil
+            selectedDate = nil
+            selectedRevenue = nil
+        }
     }
 
     private func updateSelectedDate(at location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) {
@@ -109,10 +121,9 @@ struct StoreStatsChart: View {
             return
         }
         selectedDate = viewModel.intervals
-            .sorted(by: {
+            .min(by: {
                 abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
-            })
-            .first?.date
+            })?.date
         selectedRevenue = viewModel.intervals.first(where: { $0.date == selectedDate })?.revenue
     }
 
@@ -139,8 +150,8 @@ private extension StoreStatsChart {
             comment: "Value for the x-Axis of the store stats chart on the Dashboard screen"
         )
         static let yValue = NSLocalizedString(
-            "storeStatsChart.yValueNetSales",
-            value: "Net sales",
+            "storeStatsChart.yValueTotalSales",
+            value: "Total sales",
             comment: "Value for the y-Axis of the store stats chart on the Dashboard screen"
         )
         static let zeroRevenue = NSLocalizedString(
@@ -193,7 +204,8 @@ private extension StoreStatsChartViewModel {
 
 #Preview {
     StoreStatsChart(viewModel: .init(intervals: StoreStatsChartViewModel.sampleDataForThisWeek,
-                                     timeRange: .thisWeek)) { _ in }
+                                     timeRange: .thisWeek),
+                    resetSignal: Empty<Void, Never>().eraseToAnyPublisher()) { _ in }
 }
 
 #endif

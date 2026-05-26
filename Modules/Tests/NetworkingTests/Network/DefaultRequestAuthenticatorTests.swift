@@ -226,6 +226,8 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
         mockApplicationPassword
     }
 
+    var canRegenerateApplicationPassword: Bool { true }
+
     func generateNewPassword() async throws -> Networking.ApplicationPassword {
         if let mockGeneratedPassword {
             // Store the newly generated password

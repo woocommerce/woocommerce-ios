@@ -52,6 +52,10 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     private let sourceTag: String?
 
+    /// Additional tags to include in the support request.
+    ///
+    private let additionalTags: [String]
+
     /// Handles the communication with Zendesk.
     ///
     private let zendeskProvider: ZendeskManagerProtocol
@@ -67,6 +71,12 @@ public final class SupportFormViewModel: ObservableObject {
     private let defaultSite: Site?
 
     private let attachments: [ZendeskAttachment]
+
+    /// Called when a ticket is successfully created.
+    private let onTicketCreated: (() -> Void)?
+
+    /// Called when ticket creation fails.
+    private let onTicketCreationFailed: ((Error) -> Void)?
 
     /// Defines when the submit button should be enabled or not.
     ///
@@ -97,18 +107,39 @@ public final class SupportFormViewModel: ObservableObject {
 
     init(areas: [Area] = wooSupportAreas(),
          sourceTag: String? = nil,
+         additionalTags: [String] = [],
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analyticsProvider: Analytics = ServiceLocator.analytics,
          applicationLogsProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
          defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite,
-         attachments: [ZendeskAttachment] = []) {
+         attachments: [ZendeskAttachment] = [],
+         preselectedArea: Area? = nil,
+         prefilledSubject: String? = nil,
+         prefilledSiteAddress: String? = nil,
+         prefilledDescription: String? = nil,
+         onTicketCreated: (() -> Void)? = nil,
+         onTicketCreationFailed: ((Error) -> Void)? = nil) {
         self.areas = areas
         self.sourceTag = sourceTag
+        self.additionalTags = additionalTags
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
         self.applicationLogsProvider = applicationLogsProvider
         self.defaultSite = defaultSite
         self.attachments = attachments
+        self.area = preselectedArea
+        self.onTicketCreated = onTicketCreated
+        self.onTicketCreationFailed = onTicketCreationFailed
+
+        if let prefilledSubject {
+            self.subject = prefilledSubject
+        }
+        if let prefilledSiteAddress {
+            self.siteAddress = prefilledSiteAddress
+        }
+        if let prefilledDescription {
+            self.description = prefilledDescription
+        }
     }
 
     /// Tracks when the support form is viewed.
@@ -118,7 +149,9 @@ public final class SupportFormViewModel: ObservableObject {
         requestZendeskIdentityIfNeeded()
 
         // Populates the site address field if there is any.
-        self.siteAddress = defaultSite?.url ?? ""
+        if siteAddress.isEmpty {
+            self.siteAddress = defaultSite?.url ?? ""
+        }
     }
 
     /// Selects an area.
@@ -154,23 +187,26 @@ public final class SupportFormViewModel: ObservableObject {
             switch result {
             case .success:
                 self.analyticsProvider.track(.supportNewRequestCreated)
+                self.onTicketCreated?()
                 self.shouldShowSuccessAlert = true
             case .failure(let error):
                 self.analyticsProvider.track(.supportNewRequestFailed)
+                self.onTicketCreationFailed?(error)
                 self.error = error
                 self.shouldShowErrorAlert = true
             }
         }
     }
 
-    /// Joins the selected area tags with the source tag(if available).
+    /// Joins the selected area tags with the source tag and additional tags.
     ///
     func assembleTags() -> [String] {
         guard let area else { return [] }
-        guard let sourceTag, sourceTag.isNotEmpty else {
-            return area.datasource.tags
+        var tags = area.datasource.tags
+        if let sourceTag, sourceTag.isNotEmpty {
+            tags.append(sourceTag)
         }
-        return area.datasource.tags + [sourceTag]
+        return tags + additionalTags
     }
 
     @MainActor
@@ -237,11 +273,11 @@ private extension SupportFormViewModel {
 }
 
 // MARK: Constants
-private extension SupportFormViewModel {
+extension SupportFormViewModel {
 
     /// Default Woo Support Areas
     ///
-    static func wooSupportAreas() -> [Area] {
+    private static func wooSupportAreas() -> [Area] {
         let metadataProvider = SupportFormMetadataProvider()
         return [
             .init(title: Localization.mobileApp, datasource: MobileAppSupportDataSource(metadataProvider: metadataProvider)),
@@ -255,7 +291,11 @@ private extension SupportFormViewModel {
     enum Localization {
         static let mobileApp = NSLocalizedString("Mobile App", comment: "Title of the mobile app support area option")
         static let ipp = NSLocalizedString("Card Reader / In-Person Payments", comment: "Title of the card reader support area option")
-        static let wcPayments = NSLocalizedString("WooCommerce Payments", comment: "Title of the WooCommerce Payments support area option")
+        static let wcPayments = NSLocalizedString(
+            "supportFormViewModel.wooPayments",
+            value: "WooPayments",
+            comment: "Title of the WooPayments support area option"
+        )
         static let wcPlugin = NSLocalizedString("WooCommerce Plugin", comment: "Title of the WooCommerce Plugin support area option")
         static let otherPlugin = NSLocalizedString("Other Extension / Plugin", comment: "Title of the Other Plugin support area option")
         static let badIdentityError = NSLocalizedString(

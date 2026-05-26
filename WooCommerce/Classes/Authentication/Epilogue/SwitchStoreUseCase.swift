@@ -33,7 +33,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     @MainActor
     func switchStore(with storeID: Int64) async -> Bool {
         await withCheckedContinuation { [weak self] continuation in
-            guard let self = self else { return }
+            guard let self else { return }
             self.switchStore(with: storeID) { siteChanged in
                 continuation.resume(returning: siteChanged)
             }
@@ -50,7 +50,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     func switchToStoreIfSiteIsStored(with storeID: Int64, onCompletion: @escaping (Bool) -> Void) {
         refreshStoredSites()
 
-        let siteWasStored = wooCommerceSites.first(where: { $0.siteID == storeID }) != nil
+        let siteWasStored = wooCommerceSites.contains(where: { $0.siteID == storeID })
 
         guard siteWasStored else {
             return onCompletion(false)

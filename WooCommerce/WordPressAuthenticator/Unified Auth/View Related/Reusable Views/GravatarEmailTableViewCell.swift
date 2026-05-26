@@ -31,7 +31,7 @@ class GravatarEmailTableViewCell: UITableViewCell {
 
         let gridicon: UIImage = .gridicon(.userCircle, size: hasBorders ? girdiconSmallSize : gridiconSize)
 
-        guard let email = email,
+        guard let email,
             email.isValidEmail() else {
                 gravatarImageView?.image = gridicon
                 return
@@ -56,7 +56,6 @@ class GravatarEmailTableViewCell: UITableViewCell {
     func updateEmailAddress(_ email: String?) {
         emailLabel?.text = email
     }
-
 }
 
 // MARK: - Password Manager Handling
@@ -80,5 +79,4 @@ private extension GravatarEmailTableViewCell {
 
         onChangeSelectionHandler?(emailTextField)
     }
-
 }

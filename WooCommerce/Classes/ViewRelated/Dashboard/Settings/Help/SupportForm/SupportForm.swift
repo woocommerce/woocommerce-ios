@@ -21,7 +21,7 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
         hidesBottomBarWhenPushed = true
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -301,7 +301,7 @@ struct SupportFormProvider: PreviewProvider {
             SupportForm(isPresented: .constant(true), viewModel: .init(areas: [
                 .init(title: "Mobile Apps", datasource: MockDataSource()),
                 .init(title: "Card Reader / In Person Payments", datasource: MockDataSource()),
-                .init(title: "WooCommerce Payments", datasource: MockDataSource()),
+                .init(title: "WooPayments", datasource: MockDataSource()),
                 .init(title: "WooCommerce Plugins", datasource: MockDataSource()),
                 .init(title: "Other Plugins", datasource: MockDataSource()),
             ]))

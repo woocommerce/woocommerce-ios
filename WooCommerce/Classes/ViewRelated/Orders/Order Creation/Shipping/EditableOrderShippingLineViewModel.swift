@@ -184,7 +184,7 @@ private extension EditableOrderShippingLineViewModel {
                     return ShippingLineRowViewModel(shippingLine: shippingLine,
                                                     shippingMethods: self.allShippingMethods,
                                                     editable: !isNonEditable,
-                                                    onEditShippingLine: { [weak self] shippingID in
+                                                    onEditShippingLine: { [weak self] _ in
                         guard let self else {
                             return
                         }

@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     @StateObject var viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel
     let animation: POSCardPresentPaymentAlertAnimation
+    @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posExternalViews) private var externalViews
 
     var body: some View {
@@ -15,6 +16,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
                     .font(POSFontStyle.posHeadingBold)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($isTitleFocused)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
             }
 
@@ -32,6 +34,9 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
+        .onAppear {
+            isTitleFocused = true
+        }
         .posSheet(isPresented: $viewModel.shouldShowSettingsWebView) {
             externalViews.createAuthenticatedWebView(url: viewModel.settingsAdminUrl,
                                                     title: Localization.settingsWebViewTitle,

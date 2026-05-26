@@ -179,7 +179,7 @@ final class NoteDetailsCommentTableViewCell: UITableViewCell {
     ///
     var starRating: Int? {
         didSet {
-            guard let starRating = starRating else {
+            guard let starRating else {
                 starRatingView.isHidden = true
                 return
             }

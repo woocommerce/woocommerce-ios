@@ -23,7 +23,7 @@ final class ColumnFlowLayout: UICollectionViewFlowLayout {
     }
 
     override func prepare() {
-        guard let collectionView = collectionView else { return }
+        guard let collectionView else { return }
         let marginsAndInsets = sectionInset.left + sectionInset.right
             + collectionView.safeAreaInsets.left + collectionView.safeAreaInsets.right
             + minimumInteritemSpacing * CGFloat(cellsPerRow - 1)
@@ -40,5 +40,4 @@ final class ColumnFlowLayout: UICollectionViewFlowLayout {
         context.invalidateFlowLayoutDelegateMetrics = newBounds.size != collectionView?.bounds.size
         return context
     }
-
 }

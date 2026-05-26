@@ -34,7 +34,7 @@ final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
     func test_when_onboarding_state_changes_to_loading_shouldShow_isTrue() {
         // Given
         waitFor { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
             /// When the View Model receives an _onboarding_ state, it debounces, so goes async.
             /// Waiting for the View Model's state to change at the end of this means we're done with
             /// the shouldShow changes too. We ignore the first state, as it comes from `sut.init`
@@ -53,7 +53,7 @@ final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
     func test_when_onboarding_state_changes_to_loading_didChangeShouldShow_is_called_with_newShouldShow_isTrue() {
         // Given
         let receivedShouldShow = waitFor { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
             self.sut.didChangeShouldShow = { newShouldShow in
                 promise(newShouldShow)
             }
@@ -69,7 +69,7 @@ final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
     func test_when_onboarding_state_changes_to_completed_shouldShow_isFalse() {
         // Given
         waitFor { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
             /// When the View Model receives an _onboarding_ state, it debounces, so goes async.
             /// Waiting for the View Model's state to change at the end of this means we're done with
             /// the shouldShow changes too. We ignore the first state, as it comes from `sut.init`
@@ -88,7 +88,7 @@ final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
     func test_when_onboarding_state_changes_to_completed_didChangeShouldShow_is_called_with_newShouldShow_isFalse() {
         // Given
         let receivedShouldShow = waitFor { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
             self.sut.didChangeShouldShow = { newShouldShow in
                 promise(newShouldShow)
             }
@@ -104,7 +104,7 @@ final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
     func test_when_onboarding_state_changes_to_error_shouldShow_isTrue() {
         // Given
         waitFor { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
             self.sut.$state.dropFirst(1).sink { _ in
                 promise(())
             }.store(in: &self.cancellables)
@@ -120,7 +120,7 @@ final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
     func test_when_onboarding_state_changes_to_error_didChangeShouldShow_is_called_with_newShouldShow_isTrue() {
         // Given
         let receivedShouldShow = waitFor { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
             self.sut.didChangeShouldShow = { newShouldShow in
                 promise(newShouldShow)
             }
@@ -138,7 +138,7 @@ final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
         stateSubject.send(.noConnectionError)
 
         let receivedShouldShow = waitFor { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
             self.sut.didChangeShouldShow = { newShouldShow in
                 promise(newShouldShow)
             }

@@ -115,7 +115,7 @@ struct POSRefundsServiceTests {
         let remote = MockPOSRefundsRemote()
         let gateway = PaymentGateway(siteID: 123,
                                      gatewayID: "woocommerce_payments",
-                                     title: "WooCommerce Payments",
+                                     title: "WooPayments",
                                      description: "",
                                      enabled: true,
                                      features: [.refunds],

@@ -11,7 +11,7 @@ final class StoreOnboardingPaymentsSetupHostingController: UIHostingController<S
     }
 
     @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -139,9 +139,10 @@ private extension StoreOnboardingPaymentsSetupView {
 private extension StoreOnboardingPaymentsSetupView.Task {
     var headerFormat: String {
         NSLocalizedString(
-            "Set up %1$@",
-            comment: "Header text format on the store onboarding WCPay/payments setup screen. " +
-            "%1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.'"
+            "storeOnboardingPaymentsSetup.headerFormat",
+            value: "Set up %1$@",
+            comment: "Header text format on the store onboarding WooPayments/payments setup screen. " +
+            "%1$@ can be 'WooPayments' when available, or 'Payment Methods.'"
         )
     }
 

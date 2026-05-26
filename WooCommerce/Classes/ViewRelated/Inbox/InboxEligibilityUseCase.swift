@@ -14,7 +14,6 @@ protocol InboxEligibilityChecker {
     ///   - siteID: the ID of the site to check for Inbox eligibility.
     ///
     func isEligibleForInbox(siteID: Int64) -> Bool
-
 }
 
 /// Default implementation to check whether a store is eligible for Inbox feature.

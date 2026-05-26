@@ -21,7 +21,12 @@ public extension DecodingError {
     /// A description of what went wrong, for debugging purposes.
     ///
     /// Outputs: `Expected to decode a Number but found a String instead`
-    var debugDescription: String {
+    ///
+    /// Named `contextDebugDescription` rather than `debugDescription` to avoid colliding with the
+    /// `CustomDebugStringConvertible` conformance Swift 6.3 added to `DecodingError` via SE-0489.
+    /// That conformance is gated to iOS 26.4+, so shadowing it from an extension breaks builds
+    /// targeting lower deployment versions on Xcode 26.4.
+    var contextDebugDescription: String {
         context.debugDescription
     }
 }

@@ -12,7 +12,7 @@ public class ShipmentStore: Store {
     ///
     public static let customGroupName = NSLocalizedString("Custom", comment: "Name of the group of tracking providers created manually by users")
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ShipmentsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -128,7 +128,7 @@ extension ShipmentStore {
 
             // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingData
             storageTrackings?.forEach({ storageTracking in
-                if readOnlyShipmentTrackingData.first(where: { $0.trackingID == storageTracking.trackingID } ) == nil {
+                if !readOnlyShipmentTrackingData.contains(where: { $0.trackingID == storageTracking.trackingID }) {
                     storage.deleteObject(storageTracking)
                 }
             })
@@ -160,7 +160,7 @@ extension ShipmentStore {
 
         // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingProviderGroups
         storageTrackingGroups?.forEach({ storageTrackingGroup in
-            if readOnlyGroups.first(where: { $0.name == storageTrackingGroup.name } ) == nil {
+            if !readOnlyGroups.contains(where: { $0.name == storageTrackingGroup.name }) {
                 storage.deleteObject(storageTrackingGroup)
             }
         })
@@ -301,7 +301,7 @@ extension ShipmentStore {
 
         // Now, remove any objects that exist in storageGroup.providers but not in readOnlyGroup.providers
         storageProviders?.forEach({ storageProvider in
-            if readOnlyGroup.providers.first(where: { $0.name == storageProvider.name } ) == nil {
+            if !readOnlyGroup.providers.contains(where: { $0.name == storageProvider.name }) {
                 storageGroup.removeFromProviders(storageProvider)
                 storage.deleteObject(storageProvider)
             }

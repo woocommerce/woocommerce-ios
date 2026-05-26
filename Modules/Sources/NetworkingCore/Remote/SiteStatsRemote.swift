@@ -21,7 +21,7 @@ public class SiteStatsRemote: Remote {
                                      completion: @escaping (Result<SiteVisitStats, Error>) -> Void) {
         let path = "\(Path.sites)/\(siteID)/\(Path.siteVisitStats)/"
         let dateFormatter = DateFormatter.Stats.statsDayFormatter
-        if let siteTimezone = siteTimezone {
+        if let siteTimezone {
             dateFormatter.timeZone = siteTimezone
         }
         let parameters = [ParameterKeys.unit: unit.rawValue,
@@ -52,7 +52,7 @@ public class SiteStatsRemote: Remote {
                                      completion: @escaping (Result<SiteSummaryStats, Error>) -> Void) {
         let path = "\(Path.sites)/\(siteID)/\(Path.siteSummaryStats)/"
         let dateFormatter = DateFormatter.Stats.statsDayFormatter
-        if let siteTimezone = siteTimezone {
+        if let siteTimezone {
             dateFormatter.timeZone = siteTimezone
         }
         let parameters = [ParameterKeys.period: period.rawValue,

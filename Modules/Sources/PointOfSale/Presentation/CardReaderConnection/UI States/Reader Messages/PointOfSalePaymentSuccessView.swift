@@ -3,43 +3,39 @@ import SwiftUI
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
     let customerEmail: String?
-    let onSendReceipt: (String) async throws -> Void
     let successAction: PaymentFlowAction
     let onSuccessScreenBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @State private var isShowingSendReceiptView: Bool = false
     @State private var isViewLoaded: Bool = false
+    @AccessibilityFocusState private var isTitleFocused: Bool
+    @Environment(\.posNavigationRouter) private var router
+
+    private var isBarcodeScanningEnabled: Bool {
+        onSuccessScreenBarcodeScanned != nil && !router.isNavigated
+    }
 
     var body: some View {
-        VStack {
-            if isShowingSendReceiptView {
-                POSSendReceiptView(isShowingSendReceiptView: $isShowingSendReceiptView) { email in
-                    try await onSendReceipt(email)
-                }
-                .transition(.asymmetric(
-                    insertion: .move(edge: .trailing).combined(with: .opacity),
-                    removal: .move(edge: .trailing).combined(with: .opacity)))
-            } else {
-                HStack(alignment: .center) {
-                    Spacer()
-                    successView
-                    Spacer()
-                }
-                .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : POSPadding.small)
-                .background(Color.posSurfaceBright)
-            }
+        HStack(alignment: .center) {
+            Spacer()
+            successView
+            Spacer()
         }
-        .barcodeScanning(enabled: .constant(onSuccessScreenBarcodeScanned != nil && !isShowingSendReceiptView)) { barcode in
+        .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : POSPadding.small)
+        .background(Color.posSurfaceBright)
+        .barcodeScanning(enabled: .constant(isBarcodeScanningEnabled)) { barcode in
             onSuccessScreenBarcodeScanned?(barcode)
         }
         .accessibilityIdentifier("pos-payment-success-view")
         .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                isViewLoaded = true
+            Task { @MainActor in
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1)) {
+                    isViewLoaded = true
+                }
+                isTitleFocused = true
             }
         }
-        .animation(.default, value: isShowingSendReceiptView)
     }
 
     private var successView: some View {
@@ -59,6 +55,7 @@ struct PointOfSalePaymentSuccessView: View {
                         .font(.posHeadingBold)
                         .foregroundStyle(Color.posOnSurface)
                         .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($isTitleFocused)
                         .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                         .opacity(isViewLoaded ? 1 : 0)
 
@@ -83,9 +80,16 @@ struct PointOfSalePaymentSuccessView: View {
 
                 Spacer().frame(height: POSSpacing.xxLarge)
 
-                PaymentsActionButtons(successAction: successAction,
-                                      isShowingSendReceiptView: $isShowingSendReceiptView)
-                    .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
+                // iPad: buttons take half the screen width (count:2 span:1).
+                // Phone: half the screen width is ~190pt, too narrow for "New order" /
+                // "Email receipt" — let them span the container minus standard insets instead.
+                PaymentsActionButtons(successAction: successAction)
+                    .if(horizontalSizeClass != .compact) { view in
+                        view.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
+                    }
+                    .if(horizontalSizeClass == .compact) { view in
+                        view.padding(.horizontal, POSPadding.large)
+                    }
                     .frame(maxWidth: .infinity, alignment: .center)
                     .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
                     .opacity(isViewLoaded ? 1 : 0)
@@ -93,10 +97,8 @@ struct PointOfSalePaymentSuccessView: View {
                 Spacer()
             }
             .multilineTextAlignment(.center)
-
         }
     }
-
 }
 
 private extension PointOfSalePaymentSuccessView {
@@ -121,7 +123,6 @@ private extension PointOfSalePaymentSuccessView {
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",
                                                       paymentMethod: .card),
         customerEmail: "test@example.com",
-        onSendReceipt: { _ in },
         successAction: PaymentFlowAction(title: "New order", action: {}, analyticsEvent: nil),
         onSuccessScreenBarcodeScanned: nil
     )

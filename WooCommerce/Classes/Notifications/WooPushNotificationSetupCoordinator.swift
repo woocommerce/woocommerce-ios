@@ -41,7 +41,7 @@ final class WooPushNotificationSetupCoordinator {
             onUpdatePlugin: { [weak navigationController, stores] onDismissed in
                 guard let navigationController,
                       let site = stores.sessionManager.defaultSite,
-                      let url = URL(string: site.adminURL + Constants.wooCommercePluginUpdatePath) else { return }
+                      let url = URL(string: site.adminURL + WooConstants.wooCommercePluginUpdatePath) else { return }
                 let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce, onDismiss: onDismissed)
                 let vc = UIHostingController(rootView: webView)
                 vc.modalPresentationStyle = .formSheet
@@ -67,13 +67,12 @@ final class WooPushNotificationSetupCoordinator {
 
 enum WooPluginRequirements {
     static let pluginPath = "woocommerce/woocommerce.php"
-    static let minimumVersion = "10.5.3" // This is for testing
+    static let minimumVersion = "10.9.0"
 }
 
 private extension WooPushNotificationSetupCoordinator {
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
-        static let wooCommercePluginUpdatePath = "plugin-install.php?tab=plugin-information&plugin=woocommerce"
     }
     enum Localization {
         static let flowTitle = NSLocalizedString(

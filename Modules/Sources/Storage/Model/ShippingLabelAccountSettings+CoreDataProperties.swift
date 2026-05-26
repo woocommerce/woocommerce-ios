@@ -22,7 +22,6 @@ extension ShippingLabelAccountSettings {
     @NSManaged public var storeOwnerWpcomUsername: String?
     @NSManaged public var addPaymentMethodURL: String?
     @NSManaged public var paymentMethods: Set<ShippingLabelPaymentMethod>?
-
 }
 
 // MARK: Generated accessors for paymentMethods
@@ -39,5 +38,4 @@ extension ShippingLabelAccountSettings {
 
     @objc(removePaymentMethods:)
     @NSManaged public func removeFromPaymentMethods(_ values: NSSet)
-
 }

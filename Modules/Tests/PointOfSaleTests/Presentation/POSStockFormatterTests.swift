@@ -13,7 +13,7 @@ struct POSStockFormatterTests {
         let stockLabel = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
-        #expect(stockLabel == "")
+        #expect(stockLabel.isEmpty)
     }
 
     @Test func test_when_managestock_disabled_and_stockStatusKey_instock_then_returns_in_stock_stockLabel() async throws {

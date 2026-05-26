@@ -6,7 +6,7 @@ public protocol GRDBManagerProtocol {
     func reset() throws
 }
 
-public protocol GRDBDatabaseConnection: DatabaseReader & DatabaseWriter {}
+public protocol GRDBDatabaseConnection: DatabaseReader, DatabaseWriter {}
 
 public final class GRDBManager: GRDBManagerProtocol {
 
@@ -83,6 +83,10 @@ private extension GRDBManager {
 
         migrator.registerMigration("V002FTSSearch") { db in
             try V002FTSSearch.migrate(db)
+        }
+
+        migrator.registerMigration("V003AddVariationTypeKey") { db in
+            try V003AddVariationTypeKey.migrate(db)
         }
 
         try migrator.migrate(databaseConnection)

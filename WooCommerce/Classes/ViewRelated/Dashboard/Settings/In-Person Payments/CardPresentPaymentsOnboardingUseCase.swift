@@ -119,14 +119,14 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func installCardPresentPlugin() {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
         // Only WCPay is currently supported, so we don't expose a different plugin option
         let pluginSlug = CardPresentPaymentsPlugin.wcPay.gatewayID
 
         let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.state = .loading
             switch result {
             case .success:
@@ -141,14 +141,14 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func activateCardPresentPlugin() {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
         // Only WCPay is currently supported, so we don't expose a different plugin option
         let pluginName = CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension
 
         let activatePluginAction = SitePluginAction.activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.state = .loading
             switch result {
             case .success:
@@ -172,12 +172,12 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     /// But first we also need to prompt the CardPresentPaymentStore to use the right backend based on the active plugin.
     ///
     func updateAccounts() {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
 
         let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -221,7 +221,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func clearPluginSelection() {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
         preferredPluginLocal = nil
@@ -241,7 +241,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 //
 private extension CardPresentPaymentsOnboardingUseCase {
     func synchronizeStoreCountryAndPlugins(completion: () -> Void) {
-        guard let siteID = siteID else {
+        guard let siteID else {
             completion()
             return
         }
@@ -251,7 +251,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
         // We need to sync settings to check the store's country
         let settingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
-            if let error = error {
+            if let error {
                 DDLogError("[CardPresentPaymentsOnboarding] Error syncing site settings: \(error)")
                 errors.append(error)
             }
@@ -272,7 +272,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         stores.dispatch(systemPluginsAction)
 
         group.notify(queue: .main, execute: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             if errors.isNotEmpty,
                errors.contains(where: self.isNetworkError(_:)) {
                 self.state = .noConnectionError
@@ -451,7 +451,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     var storedPreferredPlugin: CardPresentPaymentsPlugin? {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return nil
         }
 
@@ -464,7 +464,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func savePreferredPlugin(_ plugin: CardPresentPaymentsPlugin) {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
         let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: siteID, gateway: plugin.gatewayID)
@@ -478,7 +478,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     // Note: This counts on synchronizeStoreCountryAndPlugins having been called to get
     // the appropriate account for the site, be that Stripe or WCPay
     func getPaymentGatewayAccount(plugin: CardPresentPaymentsPlugin) -> PaymentGatewayAccount? {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return nil
         }
         return storageManager.viewStorage
@@ -527,7 +527,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func checkIfCashOnDeliveryStepSkipped() {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
 
@@ -540,7 +540,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
     func isCashOnDeliverySetUp() -> Bool {
         let gatewayID = PaymentGateway.Constants.cashOnDeliveryGatewayID
-        guard let siteID = siteID,
+        guard let siteID,
               let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID,
                                                                              gatewayID: gatewayID)?.toReadOnly()
         else {

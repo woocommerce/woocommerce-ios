@@ -24,7 +24,7 @@
           "amount": 13,
           "application": "ca_Ex84e31yMTLaNU5ozQvi5woLclpIDVpX",
           "currency": "usd",
-          "description": "WooCommerce Payments application fee",
+          "description": "WooPayments application fee",
           "type": "application_fee"
         }
       ],

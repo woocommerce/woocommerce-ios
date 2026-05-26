@@ -56,11 +56,11 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
             remainingCharacters: adjustedRemainingCharacters,
             parameter: selectedParameter,
             onCancel: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.clearSelectedParameter()
             },
             onCompletion: { [weak self] key, value in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 if selectedParameter != nil {
                     updateSelectedParameter(newKey: key, newValue: value)

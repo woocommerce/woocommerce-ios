@@ -17,7 +17,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
 
     /// `minimumOperatingSystemVersionOverride` allows us to override Stripe's `supportsReaders` check
     /// such that if it returns `true`, we additionally check for the user's phone meeting this version.
-    /// E.g. we check for iOS 16.4 if they're connected to a GB store, which Stripe only check during discovery.
+    /// Stripe bumped the Tap to Pay minimum to iOS 18.0.1 (September 2025).
     /// This usage can be removed if Stripe make `supportsReaders` location aware
     public let minimumOperatingSystemVersionForTapToPay: OperatingSystemVersion
 
@@ -45,6 +45,12 @@ public struct CardPresentPaymentsConfiguration: Equatable {
 
     public init(country: CountryCode) {
         /// Changing `minimumVersion` values here? You'll need to also update `CardPresentPaymentsOnboardingUseCaseTests`
+        ///
+        /// This initializer describes Stripe Terminal capabilities for the given country.
+        /// The decision of whether IPP/POS should be *exposed* to the merchant is gated
+        /// upstream by `CardPresentConfigurationLoader` and the IPP entry points, which
+        /// consult the country expansion eligibility cache (RSM-637) before consuming
+        /// this configuration.
         switch country {
         case .US:
             self.init(
@@ -60,7 +66,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: nil,
-                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0)
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
         case .PR:
             self.init(
@@ -75,7 +81,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: nil,
-                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0)
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
         case .CA:
             self.init(
@@ -88,7 +94,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: 25000,
-                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0)
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
         case .GB:
             self.init(
@@ -104,9 +110,79 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.3"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: 10000,
-                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16,
-                                                                minorVersion: 4,
-                                                                patchVersion: 0)
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
+            )
+        case .AT, .BE, .FI, .FR, .DE, .IE, .IT, .LU, .NL, .PT, .ES:
+            self.init(
+                countryCode: country,
+                paymentMethods: [.cardPresent],
+                currencies: [.EUR],
+                paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
+                supportedReaders: [.wisepad3],
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: "4.4.0"),
+                    .init(plugin: .stripe, minimumVersion: "6.2.0")
+                ],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                // €50 — Stripe Terminal contactless CVM limit, shared by all
+                // EEA-Euro countries we support (see https://docs.stripe.com/terminal/features/contactless).
+                contactlessLimitAmount: 5000,
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
+            )
+        case .SG:
+            self.init(
+                countryCode: country,
+                paymentMethods: [.cardPresent],
+                currencies: [.SGD],
+                paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
+                supportedReaders: [.wisepad3],
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: "4.4.0"),
+                    .init(plugin: .stripe, minimumVersion: "6.2.0")
+                ],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                // Stripe Terminal's published contactless limits don't include SG
+                // (see https://docs.stripe.com/terminal/features/contactless), so
+                // we leave this `nil` to match the US/PR shape and let the reader
+                // apply its own scheme limits.
+                contactlessLimitAmount: nil,
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
+            )
+        case .NZ:
+            self.init(
+                countryCode: country,
+                paymentMethods: [.cardPresent],
+                currencies: [.NZD],
+                paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
+                supportedReaders: [.wisepad3],
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: "4.4.0"),
+                    .init(plugin: .stripe, minimumVersion: "6.2.0")
+                ],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                // NZD 200 — Stripe Terminal contactless CVM limit
+                // (see https://docs.stripe.com/terminal/features/contactless).
+                contactlessLimitAmount: 20000,
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
+            )
+        case .AU:
+            self.init(
+                countryCode: country,
+                paymentMethods: [.cardPresent],
+                currencies: [.AUD],
+                paymentGateways: [WCPayAccount.gatewayID],
+                supportedReaders: [.wisepad3],
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: Constants.minimumWCPayVersionForTerminalPaymentPreparation)
+                ],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                // AUD 200 — Stripe Terminal contactless CVM limit
+                contactlessLimitAmount: 20000,
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
         default:
             self.init(
@@ -119,7 +195,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: nil,
-                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0)
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
         }
     }
@@ -139,6 +215,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
 private enum Constants {
     static let fallbackInPersonPaymentsUrl = URL(string: "https://woocommerce.com/in-person-payments/")!
     static let purchaseReaderForCountryUrlBase = "https://woocommerce.com/products/hardware/"
+    static let sharedMinimumIosVersion = OperatingSystemVersion(majorVersion: 18, minorVersion: 0, patchVersion: 1)
+    static let minimumWCPayVersionForTerminalPaymentPreparation = "10.8.0-test-1"
 }
 
 /// The `@retroactive` attribute is used to apply `Equatable` conformance to `OperatingSystemVersion` from the Foundation module.

@@ -4,26 +4,19 @@ import Yosemite
 
 final class MockCIABEligibilityChecker: CIABEligibilityCheckerProtocol {
     private let mockedIsCurrentSiteCIAB: Bool
-    var mockedIsCurrentSiteCIABProPlan: Bool
     private let mockedCIABSites: [Site]
     private let mockedCIABDisabledFeatures: [CIABAffectedFeature]
 
     init(mockedIsCurrentSiteCIAB: Bool,
-         mockedIsCurrentSiteCIABProPlan: Bool = false,
          mockedCIABSites: [Site] = [],
          mockedCIABDisabledFeatures: [CIABAffectedFeature] = CIABAffectedFeature.allCases) {
         self.mockedIsCurrentSiteCIAB = mockedIsCurrentSiteCIAB
-        self.mockedIsCurrentSiteCIABProPlan = mockedIsCurrentSiteCIABProPlan
         self.mockedCIABSites = mockedCIABSites
         self.mockedCIABDisabledFeatures = mockedCIABDisabledFeatures
     }
 
     var isCurrentSiteCIAB: Bool {
         return mockedIsCurrentSiteCIAB
-    }
-
-    var isCurrentSiteCIABProPlan: Bool {
-        return mockedIsCurrentSiteCIABProPlan
     }
 
     func isSiteCIAB(_ site: Site) -> Bool {

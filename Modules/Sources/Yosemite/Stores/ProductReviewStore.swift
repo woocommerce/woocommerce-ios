@@ -11,7 +11,7 @@ public final class ProductReviewStore: Store {
     private lazy var productReviewFromNoteUseCase =
     RetrieveProductReviewFromNoteUseCase(network: network, storageManager: storageManager)
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductReviewsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -99,7 +99,7 @@ private extension ProductReviewStore {
     ///
     func retrieveProductReview(siteID: Int64, reviewID: Int64, onCompletion: @escaping (Networking.ProductReview?, Error?) -> Void) {
         remote.loadProductReview(for: siteID, reviewID: reviewID) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

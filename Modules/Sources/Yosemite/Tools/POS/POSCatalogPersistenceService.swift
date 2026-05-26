@@ -46,7 +46,7 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             let site = PersistedSite(id: siteID, lastCatalogFullSyncDate: catalog.syncDate)
             try site.insert(db)
 
-            let productNameLookup = Dictionary(uniqueKeysWithValues: catalog.products.map { ($0.productID, $0.name) })
+            let productNameLookup = Dictionary(catalog.products.map { ($0.productID, $0.name) }, uniquingKeysWith: { _, latest in latest })
             let variationAttributesLookup = Dictionary(grouping: catalog.variationAttributesToPersist) { $0.productVariationID }
 
             for product in catalog.productsToPersist {
@@ -113,7 +113,7 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                   "\(catalog.variations.count) updated variations, " +
                   "\(catalog.productsToRemove.count) products to remove")
 
-        let productNameLookup = Dictionary(uniqueKeysWithValues: catalog.products.map { ($0.productID, $0.name) })
+        let productNameLookup = Dictionary(catalog.products.map { ($0.productID, $0.name) }, uniquingKeysWith: { _, latest in latest })
         let variationAttributesLookup = Dictionary(grouping: catalog.variationAttributesToPersist) { $0.productVariationID }
 
         try await grdbManager.databaseConnection.write { db in

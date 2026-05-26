@@ -154,7 +154,6 @@ final class TwoFAViewController: LoginViewController {
             tableView.reloadData()
         }
     }
-
 }
 
 // MARK: - Validation and Login
@@ -285,7 +284,6 @@ private extension TwoFAViewController {
         loginFields.multifactorCode = codeField?.nonNilTrimmedText() ?? ""
         configureSubmitButton(animating: false)
     }
-
 }
 
 // MARK: - Security Keys
@@ -373,7 +371,6 @@ extension TwoFAViewController: UITextFieldDelegate {
         validateForm()
         return true
     }
-
 }
 
 // MARK: - UITableViewDataSource
@@ -390,7 +387,6 @@ extension TwoFAViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
         return cell
     }
-
 }
 
 // MARK: - Keyboard Notifications
@@ -404,7 +400,6 @@ extension TwoFAViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
-
 }
 
 // MARK: - Application state changes
@@ -416,7 +411,7 @@ private extension TwoFAViewController {
     }
 
     @objc func applicationBecameActive() {
-        guard let codeField = codeField else {
+        guard let codeField else {
             return
         }
 
@@ -452,7 +447,6 @@ private extension TwoFAViewController {
             break
         }
     }
-
 }
 
 // MARK: - Table Management
@@ -556,7 +550,7 @@ private extension TwoFAViewController {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle, icon: .authenticatorPhoneIcon)
 
         cell.actionHandler = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.tracker.track(click: .sendCodeWithText)
             self.requestCode()
@@ -571,7 +565,7 @@ private extension TwoFAViewController {
                              accessibilityIdentifier: TextLinkButtonTableViewCell.Constants.passkeysID)
 
         cell.actionHandler = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.tracker.track(click: .enterSecurityKey)
             if #available(iOS 16, *) {

@@ -147,6 +147,14 @@ public enum WooAnalyticsStat: String {
     case dashboardStatsCustomRangeEditButtonTapped = "dashboard_stats_custom_range_edit_button_tapped"
     case dashboardStatsCustomRangeInteracted = "dashboard_stats_custom_range_interacted"
 
+    // MARK: Performance card order date type bottom sheet
+    case dashboardStatsOrderDateTypeSelectorTapped = "dashboard_stats_order_date_type_selector_tapped"
+    case dashboardStatsOrderDateTypeSelected = "dashboard_stats_order_date_type_selected"
+    case dashboardStatsOrderDateTypeUpdateFailed = "dashboard_stats_order_date_type_update_failed"
+
+    // MARK: Performance card revenue type segmented control
+    case dashboardStatsRevenueTypeSelected = "dashboard_stats_revenue_type_selected"
+
     // MARK: Dashboard Stats v3/v4 Events
     //
     case dashboardNewStatsAvailabilityBannerCancelTapped = "dashboard_new_stats_availability_banner_cancel_tapped"
@@ -1086,24 +1094,9 @@ public enum WooAnalyticsStat: String {
     case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
     case jetpackBenefitsModalWPAdminButtonTapped = "jetpack_benefits_modal_wpadmin_button_tapped"
 
-    // MARK: - Bookings
-    case mainTabBookingsSelect = "main_tab_bookings_select"
-    case mainTabBookingsReselect = "main_tab_bookings_reselect"
-    case bookingDetailCancelBooking = "booking_detail_cancel_booking"
-    case bookingDetailAttendanceStatusUpdate = "booking_detail_attendance_status_update"
-    case bookingDetailAddNoteTap = "booking_detail_add_note_tap"
-    case bookingDetailViewLinkedOrderTap = "booking_detail_view_linked_order_tap"
-    case bookingDetailRefundTap = "booking_detail_refund_tap"
-    case bookingListTabSelect = "booking_list_tab_select"
-    case bookingListView = "booking_list_view"
+    // MARK: - Bookings (error events only — other booking events use EventHorizon codegen)
     case bookingListFailedToFetchBookings = "booking_list_failed_to_fetch_bookings"
     case bookingListFailedToUpdateBookingDetails = "booking_list_failed_to_update_booking_details"
-    case bookingListBookingTap = "booking_list_booking_tap"
-    case bookingListFiltersTap = "booking_list_filters_tap"
-    case bookingListApplyFilters = "booking_list_apply_filters"
-    case bookingListSearchTap = "booking_list_search_tap"
-    case bookingListSortByTap = "booking_list_sort_by_tap"
-    case bookingListSortByOptionTap = "booking_list_sort_by_option_tap"
 
     // MARK: Hub Menu
     //
@@ -1204,6 +1197,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Widgets
     case widgetTapped = "widget_tapped"
+    case storeStatsWidgetMetricTapped = "store_stats_widget_metric_tapped"
 
     // MARK: Application password Events
     case applicationPasswordsNewPasswordCreated = "application_passwords_new_password_created"
@@ -1260,6 +1254,7 @@ public enum WooAnalyticsStat: String {
     case connectivityToolRequestResponse = "connectivity_tool_request_response"
     case connectivityToolReadMoreTapped = "connectivity_tool_read_more_tapped"
     case connectivityToolContactSupportTapped = "connectivity_tool_contact_support_tapped"
+    case preLoginConnectivityToolRequestResponse = "pre_login_connectivity_tool_request_response"
 
     // MARK: Watch App
     case watchAppOpened = "watch_app_opened"
@@ -1297,12 +1292,25 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleItemsPullToRefresh = "items_pull_to_refresh"
     case pointOfSaleAddItemToCart = "item_added_to_cart"
     case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
+    case pointOfSaleCustomAmountSubmitted = "custom_amount_submitted"
     case pointOfSaleCheckoutTapped = "checkout_tapped"
     case pointOfSaleBackToCartTapped = "back_to_cart_tapped"
     case pointOfSaleCheckoutCashPaymentTapped = "checkout_cash_payment_tapped"
     case pointOfSaleCashPaymentTapped = "cash_payment_tapped"
     case pointOfSaleCashPaymentFailed = "cash_payment_failed"
     case pointOfSaleBackToCheckoutFromCashTapped = "back_to_checkout_from_cash"
+    case pointOfSaleOtherPaymentMethodsTapped = "other_payment_methods_tapped"
+    case pointOfSaleCheckoutScanToPayPaymentTapped = "checkout_scan_to_pay_payment_tapped"
+    case pointOfSaleScanToPayPaymentTapped = "scan_to_pay_payment_tapped"
+    case pointOfSaleScanToPayPaymentFailed = "scan_to_pay_payment_failed"
+    case pointOfSaleScanToPayCollectPaymentSuccess = "scan_to_pay_collect_payment_success"
+    case pointOfSaleScanToPayPaymentDetectedViaPolling = "scan_to_pay_payment_detected_via_polling"
+    case pointOfSaleBackToCheckoutFromScanToPayTapped = "back_to_checkout_from_scan_to_pay"
+    case pointOfSaleCheckoutMarkAsPaidTapped = "checkout_mark_as_paid_tapped"
+    case pointOfSaleMarkAsPaidConfirmed = "mark_as_paid_confirmed"
+    case pointOfSaleMarkAsPaidFailed = "mark_as_paid_failed"
+    case pointOfSaleMarkAsPaidSuccess = "mark_as_paid_success"
+    case pointOfSaleBackToCheckoutFromMarkAsPaidTapped = "back_to_checkout_from_mark_as_paid"
     case pointOfSaleClearCartTapped = "clear_cart_tapped"
     case pointOfSaleExitMenuItemTapped = "exit_menu_item_tapped"
     case pointOfSaleExitConfirmed = "exit_confirmed"
@@ -1313,6 +1321,8 @@ public enum WooAnalyticsStat: String {
     case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
     case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
     case pointOfSaleCardReaderConnectionTapped = "card_reader_connection_tapped"
+    case pointOfSaleCheckoutTapToPayTapped = "checkout_tap_to_pay_tapped"
+    case pointOfSaleTapToPayNotAvailable = "tap_to_pay_not_available"
     case pointOfSaleInteractionWithCustomerStarted = "interaction_with_customer_started"
     case pointOfSaleViewDocsTapped = "view_docs_tapped"
     case pointOfSaleReaderReadyForCardPayment = "reader_ready_for_card_payment"
@@ -1372,27 +1382,11 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleLocalCatalogSyncCompleted = "local_catalog_sync_completed"
     case pointOfSaleLocalCatalogSyncFailed = "local_catalog_sync_failed"
     case pointOfSaleLocalCatalogSyncSkipped = "local_catalog_sync_skipped"
+    case pointOfSaleLocalCatalogSunsetWarningShown = "local_catalog_sunset_warning_shown"
+    case pointOfSaleLocalCatalogSunsetWarningDismissed = "local_catalog_sunset_warning_dismissed"
     case pointOfSaleCheckoutOutdatedItemDetectedScreenShown = "checkout_outdated_item_detected_screen_shown"
     case pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped = "checkout_outdated_item_detected_edit_order_tapped"
     case pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped = "checkout_outdated_item_detected_remove_tapped"
-
-    // MARK: Point of Sale Bookings
-    case pointOfSaleBookingsMenuItemTapped = "bookings_menu_item_tapped"
-    case pointOfSaleBookingsListSearchButtonTapped = "bookings_list_search_button_tapped"
-    case pointOfSaleBookingsListBookingTapped = "bookings_list_booking_tapped"
-    case pointOfSaleBookingCancelled = "booking_cancelled"
-    case pointOfSaleBookingAddNoteTapped = "booking_add_note_tapped"
-    case pointOfSaleBookingIssueRefundTapped = "booking_issue_refund_tapped"
-    case pointOfSaleBookingViewOrderTapped = "booking_view_order_tapped"
-    case pointOfSaleBookingAttendanceChanged = "booking_attendance_changed"
-    case pointOfSaleBookingNoteAdded = "booking_note_added"
-    case pointOfSaleBookingCancelFailed = "booking_cancel_failed"
-    case pointOfSaleBookingAttendanceChangeFailed = "booking_attendance_change_failed"
-    case pointOfSaleBookingNoteAddFailed = "booking_note_add_failed"
-    case pointOfSaleBookingRefundFailed = "booking_refund_failed"
-    case pointOfSaleBookingDatePreviousTapped = "booking_date_previous_tapped"
-    case pointOfSaleBookingDateNextTapped = "booking_date_next_tapped"
-    case pointOfSaleBookingDateCalendarSelected = "booking_date_calendar_selected"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"
@@ -1419,6 +1413,20 @@ public enum WooAnalyticsStat: String {
     case wooShippingPaymentStep = "wcs_payment_step"
     case wooShippingPurchaseStep = "wcs_purchase_step"
     case wooShippingRefundRequested = "wcs_refund_requested"
+
+    // MARK: Support Chat events
+    case supportChatEntryPointTapped = "support_chat_entry_point_tapped"
+    case supportChatIssueSelected = "support_chat_issue_selected"
+    case supportChatTroubleshootingCompleted = "support_chat_troubleshooting_completed"
+    case supportChatMessageSent = "support_chat_message_sent"
+    case supportChatResponseReceived = "support_chat_response_received"
+    case supportChatFeedbackSubmitted = "support_chat_feedback_submitted"
+    case supportChatEscalationButtonShown = "support_chat_escalation_button_shown"
+    case supportChatEscalationTapped = "support_chat_escalation_tapped"
+    case supportChatTicketCreated = "support_chat_ticket_created"
+    case supportChatTicketCreationFailed = "support_chat_ticket_creation_failed"
+    case supportChatResolutionButtonShown = "support_chat_resolution_button_shown"
+    case supportChatMarkResolvedTapped = "support_chat_mark_resolved_tapped"
 }
 
 extension WooAnalyticsStat {
@@ -1446,6 +1454,11 @@ extension WooAnalyticsStat {
              .loginJetpackRequiredScreenViewed, .loginJetpackRequiredViewInstructionsButtonTapped,
              .loginWhatIsJetpackHelpScreenViewed, .loginWhatIsJetpackHelpScreenOkButtonTapped,
              .loginWhatIsJetpackHelpScreenLearnMoreButtonTapped, .watchConnectingOpened, .watchStoreDataSynced:
+            return false
+        // Per-site push token registration events attribute properties to the target site via a factory,
+        // so opt out of the default-site enrichment that would otherwise overwrite `blog_id` / `site_url`
+        // with the currently selected site.
+        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError:
             return false
         default:
             return true

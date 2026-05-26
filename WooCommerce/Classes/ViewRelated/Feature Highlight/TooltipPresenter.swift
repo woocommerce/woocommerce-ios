@@ -114,7 +114,7 @@ final class TooltipPresenter {
             self.tooltip.alpha = 0
             tooltipTopConstraint.constant += Constants.tooltipTopConstraintAnimationOffset
             self.containerView.layoutIfNeeded()
-        } completion: { isSuccess in
+        } completion: { _ in
             self.primaryTooltipAction?()
             self.removeTooltip()
         }
@@ -190,7 +190,7 @@ final class TooltipPresenter {
     ///  states too. The sizing won't be affected in these cases so no need to reset the tooltip. Here we filter out changes
     ///  to and from `faceUp` & `faceDown`.
     @objc private func didDeviceOrientationChange() {
-        guard let previousDeviceOrientation = previousDeviceOrientation else {
+        guard let previousDeviceOrientation else {
             return
         }
 
@@ -217,7 +217,7 @@ final class TooltipPresenter {
             self.tooltip.alpha = 0
             tooltipTopConstraint.constant += Constants.tooltipTopConstraintAnimationOffset
             self.containerView.layoutIfNeeded()
-        } completion: { isSuccess in
+        } completion: { _ in
             self.tooltip.removeFromSuperview()
             self.tooltip = self.tooltip.copy(containerWidth: self.containerView.bounds.width)
             self.showTooltip()

@@ -29,7 +29,7 @@ public enum SignInError: Error {
         }
 
         if let restApiError, restApiError.code == .unknown {
-            if let source = source, restApiError.apiErrorCode == "unknown_user" {
+            if let source, restApiError.apiErrorCode == "unknown_user" {
                 self = .invalidWPComEmail(source: source)
             } else {
                 return nil
@@ -257,7 +257,6 @@ extension GetStartedViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
         return cell
     }
-
 }
 
 // MARK: - Private methods
@@ -541,7 +540,7 @@ private extension GetStartedViewController {
             failure: { [weak self] error in
                 WordPressAuthenticator.track(.loginFailed, error: error)
                 WPAuthenticatorLogError(error.localizedDescription)
-                guard let self = self else {
+                guard let self else {
                     return
                 }
                 self.configureViewLoading(false)
@@ -568,7 +567,7 @@ private extension GetStartedViewController {
     /// Show the password or magic link view based on the configuration.
     ///
     func showPasswordOrMagicLinkView() {
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             return
         }
         configureViewLoading(true)
@@ -579,7 +578,7 @@ private extension GetStartedViewController {
                                               configuration: configuration)
         passwordCoordinator = coordinator
         Task { @MainActor [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             await coordinator.start()
             self.configureViewLoading(false)
         }
@@ -639,11 +638,10 @@ private extension GetStartedViewController {
                                   success: { [weak self] in
                                     self?.didRequestSignupLink()
                                     self?.configureSubmitButton(animating: false)
-
             }, failure: { [weak self] (error: Error) in
                 WPAuthenticatorLogError("Request for signup link email failed.")
 
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 
@@ -683,9 +681,8 @@ private extension GetStartedViewController {
                                           success: { [weak self] in
                                             self?.didRequestAuthenticationLink()
                                             self?.configureViewLoading(false)
-
             }, failure: { [weak self] (error: Error) in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 
@@ -795,7 +792,7 @@ private extension GetStartedViewController {
 private extension GetStartedViewController {
 
     func configureSocialButtons() {
-        guard let buttonViewController = buttonViewController else {
+        guard let buttonViewController else {
             return
         }
 
@@ -817,7 +814,7 @@ private extension GetStartedViewController {
     }
 
     func configureButtonViewControllerForSiteAddressMode(isWPComSite: Bool) {
-        guard let buttonViewController = buttonViewController else {
+        guard let buttonViewController else {
             return
         }
 
@@ -857,7 +854,7 @@ private extension GetStartedViewController {
     }
 
     func configureButtonViewControllerWithoutSocialLogin() {
-        guard let buttonViewController = buttonViewController else {
+        guard let buttonViewController else {
             return
         }
 
@@ -929,7 +926,6 @@ extension GetStartedViewController: AppleAuthenticatorDelegate {
         displayErrorAlert(message, sourceTag: .loginApple)
         tracker.set(flow: .wpCom)
     }
-
 }
 
 // MARK: - LoginFacadeDelegate
@@ -942,7 +938,6 @@ extension GetStartedViewController {
         configureViewLoading(false)
         socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
     }
-
 }
 
 // MARK: - UITextFieldDelegate
@@ -959,7 +954,6 @@ extension GetStartedViewController: UITextFieldDelegate {
         }
         return true
     }
-
 }
 
 // MARK: - Keyboard Notifications

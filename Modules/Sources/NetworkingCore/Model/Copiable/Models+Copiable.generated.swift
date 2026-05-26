@@ -230,6 +230,7 @@ extension NetworkingCore.Order {
         paymentURL: NullableCopiableProp<URL> = .copy,
         chargeID: NullableCopiableProp<String> = .copy,
         paymentStatusMetadata: NullableCopiableProp<String> = .copy,
+        fulfillmentStatus: CopiableProp<OrderFulfillmentStatus> = .copy,
         items: CopiableProp<[OrderItem]> = .copy,
         billingAddress: NullableCopiableProp<Address> = .copy,
         shippingAddress: NullableCopiableProp<Address> = .copy,
@@ -243,6 +244,7 @@ extension NetworkingCore.Order {
         appliedGiftCards: CopiableProp<[OrderGiftCard]> = .copy,
         attributionInfo: NullableCopiableProp<OrderAttributionInfo> = .copy,
         shippingLabels: CopiableProp<[ShippingLabel]> = .copy,
+        fulfillments: CopiableProp<[OrderFulfillment]> = .copy,
         createdVia: NullableCopiableProp<String> = .copy
     ) -> NetworkingCore.Order {
         let siteID = siteID ?? self.siteID
@@ -272,6 +274,7 @@ extension NetworkingCore.Order {
         let paymentURL = paymentURL ?? self.paymentURL
         let chargeID = chargeID ?? self.chargeID
         let paymentStatusMetadata = paymentStatusMetadata ?? self.paymentStatusMetadata
+        let fulfillmentStatus = fulfillmentStatus ?? self.fulfillmentStatus
         let items = items ?? self.items
         let billingAddress = billingAddress ?? self.billingAddress
         let shippingAddress = shippingAddress ?? self.shippingAddress
@@ -285,6 +288,7 @@ extension NetworkingCore.Order {
         let appliedGiftCards = appliedGiftCards ?? self.appliedGiftCards
         let attributionInfo = attributionInfo ?? self.attributionInfo
         let shippingLabels = shippingLabels ?? self.shippingLabels
+        let fulfillments = fulfillments ?? self.fulfillments
         let createdVia = createdVia ?? self.createdVia
 
         return NetworkingCore.Order(
@@ -315,6 +319,7 @@ extension NetworkingCore.Order {
             paymentURL: paymentURL,
             chargeID: chargeID,
             paymentStatusMetadata: paymentStatusMetadata,
+            fulfillmentStatus: fulfillmentStatus,
             items: items,
             billingAddress: billingAddress,
             shippingAddress: shippingAddress,
@@ -328,6 +333,7 @@ extension NetworkingCore.Order {
             appliedGiftCards: appliedGiftCards,
             attributionInfo: attributionInfo,
             shippingLabels: shippingLabels,
+            fulfillments: fulfillments,
             createdVia: createdVia
         )
     }
@@ -390,7 +396,8 @@ extension NetworkingCore.OrderFeeLine {
         total: CopiableProp<String> = .copy,
         totalTax: CopiableProp<String> = .copy,
         taxes: CopiableProp<[OrderItemTax]> = .copy,
-        attributes: CopiableProp<[OrderItemAttribute]> = .copy
+        attributes: CopiableProp<[OrderItemAttribute]> = .copy,
+        refundedItemID: NullableCopiableProp<Int64> = .copy
     ) -> NetworkingCore.OrderFeeLine {
         let feeID = feeID ?? self.feeID
         let name = name ?? self.name
@@ -400,6 +407,7 @@ extension NetworkingCore.OrderFeeLine {
         let totalTax = totalTax ?? self.totalTax
         let taxes = taxes ?? self.taxes
         let attributes = attributes ?? self.attributes
+        let refundedItemID = refundedItemID ?? self.refundedItemID
 
         return NetworkingCore.OrderFeeLine(
             feeID: feeID,
@@ -409,7 +417,50 @@ extension NetworkingCore.OrderFeeLine {
             total: total,
             totalTax: totalTax,
             taxes: taxes,
-            attributes: attributes
+            attributes: attributes,
+            refundedItemID: refundedItemID
+        )
+    }
+}
+
+extension NetworkingCore.OrderFulfillment {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        fulfillmentID: CopiableProp<Int64> = .copy,
+        status: NullableCopiableProp<String> = .copy,
+        isFulfilled: CopiableProp<Bool> = .copy,
+        dateUpdated: NullableCopiableProp<Date> = .copy,
+        dateFulfilled: NullableCopiableProp<Date> = .copy,
+        trackingNumber: NullableCopiableProp<String> = .copy,
+        shipmentProvider: NullableCopiableProp<String> = .copy,
+        providerName: NullableCopiableProp<String> = .copy,
+        trackingURL: NullableCopiableProp<String> = .copy
+    ) -> NetworkingCore.OrderFulfillment {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let fulfillmentID = fulfillmentID ?? self.fulfillmentID
+        let status = status ?? self.status
+        let isFulfilled = isFulfilled ?? self.isFulfilled
+        let dateUpdated = dateUpdated ?? self.dateUpdated
+        let dateFulfilled = dateFulfilled ?? self.dateFulfilled
+        let trackingNumber = trackingNumber ?? self.trackingNumber
+        let shipmentProvider = shipmentProvider ?? self.shipmentProvider
+        let providerName = providerName ?? self.providerName
+        let trackingURL = trackingURL ?? self.trackingURL
+
+        return NetworkingCore.OrderFulfillment(
+            siteID: siteID,
+            orderID: orderID,
+            fulfillmentID: fulfillmentID,
+            status: status,
+            isFulfilled: isFulfilled,
+            dateUpdated: dateUpdated,
+            dateFulfilled: dateFulfilled,
+            trackingNumber: trackingNumber,
+            shipmentProvider: shipmentProvider,
+            providerName: providerName,
+            trackingURL: trackingURL
         )
     }
 }
@@ -656,12 +707,14 @@ extension NetworkingCore.OrderStatsV4Totals {
         totalOrders: CopiableProp<Int> = .copy,
         totalItemsSold: CopiableProp<Int> = .copy,
         grossRevenue: CopiableProp<Decimal> = .copy,
+        grossSales: CopiableProp<Decimal> = .copy,
         netRevenue: CopiableProp<Decimal> = .copy,
         averageOrderValue: CopiableProp<Decimal> = .copy
     ) -> NetworkingCore.OrderStatsV4Totals {
         let totalOrders = totalOrders ?? self.totalOrders
         let totalItemsSold = totalItemsSold ?? self.totalItemsSold
         let grossRevenue = grossRevenue ?? self.grossRevenue
+        let grossSales = grossSales ?? self.grossSales
         let netRevenue = netRevenue ?? self.netRevenue
         let averageOrderValue = averageOrderValue ?? self.averageOrderValue
 
@@ -669,6 +722,7 @@ extension NetworkingCore.OrderStatsV4Totals {
             totalOrders: totalOrders,
             totalItemsSold: totalItemsSold,
             grossRevenue: grossRevenue,
+            grossSales: grossSales,
             netRevenue: netRevenue,
             averageOrderValue: averageOrderValue
         )
@@ -762,7 +816,8 @@ extension NetworkingCore.Refund {
         isAutomated: NullableCopiableProp<Bool> = .copy,
         createAutomated: NullableCopiableProp<Bool> = .copy,
         items: CopiableProp<[OrderItemRefund]> = .copy,
-        shippingLines: NullableCopiableProp<[ShippingLine]> = .copy
+        shippingLines: NullableCopiableProp<[ShippingLine]> = .copy,
+        feeLines: CopiableProp<[OrderFeeLine]> = .copy
     ) -> NetworkingCore.Refund {
         let refundID = refundID ?? self.refundID
         let orderID = orderID ?? self.orderID
@@ -775,6 +830,7 @@ extension NetworkingCore.Refund {
         let createAutomated = createAutomated ?? self.createAutomated
         let items = items ?? self.items
         let shippingLines = shippingLines ?? self.shippingLines
+        let feeLines = feeLines ?? self.feeLines
 
         return NetworkingCore.Refund(
             refundID: refundID,
@@ -787,7 +843,8 @@ extension NetworkingCore.Refund {
             isAutomated: isAutomated,
             createAutomated: createAutomated,
             items: items,
-            shippingLines: shippingLines
+            shippingLines: shippingLines,
+            feeLines: feeLines
         )
     }
 }

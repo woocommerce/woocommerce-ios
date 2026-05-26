@@ -175,7 +175,7 @@ private extension ProductFormTableViewDataSource {
         else {
             cell.configure(with: productImageStatuses, config: .extendedAddImages(isVariation: isVariation), productUIImageLoader: productUIImageLoader)
         }
-        cell.onImageSelected = { [weak self] (productImage, indexPath) in
+        cell.onImageSelected = { [weak self] (_, _) in
             self?.onAddImage?()
         }
         cell.onAddImage = { [weak self] in
@@ -232,7 +232,7 @@ private extension ProductFormTableViewDataSource {
     }
 
     func configureDescription(cell: UITableViewCell, description: String?, isEditable: Bool, isAIEnabled: Bool) {
-        if let description = description, description.isEmpty == false {
+        if let description, description.isEmpty == false {
             guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
                 fatalError()
             }

@@ -30,10 +30,6 @@ class DefaultStoresManager: StoresManager {
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
 
-    /// Observes application password generation failure notification
-    ///
-    private var applicationPasswordGenerationFailureObserver: NSObjectProtocol?
-
     /// Observes invalid WPCOM token notification
     ///
     private var invalidWPCOMTokenNotificationObserver: NSObjectProtocol?
@@ -198,7 +194,7 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
         state = AuthenticatedState(credentials: credentials,
                                    sessionManager: sessionManager,
                                    isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
@@ -206,10 +202,8 @@ class DefaultStoresManager: StoresManager {
 
         if case .wpcom = credentials {
             listenToWPCOMInvalidWPCOMTokenNotification()
-            applicationPasswordGenerationFailureObserver = nil
             startObservingNetworkNotifications()
         } else {
-            listenToApplicationPasswordGenerationFailureNotification()
             invalidWPCOMTokenNotificationObserver = nil
             stopObservingNetworkNotifications()
         }
@@ -217,22 +211,12 @@ class DefaultStoresManager: StoresManager {
         return self
     }
 
-    /// De-authenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
-    ///
-    func listenToApplicationPasswordGenerationFailureNotification() {
-        applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
-                                                                                      object: nil,
-                                                                                      queue: .main) { [weak self] note in
-            _ = self?.deauthenticate()
-        }
-    }
-
     /// De-authenticates upon receiving `RemoteDidReceiveInvalidTokenError` notification
     ///
     func listenToWPCOMInvalidWPCOMTokenNotification() {
         invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
                                                                                object: nil,
-                                                                               queue: .main) { [weak self] note in
+                                                                               queue: .main) { [weak self] _ in
             _ = self?.deauthenticate()
         }
     }
@@ -303,7 +287,6 @@ class DefaultStoresManager: StoresManager {
             _ = currentState
         }
 
-        applicationPasswordGenerationFailureObserver = nil
         invalidWPCOMTokenNotificationObserver = nil
         stopObservingNetworkNotifications()
         trackedEligibleSites.removeAll()
@@ -328,15 +311,13 @@ class DefaultStoresManager: StoresManager {
         ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
-            // Reset GRDB on a background thread to avoid blocking logout
-            // when there's a large catalog to delete
-            Task.detached(priority: .userInitiated) {
-                do {
-                    try ServiceLocator.grdbManager.reset()
-                } catch {
-                    DDLogError("Could not reset GRDB database: \(error)")
-                }
+        // Reset GRDB on a background thread to avoid blocking logout
+        // when there's a large catalog to delete
+        Task.detached(priority: .userInitiated) {
+            do {
+                try ServiceLocator.grdbManager.reset()
+            } catch {
+                DDLogError("Could not reset GRDB database: \(error)")
             }
         }
 
@@ -430,7 +411,7 @@ private extension DefaultStoresManager {
     ///
     func restoreSessionAccount(with accountID: Int64) {
         let action = AccountAction.loadAccount(userID: accountID) { [weak self] account in
-            guard let `self` = self, let account = account else {
+            guard let `self` = self, let account else {
                 return
             }
             self.replaceTempCredentialsIfNecessary(account: account)
@@ -446,7 +427,7 @@ private extension DefaultStoresManager {
         let action = AccountAction.synchronizeAccount { [weak self] result in
             switch result {
             case .success(let account):
-                if let self = self, self.isAuthenticated {
+                if let self, self.isAuthenticated {
                     self.sessionManager.defaultAccount = account
                     ServiceLocator.analytics.refreshUserData()
                 }
@@ -470,7 +451,7 @@ private extension DefaultStoresManager {
         let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] result in
             switch result {
             case .success(let accountSettings):
-                if let self = self, self.isAuthenticated {
+                if let self, self.isAuthenticated {
                     // Save the user's preference
                     ServiceLocator.analytics.setUserHasOptedOut(accountSettings.tracksOptOut)
                 }
@@ -484,7 +465,7 @@ private extension DefaultStoresManager {
     }
 
     /// Replaces the temporary UUID username in default credentials with the
-    /// actual username from the passed account.  This *shouldn't* be necessary
+    /// actual username from the passed account. This *shouldn't* be necessary
     /// under normal conditions but is a safety net in case there is an error
     /// preventing the temp username from being updated during login.
     ///
@@ -528,7 +509,7 @@ private extension DefaultStoresManager {
         group.enter()
         let generalSettingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
             ServiceLocator.selectedSiteSettings.refresh()
-            if let error = error {
+            if let error {
                 errors.append(error)
             }
             group.leave()
@@ -537,7 +518,7 @@ private extension DefaultStoresManager {
 
         group.enter()
         let productSettingsAction = SettingAction.synchronizeProductSiteSettings(siteID: siteID) { error in
-            if let error = error {
+            if let error {
                 errors.append(error)
             }
             group.leave()
@@ -720,7 +701,7 @@ private extension DefaultStoresManager {
     ///
     func sendTelemetryIfNeeded(siteID: Int64) {
         let checkAvailabilityAction = AppSettingsAction.getTelemetryInfo(siteID: siteID) { [weak self] isAvailable, telemetryLastReportedTime in
-            guard let self = self else { return }
+            guard let self else { return }
 
             if isAvailable {
                 self.sendTelemetry(siteID: siteID,
@@ -738,7 +719,7 @@ private extension DefaultStoresManager {
                                                    versionString: UserAgent.bundleShortVersion,
                                                    telemetryLastReportedTime: telemetryLastReportedTime,
                                                    installationDate: installationDate) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success:
@@ -768,22 +749,31 @@ private extension DefaultStoresManager {
             restoreJetpackSiteAndSynchronizeIfNeeded(with: siteID)
         }
 
-        synchronizeSettings(with: siteID) {
-            ServiceLocator.shippingSettingsService.update(siteID: siteID)
-        }
-        synchronizePaymentGateways(siteID: siteID)
-        synchronizeAddOnsGroups(siteID: siteID)
-        synchronizeSitePlugins(siteID: siteID)
+        // Requests are split into three batches to avoid rate limiting (429 errors)
+        // on self-hosted sites. The dashboard also fires its own requests concurrently
+        // (via syncDashboardEssentialData), so keeping each batch small is important.
+        //
+        // Batch 1 (immediate): Site settings — needed for dashboard rendering.
         loadStoreUUID(siteID: siteID)
+        synchronizeSettings(with: siteID) { [weak self] in
+            guard let self else { return }
+            ServiceLocator.shippingSettingsService.update(siteID: siteID)
 
-        sendTelemetryIfNeeded(siteID: siteID)
+            // Batch 2 (after settings complete): Order statuses and system info for snapshot tracking.
+            // Sequenced after batch 1 so these don't overlap with the initial burst.
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                async let orderStatuses = retrieveOrderStatus(with: siteID)
+                async let systemInformation = fetchSystemInformationAndRetryIfFails(siteID: siteID)
 
-        Task { @MainActor in
-            // Order statuses and system plugins syncing are required outside of snapshot tracking.
-            async let orderStatuses = retrieveOrderStatus(with: siteID)
-            async let systemInformation = fetchSystemInformationAndRetryIfFails(siteID: siteID)
+                trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: await systemInformation?.systemPlugins)
 
-            trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: await systemInformation?.systemPlugins)
+                // Batch 3 (after batch 2 completes): Non-essential data.
+                synchronizePaymentGateways(siteID: siteID)
+                synchronizeAddOnsGroups(siteID: siteID)
+                synchronizeSitePlugins(siteID: siteID)
+                sendTelemetryIfNeeded(siteID: siteID)
+            }
         }
     }
 

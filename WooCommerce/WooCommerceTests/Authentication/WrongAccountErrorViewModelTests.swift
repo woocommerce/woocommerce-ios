@@ -285,7 +285,7 @@ private final class MockAuthenticator: Authenticator {
 
     static func showSiteCredentialLogin(from presenter: UIViewController, siteURL: String, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
         siteCredentialLoginTriggered = true
-        guard let credentials = credentials else {
+        guard let credentials else {
             return
         }
         onCompletion(credentials)
@@ -293,7 +293,7 @@ private final class MockAuthenticator: Authenticator {
 
     static func fetchSiteInfo(for siteURL: String, onCompletion: @escaping (Result<WordPressComSiteInfo, Error>) -> Void) {
         fetchSiteInfoTriggered = true
-        guard let siteInfo = siteInfo else {
+        guard let siteInfo else {
             return onCompletion(.failure(AuthenticatorError.serviceError))
         }
         onCompletion(.success(siteInfo))

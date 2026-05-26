@@ -29,7 +29,7 @@ open class SearchTableViewCell: UITableViewCell {
     ///
     open var liveSearch: Bool = false
 
-    /// If `true` then the user can type in spaces regularly.  If `false` the whitespaces will be
+    /// If `true` then the user can type in spaces regularly. If `false` the whitespaces will be
     /// stripped before they're entered into the field.
     ///
     open var allowSpaces: Bool = true
@@ -124,7 +124,7 @@ extension SearchTableViewCell: UITextFieldDelegate {
     /// - Precondition: make sure you check if `liveSearch` is enabled before calling this method.
     ///
     private func startLiveSearch() {
-        guard let delegate = delegate,
+        guard let delegate,
               let text = textField.text else {
             return
         }

@@ -1,5 +1,6 @@
 import XCTest
 import Combine
+import ParcelFittingCheck
 import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Networking
@@ -978,6 +979,37 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             customsFormItem.weight == shipmentItem.weight &&
             customsFormItem.originCountry == originCountry.code
         }
+    }
+
+    func test_parcelFittingDidConfirm_when_called_then_sets_package_and_caches_AR_state() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(nil)
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(nil)
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                             shipment: sampleShipment,
+                                                             shippingLabel: nil,
+                                                             originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                             destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        let package = ParcelPresetPackage(id: "usps_medium", name: "Medium Box", length: 11, width: 8.5, height: 5.5)
+        let carrier = ParcelPresetCarrier(id: "usps", name: "USPS", packages: [package])
+        let measurement = ParcelDimensions(length: 10, width: 8, height: 5)
+        let result = ParcelFittingResult.carrierPackage(package, measurement: measurement)
+
+        // When
+        viewModel.parcelFittingDidConfirm(result,
+                                           carriers: [carrier],
+                                           starredPackageIDs: ["usps_medium"],
+                                           dimensionUnit: .inches)
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedPackage)
+        XCTAssertEqual(viewModel.selectedPackage?.id, "usps_medium")
+        XCTAssertNotNil(viewModel.lastARState)
+        XCTAssertNotNil(viewModel.lastARState?.measurement)
+        XCTAssertEqual(viewModel.lastARState?.carriers.count, 1)
+        XCTAssertTrue(viewModel.lastARState?.starredPackageIDs.contains("usps_medium") == true)
+        XCTAssertEqual(viewModel.lastARState?.dimensionUnit, .inches)
     }
 }
 

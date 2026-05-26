@@ -16,7 +16,7 @@ final class MockKingfisherImageDownloader: Kingfisher.ImageDownloader {
                                 options: KingfisherOptionsInfo? = nil,
                                 progressBlock: DownloadProgressBlock?,
                                 completionHandler: ((Result<ImageLoadingResult, KingfisherError>) -> Void)? = nil) -> DownloadTask? {
-        if let options = options {
+        if let options {
             for option in options {
                 if case .processor(let processor) = option {
                     capturedProcessor = processor

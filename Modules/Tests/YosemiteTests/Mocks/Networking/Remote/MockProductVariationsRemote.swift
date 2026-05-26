@@ -102,8 +102,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
 
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
-                                      pageNumber: Int,
-                                      posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation> {
+                                      pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         let key = ResultKey(siteID: siteID, productID: parentProductID, productVariationIDs: [])
         guard let result = variationsForPointOfSaleResults[key] else {
             throw NetworkError.notFound()
@@ -118,7 +117,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
 
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -138,7 +137,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
                                  newVariation: CreateProductVariation,
                                  completion: @escaping (Result<ProductVariation, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -162,7 +161,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
 
     func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -183,7 +182,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
                                      image: ProductImage,
                                      completion: @escaping (Result<ProductVariation, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -203,7 +202,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
                                  productVariations: [ProductVariation],
                                  completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID,
                                 productID: productID,
@@ -218,7 +217,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
 
     func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

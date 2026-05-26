@@ -249,7 +249,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             let updatedProduct = remoteProduct.copy(images: images)
             analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
             onProductCreated(updatedProduct)
-
         } catch {
             DDLogError("⛔️ Error saving product with AI: \(error)")
             analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))
@@ -399,7 +398,7 @@ private extension ProductDetailPreviewViewModel {
         var shippingDetails = [String]()
 
         // Weight[unit]
-        if let weight = product.weight, let weightUnit = weightUnit, !weight.isEmpty {
+        if let weight = product.weight, let weightUnit, !weight.isEmpty {
             let localizedWeight = shippingValueLocalizer.localized(shippingValue: weight) ?? weight
             shippingDetails.append(String.localizedStringWithFormat(Localization.weightFormat,
                                                                     localizedWeight, weightUnit))
@@ -413,7 +412,7 @@ private extension ProductDetailPreviewViewModel {
             .map({ shippingValueLocalizer.localized(shippingValue: $0) ?? $0 })
             .filter({ !$0.isEmpty })
 
-        if let dimensionUnit = dimensionUnit,
+        if let dimensionUnit,
            !dimensions.isEmpty {
             switch dimensions.count {
             case 1:
@@ -625,7 +624,7 @@ private extension ProductDetailPreviewViewModel {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductCategoryAction.synchronizeProductCategories(siteID: siteID,
                                                                                fromPageNumber: Default.firstPageNumber,
-                                                                               onCompletion: { result in
+                                                                               onCompletion: { _ in
                 continuation.resume()
             }))
         }
@@ -654,7 +653,7 @@ private extension ProductDetailPreviewViewModel {
     func synchronizeAllTags() async throws {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductTagAction.synchronizeAllProductTags(siteID: siteID,
-                                                                       onCompletion: { result in
+                                                                       onCompletion: { _ in
                 continuation.resume()
             }))
         }

@@ -10,37 +10,22 @@ class MockPOSOrderService: POSOrderServiceProtocol {
     var resultToReturn: Result<Void, Error> = .success(())
 
     var syncOrderWasCalled = false
+    var syncOrderCallCount = 0
     var updateOrderWasCalled = false
     var spySyncOrderCurrency: CurrencyCode?
     var spyCashPaymentChangeDueAmount: String?
 
-    // For controlling sync timing in tests
-    private var syncContinuation: CheckedContinuation<Void, Never>?
-    private var shouldBlockSync = false
-
-    /// Blocks the next sync operation until `resumeBlockedSync()` is called
-    func blockNextSync() {
-        shouldBlockSync = true
-    }
-
-    /// Resumes a blocked sync operation
-    func resumeBlockedSync() {
-        syncContinuation?.resume()
-        syncContinuation = nil
-        shouldBlockSync = false
-    }
+    var onSyncOrderCalled: (@MainActor () async -> Void)?
 
     func syncOrder(cart: Yosemite.POSCart,
                    currency: CurrencyCode) async throws -> Yosemite.Order {
         syncOrderWasCalled = true
+        syncOrderCallCount += 1
         spySyncOrderCurrency = currency
 
-        if shouldBlockSync {
-            shouldBlockSync = false // Only block the first call
-            await withCheckedContinuation { continuation in
-                syncContinuation = continuation
-            }
-        } else if simulateSyncing {
+        await onSyncOrderCalled?()
+
+        if simulateSyncing {
             try await Task.sleep(nanoseconds: UInt64(1 * Double(NSEC_PER_SEC)))
         }
 
@@ -89,6 +74,52 @@ class MockPOSOrderService: POSOrderServiceProtocol {
         spyCashPaymentChangeDueAmount = changeDueAmount
 
         switch resultToReturn {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    var markOrderAsCompletedManuallyWasCalled = false
+    var spyMarkOrderAsCompletedManuallyOrder: Order?
+    func markOrderAsCompletedManually(order: Order) async throws {
+        markOrderAsCompletedManuallyWasCalled = true
+        spyMarkOrderAsCompletedManuallyOrder = order
+        switch resultToReturn {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    var promoteOrderToPendingWasCalled = false
+    var spyPromoteOrderToPendingOrder: Order?
+    var promoteOrderToPendingOverride: Order?
+    func promoteOrderToPending(order: Order) async throws -> Order {
+        promoteOrderToPendingWasCalled = true
+        spyPromoteOrderToPendingOrder = order
+        switch resultToReturn {
+        case .success:
+            return promoteOrderToPendingOverride ?? order
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    var addOrderNoteWasCalled = false
+    var spyAddOrderNoteOrderID: Int64?
+    var spyAddOrderNoteIsCustomerNote: Bool?
+    var spyAddOrderNoteText: String?
+    /// When non-nil, overrides `resultToReturn` for `addOrderNote` calls only.
+    var addOrderNoteResult: Result<Void, Error>?
+    func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {
+        addOrderNoteWasCalled = true
+        spyAddOrderNoteOrderID = orderID
+        spyAddOrderNoteIsCustomerNote = isCustomerNote
+        spyAddOrderNoteText = note
+        switch addOrderNoteResult ?? resultToReturn {
         case .success:
             return
         case .failure(let error):

@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import Yosemite
 @testable import Storage
+@testable import Networking
 
 struct POSCatalogSyncCoordinatorTests {
     private let mockSyncService: MockPOSCatalogFullSyncService
@@ -9,6 +10,7 @@ struct POSCatalogSyncCoordinatorTests {
     private let grdbManager: GRDBManager
     private let mockSiteSettings: MockSiteSpecificAppSettingsStoreMethods
     private let mockEligibilityChecker: MockPOSLocalCatalogEligibilityService
+    private let mockPendingParseResumer: MockBackgroundCatalogParseResuming
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
     private let sampleMaxAge: TimeInterval = 60 * 60
@@ -19,12 +21,14 @@ struct POSCatalogSyncCoordinatorTests {
         self.grdbManager = try GRDBManager()
         self.mockSiteSettings = MockSiteSpecificAppSettingsStoreMethods()
         self.mockEligibilityChecker = MockPOSLocalCatalogEligibilityService()
+        self.mockPendingParseResumer = MockBackgroundCatalogParseResuming()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
-            siteSettings: mockSiteSettings
+            siteSettings: mockSiteSettings,
+            pendingParseResumer: mockPendingParseResumer
         )
     }
 
@@ -443,7 +447,7 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twentyFiveHoursAgo)
 
         // When
-        try await sut.performSmartSync(for: sampleSiteID)
+        try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - should perform full sync
         #expect(mockSyncService.startFullSyncCallCount == 1)
@@ -456,7 +460,7 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twelveHoursAgo)
 
         // When
-        try await sut.performSmartSync(for: sampleSiteID)
+        try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - should perform incremental sync
         #expect(mockSyncService.startFullSyncCallCount == 0)
@@ -468,7 +472,7 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
 
         // When
-        try await sut.performSmartSync(for: sampleSiteID)
+        try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - should perform full sync
         #expect(mockSyncService.startFullSyncCallCount == 1)
@@ -483,7 +487,7 @@ struct POSCatalogSyncCoordinatorTests {
         // When - using custom threshold of 1 hour for full sync and 30 minutes for incremental sync
         let oneHour: TimeInterval = 60 * 60
         let thirtyMinutes: TimeInterval = 30 * 60
-        try await sut.performSmartSync(for: sampleSiteID, fullSyncMaxAge: oneHour, incrementalSyncMaxAge: thirtyMinutes)
+        try await sut.performSmartSync(for: sampleSiteID, fullSyncMaxAge: oneHour, incrementalSyncMaxAge: thirtyMinutes, isBackgroundSync: false)
 
         // Then - should perform full sync because last sync is older than 1 hour
         #expect(mockSyncService.startFullSyncCallCount == 1)
@@ -498,7 +502,7 @@ struct POSCatalogSyncCoordinatorTests {
         // When - using custom threshold of 1 hour for full sync and 15 minutes for incremental sync
         let oneHour: TimeInterval = 60 * 60
         let fifteenMinutes: TimeInterval = 15 * 60
-        try await sut.performSmartSync(for: sampleSiteID, fullSyncMaxAge: oneHour, incrementalSyncMaxAge: fifteenMinutes)
+        try await sut.performSmartSync(for: sampleSiteID, fullSyncMaxAge: oneHour, incrementalSyncMaxAge: fifteenMinutes, isBackgroundSync: false)
 
         // Then - should perform incremental sync because last sync is within 1 hour
         #expect(mockSyncService.startFullSyncCallCount == 0)
@@ -515,7 +519,7 @@ struct POSCatalogSyncCoordinatorTests {
 
         // When/Then
         await #expect(throws: expectedError) {
-            try await sut.performSmartSync(for: sampleSiteID)
+            try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
         }
     }
 
@@ -529,7 +533,7 @@ struct POSCatalogSyncCoordinatorTests {
 
         // When/Then
         await #expect(throws: expectedError) {
-            try await sut.performSmartSync(for: sampleSiteID)
+            try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
         }
     }
 
@@ -596,7 +600,7 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
     func startFullSync(for siteID: Int64,
                         regenerateCatalog: Bool,
                         allowCellular: Bool,
-                        posProductsOnly: Bool) async throws -> POSCatalog {
+                        isBackgroundSync: Bool) async throws -> POSCatalog {
         startFullSyncCallCount += 1
         lastSyncSiteID = siteID
         lastAllowCellular = allowCellular
@@ -678,7 +682,7 @@ extension POSCatalogSyncCoordinatorTests {
 
         // When / Then - sync should be skipped
         await #expect(throws: POSCatalogSyncError.shouldNotSync) {
-            try await coordinator.performSmartSync(for: sampleSiteID)
+            try await coordinator.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
         }
 
         #expect(mockSyncService.startFullSyncCallCount == 0)
@@ -701,7 +705,7 @@ extension POSCatalogSyncCoordinatorTests {
         mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
-        try await coordinator.performSmartSync(for: sampleSiteID)
+        try await coordinator.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - sync should proceed
         #expect(mockSyncService.startFullSyncCallCount == 1)
@@ -720,7 +724,7 @@ extension POSCatalogSyncCoordinatorTests {
         mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
-        try await coordinator.performSmartSync(for: sampleSiteID)
+        try await coordinator.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - first sync date should be recorded
         #expect(mockSiteSettings.setFirstPOSCatalogSyncDateCalled == true)
@@ -743,7 +747,7 @@ extension POSCatalogSyncCoordinatorTests {
         mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
-        try await coordinator.performSmartSync(for: sampleSiteID)
+        try await coordinator.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - first sync date should remain unchanged
         #expect(mockSiteSettings.mockFirstPOSCatalogSyncDate == originalDate)
@@ -767,7 +771,7 @@ extension POSCatalogSyncCoordinatorTests {
         mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
-        try await coordinator.performSmartSync(for: sampleSiteID)
+        try await coordinator.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - sync should proceed (within grace period)
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
@@ -789,7 +793,7 @@ extension POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
 
         // When
-        try await coordinator.performSmartSync(for: sampleSiteID)
+        try await coordinator.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - sync should be skipped (past grace period, no recent open)
         #expect(mockSyncService.startFullSyncCallCount == 0)
@@ -814,7 +818,7 @@ extension POSCatalogSyncCoordinatorTests {
         mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
-        try await coordinator.performSmartSync(for: sampleSiteID)
+        try await coordinator.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - sync should proceed (opened recently)
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
@@ -837,7 +841,7 @@ extension POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
 
         // When
-        try await coordinator.performSmartSync(for: sampleSiteID)
+        try await coordinator.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - sync should be skipped (last opened too long ago)
         #expect(mockSyncService.startFullSyncCallCount == 0)
@@ -861,7 +865,7 @@ extension POSCatalogSyncCoordinatorTests {
         mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
-        try await coordinator.performSmartSync(for: sampleSiteID)
+        try await coordinator.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - sync should proceed (opened recently, even though at 30-day boundary)
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
@@ -885,7 +889,7 @@ extension POSCatalogSyncCoordinatorTests {
         mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
-        try await coordinator.performSmartSync(for: sampleSiteID)
+        try await coordinator.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
         // Then - sync should proceed (exactly at 30-day boundary is still eligible)
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
@@ -1549,6 +1553,58 @@ extension POSCatalogSyncCoordinatorTests {
 
 extension POSCatalogSyncCoordinator {
     func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
-        try await performFullSyncIfApplicable(for: siteID, maxAge: maxAge, regenerateCatalog: false)
+        try await performFullSyncIfApplicable(for: siteID, maxAge: maxAge, regenerateCatalog: false, isBackgroundSync: false)
+    }
+}
+
+// MARK: - Pending Parse Resume Tests
+
+extension POSCatalogSyncCoordinatorTests {
+    @Test func performSmartSync_when_no_pending_background_download_then_does_not_call_parseAndPersistBackgroundDownload() async throws {
+        // Given: resumer has no pending staged file
+        mockPendingParseResumer.pendingResume = nil
+        await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
+
+        // Then: resumer was consulted but parse-and-persist was not invoked
+        #expect(mockPendingParseResumer.resumePendingParseIfNeededCallCount == 1)
+        #expect(mockSyncService.parseAndPersistBackgroundDownloadCallCount == 0)
+    }
+
+    @Test func performSmartSync_when_pending_background_download_then_calls_parseAndPersistBackgroundDownload_with_staged_file() async throws {
+        // Given: resumer has a pending staged file for this site
+        let stagedURL = URL(fileURLWithPath: "/tmp/pos-pending-\(sampleSiteID).json")
+        mockPendingParseResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID)
+        await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
+
+        // Then: parse-and-persist was invoked with the staged file and siteID
+        #expect(mockSyncService.parseAndPersistBackgroundDownloadCallCount == 1)
+        #expect(mockSyncService.lastBackgroundDownloadFileURL == stagedURL)
+        #expect(mockSyncService.lastBackgroundDownloadSiteID == sampleSiteID)
+    }
+
+    @Test func performSmartSync_when_parseAndPersistBackgroundDownload_throws_then_normal_sync_still_proceeds() async throws {
+        // Given: pending file exists but parse-and-persist will throw
+        let stagedURL = URL(fileURLWithPath: "/tmp/pos-pending-\(sampleSiteID).json")
+        mockPendingParseResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID)
+        let resumeError = NSError(domain: "parse", code: 1, userInfo: nil)
+        mockSyncService.parseAndPersistBackgroundDownloadResult = .failure(resumeError)
+        await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When: smart sync should not propagate the resume error — a fresh sync overwrites anyway
+        try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
+
+        // Then: parse-and-persist was attempted, error was surfaced by the mock, normal full sync still ran
+        #expect(mockSyncService.parseAndPersistBackgroundDownloadCallCount == 1)
+        #expect(mockPendingParseResumer.lastParseHandlerError as NSError? == resumeError)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 }

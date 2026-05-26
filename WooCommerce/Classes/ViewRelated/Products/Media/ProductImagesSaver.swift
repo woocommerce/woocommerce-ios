@@ -75,7 +75,7 @@ private extension ProductImagesSaver {
             let action = ProductAction.updateProductImages(siteID: siteID,
                                                            productID: productID,
                                                            images: images) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case .success(let product):
                     savedProduct = product
@@ -100,7 +100,7 @@ private extension ProductImagesSaver {
                                                                             productID: productID,
                                                                             variationID: variationID,
                                                                             image: image) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case .success(let productVariation):
                     onProductSave(.success(productVariation.image.map { [$0] } ?? []))
@@ -126,7 +126,7 @@ private extension ProductImagesSaver {
 
     func observeAssetUploadsToUpdateImageStatuses(imageActionHandler: ProductImageActionHandlerProtocol) {
         assetUploadSubscription = imageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
-            guard let self = self else { return }
+            guard let self else { return }
             guard let index = self.imageStatusesToSave.firstIndex(where: { status -> Bool in
                 switch status {
                 case .uploading(let uploadingAsset, _, _):

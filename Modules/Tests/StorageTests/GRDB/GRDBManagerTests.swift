@@ -41,6 +41,112 @@ struct GRDBManagerTests {
         }
     }
 
+    // MARK: - V003 Migration Tests
+
+    struct V003MigrationTests {
+        @Test("V003 migration adds typeKey column to productVariation table")
+        func test_v003_migration_adds_typeKey_column() throws {
+            // Given
+            let manager = try GRDBManager()
+
+            // When
+            let columns = try manager.databaseConnection.read { db in
+                try db.columns(in: "productVariation").map(\.name)
+            }
+
+            // Then
+            #expect(columns.contains("typeKey"))
+        }
+
+        @Test("V003 migration defaults typeKey to 'variation' for existing rows")
+        func test_v003_migration_defaults_typeKey_to_variation() throws {
+            // Given
+            let manager = try GRDBManager()
+            try manager.databaseConnection.write { db in
+                try TestSite(id: 1).insert(db)
+                try TestProduct(siteID: 1, id: 100, name: "Variable Product",
+                                productTypeKey: "variable", price: "10.00",
+                                downloadable: false, parentID: 0,
+                                manageStock: false, stockStatusKey: "instock").insert(db)
+                try TestProductVariation(siteID: 1, id: 200, productID: 100,
+                                         typeKey: "variation",
+                                         price: "12.00", downloadable: false,
+                                         manageStock: false, stockStatusKey: "instock").insert(db)
+            }
+
+            // When
+            let typeKey = try manager.databaseConnection.read { db in
+                try String.fetchOne(db, sql: "SELECT typeKey FROM productVariation WHERE id = 200")
+            }
+
+            // Then
+            #expect(typeKey == "variation")
+        }
+
+        @Test("V003 migration allows storing non-standard variation types")
+        func test_v003_migration_allows_storing_non_standard_variation_types() throws {
+            // Given
+            let manager = try GRDBManager()
+            try manager.databaseConnection.write { db in
+                try TestSite(id: 1).insert(db)
+                try TestProduct(siteID: 1, id: 100, name: "Subscription Product",
+                                productTypeKey: "variable-subscription", price: "10.00",
+                                downloadable: false, parentID: 0,
+                                manageStock: false, stockStatusKey: "instock").insert(db)
+            }
+
+            // When
+            try manager.databaseConnection.write { db in
+                try TestProductVariation(siteID: 1, id: 300, productID: 100,
+                                         typeKey: "subscription_variation",
+                                         price: "15.00", downloadable: false,
+                                         manageStock: false, stockStatusKey: "instock").insert(db)
+            }
+
+            // Then
+            let typeKey = try manager.databaseConnection.read { db in
+                try String.fetchOne(db, sql: "SELECT typeKey FROM productVariation WHERE id = 300")
+            }
+            #expect(typeKey == "subscription_variation")
+        }
+
+        @Test("baseQuery filters out non-standard variation types")
+        func test_baseQuery_filters_out_non_standard_variation_types() throws {
+            // Given
+            let manager = try GRDBManager()
+            let siteID: Int64 = 1
+            try manager.databaseConnection.write { db in
+                try TestSite(id: siteID).insert(db)
+                try TestProduct(siteID: siteID, id: 100, name: "Variable Product",
+                                productTypeKey: "variable", price: "10.00",
+                                downloadable: false, parentID: 0,
+                                manageStock: false, stockStatusKey: "instock").insert(db)
+
+                // Standard variation — should be included
+                try TestProductVariation(siteID: siteID, id: 200, productID: 100,
+                                         typeKey: "variation",
+                                         price: "12.00", downloadable: false,
+                                         manageStock: false, stockStatusKey: "instock").insert(db)
+
+                // Subscription variation — should be filtered out
+                try TestProductVariation(siteID: siteID, id: 201, productID: 100,
+                                         typeKey: "subscription_variation",
+                                         price: "15.00", downloadable: false,
+                                         manageStock: false, stockStatusKey: "instock").insert(db)
+            }
+
+            // When
+            let filteredVariations = try manager.databaseConnection.read { db in
+                try PersistedProductVariation.posAllVariationsRequest(siteID: siteID).fetchAll(db)
+            }
+
+            // Then
+            #expect(filteredVariations.count == 1)
+            #expect(filteredVariations.first?.id == 200)
+            #expect(filteredVariations.first?.typeKey == "variation")
+        }
+    }
+
     // MARK: - CRUD Tests
 
     struct CRUDTests {
@@ -107,6 +213,7 @@ struct GRDBManagerTests {
                     siteID: 1,
                     id: 200,
                     productID: 100,
+                    typeKey: "variation",
                     price: "12.00",
                     downloadable: false,
                     manageStock: false,
@@ -148,6 +255,7 @@ struct GRDBManagerTests {
                         siteID: 1,
                         id: Int64(200 + i),
                         productID: 100,
+                        typeKey: "variation",
                         price: "\(10 + i).00",
                         downloadable: false,
                         manageStock: false,
@@ -235,6 +343,7 @@ struct GRDBManagerTests {
                     siteID: 1,
                     id: 200,
                     productID: 100,
+                    typeKey: "variation",
                     price: "12.00",
                     downloadable: false,
                     manageStock: false,
@@ -292,6 +401,7 @@ struct GRDBManagerTests {
                     siteID: testSiteId,
                     id: 200,
                     productID: 100,
+                    typeKey: "variation",
                     price: "12.00",
                     downloadable: false,
                     manageStock: false,
@@ -452,6 +562,7 @@ struct GRDBManagerTests {
                         siteID: sampleSiteID,
                         id: Int64(200 + i),
                         productID: 100,
+                        typeKey: "variation",
                         price: "\(10 + i).00",
                         downloadable: false,
                         manageStock: false,
@@ -504,6 +615,7 @@ struct GRDBManagerTests {
                         siteID: sampleSiteID,
                         id: 200,
                         productID: 999, // Non-existent product
+                        typeKey: "variation",
                         price: "12.00",
                         downloadable: false,
                         manageStock: false,
@@ -556,6 +668,7 @@ struct GRDBManagerTests {
                             siteID: siteID,
                             id: Int64(200 + i + (siteID == 1 ? 0 : 10)),
                             productID: product.id,
+                            typeKey: "variation",
                             price: "\(i * 12).00",
                             downloadable: false,
                             manageStock: false,
@@ -718,6 +831,7 @@ struct TestProductVariation: Codable {
     let siteID: Int64
     let id: Int64
     let productID: Int64
+    let typeKey: String
     let sku: String?
     let globalUniqueID: String?
     let price: String
@@ -727,13 +841,14 @@ struct TestProductVariation: Codable {
     let stockQuantity: Double?
     let stockStatusKey: String
 
-    init(siteID: Int64, id: Int64, productID: Int64,
+    init(siteID: Int64, id: Int64, productID: Int64, typeKey: String,
          price: String, downloadable: Bool, manageStock: Bool, stockStatusKey: String,
          sku: String? = nil, globalUniqueID: String? = nil, fullDescription: String? = nil,
          stockQuantity: Double? = nil) {
         self.siteID = siteID
         self.id = id
         self.productID = productID
+        self.typeKey = typeKey
         self.price = price
         self.downloadable = downloadable
         self.manageStock = manageStock

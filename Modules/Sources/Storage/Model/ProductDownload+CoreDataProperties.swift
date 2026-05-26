@@ -13,5 +13,4 @@ extension ProductDownload {
     @NSManaged public var fileURL: String?
     @NSManaged public var product: Product?
     @NSManaged public var productVariation: ProductVariation?
-
 }

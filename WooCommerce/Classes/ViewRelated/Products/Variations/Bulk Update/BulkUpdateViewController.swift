@@ -31,7 +31,7 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
     init(viewModel: BulkUpdateViewModel, noticePresenter: NoticePresenter? = nil) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        if let noticePresenter = noticePresenter {
+        if let noticePresenter {
             self.noticePresenter = noticePresenter
         }
     }
@@ -63,7 +63,7 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
     ///
     private func configureViewModel() {
         viewModel.$syncState.sink { [weak self] state in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch state {
             // `.notStarted` is the initial state of the VM
@@ -141,7 +141,7 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
     ///
     private func navigateToEditPriceSettings() {
         let bulkUpdatePriceSettingsViewModel = viewModel.viewModelForBulkUpdatePriceOfType(.regular, priceUpdateDidFinish: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.navigationController?.popToViewController(self, animated: true)
             self.displayPriceUpdatedNotice()
         })

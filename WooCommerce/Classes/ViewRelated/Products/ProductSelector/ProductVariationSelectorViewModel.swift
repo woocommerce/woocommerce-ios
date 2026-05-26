@@ -228,7 +228,7 @@ extension ProductVariationSelectorViewModel: SyncingCoordinatorDelegate {
                                                                                variationIDs: allowedProductVariationIDs,
                                                                                pageNumber: pageNumber,
                                                                                pageSize: pageSize) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success:
@@ -312,7 +312,7 @@ private extension ProductVariationSelectorViewModel {
         // Listen only to the first emitted event.
         onLoadTrigger.first()
             .sink { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.syncFirstPage()
             }
             .store(in: &subscriptions)
@@ -329,7 +329,7 @@ private extension ProductVariationSelectorViewModel {
     ///
     func observeSelections() {
         $productVariations.combineLatest($selectedProductVariationIDs) { [weak self] variations, selectedIDs -> [ProductRowViewModel] in
-            guard let self = self else { return [] }
+            guard let self else { return [] }
             return variations.map { variation in
                 let selectedState: ProductRow.SelectedState = selectedIDs.contains(variation.productVariationID) ? .selected : .notSelected
                 return ProductRowViewModel(productVariation: variation,

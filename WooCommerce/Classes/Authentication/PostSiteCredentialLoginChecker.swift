@@ -35,7 +35,7 @@ final class PostSiteCredentialLoginChecker {
         checkApplicationPassword(for: siteURL,
                                  with: applicationPasswordUseCase,
                                  in: navigationController) { [weak self] in
-            self?.checkRoleEligibility(in: navigationController) {
+            self?.checkRoleEligibility(for: siteURL, in: navigationController) {
                 self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
             }
         }
@@ -64,11 +64,12 @@ private extension PostSiteCredentialLoginChecker {
                     let errorUI = applicationPasswordDisabledUI(for: siteURL, previousViewController: previousViewController)
                     navigationController.show(errorUI, sender: nil)
                 case ApplicationPasswordUseCaseError.unauthorizedRequest:
-                    showAlert(message: Localization.unauthorizedForAppPassword, in: navigationController)
+                    showAlert(message: Localization.unauthorizedForAppPassword, siteURL: siteURL, in: navigationController)
                 default:
                     DDLogError("⛔️ Error generating application password: \(error)")
                     showAlert(
                         message: Localization.applicationPasswordError,
+                        siteURL: siteURL,
                         in: navigationController,
                         onRetry: { [weak self] in
                             self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
@@ -82,7 +83,7 @@ private extension PostSiteCredentialLoginChecker {
     /// Checks role eligibility for the logged in user with the site address saved in the credentials.
     /// Placeholder store ID is used because we are checking for users logging in with site credentials.
     ///
-    func checkRoleEligibility(in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
+    func checkRoleEligibility(for siteURL: String, in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
         roleEligibilityUseCase.checkEligibility(for: WooConstants.placeholderStoreID) { [weak self] result in
             switch result {
             case .success:
@@ -100,9 +101,10 @@ private extension PostSiteCredentialLoginChecker {
                     DDLogError("⛔️ Error checking role eligibility: \(error)")
                     self?.showAlert(
                         message: Localization.roleEligibilityCheckError,
+                        siteURL: siteURL,
                         in: navigationController,
                         onRetry: { [weak self] in
-                            self?.checkRoleEligibility(in: navigationController, onSuccess: onSuccess)
+                            self?.checkRoleEligibility(for: siteURL, in: navigationController, onSuccess: onSuccess)
                         }
                     )
                 }
@@ -138,13 +140,13 @@ private extension PostSiteCredentialLoginChecker {
                     onSuccess()
                 } else {
                     self?.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: nil))
-                    self?.showAlert(message: Localization.noWooError, in: navigationController)
+                    self?.showAlert(message: Localization.noWooError, siteURL: siteURL, in: navigationController)
                 }
             case .failure(let error):
                 self?.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: error))
                 DDLogError("⛔️ Error checking Woo: \(error)")
                 // show generic error
-                self?.showAlert(message: Localization.wooCheckError, in: navigationController, onRetry: {
+                self?.showAlert(message: Localization.wooCheckError, siteURL: siteURL, in: navigationController, onRetry: {
                     self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
                 })
             }
@@ -155,6 +157,7 @@ private extension PostSiteCredentialLoginChecker {
     /// Shows an error alert with a button to restart login and an optional button to retry the failed action.
     ///
     func showAlert(message: String,
+                   siteURL: String,
                    in navigationController: UINavigationController,
                    onRetry: (() -> Void)? = nil) {
         let alert = UIAlertController(title: message,
@@ -168,7 +171,7 @@ private extension PostSiteCredentialLoginChecker {
         } else {
             let supportAction = UIAlertAction(title: Localization.contactSupport, style: .default) { _ in
                 navigationController.popViewController(animated: true)
-                ServiceLocator.authenticationManager.presentSupport(from: navigationController, sourceTag: .loginSiteAddress)
+                ServiceLocator.authenticationManager.presentSupport(from: navigationController, sourceTag: .loginSiteAddress, siteURL: URL(string: siteURL))
             }
             alert.addAction(supportAction)
         }

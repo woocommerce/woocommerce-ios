@@ -130,7 +130,7 @@ class PasswordViewController: LoginViewController {
             return
         }
 
-        if let source = source, loginFields.meta.userIsDotCom {
+        if let source, loginFields.meta.userIsDotCom {
             let passwordError = SignInError.invalidWPComPassword(source: source)
             if authenticationDelegate.shouldHandleError(passwordError) {
                 authenticationDelegate.handleError(passwordError) { _ in
@@ -162,7 +162,7 @@ class PasswordViewController: LoginViewController {
 
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         // The reason why this check is necessary is that we're calling this method
-        // with an empty error message when setting up the VC.  We don't want to track
+        // with an empty error message when setting up the VC. We don't want to track
         // an empty error when that happens.
         if !message.isEmpty {
             tracker.track(failure: message)
@@ -235,7 +235,6 @@ extension PasswordViewController: UITextFieldDelegate {
         }
         return true
     }
-
 }
 
 // MARK: - UITableViewDataSource
@@ -252,7 +251,6 @@ extension PasswordViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
         return cell
     }
-
 }
 
 // MARK: - Keyboard Notifications
@@ -266,7 +264,6 @@ extension PasswordViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
-
 }
 
 // MARK: - Magic Link
@@ -278,7 +275,7 @@ private extension PasswordViewController {
             secondaryButton.accessibilityIdentifier = AccessibilityIdentifier.loginWithMagicLink
             secondaryButton.on(.touchUpInside) { [weak self] _ in
                 Task { @MainActor [weak self] in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     self.secondaryButton.isEnabled = false
                     await self.loginWithMagicLink()
                     self.secondaryButton.isEnabled = true
@@ -427,7 +424,7 @@ private extension PasswordViewController {
             return configuration.wpcomPasswordInstructions
         }()
 
-        guard let instructions = instructions else {
+        guard let instructions else {
             return
         }
 
@@ -464,7 +461,7 @@ private extension PasswordViewController {
                              accessibilityTrait: .link,
                              showBorder: true)
         cell.actionHandler = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -491,7 +488,7 @@ private extension PasswordViewController {
         loginLinkCell = cell
 
         cell.actionHandler = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

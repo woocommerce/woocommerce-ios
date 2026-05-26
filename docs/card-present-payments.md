@@ -12,13 +12,13 @@
 ## High level overview
 As mentioned in the previous section, and oversimplifying, this project is going to build an integration with Stripe’s card readers, using the Stripe Terminal SDK.
 
-Things are a bit more complex though. Being able to collect a payment requires certain integrations with WooCommerce Payments. 
+Things are a bit more complex though. Being able to collect a payment requires certain integrations with WooPayments. 
 
 This is everything that is required in order to collect a payment for a cash on delivery order:
 
 1. Obtaining a token
 2. Creating and processing a payment intent using the card reader
-3. Capturing the payment intent submitting it to WooCommerce Payments.
+3. Capturing the payment intent submitting it to WooPayments.
 
 ### Obtaining a token
 
@@ -39,13 +39,13 @@ Once the discovery and connection process is completed, we can collect a payment
 
 ### Capturing a payment
 
-Once we have a payment intent that has been processed by the Stripe Terminal SDK, we submit the payment intent identifier to an endpoint in WooCommerce Payments (`payments/orders/{id}/capture_terminal_payment`). WooCommerce Payments will then proxy the request containing this identifier to Stripe, where all the pertinent checks will be performed, and the response will be sent back down to the mobile app. 
+Once we have a payment intent that has been processed by the Stripe Terminal SDK, we submit the payment intent identifier to an endpoint in WooPayments (`payments/orders/{id}/capture_terminal_payment`). WooPayments will then proxy the request containing this identifier to Stripe, where all the pertinent checks will be performed, and the response will be sent back down to the mobile app. 
 
 The end result is a "OK" or "KO" that the mobile app then uses to present a success or error message to the user.
 
 ### Printing a receipt
 
-If everything goes well in the previous step, and WooCommerce Payments lets us know that the payment intent identifier was captured correctly, and the payment was finally captured, it is time for us to offer merchants the option to print or email a receipt.
+If everything goes well in the previous step, and WooPayments lets us know that the payment intent identifier was captured correctly, and the payment was finally captured, it is time for us to offer merchants the option to print or email a receipt.
 
 There is a caveat here: when we initiate the process to capture a payment, we will attempt to provide the customer email address to the Stripe Terminal SDK. If the request to create a payment intent contains a valid email address, Stripe will send a receipt automatically.
 

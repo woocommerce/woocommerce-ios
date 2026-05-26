@@ -22,7 +22,7 @@ public final class AirPrintReceiptPrinterService: NSObject, PrinterService {
         renderer.configureFormatterForPrinting()
         printController.printPageRenderer = renderer
 
-        printController.present(animated: true) { (controller, completed, error) in
+        printController.present(animated: true) { (_, completed, error) in
             switch (completed, error) {
             case (_, .some(let error)):
                 // Printing failed
@@ -55,9 +55,9 @@ extension AirPrintReceiptPrinterService {
 
     /// Default margin for roll cutter.
     ///
-    static let defaultRollCutterMargin: CGFloat = CGFloat(1 * pointsPerInch)
+    static let defaultRollCutterMargin = CGFloat(1 * pointsPerInch)
 
     /// Default size of a page for a receipt in points.
     ///
-    static let defaultReceiptPageSize: CGSize = CGSize(width: 4 * pointsPerInch, height: 11 * pointsPerInch)
+    static let defaultReceiptPageSize = CGSize(width: 4 * pointsPerInch, height: 11 * pointsPerInch)
 }

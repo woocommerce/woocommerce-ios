@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentConnectionSuccessAlertView: View {
     private let viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel
     private let animation: POSCardPresentPaymentAlertAnimation
+    @AccessibilityFocusState private var isTitleFocused: Bool
 
     init(viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel,
          animation: POSCardPresentPaymentAlertAnimation) {
@@ -19,11 +20,15 @@ struct PointOfSaleCardPresentPaymentConnectionSuccessAlertView: View {
                 .font(POSFontStyle.posHeadingBold)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
+                .accessibilityFocused($isTitleFocused)
                 .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
         }
         .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
+        .onAppear {
+            isTitleFocused = true
+        }
     }
 }
 

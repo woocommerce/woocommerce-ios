@@ -20,8 +20,8 @@ extension AnalyticsHubTimeRangeData {
     }
 
     private func generateTimeRangeFrom(startDate: Date?, endDate: Date?) -> AnalyticsHubTimeRange? {
-        if let startDate = startDate,
-           let endDate = endDate {
+        if let startDate,
+           let endDate {
             return AnalyticsHubTimeRange(start: startDate, end: endDate)
         } else {
             return nil

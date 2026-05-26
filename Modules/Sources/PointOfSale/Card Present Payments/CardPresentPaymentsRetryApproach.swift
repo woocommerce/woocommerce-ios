@@ -29,7 +29,8 @@ private extension CardReaderServiceError {
                 .paymentCancellation(underlyingError: let underlyingError),
                 .refundCreation(underlyingError: let underlyingError),
                 .refundCancellation(underlyingError: let underlyingError),
-                .softwareUpdate(underlyingError: let underlyingError, _):
+                .softwareUpdate(underlyingError: let underlyingError, _),
+                .reconnectionCancellation(underlyingError: let underlyingError):
             return underlyingError.retryApproach(with: retryAction)
         case .refundPayment(underlyingError: let underlyingError, shouldRetry: let shouldRetry):
             guard shouldRetry else {

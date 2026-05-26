@@ -1,8 +1,20 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.8
+Managing your store is now even more convenient. With our new AI Assistant, selected stores can take action and run store tasks right from their pocket. Plus, we fixed issues in the customer form on iPad, making it smoother to add new customers. Enjoy these enhancements as you continue to grow your business.
+
+## 24.7
+Get deeper insights with a revamped Performance card. Quickly switch between Gross, Net, and Total revenue, and choose which order date (paid, placed, or completed) drives your totals. We’ve also improved shipping label flows with FedEx TOS handling, refreshed POS empty states, and expanded POS availability to Puerto Rico.
+
+## 24.6
+This update enhances Point of Sale reliability with clearer card reader status during reconnections, automatic price updates at checkout, and visual refinements for iOS 26. We've also added a login troubleshooting tool to help diagnose connection issues faster, plus a handy clear button in search fields for quicker navigation.
+
+## 24.5
+The troubleshooting tool now checks your analytics and notification settings, making it easier to diagnose issues with your store.
+
 ## 24.4
-This update improves reliability and consistency across your store management experience. We fixed site connection issues, aligned revenue with wp-admin, smoothed bookings and dashboard behavior, added FedEx shipping, improved iPad layouts, and resolved product duplication gaps. Plus several UI polish and stability fixes throughout.
+This update improves reliability and consistency across your store management experience. We fixed site connection issues, aligned revenue with wp-admin, smoothed bookings and dashboard behavior, improved iPad layouts, and resolved product duplication gaps. Plus several UI polish and stability fixes throughout.
 
 ## 24.3
 Managing your store just got better. We improved scrolling in order and product lists, made receipts more reliable across payment methods and order statuses, and improved Tap to Pay reliability for multi-store setups. We also improved login, booking filters, and Scan to Pay tracking.

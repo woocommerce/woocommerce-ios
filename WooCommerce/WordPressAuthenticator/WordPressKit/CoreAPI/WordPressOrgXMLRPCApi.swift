@@ -75,7 +75,7 @@ open class WordPressOrgXMLRPCApi: NSObject {
     /// - Parameters:
     ///   - endpoint:  the endpoint to connect to the xmlrpc api interface.
     ///   - userAgent: the user agent to use on the connection.
-    @objc convenience public init(endpoint: URL, userAgent: String? = nil) {
+    @objc public convenience init(endpoint: URL, userAgent: String? = nil) {
         self.init(endpoint: endpoint, userAgent: userAgent, backgroundUploads: false, backgroundSessionIdentifier: WordPressOrgXMLRPCApi.defaultBackgroundSessionIdentifier + "." + endpoint.absoluteString)
     }
 
@@ -202,14 +202,14 @@ open class WordPressOrgXMLRPCApi: NSObject {
 
     fileprivate static func convertError(_ error: NSError, data: Data?, statusCode: Int? = nil) -> NSError {
         let responseCode = statusCode == 403 ? 403 : error.code
-        if let data = data {
+        if let data {
             var userInfo: [String: Any] = error.userInfo
             userInfo[Self.WordPressOrgXMLRPCApiErrorKeyData as String] = data
             userInfo[Self.WordPressOrgXMLRPCApiErrorKeyDataString as String] = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
             userInfo[Self.WordPressOrgXMLRPCApiErrorKeyStatusCode as String] = statusCode
             userInfo[NSLocalizedFailureErrorKey] = error.localizedDescription
 
-            if let statusCode = statusCode, (400..<600).contains(statusCode) {
+            if let statusCode, (400..<600).contains(statusCode) {
                 let formatString = NSLocalizedString("An HTTP error code %i was returned.", comment: "A failure reason for when an error HTTP status code was returned from the site, with the specific error code.")
                 userInfo[NSLocalizedFailureReasonErrorKey] = String(format: formatString, statusCode)
             } else {
@@ -383,7 +383,6 @@ private extension WordPressAPIResult<HTTPAPIResponse<Data>, WordPressOrgXMLRPCAp
             return .success(HTTPAPIResponse(response: response.response, body: responseXML as AnyObject))
         }
     }
-
 }
 
 private extension WordPressAPIError where EndpointError == WordPressOrgXMLRPCApiFault {
@@ -428,5 +427,4 @@ private extension WordPressAPIError where EndpointError == WordPressOrgXMLRPCApi
 
         return WordPressOrgXMLRPCApi.convertError(error, data: data, statusCode: statusCode)
     }
-
 }

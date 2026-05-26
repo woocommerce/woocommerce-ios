@@ -207,6 +207,7 @@ extension SessionsReportCardViewModel {
         let sampleTotals = OrderStatsV4Totals(totalOrders: 5,
                                               totalItemsSold: 5,
                                               grossRevenue: 500,
+                                              grossSales: 500,
                                               netRevenue: 500,
                                               averageOrderValue: 100)
         return OrderStatsV4(siteID: 123,

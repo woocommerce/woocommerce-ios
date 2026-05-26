@@ -40,7 +40,7 @@ final class PrimarySectionHeaderView: UITableViewHeaderFooterView {
         titleLabel.text = title
         actionButton.isHidden = action == nil
 
-        if let action = action {
+        if let action {
             actionButton.applyIconButtonStyle(icon: action.image)
             actionHandler = action.actionHandler
             actionButton.addTarget(self, action: #selector(onAction(_:)), for: .touchUpInside)

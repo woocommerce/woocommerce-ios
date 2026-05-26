@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "B3C9F42D-1E5D-46A8-9F3B-5DEE9A1B7C20",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "WooAIAssistantTests",
+        "name" : "WooAIAssistantTests"
+      }
+    }
+  ],
+  "version" : 1
+}

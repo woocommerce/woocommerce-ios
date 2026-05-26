@@ -7,7 +7,7 @@ struct AdaptiveImage: View {
 
     @ViewBuilder var body: some View {
         if colorScheme == .dark,
-           let dark = dark {
+           let dark {
             Image(uiImage: dark)
                 .resizable()
         } else {

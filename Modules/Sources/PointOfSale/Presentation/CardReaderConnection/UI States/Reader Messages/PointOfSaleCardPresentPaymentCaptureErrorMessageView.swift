@@ -4,6 +4,7 @@ import enum Yosemite.CardReaderServiceError
 struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
     @StateObject private var viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @AccessibilityFocusState private var isTitleFocused: Bool
     @State private var width: CGFloat = 0
 
     init(viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel, animation: POSCardPresentPaymentInLineMessageAnimation) {
@@ -22,6 +23,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($isTitleFocused)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
@@ -55,6 +57,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
         }
         .onAppear {
             viewModel.onAppear()
+            isTitleFocused = true
         }
         .measureWidth({ containerWidth in
             width = containerWidth

@@ -134,7 +134,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     /// Add the log in with Google button to the view
     ///
     func addGoogleButton() {
-        guard let instructionLabel = instructionLabel,
+        guard let instructionLabel,
             let stackView = inputStack else {
             return
         }
@@ -154,7 +154,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     /// Add the log in with site address button to the view
     ///
     func addSelfHostedLogInButton() {
-        guard let instructionLabel = instructionLabel,
+        guard let instructionLabel,
             let stackView = inputStack else {
                 return
         }
@@ -176,7 +176,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     /// Note: This is only used during Jetpack setup, not the normal flows
     ///
     func addSignupButton() {
-        guard let instructionLabel = instructionLabel,
+        guard let instructionLabel,
             let stackView = inputStack else {
                 return
         }
@@ -192,7 +192,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
                 return
             }
 
-            guard let self = self else { return }
+            guard let self else { return }
 
             vc.loginFields = self.loginFields
             vc.dismissBlock = self.dismissBlock
@@ -210,7 +210,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             }
 
             vc.googleTapped = { [weak self] in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 
@@ -304,7 +304,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     func handleFetchedWebCredentials(_ found: Bool, username: String?, password: String?) {
         didFindSafariSharedCredentials = found
 
-        guard let username = username, let password = password else {
+        guard let username, let password else {
             return
         }
 
@@ -325,7 +325,12 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     ///
     /// - Parameters:
     ///     - immediately: True if the newly loaded controller should immedately attempt
-    ///                        to authenticate the user with the available credentails.  Default is `false`.
+/// Displays the wpcom sign in form, optionally telling it to immediately make
+/// the call to authenticate with the available credentials.
+///
+/// - Parameters:
+///     - immediately: True if the newly loaded controller should immediately attempt
+    ///                        to authenticate the user with the available credentials. Default is `false`.
     ///
     func loginWithUsernamePassword(immediately: Bool = false) {
         if immediately {
@@ -397,7 +402,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
                                             strongSelf.displayError(message: msg)
                                         } else if errorCode == "email_login_not_allowed" {
                                                 // If we get this error, we know we have a WordPress.com user but their
-                                                // email address is flagged as suspicious.  They need to login via their
+                                                // email address is flagged as suspicious. They need to login via their
                                                 // username instead.
                                                 strongSelf.showSelfHostedUsernamePasswordAndError(error)
                                         } else {
@@ -544,7 +549,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             }
         }
     }
-
 }
 
 // MARK: - AppleAuthenticatorDelegate
@@ -574,7 +578,6 @@ extension LoginEmailViewController: AppleAuthenticatorDelegate {
     func authFailedWithError(message: String) {
         displayErrorAlert(message, sourceTag: .loginApple)
     }
-
 }
 
 // MARK: - GoogleAuthenticatorLoginDelegate
@@ -629,5 +632,4 @@ extension LoginEmailViewController: GoogleAuthenticatorLoginDelegate {
         socialErrorVC.modalPresentationStyle = .fullScreen
         present(socialErrorNav, animated: true)
     }
-
 }

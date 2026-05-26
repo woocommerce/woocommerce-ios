@@ -5,7 +5,7 @@ import protocol WooFoundation.Analytics
 
 final class AddAttributeOptionsViewController: UIViewController, GhostableViewController {
 
-    @IBOutlet weak private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: WooBasicTableViewCell.self))
 
@@ -21,7 +21,7 @@ final class AddAttributeOptionsViewController: UIViewController, GhostableViewCo
 
     /// Keyboard management
     ///
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
@@ -129,7 +129,7 @@ private extension AddAttributeOptionsViewController {
 
     func observeViewModel() {
         viewModel.onChange = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.renderViewModel()
         }
     }
@@ -291,10 +291,9 @@ private extension AddAttributeOptionsViewController {
                                                          onTextChange: nil,
                                                          onTextDidBeginEditing: nil,
                                                          onTextDidReturn: { [weak self] text in
-                                                            if let text = text {
+                                                            if let text {
                                                                 self?.viewModel.addNewOption(name: text)
                                                             }
-
                                                          }, inputFormatter: nil,
                                                          keyboardType: .default)
         cell.configure(viewModel: viewModel)
@@ -345,7 +344,7 @@ extension AddAttributeOptionsViewController {
 
     @objc private func nextButtonPressed() {
         viewModel.updateProductAttributes { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case let .success(product):
                 self.onCompletion(product)
@@ -410,7 +409,7 @@ extension AddAttributeOptionsViewController {
 
         alertController.addCancelActionWithTitle(Localization.cancelAction)
         alertController.addDestructiveActionWithTitle(Localization.removeAction) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.analytics.track(event: WooAnalyticsEvent.Variations.removeAttributeButtonTapped(productID: self.viewModel.product.productID))
             self.removeCurrentAttribute()
         }
@@ -422,7 +421,7 @@ extension AddAttributeOptionsViewController {
     ///
     func removeCurrentAttribute() {
         viewModel.removeCurrentAttribute { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case let .success(product):
                 self.onCompletion(product)

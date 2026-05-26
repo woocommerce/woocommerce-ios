@@ -14,7 +14,6 @@ final class EntityDateModifiedMapperTests: XCTestCase {
             assertEqual(expectedDate, date)
         }
     }
-
 }
 
 /// Private Methods.

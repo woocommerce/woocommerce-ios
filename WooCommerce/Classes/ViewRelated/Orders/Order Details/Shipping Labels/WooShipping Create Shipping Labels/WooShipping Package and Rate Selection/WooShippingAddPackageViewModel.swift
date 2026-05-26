@@ -1,6 +1,8 @@
-import Foundation
-import SwiftUI
 import Combine
+import Experiments
+import Foundation
+import ParcelFittingCheck
+import SwiftUI
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -10,8 +12,13 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let stores: StoresManager
     private let storage: StorageManagerType
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
+    private let arParcelFittingEligibilityChecker: ARParcelFittingEligibilityChecking
+    private let shippingSettingsService: ShippingSettingsService
 
     private let starAnimation: Animation = .spring(duration: 0.2)
+    private let starToggleService: PackageStarToggleService
+    private var starToggleSubscription: AnyCancellable?
 
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @Published var selectedPackageType: WooShippingAddPackageView.PackageProviderType
@@ -20,11 +27,18 @@ final class WooShippingAddPackageViewModel: ObservableObject {
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         arParcelFittingEligibilityChecker: ARParcelFittingEligibilityChecking = ARParcelFittingEligibilityChecker(),
+         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
         self.siteID = siteID
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
+        self.arParcelFittingEligibilityChecker = arParcelFittingEligibilityChecker
+        self.shippingSettingsService = shippingSettingsService
+        self.starToggleService = PackageStarToggleService(siteID: siteID, stores: stores, analytics: analytics)
 
         selectedPackageType = .custom
         previousSelectedPackage = selectedPackage
@@ -41,6 +55,15 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }
         configureResultsController()
         analytics.track(event: .WooShipping.packageSelectionStep(state: .started))
+        starToggleSubscription = starToggleService.$notice.assign(to: \.notice, on: self)
+        refreshARParcelFittingEligibility()
+    }
+
+    private func refreshARParcelFittingEligibility() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.isARParcelFittingAvailable = await self.arParcelFittingEligibilityChecker.isEligible()
+        }
     }
 
     @Published private(set) var isLoadingPackages: Bool = false
@@ -111,6 +134,54 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             return false
         }
         return previousSelectedPackage.id == selectedCarriersPackageId
+    }
+
+    // MARK: - AR Parcel Fitting
+
+    @Published private(set) var isARParcelFittingAvailable: Bool = false
+
+    var arDimensionUnit: UnitLength {
+        .fromStoreUnit(shippingSettingsService.dimensionUnit ?? "in")
+    }
+
+    var parcelPresetCarriers: [ParcelPresetCarrier] {
+        carrierPackages.map { carrier in
+            let packages: [ParcelPresetPackage] = carrier.packageGroups.flatMap { group in
+                group.packages.compactMap { package in
+                    guard let length = Float(package.length),
+                          let width = Float(package.width),
+                          let height = Float(package.height),
+                          length > 0, width > 0, height > 0 else {
+                        return nil
+                    }
+                    return ParcelPresetPackage(
+                        id: package.id,
+                        name: package.name,
+                        length: length,
+                        width: width,
+                        height: height
+                    )
+                }
+            }
+            return ParcelPresetCarrier(
+                id: carrier.carrier.rawValue,
+                name: carrier.carrier.name,
+                logo: carrier.carrier.logo,
+                packages: packages
+            )
+        }
+    }
+
+    func selectCarrierPackage(withID packageID: String) {
+        for (index, carrier) in carrierPackages.enumerated() {
+            for group in carrier.packageGroups {
+                if group.packages.contains(where: { $0.id == packageID }) {
+                    selectedCarriersTabIndex = index
+                    selectedCarriersPackageId = packageID
+                    return
+                }
+            }
+        }
     }
 
     // MARK: - Storage
@@ -219,54 +290,20 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     // star/unstar packages
     func starUnstarPackage(_ packageID: String, carrierID: String) {
-        if starredCarriersPackages.contains(packageID) {
-            _ = withAnimation(starAnimation) {
+        let isStarring = !starredCarriersPackages.contains(packageID)
+        _ = withAnimation(starAnimation) {
+            if isStarring {
+                starredCarriersPackages.insert(packageID)
+            } else {
                 starredCarriersPackages.remove(packageID)
             }
-            let action = WooShippingAction.deletePackage(siteID: siteID,
-                                                         packageID: packageID,
-                                                         packageType: .predefined,
-                                                         completion: { [weak self] result in
-                guard let self else { return }
-                if case .failure(let error) = result {
-                    DDLogError("⛔️ Error saving Woo Shipping package: \(error)")
-                    starredCarriersPackages.insert(packageID)
-                    notice = Notice(title: Localization.removingPackageFailure,
-                                          feedbackType: .error,
-                                          actionTitle: Localization.retry,
-                                          actionHandler: { [weak self] in
-                        self?.starUnstarPackage(packageID, carrierID: carrierID)
-                    })
-                    analytics.track(event: .WooShipping.packageSelectionStep(state: .removingFailed, error: error))
-                } else {
-                    analytics.track(event: .WooShipping.packageSelectionStep(state: .removingSuccess))
-                }
-            })
-            stores.dispatch(action)
         }
-        else {
-            _ = withAnimation(starAnimation) {
-                starredCarriersPackages.insert(packageID)
+        starToggleService.toggle(packageID: packageID, carrierID: carrierID, isStarred: isStarring) { [weak self] in
+            if isStarring {
+                self?.starredCarriersPackages.remove(packageID)
+            } else {
+                self?.starredCarriersPackages.insert(packageID)
             }
-
-            let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])
-            let createAction = WooShippingAction.createPackage(siteID: siteID, customPackage: nil, predefinedOption: predefined) { [weak self] result in
-                guard let self else { return }
-                if case .failure(let error) = result {
-                    DDLogError("⛔️ Error saving Woo Shipping package: \(error)")
-                    starredCarriersPackages.remove(packageID)
-                    notice = Notice(title: Localization.savingPackageFailure,
-                                          feedbackType: .error,
-                                          actionTitle: Localization.retry,
-                                          actionHandler: { [weak self] in
-                        self?.starUnstarPackage(packageID, carrierID: carrierID)
-                    })
-                    analytics.track(event: .WooShipping.packageSelectionStep(state: .savingFailed, error: error))
-                } else {
-                    analytics.track(event: .WooShipping.packageSelectionStep(state: .savingSuccess))
-                }
-            }
-            stores.dispatch(createAction)
         }
     }
 
@@ -334,20 +371,17 @@ extension WooShippingAddPackageViewModel {
         static let removingPackageFailure = NSLocalizedString(
             "wooShippingAddPackageViewModel.removingPackageFailure",
             value: "Unable to remove package",
-            comment: "Message on a notice when removing a package fails in the shipping creation flow"
-        )
-        static let savingPackageFailure = NSLocalizedString(
-            "wooShippingAddPackageViewModel.savingPackageFailure",
-            value: "Unable to save package",
-            comment: "Message on a notice when saving a package fails in the shipping creation flow"
+            comment: "Message on a notice when removing a saved package fails in the shipping creation flow"
         )
         static let retry = NSLocalizedString(
             "wooShippingAddPackageViewModel.retry",
             value: "Retry",
-            comment: "Button to retry saving/removing a package in the shipping creation flow"
+            comment: "Button to retry removing a saved package in the shipping creation flow"
         )
     }
 }
+
+
 
 extension WooShippingCustomPackage {
     func toPackageData() -> WooShippingPackageData {

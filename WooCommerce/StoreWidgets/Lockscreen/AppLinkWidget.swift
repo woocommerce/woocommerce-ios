@@ -6,11 +6,7 @@ import SwiftUI
 struct AppLinkWidget: Widget {
     private var supportedFamilies: [WidgetFamily] {
 #if !os(watchOS)
-        if #available(iOSApplicationExtension 16.0, *) {
-            return [.accessoryCircular]
-        } else {
-            return []
-        }
+        return [.accessoryCircular]
 #else
         return [.accessoryCorner, .accessoryCircular]
 #endif
@@ -100,7 +96,6 @@ private extension AppLinkWidget {
 
 // MARK: Previews
 
-@available(iOSApplicationExtension 16.0, *)
 struct AppLinkWidget_Previews: PreviewProvider {
     static var previews: some View {
         AppButtonView()

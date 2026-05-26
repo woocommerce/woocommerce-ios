@@ -20,7 +20,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 
     // Timezone of the website
     //
-    private let siteTimezone: TimeZone = TimeZone.siteTimezone
+    private let siteTimezone = TimeZone.siteTimezone
 
     private let isDescriptionAIEnabled: Bool
     private let featureFlagService: FeatureFlagService
@@ -54,7 +54,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func primaryFieldRows(product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
-        actions.map { action -> [ProductFormSection.PrimaryFieldRow] in
+        actions.flatMap { action -> [ProductFormSection.PrimaryFieldRow] in
             switch action {
             case .images(let editable, let isStorePublic):
                 return [.images(isEditable: editable,
@@ -83,7 +83,7 @@ private extension DefaultProductFormTableViewModel {
             default:
                 fatalError("Unexpected action in the primary section: \(action)")
             }
-        }.reduce([], +)
+        }
     }
 
     func settingsRows(productModel product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
@@ -348,7 +348,7 @@ private extension DefaultProductFormTableViewModel {
         var shippingDetails = [String]()
 
         // Weight[unit]
-        if let weight = product.weight, let weightUnit = weightUnit, !weight.isEmpty {
+        if let weight = product.weight, let weightUnit, !weight.isEmpty {
             let localizedWeight = shippingValueLocalizer.localized(shippingValue: weight) ?? weight
             shippingDetails.append(String.localizedStringWithFormat(Localization.weightFormat,
                                                                     localizedWeight, weightUnit))
@@ -362,7 +362,7 @@ private extension DefaultProductFormTableViewModel {
             .map({ shippingValueLocalizer.localized(shippingValue: $0) ?? $0 })
             .filter({ !$0.isEmpty })
 
-        if let dimensionUnit = dimensionUnit,
+        if let dimensionUnit,
             !dimensions.isEmpty {
             switch dimensions.count {
             case 1:

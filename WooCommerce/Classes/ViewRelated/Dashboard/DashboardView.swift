@@ -216,7 +216,7 @@ private extension DashboardView {
     @ViewBuilder
     func dashboardCardList(with items: [DashboardCard]) -> some View {
         VStack(spacing: Layout.padding) {
-            ForEach(Array(items.enumerated()), id: \.element.hashValue) { index, card in
+            ForEach(Array(items.enumerated()), id: \.element.hashValue) { _, card in
                 VStack(spacing: Layout.padding) {
                     switch card.type {
                     case .onboarding:
@@ -284,6 +284,8 @@ private extension DashboardView {
                         shareStoreCard
                     case .connectWPCom:
                         connectWPComCard
+                    case .aiAssistant:
+                        aiAssistantCard
                     }
                 }
             }
@@ -293,6 +295,14 @@ private extension DashboardView {
     var feedbackCard: some View {
         InAppFeedbackCardView(viewModel: viewModel.inAppFeedbackCardViewModel)
             .padding(.horizontal, Layout.padding)
+    }
+
+    @ViewBuilder
+    var aiAssistantCard: some View {
+        if let currentSite {
+            AIAssistantDashboardCard(site: currentSite)
+                .padding(.horizontal, Layout.padding)
+        }
     }
 
     var shareStoreCard: some View {
@@ -501,7 +511,6 @@ private extension DashboardView {
                 comment: "Label of the button to add sections"
             )
         }
-
     }
 }
 

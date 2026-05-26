@@ -9,7 +9,7 @@ public struct StripeAccount: Decodable {
     /// Indicates whether the payment gateway is a live account that can accept actual payments, or just a test/developer account.
     /// Not to be confused with "test mode" which is a separate concept (see `isInTestMode`)
     /// Note: Using WCPayAccountStatusEnum is somewhat inappropriate here, since it ties this Stripe account concept
-    /// to WooCommerce Payments - although in reality both extensions use the same account on the backend.
+    /// to WooPayments - although in reality both extensions use the same account on the backend.
     /// TODO: Introduce a layer of abstraction and translate each extension's account status into a
     /// PaymentGatewayAccountStatusEnum or somesuch.
     ///

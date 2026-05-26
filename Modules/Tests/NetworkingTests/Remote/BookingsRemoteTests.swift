@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import Networking
 @testable import NetworkingCore
@@ -111,12 +112,12 @@ struct BookingsRemoteTests {
         #expect(unwrappedResource.resourceID == 22)
         #expect(unwrappedResource.name == "Joel (Sample resource)")
         #expect(unwrappedResource.quantity == 1)
-        #expect(unwrappedResource.role == "")
-        #expect(unwrappedResource.email == "")
-        #expect(unwrappedResource.phoneNumber == "")
+        #expect(unwrappedResource.role.isEmpty)
+        #expect(unwrappedResource.email?.isEmpty == true)
+        #expect(unwrappedResource.phoneNumber?.isEmpty == true)
         #expect(unwrappedResource.imageID == 0)
-        #expect(unwrappedResource.imageURL == "")
-        #expect(unwrappedResource.description == "")
+        #expect(unwrappedResource.imageURL?.isEmpty == true)
+        #expect(unwrappedResource.description?.isEmpty == true)
         #expect(unwrappedResource.siteID == sampleSiteID)
     }
 
@@ -263,6 +264,32 @@ struct BookingsRemoteTests {
         #expect((parameters["per_page"] as? String) == "100")
     }
 
+    @Test func test_fetchResources_sends_include_parameter_when_provided() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "resources/team-members", filename: "booking-resource-list")
+
+        // When
+        _ = try await remote.fetchResources(for: sampleSiteID, pageNumber: 1, pageSize: 25, include: [10, 20, 30])
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        #expect((request.parameters["include"] as? String) == "10,20,30")
+    }
+
+    @Test func test_fetchResources_does_not_send_include_parameter_when_nil() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "resources/team-members", filename: "booking-resource-list")
+
+        // When
+        _ = try await remote.fetchResources(for: sampleSiteID, pageNumber: 1, pageSize: 25)
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        #expect(request.parameters["include"] == nil)
+    }
+
     @Test func test_updateBookingNote_sends_correct_parameters_for_booking_note() async throws {
         // Given
         let remote = BookingsRemote(network: network)
@@ -285,5 +312,59 @@ struct BookingsRemoteTests {
         #expect(parameters["attendance_status"] == nil)
         #expect(parameters["status"] == nil)
         #expect((parameters["note"] as? String) == "hello")
+    }
+
+    // MARK: - rescheduleBooking
+
+    @Test func test_rescheduleBooking_sends_correct_parameters_with_resourceID() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        let bookingID: Int64 = 206
+        let startDate = Date(timeIntervalSince1970: 1776078000)
+        let endDate = Date(timeIntervalSince1970: 1776081600)
+        network.simulateResponse(requestUrlSuffix: "bookings/\(bookingID)", filename: "booking-no-create-update-dates")
+
+        // When
+        _ = try await remote.rescheduleBooking(
+            from: sampleSiteID,
+            bookingID: bookingID,
+            startDate: startDate,
+            endDate: endDate,
+            resourceID: 42
+        )
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        let parameters = request.parameters
+
+        #expect((parameters["start"] as? Int64) == 1776078000)
+        #expect((parameters["end"] as? Int64) == 1776081600)
+        #expect((parameters["resource_id"] as? String) == "42")
+    }
+
+    @Test func test_rescheduleBooking_sends_correct_parameters_without_resourceID() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        let bookingID: Int64 = 206
+        let startDate = Date(timeIntervalSince1970: 1776078000)
+        let endDate = Date(timeIntervalSince1970: 1776081600)
+        network.simulateResponse(requestUrlSuffix: "bookings/\(bookingID)", filename: "booking-no-create-update-dates")
+
+        // When
+        _ = try await remote.rescheduleBooking(
+            from: sampleSiteID,
+            bookingID: bookingID,
+            startDate: startDate,
+            endDate: endDate,
+            resourceID: nil
+        )
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        let parameters = request.parameters
+
+        #expect((parameters["start"] as? Int64) == 1776078000)
+        #expect((parameters["end"] as? Int64) == 1776081600)
+        #expect(parameters["resource_id"] == nil)
     }
 }

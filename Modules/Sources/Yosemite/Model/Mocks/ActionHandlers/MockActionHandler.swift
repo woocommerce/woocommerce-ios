@@ -14,7 +14,9 @@ extension MockActionHandler {
 
     /// A helper method to keep ActionHandler switch statements clean
     func unimplementedAction<T>(action: T) where T: Action {
-        fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
+        let message = "⚠️ [MockActionHandler] Unhandled action: \(action.identifier) \(String(describing: action))"
+        DDLogWarn(message)
+        assertionFailure(message)
     }
 
     /// A helper that immediately returns a success for `Result<Void>` closure patterns

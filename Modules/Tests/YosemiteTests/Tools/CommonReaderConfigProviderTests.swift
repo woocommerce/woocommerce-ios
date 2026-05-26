@@ -141,5 +141,4 @@ struct CommonReaderConfigProviderTests {
         #expect(sut.siteID == nil)
         #expect(sut.readerConfigRemote == nil)
     }
-
 }

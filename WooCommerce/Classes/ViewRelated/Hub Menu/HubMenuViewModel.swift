@@ -87,9 +87,6 @@ final class HubMenuViewModel: ObservableObject {
 
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
-    private var isIPPHiddenForCIAB: Bool {
-        siteCIABEligibilityChecker.isIPPHiddenForCurrentSite
-    }
     private let posEligibilityService: POSEligibilityServiceProtocol
     private let bookingsEligibilityCheckerFactory: (Site) -> BookingsTabEligibilityCheckerProtocol
     private let isPad: Bool
@@ -230,6 +227,14 @@ final class HubMenuViewModel: ObservableObject {
         analytics.track(.hubMenuOptionTapped, withProperties: [AnalyticsKeys.trackingOption: menu.trackingOption])
     }
 
+    /// Whether the current site is a CIAB (Commerce in a Box) site.
+    /// On CIAB sites, WC Admin opens in an SFSafariViewController (Safari sheet) instead of the
+    /// in-app webview, because the in-app webview hides the Admin navigation sidebar which is
+    /// needed for full WC Admin navigation.
+    func isCIABSite() -> Bool {
+        siteCIABEligibilityChecker.isCurrentSiteCIAB
+    }
+
     func createGoogleAdsCampaignCoordinator(with navigationController: UINavigationController) -> GoogleAdsCampaignCoordinator {
         GoogleAdsCampaignCoordinator(
             siteID: siteID,
@@ -299,9 +304,7 @@ private extension HubMenuViewModel {
                                eligibleForBookings: Bool) -> [HubMenuItem] {
         var items: [HubMenuItem] = []
 
-        if !isIPPHiddenForCIAB {
-            items.append(Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil))
-        }
+        items.append(Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil))
 
         if shouldShowBookingsInMenu, eligibleForBookings {
             items.append(Bookings())
@@ -605,7 +608,7 @@ extension HubMenuViewModel {
         let title: String = Localization.coupon
         let description: String = Localization.couponDescription
         let icon: UIImage = .couponImage
-        let iconColor: UIColor = UIColor(light: .withColorStudio(.green, shade: .shade30),
+        let iconColor = UIColor(light: .withColorStudio(.green, shade: .shade30),
                                          dark: .withColorStudio(.green, shade: .shade50))
         let accessibilityIdentifier: String = "menu-coupons"
         let trackingOption: String = "coupons"

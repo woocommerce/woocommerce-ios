@@ -89,6 +89,9 @@ extension Product {
     @NSManaged public var isSampleItem: Bool
     @NSManaged public var password: String?
     @NSManaged public var globalUniqueID: String?
+    @NSManaged public var bookingDuration: NSNumber?
+    @NSManaged public var bookingDurationUnit: String?
+    @NSManaged public var bookingResourceIDs: [Int64]?
 }
 
 // MARK: Generated accessors for attributes
@@ -105,7 +108,6 @@ extension Product {
 
     @objc(removeAttributes:)
     @NSManaged public func removeFromAttributes(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for categories
@@ -122,7 +124,6 @@ extension Product {
 
     @objc(removeCategories:)
     @NSManaged public func removeFromCategories(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for defaultAttributes
@@ -139,7 +140,6 @@ extension Product {
 
     @objc(removeDefaultAttributes:)
     @NSManaged public func removeFromDefaultAttributes(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for downloads
@@ -174,7 +174,6 @@ extension Product {
 
     @objc(removeDownloads:)
     @NSManaged public func removeFromDownloads(_ values: NSOrderedSet)
-
 }
 
 // MARK: Generated accessors for images
@@ -209,7 +208,6 @@ extension Product {
 
     @objc(removeImages:)
     @NSManaged public func removeFromImages(_ values: NSOrderedSet)
-
 }
 
 // MARK: Generated accessors for tags
@@ -244,7 +242,6 @@ extension Product {
 
     @objc(removeTags:)
     @NSManaged public func removeFromTags(_ values: NSOrderedSet)
-
 }
 
 // MARK: Generated accessors for searchResults
@@ -261,7 +258,6 @@ extension Product {
 
     @objc(removeSearchResults:)
     @NSManaged public func removeFromSearchResults(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for productVariations
@@ -278,7 +274,6 @@ extension Product {
 
     @objc(removeProductVariations:)
     @NSManaged public func removeFromProductVariations(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for addOns
@@ -295,7 +290,6 @@ extension Product {
 
     @objc(removeAddOns:)
     @NSManaged public func removeFromAddOns(_ values: NSOrderedSet)
-
 }
 
 // MARK: Generated accessors for bundledItems
@@ -330,7 +324,6 @@ extension Product {
 
     @objc(removeBundledItems:)
     @NSManaged public func removeFromBundledItems(_ values: NSOrderedSet)
-
 }
 
 // MARK: Generated accessors for compositeComponents
@@ -365,7 +358,6 @@ extension Product {
 
     @objc(removeCompositeComponents:)
     @NSManaged public func removeFromCompositeComponents(_ values: NSOrderedSet)
-
 }
 
 // MARK: Generated accessors for customFields
@@ -382,5 +374,4 @@ extension Product {
 
     @objc(removeCustomFields:)
     @NSManaged public func removeFromCustomFields(_ values: NSSet)
-
 }

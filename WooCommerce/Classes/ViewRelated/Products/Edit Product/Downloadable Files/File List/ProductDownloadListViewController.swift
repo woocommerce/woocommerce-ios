@@ -85,7 +85,7 @@ final class ProductDownloadListViewController: UIViewController {
         onWPLibraryPickerCompletion = { [weak self] mediaItems in
             self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
         }
-        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
+        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] _, result in
             switch result {
             case let .success(productImage):
                 ServiceLocator.analytics.track(.productDownloadableFileUploadingSuccess)
@@ -189,7 +189,7 @@ extension ProductDownloadListViewController {
         let actions = viewModel.bottomSheetActions
         let dataSource = DownloadableFileBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
             self?.dismiss(animated: true) { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch action {
                 case .deviceMedia:
                     self.showDeviceMediaLibraryPicker(origin: self)
@@ -241,7 +241,6 @@ private extension ProductDownloadListViewController {
         }
 
         navigationController?.pushViewController(viewController, animated: true)
-
     }
 
     func onAddEditDownloadableFileCompletion(fileName: String?,
@@ -260,7 +259,7 @@ private extension ProductDownloadListViewController {
                                                                                           name: fileName ?? "",
                                                                                           fileURL: fileURL)))
         case .edit:
-            if let indexPath = indexPath {
+            if let indexPath {
                 viewModel.update(at: indexPath.row,
                                  element: (ProductDownloadDragAndDrop(downloadableFile: ProductDownload(downloadID: fileID ?? "",
                                                                                                         name: fileName ?? "",
@@ -272,7 +271,7 @@ private extension ProductDownloadListViewController {
     }
 
     func onDownloadableFileDeletion(indexPath: IndexPath?) {
-        guard let indexPath = indexPath else {
+        guard let indexPath else {
             return
         }
         viewModel.remove(at: indexPath.row)
@@ -288,7 +287,7 @@ private extension ProductDownloadListViewController {
         let menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         menuAlert.view.tintColor = .text
 
-        let downloadSettingsAction = UIAlertAction(title: Localization.downloadSettingsAction, style: .default) { [weak self] (action) in
+        let downloadSettingsAction = UIAlertAction(title: Localization.downloadSettingsAction, style: .default) { [weak self] (_) in
             self?.showDownloadableFilesSettings()
         }
         menuAlert.addAction(downloadSettingsAction)

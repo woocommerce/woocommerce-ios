@@ -113,7 +113,7 @@ private extension StorePickerCoordinator {
     /// After successfully switching, the store picker screen should be dismissed.
     func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
-            guard let self = self else { return }
+            guard let self else { return }
             if self.selectedConfiguration == .login {
                 MainTabBarController.switchToMyStoreTab(animated: true)
             }

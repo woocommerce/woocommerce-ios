@@ -164,7 +164,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeTraitChanges()
 
         productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -811,7 +811,7 @@ private extension ProductFormViewController {
     ///
     func observeProductName() {
         productNameSubscription = viewModel.productName?.sink { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.updateBackButtonTitle()
             if self.view.window == nil { // If window is nil, this screen isn't the active screen.
                 self.onProductUpdated(product: self.product)
@@ -845,7 +845,6 @@ private extension ProductFormViewController {
                 ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productDetailPromoteButton))
             }
         }
-
     }
 
     /// Updates table view model and datasource.
@@ -920,7 +919,7 @@ private extension ProductFormViewController {
         updateDataSourceActions()
         tableView.dataSource = tableViewDataSource
 
-        if let reloadClosure = reloadClosure {
+        if let reloadClosure {
             reloadClosure()
         } else {
             tableView.reloadData()
@@ -934,7 +933,7 @@ private extension ProductFormViewController {
             self?.editLinkedProducts()
         }
         tableViewDataSource.reloadLinkedPromoAction = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.reloadLinkedPromoCell()
         }
         tableViewDataSource.descriptionAIAction = { [weak self] in
@@ -1207,7 +1206,7 @@ private extension ProductFormViewController {
 
     func deleteProduct() {
         self.viewModel.deleteProductRemotely { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success:
                 ServiceLocator.analytics.track(.productDetailProductDeleted)
@@ -1237,7 +1236,7 @@ private extension ProductFormViewController {
                                                            password: password,
                                                            formType: viewModel.formType,
                                                            completion: { [weak self] (productSettings) in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.viewModel.updateProductSettings(productSettings)
@@ -1652,7 +1651,7 @@ private extension ProductFormViewController {
                 self?.viewModel.updateProductType(productType: selectedProductType)
             })
         }
-        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
+        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command, initialPosition: .expanded)
         productTypesListPresenter.show(from: self, sourceView: cell, arrowDirections: .any)
     }
 }

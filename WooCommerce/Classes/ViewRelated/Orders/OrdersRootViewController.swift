@@ -37,11 +37,11 @@ final class OrdersRootViewController: UIViewController {
     /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
     ///
     private var filtersBar: FilteredOrdersHeaderBar = {
-        let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
+        let filteredOrdersBar = FilteredOrdersHeaderBar.instantiateFromNib()
         return filteredOrdersBar
     }()
 
-    private var filters: FilterOrderListViewModel.Filters = FilterOrderListViewModel.Filters() {
+    private var filters = FilterOrderListViewModel.Filters() {
         didSet {
             if filters != oldValue {
                 updateLocalOrdersSettings(filters: filters)
@@ -65,6 +65,7 @@ final class OrdersRootViewController: UIViewController {
     }()
 
     private let featureFlagService: FeatureFlagService
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
@@ -79,10 +80,12 @@ final class OrdersRootViewController: UIViewController {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
+         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
+        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.orderDurationRecorder = orderDurationRecorder
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
         self.switchDetailsHandler = switchDetailsHandler
@@ -107,7 +110,7 @@ final class OrdersRootViewController: UIViewController {
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
         ///
         syncLocalOrdersSettings { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.configureStatusResultsController()
         }
     }
@@ -202,14 +205,14 @@ final class OrdersRootViewController: UIViewController {
     /// Coordinates the navigation between the different views involved in Order Creation, Editing, and Details
     ///
     private func setupNavigation(viewModel: EditableOrderViewModel) {
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             return
         }
 
         let viewController = OrderFormHostingController(viewModel: viewModel)
 
         viewModel.onFinished = { [weak self] order in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.dismiss(animated: true) {
                 self.navigateToOrderDetail(order)
@@ -242,7 +245,7 @@ final class OrdersRootViewController: UIViewController {
     @objc func presentOrderCreationFlowByProductScanning() {
         analytics.track(event: .Orders.orderAddNewFromBarcodeScanningTapped())
 
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             return
         }
 
@@ -252,7 +255,7 @@ final class OrdersRootViewController: UIViewController {
 
             self?.navigationItem.configureLeftBarButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case let .success(product):
                     self.analytics.track(event: .Orders.orderProductAdd(flow: .creation,
@@ -310,7 +313,10 @@ final class OrdersRootViewController: UIViewController {
             DDLogError("⛔️ Unable to fetch stored statuses for Site \(siteID): \(error)")
         }
 
-        let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
+        let fetchedStatuses = statusResultsController.fetchedObjects
+        let allowedStatuses = ciabEligibilityChecker.isCurrentSiteCIAB
+            ? CIABOrderStatusMapper.mapFilterOptions(fetchedStatuses)
+            : fetchedStatuses
 
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses, siteID: siteID)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
@@ -382,8 +388,8 @@ private extension OrdersRootViewController {
     /// This is useful for stay up to date with the remote statuses, resetting the filters if one of the local status filters was deleted remotely.
     ///
     func configureStatusResultsController() {
-        statusResultsController.onDidChangeObject = { [weak self] (updatedOrdersStatus, _, _, _) in
-            guard let self = self else { return }
+        statusResultsController.onDidChangeObject = { [weak self] (_, _, _, _) in
+            guard let self else { return }
             self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
         }
 
@@ -399,8 +405,14 @@ private extension OrdersRootViewController {
     ///
     func resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: [OrderStatus]) {
         guard let storedOrderFilters = filters.orderStatus else { return }
-        for storedOrderFilter in storedOrderFilters {
-            if !orderStatuses.map({$0.status}).contains(storedOrderFilter) {
+        let availableStatuses = Set(orderStatuses.map { $0.status })
+        // On CIAB sites, resolve synthetic statuses (e.g. "open") to their underlying core statuses
+        // before checking validity, since the API only returns core statuses.
+        let resolvedFilters = ciabEligibilityChecker.isCurrentSiteCIAB
+            ? CIABOrderStatusMapper.resolveFilterStatuses(storedOrderFilters)
+            : storedOrderFilters
+        for resolvedFilter in resolvedFilters {
+            if !availableStatuses.contains(resolvedFilter) {
                 clearFilters()
                 break
             }
@@ -440,7 +452,7 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
 
 // MARK: - Stored Order Settings (eg. filters)
 private extension OrdersRootViewController {
-    /// Fetch local Orders Settings (eg.  status or date range filters stored in Orders settings)
+    /// Fetch local Orders Settings (eg. status or date range filters stored in Orders settings)
     ///
     func syncLocalOrdersSettings(onCompletion: @escaping (Result<StoredOrderSettings.Setting, Error>) -> Void) {
         let action = AppSettingsAction.loadOrdersSettings(siteID: siteID) { [weak self] (result) in

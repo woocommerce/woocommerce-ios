@@ -28,7 +28,7 @@ struct LazyNavigationLink<Destination: View, Label: View>: View {
     }
 
     var body: some View {
-        if let isActive = isActive {
+        if let isActive {
             NavigationLink(destination: LazyView(destination), isActive: isActive, label: label)
         } else {
             NavigationLink(destination: LazyView(destination), label: label)

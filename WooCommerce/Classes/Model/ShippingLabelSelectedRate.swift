@@ -19,27 +19,27 @@ struct ShippingLabelSelectedRate: GeneratedCopiable {
 
 extension ShippingLabelSelectedRate {
     var retailRate: Double {
-        if let signatureRate = signatureRate {
+        if let signatureRate {
             return signatureRate.retailRate
-        } else if let adultSignatureRate = adultSignatureRate {
+        } else if let adultSignatureRate {
             return adultSignatureRate.retailRate
         }
         return rate.retailRate
     }
 
     var discount: Double {
-        if let signatureRate = signatureRate {
+        if let signatureRate {
             return signatureRate.rate - signatureRate.retailRate
-        } else if let adultSignatureRate = adultSignatureRate {
+        } else if let adultSignatureRate {
             return adultSignatureRate.rate - adultSignatureRate.retailRate
         }
         return rate.rate - rate.retailRate
     }
 
     var totalRate: Double {
-        if let signatureRate = signatureRate {
+        if let signatureRate {
             return signatureRate.rate
-        } else if let adultSignatureRate = adultSignatureRate {
+        } else if let adultSignatureRate {
             return adultSignatureRate.rate
         }
         return rate.rate

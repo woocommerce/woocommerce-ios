@@ -37,7 +37,7 @@ extension XCTestCase {
 
     public func takeScreenshotOfFailedTest() {
         if let failureCount = testRun?.failureCount, failureCount > 0 {
-            XCTContext.runActivity(named: "Take a screenshot at the end of a failed test") { (activity) in
+            XCTContext.runActivity(named: "Take a screenshot at the end of a failed test") { (_) in
                 add(XCTAttachment(screenshot: XCUIApplication().windows.firstMatch.screenshot()))
             }
         }
@@ -117,7 +117,7 @@ extension XCUIElement {
 
     public func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {
 
-        let startCoordinate = self.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
+        let startCoordinate = self.coordinate(withNormalizedOffset: CGVector.zero)
         let destination = startCoordinate.withOffset(CGVector(dx: deltaX, dy: deltaY * -1))
 
         startCoordinate.press(forDuration: 0.01, thenDragTo: destination)
@@ -147,7 +147,7 @@ extension XCUIElement {
     func verifyLabelContains(substring firstSubstring: String, and secondSubstring: String) throws -> Bool {
         let firstPredicate = NSPredicate(format: "label CONTAINS[c] %@", firstSubstring)
         let secondPredicate = NSPredicate(format: "label CONTAINS[c] %@", secondSubstring)
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [firstPredicate, secondPredicate])
+        let predicateCompound = NSCompoundPredicate(type: .and, subpredicates: [firstPredicate, secondPredicate])
 
         return XCUIApplication().staticTexts.containing(predicateCompound).count == 1
     }

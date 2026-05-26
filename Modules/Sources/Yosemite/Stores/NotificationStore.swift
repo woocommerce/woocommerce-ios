@@ -8,14 +8,16 @@ import Storage
 public class NotificationStore: Store {
     private let remote: NotificationsRemote
     private let devicesRemote: DevicesRemote
+    private let pushNotificationPreferencesRemote: PushNotificationPreferencesRemoteProtocol
 
     /// Shared private StorageType for use during then entire notification sync process
     ///
     private static var privateStorage: StorageType!
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = NotificationsRemote(network: network)
         self.devicesRemote = DevicesRemote(network: network)
+        self.pushNotificationPreferencesRemote = PushNotificationPreferencesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -56,17 +58,25 @@ public class NotificationStore: Store {
             updateReadStatus(for: noteIDs, read: read, onCompletion: onCompletion)
         case .updateLocalDeletedStatus(let noteID, let deleteInProgress, let onCompletion):
             updateDeletedStatus(noteID: noteID, deleteInProgress: deleteInProgress, onCompletion: onCompletion)
-        case let .registerDeviceForSelfDrivenPushNotifications(siteID, device, applicationID, deviceLocale, appVersion, onCompletion):
+        case let .registerDeviceForSelfDrivenPushNotifications(siteID, device, applicationID, deviceLocale, appVersion, availableAsRESTRequest, onCompletion):
             registerDeviceForSelfDrivenPushNotifications(
                 siteID: siteID,
                 device: device,
                 applicationID: applicationID,
                 deviceLocale: deviceLocale,
                 appVersion: appVersion,
+                availableAsRESTRequest: availableAsRESTRequest,
                 onCompletion: onCompletion
             )
-        case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, onCompletion):
-            unregisterFromSelfDrivenPushNotifications(siteID: siteID, tokenID: tokenID, onCompletion: onCompletion)
+        case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, availableAsRESTRequest, onCompletion):
+            unregisterFromSelfDrivenPushNotifications(siteID: siteID,
+                                                      tokenID: tokenID,
+                                                      availableAsRESTRequest: availableAsRESTRequest,
+                                                      onCompletion: onCompletion)
+        case let .loadPushNotificationPreferences(siteID, onCompletion):
+            loadPushNotificationPreferences(siteID: siteID, onCompletion: onCompletion)
+        case let .updatePushNotificationPreferences(siteID, changes, onCompletion):
+            updatePushNotificationPreferences(siteID: siteID, changes: changes, onCompletion: onCompletion)
         }
     }
 }
@@ -101,6 +111,7 @@ private extension NotificationStore {
                                                       applicationID: String,
                                                       deviceLocale: String,
                                                       appVersion: String,
+                                                      availableAsRESTRequest: Bool,
                                                       onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         Task { @MainActor in
             do {
@@ -109,7 +120,8 @@ private extension NotificationStore {
                     device: device,
                     applicationID: applicationID,
                     deviceLocale: deviceLocale,
-                    appVersion: appVersion
+                    appVersion: appVersion,
+                    availableAsRESTRequest: availableAsRESTRequest
                 )
                 onCompletion(.success(tokenID))
             } catch {
@@ -122,11 +134,47 @@ private extension NotificationStore {
     ///
     func unregisterFromSelfDrivenPushNotifications(siteID: Int64,
                                                    tokenID: Int64,
+                                                   availableAsRESTRequest: Bool,
                                                    onCompletion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
-                try await devicesRemote.unregisterFromSelfDrivenPushNotifications(siteID: siteID, tokenID: tokenID)
+                try await devicesRemote.unregisterFromSelfDrivenPushNotifications(
+                    siteID: siteID,
+                    tokenID: tokenID,
+                    availableAsRESTRequest: availableAsRESTRequest
+                )
                 onCompletion(.success(()))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Loads the current user's push notification preferences for a site.
+    ///
+    func loadPushNotificationPreferences(siteID: Int64,
+                                         onCompletion: @escaping (Result<PushNotificationPreferences, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let preferences = try await pushNotificationPreferencesRemote.loadPreferences(siteID: siteID)
+                onCompletion(.success(preferences))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Sends a partial update to the current user's push notification preferences and returns the
+    /// full, server-merged result.
+    ///
+    func updatePushNotificationPreferences(siteID: Int64,
+                                           changes: PushNotificationPreferences,
+                                           onCompletion: @escaping (Result<PushNotificationPreferences, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let preferences = try await pushNotificationPreferencesRemote.updatePreferences(siteID: siteID,
+                                                                                                changes: changes)
+                onCompletion(.success(preferences))
             } catch {
                 onCompletion(.failure(error))
             }
@@ -138,7 +186,7 @@ private extension NotificationStore {
     ///
     func synchronizeNotifications(onCompletion: @escaping (Error?) -> Void) {
         remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] (hashes, error) in
-            guard let hashes = hashes else {
+            guard let hashes else {
                 onCompletion(error)
                 return
             }
@@ -151,7 +199,7 @@ private extension NotificationStore {
                 }
 
                 self?.remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { result in
-                    guard let self = self else {
+                    guard let self else {
                         return
                     }
                     switch result {
@@ -176,7 +224,7 @@ private extension NotificationStore {
     ///
     func synchronizeNotification(with noteID: Int64, onCompletion: @escaping (Note?, Error?) -> Void) {
         remote.loadNotes(noteIDs: [noteID]) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             switch result {

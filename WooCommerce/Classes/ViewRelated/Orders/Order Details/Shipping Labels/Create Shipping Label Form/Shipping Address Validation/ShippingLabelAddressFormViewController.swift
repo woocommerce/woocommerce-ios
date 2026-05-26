@@ -35,7 +35,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                 }
             }
         } contactCustomerPressed: { [weak self] sourceView in
-            guard let self = self else { return }
+            guard let self else { return }
             ServiceLocator.analytics.track(.shippingLabelEditAddressContactCustomerButtonTapped)
 
             guard PhoneHelper.canCallPhoneNumber(phone: phone)
@@ -49,7 +49,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             actionSheet.view.tintColor = .text
 
             actionSheet.addCancelActionWithTitle(Localization.contactActionCancel)
-            if let email = email, email.isNotEmpty && MFMailComposeViewController.canSendMail() {
+            if let email, email.isNotEmpty && MFMailComposeViewController.canSendMail() {
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionEmail) { _ in
                     self.sendEmail(to: email)
                 }
@@ -189,7 +189,7 @@ private extension ShippingLabelAddressFormViewController {
 
     func observeViewModel() {
         viewModel.onChange = { [weak self] focusedIndex in
-            guard let self = self else { return }
+            guard let self else { return }
             self.configureNavigationBar()
             self.updateTopBannerView()
             self.tableView.reloadData()
@@ -245,7 +245,7 @@ private extension ShippingLabelAddressFormViewController {
     @objc func doneButtonTapped() {
         ServiceLocator.analytics.track(.shippingLabelEditAddressDoneButtonTapped)
         viewModel.validateAddress(onlyLocally: false) { [weak self] (result) in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success:
                 self.onCompletion(self.viewModel.address)
@@ -261,7 +261,7 @@ private extension ShippingLabelAddressFormViewController {
     @objc func confirmButtonTapped() {
         ServiceLocator.analytics.track(.shippingLabelEditAddressUseAddressAsIsButtonTapped)
         viewModel.validateAddress(onlyLocally: true) { [weak self] (result) in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success:
                 self.onCompletion(self.viewModel.address)

@@ -14,7 +14,6 @@ final class RenameAttributesViewModel {
     init(attributeName: String) {
         self.originalAttributeName = attributeName
     }
-
 }
 
 // MARK: - Actions
@@ -23,7 +22,7 @@ extension RenameAttributesViewModel {
     /// Prevents the Done button from being enabled when the new attribute name is empty
     ///
     var shouldEnableDoneButton: Bool {
-        newAttributeName != ""
+        newAttributeName?.isEmpty != true
     }
 
     /// Name of the attribute

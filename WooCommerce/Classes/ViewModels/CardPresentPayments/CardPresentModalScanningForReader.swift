@@ -26,7 +26,7 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
     var bottomSubtitle: String?
 
     var accessibilityLabel: String? {
-        guard let bottomTitle = bottomTitle else {
+        guard let bottomTitle else {
             return topTitle
         }
         return topTitle + bottomTitle
@@ -44,7 +44,7 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
-        guard let viewController = viewController else {
+        guard let viewController else {
             return
         }
         WebviewHelper.launch(Constants.learnMoreURL.asURL(), with: viewController)

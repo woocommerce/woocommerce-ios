@@ -41,7 +41,6 @@ struct MyStoreView: View {
             case let .loaded(revenue, totalOrders, totalVisitors, conversion, time):
                 dataView(revenue: revenue, orders: totalOrders, visitors: totalVisitors, conversion: conversion, time: time)
                     .padding(.horizontal)
-
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -75,7 +74,6 @@ struct MyStoreView: View {
                     .font(.footnote)
 
                 Spacer()
-
             }
             .multilineTextAlignment(.center)
 
@@ -188,9 +186,9 @@ fileprivate extension MyStoreView {
 
     enum Localization {
         static let revenue = AppLocalizedString(
-            "watch.mystore.netSales.title",
-            value: "Net sales",
-            comment: "Net sales title on the watch store stats screen."
+            "watch.mystore.totalSales.title",
+            value: "Total sales",
+            comment: "Total sales title on the watch store stats screen."
         )
         static let today = AppLocalizedString(
             "watch.mystore.today.title",

@@ -90,7 +90,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
         storageOrder.orderItemsArray.forEach { storageItem in
-            if readOnlyOrder.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
+            if !readOnlyOrder.items.contains(where: { $0.itemID == storageItem.itemID }) {
                 storageOrder.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
             }
@@ -150,7 +150,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrderItem.taxes but not in readOnlyOrderItem.taxes
         storageItem.taxes?.forEach { storageTax in
-            if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+            if !readOnlyItem.taxes.contains(where: { $0.taxID == storageTax.taxID }) {
                 storageItem.removeFromTaxes(storageTax)
                 storage.deleteObject(storageTax)
             }
@@ -173,7 +173,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrder.coupons but not in readOnlyOrder.coupons
         storageOrder.coupons?.forEach { storageCoupon in
-            if readOnlyOrder.coupons.first(where: { $0.couponID == storageCoupon.couponID } ) == nil {
+            if !readOnlyOrder.coupons.contains(where: { $0.couponID == storageCoupon.couponID }) {
                 storageOrder.removeFromCoupons(storageCoupon)
                 storage.deleteObject(storageCoupon)
             }
@@ -196,7 +196,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrder.fees but not in readOnlyOrder.fees
         storageOrder.fees?.forEach { storageFee in
-            if readOnlyOrder.fees.first(where: { $0.feeID == storageFee.feeID } ) == nil {
+            if !readOnlyOrder.fees.contains(where: { $0.feeID == storageFee.feeID }) {
                 storageOrder.removeFromFees(storageFee)
                 storage.deleteObject(storageFee)
             }
@@ -219,7 +219,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrder.OrderRefundCondensed but not in readOnlyOrder.OrderRefundCondensed
         storageOrder.refunds?.forEach { storageRefunds in
-            if readOnlyOrder.refunds.first(where: { $0.refundID == storageRefunds.refundID } ) == nil {
+            if !readOnlyOrder.refunds.contains(where: { $0.refundID == storageRefunds.refundID }) {
                 storageOrder.removeFromRefunds(storageRefunds)
                 storage.deleteObject(storageRefunds)
             }
@@ -244,7 +244,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrder.shippingLines but not in readOnlyOrder.shippingLines
         storageOrder.shippingLines?.forEach { storageShippingLine in
-            if readOnlyOrder.shippingLines.first(where: { $0.shippingID == storageShippingLine.shippingID } ) == nil {
+            if !readOnlyOrder.shippingLines.contains(where: { $0.shippingID == storageShippingLine.shippingID }) {
                 storageOrder.removeFromShippingLines(storageShippingLine)
                 storage.deleteObject(storageShippingLine)
             }
@@ -268,7 +268,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageItem.taxes but not in readOnlyItem.taxes
         storageItem.taxes?.forEach { storageTax in
-            if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+            if !readOnlyItem.taxes.contains(where: { $0.taxID == storageTax.taxID }) {
                 storageItem.removeFromTaxes(storageTax)
                 storage.deleteObject(storageTax)
             }
@@ -291,7 +291,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in `storageOrder.taxes` but not in `readOnlyOrder.taxes`
         storageOrder.taxes?.forEach { storageTax in
-            if readOnlyOrder.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+            if !readOnlyOrder.taxes.contains(where: { $0.taxID == storageTax.taxID }) {
                 storageOrder.removeFromTaxes(storageTax)
                 storage.deleteObject(storageTax)
             }
@@ -315,7 +315,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in `storageOrder.customFields` but not in `readOnlyOrder.customFields`
         storageOrder.customFields?.forEach { storageCustomField in
-            if readOnlyOrder.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
+            if !readOnlyOrder.customFields.contains(where: { $0.metadataID == storageCustomField.metadataID }) {
                 storageOrder.removeFromCustomFields(storageCustomField)
                 storage.deleteObject(storageCustomField)
             }

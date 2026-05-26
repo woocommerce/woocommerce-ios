@@ -18,7 +18,7 @@ final class DecodingError_CodingPathTests: XCTestCase {
 
         // Then
         assertEqual("name", error.debugPath)
-        assertEqual(mockDebugDescription, error.debugDescription)
+        assertEqual(mockDebugDescription, error.contextDebugDescription)
     }
 
     func test_keyNotFound_decoding_error_has_expected_properties() {
@@ -27,7 +27,7 @@ final class DecodingError_CodingPathTests: XCTestCase {
 
         // Then
         assertEqual("name", error.debugPath)
-        assertEqual(mockDebugDescription, error.debugDescription)
+        assertEqual(mockDebugDescription, error.contextDebugDescription)
     }
 
     func test_typeMismatch_decoding_error_has_expected_properties() {
@@ -36,7 +36,7 @@ final class DecodingError_CodingPathTests: XCTestCase {
 
         // Then
         assertEqual("name", error.debugPath)
-        assertEqual(mockDebugDescription, error.debugDescription)
+        assertEqual(mockDebugDescription, error.contextDebugDescription)
     }
 
     func test_valueNotFound_decoding_error_has_expected_properties() {
@@ -45,9 +45,8 @@ final class DecodingError_CodingPathTests: XCTestCase {
 
         // Then
         assertEqual("name", error.debugPath)
-        assertEqual(mockDebugDescription, error.debugDescription)
+        assertEqual(mockDebugDescription, error.contextDebugDescription)
     }
-
 }
 
 private extension DecodingError_CodingPathTests {

@@ -5,7 +5,7 @@ import Yosemite
 class CardPresentPaymentOnboardingStateCache {
     private(set) var value: CardPresentPaymentOnboardingState?
 
-    static let shared: CardPresentPaymentOnboardingStateCache = CardPresentPaymentOnboardingStateCache()
+    static let shared = CardPresentPaymentOnboardingStateCache()
 
     func update(_ newState: CardPresentPaymentOnboardingState) {
         value = newState

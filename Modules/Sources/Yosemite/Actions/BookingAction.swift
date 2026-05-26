@@ -58,6 +58,7 @@ public enum BookingAction: Action {
     case synchronizeResources(siteID: Int64,
                              pageNumber: Int,
                              pageSize: Int = BookingsRemote.Default.pageSize,
+                             include: [Int64]? = nil,
                              onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Updates a booking attendance status.
@@ -104,6 +105,22 @@ public enum BookingAction: Action {
                            note: String,
                            onCompletion: (Error?) -> Void)
 
+
+    /// Reschedules a booking by updating its start date, end date, and optionally its resource.
+    ///
+    /// - Parameter siteID: The site ID of the booking.
+    /// - Parameter bookingID: The ID of the booking to reschedule.
+    /// - Parameter startDate: The new booking start date.
+    /// - Parameter endDate: The new booking end date.
+    /// - Parameter resourceID: Optional new resource/team member ID.
+    /// - Parameter onCompletion: called when reschedule completes, returns an error in case of a failure.
+    ///
+    case rescheduleBooking(siteID: Int64,
+                           bookingID: Int64,
+                           startDate: Date,
+                           endDate: Date,
+                           resourceID: Int64?,
+                           onCompletion: (Error?) -> Void)
 
     /// Fetches the booking location from the product endpoint and persists it on the booking.
     ///

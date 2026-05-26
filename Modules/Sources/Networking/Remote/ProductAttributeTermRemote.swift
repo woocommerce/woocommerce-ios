@@ -33,10 +33,10 @@ public final class ProductAttributeTermRemote: Remote {
         let mapper = ProductAttributeTermListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper) { terms, error in
-            if let error = error {
+            if let error {
                 return completion(.failure(error))
             }
-            if let terms = terms {
+            if let terms {
                 return completion(.success(terms))
             }
         }

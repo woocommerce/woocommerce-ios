@@ -4,7 +4,7 @@ import WebKit
 final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPrintInteractionControllerDelegate {
     @IBOutlet private weak var webView: WKWebView!
 
-    private var printController: UIPrintInteractionController = UIPrintInteractionController.shared
+    private var printController = UIPrintInteractionController.shared
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
@@ -92,7 +92,7 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
         configurePrintController(with: printInfo)
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
-            if let error = error {
+            if let error {
                 ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error, source: .backend))
                 DDLogError("Failed to print receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
             }
@@ -157,9 +157,9 @@ extension ReceiptViewController {
 extension ReceiptViewController {
     enum Constants {
         static let pointsPerInch: Int = 72
-        static let maximumReceiptContentWidth: CGFloat = CGFloat(4 * pointsPerInch)
-        static let maximumReceiptContentHeight: CGFloat = CGFloat(11 * pointsPerInch)
-        static let defaultRollCutterMargin: CGFloat = CGFloat(1 * pointsPerInch)
+        static let maximumReceiptContentWidth = CGFloat(4 * pointsPerInch)
+        static let maximumReceiptContentHeight = CGFloat(11 * pointsPerInch)
+        static let defaultRollCutterMargin = CGFloat(1 * pointsPerInch)
         static let margin: CGFloat = 16
     }
 }

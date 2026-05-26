@@ -8,7 +8,7 @@ public final class DefaultConnectivityObserver: ConnectivityObserver {
     private let networkMonitor: NetworkMonitoring
     private let observingQueue: DispatchQueue = .global(qos: .background)
 
-    @Published private(set) public var currentStatus: ConnectivityStatus = .unknown
+    @Published public private(set) var currentStatus: ConnectivityStatus = .unknown
 
     public var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
         $currentStatus.eraseToAnyPublisher()
@@ -22,7 +22,7 @@ public final class DefaultConnectivityObserver: ConnectivityObserver {
         self.networkMonitor = networkMonitor
         startObserving()
         networkMonitor.networkUpdateHandler = { [weak self] path in
-            guard let self = self else { return }
+            guard let self else { return }
             DispatchQueue.main.async {
                 self.currentStatus = self.connectivityStatus(from: path)
             }

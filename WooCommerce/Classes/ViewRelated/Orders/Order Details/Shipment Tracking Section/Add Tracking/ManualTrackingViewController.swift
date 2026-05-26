@@ -273,7 +273,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
     private func configureTrackingNumberScanAction(on cell: TitleAndEditableValueTableViewCell) {
         let actionButton = UIButton(type: .detailDisclosure)
         actionButton.applyIconButtonStyle(icon: .scanImage)
-        actionButton.on(.touchUpInside) { [weak self, weak cell] sender in
+        actionButton.on(.touchUpInside) { [weak self, weak cell] _ in
             self?.present(ScannerContainerViewController(navigationTitle: Localization.title,
                                                          instructionText: Localization.instructionText,
                                                          onBarcodeScanned: { barcode in
@@ -515,7 +515,7 @@ private extension ManualTrackingViewController {
                                                            dateShipped: dateShipped,
                                                            trackingNumber: trackingNumber) { [weak self] error in
 
-                                                            if let error = error {
+                                                            if let error {
                                                                 DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
                                                                 ServiceLocator.analytics.track(.orderTrackingAddFailed,
@@ -562,7 +562,7 @@ private extension ManualTrackingViewController {
                                                       trackingNumber: trackingNumber,
                                                       trackingURL: trackingLink,
                                                       dateShipped: dateShipped) { [weak self] error in
-                                                        if let error = error {
+                                                        if let error {
                                                             DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
                                                             ServiceLocator.analytics.track(.orderTrackingAddFailed,
@@ -580,7 +580,6 @@ private extension ManualTrackingViewController {
         }
 
         ServiceLocator.stores.dispatch(action)
-
     }
     func displayDismissConfirmationAlert() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self,
@@ -591,7 +590,6 @@ private extension ManualTrackingViewController {
     func dismiss() {
         dismiss(animated: true, completion: nil)
     }
-
 }
 
 // MARK: - Keyboard management

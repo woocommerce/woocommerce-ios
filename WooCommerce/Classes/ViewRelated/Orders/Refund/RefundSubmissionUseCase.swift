@@ -48,8 +48,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Analytics manager.
     private let analytics: Analytics
 
-    /// View controller used to present alerts.
-    private var rootViewController: UIViewController
+    /// View controller presenter used to present alerts.
+    private var rootViewController: ViewControllerPresenting
 
     /// Stores the card reader listener subscription while trying to connect to one.
     private var readerSubscription: AnyCancellable?
@@ -120,7 +120,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     }
 
     init(details: Details,
-         rootViewController: UIViewController,
+         rootViewController: ViewControllerPresenting,
          alerts: OrderDetailsPaymentAlertsProtocol,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
          cardReaderConnectionAlerts: AlertProvider,
@@ -165,7 +165,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         if let charge = details.charge, shouldRefundWithCardReader(details: details) {
             cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
                 from: rootViewController) { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 guard let refundAmount = self.currencyFormatter.convertToDecimal(self.details.amount) else {
                     DDLogError("Error: attempted to refund an order without a valid amount.")
                     return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.invalidRefundAmount))
@@ -177,13 +177,13 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
                 self.observeConnectedReadersForAnalytics()
                 self.connectReader(charge: charge, paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     switch result {
                     case .success:
                         self.attemptCardPresentRefund(refundAmount: refundAmount as Decimal,
                                                       charge: charge,
                                                       paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
-                            guard let self = self else { return }
+                            guard let self else { return }
                             switch result {
                             case .success:
                                 self.submitRefundToSite(refund: refund) { result in
@@ -248,10 +248,10 @@ private extension RefundSubmissionUseCase {
         // - Sends one value if there is no reader connected.
         // - Completes when a reader is connected.
         let readerConnected = CardPresentPaymentAction.publishCardReaderConnections { [weak self] connectPublisher in
-            guard let self = self else { return }
+            guard let self else { return }
             self.readerSubscription = connectPublisher
                 .sink() { [weak self] readers in
-                    guard let self = self else { return }
+                    guard let self else { return }
 
                     if readers.isNotEmpty {
                         // Dismisses the current connection alert before notifying the completion.
@@ -269,7 +269,7 @@ private extension RefundSubmissionUseCase {
                     } else {
                         // Attempts reader connection
                         self.cardReaderConnectionController.searchAndConnect() { [weak self] result in
-                            guard let self = self else { return }
+                            guard let self else { return }
                             switch result {
                             case let .success(connectionResult):
                                 switch connectionResult {
@@ -314,11 +314,18 @@ private extension RefundSubmissionUseCase {
                                              paymentGatewayAccount: paymentGatewayAccount,
                                              onWaitingForInput: { [weak self] inputMethods in
             // Requests card input.
-            guard let self = self else { return }
+            guard let self else { return }
             self.alerts.tapOrInsertCard(title: RefundSubmissionUseCaseDefinitions.Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
                                         amount: self.formattedAmount,
                                         inputMethods: inputMethods,
                                         onCancel: { [weak self] in
+                self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
+            })
+        }, onCardInserted: { [weak self] in
+            guard let self else { return }
+            self.alerts.cardInserted(title: RefundSubmissionUseCaseDefinitions.Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
+                                     amount: self.formattedAmount,
+                                     onCancel: { [weak self] in
                 self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
             })
         }, onProcessingMessage: { [weak self] in
@@ -330,7 +337,7 @@ private extension RefundSubmissionUseCase {
             // Shows reader messages (e.g. Remove Card).
             self?.alerts.displayReaderMessage(message: message)
         }, onCompletion: { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success:
                 self.trackClientSideRefundRequestSuccess(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
@@ -358,7 +365,7 @@ private extension RefundSubmissionUseCase {
         if let cardReaderError = error as? CardReaderServiceError,
            case .refundPayment(_, let shouldRetry) = cardReaderError,
            shouldRetry == false {
-            alerts.nonRetryableError(from: rootViewController, error: error) {
+            alerts.nonRetryableError(from: rootViewController as? UIViewController, error: error) {
                 onCompletion(.failure(error))
             }
         } else {
@@ -394,17 +401,22 @@ private extension RefundSubmissionUseCase {
         let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self]
             refundData, error  in
 
-            guard let self = self else { return }
+            guard let self else { return }
 
-            if let refundData = refundData {
-                // Workaround for https://github.com/woocommerce/woocommerce/issues/33389. This can be removed when the related API issue is fixed
-                self.retrieveUpdatedRefundData(refund: refundData)
-            }
-            if let error = error {
+            if let error {
                 DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")
                 self.trackCreateRefundRequestFailed(error: error)
                 return onCompletion(.failure(error))
             }
+
+            guard let refundData else {
+                DDLogError("Error creating refund: \(refund)\nWith Error: missing created refund response")
+                self.trackCreateRefundRequestFailed(error: RefundSubmissionUseCaseSubmissionError.missingCreatedRefund)
+                return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.missingCreatedRefund))
+            }
+
+            // Workaround for https://github.com/woocommerce/woocommerce/issues/33389. This can be removed when the related API issue is fixed
+            self.retrieveUpdatedRefundData(refund: refundData)
             onCompletion(.success(()))
             self.trackCreateRefundRequestSuccess()
         }
@@ -417,7 +429,7 @@ private extension RefundSubmissionUseCase {
     ///   - refund: the refund to retrieve details from.
     private func retrieveUpdatedRefundData(refund: Refund) {
         let action = RefundAction.retrieveRefund(siteID: details.order.siteID, orderID: details.order.orderID, refundID: refund.refundID) { (_, error) in
-                if let error = error {
+                if let error {
                     DDLogError("Error retrieving refund: \(String(describing: refund))\nWith Error: \(error)")
                 }
             }
@@ -510,6 +522,7 @@ enum RefundSubmissionUseCaseSubmissionError: Error, Equatable {
     case invalidRefundAmount
     case unknownPaymentGatewayAccount
     case canceledByUser
+    case missingCreatedRefund
 }
 
 private enum RefundSubmissionUseCaseDefinitions {
@@ -519,7 +532,7 @@ private enum RefundSubmissionUseCaseDefinitions {
         private static let refundPaymentWithName = NSLocalizedString("Refund payment from %1$@",
                                                                      comment: "Alert title when starting the in-person refund flow with a user name.")
         static func refundPaymentTitle(username: String?) -> String {
-            guard let username = username, username.isNotEmpty else {
+            guard let username, username.isNotEmpty else {
                 return refundPaymentWithoutName
             }
             return .localizedStringWithFormat(refundPaymentWithName, username)

@@ -93,6 +93,9 @@ extension Storage.Product: ReadOnlyConvertible {
         if let productCombineVariationQuantities = product.combineVariationQuantities {
             combineVariationQuantities = NSNumber(booleanLiteral: productCombineVariationQuantities)
         }
+        bookingDuration = product.bookingDuration as? NSNumber
+        bookingDurationUnit = product.bookingDurationUnit
+        bookingResourceIDs = product.bookingResourceIDs
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -112,7 +115,7 @@ extension Storage.Product: ReadOnlyConvertible {
         let productCustomFields = customFields?.map { $0.toReadOnly() } ?? [Yosemite.MetaData]()
 
         var quantity: Decimal?
-        if let stockQuantity = stockQuantity {
+        if let stockQuantity {
             quantity = Decimal(string: stockQuantity)
         }
         var productBundleStockStatus: ProductStockStatus?
@@ -197,13 +200,16 @@ extension Storage.Product: ReadOnlyConvertible {
                        maxAllowedQuantity: maxAllowedQuantity,
                        groupOfQuantity: groupOfQuantity,
                        combineVariationQuantities: combineVariationQuantities?.boolValue,
-                       customFields: productCustomFields.sorted { $0.metadataID < $1.metadataID })
+                       customFields: productCustomFields.sorted { $0.metadataID < $1.metadataID },
+                       bookingDuration: bookingDuration as? Int64,
+                       bookingDurationUnit: bookingDurationUnit,
+                       bookingResourceIDs: bookingResourceIDs)
     }
 
     // MARK: - Private Helpers
 
     private func createReadOnlyDimensions() -> Yosemite.ProductDimensions {
-        guard let dimensions = dimensions else {
+        guard let dimensions else {
             return ProductDimensions(length: "", width: "", height: "")
         }
 
@@ -211,7 +217,7 @@ extension Storage.Product: ReadOnlyConvertible {
     }
 
     private func convertIDArray(_ array: [Int64]? ) -> [Int64] {
-        guard let array = array else {
+        guard let array else {
             return [Int64]()
         }
 

@@ -35,7 +35,7 @@ final class Tooltip: UIView {
     /// Determines whether a leading icon for the title, should be placed or not.
     var shouldPrefixLeadingIcon: Bool = true {
         didSet {
-            guard let title = title else { return }
+            guard let title else { return }
 
             Self.updateTitleLabel(
                 titleLabel,
@@ -49,7 +49,7 @@ final class Tooltip: UIView {
     /// If `shouldPrefixLeadingIcon` is `true`, a leading icon will be prefixed.
     var title: String? {
         didSet {
-            guard let title = title else {
+            guard let title else {
                 titleLabel.text = nil
                 return
             }
@@ -213,7 +213,7 @@ final class Tooltip: UIView {
         }
 
         let arrowPath = UIBezierPath()
-        arrowPath.move(to: CGPoint(x: 0, y: 0))
+        arrowPath.move(to: CGPoint.zero)
         let arrowOriginX = (Self.arrowWidth/2 - 1)
         // In order to have a full width of `arrowWidth`, first draw the left side of the triangle until arrowOriginX.
         arrowPath.addLine(to: CGPoint(x: arrowOriginX, y: arrowTipY))
@@ -227,7 +227,7 @@ final class Tooltip: UIView {
         arrowPath.close()
 
         arrowShapeLayer = CAShapeLayer()
-        guard let arrowShapeLayer = arrowShapeLayer else {
+        guard let arrowShapeLayer else {
             return
         }
 
@@ -347,13 +347,13 @@ final class Tooltip: UIView {
 
         totalHeight += Constants.Spacing.contentStackViewTop
 
-        if let title = title {
+        if let title {
             totalHeight += title.height(withMaxWidth: maxContentWidth(), font: UIFont.body)
         }
 
         totalHeight += Constants.Spacing.contentStackViewInterItemSpacing * 2
 
-        if let message = message {
+        if let message {
             totalHeight += message.height(withMaxWidth: maxContentWidth(), font: UIFont.body)
         }
 
@@ -373,11 +373,11 @@ final class Tooltip: UIView {
         let messageWidth = message?.width(withMaxWidth: maxContentWidth(), font: UIFont.body) ?? 0
 
         var buttonsWidth: CGFloat = 0
-        if let primaryButtonTitle = primaryButtonTitle {
+        if let primaryButtonTitle {
             buttonsWidth += primaryButtonTitle.width(withMaxWidth: maxContentWidth(), font: UIFont.subheadline)
         }
 
-        if let secondaryButtonTitle = secondaryButtonTitle {
+        if let secondaryButtonTitle {
             buttonsWidth += secondaryButtonTitle.width(
                 withMaxWidth: maxContentWidth(),
                 font: UIFont.subheadline

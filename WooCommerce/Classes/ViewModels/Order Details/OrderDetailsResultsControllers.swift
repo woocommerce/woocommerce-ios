@@ -70,6 +70,7 @@ final class OrderDetailsResultsControllers {
         return ResultsController<StorageShippingMethod>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
+
     /// Shipments Results Controller.
     ///
     private lazy var shipmentResultsController: ResultsController<StorageWooShippingShipment> = {
@@ -178,7 +179,7 @@ final class OrderDetailsResultsControllers {
         // so we need to recreate it whenever receiving an updated order.
         self.productVariationResultsController = getProductVariationResultsController()
         self.productResultsController = createProductResultsController()
-        if let onReload = onReload {
+        if let onReload {
             configureProductVariationResultsController(onReload: onReload)
             configureProductResultsController(onReload: onReload)
         }
@@ -202,7 +203,7 @@ private extension OrderDetailsResultsControllers {
         }
 
         shipmentResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.refetchAllResultsControllers()
@@ -230,7 +231,7 @@ private extension OrderDetailsResultsControllers {
         }
 
         trackingResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.refetchAllResultsControllers()
@@ -252,7 +253,7 @@ private extension OrderDetailsResultsControllers {
         }
 
         productResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.refetchAllResultsControllers()
@@ -273,7 +274,7 @@ private extension OrderDetailsResultsControllers {
         }
 
         productVariationResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.refetchAllResultsControllers()
@@ -293,7 +294,7 @@ private extension OrderDetailsResultsControllers {
         }
 
         refundResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.refetchAllResultsControllers()
@@ -313,7 +314,7 @@ private extension OrderDetailsResultsControllers {
         }
 
         addOnGroupResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.refetchAllResultsControllers()
             onReload()
         }
@@ -331,7 +332,7 @@ private extension OrderDetailsResultsControllers {
         }
 
         sitePluginsResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.refetchAllResultsControllers()
             onReload()
         }

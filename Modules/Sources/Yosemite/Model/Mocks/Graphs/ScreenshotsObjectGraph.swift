@@ -60,7 +60,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
 
     var systemPlugins: [SystemPlugin] = [
         createSystemPlugin(plugin: "woocommerce-payments",
-                           name: "WooCommerce Payments",
+                           name: "WooPayments",
                            version: "3.2.1"),
         // One of the requirements for the POS tab to show up.
         createSystemPlugin(plugin: "woocommerce",

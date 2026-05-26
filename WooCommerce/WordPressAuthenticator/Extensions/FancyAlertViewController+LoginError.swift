@@ -125,7 +125,12 @@ extension FancyAlertViewController {
                 }
 
                 let state = AuthenticatorAnalyticsTracker.shared.state
-                authDelegate.presentSupport(from: sourceViewController, sourceTag: sourceTag, lastStep: state.lastStep, lastFlow: state.lastFlow)
+                let siteAddress = loginFields.siteAddress.isEmpty ? nil : loginFields.siteAddress
+                authDelegate.presentSupport(from: sourceViewController,
+                                            sourceTag: sourceTag,
+                                            lastStep: state.lastStep,
+                                            lastFlow: state.lastFlow,
+                                            siteURL: siteAddress)
             }
         }
 

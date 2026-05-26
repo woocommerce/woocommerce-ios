@@ -168,7 +168,7 @@ private extension ProductShippingSettingsViewModel {
 
 extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler {
     func handleWeightChange(_ weight: String?) {
-        guard let weight = weight else {
+        guard let weight else {
             self.weight = nil
             return
         }
@@ -177,7 +177,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
     }
 
     func handleLengthChange(_ length: String?) {
-        guard let length = length else {
+        guard let length else {
             self.length = nil
             return
         }
@@ -185,7 +185,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
     }
 
     func handleWidthChange(_ width: String?) {
-        guard let width = width else {
+        guard let width else {
             self.width = nil
             return
         }
@@ -194,7 +194,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
     }
 
     func handleHeightChange(_ height: String?) {
-        guard let height = height else {
+        guard let height else {
             self.height = nil
             return
         }

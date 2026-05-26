@@ -14,7 +14,7 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     private let coordinator = MockPOSCatalogSyncCoordinator()
 
     init() {
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleLocalCatalogi1] = true
+        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleCatalogAPI] = true
         storeProvider.defaultStoreID = 123
         storeProvider.posCatalogSyncCoordinator = coordinator
         sut = ForegroundPOSCatalogSyncDispatcher(
@@ -39,7 +39,7 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     @Test
     func start_whenFeatureFlagDisabled_doesNotCreateTimer() async throws {
         // Given
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleLocalCatalogi1] = false
+        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleCatalogAPI] = false
 
         // When
         await sut.start()
@@ -271,7 +271,7 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
     var performSmartSyncResult: Result<Void, Error> = .success(())
     var onPerformSmartSyncCalled: (() -> Void)?
 
-    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws {
+    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval, isBackgroundSync: Bool) async throws {
         performSmartSyncInvocationCount += 1
         performSmartSyncSiteID = siteID
         onPerformSmartSyncCalled?()
@@ -284,7 +284,7 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
         }
     }
 
-    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws {
+    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool, isBackgroundSync: Bool) async throws {
         // Not used
     }
 

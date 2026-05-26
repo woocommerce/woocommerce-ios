@@ -68,7 +68,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `loadAllInboxNotes` action
         let result: Result<[Networking.InboxNote], Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -93,7 +93,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `loadAllInboxNotes` action
         let result: Result<[Networking.InboxNote], Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -122,7 +122,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `loadAllInboxNotes` action
         let result: Result<[Networking.InboxNote], Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -143,7 +143,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `loadAllInboxNotes` action
         let result: Result<[Networking.InboxNote], Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -166,7 +166,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `dismissInboxNote` action
         let result: Result<Void, Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -191,7 +191,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `dismissInboxNote` action
         let result: Result<Void, Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -214,7 +214,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `dismissInboxNote` action
         let result: Result<Void, Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -236,7 +236,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `dismissInboxNote` action
         let result: Result<Void, Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -258,7 +258,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `dismissAllInboxNotes` action
         let result: Result<Void, Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -284,7 +284,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `dismissAllInboxNotes` action
         let result: Result<Void, Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -306,7 +306,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `dismissAllInboxNotes` action
         let result: Result<Void, Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -327,7 +327,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `dismissAllInboxNotes` action
         let result: Result<Void, Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -353,7 +353,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `markInboxNoteAsActioned` action
         let result: Result<Networking.InboxNote, Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -381,7 +381,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `markInboxNoteAsActioned` action
         let result: Result<Networking.InboxNote, Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -404,7 +404,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
         // When dispatching a `markInboxNoteAsActioned` action
         let result: Result<Networking.InboxNote, Error> = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

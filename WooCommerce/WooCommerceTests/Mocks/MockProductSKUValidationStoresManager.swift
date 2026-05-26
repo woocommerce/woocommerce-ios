@@ -20,7 +20,7 @@ final class MockProductSKUValidationStoresManager: DefaultStoresManager {
     private func handleProductVariationAction(_ action: ProductAction) {
         switch action {
         case let .validateProductSKU(sku, _, onCompletion):
-            guard let sku = sku else {
+            guard let sku else {
                 onCompletion(true)
                 return
             }

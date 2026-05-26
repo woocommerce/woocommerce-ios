@@ -55,9 +55,9 @@ private struct UnableToFetchView: View {
 private extension StoreInfoRectangularView {
     enum Localization {
         static let revenue = AppLocalizedString(
-            "storeWidgets.storeInfoRectangularWidget.netSales",
-            value: "Net sales",
-            comment: "Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees."
+            "storeWidgets.storeInfoRectangularWidget.totalSales",
+            value: "Total sales",
+            comment: "Total sales title label for the store info widget — shows revenue including taxes and shipping."
         )
     }
 }
@@ -76,7 +76,6 @@ private extension UnableToFetchView {
 #if DEBUG
 import class WooFoundation.CurrencySettings
 
-@available(iOSApplicationExtension 16.0, *)
 struct StoreInfoRectangularWidget_Previews: PreviewProvider {
     static var exampleData = StoreInfoData(range: "Today",
                                            name: "Ernest Shop",

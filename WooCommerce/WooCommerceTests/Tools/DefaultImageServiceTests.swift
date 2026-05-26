@@ -30,7 +30,7 @@ final class DefaultImageServiceTests: XCTestCase {
         // Downloads the image and retrieves it again.
         let waitForDownloadingAndCachingAnImage = expectation(description: "Wait for downloading and caching an image")
         let waitForRetrievingImageAfterDownload = expectation(description: "Wait for retrieving image after the previous download")
-        _ = imageService.downloadImage(with: url, shouldCacheImage: true) { (image, error) in
+        _ = imageService.downloadImage(with: url, shouldCacheImage: true) { (image, _) in
             XCTAssertNotNil(image)
             waitForDownloadingAndCachingAnImage.fulfill()
 
@@ -47,7 +47,7 @@ final class DefaultImageServiceTests: XCTestCase {
         // Downloads the image without caching and retrieves it again.
         let waitForDownloadingAndCachingAnImage = expectation(description: "Wait for downloading an image")
         let waitForRetrievingImageAfterDownload = expectation(description: "Wait for retrieving image after the previous download")
-        _ = imageService.downloadImage(with: url, shouldCacheImage: false) { (image, error) in
+        _ = imageService.downloadImage(with: url, shouldCacheImage: false) { (image, _) in
             XCTAssertNotNil(image)
             waitForDownloadingAndCachingAnImage.fulfill()
 
@@ -63,7 +63,7 @@ final class DefaultImageServiceTests: XCTestCase {
     func testCancellingDownloadingAnImage() {
         // Arrange
         let waitForDownloadingAnImage = expectation(description: "Wait for downloading an image")
-        let task = imageService.downloadImage(with: url, shouldCacheImage: true) { (image, error) in
+        let task = imageService.downloadImage(with: url, shouldCacheImage: true) { (_, _) in
             waitForDownloadingAnImage.fulfill()
         }
 
@@ -98,7 +98,7 @@ final class DefaultImageServiceTests: XCTestCase {
             .downloadAndCacheImageForImageView(mockImageView,
                                                with: url.absoluteString,
                                                placeholder: mockPlaceholder,
-                                               progressBlock: nil) { (image, error) in
+                                               progressBlock: nil) { (image, _) in
                                                 XCTAssertNotNil(image)
                                                 waitForDownloadingAndCachingAnImage.fulfill()
 
@@ -134,7 +134,7 @@ final class DefaultImageServiceTests: XCTestCase {
             .downloadAndCacheImageForImageView(mockImageView,
                                                with: urlStringWithSpecialChars,
                                                placeholder: mockPlaceholder,
-                                               progressBlock: nil) { (image, error) in
+                                               progressBlock: nil) { (image, _) in
                 XCTAssertNotNil(image)
                 waitForDownloadingAndCachingAnImage.fulfill()
 
@@ -225,7 +225,7 @@ final class DefaultImageServiceTests: XCTestCase {
             XCTAssertNil(error)
 
             // Verify image size
-            if let image = image {
+            if let image {
                 XCTAssertLessThanOrEqual(image.size.width, targetSize.width)
                 XCTAssertLessThanOrEqual(image.size.height, targetSize.height)
                 // Check aspect ratio is maintained (with some floating point tolerance)

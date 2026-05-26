@@ -10,7 +10,7 @@ final class WooShippingCreateLabelsViewHostingController: UIHostingController<Wo
         super.init(rootView: WooShippingCreateLabelsView(viewModel: viewModel))
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -125,14 +125,25 @@ struct WooShippingCreateLabelsView: View {
             }
             .sheet(isPresented: $viewModel.shouldShowUPSTermsAndConditions) {
                 if let termsViewModel = viewModel.upsTermsViewModel {
-                    UPSTermsView(viewModel: termsViewModel) {
+                    UPSTermsView(viewModel: termsViewModel, onConfirmation: {
                         viewModel.shouldShowUPSTermsAndConditions = false
                         Task { @MainActor in
                             await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
                         }
-                    }
+                    })
                     .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
                 }
+            }
+            .sheet(isPresented: $viewModel.shouldShowFedExTermsAndConditions) {
+                FedExTermsView(viewModel: viewModel.fedExTermsViewModel, onConfirmation: {
+                    viewModel.shouldShowFedExTermsAndConditions = false
+                    Task { @MainActor in
+                        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
+                    }
+                })
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
             }
         }
     }

@@ -75,12 +75,12 @@ final class ShippingLabelPackageDetailsResultsControllers {
 
     private func configureProductResultsController(onReload: @escaping ([ShippingLabelProduct]) -> ()) {
         productResultsController.onDidChangeContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             onReload(self.productResultsController.fetchedObjects)
         }
 
         productResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             try? self.productResultsController.performFetch()
             onReload(self.productResultsController.fetchedObjects)
         }
@@ -94,12 +94,12 @@ final class ShippingLabelPackageDetailsResultsControllers {
 
     private func configureProductVariationResultsController(onReload: @escaping ([ProductVariation]) -> Void) {
         productVariationResultsController.onDidChangeContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             onReload(self.productVariationResultsController.fetchedObjects)
         }
 
         productVariationResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             try? self.productVariationResultsController.performFetch()
             onReload(self.productVariationResultsController.fetchedObjects)
         }

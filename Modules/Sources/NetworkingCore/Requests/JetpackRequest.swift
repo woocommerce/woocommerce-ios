@@ -143,15 +143,15 @@ private extension JetpackRequest {
             "path": jetpackPath + "&_method=" + method.rawValue.lowercased()
         ]
 
-        if let locale = locale {
+        if let locale {
             output["locale"] = locale
         }
 
-        if let jetpackQueryParams = jetpackQueryParams {
+        if let jetpackQueryParams {
             output["query"] = jetpackQueryParams
         }
 
-        if let jetpackBodyParams = jetpackBodyParams {
+        if let jetpackBodyParams {
             output["body"] = jetpackBodyParams
         }
 

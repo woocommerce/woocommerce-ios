@@ -1,0 +1,50 @@
+{
+    "chat_id": 1001,
+    "wpcom_user_id": 2002,
+    "external_id": null,
+    "external_id_provider": null,
+    "session_id": "8c1e24b8-7d67-4f1f-92b2-f45d53136fd4",
+    "bot_slug": "woo-chat-allusers",
+    "bot_version": "1.4.3",
+    "created_at": "2026-04-23 02:59:45",
+    "zendesk_ticket_id": null,
+    "messages": [
+        {
+            "message_id": 3003,
+            "content": "Placeholder Markdown answer with a [link](https://example.com/docs).",
+            "role": "bot",
+            "created_at": "2026-04-23 02:59:55",
+            "context": {
+                "sources": [
+                    {
+                        "title": "Placeholder Source Title",
+                        "url": "https://example.com/docs/source-a",
+                        "heading": "Excerpted heading",
+                        "content": "Excerpted source chunk used as RAG grounding.",
+                        "blog_id": 113771570,
+                        "post_id": 8734757,
+                        "score": 0.91,
+                        "last_indexed_at": "2025-03-30T13:55:22.390370"
+                    },
+                    {
+                        "title": "Second Source",
+                        "url": "https://example.com/docs/source-b",
+                        "heading": "Another excerpt",
+                        "content": "Another chunk.",
+                        "blog_id": 113771570,
+                        "post_id": 8734758,
+                        "score": 0.82,
+                        "last_indexed_at": "2025-04-01T10:00:00.000000"
+                    }
+                ],
+                "flags": {
+                    "forward_to_human_support": false,
+                    "canned_response": false,
+                    "logged_in": false,
+                    "branch": "default"
+                }
+            },
+            "ts": 1776913195
+        }
+    ]
+}

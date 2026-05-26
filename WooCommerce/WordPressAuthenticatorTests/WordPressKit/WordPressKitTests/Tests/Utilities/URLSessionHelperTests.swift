@@ -371,7 +371,6 @@ class BackgroundURLSessionHelperTests: URLSessionHelperTests {
             XCTAssertTrue(delegate.completionCalled)
         }
     }
-
 }
 
 private class TestBackgroundURLSessionDelegate: BackgroundURLSessionDelegate {
@@ -404,5 +403,4 @@ enum TestError: LocalizedError, Equatable {
         default: return -1
         }
     }
-
 }

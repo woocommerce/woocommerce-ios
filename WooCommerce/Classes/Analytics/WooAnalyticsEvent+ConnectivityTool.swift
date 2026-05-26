@@ -11,6 +11,8 @@ extension WooAnalyticsEvent {
             case site
             case orders
             case products
+            case analytics
+            case notifications
         }
 
         static func automaticTimeoutRetry() -> WooAnalyticsEvent {
@@ -41,6 +43,16 @@ extension WooAnalyticsEvent {
 
         static func contactSupportTapped() -> WooAnalyticsEvent {
             .init(statName: .connectivityToolContactSupportTapped, properties: [:])
+        }
+
+        static func preLoginRequestResponse(testName: String, success: Bool, timeTaken: Double) -> WooAnalyticsEvent {
+            .init(statName: .preLoginConnectivityToolRequestResponse,
+                  properties: [
+                    "test": testName,
+                    "success": success,
+                    "time_taken": timeTaken
+                  ]
+            )
         }
     }
 }

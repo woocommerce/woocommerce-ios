@@ -17,6 +17,7 @@ These rules are enforced by SwiftLint (see `.swiftlint.yml` for the full configu
 - Use the most restrictive access level possible
 - Mark classes `final` unless designed for subclassing
 - Prefer `private` over `fileprivate`
+- Prefer immutable properties for external access — use `private(set)` for properties that need to be mutable internally but read-only externally, and `let` over `var` whenever possible
 
 ## Naming
 - Protocols for a single type: append `Protocol` (e.g., `ProductsRemoteProtocol`)

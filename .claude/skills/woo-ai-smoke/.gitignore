@@ -1,0 +1,9 @@
+# Per-run smoke eval records — local only, grow unbounded, not interesting to diff.
+runs/
+
+# Defense in depth — the skill writes credentials only to /tmp and the engineer's
+# home dir. None of these patterns should ever match anything inside this folder;
+# this is here to catch a misplaced credentials file before it gets committed.
+woo-ai-assistant-credentials*.json
+woocommerce_sites_environment*
+store.env

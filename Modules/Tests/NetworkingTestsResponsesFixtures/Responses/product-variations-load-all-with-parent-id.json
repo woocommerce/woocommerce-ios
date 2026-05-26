@@ -2,6 +2,7 @@
     "data": [
         {
             "id": 1275,
+            "type": "variation",
             "date_created": "2019-11-14T15:10:55",
             "date_created_gmt": "2019-11-14T12:40:55",
             "date_modified": "2019-11-14T15:36:42",
@@ -97,6 +98,7 @@
         },
         {
             "id": 1274,
+            "type": "variation",
             "date_created": "2019-11-14T15:10:55",
             "date_created_gmt": "2019-11-14T12:40:55",
             "date_modified": "2019-11-14T15:36:42",

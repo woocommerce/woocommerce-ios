@@ -38,14 +38,14 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         super.viewDidLoad()
 
         // Set presentation delegate to track the user dismiss flow event
-        if let navigationController = navigationController {
+        if let navigationController {
             navigationController.presentationController?.delegate = self
         } else {
             presentationController?.delegate = self
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -91,7 +91,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
 
     /// View Model for the view
     ///
-    @ObservedObject private(set) var viewModel: ViewModel
+    @Bindable private(set) var viewModel: ViewModel
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
     @State private var showingCustomerSearch: Bool = false
@@ -239,7 +239,7 @@ struct SingleAddressForm: View {
     var body: some View {
         content
             .onPreferenceChange(MaxWidthPreferenceKey.self) { value in
-                if let value = value {
+                if let value {
                     titleWidth = value
                 }
             }
@@ -290,7 +290,6 @@ struct SingleAddressForm: View {
                     .autocapitalization(.none)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
-
             }
 
             if showPhoneCountryCodeField {

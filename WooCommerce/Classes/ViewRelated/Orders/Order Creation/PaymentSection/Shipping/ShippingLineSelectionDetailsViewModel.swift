@@ -28,7 +28,7 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
     /// Text color for the selected method.
     ///
     var selectedMethodColor: Color {
-        Color(selectedMethod.methodID == "" ? .placeholderText : .text)
+        Color(selectedMethod.methodID.isEmpty ? .placeholderText : .text)
     }
 
     /// Stores the method title entered by the merchant.

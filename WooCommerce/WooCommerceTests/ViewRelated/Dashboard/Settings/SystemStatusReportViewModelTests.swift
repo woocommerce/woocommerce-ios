@@ -28,5 +28,4 @@ final class SystemStatusReportViewModelTests: XCTestCase {
         XCTAssertEqual(fetchedSiteID, testSiteID)
         XCTAssertTrue(viewModel.errorFetchingReport)
     }
-
 }

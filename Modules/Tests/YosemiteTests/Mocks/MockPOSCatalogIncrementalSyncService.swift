@@ -16,8 +16,7 @@ final class MockPOSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServi
     @discardableResult
     func startIncrementalSync(for siteID: Int64,
                               lastFullSyncDate: Date,
-                              lastIncrementalSyncDate: Date?,
-                              posProductsOnly: Bool) async throws -> POSCatalog {
+                              lastIncrementalSyncDate: Date?) async throws -> POSCatalog {
         startIncrementalSyncCallCount += 1
         lastSyncSiteID = siteID
         self.lastFullSyncDate = lastFullSyncDate

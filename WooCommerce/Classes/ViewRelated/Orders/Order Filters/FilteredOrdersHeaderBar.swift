@@ -42,7 +42,7 @@ final class FilteredOrdersHeaderBar: UIView {
             contentSizeTraitRegistration = registerForTraitChanges([
                 UITraitPreferredContentSizeCategory.self
             ]) { [weak self] (_: FilteredOrdersHeaderBar, _: UITraitCollection) in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.updateStackViewAxis(for: self.traitCollection)
             }
         } else {
@@ -69,7 +69,6 @@ final class FilteredOrdersHeaderBar: UIView {
     @IBAction private func filterButtonTapped(_ sender: Any) {
         onAction?()
     }
-
 }
 // MARK: - Dynamic type support
 /// The `Last updated: time` tends to get truncated at larger text sizes by the filter button.

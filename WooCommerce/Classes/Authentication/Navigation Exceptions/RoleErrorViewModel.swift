@@ -60,7 +60,7 @@ final class RoleErrorViewModel {
     func didTapPrimaryButton() {
         output?.updatePrimaryButtonState(loading: true)
         roleEligibilityUseCase.checkEligibility(for: siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.output?.updatePrimaryButtonState(loading: false)
 
             switch result {

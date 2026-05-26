@@ -10,7 +10,7 @@ extension String {
         }
 
         let urlComponents = latin.components(separatedBy: String.slugSafeCharacters.inverted)
-        let result = urlComponents.filter { $0 != "" }.joined(separator: "-")
+        let result = urlComponents.filter { !$0.isEmpty }.joined(separator: "-")
 
         guard !result.isEmpty else {
             return nil
@@ -18,5 +18,4 @@ extension String {
 
         return result
     }
-
 }

@@ -25,7 +25,7 @@ final class ReceiptViewModel {
     }
 
     func formattedReceiptJobName(_ jobName: String) -> String {
-        if let siteName = siteName, !siteName.isEmpty {
+        if let siteName, !siteName.isEmpty {
             return String.localizedStringWithFormat(Localization.receiptJobNameWithStoreName,
                                                     jobName,
                                                     String(orderID),

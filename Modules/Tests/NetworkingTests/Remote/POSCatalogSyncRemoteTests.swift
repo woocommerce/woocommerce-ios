@@ -8,12 +8,12 @@ struct POSCatalogSyncRemoteTests {
     private let mockBackgroundDownloader = MockBackgroundDownloader()
     private let mockFileManager = MockFileManager()
     private let sampleSiteID: Int64 = 1234
-    private let testDefaults: UserDefaults
+    private let backgroundDownloadStateStore: BackgroundDownloadStateStore
 
     init() {
         // Create isolated UserDefaults suite for this test
-        testDefaults = UserDefaults(suiteName: "POSCatalogSyncRemoteTests.\(UUID().uuidString)")!
-        BackgroundDownloadState.configure(userDefaults: testDefaults)
+        let testDefaults = UserDefaults(suiteName: "POSCatalogSyncRemoteTests.\(UUID().uuidString)")!
+        backgroundDownloadStateStore = BackgroundDownloadStateStore(userDefaults: testDefaults)
     }
 
     @Test func loadProducts_sets_correct_parameters() async throws {
@@ -697,7 +697,7 @@ struct POSCatalogSyncRemoteTests {
 
         // Then
         #expect(catalog.products.count == 2)
-        #expect(catalog.variations.count == 2)
+        #expect(catalog.variations.count == 3)
 
         let simpleProduct = try #require(catalog.products.first { $0.productType == .simple })
         #expect(simpleProduct.siteID == sampleSiteID)
@@ -714,7 +714,7 @@ struct POSCatalogSyncRemoteTests {
         #expect(variableProduct.siteID == sampleSiteID)
         #expect(variableProduct.productID == 31)
         #expect(variableProduct.sku == "incredible-silk-chair-13060312")
-        #expect(variableProduct.globalUniqueID == "")
+        #expect(variableProduct.globalUniqueID?.isEmpty == true)
         #expect(variableProduct.name == "Incredible Silk Chair")
         #expect(variableProduct.price == "134.58")
         #expect(variableProduct.stockQuantity == -83)
@@ -736,8 +736,8 @@ struct POSCatalogSyncRemoteTests {
         #expect(variation.siteID == sampleSiteID)
         #expect(variation.productVariationID == 32)
         #expect(variation.productID == 31)
-        #expect(variation.sku == "")
-        #expect(variation.globalUniqueID == "")
+        #expect(variation.sku?.isEmpty == true)
+        #expect(variation.globalUniqueID?.isEmpty == true)
         #expect(variation.price == "330.34")
         #expect(variation.attributes.count == 3)
         #expect(variation.image?.src == "https://example.com/wp-content/uploads/2025/08/img-quae.png")
@@ -746,6 +746,48 @@ struct POSCatalogSyncRemoteTests {
             .init(id: 0, name: "ab", option: "deserunt"),
             .init(id: 2, name: "Numeric Size", option: "19")
         ])
+        #expect(variation.typeKey == "variation")
+    }
+
+    @Test func downloadCatalog_decodes_subscription_variation_as_variation() async throws {
+        // Given
+        let remote = createRemote()
+        let downloadURL = "https://example.com/catalog.json"
+
+        let mockContent = loadMockData(filename: "pos-catalog-download-mixed")
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: mockContent)
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
+
+        // When
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+
+        // Then: subscription_variation (id: 99) is decoded as a variation with its original typeKey
+        #expect(catalog.products.count == 2)
+        #expect(catalog.variations.count == 3)
+        #expect(catalog.products.contains { $0.productID == 99 } == false)
+
+        let subscriptionVariation = try #require(catalog.variations.first { $0.productVariationID == 99 })
+        #expect(subscriptionVariation.typeKey == "subscription_variation")
+        #expect(subscriptionVariation.productID == 50)
+        #expect(subscriptionVariation.price == "10")
+    }
+
+    @Test func downloadCatalog_when_item_has_malformed_data_then_skips_item_without_failing() async throws {
+        // Given
+        let remote = createRemote()
+        let downloadURL = "https://example.com/catalog.json"
+
+        let mockContent = loadMockData(filename: "pos-catalog-download-malformed")
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: mockContent)
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
+
+        // When
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+
+        // Then: malformed items are skipped, valid item is parsed
+        #expect(catalog.products.count == 1)
+        #expect(catalog.products.first?.productID == 1)
+        #expect(catalog.variations.isEmpty)
     }
 
     @Test func downloadCatalog_handles_empty_catalog() async throws {
@@ -991,7 +1033,10 @@ import NetworkingTestsResponsesFixtures
 
 private extension POSCatalogSyncRemoteTests {
     func createRemote() -> POSCatalogSyncRemote {
-        POSCatalogSyncRemote(network: network, backgroundDownloader: mockBackgroundDownloader, fileManager: mockFileManager)
+        POSCatalogSyncRemote(network: network,
+                             backgroundDownloader: mockBackgroundDownloader,
+                             fileManager: mockFileManager,
+                             backgroundDownloadStateStore: backgroundDownloadStateStore)
     }
 
     /// Loads test data from bundle response file.
@@ -1049,7 +1094,7 @@ extension POSCatalogSyncRemoteTests {
             mockBackgroundDownloader.onDownloadStarted = {
                 // Download has started, state should be saved now
                 if let sessionIdentifier = mockBackgroundDownloader.lastSessionIdentifier {
-                    let state = BackgroundDownloadState.load(for: sessionIdentifier)
+                    let state = backgroundDownloadStateStore.load(for: sessionIdentifier)
                     continuation.resume(returning: state)
                 } else {
                     continuation.resume(returning: nil)
@@ -1082,7 +1127,7 @@ extension POSCatalogSyncRemoteTests {
         _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
 
         // Then - state should be cleared after successful completion
-        let savedState = BackgroundDownloadState.load(for: mockBackgroundDownloader.lastSessionIdentifier ?? "")
+        let savedState = backgroundDownloadStateStore.load(for: mockBackgroundDownloader.lastSessionIdentifier ?? "")
         #expect(savedState == nil)
 
         // Cleanup
@@ -1109,6 +1154,6 @@ extension POSCatalogSyncRemoteTests {
         #expect(secondSessionID?.hasPrefix("com.woocommerce.pos.catalog.download") == true)
 
         // Cleanup
-        BackgroundDownloadState.clear()
+        backgroundDownloadStateStore.clear()
     }
 }

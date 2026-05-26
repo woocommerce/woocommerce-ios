@@ -7,12 +7,12 @@ final class MockAuthentication: Authentication {
     private(set) var presentSupportFromScreenInvoked = false
     private(set) var presentSupportFromScreen: CustomHelpCenterContent.Screen?
 
-    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen) {
+    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen, siteURL: URL?) {
         presentSupportFromScreenInvoked = true
         presentSupportFromScreen = screen
     }
 
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, siteURL: URL?) {
         // no-op
     }
 

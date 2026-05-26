@@ -38,5 +38,4 @@ final class AztecItalicFormatBarCommandTests: XCTestCase {
                              formatBar: formatBar)
         XCTAssertEqual(editorView.getHTML(), originalHTML)
     }
-
 }

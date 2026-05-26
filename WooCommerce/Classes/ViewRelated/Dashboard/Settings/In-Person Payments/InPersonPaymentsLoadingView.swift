@@ -23,12 +23,12 @@ struct InPersonPaymentsLoading: View {
 private enum Localization {
     static let title = NSLocalizedString(
         "Connecting to your account",
-        comment: "Title when checking if WooCommerce Payments is supported"
+        comment: "Title when checking if WooPayments is supported"
     )
 
     static let message = NSLocalizedString(
         "Please wait",
-        comment: "Message when checking if WooCommerce Payments is supported"
+        comment: "Message when checking if WooPayments is supported"
     )
 }
 

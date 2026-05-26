@@ -65,6 +65,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ServiceLocator.authenticationManager.initialize()
         stores.initializeAfterDependenciesAreInitialized()
 
+        setupWidgetSiteListSync()
+
         setupAnalytics(analytics)
         setupCocoaLumberjack()
         setupLibraryLogger()
@@ -283,6 +285,13 @@ extension AppDelegate {
         UNUserNotificationCenter.current().delegate = self
     }
 
+    /// Starts the widget site list sync manager. The manager mirrors the user's selectable
+    /// WooCommerce sites into shared app-group `UserDefaults` for the widget site picker.
+    ///
+    func setupWidgetSiteListSync() {
+        ServiceLocator.widgetSiteListSyncManager.start()
+    }
+
     /// Set up app review prompt
     ///
     func setupAppRatingManager() {
@@ -408,9 +417,7 @@ extension AppDelegate {
     ///
     private func listenToAuthenticationFailureNotifications() {
         let stores = ServiceLocator.stores
-        if stores.isAuthenticatedWithoutWPCom {
-            stores.listenToApplicationPasswordGenerationFailureNotification()
-        } else {
+        if stores.isAuthenticatedWithoutWPCom == false {
             stores.listenToWPCOMInvalidWPCOMTokenNotification()
         }
     }

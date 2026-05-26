@@ -113,7 +113,7 @@ private extension ProductLoaderViewController {
     ///
     func loadProduct(productID: Int64) {
         let action = ProductAction.retrieveProduct(siteID: siteID, productID: productID) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -214,7 +214,7 @@ private extension ProductLoaderViewController {
     /// Removes EmptyStateViewController child view controller if applicable.
     ///
     func removeAllOverlays() {
-        guard let emptyStateViewController = emptyStateViewController, emptyStateViewController.parent == self else {
+        guard let emptyStateViewController, emptyStateViewController.parent == self else {
             return
         }
 

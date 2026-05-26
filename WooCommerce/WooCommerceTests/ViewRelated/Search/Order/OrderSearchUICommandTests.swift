@@ -90,7 +90,7 @@ final class OrderSearchUICommandTests: XCTestCase {
 
         // When
         waitFor { promise in
-            systemUnderTestWithMockedAnalytics.synchronizeModels(siteID: self.siteID, keyword: keyword, pageNumber: 1, pageSize: 20) { success in
+            systemUnderTestWithMockedAnalytics.synchronizeModels(siteID: self.siteID, keyword: keyword, pageNumber: 1, pageSize: 20) { _ in
                 promise(())
             }
         }

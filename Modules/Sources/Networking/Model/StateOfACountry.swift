@@ -28,7 +28,6 @@ public struct StateOfACountry: Decodable, Equatable, Hashable, GeneratedFakeable
 
         self.init(code: code, name: name)
     }
-
 }
 
 

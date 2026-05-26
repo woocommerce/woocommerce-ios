@@ -354,6 +354,29 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.loadingState, .error(.noRatesAvailable(isHAZMAT: true)))
     }
 
+    func test_when_loadLabelRates_receives_invalid_destination_name_rate_error_it_sets_error_state() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .failure(WooShippingLoadLabelRatesError.invalidDestinationName))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: samplePackage)
+
+        // Then
+        XCTAssertEqual(viewModel.loadingState, .error(.invalidDestinationName))
+    }
+
     func test_switching_tab_updates_the_card_list() {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),

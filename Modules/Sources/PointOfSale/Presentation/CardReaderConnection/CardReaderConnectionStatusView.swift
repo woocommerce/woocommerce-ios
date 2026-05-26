@@ -5,6 +5,7 @@ struct CardReaderConnectionStatusView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.isEnabled) var isEnabled
+    @State private var isCancellingReconnection = false
 
     @ViewBuilder
     private func circleIcon(with color: Color) -> some View {
@@ -57,9 +58,27 @@ struct CardReaderConnectionStatusView: View {
                     .padding(Constants.disconnectedBorderInset)
                 }
                 .accessibilityIdentifier("pos-connect-reader-button")
+            case .reconnecting:
+                Menu {
+                    Button {
+                        isCancellingReconnection = true
+                        posModel.cancelReconnection()
+                    } label: {
+                        Text(Localization.cancelReconnection)
+                    }
+                } label: {
+                    progressIndicatingCardReaderStatus(
+                        title: isCancellingReconnection ? Localization.cancellingReconnection : Localization.readerReconnecting
+                    )
+                }
+                .disabled(isCancellingReconnection)
+                .accessibilityIdentifier("pos-reader-reconnecting")
             }
         }
         .font(Constants.font)
+        .onChange(of: posModel.cardReaderConnectionStatus) {
+            isCancellingReconnection = false
+        }
         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .opacity(isEnabled ? 1 : 0.5)
     }
@@ -148,8 +167,8 @@ private extension CardReaderConnectionStatusView {
         )
 
         static let disconnectCardReader = NSLocalizedString(
-            "pointOfSale.floatingButtons.disconnectCardReader.button.title",
-            value: "Disconnect Reader",
+            "pointOfSale.floatingButtons.disconnectCardReader.button.title.2",
+            value: "Disconnect reader",
             comment: "The title of the menu button to disconnect a connected card reader, as confirmation."
         )
 
@@ -158,6 +177,24 @@ private extension CardReaderConnectionStatusView {
             value: "Please wait",
             comment: "The title of the floating button to indicate that the reader is not ready for another " +
             "connection, usually because a connection has just been cancelled"
+        )
+
+        static let readerReconnecting = NSLocalizedString(
+            "pointOfSale.floatingButtons.readerReconnecting.title",
+            value: "Reconnecting…",
+            comment: "The title of the floating button to indicate that the reader is attempting to reconnect."
+        )
+
+        static let cancelReconnection = NSLocalizedString(
+            "pointOfSale.floatingButtons.cancelReconnection.button.title",
+            value: "Cancel reconnection",
+            comment: "The title of the menu button to cancel an ongoing card reader reconnection attempt."
+        )
+
+        static let cancellingReconnection = NSLocalizedString(
+            "pointOfSale.floatingButtons.cancellingReconnection.title",
+            value: "Cancelling…",
+            comment: "The title of the floating button to indicate that the reader reconnection is being cancelled."
         )
     }
 }

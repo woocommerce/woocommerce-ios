@@ -66,6 +66,10 @@ public enum WooConstants {
     ///
     static let storeInfoWidgetKind = "StoreInfoWidget"
 
+    /// Store Trends Widget Identifier.
+    ///
+    static let storeTrendsWidgetKind = "StoreTrendsWidget"
+
     /// App link Widget Identifier.
     ///
     static let appLinkWidgetKind = "AppLinkWidget"
@@ -84,6 +88,10 @@ public enum WooConstants {
     static let appMagicLoginURLPrefix = "woocommerce://magic-login"
 
     static let wooPaymentsPluginPath = "woocommerce-payments/woocommerce-payments.php"
+
+    /// wp-admin path to the WooCommerce plugin update page.
+    ///
+    static let wooCommercePluginUpdatePath = "plugin-install.php?tab=plugin-information&plugin=woocommerce"
 
     /// Key used to identify track events sent between the phone and the watch.
     ///
@@ -206,6 +214,10 @@ extension WooConstants {
         ///
         case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
 
+        /// URL for the AI Assistant beta feedback survey
+        ///
+        case aiAssistantFeedback = "https://automattic.survey.fm/woo-mobile-ai-assistant"
+
         /// URL for the order add-on i1 feedback survey
         ///
 #if DEBUG
@@ -245,10 +257,10 @@ extension WooConstants {
         /// URLs for WCPay IPP documentation
         ///
         case inPersonPaymentsLearnMoreWCPay =
-                "https://woocommerce.com/document/woocommerce-payments/in-person-payments/getting-started-with-in-person-payments/"
+                "https://woocommerce.com/document/getting-started-with-in-person-payments-woopayments/"
 
         // swiftlint:disable:next line_length
-        case inPersonPaymentsLearnMoreWCPayTapToPay = "https://woocommerce.com/document/woocommerce-payments/in-person-payments/woocommerce-in-person-payments-tap-to-pay-on-iphone-quick-start-guide/"
+        case inPersonPaymentsLearnMoreWCPayTapToPay = "https://woocommerce.com/document/tap-to-pay-iphone/"
 
         /// URL for Stripe IPP documentation
         ///

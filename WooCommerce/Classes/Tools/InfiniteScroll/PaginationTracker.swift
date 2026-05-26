@@ -59,9 +59,9 @@ final class PaginationTracker {
 
     /// Should be called whenever a scroll position is approaching the end of the list for infinite scroll support.
     /// This method will:
-    ///     1.  Proceed only if a given element is the last one in it's page
-    ///     2.  Verify if the nextpage isn't currently being synced
-    ///     3.  Proceed syncing the next page, if possible / needed
+    ///     1. Proceed only if a given element is the last one in its page
+    ///     2. Verify if the nextpage isn't currently being synced
+    ///     3. Proceed syncing the next page, if possible / needed
     func ensureNextPageIsSynced() {
         guard hasNextPage else {
             return
@@ -99,14 +99,14 @@ final class PaginationTracker {
 private extension PaginationTracker {
     /// Syncs a given page number.
     func sync(pageNumber: Int, reason: String? = nil, onCompletion: (() -> Void)? = nil) {
-        guard let delegate = delegate else {
+        guard let delegate else {
             fatalError()
         }
 
         markAsBeingSynced(pageNumber: pageNumber)
 
         delegate.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

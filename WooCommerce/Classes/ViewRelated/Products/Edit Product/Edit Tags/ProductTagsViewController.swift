@@ -38,7 +38,7 @@ final class ProductTagsViewController: UIViewController, GhostableViewController
 
     /// Keyboard management
     ///
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
@@ -217,7 +217,7 @@ private extension ProductTagsViewController {
         }
 
         let action = ProductTagAction.synchronizeAllProductTags(siteID: product.siteID) { [weak self] error in
-            if let error = error {
+            if let error {
                 ServiceLocator.analytics.track(.productTagListLoadFailed, withError: error)
                 self?.tagsFailedLoading()
                 return
@@ -257,7 +257,7 @@ private extension ProductTagsViewController {
         configureRightBarButtonItemAsSpinner()
 
         let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] (result) in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.configureRightBarButtonItemAsSave()
@@ -271,7 +271,6 @@ private extension ProductTagsViewController {
         }
         ServiceLocator.stores.dispatch(action)
     }
-
 }
 
 // MARK: Error handling
@@ -377,7 +376,7 @@ extension ProductTagsViewController: UITextViewDelegate {
             // Don't allow a second comma if the last tag is blank
             return false
         } else if
-            range.length == 1 && text == "", // Deleting last character
+            range.length == 1 && text.isEmpty, // Deleting last character
             range.location > 0, // Not at the beginning
             range.location + range.length == original.length, // At the end
             original.substring(with: NSRange(location: range.location - 1, length: 1)) == "," { // Previous is a comma

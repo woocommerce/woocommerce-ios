@@ -115,5 +115,4 @@ class LanguagesTests: XCTestCase {
     fileprivate let es = 19
     fileprivate let zhCN = 449
     fileprivate let zhTW = 452
-
 }

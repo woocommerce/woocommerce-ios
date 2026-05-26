@@ -12,6 +12,7 @@ extension Storage.OrderStatsV4Totals: ReadOnlyConvertible {
         totalOrders = Int64(statsTotals.totalOrders)
         totalItemsSold = Int64(statsTotals.totalItemsSold)
         grossRevenue = NSDecimalNumber(decimal: statsTotals.grossRevenue)
+        grossSales = NSDecimalNumber(decimal: statsTotals.grossSales)
         netRevenue = NSDecimalNumber(decimal: statsTotals.netRevenue)
         averageOrderValue = NSDecimalNumber(decimal: statsTotals.averageOrderValue)
     }
@@ -22,6 +23,7 @@ extension Storage.OrderStatsV4Totals: ReadOnlyConvertible {
         return OrderStatsV4Totals(totalOrders: Int(totalOrders),
                                   totalItemsSold: Int(totalItemsSold),
                                   grossRevenue: grossRevenue.decimalValue,
+                                  grossSales: grossSales.decimalValue,
                                   netRevenue: netRevenue.decimalValue,
                                   averageOrderValue: averageOrderValue.decimalValue)
     }

@@ -9,9 +9,29 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     // MARK: - Variables for emitting events in unit tests
 
     @Published var paymentEvent: CardPresentPaymentEvent = .idle
-    @Published var connectedReader: CardPresentPaymentCardReader?
+    @Published var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
+
+    var connectedReader: CardPresentPaymentCardReader? {
+        get {
+            if case .connected(let reader) = connectionStatus {
+                return reader
+            }
+            return nil
+        }
+        set {
+            if let reader = newValue {
+                connectionStatus = .connected(reader)
+            } else {
+                connectionStatus = .disconnected
+            }
+        }
+    }
 
     var cancelPaymentCalled = false
+    var connectReaderCallCount = 0
+    var connectReaderResult: CardPresentPaymentReaderConnectionResult = .connected(
+        CardPresentPaymentCardReader(name: "Test reader", batteryLevel: 0.85)
+    )
 
     // MARK: - CardPresentPaymentFacade
 
@@ -20,20 +40,23 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     var readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> {
-        $connectedReader.map { reader -> CardPresentPaymentReaderConnectionStatus in
-            guard let reader else {
-                return .disconnected
-            }
-            return .connected(reader)
-        }
-        .eraseToAnyPublisher()
+        $connectionStatus.eraseToAnyPublisher()
     }
 
+    var onConnectReaderCalled: (() -> Void)?
+
+    @MainActor
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
-        .connected(CardPresentPaymentCardReader(name: "Test reader", batteryLevel: 0.85))
+        connectReaderCallCount += 1
+        onConnectReaderCalled?()
+        return connectReaderResult
     }
 
+    var disconnectReaderCallCount = 0
+    var onDisconnectReaderCalled: (() -> Void)?
     func disconnectReader() async {
+        disconnectReaderCallCount += 1
+        onDisconnectReaderCalled?()
         connectedReader = nil
     }
 
@@ -64,5 +87,12 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
 
     func updateCardReaderSoftware() async throws {
         // no-op
+    }
+
+    var cancelReconnectionCalled = false
+    var onCancelReconnectionCalled: (() async -> Void)?
+    func cancelReconnection() async {
+        cancelReconnectionCalled = true
+        await onCancelReconnectionCalled?()
     }
 }

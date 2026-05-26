@@ -19,6 +19,9 @@ protocol RequestAuthenticator {
     ///
     func authenticate(_ urlRequest: URLRequest) throws -> URLRequest
 
+    /// Checks whether app password generation is possible
+    func canGenerateApplicationPassword() -> Bool
+
     /// Generates application password
     ///
     func generateApplicationPassword() async throws
@@ -107,6 +110,14 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
         } else {
             return try authenticateUsingWPCOMTokenIfPossible(urlRequest)
         }
+    }
+
+    /// Checks whether app password generation is possible
+    func canGenerateApplicationPassword() -> Bool {
+        guard let applicationPasswordUseCase else {
+            return false
+        }
+        return applicationPasswordUseCase.canRegenerateApplicationPassword
     }
 
     /// Generates application password

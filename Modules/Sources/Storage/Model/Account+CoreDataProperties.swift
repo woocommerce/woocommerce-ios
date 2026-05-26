@@ -13,5 +13,4 @@ extension Account {
     @NSManaged public var gravatarUrl: String?
     @NSManaged public var userID: Int64
     @NSManaged public var username: String?
-
 }

@@ -21,10 +21,6 @@ public protocol POSEntryPointEligibilityCheckerProtocol {
 
     @MainActor
     func refreshEligibility(reason: POSIneligibleReason) async throws {
-        if case .ciabPlanUpgradeRequired = reason {
-            // Show loading POS while syncing site data to avoid abrupt transitions
-            eligibilityState = nil
-        }
         eligibilityState = try await posEligibilityChecker.refreshEligibility(ineligibleReason: reason)
     }
 }

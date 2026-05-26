@@ -47,7 +47,7 @@
         },
         {
             "plugin":"woocommerce-payments\/woocommerce-payments.php",
-            "name":"WooCommerce Payments",
+            "name":"WooPayments",
             "version":"3.1.0",
             "version_latest":"3.1.0",
             "url":"https:\/\/woocommerce.com\/payments\/",

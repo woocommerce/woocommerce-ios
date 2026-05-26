@@ -63,6 +63,23 @@ final class SurveyViewControllerTests: XCTestCase {
             .tagSiteInfo(siteID: siteID, storeUUID: storeUUID, storeURL: testURL))
     }
 
+    func test_it_loads_the_correct_aiAssistantFeedback_survey() throws {
+        // Given
+        let viewController = SurveyViewController(survey: .aiAssistantFeedback, onCompletion: {})
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let mirror = try self.mirror(of: viewController)
+
+        // Then
+        XCTAssertTrue(mirror.webView.isLoading)
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.aiAssistantFeedback
+            .asURL()
+            .tagPlatform("ios")
+            .tagAppVersion(Bundle.main.bundleVersion())
+            .tagSiteInfo(siteID: siteID, storeUUID: storeUUID, storeURL: testURL))
+    }
+
     func test_it_completes_after_receiving_a_form_submitted_completed_callback_request() throws {
         // Given
         var surveyCompleted = false
@@ -206,7 +223,7 @@ private extension SurveyViewControllerTests {
 
         override var request: URLRequest {
             var urlComponents = URLComponents(url: WooConstants.URLs.inAppFeedback.asURL(), resolvingAgainstBaseURL: false) ?? URLComponents()
-            if let messageParameterValue = messageParameterValue {
+            if let messageParameterValue {
                 let item = URLQueryItem(name: "msg", value: messageParameterValue)
                 urlComponents.queryItems = [item]
             }

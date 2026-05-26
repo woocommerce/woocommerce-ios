@@ -10,17 +10,17 @@ final class CardPresentPaymentsOnboardingViewController: UIHostingController<Car
         self.onWillDisappear = onWillDisappear
         super.init(rootView: CardPresentPaymentsOnboardingView(viewModel: viewModel))
         viewModel.showSupport = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             let supportForm = SupportFormHostingController(viewModel: .init())
             supportForm.show(from: self)
         }
         viewModel.showURL = { [weak self] url in
-            guard let self = self else { return }
+            guard let self else { return }
             WebviewHelper.launch(url, with: self)
         }
     }
 
-    @objc required dynamic init?(coder aDecoder: NSCoder) {
+    @objc dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 

@@ -26,7 +26,7 @@ final class EnableAnalyticsViewModel: ObservableObject {
                          onFailure: @escaping () -> Void) {
         enablingAnalyticsInProgress = true
         let action = SettingAction.enableAnalyticsSetting(siteID: siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.enablingAnalyticsInProgress = false
             switch result {
             case .success:

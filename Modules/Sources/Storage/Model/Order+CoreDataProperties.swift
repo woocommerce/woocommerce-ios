@@ -31,6 +31,7 @@ extension Order {
     @NSManaged public var discountTotal: String?
     @NSManaged public var exclusiveForSearch: Bool
     @NSManaged public var fees: Set<OrderFeeLine>?
+    @NSManaged public var fulfillmentStatusKey: String?
     @NSManaged public var isEditable: Bool
     @NSManaged public var needsPayment: Bool
     @NSManaged public var needsProcessing: Bool
@@ -67,12 +68,12 @@ extension Order {
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
     @NSManaged public var refunds: Set<OrderRefundCondensed>?
+    @NSManaged public var fulfillments: Set<OrderFulfillment>?
     @NSManaged public var shippingLabels: Set<ShippingLabel>?
     @NSManaged public var shippingLabelSettings: ShippingLabelSettings?
     @NSManaged public var taxes: Set<OrderTaxLine>?
     @NSManaged public var attributionInfo: OrderAttributionInfo?
     @NSManaged public var shipments: Set<WooShippingShipment>?
-
 }
 
 // MARK: Generated accessors for shippingLines
@@ -89,7 +90,6 @@ extension Order {
 
     @objc(removeShippingLines:)
     @NSManaged public func removeFromShippingLines(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for coupons
@@ -106,7 +106,6 @@ extension Order {
 
     @objc(removeCoupons:)
     @NSManaged public func removeFromCoupons(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for customFields
@@ -123,7 +122,6 @@ extension Order {
 
     @objc(removeCustomFields:)
     @NSManaged public func removeFromCustomFields(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for items
@@ -158,7 +156,6 @@ extension Order {
 
     @objc(removeItems:)
     @NSManaged public func removeFromItems(_ values: NSOrderedSet)
-
 }
 
 // MARK: Generated accessors for notes
@@ -175,7 +172,6 @@ extension Order {
 
     @objc(removeNotes:)
     @NSManaged public func removeFromNotes(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for searchResults
@@ -192,7 +188,6 @@ extension Order {
 
     @objc(removeSearchResults:)
     @NSManaged public func removeFromSearchResults(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for refunds
@@ -225,7 +220,6 @@ extension Order {
 
     @objc(removeShippingLabels:)
     @NSManaged public func removeFromShippingLabels(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for fees
@@ -242,7 +236,6 @@ extension Order {
 
     @objc(removeFees:)
     @NSManaged public func removeFromFees(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for taxes
@@ -259,7 +252,6 @@ extension Order {
 
     @objc(removeTaxes:)
     @NSManaged public func removeFromTaxes(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for appliedGiftCards
@@ -276,7 +268,6 @@ extension Order {
 
     @objc(removeAppliedGiftCards:)
     @NSManaged public func removeFromAppliedGiftCards(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for shipments

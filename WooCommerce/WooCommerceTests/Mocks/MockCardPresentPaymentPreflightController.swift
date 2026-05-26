@@ -4,8 +4,17 @@ import Yosemite
 import Combine
 
 final class MockCardPresentPaymentPreflightController: CardPresentPaymentPreflightControllerProtocol {
-    func start(discoveryMethod: CardReaderDiscoveryMethod?) async {
+    private(set) var startCallCount = 0
+    private(set) var cancelConnectionAttemptCallCount = 0
+    var onStart: (() -> Void)?
 
+    func start(discoveryMethod: CardReaderDiscoveryMethod?) async {
+        startCallCount += 1
+        onStart?()
+    }
+
+    func cancelConnectionAttempt() {
+        cancelConnectionAttemptCallCount += 1
     }
 
     private let readerConnectionSubject = CurrentValueSubject<CardReaderPreflightResult?, Never>(nil)

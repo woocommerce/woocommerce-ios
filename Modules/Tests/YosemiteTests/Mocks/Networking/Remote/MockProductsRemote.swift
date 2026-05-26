@@ -188,7 +188,7 @@ final class MockProductsRemote {
 extension MockProductsRemote: ProductsRemoteProtocol {
     func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -202,7 +202,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
     func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -218,7 +218,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                      productID: Int64,
                      completion: @escaping (Result<Product, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -352,7 +352,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let key = ResultKey(siteID: siteID, productIDs: [productID])
             if let result = self.updateProductImagesResultsBySiteID[key] {
@@ -447,8 +447,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
     func loadProductsForPointOfSale(for siteID: Int64,
                                     productTypes: [ProductType],
-                                    pageNumber: Int,
-                                    posProductsOnly: Bool) async throws -> PagedItems<POSProduct> {
+                                    pageNumber: Int) async throws -> PagedItems<POSProduct> {
         guard let result = posProductsResultsBySiteID[siteID] else {
             throw NetworkError.notFound()
         }
@@ -463,8 +462,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     func searchProductsForPointOfSale(for siteID: Int64,
                                       query: String,
                                       productTypes: [ProductType],
-                                      pageNumber: Int,
-                                      posProductsOnly: Bool) async throws -> PagedItems<POSProduct> {
+                                      pageNumber: Int) async throws -> PagedItems<POSProduct> {
         guard let result = posSearchResultsByQuery[query] else {
             throw NetworkError.notFound()
         }
@@ -476,7 +474,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String, posProductsOnly: Bool) async throws -> POSProduct {
+    func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String) async throws -> POSProduct {
             return POSProduct.fake().copy(siteID: siteID,
                                           globalUniqueID: globalUniqueID)
     }
@@ -484,8 +482,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     func loadPopularProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType],
                                            pageNumber: Int,
-                                           perPage: Int,
-                                           posProductsOnly: Bool) async throws -> PagedItems<POSProduct> {
+                                           perPage: Int) async throws -> PagedItems<POSProduct> {
         lastRequestedPageSize = perPage
         guard let result = posPopularProductsResultsBySiteID[siteID] else {
             throw NetworkError.notFound()
@@ -498,7 +495,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func loadPOSProduct(for siteID: Int64, productID: Int64, posProductsOnly: Bool) async throws -> POSProduct {
+    func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
         invocationCountOfLoadPOSProduct += 1
         requestedProductIDsForFetchingPOSProduct.append(productID)
 

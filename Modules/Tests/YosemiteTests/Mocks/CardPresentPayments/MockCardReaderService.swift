@@ -25,6 +25,10 @@ final class MockCardReaderService: CardReaderService {
         PassthroughSubject<Void, Never>().eraseToAnyPublisher()
     }
 
+    var reconnectionEvents: AnyPublisher<CardReaderReconnectionState, Never> {
+        reconnectionEventsSubject.eraseToAnyPublisher()
+    }
+
     /// Boolean flag Indicates that clients have called the start method
     var didHitStart = false
 
@@ -67,10 +71,13 @@ final class MockCardReaderService: CardReaderService {
 
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
+    private let reconnectionEventsSubject = CurrentValueSubject<CardReaderReconnectionState, Never>(.idle)
+
+    /// Boolean flag indicates that clients have called the cancelReconnection method
+    var didHitCancelReconnection = false
 
 
     init() {
-
     }
 
     func checkSupport(for cardReaderType: Hardware.CardReaderType,
@@ -140,16 +147,32 @@ final class MockCardReaderService: CardReaderService {
 
     func clear() { }
 
-    func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
-        capturePaymentPublisher ??
-        Just(.fake())
-            .setFailureType(to: Error.self)
+    func capturePayment(_ parameters: PaymentIntentParameters,
+                        beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>) -> AnyPublisher<PaymentIntent, Error> {
+        let paymentPublisher = capturePaymentPublisher ??
+            Just(.fake())
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
+
+        return paymentPublisher
+            .flatMap { intent in
+                beforePaymentConfirmation(intent)
+                    .map { intent }
+                    .eraseToAnyPublisher()
+            }
             .eraseToAnyPublisher()
     }
 
-    func retryActivePaymentIntent() -> AnyPublisher<Hardware.PaymentIntent, Error> {
+    func retryActivePaymentIntent(
+        beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
+    ) -> AnyPublisher<Hardware.PaymentIntent, Error> {
         Just(.fake())
             .setFailureType(to: Error.self)
+            .flatMap { intent in
+                beforePaymentConfirmation(intent)
+                    .map { intent }
+                    .eraseToAnyPublisher()
+            }
             .eraseToAnyPublisher()
     }
 
@@ -176,6 +199,15 @@ final class MockCardReaderService: CardReaderService {
 
     func installUpdate() -> Void {
     }
+
+    func cancelReconnection() -> Future<Void, Error> {
+        didHitCancelReconnection = true
+        return Future { promise in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                promise(.success(()))
+            }
+        }
+    }
 }
 
 extension MockCardReaderService {
@@ -187,6 +219,22 @@ extension MockCardReaderService {
     /// Set the return value if `waitForInsertedCardToBeRemoved` is called.
     func whenWaitForInsertedCardToBeRemoved(thenReturn future: Future<Void, Never>) {
         waitForInsertedCardToBeRemovedFuture = future
+    }
+
+    func simulateReconnectionStarted(reader: CardReader) {
+        reconnectionEventsSubject.send(.reconnecting(reader: reader))
+    }
+
+    func simulateReconnectionSucceeded(reader: CardReader) {
+        reconnectionEventsSubject.send(.succeeded(reader: reader))
+        connectedReadersSubject.send([reader])
+        reconnectionEventsSubject.send(.idle)
+    }
+
+    func simulateReconnectionFailed(reader: CardReader) {
+        reconnectionEventsSubject.send(.failed(reader: reader))
+        connectedReadersSubject.send([])
+        reconnectionEventsSubject.send(.idle)
     }
 }
 

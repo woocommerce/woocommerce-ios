@@ -86,7 +86,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
-    private lazy var filterButton: UIButton = UIButton(frame: .zero)
+    private lazy var filterButton = UIButton(frame: .zero)
 
     /// The bulk edit CTA in the navbar.
     private lazy var bulkEditButton: UIBarButtonItem = {
@@ -100,7 +100,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Container of the top banner that shows that the Products feature is still work in progress.
     ///
-    private lazy var topBannerContainerView: SwappableSubviewContainerView = SwappableSubviewContainerView()
+    private lazy var topBannerContainerView = SwappableSubviewContainerView()
 
     /// Top banner that shows that the Products feature is still work in progress.
     ///
@@ -162,7 +162,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private let imageUploader = ServiceLocator.productImageUploader
     private var activeUploadIds: [Int64] = []
 
-    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
+    private var filters = FilterProductListViewModel.Filters() {
         didSet {
             Task { @MainActor in
                 if filters != oldValue ||
@@ -321,7 +321,7 @@ private extension ProductsViewController {
     @objc func scanProducts() {
         ServiceLocator.analytics.track(.productListProductBarcodeScanningTapped)
 
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             return
         }
 
@@ -329,7 +329,7 @@ private extension ProductsViewController {
 
         let productSKUBarcodeScannerCoordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                   onBarcodeScanned: { [weak self] scannedBarcode in
-            guard let self = self else { return }
+            guard let self else { return }
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
 
             Task {
@@ -355,7 +355,6 @@ private extension ProductsViewController {
                 // Reset button state on finishing the task
                 self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
             }
-
         }, onPermissionsDenied: {
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .productList,
                                                                                                            reason: .cameraAccessNotPermitted))
@@ -372,9 +371,9 @@ private extension ProductsViewController {
                     sourceView: UIView? = nil,
                     isFirstProduct: Bool) {
         let sourceView: AddProductCoordinator.SourceView? = {
-            if let sourceBarButtonItem = sourceBarButtonItem {
+            if let sourceBarButtonItem {
                 return .barButtonItem(sourceBarButtonItem)
-            } else if let sourceView = sourceView {
+            } else if let sourceView {
                 return .view(sourceView)
             } else {
                 assertionFailure("No source view for adding a product")
@@ -860,7 +859,7 @@ private extension ProductsViewController {
                 WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
             },
             onContactSupportButtonPressed: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 let supportForm = SupportFormHostingController(viewModel: .init())
                 supportForm.show(from: self)
             })
@@ -1031,7 +1030,7 @@ private extension ProductsViewController {
 
     func listenToSelectedProductToAutoScrollWhenProductChanges(product: Product) {
         selectedProductListener = .init(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
-        selectedProductListener?.onUpsert = { [weak self] product in
+        selectedProductListener?.onUpsert = { [weak self] _ in
             guard let self,
                   let selectedIndexPath = tableView.indexPathForSelectedRow,
                   !isIndexPathVisible(selectedIndexPath) else {
@@ -1383,7 +1382,7 @@ private extension ProductsViewController {
     /// Removes EmptyStateViewController child view controller if applicable.
     ///
     func removeAllOverlays() {
-        guard let emptyStateViewController = emptyStateViewController, emptyStateViewController.parent == self else {
+        guard let emptyStateViewController, emptyStateViewController.parent == self else {
             return
         }
 
@@ -1441,7 +1440,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                  productCategory: filters.productCategory,
                                  sortOrder: sortOrder,
                                  productIDs: (filters.favoriteProduct != nil) ? viewModel.favoriteProductIDs : []) { [weak self] result in
-                                    guard let self = self else {
+                                    guard let self else {
                                         return
                                     }
 
@@ -1476,12 +1475,12 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                                               productStatusFilter: filters.productStatus,
                                                               productTypeFilter: filters.promotableProductType?.productType,
                                                               productCategoryFilter: filters.productCategory,
-                                                              favoriteProduct: filters.favoriteProduct != nil) { (error) in
+                                                              favoriteProduct: filters.favoriteProduct != nil) { (_) in
         }
         ServiceLocator.stores.dispatch(action)
     }
 
-    /// Fetch local Products Settings (eg.  sort order or filters stored in Products settings)
+    /// Fetch local Products Settings (eg. sort order or filters stored in Products settings)
     ///
     private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings.Setting, Error>) -> Void) {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
@@ -1648,7 +1647,7 @@ private extension ProductsViewController {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
         static let headerDefaultHeight = CGFloat(130)
-        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        static let headerContainerInsets = UIEdgeInsets.zero
         static let toolbarButtonInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
     }
 

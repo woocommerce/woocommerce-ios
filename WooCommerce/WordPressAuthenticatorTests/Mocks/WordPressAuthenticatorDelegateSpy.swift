@@ -41,7 +41,11 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
         self.socialUser = socialUser
     }
 
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, lastStep: AuthenticatorAnalyticsTracker.Step, lastFlow: AuthenticatorAnalyticsTracker.Flow) {
+    func presentSupport(from sourceViewController: UIViewController,
+                        sourceTag: WordPressSupportSourceTag,
+                        lastStep: AuthenticatorAnalyticsTracker.Step,
+                        lastFlow: AuthenticatorAnalyticsTracker.Flow,
+                        siteURL: String?) {
         // no-op
     }
 

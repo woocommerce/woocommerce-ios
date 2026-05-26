@@ -5,8 +5,8 @@ import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(PointOfSaleAggregateModel.self) private var posModel
-    @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var sheetManager: POSSheetManager
@@ -14,6 +14,26 @@ struct ItemListView: View {
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
+    /// Optional builder rendered in the trailing slot of the items list header when not searching.
+    /// The dashboard uses this to fold the "create coupon" entry into its overflow menu when the
+    /// merchant is on the Coupons tab, without leaking ItemListView's internal state.
+    private let phoneHeaderAccessoryBuilder: ((PhoneHeaderAccessoryContext) -> AnyView)?
+
+    init(selectedItemListType: Binding<ItemListType>,
+         searchTerm: Binding<String>,
+         phoneHeaderAccessoryBuilder: ((PhoneHeaderAccessoryContext) -> AnyView)? = nil) {
+        self._selectedItemListType = selectedItemListType
+        self._searchTerm = searchTerm
+        self.phoneHeaderAccessoryBuilder = phoneHeaderAccessoryBuilder
+    }
+
+    /// Context handed to the dashboard so the phone overflow menu can fold the
+    /// "create coupon" entry in when the merchant is on the Coupons tab. Avoids
+    /// leaking ItemListView's internal state up to the dashboard.
+    struct PhoneHeaderAccessoryContext {
+        let canCreateCoupon: Bool
+        let onCreateCoupon: () -> Void
+    }
 
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
         PointOfSaleItemListAnalyticsTracker(
@@ -48,7 +68,17 @@ struct ItemListView: View {
 
     private var isBarcodeScanningEnabled: Binding<Bool> {
         Binding(
-            get: { !isSearching && !modalManager.isPresented && !sheetManager.isPresented && !coverManager.isPresented },
+            // Also gated on `isAddingCustomAmount` — that form is pushed via NavigationStack
+            // (not a sheet/cover) so none of the manager flags flip, and typing in its text
+            // field would otherwise feed each character to the HID barcode listener and add
+            // bogus rows to the cart.
+            get: {
+                !isSearching
+                && !modalManager.isPresented
+                && !sheetManager.isPresented
+                && !coverManager.isPresented
+                && !isAddingCustomAmount
+            },
             set: { _ in }
         )
     }
@@ -63,7 +93,22 @@ struct ItemListView: View {
         !isSearching
     }
 
+    private func shouldShowCustomAmountEntryRow(_ itemListType: ItemListType) -> Bool {
+        ItemListViewHelper().shouldShowCustomAmountEntryRow(
+            itemListType: itemListType,
+            isCustomAmountsFeatureEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleCustomAmounts),
+            isSearching: isSearching
+        )
+    }
+
     @State private var showCouponCreationModal: Bool = false
+
+    /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
+    ///
+    /// Add lives in local view state because the push is scoped to this view's `NavigationStack`
+    /// (left pane). Edit, by contrast, can be triggered from the cart pane and is a modal cover,
+    /// so it lives on the aggregate model as `editingCustomAmount` for cross-pane reach.
+    @State private var isAddingCustomAmount: Bool = false
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -83,20 +128,25 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            TabView(selection: $selectedItemListType) {
+            ZStack {
                 itemListTabContent(.products(search: false))
+                    .opacity(selectedItemListType.isProducts ? 1 : 0)
+                    .accessibilityHidden(!selectedItemListType.isProducts)
                 itemListTabContent(.coupons(search: false))
+                    .opacity(selectedItemListType.isCoupons ? 1 : 0)
+                    .accessibilityHidden(!selectedItemListType.isCoupons)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(.none, value: selectedItemListType)
-            // Respect the keyboard safe area when a full keyboard is shown, but not the external keyboard shortcut bar.
-            .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .container : [.keyboard, .container])
+            .ignoresSafeArea(.container)
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
         .navigationDestination(for: POSItem.self, destination: { item in
             childListView(parentItem: item)
         })
+        .modifier(CustomAmountFormPushModifier(
+            isPresented: $isAddingCustomAmount,
+            destination: { addCustomAmountFormDestination }
+        ))
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
         .posCouponCreationSheet(isPresented: $showCouponCreationModal,
@@ -125,6 +175,7 @@ struct ItemListView: View {
     private func itemListTabContent(_ itemListType: ItemListType) -> some View {
         ZStack {
             itemListContent(itemListType)
+                .ignoresSafeArea(.keyboard)
                 .accessibilityElement(children: isSearching ? .ignore : .contain)
 
             if isSearching {
@@ -137,12 +188,15 @@ struct ItemListView: View {
                 ) { _ in
                     itemListContent(selectedItemListType)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.posSurface)
                 .scrollDismissesKeyboard(.immediately)
                 .zIndex(1)
             }
         }
-        .tag(itemListType)
-        .gesture(DragGesture()) // Disable a default swipe gesture between the tabs
+        // Both tabs exist in the ZStack simultaneously — prevent taps reaching the hidden tab.
+        // Compare by tab kind only — selectedItemListType includes search state that itemListType doesn't.
+        .allowsHitTesting(selectedItemListType.itemType == itemListType.itemType)
     }
 
     @ViewBuilder
@@ -163,6 +217,13 @@ struct ItemListView: View {
     @ViewBuilder
     private func listView(itemListType: ItemListType) -> some View {
         VStack(spacing: 0) {
+            if posModel.showSunsetWarning {
+                sunsetWarningBanner
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.vertical, POSPadding.medium)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+
             // Stale sync warning banner
             if posModel.showStaleSyncWarning {
                 staleSyncWarningBanner
@@ -177,6 +238,13 @@ struct ItemListView: View {
                 itemActionHandler: actionHandler(itemListType),
                 willLoadMore: {
                     analyticsTracker.trackNextPageWillLoad()
+                },
+                headerView: {
+                    if shouldShowCustomAmountEntryRow(itemListType) {
+                        CustomAmountEntryRow(onTap: {
+                            isAddingCustomAmount = true
+                        })
+                    }
                 }
             )
             .refreshable {
@@ -199,9 +267,28 @@ struct ItemListView: View {
             }
         }
         .task {
-            // Check stale sync status when view appears
             await posModel.checkStaleSyncStatus()
+            await posModel.checkSunsetWarningStatus()
         }
+    }
+
+    @ViewBuilder
+    private var sunsetWarningBanner: some View {
+        POSNoticeView(
+            title: Localization.sunsetWarningTitle,
+            icon: Image(systemName: "info.circle"),
+            onDismiss: {
+                analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningDismissed())
+                withAnimation {
+                    posModel.dismissSunsetWarning()
+                }
+            }, content: {
+                Text(Localization.sunsetWarningDescription)
+                    .font(POSFontStyle.posBodyMediumRegular())
+            })
+            .task {
+                analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningShown())
+            }
     }
 
     @ViewBuilder
@@ -267,6 +354,55 @@ struct ItemListView: View {
             EmptyView()
         }
     }
+
+    @ViewBuilder
+    private var addCustomAmountFormDestination: some View {
+        AddCustomAmountView(
+            currencySettings: currencyProvider.currencySettings,
+            backButtonStyle: .back,
+            onDismiss: { isAddingCustomAmount = false },
+            onSubmit: { customAmount in
+                posModel.upsertCustomAmount(customAmount, mode: .add)
+            }
+        )
+        // Hide the system nav bar so only the form's own POSPageHeaderView is visible
+        // (matches how `ChildItemList` handles the variations push).
+        .toolbar(.hidden, for: .navigationBar)
+        .navigationBarBackButtonHidden(true)
+        // Suppress the dashboard's floating control overlay so it doesn't sit on top
+        // of the form's submit button while the form is pushed.
+        .posHidesFloatingControl()
+    }
+}
+
+/// Pushes a destination from a `Bool` flag, with separate paths for iOS 18+ (`navigationDestination`)
+/// and iOS 17 (programmatic `NavigationLink` to avoid the `navigationDestination(for:)` runtime
+/// warnings reported on `NavigationView`).
+private struct CustomAmountFormPushModifier<Destination: View>: ViewModifier {
+    @Binding var isPresented: Bool
+    let destination: () -> Destination
+
+    func body(content: Content) -> some View {
+        if #available(iOS 18.0, *) {
+            content.navigationDestination(isPresented: $isPresented) {
+                destination()
+            }
+        } else {
+            // The `NavigationLink(destination:isActive:label:)` initializer is deprecated since
+            // iOS 16, but its replacement (`navigationDestination(isPresented:)`) doesn't work
+            // reliably under the `NavigationView` wrapper we still use on iOS 17 for the memory-leak
+            // workaround documented in `ItemList.swift`. Mirrors the variations push fallback.
+            content.background(
+                NavigationLink(
+                    destination: destination(),
+                    isActive: $isPresented,
+                    label: { EmptyView() }
+                )
+                .opacity(0)
+                .frame(width: 0, height: 0)
+            )
+        }
+    }
 }
 
 /// Header view
@@ -289,15 +425,32 @@ private extension ItemListView {
                         )
                         .transition(.opacity.combined(with: .move(edge: .trailing)))
                     } else {
-                        createCouponButton
+                        // Tablet keeps the inline + button. On phone (when a header
+                        // accessory builder is provided) the + folds into the overflow
+                        // menu so the menu chip is always visible.
+                        if phoneHeaderAccessoryBuilder == nil {
+                            createCouponButton
+                        }
 
                         POSPageHeaderActionButton(systemName: "magnifyingglass") {
                             analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                             setSearch(true)
                         }
                         .transition(.opacity.combined(with: .scale))
-                    }
 
+                        if let phoneHeaderAccessoryBuilder {
+                            phoneHeaderAccessoryBuilder(
+                                PhoneHeaderAccessoryContext(
+                                    canCreateCoupon: isAddingCouponAllowed,
+                                    onCreateCoupon: {
+                                        analytics.track(.pointOfSaleCouponsCreateTapped)
+                                        showCouponCreationModal = true
+                                    }
+                                )
+                            )
+                            .transition(.opacity.combined(with: .scale))
+                        }
+                    }
                 }
             })
         }
@@ -443,13 +596,25 @@ private extension ItemListView {
         static let productsTitle = NSLocalizedString(
             "pos.itemlistview.title",
             value: "Products",
-            comment: "Title at the top of the Point of Sale product selector screen."
+            comment: "Title at the top of the point of sale product selector screen."
         )
 
         static let couponsTitle = NSLocalizedString(
             "pos.itemlistview.couponsTitle",
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
+        )
+
+        static let sunsetWarningTitle = NSLocalizedString(
+            "pos.itemlistview.sunsetWarning.title",
+            value: "Update WooCommerce Soon",
+            comment: "Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it"
+        )
+
+        static let sunsetWarningDescription = NSLocalizedString(
+            "pos.itemlistview.sunsetWarning.description",
+            value: "Starting August 1st, point of sale will require WooCommerce 10.5.0 or later. Update to ensure uninterrupted access.",
+            comment: "Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it"
         )
 
         static let staleSyncWarningTitle = NSLocalizedString(

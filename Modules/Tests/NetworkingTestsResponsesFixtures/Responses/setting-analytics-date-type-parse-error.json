@@ -1,0 +1,16 @@
+{
+    "data": {
+        "id": "woocommerce_date_type",
+        "label": "Date type",
+        "description": "Choose which dates are used to define the date range used for stats and reports.",
+        "type": "select",
+        "default": "date_paid",
+        "options": {
+            "date_paid": "Paid orders",
+            "date_created": "All orders",
+            "date_completed": "Completed orders"
+        },
+        "value": "this is a value that cannot be parsed",
+        "group_id": "wc_admin"
+    }
+}

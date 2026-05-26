@@ -23,7 +23,7 @@ struct AdaptiveAsyncImage<Content>: View where Content: View {
 
     @ViewBuilder var body: some View {
         if colorScheme == .dark,
-           let darkUrl = darkUrl {
+           let darkUrl {
             AsyncImage(url: darkUrl, scale: scale, content: content)
         } else {
             AsyncImage(url: anyAppearanceUrl, scale: scale, content: content)

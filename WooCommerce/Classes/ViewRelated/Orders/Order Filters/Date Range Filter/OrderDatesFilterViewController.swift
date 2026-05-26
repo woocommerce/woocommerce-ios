@@ -103,7 +103,7 @@ extension OrderDatesFilterViewController: UITableViewDelegate {
             //
             let dateRangeFilterVC = DateRangeFilterViewController(startDate: selected?.startDate,
                                                                   endDate: selected?.endDate) { [weak self] (startDate, endDate) in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.selected = OrderDateRangeFilter(filter: .custom, startDate: startDate, endDate: endDate)
                 self.configureRows()
                 self.onCompletion(self.selected)

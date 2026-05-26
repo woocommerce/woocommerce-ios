@@ -2,9 +2,35 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 138 (Release 24.8.0.0)
+- @itsmeichigo 2026-05-12
+  - Added `sessionID` and `isResolved` attributes to `StoredSupportChat` entity.
+- @itsmeichigo 2026-05-06
+  - Added `hasCreatedTicket` attribute to `StoredSupportChat` entity.
+
+## Model 137 (Release 24.7.0.0)
+- @iamgabrielma 2026-04-24
+  - Added `StoredSupportChat` entity with attributes: `chatID`, `siteID`, `wpcomUserID`, `botSlug`, `title`, `createdAt`, `updatedAt`.
+- @rafaelkayumov 2026-04-29
+  - Added `grossSales` attribute to `OrderStatsV4Totals` entity to support the Performance card revenue type selector (Gross/Net/Total).
+
+## Model 136 (Release 24.6.0.0)
+- @rafaelkayumov 2026-04-06
+  - Added `OrderFulfillment` entity with attributes: `siteID`, `orderID`, `fulfillmentID`, `statusKey`, `isFulfilled`, `dateUpdated`, `dateFulfilled`, `trackingNumber`, `shipmentProvider`, `providerName`, `trackingURL`.
+- @itsmeichigo 2026-04-07
+  - Added `bookingDuration` attribute to `Product` entity.
+  - Added `bookingDurationUnit` attribute to `Product` entity.
+  - Added `bookingResourceIDs` attribute to `Product` entity.
+
+## Model 135 (Release 24.5.0.0)
+- @rafaelkayumov 2026-03-31
+  - Added `fulfillmentStatusKey` attribute to `Order` entity.
+
 ## Model 134 (Release 24.4.0.0)
 - @adborbas 2026-03-16
   - Added `location` attribute to `Booking` entity.
+- @rafaelkayumov 2026-03-16
+  - Added `userID` attribute to `Booking` entity.
 
 ## Model 133 (Release 24.4.0.0)
 - @itsmeichigo 2026-03-11

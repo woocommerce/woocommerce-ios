@@ -90,7 +90,7 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
             productImagesUploader: mockProductImageUploader)
 
         var isProductUpdated: Bool?
-        cancellableProduct = viewModel.observableProduct.sink { product in
+        cancellableProduct = viewModel.observableProduct.sink { _ in
             isProductUpdated = true
         }
 
@@ -123,7 +123,7 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
                                                       storesManager: mockStoresManager)
 
         var isProductUpdated: Bool?
-        cancellableProduct = viewModel.observableProduct.sink { product in
+        cancellableProduct = viewModel.observableProduct.sink { _ in
             isProductUpdated = true
         }
 
@@ -160,7 +160,7 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
                                                       storesManager: mockStoresManager)
 
         var isProductUpdated: Bool?
-        cancellableProduct = viewModel.observableProduct.sink { product in
+        cancellableProduct = viewModel.observableProduct.sink { _ in
             isProductUpdated = true
         }
 

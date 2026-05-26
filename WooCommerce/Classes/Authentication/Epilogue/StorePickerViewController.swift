@@ -6,6 +6,7 @@ import WordPressAuthenticator
 import WordPressUI
 import Yosemite
 import Experiments
+import enum NetworkingCore.DotcomError
 
 
 typealias SelectStoreClosure = () -> Void
@@ -149,9 +150,9 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    private lazy var closeAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        guard let self else { throw CloseAccountError.presenterDeallocated }
         return try await self.closeAccount()
     } onRemoveSuccess: { [weak self] in
         self?.restartAuthentication()
@@ -294,7 +295,7 @@ private extension StorePickerViewController {
 
     func observeStateChange() {
         viewModel.$state.sink { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.preselectStoreIfPossible()
             self.reloadInterface()
             self.updateFooterViewIfNeeded()
@@ -446,7 +447,7 @@ private extension StorePickerViewController {
 
         // If a site address was passed in credentials, select it
         if case let .wpcom(_, _, siteAddress) = ServiceLocator.stores.sessionManager.defaultCredentials,
-           let site = sites.filter({ $0.url == siteAddress }).first,
+           let site = sites.first(where: { $0.url == siteAddress }),
            site.isWooCommerceActive {
             currentlySelectedSite = site
             return
@@ -610,10 +611,10 @@ private extension StorePickerViewController {
         actionButton.showActivityIndicator(false)
     }
 
-    /// Displays a generic error view as a modal with options to see troubleshooting tips and to contact support.
+    /// Displays an error view as a modal with options to see troubleshooting tips and to contact support.
     ///
-    func displayUnknownErrorModal() {
-        let viewController = StorePickerErrorHostingController.createWithActions(presenting: self)
+    func displayUnknownErrorModal(isPermissionError: Bool = false) {
+        let viewController = StorePickerErrorHostingController.createWithActions(presenting: self, isPermissionError: isPermissionError)
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self
         present(viewController, animated: true)
@@ -783,7 +784,7 @@ extension StorePickerViewController: UITableViewDelegate {
 private extension StorePickerViewController {
     func closeAccount() async throws {
         try await withCheckedThrowingContinuation { [weak self] continuation in
-            guard let self = self else { return }
+            guard let self else { return }
             let action = AccountAction.closeAccount { result in
                 continuation.resume(with: result)
             }
@@ -803,7 +804,7 @@ private extension StorePickerViewController {
             site: site,
             showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
             onSetupCompletion: { [weak self] siteID in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.navigationController?.popViewController(animated: true)
                 self.viewModel.refreshSites(currentlySelectedSiteID: siteID)
                 self.delegate?.didSelectStore(with: siteID) { [weak self] in
@@ -816,14 +817,14 @@ private extension StorePickerViewController {
     }
 
     func checkRoleEligibility(for site: Site) {
-        guard let delegate = delegate else {
+        guard let delegate else {
             return
         }
 
         updateActionButtonAndTableState(animating: true, enabled: false)
 
         viewModel.checkEligibility(for: site.siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.updateActionButtonAndTableState(animating: false, enabled: true)
 
@@ -840,7 +841,9 @@ private extension StorePickerViewController {
                         self?.dismiss()
                     }
                 } else {
-                    self.displayUnknownErrorModal()
+                    let underlyingError = (error as? RoleEligibilityError)?.underlyingError ?? error
+                    let isPermissionError = underlyingError is DotcomError
+                    self.displayUnknownErrorModal(isPermissionError: isPermissionError)
                 }
             }
         }

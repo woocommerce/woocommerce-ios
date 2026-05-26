@@ -38,7 +38,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         return delegate
     }
 
-    open override var preferredStatusBarStyle: UIStatusBarStyle {
+    override open var preferredStatusBarStyle: UIStatusBarStyle {
         // Set to the old style as the default.
         // Each VC in the unified flows needs to override this to use the unified style.
         return WordPressAuthenticator.shared.style.statusBarStyle
@@ -112,7 +112,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         errorLabel?.text = message
         errorToPresent = nil
 
-        if moveVoiceOverFocus, let errorLabel = errorLabel {
+        if moveVoiceOverFocus, let errorLabel {
             UIAccessibility.post(notification: .layoutChanged, argument: errorLabel)
         }
     }
@@ -128,7 +128,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     // MARK: - Epilogue
 
     func showSignupEpilogue(for credentials: AuthenticatorCredentials) {
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             fatalError()
         }
 
@@ -140,7 +140,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     }
 
     func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             fatalError("No navigation controller found to show login epilogue")
         }
 
@@ -172,7 +172,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     }
 
     // MARK: SigninWPComSyncHandler methods
-    dynamic open func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
+    open dynamic func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
         let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: requiredMultifactorCode, siteURL: loginFields.siteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
 
@@ -186,7 +186,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     }
 
     /// Overridden here to direct these errors to the login screen's error label
-    dynamic open func displayRemoteError(_ error: Error) {
+    open dynamic func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
         let err = error as NSError
         guard err.code != 403 else {
@@ -258,7 +258,7 @@ extension LoginViewController {
         configureStatusLabel(LocalizedText.gettingAccountInfo)
 
         syncWPCom(credentials: credentials) { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -291,7 +291,7 @@ extension LoginViewController {
             ]
         }
 
-        // This stat is part of a funnel that provides critical information.  Please
+        // This stat is part of a funnel that provides critical information. Please
         // consult with your lead before removing this event.
         WordPressAuthenticator.track(.signedIn, properties: properties)
         tracker.track(step: .success)
@@ -322,7 +322,7 @@ extension LoginViewController {
                         serviceToken: serviceToken,
                         connectParameters: appleConnectParameters,
                         success: {
-                            // This stat is part of a funnel that provides critical information.  Please
+                            // This stat is part of a funnel that provides critical information. Please
                             // consult with your lead before removing this event.
                             let source = appleConnectParameters != nil ? "apple" : "google"
                             WordPressAuthenticator.track(.signedIn, properties: ["source": source])
@@ -336,7 +336,7 @@ extension LoginViewController {
             WordPressAuthenticator.track(.loginSocialConnectFailure, error: error)
             // We're opting to let this call fail silently.
             // Our user has already successfully authenticated and can use the app --
-            // connecting the social service isn't critical.  There's little to
+            // connecting the social service isn't critical. There's little to
             // be gained by displaying an error that can not currently be resolved
             // in the app and doing so might tarnish an otherwise satisfying login
             // experience.
@@ -362,7 +362,7 @@ extension LoginViewController {
         }
     }
 
-    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         setTableViewMargins(forWidth: size.width)
     }
@@ -371,8 +371,8 @@ extension LoginViewController {
     /// Used only in unified views.
     ///
     func setTableViewMargins(forWidth viewWidth: CGFloat) {
-        guard let tableViewLeadingConstraint = tableViewLeadingConstraint,
-            let tableViewTrailingConstraint = tableViewTrailingConstraint else {
+        guard let tableViewLeadingConstraint,
+            let tableViewTrailingConstraint else {
                 return
         }
 
@@ -397,7 +397,6 @@ extension LoginViewController {
         static let ipadPortrait: CGFloat = 0.1667
         static let ipadLandscape: CGFloat = 0.25
     }
-
 }
 
 // MARK: - Social Sign In Handling
@@ -466,7 +465,6 @@ extension LoginViewController {
         vc.loginFields = loginFields
         navigationController?.pushViewController(vc, animated: true)
     }
-
 }
 
 // MARK: - LoginSocialError delegate methods
@@ -538,5 +536,4 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-
 }

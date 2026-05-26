@@ -29,10 +29,17 @@ public protocol BookingsRemoteProtocol {
 
     func fetchResources(for siteID: Int64,
                         pageNumber: Int,
-                        pageSize: Int) async throws -> [BookingResource]
+                        pageSize: Int,
+                        include: [Int64]?) async throws -> [BookingResource]
 
     func fetchBookingLocationResponse(for siteID: Int64,
                                      productID: Int64) async throws -> BookingLocationResponse
+
+    func rescheduleBooking(from siteID: Int64,
+                           bookingID: Int64,
+                           startDate: Date,
+                           endDate: Date,
+                           resourceID: Int64?) async throws -> Booking?
 }
 
 /// Filters for booking queries
@@ -138,7 +145,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
             }
 
             if filters.customerIDs.isNotEmpty {
-                parameters[ParameterKey.customer] = filters.customerIDs.map(String.init)
+                parameters[ParameterKey.user] = filters.customerIDs.map(String.init)
             }
 
             if filters.resourceIDs.isNotEmpty {
@@ -172,7 +179,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
             }
         }
 
-        if let searchQuery = searchQuery, !searchQuery.isEmpty {
+        if let searchQuery, !searchQuery.isEmpty {
             parameters[ParameterKey.search] = searchQuery
         }
 
@@ -264,12 +271,16 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     public func fetchResources(
         for siteID: Int64,
         pageNumber: Int = Default.pageNumber,
-        pageSize: Int = Default.pageSize
+        pageSize: Int = Default.pageSize,
+        include: [Int64]? = nil
     ) async throws -> [BookingResource] {
-        let parameters = [
+        var parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)
         ]
+        if let include, !include.isEmpty {
+            parameters[ParameterKey.include] = include.map { String($0) }.joined(separator: ",")
+        }
 
         let path = Path.resources
         let request = JetpackRequest(
@@ -282,6 +293,45 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         )
         let mapper = ListMapper<BookingResource>(siteID: siteID)
 
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    /// Reschedules a booking by updating its start date, end date, and optionally its resource.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll update the booking.
+    ///     - bookingID: The ID of the booking to reschedule.
+    ///     - startDate: New booking start date.
+    ///     - endDate: New booking end date.
+    ///     - resourceID: Optional new resource/team member ID.
+    ///
+    public func rescheduleBooking(
+        from siteID: Int64,
+        bookingID: Int64,
+        startDate: Date,
+        endDate: Date,
+        resourceID: Int64?
+    ) async throws -> Booking? {
+        let path = "\(Path.bookings)/\(bookingID)"
+        var parameters: [String: Any] = [
+            ParameterKey.start: Int64(startDate.timeIntervalSince1970),
+            ParameterKey.end: Int64(endDate.timeIntervalSince1970)
+        ]
+
+        if let resourceID {
+            parameters[ParameterKey.resourceID] = String(resourceID)
+        }
+
+        let request = JetpackRequest(
+            wooApiVersion: .wcBookings,
+            method: .put,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+
+        let mapper = BookingMapper(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -341,13 +391,17 @@ public extension BookingsRemote {
         static let order: String           = "order"
         static let orderBy: String         = "orderby"
         static let product: String         = "product"
-        static let customer: String        = "customer"
+        static let user: String            = "user"
         static let resource: String        = "resource"
         static let attendanceStatus        = "attendance_status"
         static let paymentStatus           = "booking_status" // to be updated later when payment filtering is supported
         static let bookingStatusExclude    = "booking_status_exclude"
         static let status: String          = "status"
         static let note: String            = "note"
+        static let start: String           = "start"
+        static let end: String             = "end"
+        static let resourceID: String      = "resource_id"
+        static let include: String         = "include"
         static let fields: String          = "_fields"
     }
 

@@ -5,33 +5,8 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
     var providePointOfSaleRefundsResultToReturn: Yosemite.POSRefundsResult = POSRefundsResult(refunds: [], isFullyRefunded: false, supportsAutomaticRefund: true)
     var errorToThrow: Error?
 
-    private var continuation: CheckedContinuation<Yosemite.POSOrder, Never>?
-
-    var shouldSuspendProvidePointOfSaleRefunds = false
-    private var refundsContinuation: CheckedContinuation<Void, Never>?
-
-    func awaitProvidePointOfSaleRefundsCall() async -> Yosemite.POSOrder {
-        await withCheckedContinuation { cont in
-            continuation = cont
-        }
-    }
-
-    func resumeProvidePointOfSaleRefunds() {
-        refundsContinuation?.resume()
-        refundsContinuation = nil
-    }
-
     func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
         spyProvidePointOfSaleRefundsOrder = order
-        continuation?.resume(returning: order)
-        continuation = nil
-
-        if shouldSuspendProvidePointOfSaleRefunds {
-            await withCheckedContinuation { (cont: CheckedContinuation<Void, Never>) in
-                refundsContinuation = cont
-            }
-        }
-
         if let error = errorToThrow { throw error }
         return providePointOfSaleRefundsResultToReturn
     }
@@ -48,32 +23,15 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
         return calculator.calculateRefundAmounts(for: items, numberOfDecimals: 2)
     }
 
+    // MARK: - loadOrderRefunds
+
     var loadOrderRefundsResultToReturn: [POSOrderRefund] = []
     var loadOrderRefundsErrorToThrow: Error?
-    var shouldSuspendLoadOrderRefunds = false
-    private var loadOrderRefundsContinuation: CheckedContinuation<Void, Never>?
-    private var loadOrderRefundsCallContinuation: CheckedContinuation<Void, Never>?
+    var onLoadOrderRefundsCalled: (@MainActor (Yosemite.POSOrder) -> Void)?
 
-    func awaitLoadOrderRefundsCall() async {
-        await withCheckedContinuation { continuation in
-            loadOrderRefundsCallContinuation = continuation
-        }
-    }
-
-    func resumeLoadOrderRefunds() {
-        loadOrderRefundsContinuation?.resume()
-        loadOrderRefundsContinuation = nil
-    }
-
+    @MainActor
     func loadOrderRefunds(for order: Yosemite.POSOrder) async throws -> [POSOrderRefund] {
-        loadOrderRefundsCallContinuation?.resume()
-        loadOrderRefundsCallContinuation = nil
-
-        if shouldSuspendLoadOrderRefunds {
-            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-                loadOrderRefundsContinuation = continuation
-            }
-        }
+        onLoadOrderRefundsCalled?(order)
         if let error = loadOrderRefundsErrorToThrow {
             throw error
         }

@@ -62,6 +62,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     /// The raw value string of `StatsTimeRangeV4` that indicates the last selected time range tab in Performance dashboard card.
     public var lastSelectedPerformanceTimeRange: String
 
+    /// The raw value of `DashboardRevenueStatsType` indicating the last selected revenue metric on the Performance card.
+    /// Empty string means "use the default" (Total).
+    public var lastSelectedDashboardRevenueStatsType: String
+
     /// The raw value string of `StatsTimeRangeV4` that indicates the last selected time range tab in Top Performers dashboard card.
     public var lastSelectedTopPerformersTimeRange: String
 
@@ -98,6 +102,17 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var syncPOSCatalogOverCellular: Bool
 
+    /// The last time the sunset warning banner was dismissed for this store.
+    /// Used to throttle the banner to once every 14 days.
+    ///
+    public var lastSunsetWarningDismissedDate: Date?
+
+    /// Whether this site is eligible for In-Person Payments countries gated by remote flags.
+    /// `nil` until the eligibility refresher has run for the first time. Cached based on
+    /// the relevant remote feature flag for the site's country, with US/PR/CA/GB
+    /// short-circuited to `true`. Australia uses its own WooPayments-only flag.
+    public var isCardPresentPaymentsCountryExpansionEligible: Bool?
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -111,6 +126,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 analyticsHubCards: [AnalyticsCard]? = nil,
                 dashboardCards: [DashboardCard]? = nil,
                 lastSelectedPerformanceTimeRange: String = "",
+                lastSelectedDashboardRevenueStatsType: String = "",
                 lastSelectedTopPerformersTimeRange: String = "",
                 lastSelectedMostActiveCouponsTimeRange: String = "",
                 lastSelectedStockType: String? = nil,
@@ -120,7 +136,9 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 isPOSTabVisible: Bool? = nil,
                 lastPOSOpenedDate: Date? = nil,
                 firstPOSCatalogSyncDate: Date? = nil,
-                syncPOSCatalogOverCellular: Bool = true) {
+                syncPOSCatalogOverCellular: Bool = true,
+                lastSunsetWarningDismissedDate: Date? = nil,
+                isCardPresentPaymentsCountryExpansionEligible: Bool? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -134,6 +152,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.analyticsHubCards = analyticsHubCards
         self.dashboardCards = dashboardCards
         self.lastSelectedPerformanceTimeRange = lastSelectedPerformanceTimeRange
+        self.lastSelectedDashboardRevenueStatsType = lastSelectedDashboardRevenueStatsType
         self.lastSelectedTopPerformersTimeRange = lastSelectedTopPerformersTimeRange
         self.lastSelectedMostActiveCouponsTimeRange = lastSelectedMostActiveCouponsTimeRange
         self.lastSelectedStockType = lastSelectedStockType
@@ -144,6 +163,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.lastPOSOpenedDate = lastPOSOpenedDate
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
         self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
+        self.lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate
+        self.isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -160,6 +181,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              analyticsHubCards: analyticsHubCards,
                              dashboardCards: dashboardCards,
                              lastSelectedPerformanceTimeRange: lastSelectedPerformanceTimeRange,
+                             lastSelectedDashboardRevenueStatsType: lastSelectedDashboardRevenueStatsType,
                              lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange,
                              lastSelectedStockType: lastSelectedStockType,
                              lastSelectedOrderStatus: lastSelectedOrderStatus,
@@ -167,7 +189,9 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              searchTermsByKey: searchTermsByKey,
                              isPOSTabVisible: isPOSTabVisible,
                              lastPOSOpenedDate: lastPOSOpenedDate,
-                             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate)
+                             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
+                             lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
+                             isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible)
     }
 }
 
@@ -193,6 +217,7 @@ extension GeneralStoreSettings {
         self.dashboardCards = try container.decodeIfPresent([DashboardCard].self, forKey: .dashboardCards)
 
         self.lastSelectedPerformanceTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedPerformanceTimeRange) ?? ""
+        self.lastSelectedDashboardRevenueStatsType = try container.decodeIfPresent(String.self, forKey: .lastSelectedDashboardRevenueStatsType) ?? ""
         self.lastSelectedTopPerformersTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedTopPerformersTimeRange) ?? ""
         self.lastSelectedMostActiveCouponsTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedMostActiveCouponsTimeRange) ?? ""
         self.lastSelectedStockType = try container.decodeIfPresent(String.self, forKey: .lastSelectedStockType)
@@ -205,6 +230,11 @@ extension GeneralStoreSettings {
         self.lastPOSOpenedDate = try container.decodeIfPresent(Date.self, forKey: .lastPOSOpenedDate)
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
         self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true
+        self.lastSunsetWarningDismissedDate = try container.decodeIfPresent(Date.self, forKey: .lastSunsetWarningDismissedDate)
+        self.isCardPresentPaymentsCountryExpansionEligible = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .isCardPresentPaymentsCountryExpansionEligible
+        )
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

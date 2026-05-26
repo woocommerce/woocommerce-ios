@@ -21,14 +21,14 @@ final class ProductImagePickerViewController: UIHostingController<ProductImagePi
         super.viewDidLoad()
 
         // Set presentation delegate to track the user dismiss flow event
-        if let navigationController = navigationController {
+        if let navigationController {
             navigationController.presentationController?.delegate = self
         } else {
             presentationController?.delegate = self
         }
     }
 
-    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+    @MainActor dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

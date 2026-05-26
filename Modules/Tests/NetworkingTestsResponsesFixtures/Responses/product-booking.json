@@ -1,0 +1,110 @@
+{
+    "data": {
+        "id": 114,
+        "name": "Hair Salon",
+        "slug": "hair-salon",
+        "permalink": "https://example.com/product/hair-salon/",
+        "date_created": "2025-11-05T04:42:49",
+        "date_created_gmt": "2025-11-05T04:42:49",
+        "date_modified": "2026-03-04T14:13:35",
+        "date_modified_gmt": "2026-03-04T14:13:35",
+        "type": "bookable-service",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<p>Hair salon booking product</p>\n",
+        "short_description": "<p>Book a stylist for 1 hour.</p>\n",
+        "sku": "",
+        "price": "10",
+        "regular_price": "",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "on_sale": false,
+        "purchasable": true,
+        "total_sales": 12,
+        "virtual": true,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "low_stock_amount": null,
+        "sold_individually": true,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": false,
+        "shipping_taxable": false,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [
+            {
+                "id": 15,
+                "name": "Uncategorized",
+                "slug": "uncategorized"
+            }
+        ],
+        "brands": [],
+        "tags": [],
+        "images": [
+            {
+                "id": 0,
+                "src": "https://example.com/placeholder-image.webp",
+                "thumbnail": "https://example.com/placeholder-image.webp",
+                "name": "Service placeholder",
+                "alt": "Service"
+            }
+        ],
+        "attributes": [],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "price_html": "",
+        "related_ids": [
+            167,
+            94,
+            83,
+            95,
+            82
+        ],
+        "meta_data": [
+            {
+                "id": 448,
+                "key": "_wc_bookings_source_template",
+                "value": "hair-salon"
+            }
+        ],
+        "stock_status": "instock",
+        "has_options": true,
+        "post_password": "",
+        "global_unique_id": "",
+        "booking_duration": 60,
+        "booking_duration_unit": "minute",
+        "booking_resources": [
+            107,
+            219
+        ]
+    }
+}

@@ -23,6 +23,9 @@ public protocol ApplicationPasswordUseCase {
     ///
     var applicationPassword: ApplicationPassword? { get }
 
+    /// Whether the use case is capable of re-generating password
+    var canRegenerateApplicationPassword: Bool { get }
+
     /// Generates new ApplicationPassword
     ///
     /// - Returns: Generated `ApplicationPassword` instance
@@ -37,7 +40,7 @@ public protocol ApplicationPasswordUseCase {
     func deletePassword(locally: Bool) async throws
 }
 
-final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
+public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     /// Authentication type
     ///
     private let authenticationType: AuthenticationType
@@ -113,7 +116,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                                                                password: password,
                                                                loginURL: loginURL,
                                                                adminURL: adminURL)
-            self.network = WordPressOrgNetwork(configuration: config)
+            self.network = WordPressOrgNetwork(configuration: config, siteAddress: siteAddress)
             self.discoveryTask = Task {
                 guard rootCache.root(for: siteAddress) == nil else { return }
                 _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteAddress)
@@ -126,6 +129,9 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     public var applicationPassword: ApplicationPassword? {
         storage.applicationPassword
     }
+
+    /// Whether the use case is capable of re-generating password
+    public var canRegenerateApplicationPassword: Bool { true }
 
     /// Generates new ApplicationPassword
     ///

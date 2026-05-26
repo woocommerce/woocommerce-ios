@@ -1,0 +1,164 @@
+import Foundation
+import Observation
+
+@MainActor
+@Observable
+public final class AssistantConversation {
+
+    public enum StreamingState: Equatable, Sendable {
+        case idle
+        case sending
+        case streaming
+        case failed(String)
+        case outcomeUnknown(String)
+    }
+
+    public private(set) var messages: [ChatMessage] = []
+    public private(set) var streamingState: StreamingState = .idle
+    public internal(set) var session: AssistantSession?
+    public private(set) var conversationID: String
+
+    private let idGenerator: AssistantIdGenerator
+    private(set) var outcomeUnknownObserved: Bool = false
+    private var telemetryContextByMessageID: [ChatMessage.ID: AssistantTelemetryContext] = [:]
+
+    public init(idGenerator: AssistantIdGenerator = UUIDAssistantIdGenerator()) {
+        self.idGenerator = idGenerator
+        self.conversationID = idGenerator.nextID()
+    }
+
+    init(seededMessages: [ChatMessage],
+         idGenerator: AssistantIdGenerator = UUIDAssistantIdGenerator()) {
+        self.idGenerator = idGenerator
+        self.conversationID = idGenerator.nextID()
+        self.messages = seededMessages
+    }
+
+    func reset() {
+        messages = []
+        streamingState = .idle
+        outcomeUnknownObserved = false
+        session = nil
+        conversationID = idGenerator.nextID()
+        telemetryContextByMessageID.removeAll()
+    }
+
+    func recordTelemetryContext(_ context: AssistantTelemetryContext, for messageID: ChatMessage.ID) {
+        telemetryContextByMessageID[messageID] = context
+    }
+
+    public func telemetryContext(for messageID: ChatMessage.ID) -> AssistantTelemetryContext? {
+        telemetryContextByMessageID[messageID]
+    }
+
+    func applyConfirmationResolution(proposalID: UUID, approved: Bool) {
+        for index in messages.indices {
+            messages[index].updateConfirmation(proposalID: proposalID,
+                                               to: approved ? .confirmed : .cancelled)
+        }
+    }
+
+    func appendUserMessage(_ text: String) -> ChatMessage {
+        let message = ChatMessage(role: .user,
+                                  segments: [.text(id: UUID(), content: text)])
+        messages.append(message)
+        return message
+    }
+
+    func beginAssistantMessage() -> ChatMessage.ID {
+        let message = ChatMessage(role: .assistant, isStreaming: true)
+        messages.append(message)
+        outcomeUnknownObserved = false
+        return message.id
+    }
+
+    func apply(_ event: AssistantEvent, to assistantMessageID: ChatMessage.ID) {
+        guard let index = messages.firstIndex(where: { $0.id == assistantMessageID }) else { return }
+        switch event {
+        case .textChunk(let chunk):
+            messages[index].updateText(appending: chunk)
+        case .toolCallStarted(let id, let name, let args):
+            // show_cards renders cards directly, so the activity pill would just add noise.
+            if name == ShowCardsTool.name { break }
+            messages[index].append(.toolCall(id: UUID(),
+                                             toolCallID: id,
+                                             toolName: name,
+                                             argumentsPreview: args,
+                                             status: .running))
+        case .toolCallCompleted(let id, _, let resultJSON):
+            messages[index].updateToolCall(id: id,
+                                           to: .completed(summary: resultSummary(from: resultJSON)))
+        case .toolResult(let toolCallID, let toolName, let payload):
+            messages[index].append(.toolResult(id: UUID(),
+                                               toolCallID: toolCallID,
+                                               toolName: toolName,
+                                               payload: payload))
+        case .cardRender(let toolCallID):
+            if let match = Self.firstMatchingToolResult(in: messages[index].segments,
+                                                       toolCallID: toolCallID) {
+                messages[index].append(.cardRender(id: UUID(),
+                                                   toolCallID: toolCallID,
+                                                   toolName: match.toolName,
+                                                   payload: match.payload))
+            }
+        case .confirmationRequired(let proposal):
+            messages[index].append(.confirmation(id: UUID(),
+                                                 proposalID: proposal.id,
+                                                 toolName: proposal.toolName,
+                                                 preview: proposal.preview,
+                                                 status: .pending))
+        case .confirmationResolved(let proposalID, let approved):
+            messages[index].updateConfirmation(proposalID: proposalID,
+                                               to: approved ? .confirmed : .cancelled)
+        case .completed:
+            messages[index].markCompleted()
+        case .failed(let error):
+            switch error.kind {
+            case .outcomeUnknown:
+                outcomeUnknownObserved = true
+                streamingState = .outcomeUnknown(error.message)
+            default:
+                messages[index].markCompleted()
+                if !outcomeUnknownObserved {
+                    streamingState = .failed(error.message)
+                }
+            }
+        case .terminated:
+            break
+        }
+    }
+
+    func setStreaming(_ state: StreamingState) {
+        if outcomeUnknownObserved, case .streaming = state { return }
+        if outcomeUnknownObserved, case .idle = state { return }
+        streamingState = state
+    }
+
+    func markCancelled(messageID: ChatMessage.ID) {
+        guard let index = messages.firstIndex(where: { $0.id == messageID }) else { return }
+        messages[index].markCompleted()
+        messages[index].cancelPendingConfirmations()
+    }
+
+    func replaceSession(_ newSession: AssistantSession) {
+        session = newSession
+    }
+
+    private func resultSummary(from json: String?) -> String? {
+        guard let json else { return nil }
+        let limit = 120
+        if json.count <= limit { return json }
+        return String(json.prefix(limit)) + "..."
+    }
+
+    private static func firstMatchingToolResult(in segments: [MessageSegment],
+                                                toolCallID: String) -> (toolName: String,
+                                                                        payload: AnyCodableJSON)? {
+        for segment in segments {
+            if case .toolResult(_, let id, let name, let payload) = segment, id == toolCallID {
+                return (name, payload)
+            }
+        }
+        return nil
+    }
+}

@@ -3,7 +3,7 @@ import Yosemite
 
 final class RenameAttributesViewController: UIViewController {
 
-    @IBOutlet weak private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     private let onCompletion: (String) -> Void
 
@@ -167,7 +167,7 @@ private extension RenameAttributesViewController {
         let cellViewModel = TextFieldTableViewCell.ViewModel(text: viewModel.attributeName,
                                                          placeholder: placeholder,
                                                          onTextChange: { [weak self] newAttributeName in
-                                                            guard let self = self else {return}
+                                                            guard let self else {return}
                                                             self.viewModel.handleAttributeNameChange(newAttributeName)
                                                             self.enableDoneButton(self.viewModel.shouldEnableDoneButton)
                                                          },

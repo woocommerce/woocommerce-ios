@@ -8,6 +8,7 @@ struct POSRefundItemsSelectionView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var refundSelectableItems: [POSRefundSelectableItem] {
         orderListModel.ordersController.refundSelectableItems
@@ -29,19 +30,26 @@ struct POSRefundItemsSelectionView: View {
     var body: some View {
         VStack(spacing: POSSpacing.none) {
             headerView
-            itemsHeaderView
 
-            Divider()
-                .overlay(Color.posOutlineVariant.opacity(0.5))
+            VStack(spacing: POSSpacing.none) {
+                itemsHeaderView
 
-            itemsList
+                Divider()
+                    .overlay(Color.posOutlineVariant.opacity(0.5))
+
+                itemsList
+            }
+            .padding(.horizontal, POSPadding.xLarge)
+            .padding(.bottom, POSPadding.xLarge)
+            .frame(maxHeight: .infinity)
 
             continueButton
+                .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
+                                                 maxWidth: .infinity)
         }
-        .padding(POSPadding.xLarge)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -49,22 +57,9 @@ struct POSRefundItemsSelectionView: View {
 
 private extension POSRefundItemsSelectionView {
     var headerView: some View {
-        HStack {
-            Text(Localization.title)
-                .font(.posHeadingBold)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .lineLimit(1)
-            Spacer()
-            Button {
-                onClose()
-            } label: {
-                Text(Image(systemName: "xmark"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
-        }
-        .foregroundColor(Color.posOnSurface)
-        .padding(.bottom, POSPadding.xLarge)
+        POSRefundNavigationHeader(title: Localization.title,
+                                  backAction: onClose,
+                                  backAccessibilityLabel: Localization.backButtonAccessibilityLabel)
     }
 
     var itemsHeaderView: some View {
@@ -124,7 +119,6 @@ private extension POSRefundItemsSelectionView {
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .disabled(!hasSelectedItems)
-        .padding(.top, POSPadding.medium)
     }
 }
 
@@ -144,10 +138,10 @@ private extension POSRefundItemsSelectionView {
             comment: "Button to continue with selected items for refund"
         )
 
-        static let closeButtonAccessibilityLabel = NSLocalizedString(
-            "pos.refundItemsSelectionView.closeButton.accessibilityLabel",
-            value: "Close",
-            comment: "Accessibility label for close button on refund items selection modal"
+        static let backButtonAccessibilityLabel = NSLocalizedString(
+            "pos.refundItemsSelectionView.backButton.accessibilityLabel",
+            value: "Back",
+            comment: "Accessibility label for the back button on the refund items selection screen"
         )
 
         static let itemsHeaderTitle = NSLocalizedString(

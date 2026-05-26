@@ -15,7 +15,7 @@ public final class SitePluginStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    public override convenience init(dispatcher: Dispatcher,
+    override public convenience init(dispatcher: Dispatcher,
                             storageManager: StorageManagerType,
                             network: Network) {
         let remote = SitePluginsRemote(network: network)
@@ -27,13 +27,13 @@ public final class SitePluginStore: Store {
 
     /// Registers to support `SitePluginAction`
     ///
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: SitePluginAction.self)
     }
 
     /// Receives and executes actions
     ///
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? SitePluginAction else {
             assertionFailure("SitePluginStore receives an unsupported action!")
             return
@@ -57,7 +57,7 @@ public final class SitePluginStore: Store {
 private extension SitePluginStore {
     func synchronizeSitePlugins(siteID: Int64, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         remote.loadPlugins(for: siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let plugins):
                 self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: plugins, completionHandler: completionHandler)
@@ -69,7 +69,7 @@ private extension SitePluginStore {
 
     func installSitePlugin(siteID: Int64, slug: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.installPlugin(for: siteID, slug: slug) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let plugin):
                 self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: [plugin], completionHandler: onCompletion)
@@ -81,7 +81,7 @@ private extension SitePluginStore {
 
     func activateSitePlugin(siteID: Int64, pluginName: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.activatePlugin(for: siteID, pluginName: pluginName) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let plugin):
                 guard plugin.status == .active else {
@@ -97,7 +97,7 @@ private extension SitePluginStore {
 
     func getPluginDetails(siteID: Int64, pluginName: String, onCompletion: @escaping (Result<SitePlugin, Error>) -> Void) {
         remote.getPluginDetails(for: siteID, pluginName: pluginName) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let plugin):
                 self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: [plugin]) { result in

@@ -200,7 +200,6 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
 
         XCTAssertFalse(secondaryButton.isHidden)
     }
-
 }
 
 

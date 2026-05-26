@@ -131,7 +131,6 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssert(paymentMethodDescription.contains("Mastercard"))
         XCTAssert(paymentMethodDescription.contains("6292"))
         XCTAssertNotNil(row.cardIcon)
-        XCTAssertEqual(row.cardIconAspectHorizontal, 1.58)
     }
 
     func test_viewModel_has_manual_refundVia_values_when_using_a_gateway_that_does_not_support_refunds() throws {
@@ -541,7 +540,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher, analytics: analytics)
         waitForExpectation { exp in
             viewModel.submit(rootViewController: .init(),
-                             showInProgressUI: {}) { result in
+                             showInProgressUI: {}) { _ in
                 exp.fulfill()
             }
         }

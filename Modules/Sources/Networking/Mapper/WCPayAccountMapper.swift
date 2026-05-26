@@ -14,7 +14,7 @@ struct WCPayAccountMapper: Mapper {
         /// can cross that bridge when we need those decoded.
         decoder.dateDecodingStrategy = .secondsSince1970
 
-        /// Prior to WooCommerce Payments plugin version 2.9.0 (Aug 2021) `data` could contain an empty array []
+        /// Prior to WooPayments plugin version 2.9.0 (Aug 2021) `data` could contain an empty array []
         /// indicating that the plugin was active but the merchant had not on-boarded (and therefore has no account.)
         if let _ = try? decoder.decode(WCPayNullAccountEnvelope.self, from: response) {
             return WCPayAccount.noAccount

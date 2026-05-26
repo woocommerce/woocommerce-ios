@@ -270,7 +270,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             }
             return newState.isEmpty ? Localization.Validation.state : nil
         }
-        self.phone.validate = { [weak self] newPhone in
+        self.phone.validate = { [weak self] _ in
             guard let self else {
                 return nil
             }

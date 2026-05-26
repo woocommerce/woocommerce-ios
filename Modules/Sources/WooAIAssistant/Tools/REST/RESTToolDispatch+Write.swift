@@ -1,0 +1,35 @@
+import Foundation
+
+extension RESTToolDispatch {
+    static func dispatchEntityWrite(method: String,
+                                    path: String,
+                                    body: Data?,
+                                    client: WCRESTClient,
+                                    toolName: String,
+                                    summarize: (AnyCodableJSON) -> AnyCodableJSON) async -> ToolResult {
+        let response = await client.request(method: method,
+                                            path: path,
+                                            query: nil,
+                                            body: body)
+        return WriteResultMapper.mapEntity(response,
+                                           toolName: toolName,
+                                           summarize: summarize)
+    }
+
+    static func dispatchBatchWrite(method: String,
+                                   path: String,
+                                   body: Data?,
+                                   client: WCRESTClient,
+                                   toolName: String,
+                                   requestedCount: Int,
+                                   patchKeys: [String]) async -> ToolResult {
+        let response = await client.request(method: method,
+                                            path: path,
+                                            query: nil,
+                                            body: body)
+        return WriteResultMapper.mapBatch(response,
+                                          toolName: toolName,
+                                          requestedCount: requestedCount,
+                                          patchKeys: patchKeys)
+    }
+}

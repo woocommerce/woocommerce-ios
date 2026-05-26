@@ -27,9 +27,9 @@ struct POSSettingsLocalCatalogViewModelTests {
 
     @Test func view_model_initializes_with_correct_properties() async throws {
         // Then
-        #expect(sut.catalogSize == "")
-        #expect(sut.lastFullSyncDate == "")
-        #expect(sut.lastIncrementalSyncDate == "")
+        #expect(sut.catalogSize.isEmpty)
+        #expect(sut.lastFullSyncDate.isEmpty)
+        #expect(sut.lastIncrementalSyncDate.isEmpty)
         #expect(sut.isLoading == false)
         #expect(sut.isRefreshingCatalog == false)
         #expect(sut.catalogRefreshError == nil)

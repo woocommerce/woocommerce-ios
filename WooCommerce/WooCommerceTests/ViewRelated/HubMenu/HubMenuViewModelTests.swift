@@ -545,9 +545,9 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         waitUntil {
-            viewModel.generalElements.firstIndex(where: { item in
+            !viewModel.generalElements.contains(where: { item in
                 item.id == HubMenuViewModel.Bookings.id
-            }) == nil
+            })
         }
 
         // Then
@@ -768,40 +768,26 @@ final class HubMenuViewModelTests: XCTestCase {
         }
     }
 
-    // MARK: - CIAB IPP Gating
+
+    // MARK: - CIAB WC Admin Safari Sheet
 
     @MainActor
-    func test_generalElements_hides_payments_for_non_pro_ciab_site() {
+    func test_isCIABSite_when_site_is_CIAB_then_returns_true() {
         // Given
-        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true, mockedIsCurrentSiteCIABProPlan: false)
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          siteCIABEligibilityChecker: ciabChecker)
 
         // When
-        viewModel.setupMenuElements()
+        let result = viewModel.isCIABSite()
 
         // Then
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
+        XCTAssertTrue(result)
     }
 
     @MainActor
-    func test_generalElements_shows_payments_for_pro_ciab_site() {
-        // Given
-        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true, mockedIsCurrentSiteCIABProPlan: true)
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         siteCIABEligibilityChecker: ciabChecker)
-
-        // When
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
-    }
-
-    @MainActor
-    func test_generalElements_shows_payments_for_non_ciab_site() {
+    func test_isCIABSite_when_site_is_not_CIAB_then_returns_false() {
         // Given
         let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
@@ -809,10 +795,10 @@ final class HubMenuViewModelTests: XCTestCase {
                                          siteCIABEligibilityChecker: ciabChecker)
 
         // When
-        viewModel.setupMenuElements()
+        let result = viewModel.isCIABSite()
 
         // Then
-        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
+        XCTAssertFalse(result)
     }
 }
 

@@ -956,6 +956,126 @@ struct BookingStoreTests {
         #expect(error != nil)
     }
 
+    // MARK: - rescheduleBooking
+
+    @Test func rescheduleBooking_updates_stored_booking_on_success() async throws {
+        // Given
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 1,
+            endDate: Date(timeIntervalSince1970: 2000),
+            startDate: Date(timeIntervalSince1970: 1000)
+        )
+        storeBooking(booking)
+
+        let updatedBooking = booking.copy(
+            endDate: Date(timeIntervalSince1970: 4000),
+            resourceID: 42,
+            startDate: Date(timeIntervalSince1970: 3000)
+        )
+        remote.whenReschedulingBooking(thenReturn: .success(updatedBooking))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let error = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.rescheduleBooking(
+                    siteID: sampleSiteID,
+                    bookingID: 1,
+                    startDate: Date(timeIntervalSince1970: 1776078000),
+                    endDate: Date(timeIntervalSince1970: 1776081600),
+                    resourceID: 42,
+                    onCompletion: { error in
+                        continuation.resume(returning: error)
+                    }
+                )
+            )
+        }
+
+        // Then
+        #expect(error == nil)
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 1))
+        #expect(storedBooking.startDate == Date(timeIntervalSince1970: 3000))
+        #expect(storedBooking.endDate == Date(timeIntervalSince1970: 4000))
+        #expect(storedBooking.resourceID == 42)
+    }
+
+    @Test func rescheduleBooking_returns_error_on_remote_failure() async throws {
+        // Given
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 1
+        )
+        storeBooking(booking)
+
+        remote.whenReschedulingBooking(thenReturn: .failure(NetworkError.timeout()))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let error = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.rescheduleBooking(
+                    siteID: sampleSiteID,
+                    bookingID: 1,
+                    startDate: Date(timeIntervalSince1970: 1776078000),
+                    endDate: Date(timeIntervalSince1970: 1776081600),
+                    resourceID: nil,
+                    onCompletion: { error in
+                        continuation.resume(returning: error)
+                    }
+                )
+            )
+        }
+
+        // Then
+        #expect(error != nil)
+        let networkError = error as? NetworkError
+        #expect(networkError == .timeout())
+    }
+
+    @Test func rescheduleBooking_returns_error_when_remote_booking_is_missing() async throws {
+        // Given
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 1
+        )
+        storeBooking(booking)
+
+        remote.whenReschedulingBooking(thenReturn: .success(nil))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let error = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.rescheduleBooking(
+                    siteID: sampleSiteID,
+                    bookingID: 1,
+                    startDate: Date(timeIntervalSince1970: 1776078000),
+                    endDate: Date(timeIntervalSince1970: 1776081600),
+                    resourceID: nil,
+                    onCompletion: { error in
+                        continuation.resume(returning: error)
+                    }
+                )
+            )
+        }
+
+        // Then
+        #expect(error != nil)
+    }
+
     // MARK: - synchronizeResources
 
     @Test func synchronizeResources_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() async throws {

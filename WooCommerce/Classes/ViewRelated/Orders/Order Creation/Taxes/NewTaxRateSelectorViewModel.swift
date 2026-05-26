@@ -111,7 +111,7 @@ extension NewTaxRateSelectorViewModel: PaginationTrackerDelegate {
         transitionToSyncingState()
 
         let action = TaxAction.retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let results):
                 let hasNextPage = results.count == pageSize
@@ -141,7 +141,7 @@ private extension NewTaxRateSelectorViewModel {
         // Listens only to the first emitted event.
         onLoadTriggerOnce.first()
             .sink { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.syncFirstPage()
             }
             .store(in: &subscriptions)

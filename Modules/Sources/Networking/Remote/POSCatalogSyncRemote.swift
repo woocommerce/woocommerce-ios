@@ -10,7 +10,6 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to load products from.
     ///   - pageNumber: Page number for pagination.
     ///   - includeStatus: Optional status to include (e.g., "trash" to fetch trashed products).
-    ///   - posProductsOnly: Whether to filter to POS-eligible products only.
     /// - Returns: Paginated list of POS products.
     // TODO - remove the periphery ignore comment when the incremental sync is integrated with POS.
     // periphery:ignore
@@ -22,11 +21,10 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - modifiedAfter: Only variations modified after this date will be returned.
     ///   - siteID: Site ID to load variations from.
     ///   - pageNumber: Page number for pagination.
-    ///   - posProductsOnly: Whether to filter to POS-eligible variations only.
     /// - Returns: Paginated list of POS product variations.
     // TODO - remove the periphery ignore comment when the incremental sync is integrated with POS.
     // periphery:ignore
-    func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int, posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation>
+    func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
 
     /// Starts generation of a POS catalog.
     /// The catalog is generated asynchronously and a download URL may be returned when the file is ready.
@@ -64,9 +62,8 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to load products from.
     ///   - pageNumber: Page number for pagination.
     ///   - allowCellular: Should cellular data be used if required.
-    ///   - posProductsOnly: Whether to filter to POS-eligible products only.
     /// - Returns: Paginated list of POS products.
-    func loadProducts(siteID: Int64, pageNumber: Int, allowCellular: Bool, posProductsOnly: Bool) async throws -> PagedItems<POSProduct>
+    func loadProducts(siteID: Int64, pageNumber: Int, allowCellular: Bool) async throws -> PagedItems<POSProduct>
 
     /// Loads POS product variations for full sync.
     ///
@@ -74,25 +71,22 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to load variations from.
     ///   - pageNumber: Page number for pagination.
     ///   - allowCellular: Should cellular data be used if required.
-    ///   - posProductsOnly: Whether to filter to POS-eligible variations only.
     /// - Returns: Paginated list of POS product variations.
-    func loadProductVariations(siteID: Int64, pageNumber: Int, allowCellular: Bool, posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation>
+    func loadProductVariations(siteID: Int64, pageNumber: Int, allowCellular: Bool) async throws -> PagedItems<POSProductVariation>
 
     /// Gets the total count of products for the specified site.
     ///
     /// - Parameters:
     ///   - siteID: Site ID to get product count for.
-    ///   - posProductsOnly: Whether to filter to POS-eligible products only.
     /// - Returns: Total number of products.
-    func getProductCount(siteID: Int64, posProductsOnly: Bool) async throws -> Int
+    func getProductCount(siteID: Int64) async throws -> Int
 
     /// Gets the total count of product variations for the specified site.
     ///
     /// - Parameters:
     ///   - siteID: Site ID to get variation count for.
-    ///   - posProductsOnly: Whether to filter to POS-eligible variations only.
     /// - Returns: Total number of variations.
-    func getProductVariationCount(siteID: Int64, posProductsOnly: Bool) async throws -> Int
+    func getProductVariationCount(siteID: Int64) async throws -> Int
 }
 
 /// POS Catalog Sync: Remote Endpoints
@@ -101,12 +95,15 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     private let dateFormatter = ISO8601DateFormatter()
     private let backgroundDownloader: BackgroundDownloadProtocol
     private let fileManager: FileManager
+    private let backgroundDownloadStateStore: BackgroundDownloadStateStore
 
     public init(network: Network,
                 backgroundDownloader: BackgroundDownloadProtocol = BackgroundDownloadService(),
-                fileManager: FileManager = .default) {
+                fileManager: FileManager = .default,
+                backgroundDownloadStateStore: BackgroundDownloadStateStore = .init()) {
         self.backgroundDownloader = backgroundDownloader
         self.fileManager = fileManager
+        self.backgroundDownloadStateStore = backgroundDownloadStateStore
         super.init(network: network)
     }
 
@@ -119,14 +116,13 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to load products from.
     ///   - pageNumber: Page number for pagination.
     ///   - includeStatus: Optional status to include (e.g., "trash" to fetch trashed products).
-    ///   - posProductsOnly: Whether to filter to POS-eligible products only.
     /// - Returns: Paginated list of POS products.
     ///
     public func loadProducts(modifiedAfter: Date,
                              siteID: Int64,
                              pageNumber: Int,
                              includeStatus: String? = nil,
-                             posProductsOnly: Bool = false)
+                             posProductsOnly: Bool = true)
     async throws -> PagedItems<POSProduct> {
         let path = Path.products
         var parameters: [String: String] = [
@@ -137,7 +133,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.posProductsOnly: String(posProductsOnly)
         ]
 
-        if let includeStatus = includeStatus {
+        if let includeStatus {
             parameters[ParameterKey.includeStatus] = includeStatus
         }
 
@@ -161,20 +157,18 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - modifiedAfter: Only variations modified after this date will be returned.
     ///   - siteID: Site ID to load variations from.
     ///   - pageNumber: Page number for pagination.
-    ///   - posProductsOnly: Whether to filter to POS-eligible variations only.
     /// - Returns: Paginated list of POS product variations.
     ///
     public func loadProductVariations(modifiedAfter: Date,
                                       siteID: Int64,
-                                      pageNumber: Int,
-                                      posProductsOnly: Bool = false) async throws -> PagedItems<POSProductVariation> {
+                                      pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         let path = Path.variations
         let parameters = [
             ParameterKey.modifiedAfter: dateFormatter.string(from: modifiedAfter),
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(Constants.defaultPageSize),
             ParameterKey.fields: POSProductVariation.requestFields.joined(separator: ","),
-            ParameterKey.posProductsOnly: String(posProductsOnly)
+            ParameterKey.posProductsOnly: String(true)
         ]
 
         let request = JetpackRequest(
@@ -245,7 +239,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             sessionIdentifier: sessionIdentifier,
             siteID: siteID
         )
-        BackgroundDownloadState.save(downloadState)
+        backgroundDownloadStateStore.save(downloadState)
 
         let fileURL = try await backgroundDownloader.downloadFile(from: url,
                                                                    sessionIdentifier: sessionIdentifier,
@@ -255,7 +249,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         let catalogResponse = try await parseDownloadedCatalog(from: fileURL, siteID: siteID)
 
         // Clear the saved state since we successfully completed
-        BackgroundDownloadState.clear()
+        backgroundDownloadStateStore.clear()
 
         return catalogResponse
     }
@@ -286,6 +280,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
                 products.append(product)
             case .variation(let variation):
                 variations.append(variation)
+            case .unsupported:
+                continue
             }
         }
 
@@ -313,19 +309,17 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to load products from.
     ///   - pageNumber: Page number for pagination.
     ///   - allowCellular: Should cellular data be used if required.
-    ///   - posProductsOnly: Whether to filter to POS-eligible products only.
     /// - Returns: Paginated list of POS products.
     ///
     public func loadProducts(siteID: Int64,
                              pageNumber: Int,
-                             allowCellular: Bool,
-                             posProductsOnly: Bool = false) async throws -> PagedItems<POSProduct> {
+                             allowCellular: Bool) async throws -> PagedItems<POSProduct> {
         let path = Path.products
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(Constants.defaultPageSize),
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ","),
-            ParameterKey.posProductsOnly: String(posProductsOnly)
+            ParameterKey.posProductsOnly: String(true)
         ]
 
         let request = JetpackRequest(
@@ -349,19 +343,17 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to load variations from.
     ///   - pageNumber: Page number for pagination.
     ///   - allowCellular: Should cellular data be used if required.
-    ///   - posProductsOnly: Whether to filter to POS-eligible variations only.
     /// - Returns: Paginated list of POS product variations.
     ///
     public func loadProductVariations(siteID: Int64,
                                       pageNumber: Int,
-                                      allowCellular: Bool,
-                                      posProductsOnly: Bool = false) async throws -> PagedItems<POSProductVariation> {
+                                      allowCellular: Bool) async throws -> PagedItems<POSProductVariation> {
         let path = Path.variations
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(Constants.defaultPageSize),
             ParameterKey.fields: POSProductVariation.requestFields.joined(separator: ","),
-            ParameterKey.posProductsOnly: String(posProductsOnly)
+            ParameterKey.posProductsOnly: String(true)
         ]
 
         let request = JetpackRequest(
@@ -385,15 +377,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///
     /// - Parameters:
     ///   - siteID: Site ID to get product count for.
-    ///   - posProductsOnly: Whether to filter to POS-eligible products only.
     /// - Returns: Total number of products.
-    public func getProductCount(siteID: Int64, posProductsOnly: Bool = false) async throws -> Int {
+    public func getProductCount(siteID: Int64) async throws -> Int {
         let path = Path.products
         let parameters = [
             ParameterKey.page: String(1),
             ParameterKey.perPage: String(1),
             ParameterKey.fields: POSProductVariation.requestFields.first ?? "",
-            ParameterKey.posProductsOnly: String(posProductsOnly)
+            ParameterKey.posProductsOnly: String(true)
         ]
 
         let request = JetpackRequest(
@@ -413,15 +404,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///
     /// - Parameters:
     ///   - siteID: Site ID to get variation count for.
-    ///   - posProductsOnly: Whether to filter to POS-eligible variations only.
     /// - Returns: Total number of variations.
-    public func getProductVariationCount(siteID: Int64, posProductsOnly: Bool = false) async throws -> Int {
+    public func getProductVariationCount(siteID: Int64) async throws -> Int {
         let path = Path.variations
         let parameters = [
             ParameterKey.page: String(1),
             ParameterKey.perPage: String(1),
             ParameterKey.fields: POSProductVariation.requestFields.first ?? "",
-            ParameterKey.posProductsOnly: String(posProductsOnly)
+            ParameterKey.posProductsOnly: String(true)
         ]
 
         let request = JetpackRequest(
@@ -476,7 +466,7 @@ public struct POSCatalogRequestResponse: Decodable {
     /// Timestamp when the job completed.
     public let completedAt: String?
     /// Progress percentage (0-100)
-    public let progress: Int?
+    public let progress: Double?
     /// Number of items processed so far
     public let processed: Int?
     /// Total number of items to process
@@ -496,7 +486,7 @@ public struct POSCatalogRequestResponse: Decodable {
                 downloadURL: String? = nil,
                 scheduledAt: String? = nil,
                 completedAt: String? = nil,
-                progress: Int? = nil,
+                progress: Double? = nil,
                 processed: Int? = nil,
                 total: Int? = nil) {
         self.status = status
@@ -522,6 +512,8 @@ public enum POSCatalogStatus: String, Decodable {
 public enum POSCatalogItem: Decodable {
     case product(POSProduct)
     case variation(POSProductVariation)
+    /// Items with malformed data that fail to decode are skipped during parsing
+    case unsupported
 
     private enum CodingKeys: String, CodingKey {
         case type
@@ -532,11 +524,18 @@ public enum POSCatalogItem: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let type = try container.decode(String.self, forKey: .type)
 
-        switch type {
-        case "variation":
-            self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
-        default:
-            self = .product(try container.decode(POSProduct.self, forKey: .data))
+        if type.contains("variation") {
+            do {
+                self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
+            } catch {
+                self = .unsupported
+            }
+        } else {
+            do {
+                self = .product(try container.decode(POSProduct.self, forKey: .data))
+            } catch {
+                self = .unsupported
+            }
         }
     }
 }
@@ -553,30 +552,4 @@ public struct POSCatalogResponse {
 public enum POSCatalogSyncConstants {
     /// Background download session identifier prefix for POS catalog downloads
     public static let backgroundDownloadSessionPrefix = "com.woocommerce.pos.catalog.download"
-}
-
-private extension POSProduct {
-    var toVariation: POSProductVariation {
-        let variationAttributes = attributes.compactMap { attribute in
-            try? attribute.toProductVariationAttribute()
-        }
-
-        let firstImage = images.first
-
-        return .init(
-            siteID: siteID,
-            productID: parentID,
-            productVariationID: productID,
-            attributes: variationAttributes,
-            image: firstImage,
-            fullDescription: fullDescription,
-            sku: sku,
-            globalUniqueID: globalUniqueID,
-            price: price,
-            downloadable: downloadable,
-            manageStock: manageStock,
-            stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
-        )
-    }
 }

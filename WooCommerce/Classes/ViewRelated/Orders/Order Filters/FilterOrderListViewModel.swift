@@ -42,20 +42,20 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
         var readableString: String {
             var readable: [String] = []
-            if let orderStatus = orderStatus, !orderStatus.isEmpty {
+            if let orderStatus, !orderStatus.isEmpty {
                 readable = orderStatus.map { $0.rawValue.capitalized }
             }
-            if let dateRange = dateRange {
+            if let dateRange {
                 readable.append(dateRange.description)
             }
-            if let product = product {
+            if let product {
                 readable.append(product.name)
             }
-            if let customer = customer {
+            if let customer {
                 readable.append(customer.description)
             }
 
-            if let salesChannel = salesChannel {
+            if let salesChannel {
                 readable.append(salesChannel.description)
             }
 
@@ -364,10 +364,10 @@ extension CustomerFilter: FilterType {
 
         if fullName.isNotEmpty {
             return fullName
-        } else if let email = email,
+        } else if let email,
                   email.isNotEmpty {
             return email
-        } else if let username = username,
+        } else if let username,
                   username.isNotEmpty {
             return username
         } else {

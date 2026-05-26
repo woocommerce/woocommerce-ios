@@ -1,5 +1,6 @@
-import Foundation
 import Combine
+import EventHorizonSDK
+import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
 
@@ -152,7 +153,7 @@ final class BookingListContainerViewModel: ObservableObject {
     func setSelectedTab(to newTab: BookingListTab) {
         hasUserSwitchedTab = true
         selectedTab = newTab
-        analytics.track(event: .BookingList.tabSelect(newTab))
+        analytics.track(Event.bookingListTabSelect(selectedTab: newTab.analyticsValue))
         // Manually trigger onAppear as we are programaticcaly
         // changing the tab which will not trigger
         // onAppear on the View.
@@ -162,8 +163,8 @@ final class BookingListContainerViewModel: ObservableObject {
     func onAppear() {
         guard hasRestoredFilters else { return }
         let tabViewModel = listViewModel(for: selectedTab)
-        analytics.track(event: .BookingList.bookingListView(
-            tab: selectedTab,
+        analytics.track(Event.bookingListView(
+            selectedTab: selectedTab.analyticsValue,
             isDefaultTab: !hasUserSwitchedTab && selectedTab == Self.defaultTab,
             isListEmpty: tabViewModel.bookings.isEmpty,
             isFiltered: tabViewModel.hasFilters
@@ -173,31 +174,31 @@ final class BookingListContainerViewModel: ObservableObject {
     func selectedBookingChanged() {
         let tabViewModel = listViewModel(for: selectedTab)
         let searchViewModel = searchViewModel(for: selectedTab)
-        analytics.track(event: .BookingList.bookingTap(
-            selectedTab: selectedTab,
+        analytics.track(Event.bookingListBookingTap(
+            selectedTab: selectedTab.analyticsValue,
             isSearchActive: !searchViewModel.currentSearchQuery.isEmpty,
             isFilteringActive: tabViewModel.hasFilters))
     }
 
     func filtersTapped() {
-        analytics.track(event: .BookingList.filtersTap())
+        analytics.track(Event.bookingListFiltersTap)
     }
 
     func applyFiltersTapped() {
-        analytics.track(event: .BookingList.applyFilters(filters))
+        analytics.track(Event.bookingListApplyFilters(selectedFilters: filters.analyticsFilterString))
     }
 
     func searchTapped() {
-        analytics.track(event: .BookingList.searchTap())
+        analytics.track(Event.bookingListSearchTap)
     }
 
     func sortByTapped() {
-        analytics.track(event: .BookingList.sortByTap())
+        analytics.track(Event.bookingListSortByTap)
     }
 
     func sortByOptionSelected(_ option: BookingListViewModel.SortBy) {
         sortBy = option
-        analytics.track(event: .BookingList.sortByOptionTap(option))
+        analytics.track(Event.bookingListSortByOptionTap(sortOption: option.analyticsValue))
     }
 }
 
@@ -249,7 +250,7 @@ private extension BookingListContainerViewModel {
             dateRange: filters.dateRange
         )
         let action = AppSettingsAction.upsertBookingFilters(siteID: siteID, filters: persistedFilters) { error in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error saving booking filters: \(error)")
             }
         }

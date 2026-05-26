@@ -5,13 +5,13 @@ import SwiftUI
 struct CouponExpiryDateView: View {
     @Environment(\.presentationMode) var presentationMode
 
-    @State var date: Date = Date()
+    @State var date = Date()
     @State var isRemovalEnabled: Bool = false
     var timezone: TimeZone
     let onCompletion: (Date?) -> Void
 
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader { _ in
             ScrollView {
                 VStack {
                     DatePicker("Date picker", selection: $date, displayedComponents: .date)

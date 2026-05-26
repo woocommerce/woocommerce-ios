@@ -33,7 +33,7 @@ extension LoggedOutAppSettings: LoggedOutAppSettingsProtocol {
     }
 
     func setErrorLoginSiteAddress(_ address: String?) {
-        if let address = address {
+        if let address {
             userDefaults.set(address, forKey: .errorLoginSiteAddress)
         } else {
             userDefaults.removeObject(forKey: .errorLoginSiteAddress)

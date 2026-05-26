@@ -466,7 +466,7 @@ private extension ProductVariationsViewController {
     func navigateToAddAttributeViewController() {
         let viewModel = AddAttributeViewModel(product: product)
         let addAttributeViewController = AddAttributeViewController(viewModel: viewModel) { [weak self] updatedProduct in
-            guard let self = self else { return }
+            guard let self else { return }
             self.product = updatedProduct
             self.navigateToEditAttributeViewController(allowVariationCreation: true)
 
@@ -481,7 +481,7 @@ private extension ProductVariationsViewController {
     /// Cleans the navigation stack until `self` and navigates to `EditAttributesViewController`
     ///
     func navigateToEditAttributeViewController(allowVariationCreation: Bool) {
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             return
         }
 
@@ -492,7 +492,7 @@ private extension ProductVariationsViewController {
             self?.onFirstVariationCreated()
         }
         editAttributeViewController.onAttributesUpdate = { [weak self] updatedProduct in
-            guard let self = self else { return }
+            guard let self else { return }
             self.product = updatedProduct
             self.onAttributesUpdate(editAttributesViewController: editAttributeViewController)
         }
@@ -526,7 +526,7 @@ private extension ProductVariationsViewController {
             noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
         }
 
-        guard let initialViewController = initialViewController else {
+        guard let initialViewController else {
             navigationController?.popViewController(animated: true)
             return
         }
@@ -555,7 +555,7 @@ private extension ProductVariationsViewController {
                                                       formType: self.viewModel.formType,
                                                       productImageActionHandler: productImageActionHandler)
         viewModel.onVariationDeletion = { [weak self] variation in
-            guard let self = self else { return }
+            guard let self else { return }
 
             // Remove deleted variation from variations array
             let variationsUpdated = self.product.variations.filter { $0 != variation.productVariationID }
@@ -594,7 +594,7 @@ private extension ProductVariationsViewController {
         actionSheet.view.tintColor = .text
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.bulkUpdate) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let viewModel = BulkUpdateViewModel(siteID: self.siteID,
                                                 productID: self.productID,
@@ -659,7 +659,7 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
 
         let action = ProductVariationAction
             .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 
@@ -689,7 +689,7 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         viewModel.generateVariation(for: product) { [weak self] result in
             progressViewController.dismiss(animated: true)
 
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let (updatedProduct, newVariation)):
                 self.noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))

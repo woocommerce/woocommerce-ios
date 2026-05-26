@@ -12,6 +12,7 @@ private struct CardWaveProgressView: View {
     private let inactiveInset: CGFloat = 0.025
 
     @State private var activeArcIndex: Int = 0
+    @State private var animationTimer: Timer?
 
     private var waveCount: Int {
         radii.count
@@ -53,15 +54,27 @@ private struct CardWaveProgressView: View {
         .onAppear {
             startAnimating()
         }
+        .onDisappear {
+            stopAnimating()
+        }
         .accessibilityLabel(Localization.accessibilityLabel)
     }
 
     private func startAnimating() {
-        Timer.scheduledTimer(withTimeInterval: animationDuration, repeats: true) { _ in
-            withAnimation {
+        guard animationTimer == nil else {
+            return
+        }
+
+        animationTimer = Timer.scheduledTimer(withTimeInterval: animationDuration, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: animationDuration)) {
                 activeArcIndex = (activeArcIndex + 1) % waveCount
             }
         }
+    }
+
+    private func stopAnimating() {
+        animationTimer?.invalidate()
+        animationTimer = nil
     }
 }
 

@@ -128,7 +128,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
         analytics.track(.loginJetpackConnectButtonTapped)
-        guard let viewController = viewController else {
+        guard let viewController else {
             return
         }
 
@@ -161,10 +161,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     }
 
     func didTapRightBarButtonItem(in viewController: UIViewController?) {
-        guard let viewController = viewController else {
+        guard let viewController else {
             return
         }
-        authentication.presentSupport(from: viewController, screen: .wrongAccountError)
+        authentication.presentSupport(from: viewController, screen: .wrongAccountError, siteURL: URL(string: siteURL))
     }
 }
 
@@ -216,12 +216,12 @@ private extension WrongAccountErrorViewModel {
     func fetchSiteInfo() {
         primaryButtonLoading = true
         authenticatorType.fetchSiteInfo(for: siteURL) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.primaryButtonLoading = false
 
             switch result {
             case .success(let siteInfo):
-                self.isSelfHostedSite = !siteInfo.isWPCom
+                self.isSelfHostedSite = !siteInfo.isWPCom && !siteInfo.isCommerceGarden
             case .failure(let error):
                 DDLogWarn("⚠️ Error fetching site info: \(error)")
             }

@@ -3,5 +3,4 @@ import CoreData
 
 @objc(TopEarnerStatsItem)
 public class TopEarnerStatsItem: NSManagedObject {
-
 }

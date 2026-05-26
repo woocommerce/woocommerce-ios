@@ -10,8 +10,8 @@ extension MarkOrderAsReadUseCase {
     @MainActor
     static func markOrderNoteAsReadIfNeeded(stores: StoresManager, noteID: Int64, orderID: Int) async -> Result<Note, Error> {
         let syncronizedNoteResult: Result<Note, Error> = await withCheckedContinuation { continuation in
-            let action = NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, error in
-                guard let syncronizedNote = syncronizedNote else {
+            let action = NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, _ in
+                guard let syncronizedNote else {
                     continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.unavailableNote))
                     return
                 }

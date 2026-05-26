@@ -196,7 +196,7 @@ final class ProductCategoryListViewModel {
         } else {
             let selectedCategory = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModel.categoryID })
 
-            if let selectedCategory = selectedCategory {
+            if let selectedCategory {
                 selectedCategories.append(selectedCategory)
             }
 
@@ -268,7 +268,7 @@ final class ProductCategoryListViewModel {
             .removeDuplicates()
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .sink { [weak self] newQuery in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 if newQuery.isNotEmpty {
                     let searchPredicate = NSPredicate(format: "siteID = %lld AND ((name CONTAINS[cd] %@) OR (slug CONTAINS[cd] %@))",
@@ -298,7 +298,7 @@ private extension ProductCategoryListViewModel {
             // Make sure we always have view models to display
             self?.updateViewModelsArray()
 
-            if let error = error {
+            if let error {
                 ServiceLocator.analytics.track(.productCategoryListLoadFailed, withError: error)
                 self?.handleSychronizeAllCategoriesError(error)
             } else {

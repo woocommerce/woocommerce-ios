@@ -33,7 +33,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then
-        #expect(analytics.events.first(where: { $0.eventName == expectedEvent }) != nil)
+        #expect(analytics.events.contains(where: { $0.eventName == expectedEvent }))
         #expect(expectedProperties.allSatisfy { key in
             analytics.events.map(\.properties).contains(where: { $0.keys.contains(key) })
         })

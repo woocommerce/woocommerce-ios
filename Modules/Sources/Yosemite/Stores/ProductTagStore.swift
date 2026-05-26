@@ -7,7 +7,7 @@ import Storage
 public final class ProductTagStore: Store {
     private let remote: ProductTagsRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductTagsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -47,7 +47,7 @@ private extension ProductTagStore {
 
         // Start fetching the provided initial page
         synchronizeProductTags(siteID: siteID, pageNumber: fromPageNumber, pageSize: Constants.defaultMaxPageSize) { [weak self] (result) in
-            guard let self = self  else {
+            guard let self  else {
                 return
             }
 
@@ -140,7 +140,6 @@ private extension ProductTagStore {
             storage.deleteProductTags(siteID: siteID, ids: ids)
         }, completion: onCompletion, on: .main)
     }
-
 }
 
 private extension ProductTagStore {

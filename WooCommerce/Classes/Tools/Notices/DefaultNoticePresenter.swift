@@ -88,7 +88,7 @@ private extension DefaultNoticePresenter {
         let content = UNMutableNotificationContent(notice: notice)
         let request = UNNotificationRequest(identifier: notificationInfo.identifier, content: content, trigger: nil)
 
-        UNUserNotificationCenter.current().add(request) { error in
+        UNUserNotificationCenter.current().add(request) { _ in
             DispatchQueue.main.async {
                 self.dismiss()
             }
@@ -109,7 +109,7 @@ private extension DefaultNoticePresenter {
 
         var onScreenBottomOffsetAdjustedForKeyboard: CGFloat = 0
         keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            guard let self = self else { return }
+            guard let self else { return }
 
             onScreenBottomOffsetAdjustedForKeyboard = -keyboardFrame.height
 
@@ -141,7 +141,7 @@ private extension DefaultNoticePresenter {
         ])
 
         let offScreenState = { [weak noticeView, weak self] in
-            guard let noticeView = noticeView, let self = self else {
+            guard let noticeView, let self else {
                 return
             }
             noticeView.alpha = UIKitConstants.alphaZero
@@ -158,7 +158,7 @@ private extension DefaultNoticePresenter {
         }
 
         let hiddenState = { [weak noticeView] in
-            guard let noticeView = noticeView else {
+            guard let noticeView else {
                 return
             }
             noticeView.alpha = UIKitConstants.alphaZero
@@ -206,7 +206,7 @@ private extension DefaultNoticePresenter {
     }
 
     func makeBottomConstraintForNoticeContainer(_ container: UIView) -> NSLayoutConstraint {
-        guard let presentingViewController = presentingViewController else {
+        guard let presentingViewController else {
             fatalError("NoticePresenter requires a presentingViewController!")
         }
 

@@ -62,7 +62,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     }
 
     private func showJetpackSetupScreen(in viewController: UIViewController?) {
-        guard let viewController = viewController else {
+        guard let viewController else {
             return
         }
 
@@ -96,10 +96,10 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     }
 
     func didTapRightBarButtonItem(in viewController: UIViewController?) {
-        guard let viewController = viewController else {
+        guard let viewController else {
             return
         }
-        authentication.presentSupport(from: viewController, screen: .jetpackRequired)
+        authentication.presentSupport(from: viewController, screen: .jetpackRequired, siteURL: URL(string: siteURL))
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {

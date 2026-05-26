@@ -124,7 +124,7 @@ private extension NotificationsRemote {
     ///
     func requestForNotifications(fields: Fields? = nil, noteIDs: [Int64]? = nil, pageSize: Int?) -> DotcomRequest {
         var parameters = [ParameterKeys.locale: Locale.current.description]
-        if let fields = fields {
+        if let fields {
             parameters[ParameterKeys.fields] = fields.rawValue
         }
 
@@ -133,7 +133,7 @@ private extension NotificationsRemote {
             parameters[ParameterKeys.identifiers] = identifiersAsStrings.joined(separator: ",")
         }
 
-        if let pageSize = pageSize {
+        if let pageSize {
             parameters[ParameterKeys.number] = String(pageSize)
         }
 

@@ -25,7 +25,7 @@ final class OrderDetailsViewController: UIViewController {
     /// content for the first time.
     ///
     private var topLoaderView: TopLoaderView = {
-        let loaderView: TopLoaderView = TopLoaderView.instantiateFromNib()
+        let loaderView = TopLoaderView.instantiateFromNib()
         loaderView.setBody(Localization.Generic.topLoaderBannerDescription)
         return loaderView
     }()
@@ -98,7 +98,10 @@ final class OrderDetailsViewController: UIViewController {
         syncEverything { [weak self] in
             ServiceLocator.analytics.track(event: waitingTracker.end())
 
-            self?.topLoaderView.isHidden = true
+            UIView.animate(withDuration: 0.3) {
+                self?.topLoaderView.alpha = 0
+                self?.topLoaderView.isHidden = true
+            }
 
             /// We add the refresh control to the tableview just after the `topLoaderView` disappear for the first time.
             if self?.tableView.refreshControl == nil {
@@ -211,7 +214,7 @@ private extension OrderDetailsViewController {
     ///
     func configureEntityListener() {
         entityListener.onUpsert = { [weak self] order in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             let previousStatus = self.viewModel.order.status
@@ -396,7 +399,7 @@ private extension OrderDetailsViewController {
         case .summary:
             displayOrderStatusList()
         case .tracking:
-            guard let indexPath = indexPath else {
+            guard let indexPath else {
                 break
             }
             trackingWasPressed(at: indexPath)
@@ -450,7 +453,7 @@ private extension OrderDetailsViewController {
                 }
             }
             shippingLabelFormVC.onLabelSave = { [weak self] in
-                guard let self = self, let navigationController = self.navigationController, navigationController.viewControllers.contains(self) else {
+                guard let self, let navigationController = self.navigationController, navigationController.viewControllers.contains(self) else {
                     // Navigate back to order details when presented from push notification
                     if let orderLoaderVC = self?.parent as? OrderLoaderViewController {
                         self?.navigationController?.popToViewController(orderLoaderVC, animated: true)
@@ -485,7 +488,7 @@ private extension OrderDetailsViewController {
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
         let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
         let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
             let presenter = OrderFulfillmentNoticePresenter()
             presenter.present(process: fulfillmentProcess)
@@ -498,7 +501,7 @@ private extension OrderDetailsViewController {
         let isRevampedFlow = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
 
         var cancellables = Set<AnyCancellable>()
-        var cancellable: AnyCancellable = AnyCancellable { }
+        var cancellable = AnyCancellable { }
         cancellable = fulfillmentProcess.result.sink { completion in
             if case .failure = completion {
                 ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed,
@@ -644,7 +647,7 @@ private extension OrderDetailsViewController {
         // Only shows the tracking action when there is a tracking URL.
         if let url = ShippingLabelTrackingURLGenerator.url(for: shippingLabel) {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.trackShipmentAction) { [weak self] _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 ServiceLocator.analytics.track(event: .shipmentTrackingMenu(action: .track))
                 WebviewHelper.launch(url, with: self)
             }
@@ -677,10 +680,10 @@ private extension OrderDetailsViewController {
                                                 message: Localization.Alert.orderTrashConfirmationMessage,
                                                 preferredStyle: .alert)
         let cancel = UIAlertAction(title: Localization.Alert.orderTrashConfirmationCancelButton,
-                                   style: .cancel) { (action) in
+                                   style: .cancel) { (_) in
         }
         let confirm = UIAlertAction(title: Localization.Alert.orderTrashConfirmationConfirmButton,
-                                    style: .default) { [weak self] (action) in
+                                    style: .default) { [weak self] (_) in
             self?.trashOrderAction()
         }
         alertController.addAction(cancel)
@@ -779,7 +782,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
         }
 
         let copyActionTitle = NSLocalizedString("Copy", comment: "Copy address text button title — should be one word and as short as possible.")
-        let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
+        let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (_, _, success) in
             self?.viewModel.dataSource.copyText(at: indexPath)
             success(true)
         }
@@ -921,7 +924,7 @@ private extension OrderDetailsViewController {
     ///
     private static func updateOrderStatusAction(viewModel: OrderDetailsViewModel, siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
         return OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
-            guard let error = error else {
+            guard let error else {
                 let updatedOrder = viewModel.order.copy(status: status)
                 viewModel.update(order: updatedOrder)
 

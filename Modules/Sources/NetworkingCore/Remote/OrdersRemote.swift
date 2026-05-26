@@ -21,9 +21,9 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
     ///     - statuses: Filters the Orders by the specified Status, if any.
-    ///     - after: If given, limit response to orders published after a given compliant date.  Passing a local date is fine. This
+    ///     - after: If given, limit response to orders published after a given compliant date. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
-    ///     - before: If given, limit response to resources published before a given compliant date.. Passing a local date is fine. This
+    ///     - before: If given, limit response to resources published before a given compliant date. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - modifiedAfter: If given, limit response to resources modified after a given compliant date. Passing a local date is fine.
     ///     This method will convert it to UTC ISO 8601 before calling the REST API.
@@ -57,10 +57,10 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                 ParameterKeys.fields: ParameterValues.fieldValues,
             ]
 
-            if let after = after {
+            if let after {
                 parameters[ParameterKeys.after] = utcDateFormatter.string(from: after)
             }
-            if let before = before {
+            if let before {
                 parameters[ParameterKeys.before] = utcDateFormatter.string(from: before)
             }
             if let modifiedAfter {
@@ -489,6 +489,21 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                     continuation.resume(returning: order)
                 case let .failure(error):
                     continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
+    public func addPOSOrderNote(siteID: Int64,
+                                orderID: Int64,
+                                isCustomerNote: Bool,
+                                note: String) async throws -> OrderNote {
+        try await withCheckedThrowingContinuation { continuation in
+            addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { orderNote, error in
+                if let orderNote {
+                    continuation.resume(returning: orderNote)
+                } else {
+                    continuation.resume(throwing: error ?? POSOrdersRemoteError.addOrderNoteFailed)
                 }
             }
         }

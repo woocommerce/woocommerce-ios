@@ -128,7 +128,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Ids of those products that were most or last sold among the cached orders
     ///
-    private var topProductsFromCachedOrders: ProductSelectorTopProducts = ProductSelectorTopProducts.empty
+    private var topProductsFromCachedOrders = ProductSelectorTopProducts.empty
 
     private let tracker: ProductSelectorViewModelTracker
 
@@ -536,7 +536,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                                        sortOrder: .nameAscending,
                                                        productIDs: (filtersSubject.value.favoriteProduct != nil) ? favoriteProductIDs : [],
                                                        shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success:
@@ -569,7 +569,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                                   productType: filtersSubject.value.promotableProductType?.productType,
                                                   productCategory: filtersSubject.value.productCategory) { [weak self] result in
             // Don't continue if this isn't the latest search.
-            guard let self = self, keyword == self.searchTerm else {
+            guard let self, keyword == self.searchTerm else {
                 return
             }
 
@@ -602,7 +602,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
         }
 
         let action = ProductAction.searchProductsInCache(siteID: siteID, keyword: keyword, pageSize: pageSize) { [weak self ] thereAreCachedResults in
-            guard let self = self,
+            guard let self,
                   keyword == self.searchTerm else {
                 return
             }
@@ -732,6 +732,7 @@ private extension ProductSelectorViewModel {
                 // We don't use `contains` here because of performance reasons,
                 // as we don't need to check all the Product properties as the Equatable synthesized function would do.
                 // Furthermore, with the latter can get different properties (e.g arrays from set that have different order) from the same product.
+                // swiftlint:disable:next contains_over_first_not_nil
                 products.first(where: { $0.productID == product.productID }) == nil
         }
     }
@@ -784,7 +785,7 @@ private extension ProductSelectorViewModel {
         // Listen only to the first emitted event.
         onLoadTrigger.first()
             .sink { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.syncFirstPage()
             }
             .store(in: &subscriptions)
@@ -804,7 +805,7 @@ private extension ProductSelectorViewModel {
 
         Publishers.CombineLatest3(searchTermPublisher, filtersPublisher, searchFilterPublisher)
             .sink { [weak self] searchTerm, filtersSubject, productSearchFilter in
-                guard let self = self else { return }
+                guard let self else { return }
                 Task { @MainActor in
                     self.updateFilterButtonTitle(with: filtersSubject)
                     await self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject, productSearchFilter: productSearchFilter)
@@ -831,7 +832,7 @@ private extension ProductSelectorViewModel {
     func observeSelections() {
         $sections.combineLatest($selectedItemsIDs) {
             [weak self] sections, selectedItemsIDs -> [ProductsSectionViewModel] in
-            guard let self = self else {
+            guard let self else {
                 return []
             }
             return self.generateProductsSectionViewModels(sections: sections,

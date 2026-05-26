@@ -38,7 +38,7 @@ extension SearchableActivityConvertible where Self: UIViewController {
             activity.keywords = keywords
         }
 
-        if let activityDescription = activityDescription {
+        if let activityDescription {
             let contentAttributeSet = CSSearchableItemAttributeSet(contentType: UTType.text)
             contentAttributeSet.contentDescription = activityDescription
             activity.contentAttributeSet = contentAttributeSet

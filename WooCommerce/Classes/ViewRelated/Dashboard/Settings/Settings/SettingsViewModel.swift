@@ -94,7 +94,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let sitesResultsController: ResultsController<StorageSite>
 
     /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
-    /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
+    /// e.g. WooPayments, but eventually other in-person payment accounts too
     ///
     private let paymentGatewayAccountsResultsController: ResultsController<StoragePaymentGatewayAccount>?
 
@@ -104,7 +104,10 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let defaults: UserDefaults
     private let pushNotesManager: PushNotesManager
     private let analytics: Analytics
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
 
+    private var isSelfDrivenPNEligible = false
     private var subscriptions: Set<AnyCancellable> = []
 
     /// Reference to the Zendesk shared instance
@@ -116,13 +119,17 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          defaults: UserDefaults = .standard,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck()) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.defaults = defaults
         self.pushNotesManager = pushNotesManager
         self.analytics = analytics
+        self.ciabEligibilityChecker = ciabEligibilityChecker
+        self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
 
         /// Initialize Sites Results Controller
         ///
@@ -162,6 +169,14 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         loadSites()
         reloadSettings()
         observeSelfDrivenPushTokenPersistence()
+        checkPushNotificationEligibility()
+    }
+
+    private func checkPushNotificationEligibility() {
+        Task { @MainActor in
+            isSelfDrivenPNEligible = await pushNotificationEligibilityChecker.checkEligibility()
+            reloadSettings()
+        }
     }
 
     /// Reloads the sites when store picker gets dismissed.
@@ -184,7 +199,7 @@ private extension SettingsViewModel {
 
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             guard let (announcement, _) = try? result.get(),
                     announcement.shownInThisAppVersion else {
                 return DDLogInfo("📣 There are no announcements to show!")
@@ -204,7 +219,7 @@ private extension SettingsViewModel {
         pushNotesManager.siteIDsRegisteredForWooPNsPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.reloadSettings()
+                self?.checkPushNotificationEligibility()
             }
             .store(in: &subscriptions)
     }
@@ -213,8 +228,7 @@ private extension SettingsViewModel {
         let configureSection: Section? = {
             var rows: [Row] = []
 
-            if stores.isAuthenticated,
-               stores.sessionManager.defaultSite?.isWordPressComStore == false {
+            if stores.isAuthenticated {
                 rows.append(.connectivity)
             }
 
@@ -231,6 +245,11 @@ private extension SettingsViewModel {
             // Show the plugins section only if the user has an `admin` role for the default store site.
             //
             guard stores.sessionManager.defaultRoles.contains(.administrator) else {
+                return nil
+            }
+
+            // Hide plugins section for CIAB sites
+            guard !ciabEligibilityChecker.isCurrentSiteCIAB else {
                 return nil
             }
 
@@ -300,10 +319,20 @@ private extension SettingsViewModel {
                 guard let siteID = stores.sessionManager.defaultSite?.siteID else {
                     return false
                 }
-                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom) &&
+                return isSelfDrivenPNEligible &&
                 pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
             }()
-            if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
+            let isRegisteredForWooDrivenPushes: Bool = {
+                guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+                    return false
+                }
+                return pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
+            }()
+            let showPushNotificationPreferences = isRegisteredForWooDrivenPushes
+                && featureFlagService.isFeatureFlagEnabled(.smarterNotifications)
+            if showPushNotificationPreferences {
+                rows = [.pushNotificationPreferences, .privacy]
+            } else if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]
             } else {
                 rows = [.privacy]
@@ -374,7 +403,7 @@ private extension SettingsViewModel {
             return false
         }
 
-        guard featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords) else {
+        guard isSelfDrivenPNEligible else {
             return false
         }
 
@@ -403,14 +432,14 @@ private extension SettingsViewModel {
 
         func configureResultsController<T>(_ resultsController: ResultsController<T>?,
                           onReload: @escaping () -> Void) where T: ResultsControllerMutableType {
-            guard let resultsController = resultsController else { return }
+            guard let resultsController else { return }
 
             resultsController.onDidChangeContent = {
                 onReload()
             }
 
             resultsController.onDidResetContent = { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
                 /// involves more than one results controller.

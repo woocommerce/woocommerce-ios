@@ -65,6 +65,7 @@ final class OrderListViewModel {
     }
 
     private let siteID: Int64
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     /// Used for tracking whether the app was _previously_ in the background.
     ///
@@ -129,7 +130,8 @@ final class OrderListViewModel {
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          filters: FilterOrderListViewModel.Filters?,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
         self.siteID = siteID
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.stores = stores
@@ -139,9 +141,11 @@ final class OrderListViewModel {
         self.notificationCenter = notificationCenter
         self.filters = filters
         self.featureFlagService = featureFlagService
+        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
                                                                             query: Self.createQuery(siteID: siteID,
-                                                                                                    filters: filters))
+                                                                                                    filters: filters,
+                                                                                                    isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB))
     }
 
     deinit {
@@ -216,7 +220,8 @@ final class OrderListViewModel {
                                lastFullSyncTimestamp: Date?,
                                completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 filters: filters)
+                                                 filters: filters,
+                                                 ciabEligibilityChecker: ciabEligibilityChecker)
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,
@@ -226,10 +231,15 @@ final class OrderListViewModel {
         })
     }
 
-    private static func createQuery(siteID: Int64, filters: FilterOrderListViewModel.Filters?) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
+    private static func createQuery(siteID: Int64,
+                                     filters: FilterOrderListViewModel.Filters?,
+                                     isCIAB: Bool) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
         let predicateStatus: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
-            let excludeNonMatchingStatus = filters?.orderStatus.map { NSPredicate(format: "statusKey IN %@", $0.map { $0.rawValue }) }
+            let excludeNonMatchingStatus = filters?.orderStatus.map { statuses in
+                let resolved = isCIAB ? CIABOrderStatusMapper.resolveFilterStatuses(statuses) : statuses
+                return NSPredicate(format: "statusKey IN %@", resolved.map { $0.rawValue })
+            }
 
             let predicates = [excludeSearchCache, excludeNonMatchingStatus].compactMap { $0 }
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
@@ -348,7 +358,9 @@ extension OrderListViewModel {
             return nil
         }
 
-        return OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
+        return OrderListCellViewModel(order: order,
+                                      currencySettings: ServiceLocator.currencySettings,
+                                      isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.

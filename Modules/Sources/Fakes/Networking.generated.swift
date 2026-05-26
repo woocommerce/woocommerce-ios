@@ -329,6 +329,7 @@ extension Networking.Booking {
             allDay: .fake(),
             cost: .fake(),
             customerID: .fake(),
+            userID: .fake(),
             dateCreated: .fake(),
             dateModified: .fake(),
             endDate: .fake(),
@@ -799,6 +800,7 @@ extension Networking.POSProductVariation {
             fullDescription: .fake(),
             sku: .fake(),
             globalUniqueID: .fake(),
+            typeKey: .fake(),
             price: .fake(),
             downloadable: .fake(),
             manageStock: .fake(),
@@ -945,7 +947,10 @@ extension Networking.Product {
             maxAllowedQuantity: .fake(),
             groupOfQuantity: .fake(),
             combineVariationQuantities: .fake(),
-            customFields: .fake()
+            customFields: .fake(),
+            bookingDuration: .fake(),
+            bookingDurationUnit: .fake(),
+            bookingResourceIDs: .fake()
         )
     }
 }

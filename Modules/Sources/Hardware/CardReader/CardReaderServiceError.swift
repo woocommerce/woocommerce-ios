@@ -45,6 +45,9 @@ public enum CardReaderServiceError: Error {
     /// Error thrown while updating the reader firmware
     case softwareUpdate(underlyingError: UnderlyingError = .internalServiceError, batteryLevel: Double?)
 
+    /// Error thrown while cancelling an auto-reconnection attempt
+    case reconnectionCancellation(underlyingError: UnderlyingError = .internalServiceError)
+
     /// The user has denied the app permission to use Bluetooth
     case bluetoothDenied
 
@@ -74,7 +77,8 @@ extension CardReaderServiceError: LocalizedError {
                 .refundCreation(let underlyingError),
                 .refundPayment(let underlyingError, _),
                 .refundCancellation(let underlyingError),
-                .softwareUpdate(let underlyingError, _):
+                .softwareUpdate(let underlyingError, _),
+                .reconnectionCancellation(let underlyingError):
             return underlyingError.errorDescription
         case .paymentCaptureWithPaymentMethod(underlyingError: let underlyingError, paymentMethod: _):
             return underlyingError.errorDescription ?? underlyingError.localizedDescription

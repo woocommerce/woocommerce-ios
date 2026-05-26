@@ -5,7 +5,7 @@ import Yosemite
 ///
 struct MyStoreRoute: Route {
     func canHandle(subPath: String) -> Bool {
-        return subPath == ""
+        return subPath.isEmpty
     }
 
     func perform(for subPath: String, with parameters: [String: String]) -> Bool {

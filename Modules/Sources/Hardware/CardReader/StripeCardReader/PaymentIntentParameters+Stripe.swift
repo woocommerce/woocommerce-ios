@@ -46,11 +46,15 @@ private extension Hardware.PaymentIntentParameters {
             builder.setStatementDescriptor(descriptor)
         }
 
-        if let applicationFee = applicationFee {
+        if let applicationFee {
             /// Stripe requires that "The amount must be provided as a boxed UInt in the currency's smallest unit."
             /// Smallest-unit and UInt conversion is done in the same way as for the total amount, but that does not need to be boxed.
             let applicationFeeForStripe = NSNumber(value: prepareAmountForStripe(applicationFee))
             builder.setApplicationFeeAmount(applicationFeeForStripe)
+        }
+
+        if let cardPresentCaptureMethod {
+            _ = builder.setPaymentMethodOptionsParameters(try createCardPresentPaymentMethodOptions(captureMethod: cardPresentCaptureMethod))
         }
 
         builder.setReceiptEmail(receiptEmail)
@@ -62,10 +66,19 @@ private extension Hardware.PaymentIntentParameters {
         return try builder.build()
     }
 
+    func createCardPresentPaymentMethodOptions(captureMethod: Hardware.CardPresentCaptureMethod) throws -> PaymentMethodOptionsParameters {
+        let cardPresentParameters = try CardPresentParametersBuilder()
+            .setCaptureMethod(captureMethod.stripeTerminalCardPresentCaptureMethod)
+            .build()
+
+        return try PaymentMethodOptionsParametersBuilder(cardPresentParameters: cardPresentParameters)
+            .build()
+    }
+
     /// Updates the existing PaymentIntentParameters metadata with our CardReader metadata, if any.
     ///
     func prepareMetadataForStripe(with meta: CardReaderMetadata? = nil) -> [String: String]? {
-        guard let meta = meta else {
+        guard let meta else {
             return metadata
         }
 
@@ -88,6 +101,17 @@ private extension PaymentMethodType {
             return .cardPresent
         case .interacPresent:
             return .interacPresent
+        }
+    }
+}
+
+private extension Hardware.CardPresentCaptureMethod {
+    var stripeTerminalCardPresentCaptureMethod: StripeTerminal.CardPresentCaptureMethod {
+        switch self {
+        case .manualPreferred:
+            return .manualPreferred
+        case .manual:
+            return .manual
         }
     }
 }

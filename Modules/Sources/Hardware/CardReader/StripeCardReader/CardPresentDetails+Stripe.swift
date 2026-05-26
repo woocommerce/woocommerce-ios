@@ -11,6 +11,9 @@ extension CardPresentTransactionDetails {
                   expYear: details.expYear,
                   cardholderName: details.cardholderName,
                   brand: CardBrand(brand: details.brand),
+                  availableNetworks: details.networks?.available?.compactMap {
+                      StripeTerminal.CardBrand(rawValue: $0.intValue).map(CardBrand.init(brand:))
+                  },
                   generatedCard: details.generatedCard,
                   receipt: Hardware.ReceiptDetails(receiptDetails: details.receipt),
                   emvAuthData: details.emvAuthData,
@@ -35,6 +38,7 @@ protocol StripeCardPresentDetails {
     var receipt: StripeTerminal.ReceiptDetails? { get }
     var emvAuthData: String? { get }
     var wallet: StripeTerminal.SCPWallet? { get }
+    var networks: StripeTerminal.SCPNetworks? { get }
     var network: NSNumber? { get }
 }
 

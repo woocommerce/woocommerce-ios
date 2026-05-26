@@ -1424,7 +1424,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             }
         }
 
-        let input = OrderSyncProductInput.init(product: .product(Product.fake()), quantity: 1, discount: 0)
+        let input = OrderSyncProductInput(product: .product(Product.fake()), quantity: 1, discount: 0)
         createOrder(on: synchronizer, input: input)
 
         // When

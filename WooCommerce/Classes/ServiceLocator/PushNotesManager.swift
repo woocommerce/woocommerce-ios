@@ -33,6 +33,10 @@ protocol PushNotesManager {
     ///
     var deviceID: String? { get }
 
+    /// Self-driven push notification token ID
+    ///
+    var wooPushNotificationToken: String? { get }
+
     /// Site IDs registered for Woo Push Notifications.
     ///
     var siteIDsRegisteredForWooPNs: [Int64] { get }
@@ -44,6 +48,10 @@ protocol PushNotesManager {
     /// Indicates whether the registered site IDs value exists in storage.
     ///
     var hasStoredSiteIDsRegisteredForWooPNs: Bool { get }
+
+    /// Unmarks a site as registered for Woo Push Notifications.
+    ///
+    func unmarkSiteAsRegisteredForWooPNs(_ siteID: Int64)
 
     /// Resets the Badge Count.
     ///
@@ -64,6 +72,11 @@ protocol PushNotesManager {
     /// - Returns: The token ID on success.
     /// - Throws: If any step in the registration pipeline fails.
     @MainActor func registerDeviceAndWaitForTokenAcceptance() async throws -> Int64
+
+    /// Registers a specific site for self-driven push notifications.
+    /// - Parameter siteID: The site ID to register.
+    /// - Throws: If registration fails or device token is not available.
+    @MainActor func registerSiteForSelfDrivenPushNotifications(_ siteID: Int64) async throws
 
     /// Registers the Application for Remote Notifications.
     ///
@@ -137,4 +150,15 @@ protocol PushNotesManager {
     /// Enables remote notifications to appear as in-app notices when needed.
     /// This is the app's default state
     func enableInAppNotifications()
+}
+
+extension PushNotesManager {
+    /// Whether WPCom notifications-based features should be available for a site.
+    /// Returns false for non-WPCom authenticated sites or sites using Woo-driven push notifications.
+    func supportsWPComNotifications(for siteID: Int64, stores: StoresManager) -> Bool {
+        guard stores.isAuthenticatedWithoutWPCom == false else {
+            return false
+        }
+        return !siteIDsRegisteredForWooPNs.contains(siteID)
+    }
 }

@@ -24,6 +24,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(hourlyStats.totals.totalOrders, 3)
         XCTAssertEqual(hourlyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(hourlyStats.totals.grossRevenue, 800)
+        XCTAssertEqual(hourlyStats.totals.grossSales, 750)
         XCTAssertEqual(hourlyStats.totals.netRevenue, 800)
         XCTAssertEqual(hourlyStats.totals.averageOrderValue, 266)
 
@@ -36,8 +37,21 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroHourTotals.totalOrders, 2)
         XCTAssertEqual(nonZeroHourTotals.grossRevenue, 350)
+        XCTAssertEqual(nonZeroHourTotals.grossSales, 320)
         XCTAssertEqual(nonZeroHourTotals.netRevenue, 350)
         XCTAssertEqual(nonZeroHourTotals.averageOrderValue, 175)
+    }
+
+    /// Verifies that `gross_sales` defaults to 0 when missing from the response (older fixtures/backends).
+    ///
+    func test_gross_sales_defaults_to_zero_when_missing() {
+        guard let dailyStats = mapOrderStatsWithDailyUnitResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(dailyStats.totals.grossSales, 0)
+        XCTAssertEqual(dailyStats.intervals.first?.subtotals.grossSales, 0)
     }
 
     /// Verifies that all of the daily unit OrderStatsV4 fields are parsed correctly.

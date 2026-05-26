@@ -37,6 +37,7 @@ extension Storage.Order: ReadOnlyConvertible {
         paymentMethodTitle = order.paymentMethodTitle
         paymentURL = order.paymentURL as NSURL?
         chargeID = order.chargeID
+        fulfillmentStatusKey = order.fulfillmentStatus.rawValue
         renewalSubscriptionID = order.renewalSubscriptionID
 
         if let billingAddress = order.billingAddress {
@@ -82,6 +83,7 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderCustomFields = customFields?.map { $0.toReadOnly() } ?? [Yosemite.MetaData]()
         let orderGiftCards = appliedGiftCards?.map { $0.toReadOnly() } ?? [Yosemite.OrderGiftCard]()
         let orderShippingLabels = shippingLabels?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLabel]()
+        let orderFulfillments = fulfillments?.map { $0.toReadOnly() } ?? [Yosemite.OrderFulfillment]()
 
         return Order(siteID: siteID,
                      orderID: orderID,
@@ -90,7 +92,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      orderKey: orderKey,
                      isEditable: isEditable,
                      needsPayment: needsPayment,
-                     needsProcessing: needsPayment,
+                     needsProcessing: needsProcessing,
                      number: number ?? "",
                      status: OrderStatusEnum(rawValue: statusKey),
                      currency: currency ?? "",
@@ -109,6 +111,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      paymentMethodTitle: paymentMethodTitle ?? "",
                      paymentURL: paymentURL as URL?,
                      chargeID: chargeID,
+                     fulfillmentStatus: OrderFulfillmentStatus(rawValue: fulfillmentStatusKey ?? "") ?? .unknown,
                      items: orderItems,
                      billingAddress: createReadOnlyBillingAddress(),
                      shippingAddress: createReadOnlyShippingAddress(),
@@ -122,15 +125,15 @@ extension Storage.Order: ReadOnlyConvertible {
                      appliedGiftCards: orderGiftCards,
                      attributionInfo: attributionInfo?.toReadOnly(),
                      shippingLabels: orderShippingLabels,
+                     fulfillments: orderFulfillments,
                      createdVia: createdVia)
-
     }
 
 
     // MARK: - Private Helpers
 
     private func createReadOnlyBillingAddress() -> Yosemite.Address? {
-        guard let billingCountry = billingCountry else {
+        guard let billingCountry else {
             return nil
         }
 
@@ -148,7 +151,7 @@ extension Storage.Order: ReadOnlyConvertible {
     }
 
     private func createReadOnlyShippingAddress() -> Yosemite.Address? {
-        guard let shippingCountry = shippingCountry else {
+        guard let shippingCountry else {
             return nil
         }
 

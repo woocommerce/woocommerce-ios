@@ -85,7 +85,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
 
     private static func createPaymentGatewaysResultsController(siteID: Int64?,
                                                                storageManager: StorageManagerType) -> ResultsController<StoragePaymentGateway>? {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return nil
         }
 
@@ -97,7 +97,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
     }
 
     func refreshState() {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
 
@@ -128,12 +128,12 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
     }
 
     private func enableCashOnDeliveryGateway() {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
 
         let action = PaymentGatewayAction.updatePaymentGateway(PaymentGateway.defaultPayInPersonGateway(siteID: siteID)) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             guard result.isSuccess else {
                 DDLogError("💰 Could not update Payment Gateway: \(String(describing: result.failure))")
                 // Resetting the toggle to the most recent stored value, or false because we failed to make it true.
@@ -159,13 +159,13 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
     }
 
     private func disableCashOnDeliveryGateway() {
-        guard let cashOnDeliveryGateway = cashOnDeliveryGateway else {
+        guard let cashOnDeliveryGateway else {
             return
         }
 
         let disabledPaymentGateway = cashOnDeliveryGateway.copy(enabled: false)
         let action = PaymentGatewayAction.updatePaymentGateway(disabledPaymentGateway) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             guard result.isSuccess else {
                 DDLogError("💰 Could not update Payment Gateway: \(String(describing: result.failure))")
                 // Resetting the toggle to the most recent stored value, or true because we failed to make it false.

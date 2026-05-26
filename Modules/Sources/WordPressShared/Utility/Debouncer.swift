@@ -18,7 +18,7 @@ public final class Debouncer {
     }
 
     deinit {
-        if let timer = timer, timer.fireDate >= Date() {
+        if let timer, timer.fireDate >= Date() {
             timer.invalidate()
             callback?()
         }
@@ -52,7 +52,7 @@ public final class Debouncer {
     }
 
     private func scheduleCallback() {
-        timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [callback] timer in
+        timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [callback] _ in
             callback?()
         }
     }

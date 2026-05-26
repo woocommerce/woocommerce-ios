@@ -8,38 +8,37 @@ struct POSSettingsHardwareDetailView: View {
 
     let settingsController: POSSettingsControllerProtocol
 
-    @State private var navigationPath: [NavigationDestination] = []
+    @Binding var navigationPath: NavigationPath
     @State private var showBarcodeScanningSetupModal: Bool = false
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
     @State private var showSupport: Bool = false
+    @State private var isCancellingReconnection: Bool = false
 
     private var cardReaderName: String {
-        if let cardReaderName = settingsController.connectedCardReader?.name {
-            return cardReaderName
-        } else {
-            return Localization.cardReaderNotConnected
-        }
+        settingsController.connectedCardReader?.name ?? Localization.cardReaderNotConnected
     }
 
     private var formattedBatteryLevel: String {
-        if let batteryLevel = settingsController.connectedCardReader?.batteryLevel {
-            return String(format: Localization.batteryLevelFormat, 100 * batteryLevel)
-        } else {
+        guard let batteryLevel = settingsController.connectedCardReader?.batteryLevel else {
             return Localization.batteryLevelUnknown
         }
+        return String(format: Localization.batteryLevelFormat, 100 * batteryLevel)
     }
 
     private var formattedCardReaderFirmware: String {
-        if let softwareVersion = settingsController.connectedCardReader?.softwareVersion {
-            return softwareVersion
-        } else {
-            return Localization.firmwareVersionUnknown
+        settingsController.connectedCardReader?.softwareVersion ?? Localization.firmwareVersionUnknown
+    }
+
+    private var isReconnecting: Bool {
+        if case .reconnecting = posModel.cardReaderConnectionStatus {
+            return true
         }
+        return false
     }
 
     private var shouldShowUpdateFirmwareButton: Bool {
-        posModel.isCardReaderUpdateAvailable
+        posModel.isCardReaderUpdateAvailable && !isReconnecting
     }
 
     private var backgroundColor: Color {
@@ -48,68 +47,68 @@ struct POSSettingsHardwareDetailView: View {
 
     var body: some View {
         @Bindable var posModel = posModel
-        NavigationStack(path: $navigationPath) {
-            VStack(spacing: POSSpacing.none) {
-                POSPageHeaderView(title: Localization.hardwareTitle)
-                    .foregroundColor(.posSurface)
-                    .accessibilityAddTraits(.isHeader)
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(title: Localization.hardwareTitle)
+                .foregroundColor(.posSurface)
+                .accessibilityAddTraits(.isHeader)
 
-                VStack(spacing: POSSpacing.small) {
-                    ForEach(HardwareDestination.allCases) { destination in
-                        NavigationLink(value: NavigationDestination.hardware(destination)) {
-                            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                                Text(destination.title)
-                                    .font(.posBodyLargeBold)
-                                    .foregroundStyle(Color.posOnSurface)
-                                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                                Text(destination.subtitle)
-                                    .font(.posBodyMediumRegular())
-                                    .foregroundStyle(.secondary)
-                                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.posSurfaceContainerLowest)
-                            .posItemCardBorderStyles()
+            VStack(spacing: POSSpacing.small) {
+                ForEach(HardwareDestination.allCases) { destination in
+                    NavigationLink(value: NavigationDestination.hardware(destination)) {
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(destination.title)
+                                .font(.posBodyLargeBold)
+                                .foregroundStyle(Color.posOnSurface)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                            Text(destination.subtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("\(destination.title), \(destination.subtitle)")
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.posSurfaceContainerLowest)
+                        .posItemCardBorderStyles()
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(destination.title), \(destination.subtitle)")
                 }
-                .padding(.horizontal, POSPadding.medium)
+            }
+            .padding(.horizontal, POSPadding.medium)
 
-                Spacer()
+            Spacer()
+        }
+        .background(backgroundColor)
+        .navigationDestination(for: NavigationDestination.self) { destination in
+            switch destination {
+            case .hardware(.cardReaders):
+                cardReadersView
+                    .environment(\.posHeaderBackButtonConfiguration, nil)
+            case .hardware(.scanners):
+                scannersView
+                    .environment(\.posHeaderBackButtonConfiguration, nil)
             }
-            .background(backgroundColor)
-            .navigationDestination(for: NavigationDestination.self) { destination in
-                switch destination {
-                case .hardware(.cardReaders):
-                    cardReadersView
-                case .hardware(.scanners):
-                    scannersView
-                }
-            }
-            .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
-                posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
-            }, content: { alertType in
-                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-                    .posInteractiveDismissDisabled(alertType.isDismissDisabled)
-            })
-            .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
-                posModel.cancelCardPaymentsOnboarding()
-            }, content: { viewContainer in
-                paymentsOnboardingView(from: viewContainer)
-            })
-            .posSheet(isPresented: $showSupport) {
-                supportForm
-                    .interactiveDismissDisabled(true)
-            }
-            .posModal(isPresented: $showBarcodeScanningSetupModal) {
-                POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
-            }
-            .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
-                SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
-            }
+        }
+        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
+            posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+        }, content: { alertType in
+            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+        })
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+            posModel.cancelCardPaymentsOnboarding()
+        }, content: { viewContainer in
+            paymentsOnboardingView(from: viewContainer)
+        })
+        .posSheet(isPresented: $showSupport) {
+            supportForm
+                .interactiveDismissDisabled(true)
+        }
+        .posModal(isPresented: $showBarcodeScanningSetupModal) {
+            POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
+        }
+        .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
+            SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
         }
     }
 }
@@ -145,6 +144,65 @@ private extension POSSettingsHardwareDetailView {
         }
     }
 
+    @ViewBuilder
+    var cardReaderNameRow: some View {
+        VStack(alignment: .leading, spacing: POSPadding.small) {
+            HStack(alignment: .center, spacing: POSSpacing.medium) {
+                VStack(alignment: .leading, spacing: POSPadding.small) {
+                    Text(Localization.readerModelTitle)
+                        .font(.posBodyMediumRegular())
+                    Text(cardReaderName)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                if isReconnecting {
+                    reconnectingMenuButton
+                } else {
+                    Button(Localization.cardReaderDisconnectTitle) {
+                        posModel.disconnectCardReader()
+                    }
+                    .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default, isLoading: false))
+                }
+            }
+
+            Divider()
+                .padding(.top, POSPadding.small)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    var reconnectingMenuButton: some View {
+        Menu {
+            Button(Localization.cancelReconnectionTitle) {
+                isCancellingReconnection = true
+                posModel.cancelReconnection()
+            }
+        } label: {
+            HStack(spacing: POSSpacing.small) {
+                ProgressView()
+                    .progressViewStyle(POSProgressViewStyle(size: 16, lineWidth: 4))
+                Text(isCancellingReconnection ? Localization.cancellingReconnectionTitle : Localization.reconnectingButtonTitle)
+            }
+            .font(.posBodySmallBold())
+            .foregroundColor(.posOnSurface)
+            .padding(.vertical, POSPadding.small)
+            .padding(.horizontal, POSPadding.medium)
+            .background(Color.posSurfaceContainerLowest)
+            .cornerRadius(POSCornerRadiusStyle.small.value)
+            .overlay(
+                RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value)
+                    .strokeBorder(Color.posOnSurface, lineWidth: 2)
+            )
+        }
+        .disabled(isCancellingReconnection)
+        .onChange(of: posModel.cardReaderConnectionStatus) {
+            isCancellingReconnection = false
+        }
+    }
+
     var cardReadersView: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
@@ -156,19 +214,15 @@ private extension POSSettingsHardwareDetailView {
 
             ScrollView {
                 VStack(spacing: POSSpacing.small) {
-                    if case .connected = posModel.cardReaderConnectionStatus {
+                    switch posModel.cardReaderConnectionStatus {
+                    case .connected, .reconnecting:
                         if shouldShowUpdateFirmwareButton {
                             POSSettingsCardWithIcon(title: Localization.updateFirmwareBannerTitle,
                                                     subtitle: Localization.updateFirmwareBannerSubtitle)
                         }
                         POSInformationCard {
                             VStack(spacing: POSSpacing.small) {
-                                POSInformationCardFieldRow(label: Localization.readerModelTitle,
-                                                           value: cardReaderName,
-                                                           buttonTitle: Localization.cardReaderDisconnectTitle,
-                                                           buttonAction: {
-                                    posModel.disconnectCardReader()
-                                })
+                                cardReaderNameRow
 
                                 POSInformationCardFieldRow(label: Localization.readerBatteryTitle,
                                                            value: formattedBatteryLevel)
@@ -183,10 +237,10 @@ private extension POSSettingsHardwareDetailView {
                                                            buttonStyle: .primary)
                             }
                         }
-                    } else {
+                    default:
                         POSSettingsCard(title: Localization.cardReaderConnectTitle,
-                                            subtitle: Localization.cardReaderConnectSubtitle,
-                                            action: {
+                                        subtitle: Localization.cardReaderConnectSubtitle,
+                                        action: {
                             posModel.connectCardReader()
                         })
                     }
@@ -471,6 +525,24 @@ private extension POSSettingsHardwareDetailView {
             value: "Cancel",
             comment: "Button to dismiss the support form from POS settings."
         )
+
+        static let reconnectingButtonTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.reconnectingButtonTitle",
+            value: "Reconnecting…",
+            comment: "Button title shown when card reader is reconnecting in POS settings."
+        )
+
+        static let cancelReconnectionTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cancelReconnectionTitle",
+            value: "Cancel reconnection",
+            comment: "Menu option to cancel card reader reconnection in POS settings."
+        )
+
+        static let cancellingReconnectionTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cancellingReconnectionTitle",
+            value: "Cancelling…",
+            comment: "Button title shown when card reader reconnection is being cancelled in POS settings."
+        )
     }
 }
 
@@ -512,6 +584,9 @@ private extension POSSettingsHardwareDetailView {
 
 #if DEBUG
 #Preview {
-    POSSettingsHardwareDetailView(settingsController: POSSettingsPreviewController())
+    @Previewable @State var navigationPath = NavigationPath()
+    NavigationStack(path: $navigationPath) {
+        POSSettingsHardwareDetailView(settingsController: POSSettingsPreviewController(), navigationPath: $navigationPath)
+    }
 }
 #endif

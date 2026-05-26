@@ -28,7 +28,7 @@ struct MockSystemStatusActionHandler: MockActionHandler {
         let systemPlugins = objectGraph.systemPlugins(for: siteID)
 
         save(mocks: systemPlugins, as: StorageSystemPlugin.self) { error in
-            if let error = error {
+            if let error {
                 onCompletion(.failure(error))
             } else {
                 onCompletion(.success([]))

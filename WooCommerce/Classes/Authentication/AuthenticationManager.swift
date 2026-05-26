@@ -94,7 +94,7 @@ class AuthenticationManager: Authentication {
     func authenticationUI() -> UIViewController {
         let loginViewController: UIViewController = {
             let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 // Resets Apple ID at the beginning of the authentication.
                 self.appleUserID = nil
 
@@ -330,7 +330,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                                          isJetpackActive: siteInfo?.isJetpackActive ?? false,
                                                          isJetpackConnected: siteInfo?.isJetpackConnected ?? false))
 
-        guard let site = siteInfo, let navigationController = navigationController else {
+        guard let site = siteInfo, let navigationController else {
             navigationController?.show(noWPUI, sender: nil)
             return
         }
@@ -484,16 +484,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///     - from: UIViewController instance from which to present the support interface
     ///     - screen: A case from `CustomHelpCenterContent.Screen` enum. This represents authentication related screens from WCiOS.
     ///
-    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen) {
+    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen, siteURL: URL?) {
         let customHelpCenterContent = CustomHelpCenterContent(screen: screen,
                                                               flow: AuthenticatorAnalyticsTracker.shared.state.lastFlow)
-        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: nil)
+        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: nil, siteURL: siteURL)
     }
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        presentHelpAndSupport(from: sourceViewController, sourceTag: sourceTag)
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, siteURL: URL?) {
+        presentHelpAndSupport(from: sourceViewController, sourceTag: sourceTag, siteURL: siteURL)
     }
 
     /// Presents the Support Interface from a given ViewController.
@@ -507,13 +507,24 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func presentSupport(from sourceViewController: UIViewController,
                         sourceTag: WordPressSupportSourceTag,
                         lastStep: AuthenticatorAnalyticsTracker.Step,
-                        lastFlow: AuthenticatorAnalyticsTracker.Flow) {
+                        lastFlow: AuthenticatorAnalyticsTracker.Flow,
+                        siteURL: String?) {
+        let parsedURL: URL? = {
+            // swiftlint:disable:next control_statement
+            guard let siteURL, let url = URL(string: siteURL),
+                  let scheme = url.scheme?.lowercased(),
+                  (scheme == "http" || scheme == "https"),
+                  url.host != nil else {
+                return nil
+            }
+            return url
+        }()
         guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow) else {
-            presentSupport(from: sourceViewController, sourceTag: sourceTag)
+            presentSupport(from: sourceViewController, sourceTag: sourceTag, siteURL: parsedURL)
             return
         }
 
-        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag)
+        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag, siteURL: parsedURL)
     }
 
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
@@ -551,7 +562,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
 
         // If Apple ID is previously set, saves it to Keychain now that authentication is complete.
-        if let appleUserID = appleUserID {
+        if let appleUserID {
             keychain.wooAppleID = appleUserID
         }
         appleUserID = nil
@@ -650,7 +661,7 @@ private extension AuthenticationManager {
         let viewModel = JetpackErrorViewModel(siteURL: siteURL,
                                               siteCredentials: credentials.wporg,
                                               onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
-            guard let self = self else { return }
+            guard let self else { return }
             // Resets the referenced site since the setup completed now.
             self.currentSelfHostedSite = nil
             guard credentials.wpcom != nil else {
@@ -681,7 +692,7 @@ private extension AuthenticationManager {
                                                         config: config,
                                                         switchStoreUseCase: switchStoreUseCase)
         storePickerCoordinator?.onDismiss = onDismiss
-        if let siteID = siteID {
+        if let siteID {
             storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)
         } else {
             storePickerCoordinator?.start()
@@ -725,7 +736,7 @@ private extension AuthenticationManager {
             site: site,
             showsConnectedStores: matcher.hasConnectedStores,
             onSetupCompletion: { [weak self] siteID in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)
         })
         let noWooUI = ULErrorViewController(viewModel: viewModel)
@@ -989,18 +1000,20 @@ private extension AuthenticationManager {
 
     func presentHelpAndSupport(from sourceViewController: UIViewController,
                                customHelpCenterContent: CustomHelpCenterContent? = nil,
-                               sourceTag: WordPressSupportSourceTag?) {
+                               sourceTag: WordPressSupportSourceTag?,
+                               siteURL: URL?) {
         let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
         let supportViewController = UIStoryboard.settings.instantiateViewController(identifier: identifier,
                                                                                      creator: { coder -> HelpAndSupportViewController? in
-            guard let customHelpCenterContent = customHelpCenterContent else {
-                /// Returning nil as we don't need to customise the HelpAndSupportViewController
-                /// In this case `instantiateViewController` method will use the default `HelpAndSupportViewController` created from storyboard.
-                ///
-                return nil
+            if let customHelpCenterContent {
+                return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent,
+                                                    sourceTag: sourceTag?.origin,
+                                                    loginSiteURL: siteURL,
+                                                    coder: coder)
             }
-
-            return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag?.origin, coder: coder)
+            return HelpAndSupportViewController(sourceTag: sourceTag?.origin,
+                                                loginSiteURL: siteURL,
+                                                coder: coder)
         })
         supportViewController.displaysDismissAction = true
 

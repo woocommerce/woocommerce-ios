@@ -63,7 +63,7 @@ struct InPersonPaymentsSelectPluginView: View {
                         .bodyStyle()
 
                     VStack(alignment: .leading, spacing: 16) {
-                        InPersonPaymentsSelectPluginRow(icon: .wcpayIcon, name: "WooCommerce Payments", selected: selectedPlugin == .wcPay)
+                        InPersonPaymentsSelectPluginRow(icon: .wcpayIcon, name: CardPresentPaymentsPlugin.wcPay.pluginName, selected: selectedPlugin == .wcPay)
                             .onTapGesture {
                                 selectedPlugin = .wcPay
                             }
@@ -87,7 +87,7 @@ struct InPersonPaymentsSelectPluginView: View {
     }
 
     private func confirmPluginSelection() {
-        guard let selectedPlugin = selectedPlugin else {
+        guard let selectedPlugin else {
             // This should not be possible
             assertionFailure()
             return DDLogError("Attempt to confirm a payment gateway selection with no gateway selected")

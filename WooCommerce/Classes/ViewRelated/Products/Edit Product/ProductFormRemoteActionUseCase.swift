@@ -150,7 +150,7 @@ final class ProductFormRemoteActionUseCase {
         }
 
         group.notify(queue: .main) {
-            guard let productResult = productResult, let passwordResult = passwordResult else {
+            guard let productResult, let passwordResult else {
                 assertionFailure("Unexpected nil result after updating product and password remotely")
                 onCompletion(.failure(.unexpected))
                 return
@@ -318,7 +318,7 @@ private extension ProductFormRemoteActionUseCase {
                     let updatedProduct = EditableProductModel(product: productModel)
                     onCompletion(.success(updatedProduct))
                 }
-            } catch let error {
+            } catch {
                 await MainActor.run {
                     onCompletion(.failure(.unknown(error: AnyError(error))))
                 }
@@ -384,7 +384,7 @@ private extension ProductFormRemoteActionUseCase {
             let createAction = ProductVariationAction.createProductVariation(
                 siteID: parent.siteID,
                 productID: parent.productID,
-                newVariation: newVariation) { result in
+                newVariation: newVariation) { _ in
                 continuation.resume(returning: ())
             }
             DispatchQueue.main.async { [weak self] in

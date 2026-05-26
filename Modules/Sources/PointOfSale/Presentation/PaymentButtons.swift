@@ -3,7 +3,7 @@ import SwiftUI
 struct PaymentsActionButtons: View {
     let successAction: PaymentFlowAction
     @Environment(\.posAnalytics) private var analytics
-    @Binding var isShowingSendReceiptView: Bool
+    @Environment(\.posNavigationRouter) private var router
 
     var body: some View {
         ZStack {
@@ -19,7 +19,7 @@ private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
             analytics.track(.receiptEmailTapped)
-            isShowingSendReceiptView = true
+            router.pushEmailReceipt()
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.sendReceipt)
@@ -63,7 +63,6 @@ private extension PaymentsActionButtons {
         successAction: PaymentFlowAction(
             title: "New order",
             action: {},
-            analyticsEvent: nil),
-        isShowingSendReceiptView: .constant(false))
+            analyticsEvent: nil))
 }
 #endif

@@ -79,7 +79,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     private func beginConnectedReaderObservation() {
         // This completion should be called repeatedly as the list of connected readers changes
         let connectedAction = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.disconnectFromBluetoothReader(in: readers)
@@ -106,7 +106,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
 
     private func beginConnectivityObservation() {
         connectivityObserver.statusPublisher.sink { [weak self] status in
-            guard let self = self else { return }
+            guard let self else { return }
             switch (status, self.enableSetup) {
             case (.notReachable, true),
                 (.reachable, false):
@@ -157,13 +157,13 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
 
 private extension [CardReader] {
     func includesBluetoothReader() -> Bool {
-        return self.first(where: { reader in
+        return self.contains(where: { reader in
             switch reader.readerType {
             case .tapToPay:
                 return false
             default:
                 return true
             }
-        }) != nil
+        })
     }
 }

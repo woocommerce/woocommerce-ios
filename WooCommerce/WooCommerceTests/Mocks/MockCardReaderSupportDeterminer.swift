@@ -32,5 +32,4 @@ final class MockCardReaderSupportDeterminer: CardReaderSupportDetermining {
     func firstTapToPayTransactionDate() async -> Date? {
         mockFirstTapToPayTransactionDate
     }
-
 }

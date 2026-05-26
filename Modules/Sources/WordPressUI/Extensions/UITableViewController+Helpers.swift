@@ -22,7 +22,7 @@ extension UITableViewController {
                     self.tableView.deselectRow(at: indexPath, animated: true)
                 }
                 let completionBlock: (UIViewControllerTransitionCoordinatorContext?) -> Void = { [unowned self] context in
-                    if let context = context,
+                    if let context,
                         context.isCancelled {
                         self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
                     }
@@ -32,6 +32,5 @@ extension UITableViewController {
                 tableView.deselectRow(at: indexPath, animated: true)
             }
         }
-
     }
 }

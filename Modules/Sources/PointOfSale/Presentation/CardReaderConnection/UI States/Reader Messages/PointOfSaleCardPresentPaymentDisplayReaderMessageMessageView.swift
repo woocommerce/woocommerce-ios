@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @AccessibilityFocusState private var isMessageFocused: Bool
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
@@ -23,11 +24,15 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
                     .font(.posHeadingBold)
                     .foregroundColor(.posOnPrimary)
                     .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($isMessageFocused)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
         }
         .padding(.bottom)
         .multilineTextAlignment(.center)
+        .onAppear {
+            isMessageFocused = true
+        }
     }
 }
 

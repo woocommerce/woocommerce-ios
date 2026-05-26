@@ -130,7 +130,7 @@ extension ShippingLabelCustomsFormInputViewModel {
               !missingITNForDestination,
               !missingITNForClassesAbove2500usd,
               !invalidITN,
-              itemViewModels.filter({ $0.validatedItem == nil }).isEmpty else {
+              !itemViewModels.contains(where: { $0.validatedItem == nil }) else {
             return nil
         }
         return ShippingLabelCustomsForm(packageID: packageID,
@@ -223,7 +223,7 @@ private extension ShippingLabelCustomsFormInputViewModel {
         let groupTwo = $itn.combineLatest($restrictionType, $restrictionComments, $itemsValidation)
         groupOne.combineLatest(groupTwo)
             .map { [weak self] groupOne, groupTwo -> Bool in
-                guard let self = self else {
+                guard let self else {
                     return false
                 }
                 let (classesAbove2500usd, contentsType, contentExplanation) = groupOne
@@ -233,7 +233,7 @@ private extension ShippingLabelCustomsFormInputViewModel {
                     !self.checkMissingITNForDestination(itn) &&
                     !self.checkMissingITN(itn, for: classesAbove2500usd) &&
                     !self.checkInvalidITN(itn) &&
-                    itemsValidation.values.first(where: { !$0 }) == nil
+                    !itemsValidation.values.contains(where: { !$0 })
             }
             .removeDuplicates()
             .assign(to: &$validForm)
@@ -250,8 +250,8 @@ private extension ShippingLabelCustomsFormInputViewModel {
         itemViewModels.forEach { viewModel in
             viewModel.$validatedHSTariffNumber.combineLatest(viewModel.$validatedTotalValue)
                 .sink { [weak self] number, totalValue in
-                    if let number = number, number.isNotEmpty,
-                       let totalValue = totalValue {
+                    if let number, number.isNotEmpty,
+                       let totalValue {
                         self?.itemTariffNumbersAndValues[viewModel.productID] = (hsTariffNumber: number, totalValue: totalValue)
                     } else {
                         self?.itemTariffNumbersAndValues.removeValue(forKey: viewModel.productID)
@@ -266,14 +266,12 @@ private extension ShippingLabelCustomsFormInputViewModel {
     ///
     func configureClassesAbove2500usd() {
         classesAbove2500usd = itemTariffNumbersAndValues.values
-            .reduce([String: Decimal]()) { accumulator, item in
-                var result = accumulator
+            .reduce(into: [String: Decimal]()) { result, item in
                 if let currentTotal = result[item.hsTariffNumber] {
                     result[item.hsTariffNumber] = currentTotal + item.totalValue
                 } else {
                     result[item.hsTariffNumber] = item.totalValue
                 }
-                return result
             }
             .filter { $0.value > Constants.minimumValueRequiredForITNValidation }
             .keys

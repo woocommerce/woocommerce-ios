@@ -31,6 +31,7 @@ struct PersistedProductVariationTests {
             fullDescription: "VFull",
             sku: "VSKU",
             globalUniqueID: "VGID",
+            typeKey: "variation",
             price: "19.95",
             downloadable: false,
             manageStock: true,
@@ -116,6 +117,31 @@ struct PersistedProductVariationTests {
         #expect(pos.stockStatusKey == persisted.stockStatusKey)
         #expect(pos.attributes.count == 2)
         #expect(pos.image?.imageID == varImage.id)
+    }
+
+    @Test("PersistedProductVariation toPOSProductVariation preserves correct typeKey")
+    func variation_toPOSProductVariation_preserves_non_correct_typeKey() throws {
+        // Given
+        let persisted = PersistedProductVariation(
+            id: 700,
+            siteID: 7,
+            productID: 70,
+            typeKey: "subscription_variation",
+            sku: nil,
+            globalUniqueID: nil,
+            price: "15.00",
+            downloadable: false,
+            fullDescription: nil,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock"
+        )
+
+        // When
+        let pos = persisted.toPOSProductVariation()
+
+        // Then
+        #expect(pos.typeKey == "subscription_variation")
     }
 
     @Test("ProductVariation with associations fetches attributes and image automatically")
@@ -533,6 +559,7 @@ struct PersistedProductVariationTests {
             fullDescription: "Complete variation description",
             sku: "VAR-COMPLETE-SKU",
             globalUniqueID: "GID-456",
+            typeKey: "variation",
             price: "149.99",
             downloadable: false,
             manageStock: true,

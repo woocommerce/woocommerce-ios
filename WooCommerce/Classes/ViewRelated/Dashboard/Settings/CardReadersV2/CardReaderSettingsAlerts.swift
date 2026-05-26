@@ -83,7 +83,7 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
                              cancelSearch: @escaping () -> Void) {
         severalFoundController = SeveralReadersFoundViewController()
 
-        if let severalFoundController = severalFoundController {
+        if let severalFoundController {
             severalFoundController.configureController(
                 readerIDs: readerIDs,
                 connect: connect,
@@ -131,7 +131,7 @@ private extension CardReaderSettingsAlerts {
             let shouldAnimateDismissal = animated && present == nil
             modalController?.dismiss(animated: shouldAnimateDismissal, completion: { [weak self] in
                 self?.modalController = nil
-                guard let from = from, let present = present else {
+                guard let from, let present else {
                     return
                 }
                 from.present(present, animated: false)
@@ -141,7 +141,7 @@ private extension CardReaderSettingsAlerts {
 
         /// Or, if there was no common modal to dismiss, present straight-away
         ///
-        guard let from = from, let present = present else {
+        guard let from, let present else {
             return
         }
         from.present(present, animated: animated)
@@ -155,7 +155,7 @@ private extension CardReaderSettingsAlerts {
             let shouldAnimateDismissal = animated && present == nil
             severalFoundController?.dismiss(animated: shouldAnimateDismissal, completion: { [weak self] in
                 self?.severalFoundController = nil
-                guard let from = from, let present = present else {
+                guard let from, let present else {
                     return
                 }
                 from.present(present, animated: false)
@@ -164,7 +164,7 @@ private extension CardReaderSettingsAlerts {
         }
         /// Or, if there was no several-found modal to dismiss, present straight-away
         ///
-        guard let from = from, let present = present else {
+        guard let from, let present else {
             return
         }
         from.present(present, animated: animated)
@@ -220,7 +220,7 @@ private extension CardReaderSettingsAlerts {
     }
 
     func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if let tryAgain = tryAgain {
+        if let tryAgain {
             return CardPresentModalUpdateFailed(tryAgain: tryAgain, close: close)
         } else {
             return CardPresentModalUpdateFailedNonRetryable(close: close)
@@ -244,7 +244,7 @@ private extension CardReaderSettingsAlerts {
         }
 
         modalController = CardPresentPaymentsModalViewController(viewModel: viewModel)
-        guard let modalController = modalController else {
+        guard let modalController else {
             return
         }
 

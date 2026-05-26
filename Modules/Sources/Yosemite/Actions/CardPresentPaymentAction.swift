@@ -3,6 +3,7 @@
 
 import Combine
 import Foundation
+import enum WooFoundation.CountryCode
 
 public enum CardPresentPaymentAction: Action {
     /// Sets the store to use a given payment gateway
@@ -18,7 +19,7 @@ public enum CardPresentPaymentAction: Action {
     case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentsPlugin) -> Void)
 
     /// Retrieves and stores payment gateway account(s) for the provided `siteID`
-    /// We support payment gateway accounts for both the WooCommerce Payments extension AND
+    /// We support payment gateway accounts for both the WooPayments extension AND
     /// the Stripe extension. Let's attempt to load each and update view storage with the results.
     /// Calls the passed completion with success after both loads have been attempted.
     ///
@@ -60,6 +61,8 @@ public enum CardPresentPaymentAction: Action {
     case collectPayment(siteID: Int64,
                         orderID: Int64,
                         parameters: PaymentParameters,
+                        countryCode: CountryCode,
+                        terminalPaymentPreparationEnabled: Bool,
                         onCardReaderMessage: (CardReaderEvent) -> Void,
                         onProcessingCompletion: (PaymentIntent) -> Void,
                         onCompletion: (Result<PaymentIntent, Error>) -> Void)
@@ -69,6 +72,8 @@ public enum CardPresentPaymentAction: Action {
 
     case retryPayment(siteID: Int64,
                       orderID: Int64,
+                      countryCode: CountryCode,
+                      terminalPaymentPreparationEnabled: Bool,
                       onCardReaderMessage: (CardReaderEvent) -> Void,
                       onProcessingCompletion: (PaymentIntent) -> Void,
                       onCompletion: (Result<PaymentIntent, Error>) -> Void)
@@ -102,4 +107,11 @@ public enum CardPresentPaymentAction: Action {
     /// Fetches Charge details by charge ID
     ///
     case fetchWCPayCharge(siteID: Int64, chargeID: String, onCompletion: (Result<WCPayCharge, Error>) -> Void)
+
+    /// Provides a publisher for card reader reconnection state changes.
+    /// Used to observe when a Bluetooth card reader is attempting to auto-reconnect.
+    case observeCardReaderReconnectionState(onCompletion: (AnyPublisher<CardReaderReconnectionState, Never>) -> Void)
+
+    /// Cancels an in-progress auto-reconnection attempt.
+    case cancelReconnection(onCompletion: (Result<Void, Error>) -> Void)
 }

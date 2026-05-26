@@ -9,7 +9,7 @@ final class ProductReviewsTableViewCell: UITableViewCell {
 
     private var starRating: Double? {
         didSet {
-            guard let starRating = starRating else {
+            guard let starRating else {
                 ratingView.isHidden = true
                 return
             }

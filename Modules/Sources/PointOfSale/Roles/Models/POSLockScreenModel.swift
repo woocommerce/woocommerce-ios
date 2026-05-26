@@ -6,7 +6,7 @@ import Observation
 final class POSLockScreenModel {
     private let session: POSAccessSession
 
-    var pinEntryState: POSPINEntryState = .idle
+    private(set) var pinEntryState: POSPINEntryState = .idle
 
     var isLocked: Bool {
         session.isLocked
@@ -15,6 +15,13 @@ final class POSLockScreenModel {
     init(session: POSAccessSession) {
         self.session = session
     }
+
+    #if DEBUG
+    convenience init(session: POSAccessSession, initialPinEntryState: POSPINEntryState) {
+        self.init(session: session)
+        self.pinEntryState = initialPinEntryState
+    }
+    #endif
 
     func signIn(withPIN pin: String) async {
         pinEntryState = .loading

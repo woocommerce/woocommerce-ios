@@ -12,7 +12,6 @@ import enum Networking.POSAuthError
 ///
 /// Capability gating is hardcoded per role (admin/shop_manager full,
 /// `pos_manager` reduced, `pos_cashier` minimal) per the M1 capability matrix.
-@MainActor
 @Observable
 public final class POSPermissionProvider: POSPermissionProviding {
 
@@ -211,9 +210,7 @@ public final class POSPermissionProvider: POSPermissionProviding {
     private func startAutoLockTimer() {
         autoLockTimer?.invalidate()
         let timer = Timer(timeInterval: TimeInterval(autoLockTimeoutSeconds), repeats: false) { [weak self] _ in
-            Task { @MainActor in
-                self?.lock()
-            }
+            self?.lock()
         }
         RunLoop.main.add(timer, forMode: .common)
         autoLockTimer = timer

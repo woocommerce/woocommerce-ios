@@ -14,7 +14,7 @@ final class POSOrderServiceScreenshotMock: POSOrderServiceProtocol {
         self.currency = currency
     }
 
-    func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order {
+    func syncOrder(cart: POSCart, currency: CurrencyCode, staffUserID: Int64?) async throws -> Order {
         // Create a mock order with totals calculated from the cart
         // For screenshot tests with 2 products: $35.00 + $45.00 = $80.00
         let orderItems = [
@@ -106,7 +106,7 @@ final class POSOrderServiceScreenshotMock: POSOrderServiceProtocol {
     }
 
     func loadOrder(orderID: Int64) async throws -> Order {
-        try await syncOrder(cart: POSCart(items: [], coupons: []), currency: .USD)
+        try await syncOrder(cart: POSCart(items: [], coupons: []), currency: .USD, staffUserID: nil)
     }
 
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}

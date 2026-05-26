@@ -271,10 +271,7 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
-                let isCIAB = storesManager.sessionManager.defaultSite
-                    .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
-
-                let receiptSettingsAdminURL = Site.receiptSettingsAdminURL(site: storesManager.sessionManager.defaultSite, isCIAB: isCIAB)
+                let receiptSettingsAdminURL = storesManager.sessionManager.defaultSite?.receiptSettingsAdminURL ?? ""
 
                 // Resolve TTP eligibility once, up front, so we can hand the right
                 // preferred method down to POSPaymentModel. The same checker is also

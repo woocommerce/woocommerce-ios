@@ -1,4 +1,3 @@
-import CocoaLumberjackSwift
 import Foundation
 import Yosemite
 
@@ -48,18 +47,8 @@ extension Site {
     }
 
     /// Constructs the admin URL for editing POS receipt settings.
-    /// CIAB sites use the next-admin page; non-CIAB sites use the classic wc-settings page.
-    /// Returns an empty string if site is nil.
-    static func receiptSettingsAdminURL(site: Site?, isCIAB: Bool) -> String {
-        guard let site else {
-            DDLogError("⛔️ receiptSettingsAdminURL called without a site")
-            return ""
-        }
-        if isCIAB {
-            return site.adminURL + "admin.php?page=next-admin&p=%2Fwoocommerce%2Fsettings%2Fpayments%2Fpos"
-        } else {
-            return site.adminURL + "admin.php?page=wc-settings&tab=point-of-sale"
-        }
+    var receiptSettingsAdminURL: String {
+        adminURL + "admin.php?page=wc-settings&tab=point-of-sale"
     }
 
     /// Returns the WooCommerce admin URL, or attempts to construct it from the site URL.

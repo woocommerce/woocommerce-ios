@@ -5,6 +5,7 @@ struct POSSettingsStoreDetailView: View {
     @State private var showingWebView: Bool = false
 
     @Environment(\.posExternalViews) private var externalViews
+    @Environment(\.posAnalytics) private var analytics
 
     let viewModel: POSSettingsStoreViewModel
 
@@ -105,6 +106,7 @@ struct POSSettingsStoreDetailView: View {
 
                 if !viewModel.receiptSettingsAdminURL.isEmpty {
                     Button {
+                        analytics.track(.pointOfSaleEditReceiptTapped)
                         showingWebView = true
                     } label: {
                         Image(systemName: "square.and.pencil")

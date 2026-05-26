@@ -37,10 +37,17 @@ module WooAiTranslation
       its translated string. No prose, no code fences.
     RULES
 
-    def initialize(client:, batch_size: DEFAULT_BATCH, logger: nil)
+    def initialize(client:, batch_size: DEFAULT_BATCH, logger: nil, brand_terms: nil)
       @client = client
       @batch_size = batch_size
       @logger = logger
+      # Locale-agnostic terms that must appear verbatim in every translation
+      # (sourced from glossary/common.yml in the caller). Listing them in the
+      # system prompt keeps the model on-rails BEFORE the validator catches a
+      # violation post-hoc — otherwise we waste an Opus escalation and still
+      # end up with a glossary_violations failure (e.g. Bulgarian translating
+      # "SKU" to "Артикулен №").
+      @brand_terms = Array(brand_terms).compact.uniq
     end
 
     # items: [{ id:, source:, context: }] ; returns { id => translation }.
@@ -81,9 +88,32 @@ module WooAiTranslation
     end
 
     def system_blocks(locale, style)
-      # First block: constant rules. Last block: per-locale style guide. The
-      # client cache-flags the last block so the whole prefix is prompt-cached.
-      [SYSTEM_RULES, "Target locale: #{locale}.\n#{style || default_style(locale)}"]
+      # Block order:
+      #   1. SYSTEM_RULES — constant rules (placeholders, HTML, escapes, tone).
+      #   2. Brand-safety list — verbatim terms, when provided by the caller.
+      #      Lifts the validator's hard constraint into the prompt so the model
+      #      doesn't have to be corrected post-hoc.
+      #   3. Per-locale style guide.
+      # The client cache-flags the LAST block, so we put the per-locale block
+      # at the end and the constants earlier.
+      blocks = [SYSTEM_RULES]
+      blocks << brand_safety_block unless @brand_terms.empty?
+      blocks << "Target locale: #{locale}.\n#{style || default_style(locale)}"
+      blocks
+    end
+
+    def brand_safety_block
+      list = @brand_terms.map { |t| "- #{t}" }.join("\n")
+      <<~TXT.strip
+        Brand-safety terms — non-negotiable:
+        Every name in this list MUST appear in the translation EXACTLY as in
+        the source, with no transliteration, translation, or localization.
+        If a name appears in the source string, the same characters MUST
+        appear in the translation. This includes acronyms and short labels
+        even when a natural-language equivalent exists in the target locale.
+
+        #{list}
+      TXT
     end
 
     def default_style(locale)

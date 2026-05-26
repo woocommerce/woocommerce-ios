@@ -413,7 +413,7 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        ZendeskProvider.shared.showSupportEmailPrompt(from: navController) { [weak self] (success, _) in
+        ZendeskProvider.shared.showSupportEmailPrompt(from: navController) { [weak self] success, _ in
             guard success else {
                 return
             }

@@ -174,7 +174,7 @@ public final class CoreDataManager: StorageManagerType {
                                                                  storeURL: storeURL,
                                                                  modelsInventory: modelsInventory)
 
-        container.loadPersistentStores { (storeDescription, error) in
+        container.loadPersistentStores { storeDescription, error in
             guard let persistentStoreLoadingError = error else {
                 return
             }
@@ -195,7 +195,7 @@ public final class CoreDataManager: StorageManagerType {
 
             /// Retry!
             ///
-            container.loadPersistentStores { (_, underlyingError) in
+            container.loadPersistentStores { _, underlyingError in
                 guard let underlyingError = underlyingError as NSError? else {
                     return
                 }

@@ -179,7 +179,7 @@ class RefundStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(refundID)", filename: "refund-single")
         let action = RefundAction.retrieveRefund(siteID: sampleSiteID,
                                                  orderID: sampleOrderID,
-                                                 refundID: refundID) { (refund, error) in
+                                                 refundID: refundID) { refund, error in
             XCTAssertNil(error)
             XCTAssertNotNil(refund)
             XCTAssertEqual(refund, remoteRefund)
@@ -204,7 +204,7 @@ class RefundStoreTests: XCTestCase {
 
         let action = RefundAction.retrieveRefund(siteID: sampleSiteID,
                                                  orderID: sampleOrderID,
-                                                 refundID: refundID) { (refund, error) in
+                                                 refundID: refundID) { refund, error in
             XCTAssertNotNil(refund)
             XCTAssertNil(error)
 
@@ -233,7 +233,7 @@ class RefundStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(refundID)", filename: "generic_error")
         let action = RefundAction.retrieveRefund(siteID: sampleSiteID,
                                                  orderID: sampleOrderID,
-                                                 refundID: refundID) { (_, error) in
+                                                 refundID: refundID) { _, error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -250,7 +250,7 @@ class RefundStoreTests: XCTestCase {
 
         let action = RefundAction.retrieveRefund(siteID: sampleSiteID,
                                                  orderID: sampleOrderID,
-                                                 refundID: refundID) { (_, error) in
+                                                 refundID: refundID) { _, error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -274,7 +274,7 @@ class RefundStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(sampleRefundID)", error: NetworkError.notFound())
         let action = RefundAction.retrieveRefund(siteID: sampleSiteID,
                                                  orderID: sampleOrderID,
-                                                 refundID: sampleRefundID) { (refund, error) in
+                                                 refundID: sampleRefundID) { refund, error in
             XCTAssertNotNil(error)
             XCTAssertNil(refund)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Refund.self), 0)

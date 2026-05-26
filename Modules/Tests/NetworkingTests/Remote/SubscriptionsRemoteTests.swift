@@ -70,7 +70,7 @@ final class SubscriptionsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadSubscription(siteID: self.sampleSiteID, subscriptionID: self.sampleSubscriptionID) { (result) in
+            remote.loadSubscription(siteID: self.sampleSiteID, subscriptionID: self.sampleSubscriptionID) { result in
                 promise(result)
             }
         }
@@ -114,7 +114,7 @@ final class SubscriptionsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadSubscriptions(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (result) in
+            remote.loadSubscriptions(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             }
         }

@@ -175,13 +175,13 @@ private extension ProductFormTableViewDataSource {
         else {
             cell.configure(with: productImageStatuses, config: .extendedAddImages(isVariation: isVariation), productUIImageLoader: productUIImageLoader)
         }
-        cell.onImageSelected = { [weak self] (_, _) in
+        cell.onImageSelected = { [weak self] _, _ in
             self?.onAddImage?()
         }
         cell.onAddImage = { [weak self] in
             self?.onAddImage?()
         }
-        cell.onFailedUploadSelected = { [weak self] (asset, error) in
+        cell.onFailedUploadSelected = { [weak self] asset, error in
             self?.onFailedImageUpload?(asset, error)
         }
     }
@@ -210,7 +210,7 @@ private extension ProductFormTableViewDataSource {
                                                                    textViewMinimumHeight: 10.0,
                                                                    shouldDismissOnReturn: true,
                                                                    isScrollEnabled: false,
-                                                                   onNameChange: { [weak self] (newName) in self?.onNameChange?(newName) },
+                                                                   onNameChange: { [weak self] newName in self?.onNameChange?(newName) },
                                                                    style: .headline)
         cell.configure(with: cellViewModel)
         cell.accessibilityLabel = NSLocalizedString(

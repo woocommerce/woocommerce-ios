@@ -51,7 +51,7 @@ final class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
 
-        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 20)
 
@@ -81,7 +81,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general-alt")
-        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 19)
 
@@ -104,7 +104,7 @@ final class SettingStoreTests: XCTestCase {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "generic_error")
-        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -119,7 +119,7 @@ final class SettingStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve general site settings empty response")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -228,7 +228,7 @@ final class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/products", filename: "settings-product")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
 
-        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 23)
 
@@ -258,7 +258,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
 
         network.simulateResponse(requestUrlSuffix: "settings/products", filename: "settings-product-alt")
-        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 22)
 
@@ -281,7 +281,7 @@ final class SettingStoreTests: XCTestCase {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "settings/products", filename: "generic_error")
-        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -296,7 +296,7 @@ final class SettingStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve product site settings empty response")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }

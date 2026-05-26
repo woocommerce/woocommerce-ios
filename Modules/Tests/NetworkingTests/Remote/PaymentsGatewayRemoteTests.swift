@@ -75,7 +75,7 @@ final class PaymentsGatewayRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.updatePaymentGateway(paymentGateway) { (result) in
+            remote.updatePaymentGateway(paymentGateway) { result in
                 promise(result)
             }
         }

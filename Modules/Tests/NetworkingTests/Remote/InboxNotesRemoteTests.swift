@@ -91,7 +91,7 @@ final class InboxNotesRemoteTests: XCTestCase {
         // When
         let result = waitFor { promise in
             remote.loadAllInboxNotes(for: self.sampleSiteID,
-                                  completion: { (result) in
+                                  completion: { result in
                                     promise(result)
                                 })
         }

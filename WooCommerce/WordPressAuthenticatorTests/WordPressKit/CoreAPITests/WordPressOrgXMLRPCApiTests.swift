@@ -35,7 +35,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         api.callMethod("wp.getPost", parameters: nil, success: { (responseObject: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
             XCTAssert(responseObject is [String: AnyObject], "The response should be a dictionary")
-            }, failure: { (_, _) in
+            }, failure: { _, _ in
                 expect.fulfill()
                 XCTFail("This call should be successfull")
             }
@@ -57,7 +57,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
-            failure: { (error, _) in
+            failure: { error, _ in
                 expect.fulfill()
                 XCTAssertEqual(error.code, WordPressOrgXMLRPCApiError.httpErrorStatusCode.rawValue)
                 XCTAssertEqual(error.localizedFailureReason, "An HTTP error code 404 was returned.")
@@ -82,7 +82,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
-            failure: { (error, _) in
+            failure: { error, _ in
                 expect.fulfill()
 
                 XCTAssertFalse(error is WordPressOrgXMLRPCApiError)
@@ -109,7 +109,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
-            failure: { (error, _) in
+            failure: { error, _ in
                 expect.fulfill()
 
                 XCTAssertTrue(error is WordPressOrgXMLRPCApiError)
@@ -136,7 +136,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
-            failure: { (error, _) in
+            failure: { error, _ in
                 expect.fulfill()
 
                 XCTAssertTrue(error is URLError)
@@ -162,7 +162,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
-            failure: { (error, _) in
+            failure: { error, _ in
                 expect.fulfill()
 
                 XCTAssertEqual(error.domain, WPXMLRPCFaultErrorDomain)
@@ -190,7 +190,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
-            failure: { (error, _) in
+            failure: { error, _ in
                 expect.fulfill()
 
                 XCTAssertEqual(error.domain, WPXMLRPCFaultErrorDomain)
@@ -221,7 +221,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
-            failure: { (error, _) in
+            failure: { error, _ in
                 expect.fulfill()
 
                 XCTAssertEqual(error.domain, XMLParser.errorDomain)
@@ -247,7 +247,7 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
                 expect.fulfill()
                 XCTFail("This call should fail")
             },
-            failure: { (error, _) in
+            failure: { error, _ in
                 expect.fulfill()
 
                 XCTAssertEqual(error.domain, WPXMLRPCErrorDomain)
@@ -270,8 +270,8 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         let progress = api.callMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (_, _) in success.fulfill() },
-            failure: { (_, _) in }
+            success: { _, _ in success.fulfill() },
+            failure: { _, _ in }
         )
 
         let observerCalled = expectation(description: "Progress observer is called")
@@ -298,8 +298,8 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         let progress = api.callMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (_, _) in },
-            failure: { (_, _) in failure.fulfill() }
+            success: { _, _ in },
+            failure: { _, _ in failure.fulfill() }
         )
 
         let observerCalled = expectation(description: "Progress observer is called")
@@ -326,8 +326,8 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         let progress = api.streamCallMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (_, _) in success.fulfill() },
-            failure: { (_, _) in }
+            success: { _, _ in success.fulfill() },
+            failure: { _, _ in }
         )
 
         let observerCalled = expectation(description: "Progress observer is called")
@@ -354,8 +354,8 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
         let progress = api.streamCallMethod(
             "wp.getPost",
             parameters: nil,
-            success: { (_, _) in },
-            failure: { (_, _) in failure.fulfill() }
+            success: { _, _ in },
+            failure: { _, _ in failure.fulfill() }
         )
 
         let observerCalled = expectation(description: "Progress observer is called")

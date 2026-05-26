@@ -208,7 +208,7 @@ final class ProductStoreTests: XCTestCase {
 
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
-            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { (aResult) in
+            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { aResult in
                 result = aResult
                 expectation.fulfill()
             }
@@ -243,7 +243,7 @@ final class ProductStoreTests: XCTestCase {
         // Action
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
-            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { (aResult) in
+            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { aResult in
                 result = aResult
                 expectation.fulfill()
             }

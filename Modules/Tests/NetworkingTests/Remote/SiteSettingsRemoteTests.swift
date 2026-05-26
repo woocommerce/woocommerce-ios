@@ -29,7 +29,7 @@ final class SiteSettingsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load site settings")
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
-        remote.loadGeneralSettings(for: sampleSiteID) { (siteSettings, error) in
+        remote.loadGeneralSettings(for: sampleSiteID) { siteSettings, error in
             XCTAssertNil(error)
             XCTAssertNotNil(siteSettings)
             XCTAssertEqual(siteSettings?.count, 20)
@@ -45,7 +45,7 @@ final class SiteSettingsRemoteTests: XCTestCase {
         let remote = SiteSettingsRemote(network: network)
         let expectation = self.expectation(description: "Load site settings contains errors")
 
-        remote.loadGeneralSettings(for: sampleSiteID) { (siteSettings, error) in
+        remote.loadGeneralSettings(for: sampleSiteID) { siteSettings, error in
             XCTAssertNil(siteSettings)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -63,7 +63,7 @@ final class SiteSettingsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load product settings")
 
         network.simulateResponse(requestUrlSuffix: "settings/products", filename: "settings-product")
-        remote.loadProductSettings(for: sampleSiteID) { (siteSettings, error) in
+        remote.loadProductSettings(for: sampleSiteID) { siteSettings, error in
             XCTAssertNil(error)
             XCTAssertNotNil(siteSettings)
             XCTAssertEqual(siteSettings?.count, 23)
@@ -79,7 +79,7 @@ final class SiteSettingsRemoteTests: XCTestCase {
         let remote = SiteSettingsRemote(network: network)
         let expectation = self.expectation(description: "Load product settings contains errors")
 
-        remote.loadProductSettings(for: sampleSiteID) { (siteSettings, error) in
+        remote.loadProductSettings(for: sampleSiteID) { siteSettings, error in
             XCTAssertNil(siteSettings)
             XCTAssertNotNil(error)
             expectation.fulfill()

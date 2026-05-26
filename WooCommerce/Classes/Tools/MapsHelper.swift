@@ -9,7 +9,7 @@ final class MapsHelper {
             completion(.failure(.locationNotFound))
             return
         }
-        CLGeocoder().geocodeAddressString(address) { (placemarksOptional, _) -> Void in
+        CLGeocoder().geocodeAddressString(address) { placemarksOptional, _ -> Void in
             guard let placemarks = placemarksOptional else {
                 completion(.failure(.locationNotFound))
                 return

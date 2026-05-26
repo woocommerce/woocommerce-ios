@@ -186,7 +186,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         // Tapping the Sign up text link in "Don't have an account? _Sign up_"
         // will present the 3 button view for signing up.
-        button.on(.touchUpInside) { [weak self] (_) in
+        button.on(.touchUpInside) { [weak self] _ in
             guard let vc = LoginPrologueSignupMethodViewController.instantiate(from: .login) else {
                 WPAuthenticatorLogError("Failed to navigate to LoginPrologueSignupMethodViewController")
                 return
@@ -289,7 +289,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     ///
     func fetchSharedWebCredentialsIfAvailable() {
         didRequestSafariSharedCredentials = true
-        SafariCredentialsService.requestSharedWebCredentials { [weak self] (found, username, password) in
+        SafariCredentialsService.requestSharedWebCredentials { [weak self] found, username, password in
             self?.handleFetchedWebCredentials(found, username: username, password: password)
         }
     }

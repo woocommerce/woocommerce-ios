@@ -25,7 +25,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             shipType: viewModel.type,
             hasContactInfo: !phone.isNilOrEmpty || !email.isNilOrEmpty
         ) { [weak self] in
-            MapsHelper.openAppleMaps(address: self?.viewModel.address?.formattedPostalAddress) { [weak self] (result) in
+            MapsHelper.openAppleMaps(address: self?.viewModel.address?.formattedPostalAddress) { [weak self] result in
                 ServiceLocator.analytics.track(.shippingLabelEditAddressOpenMapButtonTapped)
                 switch result {
                 case .success:
@@ -244,7 +244,7 @@ private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
         ServiceLocator.analytics.track(.shippingLabelEditAddressDoneButtonTapped)
-        viewModel.validateAddress(onlyLocally: false) { [weak self] (result) in
+        viewModel.validateAddress(onlyLocally: false) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:
@@ -260,7 +260,7 @@ private extension ShippingLabelAddressFormViewController {
 
     @objc func confirmButtonTapped() {
         ServiceLocator.analytics.track(.shippingLabelEditAddressUseAddressAsIsButtonTapped)
-        viewModel.validateAddress(onlyLocally: true) { [weak self] (result) in
+        viewModel.validateAddress(onlyLocally: true) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:
@@ -381,7 +381,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      placeholder: placeholder,
                                                                      state: .normal,
                                                                      keyboardType: .default,
-                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+                                                                     textFieldAlignment: .leading) { [weak self] newText in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
         cell.configure(viewModel: cellViewModel)
@@ -393,7 +393,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      placeholder: Localization.companyFieldPlaceholder,
                                                                      state: .normal,
                                                                      keyboardType: .default,
-                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+                                                                     textFieldAlignment: .leading) { [weak self] newText in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
         cell.configure(viewModel: cellViewModel)
@@ -406,7 +406,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      placeholder: placeholder,
                                                                      state: .normal,
                                                                      keyboardType: .phonePad,
-                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+                                                                     textFieldAlignment: .leading) { [weak self] newText in
             let phone = newText?.filter { "0"..."9" ~= $0 }
             self?.viewModel.handleAddressValueChanges(row: row, newValue: phone)
         }
@@ -420,7 +420,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      placeholder: Localization.addressFieldPlaceholder,
                                                                      state: state,
                                                                      keyboardType: .default,
-                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+                                                                     textFieldAlignment: .leading) { [weak self] newText in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
         cell.configure(viewModel: cellViewModel)
@@ -432,7 +432,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      placeholder: Localization.address2FieldPlaceholder,
                                                                      state: .normal,
                                                                      keyboardType: .default,
-                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+                                                                     textFieldAlignment: .leading) { [weak self] newText in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
         cell.configure(viewModel: cellViewModel)
@@ -471,7 +471,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      placeholder: Localization.cityFieldPlaceholder,
                                                                      state: .normal,
                                                                      keyboardType: .default,
-                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+                                                                     textFieldAlignment: .leading) { [weak self] newText in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
         cell.configure(viewModel: cellViewModel)
@@ -483,7 +483,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      placeholder: Localization.postcodeFieldPlaceholder,
                                                                      state: .normal,
                                                                      keyboardType: viewModel.isUSAddress ? .phonePad : .namePhonePad,
-                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+                                                                     textFieldAlignment: .leading) { [weak self] newText in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
         cell.configure(viewModel: cellViewModel)

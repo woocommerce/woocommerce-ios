@@ -120,7 +120,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             let mapper = WordPressMediaMapper()
 
             enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in
-                formParameters.forEach { (key, value) in
+                formParameters.forEach { key, value in
                     multipartFormData.append(Data(value.utf8), withName: key)
                 }
 

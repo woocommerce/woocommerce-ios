@@ -11,7 +11,7 @@ final class WooConstantsTests: XCTestCase {
         let allTrustedURLs = allTrustedURLPaths.map { $0.asURL() }
 
         // Then
-        zip(allTrustedURLPaths, allTrustedURLs).forEach { (path, url) in
+        zip(allTrustedURLPaths, allTrustedURLs).forEach { path, url in
             XCTAssertEqual(path.asURL().absoluteString, url.absoluteString)
         }
     }

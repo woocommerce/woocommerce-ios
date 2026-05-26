@@ -139,7 +139,7 @@ private extension MediaAssetExporter {
     func requestImage(asset: PHAsset, options: PHImageRequestOptions?) async -> (Data?, String?, CGImagePropertyOrientation, [AnyHashable: Any]?) {
         await withCheckedContinuation { continuation in
             imageManager.requestImageDataAndOrientation(for: asset,
-                                                        options: options) { (data, uti, orientation, info) in
+                                                        options: options) { data, uti, orientation, info in
                 continuation.resume(returning: (data, uti, orientation, info))
             }
         }

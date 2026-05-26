@@ -29,7 +29,7 @@ class TopEarnerStatsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load top earner stats")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "top-performers-year")
-        remote.loadTopEarnersStats(for: sampleSiteID, unit: .year, latestDateToInclude: "2018", limit: 5) { (topEarnerStats, error) in
+        remote.loadTopEarnersStats(for: sampleSiteID, unit: .year, latestDateToInclude: "2018", limit: 5) { topEarnerStats, error in
             XCTAssertNil(error)
             XCTAssertNotNil(topEarnerStats)
             XCTAssertEqual(topEarnerStats?.items?.count, 4)
@@ -45,7 +45,7 @@ class TopEarnerStatsRemoteTests: XCTestCase {
         let remote = TopEarnersStatsRemote(network: network)
         let expectation = self.expectation(description: "Load top earner stats contains errors")
 
-        remote.loadTopEarnersStats(for: sampleSiteID, unit: .year, latestDateToInclude: "2018", limit: 5) { (topEarnerStats, error) in
+        remote.loadTopEarnersStats(for: sampleSiteID, unit: .year, latestDateToInclude: "2018", limit: 5) { topEarnerStats, error in
             XCTAssertNil(topEarnerStats)
             XCTAssertNotNil(error)
             expectation.fulfill()

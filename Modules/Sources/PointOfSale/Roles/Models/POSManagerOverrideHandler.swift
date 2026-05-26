@@ -18,7 +18,7 @@ final class POSManagerOverrideHandler {
         self.session = session
     }
 
-    func requestApproval(for capability: POSCapability, reason: String, onApproved: @escaping () -> Void = {}) {
+    func requestApproval(for capability: POSCapability, reason: String, onApproved: (() -> Void)? = nil) {
         request = POSManagerOverrideRequest(capability: capability, reason: reason)
         pinEntryState = .idle
         self.onApproved = onApproved

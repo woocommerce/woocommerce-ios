@@ -109,6 +109,72 @@ struct POSManagerOverrideHandlerTests {
         #expect(session.managerApprovalCapabilities.isEmpty)
     }
 
+    @Test func test_submit_when_cancelled_in_flight_then_completion_is_not_called() async {
+        // Given
+        var completionWasCalled = false
+        let session = MockPOSAccessSession()
+        let sut = POSManagerOverrideHandler(session: session)
+        sut.requestApproval(
+            for: .refundShopOrders,
+            reason: "Refunding orders requires manager approval",
+            onApproved: {
+                completionWasCalled = true
+            }
+        )
+        session.onManagerApproval = {
+            sut.cancel()
+        }
+
+        // When
+        await sut.submit(pin: "1234")
+
+        // Then
+        #expect(session.managerApprovalPINs == ["1234"])
+        #expect(session.managerApprovalCapabilities == [.refundShopOrders])
+        #expect(sut.request == nil)
+        #expect(sut.pinEntryState == .idle)
+        #expect(completionWasCalled == false)
+    }
+
+    @Test func test_requestApproval_when_called_consecutively_then_replaces_previous_request_and_completion() async {
+        // Given
+        var firstCompletionWasCalled = false
+        var secondCompletionWasCalled = false
+        let session = MockPOSAccessSession()
+        let sut = POSManagerOverrideHandler(session: session)
+        sut.requestApproval(
+            for: .refundShopOrders,
+            reason: "Refunding orders requires manager approval",
+            onApproved: {
+                firstCompletionWasCalled = true
+            }
+        )
+        let firstRequestID = sut.request?.id
+        sut.pinEntryState = .error(message: "Previous error")
+
+        // When
+        sut.requestApproval(
+            for: .publishShopCoupons,
+            reason: "Creating coupons requires manager approval",
+            onApproved: {
+                secondCompletionWasCalled = true
+            }
+        )
+        let secondRequest = sut.request
+        await sut.submit(pin: "1234")
+
+        // Then
+        #expect(sut.request == nil)
+        #expect(sut.pinEntryState == .idle)
+        #expect(firstRequestID != nil)
+        #expect(secondRequest?.id != firstRequestID)
+        #expect(secondRequest?.capability == .publishShopCoupons)
+        #expect(secondRequest?.reason == "Creating coupons requires manager approval")
+        #expect(session.managerApprovalCapabilities == [.publishShopCoupons])
+        #expect(firstCompletionWasCalled == false)
+        #expect(secondCompletionWasCalled)
+    }
+
     @Test func test_submit_when_session_is_missing_then_shows_generic_error() async {
         // Given
         let sut = POSManagerOverrideHandler()

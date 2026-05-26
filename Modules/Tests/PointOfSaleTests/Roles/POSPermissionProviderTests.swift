@@ -11,23 +11,26 @@ struct POSPermissionProviderTests {
 
     // MARK: - Test helpers
 
-    private static let testSalt = "abcdef0123456789abcdef0123456789"
+    private static let testSalt = Data(repeating: 0xAB, count: 16)
     private static let testIterations = 1_000
 
-    /// Builds a `POSStaffMember` whose `pinHash` matches PBKDF2(pin, testSalt, testIterations).
+    /// Builds a `POSStaffMember` whose `pin.hash` matches PBKDF2(pin, testSalt, testIterations).
     private func makeMember(userID: Int64,
                             pin: String,
                             displayName: String = "Mike",
                             role: String = "pos_cashier",
                             hasPIN: Bool = true) -> POSStaffMember {
-        POSStaffMember(
+        let pinDetails: POSStaffMember.PINDetails? = hasPIN ? .init(
+            algo: "pbkdf2-sha256",
+            iterations: Self.testIterations,
+            salt: Self.testSalt.base64EncodedString(),
+            hash: derivedHash(pin: pin, salt: Self.testSalt, iterations: Self.testIterations).base64EncodedString()
+        ) : nil
+        return POSStaffMember(
             userID: userID,
             displayName: displayName,
             role: role,
-            hasPIN: hasPIN,
-            pinSalt: hasPIN ? Self.testSalt : "",
-            pinHash: hasPIN ? derivedHexHash(pin: pin, saltHex: Self.testSalt, iterations: Self.testIterations) : "",
-            pinIterations: hasPIN ? Self.testIterations : 0
+            pin: pinDetails
         )
     }
 
@@ -180,14 +183,8 @@ struct POSPermissionProviderTests {
 
     // MARK: - PBKDF2 helper
 
-    private func derivedHexHash(pin: String, saltHex: String, iterations: Int, keyLength: Int = 32) -> String {
-        guard let pinData = pin.data(using: .utf8) else { return "" }
-        let saltBytes = stride(from: 0, to: saltHex.count, by: 2).compactMap { offset -> UInt8? in
-            let startIndex = saltHex.index(saltHex.startIndex, offsetBy: offset)
-            let endIndex = saltHex.index(startIndex, offsetBy: 2)
-            return UInt8(saltHex[startIndex..<endIndex], radix: 16)
-        }
-        let salt = Data(saltBytes)
+    private func derivedHash(pin: String, salt: Data, iterations: Int, keyLength: Int = 32) -> Data {
+        guard let pinData = pin.data(using: .utf8) else { return Data() }
         var derived = Data(count: keyLength)
         let status: Int32 = derived.withUnsafeMutableBytes { derivedBytes -> Int32 in
             guard let derivedPointer = derivedBytes.bindMemory(to: UInt8.self).baseAddress else {
@@ -206,6 +203,6 @@ struct POSPermissionProviderTests {
                 }
             }
         }
-        return status == kCCSuccess ? derived.map { String(format: "%02x", $0) }.joined() : ""
+        return status == kCCSuccess ? derived : Data()
     }
 }

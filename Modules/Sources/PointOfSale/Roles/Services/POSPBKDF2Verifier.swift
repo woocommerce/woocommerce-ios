@@ -4,12 +4,10 @@ import struct Networking.POSStaffMember
 
 /// Verifies an entered PIN against a staff member's PBKDF2-SHA256 hash.
 ///
-/// The server stores PINs as `pbkdf2_sha256(pin, salt, iterations)`. Mobile receives
-/// `pinSalt`, `pinHash`, and `pinIterations` over `GET /wc-pos/v1/staff` and computes
-/// the same digest locally to verify entry — no PIN ever leaves the device.
-///
-/// Hex-encoded inputs are expected (matching the WooCommerce backend's
-/// canonical encoding for password hashes).
+/// The server stores PINs as `pbkdf2_sha256(pin, salt, iterations)` and ships the
+/// salt + hash base64-encoded under `pin.salt` / `pin.hash` (see `POSStaffMember.PINDetails`).
+/// Mobile receives those over `GET /wc-pos/v1/staff` and computes the same digest
+/// locally to verify entry — no PIN ever leaves the device.
 public struct POSPBKDF2Verifier {
 
     public init() {}
@@ -17,19 +15,20 @@ public struct POSPBKDF2Verifier {
     /// Verifies the entered PIN against the cached staff member's hash.
     ///
     /// Returns `false` when:
-    /// - The member has no PIN configured (`hasPIN == false`)
-    /// - The salt/hash/iterations are empty or malformed
+    /// - The member has no PIN configured (`pin == nil`)
+    /// - The algorithm is anything other than `pbkdf2-sha256`
+    /// - The salt or hash isn't valid base64
     /// - The derived digest does not match the stored hash
     public func verify(pin: String, member: POSStaffMember) -> Bool {
-        guard member.hasPIN,
-              !member.pinSalt.isEmpty,
-              !member.pinHash.isEmpty,
-              member.pinIterations > 0,
-              let saltData = Data(hexEncoded: member.pinSalt),
-              let expected = Data(hexEncoded: member.pinHash),
+        guard let details = member.pin,
+              details.algo == Constants.supportedAlgorithm,
+              details.iterations > 0,
+              let saltData = Data(base64Encoded: details.salt),
+              let expected = Data(base64Encoded: details.hash),
+              !expected.isEmpty,
               let derived = derive(pin: pin,
                                    salt: saltData,
-                                   iterations: member.pinIterations,
+                                   iterations: details.iterations,
                                    keyLength: expected.count) else {
             return false
         }
@@ -70,24 +69,8 @@ public struct POSPBKDF2Verifier {
         }
         return diff == 0
     }
-}
 
-// MARK: - Hex decoding
-
-private extension Data {
-    /// Decodes a hex-encoded string into the corresponding bytes. Accepts both
-    /// upper- and lower-case digits. Returns nil when the string is malformed or odd-length.
-    init?(hexEncoded string: String) {
-        guard string.count % 2 == 0 else { return nil }
-        var bytes = [UInt8]()
-        bytes.reserveCapacity(string.count / 2)
-        var index = string.startIndex
-        while index < string.endIndex {
-            let next = string.index(index, offsetBy: 2)
-            guard let byte = UInt8(string[index..<next], radix: 16) else { return nil }
-            bytes.append(byte)
-            index = next
-        }
-        self = Data(bytes)
+    private enum Constants {
+        static let supportedAlgorithm = "pbkdf2-sha256"
     }
 }

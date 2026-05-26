@@ -79,6 +79,7 @@ public struct PointOfSaleEntryPointView: View {
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
+         receiptSettingsAdminURL: String,
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
@@ -136,7 +137,8 @@ public struct PointOfSaleEntryPointView: View {
                                                                 siteSettings: siteSettings,
                                                                 grdbManager: grdbManager,
                                                                 catalogSyncCoordinator: catalogSyncCoordinator,
-                                                                isLocalCatalogEligible: isLocalCatalogEligible)
+                                                                isLocalCatalogEligible: isLocalCatalogEligible,
+                                                                receiptSettingsAdminURL: receiptSettingsAdminURL)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -264,6 +266,7 @@ public struct PointOfSaleEntryPointView: View {
         grdbManager: nil,
         catalogSyncCoordinator: nil,
         isLocalCatalogEligible: false,
+        receiptSettingsAdminURL: "",
         services: POSPreviewServices()
     )
 }

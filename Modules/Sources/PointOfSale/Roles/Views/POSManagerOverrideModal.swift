@@ -40,7 +40,7 @@ extension View {
 }
 
 #if DEBUG
-#Preview("Modifier over dashboard") {
+#Preview("Dashboard") {
     @Previewable @StateObject var modalManager = POSModalManager()
     @Previewable @StateObject var coverManager = POSFullScreenCoverManager()
     @Previewable @State var handler = POSManagerOverrideHandler(session: MockPOSAccessSession())
@@ -62,27 +62,77 @@ extension View {
     .environment(\.posAccessSession, MockPOSAccessSession())
 }
 
-#Preview("Modifier over dashboard - Phone") {
+#Preview("Sample order - Invalid PIN") {
     @Previewable @StateObject var modalManager = POSModalManager()
     @Previewable @StateObject var coverManager = POSFullScreenCoverManager()
-    @Previewable @State var handler = POSManagerOverrideHandler(session: MockPOSAccessSession())
+    @Previewable @State var handler = POSManagerOverrideHandler(session: MockPOSAccessSession(managerApprovalResult: .failure(.invalidPIN)))
 
-    NavigationStack {
-        PointOfSaleDashboardView()
-            .environment(POSPreviewHelpers.makePreviewAggregateModel())
-            .posManagerOverrideModal(handler: handler)
-            .posRootModal()
-            .environmentObject(modalManager)
-            .environmentObject(coverManager)
-            .onAppear {
-                handler.requestApproval(
-                    for: .refundShopOrders,
-                    reason: "Refunding orders requires manager approval."
-                )
+    POSManagerOverridePreviewSurface()
+        .posManagerOverrideModal(handler: handler)
+        .posRootModal()
+        .environmentObject(modalManager)
+        .environmentObject(coverManager)
+        .environment(\.posAccessSession, MockPOSAccessSession(managerApprovalResult: .failure(.invalidPIN)))
+        .onAppear {
+            handler.requestApproval(
+                for: .publishShopCoupons,
+                reason: "Creating coupons requires manager approval."
+            )
+            handler.pinEntryState = .error(message: "Incorrect PIN. Try again.")
+        }
+}
+
+private struct POSManagerOverridePreviewSurface: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
+            HStack {
+                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                    Text("Order #1043")
+                        .font(.posHeadingBold)
+                        .foregroundStyle(Color.posOnSurface)
+
+                    Text("2 items")
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
+
+                Spacer()
+
+                Text("$48.00")
+                    .font(.posHeadingBold)
+                    .foregroundStyle(Color.posOnSurface)
             }
+
+            VStack(spacing: POSSpacing.medium) {
+                row(title: "Black hoodie", detail: "$32.00")
+                row(title: "Beanie", detail: "$16.00")
+            }
+            .padding(POSPadding.medium)
+            .background(Color.posSurfaceContainerLowest)
+            .cornerRadius(POSCornerRadiusStyle.medium.value)
+
+            Spacer()
+
+            Button("Create coupon") {}
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
+        }
+        .padding(POSPadding.xxLarge)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.posSurface)
     }
-    .environment(\.horizontalSizeClass, .compact)
-    .environment(\.posAccessSession, MockPOSAccessSession())
-    .previewDevice(PreviewDevice(rawValue: "iPhone 16 Pro"))
+
+    private func row(title: String, detail: String) -> some View {
+        HStack {
+            Text(title)
+                .font(.posBodyLargeRegular())
+                .foregroundStyle(Color.posOnSurface)
+
+            Spacer()
+
+            Text(detail)
+                .font(.posBodyLargeRegular())
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+        }
+    }
 }
 #endif

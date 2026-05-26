@@ -44,13 +44,16 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
     var createPOSOrderCalled: Bool = false
     var spyCreatePOSOrder: Order?
     var spyCreatePOSOrderFields: [OrdersRemote.CreateOrderField]?
+    var spyCreatePOSOrderAdditionalMetadata: [MetaData]?
     var createPOSOrderResult: Result<Order, Error>?
     func createPOSOrder(siteID: Int64,
                         order: Networking.Order,
-                        fields: [OrdersRemote.CreateOrderField]) async throws -> Order {
+                        fields: [OrdersRemote.CreateOrderField],
+                        additionalMetadata: [MetaData]) async throws -> Order {
         createPOSOrderCalled = true
         spyCreatePOSOrder = order
         spyCreatePOSOrderFields = fields
+        spyCreatePOSOrderAdditionalMetadata = additionalMetadata
 
         // If a custom result is set, use it
         if let result = createPOSOrderResult {

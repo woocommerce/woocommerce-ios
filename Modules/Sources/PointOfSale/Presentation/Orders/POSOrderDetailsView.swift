@@ -25,8 +25,6 @@ struct POSOrderDetailsView: View {
     @State private var isShowingEmailReceiptView = false
     @State private var refundModalState: RefundModalState?
     @State private var selectedRefundForDetail: POSOrderRefund?
-    @State private var overrideHandler = POSManagerOverrideHandler()
-    @State private var approvedRefundToken: String?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -117,7 +115,6 @@ struct POSOrderDetailsView: View {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: step))
             }
             orderListModel.ordersController.clearRefundSelection()
-            approvedRefundToken = nil
         }) { state in
             POSRefundModalContentView(
                 state: state,
@@ -131,7 +128,6 @@ struct POSOrderDetailsView: View {
                 showsItemSelection: true,
                 onRefundSuccess: onRefundSuccess,
                 onRefundFailure: onRefundFailure,
-                approvalToken: approvedRefundToken,
                 errorStrings: .init(
                     loadTitle: Localization.loadRefundErrorTitle,
                     loadSubtitle: Localization.loadRefundErrorSubtitle,
@@ -148,7 +144,6 @@ struct POSOrderDetailsView: View {
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
-        .posManagerOverrideModal(handler: overrideHandler, permissions: permissions)
         .task {
             guard shouldShowDedicatedRefundsSection else { return }
             await orderListModel.ordersController.loadOrderRefunds()
@@ -479,7 +474,9 @@ private extension POSOrderDetailsView {
                 isShowingEmailReceiptView = true
             }
         case .issueRefund:
-            return { requestPermissionForRefund() }
+            return {
+                initiateRefundFlow()
+            }
         }
     }
 
@@ -491,11 +488,15 @@ private extension POSOrderDetailsView {
     var availableActionsSetup: OrderDetailsActionsSetup {
         let email: OrderDetailsAction = .emailReceipt
 
+        // In M1 the refund button is hidden when the operator lacks the capability:
+        // there is no manager-override path until M3 per the plan.
+        let canRefund = permissions.hasCapability(.refundShopOrders)
+
         switch order.status {
         case .refunded:
             return .init(primary: email, secondary: [])
         case .completed:
-            guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
+            guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1), canRefund else {
                 return .init(primary: email, secondary: [])
             }
 
@@ -551,23 +552,6 @@ private extension POSOrderDetailsView {
     var divider: some View {
         POSDivider()
             .padding(.vertical, POSSpacing.small)
-    }
-}
-
-// MARK: - Permission Checks
-
-private extension POSOrderDetailsView {
-    func requestPermissionForRefund() {
-        overrideHandler.requestPermission(
-            for: .refundShopOrders,
-            actionDescription: Localization.refundOverrideDescription(order.number),
-            permissions: permissions,
-            orderID: order.id,
-            onApproved: { token in
-                approvedRefundToken = token
-                initiateRefundFlow()
-            }
-        )
     }
 }
 
@@ -736,16 +720,6 @@ private enum Localization {
         return label
     }
 
-    // MARK: - Manager Override
-
-    static func refundOverrideDescription(_ orderNumber: String) -> String {
-        let format = NSLocalizedString(
-            "pos.orderDetailsView.managerOverride.refund.description",
-            value: "Issue a refund for Order #%1$@",
-            comment: "Description shown in the manager override modal when a refund requires approval. %1$@ is the order number."
-        )
-        return String(format: format, orderNumber)
-    }
 
     // MARK: - Refund Error Messages
 

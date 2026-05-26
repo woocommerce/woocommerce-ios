@@ -127,10 +127,14 @@ public struct PointOfSaleEntryPointView: View {
                                              receiptService: receiptService,
                                              analytics: services.analytics,
                                              pluginsService: pluginsService)
+        let permissions = services.permissions
         self.orderController = PointOfSaleOrderController(orderService: orderService,
                                                           receiptSender: receiptSender,
                                                           currencySettingsProvider: services.currency,
-                                                          analytics: services.analytics)
+                                                          analytics: services.analytics,
+                                                          staffUserIDProvider: { [weak permissions] in
+                                                              permissions?.currentOperator?.userID
+                                                          })
         self.settingsController = PointOfSaleSettingsController(siteID: siteID,
                                                                 settingsService: settingsService,
                                                                 cardPresentPaymentService: cardPresentPaymentService,
@@ -189,14 +193,7 @@ public struct PointOfSaleEntryPointView: View {
                 }
             }
 
-            POSLockScreenOverlay(
-                permissionProvider: permissionProvider,
-                onLogOut: {
-                    // Clear lock state and dismiss POS so the user can log out from the main app
-                    UserDefaults.standard.set(false, forKey: POSLockStateKey.isLocked)
-                    dismiss()
-                }
-            )
+            POSLockScreenOverlay(permissionProvider: permissionProvider)
         }
         .posAutoLockActivityTracking(permissions: permissionProvider,
                                      paymentModel: posModel?.paymentModel,

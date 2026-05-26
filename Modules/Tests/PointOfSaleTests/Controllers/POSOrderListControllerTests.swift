@@ -1075,30 +1075,6 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func processRefund_then_passes_approval_token_to_service() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // When
-        try await sut.processRefund(reason: .none, approvalToken: "approval-token-123")
-
-        // Then
-        #expect(refundsService.spyCreateRefundApprovalToken == "approval-token-123")
-    }
-
-    @MainActor
     @Test func processRefund_when_successful_then_clears_selection() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true

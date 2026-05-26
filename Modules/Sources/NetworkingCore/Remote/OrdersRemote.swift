@@ -223,6 +223,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                             giftCard: String?,
                             fields: [CreateOrderField],
                             source: OrderCreationSource = .storeManagement,
+                            additionalMetadata: [MetaData] = [],
                             completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = Constants.ordersPath
@@ -262,10 +263,17 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                     params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
                 }
 
-                // Set source type to mark the order as created from mobile
-                params[Order.CodingKeys.metadata.rawValue] = try [MetaData(metadataID: 0,
-                                                                                key: OrderAttributionInfo.Keys.sourceType.rawValue,
-                                                                                value: OrderAttributionInfo.Values.mobileAppSourceType).toDictionary()]
+                // Set source type to mark the order as created from mobile, plus any
+                // POS attribution metadata (`_pos_attribution` per the M1 plan) supplied
+                // by the caller. Caller-supplied entries are appended so the source-type
+                // record always lands first in the array.
+                let baseMetadata: [MetaData] = [
+                    MetaData(metadataID: 0,
+                             key: OrderAttributionInfo.Keys.sourceType.rawValue,
+                             value: OrderAttributionInfo.Values.mobileAppSourceType)
+                ]
+                let allMetadata = baseMetadata + additionalMetadata
+                params[Order.CodingKeys.metadata.rawValue] = try allMetadata.map { try $0.toDictionary() }
 
                 if let createdViaValue = source.createdViaValue {
                     params[Order.CodingKeys.createdVia.rawValue] = createdViaValue
@@ -468,9 +476,17 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
 }
 
 extension OrdersRemote: POSOrdersRemoteProtocol {
-    public func createPOSOrder(siteID: Int64, order: Order, fields: [CreateOrderField]) async throws -> Order {
+    public func createPOSOrder(siteID: Int64,
+                               order: Order,
+                               fields: [CreateOrderField],
+                               additionalMetadata: [MetaData]) async throws -> Order {
         return try await withCheckedThrowingContinuation { continuation in
-            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields, source: .pointOfSale) { result in
+            createOrder(siteID: siteID,
+                        order: order,
+                        giftCard: nil,
+                        fields: fields,
+                        source: .pointOfSale,
+                        additionalMetadata: additionalMetadata) { result in
                 switch result {
                 case let .success(order):
                     continuation.resume(returning: order)

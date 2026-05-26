@@ -1,35 +1,17 @@
 import SwiftUI
 import enum Networking.POSAuthError
 
-/// Overlay that shows the POS lock screen when the permission provider is locked.
+/// Overlay that shows the POS lock screen when the permission provider is locked
+/// or when staff PINs are configured and no operator is signed in.
 struct POSLockScreenOverlay: View {
     @StateObject private var model: POSLockScreenModel
     @State private var pinState: POSPINEntryState = .idle
     @State private var showForgotPINAlert: Bool = false
     @State private var pinViewID = UUID()
 
-    private let isRemoteMode: Bool
-    private let onLogOut: (() -> Void)?
-
-    init(permissionProvider: POSPermissionProviding,
-         onLogOut: (() -> Void)? = nil) {
-        let authenticator: POSPINAuthenticating
-        if let local = permissionProvider as? LocalPOSPermissionProvider {
-            authenticator = LocalPOSPINAuthenticator(provider: local)
-            self.isRemoteMode = false
-        } else if let remote = permissionProvider as? RemotePOSPermissionProvider {
-            authenticator = RemotePOSPINAuthenticator(provider: remote)
-            self.isRemoteMode = true
-        } else {
-            authenticator = NoOpPOSPINAuthenticator()
-            self.isRemoteMode = false
-        }
-        self.onLogOut = onLogOut
+    init(permissionProvider: POSPermissionProviding) {
         _model = StateObject(
-            wrappedValue: POSLockScreenModel(
-                provider: permissionProvider,
-                authenticator: authenticator
-            )
+            wrappedValue: POSLockScreenModel(provider: permissionProvider)
         )
     }
 
@@ -45,9 +27,9 @@ struct POSLockScreenOverlay: View {
                 }
             )
             .alert(Localization.forgotPINTitle, isPresented: $showForgotPINAlert) {
-                forgotPINAlertButtons
+                Button(Localization.forgotPINDismiss, role: .cancel) { }
             } message: {
-                Text(forgotPINAlertMessage)
+                Text(Localization.forgotPINBody)
             }
             .id(pinViewID)
             .onAppear {
@@ -59,36 +41,12 @@ struct POSLockScreenOverlay: View {
         }
     }
 
-    @ViewBuilder
-    private var forgotPINAlertButtons: some View {
-        if isRemoteMode {
-            Button(Localization.forgotPINDismiss, role: .cancel) { }
-        } else {
-            Button(Localization.forgotPINLogOut, role: .destructive) {
-                onLogOut?()
-            }
-            Button(Localization.forgotPINCancel, role: .cancel) { }
-        }
-    }
-
-    private var forgotPINAlertMessage: String {
-        if isRemoteMode {
-            return Localization.forgotPINRemoteBody
-        } else {
-            return Localization.forgotPINLocalBody
-        }
-    }
-
     private func handlePINEntered(_ pin: String) {
         pinState = .loading
         Task { @MainActor in
             do {
-                let success = try await model.authenticatePIN(pin)
-                if !success {
-                    pinState = .error(message: Localization.invalidPIN)
-                } else {
-                    pinState = .idle
-                }
+                try await model.authenticatePIN(pin)
+                pinState = .idle
             } catch let error as POSAuthError {
                 switch error {
                 case .rateLimited(let retryAfter):
@@ -122,35 +80,15 @@ struct POSLockScreenOverlay: View {
             value: "Forgot your PIN?",
             comment: "Title of the alert shown when tapping Forgot PIN on the POS lock screen"
         )
-        static let forgotPINLocalBody = NSLocalizedString(
-            "pos.lockScreen.forgotPIN.localBody",
-            value: "You can log out and sign in with an admin account to reset PINs.",
-            comment: "Body text of the Forgot PIN alert in local mode, explaining how to reset PINs."
-        )
-        static let forgotPINRemoteBody = NSLocalizedString(
-            "pos.lockScreen.forgotPIN.remoteBody",
+        static let forgotPINBody = NSLocalizedString(
+            "pos.lockScreen.forgotPIN.body",
             value: "Ask the store owner to reset your PIN in WooCommerce > Settings > Point of sale > Staff.",
-            comment: "Body text of the Forgot PIN alert in remote mode, explaining how to reset PINs."
+            comment: "Body text of the Forgot PIN alert, explaining how to reset PINs via the web admin."
         )
         static let forgotPINDismiss = NSLocalizedString(
             "pos.lockScreen.forgotPIN.dismiss",
             value: "OK",
             comment: "Button to dismiss the Forgot PIN alert on the POS lock screen"
         )
-        static let forgotPINLogOut = NSLocalizedString(
-            "pos.lockScreen.forgotPIN.logOut",
-            value: "Log out",
-            comment: "Button to log out from the Forgot PIN alert on the POS lock screen in local mode."
-        )
-        static let forgotPINCancel = NSLocalizedString(
-            "pos.lockScreen.forgotPIN.cancel",
-            value: "Cancel",
-            comment: "Button to cancel the Forgot PIN alert on the POS lock screen."
-        )
     }
-}
-
-/// No-op authenticator used when the provider type is neither local nor remote.
-private struct NoOpPOSPINAuthenticator: POSPINAuthenticating {
-    func authenticate(pin: String) async throws -> Bool { false }
 }

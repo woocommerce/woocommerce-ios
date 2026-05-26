@@ -185,9 +185,10 @@ private extension POSTabCoordinator {
                 isLocalCatalogEligible = false
             }
 
-            // Shared network for all POS services that make mutating API calls.
-            // When a cashier authenticates via PIN, overridePOSCredentials() updates
-            // this network so refunds, orders, receipts, etc. are attributed correctly.
+            // Shared network for all POS services that make mutating API calls. Every
+            // request authenticates as the device admin per the M1 plan — there is no
+            // per-staff Application Password override; staff identity rides as
+            // `_pos_attribution` order meta instead.
             guard let credentials else {
                 DDLogError("⛔️ POS cannot start without credentials")
                 return
@@ -203,7 +204,7 @@ private extension POSTabCoordinator {
                 )
             )
 
-            let serviceAdaptor = POSServiceLocatorAdaptor(posNetwork: posNetwork)
+            let serviceAdaptor = POSServiceLocatorAdaptor()
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
 
             let cardPresentPaymentService: CardPresentPaymentFacade
@@ -274,19 +275,10 @@ private extension POSTabCoordinator {
                 preferredConnectionMethod = .bluetooth
             }
 
-            var staffSettingsMode = self.createStaffSettingsMode(
+            let staffSettingsMode = self.createStaffSettingsMode(
                 siteID: siteID,
                 stores: storesManager
             )
-            // Wire auto sign-in callback for local mode after the service adaptor is created
-            if case .local(let pinService, _) = staffSettingsMode {
-                let permissions = serviceAdaptor.permissions
-                staffSettingsMode = .local(pinService: pinService, onAdminPINSet: { pin in
-                    if let provider = permissions as? LocalPOSPermissionProvider {
-                        try? provider.authenticatePIN(pin)
-                    }
-                })
-            }
 
             let posView = PointOfSaleEntryPointView(
                 siteID: siteID,
@@ -337,41 +329,30 @@ private extension POSTabCoordinator {
 private extension POSTabCoordinator {
     func createStaffSettingsMode(siteID: Int64, stores: StoresManager) -> POSStaffSettingsMode? {
         let featureFlagService = ServiceLocator.featureFlagService
-        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleRemoteRoles) {
-            let siteURL = stores.sessionManager.defaultSite?.url ?? ""
-            let manageURL = URL(string: "\(siteURL)/wp-admin/admin.php?page=wc-settings&tab=point-of-sale&section=staff")
-                ?? URL(string: "about:blank")!
-            return .remote(
-                loadStaff: {
-                    try await withCheckedThrowingContinuation { continuation in
-                        let action = POSAuthAction.fetchStaffStatus(siteID: siteID) { result in
-                            switch result {
-                            case .success(let users):
-                                let members = users.map { user in
-                                    StaffMemberInfo(
-                                        id: user.userID,
-                                        displayName: user.displayName,
-                                        role: user.role,
-                                        hasPIN: user.hasPIN
-                                    )
-                                }
-                                continuation.resume(returning: members)
-                            case .failure(let error):
-                                continuation.resume(throwing: error)
-                            }
-                        }
-                        Task { @MainActor in
-                            stores.dispatch(action)
-                        }
-                    }
-                },
-                manageURL: manageURL
-            )
-        } else if featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalRoles) {
-            return .local(pinService: POSPINService())
-        } else {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleStaff) else {
             return nil
         }
+        let siteURL = stores.sessionManager.defaultSite?.url ?? ""
+        let manageURL = URL(string: "\(siteURL)/wp-admin/admin.php?page=wc-settings&tab=point-of-sale&section=staff")
+            ?? URL(string: "about:blank")!
+        return POSStaffSettingsMode(
+            loadStaff: {
+                try await withCheckedThrowingContinuation { continuation in
+                    let action = POSStaffAction.fetchStaff(siteID: siteID) { result in
+                        switch result {
+                        case .success(let members):
+                            continuation.resume(returning: members)
+                        case .failure(let error):
+                            continuation.resume(throwing: error)
+                        }
+                    }
+                    Task { @MainActor in
+                        stores.dispatch(action)
+                    }
+                }
+            },
+            manageURL: manageURL
+        )
     }
 
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {

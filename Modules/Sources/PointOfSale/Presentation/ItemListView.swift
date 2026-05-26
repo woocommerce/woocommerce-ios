@@ -103,8 +103,6 @@ struct ItemListView: View {
 
     @Environment(\.posPermissions) private var permissions
     @State private var showCouponCreationModal: Bool = false
-    @State private var couponApprovalToken: String?
-    @State private var couponOverrideHandler = POSManagerOverrideHandler()
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
     ///
@@ -153,7 +151,6 @@ struct ItemListView: View {
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
         .posCouponCreationSheet(isPresented: $showCouponCreationModal,
-                                approvalToken: couponApprovalToken,
                                 currencySettings: currencyProvider.currencySettings,
                                 onSuccess: { couponItem in
             Task { @MainActor in
@@ -161,7 +158,6 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
-        .posManagerOverrideModal(handler: couponOverrideHandler, permissions: permissions)
         .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
             posModel.barcodeScanned(scannedCode)
         }
@@ -499,10 +495,16 @@ private extension ItemListView {
     private var createCouponButton: some View {
         POSPageHeaderActionButton(systemName: "plus") {
             analytics.track(.pointOfSaleCouponsCreateTapped)
-            requestPermissionForCouponCreation()
+            showCouponCreationModal = true
         }
-        .renderedIf(isAddingCouponAllowed)
+        .renderedIf(isAddingCouponAllowed && canCreateCoupons)
         .transition(.opacity.combined(with: .scale))
+    }
+
+    /// In M1 the coupon-creation affordance is hidden when the operator lacks the capability —
+    /// the manager-override path that previously gated this is deferred to M3.
+    private var canCreateCoupons: Bool {
+        permissions.hasCapability(.publishCoupons)
     }
 
     @ViewBuilder
@@ -522,7 +524,9 @@ private extension ItemListView {
                 viewModel: POSListEmptyViewModel(
                     itemListType: selectedItemListType,
                     baseItem: .root)) {
-                requestPermissionForCouponCreation()
+                if canCreateCoupons {
+                    showCouponCreationModal = true
+                }
             }
         }
     }
@@ -590,22 +594,6 @@ private extension ItemListView {
     }
 }
 
-// MARK: - Permission Checks
-
-private extension ItemListView {
-    func requestPermissionForCouponCreation() {
-        couponOverrideHandler.requestPermission(
-            for: .publishCoupons,
-            actionDescription: Localization.couponOverrideDescription,
-            permissions: permissions,
-            onApproved: { token in
-                couponApprovalToken = token
-                showCouponCreationModal = true
-            }
-        )
-    }
-}
-
 /// Constants
 ///
 private extension ItemListView {
@@ -655,11 +643,6 @@ private extension ItemListView {
             String.localizedStringWithFormat(staleSyncWarningDescriptionFormat, days)
         }
 
-        static let couponOverrideDescription = NSLocalizedString(
-            "pos.itemlistview.managerOverride.coupon.description",
-            value: "Create a coupon",
-            comment: "Description shown in the manager override modal when coupon creation requires approval"
-        )
     }
 }
 

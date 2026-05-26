@@ -143,7 +143,7 @@ class AuthenticatedState: StoresManagerState {
             MetaDataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             BookingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            POSAuthStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            POSStaffStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
 
@@ -260,13 +260,6 @@ class AuthenticatedState: StoresManagerState {
         dispatcher.dispatch(action)
     }
 
-    func overridePOSCredentials(username: String, applicationPassword: String, siteAddress: String) {
-        network.overridePOSCredentials(username: username, applicationPassword: applicationPassword, siteAddress: siteAddress)
-    }
-
-    func revertPOSCredentialOverride() {
-        network.revertPOSCredentialOverride()
-    }
 }
 
 

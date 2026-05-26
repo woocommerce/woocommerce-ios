@@ -7,7 +7,6 @@ struct POSSettingsView: View {
     @Environment(\.posPermissions) private var permissions
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
-    @State private var staffOverrideHandler = POSManagerOverrideHandler()
 
     let settingsController: POSSettingsControllerProtocol
     let staffSettingsMode: POSStaffSettingsMode
@@ -27,7 +26,6 @@ struct POSSettingsView: View {
                 selection = .store
             }
         }
-        .posManagerOverrideModal(handler: staffOverrideHandler, permissions: permissions)
     }
 }
 
@@ -74,7 +72,7 @@ extension POSSettingsView {
                                         subtitle: POSSettingsView.SidebarNavigation.staff.subtitle,
                                         isSelected: selection == .staff,
                                         action: {
-                        requestPermissionForStaff()
+                        selection = .staff
                     })
                 }
                 Spacer()
@@ -106,18 +104,13 @@ extension POSSettingsView {
         }
     }
 
+    /// In M1 the Staff card is only shown when the operator has settings-edit access (admin).
+    /// Manager-override returns in M3.
     private var isStaffSectionVisible: Bool {
-        featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalRoles) ||
-        featureFlags.isFeatureFlagEnabled(.pointOfSaleRemoteRoles)
-    }
-
-    private func requestPermissionForStaff() {
-        staffOverrideHandler.requestPermission(
-            for: .editPOSSettings,
-            actionDescription: Localization.staffOverrideDescription,
-            permissions: permissions,
-            onApproved: { _ in selection = .staff }
-        )
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleStaff) else { return false }
+        // When no PINs are configured the device admin operates POS directly; show the card.
+        guard permissions.hasAnyPINs else { return true }
+        return permissions.hasCapability(.editPOSSettings)
     }
 
     @ViewBuilder
@@ -188,12 +181,6 @@ extension POSSettingsView {
     }
 
     enum Localization {
-        static let staffOverrideDescription = NSLocalizedString(
-            "pointOfSaleSettingsView.staffOverrideDescription",
-            value: "Access and change staff settings",
-            comment: "Description shown in the manager override modal when staff settings access requires admin approval."
-        )
-
         static let navigationTitle = NSLocalizedString(
             "pointOfSaleSettingsView.navigationTitle",
             value: "Settings",
@@ -264,7 +251,12 @@ extension POSSettingsView {
 
 #if DEBUG
 #Preview {
-    POSSettingsView(settingsController: POSSettingsPreviewController(),
-                    staffSettingsMode: .local(pinService: POSPINService(storage: InMemoryPINStorage())))
+    POSSettingsView(
+        settingsController: POSSettingsPreviewController(),
+        staffSettingsMode: POSStaffSettingsMode(
+            loadStaff: { [] },
+            manageURL: URL(string: "about:blank")!
+        )
+    )
 }
 #endif

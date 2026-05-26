@@ -203,13 +203,12 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleCustomAmounts
 
-    /// Enables local POS roles with on-device PIN management
+    /// Enables POS Staff Roles & Permissions.
     ///
-    case pointOfSaleLocalRoles
-
-    /// Enables remote POS roles with server-backed PIN auth and Application Passwords
-    ///
-    case pointOfSaleRemoteRoles
+    /// Behind this flag the app fetches `GET /wc-pos/v1/staff` on POS entry,
+    /// caches the PBKDF2-hashed staff list in the Keychain, and validates PIN
+    /// entry locally. See https://peacockp2.wordpress.com/?p=34760 for the design.
+    case pointOfSaleStaff
 
     /// Enables Point of Sale on iPhone (prototype).
     /// When enabled, the iPad-only gate in `POSTabVisibilityChecker` is lifted and POS layouts

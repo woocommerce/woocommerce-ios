@@ -12,23 +12,4 @@ public enum POSCapability: String, CaseIterable, Sendable {
     case refundShopOrders = "refund_shop_orders"
     /// Create coupons.
     case publishCoupons = "publish_shop_coupons"
-
-    // MARK: - Approval Path
-
-    /// Whether this capability supports backend approval via `/pos/auth/approve` (remote mode).
-    ///
-    /// - `true`: Remote mode uses the approve endpoint, which returns an audit token.
-    /// - `false`: Remote mode uses `/pos/auth/pin/verify` for a capability check only.
-    /// - Local mode always uses local PIN verification regardless of this value.
-    public var supportsBackendApproval: Bool {
-        switch self {
-        case .refundShopOrders:
-            return true
-        case .viewPOSSettings, .editPOSSettings, .publishCoupons:
-            // publishCoupons: approval token not yet threaded to the coupon creation API.
-            // Switch to true when backend adds publish_shop_coupons to APPROVABLE_ACTIONS
-            // and the app passes _pos_approval through POSCouponCreationViewAdaptor.
-            return false
-        }
-    }
 }

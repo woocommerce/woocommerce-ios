@@ -162,8 +162,17 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .posFullScreenCover(isPresented: $showSettings) {
-            POSSettingsView(settingsController: posModel.settingsController,
-                            staffSettingsMode: staffSettingsMode ?? .local(pinService: POSPINService()))
+            // The staff-settings mode is supplied by the host (POSTabCoordinator) when the
+            // POS staff feature flag is on. When the flag is off, fall back to an empty mode
+            // so the settings sheet remains buildable — the Staff card itself is gated off
+            // by the same feature flag inside `POSSettingsView`.
+            POSSettingsView(
+                settingsController: posModel.settingsController,
+                staffSettingsMode: staffSettingsMode ?? POSStaffSettingsMode(
+                    loadStaff: { [] },
+                    manageURL: URL(string: "about:blank")!
+                )
+            )
         }
         .posFullScreenCover(isPresented: $phoneShowOrders) {
             POSOrdersView(isPresented: $phoneShowOrders)

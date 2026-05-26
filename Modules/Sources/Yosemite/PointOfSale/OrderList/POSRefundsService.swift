@@ -133,8 +133,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
     public func createRefund(orderID: Int64,
                              items: [POSRefundableItem],
                              reason: String?,
-                             isAutomaticRefund: Bool,
-                             approvalToken: String?) async throws {
+                             isAutomaticRefund: Bool) async throws {
         let numberOfDecimals = currencySettings.fractionDigits
         let request = refundCalculator.buildRefundRequest(
             orderID: orderID,
@@ -143,7 +142,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
             numberOfDecimals: numberOfDecimals
         )
         let refund = buildRefund(from: request, createAutomated: isAutomaticRefund, numberOfDecimals: numberOfDecimals)
-        _ = try await refundsRemote.createRefund(for: siteID, by: orderID, refund: refund, approvalToken: approvalToken)
+        _ = try await refundsRemote.createRefund(for: siteID, by: orderID, refund: refund)
     }
 
     private func buildRefund(from request: POSRefundRequest, createAutomated: Bool, numberOfDecimals: Int) -> Refund {

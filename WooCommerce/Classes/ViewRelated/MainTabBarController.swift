@@ -134,7 +134,7 @@ final class MainTabBarController: UITabBarController {
     private var posTabCoordinator: POSTabCoordinator?
 
     /// Whether POS was locked when the app was last terminated.
-    /// Uses the same UserDefaults key as LocalPOSPermissionProvider/RemotePOSPermissionProvider.
+    /// Uses the same UserDefaults key as `POSPermissionProvider`.
     private static var wasPOSLockedWhenTerminated: Bool {
         UserDefaults.standard.bool(forKey: POSLockStateKey.isLocked)
     }

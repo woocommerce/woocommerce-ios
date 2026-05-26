@@ -9,7 +9,9 @@ import enum Networking.POSAuthError
 /// - 15 failed attempts: permanent lock (only recovery is logout)
 ///
 /// A successful PIN entry resets the counter. Logout also resets it.
-final class POSLocalRateLimiter {
+public final class POSLocalRateLimiter {
+
+    public init() {}
 
     // MARK: - Thresholds (matching backend POSRateLimitService)
 
@@ -37,7 +39,7 @@ final class POSLocalRateLimiter {
         set { UserDefaults.standard.set(newValue, forKey: Self.lockoutUntilKey) }
     }
 
-    var isPermanentlyLocked: Bool {
+    public var isPermanentlyLocked: Bool {
         get { UserDefaults.standard.bool(forKey: Self.permanentlyLockedKey) }
         set { UserDefaults.standard.set(newValue, forKey: Self.permanentlyLockedKey) }
     }
@@ -46,7 +48,7 @@ final class POSLocalRateLimiter {
 
     /// Checks if PIN entry is currently allowed.
     /// Throws `POSAuthError.rateLimited` if in a lockout period.
-    func checkAllowed() throws {
+    public func checkAllowed() throws {
         if isPermanentlyLocked {
             throw POSAuthError.rateLimited(retryAfter: -1)
         }
@@ -61,7 +63,7 @@ final class POSLocalRateLimiter {
     }
 
     /// Records a failed PIN attempt and applies lockout if a threshold is crossed.
-    func recordFailure() {
+    public func recordFailure() {
         failedAttempts += 1
         let attempts = failedAttempts
 
@@ -81,7 +83,7 @@ final class POSLocalRateLimiter {
     /// Returns the appropriate error after a failed attempt.
     /// If a lockout was just triggered by `recordFailure()`, returns the lockout error.
     /// Otherwise returns the fallback error (e.g. invalidPIN).
-    func errorForCurrentState(fallback: POSAuthError) throws -> POSAuthError {
+    public func errorForCurrentState(fallback: POSAuthError) throws -> POSAuthError {
         do {
             try checkAllowed()
             return fallback
@@ -91,7 +93,7 @@ final class POSLocalRateLimiter {
     }
 
     /// Resets the rate limiter. Called on successful PIN entry or logout.
-    func reset() {
+    public func reset() {
         failedAttempts = 0
         lockoutUntil = nil
         isPermanentlyLocked = false

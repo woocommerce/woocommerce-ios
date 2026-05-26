@@ -2,39 +2,34 @@ import SwiftUI
 import Observation
 import Combine
 
-/// Bridges a POSPermissionProviding protocol reference to SwiftUI observation.
-/// Uses withObservationTracking to detect changes on the @Observable providers
-/// and republish them as @Published for SwiftUI.
+/// Bridges a `POSPermissionProviding` reference to SwiftUI's `ObservableObject`
+/// world, and owns the PIN validation entry point shown by `POSLockScreenOverlay`.
 @MainActor
 final class POSLockScreenModel: ObservableObject {
     @Published private(set) var isShowingLockScreen: Bool = false
 
     private let provider: POSPermissionProviding
-    private let authenticator: POSPINAuthenticating
     private var observationTask: Task<Void, Never>?
 
-    init(provider: POSPermissionProviding,
-         authenticator: POSPINAuthenticating) {
+    init(provider: POSPermissionProviding) {
         self.provider = provider
-        self.authenticator = authenticator
         self.isShowingLockScreen = Self.shouldShowLockScreen(provider)
         startObserving()
-        refreshRemoteStaffStatusIfNeeded()
-    }
-
-    /// Refresh PIN status from the backing store. No-op for local providers;
-    /// remote providers hit the network. Covers the "admin deleted all users /
-    /// removed all PINs while POS was locked" case — after the refresh the
-    /// observed `isShowingLockScreen` will drop to false.
-    private func refreshRemoteStaffStatusIfNeeded() {
-        let currentProvider = provider
-        Task { @MainActor in
-            await currentProvider.refreshPINStatus()
-        }
+        refreshStaffOnEntry()
     }
 
     deinit {
         observationTask?.cancel()
+    }
+
+    /// Re-fetch the staff list whenever POS is entered, per the M1 plan:
+    /// "the staff list is synced upon entering POS." Ensures local hashes reflect any
+    /// web-admin changes made since the last sync.
+    private func refreshStaffOnEntry() {
+        let currentProvider = provider
+        Task { @MainActor in
+            await currentProvider.refreshPINStatus()
+        }
     }
 
     private func startObserving() {
@@ -67,14 +62,15 @@ final class POSLockScreenModel: ObservableObject {
         }
     }
 
-    /// Authenticates a PIN. Returns true on success, false on wrong PIN.
-    /// Throws `POSAuthError.rateLimited` when too many failed attempts.
-    func authenticatePIN(_ pin: String) async throws -> Bool {
-        let success = try await authenticator.authenticate(pin: pin)
-        if success {
-            updateLockState()
+    /// Authenticates a PIN by delegating to the concrete provider. Throws on
+    /// invalid PIN / rate limit per `POSAuthError`.
+    func authenticatePIN(_ pin: String) async throws {
+        guard let permissionProvider = provider as? POSPermissionProvider else {
+            // Test doubles / EmptyPOSPermissionProvider don't authenticate.
+            return
         }
-        return success
+        _ = try await permissionProvider.authenticatePIN(pin)
+        updateLockState()
     }
 
     private func updateLockState() {
@@ -89,7 +85,6 @@ final class POSLockScreenModel: ObservableObject {
     /// Someone must authenticate via PIN before using POS.
     private static func shouldShowLockScreen(_ provider: POSPermissionProviding) -> Bool {
         let hasNoOperator = provider.currentOperator == nil
-        // Show lock screen if explicitly locked, or if PINs exist but nobody signed in
         return hasNoOperator && (provider.isLocked || provider.hasAnyPINs)
     }
 }

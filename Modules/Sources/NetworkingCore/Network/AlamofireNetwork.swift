@@ -60,10 +60,6 @@ public class AlamofireNetwork: Network {
 
     private var appPasswordSupportSubscription: AnyCancellable?
 
-    /// Saved state for restoring after POS credential override.
-    private var savedRequestConverter: RequestConverter?
-    private var savedAuthenticationMode: RequestAuthenticationMode?
-
     /// Background task that discovers the REST API root URL eagerly on init, so REST requests
     /// made immediately after authentication use the correct base path.
     ///
@@ -315,68 +311,6 @@ public class AlamofireNetwork: Network {
                         }
                     )
                 }
-        }
-    }
-}
-
-// MARK: - POS Credential Override
-//
-public extension AlamofireNetwork {
-
-    /// Temporarily overrides the request authenticator with POS operator credentials.
-    /// Call `revertPOSCredentialOverride()` to restore the original credentials.
-    func overridePOSCredentials(username: String, applicationPassword: String, siteAddress: String) {
-        DDLogInfo("🔑 POS credential override: switching to \(username) at \(siteAddress)")
-
-        // Save current state for later restoration
-        savedRequestConverter = requestConverter
-        savedAuthenticationMode = authenticationMode
-
-        // Stop observing site changes so they don't overwrite our POS credentials
-        siteSubscription = nil
-
-        let posCredentials = Credentials.applicationPassword(
-            username: username,
-            password: applicationPassword,
-            siteAddress: siteAddress
-        )
-        requestConverter = RequestConverter(siteAddress: siteAddress)
-        requestAuthenticator.updateAuthenticator(
-            DefaultRequestAuthenticator(credentials: posCredentials)
-        )
-        requestAuthenticator.delegate = nil
-        // Keep the error handler in sync with the active credentials so retry
-        // logic doesn't fall back to the admin's Jetpack tunnel when a POS
-        // cashier's REST request fails (e.g. 403 on refunds).
-        errorHandler.updateCredentials(posCredentials)
-        updateAuthenticationMode(.appPasswords)
-    }
-
-    /// Reverts POS credential override, restoring the original admin credentials.
-    func revertPOSCredentialOverride() {
-        guard let credentials else { return }
-
-        // Restore the saved request converter and authentication mode
-        if let savedRequestConverter {
-            requestConverter = savedRequestConverter
-        }
-        requestAuthenticator.updateAuthenticator(
-            DefaultRequestAuthenticator(credentials: credentials)
-        )
-        // Restore the error handler's credentials so the Jetpack-tunnel retry
-        // path is available again for the admin session.
-        errorHandler.updateCredentials(credentials)
-        if let savedAuthenticationMode {
-            updateAuthenticationMode(savedAuthenticationMode)
-        }
-
-        // Clear saved state
-        self.savedRequestConverter = nil
-        self.savedAuthenticationMode = nil
-
-        // Re-observe the selected site to restore proper app password switching behavior
-        if let selectedSite {
-            observeSelectedSite(selectedSite)
         }
     }
 }

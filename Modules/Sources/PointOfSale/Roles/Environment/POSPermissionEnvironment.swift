@@ -11,15 +11,13 @@ extension EnvironmentValues {
     }
 }
 
-/// Default no-op provider when roles are disabled.
+/// Default no-op provider used in previews and when roles are disabled.
 final class EmptyPOSPermissionProvider: POSPermissionProviding {
     var currentOperator: POSOperator? { nil }
     var isLocked: Bool { false }
     var hasAnyPINs: Bool { false }
     var autoLockTimeoutSeconds: Int { 0 }
-    func checkPermission(_ capability: String) -> POSPermissionResult { .allowed }
     func hasCapability(_ capability: String) -> Bool { true }
-    func requestManagerApproval(managerPIN: String, for capability: String, orderID: Int64?) async throws -> String? { nil }
     func signIn(_ posOperator: POSOperator) {}
     func lock() {}
     func resetInactivityTimer() {}

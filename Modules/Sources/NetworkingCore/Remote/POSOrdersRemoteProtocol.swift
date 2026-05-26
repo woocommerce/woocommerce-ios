@@ -17,7 +17,8 @@ public protocol POSOrdersRemoteProtocol {
 
     func createPOSOrder(siteID: Int64,
                         order: Order,
-                        fields: [OrdersRemote.CreateOrderField]) async throws -> Order
+                        fields: [OrdersRemote.CreateOrderField],
+                        additionalMetadata: [MetaData]) async throws -> Order
 
     func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order
 

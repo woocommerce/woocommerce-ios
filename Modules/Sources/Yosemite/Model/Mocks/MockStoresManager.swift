@@ -265,14 +265,6 @@ public class MockStoresManager: StoresManager {
         return false
     }
 
-    public func overridePOSCredentials(username: String, applicationPassword: String, siteAddress: String) {
-        // no-op
-    }
-
-    public func revertPOSCredentialOverride() {
-        // no-op
-    }
-
     public var posCatalogSyncCoordinator: (any POSCatalogSyncCoordinatorProtocol)? {
         nil
     }

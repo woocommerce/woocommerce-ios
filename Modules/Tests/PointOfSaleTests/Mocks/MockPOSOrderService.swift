@@ -13,15 +13,18 @@ class MockPOSOrderService: POSOrderServiceProtocol {
     var syncOrderCallCount = 0
     var updateOrderWasCalled = false
     var spySyncOrderCurrency: CurrencyCode?
+    var spySyncOrderStaffUserID: Int64?
     var spyCashPaymentChangeDueAmount: String?
 
     var onSyncOrderCalled: (@MainActor () async -> Void)?
 
     func syncOrder(cart: Yosemite.POSCart,
-                   currency: CurrencyCode) async throws -> Yosemite.Order {
+                   currency: CurrencyCode,
+                   staffUserID: Int64?) async throws -> Yosemite.Order {
         syncOrderWasCalled = true
         syncOrderCallCount += 1
         spySyncOrderCurrency = currency
+        spySyncOrderStaffUserID = staffUserID
 
         await onSyncOrderCalled?()
 

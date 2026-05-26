@@ -10,8 +10,11 @@ public protocol POSOrderServiceProtocol {
     /// Syncs order based on the cart.
     /// - Parameters:
     ///   - cart: Cart with different types of items and quantities.
+    ///   - currency: The store's currency code.
+    ///   - staffUserID: When non-nil, written to the order as `_pos_attribution` meta
+    ///     (per the M1 plan) so the order timeline records which staff member processed it.
     /// - Returns: Order from the remote sync.
-    func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order
+    func syncOrder(cart: POSCart, currency: CurrencyCode, staffUserID: Int64?) async throws -> Order
     func loadOrder(orderID: Int64) async throws -> Order
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws
@@ -56,7 +59,8 @@ public final class POSOrderService: POSOrderServiceProtocol {
     }
 
     public func syncOrder(cart: POSCart,
-                          currency: CurrencyCode) async throws -> Order {
+                          currency: CurrencyCode,
+                          staffUserID: Int64?) async throws -> Order {
         let order = OrderFactory
             .newOrder(currency: currency)
             .copy(siteID: siteID, status: .autoDraft)
@@ -64,12 +68,15 @@ public final class POSOrderService: POSOrderServiceProtocol {
             .addCoupons(cart.coupons)
             .addCustomAmounts(cart.customAmounts)
 
+        let additionalMetadata = Self.makeAttributionMetadata(staffUserID: staffUserID)
+
         let createdOrder: Order
         do {
             createdOrder = try await ordersRemote.createPOSOrder(
                 siteID: siteID,
                 order: order,
-                fields: [.items, .status, .currency, .couponLines, .feeLines]
+                fields: [.items, .status, .currency, .couponLines, .feeLines],
+                additionalMetadata: additionalMetadata
             )
         } catch {
             // Check if this is a server validation error about missing products
@@ -216,6 +223,18 @@ public extension POSOrderService {
     enum POSOrderServiceError: Error {
         case updateOrderFailed
         case missingProductsInOrder([CartOrderComparison.MissingCartItem])
+    }
+}
+
+private extension POSOrderService {
+    /// Builds the `_pos_attribution` meta entry per the M1 plan
+    /// (https://peacockp2.wordpress.com/?p=34760). Returns an empty array when no staff
+    /// user is signed in so the server-side `pre_insert_shop_order_object` validation
+    /// won't reject pre-roll-out clients.
+    static func makeAttributionMetadata(staffUserID: Int64?) -> [MetaData] {
+        guard let staffUserID else { return [] }
+        let value = "{\"staff_user_id\":\(staffUserID)}"
+        return [MetaData(metadataID: 0, key: "_pos_attribution", value: value)]
     }
 }
 

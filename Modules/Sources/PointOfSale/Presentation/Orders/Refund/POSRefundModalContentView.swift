@@ -78,7 +78,6 @@ struct POSRefundModalContentView: View {
     let showsItemSelection: Bool
     let onRefundSuccess: (() -> Void)?
     let onRefundFailure: ((Error) -> Void)?
-    let approvalToken: String?
 
     let errorStrings: POSRefundErrorStrings
 
@@ -228,8 +227,7 @@ struct POSRefundModalContentView: View {
         analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingStarted())
         do {
             try await orderListModel.ordersController.processRefund(
-                reason: reviewData.refundReason,
-                approvalToken: approvalToken
+                reason: reviewData.refundReason
             )
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingSuccess())
             modalState = .success(reviewData)

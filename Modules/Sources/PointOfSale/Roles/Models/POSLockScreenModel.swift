@@ -37,6 +37,15 @@ final class POSLockScreenModel {
         }
     }
 
+    func refresh() async {
+        await session.refreshPINStatus()
+        do {
+            try session.checkLockoutState()
+        } catch {
+            pinEntryState = state(for: error)
+        }
+    }
+
     func lockoutExpired() {
         guard case .lockout = pinEntryState else { return }
         pinEntryState = .idle

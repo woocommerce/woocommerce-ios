@@ -55,7 +55,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         }
 
         let waitForAssetUpload = self.expectation(description: "Wait for asset upload callback from image upload")
-        assetUploadSubscription = productImageActionHandler.addAssetUploadObserver(self) { (asset, result) in
+        assetUploadSubscription = productImageActionHandler.addAssetUploadObserver(self) { asset, result in
             guard case let .success(productImage) = result else {
                 return XCTFail()
             }

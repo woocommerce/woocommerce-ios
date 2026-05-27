@@ -43,7 +43,7 @@ private extension DataStore {
 
     func synchronizeCountries(siteID: Int64,
                               completion: @escaping (Result<[Country], Error>) -> Void) {
-        remote.loadCountries(siteID: siteID) { [weak self] (result) in
+        remote.loadCountries(siteID: siteID) { [weak self] result in
             guard let self else { return }
 
             switch result {

@@ -104,7 +104,7 @@ private extension ProductVariationStore {
                                         variationIDs: variationIDs,
                                         context: nil,
                                         pageNumber: pageNumber,
-                                        pageSize: pageSize) { [weak self] (productVariations, error) in
+                                        pageSize: pageSize) { [weak self] productVariations, error in
             guard let productVariations else {
                 onCompletion(.failure(error ?? ProductVariationLoadError.unexpected))
                 return

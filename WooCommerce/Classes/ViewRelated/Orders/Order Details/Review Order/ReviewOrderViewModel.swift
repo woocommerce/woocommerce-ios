@@ -276,7 +276,7 @@ private extension ReviewOrderViewModel {
 
         let addressRow: Row? = {
             let orderContainsOnlyVirtualProducts = products
-                .filter { (product) -> Bool in
+                .filter { product -> Bool in
                     order.items.contains(where: { $0.productID == product.productID})
                 }
                 .allSatisfy { $0.virtual == true }

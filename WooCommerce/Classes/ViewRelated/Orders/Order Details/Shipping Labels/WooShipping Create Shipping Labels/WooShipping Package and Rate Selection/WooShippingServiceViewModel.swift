@@ -246,7 +246,7 @@ private extension WooShippingServiceViewModel {
     /// Generates the data to display available shipping rates, grouped by carrier ID.
     func generateServiceTabs() {
         serviceTabs = standardRates.grouped(by: { $0.carrierID })
-            .compactMap { (carrierID, rates) -> WooShippingServiceTab? in
+            .compactMap { carrierID, rates -> WooShippingServiceTab? in
                 guard let carrier = WooShippingCarrier(rawValue: carrierID) else {
                     return nil
                 }

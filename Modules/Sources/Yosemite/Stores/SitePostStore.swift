@@ -41,7 +41,7 @@ private extension SitePostStore {
     /// Retrieve the password for a specific site post from WP.com
     ///
     func retrieveSitePostPassword(siteID: Int64, postID: Int64, onCompletion: @escaping (_ password: String?, _ error: Error?) -> Void) {
-        remote.loadSitePost(for: siteID, postID: postID) { (sitePost, error) in
+        remote.loadSitePost(for: siteID, postID: postID) { sitePost, error in
             guard error == nil else {
                 onCompletion(nil, error)
                 return

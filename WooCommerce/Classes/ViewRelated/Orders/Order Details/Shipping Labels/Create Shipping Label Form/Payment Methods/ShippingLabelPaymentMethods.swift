@@ -210,26 +210,26 @@ struct ShippingLabelPaymentMethods_Previews: PreviewProvider {
         let accountSettingsWithoutEditPermissions = ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(withPermissions: false)
         let disabledViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettingsWithoutEditPermissions)
 
-        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (_) in
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { _ in
         })
         .colorScheme(.light)
         .previewDisplayName("Light mode")
 
-        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (_) in
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { _ in
         })
         .colorScheme(.dark)
         .previewDisplayName("Dark Mode")
 
-        ShippingLabelPaymentMethods(viewModel: disabledViewModel, completion: { (_) in
+        ShippingLabelPaymentMethods(viewModel: disabledViewModel, completion: { _ in
         })
         .previewDisplayName("Disabled state")
 
-        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (_) in
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { _ in
         })
         .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
         .previewDisplayName("Accessibility: Large Font Size")
 
-        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (_) in
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { _ in
         })
         .environment(\.layoutDirection, .rightToLeft)
         .previewDisplayName("Localization: Right-to-Left Layout")

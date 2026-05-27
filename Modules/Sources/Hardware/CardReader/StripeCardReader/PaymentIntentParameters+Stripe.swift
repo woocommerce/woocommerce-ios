@@ -88,7 +88,7 @@ private extension Hardware.PaymentIntentParameters {
             "platform": "\(meta.platformMetadataKey)"
         ]
 
-        let updatedMetadata = metadata?.merging(cardReaderMetadata) { (_, new) in new }
+        let updatedMetadata = metadata?.merging(cardReaderMetadata) { _, new in new }
 
         return updatedMetadata
     }

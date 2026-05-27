@@ -152,7 +152,7 @@ final class ProductsRemoteTests: XCTestCase {
         // When
         var deletedProduct: Product?
         waitForExpectation { expectation in
-            remote.deleteProduct(for: sampleSiteID, productID: sampleProductID) { (result) in
+            remote.deleteProduct(for: sampleSiteID, productID: sampleProductID) { result in
                 deletedProduct = try? result.get()
                 expectation.fulfill()
             }
@@ -243,7 +243,7 @@ final class ProductsRemoteTests: XCTestCase {
         // When
         var result: Result<Product, Error>?
         waitForExpectation { expectation in
-            remote.deleteProduct(for: sampleSiteID, productID: sampleProductID) { (aResult) in
+            remote.deleteProduct(for: sampleSiteID, productID: sampleProductID) { aResult in
                 result = aResult
                 expectation.fulfill()
             }

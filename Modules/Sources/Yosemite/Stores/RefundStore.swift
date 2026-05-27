@@ -50,7 +50,7 @@ private extension RefundStore {
     /// Creates a new Refund.
     ///
     func createRefund(siteID: Int64, orderID: Int64, refund: Refund, onCompletion: @escaping (Refund?, Error?) -> Void) {
-        remote.createRefund(for: siteID, by: orderID, refund: refund) { [weak self] (refund, error) in
+        remote.createRefund(for: siteID, by: orderID, refund: refund) { [weak self] refund, error in
             guard let refund else {
                 onCompletion(nil, error)
                 return
@@ -65,7 +65,7 @@ private extension RefundStore {
     /// Retrieves a single Refund by ID.
     ///
     func retrieveRefund(siteID: Int64, orderID: Int64, refundID: Int64, onCompletion: @escaping (Networking.Refund?, Error?) -> Void) {
-        remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) { [weak self] (refund, error) in
+        remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) { [weak self] refund, error in
             guard let refund else {
                 if case NetworkError.notFound? = error {
                     self?.deleteStoredRefund(siteID: siteID, orderID: orderID, refundID: refundID) {
@@ -120,7 +120,7 @@ private extension RefundStore {
         }
 
         // Request any refunds that don't exist in storage.
-        remote.loadRefunds(for: siteID, by: orderID, with: missingRefundIDs) { [weak self] (refunds, error) in
+        remote.loadRefunds(for: siteID, by: orderID, with: missingRefundIDs) { [weak self] refunds, error in
             guard let refunds else {
                 return onCompletion(error)
             }
@@ -137,7 +137,7 @@ private extension RefundStore {
     /// Synchronizes the refunds associated with a given orderID
     ///
     func synchronizeRefunds(siteID: Int64, orderID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadAllRefunds(for: siteID, by: orderID) { [weak self] (refunds, error) in
+        remote.loadAllRefunds(for: siteID, by: orderID) { [weak self] refunds, error in
             guard let refunds else {
                 onCompletion(error)
                 return

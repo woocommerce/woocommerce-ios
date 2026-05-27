@@ -80,7 +80,7 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
             stackView.removeFromSuperview()
         }
         if rates.isNotEmpty {
-            packageRatesStackViews = rates.enumerated().map { (index, rateText) in
+            packageRatesStackViews = rates.enumerated().map { index, rateText in
                 let titleLabel = UILabel()
                 titleLabel.applyBodyStyle()
                 titleLabel.text = String(format: Localization.packageNumber, index + 1)
@@ -98,7 +98,7 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
                 stackView.addArrangedSubviews([titleLabel, descriptionLabel])
                 return stackView
             }
-            packageRatesStackViews.enumerated().forEach { (index, stackView) in
+            packageRatesStackViews.enumerated().forEach { index, stackView in
                 mainStackView.insertArrangedSubview(stackView, at: index)
             }
         }

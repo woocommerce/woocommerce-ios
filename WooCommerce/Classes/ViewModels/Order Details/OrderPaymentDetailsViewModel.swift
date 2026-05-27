@@ -67,7 +67,7 @@ final class OrderPaymentDetailsViewModel {
     }
 
     private var feesTotal: Decimal {
-        let subtotal = order.fees.reduce(Constants.decimalZero) { (output, fee) in
+        let subtotal = order.fees.reduce(Constants.decimalZero) { output, fee in
             let feeSubtotal = Decimal(string: fee.total) ?? Constants.decimalZero
             return output + feeSubtotal
         }

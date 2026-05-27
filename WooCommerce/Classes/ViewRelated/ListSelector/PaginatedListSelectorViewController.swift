@@ -199,7 +199,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
             return resultsController.object(at: indexPath)
         }
         let objects = resultsController.sections[indexPath.section].objects
-            .sorted(by: { (lhs, rhs) -> Bool in
+            .sorted(by: { lhs, rhs -> Bool in
                 return customResultsSortOrder(lhs, rhs)
             })
         return objects[indexPath.row]

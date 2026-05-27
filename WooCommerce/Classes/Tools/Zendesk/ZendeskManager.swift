@@ -215,7 +215,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
             }
         }
 
-        getUserInformationAndShowPrompt(withName: true, from: viewController) { (success, _) in
+        getUserInformationAndShowPrompt(withName: true, from: viewController) { success, _ in
             completion(success)
         }
     }
@@ -301,7 +301,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
             withName = false
         }
 
-        getUserInformationAndShowPrompt(withName: withName, from: controller) { (success, email) in
+        getUserInformationAndShowPrompt(withName: withName, from: controller) { success, email in
             completion(success, email)
         }
     }
@@ -342,7 +342,7 @@ private extension ZendeskManager {
     func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
         presentInController = viewController
         getUserInformationIfAvailable()
-        promptUserForInformation(withName: withName, from: viewController) { (success, email) in
+        promptUserForInformation(withName: withName, from: viewController) { success, email in
             guard success else {
                 DDLogInfo("No user information to create Zendesk identity with.")
                 completion(false, nil)

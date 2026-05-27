@@ -531,6 +531,7 @@ extension POSPaymentModel {
         analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewContainer.configuration.state))
         cardPresentPaymentOnboardingViewContainer = nil
         onOnboardingCancellation?()
+        cancelConnectCardReaderTask()
     }
 
     func trackCardPaymentsOnboardingShown() {

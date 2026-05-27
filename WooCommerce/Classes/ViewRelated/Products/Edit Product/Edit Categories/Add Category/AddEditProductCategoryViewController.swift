@@ -160,7 +160,7 @@ extension AddEditProductCategoryViewController: UITableViewDelegate {
                 siteID: viewModel.siteID,
                 childCategory: viewModel.currentCategory,
                 selectedCategory: viewModel.selectedParentCategory
-            ) { [weak self] (parentCategory) in
+            ) { [weak self] parentCategory in
                 defer {
                     self?.navigationController?.popViewController(animated: true)
                 }

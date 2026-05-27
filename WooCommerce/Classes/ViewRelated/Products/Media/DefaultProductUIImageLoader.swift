@@ -100,7 +100,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         }
 
         if let downloadedImage = await withCheckedContinuation({ continuation in
-            _ = imageService.downloadImage(with: url, shouldCacheImage: true) { (image, _) in
+            _ = imageService.downloadImage(with: url, shouldCacheImage: true) { image, _ in
                 if let image {
                     continuation.resume(returning: image)
                 } else {
@@ -119,7 +119,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
     }
 
     func requestImage(asset: PHAsset, targetSize: CGSize, skipsDegradedImage: Bool, completion: @escaping (UIImage) -> Void) {
-        phAssetImageLoader.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: nil) { (image, info) in
+        phAssetImageLoader.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: nil) { image, info in
             guard let image else {
                 return
             }
@@ -147,7 +147,7 @@ private extension DefaultProductUIImageLoader {
             phAssetImageLoader.requestImage(for: asset,
                                             targetSize: PHImageManagerMaximumSize,
                                             contentMode: .aspectFit,
-                                            options: nil) { [weak self] (image, _) in
+                                            options: nil) { [weak self] image, _ in
                 guard let image, let self else {
                     return
                 }

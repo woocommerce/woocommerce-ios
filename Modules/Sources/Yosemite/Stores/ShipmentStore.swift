@@ -76,7 +76,7 @@ public class ShipmentStore: Store {
 private extension ShipmentStore {
 
     func synchronizeShipmentTrackingData(siteID: Int64, orderID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadShipmentTrackings(for: siteID, orderID: orderID) { [weak self] (shipmentTrackingData, error) in
+        remote.loadShipmentTrackings(for: siteID, orderID: orderID) { [weak self] shipmentTrackingData, error in
             guard let readOnlyShipmentTrackingData = shipmentTrackingData else {
                 onCompletion(error)
                 return
@@ -89,7 +89,7 @@ private extension ShipmentStore {
     }
 
     func syncronizeShipmentTrackingProviderGroupsData(siteID: Int64, orderID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadShipmentTrackingProviderGroups(for: siteID, orderID: orderID) { [weak self] (groups, error) in
+        remote.loadShipmentTrackingProviderGroups(for: siteID, orderID: orderID) { [weak self] groups, error in
             guard let readOnlyShipmentTrackingProviderGroups = groups else {
                 onCompletion(error)
                 return
@@ -177,7 +177,7 @@ extension ShipmentStore {
                                       orderID: orderID,
                                       trackingProvider: providerName,
                                       dateShipped: dateShipped,
-                                      trackingNumber: trackingNumber) { [weak self] (tracking, error) in
+                                      trackingNumber: trackingNumber) { [weak self] tracking, error in
                                         guard let newTracking = tracking else {
                                             onCompletion(error)
                                             return
@@ -203,7 +203,7 @@ extension ShipmentStore {
                                                         trackingProvider: trackingProvider,
                                                         trackingNumber: trackingNumber,
                                                         trackingURL: trackingURL,
-                                                        dateShipped: dateShipped) { [weak self] (tracking, error) in
+                                                        dateShipped: dateShipped) { [weak self] tracking, error in
             guard let newTracking = tracking else {
                 onCompletion(error)
                 return
@@ -223,7 +223,7 @@ extension ShipmentStore {
                         orderID: Int64,
                         trackingID: String,
                         onCompletion: @escaping (Error?) -> Void) {
-        remote.deleteShipmentTracking(for: siteID, orderID: orderID, trackingID: trackingID) { [weak self] (tracking, error) in
+        remote.deleteShipmentTracking(for: siteID, orderID: orderID, trackingID: trackingID) { [weak self] tracking, error in
             guard let _ = tracking else {
                 onCompletion(error)
                 return

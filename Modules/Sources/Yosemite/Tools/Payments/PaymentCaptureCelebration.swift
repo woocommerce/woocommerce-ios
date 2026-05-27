@@ -29,7 +29,7 @@ private extension PaymentCaptureCelebration {
 
         let url = URL(fileURLWithPath: path)
         AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
-        AudioServicesAddSystemSoundCompletion(soundID, nil, nil, { (soundId, _) -> Void in
+        AudioServicesAddSystemSoundCompletion(soundID, nil, nil, { soundId, _ -> Void in
             AudioServicesDisposeSystemSoundID(soundId)
           }, nil)
 

@@ -9,6 +9,7 @@
 - [**] Contact support now includes troubleshooting and AI help [https://github.com/woocommerce/woocommerce-ios/pull/17218]
 - [Internal] Enabled local flag for self-driven push notifications [https://github.com/woocommerce/woocommerce-ios/pull/17254]
 - [Internal] Phone POS Tap to Pay on iPhone: hero CTA stays tappable during silent pre-connect, Apple-compliant "Tap to Pay on iPhone" wording, Bluetooth as a one-shot opt-in from the Other payment methods sheet. Feature-flagged. [https://github.com/woocommerce/woocommerce-ios/pull/17152]
+- [*] POS: Receipt details can be edited directly from POS settings [https://github.com/woocommerce/woocommerce-ios/pull/16811]
 
 
 24.8

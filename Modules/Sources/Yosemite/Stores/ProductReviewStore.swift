@@ -192,7 +192,7 @@ private extension ProductReviewStore {
     }
 
     func moderateReview(siteID: Int64, reviewID: Int64, status: ProductReviewStatus, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
-        remote.updateProductReviewStatus(for: siteID, reviewID: reviewID, statusKey: status.rawValue) { [weak self] (productReview, error) in
+        remote.updateProductReviewStatus(for: siteID, reviewID: reviewID, statusKey: status.rawValue) { [weak self] productReview, error in
             guard let self, let productReview else {
                 onCompletion(nil, error)
                 return

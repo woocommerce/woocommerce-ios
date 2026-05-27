@@ -22,11 +22,11 @@ extension ProductFormViewController {
                                                 message: body,
                                                 preferredStyle: .alert)
         let cancel = UIAlertAction(title: Localization.Alert.productTypeChangeCancelButton,
-                                   style: .cancel) { (_) in
+                                   style: .cancel) { _ in
                                        completion(false)
                                    }
         let confirm = UIAlertAction(title: Localization.Alert.productTypeChangeConfirmButton,
-                                    style: .default) { (_) in
+                                    style: .default) { _ in
                                         completion(true)
                                     }
         alertController.addAction(cancel)
@@ -72,11 +72,11 @@ extension ProductFormViewController {
                                                 message: Localization.Alert.productDeleteConfirmationMessage,
                                                 preferredStyle: .alert)
         let cancel = UIAlertAction(title: Localization.Alert.productDeleteConfirmationCancelButton,
-                                   style: .cancel) { (_) in
+                                   style: .cancel) { _ in
                                        completion(false)
                                    }
         let confirm = UIAlertAction(title: Localization.Alert.productDeleteConfirmationConfirmButton,
-                                    style: .default) { (_) in
+                                    style: .default) { _ in
                                         completion(true)
                                     }
         alertController.addAction(cancel)
@@ -91,11 +91,11 @@ extension ProductFormViewController {
                                                 message: Localization.Alert.variationDeleteConfirmationMessage,
                                                 preferredStyle: .alert)
         let cancel = UIAlertAction(title: Localization.Alert.variationDeleteConfirmationCancelButton,
-                                   style: .cancel) { (_) in
+                                   style: .cancel) { _ in
             completion(false)
         }
         let confirm = UIAlertAction(title: Localization.Alert.variationDeleteConfirmationConfirmButton,
-                                    style: .default) { (_) in
+                                    style: .default) { _ in
             completion(true)
         }
         alertController.addAction(cancel)

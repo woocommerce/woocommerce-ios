@@ -382,7 +382,7 @@ private extension WidgetSiteListSyncManagerTests {
             ("woocommerce_price_thousand_sep", ","),
             ("woocommerce_price_decimal_sep", "."),
             ("woocommerce_price_num_decimals", "2")
-        ].map { (settingID, value) in
+        ].map { settingID, value in
             makeSiteSetting(siteID: siteID, settingID: settingID, value: value, settingGroupKey: settingGroupKey)
         }
     }

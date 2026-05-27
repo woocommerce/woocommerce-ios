@@ -8,6 +8,8 @@ struct DefaultPOSAccessSessionTests {
     @Test func test_signIn_when_pin_is_valid_then_sets_currentStaff_and_unlocks_and_resets_limiter() async throws {
         // Given
         let staff = POSStaff(
+            userID: 1,
+            userLogin: "maya",
             displayName: "Maya",
             role: "shop_manager",
             capabilities: Set(POSCapability.allCases.map(\.rawValue))
@@ -126,7 +128,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_lock_when_called_then_sets_isLocked_true_and_keeps_currentStaff() async throws {
         // Given
-        let staff = POSStaff(displayName: "Maya", role: "shop_manager", capabilities: [])
+        let staff = POSStaff(userID: 1, userLogin: "maya", displayName: "Maya", role: "shop_manager", capabilities: [])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -178,6 +180,8 @@ struct DefaultPOSAccessSessionTests {
     @Test func test_allows_when_currentStaff_has_capability_then_returns_true() async throws {
         // Given
         let staff = POSStaff(
+            userID: 1,
+            userLogin: "maya",
             displayName: "Maya",
             role: "shop_manager",
             capabilities: [POSCapability.refundShopOrders.rawValue]
@@ -191,7 +195,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_allows_when_currentStaff_lacks_capability_then_returns_false() async throws {
         // Given
-        let staff = POSStaff(displayName: "Maya", role: "pos_cashier", capabilities: [])
+        let staff = POSStaff(userID: 1, userLogin: "maya", displayName: "Maya", role: "pos_cashier", capabilities: [])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 

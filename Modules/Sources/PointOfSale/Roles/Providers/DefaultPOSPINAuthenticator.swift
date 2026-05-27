@@ -8,6 +8,8 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
             throw .invalidPIN
         }
         return POSStaff(
+            userID: 999,
+            userLogin: "demo_manager",
             displayName: "Demo Manager",
             role: "shop_manager",
             capabilities: Set(POSCapability.allCases.map(\.rawValue))

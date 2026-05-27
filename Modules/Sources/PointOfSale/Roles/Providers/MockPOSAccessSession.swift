@@ -21,7 +21,8 @@ final class MockPOSAccessSession: POSAccessSession {
          isLocked: Bool = false,
          hasAnyPINs: Bool = true,
          signInResult: Result<POSStaff, POSAuthError> = .success(
-            POSStaff(displayName: "Maya", role: "Manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+            POSStaff(userID: 1, userLogin: "maya", displayName: "Maya",
+                     role: "Manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
          ),
          managerApprovalResult: Result<Void, POSAuthError> = .success(()),
          checkLockoutResult: Result<Void, POSAuthError> = .success(())) {

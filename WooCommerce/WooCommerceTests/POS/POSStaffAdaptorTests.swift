@@ -44,6 +44,30 @@ final class POSStaffAdaptorTests: XCTestCase {
         }
     }
 
+    func test_fetchStaff_when_invalidToken_then_throws_adminMissingCapability() async {
+        // Given
+        let error = DotcomError.invalidToken()
+        let remote = MockPOSStaffRemote(result: .failure(error))
+        let sut = POSStaffAdaptor(remote: remote)
+
+        // When / Then
+        await assertThrows(POSStaffFetchError.adminMissingCapability) {
+            _ = try await sut.fetchStaff(siteID: 1)
+        }
+    }
+
+    func test_fetchStaff_when_rest_forbidden_then_throws_adminMissingCapability() async {
+        // Given
+        let error = DotcomError.unknown(code: "rest_forbidden", message: nil, data: nil)
+        let remote = MockPOSStaffRemote(result: .failure(error))
+        let sut = POSStaffAdaptor(remote: remote)
+
+        // When / Then
+        await assertThrows(POSStaffFetchError.adminMissingCapability) {
+            _ = try await sut.fetchStaff(siteID: 1)
+        }
+    }
+
     func test_fetchStaff_when_decoding_fails_then_throws_malformedResponse() async {
         // Given
         let decodingError = DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: ""))

@@ -14,6 +14,7 @@ extension POSStaffRemote: POSStaffRemoteProtocol {}
 /// Concrete `POSStaffFetching` in the app target. Calls `POSStaffRemote` and maps Networking
 /// errors to the typed `POSStaffFetchError` so PointOfSale callers can branch by intent.
 ///
+/// HTTP 401, 403 (rest_forbidden), and invalid/expired token responses map to `.adminMissingCapability`.
 final class POSStaffAdaptor: POSStaffFetching {
     private let remote: POSStaffRemoteProtocol
 
@@ -33,10 +34,12 @@ final class POSStaffAdaptor: POSStaffFetching {
             throw .malformedResponse
         } catch let error as DotcomError {
             switch error {
-            case .unauthorized:
+            case .unauthorized, .invalidToken:
                 throw .adminMissingCapability
             case .noRestRoute:
                 throw .flagDisabledServerSide
+            case .unknown(let code, _, _) where code == "rest_forbidden":
+                throw .adminMissingCapability
             default:
                 throw .transient(retryable: true)
             }

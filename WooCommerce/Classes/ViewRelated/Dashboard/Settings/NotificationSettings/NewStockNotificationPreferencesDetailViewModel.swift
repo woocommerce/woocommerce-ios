@@ -100,13 +100,14 @@ private extension NewStockNotificationPreferencesDetailViewModel {
     static let lowStockAmountKey = "woocommerce_notify_low_stock_amount"
 
     func configureLowStockThresholdResultsController() {
+        // The view-model is `@MainActor`-isolated; hop explicitly from these
+        // non-isolated `ResultsController` callbacks so the actor isolation
+        // matches without relying on `viewContext` being on main.
         lowStockThresholdResultsController.onDidChangeContent = { [weak self] in
-            self?.applyLowStockThresholdStorageValue()
+            Task { @MainActor in self?.applyLowStockThresholdStorageValue() }
         }
-        // `StorageManagerDidResetStorage` can be posted from a background
-        // thread, so hop to main before mutating @Observable state.
         lowStockThresholdResultsController.onDidResetContent = { [weak self] in
-            DispatchQueue.main.async { self?.applyLowStockThresholdStorageValue() }
+            Task { @MainActor in self?.applyLowStockThresholdStorageValue() }
         }
         do {
             try lowStockThresholdResultsController.performFetch()

@@ -68,9 +68,10 @@ struct POSLockScreenModelTests {
         let sut = POSLockScreenModel(session: session)
 
         // When
-        await sut.signIn(withPIN: "1234")
+        let succeeded = await sut.signIn(withPIN: "1234")
 
         // Then
+        #expect(succeeded == true)
         #expect(sut.isLocked == false)
         #expect(sut.pinEntryState == .idle)
         #expect(session.currentStaff == signedInStaff)
@@ -82,9 +83,10 @@ struct POSLockScreenModelTests {
         let sut = POSLockScreenModel(session: session)
 
         // When
-        await sut.signIn(withPIN: "9999")
+        let succeeded = await sut.signIn(withPIN: "9999")
 
         // Then
+        #expect(succeeded == false)
         #expect(sut.isLocked == true)
         #expect(sut.pinEntryState == .error(kind: .invalidPIN))
     }
@@ -95,9 +97,10 @@ struct POSLockScreenModelTests {
         let sut = POSLockScreenModel(session: session)
 
         // When
-        await sut.signIn(withPIN: "1234")
+        let succeeded = await sut.signIn(withPIN: "1234")
 
         // Then
+        #expect(succeeded == false)
         #expect(sut.isLocked == true)
         #expect(sut.pinEntryState == .error(kind: .generic))
     }
@@ -112,9 +115,10 @@ struct POSLockScreenModelTests {
         let sut = POSLockScreenModel(session: session)
 
         // When
-        await sut.signIn(withPIN: "9999")
+        let succeeded = await sut.signIn(withPIN: "9999")
 
         // Then
+        #expect(succeeded == false)
         #expect(sut.isLocked == true)
         #expect(sut.pinEntryState == .lockout(until: lockoutUntil))
     }
@@ -128,9 +132,10 @@ struct POSLockScreenModelTests {
         let sut = POSLockScreenModel(session: session)
 
         // When
-        await sut.signIn(withPIN: "9999")
+        let succeeded = await sut.signIn(withPIN: "9999")
 
         // Then
+        #expect(succeeded == false)
         #expect(sut.isLocked == true)
         #expect(sut.pinEntryState == .error(kind: .generic))
     }

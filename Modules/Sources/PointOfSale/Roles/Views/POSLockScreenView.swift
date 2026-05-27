@@ -24,9 +24,7 @@ struct POSLockScreenView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 POSPINEntryView(state: model.pinEntryState) { pin in
-                    Task {
-                        await model.signIn(withPIN: pin)
-                    }
+                    await model.signIn(withPIN: pin)
                 }
                 .frame(height: POSPINEntryView.preferredHeight)
             }

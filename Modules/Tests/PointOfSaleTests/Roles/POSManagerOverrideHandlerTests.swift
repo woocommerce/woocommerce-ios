@@ -57,9 +57,10 @@ struct POSManagerOverrideHandlerTests {
         )
 
         // When
-        await sut.submit(pin: "1234")
+        let succeeded = await sut.submit(pin: "1234")
 
         // Then
+        #expect(succeeded == true)
         #expect(session.managerApprovalPINs == ["1234"])
         #expect(session.managerApprovalCapabilities == [.viewPOSSettings])
         #expect(sut.request == nil)
@@ -74,9 +75,10 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(for: .refundShopOrders, reason: "Refunding orders requires manager approval")
 
         // When
-        await sut.submit(pin: "9999")
+        let succeeded = await sut.submit(pin: "9999")
 
         // Then
+        #expect(succeeded == false)
         #expect(session.managerApprovalPINs == ["9999"])
         #expect(session.managerApprovalCapabilities == [.refundShopOrders])
         #expect(sut.request?.capability == .refundShopOrders)
@@ -90,9 +92,10 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(for: .publishShopCoupons, reason: "Creating coupons requires manager approval")
 
         // When
-        await sut.submit(pin: "1234")
+        let succeeded = await sut.submit(pin: "1234")
 
         // Then
+        #expect(succeeded == false)
         #expect(session.managerApprovalPINs == ["1234"])
         #expect(sut.request?.capability == .publishShopCoupons)
         #expect(sut.pinEntryState == .error(kind: .generic))
@@ -220,9 +223,10 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(for: .refundShopOrders, reason: "Refunding orders requires manager approval")
 
         // When
-        await sut.submit(pin: "1234")
+        let succeeded = await sut.submit(pin: "1234")
 
         // Then
+        #expect(succeeded == false)
         #expect(sut.request?.capability == .refundShopOrders)
         #expect(sut.pinEntryState == .error(kind: .generic))
     }

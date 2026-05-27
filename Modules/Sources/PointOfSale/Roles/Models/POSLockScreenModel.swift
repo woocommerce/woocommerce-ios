@@ -23,14 +23,17 @@ final class POSLockScreenModel {
     }
     #endif
 
-    func signIn(withPIN pin: String) async {
+    @discardableResult
+    func signIn(withPIN pin: String) async -> Bool {
         pinEntryState = .loading
 
         do {
             try await session.signIn(withPIN: pin)
             pinEntryState = .idle
+            return true
         } catch {
             pinEntryState = state(for: error)
+            return false
         }
     }
 }

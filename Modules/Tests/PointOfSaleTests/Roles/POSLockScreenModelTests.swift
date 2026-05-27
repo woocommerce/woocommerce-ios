@@ -140,6 +140,46 @@ struct POSLockScreenModelTests {
         #expect(sut.pinEntryState == .error(kind: .generic))
     }
 
+    @Test func test_lockoutExpired_when_in_lockout_state_then_resets_to_idle() async {
+        // Given
+        let session = MockPOSAccessSession(
+            isLocked: true,
+            signInResult: .failure(.rateLimited(until: Date().addingTimeInterval(60)))
+        )
+        let sut = POSLockScreenModel(session: session)
+        await sut.signIn(withPIN: "9999")
+
+        // When
+        sut.lockoutExpired()
+
+        // Then
+        #expect(sut.pinEntryState == .idle)
+    }
+
+    @Test func test_lockoutExpired_when_in_idle_state_then_does_nothing() {
+        // Given
+        let session = MockPOSAccessSession(isLocked: true)
+        let sut = POSLockScreenModel(session: session)
+
+        // When
+        sut.lockoutExpired()
+
+        // Then
+        #expect(sut.pinEntryState == .idle)
+    }
+
+    @Test func test_lockoutExpired_when_in_error_state_then_does_not_clear_error() {
+        // Given
+        let session = MockPOSAccessSession(isLocked: true)
+        let sut = POSLockScreenModel(session: session, initialPinEntryState: .error(kind: .invalidPIN))
+
+        // When
+        sut.lockoutExpired()
+
+        // Then
+        #expect(sut.pinEntryState == .error(kind: .invalidPIN))
+    }
+
     private func makeStaff() -> POSStaff {
         POSStaff(
             displayName: "Maya",

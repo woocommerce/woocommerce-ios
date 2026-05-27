@@ -23,9 +23,13 @@ struct POSLockScreenView: View {
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
-                POSPINEntryView(state: model.pinEntryState) { pin in
-                    await model.signIn(withPIN: pin)
-                }
+                POSPINEntryView(
+                    state: model.pinEntryState,
+                    onComplete: { pin in
+                        await model.signIn(withPIN: pin)
+                    },
+                    onLockoutExpired: { model.lockoutExpired() }
+                )
                 .frame(height: POSPINEntryView.preferredHeight)
             }
             .frame(maxWidth: POSPINEntryView.contentWidth)

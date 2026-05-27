@@ -36,6 +36,11 @@ final class POSLockScreenModel {
             return false
         }
     }
+
+    func lockoutExpired() {
+        guard case .lockout = pinEntryState else { return }
+        pinEntryState = .idle
+    }
 }
 
 private extension POSLockScreenModel {

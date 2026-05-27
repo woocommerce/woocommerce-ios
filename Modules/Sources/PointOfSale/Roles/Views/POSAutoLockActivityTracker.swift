@@ -48,6 +48,14 @@ struct POSAutoLockActivityTracker: ViewModifier {
             .onChange(of: aggregateModel.cart.purchasableItems.count) { _, _ in
                 noteActivity()
             }
+            .onChange(of: session.isLocked) { _, isLocked in
+                // The tracker sits under the lock overlay, so PIN entry never reaches our
+                // gesture or cart observers. Treat the locked -> unlocked transition as
+                // activity so the timer re-arms after sign-in.
+                if !isLocked {
+                    noteActivity()
+                }
+            }
             .onAppear { noteActivity() }
             .onDisappear { stopTimer() }
     }

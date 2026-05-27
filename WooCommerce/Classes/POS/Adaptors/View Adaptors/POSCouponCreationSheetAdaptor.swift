@@ -1,5 +1,6 @@
 import SwiftUI
 import struct Yosemite.Coupon
+import struct Networking.MetaData
 
 /// Provide access to AddEditCouponView and ViewModel for POS without making it as an explicit type dependency
 /// AddEditCouponView cannot be easily moved and reused in a shared module due to multiple dependencies
@@ -14,6 +15,7 @@ struct POSCouponCreationViewAdaptor: View {
 
     init(discountType: Coupon.DiscountType,
          showTypeSelection: Binding<Bool>,
+         additionalCreateMetadata: [MetaData],
          onSuccess: @escaping (Coupon) -> Void,
          dismissHandler: @escaping () -> Void,
          onDisappear: @escaping () -> Void) {
@@ -22,6 +24,7 @@ struct POSCouponCreationViewAdaptor: View {
         self.onDisappear = onDisappear
         _viewModel = StateObject(wrappedValue: AddEditCouponViewModel(
             discountType: discountType,
+            additionalCreateMetadata: additionalCreateMetadata,
             onSuccess: onSuccess
         ))
     }

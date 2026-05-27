@@ -76,6 +76,52 @@ public final class POSPermissionProvider: POSPermissionProviding {
         currentOperator?.hasCapability(capability) ?? false
     }
 
+    /// Two-tier permission check. When no PINs are configured, every action is allowed
+    /// (no security boundary). Otherwise returns `.allowed` if the current operator has
+    /// the capability, else `.requiresOverride` so the caller can present the modal.
+    public func checkPermission(_ capability: String) -> POSPermissionResult {
+        guard hasAnyPINs else { return .allowed }
+        resetInactivityTimer()
+        return hasCapability(capability) ? .allowed : .requiresOverride
+    }
+
+    /// Verifies the entered manager PIN against the cached staff hashes and confirms
+    /// the matched staff member holds `capability`. Does **not** sign the manager in —
+    /// the current operator stays the cashier; the caller attaches the approver's
+    /// user id as `_pos_override_user_id` meta to the next request.
+    ///
+    /// Refetches `/staff` once on cache miss before failing, mirroring `authenticatePIN`.
+    public func requestManagerApproval(managerPIN: String,
+                                       for capability: String) async throws -> POSOperator {
+        try rateLimiter.checkAllowed()
+
+        if let approver = matchOverrideOperator(forPIN: managerPIN, capability: capability) {
+            rateLimiter.reset()
+            return approver
+        }
+
+        await refreshPINStatus()
+        if let approver = matchOverrideOperator(forPIN: managerPIN, capability: capability) {
+            rateLimiter.reset()
+            return approver
+        }
+
+        rateLimiter.recordFailure()
+        throw (try? rateLimiter.errorForCurrentState(fallback: .invalidPIN)) ?? POSAuthError.invalidPIN
+    }
+
+    private func matchOverrideOperator(forPIN pin: String, capability: String) -> POSOperator? {
+        for member in staff where member.hasPIN {
+            guard verifier.verify(pin: pin, member: member) else { continue }
+            let approver = makeOperator(for: member)
+            // The approver must themselves hold the capability they're authorizing,
+            // otherwise this is just a same-role re-entry and shouldn't count.
+            guard approver.hasCapability(capability) else { continue }
+            return approver
+        }
+        return nil
+    }
+
     public func signIn(_ posOperator: POSOperator) {
         currentOperator = posOperator
         isLocked = false

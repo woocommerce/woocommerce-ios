@@ -14,6 +14,8 @@ struct POSFloatingControlView: View {
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
     @State private var showOrders: Bool = false
+    @State private var exitOverrideHandler = POSManagerOverrideHandler()
+    @State private var settingsOverrideHandler = POSManagerOverrideHandler()
     @Environment(\.posPermissions) private var permissions
     @Environment(\.dismiss) private var dismiss
 
@@ -63,6 +65,8 @@ struct POSFloatingControlView: View {
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
         }
+        .posManagerOverrideModal(handler: exitOverrideHandler, permissions: permissions)
+        .posManagerOverrideModal(handler: settingsOverrideHandler, permissions: permissions)
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
@@ -84,29 +88,25 @@ private extension POSFloatingControlView {
             Divider()
         }
 
-        if canExitPOS {
+        Button {
+            analytics.track(.pointOfSaleExitMenuItemTapped)
+            requestExitPermission()
+        } label: {
+            Label(
+                title: { Text(Localization.exitPointOfSale) },
+                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+            )
+        }
+        .accessibilityIdentifier("pos-exit-menu-item")
+        if horizontalSizeClass == .regular || featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype) {
             Button {
-                analytics.track(.pointOfSaleExitMenuItemTapped)
-                showExitPOSModal = true
+                analytics.track(.pointOfSaleSettingsMenuItemTapped)
+                requestSettingsPermission()
             } label: {
                 Label(
-                    title: { Text(Localization.exitPointOfSale) },
-                    icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+                    title: { Text(Localization.settings) },
+                    icon: { Image(systemName: "gearshape") }
                 )
-            }
-            .accessibilityIdentifier("pos-exit-menu-item")
-        }
-        if horizontalSizeClass == .regular || featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype) {
-            if canViewSettings {
-                Button {
-                    analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                    showSettings = true
-                } label: {
-                    Label(
-                        title: { Text(Localization.settings) },
-                        icon: { Image(systemName: "gearshape") }
-                    )
-                }
             }
 
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
@@ -134,17 +134,22 @@ private extension POSFloatingControlView {
         }
     }
 
-    /// In M1, settings menu visibility is hardcoded per role: cashier cannot view settings
-    /// (manager-override returns in M3 per the plan). Outside roles mode the menu is always shown.
-    var canViewSettings: Bool {
-        guard isRolesEnabled else { return true }
-        return permissions.hasCapability(.viewPOSSettings)
+    func requestExitPermission() {
+        exitOverrideHandler.requestPermission(
+            for: .editPOSSettings,
+            actionDescription: Localization.exitOverrideDescription,
+            permissions: permissions,
+            onApproved: { _ in showExitPOSModal = true }
+        )
     }
 
-    /// Same gating for exit, but tighter: only admin can exit POS in M1.
-    var canExitPOS: Bool {
-        guard isRolesEnabled else { return true }
-        return permissions.hasCapability(.editPOSSettings)
+    func requestSettingsPermission() {
+        settingsOverrideHandler.requestPermission(
+            for: .viewPOSSettings,
+            actionDescription: Localization.settingsOverrideDescription,
+            permissions: permissions,
+            onApproved: { _ in showSettings = true }
+        )
     }
 
     func operatorMenuLabel(_ op: POSOperator) -> String {
@@ -229,6 +234,18 @@ private extension POSFloatingControlView {
             "pointOfSale.floatingButtons.lock.button.title",
             value: "Lock POS",
             comment: "The title of the menu button to lock Point of Sale, requiring PIN entry to continue."
+        )
+
+        static let exitOverrideDescription = NSLocalizedString(
+            "pointOfSale.floatingButtons.exitOverride.description",
+            value: "Exit Point of Sale",
+            comment: "Description shown in the manager override modal when exiting POS requires admin approval."
+        )
+
+        static let settingsOverrideDescription = NSLocalizedString(
+            "pointOfSale.floatingButtons.settingsOverride.description",
+            value: "Access POS settings",
+            comment: "Description shown in the manager override modal when settings access requires approval."
         )
 
         static let roleCashier = NSLocalizedString(

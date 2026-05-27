@@ -94,12 +94,16 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     var processRefundCalled = false
     var spyProcessRefundReason: String?
+    var spyProcessRefundOverrideUserID: Int64?
+    var spyProcessRefundOverrideReason: String?
     var shouldThrowProcessRefundError = false
 
     @MainActor
-    func processRefund(reason: String?) async throws {
+    func processRefund(reason: String?, overrideUserID: Int64?, overrideReason: String?) async throws {
         processRefundCalled = true
         spyProcessRefundReason = reason
+        spyProcessRefundOverrideUserID = overrideUserID
+        spyProcessRefundOverrideReason = overrideReason
 
         if shouldThrowProcessRefundError {
             throw TestError.updateOrderFailed

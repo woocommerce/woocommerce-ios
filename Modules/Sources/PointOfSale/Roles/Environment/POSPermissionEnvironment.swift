@@ -18,6 +18,10 @@ final class EmptyPOSPermissionProvider: POSPermissionProviding {
     var hasAnyPINs: Bool { false }
     var autoLockTimeoutSeconds: Int { 0 }
     func hasCapability(_ capability: String) -> Bool { true }
+    func checkPermission(_ capability: String) -> POSPermissionResult { .allowed }
+    func requestManagerApproval(managerPIN: String, for capability: String) async throws -> POSOperator {
+        POSOperator(userID: 0, displayName: "", role: "", capabilities: [], isAppAccountHolder: false)
+    }
     func signIn(_ posOperator: POSOperator) {}
     func lock() {}
     func resetInactivityTimer() {}

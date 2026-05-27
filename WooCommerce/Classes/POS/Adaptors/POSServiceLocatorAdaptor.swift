@@ -1,5 +1,6 @@
 import SwiftUI
 import class NetworkingCore.AlamofireNetwork
+import struct Networking.MetaData
 import WooFoundationCore
 import WooFoundation
 import Yosemite
@@ -115,12 +116,14 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
 
     func createCouponCreationView(discountType: Coupon.DiscountType,
                                   showTypeSelection: Binding<Bool>,
+                                  additionalCreateMetadata: [MetaData],
                                   onSuccess: @escaping (Coupon) -> Void,
                                   dismissHandler: @escaping () -> Void,
                                   onDisappear: @escaping () -> Void) -> AnyView {
         AnyView(POSCouponCreationViewAdaptor(
             discountType: discountType,
             showTypeSelection: showTypeSelection,
+            additionalCreateMetadata: additionalCreateMetadata,
             onSuccess: onSuccess,
             dismissHandler: dismissHandler,
             onDisappear: onDisappear

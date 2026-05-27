@@ -25,6 +25,8 @@ struct POSOrderDetailsView: View {
     @State private var isShowingEmailReceiptView = false
     @State private var refundModalState: RefundModalState?
     @State private var selectedRefundForDetail: POSOrderRefund?
+    @State private var refundOverrideHandler = POSManagerOverrideHandler()
+    @State private var pendingRefundGrant: POSPermissionGrant = .allowed
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -128,6 +130,8 @@ struct POSOrderDetailsView: View {
                 showsItemSelection: true,
                 onRefundSuccess: onRefundSuccess,
                 onRefundFailure: onRefundFailure,
+                overrideUserID: pendingRefundGrant.overrideUserID,
+                overrideReason: pendingRefundGrant.overrideReason,
                 errorStrings: .init(
                     loadTitle: Localization.loadRefundErrorTitle,
                     loadSubtitle: Localization.loadRefundErrorSubtitle,
@@ -144,6 +148,7 @@ struct POSOrderDetailsView: View {
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
+        .posManagerOverrideModal(handler: refundOverrideHandler, permissions: permissions)
         .task {
             guard shouldShowDedicatedRefundsSection else { return }
             await orderListModel.ordersController.loadOrderRefunds()
@@ -475,7 +480,7 @@ private extension POSOrderDetailsView {
             }
         case .issueRefund:
             return {
-                initiateRefundFlow()
+                requestRefundPermission()
             }
         }
     }
@@ -488,15 +493,15 @@ private extension POSOrderDetailsView {
     var availableActionsSetup: OrderDetailsActionsSetup {
         let email: OrderDetailsAction = .emailReceipt
 
-        // In M1 the refund button is hidden when the operator lacks the capability:
-        // there is no manager-override path until M3 per the plan.
-        let canRefund = permissions.hasCapability(.refundShopOrders)
-
         switch order.status {
         case .refunded:
             return .init(primary: email, secondary: [])
         case .completed:
-            guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1), canRefund else {
+            // The refund button is always visible when refunds are enabled. When the
+            // operator lacks `refund_shop_orders`, tapping it pops a manager-override
+            // modal; an approver's PIN unlocks the action and their user id is attached
+            // as `_pos_override_user_id` meta on the refund (M1 plan).
+            guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
                 return .init(primary: email, secondary: [])
             }
 
@@ -558,6 +563,23 @@ private extension POSOrderDetailsView {
 // MARK: - Refund Flow Helpers
 
 private extension POSOrderDetailsView {
+    /// Gates the refund button through the manager-override flow. When the operator
+    /// already has `refund_shop_orders` the handler fires the callback immediately with
+    /// `.allowed`; otherwise it shows the PIN modal and waits for a manager to authorize.
+    /// The grant carries the approver's user id which we stash on `pendingRefundGrant`
+    /// so the refund modal can hand it to `processRefund` as `_pos_override_*` meta.
+    func requestRefundPermission() {
+        refundOverrideHandler.requestPermission(
+            for: .refundShopOrders,
+            actionDescription: Localization.refundOverrideDescription(order.number),
+            permissions: permissions,
+            onApproved: { grant in
+                pendingRefundGrant = grant
+                initiateRefundFlow()
+            }
+        )
+    }
+
     func initiateRefundFlow() {
         analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowStarted())
         refundModalState = .loading
@@ -679,6 +701,15 @@ private enum Localization {
         value: "Start refund flow for this order",
         comment: "Accessibility hint for issue refund button"
     )
+
+    static func refundOverrideDescription(_ orderNumber: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.refundOverride.description",
+            value: "Issue a refund for Order #%1$@",
+            comment: "Description shown in the manager override modal when refund requires approval. %1$@ is the order number."
+        )
+        return String(format: format, orderNumber)
+    }
 
     static let moreActionsA11yLabel = NSLocalizedString(
         "pos.orderDetailsView.moreActions.label",

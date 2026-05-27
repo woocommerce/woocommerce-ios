@@ -58,8 +58,11 @@ public final class CouponStore: Store {
             methods.deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
         case .updateCoupon(let coupon, let siteTimezone, let onCompletion):
             methods.updateCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
-        case .createCoupon(let coupon, let siteTimezone, let onCompletion):
-            methods.createCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
+        case .createCoupon(let coupon, let siteTimezone, let additionalMetadata, let onCompletion):
+            methods.createCoupon(coupon,
+                                 siteTimezone: siteTimezone,
+                                 additionalMetadata: additionalMetadata,
+                                 onCompletion: onCompletion)
         case .loadCouponReport(let siteID, let couponID, let startDate, let onCompletion):
             methods.loadCouponReport(siteID: siteID, couponID: couponID, startDate: startDate, onCompletion: onCompletion)
         case .loadMostActiveCoupons(let siteID, let numberOfCouponsToLoad, let timeRange, let siteTimezone, let onCompletion):

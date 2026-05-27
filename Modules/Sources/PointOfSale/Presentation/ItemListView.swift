@@ -103,6 +103,8 @@ struct ItemListView: View {
 
     @Environment(\.posPermissions) private var permissions
     @State private var showCouponCreationModal: Bool = false
+    @State private var couponOverrideHandler = POSManagerOverrideHandler()
+    @State private var pendingCouponGrant: POSPermissionGrant = .allowed
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
     ///
@@ -151,6 +153,9 @@ struct ItemListView: View {
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
         .posCouponCreationSheet(isPresented: $showCouponCreationModal,
+                                additionalCreateMetadata: pendingCouponGrant.couponCreationMetadata(
+                                    staffUserID: permissions.currentOperator?.userID
+                                ),
                                 currencySettings: currencyProvider.currencySettings,
                                 onSuccess: { couponItem in
             Task { @MainActor in
@@ -158,6 +163,7 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
+        .posManagerOverrideModal(handler: couponOverrideHandler, permissions: permissions)
         .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
             posModel.barcodeScanned(scannedCode)
         }
@@ -495,16 +501,27 @@ private extension ItemListView {
     private var createCouponButton: some View {
         POSPageHeaderActionButton(systemName: "plus") {
             analytics.track(.pointOfSaleCouponsCreateTapped)
-            showCouponCreationModal = true
+            requestCouponCreationPermission()
         }
-        .renderedIf(isAddingCouponAllowed && canCreateCoupons)
+        .renderedIf(isAddingCouponAllowed)
         .transition(.opacity.combined(with: .scale))
     }
 
-    /// In M1 the coupon-creation affordance is hidden when the operator lacks the capability —
-    /// the manager-override path that previously gated this is deferred to M3.
-    private var canCreateCoupons: Bool {
-        permissions.hasCapability(.publishCoupons)
+    /// Gates the coupon-create flow through the manager-override modal. When the operator
+    /// already has `publish_shop_coupons` the handler fires immediately with `.allowed`;
+    /// otherwise it pops the PIN modal and waits for a manager. The grant is stashed on
+    /// `pendingCouponGrant` so the resulting `POST /coupons` request can attach
+    /// `_pos_override_user_id` / `_pos_override_reason` meta.
+    private func requestCouponCreationPermission() {
+        couponOverrideHandler.requestPermission(
+            for: .publishCoupons,
+            actionDescription: Localization.couponOverrideDescription,
+            permissions: permissions,
+            onApproved: { grant in
+                pendingCouponGrant = grant
+                showCouponCreationModal = true
+            }
+        )
     }
 
     @ViewBuilder
@@ -524,9 +541,7 @@ private extension ItemListView {
                 viewModel: POSListEmptyViewModel(
                     itemListType: selectedItemListType,
                     baseItem: .root)) {
-                if canCreateCoupons {
-                    showCouponCreationModal = true
-                }
+                requestCouponCreationPermission()
             }
         }
     }
@@ -612,6 +627,12 @@ private extension ItemListView {
             "pos.itemlistview.couponsTitle",
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
+        )
+
+        static let couponOverrideDescription = NSLocalizedString(
+            "pos.itemlistview.managerOverride.coupon.description",
+            value: "Create a coupon",
+            comment: "Description shown in the manager override modal when coupon creation requires approval"
         )
 
         static let sunsetWarningTitle = NSLocalizedString(

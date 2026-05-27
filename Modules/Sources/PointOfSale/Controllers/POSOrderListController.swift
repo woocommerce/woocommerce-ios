@@ -45,7 +45,13 @@ protocol POSOrderListControllerProtocol {
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
     @MainActor
-    func processRefund(reason: String?) async throws
+    /// Issues a refund for the currently selected order.
+    /// - Parameters:
+    ///   - overrideUserID: When a manager authorized the refund (cashier triggered it),
+    ///     the manager's user id. Written as `_pos_override_user_id` meta on the refund.
+    ///   - overrideReason: The capability that triggered the override
+    ///     (e.g. `"refund_shop_orders"`). Written as `_pos_override_reason` meta.
+    func processRefund(reason: String?, overrideUserID: Int64?, overrideReason: String?) async throws
     func loadOrderRefunds() async
 }
 
@@ -425,7 +431,7 @@ enum RefundActionAvailability {
     // MARK: - Refund Processing
 
     @MainActor
-    func processRefund(reason: String?) async throws {
+    func processRefund(reason: String?, overrideUserID: Int64?, overrideReason: String?) async throws {
         guard let order = selectedOrder else {
             assertionFailure("processRefund called without selected order")
             return
@@ -457,7 +463,9 @@ enum RefundActionAvailability {
             items: refundableItems,
             reason: reason,
             isAutomaticRefund: refundsResult.supportsAutomaticRefund,
-            staffUserID: staffUserIDProvider()
+            staffUserID: staffUserIDProvider(),
+            overrideUserID: overrideUserID,
+            overrideReason: overrideReason
         )
 
         clearRefundSelection()

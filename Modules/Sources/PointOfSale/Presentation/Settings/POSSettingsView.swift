@@ -7,6 +7,7 @@ struct POSSettingsView: View {
     @Environment(\.posPermissions) private var permissions
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
+    @State private var staffOverrideHandler = POSManagerOverrideHandler()
 
     let settingsController: POSSettingsControllerProtocol
     let staffSettingsMode: POSStaffSettingsMode
@@ -26,6 +27,7 @@ struct POSSettingsView: View {
                 selection = .store
             }
         }
+        .posManagerOverrideModal(handler: staffOverrideHandler, permissions: permissions)
     }
 }
 
@@ -72,7 +74,7 @@ extension POSSettingsView {
                                         subtitle: POSSettingsView.SidebarNavigation.staff.subtitle,
                                         isSelected: selection == .staff,
                                         action: {
-                        selection = .staff
+                        requestStaffSettingsPermission()
                     })
                 }
                 Spacer()
@@ -104,13 +106,20 @@ extension POSSettingsView {
         }
     }
 
-    /// In M1 the Staff card is only shown when the operator has settings-edit access (admin).
-    /// Manager-override returns in M3.
+    /// The Staff card is always visible when the feature flag is on. Tapping it gates through
+    /// the manager-override modal — admins / managers proceed immediately, cashiers (or anyone
+    /// missing `edit_pos_settings`) get a PIN prompt for a manager to authorize the navigation.
     private var isStaffSectionVisible: Bool {
-        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleStaff) else { return false }
-        // When no PINs are configured the device admin operates POS directly; show the card.
-        guard permissions.hasAnyPINs else { return true }
-        return permissions.hasCapability(.editPOSSettings)
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleStaff)
+    }
+
+    private func requestStaffSettingsPermission() {
+        staffOverrideHandler.requestPermission(
+            for: .editPOSSettings,
+            actionDescription: Localization.staffOverrideDescription,
+            permissions: permissions,
+            onApproved: { _ in selection = .staff }
+        )
     }
 
     @ViewBuilder
@@ -181,6 +190,12 @@ extension POSSettingsView {
     }
 
     enum Localization {
+        static let staffOverrideDescription = NSLocalizedString(
+            "pointOfSaleSettingsView.staffOverrideDescription",
+            value: "Access staff settings",
+            comment: "Description shown in the manager override modal when staff settings access requires approval."
+        )
+
         static let navigationTitle = NSLocalizedString(
             "pointOfSaleSettingsView.navigationTitle",
             value: "Settings",

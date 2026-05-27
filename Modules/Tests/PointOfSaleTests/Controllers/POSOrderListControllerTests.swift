@@ -1014,7 +1014,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, overrideUserID: nil, overrideReason: nil)
 
         // Then
         #expect(refundsService.createRefundCalled == true)
@@ -1041,7 +1041,7 @@ final class POSOrderListControllerTests {
         sut.toggleRefundItemSelection(at: 0) // Deselect first item of itemID 1
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, overrideUserID: nil, overrideReason: nil)
 
         // Then
         let items = try #require(refundsService.spyCreateRefundItems)
@@ -1068,7 +1068,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: "Customer changed their mind")
+        try await sut.processRefund(reason: "Customer changed their mind", overrideUserID: nil, overrideReason: nil)
 
         // Then
         #expect(refundsService.spyCreateRefundReason == "Customer changed their mind")
@@ -1093,7 +1093,7 @@ final class POSOrderListControllerTests {
         try #require(sut.refundSelectableItems.count == 2)
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, overrideUserID: nil, overrideReason: nil)
 
         // Then
         #expect(sut.refundSelectableItems.isEmpty)
@@ -1122,7 +1122,7 @@ final class POSOrderListControllerTests {
         // When / Then
         var thrownError: Error?
         do {
-            try await sut.processRefund(reason: .none)
+            try await sut.processRefund(reason: .none, overrideUserID: nil, overrideReason: nil)
         } catch {
             thrownError = error
         }
@@ -1148,7 +1148,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, overrideUserID: nil, overrideReason: nil)
 
         // Then
         let items = try #require(refundsService.spyCreateRefundItems)
@@ -1179,7 +1179,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, overrideUserID: nil, overrideReason: nil)
 
         // Then
         #expect(refundsService.spyCreateRefundAutomaticRefund == true)
@@ -1203,7 +1203,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, overrideUserID: nil, overrideReason: nil)
 
         // Then
         #expect(refundsService.spyCreateRefundAutomaticRefund == false)
@@ -1231,7 +1231,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, overrideUserID: nil, overrideReason: nil)
 
         // Then
         #expect(orderListService.loadOrderWasCalled == true)

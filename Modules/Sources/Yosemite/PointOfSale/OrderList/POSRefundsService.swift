@@ -134,7 +134,9 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
                              items: [POSRefundableItem],
                              reason: String?,
                              isAutomaticRefund: Bool,
-                             staffUserID: Int64?) async throws {
+                             staffUserID: Int64?,
+                             overrideUserID: Int64?,
+                             overrideReason: String?) async throws {
         let numberOfDecimals = currencySettings.fractionDigits
         let request = refundCalculator.buildRefundRequest(
             orderID: orderID,
@@ -143,7 +145,9 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
             numberOfDecimals: numberOfDecimals
         )
         let refund = buildRefund(from: request, createAutomated: isAutomaticRefund, numberOfDecimals: numberOfDecimals)
-        let additionalMetadata = Self.makeAttributionMetadata(staffUserID: staffUserID)
+        let additionalMetadata = Self.makeAttributionMetadata(staffUserID: staffUserID,
+                                                              overrideUserID: overrideUserID,
+                                                              overrideReason: overrideReason)
         _ = try await refundsRemote.createRefund(for: siteID,
                                                  by: orderID,
                                                  refund: refund,
@@ -223,13 +227,26 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
 }
 
 private extension POSRefundsService {
-    /// Builds the `_pos_attribution` meta entry per the M1 plan
-    /// (https://peacockp2.wordpress.com/?p=34760). Returns an empty array when no staff
-    /// user is signed in so the server-side `pre_insert_shop_order_refund_object` validation
-    /// won't reject pre-roll-out clients.
-    static func makeAttributionMetadata(staffUserID: Int64?) -> [MetaData] {
-        guard let staffUserID else { return [] }
-        let value = "{\"staff_user_id\":\(staffUserID)}"
-        return [MetaData(metadataID: 0, key: "_pos_attribution", value: value)]
+    /// Builds the `_pos_staff_user_id` + optional `_pos_override_*` meta entries per the M1 plan
+    /// (https://peacockp2.wordpress.com/?p=34760). Override entries are only present when a
+    /// manager authorized the refund for a cashier (or an admin authorized it for a manager).
+    static func makeAttributionMetadata(staffUserID: Int64?,
+                                        overrideUserID: Int64?,
+                                        overrideReason: String?) -> [MetaData] {
+        var entries: [MetaData] = []
+        if let staffUserID {
+            entries.append(MetaData(metadataID: 0,
+                                    key: "_pos_staff_user_id",
+                                    value: String(staffUserID)))
+        }
+        if let overrideUserID, let overrideReason {
+            entries.append(MetaData(metadataID: 0,
+                                    key: "_pos_override_user_id",
+                                    value: String(overrideUserID)))
+            entries.append(MetaData(metadataID: 0,
+                                    key: "_pos_override_reason",
+                                    value: overrideReason))
+        }
+        return entries
     }
 }

@@ -18,6 +18,11 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let onSuccess: (Coupon) -> Void
 
+    /// Extra `meta_data` entries appended to the create-coupon request. Used by POS to
+    /// attach `_pos_staff_user_id` / `_pos_override_*` attribution per the M1 plan.
+    /// Empty for non-POS coupon creation.
+    private let additionalCreateMetadata: [MetaData]
+
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
@@ -221,6 +226,7 @@ final class AddEditCouponViewModel: ObservableObject {
          couponAmountInputFormatter: CouponAmountInputFormatter = CouponAmountInputFormatter(),
          inputWarningDurationInSeconds: Double = 3,
          timezone: TimeZone = .siteTimezone,
+         additionalCreateMetadata: [MetaData] = [],
          onSuccess: @escaping (Coupon) -> Void) {
         self.siteID = siteID
         editingOption = .creation
@@ -231,6 +237,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.couponAmountInputFormatter = couponAmountInputFormatter
         self.inputWarningDurationInSeconds = inputWarningDurationInSeconds
         self.timezone = timezone
+        self.additionalCreateMetadata = additionalCreateMetadata
         self.onSuccess = onSuccess
 
         amountField = String()
@@ -270,6 +277,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.couponAmountInputFormatter = couponAmountInputFormatter
         self.inputWarningDurationInSeconds = inputWarningDurationInSeconds
         self.timezone = timezone
+        self.additionalCreateMetadata = []
         self.onSuccess = onSuccess
 
         // Populate fields
@@ -382,7 +390,9 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         isLoading = true
-        let action = CouponAction.createCoupon(coupon, siteTimezone: timezone) { [weak self] result in
+        let action = CouponAction.createCoupon(coupon,
+                                               siteTimezone: timezone,
+                                               additionalMetadata: additionalCreateMetadata) { [weak self] result in
             guard let self else { return }
             self.isLoading = false
             switch result {

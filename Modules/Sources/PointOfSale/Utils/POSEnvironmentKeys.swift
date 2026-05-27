@@ -6,6 +6,7 @@ import protocol Yosemite.Action
 import struct Yosemite.Site
 import enum Yosemite.POSItem
 import struct Yosemite.Coupon
+import struct Networking.MetaData
 
 struct SiteTimezoneKey: EnvironmentKey {
     static let defaultValue: TimeZone = .current
@@ -148,6 +149,7 @@ struct EmptyPOSExternalView: POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView { AnyView(EmptyView()) }
     func createCouponCreationView(discountType: Coupon.DiscountType,
                                   showTypeSelection: Binding<Bool>,
+                                  additionalCreateMetadata: [MetaData],
                                   onSuccess: @escaping (Coupon) -> Void,
                                   dismissHandler: @escaping () -> Void,
                                   onDisappear: @escaping () -> Void) -> AnyView {

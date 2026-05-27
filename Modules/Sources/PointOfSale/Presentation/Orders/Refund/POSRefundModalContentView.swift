@@ -79,6 +79,12 @@ struct POSRefundModalContentView: View {
     let onRefundSuccess: (() -> Void)?
     let onRefundFailure: ((Error) -> Void)?
 
+    /// When a cashier triggered the refund and a manager authorized it, these flow through
+    /// to `processRefund` so the API request carries `_pos_override_user_id` /
+    /// `_pos_override_reason` meta.
+    let overrideUserID: Int64?
+    let overrideReason: String?
+
     let errorStrings: POSRefundErrorStrings
 
     @State private var isShowingEmailReceiptView = false
@@ -227,7 +233,9 @@ struct POSRefundModalContentView: View {
         analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingStarted())
         do {
             try await orderListModel.ordersController.processRefund(
-                reason: reviewData.refundReason
+                reason: reviewData.refundReason,
+                overrideUserID: overrideUserID,
+                overrideReason: overrideReason
             )
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingSuccess())
             modalState = .success(reviewData)

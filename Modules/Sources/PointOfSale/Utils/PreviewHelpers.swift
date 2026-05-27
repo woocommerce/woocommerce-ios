@@ -537,7 +537,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
     @MainActor
-    func processRefund(reason: String?) async throws {}
+    func processRefund(reason: String?, overrideUserID: Int64?, overrideReason: String?) async throws {}
     func loadOrderRefunds() async {}
 }
 
@@ -608,7 +608,9 @@ final class POSRefundsServicePreview: POSRefundsServiceProtocol {
                       items: [Yosemite.POSRefundableItem],
                       reason: String?,
                       isAutomaticRefund: Bool,
-                      staffUserID: Int64?) async throws {}
+                      staffUserID: Int64?,
+                      overrideUserID: Int64?,
+                      overrideReason: String?) async throws {}
 
     func loadOrderRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSOrderRefund] { [] }
 }

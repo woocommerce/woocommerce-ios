@@ -15,10 +15,25 @@ public protocol POSPermissionProviding: AnyObject {
 
     /// Whether the current operator has the named capability.
     ///
-    /// In M1 capability gates are pure UI hides — there is no manager-override
-    /// affordance, so callers should hide affordances when this returns `false`.
-    /// Manager override returns in M3 per the plan.
+    /// Use `checkPermission(_:)` instead when the call site wants to branch into
+    /// a manager-override flow on insufficient capability.
     func hasCapability(_ capability: String) -> Bool
+
+    /// Two-tier permission check: returns `.allowed` when the operator has the
+    /// capability, `.requiresOverride` when they don't (in which case the call
+    /// site should present a manager-override modal).
+    func checkPermission(_ capability: String) -> POSPermissionResult
+
+    /// Verifies a manager-or-above PIN locally against the cached `/staff` hashes
+    /// and confirms the matched staff member holds `capability`. Returns the
+    /// approver's `POSOperator` on success **without** signing them in — the
+    /// current operator stays the cashier, and the caller is expected to attach
+    /// `_pos_override_user_id` + `_pos_override_reason` meta to the next request.
+    ///
+    /// Throws `POSAuthError.invalidPIN` when the PIN doesn't match a staff
+    /// member with the capability, or `POSAuthError.rateLimited` when the local
+    /// rate limiter cuts in.
+    func requestManagerApproval(managerPIN: String, for capability: String) async throws -> POSOperator
 
     /// Signs in the operator and clears any lock-screen state.
     func signIn(_ posOperator: POSOperator)
@@ -53,5 +68,17 @@ extension POSPermissionProviding {
     /// Usage: `permissions.hasCapability(.publishCoupons)`
     func hasCapability(_ capability: POSCapability) -> Bool {
         hasCapability(capability.rawValue)
+    }
+
+    /// Two-tier check using the typed capability enum.
+    /// Usage: `permissions.checkPermission(.refundShopOrders)`
+    func checkPermission(_ capability: POSCapability) -> POSPermissionResult {
+        checkPermission(capability.rawValue)
+    }
+
+    /// Manager-override verify using the typed capability enum.
+    func requestManagerApproval(managerPIN: String,
+                                for capability: POSCapability) async throws -> POSOperator {
+        try await requestManagerApproval(managerPIN: managerPIN, for: capability.rawValue)
     }
 }

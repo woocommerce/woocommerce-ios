@@ -4,14 +4,21 @@ import struct Yosemite.Coupon
 import enum Yosemite.POSItem
 import struct Yosemite.POSItemIdentifier
 import struct Yosemite.POSCoupon
+import struct Networking.MetaData
 
 extension View {
+    /// Presents the coupon-creation sheet.
+    /// - Parameter additionalCreateMetadata: appended to the `meta_data` of the resulting
+    ///   `POST /wc/v3/coupons` request — POS uses this to attach `_pos_staff_user_id` and
+    ///   (when a manager authorized a cashier-triggered create) `_pos_override_*` meta.
     func posCouponCreationSheet(
         isPresented: Binding<Bool>,
+        additionalCreateMetadata: [MetaData] = [],
         currencySettings: CurrencySettings,
         onSuccess: @escaping (POSItem) -> Void
     ) -> some View {
         modifier(POSCouponCreationSheetModifier(isPresented: isPresented,
+                                                additionalCreateMetadata: additionalCreateMetadata,
                                                 currencySettings: currencySettings,
                                                 onSuccess: onSuccess))
     }
@@ -19,6 +26,7 @@ extension View {
 
 private struct POSCouponCreationSheetModifier: ViewModifier {
     @Binding var isPresented: Bool
+    let additionalCreateMetadata: [MetaData]
     let currencySettings: CurrencySettings
     let onSuccess: (POSItem) -> Void
 
@@ -33,6 +41,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
                 externalViews.createCouponCreationView(
                     discountType: posDiscountType.discountType,
                     showTypeSelection: $showCouponSelectionSheet,
+                    additionalCreateMetadata: additionalCreateMetadata,
                     onSuccess: { coupon in
                         let id = POSItemIdentifier(underlyingType: .coupon, itemID: coupon.couponID)
                         addedCouponItem = .coupon(.init(id: id, code: coupon.code, summary: coupon.summary(currencySettings: currencySettings)))

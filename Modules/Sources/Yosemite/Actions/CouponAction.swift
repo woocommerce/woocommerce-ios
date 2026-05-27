@@ -42,10 +42,14 @@ public enum CouponAction: Action {
     ///
     /// - `coupon`: the coupon to be created.
     /// - `siteTimezone`: the timezone configured on the site (also know as local time of the site).
+    /// - `additionalMetadata`: extra `meta_data` entries appended to the API request.
+    ///   POS uses this to attach `_pos_staff_user_id` / `_pos_override_*` attribution per
+    ///   the M1 plan (https://peacockp2.wordpress.com/?p=34760).
     /// - `onCompletion`: invoked when the creation finishes.
     ///
     case createCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone?,
+                      additionalMetadata: [MetaData] = [],
                       onCompletion: (Result<Coupon, Error>) -> Void)
 
     /// Loads analytics report for a coupon with the specified coupon ID and site ID.

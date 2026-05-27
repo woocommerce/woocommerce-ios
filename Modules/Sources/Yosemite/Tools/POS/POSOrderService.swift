@@ -236,14 +236,13 @@ public extension POSOrderService {
 }
 
 private extension POSOrderService {
-    /// Builds the `_pos_attribution` meta entry per the M1 plan
+    /// Builds the `_pos_staff_user_id` meta entry per the M1 plan
     /// (https://peacockp2.wordpress.com/?p=34760). Returns an empty array when no staff
     /// user is signed in so the server-side `pre_insert_shop_order_object` validation
     /// won't reject pre-roll-out clients.
     static func makeAttributionMetadata(staffUserID: Int64?) -> [MetaData] {
         guard let staffUserID else { return [] }
-        let value = "{\"staff_user_id\":\(staffUserID)}"
-        return [MetaData(metadataID: 0, key: "_pos_attribution", value: value)]
+        return [MetaData(metadataID: 0, key: "_pos_staff_user_id", value: String(staffUserID))]
     }
 }
 

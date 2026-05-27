@@ -11,9 +11,13 @@ require_relative '../lib/woo_ai_translation/release_notes_translator'
 # StubClient-style fake that lets a test program per-model behavior. The real
 # StubClient ignores the `model:` argument; here we branch on it so we can
 # exercise the Haiku → Opus escalation path deterministically.
+#
+# Each value in `behaviors_by_model` can be either:
+#   - a Proc (locale, source) -> translation_string — for normal returns
+#   - an Exception instance — to simulate a client/API failure on that model
 class ModelAwareStubClient
-  def initialize(transforms_by_model)
-    @transforms = transforms_by_model
+  def initialize(behaviors_by_model)
+    @behaviors = behaviors_by_model
     @calls = []
   end
 
@@ -26,10 +30,12 @@ class ModelAwareStubClient
   def complete(model:, system_blocks:, user_content:, max_tokens: 8192)
     _ = [system_blocks, max_tokens] # unused in fake
     @calls << model
+    behavior = @behaviors.fetch(model) { ->(_loc, _src) { '' } }
+    raise behavior if behavior.is_a?(Exception)
+
     locale = user_content[/locale:\s*([\w-]+)/, 1] || '??'
     payload = JSON.parse(user_content[/\[.*\]/m] || '[]')
-    transform = @transforms.fetch(model) { ->(_loc, _src) { '' } }
-    out = payload.to_h { |item| [item['id'], transform.call(locale, item['source'])] }
+    out = payload.to_h { |item| [item['id'], behavior.call(locale, item['source'])] }
     JSON.generate(out)
   end
 end
@@ -177,6 +183,67 @@ class ReleaseNotesTranslatorTest < Minitest::Test
     assert_equal :skipped, result.status
     assert_match(/exceeds/, result.skip_reason)
     assert_match(/4000/, result.skip_reason)
+  end
+
+  def test_translate_when_haiku_raises_api_error_then_retries_with_opus_and_succeeds
+    # Given Haiku raises an AnthropicClient::Error (transient API failure)
+    # and Opus returns a valid translation
+    behaviors = {
+      HAIKU => WooAiTranslation::AnthropicClient::Error.new('simulated haiku failure'),
+      OPUS => ->(loc, src) { "[#{loc}] #{src}" }
+    }
+    stub = ModelAwareStubClient.new(behaviors)
+    t = WooAiTranslation::ReleaseNotesTranslator.new(client: stub, glossary_dir: @glossary_dir)
+
+    # When we translate
+    result = t.translate(source_text: 'Welcome to WooCommerce', locale: 'pl', asc_locale: 'pl')
+
+    # Then we get an Opus-tier success — the rescue caught the error and
+    # let `translate` proceed to the escalation path.
+    assert_equal :translated, result.status
+    assert_equal OPUS, result.model
+    assert_equal [HAIKU, OPUS], stub.calls
+  end
+
+  def test_translate_when_both_models_raise_api_error_then_returns_skipped_with_client_error_reason
+    # Given both Haiku and Opus raise the same API error
+    behaviors = {
+      HAIKU => WooAiTranslation::AnthropicClient::Error.new('haiku unavailable'),
+      OPUS => WooAiTranslation::AnthropicClient::Error.new('opus also unavailable')
+    }
+    t = WooAiTranslation::ReleaseNotesTranslator.new(
+      client: ModelAwareStubClient.new(behaviors),
+      glossary_dir: @glossary_dir
+    )
+
+    # When we translate
+    result = t.translate(source_text: 'Welcome to WooCommerce', locale: 'pl', asc_locale: 'pl')
+
+    # Then per-locale failure is soft: we get a :skipped Result citing the
+    # client error, and the lane (caller) ships English for this locale.
+    assert_equal :skipped, result.status
+    assert_equal OPUS, result.model
+    assert_match(/client error/, result.skip_reason)
+    assert_match(/Error/, result.skip_reason)
+  end
+
+  def test_translate_when_haiku_raises_network_timeout_then_retries_with_opus
+    # Given Haiku raises a network timeout (covered by the same rescue)
+    behaviors = {
+      HAIKU => Net::ReadTimeout.new('haiku timed out'),
+      OPUS => ->(loc, src) { "[#{loc}] #{src}" }
+    }
+    t = WooAiTranslation::ReleaseNotesTranslator.new(
+      client: ModelAwareStubClient.new(behaviors),
+      glossary_dir: @glossary_dir
+    )
+
+    # When we translate
+    result = t.translate(source_text: 'Welcome to WooCommerce', locale: 'pl', asc_locale: 'pl')
+
+    # Then we get an Opus-tier success — network timeouts are recoverable too.
+    assert_equal :translated, result.status
+    assert_equal OPUS, result.model
   end
 
   def test_translate_when_style_file_present_then_no_crash_and_translation_succeeds

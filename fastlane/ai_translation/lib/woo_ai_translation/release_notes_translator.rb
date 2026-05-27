@@ -85,6 +85,23 @@ module WooAiTranslation
         translation: reason ? nil : raw,
         skip_reason: reason
       )
+    rescue AnthropicClient::Error, Net::OpenTimeout, Net::ReadTimeout => e
+      # `Translator#translate_slice` re-raises `AnthropicClient::Error` (and
+      # leaves network timeouts unhandled) when the batch has a single item —
+      # which is always our case for release_notes. Without this rescue, a
+      # transient Haiku failure (or an Opus-side parameter rejection)
+      # would kill the lane instead of flowing through the Haiku→Opus retry
+      # → English-fallback path. Surface the failure as a soft `:skipped`
+      # result so `translate` can try Opus, and so a final failure stays
+      # within the documented "ship English for the failed locale" contract.
+      Result.new(
+        locale: locale,
+        asc_locale: asc_locale,
+        model: model,
+        status: :skipped,
+        translation: nil,
+        skip_reason: "client error: #{e.class.name.split('::').last} (#{e.message})"
+      )
     end
 
     # Returns `nil` if `raw` is an acceptable translation, otherwise a short

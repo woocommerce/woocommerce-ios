@@ -210,13 +210,13 @@ final class SupportChatViewModel {
     }
 
     /// Whether the trailing toolbar entry point to human support should be visible.
-    /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics),
+    /// Shown while the issue picker is visible or once the merchant has reached the free-chat phase,
     /// and only while no ticket has been created yet.
     var canEscalateToHumanSupport: Bool {
-        guard shouldShowInputArea, !hasCreatedTicket, !isChatResolved else {
+        guard !hasCreatedTicket, !isChatResolved else {
             return false
         }
-        return true
+        return shouldShowInputArea || isShowingIssuePicker
     }
 
     var shouldShowResolvedButton: Bool {
@@ -330,11 +330,6 @@ final class SupportChatViewModel {
             issueType: issue,
             entryPoint: entryPoint
         ))
-
-        if issue == .contactSupport {
-            contactHumanSupport(source: .issuePicker)
-            return
-        }
 
         selectedIssue = issue
 
@@ -995,6 +990,15 @@ final class SupportChatViewModel {
 
     private var hasRemoteBotResponse: Bool {
         messages.contains { $0.role == .bot && $0.messageID != nil }
+    }
+
+    private var isShowingIssuePicker: Bool {
+        messages.contains {
+            if case .issuePicker = $0.content {
+                return true
+            }
+            return false
+        }
     }
 
     private func trackTroubleshootingCompleted(issueType: SupportIssueType,

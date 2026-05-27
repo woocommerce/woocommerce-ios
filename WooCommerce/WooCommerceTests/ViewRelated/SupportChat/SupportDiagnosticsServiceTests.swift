@@ -73,17 +73,6 @@ struct SupportDiagnosticsServiceTests {
         #expect(tests == nil)
     }
 
-    @Test func test_SupportIssueType_contactSupport_returns_nil_tests() {
-        // Given
-        let issueType = SupportIssueType.contactSupport
-
-        // When
-        let tests = issueType.testsToRun
-
-        // Then
-        #expect(tests == nil)
-    }
-
     // MARK: - Internet Connection Tests
 
     @Test func test_testInternetConnection_when_reachable_then_returns_success() async {

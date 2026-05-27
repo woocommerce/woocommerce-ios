@@ -20,7 +20,7 @@ struct SupportChatViewModelTests {
         // Then
         #expect(sut.messages.count == 1)
         if case .issuePicker(let issues) = sut.messages.first?.content {
-            #expect(issues.last == .contactSupport)
+            #expect(issues == SupportIssueType.allCases)
         } else {
             Issue.record("Expected issue picker message")
         }
@@ -138,40 +138,6 @@ struct SupportChatViewModelTests {
         // Should have: issue picker, user selection, greeting
         #expect(sut.messages.count == 3)
         #expect(sut.hasProceededToChat == true)
-    }
-
-    @Test func selectIssue_when_contactSupport_then_invokes_contact_support_callback_without_disabling_picker() async {
-        // Given
-        let analyticsProvider = MockAnalyticsProvider()
-        var didContactHumanSupport = false
-        var receivedEntryPoint: SupportChatViewModel.EntryPoint?
-        let sut = makeSUT(
-            entryPoint: .helpAndSupport,
-            analyticsProvider: analyticsProvider,
-            onContactHumanSupport: { _, _, _, entryPoint, _ in
-                didContactHumanSupport = true
-                receivedEntryPoint = entryPoint
-            }
-        )
-        sut.showGreeting()
-        analyticsProvider.clearEvents()
-
-        // When
-        await sut.selectIssue(.contactSupport)
-
-        // Then
-        #expect(sut.selectedIssue == nil)
-        #expect(didContactHumanSupport == true)
-        #expect(receivedEntryPoint == .helpAndSupport)
-        assertProperties(
-            analyticsProvider,
-            event: "support_chat_escalation_tapped",
-            include: [
-                "source": "issue_picker",
-                "entry_point": "help_and_support",
-                "user_message_count": 0
-            ]
-        )
     }
 
     // MARK: - Analytics Tests
@@ -1113,16 +1079,16 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
-    @Test func canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_when_input_area_is_hidden() {
+    @Test func canEscalateToHumanSupport_is_true_for_helpAndSupport_entry_when_issue_picker_is_visible() {
         // Given — helpAndSupport entry shows the issue picker; input area is hidden until proceedToChat
         let sut = makeSUT(entryPoint: .helpAndSupport)
 
         // When
         sut.showGreeting()
 
-        // Then — even if there are messages, the toolbar must stay hidden during the picker phase
+        // Then
         #expect(sut.shouldShowInputArea == false)
-        #expect(sut.canEscalateToHumanSupport == false)
+        #expect(sut.canEscalateToHumanSupport == true)
     }
 
     @Test func markChatTicketCreated_flips_hasCreatedTicket_and_hides_toolbar() {

@@ -8,7 +8,6 @@ enum SupportIssueType: String, CaseIterable {
     case loadingAnalytics
     case receivingNotifications
     case other
-    case contactSupport
 
     /// The diagnostic tests to run for this issue type.
     /// Returns nil for options that do not run diagnostics.
@@ -23,7 +22,7 @@ enum SupportIssueType: String, CaseIterable {
             return [.internetConnection, .site, .analyticsSetting]
         case .receivingNotifications:
             return [.internetConnection, .site, .notifications]
-        case .other, .contactSupport:
+        case .other:
             return nil
         }
     }
@@ -40,8 +39,6 @@ enum SupportIssueType: String, CaseIterable {
             return Localization.receivingNotifications
         case .other:
             return Localization.other
-        case .contactSupport:
-            return Localization.contactSupport
         }
     }
 }
@@ -74,11 +71,6 @@ private extension SupportIssueType {
             "supportIssueType.other",
             value: "Other",
             comment: "Support issue type for other problems not listed"
-        )
-        static let contactSupport = NSLocalizedString(
-            "supportIssueType.contactSupport",
-            value: "Contact Support",
-            comment: "Support issue picker option to contact human support"
         )
     }
 }

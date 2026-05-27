@@ -95,28 +95,20 @@ struct NewStockNotificationPreferencesDetailView: View {
 
     private func thresholdValueText(_ value: Int) -> some View {
         let valueString = NumberFormatter.localizedString(from: NSNumber(value: value), number: .none)
-        let prefix = String.localizedStringWithFormat(Localization.thresholdValuePrefixFormat, valueString)
-        var attributed = AttributedString(prefix)
+        let content = String.localizedStringWithFormat(
+            Localization.thresholdValueWithLinkFormat,
+            valueString,
+            Localization.editStoreWideThresholdLink)
+        var attributed = AttributedString.withEmbeddedLinks(
+            content: content,
+            links: [Localization.editStoreWideThresholdLink: Self.editLinkScheme],
+            font: .caption2,
+            foregroundColor: Color(.secondaryLabel))
         if let range = attributed.range(of: valueString) {
             attributed[range].font = .caption2.bold()
         }
-        var link = AttributedString(Localization.editStoreWideThresholdLink)
-        link.link = URL(string: Self.editLinkScheme)
-        return (Text(attributed + AttributedString(" ") + link)
-                + Text(" ")
-                + Text(Image(systemName: Self.externalLinkSymbol)).foregroundColor(.accentColor))
-            .font(.caption2)
-            .foregroundStyle(Color(.secondaryLabel))
-            .environment(\.openURL, OpenURLAction { [detailViewModel] url in
-                if url.absoluteString == Self.editLinkScheme {
-                    detailViewModel.onTapEditStoreWideThreshold?()
-                    return .handled
-                }
-                return .systemAction
-            })
-            // Override the auto-generated label so VoiceOver doesn't announce
-            // the SF Symbol's name ("arrow up right") at the end of the sentence.
-            .accessibilityLabel(prefix + " " + Localization.editStoreWideThresholdLink)
+        return Text(attributed)
+            .environment(\.openURL, handleEditStoreWideThresholdTap)
     }
 
     private var thresholdLoadingText: some View {
@@ -128,27 +120,29 @@ struct NewStockNotificationPreferencesDetailView: View {
     }
 
     private var thresholdUnavailableText: some View {
-        let prefixString = Localization.thresholdUnavailablePrefix
-        let prefix = AttributedString(prefixString)
-        var link = AttributedString(Localization.viewStoreWideThresholdLink)
-        link.link = URL(string: Self.editLinkScheme)
-        let suffix = AttributedString(" " + Localization.thresholdUnavailableSuffix)
-        return (Text(prefix + AttributedString(" ") + link)
-                + Text(" ")
-                + Text(Image(systemName: Self.externalLinkSymbol)).foregroundColor(.accentColor)
-                + Text(suffix))
-            .font(.caption2)
-            .foregroundStyle(Color(.secondaryLabel))
-            .environment(\.openURL, OpenURLAction { [detailViewModel] url in
-                if url.absoluteString == Self.editLinkScheme {
-                    detailViewModel.onTapEditStoreWideThreshold?()
-                    return .handled
-                }
-                return .systemAction
-            })
-            // Override the auto-generated label so VoiceOver doesn't announce
-            // the SF Symbol's name ("arrow up right") between the link and suffix.
-            .accessibilityLabel(prefixString + " " + Localization.viewStoreWideThresholdLink + " " + Localization.thresholdUnavailableSuffix)
+        let content = String.localizedStringWithFormat(
+            Localization.thresholdUnavailableSentenceFormat,
+            Localization.viewStoreWideThresholdLink)
+        let attributed = AttributedString.withEmbeddedLinks(
+            content: content,
+            links: [Localization.viewStoreWideThresholdLink: Self.editLinkScheme],
+            font: .caption2,
+            foregroundColor: Color(.secondaryLabel))
+        return Text(attributed)
+            .environment(\.openURL, handleEditStoreWideThresholdTap)
+    }
+
+    /// Routes the in-text "edit/view store-wide threshold" link's tap to the
+    /// hosting controller via `onTapEditStoreWideThreshold`. Defined once so
+    /// both the loaded and unavailable variants share the routing logic.
+    private var handleEditStoreWideThresholdTap: OpenURLAction {
+        OpenURLAction { [detailViewModel] url in
+            if url.absoluteString == Self.editLinkScheme {
+                detailViewModel.onTapEditStoreWideThreshold?()
+                return .handled
+            }
+            return .systemAction
+        }
     }
 
     private func toggleRow(title: String,
@@ -165,7 +159,6 @@ struct NewStockNotificationPreferencesDetailView: View {
 
 private extension NewStockNotificationPreferencesDetailView {
     static let editLinkScheme = "woo-internal://edit-store-wide-threshold"
-    static let externalLinkSymbol = "arrow.up.right"
     static let loadingPlaceholderValue = 8
 
     enum Layout {
@@ -205,21 +198,18 @@ private extension NewStockNotificationPreferencesDetailView {
             value: "When a product variant reaches its low stock threshold.",
             comment: "Subtitle of the low-stock toggle row."
         )
-        static let thresholdValuePrefixFormat = NSLocalizedString(
-            "newStockNotificationPreferencesDetailView.lowStock.thresholdSentenceFormat",
-            value: "Products can use their own threshold or the store-wide threshold of\u{00A0}%1$@.",
-            comment: "Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5. "
-                + "The non-breaking space (\\u00A0) before the placeholder keeps the word 'of' and the value on the same line."
+        static let thresholdValueWithLinkFormat = NSLocalizedString(
+            "newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat",
+            value: "Products can use their own threshold or the store-wide threshold of\u{00A0}%1$@. %2$@",
+            comment: "Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; "
+                + "%2$@ is the tappable 'Edit store-wide threshold' link text. "
+                + "The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line."
         )
-        static let thresholdUnavailablePrefix = NSLocalizedString(
-            "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailablePrefix",
-            value: "Products can use their own threshold or the store-wide threshold.",
-            comment: "Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable."
-        )
-        static let thresholdUnavailableSuffix = NSLocalizedString(
-            "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSuffix",
-            value: "to see the current value.",
-            comment: "Sentence fragment shown after the 'View store-wide threshold' link when the store-wide threshold value is unavailable."
+        static let thresholdUnavailableSentenceFormat = NSLocalizedString(
+            "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat",
+            value: "Products can use their own threshold or the store-wide threshold. %1$@ to see the current value.",
+            comment: "Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. "
+                + "%1$@ is the tappable 'View store-wide threshold' link text."
         )
         static let editStoreWideThresholdLink = NSLocalizedString(
             "newStockNotificationPreferencesDetailView.lowStock.editStoreWideThresholdLink",

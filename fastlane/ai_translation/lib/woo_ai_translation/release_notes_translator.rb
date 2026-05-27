@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'openssl'
+
 require_relative 'anthropic_client'
 require_relative 'constants'
 require_relative 'translator'
@@ -85,15 +87,21 @@ module WooAiTranslation
         translation: reason ? nil : raw,
         skip_reason: reason
       )
-    rescue AnthropicClient::Error, Net::OpenTimeout, Net::ReadTimeout => e
+    rescue AnthropicClient::Error,
+           Net::OpenTimeout, Net::ReadTimeout,
+           SystemCallError, SocketError, IOError,
+           OpenSSL::SSL::SSLError => e
       # `Translator#translate_slice` re-raises `AnthropicClient::Error` (and
       # leaves network timeouts unhandled) when the batch has a single item —
-      # which is always our case for release_notes. Without this rescue, a
-      # transient Haiku failure (or an Opus-side parameter rejection)
-      # would kill the lane instead of flowing through the Haiku→Opus retry
-      # → English-fallback path. Surface the failure as a soft `:skipped`
-      # result so `translate` can try Opus, and so a final failure stays
-      # within the documented "ship English for the failed locale" contract.
+      # which is always our case for release_notes. The underlying
+      # `Net::HTTP.request` in `AnthropicClient` can also raise socket-level
+      # exceptions (`Errno::ECONNRESET`, `SocketError`, `EOFError`,
+      # `OpenSSL::SSL::SSLError`) that `with_retries` does not catch. Without
+      # this broad rescue, any of those would kill the lane instead of
+      # flowing through the Haiku→Opus retry → English-fallback path.
+      # Surface the failure as a soft `:skipped` result so `translate` can
+      # try Opus, and so a final failure stays within the documented "ship
+      # English for the failed locale" contract.
       Result.new(
         locale: locale,
         asc_locale: asc_locale,

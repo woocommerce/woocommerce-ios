@@ -4,6 +4,8 @@ require 'minitest/autorun'
 require 'json'
 require 'tmpdir'
 require 'fileutils'
+require 'openssl'
+require 'socket'
 
 require_relative '../lib/woo_ai_translation/constants'
 require_relative '../lib/woo_ai_translation/release_notes_translator'
@@ -242,6 +244,84 @@ class ReleaseNotesTranslatorTest < Minitest::Test
     result = t.translate(source_text: 'Welcome to WooCommerce', locale: 'pl', asc_locale: 'pl')
 
     # Then we get an Opus-tier success — network timeouts are recoverable too.
+    assert_equal :translated, result.status
+    assert_equal OPUS, result.model
+  end
+
+  def test_translate_when_haiku_raises_econnreset_then_retries_with_opus
+    # Given Haiku raises Errno::ECONNRESET — a `SystemCallError` subclass that
+    # `Net::HTTP` propagates without retry. Verifies the rescue's
+    # `SystemCallError` arm.
+    behaviors = {
+      HAIKU => Errno::ECONNRESET.new('connection reset by peer'),
+      OPUS => ->(loc, src) { "[#{loc}] #{src}" }
+    }
+    t = WooAiTranslation::ReleaseNotesTranslator.new(
+      client: ModelAwareStubClient.new(behaviors),
+      glossary_dir: @glossary_dir
+    )
+
+    # When we translate
+    result = t.translate(source_text: 'Welcome to WooCommerce', locale: 'pl', asc_locale: 'pl')
+
+    # Then we recover via Opus
+    assert_equal :translated, result.status
+    assert_equal OPUS, result.model
+  end
+
+  def test_translate_when_haiku_raises_socket_error_then_retries_with_opus
+    # Given Haiku raises SocketError (DNS / connection setup failure).
+    behaviors = {
+      HAIKU => SocketError.new('getaddrinfo: nodename nor servname provided'),
+      OPUS => ->(loc, src) { "[#{loc}] #{src}" }
+    }
+    t = WooAiTranslation::ReleaseNotesTranslator.new(
+      client: ModelAwareStubClient.new(behaviors),
+      glossary_dir: @glossary_dir
+    )
+
+    # When we translate
+    result = t.translate(source_text: 'Welcome to WooCommerce', locale: 'pl', asc_locale: 'pl')
+
+    # Then we recover via Opus
+    assert_equal :translated, result.status
+    assert_equal OPUS, result.model
+  end
+
+  def test_translate_when_haiku_raises_eof_error_then_retries_with_opus
+    # Given Haiku raises EOFError (mid-stream connection close, an IOError).
+    behaviors = {
+      HAIKU => EOFError.new('end of file reached'),
+      OPUS => ->(loc, src) { "[#{loc}] #{src}" }
+    }
+    t = WooAiTranslation::ReleaseNotesTranslator.new(
+      client: ModelAwareStubClient.new(behaviors),
+      glossary_dir: @glossary_dir
+    )
+
+    # When we translate
+    result = t.translate(source_text: 'Welcome to WooCommerce', locale: 'pl', asc_locale: 'pl')
+
+    # Then we recover via Opus
+    assert_equal :translated, result.status
+    assert_equal OPUS, result.model
+  end
+
+  def test_translate_when_haiku_raises_ssl_error_then_retries_with_opus
+    # Given Haiku raises OpenSSL::SSL::SSLError (TLS handshake failure).
+    behaviors = {
+      HAIKU => OpenSSL::SSL::SSLError.new('SSL_connect returned=1'),
+      OPUS => ->(loc, src) { "[#{loc}] #{src}" }
+    }
+    t = WooAiTranslation::ReleaseNotesTranslator.new(
+      client: ModelAwareStubClient.new(behaviors),
+      glossary_dir: @glossary_dir
+    )
+
+    # When we translate
+    result = t.translate(source_text: 'Welcome to WooCommerce', locale: 'pl', asc_locale: 'pl')
+
+    # Then we recover via Opus
     assert_equal :translated, result.status
     assert_equal OPUS, result.model
   end

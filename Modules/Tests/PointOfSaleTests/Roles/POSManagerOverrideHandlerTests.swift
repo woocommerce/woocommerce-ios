@@ -115,6 +115,41 @@ struct POSManagerOverrideHandlerTests {
         #expect(session.managerApprovalCapabilities == [.editPOSSettings])
     }
 
+    @Test func test_submit_when_request_replaced_in_flight_then_neither_completion_is_called() async {
+        // Given
+        var firstCompletionWasCalled = false
+        var secondCompletionWasCalled = false
+        let session = MockPOSAccessSession()
+        let sut = POSManagerOverrideHandler(session: session)
+        sut.requestApproval(
+            for: .refundShopOrders,
+            reason: "Refunding orders requires manager approval",
+            onApproved: {
+                firstCompletionWasCalled = true
+            }
+        )
+        session.onManagerApproval = {
+            sut.requestApproval(
+                for: .publishShopCoupons,
+                reason: "Creating coupons requires manager approval",
+                onApproved: {
+                    secondCompletionWasCalled = true
+                }
+            )
+        }
+
+        // When
+        await sut.submit(pin: "1234")
+
+        // Then
+        #expect(session.managerApprovalPINs == ["1234"])
+        #expect(session.managerApprovalCapabilities == [.refundShopOrders])
+        #expect(sut.request?.capability == .publishShopCoupons)
+        #expect(sut.pinEntryState == .idle)
+        #expect(firstCompletionWasCalled == false)
+        #expect(secondCompletionWasCalled == false)
+    }
+
     @Test func test_submit_when_cancelled_in_flight_then_completion_is_not_called() async {
         // Given
         var completionWasCalled = false

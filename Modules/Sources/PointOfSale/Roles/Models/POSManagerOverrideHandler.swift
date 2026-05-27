@@ -40,14 +40,18 @@ final class POSManagerOverrideHandler {
             return
         }
 
+        // Pin the in-flight request so a cancel or replacement mid-await can't leak into the resolving submit.
+        let activeRequestID = request.id
+        let activeOnApproved = onApproved
         pinEntryState = .loading
 
         do {
             try await session.requestManagerApproval(withPIN: pin, for: request.capability)
-            let approvedAction = onApproved
+            guard self.request?.id == activeRequestID else { return }
             dismiss()
-            approvedAction?()
+            activeOnApproved?()
         } catch {
+            guard self.request?.id == activeRequestID else { return }
             pinEntryState = .error(kind: errorKind(for: error))
         }
     }

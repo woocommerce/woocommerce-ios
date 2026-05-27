@@ -14,7 +14,7 @@ struct POSManagerOverrideView: View {
                 modalContent
             }
         }
-        .dynamicTypeSize(.large)
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
     }
 }
 

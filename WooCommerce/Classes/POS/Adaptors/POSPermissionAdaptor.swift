@@ -52,6 +52,10 @@ private final class EmptyPOSPermissionAdaptor: POSPermissionProviding {
     var hasAnyPINs: Bool { false }
     var autoLockTimeoutSeconds: Int { 0 }
     func hasCapability(_ capability: String) -> Bool { true }
+    func checkPermission(_ capability: String) -> PointOfSale.POSPermissionResult { .allowed }
+    func requestManagerApproval(managerPIN: String, for capability: String) async throws -> PointOfSale.POSOperator {
+        PointOfSale.POSOperator(userID: 0, displayName: "", role: "", capabilities: [], isAppAccountHolder: false)
+    }
     func signIn(_ posOperator: PointOfSale.POSOperator) {}
     func lock() {}
     func resetInactivityTimer() {}

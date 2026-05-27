@@ -34,10 +34,11 @@ final class POSManagerOverrideHandler {
         self.onApproved = onApproved
     }
 
-    func submit(pin: String) async {
+    @discardableResult
+    func submit(pin: String) async -> Bool {
         guard let request, let session else {
             pinEntryState = .error(kind: .generic)
-            return
+            return false
         }
 
         // Pin the in-flight request so a cancel or replacement mid-await can't leak into the resolving submit.
@@ -47,12 +48,14 @@ final class POSManagerOverrideHandler {
 
         do {
             try await session.requestManagerApproval(withPIN: pin, for: request.capability)
-            guard self.request?.id == activeRequestID else { return }
+            guard self.request?.id == activeRequestID else { return true }
             dismiss()
             activeOnApproved?()
+            return true
         } catch {
-            guard self.request?.id == activeRequestID else { return }
-            pinEntryState = .error(kind: errorKind(for: error))
+            guard self.request?.id == activeRequestID else { return true }
+            pinEntryState = state(for: error)
+            return false
         }
     }
 
@@ -68,10 +71,11 @@ private extension POSManagerOverrideHandler {
         onApproved = nil
     }
 
-    func errorKind(for error: POSAuthError) -> POSPINErrorKind {
+    // TODO: route .rateLimited(until:) to a lockout state when the manager override flow is wired in.
+    func state(for error: POSAuthError) -> POSPINEntryState {
         switch error {
-        case .invalidPIN: .invalidPIN
-        case .unknown: .generic
+        case .invalidPIN: .error(kind: .invalidPIN)
+        case .rateLimited, .permanentlyLocked, .unknown: .error(kind: .generic)
         }
     }
 }

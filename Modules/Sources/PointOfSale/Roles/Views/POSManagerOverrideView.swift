@@ -80,9 +80,7 @@ private extension POSManagerOverrideView {
 
     var pinEntry: some View {
         POSPINEntryView(state: handler.pinEntryState) { pin in
-            Task {
-                await handler.submit(pin: pin)
-            }
+            await handler.submit(pin: pin)
         }
     }
 

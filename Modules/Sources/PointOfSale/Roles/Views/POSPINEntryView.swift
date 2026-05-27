@@ -3,7 +3,8 @@ import SwiftUI
 struct POSPINEntryView: View {
     private let state: POSPINEntryState
     private let pinLength: Int
-    private let onComplete: (String) -> Void
+    private let onComplete: (String) async -> Bool
+    private let onLockoutExpired: (() -> Void)?
 
     @State private var enteredPIN = ""
     @State private var shakeAmount: CGFloat = 0
@@ -13,10 +14,12 @@ struct POSPINEntryView: View {
 
     init(state: POSPINEntryState,
          pinLength: Int = 4,
-         onComplete: @escaping (String) -> Void) {
+         onComplete: @escaping (String) async -> Bool,
+         onLockoutExpired: (() -> Void)? = nil) {
         self.state = state
         self.pinLength = pinLength
         self.onComplete = onComplete
+        self.onLockoutExpired = onLockoutExpired
     }
 
     var body: some View {
@@ -108,7 +111,13 @@ private extension POSPINEntryView {
 
     func lockoutCountdown(until date: Date) -> some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
-            lockoutMessage(helper.lockoutMessage(remainingSeconds: helper.remainingLockoutSeconds(until: date, now: context.date)))
+            let remaining = helper.remainingLockoutSeconds(until: date, now: context.date)
+            lockoutMessage(helper.lockoutMessage(remainingSeconds: remaining))
+                .onChange(of: remaining <= 0) { _, expired in
+                    if expired {
+                        onLockoutExpired?()
+                    }
+                }
         }
     }
 
@@ -171,7 +180,12 @@ private extension POSPINEntryView {
         enteredPIN = result.pin
         haptics.digitEntered()
         if result.shouldSubmit {
-            onComplete(result.pin)
+            Task {
+                let succeeded = await onComplete(result.pin)
+                if !succeeded {
+                    handleFailedAttempt()
+                }
+            }
         }
     }
 
@@ -182,20 +196,20 @@ private extension POSPINEntryView {
         enteredPIN = helper.removingLastDigit(from: enteredPIN)
     }
 
-    // Parent drives state per attempt (e.g. via .loading) so a repeated failure re-animates, and exits .lockout once the deadline passes.
     func handleStateChange(_ newState: POSPINEntryState) {
-        switch newState {
-        case .error(let kind):
+        if case .idle = newState {
             enteredPIN = ""
-            haptics.attemptFailed()
-            withAnimation(.linear(duration: Constants.shakeDuration)) {
-                shakeAmount += 1
-            }
+        }
+    }
+
+    func handleFailedAttempt() {
+        enteredPIN = ""
+        haptics.attemptFailed()
+        withAnimation(.linear(duration: Constants.shakeDuration)) {
+            shakeAmount += 1
+        }
+        if case .error(let kind) = state {
             AccessibilityNotification.Announcement(Localization.message(for: kind)).post()
-        case .idle:
-            enteredPIN = ""
-        case .loading, .lockout:
-            break
         }
     }
 }
@@ -297,25 +311,25 @@ extension POSPINEntryView {
 
 #if DEBUG
 #Preview("Idle") {
-    POSPINEntryView(state: .idle, onComplete: { _ in })
+    POSPINEntryView(state: .idle, onComplete: { _ in true })
         .padding()
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Error") {
-    POSPINEntryView(state: .error(kind: .invalidPIN), onComplete: { _ in })
+    POSPINEntryView(state: .error(kind: .invalidPIN), onComplete: { _ in false })
         .padding()
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Lockout") {
-    POSPINEntryView(state: .lockout(until: Date().addingTimeInterval(30)), onComplete: { _ in })
+    POSPINEntryView(state: .lockout(until: Date().addingTimeInterval(30)), onComplete: { _ in true })
         .padding()
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Loading") {
-    POSPINEntryView(state: .loading, onComplete: { _ in })
+    POSPINEntryView(state: .loading, onComplete: { _ in true })
         .padding()
         .background(Color.posSurfaceContainerLow)
 }
@@ -324,8 +338,11 @@ extension POSPINEntryView {
     @Previewable @State var state: POSPINEntryState = .idle
     POSPINEntryView(state: state, onComplete: { _ in
         state = .loading
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            state = .error(kind: .invalidPIN)
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                state = .error(kind: .invalidPIN)
+                continuation.resume(returning: false)
+            }
         }
     })
     .padding()

@@ -23,23 +23,32 @@ final class POSLockScreenModel {
     }
     #endif
 
-    func signIn(withPIN pin: String) async {
+    @discardableResult
+    func signIn(withPIN pin: String) async -> Bool {
         pinEntryState = .loading
 
         do {
             try await session.signIn(withPIN: pin)
             pinEntryState = .idle
+            return true
         } catch {
-            pinEntryState = .error(kind: errorKind(for: error))
+            pinEntryState = state(for: error)
+            return false
         }
+    }
+
+    func lockoutExpired() {
+        guard case .lockout = pinEntryState else { return }
+        pinEntryState = .idle
     }
 }
 
 private extension POSLockScreenModel {
-    func errorKind(for error: POSAuthError) -> POSPINErrorKind {
+    func state(for error: POSAuthError) -> POSPINEntryState {
         switch error {
-        case .invalidPIN: .invalidPIN
-        case .unknown: .generic
+        case .invalidPIN: .error(kind: .invalidPIN)
+        case .rateLimited(let until): .lockout(until: until)
+        case .permanentlyLocked, .unknown: .error(kind: .generic)
         }
     }
 }

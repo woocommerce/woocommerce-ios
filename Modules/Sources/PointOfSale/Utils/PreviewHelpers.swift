@@ -37,6 +37,7 @@ import enum Yosemite.POSCatalogSyncState
 import class Yosemite.POSCatalogSyncStateModel
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
 import struct Yosemite.POSCatalogInfo
+import struct Networking.POSStaffMember
 import struct Yosemite.Site
 import struct Yosemite.Order
 import struct Yosemite.POSCart
@@ -764,6 +765,17 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
 
     func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
         // no-op
+    }
+}
+
+// MARK: - Preview Staff Fetcher
+
+/// No-op `POSStaffFetching` for SwiftUI previews. Always reports the feature flag as
+/// disabled so previews remain unrestricted without a network call.
+///
+struct POSPreviewStaffFetcher: POSStaffFetching {
+    func fetchStaff(siteID: Int64) async throws(POSStaffFetchError) -> [POSStaffMember] {
+        throw .flagDisabledServerSide
     }
 }
 

@@ -8,9 +8,10 @@ struct POSAccessSessionFactoryTests {
     @Test func test_make_when_flag_is_off_then_returns_unrestricted_session() {
         // Given
         let flags = StubPOSFeatureFlagProviding(enabledFlags: [])
+        let fetcher = MockPOSStaffFetcher(staff: [])
 
         // When
-        let session = POSAccessSessionFactory.make(siteID: 123, featureFlags: flags)
+        let session = POSAccessSessionFactory.make(siteID: 123, featureFlags: flags, fetcher: fetcher)
 
         // Then
         #expect(session is UnrestrictedPOSAccessSession)
@@ -19,9 +20,10 @@ struct POSAccessSessionFactoryTests {
     @Test func test_make_when_flag_is_on_then_returns_default_session() {
         // Given
         let flags = StubPOSFeatureFlagProviding(enabledFlags: [.pointOfSaleRoles])
+        let fetcher = MockPOSStaffFetcher(staff: [])
 
         // When
-        let session = POSAccessSessionFactory.make(siteID: 123, featureFlags: flags)
+        let session = POSAccessSessionFactory.make(siteID: 123, featureFlags: flags, fetcher: fetcher)
 
         // Then
         #expect(session is DefaultPOSAccessSession)

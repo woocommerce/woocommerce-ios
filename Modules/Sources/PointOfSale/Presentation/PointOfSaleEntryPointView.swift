@@ -85,11 +85,13 @@ public struct PointOfSaleEntryPointView: View {
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          services: POSDependencyProviding,
+         staffFetcher: POSStaffFetching,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
         self._accessSession = State(initialValue: POSAccessSessionFactory.make(
             siteID: siteID,
-            featureFlags: services.featureFlags
+            featureFlags: services.featureFlags,
+            fetcher: staffFetcher
         ))
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
@@ -277,7 +279,8 @@ public struct PointOfSaleEntryPointView: View {
         catalogSyncCoordinator: nil,
         isLocalCatalogEligible: false,
         receiptSettingsAdminURL: "",
-        services: POSPreviewServices()
+        services: POSPreviewServices(),
+        staffFetcher: POSPreviewStaffFetcher()
     )
 }
 

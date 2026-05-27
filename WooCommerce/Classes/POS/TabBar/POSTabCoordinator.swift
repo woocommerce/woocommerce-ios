@@ -5,6 +5,7 @@ import Yosemite
 import Combine
 import class WooFoundation.CurrencySettings
 import WooFoundationCore
+import Networking
 import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
 import struct NetworkingCore.JetpackSite
@@ -295,6 +296,8 @@ private extension POSTabCoordinator {
                                                                            storageManager: storageManager,
                                                                            currencySettings: currencySettings)
 
+                let staffFetcher = makeStaffFetcher()
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -334,6 +337,7 @@ private extension POSTabCoordinator {
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
                     services: serviceAdaptor,
+                    staffFetcher: staffFetcher,
                     itemProvider: itemProvider
                 )
 
@@ -364,5 +368,27 @@ private extension POSTabCoordinator {
     /// Decorates track events with a different prefix when Point of Sale is active.
     func updateTrackEventPrefix(_ isPointOfSaleActive: Bool) {
         TracksProvider.setPOSMode(isPointOfSaleActive)
+    }
+
+    /// Builds the `POSStaffFetching` adaptor used for PIN authentication.
+    /// Falls back to a no-op fetcher when credentials are unavailable (should not happen in
+    /// normal operation, but guards against edge cases at the call site).
+    func makeStaffFetcher() -> POSStaffFetching {
+        guard let creds = credentials else {
+            DDLogError("⛔️ POSTabCoordinator: credentials unavailable - staff fetcher will be inert")
+            return InertPOSStaffFetcher()
+        }
+        let network = AlamofireNetwork(credentials: creds,
+                                       selectedSite: defaultSitePublisher,
+                                       appPasswordSupportState: isAppPasswordSupported)
+        return POSStaffAdaptor(network: network)
+    }
+}
+
+/// Fallback `POSStaffFetching` used when credentials are unavailable at POS launch.
+/// Always throws a transient error so PIN gating degrades gracefully.
+private struct InertPOSStaffFetcher: POSStaffFetching {
+    func fetchStaff(siteID: Int64) async throws(POSStaffFetchError) -> [POSStaffMember] {
+        throw .transient(retryable: false)
     }
 }

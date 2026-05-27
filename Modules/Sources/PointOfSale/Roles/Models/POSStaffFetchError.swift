@@ -3,7 +3,7 @@ import Foundation
 /// Error returned by `POSStaffFetching.fetchStaff(siteID:)`. Mapped at the app-target adaptor
 /// from underlying Networking errors so the authenticator and session can branch by intent.
 ///
-enum POSStaffFetchError: Error, Equatable {
+public enum POSStaffFetchError: Error, Equatable {
     /// HTTP 404 / `rest_no_route`. Server-side `point_of_sale_staff` feature flag is off.
     /// The session should clear its cache and degrade to no-PIN-gating mode.
     case flagDisabledServerSide

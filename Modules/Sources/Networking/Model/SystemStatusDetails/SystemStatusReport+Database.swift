@@ -34,8 +34,8 @@ public extension SystemStatusReport {
     /// Subtype for details about a database table.
     ///
     struct DatabaseTable: Decodable {
-        public let data: String
-        public let index: String
-        public let engine: String
+        public let data: String?
+        public let index: String?
+        public let engine: String?
     }
 }

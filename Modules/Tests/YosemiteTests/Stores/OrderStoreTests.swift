@@ -591,7 +591,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.toReadOnly(), remoteOrder)
     }
 
-    /// Verifies that `upsertStoredOrder` doesnt mark a Pre Existant order as "Search Results" (since it's been already
+    /// Verifies that `upsertStoredOrder` doesn't mark a Pre Existant order as "Search Results" (since it's been already
     /// retrieved for "Regular Scroll" display).
     ///
     func testUpsertStoredOrderDoesntMarkPreExistantOrdersAsSearchResults() {

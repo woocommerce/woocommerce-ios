@@ -17,7 +17,7 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
     }
 
     func verify(managerPIN pin: String, authorizes capability: POSCapability)
-        async throws(POSAuthError) {
+        async throws(POSAuthError) -> POSStaff {
         // TODO: implement when the manager override flow is wired in.
         throw .unknown
     }

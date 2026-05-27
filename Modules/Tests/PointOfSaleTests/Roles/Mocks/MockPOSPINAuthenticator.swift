@@ -4,7 +4,7 @@ import Foundation
 @MainActor
 final class MockPOSPINAuthenticator: POSPINAuthenticating {
     var authenticateResult: Result<POSStaff, POSAuthError>
-    var verifyResult: Result<Void, POSAuthError>
+    var verifyResult: Result<POSStaff, POSAuthError>
     var hasAnyPINsResult: Result<Bool, POSAuthError>
 
     private(set) var authenticatedPINs: [String] = []
@@ -20,7 +20,9 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
                 capabilities: Set(POSCapability.allCases.map(\.rawValue))
             )
          ),
-         verifyResult: Result<Void, POSAuthError> = .success(()),
+         verifyResult: Result<POSStaff, POSAuthError> = .success(
+            POSStaff(userID: 2, userLogin: "approver", displayName: "Approver",
+                     role: "shop_manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))),
          hasAnyPINsResult: Result<Bool, POSAuthError> = .success(true)) {
         self.authenticateResult = authenticateResult
         self.verifyResult = verifyResult
@@ -33,9 +35,9 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
     }
 
     func verify(managerPIN pin: String, authorizes capability: POSCapability)
-        async throws(POSAuthError) {
+        async throws(POSAuthError) -> POSStaff {
         verifyCallCount += 1
-        _ = try verifyResult.get()
+        return try verifyResult.get()
     }
 
     func hasAnyPINs() async throws(POSAuthError) -> Bool {

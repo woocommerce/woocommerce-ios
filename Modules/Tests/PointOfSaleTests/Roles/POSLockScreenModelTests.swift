@@ -180,50 +180,47 @@ struct POSLockScreenModelTests {
         #expect(sut.pinEntryState == .error(kind: .invalidPIN))
     }
 
-    @Test func test_refresh_when_session_reports_rate_limited_then_sets_lockout_state() async {
+    @Test func test_init_when_session_reports_rate_limited_then_sets_lockout_state() {
         // Given
         let lockoutEnd = Date(timeIntervalSinceReferenceDate: 5000)
         let session = MockPOSAccessSession(
             isLocked: true,
             checkLockoutResult: .failure(.rateLimited(until: lockoutEnd))
         )
-        let sut = POSLockScreenModel(session: session)
 
         // When
-        await sut.refresh()
+        let sut = POSLockScreenModel(session: session)
 
         // Then
         #expect(sut.pinEntryState == .lockout(until: lockoutEnd))
     }
 
-    @Test func test_refresh_when_session_reports_permanently_locked_then_sets_generic_error() async {
+    @Test func test_init_when_session_reports_permanently_locked_then_sets_generic_error() {
         // Given
         let session = MockPOSAccessSession(
             isLocked: true,
             checkLockoutResult: .failure(.permanentlyLocked)
         )
-        let sut = POSLockScreenModel(session: session)
 
         // When
-        await sut.refresh()
+        let sut = POSLockScreenModel(session: session)
 
         // Then
         #expect(sut.pinEntryState == .error(kind: .generic))
     }
 
-    @Test func test_refresh_when_session_is_clean_then_leaves_state_unchanged() async {
+    @Test func test_init_when_session_is_clean_then_pin_entry_state_is_idle() {
         // Given
         let session = MockPOSAccessSession(
             isLocked: true,
             checkLockoutResult: .success(())
         )
-        let sut = POSLockScreenModel(session: session, initialPinEntryState: .error(kind: .invalidPIN))
 
         // When
-        await sut.refresh()
+        let sut = POSLockScreenModel(session: session)
 
         // Then
-        #expect(sut.pinEntryState == .error(kind: .invalidPIN))
+        #expect(sut.pinEntryState == .idle)
     }
 
     private func makeStaff() -> POSStaff {

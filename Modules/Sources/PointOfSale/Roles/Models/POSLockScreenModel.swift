@@ -14,6 +14,11 @@ final class POSLockScreenModel {
 
     init(session: POSAccessSession) {
         self.session = session
+        do {
+            try session.checkLockoutState()
+        } catch {
+            pinEntryState = state(for: error)
+        }
     }
 
     #if DEBUG
@@ -34,15 +39,6 @@ final class POSLockScreenModel {
         } catch {
             pinEntryState = state(for: error)
             return false
-        }
-    }
-
-    func refresh() async {
-        await session.refreshPINStatus()
-        do {
-            try session.checkLockoutState()
-        } catch {
-            pinEntryState = state(for: error)
         }
     }
 

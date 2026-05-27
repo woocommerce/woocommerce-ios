@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
+---
+
+# Manual one-click trigger for the WooAiTranslation shadow-diff calibration
+# tool. Invoke from Buildkite's "New Build" with a custom message; set the
+# LOCALES env var if you want a non-default locale set.
+#
+# This pipeline is NOT scheduled and NOT triggered by PRs. It exists so the
+# release manager (or anyone) can re-run shadow-diff after a model bump or
+# glossary change without setting up a local environment.
+
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
+  # Override at trigger time via "Environment Variables" in the Buildkite UI.
+  LOCALES: "de,es,fr,ja"
+  # Optional Tier 2 AI-as-judge. Leave empty to skip Tier 2.
+  JUDGE_MODEL: ""
+  # Optional cap on keys per locale (e.g. "500" for a smoke run).
+  LIMIT: ""
+
+steps:
+  - label: ":magnifying_glass_tilted_right: Shadow-diff calibration"
+    plugins: [$CI_TOOLKIT]
+    command: |
+      echo '--- :ruby: Setup Ruby Tools'
+      install_gems
+
+      echo '--- :closed_lock_with_key: Access Secrets'
+      bundle exec fastlane run configure_apply
+
+      echo '--- :magnifying_glass_tilted_right: Run shadow-diff'
+      export OUTPUT="$PWD/shadow-diff-out"
+      cmd="bundle exec rake -f fastlane/ai_translation/Rakefile translate:shadow_diff"
+      cmd="$cmd LOCALES=\"$LOCALES\" OUTPUT=\"$OUTPUT\""
+      [ -n "$JUDGE_MODEL" ] && cmd="$cmd JUDGE_MODEL=\"$JUDGE_MODEL\""
+      [ -n "$LIMIT" ] && cmd="$cmd LIMIT=\"$LIMIT\""
+      echo "$ $cmd"
+      eval "$cmd"
+
+      echo '--- :buildkite: Upload report artifacts'
+      buildkite-agent artifact upload "shadow-diff-out/*.md"
+
+      echo '--- :clipboard: Post combined summary as annotation'
+      buildkite-agent annotate --context shadow-diff --style info < shadow-diff-out/index.md
+    retry:
+      manual:
+        allowed: true

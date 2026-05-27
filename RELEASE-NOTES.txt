@@ -5,6 +5,7 @@
 - [*] The Store Stats widget is now configurable: choose your size (small / medium / large), metrics, date range, store, and theme. [https://github.com/woocommerce/woocommerce-ios/pull/17170]
 - [*] New Trends widget for the lock screen, with a metric and date-range picker. [https://github.com/woocommerce/woocommerce-ios/pull/17160]
 - [**] Added support for 15 new app languages: Bulgarian, Czech, Danish, Finnish, Greek, Hindi, Hungarian, Malay, Norwegian Bokmål, Polish, Portuguese (Portugal), Romanian, Thai, Ukrainian, and Vietnamese.
+- [Internal] Added shadow-diff calibration tool (`fastlane/ai_translation/bin/translate_shadow_diff.rb`) for comparing AI translations against existing GP human translations. Produces a per-locale reviewer worksheet with mechanical bucketing (identical/cosmetic/placeholder-mismatch/length-significant/substantive) and an optional GPT-5.1-as-judge advisory column. Data-gathering tooling for the eventual GlotPress sunset conversation; no production behavior change.
 
 
 24.8

@@ -27,6 +27,12 @@ Metrics/AbcSize:
     - 'lib/woo_ai_translation/ios_resources.rb'
     - 'lib/woo_ai_translation/anthropic_client.rb'
     - 'lib/woo_ai_translation/translator.rb'
+    # OpenAI client mirrors AnthropicClient's shape; same branchy http path.
+    - 'lib/woo_ai_translation/openai_client.rb'
+    # ShadowDiff's categorize/sample/render methods have many small branches
+    # that the rule reads as high-ABC; splitting them artificially hurts
+    # readability of the comparison logic.
+    - 'lib/woo_ai_translation/shadow_diff.rb'
 
 Metrics/CyclomaticComplexity:
   Exclude:
@@ -35,6 +41,7 @@ Metrics/CyclomaticComplexity:
     - 'bin/**/*'
     - 'lib/woo_ai_translation/ios_resources.rb'
     - 'lib/woo_ai_translation/translator.rb'
+    - 'lib/woo_ai_translation/shadow_diff.rb'
 
 Metrics/PerceivedComplexity:
   Exclude:
@@ -57,10 +64,15 @@ Metrics/ClassLength:
 Metrics/ModuleLength:
   Exclude:
     - 'lib/woo_ai_translation/ios_resources.rb'
+    # ShadowDiff bundles categorizer + worksheet writer + report writer in
+    # one module by design (all operate on the same Entry/LocaleResult
+    # shapes); splitting would scatter related code.
+    - 'lib/woo_ai_translation/shadow_diff.rb'
 
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
+    - 'bin/**/*'
 
 Metrics/BlockNesting:
   Exclude:
@@ -77,9 +89,18 @@ Style/Documentation:
   Exclude:
     - 'spec/**/*'
 
+Style/OneClassPerFile:
+  # Test files often bundle small helper stub classes (e.g.
+  # `FakeHttp`, `ProgrammableJudgeStub`, `ModelAwareStubClient`) alongside
+  # the `*Test` class itself; splitting harms locality. Also some spec files
+  # use multiple `*Test` classes per concern (e.g. shadow_diff_test.rb).
+  Exclude:
+    - 'spec/**/*'
+
 Style/FormatStringToken:
   Exclude:
     - 'scripts/**/*'
+    - 'bin/**/*'
 
 Style/MultilineBlockChain:
   Exclude:
@@ -89,6 +110,9 @@ Naming/MethodParameterName:
   AllowedNames:
     - 'tx'  # translation
     - 'p'   # OptionParser block param
+    - 'en'  # English source — paired with gp/ai in shadow-diff comparisons
+    - 'gp'  # GlotPress human translation — paired with en/ai
+    - 'ai'  # AI proposal — paired with en/gp
 
 Lint/UselessConstantScoping:
   # Struct/lookup table constants are intentionally namespaced under their

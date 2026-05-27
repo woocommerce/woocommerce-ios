@@ -46,25 +46,29 @@ new ones); set it to scope a run.
 ```
 fastlane/ai_translation/
 ├── bin/
-│   └── translate_locale.rb       # CLI entry point
+│   ├── translate_locale.rb           # CLI: per-locale in-app .strings translation
+│   └── translate_shadow_diff.rb      # CLI: shadow-diff calibration vs GP humans
 ├── lib/woo_ai_translation/
-│   ├── anthropic_client.rb       # Anthropic Messages API wrapper (+ StubClient)
-│   ├── byte_sizer.rb             # Script-aware batch sizing
-│   ├── constants.rb              # Version, model IDs, prompt version
-│   ├── ios_resources.rb          # .strings parser + writer
-│   ├── manifest.rb               # Source-only invalidation cache (per-locale JSON)
-│   ├── translator.rb             # Batched JSON-in/JSON-out translator with split-retry
-│   └── validator.rb              # Brand-safety + glossary enforcement
+│   ├── ai_judge.rb                   # Tier 2 OpenAI-as-judge for shadow-diff (advisory)
+│   ├── anthropic_client.rb           # Anthropic Messages API wrapper (+ StubClient)
+│   ├── byte_sizer.rb                 # Script-aware batch sizing
+│   ├── constants.rb                  # Version, model IDs, prompt version
+│   ├── ios_resources.rb              # .strings parser + writer
+│   ├── manifest.rb                   # Source-only invalidation cache (per-locale JSON)
+│   ├── openai_client.rb              # OpenAI Chat Completions API wrapper (+ StubOpenAIClient)
+│   ├── shadow_diff.rb                # Tier 1 categorizer + worksheet/report writer
+│   ├── translator.rb                 # Batched JSON-in/JSON-out translator with split-retry
+│   └── validator.rb                  # Brand-safety + glossary enforcement
 ├── glossary/
-│   ├── common.yml                # Brand names — never translate (hard validator)
-│   └── <locale>.yml × 31         # Per-locale UI term + noun mappings
+│   ├── common.yml                    # Brand names — never translate (hard validator)
+│   └── <locale>.yml × 31             # Per-locale UI term + noun mappings
 ├── style/
-│   ├── default.md                # Fallback style guide
-│   └── <locale>.md               # Per-locale register / quirks (when applicable)
-├── spec/                         # Minitest specs
-├── scripts/                      # One-off bootstrap utilities (assemble, gap-fill)
-├── Rakefile                      # Rake task wrappers
-└── translate-progress.json       # Audit checkpoint for the original bootstrap run
+│   ├── default.md                    # Fallback style guide
+│   └── <locale>.md                   # Per-locale register / quirks (when applicable)
+├── spec/                             # Minitest specs
+├── scripts/                          # One-off bootstrap utilities (assemble, gap-fill)
+├── Rakefile                          # Rake task wrappers
+└── translate-progress.json           # Audit checkpoint for the original bootstrap run
 ```
 
 ### Glossaries and brand-safety
@@ -179,6 +183,108 @@ This is the mode the CI step is designed to call on every PR that touches
 `en.lproj` (the CI wiring lands in a separate PR in this series). A typical
 PR adds 1–10 strings, so the incremental call costs cents and finishes in
 seconds.
+
+## Shadow-diff calibration
+
+A separate tool for the **GlotPress sunset conversation**. Asks the question:
+"For an existing GP-translated locale, how close does the production AI engine
+come to the human GP translation?" Builds the data needed to decide whether
+AI can replace GP for the 16 existing locales (a future PR — not in this
+engine version's scope).
+
+The tool produces **data**, not a verdict. The substantive question — "is AI
+better than, equivalent to, or worse than GP human for our merchant audience"
+— is answered by a native-speaker human reviewer filling in a worksheet. The
+tool prepares the work in a structured way that respects their time.
+
+### Methodology — 3 tiers
+
+**Tier 1 — Mechanical bucketing (the tool, no judgment).** Pure string operations:
+
+| Bucket | Meaning |
+|---|---|
+| `identical` | byte-for-byte match between GP and AI |
+| `cosmetic` | differ only by whitespace / case |
+| `placeholder_mismatch` | **HARD FAIL** — `%@` / `%1$d` etc. differs from EN source (bug regardless of side) |
+| `length_significant` | >20% byte delta between GP and AI (possible register / verbosity change) |
+| `substantive` | everything else |
+
+**Tier 2 — AI-as-judge (advisory, opt-in).** Optional pass on the
+`substantive` sample using **GPT-5.1 via OpenAI** — deliberately a different
+model family from the Anthropic Claude production translator, to reduce
+self-bias. Each entry gets a `verdict ∈ {equivalent | acceptable_variant |
+different_meaning | ai_wrong | gp_wrong}` + a one-line reasoning. Output is
+**explicitly tagged as advisory** in the worksheet — never used to skip human
+review.
+
+**Tier 3 — Human (the actual decision).** A native-speaker reviewer fills
+in the worksheet for the rows the tool sampled:
+
+- **100% of `placeholder_mismatch`** — must be ~0 before any sunset talk
+- **100% of `length_significant`** — verify register / verbosity is appropriate
+- **Sample of `substantive`** — `max(30, 5% of bucket)` per locale, deterministic by `--seed`
+- **Sanity sample of `identical`** — `max(10, 0.5% of bucket)` to check for training-data memorization
+
+Reviewer answers per row: *"For our merchant audience, is the AI proposal
+**better than**, **equivalent to**, or **worse than** the current GP human
+translation?"* — comparative, not "is AI correct".
+
+### Running locally
+
+```bash
+# Smoke run (offline, deterministic, no spend)
+fastlane/ai_translation/bin/translate_shadow_diff.rb \
+  --locales de --limit 20 --offline \
+  --output /tmp/shadow-diff-smoke
+
+# Real run, one locale, Tier 1 only (~$3-5 in Haiku tokens)
+ANTHROPIC_API_KEY=sk-... fastlane/ai_translation/bin/translate_shadow_diff.rb \
+  --locales de --output ./shadow-diff-out
+
+# Full 4-locale run with Tier 2 GPT-5.1 advisory (~$25 total)
+ANTHROPIC_API_KEY=sk-... OPENAI_API_KEY=sk-... \
+  fastlane/ai_translation/bin/translate_shadow_diff.rb \
+  --locales de,es,fr,ja \
+  --judge-model gpt-5.1 \
+  --output ./shadow-diff-out
+
+# Or via Rake
+bundle exec rake -f fastlane/ai_translation/Rakefile translate:shadow_diff \
+  LOCALES=de,es,fr,ja JUDGE_MODEL=gpt-5.1 OUTPUT=./shadow-diff-out
+```
+
+### Running via Buildkite (manual trigger)
+
+The pipeline at `.buildkite/release-pipelines/run-shadow-diff.yml` is a
+**manual one-click trigger**, not scheduled. Useful after a model bump or
+glossary change when we want fresh data without setting up a local
+environment. Set `LOCALES`, `JUDGE_MODEL`, `LIMIT` as environment variables
+at trigger time.
+
+### Output
+
+Per locale: `<locale>-worksheet.md` (rows for reviewer to judge) and
+`<locale>-summary.md` (bucket counts). One combined `index.md` across all
+locales. Reviewer fills in the worksheet's `Verdict` column, saves a copy,
+and we tally the comparative judgments.
+
+### Why not just run continuously in CI?
+
+GP human translations don't drift on a daily/weekly cadence. The signal is a
+cross-section, not a time series. The output feeds a human decision (sunset
+conversation), so there's no automated actor to wake up. Token cost is
+non-trivial (~$25 per full run) and we'd burn it for no new information.
+Manual trigger is the right cadence.
+
+### Why GPT, not Claude, as the judge?
+
+Asking a Haiku-family model to judge another Haiku-family model's output is
+biased — same training data, same failure modes, same favorite phrasings. A
+different family (OpenAI's GPT-5.1) gives us cross-family judgment that's
+less self-justifying. The judge is still flagged as **advisory only** in the
+worksheet; Tier 3 (human) is the actual decision-maker. AI cannot answer the
+"is AI good enough" question for us — that's the methodology's load-bearing
+point.
 
 ## Adding a new locale
 

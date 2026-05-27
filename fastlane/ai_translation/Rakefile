@@ -122,6 +122,23 @@ namespace :translate do
     SUPPORTED_LOCALES.each { |loc| run_cli(loc) }
   end
 
+  desc 'Shadow-diff calibration: AI-translate existing GP locale(s) and diff vs human GP. ' \
+       'See README "Shadow-diff calibration" for methodology.'
+  task :shadow_diff do
+    locales = ENV.fetch('LOCALES', 'de,es,fr,ja')
+    output = ENV.fetch('OUTPUT', File.join(REPO_ROOT, 'shadow-diff-out'))
+    bin = File.join(__dir__, 'bin', 'translate_shadow_diff.rb')
+
+    args = ['ruby', bin, '--locales', locales, '--output', output]
+    args.push('--limit', ENV['LIMIT']) if ENV['LIMIT']
+    args.push('--judge-model', ENV['JUDGE_MODEL']) if ENV['JUDGE_MODEL']
+    args.push('--seed', ENV['SEED']) if ENV['SEED']
+    args << '--offline' if ENV['OFFLINE'] == '1'
+
+    puts "$ #{args.join(' ')}"
+    abort('translate_shadow_diff.rb failed') unless system(*args)
+  end
+
   desc 'Backfill manifest entries for already-shipped locales (no API calls).'
   task :backfill_manifest do
     require_relative 'lib/woo_ai_translation/ios_resources'

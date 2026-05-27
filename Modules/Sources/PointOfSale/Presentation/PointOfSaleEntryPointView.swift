@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCartProductObserving
@@ -186,6 +187,11 @@ public struct PointOfSaleEntryPointView: View {
                 PointOfSaleDashboardView()
                     .environment(posModel)
                     .environment(posModel.paymentModel)
+                    .posAutoLockActivityTracking(
+                        session: accessSession,
+                        paymentModel: posModel.paymentModel,
+                        aggregateModel: posModel
+                    )
             } else {
                 PointOfSaleLoadingView()
             }
@@ -246,6 +252,10 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posAccessSession, accessSession)
         .task {
             await accessSession.refreshPINStatus()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+            guard accessSession.hasAnyPINs, accessSession.currentStaff != nil else { return }
+            accessSession.lock()
         }
     }
 }

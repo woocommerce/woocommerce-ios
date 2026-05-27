@@ -31,7 +31,7 @@ struct POSAutoLockActivityTracker: ViewModifier {
     let aggregateModel: PointOfSaleAggregateModel
     let timeout: TimeInterval
 
-    @State private var lastActivityAt: Date = Date()
+    @State private var lastActivityAt = Date()
     @State private var timer: Timer?
 
     func body(content: Content) -> some View {

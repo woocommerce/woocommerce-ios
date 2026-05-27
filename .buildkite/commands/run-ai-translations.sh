@@ -23,6 +23,8 @@
 #   - the build is not a PR (e.g. trunk / release branches)
 #   - the PR is from a fork (annotated; translation will be done on a
 #     same-repo PR or by the release sweep)
+#   - the PR has the `skip_ai_translations` label (intended for hotfixes
+#     where shipping urgency outweighs needing AI translation; annotated)
 #   - no EN strings changed in the PR
 #   - HEAD is already a translation-bot commit (loop prevention)
 #
@@ -38,6 +40,8 @@
 #   BUILDKITE_PULL_REQUEST_REPO     git URL of PR head repo
 #   BUILDKITE_REPO                  git URL of main repo
 #   ANTHROPIC_API_KEY               required for actual translation
+#   GITHUB_TOKEN                    used by `gh` for label lookup (the
+#                                   Automattic agent image exports it)
 
 BOT_NAME="WooCommerce Translation Bot"
 BOT_EMAIL="translation-bot@noreply.woocommerce.com"
@@ -57,6 +61,19 @@ normalize_repo_url() {
   printf '%s' "$url"
 }
 
+# Returns 0 if the PR carries the given label, 1 otherwise. Used to honor
+# `skip_ai_translations` as a hotfix opt-out. Failures (gh missing, auth
+# issue, network blip) are treated as "label not present" so a transient
+# infra problem cannot silently smuggle a skip into a regular PR — the
+# only way to skip is via an actually-present label.
+pr_has_label() {
+  local label="$1"
+  gh pr view "${BUILDKITE_PULL_REQUEST}" \
+    --repo "${MAIN_REPO_PATH}" \
+    --json labels --jq '.labels[].name' 2>/dev/null \
+    | grep -Fxq -- "${label}"
+}
+
 echo "--- :globe_with_meridians: AI Translation"
 echo "PR repo: ${BUILDKITE_PULL_REQUEST_REPO:-<unset>}"
 echo "Main repo: ${BUILDKITE_REPO:-<unset>}"
@@ -74,6 +91,22 @@ if [[ -n "${PR_REPO_PATH}" && "${PR_REPO_PATH}" != "${MAIN_REPO_PATH}" ]]; then
   echo "Translation bot cannot push back to forks; the release-time sweep will pick up missing translations."
   buildkite-agent annotate --style 'info' --context ai-translation-fork \
     "AI translation skipped: PR is from a fork. Maintainer or release sweep will translate." || true
+  exit 0
+fi
+
+# Hotfix opt-out. A PR labeled `skip_ai_translations` short-circuits this
+# step with exit 0 so the GitHub `AI Translation` status posts as success
+# and the required-check protection on trunk considers it satisfied. The
+# label is the operator's explicit "ship it without translation" signal.
+#
+# Placed BEFORE the API-key check so the label can also unblock builds
+# where the secret is temporarily misconfigured for unrelated reasons —
+# the label is a categorical override, not a quality gate.
+if pr_has_label 'skip_ai_translations'; then
+  echo "Skipping: PR ${BUILDKITE_PULL_REQUEST} has the 'skip_ai_translations' label."
+  echo "Any new EN strings in this PR will be backfilled on the next non-skipped run."
+  buildkite-agent annotate --style 'warning' --context ai-translation-skip-label \
+    "AI translation skipped via \`skip_ai_translations\` label. Any new EN strings will be backfilled on the next non-skipped run." || true
   exit 0
 fi
 

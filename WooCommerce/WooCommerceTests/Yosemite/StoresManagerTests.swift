@@ -183,42 +183,37 @@ final class StoresManagerTests: XCTestCase {
     }
 
     @MainActor
-    func test_deauthenticate_does_not_initialize_grdb_manager_when_it_was_not_initialized() async {
+    func test_deauthenticate_does_not_reset_grdb_manager_when_it_was_not_initialized() {
         // Arrange
         let sessionManager = SessionManager.testingInstance
+        let grdbManagerProvider = MockGRDBManagerProvider(grdbManager: nil)
         let manager = DefaultStoresManager(sessionManager: sessionManager,
-                                           notificationCenter: MockNotificationCenter.testingInstance)
+                                           notificationCenter: MockNotificationCenter.testingInstance,
+                                           grdbManagerProvider: grdbManagerProvider)
         manager.authenticate(credentials: SessionSettings.wpcomCredentials)
         manager.updateDefaultStore(storeID: 123)
-        ServiceLocator.setGRDBManager(nil)
-        defer {
-            ServiceLocator.setGRDBManager(nil)
-        }
 
         // Action
         manager.deauthenticate()
-        try? await Task.sleep(nanoseconds: 100_000_000)
 
         // Assert
-        XCTAssertNil(ServiceLocator.initializedGRDBManager)
+        XCTAssertEqual(grdbManagerProvider.initializedGRDBManagerReadCount, 1)
     }
 
     @MainActor
     func test_deauthenticate_resets_existing_grdb_manager() async {
         // Arrange
         let sessionManager = SessionManager.testingInstance
+        let resetExpectation = expectation(description: "GRDB reset is called")
+        let grdbManager = MockGRDBManager {
+            resetExpectation.fulfill()
+        }
+        let grdbManagerProvider = MockGRDBManagerProvider(grdbManager: grdbManager)
         let manager = DefaultStoresManager(sessionManager: sessionManager,
-                                           notificationCenter: MockNotificationCenter.testingInstance)
+                                           notificationCenter: MockNotificationCenter.testingInstance,
+                                           grdbManagerProvider: grdbManagerProvider)
         manager.authenticate(credentials: SessionSettings.wpcomCredentials)
         manager.updateDefaultStore(storeID: 123)
-
-        let resetExpectation = expectation(description: "GRDB reset is called")
-        ServiceLocator.setGRDBManager(MockGRDBManager {
-            resetExpectation.fulfill()
-        })
-        defer {
-            ServiceLocator.setGRDBManager(nil)
-        }
 
         // Action
         manager.deauthenticate()
@@ -558,6 +553,20 @@ final class MockAuthenticationManager: AuthenticationManager {
     override func authenticationUI() -> UIViewController {
         authenticationUIInvoked = true
         return UIViewController()
+    }
+}
+
+private final class MockGRDBManagerProvider: GRDBManagerProviding {
+    private let grdbManager: GRDBManagerProtocol?
+    private(set) var initializedGRDBManagerReadCount = 0
+
+    init(grdbManager: GRDBManagerProtocol?) {
+        self.grdbManager = grdbManager
+    }
+
+    var initializedGRDBManager: GRDBManagerProtocol? {
+        initializedGRDBManagerReadCount += 1
+        return grdbManager
     }
 }
 

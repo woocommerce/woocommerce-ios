@@ -42,6 +42,8 @@ class DefaultStoresManager: StoresManager {
     ///
     private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
 
+    private let grdbManagerProvider: GRDBManagerProviding
+
     /// Tracks site IDs that are eligible for app password support to prevent duplicate analytics events
     ///
     private var trackedEligibleSites: Set<Int64> = []
@@ -155,12 +157,14 @@ class DefaultStoresManager: StoresManager {
     init(sessionManager: SessionManagerProtocol,
          notificationCenter: NotificationCenter = .default,
          defaults: UserDefaults = .standard,
-         cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
+         cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
+         grdbManagerProvider: GRDBManagerProviding = ServiceLocatorGRDBManagerProvider()) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
         self.defaults = defaults
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
+        self.grdbManagerProvider = grdbManagerProvider
 
         isLoggedIn = isAuthenticated
         if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
@@ -298,7 +302,7 @@ class DefaultStoresManager: StoresManager {
 
         let siteIDForSync = sessionManager.defaultStoreID
         let syncCoordinator = posCatalogSyncCoordinator
-        let grdbManager = ServiceLocator.initializedGRDBManager
+        let grdbManager = grdbManagerProvider.initializedGRDBManager
 
         sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()

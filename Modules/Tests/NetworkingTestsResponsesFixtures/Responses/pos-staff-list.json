@@ -1,0 +1,59 @@
+{
+  "staff": [
+    {
+      "user_id": 1,
+      "user_login": "admin",
+      "display_name": "Admin",
+      "role": "administrator",
+      "capabilities": {
+        "view_pos": true,
+        "view_pos_settings": true,
+        "edit_pos_settings": true,
+        "refund_shop_orders": true,
+        "publish_shop_coupons": true,
+        "manage_pos_staff": true,
+        "manage_woocommerce": true,
+        "read": true,
+        "level_0": true
+      },
+      "pin": {
+        "algo": "pbkdf2-sha256",
+        "iterations": 10000,
+        "salt": "c2FsdHkxMjM0NTY3OA==",
+        "hash": "Y2I3OTRhZWZkOTcyNmIwNGNiM2JlNmJjOGRkNzA2NWVjOTM1OWQ4ZQ=="
+      }
+    },
+    {
+      "user_id": 7,
+      "user_login": "sarah",
+      "display_name": "Sarah",
+      "role": "pos_manager",
+      "capabilities": {
+        "view_pos": true,
+        "view_pos_settings": true,
+        "refund_shop_orders": true,
+        "publish_shop_coupons": true,
+        "read": true,
+        "level_0": true
+      },
+      "pin": {
+        "algo": "pbkdf2-sha256",
+        "iterations": 10000,
+        "salt": "c2FsdHlfc2FyYWg=",
+        "hash": "ZjFlOWMyNDM5NDhmNGZjNzc1Y2ZjMGM2YjMzMjA0ZWRkN2I4Yzg5Yw=="
+      }
+    },
+    {
+      "user_id": 42,
+      "user_login": "mike",
+      "display_name": "Mike",
+      "role": "pos_cashier",
+      "capabilities": {
+        "view_pos": true,
+        "read": true,
+        "level_0": true
+      },
+      "pin": null
+    }
+  ]
+}

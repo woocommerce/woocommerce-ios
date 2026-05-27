@@ -8,6 +8,7 @@ import Experiments
 import enum WooFoundationCore.BuildConfiguration
 import protocol WooFoundation.Analytics
 import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
+import enum PointOfSale.POSLockStateKey
 
 
 /// Enum representing the individual tabs
@@ -132,6 +133,11 @@ final class MainTabBarController: UITabBarController {
 
     private let posContainerController = TabContainerController()
     private var posTabCoordinator: POSTabCoordinator?
+
+    /// One-shot signal that the POS tab should auto-reopen at cold launch if the persisted
+    /// lock state for the active site is true. Flipped to false after the first attempt so
+    /// subsequent site switches don't keep yanking the user back into POS.
+    private var needsPOSAutoReopenCheck = true
 
     private let bookingsContainerController = TabContainerController()
 
@@ -979,6 +985,7 @@ private extension MainTabBarController {
             localCatalogEligibilityService: stores.posCatalogEligibilityChecker
         )
         posTabCoordinator = coordinator
+        autoReopenPOSIfNeeded(siteID: siteID)
 
         // Setup bookings wrapped view controller
         let bookingsViewController = createBookingsViewController(siteID: siteID)
@@ -1212,6 +1219,24 @@ private extension MainTabBarController {
 private extension MainTabBarController {
     func cachePOSTabVisibility(siteID: Int64, isPOSTabVisible: Bool) {
         posEligibilityService.cachePOSTabVisibility(siteID: siteID, isVisible: isPOSTabVisible)
+    }
+}
+
+private extension MainTabBarController {
+    /// If POS was locked when the app terminated, reopens POS on cold launch so the
+    /// operator returns to the same lock screen instead of the dashboard.
+    /// Gated on the `pointOfSaleRoles` feature flag so a stale persisted key from a
+    /// prior flag-on session can't trigger a flag-off auto-reopen.
+    func autoReopenPOSIfNeeded(siteID: Int64) {
+        guard needsPOSAutoReopenCheck else { return }
+        needsPOSAutoReopenCheck = false
+
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) else { return }
+        guard UserDefaults.standard.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
+
+        DispatchQueue.main.async { [weak self] in
+            self?.posTabCoordinator?.onTabSelected()
+        }
     }
 }
 

@@ -1228,10 +1228,10 @@ private extension MainTabBarController {
     /// Gated on the `pointOfSaleRoles` feature flag so a stale persisted key from a
     /// prior flag-on session can't trigger a flag-off auto-reopen.
     func autoReopenPOSIfNeeded(siteID: Int64) {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) else { return }
         guard needsPOSAutoReopenCheck else { return }
         needsPOSAutoReopenCheck = false
 
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) else { return }
         guard UserDefaults.standard.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
 
         DispatchQueue.main.async { [weak self] in

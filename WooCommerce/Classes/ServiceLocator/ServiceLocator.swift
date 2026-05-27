@@ -565,7 +565,6 @@ extension ServiceLocator {
 
         _productImageUploader = mock
     }
-
 }
 
 

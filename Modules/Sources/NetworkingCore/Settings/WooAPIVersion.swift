@@ -58,6 +58,12 @@ public enum WooAPIVersion: String {
     ///
     case wcPosV1 = "wc/pos/v1"
 
+    /// POS server-side design v1 namespace. Hosts the M1 staff endpoint and any future POS REST
+    /// routes added under the same proposal. Distinct from `wcPosV1 = "wc/pos/v1"` used by
+    /// catalog sync.
+    ///
+    case pointOfSaleV1 = "wc-pos/v1"
+
     /// Returns the path for the current API Version
     ///
     var path: String {

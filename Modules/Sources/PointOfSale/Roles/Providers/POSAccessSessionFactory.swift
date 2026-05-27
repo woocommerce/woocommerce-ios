@@ -12,7 +12,10 @@ enum POSAccessSessionFactory {
         let fetcher = NullPOSStaffFetcher()
         return DefaultPOSAccessSession(
             authenticator: DefaultPOSPINAuthenticator(cache: cache, fetcher: fetcher, siteID: siteID),
-            rateLimiter: POSLocalRateLimiter(siteID: siteID)
+            rateLimiter: POSLocalRateLimiter(siteID: siteID),
+            cache: cache,
+            fetcher: fetcher,
+            siteID: siteID
         )
     }
 }

@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import struct Networking.POSStaffMember
 @testable import PointOfSale
 
 @MainActor
@@ -140,31 +141,91 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.currentStaff == staff)
     }
 
-    @Test func test_refreshPINStatus_when_authenticator_succeeds_then_updates_hasAnyPINs() async {
+    @Test func test_refreshPINStatus_when_fetch_succeeds_then_caches_and_updates_hasAnyPINs() async {
         // Given
-        let authenticator = MockPOSPINAuthenticator(hasAnyPINsResult: .success(true))
-        let sut = makeSUT(authenticator: authenticator)
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
+        let member = POSStaffMember(userID: 1, userLogin: "u1", displayName: "U1",
+                                    role: "pos_cashier", capabilities: ["view_pos": true],
+                                    pin: .init(algo: "pbkdf2-sha256", iterations: 10000,
+                                               salt: "c2FsdA==", hash: "aGFzaA=="))
+        let session = makeSession(cache: cache, fetcher: MockPOSStaffFetcher(staff: [member]), siteID: 1)
 
         // When
-        await sut.session.refreshPINStatus()
+        await session.refreshPINStatus()
 
         // Then
-        #expect(sut.session.hasAnyPINs == true)
-        #expect(authenticator.hasAnyPINsCallCount == 1)
+        #expect(session.hasAnyPINs == true)
+        #expect(cache.load(siteID: 1)?.count == 1)
     }
 
-    @Test func test_refreshPINStatus_when_authenticator_fails_then_keeps_last_value() async {
+    @Test func test_refreshPINStatus_when_TTL_not_expired_then_skips_fetch() async {
         // Given
-        let authenticator = MockPOSPINAuthenticator(hasAnyPINsResult: .success(true))
-        let sut = makeSUT(authenticator: authenticator)
-        await sut.session.refreshPINStatus()
+        let now = Date()
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { now })
+        cache.save([], siteID: 1)
+        let fetcher = MockPOSStaffFetcher(staff: [])
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
+                                  now: { now.addingTimeInterval(5) })
 
         // When
-        authenticator.hasAnyPINsResult = .failure(.unknown)
-        await sut.session.refreshPINStatus()
+        await session.refreshPINStatus()
 
         // Then
-        #expect(sut.session.hasAnyPINs == true)
+        #expect(fetcher.calls == 0)
+    }
+
+    @Test func test_refreshPINStatus_when_TTL_expired_then_refetches() async {
+        // Given
+        let saveTime = Date()
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { saveTime })
+        cache.save([], siteID: 1)
+        let fetcher = MockPOSStaffFetcher(staff: [])
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
+                                  now: { saveTime.addingTimeInterval(31) })
+
+        // When
+        await session.refreshPINStatus()
+
+        // Then
+        #expect(fetcher.calls == 1)
+    }
+
+    @Test func test_refreshPINStatus_when_flag_disabled_server_side_then_clears_cache_and_sets_flag() async {
+        // Given
+        let saveTime = Date()
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { saveTime })
+        cache.save([makeMember(id: 1, hasPIN: true)], siteID: 1)
+        let fetcher = MockPOSStaffFetcher(error: .flagDisabledServerSide)
+        // Session clock is past TTL so the fetch is not skipped.
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
+                                  now: { saveTime.addingTimeInterval(31) })
+
+        // When
+        await session.refreshPINStatus()
+
+        // Then
+        #expect(cache.load(siteID: 1) == nil)
+        #expect(session.flagDisabledServerSide == true)
+        #expect(session.hasAnyPINs == false)
+    }
+
+    @Test func test_refreshPINStatus_when_transient_error_then_keeps_existing_cache() async {
+        // Given
+        let saveTime = Date()
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { saveTime })
+        let existing = [makeMember(id: 1, hasPIN: true)]
+        cache.save(existing, siteID: 1)
+        let fetcher = MockPOSStaffFetcher(error: .transient(retryable: true))
+        // Session clock is past TTL so the fetch is not skipped.
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
+                                  now: { saveTime.addingTimeInterval(31) })
+
+        // When
+        await session.refreshPINStatus()
+
+        // Then
+        #expect(cache.load(siteID: 1) == existing)
+        #expect(session.hasAnyPINs == true)
     }
 
     @Test func test_requestManagerApproval_when_called_then_throws_unknown() async {
@@ -223,8 +284,32 @@ private extension DefaultPOSAccessSessionTests {
                  now: @escaping () -> Date = { Date() }) -> SUT {
         let scope = UserDefaultsTestScope()
         let limiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: now)
-        let session = DefaultPOSAccessSession(authenticator: authenticator, rateLimiter: limiter)
+        let session = makeSession(authenticator: authenticator, rateLimiter: limiter, now: now)
         return SUT(session: session, limiter: limiter, scope: scope)
+    }
+
+    func makeSession(authenticator: POSPINAuthenticating? = nil,
+                     rateLimiter: POSLocalRateLimiter? = nil,
+                     cache: POSStaffCache = POSStaffCache(storage: InMemoryKeyValueStorage()),
+                     fetcher: POSStaffFetching = MockPOSStaffFetcher(staff: []),
+                     siteID: Int64 = 1,
+                     now: @escaping @Sendable () -> Date = Date.init) -> DefaultPOSAccessSession {
+        let resolvedAuthenticator = authenticator ?? MockPOSPINAuthenticator()
+        let limiter = rateLimiter ?? POSLocalRateLimiter(siteID: siteID)
+        return DefaultPOSAccessSession(authenticator: resolvedAuthenticator,
+                                       rateLimiter: limiter,
+                                       cache: cache,
+                                       fetcher: fetcher,
+                                       siteID: siteID,
+                                       now: now)
+    }
+
+    func makeMember(id: Int64, hasPIN: Bool) -> POSStaffMember {
+        let pin: POSStaffMember.PINDetails? = hasPIN
+            ? .init(algo: "pbkdf2-sha256", iterations: 10000, salt: "c2FsdA==", hash: "aGFzaA==")
+            : nil
+        return POSStaffMember(userID: id, userLogin: "u\(id)", displayName: "U\(id)",
+                              role: "pos_cashier", capabilities: ["view_pos": true], pin: pin)
     }
 }
 

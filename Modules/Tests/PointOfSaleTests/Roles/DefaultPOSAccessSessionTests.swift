@@ -219,7 +219,12 @@ private extension DefaultPOSAccessSessionTests {
                  now: @escaping () -> Date = { Date() }) -> SUT {
         let scope = UserDefaultsTestScope()
         let limiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: now)
-        let session = DefaultPOSAccessSession(authenticator: authenticator, rateLimiter: limiter)
+        let session = DefaultPOSAccessSession(
+            siteID: 123,
+            authenticator: authenticator,
+            rateLimiter: limiter,
+            userDefaults: scope.defaults
+        )
         return SUT(session: session, limiter: limiter, scope: scope)
     }
 }

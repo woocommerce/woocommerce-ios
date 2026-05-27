@@ -7,6 +7,7 @@ enum POSAccessSessionFactory {
             return UnrestrictedPOSAccessSession()
         }
         return DefaultPOSAccessSession(
+            siteID: siteID,
             authenticator: DefaultPOSPINAuthenticator(),
             rateLimiter: POSLocalRateLimiter(siteID: siteID)
         )

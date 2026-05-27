@@ -304,6 +304,13 @@ class DefaultStoresManager: StoresManager {
         let syncCoordinator = posCatalogSyncCoordinator
         let grdbManager = grdbManagerProvider.initializedGRDBManager
 
+        // Stop any ongoing catalog sync tasks before resetting session.
+        if let siteID = siteIDForSync {
+            Task {
+                await syncCoordinator?.stopOngoingSyncs(for: siteID)
+            }
+        }
+
         sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()
         state = DeauthenticatedState()
@@ -313,12 +320,8 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.storageManager.reset()
 
         // Reset GRDB on a background thread to avoid blocking logout when there's a large catalog to delete.
-        // Capture the authenticated-session dependencies before resetting state so cleanup is not lost.
         if let grdbManager {
             Task.detached(priority: .userInitiated) {
-                if let siteID = siteIDForSync {
-                    await syncCoordinator?.stopOngoingSyncs(for: siteID)
-                }
                 do {
                     try grdbManager.reset()
                 } catch {

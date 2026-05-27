@@ -19,8 +19,8 @@ struct SupportChatViewModelTests {
 
         // Then
         #expect(sut.messages.count == 1)
-        if case .issuePicker = sut.messages.first?.content {
-            // Success
+        if case .issuePicker(let issues) = sut.messages.first?.content {
+            #expect(issues.last == .contactSupport)
         } else {
             Issue.record("Expected issue picker message")
         }
@@ -138,6 +138,40 @@ struct SupportChatViewModelTests {
         // Should have: issue picker, user selection, greeting
         #expect(sut.messages.count == 3)
         #expect(sut.hasProceededToChat == true)
+    }
+
+    @Test func selectIssue_when_contactSupport_then_invokes_contact_support_callback_without_disabling_picker() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        var didContactHumanSupport = false
+        var receivedEntryPoint: SupportChatViewModel.EntryPoint?
+        let sut = makeSUT(
+            entryPoint: .helpAndSupport,
+            analyticsProvider: analyticsProvider,
+            onContactHumanSupport: { _, _, _, entryPoint in
+                didContactHumanSupport = true
+                receivedEntryPoint = entryPoint
+            }
+        )
+        sut.showGreeting()
+        analyticsProvider.clearEvents()
+
+        // When
+        await sut.selectIssue(.contactSupport)
+
+        // Then
+        #expect(sut.selectedIssue == nil)
+        #expect(didContactHumanSupport == true)
+        #expect(receivedEntryPoint == .helpAndSupport)
+        assertProperties(
+            analyticsProvider,
+            event: "support_chat_escalation_tapped",
+            include: [
+                "source": "issue_picker",
+                "entry_point": "help_and_support",
+                "user_message_count": 0
+            ]
+        )
     }
 
     // MARK: - Analytics Tests
@@ -770,7 +804,7 @@ struct SupportChatViewModelTests {
     }
 
     @Test(.timeLimit(.minutes(1)))
-    func resumeIfNeeded_when_chat_has_no_persisted_bot_response_then_canEscalateToHumanSupport_is_false() async {
+    func resumeIfNeeded_when_chat_has_no_persisted_bot_response_then_canEscalateToHumanSupport_is_true() async {
         // Given
         let chatID: Int64 = 123
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -807,7 +841,7 @@ struct SupportChatViewModelTests {
 
         // Then
         #expect(sut.messages.count == 1)
-        #expect(sut.canEscalateToHumanSupport == false)
+        #expect(sut.canEscalateToHumanSupport == true)
     }
 
     @Test func contactHumanSupport_passes_chatID_in_callback() async {
@@ -950,15 +984,15 @@ struct SupportChatViewModelTests {
 
     // MARK: - canEscalateToHumanSupport Tests
 
-    @Test func canEscalateToHumanSupport_is_false_initially() {
+    @Test func canEscalateToHumanSupport_is_true_initially_when_input_area_is_visible() {
         // Given
         let sut = makeSUT(entryPoint: .connectivityTool)
 
         // Then
-        #expect(sut.canEscalateToHumanSupport == false)
+        #expect(sut.canEscalateToHumanSupport == true)
     }
 
-    @Test func canEscalateToHumanSupport_is_false_when_only_bot_greeting_exists() {
+    @Test func canEscalateToHumanSupport_is_true_when_only_bot_greeting_exists() {
         // Given
         let sut = makeSUT(entryPoint: .connectivityTool)
 
@@ -967,7 +1001,7 @@ struct SupportChatViewModelTests {
 
         // Then
         #expect(sut.messages.contains(where: { $0.role == .bot }))
-        #expect(sut.canEscalateToHumanSupport == false)
+        #expect(sut.canEscalateToHumanSupport == true)
     }
 
     @Test func canEscalateToHumanSupport_becomes_true_after_first_user_message_is_sent() async {
@@ -986,7 +1020,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
-    @Test func canEscalateToHumanSupport_remains_false_when_sending_message_fails() async {
+    @Test func canEscalateToHumanSupport_remains_true_when_sending_message_fails() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -1001,10 +1035,10 @@ struct SupportChatViewModelTests {
         sut.sendMessage()
 
         // Then
-        #expect(sut.canEscalateToHumanSupport == false)
+        #expect(sut.canEscalateToHumanSupport == true)
     }
 
-    @Test func canEscalateToHumanSupport_is_false_for_helpAndSupport_entry_until_proceedToChat() async {
+    @Test func canEscalateToHumanSupport_is_true_for_helpAndSupport_entry_after_proceedToChat() async {
         // Given — helpAndSupport entry shows issue picker first; input area is hidden
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -1016,22 +1050,12 @@ struct SupportChatViewModelTests {
         // When — proceed to chat
         sut.proceedToChat()
 
-        // Then — input area is visible, but the merchant has not typed anything yet
-        #expect(sut.shouldShowInputArea == true)
-        #expect(sut.canEscalateToHumanSupport == false)
-
-        // When — merchant actually types and sends a message
-        sut.inputText = "Hello"
-        sut.sendMessage()
-
         // Then
+        #expect(sut.shouldShowInputArea == true)
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
-    @Test func canEscalateToHumanSupport_is_false_after_helpAndSupport_picker_selection_until_user_types() async {
-        // Reviewer scenario (PR #17102 / WOOMOB-3033): tapping an issue picker option appends a
-        // user-role message ("Loading orders" etc.). The toolbar entry must wait until the merchant
-        // actually describes the problem via the input field — picker taps don't count.
+    @Test func canEscalateToHumanSupport_is_true_after_helpAndSupport_picker_selection() async {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
             completeSendMessageSuccessfully(action)
@@ -1042,17 +1066,9 @@ struct SupportChatViewModelTests {
         // When — pick the no-diagnostics path so we land in chat without manual `proceedToChat`
         await sut.selectIssue(.other)
 
-        // Then — chat surface is in free-chat phase, picker tap added a user message,
-        // but the merchant has NOT typed via the input field yet
+        // Then
         #expect(sut.hasProceededToChat == true)
         #expect(sut.messages.contains(where: { $0.role == .user }))
-        #expect(sut.canEscalateToHumanSupport == false)
-
-        // When — merchant types and sends
-        sut.inputText = "Help, my orders aren't loading"
-        sut.sendMessage()
-
-        // Then
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
@@ -2002,6 +2018,7 @@ struct SupportChatViewModelTests {
         stores: StoresManager? = nil,
         diagnosticsService: SupportDiagnosticsServicing? = nil,
         analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider(),
+        onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _ in },
         onStartJetpackSetup: @escaping () -> Void = {},
         onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() },
         onOpenPushNotificationPreferences: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }
@@ -2012,7 +2029,7 @@ struct SupportChatViewModelTests {
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
             diagnosticsService: diagnosticsService,
-            onContactHumanSupport: Self.noopContactHumanSupport,
+            onContactHumanSupport: onContactHumanSupport,
             onUpdateWooCommercePlugin: onUpdateWooCommercePlugin,
             onOpenPushNotificationPreferences: onOpenPushNotificationPreferences
         )

@@ -19,6 +19,7 @@ extension WooAnalyticsEvent {
             case toolbar
             case errorDialog
             case banner
+            case issuePicker
         }
 
         enum EscalationTrigger: String {

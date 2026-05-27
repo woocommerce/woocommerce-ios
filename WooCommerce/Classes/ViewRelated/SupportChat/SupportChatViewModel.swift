@@ -210,14 +210,13 @@ final class SupportChatViewModel {
     }
 
     /// Whether the trailing toolbar entry point to human support should be visible.
-    /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics)
-    /// AND the conversation has at least one persisted bot response, and only while no ticket
-    /// has been created yet.
+    /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics),
+    /// and only while no ticket has been created yet.
     var canEscalateToHumanSupport: Bool {
         guard shouldShowInputArea, !hasCreatedTicket, !isChatResolved else {
             return false
         }
-        return hasRemoteBotResponse
+        return true
     }
 
     var shouldShowResolvedButton: Bool {
@@ -326,11 +325,17 @@ final class SupportChatViewModel {
     /// Selects an issue type and runs diagnostics if needed.
     ///
     func selectIssue(_ issue: SupportIssueType) async {
-        selectedIssue = issue
         analytics.track(event: WooAnalyticsEvent.SupportChat.issueSelected(
             issueType: issue,
             entryPoint: entryPoint
         ))
+
+        if issue == .contactSupport {
+            contactHumanSupport(source: .issuePicker)
+            return
+        }
+
+        selectedIssue = issue
 
         // Add user's selection as a message
         let userMessage = ChatMessage(role: .user, text: issue.displayName)
@@ -985,10 +990,6 @@ final class SupportChatViewModel {
 
     private var latestBotResponse: ChatMessage? {
         messages.last { $0.role == .bot && $0.messageID != nil }
-    }
-
-    private var hasRemoteBotResponse: Bool {
-        messages.contains { $0.role == .bot && $0.messageID != nil }
     }
 
     private func trackTroubleshootingCompleted(issueType: SupportIssueType,

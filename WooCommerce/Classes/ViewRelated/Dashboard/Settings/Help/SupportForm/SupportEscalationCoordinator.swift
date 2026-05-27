@@ -127,6 +127,7 @@ final class SupportEscalationCoordinator {
                 self?.onTicketCreated?()
             },
             onTicketCreationFailed: { [weak self] error in
+                DDLogError("⛔️ Support chat ticket creation failed via support form: \(error)")
                 self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
                     route: .supportForm,
                     supportAreaInfo: supportAreaInfo,
@@ -191,6 +192,7 @@ final class SupportEscalationCoordinator {
                     self?.onTicketCreated?()
                     self?.showSuccessAndPop()
                 case .failure(let error):
+                    DDLogError("⛔️ Support chat ticket creation failed via direct ticket creation: \(error)")
                     self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
                         route: .directTicketCreation,
                         supportAreaInfo: areaInfo,

@@ -10,6 +10,9 @@ fastlane_require 'git'
 fastlane_require 'octokit'
 
 require_relative 'helpers/release_notes_pr_helper'
+# Canonical iOS → ASC mapping for the 14 AI-translated App Store listings.
+# Consumed by the `translate_release_notes_ai_locales` lane below.
+require_relative 'ai_translation/lib/woo_ai_translation/asc_locales'
 
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
@@ -700,6 +703,11 @@ platform :ios do
     # Don't check translation coverage in CI
     check_translation_progress_all unless is_ci
     download_localized_strings_and_metadata_from_glotpress
+    # AI-translate release_notes.txt for the 14 AI-only locales using the
+    # WooAiTranslation engine. Runs after GlotPress has populated
+    # `fastlane/metadata/default/release_notes.txt`; produces a separate
+    # commit so blame stays distinct from the GP-bot metadata commit.
+    translate_release_notes_ai_locales
     lint_localizations(fail_on_strings_not_in_base_language: false)
 
     UI.important('Pushing changes to remote')
@@ -1283,6 +1291,65 @@ platform :ios do
     git_commit(
       path: files_to_commit,
       message: 'Update metadata translations',
+      allow_nothing_to_commit: true
+    )
+  end
+
+  # Translates the App Store `release_notes.txt` into the 14 AI-only locales
+  # via the WooAiTranslation engine. The 16 GlotPress-curated locales are
+  # handled separately by `download_localized_metadata_from_glotpress`; this
+  # lane only writes to the 14 ASC folders enumerated in `AscLocales`.
+  #
+  # Per-locale failures (empty response, validator violation, length overflow)
+  # are soft: the locale is skipped, no file is written, and Apple's automatic
+  # English fallback supplies the release_notes for that locale. The lane
+  # fails the build only on infrastructure errors (missing source file, CLI
+  # error). A missing `ANTHROPIC_API_KEY` is treated as "skip all 14 locales"
+  # with a warning annotation — letting the rest of `download_release_translations`
+  # complete is preferable to blocking a release on a secret-management issue.
+  desc 'AI-translates App Store release_notes.txt into the 14 AI-only locales.'
+  lane :translate_release_notes_ai_locales do
+    if ENV.fetch('ANTHROPIC_API_KEY', '').strip.empty?
+      UI.important('ANTHROPIC_API_KEY not set — skipping AI release-notes translation. ' \
+                   'Apple will fall back to English for all 14 AI locales.')
+      if is_ci
+        buildkite_annotate(
+          style: 'warning',
+          context: 'ai-release-notes',
+          message: 'ANTHROPIC_API_KEY is not set on this agent — AI release-notes translation skipped. ' \
+                   'Apple will fall back to English release_notes for all 14 AI locales.'
+        )
+      end
+      next
+    end
+
+    source_path = File.join(FASTLANE_METADATA_FOLDER, 'default', 'release_notes.txt')
+    unless File.exist?(source_path)
+      fail_lane!(
+        context: 'ai-release-notes',
+        message: "Source release_notes not found at #{source_path}. " \
+                 '`download_localized_metadata_from_glotpress` must run first to populate it.'
+      )
+    end
+
+    cli = File.join(FASTLANE_DIR, 'ai_translation', 'bin', 'translate_release_notes.rb')
+    sh('ruby', cli, '--source', source_path, '--metadata-dir', FASTLANE_METADATA_FOLDER)
+
+    # Only stage the 14 AI locale files; the upstream GlotPress lane has its
+    # own commit for the 16 GP locale files.
+    ai_paths = WooAiTranslation::AscLocales::AI_TRANSLATION_LOCALES.values.map do |asc|
+      File.join(FASTLANE_METADATA_FOLDER, asc, 'release_notes.txt')
+    end
+    existing = ai_paths.select { |p| File.exist?(p) }
+    if existing.empty?
+      UI.important('No AI release-notes files were produced (all locales fell back to English).')
+      next
+    end
+
+    git_add(path: existing, shell_escape: false)
+    git_commit(
+      path: existing,
+      message: 'Update AI release notes translations',
       allow_nothing_to_commit: true
     )
   end

@@ -46,25 +46,28 @@ new ones); set it to scope a run.
 ```
 fastlane/ai_translation/
 ├── bin/
-│   └── translate_locale.rb       # CLI entry point
+│   ├── translate_locale.rb         # CLI: per-locale in-app .strings translation
+│   └── translate_release_notes.rb  # CLI: per-release ASC release_notes translation
 ├── lib/woo_ai_translation/
-│   ├── anthropic_client.rb       # Anthropic Messages API wrapper (+ StubClient)
-│   ├── byte_sizer.rb             # Script-aware batch sizing
-│   ├── constants.rb              # Version, model IDs, prompt version
-│   ├── ios_resources.rb          # .strings parser + writer
-│   ├── manifest.rb               # Source-only invalidation cache (per-locale JSON)
-│   ├── translator.rb             # Batched JSON-in/JSON-out translator with split-retry
-│   └── validator.rb              # Brand-safety + glossary enforcement
+│   ├── anthropic_client.rb         # Anthropic Messages API wrapper (+ StubClient)
+│   ├── asc_locales.rb              # iOS → ASC locale map for the 14 AI metadata locales
+│   ├── byte_sizer.rb               # Script-aware batch sizing
+│   ├── constants.rb                # Version, model IDs, prompt version
+│   ├── ios_resources.rb            # .strings parser + writer
+│   ├── manifest.rb                 # Source-only invalidation cache (per-locale JSON)
+│   ├── release_notes_translator.rb # Per-release release_notes orchestrator (Haiku → Opus)
+│   ├── translator.rb               # Batched JSON-in/JSON-out translator with split-retry
+│   └── validator.rb                # Brand-safety + glossary enforcement
 ├── glossary/
-│   ├── common.yml                # Brand names — never translate (hard validator)
-│   └── <locale>.yml × 31         # Per-locale UI term + noun mappings
+│   ├── common.yml                  # Brand names — never translate (hard validator)
+│   └── <locale>.yml × 31           # Per-locale UI term + noun mappings
 ├── style/
-│   ├── default.md                # Fallback style guide
-│   └── <locale>.md               # Per-locale register / quirks (when applicable)
-├── spec/                         # Minitest specs
-├── scripts/                      # One-off bootstrap utilities (assemble, gap-fill)
-├── Rakefile                      # Rake task wrappers
-└── translate-progress.json       # Audit checkpoint for the original bootstrap run
+│   ├── default.md                  # Fallback style guide
+│   └── <locale>.md                 # Per-locale register / quirks (when applicable)
+├── spec/                           # Minitest specs
+├── scripts/                        # One-off bootstrap utilities (assemble, gap-fill)
+├── Rakefile                        # Rake task wrappers
+└── translate-progress.json         # Audit checkpoint for the original bootstrap run
 ```
 
 ### Glossaries and brand-safety
@@ -179,6 +182,50 @@ This is the mode the CI step is designed to call on every PR that touches
 `en.lproj` (the CI wiring lands in a separate PR in this series). A typical
 PR adds 1–10 strings, so the incremental call costs cents and finishes in
 seconds.
+
+## App Store `release_notes.txt` (per release)
+
+A separate per-release workflow translates
+`fastlane/metadata/default/release_notes.txt` into the 14 AI-only ASC
+locales. It runs from the `translate_release_notes_ai_locales` Fastlane lane,
+which is wired into `download_release_translations` (Buildkite job
+`download-release-translations.yml`) right after GlotPress downloads the
+existing 16 locales' metadata.
+
+The locale list lives in `lib/woo_ai_translation/asc_locales.rb`. It is the
+in-app cutover list (15 codes) minus `bg` (Apple ASC unsupported), with `nb`
+mapping to ASC `no` (Apple has no Bokmål-specific listing).
+
+Per-locale flow:
+
+1. `ReleaseNotesTranslator` reads the EN source and synthesizes a single
+   Translator item with id `release_notes`.
+2. Attempts translation with Haiku (`DEFAULT_MODEL`). On failure (empty,
+   validator violation, or `> 4000` bytes) escalates to Opus.
+3. On success → writes `fastlane/metadata/<asc_locale>/release_notes.txt`.
+4. On final failure → skips writing. Apple's automatic English fallback
+   covers missing per-locale `release_notes.txt` files.
+
+The lane creates its own commit (`Update AI release notes translations`)
+separate from the GlotPress `Update metadata translations` commit so blame
+stays clean.
+
+Run the CLI directly (e.g. for a local dry-run):
+
+```bash
+ANTHROPIC_API_KEY=sk-... \
+  fastlane/ai_translation/bin/translate_release_notes.rb \
+  --source fastlane/metadata/default/release_notes.txt \
+  --metadata-dir fastlane/metadata
+```
+
+Or smoke-test with the deterministic stub (no API calls, no spend):
+
+```bash
+fastlane/ai_translation/bin/translate_release_notes.rb \
+  --source fastlane/metadata/default/release_notes.txt \
+  --metadata-dir /tmp/release-notes-smoke --offline
+```
 
 ## Adding a new locale
 

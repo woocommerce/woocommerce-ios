@@ -101,7 +101,7 @@ struct NewStockNotificationPreferencesDetailView: View {
             Localization.editStoreWideThresholdLink)
         var attributed = AttributedString.withEmbeddedLinks(
             content: content,
-            links: [Localization.editStoreWideThresholdLink: Self.editLinkScheme],
+            links: [Localization.editStoreWideThresholdLink: Constants.editLinkScheme],
             font: .caption2,
             foregroundColor: Color(.secondaryLabel))
         if let range = attributed.range(of: valueString) {
@@ -114,7 +114,7 @@ struct NewStockNotificationPreferencesDetailView: View {
     private var thresholdLoadingText: some View {
         // Render the value-known layout with a placeholder number so the row's
         // vertical space stays stable, and shimmer to signal loading.
-        thresholdValueText(Self.loadingPlaceholderValue)
+        thresholdValueText(Constants.loadingPlaceholderValue)
             .redacted(reason: .placeholder)
             .shimmering()
     }
@@ -125,7 +125,7 @@ struct NewStockNotificationPreferencesDetailView: View {
             Localization.viewStoreWideThresholdLink)
         let attributed = AttributedString.withEmbeddedLinks(
             content: content,
-            links: [Localization.viewStoreWideThresholdLink: Self.editLinkScheme],
+            links: [Localization.viewStoreWideThresholdLink: Constants.editLinkScheme],
             font: .caption2,
             foregroundColor: Color(.secondaryLabel))
         return Text(attributed)
@@ -137,7 +137,7 @@ struct NewStockNotificationPreferencesDetailView: View {
     /// both the loaded and unavailable variants share the routing logic.
     private var handleEditStoreWideThresholdTap: OpenURLAction {
         OpenURLAction { [detailViewModel] url in
-            if url.absoluteString == Self.editLinkScheme {
+            if url.absoluteString == Constants.editLinkScheme {
                 detailViewModel.onTapEditStoreWideThreshold?()
                 return .handled
             }
@@ -158,8 +158,17 @@ struct NewStockNotificationPreferencesDetailView: View {
 }
 
 private extension NewStockNotificationPreferencesDetailView {
-    static let editLinkScheme = "woo-internal://edit-store-wide-threshold"
-    static let loadingPlaceholderValue = 8
+    enum Constants {
+        /// Internal URL scheme used to route in-text link taps through
+        /// `OpenURLAction` — the actual wp-admin URL is constructed and
+        /// presented by the hosting controller.
+        static let editLinkScheme = "woo-internal://edit-store-wide-threshold"
+
+        /// Placeholder threshold value rendered behind the shimmer while the
+        /// real value is loading. Only its width matters; the redacted
+        /// modifier obscures the content.
+        static let loadingPlaceholderValue = 8
+    }
 
     enum Layout {
         static let titleDetailSpacing: CGFloat = 4

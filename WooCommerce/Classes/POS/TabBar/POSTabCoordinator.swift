@@ -44,6 +44,8 @@ final class POSTabCoordinator {
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
 
+    private var cacheCleanupObservers: [NSObjectProtocol] = []
+
     private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
     /// Local catalog eligibility service - created asynchronously during init
@@ -140,6 +142,11 @@ final class POSTabCoordinator {
         self.localCatalogEligibilityService = localCatalogEligibilityService
 
         tabContainerController.wrappedController = POSTabViewController()
+        registerStaffCacheCleanup()
+    }
+
+    deinit {
+        cacheCleanupObservers.forEach(NotificationCenter.default.removeObserver)
     }
 
     /// Check and update POS eligibility for local catalog
@@ -368,6 +375,25 @@ private extension POSTabCoordinator {
     /// Decorates track events with a different prefix when Point of Sale is active.
     func updateTrackEventPrefix(_ isPointOfSaleActive: Bool) {
         TracksProvider.setPOSMode(isPointOfSaleActive)
+    }
+
+    /// Registers `NotificationCenter` observers that forward logout and site-switch events to
+    /// the PointOfSale module, which then clears the staff PIN Keychain cache. Without this,
+    /// stale PINs could survive across user sessions or site changes.
+    func registerStaffCacheCleanup() {
+        let forward: (Notification) -> Void = { _ in
+            NotificationCenter.default.post(name: .posShouldClearStaffCache, object: nil)
+        }
+        cacheCleanupObservers = [
+            NotificationCenter.default.addObserver(forName: .logOutEventReceived,
+                                                    object: nil,
+                                                    queue: .main,
+                                                    using: forward),
+            NotificationCenter.default.addObserver(forName: .StoresManagerDidUpdateDefaultSite,
+                                                    object: nil,
+                                                    queue: .main,
+                                                    using: forward),
+        ]
     }
 
     /// Builds the `POSStaffFetching` adaptor used for PIN authentication.

@@ -78,6 +78,7 @@ final class MockPOSAccessSession: POSAccessSession {
     }
 
     func refreshPINStatus() async {}
+    func clearStaffCache() {}
 }
 
 #endif

@@ -249,6 +249,9 @@ public struct PointOfSaleEntryPointView: View {
         .task {
             await accessSession.refreshPINStatus()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .posShouldClearStaffCache)) { _ in
+            accessSession.clearStaffCache()
+        }
     }
 }
 

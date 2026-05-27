@@ -98,4 +98,11 @@ final class DefaultPOSAccessSession: POSAccessSession {
             DDLogError("POS staff refresh failed: \(error)")
         }
     }
+
+    func clearStaffCache() {
+        cache.clear(siteID: siteID)
+        hasAnyPINs = false
+        currentStaff = nil
+        isLocked = true
+    }
 }

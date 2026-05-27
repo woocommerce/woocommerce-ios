@@ -42,6 +42,8 @@ class DefaultStoresManager: StoresManager {
     ///
     private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
 
+    private let grdbManagerProvider: GRDBManagerProviding
+
     /// Tracks site IDs that are eligible for app password support to prevent duplicate analytics events
     ///
     private var trackedEligibleSites: Set<Int64> = []
@@ -155,12 +157,14 @@ class DefaultStoresManager: StoresManager {
     init(sessionManager: SessionManagerProtocol,
          notificationCenter: NotificationCenter = .default,
          defaults: UserDefaults = .standard,
-         cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
+         cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
+         grdbManagerProvider: GRDBManagerProviding = ServiceLocatorGRDBManagerProvider()) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
         self.defaults = defaults
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
+        self.grdbManagerProvider = grdbManagerProvider
 
         isLoggedIn = isAuthenticated
         if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
@@ -296,10 +300,14 @@ class DefaultStoresManager: StoresManager {
             dispatch(resetAction)
         }
 
-        // Stop any ongoing catalog sync tasks before resetting session
-        if let siteID = sessionManager.defaultStoreID {
+        let siteIDForSync = sessionManager.defaultStoreID
+        let syncCoordinator = posCatalogSyncCoordinator
+        let grdbManager = grdbManagerProvider.initializedGRDBManager
+
+        // Stop any ongoing catalog sync tasks before resetting session.
+        if let siteID = siteIDForSync {
             Task {
-                await posCatalogSyncCoordinator?.stopOngoingSyncs(for: siteID)
+                await syncCoordinator?.stopOngoingSyncs(for: siteID)
             }
         }
 
@@ -311,13 +319,14 @@ class DefaultStoresManager: StoresManager {
         ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
 
-        // Reset GRDB on a background thread to avoid blocking logout
-        // when there's a large catalog to delete
-        Task.detached(priority: .userInitiated) {
-            do {
-                try ServiceLocator.grdbManager.reset()
-            } catch {
-                DDLogError("Could not reset GRDB database: \(error)")
+        // Reset GRDB on a background thread to avoid blocking logout when there's a large catalog to delete.
+        if let grdbManager {
+            Task.detached(priority: .userInitiated) {
+                do {
+                    try grdbManager.reset()
+                } catch {
+                    DDLogError("Could not reset GRDB database: \(error)")
+                }
             }
         }
 

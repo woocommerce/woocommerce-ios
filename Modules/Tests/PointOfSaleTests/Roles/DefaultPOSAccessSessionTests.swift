@@ -271,6 +271,46 @@ struct DefaultPOSAccessSessionTests {
         // When / Then
         #expect(sut.session.allows(.refundShopOrders) == false)
     }
+
+    @Test func test_clearStaffCache_resets_flagDisabledServerSide() async {
+        // Given - trigger flagDisabledServerSide=true via a refresh that returns .flagDisabledServerSide
+        let saveTime = Date()
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { saveTime })
+        cache.save([makeMember(id: 1, hasPIN: true)], siteID: 1)
+        let fetcher = MockPOSStaffFetcher(error: .flagDisabledServerSide)
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
+                                  now: { saveTime.addingTimeInterval(31) })
+        await session.refreshPINStatus()
+        #expect(session.flagDisabledServerSide == true)
+
+        // When
+        session.clearStaffCache()
+
+        // Then
+        #expect(cache.load(siteID: 1) == nil)
+        #expect(session.hasAnyPINs == false)
+        #expect(session.currentStaff == nil)
+        #expect(session.isLocked == true)
+        #expect(session.flagDisabledServerSide == false)
+    }
+
+    @Test func test_refreshPINStatus_when_fetch_returns_no_pins_then_unlocks_session() async {
+        // Given - refresh returns members without PINs (admin removed all)
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
+        let memberWithoutPIN = POSStaffMember(userID: 1, userLogin: "u1", displayName: "U1",
+                                              role: "pos_cashier", capabilities: ["view_pos": true],
+                                              pin: nil)
+        let session = makeSession(cache: cache,
+                                  fetcher: MockPOSStaffFetcher(staff: [memberWithoutPIN]),
+                                  siteID: 1)
+
+        // When
+        await session.refreshPINStatus()
+
+        // Then
+        #expect(session.hasAnyPINs == false)
+        #expect(session.isLocked == false)
+    }
 }
 
 private extension DefaultPOSAccessSessionTests {

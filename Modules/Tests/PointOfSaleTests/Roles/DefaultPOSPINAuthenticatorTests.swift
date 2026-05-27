@@ -142,6 +142,23 @@ struct DefaultPOSPINAuthenticatorTests {
         }
     }
 
+    @Test func test_authenticate_when_cache_misses_and_fetcher_throws_then_throws_staffFetchFailed() async {
+        // Given
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
+        let fetcher = MockPOSStaffFetcher(error: .flagDisabledServerSide)
+        let sut = makeSUT(cache: cache, fetcher: fetcher, siteID: 1)
+
+        // When / Then
+        do {
+            _ = try await sut.authenticate(withPIN: "9999")
+            Issue.record("Expected staffFetchFailed")
+        } catch POSAuthError.staffFetchFailed(let inner) {
+            #expect(inner == .flagDisabledServerSide)
+        } catch {
+            Issue.record("Unexpected: \(error)")
+        }
+    }
+
     @Test func test_hasAnyPINs_passes_through_to_cache() async throws {
         // Given
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage())

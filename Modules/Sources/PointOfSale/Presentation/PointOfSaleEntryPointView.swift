@@ -247,6 +247,8 @@ public struct PointOfSaleEntryPointView: View {
         .posLockScreenOverlay()
         .environment(\.posAccessSession, accessSession)
         .task {
+            // Initial refresh on POS entry. The 30s TTL in DefaultPOSAccessSession.refreshPINStatus
+            // deduplicates with the lock-screen .task that fires for the lock-screen view.
             await accessSession.refreshPINStatus()
         }
         .onReceive(NotificationCenter.default.publisher(for: .posShouldClearStaffCache)) { _ in
